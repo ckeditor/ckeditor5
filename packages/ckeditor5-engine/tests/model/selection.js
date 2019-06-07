@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../src/model/model';
@@ -806,6 +806,21 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( selection.is( 'documentSelection' ) ).to.be.false;
+			expect( selection.is( 'node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( 'element' ) ).to.be.false;
+			expect( selection.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'setTo - used to collapse at start', () => {
 		it( 'should collapse to start position and fire change event', () => {
 			selection.setTo( [ range2, range1, range3 ] );
@@ -1102,12 +1117,90 @@ describe( 'Selection', () => {
 			);
 		} );
 
+		it( 'does not go beyond limit elements', () => {
+			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
+
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			model.schema.extend( 'p', { allowIn: 'tableCell' } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
+		} );
+
 		// Map all elements to data of its first child text node.
 		function toText( elements ) {
 			return Array.from( elements ).map( el => {
 				return Array.from( el.getChildren() ).find( child => child.data ).data;
 			} );
 		}
+	} );
+
+	describe( 'getTopMostBlocks()', () => {
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
+
+			model.schema.extend( 'p', { allowIn: 'tableCell' } );
+		} );
+
+		it( 'returns an iterator', () => {
+			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( doc.selection.getTopMostBlocks().next ).to.be.a( 'function' );
+		} );
+
+		it( 'returns block for a collapsed selection', () => {
+			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b' ] );
+		} );
+
+		it( 'returns block for a collapsed selection (empty block)', () => {
+			setData( model, '<p>a</p><p>[]</p><p>c</p>' );
+
+			const blocks = Array.from( doc.selection.getTopMostBlocks() );
+
+			expect( blocks ).to.have.length( 1 );
+			expect( blocks[ 0 ].childCount ).to.equal( 0 );
+		} );
+
+		it( 'returns block for a non collapsed selection', () => {
+			setData( model, '<p>a</p><p>[b]</p><p>c</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b' ] );
+		} );
+
+		it( 'returns two blocks for a non collapsed selection', () => {
+			setData( model, '<p>a</p><p>[b</p><p>c]</p><p>d</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
+		} );
+
+		it( 'returns only top most blocks', () => {
+			setData( model, '[<p>foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz</p>]' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks', () => {
+			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
+		} );
 	} );
 
 	describe( 'attributes interface', () => {
@@ -1283,4 +1376,16 @@ describe( 'Selection', () => {
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 	} );
+
+	// Map all elements to names. If element contains child text node it will be appended to name with '#'.
+	function stringifyBlocks( elements ) {
+		return Array.from( elements ).map( el => {
+			const name = el.name;
+
+			const firstChild = el.getChild( 0 );
+			const hasText = firstChild && firstChild.data;
+
+			return hasText ? `${ name }#${ firstChild.data }` : name;
+		} );
+	}
 } );

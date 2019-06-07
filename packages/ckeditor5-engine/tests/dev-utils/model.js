@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { stringify, parse, getData, setData } from '../../src/dev-utils/model';
@@ -78,6 +78,28 @@ describe( 'model test utils', () => {
 			expect( () => {
 				getData( { invalid: 'document' } );
 			} ).to.throw( TypeError, 'Model needs to be an instance of module:engine/model/model~Model.' );
+		} );
+
+		describe( 'markers', () => {
+			it( 'should stringify collapsed marker', () => {
+				setData( model, '<paragraph>bar</paragraph>' );
+
+				model.markers._set( 'foo', new Range( Position._createAt( document.getRoot(), 0 ) ) );
+
+				expect( getData( model, { convertMarkers: true, withoutSelection: true } ) )
+					.to.equal( '<foo:start></foo:start><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'should stringify non-collapsed marker', () => {
+				setData( model, '<paragraph>bar</paragraph>' );
+
+				const markerRange = new Range( Position._createAt( document.getRoot(), 0 ), Position._createAt( document.getRoot(), 1 ) );
+
+				model.markers._set( 'foo', markerRange );
+
+				expect( getData( model, { convertMarkers: true, withoutSelection: true } ) )
+					.to.equal( '<foo:start></foo:start><paragraph>bar</paragraph><foo:end></foo:end>' );
+			} );
 		} );
 	} );
 

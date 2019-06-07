@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
@@ -377,7 +382,7 @@ describe( 'transform', () => {
 				expectClients( '<blockQuote><paragraph>c</paragraph></blockQuote>' );
 			} );
 
-			it.skip( 'delete all wrapped content and undo', () => {
+			it( 'delete all wrapped content and undo', () => {
 				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
 				kate.setData( '<paragraph>[Foo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
 

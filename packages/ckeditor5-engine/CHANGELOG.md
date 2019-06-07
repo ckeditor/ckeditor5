@@ -1,6 +1,192 @@
 Changelog
 =========
 
+## [13.1.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.0...v13.1.1) (2019-06-05)
+
+### Bug fixes
+
+* Prevented from losing selection attributes between operations (fixes a bug with text composition). Closes https://github.com/ckeditor/ckeditor5-typing/issues/188. ([42dcb25](https://github.com/ckeditor/ckeditor5-engine/commit/42dcb25))
+
+### Other changes
+
+* Added more cases of affected markers on merging in `model.Writer`. Closes [#1738](https://github.com/ckeditor/ckeditor5-engine/issues/1738). ([01ff6e6](https://github.com/ckeditor/ckeditor5-engine/commit/01ff6e6))
+
+
+## [13.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.0.0...v13.1.0) (2019-04-10)
+
+### Features
+
+* `Model#insertContent()` will return a range affected by the insertion. ([f4e4644](https://github.com/ckeditor/ckeditor5-engine/commit/f4e4644))
+
+  In `Model#deleteContent()`, added `doNotAutoparagraph` flag to `options`.
+  `Position` and `LivePosition` static creators should handle `stickiness` param.
+* Added possibility to refresh the marker with no changes through `Writer#updateMarker()` method. Closes [#1649](https://github.com/ckeditor/ckeditor5-engine/issues/1649). ([cf56d90](https://github.com/ckeditor/ckeditor5-engine/commit/cf56d90))
+* Introduced `Schema#setAttributeProperties()` and `Schema#getAttributeProperties()` methods. Closes [ckeditor/ckeditor5#1659](https://github.com/ckeditor/ckeditor5/issues/1659). ([1c6f83a](https://github.com/ckeditor/ckeditor5-engine/commit/1c6f83a))
+* Introduced `UpcastConversionApi#getSplitParts()`. Also, provided a way to set upcast conversion helper fired for every view element. Closes https://github.com/ckeditor/ckeditor5/issues/1580. Closes https://github.com/ckeditor/ckeditor5/issues/1581. ([d0ee3f4](https://github.com/ckeditor/ckeditor5-engine/commit/d0ee3f4))
+
+### Bug fixes
+
+* `view.DowncastWriter` will now correctly wrap and unwrap nested attribute elements. Closes [#1716](https://github.com/ckeditor/ckeditor5-engine/issues/1716). Closes [ckeditor/ckeditor5-font#30](https://github.com/ckeditor/ckeditor5-font/issues/30). ([4126359](https://github.com/ckeditor/ckeditor5-engine/commit/4126359))
+* Attribute and remove change on intersecting ranges done in the same change block will be correctly saved in `Differ` and downcasted. Closes [ckeditor/ckeditor5#1645](https://github.com/ckeditor/ckeditor5/issues/1645). ([b2a9d86](https://github.com/ckeditor/ckeditor5-engine/commit/b2a9d86))
+* Editor will no longer crash during undo in some pasting+remove scenarios. Closes [#1701](https://github.com/ckeditor/ckeditor5-engine/issues/1701). ([ca619e7](https://github.com/ckeditor/ckeditor5-engine/commit/ca619e7))
+* Made sure that `Schema#getAttributeProperties()` always returns an object. Closes [#1717](https://github.com/ckeditor/ckeditor5-engine/issues/1717). ([b3f5da3](https://github.com/ckeditor/ckeditor5-engine/commit/b3f5da3))
+* Markers should be now correctly upcasted inside any element. Closes [#1697](https://github.com/ckeditor/ckeditor5-engine/issues/1697). ([3706324](https://github.com/ckeditor/ckeditor5-engine/commit/3706324))
+* `Model#deleteContent()` will not throw anymore if the passed selection is in the graveyard root. Closes [#1706](https://github.com/ckeditor/ckeditor5-engine/issues/1706). ([bd875c7](https://github.com/ckeditor/ckeditor5-engine/commit/bd875c7))
+* The editor will not throw an error when updating an empty fake selection container. Closes [#1714](https://github.com/ckeditor/ckeditor5-engine/issues/1714). ([c48f5a4](https://github.com/ckeditor/ckeditor5-engine/commit/c48f5a4))
+
+
+## [13.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v12.0.0...v13.0.0) (2019-02-28)
+
+### Features
+
+* Added an additional event in markers conversion. Improved how `MarkerOperation` is transformed during undo. Closes [#1604](https://github.com/ckeditor/ckeditor5-engine/issues/1604). ([da5a390](https://github.com/ckeditor/ckeditor5-engine/commit/da5a390))
+* Implemented `Selection#is()` and `DocumentSelection#is()` methods in both the model and the view. Closes [#1663](https://github.com/ckeditor/ckeditor5-engine/issues/1663). ([aac4948](https://github.com/ckeditor/ckeditor5-engine/commit/aac4948))
+* Introduce the `selection.getTopMostBlocks()` method. ([a9c41c8](https://github.com/ckeditor/ckeditor5-engine/commit/a9c41c8))
+* Introduce the read-only `View#isRenderingInProgress` flag to check if the document is in the rendering phase. Closes https://github.com/ckeditor/ckeditor5/issues/1530. ([6577d04](https://github.com/ckeditor/ckeditor5-engine/commit/6577d04))
+* Introduced `Differ#getChangedMarkers`. Closes [#1658](https://github.com/ckeditor/ckeditor5-engine/issues/1658). ([2e04af7](https://github.com/ckeditor/ckeditor5-engine/commit/2e04af7))
+* Introduced `DocumentSelection#markers` collection. Closes [#1615](https://github.com/ckeditor/ckeditor5-engine/issues/1615). ([b2c1d72](https://github.com/ckeditor/ckeditor5-engine/commit/b2c1d72))
+* Introduced support for inline objects (enables support for inline widgets). Introduced `Schema#isInline()`. Closes [[ckeditor/ckeditor5#1049](https://github.com/ckeditor/ckeditor5/issues/1049)](https://github.com/ckeditor/ckeditor5/issues/1049). Closes [[ckeditor/ckeditor5#1426](https://github.com/ckeditor/ckeditor5/issues/1426)](https://github.com/ckeditor/ckeditor5/issues/1426). ([6b36bf1](https://github.com/ckeditor/ckeditor5-engine/commit/6b36bf1))
+* Introduced whitespace trimming to `Model#hasContent()`. `DataController#get()` method can now trim empty data (so it returns empty string instead of `<p>&nbsp;</p>`). Closes [[ckeditor/ckeditor5#401](https://github.com/ckeditor/ckeditor5/issues/401)](https://github.com/ckeditor/ckeditor5/issues/401). ([2b95dc3](https://github.com/ckeditor/ckeditor5-engine/commit/2b95dc3))
+* Moved the root element DOM attributes management from the UI to the engine. Made it possible to use `addPlaceholder()` (now `enablePlaceholder()`) on the root editable. Introduced the `View.detachDomRoot()` method. Implemented additional placeholder helpers (`showPlaceholder()`, `hidePlaceholder()`, `needsPlaceholder()`) (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). Closes [#899](https://github.com/ckeditor/ckeditor5-engine/issues/899). ([21dee6b](https://github.com/ckeditor/ckeditor5-engine/commit/21dee6b))
+
+### Bug fixes
+
+* `MarkerOperation` OT cases for undo. Closes [#1650](https://github.com/ckeditor/ckeditor5-engine/issues/1650). ([649cae0](https://github.com/ckeditor/ckeditor5-engine/commit/649cae0))
+* `MarkerOperation` transformation in undo. Closes [#1668](https://github.com/ckeditor/ckeditor5-engine/issues/1668). ([c9932b8](https://github.com/ckeditor/ckeditor5-engine/commit/c9932b8))
+* `Selection#getTopMostBlocks()` should not leak from limit elements. Closes [ckeditor/ckeditor5-table#163](https://github.com/ckeditor/ckeditor5-table/issues/163). ([7bc0338](https://github.com/ckeditor/ckeditor5-engine/commit/7bc0338))
+* All content is properly removed after undoing paste in some scenarios. Closes [[ckeditor/ckeditor5#1540](https://github.com/ckeditor/ckeditor5/issues/1540)](https://github.com/ckeditor/ckeditor5/issues/1540). ([08855d3](https://github.com/ckeditor/ckeditor5-engine/commit/08855d3))
+* Converter priority passing in `conversion.attributeToElement()`. Closes [#1617](https://github.com/ckeditor/ckeditor5-engine/issues/1617). ([fe6d17d](https://github.com/ckeditor/ckeditor5-engine/commit/fe6d17d))
+* Fake selection container should be correctly appended to the new editable element when creating a new fake selection in a different editable element than the one which was focused before. Closes [[ckeditor/ckeditor5#1523](https://github.com/ckeditor/ckeditor5/issues/1523)](https://github.com/ckeditor/ckeditor5/issues/1523). ([3b53d5a](https://github.com/ckeditor/ckeditor5-engine/commit/3b53d5a))
+* Filter out fake selection container before comparing DOM view root children in view renderer. Closes [ckeditor/ckeditor5#1578](https://github.com/ckeditor/ckeditor5/issues/1578). ([6591f87](https://github.com/ckeditor/ckeditor5-engine/commit/6591f87))
+* Moving to the same position is not handled by the `Differ` as a change. ([7dfaae6](https://github.com/ckeditor/ckeditor5-engine/commit/7dfaae6))
+* Prevented `model.Writer` from inserting empty text nodes. Closes [#1320](https://github.com/ckeditor/ckeditor5-engine/issues/1320). ([47070b5](https://github.com/ckeditor/ckeditor5-engine/commit/47070b5))
+* Prevented `View` from firing the `render` event if there were no changes since the last rendering. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). Closes [#1660](https://github.com/ckeditor/ckeditor5-engine/issues/1660). ([558638c](https://github.com/ckeditor/ckeditor5-engine/commit/558638c))
+* Renamed the event during selection attributes conversion. `attribute:key` becomes to `attribute:key:$text`. Closes [#1597](https://github.com/ckeditor/ckeditor5-engine/issues/1597). ([fd7734e](https://github.com/ckeditor/ckeditor5-engine/commit/fd7734e))
+* Stopped invoking `view.render()` by `EditingController` when the model document isn't changed. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). ([5d97fd6](https://github.com/ckeditor/ckeditor5-engine/commit/5d97fd6))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([bf86ffa](https://github.com/ckeditor/ckeditor5-engine/commit/bf86ffa))
+* Undo and redo no longer crashes in scenarios featuring pasting content into earlier pasted content. Closes [[ckeditor/ckeditor5#1385](https://github.com/ckeditor/ckeditor5/issues/1385)](https://github.com/ckeditor/ckeditor5/issues/1385). ([551ab50](https://github.com/ckeditor/ckeditor5-engine/commit/551ab50))
+* Update model selection attributes and markers after each change that affects the selection. Closes [#1673](https://github.com/ckeditor/ckeditor5-engine/issues/1673). ([4f9ac0e](https://github.com/ckeditor/ckeditor5-engine/commit/4f9ac0e))
+
+* Add selection post-fixer improvements. Closes [#1593](https://github.com/ckeditor/ckeditor5-engine/issues/1593). ([7f40831](https://github.com/ckeditor/ckeditor5-engine/commit/7f40831))
+
+### Other changes
+
+* Added support for handling data in multiple roots in `DataController`. Closes [#1626](https://github.com/ckeditor/ckeditor5-engine/issues/1626). ([0fb4295](https://github.com/ckeditor/ckeditor5-engine/commit/0fb4295))
+* Change `Conversion` class API. Closes [#1640](https://github.com/ckeditor/ckeditor5-engine/issues/1640). ([e7d09cd](https://github.com/ckeditor/ckeditor5-engine/commit/e7d09cd))
+* Introduced `editor.data#ready` event. ([46d9243](https://github.com/ckeditor/ckeditor5-engine/commit/46d9243))
+* Removed `wrap()` from public API. Closes [#1616](https://github.com/ckeditor/ckeditor5-engine/issues/1616). ([1c7ef68](https://github.com/ckeditor/ckeditor5-engine/commit/1c7ef68))
+* Swapped the order of parameters in `Schema#findAllowedParent()`. Now those parameters match to parameters in other methods of the `Schema` class. Closes [#1636](https://github.com/ckeditor/ckeditor5-engine/issues/1636). ([6515558](https://github.com/ckeditor/ckeditor5-engine/commit/6515558))
+* Upcast element to attribute defaults to `low` priority instead of `normal`. Closes [ckeditor/ckeditor5#1399](https://github.com/ckeditor/ckeditor5/issues/1399). ([c33c49c](https://github.com/ckeditor/ckeditor5-engine/commit/c33c49c))
+* Expose conversion utilities. Closes [#1556](https://github.com/ckeditor/ckeditor5-engine/issues/1556). ([9306c22](https://github.com/ckeditor/ckeditor5-engine/commit/9306c22))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* `DataController#get()` method now returns an empty string when the editor content is empty (instead of returning e.g. `<p>&nbsp;</p>`).
+* The wrap() conversion helper was removed from public API.
+* The `attachPlaceholder()` has been renamed to `enablePlaceholder()`.
+* `enablePlaceholder()` accepts a configuration object instead of separate parameters.
+* The `detachPlaceholder()` has been renamed to `disablePlaceholder()`.
+* The `Conversion#register()` method was removed from the public API. Use constructor parameters to pass dispatchers and `Conversion#addAlias()` to register an alternative conversion group for registered upcast or downcast dispatchers.
+* The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
+* Swapped the order of parameters in `Schema#findAllowedParent()`.
+* The second parameter (`rootName`) from `DataController#init()` method has been removed. To initialize data on a root different than default one an object with `rootName` - `data` pair should be passed.
+* The second parameter (`rootName`) from `DataController#set()` method has been removed. To set data on a root different than default one an object with `rootName` - `data` pair should be passed.
+* The `editing.view.render()` method was renamed to `editing.view.forceRender()`. It should be used with caution as it will re-render editing view and repaint the UI.
+* The `conversion.register()` method now accepts single options object as a parameter.
+* The `downcastElementToElement()` helper was removed from public API. Use `conversion.for( 'downcast' ).elementToElement()` instead.
+* The `downcastAttributeToElement()` helper was removed from public API. Use `conversion.for( 'downcast' ).attributeToElement()` instead.
+* The `downcastAttributeToAttribute()` helper was removed from public API. Use `conversion.for( 'downcast' ).attributeToAttribute()` instead.
+* The `downcastMarkerToElement()` helper was removed from public API. Use `conversion.for( 'downcast' ).markerToElement()` instead.
+* The `downcastMarkerToHighlight()` helper was removed from public API. Use `conversion.for( 'downcast' ).markerToHighlight()` instead.
+* The `upcastElementToElement()` helper was removed from public API. Use `conversion.for( 'upcast' ).elementToElement()` instead.
+* The `upcastElementToAttribute()` helper was removed from public API. Use `conversion.for( 'upcast' ).elementToAttribute()` instead.
+* The `upcastAttributeToAttribute()` helper was removed from public API. Use `conversion.for( 'upcast' ).attributeToAttribute()` instead.
+* The `upcastElementToMarker()` helper was removed from public API. Use `conversion.for( 'upcast' ).elementToMarker()` instead.
+* The `insertUIElement()` and `removeUIElement()` downcast converters were removed from public API. Use `conversion.for( 'downcast' ).markerToElement()` instead.
+* The `highlightText()`, `highlightElement()` and `removeHighlight()` downcast converters were removed from public API. Use `conversion.for( 'downcast' ).markerToHighlight()` instead.
+* The `insertElement()` downcast converter was removed from public API. Use `conversion.for( 'downcast' ).elementToElement()` instead.
+* The `changeAttribute()` downcast converter was removed from public API. Use `conversion.for( 'downcast' ).attributeToAttribute()` instead.
+
+
+## [12.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v11.0.0...v12.0.0) (2018-12-05)
+
+### Features
+
+* Introduced `createDocumentFragment()`, `createElement()` and `createText()` methods in `UpcastWriter`. Additionally, the `View#change()` method now returns the return value of its callback. Closes [#1549](https://github.com/ckeditor/ckeditor5-engine/issues/1549). ([ec13c85](https://github.com/ckeditor/ckeditor5-engine/commit/ec13c85))
+* The `Model#insertContent()` method will accept offset parameter. ([00dd70c](https://github.com/ckeditor/ckeditor5-engine/commit/00dd70c))
+* Made `Position.createAt()` require the `offset` when the first parameter is a model/view item. This change affected the following methods too. Closes [#1554](https://github.com/ckeditor/ckeditor5-engine/issues/1554). ([00dd70c](https://github.com/ckeditor/ckeditor5-engine/commit/00dd70c))
+
+  * `model.Position.createAt()`
+  * `model.Range.createCollapsedAt()`
+  * `model.Selection#setFocus()`
+  * `model.Writer#insert()`
+  * `model.Writer#insertText()`
+  * `model.Writer#insertElement()`
+  * `model.Writer#move()`
+  * `model.Writer#setSelectionFocus()`
+  * `view.Writer#setSelectionFocus()`
+  * `view.Position.createAt()`
+  * `view.Range.createCollapsedAt()`
+  * `view.Selection#setFocus()`
+
+  See breaking changes.
+
+### Bug fixes
+
+* `Model#deleteContent()` will properly merge elements inside a limit element. Closes [ckeditor/ckeditor5#1265](https://github.com/ckeditor/ckeditor5/issues/1265). ([5d26bc3](https://github.com/ckeditor/ckeditor5-engine/commit/5d26bc3))
+* Added `MoveOperation` x `SplitOperation` transformation for a case when graveyard element is moved. Closes [#1580](https://github.com/ckeditor/ckeditor5-engine/issues/1580). ([f88c918](https://github.com/ckeditor/ckeditor5-engine/commit/f88c918))
+* Better handling for `MoveOperation` x `SplitOperation` transformation special case. Closes [ckeditor/ckeditor5#1288](https://github.com/ckeditor/ckeditor5/issues/1288). ([b92a800](https://github.com/ckeditor/ckeditor5-engine/commit/b92a800))
+* Corrected transformations for pasting and undo scenarios. Closes [ckeditor/ckeditor5#1287](https://github.com/ckeditor/ckeditor5/issues/1287). ([b1e8975](https://github.com/ckeditor/ckeditor5-engine/commit/b1e8975))
+* Do not run attribute-to-attribute downcast conversion on text node attributes. Closes [#1587](https://github.com/ckeditor/ckeditor5-engine/issues/1587). ([6659582](https://github.com/ckeditor/ckeditor5-engine/commit/6659582))
+* Firefox should visually move the caret to a new line after a soft break. Closes [#1439](https://github.com/ckeditor/ckeditor5-engine/issues/1439). ([80392ad](https://github.com/ckeditor/ckeditor5-engine/commit/80392ad))
+* Made markers created by `Writer#insert()` affect the data. Closes [#1583](https://github.com/ckeditor/ckeditor5-engine/issues/1583). ([72aaaf0](https://github.com/ckeditor/ckeditor5-engine/commit/72aaaf0))
+
+### Other changes
+
+* `ContainerElement#getFillerOffset()` can now be re-used in other places in the code (it is now exported by the module). See [ckeditor/ckeditor5-list#117](https://github.com/ckeditor/ckeditor5-list/issues/117). ([12f28bb](https://github.com/ckeditor/ckeditor5-engine/commit/12f28bb))
+* Moved `Position`, `Range` and `Selection` static factories from those classes to the model/view writers and `Model`/`View` instances. Previously, those factories were available as static methods of the `Position`, `Range` and `Selection` classes which meant that you needed to import those classes to your plugin's code to create new instances. That required your package to depend on `@ckeditor/ckeditor5-engine` and was not very useful in general. After this change, you can create instances of those classes without importing anything. See the "Breaking changes" section for more details. Closes [#1555](https://github.com/ckeditor/ckeditor5-engine/issues/1555). ([e7f8467](https://github.com/ckeditor/ckeditor5-engine/commit/e7f8467))
+* Vairous fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+
+### BREAKING CHANGES
+
+* The model `Position.createAt()` method was removed from the public API. Use `writer.createPositionAt()` instead. This method is also available on the `Model` instance.
+* The `offset` parameter of the following methods does not default to `0` and hence is no longer optional when `itemOrPosition` is a model/view item:
+  - `model.Position.createAt()`
+  - `model.Range.createCollapsedAt()`
+  - `model.Selection#setFocus()`
+  - `model.Writer#insert()`
+  - `model.Writer#insertText()`
+  - `model.Writer#insertElement()`
+  - `model.Writer#move()`
+  - `model.Writer#setSelectionFocus()`
+  - `view.Writer#setSelectionFocus()`
+  - `view.Position.createAt()`
+  - `view.Range.createCollapsedAt()`
+  - `view.Selection#setFocus()`
+* The model `Position.createBefore()` method was removed from the public API. Use `writer.createPositionBefore()` instead. This method is also available on the `Model` instance.
+* The model `Position.createFromPosition()` method was removed. Use `writer.createPositionAt( position )` to create a new position instance. This method is also available on the `Model` instance.
+* The model `Position.createFromParentAndOffset()` method was removed. Use `writer.createPositionAt( parent, offset )` instead. This method is also available on the `Model` instance.
+* The model `Range.createIn()` method was removed from the public API. Use `writer.createRangeIn()` instead. This method is also available on the `Model` instance.
+* The model `Range.createOn()` method was removed from the public API. Use `writer.createRangeOn()` instead. This method is also available on the `Model` instance.
+* The model `Range.createFromRange()` method was removed from the public API.
+* The model `Range.createFromParentsAndOffsets()` method was removed from the public API.
+* The model `Range.createFromPositionAndShift()` method was removed from the public API.
+* The model `Range.createCollapsedAt()` method removed method was removed. Use `writer.createRange( position )` to create collapsed range. This method is also available on the `Model` instance.
+* The model `Position.createAfter()` method was removed from the public API. Use `writer.createPositionAfter()` instead. This method is also available on the `Model` instance.
+* The view `Position.createAt()` method was removed from the public API. Use `writer.createPositionAt()` instead. This method is also available on the `View` instance.
+* The view `Position.createAfter()` method was removed from the public API. Use `writer.createPositionAfter()` instead. This method is also available on the `View` instance.
+* The view `Position.createBefore()` method was removed from the public API. Use `writer.createPositionBefore()` instead. This method is also available on the `View` instance.
+* The view `Position.createFromPosition()` method was removed. Use `writer.createPositionAt( position )` to create a new position instance. This method is also available on the `View` instance.
+* The view `Range.createIn()` method was removed from the public API. Use `writer.createRangeIn()` instead. This method is also available on the `View` instance.
+* The view `Range.createOn()` method was removed from the public API. Use `writer.createRangeOn()` instead. This method is also available on the `View` instance.
+* The view `Range.createFromRange()` method was removed from the public API.
+* The view `Range.createFromPositionAndShift()` method was removed from the public API.
+* The view `Range.createFromParentsAndOffsets()` method was removed from the public API.
+* The view `Range.createCollapsedAt()` method removed method was removed. Use `writer.createRange( position )` to create a collapsed range. This method is also available on the `View` instance.
+* The model `Range.createFromRanges()` method was removed from the public API.
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.2.0...v11.0.0) (2018-10-08)
 
 ### Bug fixes

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -94,7 +94,8 @@ export default class Model {
 			isBlock: true
 		} );
 		this.schema.register( '$text', {
-			allowIn: '$block'
+			allowIn: '$block',
+			isInline: true
 		} );
 		this.schema.register( '$clipboardHolder', {
 			allowContentOf: '$root',
@@ -102,12 +103,15 @@ export default class Model {
 		} );
 		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
 
-		// Element needed by `upcastElementToMarker` converter.
-		// This element temporarily represents marker bound during conversion process and is removed
-		// at the end of conversion. `UpcastDispatcher` or at least `Conversion` class looks like a better for this
-		// registration but both know nothing about Schema.
-		this.schema.register( '$marker', {
-			allowIn: [ '$root', '$block' ]
+		// An element needed by the `upcastElementToMarker` converter.
+		// This element temporarily represents a marker boundary during the conversion process and is removed
+		// at the end of the conversion. `UpcastDispatcher` or at least `Conversion` class looks like a
+		// better place for this registration but both know nothing about `Schema`.
+		this.schema.register( '$marker' );
+		this.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name === '$marker' ) {
+				return true;
+			}
 		} );
 
 		injectSelectionPostFixer( this );
@@ -331,15 +335,16 @@ export default class Model {
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/item~Item|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
+	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
 	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
 	 * This param defines a position in relation to that item.
+	 * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
+	 * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
+	 * at the insertion position.
 	 */
 	insertContent( content, selectable, placeOrOffset ) {
-		insertContent( this, content, selectable, placeOrOffset );
+		return insertContent( this, content, selectable, placeOrOffset );
 	}
 
 	/**
@@ -374,6 +379,18 @@ export default class Model {
 	 *
 	 * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
 	 * * `<heading1>^</heading1>` with enabled (`doNotResetEntireContent == true`)
+	 *
+	 * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
+	 * to a place where text cannot be inserted.
+	 *
+	 * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
+	 *
+	 * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
+	 * * `<paragraph>x[]</paragraph>` with the option enabled (`doNotAutoparagraph == true`).
+	 *
+	 * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+	 *
+	 * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
@@ -447,26 +464,49 @@ export default class Model {
 
 	/**
 	 * Checks whether the given {@link module:engine/model/range~Range range} or
-	 * {@link module:engine/model/element~Element element}
-	 * has any content.
+	 * {@link module:engine/model/element~Element element} has any meaningful content.
 	 *
-	 * Content is any text node or element which is registered in the {@link module:engine/model/schema~Schema schema}.
+	 * Meaningful content is:
+	 *
+	 * * any text node (`options.ignoreWhitespaces` allows controlling whether this text node must also contain
+	 * any non-whitespace characters),
+	 * * or any {@link module:engine/model/schema~Schema#isObject object element},
+	 * * or any {@link module:engine/model/markercollection~Marker marker} which
+	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
+	 *
+	 * This means that a range containing an empty `<paragraph></paragraph>` is not considered to have a meaningful content.
+	 * However, a range containing an `<image></image>` (which would normally be marked in the schema as an object element)
+	 * is considered non-empty.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.ignoreWhitespaces] Whether text node with whitespaces only should be considered empty.
 	 * @returns {Boolean}
 	 */
-	hasContent( rangeOrElement ) {
-		if ( rangeOrElement instanceof ModelElement ) {
-			rangeOrElement = ModelRange._createIn( rangeOrElement );
-		}
+	hasContent( rangeOrElement, options ) {
+		const range = rangeOrElement instanceof ModelElement ? ModelRange._createIn( rangeOrElement ) : rangeOrElement;
 
-		if ( rangeOrElement.isCollapsed ) {
+		if ( range.isCollapsed ) {
 			return false;
 		}
 
-		for ( const item of rangeOrElement.getItems() ) {
-			// Remember, `TreeWalker` returns always `textProxy` nodes.
-			if ( item.is( 'textProxy' ) || this.schema.isObject( item ) ) {
+		// Check if there are any markers which affects data in this given range.
+		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( range ) ) {
+			if ( intersectingMarker.affectsData ) {
+				return true;
+			}
+		}
+
+		const { ignoreWhitespaces = false } = options || {};
+
+		for ( const item of range.getItems() ) {
+			if ( item.is( 'textProxy' ) ) {
+				if ( !ignoreWhitespaces ) {
+					return true;
+				} else if ( item.data.search( /\S/ ) !== -1 ) {
+					return true;
+				}
+			} else if ( this.schema.isObject( item ) ) {
 				return true;
 			}
 		}
@@ -596,14 +636,8 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a new selection instance based on:
-	 *
-	 * * the given {@link module:engine/model/selection~Selection selection},
-	 * * or based on the given {@link module:engine/model/range~Range range},
-	 * * or based on the given iterable collection of {@link module:engine/model/range~Range ranges}
-	 * * or at the given {@link module:engine/model/position~Position position},
-	 * * or on the given {@link module:engine/model/element~Element element},
-	 * * or creates an empty selection if no arguments were passed.
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
 	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
@@ -650,9 +684,7 @@ export default class Model {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -705,8 +737,7 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire internal `_change` event.
-			this.fire( '_change', this._currentWriter );
+			this.document._handleChangeBlock( this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
@@ -716,17 +747,6 @@ export default class Model {
 
 		return ret;
 	}
-
-	/**
-	 * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
-	 * {@link module:engine/model/model~Model#change} block.
-	 *
-	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
-	 *
-	 * @protected
-	 * @event _change
-	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
-	 */
 
 	/**
 	 * Fired when entering the outermost {@link module:engine/model/model~Model#enqueueChange} or

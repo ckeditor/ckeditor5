@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -13,14 +13,17 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
+
 /**
  * Position in the view tree. Position is represented by its parent node and an offset in this parent.
  *
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
- * * {@module:engine/view/view~View}
- * * {@module:engine/view/downcastwriter~DowncastWriter}
- * * {@module:engine/view/upcastwriter~UpcastWriter}
+ * * {@link module:engine/view/view~View}
+ * * {@link module:engine/view/downcastwriter~DowncastWriter}
+ * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Position {
 	/**

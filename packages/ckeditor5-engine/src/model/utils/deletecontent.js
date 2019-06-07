@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -42,9 +42,28 @@ import DocumentSelection from '../documentselection';
  *
  * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
  * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`).
+ *
+ * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
+ * to a place where text cannot be inserted.
+ *
+ * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
+ *
+ * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
+ * * `<paragraph>x[]</paragraph>` with the option enabled (`doNotAutoparagraph == true`).
+ *
+ * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+ *
+ * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
  */
 export default function deleteContent( model, selection, options = {} ) {
 	if ( selection.isCollapsed ) {
+		return;
+	}
+
+	const selRange = selection.getFirstRange();
+
+	// If the selection is already removed, don't do anything.
+	if ( selRange.root.rootName == '$graveyard' ) {
 		return;
 	}
 
@@ -59,7 +78,6 @@ export default function deleteContent( model, selection, options = {} ) {
 			return;
 		}
 
-		const selRange = selection.getFirstRange();
 		const startPos = selRange.start;
 		const endPos = LivePosition.fromPosition( selRange.end, 'toNext' );
 
@@ -79,7 +97,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		if ( !options.leaveUnmerged ) {
 			mergeBranches( writer, startPos, endPos );
 
-			// TMP this will be replaced with a postifxer.
+			// TMP this will be replaced with a postfixer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
 			// some attributes could end up in a path where are disallowed.
 			//
@@ -88,16 +106,20 @@ export default function deleteContent( model, selection, options = {} ) {
 			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
 		}
 
-		if ( selection instanceof DocumentSelection ) {
-			writer.setSelection( startPos );
-		} else {
-			selection.setTo( startPos );
-		}
+		collapseSelectionAt( writer, selection, startPos );
 
-		// 4. Autoparagraphing.
+		// 4. Add a paragraph to set selection in it.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		if ( shouldAutoparagraph( schema, startPos ) ) {
-			insertParagraph( writer, startPos, selection );
+			// If auto-paragraphing is off, find the closest valid selection range and collapse the selection there.
+			// If there is no valid selection range, create paragraph anyway and set selection there.
+			const validSelectionRange = schema.getNearestSelectionRange( startPos );
+
+			if ( options.doNotAutoparagraph && validSelectionRange ) {
+				collapseSelectionAt( writer, selection, validSelectionRange );
+			} else {
+				insertParagraph( writer, startPos, selection );
+			}
 		}
 
 		endPos.detach();
@@ -195,11 +217,7 @@ function insertParagraph( writer, position, selection ) {
 
 	writer.insert( paragraph, position );
 
-	if ( selection instanceof DocumentSelection ) {
-		writer.setSelection( paragraph, 0 );
-	} else {
-		selection.setTo( paragraph, 0 );
-	}
+	collapseSelectionAt( writer, selection, writer.createPositionAt( paragraph, 0 ) );
 }
 
 function replaceEntireContentWithParagraph( writer, selection ) {
@@ -227,4 +245,14 @@ function shouldEntireContentBeReplacedWithParagraph( schema, selection ) {
 	}
 
 	return schema.checkChild( limitElement, 'paragraph' );
+}
+
+// Helper function that sets the selection. Depending whether given `selection` is a document selection or not,
+// uses a different method to set it.
+function collapseSelectionAt( writer, selection, positionOrRange ) {
+	if ( selection instanceof DocumentSelection ) {
+		writer.setSelection( positionOrRange );
+	} else {
+		selection.setTo( positionOrRange );
+	}
 }

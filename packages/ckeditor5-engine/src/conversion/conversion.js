@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -8,18 +8,8 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
-import {
-	downcastElementToElement,
-	downcastAttributeToElement,
-	downcastAttributeToAttribute
-} from './downcast-converters';
-
-import {
-	upcastElementToElement,
-	upcastElementToAttribute,
-	upcastAttributeToAttribute
-} from './upcast-converters';
+import UpcastHelpers from './upcasthelpers';
+import DowncastHelpers from './downcasthelpers';
 
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.
@@ -27,7 +17,7 @@ import {
  * We recommend reading the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide first to
  * understand the core concepts of the conversion mechanisms.
  *
- * The instance of the conversion manager is available in the
+ * An instance of the conversion manager is available in the
  * {@link module:core/editor/editor~Editor#conversion `editor.conversion`} property
  * and by default has the following groups of dispatchers (i.e. directions of conversion):
  *
@@ -36,23 +26,26 @@ import {
  * * `dataDowncast`
  * * `upcast`
  *
+ * # One-way converters
+ *
  * To add a converter to a specific group, use the {@link module:engine/conversion/conversion~Conversion#for `for()`}
  * method:
  *
  *		// Add a converter to editing downcast and data downcast.
- *		editor.conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
+ *		editor.conversion.for( 'downcast' ).elementToElement( config ) );
  *
  *		// Add a converter to the data pipepline only:
- *		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( dataConversionConfig ) );
+ *		editor.conversion.for( 'dataDowncast' ).elementToElement( dataConversionConfig ) );
+ *
  *		// And a slightly different one for the editing pipeline:
- *		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( editingConversionConfig ) );
+ *		editor.conversion.for( 'editingDowncast' ).elementToElement( editingConversionConfig ) );
  *
- * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
- * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
- * You can find a set of them in the {@link module:engine/conversion/downcast-converters} and
- * {@link module:engine/conversion/upcast-converters} modules.
+ * See {@link module:engine/conversion/conversion~Conversion#for `for()`} method documentation to learn more about
+ * available conversion helpers and how to use your custom ones.
  *
- * Besides allowing to register converters to specific dispatchers, you can also use methods available in this
+ * # Two-way converters
+ *
+ * Besides using one-way converters via the `for()` method, you can also use other methods available in this
  * class to add two-way converters (upcast and downcast):
  *
  * * {@link module:engine/conversion/conversion~Conversion#elementToElement `elementToElement()`} &ndash;
@@ -65,95 +58,132 @@ import {
 export default class Conversion {
 	/**
 	 * Creates a new conversion instance.
+	 *
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher>} downcastDispatchers
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastDispatcher|
+	 * Array.<module:engine/conversion/upcastdispatcher~UpcastDispatcher>} upcastDispatchers
 	 */
-	constructor() {
+	constructor( downcastDispatchers, upcastDispatchers ) {
 		/**
+		 * Maps dispatchers group name to ConversionHelpers instances.
+		 *
 		 * @private
-		 * @member {Map}
+		 * @member {Map.<String,module:engine/conversion/conversionhelpers~ConversionHelpers>}
 		 */
-		this._dispatchersGroups = new Map();
+		this._helpers = new Map();
+
+		// Define default 'downcast' & 'upcast' dispatchers groups. Those groups are always available as two-way converters needs them.
+		this._downcast = Array.isArray( downcastDispatchers ) ? downcastDispatchers : [ downcastDispatchers ];
+		this._createConversionHelpers( { name: 'downcast', dispatchers: this._downcast, isDowncast: true } );
+
+		this._upcast = Array.isArray( upcastDispatchers ) ? upcastDispatchers : [ upcastDispatchers ];
+		this._createConversionHelpers( { name: 'upcast', dispatchers: this._upcast, isDowncast: false } );
 	}
 
 	/**
-	 * Registers one or more converters under a given group name. The group name can then be used to assign a converter
-	 * to multiple dispatchers at once.
+	 * Define an alias for registered dispatcher.
 	 *
-	 * If a given group name is used for the second time, the
-	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-register-group-exists` error} is thrown.
+	 *		const conversion = new Conversion(
+	 *			[ dataDowncastDispatcher, editingDowncastDispatcher ],
+	 *			upcastDispatcher
+	 *		);
 	 *
-	 * @param {String} groupName The name for dispatchers group.
-	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers Dispatchers to register
-	 * under the given name.
+	 *		conversion.addAlias( 'dataDowncast', dataDowncastDispatcher );
+	 *
+	 * @param {String} alias An alias of a dispatcher.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher} dispatcher Dispatcher which should have an alias.
 	 */
-	register( groupName, dispatchers ) {
-		if ( this._dispatchersGroups.has( groupName ) ) {
+	addAlias( alias, dispatcher ) {
+		const isDowncast = this._downcast.includes( dispatcher );
+		const isUpcast = this._upcast.includes( dispatcher );
+
+		if ( !isUpcast && !isDowncast ) {
 			/**
-			 * Trying to register a group name that was already registered.
+			 * Trying to register and alias for a dispatcher that nas not been registered.
 			 *
-			 * @error conversion-register-group-exists
+			 * @error conversion-add-alias-dispatcher-not-registered
 			 */
-			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that was already registered.' );
+			throw new CKEditorError( 'conversion-add-alias-dispatcher-not-registered: ' +
+				'Trying to register and alias for a dispatcher that nas not been registered.' );
 		}
 
-		this._dispatchersGroups.set( groupName, dispatchers );
+		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast } );
 	}
 
 	/**
-	 * Provides chainable API to assign converters to dispatchers registered under a given group name. Converters are added
-	 * by calling the `.add()` method of an object returned by this function.
+	 * Provides a chainable API to assign converters to conversion dispatchers group.
 	 *
-	 *		conversion.for( 'downcast' )
-	 *			.add( conversionHelperA )
-	 *			.add( conversionHelperB );
+	 * If the given group name has not been registered, the
+	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
 	 *
-	 * In this example `conversionHelperA` and `conversionHelperB` will be called for all dispatchers from the `'model'` group.
+	 * You can use conversion helpers available directly in the `for()` chain or your custom ones via
+	 * the {@link module:engine/conversion/conversionhelpers~ConversionHelpers#add `add()`} method.
+	 *
+	 * # Using bulit-in conversion helpers
+	 *
+	 * The `for()` chain comes with a set of conversion helpers which you can use like this:
+	 *
+	 *		editor.conversion.for( 'downcast' )
+	 *			.elementToElement( config1 )        // Adds an element-to-element downcast converter.
+	 *			.attributeToElement( config2 );     // Adds an attribute-to-element downcast converter.
+	 *
+	 *		editor.conversion.for( 'upcast' )
+	 *			.elementToAttribute( config3 );     // Adds an element-to-attribute upcast converter.
+	 *
+	 * Refer to the documentation of built-in conversion helpers to learn about their configuration options.
+	 *
+	 * * downcast (model-to-view) conversion helpers:
+	 *
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`},
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement `attributeToElement()`},
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute `attributeToAttribute()`}.
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement `markerToElement()`}.
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight `markerToHighlight()`}.
+	 *
+	 * * upcast (view-to-model) conversion helpers:
+	 *
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `elementToElement()`},
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute `elementToAttribute()`},
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute `attributeToAttribute()`}.
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker `elementToMarker()`}.
+	 *
+	 * # Using custom conversion helpers
+	 *
+	 * If you need to implement a nontypical converter, you can do so by calling:
+	 *
+	 *		editor.conversion.for( direction ).add( customHelper );
 	 *
 	 * The `.add()` method takes exactly one parameter, which is a function. This function should accept one parameter that
 	 * is a dispatcher instance. The function should add an actual converter to the passed dispatcher instance.
 	 *
-	 * Conversion helpers for most common cases are already provided. They are flexible enough to cover most use cases.
-	 * See the documentation to learn how they can be configured.
+	 * Example:
 	 *
-	 * For downcast (model-to-view conversion), these are:
+	 *		editor.conversion.for( 'upcast' ).add( dispatcher => {
+	 *			dispatcher.on( 'element:a',  ( evt, data, conversionApi ) => {
+	 *				// Do something with a view <a> element.
+	 *			} );
+	 *		} );
 	 *
-	 * * {@link module:engine/conversion/downcast-converters~downcastElementToElement Downcast element-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToElement Downcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToAttribute Downcast attribute-to-attribute converter}.
-	 *
-	 * For upcast (view-to-model conversion), these are:
-	 *
-	 * * {@link module:engine/conversion/upcast-converters~upcastElementToElement Upcast element-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute Upcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute Upcast attribute-to-attribute converter}.
-	 *
-	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
-	 *
-	 *		// Define conversion configuration - model element 'paragraph' should be converted to view element 'p'.
-	 *		const config = { model: 'paragraph', view: 'p' };
-	 *
-	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
-	 *		conversion.for( 'upcast' ).add( upcastElementToElement( config ) );
-	 *
-	 * An example of providing a custom conversion helper that uses a custom converter function:
-	 *
-	 *		// Adding a custom `myConverter` converter for 'paragraph' element insertion, with the default priority ('normal').
-	 *		conversion.for( 'downcast' ).add( conversion.customConverter( 'insert:paragraph', myConverter ) );
+	 * Refer to the documentation of {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}
+	 * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} to learn how to write
+	 * custom converters.
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
-	 * @returns {Object} An object with the `.add()` method, providing a way to add converters.
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
-		const dispatchers = this._getDispatchers( groupName );
+		if ( !this._helpers.has( groupName ) ) {
+			/**
+			 * Trying to add a converter to an unknown dispatchers group.
+			 *
+			 * @error conversion-for-unknown-group
+			 */
+			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+		}
 
-		return {
-			add( conversionHelper ) {
-				_addToDispatchers( dispatchers, conversionHelper );
-
-				return this;
-			}
-		};
+		return this._helpers.get( groupName );
 	}
 
 	/**
@@ -161,13 +191,13 @@ export default class Conversion {
 	 * For example, the model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
 	 *
 	 *		// A simple conversion from the `paragraph` model element to the `<p>` view element (and vice versa).
-	 *		conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+	 *		editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 	 *
 	 *		// Override other converters by specifying a converter definition with a higher priority.
-	 *		conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
+	 *		editor.conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
-	 *		conversion.elementToElement( {
+	 *		editor.conversion.elementToElement( {
 	 *			model: 'fancyParagraph',
 	 *			view: {
 	 *				name: 'p',
@@ -176,7 +206,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// Use `upcastAlso` to define other view elements that should also be converted to a `paragraph` element.
-	 *		conversion.elementToElement( {
+	 *		editor.conversion.elementToElement( {
 	 *			model: 'paragraph',
 	 *			view: 'p',
 	 *			upcastAlso: [
@@ -191,7 +221,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
-	 *		conversion.elementToElement( {
+	 *		editor.conversion.elementToElement( {
 	 *			model: 'heading',
 	 *			view: 'h2',
 	 *			// Convert "headling-like" paragraphs to headings.
@@ -229,17 +259,16 @@ export default class Conversion {
 	 */
 	elementToElement( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastElementToElement( definition ) );
+		this.for( 'downcast' ).elementToElement( definition );
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
-			this.for( 'upcast' ).add(
-				upcastElementToElement( {
+			this.for( 'upcast' )
+				.elementToElement( {
 					model,
 					view,
 					converterPriority: definition.converterPriority
-				} )
-			);
+				} );
 		}
 	}
 
@@ -248,13 +277,13 @@ export default class Conversion {
 	 * For example, a model text node with `"Foo"` as data and the `bold` attribute is `<strong>Foo</strong>` in the view.
 	 *
 	 *		// A simple conversion from the `bold=true` attribute to the `<strong>` view element (and vice versa).
-	 *		conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+	 *		editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 	 *
 	 *		// Override other converters by specifying a converter definition with a higher priority.
-	 *		conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
+	 *		editor.conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: 'bold',
 	 *			view: {
 	 *				name: 'span',
@@ -264,7 +293,7 @@ export default class Conversion {
 	 *
 	 *		// Use `config.model.name` to define the conversion only from a given node type, `$text` in this case.
 	 *		// The same attribute on different elements may then be handled by a different converter.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: {
 	 *				key: 'textDecoration',
 	 *				values: [ 'underline', 'lineThrough' ],
@@ -287,7 +316,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// Use `upcastAlso` to define other view elements that should also be converted to the `bold` attribute.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: 'bold',
 	 *			view: 'strong',
 	 *			upcastAlso: [
@@ -321,7 +350,7 @@ export default class Conversion {
 	 *
 	 *		// Conversion from and to a model attribute key whose value is an enum (`fontSize=big|small`).
 	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: {
 	 *				key: 'fontSize',
 	 *				values: [ 'big', 'small' ]
@@ -402,29 +431,31 @@ export default class Conversion {
 	 */
 	attributeToElement( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastAttributeToElement( definition ) );
+		this.for( 'downcast' ).attributeToElement( definition );
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
-			this.for( 'upcast' ).add(
-				upcastElementToAttribute( {
+			this.for( 'upcast' )
+				.elementToAttribute( {
 					view,
 					model,
-					priority: definition.priority
-				} )
-			);
+					converterPriority: definition.converterPriority
+				} );
 		}
 	}
 
 	/**
 	 * Sets up converters between the model and the view that convert a model attribute to a view attribute (and vice versa).
 	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (the same attribute key and value).
+	 * This type of converters is intended to be used with {@link module:engine/model/element~Element model element} nodes.
+	 * To convert text attributes {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement converter`}
+	 * should be set up.
 	 *
 	 *		// A simple conversion from the `source` model attribute to the `src` view attribute (and vice versa).
-	 *		conversion.attributeToAttribute( { model: 'source', view: 'src' } );
+	 *		editor.conversion.attributeToAttribute( { model: 'source', view: 'src' } );
 	 *
 	 *		// Attribute values are strictly specified.
-	 *		conversion.attributeToAttribute( {
+	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
 	 *				key: 'aside',
@@ -440,7 +471,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// Set the style attribute.
-	 *		conversion.attributeToAttribute( {
+	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
 	 *				key: 'aside',
@@ -461,7 +492,7 @@ export default class Conversion {
 	 *
 	 *		// Conversion from and to a model attribute key whose value is an enum (`align=right|center`).
 	 *		// Use `upcastAlso` to define other view elements that should also be converted to the `align=right` attribute.
-	 *		conversion.attributeToAttribute( {
+	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
 	 *				key: 'align',
 	 *				values: [ 'right', 'center' ]
@@ -525,43 +556,41 @@ export default class Conversion {
 	 */
 	attributeToAttribute( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastAttributeToAttribute( definition ) );
+		this.for( 'downcast' ).attributeToAttribute( definition );
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
-			this.for( 'upcast' ).add(
-				upcastAttributeToAttribute( {
+			this.for( 'upcast' )
+				.attributeToAttribute( {
 					view,
 					model
-				} )
-			);
+				} );
 		}
 	}
 
 	/**
-	 * Returns dispatchers registered under a given group name.
-	 *
-	 * If the given group name has not been registered, the
-	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
+	 * Creates and caches conversion helpers for given dispatchers group.
 	 *
 	 * @private
-	 * @param {String} groupName
-	 * @returns {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>}
+	 * @param {Object} options
+	 * @param {String} options.name Group name.
+	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatchers
+	 * @param {Boolean} options.isDowncast
 	 */
-	_getDispatchers( groupName ) {
-		const dispatchers = this._dispatchersGroups.get( groupName );
-
-		if ( !dispatchers ) {
+	_createConversionHelpers( { name, dispatchers, isDowncast } ) {
+		if ( this._helpers.has( name ) ) {
 			/**
-			 * Trying to add a converter to an unknown dispatchers group.
+			 * Trying to register a group name that has already been registered.
 			 *
-			 * @error conversion-for-unknown-group
+			 * @error conversion-group-exists
 			 */
-			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
 		}
 
-		return dispatchers;
+		const helpers = isDowncast ? new DowncastHelpers( dispatchers ) : new UpcastHelpers( dispatchers );
+
+		this._helpers.set( name, helpers );
 	}
 }
 
@@ -581,21 +610,6 @@ export default class Conversion {
  * (`upcastAlso` object values).
  * @property {module:utils/priorities~PriorityString} [converterPriority] The converter priority.
  */
-
-// Helper function for the `Conversion` `.add()` method.
-//
-// Calls `conversionHelper` on each dispatcher from the group specified earlier in the `.for()` call, effectively
-// adding converters to all specified dispatchers.
-//
-// @private
-// @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-// module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
-// @param {Function} conversionHelper
-function _addToDispatchers( dispatchers, conversionHelper ) {
-	for ( const dispatcher of dispatchers ) {
-		conversionHelper( dispatcher );
-	}
-}
 
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
 // `definition.upcastAlso`.

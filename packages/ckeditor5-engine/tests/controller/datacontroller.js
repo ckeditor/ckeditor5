@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../src/model/model';
@@ -18,19 +18,11 @@ import { parse as parseView, stringify as stringifyView } from '../../src/dev-ut
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
-import {
-	upcastElementToElement,
-	upcastElementToAttribute
-} from '../../src/conversion/upcast-converters';
-
-import {
-	downcastElementToElement,
-	downcastAttributeToElement,
-	downcastMarkerToHighlight
-} from '../../src/conversion/downcast-converters';
+import UpcastHelpers from '../../src/conversion/upcasthelpers';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 
 describe( 'DataController', () => {
-	let model, modelDocument, htmlDataProcessor, data, schema;
+	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers;
 
 	beforeEach( () => {
 		model = new Model();
@@ -46,6 +38,9 @@ describe( 'DataController', () => {
 		htmlDataProcessor = new HtmlDataProcessor();
 
 		data = new DataController( model, htmlDataProcessor );
+
+		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
+		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
 	} );
 
 	describe( 'constructor()', () => {
@@ -68,7 +63,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -79,7 +74,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -93,8 +88,8 @@ describe( 'DataController', () => {
 				allowAttributes: [ 'bold' ]
 			} );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
-			upcastElementToAttribute( { view: 'strong', model: 'bold' } )( data.upcastDispatcher );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
 
 			const output = data.parse( '<p>foo<strong>bar</strong></p>' );
 
@@ -119,7 +114,7 @@ describe( 'DataController', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 		} );
 
 		it( 'should convert content of an element #1', () => {
@@ -165,6 +160,16 @@ describe( 'DataController', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.any, [ 'foo bar' ] );
 		} );
 
+		it( 'should fire ready event after init', () => {
+			const spy = sinon.spy();
+
+			data.on( 'ready', spy );
+
+			data.init( 'foo bar' );
+
+			sinon.assert.called( spy );
+		} );
+
 		it( 'should throw an error when document data is already initialized', () => {
 			data.init( '<p>Foo</p>' );
 
@@ -183,9 +188,17 @@ describe( 'DataController', () => {
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
+		it( 'should set data to multiple roots at once', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.init( { main: 'bar', title: 'baz' } );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'bar' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'baz' );
+		} );
+
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.init( 'foo', 'title' );
+			data.init( { title: 'foo' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 		} );
@@ -214,6 +227,28 @@ describe( 'DataController', () => {
 			expect( promise ).to.be.instanceof( Promise );
 
 			return promise;
+		} );
+
+		it( 'should throw an error when non-existent root is used (single)', () => {
+			expect( () => {
+				data.init( { nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
+			);
+		} );
+
+		it( 'should throw an error when non-existent root is used (one of many)', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+
+			expect( () => {
+				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
+			);
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
 		} );
 	} );
 
@@ -245,8 +280,8 @@ describe( 'DataController', () => {
 
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.set( 'foo', 'main' );
-			data.set( 'Bar', 'title' );
+			data.set( 'foo' );
+			data.set( { title: 'Bar' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
@@ -257,7 +292,7 @@ describe( 'DataController', () => {
 		it( 'should parse given data before set in a context of correct root', () => {
 			schema.extend( '$text', { allowIn: '$title', disallowIn: '$root' } );
 			data.set( 'foo', 'main' );
-			data.set( 'Bar', 'title' );
+			data.set( { title: 'Bar' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
@@ -270,13 +305,36 @@ describe( 'DataController', () => {
 		it( 'should allow setting empty data', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 
-			data.set( 'foo', 'title' );
+			data.set( { title: 'foo' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 
-			data.set( '', 'title' );
+			data.set( { title: '' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
+		} );
+
+		it( 'should throw an error when non-existent root is used (single)', () => {
+			expect( () => {
+				data.set( { nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
+			);
+		} );
+
+		it( 'should throw an error when non-existent root is used (one of many) without touching any roots data', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.set( 'foo' );
+
+			expect( () => {
+				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
+			);
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -285,27 +343,39 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo</p>' );
 		} );
 
-		it( 'should get empty paragraph', () => {
+		it( 'should trim empty paragraph by default', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
+			expect( data.get() ).to.equal( '' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '' );
+		} );
+
+		it( 'should get empty paragraph (with trim=none)', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph></paragraph>' );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			expect( data.get( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 
 		it( 'should get two paragraphs', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should get text directly in root', () => {
@@ -313,25 +383,28 @@ describe( 'DataController', () => {
 			setData( model, 'foo' );
 
 			expect( data.get() ).to.equal( 'foo' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should get paragraphs without bold', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foobar</p>' );
 		} );
 
 		it( 'should get paragraphs with bold', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
-			downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
 			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
 
 		it( 'should get root name as a parameter', () => {
@@ -341,12 +414,21 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( model, 'Bar', { rootName: 'title' } );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
-			downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
-			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
-			expect( data.get( 'title' ) ).to.equal( 'Bar' );
+			expect( data.get( { rootName: 'main' } ) ).to.equal( '<p>foo</p>' );
+			expect( data.get( { rootName: 'title' } ) ).to.equal( 'Bar' );
+		} );
+
+		it( 'should throw an error when non-existent root is used', () => {
+			expect( () => {
+				data.get( { rootName: 'nonexistent' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.'
+			);
 		} );
 	} );
 
@@ -358,7 +440,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 		} );
 
 		it( 'should stringify a content of an element', () => {
@@ -382,7 +464,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 		} );
 
 		it( 'should convert a content of an element', () => {
@@ -403,7 +485,7 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
+			downcastHelpers.markerToHighlight( { model: 'marker:a', view: { classes: 'a' } } );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
@@ -421,8 +503,8 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
-			downcastMarkerToHighlight( { model: 'marker:b', view: { classes: 'b' } } )( data.downcastDispatcher );
+			downcastHelpers.markerToHighlight( { model: 'marker:a', view: { classes: 'a' } } );
+			downcastHelpers.markerToHighlight( { model: 'marker:b', view: { classes: 'b' } } );
 
 			const modelP1 = modelElement.getChild( 0 );
 			const modelP2 = modelElement.getChild( 1 );

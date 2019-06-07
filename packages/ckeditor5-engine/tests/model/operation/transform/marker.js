@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
@@ -420,6 +425,52 @@ describe( 'transform', () => {
 					'<paragraph></paragraph>' +
 					'<paragraph><m1:start></m1:start>Foo Bar<m1:end></m1:end></paragraph>'
 				);
+			} );
+
+			it( 'left side of marker moved, insertion at the moved range start, move undo', () => {
+				john.setData( '<paragraph>Foo[bar]</paragraph><paragraph></paragraph>' );
+				kate.setData( '<paragraph>Foo[bar]</paragraph><paragraph></paragraph>' );
+
+				john.setMarker( 'm1' );
+				john.setSelection( [ 0, 2 ], [ 0, 4 ] );
+				john.move( [ 1, 0 ] );
+
+				syncClients();
+
+				kate.setSelection( [ 0, 2 ] );
+				kate.type( 'xx' );
+
+				syncClients();
+
+				expectClients( '<paragraph>Foxx<m1:start></m1:start>ar<m1:end></m1:end></paragraph><paragraph>ob</paragraph>' );
+
+				john.undo();
+				syncClients();
+
+				expectClients( '<paragraph>Foobxx<m1:start></m1:start>ar<m1:end></m1:end></paragraph><paragraph></paragraph>' );
+			} );
+
+			it( 'right side of marker moved, insertion at the moved range start, move undo', () => {
+				john.setData( '<paragraph>[Foo]bar</paragraph><paragraph></paragraph>' );
+				kate.setData( '<paragraph>[Foo]bar</paragraph><paragraph></paragraph>' );
+
+				john.setMarker( 'm1' );
+				john.setSelection( [ 0, 2 ], [ 0, 4 ] );
+				john.move( [ 1, 0 ] );
+
+				syncClients();
+
+				kate.setSelection( [ 0, 2 ] );
+				kate.type( 'xx' );
+
+				syncClients();
+
+				expectClients( '<paragraph><m1:start></m1:start>Fo<m1:end></m1:end>xxar</paragraph><paragraph>ob</paragraph>' );
+
+				john.undo();
+				syncClients();
+
+				expectClients( '<paragraph><m1:start></m1:start>Foo<m1:end></m1:end>bxxar</paragraph><paragraph></paragraph>' );
 			} );
 		} );
 

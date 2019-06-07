@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Range from '../../src/model/range';
@@ -1178,6 +1178,27 @@ describe( 'Range', () => {
 				// <p>aa{bb</p><p>cc</p>}
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'range is set on closing tag of merge target element', () => {
+				// <p>aa{</p>}<p>bb</p>
+				const range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1 ] ) );
+
+				const op = new MergeOperation(
+					new Position( root, [ 1, 0 ] ),
+					2,
+					new Position( root, [ 0, 2 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				// <p>aa{}bb</p>
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 2 ] );
 			} );
 		} );
 	} );

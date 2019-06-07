@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Schema, { SchemaContext } from '../../src/model/schema';
@@ -93,6 +93,58 @@ describe( 'Schema', () => {
 			expect( () => {
 				schema.extend( 'foo' );
 			} ).to.throw( CKEditorError, /^schema-cannot-extend-missing-item:/ );
+		} );
+	} );
+
+	describe( 'attribute properties', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'paragraph', {
+				allowIn: '$root'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+			schema.extend( '$text', { allowAttributes: [ 'testAttribute', 'noPropertiesAttribute' ] } );
+		} );
+
+		describe( 'setAttributeProperties()', () => {
+			it( 'allows registering new properties', () => {
+				schema.setAttributeProperties( 'testAttribute', {
+					foo: 'bar',
+					baz: 'bom'
+				} );
+
+				expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+					foo: 'bar',
+					baz: 'bom'
+				} );
+			} );
+
+			it( 'support adding properties in subsequent calls', () => {
+				schema.setAttributeProperties( 'testAttribute', {
+					first: 'foo'
+				} );
+
+				schema.setAttributeProperties( 'testAttribute', {
+					second: 'bar'
+				} );
+
+				expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+					first: 'foo',
+					second: 'bar'
+				} );
+			} );
+		} );
+
+		describe( 'getAttributeProperties()', () => {
+			it( 'it returns a proper value if the attribute has no properties', () => {
+				expect( schema.getAttributeProperties( 'noPropertiesAttribute' ) ).to.deep.equal( {} );
+			} );
+
+			it( 'it returns a proper value for unknown attribute', () => {
+				expect( schema.getAttributeProperties( 'unregistered-attribute' ) ).to.deep.equal( {} );
+			} );
 		} );
 	} );
 
@@ -372,6 +424,41 @@ describe( 'Schema', () => {
 			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isObject: true } );
 
 			expect( schema.isObject( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'isInline()', () => {
+		it( 'returns true if an item was registered as inline', () => {
+			schema.register( 'foo', {
+				isInline: true
+			} );
+
+			expect( schema.isInline( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was registered as a limit (because not all limits are objects)', () => {
+			schema.register( 'foo', {
+				isLimit: true
+			} );
+
+			expect( schema.isInline( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered as an object', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isInline( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered at all', () => {
+			expect( schema.isInline( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isInline: true } );
+
+			expect( schema.isInline( 'foo' ) ).to.be.true;
 			expect( stub.calledOnce ).to.be.true;
 		} );
 	} );
@@ -1574,7 +1661,13 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it', () => {
 			const node = new Element( 'paragraph' );
 
-			const allowedParent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+
+			expect( allowedParent ).to.equal( r1bQ );
+		} );
+
+		it( 'should return position ancestor that allows to insert given node to it - works with a string too', () => {
+			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), 'paragraph' );
 
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
@@ -1582,7 +1675,7 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
 			const node = new Text( 'text' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.equal( r1bQp );
 		} );
@@ -1596,7 +1689,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new Element( 'div' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
@@ -1610,7 +1703,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new Element( 'div' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
@@ -1618,7 +1711,13 @@ describe( 'Schema', () => {
 		it( 'should return null when there is no allowed ancestor for given position', () => {
 			const node = new Element( 'section' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should return null when there is no allowed ancestor for given position – works with a string too', () => {
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), 'section' );
 
 			expect( parent ).to.null;
 		} );
@@ -2456,7 +2555,8 @@ describe( 'Schema', () => {
 			},
 			() => {
 				schema.extend( '$text', {
-					allowAttributes: [ 'bold', 'italic' ]
+					allowAttributes: [ 'bold', 'italic' ],
+					isInline: true
 				} );
 
 				// Disallow bold in heading1.
@@ -2482,7 +2582,8 @@ describe( 'Schema', () => {
 				isBlock: true
 			} );
 			schema.register( '$text', {
-				allowIn: '$block'
+				allowIn: '$block',
+				isInline: true
 			} );
 
 			for ( const definition of definitions ) {
@@ -2726,40 +2827,53 @@ describe( 'Schema', () => {
 			expect( schema.checkAttribute( r1i, 'alignment' ) ).to.be.false;
 		} );
 
+		it( '$text is inline', () => {
+			expect( schema.isLimit( '$text' ) ).to.be.false;
+			expect( schema.isBlock( '$text' ) ).to.be.false;
+			expect( schema.isObject( '$text' ) ).to.be.false;
+			expect( schema.isInline( '$text' ) ).to.be.true;
+		} );
+
 		it( '$root is limit', () => {
 			expect( schema.isLimit( '$root' ) ).to.be.true;
 			expect( schema.isBlock( '$root' ) ).to.be.false;
 			expect( schema.isObject( '$root' ) ).to.be.false;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 
 		it( 'paragraph is block', () => {
 			expect( schema.isLimit( 'paragraph' ) ).to.be.false;
 			expect( schema.isBlock( 'paragraph' ) ).to.be.true;
 			expect( schema.isObject( 'paragraph' ) ).to.be.false;
+			expect( schema.isInline( 'paragraph' ) ).to.be.false;
 		} );
 
 		it( 'heading1 is block', () => {
 			expect( schema.isLimit( 'heading1' ) ).to.be.false;
 			expect( schema.isBlock( 'heading1' ) ).to.be.true;
 			expect( schema.isObject( 'heading1' ) ).to.be.false;
+			expect( schema.isInline( 'heading1' ) ).to.be.false;
 		} );
 
 		it( 'listItem is block', () => {
 			expect( schema.isLimit( 'listItem' ) ).to.be.false;
 			expect( schema.isBlock( 'listItem' ) ).to.be.true;
 			expect( schema.isObject( 'listItem' ) ).to.be.false;
+			expect( schema.isInline( 'lisItem' ) ).to.be.false;
 		} );
 
 		it( 'image is block object', () => {
 			expect( schema.isLimit( 'image' ) ).to.be.true;
 			expect( schema.isBlock( 'image' ) ).to.be.true;
 			expect( schema.isObject( 'image' ) ).to.be.true;
+			expect( schema.isInline( 'image' ) ).to.be.false;
 		} );
 
 		it( 'caption is limit', () => {
 			expect( schema.isLimit( 'caption' ) ).to.be.true;
 			expect( schema.isBlock( 'caption' ) ).to.be.false;
 			expect( schema.isObject( 'caption' ) ).to.be.false;
+			expect( schema.isInline( 'caption' ) ).to.be.false;
 		} );
 	} );
 

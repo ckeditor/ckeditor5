@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -58,7 +58,8 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should render document after blurring', () => {
-			const renderSpy = sinon.spy( view, 'render' );
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
 
@@ -122,7 +123,8 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should delay rendering by 50ms', () => {
-			const renderSpy = sinon.spy( view, 'render' );
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
 			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
@@ -134,7 +136,8 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should not call render if destroyed', () => {
-			const renderSpy = sinon.spy( view, 'render' );
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
 			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
@@ -167,7 +170,7 @@ describe( 'FocusObserver', () => {
 			const renderSpy = sinon.spy();
 
 			setData( view, '<div contenteditable="true">foo bar</div>' );
-			view.render();
+			view.forceRender();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
 			view.on( 'render', renderSpy );
@@ -188,7 +191,7 @@ describe( 'FocusObserver', () => {
 			const renderSpy = sinon.spy();
 
 			setData( view, '<div contenteditable="true">foo bar</div>' );
-			view.render();
+			view.forceRender();
 			const domEditable = domRoot.childNodes[ 0 ];
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );

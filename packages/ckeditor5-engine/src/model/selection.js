@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -27,12 +27,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  */
 export default class Selection {
 	/**
-	 * Creates a new selection instance
-	 * based on the given {@link module:engine/model/selection~Selection selection},
-	 * or based on the given {@link module:engine/model/range~Range range},
-	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
-	 * or at the given {@link module:engine/model/position~Position position},
-	 * or on the given {@link module:engine/model/element~Element element},
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Creates empty selection without ranges.
@@ -77,9 +72,7 @@ export default class Selection {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -322,9 +315,7 @@ export default class Selection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 *
 	 *		// Removes all selection's ranges.
 	 *		selection.setTo( null );
@@ -368,9 +359,7 @@ export default class Selection {
 	 *		// Sets backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -415,11 +404,18 @@ export default class Selection {
 			this._setRanges( selectable, placeOrOffset && !!placeOrOffset.backward );
 		} else {
 			/**
-			 * Cannot set selection to given place.
+			 * Cannot set the selection to the given place.
+			 *
+			 * Invalid parameters were specified when setting the selection. Common issues:
+			 *
+			 * * A {@link module:engine/model/textproxy~TextProxy} instance was passed instead of
+			 * a real {@link module:engine/model/text~Text}.
+			 * * View nodes were passed instead of model nodes.
+			 * * `null`/`undefined` was passed.
 			 *
 			 * @error model-selection-setTo-not-selectable
 			 */
-			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set selection to given place.' );
+			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set the selection to the given place.' );
 		}
 	}
 
@@ -620,6 +616,23 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new Selection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection';
+	}
+
+	/**
 	 * Gets elements of type "block" touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
@@ -668,6 +681,35 @@ export default class Selection {
 			// #984. Don't return the end block if the range ends right at its beginning.
 			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
 				yield endBlock;
+			}
+		}
+	}
+
+	/**
+	 * Returns blocks that aren't nested in other selected blocks.
+	 *
+	 * In this case the method will return blocks A, B and E because C & D are children of block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
+	* getTopMostBlocks() {
+		const selected = Array.from( this.getSelectedBlocks() );
+
+		for ( const block of selected ) {
+			const parentBlock = findAncestorBlock( block );
+
+			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
+			if ( !parentBlock || !selected.includes( parentBlock ) ) {
+				yield block;
 			}
 		}
 	}
@@ -791,10 +833,25 @@ function isUnvisitedBlockContainer( element, visited ) {
 }
 
 // Finds the lowest element in position's ancestors which is a block.
+// It will search until first ancestor that is a limit element.
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
+	const schema = position.parent.document.model.schema;
+
 	const ancestors = position.parent.getAncestors( { parentFirst: true, includeSelf: true } );
-	const block = ancestors.find( element => isUnvisitedBlockContainer( element, visited ) );
+
+	let hasParentLimit = false;
+
+	const block = ancestors.find( element => {
+		// Stop searching after first parent node that is limit element.
+		if ( hasParentLimit ) {
+			return false;
+		}
+
+		hasParentLimit = schema.isLimit( element );
+
+		return !hasParentLimit && isUnvisitedBlockContainer( element, visited );
+	} );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
 	// the found block may be a child of another block.
@@ -802,3 +859,37 @@ function getParentBlock( position, visited ) {
 
 	return block;
 }
+
+// Returns first ancestor block of a node.
+//
+// @param {module:engine/model/node~Node} node
+// @returns {module:engine/model/node~Node|undefined}
+function findAncestorBlock( node ) {
+	const schema = node.document.model.schema;
+
+	let parent = node.parent;
+
+	while ( parent ) {
+		if ( schema.isBlock( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+}
+
+/**
+ * An entity that is used to set selection.
+ *
+ * See also {@link module:engine/model/selection~Selection#setTo}
+ *
+ * @typedef {
+ *     module:engine/model/selection~Selection|
+ *     module:engine/model/documentselection~DocumentSelection|
+ *     module:engine/model/position~Position|
+ *     module:engine/model/range~Range|
+ *     module:engine/model/node~Node|
+ *     Iterable.<module:engine/model/range~Range>|
+ *     null
+ * } module:engine/model/selection~Selectable
+ */

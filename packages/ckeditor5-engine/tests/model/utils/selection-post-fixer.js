@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../../src/model/model';
@@ -28,6 +28,7 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'table', {
 				allowWhere: '$block',
 				allowAttributes: [ 'headingRows', 'headingColumns' ],
+				isLimit: true,
 				isObject: true
 			} );
 
@@ -39,7 +40,7 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'tableCell', {
 				allowIn: 'tableRow',
 				allowAttributes: [ 'colspan', 'rowspan' ],
-				isObject: true
+				isLimit: true
 			} );
 
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
@@ -49,6 +50,8 @@ describe( 'Selection post-fixer', () => {
 				isBlock: true,
 				allowWhere: '$block'
 			} );
+
+			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 			model.schema.register( 'caption', {
 				allowIn: 'image',
@@ -194,6 +197,43 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
+			it( 'should fix #5', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'[]' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
+							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
+							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>baz</paragraph>'
+				);
+			} );
+
 			// There's a chance that this and the following test will not be up to date with
 			// how the table feature is really implemented once we'll introduce row/cells/columns selection
 			// in which case all these elements will need to be marked as objects.
@@ -245,13 +285,16 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell>' +
+							'<tableCell><paragraph>1</paragraph></tableCell>' +
+							'<tableCell><paragraph>2</paragraph></tableCell>' +
 						'</tableRow>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>3</paragraph></tableCell><tableCell><paragraph>4</paragraph></tableCell>' +
+							'<tableCell><paragraph>3</paragraph></tableCell>' +
+							'<tableCell><paragraph>4</paragraph></tableCell>' +
 						'</tableRow>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>5</paragraph></tableCell><tableCell><paragraph>6</paragraph></tableCell>' +
+							'<tableCell><paragraph>5</paragraph></tableCell>' +
+							'<tableCell><paragraph>6</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>]' +
 					'<paragraph>baz</paragraph>'
@@ -284,7 +327,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #1 (selection after a table)', () => {
+			it( 'should not fix #1 - selection over paragraphs outside table', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -307,6 +350,123 @@ describe( 'Selection post-fixer', () => {
 					'</table>' +
 					'<paragraph>b[ar</paragraph>' +
 					'<paragraph>ba]z</paragraph>'
+				);
+			} );
+
+			it( 'should not fix #2 - selection over image in table', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>foo</paragraph><image></image></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const image = model.document.getRoot().getNodeByPath( [ 1, 0, 0, 1 ] );
+
+					writer.setSelection( writer.createRangeOn( image ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>foo</paragraph>[<image></image>]</tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix #3 - selection over paragraph & image in table', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>foo</paragraph><image></image></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const tableCell = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
+
+					writer.setSelection( writer.createRangeIn( tableCell ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[foo</paragraph><image></image>]</tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix #4 - selection over image & paragraph in table', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><image></image><paragraph>foo</paragraph></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const tableCell = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
+
+					writer.setSelection( writer.createRangeIn( tableCell ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>[<image></image><paragraph>foo]</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix #5 - selection over blockQuote in table', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><blockQuote><paragraph>foo</paragraph></blockQuote></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const tableCell = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
+
+					writer.setSelection( writer.createRangeIn( tableCell ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><blockQuote><paragraph>[foo]</paragraph></blockQuote></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
 				);
 			} );
 
@@ -822,6 +982,64 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
 				);
 			} );
+
+			it( 'should not fix #4 - object in object', () => {
+				model.schema.register( 'div', {
+					allowIn: [ '$root', 'div' ],
+					isObject: true
+				} );
+
+				setModelData( model, '<div>[<div></div>]</div>' );
+
+				model.change( writer => {
+					const innerDiv = model.document.getRoot().getNodeByPath( [ 0, 0 ] );
+
+					writer.setSelection( writer.createRangeOn( innerDiv ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
+			} );
+		} );
+
+		describe( 'non-collapsed selection - inline widget scenarios', () => {
+			beforeEach( () => {
+				model.schema.register( 'placeholder', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+			} );
+
+			it( 'should fix selection that ends in inline element', () => {
+				setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[]<placeholder></placeholder>bbb</paragraph>' );
+			} );
+
+			it( 'should fix selection that starts in inline element', () => {
+				setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa<placeholder></placeholder>[]bbb</paragraph>' );
+			} );
+
+			it( 'should fix selection that ends in inline element that is also an object', () => {
+				model.schema.extend( 'placeholder', {
+					isObject: true
+				} );
+
+				setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
+			} );
+
+			it( 'should fix selection that starts in inline element that is also an object', () => {
+				model.schema.extend( 'placeholder', {
+					isObject: true
+				} );
+
+				setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
+			} );
 		} );
 
 		describe( 'collapsed selection', () => {
@@ -829,8 +1047,9 @@ describe( 'Selection post-fixer', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
-						'[]<tableRow>' +
+						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
@@ -850,6 +1069,7 @@ describe( 'Selection post-fixer', () => {
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
@@ -871,6 +1091,7 @@ describe( 'Selection post-fixer', () => {
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
@@ -915,6 +1136,7 @@ describe( 'Selection post-fixer', () => {
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'

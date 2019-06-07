@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
@@ -532,6 +537,24 @@ describe( 'transform', () => {
 				expectClients(
 					'<paragraph>F</paragraph>' +
 					'<paragraph>ooBa</paragraph>' +
+					'<paragraph>r</paragraph>'
+				);
+			} );
+
+			it( 'move operation does not really move anything', () => {
+				john.setData( '<paragraph>[F]oobar</paragraph>' );
+				kate.setData( '<paragraph>F[oo]bar</paragraph>' );
+
+				john.remove();
+				john.setSelection( [ 0, 4 ] );
+				john.split();
+
+				kate.move( [ 0, 0 ] );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>ooba</paragraph>' +
 					'<paragraph>r</paragraph>'
 				);
 			} );

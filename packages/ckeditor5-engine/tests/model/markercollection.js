@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import MarkerCollection from '../../src/model/markercollection';
@@ -192,6 +192,24 @@ describe( 'MarkerCollection', () => {
 			expect( result ).to.be.true;
 			expect( markers.fire.calledWithExactly( 'update:name', marker, range, null ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
+		} );
+	} );
+
+	describe( '_refresh()', () => {
+		it( 'should fire update:<markerName> event', () => {
+			const marker = markers._set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+
+			markers._refresh( 'name' );
+
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range, false, false );
+		} );
+
+		it( 'should throw if marker does not exist', () => {
+			expect( () => {
+				markers._refresh( 'name' );
+			} ).to.throw( CKEditorError, 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
 		} );
 	} );
 

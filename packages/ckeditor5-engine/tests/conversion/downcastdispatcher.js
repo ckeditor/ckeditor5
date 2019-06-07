@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
@@ -319,7 +319,7 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
-			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'attribute:bold:$text' ) ).to.be.true;
 		} );
 
 		it( 'should not fire attributes events if attribute has been consumed', () => {
@@ -446,22 +446,29 @@ describe( 'DowncastDispatcher', () => {
 	} );
 
 	describe( 'convertMarkerAdd', () => {
-		let range, element, text;
+		let element, text;
 
 		beforeEach( () => {
 			text = new ModelText( 'foo bar baz' );
 			element = new ModelElement( 'paragraph', null, [ text ] );
 			root._appendChild( [ element ] );
-
-			range = model.createRange( model.createPositionAt( element, 0 ), model.createPositionAt( element, 4 ) );
 		} );
 
-		it( 'should fire addMarker event', () => {
-			sinon.spy( dispatcher, 'fire' );
+		it( 'should fire addMarker event for whole collapsed marker', () => {
+			const range = model.createRange( model.createPositionAt( element, 2 ), model.createPositionAt( element, 2 ) );
+
+			const spy = sinon.spy();
+
+			dispatcher.on( 'addMarker:name', ( evt, data ) => {
+				spy();
+
+				expect( data.markerName ).to.equal( 'name' );
+				expect( data.markerRange.isEqual( range ) ).to.be.true;
+			} );
 
 			dispatcher.convertMarkerAdd( 'name', range );
 
-			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
@@ -483,37 +490,110 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
 
-		it( 'should fire conversion for each item in the range', () => {
-			range = model.createRangeIn( root );
+		it( 'should fire addMarker event for whole non-collapsed marker and for each item in the range', () => {
+			const range = model.createRangeIn( root );
 
+			const spyWholeRange = sinon.spy();
+
+			dispatcher.on( 'addMarker:name', ( evt, data ) => {
+				if ( !data.item ) {
+					spyWholeRange();
+
+					expect( data.markerName ).to.equal( 'name' );
+					expect( data.markerRange.isEqual( range ) ).to.be.true;
+				}
+			} );
+
+			const spyItems = sinon.spy();
 			const items = [];
 
 			dispatcher.on( 'addMarker:name', ( evt, data, conversionApi ) => {
-				expect( data.markerName ).to.equal( 'name' );
-				expect( data.markerRange.isEqual( range ) ).to.be.true;
-				expect( conversionApi.consumable.test( data.item, 'addMarker:name' ) );
+				if ( data.item ) {
+					spyItems();
 
-				items.push( data.item );
+					expect( data.markerName ).to.equal( 'name' );
+					expect( data.markerRange.isEqual( range ) ).to.be.true;
+					expect( conversionApi.consumable.test( data.item, 'addMarker:name' ) );
+
+					items.push( data.item );
+				}
 			} );
 
 			dispatcher.convertMarkerAdd( 'name', range );
+
+			expect( spyWholeRange.calledOnce ).to.be.true;
+			expect( spyItems.calledTwice ).to.be.true;
 
 			expect( items[ 0 ] ).to.equal( element );
 			expect( items[ 1 ].data ).to.equal( text.data );
 		} );
 
-		it( 'should be possible to override', () => {
-			range = model.createRangeIn( root );
+		it( 'should not fire conversion for non-collapsed marker items if marker was consumed in earlier event', () => {
+			const range = model.createRangeIn( root );
+
+			dispatcher.on( 'addMarker:name', ( evt, data, conversionApi ) => {
+				if ( !data.item ) {
+					conversionApi.consumable.consume( data.markerRange, evt.name );
+				}
+			}, { priority: 'high' } );
+
+			const spyItems = sinon.spy();
+
+			dispatcher.on( 'addMarker:name', ( evt, data ) => {
+				if ( data.item ) {
+					spyItems();
+				}
+			} );
+
+			dispatcher.convertMarkerAdd( 'name', range );
+
+			expect( spyItems.called ).to.be.false;
+		} );
+
+		it( 'should be possible to override #1', () => {
+			const range = model.createRangeIn( root );
 
 			const addMarkerSpy = sinon.spy();
 			const highAddMarkerSpy = sinon.spy();
 
-			dispatcher.on( 'addMarker:marker', addMarkerSpy );
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( !data.item ) {
+					addMarkerSpy();
+				}
+			} );
 
-			dispatcher.on( 'addMarker:marker', evt => {
-				highAddMarkerSpy();
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( !data.item ) {
+					highAddMarkerSpy();
 
-				evt.stop();
+					evt.stop();
+				}
+			}, { priority: 'high' } );
+
+			dispatcher.convertMarkerAdd( 'marker', range );
+
+			expect( addMarkerSpy.called ).to.be.false;
+			expect( highAddMarkerSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should be possible to override #2', () => {
+			const range = model.createRangeIn( root );
+
+			const addMarkerSpy = sinon.spy();
+			const highAddMarkerSpy = sinon.spy();
+
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( data.item ) {
+					addMarkerSpy();
+				}
+			} );
+
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( data.item ) {
+					highAddMarkerSpy();
+
+					evt.stop();
+				}
 			}, { priority: 'high' } );
 
 			dispatcher.convertMarkerAdd( 'marker', range );

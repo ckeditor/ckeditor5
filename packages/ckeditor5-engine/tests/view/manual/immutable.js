@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -24,7 +24,7 @@ setData( view,
 viewDocument.on( 'selectionChange', () => {
 	// Re-render view selection each time selection is changed.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/796.
-	view.render();
+	view.forceRender();
 } );
 
 view.focus();

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Mapper from '../../src/conversion/mapper';
@@ -719,6 +719,31 @@ describe( 'Mapper', () => {
 			mapper.registerViewToModelLength( 'xxx', () => 2 );
 
 			expect( mapper.getModelLength( viewDiv ) ).to.equal( 6 );
+		} );
+	} );
+
+	describe( 'findMappedViewAncestor()', () => {
+		it( 'should return for given view position the closest ancestor which is mapped to a model element', () => {
+			const mapper = new Mapper();
+
+			const modelP = new ModelElement( 'p' );
+			const modelDiv = new ModelElement( 'div' );
+
+			const viewText = new ViewText( 'foo' );
+			const viewSpan = new ViewElement( 'span', null, viewText );
+			const viewP = new ViewElement( 'p', null, viewSpan );
+			const viewDiv = new ViewElement( 'div', null, viewP );
+
+			mapper.bindElements( modelP, viewP );
+			mapper.bindElements( modelDiv, viewDiv );
+
+			// <div><p><span>f{}oo</span></p></div>
+
+			const viewPosition = new ViewPosition( viewText, 1 );
+
+			const viewMappedAncestor = mapper.findMappedViewAncestor( viewPosition );
+
+			expect( viewMappedAncestor ).to.equal( viewP );
 		} );
 	} );
 } );

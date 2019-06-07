@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -88,6 +88,7 @@ export default class LivePosition extends Position {
 	 * @method module:engine/model/liveposition~LivePosition._createAfter
 	 * @see module:engine/model/position~Position._createAfter
 	 * @param {module:engine/model/node~Node} node
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone']
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 
@@ -97,6 +98,18 @@ export default class LivePosition extends Position {
 	 * @method module:engine/model/liveposition~LivePosition._createBefore
 	 * @see module:engine/model/position~Position._createBefore
 	 * @param {module:engine/model/node~Node} node
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone']
+	 * @returns {module:engine/model/liveposition~LivePosition}
+	 */
+
+	/**
+	 * @static
+	 * @protected
+	 * @method module:engine/model/liveposition~LivePosition._createAt
+	 * @see module:engine/model/position~Position._createAt
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset]
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone']
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 

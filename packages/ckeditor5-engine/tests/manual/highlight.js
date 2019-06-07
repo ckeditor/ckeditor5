@@ -1,18 +1,9 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console, window, document */
-
-import {
-	upcastElementToElement,
-} from '../../src/conversion/upcast-converters';
-
-import {
-	downcastElementToElement,
-	downcastMarkerToHighlight
-} from '../../src/conversion/downcast-converters';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -44,7 +35,7 @@ class FancyWidget extends Plugin {
 		} );
 		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fancywidget',
 			view: ( modelItem, viewWriter ) => {
 				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
@@ -52,13 +43,12 @@ class FancyWidget extends Plugin {
 
 				return toWidget( widgetElement, viewWriter );
 			}
-		} ) );
+		} );
 
-		conversion.for( 'upcast' )
-			.add( upcastElementToElement( {
-				view: 'figure',
-				model: 'fancywidget'
-			} ) );
+		conversion.for( 'upcast' ).elementToElement( {
+			view: 'figure',
+			model: 'fancywidget'
+		} );
 	}
 }
 
@@ -69,12 +59,12 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	.then( editor => {
 		window.editor = editor;
 
-		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'marker',
 			view: data => ( {
 				classes: 'highlight-' + data.markerName.split( ':' )[ 1 ]
 			} )
-		} ) );
+		} );
 
 		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
 			addMarker( editor, 'yellow' );

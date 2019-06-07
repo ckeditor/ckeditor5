@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -149,6 +149,15 @@ export default class Differ {
 			case 'remove':
 			case 'move':
 			case 'reinsert': {
+				// When range is moved to the same position then not mark it as a change.
+				// See: https://github.com/ckeditor/ckeditor5-engine/issues/1664.
+				if (
+					operation.sourcePosition.isEqual( operation.targetPosition ) ||
+					operation.sourcePosition.getShiftedBy( operation.howMany ).isEqual( operation.targetPosition )
+				) {
+					return;
+				}
+
 				const sourceParentInserted = this._isInInsertedElement( operation.sourcePosition.parent );
 				const targetParentInserted = this._isInInsertedElement( operation.targetPosition.parent );
 
@@ -290,6 +299,23 @@ export default class Differ {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Returns all markers which changed.
+	 *
+	 * @returns {Array.<Object>}
+	 */
+	getChangedMarkers() {
+		return Array.from( this._changedMarkers ).map( item => (
+			{
+				name: item[ 0 ],
+				data: {
+					oldRange: item[ 1 ].oldRange,
+					newRange: item[ 1 ].newRange
+				}
+			}
+		) );
 	}
 
 	/**
@@ -795,6 +821,26 @@ export default class Differ {
 					}
 				}
 
+				if ( old.type == 'remove' ) {
+					// This is a case when attribute change "contains" remove change.
+					// The attribute change needs to be split into two because changes cannot intersect.
+					if ( inc.offset < old.offset && incEnd > old.offset ) {
+						const attributePart = {
+							type: 'attribute',
+							offset: old.offset,
+							howMany: incEnd - old.offset,
+							count: this._changeCount++
+						};
+
+						this._handleChange( attributePart, changes );
+
+						changes.push( attributePart );
+
+						inc.nodesToHandle = old.offset - inc.offset;
+						inc.howMany = inc.nodesToHandle;
+					}
+				}
+
 				if ( old.type == 'attribute' ) {
 					// There are only two conflicting scenarios possible here:
 					if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
@@ -1061,7 +1107,7 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 		} else {
 			actions.push( ...'a'.repeat( change.howMany ).split( '' ) );
 
-			// The last handled offset isa at the position after the changed range.
+			// The last handled offset is at the position after the changed range.
 			offset = change.offset + change.howMany;
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals setTimeout, document */
@@ -311,6 +311,7 @@ describe( 'SelectionObserver', () => {
 		const domParagraph = domMain.childNodes[ 0 ];
 		const domText = domParagraph.childNodes[ 0 ];
 		const domUI = domParagraph.childNodes[ 1 ];
+		const viewRenderSpy = sinon.spy();
 
 		// Add rendering on selectionChange event to check this feature.
 		viewDocument.on( 'selectionChange', () => {
@@ -330,7 +331,7 @@ describe( 'SelectionObserver', () => {
 
 			selectionObserver.listenTo( domDocument, 'selectionchange', () => {
 				// 4. Check if view was re-rendered.
-				expect( view.render.called ).to.be.true;
+				sinon.assert.calledOnce( viewRenderSpy );
 
 				done();
 			}, { priority: 'lowest' } );
@@ -339,7 +340,7 @@ describe( 'SelectionObserver', () => {
 			// Current and new selection position are similar in view (but not equal!).
 			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
 			sel.collapse( domUI, 0 );
-			sinon.spy( view, 'render' );
+			view.on( 'render', viewRenderSpy );
 
 			// Some browsers like Safari won't allow to put selection inside empty ui element.
 			// In that situation selection should stay in correct place.

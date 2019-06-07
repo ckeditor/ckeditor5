@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -55,7 +55,8 @@ export default class Text extends Node {
 	/**
 	 * Returns a text data contained in the node.
 	 *
-	 * @returns {String}
+	 * @readonly
+	 * @type {String}
 	 */
 	get data() {
 		return this._data;

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -67,42 +67,61 @@ export default class View {
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/view~View#document
+		 * @type {module:engine/view/document~Document}
 		 */
 		this.document = new Document();
 
 		/**
-		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
-		 * {@link module:engine/view/view~View#renderer renderer}
+		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
+		 * {@link module:engine/view/view~View#_renderer renderer}
 		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/view~View#domConverter
+		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter();
-
-		/**
-		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
-		 *
-		 * @protected
-		 * @member {module:engine/view/renderer~Renderer} module:engine/view/view~View#renderer
-		 */
-		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused' ).to( this.document );
 
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} module:engine/view/view~View#domRoots
+		 * @type {Map.<String, HTMLElement>}
 		 */
 		this.domRoots = new Map();
+
+		/**
+		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isRenderingInProgress
+		 */
+		this.set( 'isRenderingInProgress', false );
+
+		/**
+		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
+		 *
+		 * @protected
+		 * @type {module:engine/view/renderer~Renderer}
+		 */
+		this._renderer = new Renderer( this.domConverter, this.document.selection );
+		this._renderer.bind( 'isFocused' ).to( this.document );
+
+		/**
+		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
+		 * is {@link module:engine/view/view~View#attachDomRoot attached} to the view so later on, when
+		 * the view is destroyed ({@link module:engine/view/view~View#detachDomRoot}), they can be easily restored.
+		 * This way, the DOM element can go back to the (clean) state as if the editing view never used it.
+		 *
+		 * @private
+		 * @member {WeakMap.<HTMLElement,Object>}
+		 */
+		this._initialDomRootAttributes = new WeakMap();
 
 		/**
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @private
-		 * @member {Map.<Function, module:engine/view/observer/observer~Observer>} module:engine/view/view~View#_observers
+		 * @type {Map.<Function, module:engine/view/observer/observer~Observer>}
 		 */
 		this._observers = new Map();
 
@@ -110,39 +129,40 @@ export default class View {
 		 * Is set to `true` when {@link #change view changes} are currently in progress.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_ongoingChange
+		 * @type {Boolean}
 		 */
 		this._ongoingChange = false;
 
 		/**
-		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
+		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
-		 */
-		this._renderingInProgress = false;
-
-		/**
-		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
-		 *
-		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 * @type {Boolean}
 		 */
 		this._postFixersInProgress = false;
 
 		/**
-		 * Internal flag to temporary disable rendering. See usage in the editing controller.
+		 * Internal flag to temporary disable rendering. See the usage in the {@link #_disableRendering}.
 		 *
-		 * @protected
-		 * @member {Boolean} module:engine/view/view~View#_renderingDisabled
+		 * @private
+		 * @type {Boolean}
 		 */
 		this._renderingDisabled = false;
 
 		/**
-		 * DowncastWriter instance used in {@link #change change method) callbacks.
+		 * Internal flag that disables rendering when there are no changes since the last rendering.
+		 * It stores information about changed selection and changed elements from attached document roots.
 		 *
 		 * @private
-		 * @member {module:engine/view/downcastwriter~DowncastWriter} module:engine/view/view~View#_writer
+		 * @type {Boolean}
+		 */
+		this._hasChangedSinceTheLastRendering = false;
+
+		/**
+		 * DowncastWriter instance used in {@link #change change method} callbacks.
+		 *
+		 * @private
+		 * @type {module:engine/view/downcastwriter~DowncastWriter}
 		 */
 		this._writer = new DowncastWriter( this.document );
 
@@ -165,16 +185,26 @@ export default class View {
 
 			// Informs that layout has changed after render.
 			this.document.fire( 'layoutChanged' );
+
+			// Reset the `_hasChangedSinceTheLastRendering` flag after rendering.
+			this._hasChangedSinceTheLastRendering = false;
+		} );
+
+		// Listen to the document selection changes directly.
+		this.listenTo( this.document.selection, 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
 		} );
 	}
 
 	/**
-	 * Attaches DOM root element to the view element and enable all observers on that element.
-	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized with the view
-	 * what means that all child nodes will be removed and replaced with content of the view root.
+	 * Attaches a DOM root element to the view element and enable all observers on that element.
+	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized
+	 * with the view what means that all child nodes will be removed and replaced with content of the view root.
 	 *
 	 * This method also will change view element name as the same as tag name of given dom root.
 	 * Name is always transformed to lower case.
+	 *
+	 * **Note:** Use {@link #detachDomRoot `detachDomRoot()`} to revert this action.
 	 *
 	 * @param {Element} domRoot DOM root element.
 	 * @param {String} [name='main'] Name of the root.
@@ -185,18 +215,85 @@ export default class View {
 		// Set view root name the same as DOM root tag name.
 		viewRoot._name = domRoot.tagName.toLowerCase();
 
+		const initialDomRootAttributes = {};
+
+		// 1. Copy and cache the attributes to remember the state of the element before attaching.
+		//    The cached attributes will be restored in detachDomRoot() so the element goes to the
+		//    clean state as if the editing view never used it.
+		// 2. Apply the attributes using the view writer, so they all go under the control of the engine.
+		//    The editing view takes over the attribute management completely because various
+		//    features (e.g. addPlaceholder()) require dynamic changes of those attributes and they
+		//    cannot be managed by the engine and the UI library at the same time.
+		for ( const { name, value } of Array.from( domRoot.attributes ) ) {
+			initialDomRootAttributes[ name ] = value;
+
+			// Do not use writer.setAttribute() for the class attribute. The EditableUIView class
+			// and its descendants could have already set some using the writer.addClass() on the view
+			// document root. They haven't been rendered yet so they are not present in the DOM root.
+			// Using writer.setAttribute( 'class', ... ) would override them completely.
+			if ( name === 'class' ) {
+				this._writer.addClass( value.split( ' ' ), viewRoot );
+			} else {
+				this._writer.setAttribute( name, value, viewRoot );
+			}
+		}
+
+		this._initialDomRootAttributes.set( domRoot, initialDomRootAttributes );
+
+		const updateContenteditableAttribute = () => {
+			this._writer.setAttribute( 'contenteditable', !viewRoot.isReadOnly, viewRoot );
+
+			if ( viewRoot.isReadOnly ) {
+				this._writer.addClass( 'ck-read-only', viewRoot );
+			} else {
+				this._writer.removeClass( 'ck-read-only', viewRoot );
+			}
+		};
+
+		// Set initial value.
+		updateContenteditableAttribute();
+
 		this.domRoots.set( name, domRoot );
 		this.domConverter.bindElements( domRoot, viewRoot );
 		this._renderer.markToSync( 'children', viewRoot );
+		this._renderer.markToSync( 'attributes', viewRoot );
 		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
 		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+		viewRoot.on( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
+
+		viewRoot.on( 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
+		} );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
+	}
+
+	/**
+	 * Detaches a DOM root element from the view element and restores its attributes to the state before
+	 * {@link #attachDomRoot `attachDomRoot()`}.
+	 *
+	 * @param {String} name Name of the root to detach.
+	 */
+	detachDomRoot( name ) {
+		const domRoot = this.domRoots.get( name );
+
+		// Remove all root attributes so the DOM element is "bare".
+		Array.from( domRoot.attributes ).forEach( ( { name } ) => domRoot.removeAttribute( name ) );
+
+		const initialDomRootAttributes = this._initialDomRootAttributes.get( domRoot );
+
+		// Revert all view root attributes back to the state before attachDomRoot was called.
+		for ( const attribute in initialDomRootAttributes ) {
+			domRoot.setAttribute( attribute, initialDomRootAttributes[ attribute ] );
+		}
+
+		this.domRoots.delete( name );
+		this.domConverter.unbindDomElement( domRoot );
 	}
 
 	/**
@@ -295,7 +392,7 @@ export default class View {
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
-				this.render();
+				this.forceRender();
 			} else {
 				/**
 				 * Before focusing view document, selection should be placed inside one of the view's editables.
@@ -311,9 +408,10 @@ export default class View {
 
 	/**
 	 * The `change()` method is the primary way of changing the view. You should use it to modify any node in the view tree.
-	 * It makes sure that after all changes are made the view is rendered to the DOM. It prevents situations when the DOM is updated
-	 * when the view state is not yet correct. It allows to nest calls one inside another and still performs a single rendering
-	 * after all those changes are made. It also returns the return value of its callback.
+	 * It makes sure that after all changes are made the view is rendered to the DOM (assuming that the view will be changed
+	 * inside the callback). It prevents situations when the DOM is updated when the view state is not yet correct. It allows
+	 * to nest calls one inside another and still performs a single rendering after all those changes are made.
+	 * It also returns the return value of its callback.
 	 *
 	 *		const text = view.change( writer => {
 	 *			const newText = writer.createText( 'foo' );
@@ -338,14 +436,14 @@ export default class View {
 	 * @returns {*} Value returned by the callback.
 	 */
 	change( callback ) {
-		if ( this._renderingInProgress || this._postFixersInProgress ) {
+		if ( this.isRenderingInProgress || this._postFixersInProgress ) {
 			/**
 			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
 			 *
-			 * * calling {@link #change} or {@link #render} during rendering process,
-			 * * calling {@link #change} or {@link #render} inside of
+			 * * calling {@link #change} or {@link #forceRender} during rendering process,
+			 * * calling {@link #change} or {@link #forceRender} inside of
 			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree
@@ -370,7 +468,8 @@ export default class View {
 
 		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
 		// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all changes.
-		if ( !this._renderingDisabled ) {
+		// Also, we don't need to render anything if there're no changes since last rendering.
+		if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
 			this._postFixersInProgress = true;
 			this.document._callPostFixers( this._writer );
 			this._postFixersInProgress = false;
@@ -382,13 +481,17 @@ export default class View {
 	}
 
 	/**
-	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
+	 * Forces rendering {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
+	 *
+	 * Note that this method is dedicated for special cases. All view changes should be wrapped in the {@link #change}
+	 * block and the view will automatically check whether it needs to render DOM or not.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
 	 * trying to re-render when rendering to DOM has already started.
 	 */
-	render() {
+	forceRender() {
+		this._hasChangedSinceTheLastRendering = true;
 		this.change( () => {} );
 	}
 
@@ -399,6 +502,8 @@ export default class View {
 		for ( const observer of this._observers.values() ) {
 			observer.destroy();
 		}
+
+		this.document.destroy();
 
 		this.stopListening();
 	}
@@ -530,9 +635,7 @@ export default class View {
 	 *		// Creates fake selection with label.
 	 *		const selection = view.createSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
-	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
-	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selectable} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -545,17 +648,33 @@ export default class View {
 	}
 
 	/**
+	 * Disables or enables rendering. If the flag is set to `true` then the rendering will be disabled.
+	 * If the flag is set to `false` and if there was some change in the meantime, then the rendering action will be performed.
+	 *
+	 * @protected
+	 * @param {Boolean} flag A flag indicates whether the rendering should be disabled.
+	 */
+	_disableRendering( flag ) {
+		this._renderingDisabled = flag;
+
+		if ( flag == false ) {
+			// Render when you stop blocking rendering.
+			this.change( () => {} );
+		}
+	}
+
+	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *
 	 * @private
 	 */
 	_render() {
-		this._renderingInProgress = true;
+		this.isRenderingInProgress = true;
 		this.disableObservers();
 		this._renderer.render();
 		this.enableObservers();
-		this._renderingInProgress = false;
+		this.isRenderingInProgress = false;
 	}
 
 	/**

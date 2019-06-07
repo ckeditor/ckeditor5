@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -106,7 +106,7 @@ export default class Element extends Node {
 		 * Map of styles.
 		 *
 		 * @protected
-		 * @member {Set} module:engine/view/element~Element#_styles
+		 * @member {Map} module:engine/view/element~Element#_styles
 		 */
 		this._styles = new Map();
 
@@ -121,7 +121,7 @@ export default class Element extends Node {
 		 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
 		 *
 		 * @protected
-		 * @memeber {Map}
+		 * @member {Map}
 		 */
 		this._customProperties = new Map();
 	}
@@ -147,9 +147,15 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks whether given view tree object is of given type.
+	 * Checks whether this view object is of the given type.
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *		obj.is( 'element' ); // true
+	 *		obj.is( 'li' ); // true
+	 *		obj.is( 'element', 'li' ); // true
+	 *		obj.is( 'text' ); // false
+	 *		obj.is( 'element', 'img' ); // false
+	 *
+	 * Read more in {@link module:engine/view/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @param {String} [name] Element name.
@@ -206,11 +212,7 @@ export default class Element extends Node {
 			yield 'style';
 		}
 
-		// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
-		// It can be simplified to `yield* this._attrs.keys();`.
-		for ( const key of this._attrs.keys() ) {
-			yield key;
-		}
+		yield* this._attrs.keys();
 	}
 
 	/**

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -52,7 +52,7 @@ export default class Observer {
 
 	/**
 	 * Enables the observer. This method is called when the observer is registered to the
-	 * {@link module:engine/view/view~View} and after {@link module:engine/view/view~View#render rendering}
+	 * {@link module:engine/view/view~View} and after {@link module:engine/view/view~View#forceRender rendering}
 	 * (all observers are {@link #disable disabled} before rendering).
 	 *
 	 * A typical use case for disabling observers is that mutation observers need to be disabled for the rendering.
@@ -66,7 +66,7 @@ export default class Observer {
 
 	/**
 	 * Disables the observer. This method is called before
-	 * {@link module:engine/view/view~View#render rendering} to prevent firing events during rendering.
+	 * {@link module:engine/view/view~View#forceRender rendering} to prevent firing events during rendering.
 	 *
 	 * @see module:engine/view/observer/observer~Observer#enable
 	 */

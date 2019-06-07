@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 import ViewContainerElement from '../../src/view/containerelement';
+import ViewElement from '../../src/view/element';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
@@ -38,10 +39,12 @@ describe( 'UpcastDispatcher', () => {
 			expect( dispatcher.conversionApi ).to.have.property( 'splitToAllowedParent' ).that.is.instanceof( Function );
 		} );
 
-		it( 'should have properties', () => {
+		it( 'should not crash if no additional api is passed', () => {
 			const dispatcher = new UpcastDispatcher();
 
-			expect( dispatcher._removeIfEmpty ).to.instanceof( Set );
+			expect( dispatcher.conversionApi ).to.have.property( 'convertItem' ).that.is.instanceof( Function );
+			expect( dispatcher.conversionApi ).to.have.property( 'convertChildren' ).that.is.instanceof( Function );
+			expect( dispatcher.conversionApi ).to.have.property( 'splitToAllowedParent' ).that.is.instanceof( Function );
 		} );
 	} );
 
@@ -49,10 +52,10 @@ describe( 'UpcastDispatcher', () => {
 		let dispatcher;
 
 		beforeEach( () => {
-			dispatcher = new UpcastDispatcher();
+			dispatcher = new UpcastDispatcher( { schema: model.schema } );
 		} );
 
-		it( 'should create api for current conversion process', () => {
+		it( 'should create api for a conversion process', () => {
 			const viewElement = new ViewContainerElement( 'p', null, new ViewText( 'foobar' ) );
 
 			// To be sure that both converters was called.
@@ -64,22 +67,17 @@ describe( 'UpcastDispatcher', () => {
 			// Conversion process properties should be undefined/empty before conversion.
 			expect( dispatcher.conversionApi.writer ).to.not.ok;
 			expect( dispatcher.conversionApi.store ).to.not.ok;
-			expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// Check conversion api params.
 				expect( conversionApi.writer ).to.instanceof( ModelWriter );
 				expect( conversionApi.store ).to.deep.equal( {} );
-				expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 
 				// Remember writer to check in next converter that is exactly the same instance (the same undo step).
 				writer = conversionApi.writer;
 
 				// Add some data to conversion storage to verify them in next converter.
 				conversionApi.store.foo = 'bar';
-
-				// Add empty element and mark as a split result to check in next converter.
-				dispatcher._removeIfEmpty.add( conversionApi.writer.createElement( 'paragraph' ) );
 
 				// Convert children - this will call second converter.
 				conversionApi.convertChildren( data.viewItem, data.modelCursor );
@@ -94,9 +92,6 @@ describe( 'UpcastDispatcher', () => {
 				// Data set by previous converter are remembered.
 				expect( conversionApi.store ).to.deep.equal( { foo: 'bar' } );
 
-				// Split element is remembered as well.
-				expect( dispatcher._removeIfEmpty.size ).to.equal( 1 );
-
 				spy();
 			} );
 
@@ -108,7 +103,6 @@ describe( 'UpcastDispatcher', () => {
 			// Conversion process properties should be cleared after conversion.
 			expect( dispatcher.conversionApi.writer ).to.not.ok;
 			expect( dispatcher.conversionApi.store ).to.not.ok;
-			expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 		} );
 
 		it( 'should fire viewCleanup event on converted view part', () => {
@@ -248,58 +242,50 @@ describe( 'UpcastDispatcher', () => {
 		} );
 
 		it( 'should remove empty elements that was created as a result of split', () => {
-			const viewElement = new ViewContainerElement( 'p' );
+			const viewElement = new ViewElement( 'div', null, [
+				new ViewElement( 'p', null, [
+					new ViewElement( 'img' )
+				] )
+			] );
 
-			// To be sure that converter was called.
-			const spy = sinon.spy();
+			model.schema.register( 'div', { allowIn: '$root' } );
+			model.schema.register( 'p', { allowIn: 'div' } );
+			model.schema.register( 'image', { allowIn: '$root' } );
+
+			dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				const writer = conversionApi.writer;
+
+				const modelElement = writer.createElement( 'image' );
+				const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
+				writer.insert( modelElement, splitResult.position );
+
+				data.modelRange = writer.createRangeOn( modelElement );
+				data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
+
+				// Prevent below converter to fire.
+				evt.stop();
+			}, { priority: 'high' } );
 
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
-				// First let's convert target element.
-				const paragraph = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( paragraph, data.modelCursor );
+				const writer = conversionApi.writer;
 
-				// Then add some elements and mark as split.
+				const modelElement = writer.createElement( data.viewItem.name );
+				writer.insert( modelElement, data.modelCursor );
 
-				// Create and insert empty split element before target element.
-				const emptySplit = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( emptySplit, ModelPosition._createAfter( paragraph ) );
+				const result = conversionApi.convertChildren( data.viewItem, writer.createPositionAt( modelElement, 0 ) );
 
-				// Create and insert not empty split after target element.
-				const notEmptySplit = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.appendText( 'foo', notEmptySplit );
-				conversionApi.writer.insert( notEmptySplit, ModelPosition._createAfter( emptySplit ) );
-
-				// Create and insert split with other split inside (both should be removed)
-				const outerSplit = conversionApi.writer.createElement( 'paragraph' );
-				const innerSplit = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.append( innerSplit, outerSplit );
-				conversionApi.writer.insert( outerSplit, ModelPosition._createBefore( paragraph ) );
-
-				dispatcher._removeIfEmpty.add( emptySplit );
-				dispatcher._removeIfEmpty.add( notEmptySplit );
-				dispatcher._removeIfEmpty.add( outerSplit );
-				dispatcher._removeIfEmpty.add( innerSplit );
-
-				data.modelRange = ModelRange._createOn( paragraph );
+				data.modelRange = writer.createRange(
+					writer.createPositionBefore( modelElement ),
+					conversionApi.writer.createPositionAfter( result.modelCursor.parent )
+				);
 				data.modelCursor = data.modelRange.end;
-
-				// We have the following result:
-				// <p><p></p></p>[<p></p>]<p></p><p>foo</p>
-				// Everything out of selected range is a result of the split.
-
-				spy();
 			} );
 
 			const result = model.change( writer => dispatcher.convert( viewElement, writer ) );
 
-			// Empty split elements should be removed and we should have the following result:
-			// [<p></p>]<p>foo</p>
-			expect( result.childCount ).to.equal( 2 );
-			expect( result.getChild( 0 ).name ).to.equal( 'paragraph' );
-			expect( result.getChild( 0 ).childCount ).to.equal( 0 );
-			expect( result.getChild( 1 ).name ).to.equal( 'paragraph' );
-			expect( result.getChild( 1 ).childCount ).to.equal( 1 );
-			expect( result.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
+			// After splits `div` and `p` are empty so they should be removed.
+			expect( result.childCount ).to.equal( 1 );
+			expect( result.getChild( 0 ).name ).to.equal( 'image' );
 		} );
 
 		it( 'should extract temporary markers elements from converter element and create static markers list', () => {
@@ -626,6 +612,100 @@ describe( 'UpcastDispatcher', () => {
 
 				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer, [ '$root', 'paragraph' ] ) );
 				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'getSplitParts()', () => {
+			it( 'should return an array containing only passed element if the element has not been split', () => {
+				model.schema.register( 'paragraph', { allowIn: '$root' } );
+
+				const spy = sinon.spy();
+
+				dispatcher.on( 'element', ( evt, data, conversionApi ) => {
+					const modelElement = conversionApi.writer.createElement( 'paragraph' );
+					const parts = conversionApi.getSplitParts( modelElement );
+
+					expect( parts ).to.deep.equal( [ modelElement ] );
+
+					spy();
+
+					// Overwrite converters specified in `beforeEach`.
+					evt.stop();
+				}, { priority: 'high' } );
+
+				const viewElement = new ViewElement( 'p' );
+
+				model.change( writer => dispatcher.convert( viewElement, writer ) );
+
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should return all parts of the split element', () => {
+				model.schema.register( 'paragraph', { allowIn: '$root' } );
+				model.schema.register( 'text', { allowIn: 'paragraph' } );
+				model.schema.register( 'image', { allowIn: '$root' } );
+
+				dispatcher.on( 'text', ( evt, data, conversionApi ) => {
+					const modelText = conversionApi.writer.createText( data.viewItem.data );
+
+					conversionApi.writer.insert( modelText, data.modelCursor );
+
+					data.modelRange = conversionApi.writer.createRangeOn( modelText );
+					data.modelCursor = data.modelRange.end;
+
+					// Overwrite converters specified in `beforeEach`.
+					evt.stop();
+				}, { priority: 'high' } );
+
+				dispatcher.on( 'element:image', ( evt, data, conversionApi ) => {
+					const modelElement = conversionApi.writer.createElement( 'image' );
+
+					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
+
+					conversionApi.writer.insert( modelElement, splitResult.position );
+
+					data.modelRange = conversionApi.writer.createRangeOn( modelElement );
+					data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
+
+					// Overwrite converters specified in `beforeEach`.
+					evt.stop();
+				}, { priority: 'high' } );
+
+				const spy = sinon.spy();
+
+				dispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+					const modelElement = conversionApi.writer.createElement( 'paragraph' );
+
+					conversionApi.writer.insert( modelElement, data.modelCursor );
+					conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
+
+					const parts = conversionApi.getSplitParts( modelElement );
+
+					expect( parts.length ).to.equal( 3 );
+
+					expect( parts[ 0 ].getChild( 0 ).data ).to.equal( 'foo' );
+					expect( parts[ 1 ].getChild( 0 ).data ).to.equal( 'bar' );
+					expect( parts[ 2 ].getChild( 0 ).data ).to.equal( 'xyz' );
+
+					expect( parts[ 0 ] ).to.equal( modelElement );
+
+					spy();
+
+					// Overwrite converters specified in `beforeEach`.
+					evt.stop();
+				}, { priority: 'high' } );
+
+				const viewElement = new ViewElement( 'p', null, [
+					new ViewText( 'foo' ),
+					new ViewElement( 'image' ),
+					new ViewText( 'bar' ),
+					new ViewElement( 'image' ),
+					new ViewText( 'xyz' )
+				] );
+
+				model.change( writer => dispatcher.convert( viewElement, writer, [ '$root' ] ) );
+
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 	} );

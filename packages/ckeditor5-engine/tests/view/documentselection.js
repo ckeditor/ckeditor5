@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import DocumentSelection from '../../src/view/documentselection';
@@ -722,6 +722,24 @@ describe( 'DocumentSelection', () => {
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 			expect( otherSelection.isEqual( documentSelection ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( documentSelection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return true for documentSelection', () => {
+			expect( documentSelection.is( 'documentSelection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( documentSelection.is( 'node' ) ).to.be.false;
+			expect( documentSelection.is( 'text' ) ).to.be.false;
+			expect( documentSelection.is( 'textProxy' ) ).to.be.false;
+			expect( documentSelection.is( 'element' ) ).to.be.false;
+			expect( documentSelection.is( 'rootElement' ) ).to.be.false;
 		} );
 	} );
 

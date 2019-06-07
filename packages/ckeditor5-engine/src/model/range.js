@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -336,6 +336,16 @@ export default class Range {
 	/**
 	 * Creates a {@link module:engine/model/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
 	 *
+	 * For example, to iterate over all items in the entire document root:
+	 *
+	 *		// Create a range spanning over the entire root content:
+	 *		const range = editor.model.createRangeIn( editor.model.document.getRoot() );
+	 *
+	 *		// Iterate over all items in this range:
+	 *		for ( const value of range.getWalker() ) {
+	 *			console.log( value.item );
+	 *		}
+	 *
 	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 * @param {module:engine/model/position~Position} [options.startPosition]
 	 * @param {Boolean} [options.singleCharacters=false]
@@ -562,6 +572,21 @@ export default class Range {
 	 * @returns {module:engine/model/range~Range}
 	 */
 	_getTransformedByMergeOperation( operation ) {
+		// Special case when the marker is set on "the closing tag" of an element. Marker can be set like that during
+		// transformations, especially when a content of a few block elements were removed. For example:
+		//
+		// {} is the transformed range, [] is the removed range.
+		// <p>F[o{o</p><p>B}ar</p><p>Xy]z</p>
+		//
+		// <p>Fo{o</p><p>B}ar</p><p>z</p>
+		// <p>F{</p><p>B}ar</p><p>z</p>
+		// <p>F{</p>}<p>z</p>
+		// <p>F{}z</p>
+		//
+		if ( this.start.isEqual( operation.targetPosition ) && this.end.isEqual( operation.deletionPosition ) ) {
+			return new Range( this.start );
+		}
+
 		let start = this.start._getTransformedByMergeOperation( operation );
 		let end = this.end._getTransformedByMergeOperation( operation );
 

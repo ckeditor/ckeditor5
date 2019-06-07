@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -21,7 +21,10 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Maps elements, positions and markers between {@link module:engine/view/document~Document the view} and
  * {@link module:engine/model/model the model}.
  *
- * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
+ * The instance of the Mapper used for the editing pipeline is available in
+ * {@link module:engine/controller/editingcontroller~EditingController#mapper `editor.editing.mapper`}.
+ *
+ * Mapper uses bound elements to find corresponding elements and positions, so, to get proper results,
  * all model elements should be {@link module:engine/conversion/mapper~Mapper#bindElements bound}.
  *
  * To map complex model to/from view relations, you may provide custom callbacks for
@@ -91,14 +94,8 @@ export default class Mapper {
 				return;
 			}
 
-			let viewBlock = data.viewPosition.parent;
-			let modelParent = this._viewToModelMapping.get( viewBlock );
-
-			while ( !modelParent ) {
-				viewBlock = viewBlock.parent;
-				modelParent = this._viewToModelMapping.get( viewBlock );
-			}
-
+			const viewBlock = this.findMappedViewAncestor( data.viewPosition );
+			const modelParent = this._viewToModelMapping.get( viewBlock );
 			const modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
 
 			data.modelPosition = ModelPosition._createAt( modelParent, modelOffset );
@@ -336,6 +333,23 @@ export default class Mapper {
 	 */
 	registerViewToModelLength( viewElementName, lengthCallback ) {
 		this._viewToModelLengthCallbacks.set( viewElementName, lengthCallback );
+	}
+
+	/**
+	 * For given `viewPosition`, finds and returns the closest ancestor of this position that has a mapping to
+	 * the model.
+	 *
+	 * @param {module:engine/view/position~Position} viewPosition Position for which mapped ancestor should be found.
+	 * @returns {module:engine/view/element~Element}
+	 */
+	findMappedViewAncestor( viewPosition ) {
+		let parent = viewPosition.parent;
+
+		while ( !this._viewToModelMapping.has( parent ) ) {
+			parent = parent.parent;
+		}
+
+		return parent;
 	}
 
 	/**

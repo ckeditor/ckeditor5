@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Conversion from '../../src/conversion/conversion';
@@ -8,49 +8,66 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
+import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 
 import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
 
-import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
+import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
+import ConversionHelpers from '../../src/conversion/conversionhelpers';
 
 describe( 'Conversion', () => {
-	let conversion, dispA, dispB;
+	let conversion, downcastDispA, upcastDispaA, downcastDispB;
 
 	beforeEach( () => {
-		conversion = new Conversion();
-
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
-		dispA = Symbol( 'dispA' );
-		dispB = Symbol( 'dispB' );
+		downcastDispA = Symbol( 'downA' );
+		downcastDispB = Symbol( 'downB' );
 
-		conversion.register( 'ab', [ dispA, dispB ] );
-		conversion.register( 'a', [ dispA ] );
-		conversion.register( 'b', [ dispB ] );
+		upcastDispaA = Symbol( 'upA' );
+
+		conversion = new Conversion( [ downcastDispA, downcastDispB ], [ upcastDispaA ] );
 	} );
 
-	describe( 'register()', () => {
+	describe( 'addAlias()', () => {
 		it( 'should throw when trying to use same group name twice', () => {
 			expect( () => {
-				conversion.register( 'ab' );
-			} ).to.throw( CKEditorError, /conversion-register-group-exists/ );
+				conversion.addAlias( 'upcast', upcastDispaA );
+			} ).to.throw( CKEditorError, /conversion-group-exists/ );
+		} );
+
+		it( 'should throw when trying to add not registered dispatcher', () => {
+			expect( () => {
+				conversion.addAlias( 'foo', {} );
+			} ).to.throw( CKEditorError, /conversion-add-alias-dispatcher-not-registered/ );
 		} );
 	} );
 
 	describe( 'for()', () => {
-		it( 'should return object with .add() method', () => {
-			const forResult = conversion.for( 'ab' );
-
-			expect( forResult.add ).to.be.instanceof( Function );
+		it( 'should return ConversionHelpers', () => {
+			expect( conversion.for( 'upcast' ) ).to.be.instanceof( ConversionHelpers );
+			expect( conversion.for( 'downcast' ) ).to.be.instanceof( ConversionHelpers );
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
 			expect( () => {
 				conversion.for( 'foo' );
 			} ).to.throw( CKEditorError, /conversion-for-unknown-group/ );
+		} );
+
+		it( 'should return proper helpers for group', () => {
+			expect( conversion.for( 'upcast' ) ).to.be.instanceof( UpcastHelpers );
+
+			conversion.addAlias( 'foo', upcastDispaA );
+			expect( conversion.for( 'foo' ) ).to.be.instanceof( UpcastHelpers );
+
+			expect( conversion.for( 'downcast' ) ).to.be.instanceof( DowncastHelpers );
+
+			conversion.addAlias( 'bar', downcastDispB );
+			expect( conversion.for( 'bar' ) ).to.be.instanceof( DowncastHelpers );
 		} );
 	} );
 
@@ -63,23 +80,40 @@ describe( 'Conversion', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			const forResult = conversion.for( 'ab' );
-			const addResult = forResult.add( () => {} );
+			const helpers = conversion.for( 'upcast' );
+			const addResult = helpers.add( () => {} );
 
-			expect( addResult ).to.equal( addResult.add( () => {} ) );
+			expect( addResult ).to.equal( helpers );
 		} );
 
 		it( 'should fire given helper for every dispatcher in given group', () => {
-			conversion.for( 'ab' ).add( helperA );
+			conversion.for( 'downcast' ).add( helperA );
 
-			expect( helperA.calledWithExactly( dispA ) ).to.be.true;
-			expect( helperA.calledWithExactly( dispB ) ).to.be.true;
+			expect( helperA.calledWithExactly( downcastDispA ) ).to.be.true;
+			expect( helperA.calledWithExactly( downcastDispB ) ).to.be.true;
+			expect( helperA.calledWithExactly( upcastDispaA ) ).to.be.false;
 
-			conversion.for( 'b' ).add( helperB );
+			conversion.for( 'upcast' ).add( helperB );
 
-			expect( helperB.calledWithExactly( dispA ) ).to.be.false;
-			expect( helperB.calledWithExactly( dispB ) ).to.be.true;
+			expect( helperB.calledWithExactly( downcastDispA ) ).to.be.false;
+			expect( helperB.calledWithExactly( downcastDispB ) ).to.be.false;
+			expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
 		} );
+	} );
+
+	it( 'constructor() should be able to take singular objects instead of arrays', () => {
+		const helperA = sinon.stub();
+		const helperB = sinon.stub();
+
+		conversion = new Conversion( downcastDispA, upcastDispaA );
+
+		conversion.for( 'downcast' ).add( helperA );
+
+		expect( helperA.calledWithExactly( downcastDispA ) ).to.be.true;
+
+		conversion.for( 'upcast' ).add( helperB );
+
+		expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
 	} );
 
 	describe( 'converters', () => {
@@ -100,6 +134,7 @@ describe( 'Conversion', () => {
 			schema = model.schema;
 
 			schema.extend( '$text', {
+				allowIn: '$root',
 				allowAttributes: [ 'bold' ]
 			} );
 
@@ -112,9 +147,7 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-			conversion = new Conversion();
-			conversion.register( 'upcast', [ viewDispatcher ] );
-			conversion.register( 'downcast', [ controller.downcastDispatcher ] );
+			conversion = new Conversion( controller.downcastDispatcher, viewDispatcher );
 		} );
 
 		describe( 'elementToElement', () => {
@@ -124,12 +157,22 @@ describe( 'Conversion', () => {
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
 			} );
 
-			it( 'config.converterPriority is defined', () => {
+			it( 'config.converterPriority is defined (override downcast)', () => {
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 				conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 
 				test( '<div>Foo</div>', '<paragraph>Foo</paragraph>' );
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>', '<div>Foo</div>' );
+			} );
+
+			it( 'config.converterPriority is defined (override upcast)', () => {
+				schema.register( 'foo', {
+					inheritAllFrom: '$block'
+				} );
+				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+				conversion.elementToElement( { model: 'foo', view: 'p', converterPriority: 'high' } );
+
+				test( '<p>Foo</p>', '<foo>Foo</foo>', '<p>Foo</p>' );
 			} );
 
 			it( 'config.view is an object', () => {
@@ -223,12 +266,26 @@ describe( 'Conversion', () => {
 				test( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 			} );
 
-			it( 'config.converterPriority is defined', () => {
+			it( 'config.converterPriority is defined (override downcast)', () => {
 				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 				conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 
 				test( '<p><b>Foo</b></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>' );
 				test( '<p><strong>Foo</strong></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>', '<p><b>Foo</b></p>' );
+			} );
+
+			it( 'config.converterPriority is defined (override upcast)', () => {
+				schema.extend( '$text', {
+					allowAttributes: [ 'foo' ]
+				} );
+				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+				conversion.attributeToElement( { model: 'foo', view: 'strong', converterPriority: 'high' } );
+
+				test(
+					'<p><strong>Foo</strong></p>',
+					'<paragraph><$text foo="true">Foo</$text></paragraph>',
+					'<p><strong>Foo</strong></p>'
+				);
 			} );
 
 			it( 'config.view is an object', () => {
@@ -624,6 +681,17 @@ describe( 'Conversion', () => {
 					'<div class="border"><div class="shade"></div></div>',
 					'<div border="border"><div shade="shade"></div></div>'
 				);
+			} );
+
+			it( 'config.converterPriority is defined (override downcast)', () => {
+				schema.extend( 'image', {
+					allowAttributes: [ 'foo' ]
+				} );
+
+				conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+				conversion.attributeToAttribute( { model: 'foo', view: 'foofoo', converterPriority: 'high' } );
+
+				test( '<img foo="foo"></img>', '<image foo="foo"></image>', '<img foofoo="foo"></img>' );
 			} );
 		} );
 

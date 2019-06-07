@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -62,7 +62,7 @@ describe( 'View', () => {
 	} );
 
 	function renderAndFireKeydownEvent( options ) {
-		view.render();
+		view.forceRender();
 
 		const eventData = Object.assign( { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) }, options );
 		viewDocument.fire( 'keydown', eventData );

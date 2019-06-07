@@ -1,11 +1,9 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global console */
-
-import { downcastElementToElement } from '../../src/conversion/downcast-converters';
 
 import { getData } from '../../src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -16,7 +14,6 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import { upcastElementToElement } from '../../src/conversion/upcast-converters';
 
 import './selection.css';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -44,24 +41,24 @@ class SelectionTest extends Plugin {
 			isLimit: true
 		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'table', view: 'table' } ) );
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'table', view: 'table' } );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'table',
 			view: ( modelItem, viewWriter ) => {
 				return toWidget( viewWriter.createContainerElement( 'table' ), viewWriter );
 			}
-		} ) );
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+		} );
+		editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'tableCell',
 			view: ( modelItem, viewWriter ) => {
 				return toWidgetEditable( viewWriter.createEditableElement( 'td' ), viewWriter );
 			}
-		} ) );
+		} );
 	}
 }
 

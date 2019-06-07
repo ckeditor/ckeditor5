@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Selection from '../../src/view/selection';
@@ -599,6 +599,21 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( selection.is( 'documentSelection' ) ).to.be.false;
+			expect( selection.is( 'node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( 'element' ) ).to.be.false;
+			expect( selection.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'setTo()', () => {
 		describe( 'simple scenarios', () => {
 			it( 'should set selection ranges from the given selection', () => {
@@ -955,6 +970,14 @@ describe( 'Selection', () => {
 	describe( 'getSelectedElement()', () => {
 		it( 'should return selected element', () => {
 			const { selection: docSelection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const b = view.getChild( 1 );
+			const selection = new Selection( docSelection );
+
+			expect( selection.getSelectedElement() ).to.equal( b );
+		} );
+
+		it( 'should return selected element if the selection is anchored at the end/at the beginning of a text node', () => {
+			const { selection: docSelection, view } = parse( 'foo {<b>bar</b>} baz' );
 			const b = view.getChild( 1 );
 			const selection = new Selection( docSelection );
 

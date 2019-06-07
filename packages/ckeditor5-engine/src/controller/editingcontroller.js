@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -11,12 +11,11 @@ import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { insertText, remove } from '../conversion/downcast-converters';
-import { convertSelectionChange } from '../conversion/upcast-selection-converters';
-import { clearAttributes, convertCollapsedSelection, convertRangeSelection } from '../conversion/downcast-selection-converters';
+import { clearAttributes, convertCollapsedSelection, convertRangeSelection, insertText, remove } from '../conversion/downcasthelpers';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
@@ -76,12 +75,11 @@ export default class EditingController {
 		//
 		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
 		this.listenTo( this.model, '_beforeChanges', () => {
-			this.view._renderingDisabled = true;
+			this.view._disableRendering( true );
 		}, { priority: 'highest' } );
 
 		this.listenTo( this.model, '_afterChanges', () => {
-			this.view._renderingDisabled = false;
-			this.view.render();
+			this.view._disableRendering( false );
 		}, { priority: 'lowest' } );
 
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).

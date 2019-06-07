@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -29,7 +29,7 @@ import TextProxy from '../model/textproxy';
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
  * However, it is important to understand how consumable values can be
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
- * See {@link module:engine/conversion/downcast-selection-converters default downcast converters} for more information.
+ * See {@link module:engine/conversion/downcasthelpers default downcast converters} for more information.
  *
  * Keep in mind, that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
  * able to convert one or more parts of the model. However, when one of those callbacks actually converts

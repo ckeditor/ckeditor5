@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -88,9 +88,7 @@ export default class Selection {
 	 *		// Creates fake selection with label.
 	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
-	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
-	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selectable} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -416,18 +414,33 @@ export default class Selection {
 		}
 
 		const range = this.getFirstRange();
-		const nodeAfterStart = range.start.nodeAfter;
-		const nodeBeforeEnd = range.end.nodeBefore;
+
+		let nodeAfterStart = range.start.nodeAfter;
+		let nodeBeforeEnd = range.end.nodeBefore;
+
+		// Handle the situation when selection position is at the beginning / at the end of a text node.
+		// In such situation `.nodeAfter` and `.nodeBefore` are `null` but the selection still might be spanning
+		// over one element.
+		//
+		// <p>Foo{<span class="widget"></span>}bar</p> vs <p>Foo[<span class="widget"></span>]bar</p>
+		//
+		// These are basically the same selections, only the difference is if the selection position is at
+		// at the end/at the beginning of a text node or just before/just after the text node.
+		//
+		if ( range.start.parent.is( 'text' ) && range.start.isAtEnd && range.start.parent.nextSibling ) {
+			nodeAfterStart = range.start.parent.nextSibling;
+		}
+
+		if ( range.end.parent.is( 'text' ) && range.end.isAtStart && range.end.parent.previousSibling ) {
+			nodeBeforeEnd = range.end.parent.previousSibling;
+		}
 
 		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 	}
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/documentselection~DocumentSelection document selection},
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
-	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 * {@link module:engine/view/selection~Selectable selectable}.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );
@@ -479,9 +492,7 @@ export default class Selection {
 	 *		selection.setTo( range, { fake: true, label: 'foo' } );
 	 *
 	 * @fires change
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
-	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
-	 * module:engine/view/item~Item|null} selectable
+	 * @param {module:engine/view/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -582,6 +593,23 @@ export default class Selection {
 		}
 
 		this.fire( 'change' );
+	}
+
+	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new Selection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection';
 	}
 
 	/**
@@ -697,3 +725,19 @@ export default class Selection {
 }
 
 mix( Selection, EmitterMixin );
+
+/**
+ * An entity that is used to set selection.
+ *
+ * See also {@link module:engine/view/selection~Selection#setTo}
+ *
+ * @typedef {
+ *    module:engine/view/selection~Selection|
+ *    module:engine/view/documentselection~DocumentSelection|
+ *    module:engine/view/position~Position|
+ *    Iterable.<module:engine/view/range~Range>|
+ *    module:engine/view/range~Range|
+ *    module:engine/view/item~Item|
+ *    null
+ * } module:engine/view/selection~Selectable
+ */

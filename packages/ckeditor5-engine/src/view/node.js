@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -12,6 +12,9 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { clone } from 'lodash-es';
+
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
  * Abstract tree view node class.
@@ -287,7 +290,7 @@ export default class Node {
 	}
 
 	/**
-	 * Checks whether given view tree object is of given type.
+	 * Checks whether this view object is of the given type.
 	 *
 	 * This method is useful when processing view tree objects that are of unknown type. For example, a function
 	 * may return {@link module:engine/view/documentfragment~DocumentFragment} or {@link module:engine/view/node~Node}
@@ -300,7 +303,6 @@ export default class Node {
 	 *		obj.is( 'p' ); // shortcut for obj.is( 'element', 'p' )
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *
-	 * @method #is
 	 * @param {'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
 	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
 	 * @returns {Boolean}

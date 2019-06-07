@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
@@ -286,8 +291,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			// Incorrect result due to wrap/unwrap being represented by inserts and moves.
-			it.skip( 'element in same path #2', () => {
+			it( 'element in same path #2', () => {
 				john.setData( '<paragraph>Foo[]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 

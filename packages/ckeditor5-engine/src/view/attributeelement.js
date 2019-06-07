@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -69,7 +69,7 @@ export default class AttributeElement extends Element {
 		 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
 		 *
 		 * @protected
-		 * @member {Set|null}
+		 * @member {Set.<module:engine/view/attributeelement~AttributeElement>|null}
 		 */
 		this._clonesGroup = null;
 	}
@@ -78,7 +78,7 @@ export default class AttributeElement extends Element {
 	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
 	 * @readonly
-	 * @returns {Number}
+	 * @type {Number}
 	 */
 	get priority() {
 		return this._priority;
@@ -89,7 +89,7 @@ export default class AttributeElement extends Element {
 	 * and then two elements are considered similar if, and only if they have the same `id`.
 	 *
 	 * @readonly
-	 * @returns {String|Number}
+	 * @type {String|Number}
 	 */
 	get id() {
 		return this._id;

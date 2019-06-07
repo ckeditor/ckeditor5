@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -10,14 +10,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Range from '../../../../src/model/range';
 import LivePosition from '../../../../src/model/liveposition';
-
-import {
-	upcastElementToAttribute
-} from '../../../../src/conversion/upcast-converters';
-
-import {
-	downcastAttributeToElement,
-} from '../../../../src/conversion/downcast-converters';
 
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -31,20 +23,20 @@ class Link extends Plugin {
 		// Allow bold attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( {
+		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'link',
 			view: ( modelAttributeValue, viewWriter ) => {
 				return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
 			}
-		} ) );
+		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: 'a',
 			model: {
 				key: 'link',
 				value: viewElement => viewElement.getAttribute( 'href' )
 			}
-		} ) );
+		} );
 	}
 }
 

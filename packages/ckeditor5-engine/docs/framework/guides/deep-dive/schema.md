@@ -57,7 +57,8 @@ schema.register( '$block', {
 	isBlock: true
 } );
 schema.register( '$text', {
-	allowIn: '$block'
+	allowIn: '$block',
+	isInline: true
 } );
 ```
 

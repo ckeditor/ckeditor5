@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../src/model/model';
@@ -78,14 +78,23 @@ describe( 'LivePosition', () =>
 	} );
 
 	it( '_createBefore should return LivePosition', () => {
-		const position = LivePosition._createBefore( ul );
+		const position = LivePosition._createBefore( ul, 'toPrevious' );
 		expect( position ).to.be.instanceof( LivePosition );
+		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
 
 	it( '_createAfter should return LivePosition', () => {
-		const position = LivePosition._createAfter( ul );
+		const position = LivePosition._createAfter( ul, 'toPrevious' );
 		expect( position ).to.be.instanceof( LivePosition );
+		expect( position.stickiness ).to.equal( 'toPrevious' );
+		position.detach();
+	} );
+
+	it( '_createAt should return LivePosition', () => {
+		const position = LivePosition._createAt( ul, 'end', 'toPrevious' );
+		expect( position ).to.be.instanceof( LivePosition );
+		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
 

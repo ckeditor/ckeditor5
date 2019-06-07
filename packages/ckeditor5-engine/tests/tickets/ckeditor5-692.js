@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import MutationObserver from '../../src/view/observer/mutationobserver';
@@ -29,7 +29,7 @@ describe( 'Bug ckeditor5#692', () => {
 				editor = newEditor;
 				view = editor.editing.view;
 				mutationObserver = view.getObserver( MutationObserver );
-				domEditor = editor.ui.view.editableElement;
+				domEditor = editor.ui.getEditableElement();
 			} );
 	} );
 

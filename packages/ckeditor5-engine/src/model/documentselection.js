@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -15,6 +15,7 @@ import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
@@ -150,6 +151,17 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * A collection of selection markers.
+	 * Marker is a selection marker when selection range is inside the marker range.
+	 *
+	 * @readonly
+	 * @type {module:utils/collection~Collection.<module:engine/model/markercollection~Marker>}
+	 */
+	get markers() {
+		return this._selection.markers;
+	}
+
+	/**
 	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
 	 *
 	 * @protected
@@ -247,10 +259,30 @@ export default class DocumentSelection {
 	 *		<paragraph>b</paragraph>
 	 *		<paragraph>]c</paragraph> // this block will not be returned
 	 *
-	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	getSelectedBlocks() {
 		return this._selection.getSelectedBlocks();
+	}
+
+	/**
+	 * Returns blocks that aren't nested in other selected blocks.
+	 *
+	 * In this case the method will return blocks A, B and E because C & D are children of block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
+	getTopMostBlocks() {
+		return this._selection.getTopMostBlocks();
 	}
 
 	/**
@@ -328,6 +360,32 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Refreshes selection attributes and markers according to the current position in the model.
+	 */
+	refresh() {
+		this._selection._updateMarkers();
+		this._selection._updateAttributes( false );
+	}
+
+	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new DocumentSelection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'documentSelection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection' || type == 'documentSelection';
+	}
+
+	/**
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *
@@ -346,16 +404,12 @@ export default class DocumentSelection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
 	 *
 	 * @see module:engine/model/writer~Writer#setSelection
 	 * @protected
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -506,6 +560,12 @@ class LiveSelection extends Selection {
 	constructor( doc ) {
 		super();
 
+		// List of selection markers.
+		// Marker is a selection marker when selection range is inside the marker range.
+		//
+		// @type {module:utils/collection~Collection}
+		this.markers = new Collection( { idProperty: 'name' } );
+
 		// Document which owns this selection.
 		//
 		// @protected
@@ -546,7 +606,27 @@ class LiveSelection extends Selection {
 		// @type {Set}
 		this._overriddenGravityRegister = new Set();
 
-		// Add events that will ensure selection correctness.
+		// Ensure selection is correct after each operation.
+		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( !operation.isDocumentOperation || operation.type == 'marker' || operation.type == 'rename' || operation.type == 'noop' ) {
+				return;
+			}
+
+			while ( this._fixGraveyardRangesData.length ) {
+				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
+
+				this._fixGraveyardSelection( liveRange, sourcePosition );
+			}
+
+			if ( this._hasChangedRange ) {
+				this._hasChangedRange = false;
+				this.fire( 'change:range', { directChange: false } );
+			}
+		}, { priority: 'lowest' } );
+
+		// Ensure selection is correct and up to date after each range change.
 		this.on( 'change:range', () => {
 			for ( const range of this.getRanges() ) {
 				if ( !this._document._validateSelectionRange( range ) ) {
@@ -565,27 +645,13 @@ class LiveSelection extends Selection {
 			}
 		} );
 
-		this.listenTo( this._document, 'change', ( evt, batch ) => {
-			// Update selection's attributes.
-			this._updateAttributes( false );
+		// Update markers data stored by the selection after each marker change.
+		this.listenTo( this._model.markers, 'update', () => this._updateMarkers() );
 
-			// Clear selection attributes from element if no longer empty.
+		// Ensure selection is up to date after each change block.
+		this.listenTo( this._document, 'change', ( evt, batch ) => {
 			clearAttributesStoredInElement( this._model, batch );
 		} );
-
-		this.listenTo( this._model, 'applyOperation', () => {
-			while ( this._fixGraveyardRangesData.length ) {
-				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
-
-				this._fixGraveyardSelection( liveRange, sourcePosition );
-			}
-
-			if ( this._hasChangedRange ) {
-				this._hasChangedRange = false;
-
-				this.fire( 'change:range', { directChange: false } );
-			}
-		}, { priority: 'lowest' } );
 	}
 
 	get isCollapsed() {
@@ -651,12 +717,12 @@ class LiveSelection extends Selection {
 
 	setTo( selectable, optionsOrPlaceOrOffset, options ) {
 		super.setTo( selectable, optionsOrPlaceOrOffset, options );
-		this._refreshAttributes();
+		this._updateAttributes( true );
 	}
 
 	setFocus( itemOrPosition, offset ) {
 		super.setFocus( itemOrPosition, offset );
-		this._refreshAttributes();
+		this._updateAttributes( true );
 	}
 
 	setAttribute( key, value ) {
@@ -683,7 +749,7 @@ class LiveSelection extends Selection {
 		this._overriddenGravityRegister.add( overrideUid );
 
 		if ( this._overriddenGravityRegister.size === 1 ) {
-			this._refreshAttributes();
+			this._updateAttributes( true );
 		}
 
 		return overrideUid;
@@ -696,7 +762,8 @@ class LiveSelection extends Selection {
 			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
 			 *
 			 * @error document-selection-gravity-wrong-restore
-			 * @param {String} uid The unique identifier returned by {@link #overrideGravity}.
+			 * @param {String} uid The unique identifier returned by
+			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
@@ -708,13 +775,8 @@ class LiveSelection extends Selection {
 
 		// Restore gravity only when all overriding have been restored.
 		if ( !this.isGravityOverridden ) {
-			this._refreshAttributes();
+			this._updateAttributes( true );
 		}
-	}
-
-	// Removes all attributes from the selection and sets attributes according to the surrounding nodes.
-	_refreshAttributes() {
-		this._updateAttributes( true );
 	}
 
 	_popRange() {
@@ -765,6 +827,32 @@ class LiveSelection extends Selection {
 		} );
 
 		return liveRange;
+	}
+
+	_updateMarkers() {
+		const markers = [];
+
+		for ( const marker of this._model.markers ) {
+			const markerRange = marker.getRange();
+
+			for ( const selectionRange of this.getRanges() ) {
+				if ( markerRange.containsRange( selectionRange, !selectionRange.isCollapsed ) ) {
+					markers.push( marker );
+				}
+			}
+		}
+
+		for ( const marker of markers ) {
+			if ( !this.markers.has( marker ) ) {
+				this.markers.add( marker );
+			}
+		}
+
+		for ( const marker of Array.from( this.markers ) ) {
+			if ( !markers.includes( marker ) ) {
+				this.markers.remove( marker );
+			}
+		}
 	}
 
 	// Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
@@ -953,10 +1041,9 @@ class LiveSelection extends Selection {
 					break;
 				}
 
-				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
-				// It can be done better by using `break;` instead of checking `attrs === null`.
-				if ( value.type == 'text' && attrs === null ) {
+				if ( value.type == 'text' ) {
 					attrs = value.item.getAttributes();
+					break;
 				}
 			}
 		} else {

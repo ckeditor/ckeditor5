@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../src/model/model';
@@ -629,6 +629,35 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
+		it( 'move to the same position #1', () => {
+			const position = new Position( root, [ 0 ] );
+
+			model.change( () => {
+				move( position, 1, position );
+
+				expectChanges( [] );
+			} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
+		it( 'move to the same position #2', () => {
+			const sourcePosition = new Position( root, [ 0 ] );
+			const targetPosition = new Position( root, [ 2 ] );
+
+			// Add two more elements to the root, now there are 4 paragraphs.
+			root._appendChild( [
+				new Element( 'paragraph' ),
+				new Element( 'paragraph' )
+			] );
+
+			model.change( () => {
+				move( sourcePosition, 2, targetPosition );
+
+				expectChanges( [] );
+			} );
+		} );
 	} );
 
 	describe( 'rename', () => {
@@ -969,7 +998,7 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'remove and add attribute on text', () => {
+		it( 'remove attribute and add attribute on text', () => {
 			const p = root.getChild( 1 );
 
 			p.getChild( 0 )._setAttribute( 'bold', true );
@@ -1254,6 +1283,46 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		it( 'add attribute after some text was removed', () => {
+			const p = root.getChild( 0 );
+
+			const range = new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) );
+			const position = Position._createAt( p, 1 );
+
+			model.change( () => {
+				remove( position, 1 );
+				attribute( range, 'a', null, true );
+
+				const type = 'attribute';
+				const attributeOldValue = null;
+				const attributeNewValue = true;
+
+				// Attribute change glueing does not work 100% correct.
+				expectChanges( [
+					{
+						type,
+						range: new Range( Position._createAt( p, 0 ), Position._createAt( p, 1 ) ),
+						attributeKey: 'a',
+						attributeOldValue,
+						attributeNewValue
+					},
+					{
+						type: 'remove',
+						position,
+						length: 1,
+						name: '$text'
+					},
+					{
+						type,
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) ),
+						attributeKey: 'a',
+						attributeOldValue,
+						attributeNewValue
+					}
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'split', () => {
@@ -1403,6 +1472,16 @@ describe( 'Differ', () => {
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range }
 			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: range
+					}
+				}
+			] );
 		} );
 
 		it( 'remove marker', () => {
@@ -1413,6 +1492,16 @@ describe( 'Differ', () => {
 			] );
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: null
+					}
+				}
+			] );
 		} );
 
 		it( 'change marker\'s range', () => {
@@ -1424,6 +1513,16 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range: rangeB }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: rangeB
+					}
+				}
 			] );
 		} );
 
@@ -1445,6 +1544,8 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
+
 			expect( differ.hasDataChanges() ).to.be.false;
 		} );
 
@@ -1456,6 +1557,16 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range: rangeB }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: rangeB
+					}
+				}
 			] );
 		} );
 
@@ -1475,6 +1586,17 @@ describe( 'Differ', () => {
 			] );
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: null
+					}
+				}
+			] );
+
 			expect( differ.hasDataChanges() ).to.be.true;
 		} );
 
@@ -1489,6 +1611,16 @@ describe( 'Differ', () => {
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range }
 			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: range
+					}
+				}
+			] );
 		} );
 
 		it( 'change marker to the same range', () => {
@@ -1500,6 +1632,16 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: range
+					}
+				}
 			] );
 		} );
 	} );

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -40,7 +40,7 @@ export default class Document {
 		 * model root using {@link module:engine/model/document~Document#createRoot}.
 		 *
 		 * @readonly
-		 * @member {Collection} module:engine/view/document~Document#roots
+		 * @member {module:utils/collection~Collection} module:engine/view/document~Document#roots
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
 
@@ -115,10 +115,21 @@ export default class Document {
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
 	 * instance connected with the executed changes block.
 	 *
+	 * Note that registering a post-fixer won't re-render the editor's view. If the view should change after registering the post-fixer then
+	 * it should be done manually calling `view.forceRender();`.
+	 *
 	 * @param {Function} postFixer
 	 */
 	registerPostFixer( postFixer ) {
 		this._postFixers.add( postFixer );
+	}
+
+	/**
+	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
+	 */
+	destroy() {
+		this.roots.map( root => root.destroy() );
+		this.stopListening();
 	}
 
 	/**

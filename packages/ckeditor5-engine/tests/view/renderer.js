@@ -1,12 +1,13 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, NodeFilter */
+/* globals document, window, NodeFilter, MutationObserver */
 
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
+import ViewEditableElement from '../../src/view/editableelement';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
@@ -112,10 +113,12 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'render', () => {
-		let viewRoot, domRoot, selectionEditable;
+		let viewRoot, domRoot;
 
 		beforeEach( () => {
-			viewRoot = new ViewElement( 'div' );
+			viewRoot = new ViewEditableElement( 'div' );
+			viewRoot.getFillerOffset = () => null;
+
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
@@ -127,16 +130,7 @@ describe( 'Renderer', () => {
 
 			selection._setTo( null );
 
-			selectionEditable = viewRoot;
-
 			renderer.isFocused = true;
-
-			// Fake selection editable - it is needed to render selection properly.
-			Object.defineProperty( selection, 'editableElement', {
-				get() {
-					return selectionEditable;
-				}
-			} );
 		} );
 
 		afterEach( () => {
@@ -422,8 +416,6 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not care about filler if there is no DOM', () => {
-			selectionEditable = null;
-
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
@@ -1202,11 +1194,10 @@ describe( 'Renderer', () => {
 			domSelection.removeAllRanges();
 			domSelection.collapse( domDiv, 0 );
 
-			selectionEditable = null;
-
+			const viewDiv = new ViewElement( 'div' );
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
-			viewRoot._appendChild( viewP );
+			viewDiv._appendChild( viewP );
 			selection._setTo( newSelection );
 
 			renderer.render();
@@ -1353,13 +1344,13 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should handle focusing element', () => {
+			selection._setTo( viewRoot, 0 );
+
 			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-			const editable = selection.editableElement;
 
 			renderer.render();
 
-			expect( editable ).to.equal( viewRoot );
-			expect( domFocusSpy.calledOnce ).to.be.true;
+			expect( domFocusSpy.called ).to.be.true;
 		} );
 
 		it( 'should not focus editable if isFocues is set to false', () => {
@@ -1928,6 +1919,32 @@ describe( 'Renderer', () => {
 				expect( container.style.left ).to.equal( '-9999px' );
 			} );
 
+			it( 'should move fake selection container between editables', () => {
+				const viewEditable = new ViewEditableElement( 'div' );
+				viewEditable._appendChild( parse( '<container:p>abc xyz</container:p>' ) );
+
+				const domEditable = document.createElement( 'div' );
+
+				document.body.appendChild( domEditable );
+
+				domConverter.bindElements( domEditable, viewEditable );
+
+				renderer.markToSync( 'children', viewEditable );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'fake selection' } );
+				renderer.render();
+
+				let container = document.getSelection().anchorNode;
+
+				expect( domRoot.contains( container ) ).to.be.true;
+
+				selection._setTo( viewEditable, 'in', { fake: true, label: 'fake selection' } );
+				renderer.render();
+
+				container = document.getSelection().anchorNode;
+
+				expect( domEditable.contains( container ) ).to.be.true;
+			} );
+
 			it( 'should bind fake selection container to view selection', () => {
 				selection._setTo( selection.getRanges(), { fake: true, label: 'fake selection' } );
 				renderer.render();
@@ -1939,6 +1956,31 @@ describe( 'Renderer', () => {
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
 				expect( bindSelection ).to.not.be.undefined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-engine/issues/1714.
+			it( 'should handle situation when label got removed from the fake selection container', () => {
+				const label = 'fake selection label';
+				selection._setTo( selection.getRanges(), { fake: true, label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+
+				const container = domRoot.childNodes[ 1 ];
+				expect( domConverter.mapDomToView( container ) ).to.be.undefined;
+				expect( container.childNodes.length ).to.equal( 1 );
+
+				const textNode = container.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( label );
+
+				// Remove a text node (label) from the fake selection container.
+				// It can be done by pressing backspace while the delete command is disabled and selection is on the widget.
+				textNode.remove();
+
+				renderer.render();
+
+				const domSelection = domRoot.ownerDocument.getSelection();
+				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
 			} );
 
 			// Use a forgiving way of checking what the selection contains
@@ -2285,7 +2327,7 @@ describe( 'Renderer', () => {
 		} );
 
 		// #1417
-		describe( 'optimal rendering', () => {
+		describe( 'optimal rendering – reusing existing nodes', () => {
 			it( 'should render inline element replacement (before text)', () => {
 				viewRoot._appendChild( parse( '<container:p><attribute:i>A</attribute:i>1</container:p>' ) );
 
@@ -3109,6 +3151,301 @@ describe( 'Renderer', () => {
 			} );
 		} );
 
+		describe( 'optimal (minimal) rendering – minimal children changes', () => {
+			let observer;
+
+			beforeEach( () => {
+				observer = new MutationObserver( () => {} );
+
+				observer.observe( domRoot, {
+					childList: true,
+					attributes: false,
+					subtree: false
+				} );
+			} );
+
+			afterEach( () => {
+				observer.disconnect();
+			} );
+
+			it( 'should add only one child (at the beginning)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 0, parse( '<container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0'
+				] );
+			} );
+
+			it( 'should add only one child (at the end)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._appendChild( parse( '<container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0'
+				] );
+			} );
+
+			it( 'should add only one child (in the middle)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 1, parse( '<container:p>3</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0'
+				] );
+			} );
+
+			it( 'should not touch elements at all (rendering texts is enough)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 1, parse( '<container:p>3</container:p>' ) );
+				viewRoot._removeChildren( 0, 1 );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
+			} );
+
+			it( 'should add and remove one', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 1, parse( '<container:h1>3</container:h1>' ) );
+				viewRoot._removeChildren( 0, 1 );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0',
+					'added: 0, removed: 1'
+				] );
+			} );
+
+			it( 'should not touch the FSC when rendering children', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				// Set fake selection on the second paragraph.
+				selection._setTo( viewRoot.getChild( 1 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				// Remove the second paragraph.
+				viewRoot._removeChildren( 1, 1 );
+				// And set the fake selection on the first one.
+				selection._setTo( viewRoot.getChild( 0 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 0, removed: 1'
+				] );
+			} );
+
+			it( 'should not incorrectly remove element which is not a FSC when rendering children', () => {
+				// This test's purpose is mostly reaching 100% CC.
+				observer = new MutationObserver( () => {} );
+
+				viewRoot._appendChild( parse( '<container:div><container:p>1</container:p><container:p>2</container:p></container:div>' ) );
+
+				const viewDiv = viewRoot.getChild( 0 );
+
+				// Set fake selection on the second paragraph.
+				selection._setTo( viewDiv.getChild( 1 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewDiv );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				observer.observe( domRoot.childNodes[ 0 ], {
+					childList: true,
+					attributes: false,
+					subtree: false
+				} );
+
+				// Remove the second paragraph.
+				viewDiv._removeChildren( 1, 1 );
+				// And set the fake selection on the first one.
+				selection._setTo( viewDiv.getChild( 0 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewDiv );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 0, removed: 1'
+				] );
+
+				observer.disconnect();
+			} );
+
+			describe( 'using fastDiff() - significant number of nodes in the editor', () => {
+				it( 'should add only one child (at the beginning)', () => {
+					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+					cleanObserver( observer );
+
+					viewRoot._insertChild( 0, parse( '<container:p>x</container:p>' ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+						'added: 1, removed: 0'
+					] );
+				} );
+
+				it( 'should add only one child (at the end)', () => {
+					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+					cleanObserver( observer );
+
+					viewRoot._appendChild( parse( '<container:p>x</container:p>' ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+						'added: 1, removed: 0'
+					] );
+				} );
+
+				it( 'should add only one child (in the middle)', () => {
+					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+					cleanObserver( observer );
+
+					viewRoot._insertChild( 75, parse( '<container:p>x</container:p>' ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+						'added: 1, removed: 0'
+					] );
+				} );
+
+				it( 'should not touch elements at all (rendering texts is enough)', () => {
+					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+					cleanObserver( observer );
+
+					viewRoot._insertChild( 1, parse( '<container:p>x</container:p>' ) );
+					viewRoot._removeChildren( 0, 1 );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
+				} );
+
+				it( 'should add and remove one', () => {
+					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+					cleanObserver( observer );
+
+					viewRoot._insertChild( 1, parse( '<container:h1>x</container:h1>' ) );
+					viewRoot._removeChildren( 0, 1 );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+						'added: 1, removed: 0',
+						'added: 0, removed: 1'
+					] );
+				} );
+
+				it( 'should not touch the FSC when rendering children', () => {
+					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
+
+					// Set fake selection on the second paragraph.
+					selection._setTo( viewRoot.getChild( 1 ), 'on', { fake: true } );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+					cleanObserver( observer );
+
+					// Remove the second paragraph.
+					viewRoot._removeChildren( 1, 1 );
+					// And set the fake selection on the first one.
+					selection._setTo( viewRoot.getChild( 0 ), 'on', { fake: true } );
+
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+						'added: 0, removed: 1'
+					] );
+				} );
+			} );
+
+			function getMutationStats( mutationList ) {
+				return mutationList.map( mutation => {
+					return `added: ${ mutation.addedNodes.length }, removed: ${ mutation.removedNodes.length }`;
+				} );
+			}
+
+			function cleanObserver( observer ) {
+				observer.takeRecords();
+			}
+
+			function makeContainers( howMany ) {
+				const containers = [];
+
+				for ( let i = 1; i <= howMany; i++ ) {
+					containers.push( `<container:p>${ i }</container:p>` );
+				}
+
+				return containers.join( '' );
+			}
+		} );
+
 		// #1560
 		describe( 'attributes manipulation on replaced element', () => {
 			it( 'should rerender element if it was removed after having its attributes removed (attribute)', () => {
@@ -3198,6 +3535,111 @@ describe( 'Renderer', () => {
 				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p>' );
 			} );
 		} );
+
+		// ckeditor/ckeditor5-utils#269
+		// The expected times has a significant margin above the usual execution time (which is around 40-50%
+		// of the expected time) because it depends on the browser and environment in which tests are run.
+		// However, for larger data sets the difference between using `diff()` and `fastDiff()` (see above issue for context)
+		// is more than 10x in execution time so it is clearly visible in these tests when something goes wrong.
+		describe( 'rendering performance', () => {
+			before( function() {
+				// Ignore on Edge browser where performance is quite poor.
+				if ( env.isEdge ) {
+					this.skip();
+				}
+			} );
+
+			it( 'should not take more than 350ms to render around 300 element nodes (same html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 65 ), generateViewData1( 55 ) );
+				expect( renderingTime ).to.be.within( 0, 350 );
+			} );
+
+			it( 'should not take more than 350ms to render around 300 element nodes (different html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 55 ), generateViewData2( 65 ) );
+				expect( renderingTime ).to.be.within( 0, 350 );
+			} );
+
+			it( 'should not take more than 350ms to render around 500 element nodes (same html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 105 ), generateViewData1( 95 ) );
+				expect( renderingTime ).to.be.within( 0, 350 );
+			} );
+
+			it( 'should not take more than 350ms to render around 500 element nodes (different html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 95 ), generateViewData2( 105 ) );
+				expect( renderingTime ).to.be.within( 0, 350 );
+			} );
+
+			it( 'should not take more than 350ms to render around 1000 element nodes (same html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 195 ), generateViewData1( 205 ) );
+				expect( renderingTime ).to.be.within( 0, 350 );
+			} );
+
+			it( 'should not take more than 350ms to render around 1000 element nodes (different html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 205 ), generateViewData2( 195 ) );
+				expect( renderingTime ).to.be.within( 0, 350 );
+			} );
+
+			function measureRenderingTime( viewRoot, initialData, newData ) {
+				// Set initial data.
+				const initialView = parse( initialData );
+				viewRoot._appendChild( initialView );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Set new data.
+				const newView = parse( newData );
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( newView );
+				renderer.markToSync( 'children', viewRoot );
+
+				// Measure render time.
+				const start = Date.now();
+
+				renderer.render();
+
+				return Date.now() - start;
+			}
+
+			function generateViewData1( repeat = 1 ) {
+				const viewData = '' +
+					'<container:h1>' +
+						'CKEditor 5 <attribute:strong>h1</attribute:strong> heading!' +
+					'</container:h1>' +
+					'<container:p>' +
+						'Foo <attribute:strong>Bar</attribute:strong> Baz and some text' +
+					'</container:p>' +
+					'<container:ul>' +
+						'<container:li>Item 1</container:li>' +
+					'</container:ul>' +
+					'<container:ul>' +
+						'<container:li>Item 2</container:li>' +
+					'</container:ul>' +
+					'<container:ul>' +
+						'<container:li>Item 3</container:li>' +
+					'</container:ul>';
+
+				return viewData.repeat( repeat );
+			}
+
+			function generateViewData2( repeat = 1 ) {
+				const viewData = '' +
+					'<container:ol>' +
+						'<container:li>' +
+							'<attribute:strong>Foo</attribute:strong>' +
+						'</container:li>' +
+					'</container:ol>' +
+					'<container:ol>' +
+						'<container:li>Item 1</container:li>' +
+					'</container:ol>' +
+					'<container:h1>Heading 1</container:h1>' +
+					'<container:h2>' +
+						'<attribute:strong>Heading</attribute:strong> 2' +
+					'</container:h2>' +
+					'<container:h3>Heading 4</container:h3>';
+
+				return viewData.repeat( repeat );
+			}
+		} );
 	} );
 
 	describe( '#922', () => {
@@ -3224,7 +3666,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Unwrap italic attribute element.
 			view.change( writer => {
@@ -3234,7 +3676,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
@@ -3250,7 +3692,7 @@ describe( 'Renderer', () => {
 				'</container:p>' );
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Unwrap italic attribute element and change text inside.
 			view.change( writer => {
@@ -3261,7 +3703,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
@@ -3274,7 +3716,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
@@ -3287,7 +3729,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -3300,7 +3742,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
@@ -3313,7 +3755,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -3330,7 +3772,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Remove first element and reinsert it at the end.
 			const container = viewRoot.getChild( 0 );
@@ -3344,7 +3786,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><i></i><span></span><b></b></p>' );

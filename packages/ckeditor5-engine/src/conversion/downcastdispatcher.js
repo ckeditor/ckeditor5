@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -105,13 +105,15 @@ export default class DowncastDispatcher {
 	/**
 	 * Creates a `DowncastDispatcher` instance.
 	 *
-	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events calls.
+	 * @see module:engine/conversion/downcastdispatcher~DowncastConversionApi
+	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
+	 * by `DowncastDispatcher`.
 	 */
 	constructor( conversionApi = {} ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
-		 * @member {Object}
+		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
 		this.conversionApi = extend( { dispatcher: this }, conversionApi );
 	}
@@ -294,7 +296,7 @@ export default class DowncastDispatcher {
 
 			// Do not fire event if the attribute has been consumed.
 			if ( this.conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire( 'attribute:' + data.attributeKey, data, this.conversionApi );
+				this.fire( 'attribute:' + data.attributeKey + ':$text', data, this.conversionApi );
 			}
 		}
 
@@ -321,22 +323,28 @@ export default class DowncastDispatcher {
 		// In markers' case, event name == consumable name.
 		const eventName = 'addMarker:' + markerName;
 
-		// When range is collapsed - fire single event with collapsed range in consumable.
-		if ( markerRange.isCollapsed ) {
-			const consumable = new Consumable();
-			consumable.add( markerRange, eventName );
+		//
+		// First, fire an event for the whole marker.
+		//
+		const consumable = new Consumable();
+		consumable.add( markerRange, eventName );
 
-			this.conversionApi.consumable = consumable;
+		this.conversionApi.consumable = consumable;
 
-			this.fire( eventName, { markerName, markerRange }, this.conversionApi );
+		this.fire( eventName, { markerName, markerRange }, this.conversionApi );
 
+		//
+		// Do not fire events for each item inside the range if the range got consumed.
+		//
+		if ( !consumable.test( markerRange, eventName ) ) {
 			return;
 		}
 
-		// Create consumable for each item in range.
+		//
+		// Then, fire an event for each item inside the marker range.
+		//
 		this.conversionApi.consumable = this._createConsumableForRange( markerRange, eventName );
 
-		// Create separate event for each node in the range.
 		for ( const item of markerRange.getItems() ) {
 			// Do not fire event for already consumed items.
 			if ( !this.conversionApi.consumable.test( item, eventName ) ) {
@@ -481,7 +489,8 @@ export default class DowncastDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/item~Item} data.item Inserted item.
 	 * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -497,7 +506,8 @@ export default class DowncastDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
 	 * @param {Number} data.length Offset size of the removed node.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -523,7 +533,8 @@ export default class DowncastDispatcher {
 	 * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
 	 * @param {*} data.attributeNewValue New attribute value.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -532,7 +543,8 @@ export default class DowncastDispatcher {
 	 * @event selection
 	 * @param {module:engine/model/selection~Selection} selection Selection that is converted.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -567,7 +579,8 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -582,7 +595,8 @@ export default class DowncastDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 }
 
@@ -611,3 +625,36 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
 
 	return !hasCustomHandling;
 }
+
+/**
+ * Conversion interface that is registered for given {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
+ * and is passed as one of parameters when {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher dispatcher}
+ * fires it's events.
+ *
+ * @interface module:engine/conversion/downcastdispatcher~DowncastConversionApi
+ */
+
+/**
+ * The {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} instance.
+ *
+ * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #dispatcher
+ */
+
+/**
+ * Stores information about what parts of processed model item are still waiting to be handled. After a piece of model item
+ * was converted, appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
+ *
+ * @member {module:engine/conversion/modelconsumable~ModelConsumable} #consumable
+ */
+
+/**
+ * The {@link module:engine/conversion/mapper~Mapper} instance.
+ *
+ * @member {module:engine/conversion/mapper~Mapper} #mapper
+ */
+
+/**
+ * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate data during conversion.
+ *
+ * @member {module:engine/view/downcastwriter~DowncastWriter} #writer
+ */

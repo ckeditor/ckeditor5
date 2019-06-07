@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -39,6 +39,14 @@ export default class Schema {
 	constructor() {
 		this._sourceDefinitions = {};
 
+		/**
+		 * A dictionary containing attribute properties.
+		 *
+		 * @private
+		 * @member {Object.<String,String>}
+		 */
+		this._attributeProperties = {};
+
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
 
@@ -64,7 +72,25 @@ export default class Schema {
 	 */
 	register( itemName, definition ) {
 		if ( this._sourceDefinitions[ itemName ] ) {
-			// TODO docs
+			/**
+			 * A single item cannot be registered twice in the schema.
+			 *
+			 * This situation may happen when:
+			 *
+			 * * Two or more plugins called {@link #register `register()`} with the same name. This will usually mean that
+			 * there is a collision between plugins which try to use the same element in the model. Unfortunately,
+			 * the only way to solve this is by modifying one of these plugins to use a unique model element name.
+			 * * A single plugin was loaded twice. This happens when it is installed by npm/yarn in two versions
+			 * and usually means one or more of the following issues:
+			 *     * a version mismatch (two of your dependencies require two different versions of this plugin),
+			 *     * incorrect imports (this plugin is somehow imported twice in a way which confuses webpack),
+			 *     * mess in `node_modules/` (`rm -rf node_modules/` may help).
+			 *
+			 * **Note:** Check the logged `itemName` to better understand which plugin was duplicated/conflicting.
+			 *
+			 * @param itemName The name of the model element that is being registered twice.
+			 * @error schema-cannot-register-item-twice
+			 */
 			throw new CKEditorError( 'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.', {
 				itemName
 			} );
@@ -103,7 +129,15 @@ export default class Schema {
 	 */
 	extend( itemName, definition ) {
 		if ( !this._sourceDefinitions[ itemName ] ) {
-			// TODO docs
+			/**
+			 * Cannot extend an item which was not registered yet.
+			 *
+			 * This error happens when a plugin tries to extend the schema definition of an item which was not
+			 * {@link #register registered} yet.
+			 *
+			 * @param itemName The name of the model element which is being extended.
+			 * @error schema-cannot-register-item-twice
+			 */
 			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', {
 				itemName
 			} );
@@ -204,7 +238,7 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
+	 * an object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
 	 *		schema.isObject( 'image' ); // -> true
@@ -218,6 +252,24 @@ export default class Schema {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isObject );
+	}
+
+	/**
+	 * Returns `true` if the given item is defined to be
+	 * an inline element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
+	 *
+	 *		schema.isInline( 'paragraph' ); // -> false
+	 *		schema.isInline( 'softBreak' ); // -> true
+	 *
+	 *		const text = writer.createText('foo' );
+	 *		schema.isInline( text ); // -> true
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isInline( item ) {
+		const def = this.getDefinition( item );
+
+		return !!( def && def.isInline );
 	}
 
 	/**
@@ -395,7 +447,7 @@ export default class Schema {
 	 * Example:
 	 *
 	 *		// Disallow bold on $text inside heading1.
-	 *		schema.addChildCheck( ( context, attributeName ) => {
+	 *		schema.addAttributeCheck( ( context, attributeName ) => {
 	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
 	 *				return false;
 	 *			}
@@ -429,6 +481,58 @@ export default class Schema {
 				evt.return = retValue;
 			}
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * This method allows assigning additional metadata to the model attributes. For example,
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties#isFormatting` property} is
+	 * used to mark formatting attributes (like `bold` or `italic`).
+	 *
+	 *		// Mark bold as a formatting attribute.
+	 *		schema.setAttributeProperties( 'bold', {
+	 *			isFormatting: true
+	 *		} );
+	 *
+	 *		// Override code not to be considered a formatting markup.
+	 *		schema.setAttributeProperties( 'code', {
+	 *			isFormatting: false
+	 *		} );
+	 *
+	 * Properties are not limited to members defined in the
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties` type} and you can also use custom properties:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			customProperty: 'value'
+	 *		} );
+	 *
+	 * Subsequent calls with the same attribute will extend its custom properties:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			one: 1
+	 *		} );
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			two: 2
+	 *		} );
+	 *
+	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
+	 *		// Logs: { one: 1, two: 2 }
+	 *
+	 * @param {String} attributeName A name of the attribute to receive the properties.
+	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
+	 */
+	setAttributeProperties( attributeName, properties ) {
+		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ), properties );
+	}
+
+	/**
+	 * Returns properties associated with a given model attribute. See {@link #setAttributeProperties `setAttributeProperties()`}.
+	 *
+	 * @param {String} attributeName A name of the attribute.
+	 * @returns {module:engine/model/schema~AttributeProperties}
+	 */
+	getAttributeProperties( attributeName ) {
+		return this._attributeProperties[ attributeName ] || {};
 	}
 
 	/**
@@ -520,49 +624,13 @@ export default class Schema {
 	 *
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
 	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
 	* getValidRanges( ranges, attribute ) {
 		ranges = convertToMinimalFlatRanges( ranges );
 
 		for ( const range of ranges ) {
 			yield* this._getValidRangesForRange( range, attribute );
-		}
-	}
-
-	/**
-	 * Takes a flat range and an attribute name. Traverses the range recursively and deeply to find and return all ranges
-	 * inside the given range on which the attribute can be applied.
-	 *
-	 * This is a helper function for {@link ~Schema#getValidRanges}.
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} range Range to process.
-	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
-	 */
-	* _getValidRangesForRange( range, attribute ) {
-		let start = range.start;
-		let end = range.start;
-
-		for ( const item of range.getItems( { shallow: true } ) ) {
-			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
-			}
-
-			if ( !this.checkAttribute( item, attribute ) ) {
-				if ( !start.isEqual( end ) ) {
-					yield new Range( start, end );
-				}
-
-				start = Position._createAfter( item );
-			}
-
-			end = Position._createAfter( item );
-		}
-
-		if ( !start.isEqual( end ) ) {
-			yield new Range( start, end );
 		}
 	}
 
@@ -624,11 +692,11 @@ export default class Schema {
 	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
 	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
 	 *
-	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
 	 * @params {module:engine/model/position~Position} position Position from searching will start.
+	 * @params {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
-	findAllowedParent( node, position ) {
+	findAllowedParent( position, node ) {
 		let parent = position.parent;
 
 		while ( parent ) {
@@ -736,6 +804,42 @@ export default class Schema {
 			}
 		} else {
 			return false;
+		}
+	}
+
+	/**
+	 * Takes a flat range and an attribute name. Traverses the range recursively and deeply to find and return all ranges
+	 * inside the given range on which the attribute can be applied.
+	 *
+	 * This is a helper function for {@link ~Schema#getValidRanges}.
+	 *
+	 * @private
+	 * @param {module:engine/model/range~Range} range Range to process.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 */
+	* _getValidRangesForRange( range, attribute ) {
+		let start = range.start;
+		let end = range.start;
+
+		for ( const item of range.getItems( { shallow: true } ) ) {
+			if ( item.is( 'element' ) ) {
+				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
+			}
+
+			if ( !this.checkAttribute( item, attribute ) ) {
+				if ( !start.isEqual( end ) ) {
+					yield new Range( start, end );
+				}
+
+				start = Position._createAfter( item );
+			}
+
+			end = Position._createAfter( item );
+		}
+
+		if ( !start.isEqual( end ) ) {
+			yield new Range( start, end );
 		}
 	}
 }
@@ -873,7 +977,7 @@ mix( Schema, ObservableMixin );
  * * `allowAttributesOf` &ndash; A string or an array of strings. Inherits attributes from other items.
  * * `inheritTypesFrom` &ndash; A string or an array of strings. Inherits `is*` properties of other items.
  * * `inheritAllFrom` &ndash; A string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`, `isInline`. Read about them below.
  *
  * # The is* properties
  *
@@ -889,8 +993,9 @@ mix( Schema, ObservableMixin );
  * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
  * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
  * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
- * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
- * returns `true` for object elements automatically.
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+ * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
+ * `$text`, `softBreak` (`<br>`), etc.
  *
  * # Generic items
  *
@@ -905,7 +1010,8 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *		this.schema.register( '$text', {
- *			allowIn: '$block'
+ *			allowIn: '$block',
+ *			isInline: true
  *		} );
  *
  * They reflect typical editor content that is contained within one root, consists of several blocks
@@ -1239,6 +1345,16 @@ export class SchemaContext {
  * @typedef {Object} module:engine/model/schema~SchemaContextItem
  */
 
+/**
+ * A structure containing additional metadata describing the attribute.
+ *
+ * See {@link module:engine/model/schema~Schema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
+ *
+ * @typedef {Object} module:engine/model/schema~AttributeProperties
+ * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting, like `bold`, `italic` or
+ * `fontSize` rather than semantic attribute (such as `src`, `listType`, etc.). For example, it is used by the "Remove format" feature.
+ */
+
 function compileBaseItemRule( sourceItemRules, itemName ) {
 	const itemRule = {
 		name: itemName,
@@ -1459,7 +1575,7 @@ function* combineWalkers( backward, forward ) {
 // all those minimal flat ranges.
 //
 // @param {Array.<module:engine/model/range~Range>} ranges Ranges to process.
-// @returns {Iterator.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
+// @returns {Iterable.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
 function* convertToMinimalFlatRanges( ranges ) {
 	for ( const range of ranges ) {
 		yield* range.getMinimalFlatRanges();

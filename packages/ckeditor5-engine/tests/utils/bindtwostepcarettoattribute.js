@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
@@ -11,7 +11,6 @@ import DomEventData from '../../src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 import Position from '../../src/model/position';
-import { upcastElementToAttribute } from '../../src/conversion/upcast-converters';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '../../src/dev-utils/model';
 
@@ -37,9 +36,9 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			} );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'a', model: 'a' } ) );
-			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'b', model: 'b' } ) );
-			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'c', model: 'c' } ) );
+			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
+			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
+			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'a' );

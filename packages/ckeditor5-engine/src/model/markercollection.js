@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -154,6 +154,28 @@ export default class MarkerCollection {
 	}
 
 	/**
+	 * Fires an {@link module:engine/model/markercollection~MarkerCollection#event:update} event for the given {@link ~Marker marker}
+	 * but does not change the marker. Useful to force {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast
+	 * conversion} for the marker.
+	 *
+	 * @protected
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
+	 * @param {String} markerOrName Marker or name of a marker to refresh.
+	 */
+	_refresh( markerOrName ) {
+		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
+		const marker = this._markers.get( markerName );
+
+		if ( !marker ) {
+			throw new CKEditorError( 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
+		}
+
+		const range = marker.getRange();
+
+		this.fire( 'update:' + markerName, marker, range, range, marker.managedUsingOperations, marker.affectsData );
+	}
+
+	/**
 	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position
@@ -230,7 +252,7 @@ export default class MarkerCollection {
 	 * Fired whenever marker is added, updated or removed from `MarkerCollection`.
 	 *
 	 * @event update
-	 * @param {module:engine/model/markercollection~Marker} Updated Marker.
+	 * @param {module:engine/model/markercollection~Marker} marker Updated Marker.
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the update. When is not defined it
 	 * means that marker is just added.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after update. When is not defined it
@@ -300,14 +322,10 @@ mix( MarkerCollection, EmitterMixin );
  *
  * Markers downcast happens on {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} and
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} events.
- * Use {@link module:engine/conversion/downcast-converters downcast converters} or attach a custom converter to mentioned events.
+ * Use {@link module:engine/conversion/downcasthelpers downcast converters} or attach a custom converter to mentioned events.
  * For {@link module:engine/controller/datacontroller~DataController data pipeline}, marker should be downcasted to an element.
- * Then, it can be upcasted back to a marker. Again, use {@link module:engine/conversion/upcast-converters upcast converters} or
+ * Then, it can be upcasted back to a marker. Again, use {@link module:engine/conversion/upcasthelpers upcast converters} or
  * attach a custom converter to {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element}.
- *
- * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
- * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
- * to the range which it is marking at the moment.
  *
  * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -1053,7 +1053,7 @@ function _convertType( type ) {
 // Checks if a given priority is allowed. Returns null if the priority cannot be converted.
 //
 // @param {String} priorityString
-// returns {Number|Null}
+// returns {Number|null}
 function _convertPriority( priorityString ) {
 	const priority = parseInt( priorityString, 10 );
 
