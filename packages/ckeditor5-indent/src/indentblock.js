@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import IndentBlockCommand from './indentblockcommand';
 
 /**
  * The block indentation feature.
@@ -26,8 +27,9 @@ export default class IndentBlock extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const schema = this.editor.model.schema;
-		const conversion = this.editor.conversion;
+		const editor = this.editor;
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
 
 		// TODO: better features inclusion
 		schema.extend( 'paragraph', { allowAttributes: 'indent' } );
@@ -58,5 +60,17 @@ export default class IndentBlock extends Plugin {
 				};
 			}
 		} );
+
+		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor ) );
+		editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor ) );
+	}
+
+	afterInit() {
+		const editor = this.editor;
+		const indentCommand = editor.commands.get( 'indent' );
+		const outdentCommand = editor.commands.get( 'outdent' );
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' ) );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' ) );
 	}
 }

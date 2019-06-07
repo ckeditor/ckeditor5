@@ -13,19 +13,25 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import IndentBlock from '../../src/indentblock';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import IndentBlockCommand from '../../src/indentblockcommand';
 
-class IndentUI extends Plugin {
+class Indent extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._createButton( 'indent', t( 'Indent' ) );
-		// this._createButton( 'outdent', t( 'Outdent' ) );
-		this._createButton( 'indentList', t( 'Indent List' ) );
-		// this._createButton( 'outdentList', t( 'Outdent List' ) );
-		this._createButton( 'indentBlock', t( 'Indent Block' ) );
-		// this._createButton( 'outdentBlock', t( 'Outdent Block' ) );
+		editor.commands.add( 'indent', new MultiCommand( editor ) );
+		editor.commands.add( 'outdent', new MultiCommand( editor ) );
+
+		this._createButton( 'indent', t( '>' ) );
+		this._createButton( 'outdent', t( '<' ) );
+
+		// TODO: temporary - tests only
+		this._createButton( 'indentList', t( '> List' ) );
+		this._createButton( 'outdentList', t( '< List' ) );
+
+		// TODO: temporary - tests only
+		this._createButton( 'indentBlock', t( '> Block' ) );
+		this._createButton( 'outdentBlock', t( '< Block' ) );
 	}
 
 	_createButton( commandName, label ) {
@@ -49,38 +55,13 @@ class IndentUI extends Plugin {
 			return view;
 		} );
 	}
-
-	afterInit() {
-		const editor = this.editor;
-
-		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor ) );
-
-		const indentCommand = new MultiCommand( editor );
-
-		indentCommand.registerChildCommand( editor.commands.get( 'indentList' ) );
-		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' ) );
-
-		editor.commands.add( 'indent', indentCommand );
-
-		// TODO nicer API?
-		// editor.commands.add( 'indentList', new Command(), 'indent' );
-		// editor.commands.addMulti( 'indentList', new Command(), 'indent' );
-		// editor.commands.addMulti( 'indentList', 'indent' );
-
-		const outdentCommand = new MultiCommand( editor );
-		outdentCommand.registerChildCommand( editor.commands.get( 'outdentList' ) );
-		editor.commands.add( 'outdent', outdentCommand );
-	}
 }
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, IndentUI, IndentBlock ],
+		plugins: [ ArticlePluginSet, Indent, IndentBlock ],
 		toolbar: [
 			'heading',
-			// '|',
-			// 'bold',
-			// 'italic',
-			// 'link',
 			'|',
 			'indent',
 			'outdent',
@@ -94,9 +75,8 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'|',
-			// 'blockQuote',
-			// 'insertTable',
-			// 'mediaEmbed',
+			'blockQuote',
+			'insertTable',
 			'undo',
 			'redo'
 		],
