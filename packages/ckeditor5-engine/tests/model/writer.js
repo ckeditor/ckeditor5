@@ -302,7 +302,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				insert( node, docFrag );
-			} ).to.throw();
+			} ).to.throw( CKEditorError, /^model-writer-insert-forbidden-mode/ );
 		} );
 
 		it( 'should transfer markers from given DocumentFragment', () => {
@@ -716,7 +716,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				append( node, docFrag );
-			} ).to.throw();
+			} ).to.throw( CKEditorError, /^model-writer-insert-forbidden-mode/ );
 		} );
 	} );
 
