@@ -1,0 +1,73 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* globals console, window, document, Worker, setTimeout */
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-link-decorators' ), {
+		cloudServices: CS_CONFIG,
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'undo',
+				'redo'
+			],
+			viewportTopOffset: window.getViewportTopOffsetConfig()
+		},
+		link: {
+			targetDecorator: true,
+			decorators: [
+				{
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		if ( !window.editors ) {
+			window.editors = {};
+		}
+		window.editors.decorators = editor;
+
+		const outputElement = document.querySelector( '#output-link-decorators' );
+		const worker = new Worker( window.umberto.relativeAppPath + '/highlight.worker.js' );
+
+		worker.addEventListener( 'message', evt => {
+			const data = JSON.parse( evt.data );
+
+			outputElement.innerHTML = data.payload;
+		} );
+
+		editor.model.document.on( 'change', () => {
+			worker.postMessage( JSON.stringify( {
+				payload: editor.getData(),
+				language: 'html'
+			} ) );
+		} );
+
+		setTimeout( () => {
+			worker.postMessage( JSON.stringify( {
+				payload: editor.getData(),
+				language: 'html'
+			} ) );
+		}, 500 );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
