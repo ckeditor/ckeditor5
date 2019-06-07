@@ -43,38 +43,61 @@ export default class IndentBlock extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
+		const config = editor.config.get( 'indentBlock' );
 
 		// TODO: better features inclusion
 		schema.extend( 'paragraph', { allowAttributes: 'indent' } );
 		schema.extend( 'heading1', { allowAttributes: 'indent' } );
 
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				styles: {
-					'margin-left': /[\s\S]+/
-				}
-			},
-			model: {
-				key: 'indent',
-				value: viewElement => {
-					return viewElement.getStyle( 'margin-left' );
-				}
-			}
-		} );
+		const classes = config.classes;
 
-		conversion.for( 'downcast' ).attributeToAttribute( {
-			model: 'indent',
-			view: modelAttributeValue => {
-				return {
-					key: 'style',
-					value: {
-						'margin-left': modelAttributeValue
-					}
+		const usingClasses = !!classes.length;
+
+		if ( usingClasses ) {
+			const definition = {
+				model: {
+					key: 'indent',
+					values: []
+				},
+				view: {}
+			};
+
+			for ( const className of classes ) {
+				definition.model.values.push( className );
+				definition.view[ className ] = {
+					key: 'class',
+					value: [ className ]
 				};
 			}
-		} );
 
-		const config = editor.config.get( 'indentBlock' );
+			editor.conversion.attributeToAttribute( definition );
+		} else {
+			conversion.for( 'upcast' ).attributeToAttribute( {
+				view: {
+					styles: {
+						'margin-left': /[\s\S]+/
+					}
+				},
+				model: {
+					key: 'indent',
+					value: viewElement => {
+						return viewElement.getStyle( 'margin-left' );
+					}
+				}
+			} );
+
+			conversion.for( 'downcast' ).attributeToAttribute( {
+				model: 'indent',
+				view: modelAttributeValue => {
+					return {
+						key: 'style',
+						value: {
+							'margin-left': modelAttributeValue
+						}
+					};
+				}
+			} );
+		}
 
 		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'forward' }, config ) ) );
 		editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'backward' }, config ) ) );

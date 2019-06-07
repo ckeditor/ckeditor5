@@ -103,7 +103,7 @@ export default class IndentBlockCommand extends Command {
 			if ( this.direction > 0 ) {
 				return currentIndex < this.classes.length - 1;
 			} else {
-				return currentIndex > 0 && currentIndex < this.classes.length;
+				return currentIndex >= 0 && currentIndex < this.classes.length;
 			}
 		} else {
 			const currentOffset = parseFloat( currentIndent || 0 );
