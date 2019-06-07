@@ -1,12 +1,8 @@
 sudo: required
 dist: trusty
 addons:
+  chrome: stable
   firefox: latest
-  apt:
-    sources:
-    - google-chrome
-    packages:
-    - google-chrome-stable
 language: node_js
 node_js:
 - '8'
@@ -16,6 +12,7 @@ branches:
   except:
   - stable
 before_install:
+- export START_TIME=$( date +%s )
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
@@ -26,7 +23,9 @@ script:
 - ckeditor5-dev-tests-travis
 after_success:
 - ckeditor5-dev-tests-save-revision
+after_script:
+- export END_TIME=$( date +%s )
+- ckeditor5-dev-tests-notify-travis-status
 env:
   global:
-  - secure: RtA5YtWkbIlqhVhLsTd5i912ERdHTEOcMPG7I4Kw2wXy2SOjXN/jGM3+VMpvLpv1LxKJOws37tQvSjnFfN/HW3I4paaxDukitX4m3H017YiY2VxjhU7buHX6MBY8wAe/qtRZJbiZ44N5ww0HKyF3t9JrwS6UGaoxDreshRwt4DRBs+YA0V/z/fZoFY5zXpudjUiqgA2bXpDgYcURn2muEEJ5pD07bT+SdMldKFfOi/j6r8Uc1ibmcBxDTZ+42KKwT3NPd28ERVYInMlcepb1OB0N5MzDHE9gAqkCooE9WlZPL4AcXrxajhYpMMLamkTiOHsiBuUmGyBgrn76y4ypiW5gf1dVhz9h7YSBJAw5tGUmPHoG7/yigSTt7rabvFHpko7m372VENOky1kIrrLzaxJNspD0ujRw5ZZVqbxDZflPAE1jUNv/PZlKFze4zHaL8RFns0rv0tq3zNaiUki4TvRtgqxWrkrfPFyEp9WUMFcintB+B9z8kwCbWA/6Jwuby1QOtD7QmmSkEqnroJeahS71n1Z4+xJUk/b6EdOd18ew7PJ3VJMD3pkQddDJ6ly+SIl2SAyIAWOk4YPd+IzCcOm3vIxeHasLnnp/Gs1vTNSfQbgReOcNYm0IMM174HcqtGYf9prGRI3Bjp6B2pGGUipMO+D2V2pSzpSL+SbgBDQ=
-  - secure: v5nmXdqD8YvOUFlNRUzeDy73nDDmlSM0SW5jhS/zgWDa2SqLH9SbIGR1LQHKmzhs96GrVFQrPb/GibDKmIYo5FVsXXqzs0YvfDXkMO/ejZIs4k8Td/kLqbRCevK+xovJf3XZ44NwcreCF3jY9XRyasZRi65DK27tri53Ynahv+WGDl4w/3soTGR8xBHDmbE8uwVOL21ybIsFoQNCL4XcfROSVhjbGQQyspLuivkGipFuFa1aPlqnDdCmPBb1SBV7x+GPuDdry2uDdNulW74qXFvN8V5PJGsoJ5LtKeilNIEgTtD796tkpdwhQuBwqFU61G/LyNltGXWQhrntCjErdsHYsOezrVb1X3RUOoOma2Afp/y76WNiEuB06abyhXO5h98Un3dNa7rFiUxK1pcMAsyQnkKbvaJ/Y8TqsPyYEYRSA0gO6ayJeHWRsS6H3IfDlF1H29GIppAIQLC5UwERxFK3iVfEVwX1PX4d/75+QpyL1IPxq1jlVeqivFEom5QCWfYVpM27mmUsv37VcTG3oOOjdJdccuLTkPwp2VSbGpBhzOsiHpn+ffTzIJdGOxd9Adb9PbDETNVPdxF3FLZWd41Zfcmp+M62VNOljry9KT4nX4Hi8Jhv6KskWxYITMpNv1ZMLPJcPXyrbFUmE2bbry4hBJ9nn0ha4DSmjOPT40A=
+    secure: NEc7V0b4XaZfCzk8pne6dLV9wsM036yb9C+rkrXORQJuBHP7k93b5jcXzLvqE1LbZwyoWVroAmOKBR+0+ZoqcfcTU49dL6W3kmdbJr6ltxHHqcJ+9ES7bdxOMxuu7Uy+EQrdKOOfxh6MPOPQC6+d3bAwiMYuzM1yUtif7oYuFMsR7aRqQreWVnpiJPy4+EDOGmEw+WHgr9vms3RsK4dyECbnLYaCBsK0IAzYh94wKz7/NCBYANExojKuvKNBQvonjz/tMW/2y/9MS5+N8il9H/skzkgbB2jkwaC9Ved2m41TCVaPWg1DBLvN/T/bcD3br4a6r71V9QiDxS12qcc/gtlpKKByAiYMu8clhrBgda9PGGxuAAVeJwcAzcw6SMfoAaymSuhZQDfKiHdFBu4cxCjRFL7SkN5ReBRZfRaYfxuN66Lftd3rukwiz3xFX1XlXpqDPQQlgKm0KbLQZro1M3qaRgUc01kp+JLyDElLs/3sgWjJfof2+V5+kNSSoni5W9VOVg7+5ukPxVaGpY40B5nL0T5WcE5U4xrOaoyQsBwuyJSpxdSQ2N2NP7mJ5NyX6zaLAc2MGsIbNftygOWwJIVZ4rCVMp3NP3bc9BDlMHenWINzVpfh3x2Sy1TI8yDgfjYGjMxwGkkXzz8NzvOHFJ35Y4q9T/d0yLXoZS+XupM=
