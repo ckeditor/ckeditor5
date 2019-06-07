@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event, document */
+/* globals Event */
 
 import LinkFormView from '../../src/ui/linkformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -15,9 +15,6 @@ import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ManualDecorator from '../../src/utils/manualdecorator';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Link from '../../src/link';
 
 describe( 'LinkFormView', () => {
 	let view;
@@ -261,56 +258,6 @@ describe( 'LinkFormView', () => {
 
 			expect( modelItem.value ).to.be.false;
 			expect( viewItem.isOn ).to.be.false;
-		} );
-	} );
-
-	describe( 'localization of custom attributes', () => {
-		before( () => {
-			addTranslations( 'pl', {
-				'Open in new window': 'Otwórz w nowym oknie'
-			} );
-		} );
-		after( () => {
-			clearTranslations();
-		} );
-
-		let editor, editorElement, linkFormView;
-
-		beforeEach( () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Link ],
-					toolbar: [ 'link' ],
-					language: 'pl',
-					link: {
-						decorators: [
-							{
-								mode: 'manual',
-								label: 'Open in new window',
-								attributes: {
-									target: '_blank'
-								}
-							}
-						]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).customAttributes );
-				} );
-		} );
-
-		afterEach( () => {
-			editorElement.remove();
-
-			return editor.destroy();
-		} );
-
-		it( 'translates labels of manual decorators UI', () => {
-			expect( linkFormView.customAttributesView.first.label ).to.equal( 'Otwórz w nowym oknie' );
 		} );
 	} );
 } );
