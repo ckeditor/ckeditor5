@@ -195,7 +195,35 @@
  *
  * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
+ * TODO: What's the difference between #language and #contentLanguage? Also link to #contentLanguage.
+ *
  * @member {String} module:core/editor/editorconfig~EditorConfig#language
+ */
+
+/**
+ * The editor content language.
+ *
+ * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ *
+ * TODO: What is this setting and what's the difference between #language and #contentLanguage?  Also link to #language.
+ *
+ * Simple usage:
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				language: 'de',
+ *				contentLanguage: 'ar'
+ *			} )
+ *			.then( editor => {
+ *				console.log( editor );
+ *			} )
+ *			.catch( error => {
+ *				console.error( error );
+ *			} );
+ *
+ * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#contentLanguage
  */
 
 /**
