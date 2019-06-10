@@ -307,16 +307,49 @@ describe( 'Writer', () => {
 
 		it( 'should transfer markers from given DocumentFragment', () => {
 			const root = doc.createRoot();
-
 			const docFrag = createDocumentFragment();
 
 			appendText( 'abcd', root );
+
 			appendElement( 'p', docFrag );
 			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
 			const marker = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) );
 
 			docFrag.markers.set( 'marker', marker );
+
+			insert( docFrag, new Position( root, [ 2 ] ) );
+
+			expect( Array.from( model.markers ).length ).to.equal( 1 );
+
+			const modelMarker = model.markers.get( 'marker' );
+			const range = modelMarker.getRange();
+			expect( range.root ).to.equal( root );
+			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
+			expect( modelMarker.managedUsingOperations ).to.be.true;
+			expect( modelMarker.affectsData ).to.be.true;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
+		it( 'should update a marker if DocumentFragment has a marker that is already in the model (markers have the same name)', () => {
+			const root = doc.createRoot();
+			const docFrag = createDocumentFragment();
+
+			// <root><p></p><p>[ab]cd</p></root>.
+			appendText( 'abcd', root );
+
+			// <docFrag><p>f[oo b]ar</p></docFrag>.
+			appendElement( 'p', docFrag );
+			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+
+			model.change( writer => {
+				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+
+				writer.addMarker( 'marker', { range, usingOperation: true } );
+			} );
+
+			docFrag.markers.set( 'marker', new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) ) );
 
 			insert( docFrag, new Position( root, [ 2 ] ) );
 
