@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import IndentBlockCommand from '../src/indentblockcommand';
 
@@ -68,7 +68,19 @@ describe( 'IndentBlockCommand', () => {
 				} );
 			} );
 
-			describe( 'execute()', () => {} );
+			describe( 'execute()', () => {
+				it( 'should set first indent class for non-indented block', () => {
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="indent-1">f[]oo</paragraph>' );
+				} );
+
+				it( 'should set next indent class for indented block', () => {
+					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="indent-3">f[]oo</paragraph>' );
+				} );
+			} );
 		} );
 
 		describe( 'using offset', () => {
@@ -98,7 +110,7 @@ describe( 'IndentBlockCommand', () => {
 
 				it( 'should be true in indented block with different unit', () => {
 					setData( model, '<paragraph indent="2em">f[]oo</paragraph>' );
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 			} );
 
@@ -142,7 +154,13 @@ describe( 'IndentBlockCommand', () => {
 				} );
 			} );
 
-			describe( 'execute()', () => {} );
+			describe( 'execute()', () => {
+				it( 'should set previous indent class for indented block', () => {
+					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="indent-1">f[]oo</paragraph>' );
+				} );
+			} );
 		} );
 
 		describe( 'using offset', () => {
@@ -162,7 +180,7 @@ describe( 'IndentBlockCommand', () => {
 
 				it( 'should be false in non-indented block', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).to.be.false;
 				} );
 
 				it( 'should be true in indented block', () => {
@@ -172,7 +190,7 @@ describe( 'IndentBlockCommand', () => {
 
 				it( 'should be true in indented block with different unit', () => {
 					setData( model, '<paragraph indent="2em">f[]oo</paragraph>' );
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 			} );
 
