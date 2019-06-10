@@ -85,6 +85,21 @@ describe( 'IndentBlockCommand', () => {
 					setData( model, '<block>f[]oo</block>' );
 					expect( command.isEnabled ).to.be.false;
 				} );
+
+				it( 'should be true in non-indented block', () => {
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block', () => {
+					setData( model, '<paragraph indent="50px">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block with different unit', () => {
+					setData( model, '<paragraph indent="2em">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
 			} );
 
 			describe( 'execute()', () => {} );
@@ -142,6 +157,21 @@ describe( 'IndentBlockCommand', () => {
 			describe( 'isEnabled', () => {
 				it( 'should be false in block that does not support indent', () => {
 					setData( model, '<block>f[]oo</block>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be false in non-indented block', () => {
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block', () => {
+					setData( model, '<paragraph indent="50px">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block with different unit', () => {
+					setData( model, '<paragraph indent="2em">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.false;
 				} );
 			} );
