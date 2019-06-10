@@ -24,6 +24,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
  * that every block in editor is separate with a new line character, which is included into calculation.
  *
  * Few examples how word and character calculation are made:
+ *
  * 		<paragraph>foo</paragraph>
  * 		<paragraph>bar</paragraph>
  * 		// Words: 2, Characters: 7
