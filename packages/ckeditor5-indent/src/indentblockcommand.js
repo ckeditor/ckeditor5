@@ -28,7 +28,7 @@ export default class IndentBlockCommand extends Command {
 		this.offset = offset;
 		this.unit = unit;
 		this.direction = direction == 'forward' ? 1 : -1;
-		this.useClasses = !!classes.length;
+		this.useClasses = !!( classes && classes.length );
 	}
 
 	/**

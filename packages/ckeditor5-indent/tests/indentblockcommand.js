@@ -9,7 +9,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import IndentBlockCommand from '../src/indentblockcommand';
 
 describe( 'IndentBlockCommand', () => {
-	let editor, command, model, doc, selection;
+	let editor, command, model;
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -17,10 +17,12 @@ describe( 'IndentBlockCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				doc = model.document;
-				selection = doc.selection;
 
-				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowAttributes: [ 'indent' ] } );
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowAttributes: [ 'indent' ]
+				} );
+				model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
@@ -34,35 +36,58 @@ describe( 'IndentBlockCommand', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
 				command = new IndentBlockCommand( editor, {
-					indentBlock: {
-						classes: [
-							'indent-1',
-							'indent-2',
-							'indent-3',
-							'indent-4'
-						]
-					}
+					classes: [
+						'indent-1',
+						'indent-2',
+						'indent-3',
+						'indent-4'
+					],
+					direction: 'forward'
 				} );
 			} );
 
-			describe( 'isEnabled' );
+			describe( 'isEnabled', () => {
+				it( 'should be false in block that does not support indent', () => {
+					setData( model, '<block>f[]oo</block>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
 
-			describe( 'execute()' );
+				it( 'should be true in non-indented block', () => {
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block and there are still indentation classes', () => {
+					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block in last indentation class', () => {
+					setData( model, '<paragraph indent="indent-4">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
+			} );
+
+			describe( 'execute()', () => {} );
 		} );
 
 		describe( 'using offset', () => {
 			beforeEach( () => {
 				command = new IndentBlockCommand( editor, {
-					indentBlock: {
-						offset: 50,
-						unit: 'px'
-					}
+					offset: 50,
+					unit: 'px',
+					direction: 'forward'
 				} );
 			} );
 
-			describe( 'isEnabled' );
+			describe( 'isEnabled', () => {
+				it( 'should be false in block that does not support indent', () => {
+					setData( model, '<block>f[]oo</block>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
+			} );
 
-			describe( 'execute()' );
+			describe( 'execute()', () => {} );
 		} );
 	} );
 
@@ -70,56 +95,58 @@ describe( 'IndentBlockCommand', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
 				command = new IndentBlockCommand( editor, {
-					indentBlock: {
-						classes: [
-							'indent-1',
-							'indent-2',
-							'indent-3',
-							'indent-4'
-						]
-					}
+					classes: [
+						'indent-1',
+						'indent-2',
+						'indent-3',
+						'indent-4'
+					],
+					direction: 'backward'
 				} );
 			} );
 
-			describe( 'isEnabled' );
+			describe( 'isEnabled', () => {
+				it( 'should be false in block that does not support indent', () => {
+					setData( model, '<block>f[]oo</block>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
 
-			describe( 'execute()' );
+				it( 'should be false in non-indented block', () => {
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be true in indented block and there are still indentation classes', () => {
+					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true in indented block in last indentation class', () => {
+					setData( model, '<paragraph indent="indent-4">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+			} );
+
+			describe( 'execute()', () => {} );
 		} );
 
 		describe( 'using offset', () => {
 			beforeEach( () => {
 				command = new IndentBlockCommand( editor, {
-					indentBlock: {
-						offset: 50,
-						unit: 'px'
-					}
+					offset: 50,
+					unit: 'px',
+					direction: 'backward'
 				} );
 			} );
 
-			describe( 'isEnabled' );
-
-			describe( 'execute()' );
-		} );
-	} );
-
-	describe( 'isEnabled', () => {
-		it( 'should return true if characters with the attribute can be placed at caret position', () => {
-			setData( model, '<paragraph>f[]oo</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
-		} );
-	} );
-
-	describe( 'execute()', () => {
-		it( 'inserts mention object if mention was passed as string', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
-
-			command.execute( {
-				marker: '@',
-				mention: '@John',
-				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
+			describe( 'isEnabled', () => {
+				it( 'should be false in block that does not support indent', () => {
+					setData( model, '<block>f[]oo</block>' );
+					expect( command.isEnabled ).to.be.false;
+				} );
 			} );
 
-			// assertIndentBlock( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
+			describe( 'execute()', () => {} );
 		} );
 	} );
 } );
