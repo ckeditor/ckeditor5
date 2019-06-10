@@ -23,7 +23,7 @@ describe( 'BalloonEditor build', () => {
 		editorElement.remove();
 	} );
 
-	describe( 'buid', () => {
+	describe( 'build', () => {
 		it( 'contains plugins', () => {
 			expect( BalloonEditor.builtinPlugins ).to.not.be.empty;
 		} );
