@@ -75,6 +75,12 @@ export default class IndentBlockCommand extends Command {
 
 	_getIndentOffset( currentIndent ) {
 		const currentOffset = parseFloat( currentIndent || 0 );
+		const isSameUnit = !currentIndent || currentIndent.endsWith( this.unit );
+
+		if ( !isSameUnit ) {
+			return this.direction > 0 ? this.offset + this.unit : undefined;
+		}
+
 		const offsetToSet = currentOffset + this.direction * this.offset;
 
 		return offsetToSet && offsetToSet > 0 ? offsetToSet + this.unit : undefined;

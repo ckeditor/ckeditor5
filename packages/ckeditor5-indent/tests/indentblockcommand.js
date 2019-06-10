@@ -114,7 +114,31 @@ describe( 'IndentBlockCommand', () => {
 				} );
 			} );
 
-			describe( 'execute()', () => {} );
+			describe( 'execute()', () => {
+				it( 'should set first offset for non-indented block', () => {
+					setData( model, '<paragraph>f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="50px">f[]oo</paragraph>' );
+				} );
+
+				it( 'should calculate next offset for indented block', () => {
+					setData( model, '<paragraph indent="100px">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="150px">f[]oo</paragraph>' );
+				} );
+
+				it( 'should calculate next offset for indented block even if current indent is not tied to offset', () => {
+					setData( model, '<paragraph indent="27px">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="77px">f[]oo</paragraph>' );
+				} );
+
+				it( 'should set first offset if current indent has different unit', () => {
+					setData( model, '<paragraph indent="3mm">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="50px">f[]oo</paragraph>' );
+				} );
+			} );
 		} );
 	} );
 
@@ -194,7 +218,31 @@ describe( 'IndentBlockCommand', () => {
 				} );
 			} );
 
-			describe( 'execute()', () => {} );
+			describe( 'execute()', () => {
+				it( 'should set remove offset if indent is on first offset', () => {
+					setData( model, '<paragraph indent="50px">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+				} );
+
+				it( 'should calculate next offset for indented block', () => {
+					setData( model, '<paragraph indent="100px">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="50px">f[]oo</paragraph>' );
+				} );
+
+				it( 'should calculate next offset for indented block even if current indent is not tied to offset', () => {
+					setData( model, '<paragraph indent="92px">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph indent="42px">f[]oo</paragraph>' );
+				} );
+
+				it( 'should remove offset if current indent has different unit', () => {
+					setData( model, '<paragraph indent="3mm">f[]oo</paragraph>' );
+					command.execute();
+					expect( getData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+				} );
+			} );
 		} );
 	} );
 } );
