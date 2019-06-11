@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Indent from '@ckeditor/ckeditor5-core/src/indent';
 
 import IndentBlockCommand from './indentblockcommand';
+import UsingOffset from './usingoffset';
+import UsingClasses from './usingclasses';
 
 /**
  * The block indentation feature.
@@ -71,14 +73,18 @@ export default class IndentBlock extends Plugin {
 
 		const useOffsetConfig = !configuration.classes || !configuration.classes.length;
 
+		const indentConfig = Object.assign( { direction: 'forward' }, configuration );
+		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
+
 		if ( useOffsetConfig ) {
 			this._setupConversionUsingOffset( conversion );
+			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new UsingOffset( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new UsingOffset( indentConfig ) ) );
 		} else {
 			this._setupConversionUsingClasses( configuration.classes, editor );
+			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new UsingClasses( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new UsingClasses( outdentConfig ) ) );
 		}
-
-		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'forward' }, configuration ) ) );
-		editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'backward' }, configuration ) ) );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {

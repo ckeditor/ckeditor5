@@ -7,6 +7,8 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import IndentBlockCommand from '../src/indentblockcommand';
+import UsingClasses from '../src/usingclasses';
+import UsingOffset from '../src/usingoffset';
 
 describe( 'IndentBlockCommand', () => {
 	let editor, command, model;
@@ -35,7 +37,7 @@ describe( 'IndentBlockCommand', () => {
 	describe( 'indent', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, {
+				command = new IndentBlockCommand( editor, new UsingClasses( {
 					classes: [
 						'indent-1',
 						'indent-2',
@@ -43,7 +45,7 @@ describe( 'IndentBlockCommand', () => {
 						'indent-4'
 					],
 					direction: 'forward'
-				} );
+				} ) );
 			} );
 
 			describe( 'isEnabled', () => {
@@ -85,11 +87,11 @@ describe( 'IndentBlockCommand', () => {
 
 		describe( 'using offset', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, {
+				command = new IndentBlockCommand( editor, new UsingOffset( {
 					offset: 50,
 					unit: 'px',
 					direction: 'forward'
-				} );
+				} ) );
 			} );
 
 			describe( 'isEnabled', () => {
@@ -145,7 +147,7 @@ describe( 'IndentBlockCommand', () => {
 	describe( 'outdent', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, {
+				command = new IndentBlockCommand( editor, new UsingClasses( {
 					classes: [
 						'indent-1',
 						'indent-2',
@@ -153,7 +155,7 @@ describe( 'IndentBlockCommand', () => {
 						'indent-4'
 					],
 					direction: 'backward'
-				} );
+				} ) );
 			} );
 
 			describe( 'isEnabled', () => {
@@ -189,11 +191,11 @@ describe( 'IndentBlockCommand', () => {
 
 		describe( 'using offset', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, {
+				command = new IndentBlockCommand( editor, new UsingOffset( {
 					offset: 50,
 					unit: 'px',
 					direction: 'backward'
-				} );
+				} ) );
 			} );
 
 			describe( 'isEnabled', () => {

@@ -20,22 +20,33 @@ export default class IndentBlockCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Object} config.
 	 */
-	constructor( editor, { classes, offset, unit, direction } ) {
+	constructor( editor, strategy ) {
 		super( editor );
-		this.classes = classes;
-		this.offset = offset;
-		this.unit = unit;
-		this.direction = direction == 'forward' ? 1 : -1;
-		this.useClasses = !!( classes && classes.length );
+
+		this.strategy = strategy;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = this._checkEnabled();
+		// Check whether any of position's ancestor is a list item.
+		const editor = this.editor;
+		const model = editor.model;
+
+		const block = first( model.document.selection.getSelectedBlocks() );
+
+		// If selection is not in a list item, the command is disabled.
+		if ( !block || !model.schema.checkAttribute( block, 'indent' ) ) {
+			this.isEnabled = false;
+
+			return;
+		}
+
+		const currentIndent = block.getAttribute( 'indent' );
+
+		this.isEnabled = this.strategy.checkEnabled( currentIndent );
 	}
 
 	execute() {
@@ -47,14 +58,8 @@ export default class IndentBlockCommand extends Command {
 		model.change( writer => {
 			for ( const item of itemsToChange ) {
 				const currentIndent = item.getAttribute( 'indent' );
-				let newIndent;
 
-				// TODO: split potential:
-				if ( this.useClasses ) {
-					newIndent = this._getIndentClasses( currentIndent );
-				} else {
-					newIndent = this._getIndentOffset( currentIndent );
-				}
+				const newIndent = this.strategy.getNewIndent( currentIndent );
 
 				if ( newIndent ) {
 					writer.setAttribute( 'indent', newIndent, item );
@@ -63,73 +68,5 @@ export default class IndentBlockCommand extends Command {
 				}
 			}
 		} );
-	}
-
-	_getIndentOffset( currentIndent ) {
-		const currentOffset = parseFloat( currentIndent || 0 );
-		const isSameUnit = !currentIndent || currentIndent.endsWith( this.unit );
-
-		if ( !isSameUnit ) {
-			return this.direction > 0 ? this.offset + this.unit : undefined;
-		}
-
-		const offsetToSet = currentOffset + this.direction * this.offset;
-
-		return offsetToSet && offsetToSet > 0 ? offsetToSet + this.unit : undefined;
-	}
-
-	_getIndentClasses( currentIndent ) {
-		const currentIndex = this.classes.indexOf( currentIndent );
-
-		return this.classes[ currentIndex + this.direction ];
-	}
-
-	/**
-	 * Checks whether the command can be enabled in the current context.
-	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
-	 */
-	_checkEnabled() {
-		// Check whether any of position's ancestor is a list item.
-		const editor = this.editor;
-		const model = editor.model;
-
-		const block = first( model.document.selection.getSelectedBlocks() );
-
-		// If selection is not in a list item, the command is disabled.
-		if ( !block || !model.schema.checkAttribute( block, 'indent' ) ) {
-			return false;
-		}
-
-		const currentIndent = block.getAttribute( 'indent' );
-
-		// TODO: split potential.
-		if ( this.useClasses ) {
-			return this._checkEnabledClasses( currentIndent );
-		} else {
-			return this._checkEnabledOffset( currentIndent );
-		}
-	}
-
-	_checkEnabledOffset( currentIndent ) {
-		const currentOffset = parseFloat( currentIndent || 0 );
-
-		// is forward
-		if ( this.direction > 0 ) {
-			return true;
-		} else {
-			return currentOffset > 0;
-		}
-	}
-
-	_checkEnabledClasses( currentIndent ) {
-		const currentIndex = this.classes.indexOf( currentIndent );
-
-		if ( this.direction > 0 ) {
-			return currentIndex < this.classes.length - 1;
-		} else {
-			return currentIndex >= 0 && currentIndex < this.classes.length;
-		}
 	}
 }
