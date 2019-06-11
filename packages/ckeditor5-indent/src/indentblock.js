@@ -104,6 +104,20 @@ export default class IndentBlock extends Plugin {
 
 		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'forward' }, config ) ) );
 		editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'backward' }, config ) ) );
+
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
+				const command = this.editor.commands.get( commandName );
+
+				if ( command.isEnabled ) {
+					this.editor.execute( commandName );
+					cancel();
+				}
+			};
+		};
+
+		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentBlock' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentBlock' ) );
 	}
 
 	afterInit() {
