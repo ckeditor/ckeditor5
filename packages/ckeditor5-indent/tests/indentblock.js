@@ -3,33 +3,33 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import MultiCommand from '@ckeditor/ckeditor5-core/src/multicommand';
+
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Indent from '@ckeditor/ckeditor5-core/src/indent';
 
 import IndentBlock from '../src/indentblock';
 import IndentBlockCommand from '../src/indentblockcommand';
 
-class Indent extends Plugin {
-	init() {
-		const editor = this.editor;
-
-		editor.commands.add( 'indent', new MultiCommand( editor ) );
-		editor.commands.add( 'outdent', new MultiCommand( editor ) );
-	}
-}
-
 describe( 'IndentBlock', () => {
-	let editor, model, doc;
+	let editor, element, model, doc;
 
 	testUtils.createSinonSandbox();
 
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+	} );
+
 	afterEach( () => {
+		element.remove();
+
 		if ( editor ) {
 			return editor.destroy();
 		}
@@ -257,8 +257,8 @@ describe( 'IndentBlock', () => {
 	} );
 
 	function createTestEditor( extraConfig = {} ) {
-		return VirtualTestEditor
-			.create( Object.assign( {
+		return ClassicTestEditor
+			.create( element, Object.assign( {
 				plugins: [ Paragraph, HeadingEditing, Indent, IndentBlock ]
 			}, extraConfig ) );
 	}
