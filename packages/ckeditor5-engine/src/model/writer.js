@@ -216,7 +216,13 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.addMarker( markerName, { range, usingOperation: true, affectsData: true } );
+				const options = { range, usingOperation: true, affectsData: true };
+
+				if ( this.model.markers.has( markerName ) ) {
+					this.updateMarker( markerName, options );
+				} else {
+					this.addMarker( markerName, options );
+				}
 			}
 		}
 	}

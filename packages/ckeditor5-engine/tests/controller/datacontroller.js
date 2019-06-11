@@ -336,6 +336,24 @@ describe( 'DataController', () => {
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
+		it( 'should not throw when setting the data with markers that already exist in the editor', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+
+			data.set( 'foo' );
+
+			downcastHelpers.markerToElement( { model: 'marker', view: 'marker' } );
+			upcastHelpers.elementToMarker( { view: 'marker', model: 'marker' } );
+
+			model.change( writer => {
+				writer.addMarker( 'marker', { range: writer.createRangeIn( modelDocument.getRoot() ), usingOperation: true } );
+			} );
+
+			expect( () => {
+				data.set( data.get() );
+			} ).not.to.throw();
+		} );
 	} );
 
 	describe( 'get()', () => {
