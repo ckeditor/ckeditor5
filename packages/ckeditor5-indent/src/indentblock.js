@@ -46,8 +46,11 @@ export default class IndentBlock extends Plugin {
 		const config = editor.config.get( 'indentBlock' );
 
 		// TODO: better features inclusion
+		// CKE4: context: { div: 1, dl: 1, h1: 1, h2: 1, h3: 1, h4: 1, h5: 1, h6: 1, ul: 1, ol: 1, p: 1, pre: 1, table: 1 },
 		schema.extend( 'paragraph', { allowAttributes: 'indent' } );
 		schema.extend( 'heading1', { allowAttributes: 'indent' } );
+		schema.extend( 'heading2', { allowAttributes: 'indent' } );
+		schema.extend( 'heading3', { allowAttributes: 'indent' } );
 
 		const classes = config.classes;
 

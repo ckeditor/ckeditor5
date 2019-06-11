@@ -50,8 +50,10 @@ describe( 'IndentBlock', () => {
 			.then( newEditor => {
 				model = newEditor.model;
 
-				expect( model.schema.checkAttribute( [ 'heading1' ], 'indent' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ 'paragraph' ], 'indent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'heading1' ], 'indent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'heading2' ], 'indent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'heading3' ], 'indent' ) ).to.be.true;
 			} );
 	} );
 
@@ -62,6 +64,16 @@ describe( 'IndentBlock', () => {
 
 				expect( command ).to.be.instanceof( IndentBlockCommand );
 			} );
+	} );
+
+	describe( 'config', () => {
+		describe( 'default value', () => {
+			it( 'should be set', () => {
+				return createTestEditor().then( editor => {
+					expect( editor.config.get( 'indentBlock' ) ).to.deep.equal( { offset: 1, unit: 'em', classes: [] } );
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'conversion', () => {
@@ -75,7 +87,7 @@ describe( 'IndentBlock', () => {
 					} );
 			} );
 
-			it( 'should convert margin-left to indent attribute', () => {
+			it( 'should convert margin-left to indent attribute (known offset)', () => {
 				editor.setData( '<p style="margin-left:50px">foo</p>' );
 
 				const paragraph = doc.getRoot().getChild( 0 );
@@ -86,6 +98,32 @@ describe( 'IndentBlock', () => {
 				expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<p style="margin-left:50px">foo</p>' );
+			} );
+
+			it( 'should convert margin-left to indent attribute (any offset)', () => {
+				editor.setData( '<p style="margin-left:42em">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+
+				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p style="margin-left:42em">foo</p>' );
+			} );
+
+			it( 'should not convert class to indent attribute', () => {
+				editor.setData( '<p class="indent-1">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.false;
+
+				const expectedView = '<p>foo</p>';
+
+				expect( editor.getData() ).to.equal( expectedView );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
 		} );
 
@@ -111,6 +149,32 @@ describe( 'IndentBlock', () => {
 				expect( paragraph.getAttribute( 'indent' ) ).to.equal( 'indent-1' );
 
 				const expectedView = '<p class="indent-1">foo</p>';
+
+				expect( editor.getData() ).to.equal( expectedView );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			} );
+
+			it( 'should not convert unknown class to indent attribute', () => {
+				editor.setData( '<p class="indent-7">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.false;
+
+				const expectedView = '<p>foo</p>';
+
+				expect( editor.getData() ).to.equal( expectedView );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			} );
+
+			it( 'should not convert margin-left to indent attribute (known offset)', () => {
+				editor.setData( '<p style="margin-left:50px">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.false;
+
+				const expectedView = '<p>foo</p>';
 
 				expect( editor.getData() ).to.equal( expectedView );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );

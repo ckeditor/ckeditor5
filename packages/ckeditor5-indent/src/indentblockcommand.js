@@ -51,9 +51,6 @@ export default class IndentBlockCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of itemsToChange ) {
-				// eslint-disable-next-line no-undef
-				console.log( 'indent block', item );
-
 				const currentIndent = item.getAttribute( 'indent' );
 				let newIndent;
 
