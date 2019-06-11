@@ -22,7 +22,7 @@
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#bd6f27b",
     "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled#5d0c0d7",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#6e70f06",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#f70cf35",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#4ff0656",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#52c27a9",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials#9bdb86a",
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font#c748eb4",
