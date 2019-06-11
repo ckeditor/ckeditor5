@@ -27,6 +27,10 @@ ClassicEditor
 		} );
 
 		document.getElementById( 'words' ).appendChild( wordCount );
+
+		document.getElementById( 'destroy-editor' ).addEventListener( 'click', () => {
+			editor.destroy();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
