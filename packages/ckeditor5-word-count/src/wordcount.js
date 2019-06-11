@@ -17,7 +17,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
  * The word count plugin.
  *
  * This plugin calculate all words and characters in all {@link module:engine/model/text~Text text nodes} available in the model.
- * It also provides an HTML element, which updates it states whenever editor's content is changed.
+ * It also provides an HTML element, which updates its states whenever editor's content is changed.
  *
  * Firstly model's data are convert to plain text using {@link module:wordcount/utils.modelElementToPlainText}.
  * Based on such created plain text there are determined amount of words and characters in your text. Please keep in mind
@@ -203,4 +203,64 @@ export default class WordCount extends Plugin {
  * @param {Object} data
  * @param {Number} data.words number of words in current model
  * @param {Number} data.characters number of characters in current model
+ */
+
+/**
+ * The configuration of the word count feature.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				wordCount: ... // Word count feature configuration.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface module:wordcount/wordcount~WordCountConfig
+ */
+
+/**
+ * The configuration of the word count feature.
+ * It is introduced by the {@link module:wordcount/wordcount~WordCount} feature.
+ *
+ * Read more in {@link module:wordcount/wordcount~WordCountConfig}.
+ *
+ * @member {module:wordcount/wordcount~WordCountConfig} module:core/editor/editorconfig~EditorConfig#wordCount
+ */
+
+/**
+ * This options allows on hiding word counter. The element obtained through
+ * {@link module:wordcount/wordcount~WordCount#getWordCountContainer} will only preserve
+ * characters part. Word counter is displayed by default, when configuration option is not defined.
+ *
+ *		const wordCountConfig = {
+ *			displayWords = false
+ *		}
+ *
+ * Mentioned configuration will result with followed container:
+ *
+ *		<div class="ck ck-word-count">
+ *			<div>Characters: 28</div>
+ *		</div>
+ *
+ * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayWords
+ */
+
+/**
+ * This options allows on hiding character counter. The element obtained through
+ * {@link module:wordcount/wordcount~WordCount#getWordCountContainer} will only preserve
+ * words part. Character counter is displayed by default, when configuration option is not defined.
+ *
+ *		const wordCountConfig = {
+ *			displayCharacters = false
+ *		}
+ *
+ * Mentioned configuration will result with followed container:
+ *
+ *		<div class="ck ck-word-count">
+ *			<div>Words: 4</div>
+ *		</div>
+ *
+ * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayCharacters
  */
