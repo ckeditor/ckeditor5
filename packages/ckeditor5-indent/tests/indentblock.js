@@ -71,7 +71,7 @@ describe( 'IndentBlock', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
 				return createTestEditor().then( editor => {
-					expect( editor.config.get( 'indentBlock' ) ).to.deep.equal( { offset: 1, unit: 'em', classes: [] } );
+					expect( editor.config.get( 'indentBlock' ) ).to.deep.equal( { offset: 1, unit: 'em' } );
 				} );
 			} );
 		} );
@@ -183,7 +183,7 @@ describe( 'IndentBlock', () => {
 		} );
 	} );
 
-	describe.only( 'tab key handling callback', () => {
+	describe( 'tab key handling callback', () => {
 		let domEvtDataStub;
 
 		beforeEach( () => {
