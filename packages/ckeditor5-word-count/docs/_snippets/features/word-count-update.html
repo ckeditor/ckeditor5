@@ -1,0 +1,36 @@
+
+<style>
+	.customized-counter__color-box {
+		--hue: 180;
+		width: 20px;
+		height: 20px;
+		background-color: hsl( var( --hue ), 100%, 50% );
+		display: inline-block;
+	}
+
+	.customized-counter {
+		margin-bottom: 15px;
+	}
+
+	.customized-counter > div {
+		display: inline-block;
+		width: 50%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+</style>
+
+<div id="demo-editor-update">
+		<p>A <strong>black hole</strong> is a region of <a href="https://en.wikipedia.org/wiki/Spacetime">spacetime</a> exhibiting <a href="https://en.wikipedia.org/wiki/Gravitation">gravitational</a> acceleration so strong that nothing—no <a href="https://en.wikipedia.org/wiki/Particle">particles</a> or even <a href="https://en.wikipedia.org/wiki/Electromagnetic_radiation">electromagnetic radiation</a> such as <a href="https://en.wikipedia.org/wiki/Light">light</a>—can escape from it.<a href="https://en.wikipedia.org/wiki/Black_hole#cite_note-6">[6]</a> The theory of <a href="https://en.wikipedia.org/wiki/General_relativity">general relativity</a> predicts that a sufficiently compact <a href="https://en.wikipedia.org/wiki/Mass">mass</a> can deform <a href="https://en.wikipedia.org/wiki/Spacetime">spacetime</a> to form a black hole.</p>
+</div>
+<div class="customized-counter">
+	<div class="customized-counter__words">
+		<label>Words:
+			<progress value="48" max='100'></progress>
+		</label>
+	</div>
+	<div class="customized-counter__characters">
+		Characters:
+		<div class="customized-counter__color-box"></div>
+	</div>
+</div>
