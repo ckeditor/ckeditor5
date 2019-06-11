@@ -10,7 +10,7 @@
 /* globals window */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import FileRepository from './filerepository';
 
 /**
  * @extends module:core/plugin~Plugin
