@@ -127,7 +127,7 @@ export default class WordCount extends Plugin {
 			const children = [];
 
 			if ( displayWords || displayWords === undefined ) {
-				const wordsLabel = t( 'Words' );
+				const wordsLabel = t( 'Words' ) + ':';
 
 				children.push( {
 					tag: 'div',
@@ -135,7 +135,6 @@ export default class WordCount extends Plugin {
 						{
 							text: [
 								wordsLabel,
-								': ',
 								bind.to( 'words' )
 							]
 						}
@@ -144,7 +143,7 @@ export default class WordCount extends Plugin {
 			}
 
 			if ( displayCharacters || displayCharacters === undefined ) {
-				const charactersLabel = t( 'Characters' );
+				const charactersLabel = t( 'Characters' ) + ':';
 
 				children.push( {
 					tag: 'div',
@@ -152,7 +151,6 @@ export default class WordCount extends Plugin {
 						{
 							text: [
 								charactersLabel,
-								': ',
 								bind.to( 'characters' )
 							]
 						}
