@@ -137,3 +137,76 @@ export default class IndentBlock extends Plugin {
 		editor.conversion.attributeToAttribute( definition );
 	}
 }
+
+/**
+ * The configuration of the {@link module:indent-block/indentblock~IndentBlock block indentation feature}.
+ *
+ * Read more in {@link module:indent-block/indentblock~IndentBlockConfig}.
+ *
+ * @member {module:indent-block/indentblock~IndentBlockConfig} module:core/editor/editorconfig~EditorConfig#indentBlock
+ */
+
+/**
+ * The configuration of the block indentation feature.
+ *
+ * If no {@link module:indent-block/indentblock~IndentBlockConfig#classes} are set the block indentation feature will use
+ * {@link module:indent-block/indentblock~IndentBlockConfig#offset} and {@link module:indent-block/indentblock~IndentBlockConfig#unit} to
+ * create indentation steps.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				indentBlock: {
+ *					offset: 2,
+ *					unit: 'em'
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * Alternatively the block indentation feature may set one of defined {@link module:indent-block/indentblock~IndentBlockConfig#classes} as
+ * indentation steps:
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				indentBlock: {
+ *					classes: [
+ *						'indent-a', // First step - smallest indentation.
+ *						'indent-b',
+ *						'indent-c',
+ *						'indent-d',
+ *						'indent-e' // Last step - biggest indentation.
+ *					]
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * In the above example only 5 indentation steps will be available.
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface IndentBlockConfig
+ */
+
+/**
+ * The size in indentation {@link module:indent-block/indentblock~IndentBlockConfig#unit units} of each indentation step.
+ *
+ * @default 1
+ * @member {Number} module:indent-block/indentblock~IndentBlockConfig#offset
+ */
+
+/**
+ * The unit used for indentation {@link module:indent-block/indentblock~IndentBlockConfig#offset}.
+ *
+ * @default 'em'
+ * @member {String} module:indent-block/indentblock~IndentBlockConfig#unit
+ */
+
+/**
+ * An optional list of classes to use for indenting the contents. If not set or set to empty array, no classes will be used and instead
+ * the {@link module:indent-block/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
+ * {@link module:indent-block/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used.
+ *
+ * @default undefined
+ * @member {Array.<String>|undefined} module:indent-block/indentblock~IndentBlockConfig#classes
+ */

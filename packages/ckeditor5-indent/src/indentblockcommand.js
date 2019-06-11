@@ -38,11 +38,6 @@ export default class IndentBlockCommand extends Command {
 		this.isEnabled = this._checkEnabled();
 	}
 
-	/**
-	 * Indents or outdents (depends on the {@link #constructor}'s `indentDirection` parameter) selected list items.
-	 *
-	 * @fires execute
-	 */
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
