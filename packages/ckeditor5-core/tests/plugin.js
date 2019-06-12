@@ -6,7 +6,7 @@
 import Plugin from '../src/plugin';
 import Editor from '../src/editor/editor';
 
-describe( 'plugin', () => {
+describe( 'Plugin', () => {
 	let editor;
 
 	beforeEach( () => {
