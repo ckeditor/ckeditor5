@@ -45,3 +45,9 @@
 .ck-editor__editable:not(.ck-read-only) .ck-media__wrapper > *:not(.ck-media__placeholder) {
 	pointer-events: none;
 }
+
+/* Disable all mouse interaction when the widget is not selected (e.g. to avoid opening links by accident).
+   https://github.com/ckeditor/ckeditor5-media-embed/issues/18 */
+.ck-editor__editable:not(.ck-read-only) .ck-widget:not(.ck-widget_selected) .ck-media__placeholder {
+	pointer-events: none;
+}

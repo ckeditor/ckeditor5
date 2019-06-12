@@ -19,7 +19,3 @@
 	from being "squashed" in tight spaces, e.g. in table cells (#44) */
 	min-width: 15em;
 }
-
-.ck-editor__editable:not( .ck-read-only ) .ck-widget:not( .ck-widget_selected ) .ck-media__placeholder {
-	pointer-events: none;
-}
