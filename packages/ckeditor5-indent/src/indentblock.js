@@ -79,7 +79,7 @@ export default class IndentBlock extends Plugin {
 		if ( useOffsetConfig ) {
 			this._setupConversionUsingOffset( conversion );
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
-			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( outdentConfig ) ) );
 		} else {
 			this._setupConversionUsingClasses( configuration.classes );
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
