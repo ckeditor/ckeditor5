@@ -31,7 +31,7 @@ export default class LinkCommand extends Command {
 
 		/**
 		 * Keeps collection of {@link module:link/utils~ManualDecorator}
-		 * recognized from {@link module:link/link~LinkConfig#decorators}.
+		 * corresponding to {@link module:link/link~LinkConfig#decorators}.
 		 * You can consider it as a model of states for custom attributes added to links.
 		 *
 		 * @readonly
@@ -79,13 +79,14 @@ export default class LinkCommand extends Command {
 		// Stores information about custom attributes to turn on/off.
 		const truthyCustomAttributes = [];
 		const falsyCustomAttributes = [];
-		Object.entries( customAttrs ).forEach( entriesPair => {
-			if ( entriesPair[ 1 ] ) {
-				truthyCustomAttributes.push( entriesPair[ 0 ] );
+
+		for ( const name in customAttrs ) {
+			if ( customAttrs[ name ] ) {
+				truthyCustomAttributes.push( name );
 			} else {
-				falsyCustomAttributes.push( entriesPair[ 0 ] );
+				falsyCustomAttributes.push( name );
 			}
-		} );
+		}
 
 		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.

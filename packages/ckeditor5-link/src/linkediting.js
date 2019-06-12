@@ -18,8 +18,9 @@ import findLinkRange from './findlinkrange';
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
-const AUTO = 'automatic';
-const MANUAL = 'manual';
+const DECORATOR_AUTOMATIC = 'automatic';
+const DECORATOR_MANUAL = 'manual';
+const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
 
 /**
  * The link engine feature.
@@ -78,8 +79,8 @@ export default class LinkEditing extends Plugin {
 
 		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
 
-		this.enableAutomaticDecorators( linkDecorators.filter( item => item.mode === AUTO ) );
-		this.enableManualDecorators( linkDecorators.filter( item => item.mode === MANUAL ) );
+		this.enableAutomaticDecorators( linkDecorators.filter( item => item.mode === DECORATOR_AUTOMATIC ) );
+		this.enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
 
 		// Enable two-step caret movement for `linkHref` attribute.
 		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
@@ -106,9 +107,8 @@ export default class LinkEditing extends Plugin {
 		// Adds default decorator for external links.
 		if ( editor.config.get( 'link.targetDecorator' ) ) {
 			automaticDecorators.add( {
-				mode: AUTO,
+				mode: DECORATOR_AUTOMATIC,
 				callback: url => {
-					const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
 					return EXTERNAL_LINKS_REGEXP.test( url );
 				},
 				attributes: {
