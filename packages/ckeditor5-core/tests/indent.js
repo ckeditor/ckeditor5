@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Indent from '../src/indent';
 import MultiCommand from '../src/multicommand';
 
-describe.only( 'indent', () => {
+describe( 'indent', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
