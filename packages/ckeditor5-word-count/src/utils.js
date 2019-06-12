@@ -8,10 +8,10 @@
  */
 
 /**
- * Function walks through all model's nodes. It obtains a plain text from each {@link module:engine/model/text~Text}
+ * Function walks through all the model's nodes. It obtains a plain text from each {@link module:engine/model/text~Text}
  * and {@link module:engine/model/textproxy~TextProxy}. All sections, which are not a text, are separated with a new line (`\n`).
  *
- * **Note:** Function walks through entire model. There should be considered throttling it during usage.
+ * **Note:** Function walks through the entire model. There should be considered throttling during usage.
  *
  * @param {module:engine/model/node~Node} node
  * @returns {String} Plain text representing model's data
