@@ -17,6 +17,11 @@ import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
 /**
  * The block indentation feature.
  *
+ * It registers the `'indentBlock'` and `'outdentBlock'` commands.
+ *
+ * If the plugin {@link module:core/indent~Indent} is defined it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
+ * `'indent'` and `'outdent'` commands.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class IndentBlock extends Plugin {
