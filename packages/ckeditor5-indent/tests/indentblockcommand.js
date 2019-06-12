@@ -7,8 +7,8 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import IndentBlockCommand from '../src/indentblockcommand';
-import UsingClasses from '../src/usingclasses';
-import UsingOffset from '../src/usingoffset';
+import IndentUsingClasses from '../src/indentcommandbehavior/indentusingclasses';
+import IndentUsingOffset from '../src/indentcommandbehavior/indentusingoffset';
 
 describe( 'IndentBlockCommand', () => {
 	let editor, command, model;
@@ -37,7 +37,7 @@ describe( 'IndentBlockCommand', () => {
 	describe( 'indent', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, new UsingClasses( {
+				command = new IndentBlockCommand( editor, new IndentUsingClasses( {
 					classes: [
 						'indent-1',
 						'indent-2',
@@ -64,7 +64,7 @@ describe( 'IndentBlockCommand', () => {
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be true in indented block in last indentation class', () => {
+				it( 'should be false in indented block in last indentation class', () => {
 					setData( model, '<paragraph indent="indent-4">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.false;
 				} );
@@ -87,7 +87,7 @@ describe( 'IndentBlockCommand', () => {
 
 		describe( 'using offset', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, new UsingOffset( {
+				command = new IndentBlockCommand( editor, new IndentUsingOffset( {
 					offset: 50,
 					unit: 'px',
 					direction: 'forward'
@@ -147,7 +147,7 @@ describe( 'IndentBlockCommand', () => {
 	describe( 'outdent', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, new UsingClasses( {
+				command = new IndentBlockCommand( editor, new IndentUsingClasses( {
 					classes: [
 						'indent-1',
 						'indent-2',
@@ -191,7 +191,7 @@ describe( 'IndentBlockCommand', () => {
 
 		describe( 'using offset', () => {
 			beforeEach( () => {
-				command = new IndentBlockCommand( editor, new UsingOffset( {
+				command = new IndentBlockCommand( editor, new IndentUsingOffset( {
 					offset: 50,
 					unit: 'px',
 					direction: 'backward'

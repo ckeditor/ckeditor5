@@ -11,8 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Indent from '@ckeditor/ckeditor5-core/src/indent';
 
 import IndentBlockCommand from './indentblockcommand';
-import UsingOffset from './usingoffset';
-import UsingClasses from './usingclasses';
+import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
+import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
 
 /**
  * The block indentation feature.
@@ -78,12 +78,12 @@ export default class IndentBlock extends Plugin {
 
 		if ( useOffsetConfig ) {
 			this._setupConversionUsingOffset( conversion );
-			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new UsingOffset( indentConfig ) ) );
-			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new UsingOffset( indentConfig ) ) );
+			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
 		} else {
 			this._setupConversionUsingClasses( configuration.classes, editor );
-			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new UsingClasses( indentConfig ) ) );
-			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new UsingClasses( outdentConfig ) ) );
+			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
 		}
 
 		const getCommandExecuter = commandName => {

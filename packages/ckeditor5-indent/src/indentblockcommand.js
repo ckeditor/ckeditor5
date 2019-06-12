@@ -11,7 +11,18 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
- * The block indentation feature.
+ * The indent block command.
+ *
+ * The command is registered by the {@link module:indent-block/indentblock~IndentBlock} as `'indentBlock'` - for indenting blocks and
+ * `'outdentBlock'` - for outdenting blocks.
+ *
+ * To increase block indentation at current selection execute the command:
+ *
+ *		editor.execute( 'indentBlock' );
+ *
+ * To decrease block indentation at current selection execute the command:
+ *
+ *		editor.execute( 'outdentBlock' );
  *
  * @extends module:core/plugin~Plugin
  */
@@ -20,11 +31,18 @@ export default class IndentBlockCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @param {module:indent-block/indentblockcommand~IndentBehavior} indentBehavior
 	 */
-	constructor( editor, strategy ) {
+	constructor( editor, indentBehavior ) {
 		super( editor );
 
-		this.strategy = strategy;
+		/**
+		 * Command's indentation behavior.
+		 *
+		 * @type {module:indent-block/indentblockcommand~IndentBehavior}
+		 * @private
+		 */
+		this._indentBehavior = indentBehavior;
 	}
 
 	/**
@@ -44,11 +62,12 @@ export default class IndentBlockCommand extends Command {
 			return;
 		}
 
-		const currentIndent = block.getAttribute( 'indent' );
-
-		this.isEnabled = this.strategy.checkEnabled( currentIndent );
+		this.isEnabled = this._indentBehavior.checkEnabled( block.getAttribute( 'indent' ) );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
@@ -59,7 +78,7 @@ export default class IndentBlockCommand extends Command {
 			for ( const item of itemsToChange ) {
 				const currentIndent = item.getAttribute( 'indent' );
 
-				const newIndent = this.strategy.getNewIndent( currentIndent );
+				const newIndent = this._indentBehavior.getNewIndent( currentIndent );
 
 				if ( newIndent ) {
 					writer.setAttribute( 'indent', newIndent, item );
@@ -70,3 +89,25 @@ export default class IndentBlockCommand extends Command {
 		} );
 	}
 }
+
+/**
+ * Provides indentation behavior to {@link module:indent-block/indentblockcommand~IndentBlockCommand}.
+ *
+ * @interface module:indent-block/indentblockcommand~IndentBehavior
+ */
+
+/**
+ * Performs check if command should be enabled.
+ *
+ * @method #checkEnabled
+ * @param {String} indentAttributeValue Current indent attribute value.
+ * @returns {Boolean}
+ */
+
+/**
+ * Returns new indent attribute value based on current indent.
+ *
+ * @method #getNewIndent
+ * @param {String} indentAttributeValue Current indent attribute value.
+ * @returns {String|undefined}
+ */
