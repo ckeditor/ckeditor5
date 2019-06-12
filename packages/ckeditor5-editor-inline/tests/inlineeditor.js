@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document */
 
 import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
@@ -66,37 +66,6 @@ describe( 'InlineEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
-		} );
-
-		it( 'handles form element', () => {
-			const form = document.createElement( 'form' );
-			const textarea = document.createElement( 'textarea' );
-			form.appendChild( textarea );
-			document.body.appendChild( form );
-
-			// Prevents page realods in Firefox ;|
-			form.addEventListener( 'submit', evt => {
-				evt.preventDefault();
-			} );
-
-			return InlineEditor.create( textarea, {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( textarea.value ).to.equal( '' );
-
-				editor.setData( '<p>Foo</p>' );
-
-				form.dispatchEvent( new Event( 'submit', {
-					// We need to be able to do preventDefault() to prevent page reloads in Firefox.
-					cancelable: true
-				} ) );
-
-				expect( textarea.value ).to.equal( '<p>Foo</p>' );
-
-				return editor.destroy().then( () => {
-					form.remove();
-				} );
-			} );
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
@@ -185,9 +154,19 @@ describe( 'InlineEditor', () => {
 			InlineEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
-			} ).catch( () => {
-				done();
-			} );
+			} )
+				.then(
+					() => {
+						expect.fail( 'Inline editor should throw an error when both initial data are passed' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							// eslint-disable-next-line max-len
+							.match( /^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 
 		// #25
@@ -215,6 +194,21 @@ describe( 'InlineEditor', () => {
 
 					return newEditor.destroy();
 				} );
+		} );
+
+		it( 'throws an error when is initialized in textarea', done => {
+			InlineEditor.create( document.createElement( 'textarea' ) )
+				.then(
+					() => {
+						expect.fail( 'Inline editor should throw an error when is initialized in textarea.' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							.match( /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 	} );
 
