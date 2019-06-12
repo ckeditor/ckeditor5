@@ -12,34 +12,34 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
-"Language: ne_NP\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Russian (https://www.transifex.com/ckeditor/teams/11143/ru/)\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "मिडिया विजेट"
+msgstr "медиа-виджет"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
-msgstr "मिडिया यूआरएल"
+msgstr "URL медиа"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr "इनपुटमा मिडिया यूआरएल पेस्ट गर्नुहोस्।"
+msgstr "Вставьте URL медиа в поле ввода."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
-msgstr "सुझाव:छिटो इम्बेड गर्न यूआरएल सामग्रीमा पेस्ट गर्नुहोस्।"
+msgstr "Подсказка: Вставьте URL в контент для быстрого включения."
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "यूआरएल खाली हुनु हुँदैन।"
+msgstr "URL не должен быть пустым."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "यो मिडिया यूआरएल समर्थित छैन।"
+msgstr "Этот URL медиа не поддерживается."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
-msgstr "मिडिया सम्मिलित गर्नुहोस्।"
+msgstr "Вставить медиа"
