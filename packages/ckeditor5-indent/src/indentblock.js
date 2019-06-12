@@ -81,7 +81,7 @@ export default class IndentBlock extends Plugin {
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
 		} else {
-			this._setupConversionUsingClasses( configuration.classes, editor );
+			this._setupConversionUsingClasses( configuration.classes );
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
 		}
@@ -113,7 +113,14 @@ export default class IndentBlock extends Plugin {
 		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' ) );
 	}
 
-	_setupConversionUsingOffset( conversion ) {
+	/**
+	 * Setups conversion for using offset indents.
+	 *
+	 * @private
+	 */
+	_setupConversionUsingOffset() {
+		const conversion = this.editor.conversion;
+
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				styles: {
@@ -141,7 +148,13 @@ export default class IndentBlock extends Plugin {
 		} );
 	}
 
-	_setupConversionUsingClasses( classes, editor ) {
+	/**
+	 * Setups conversion for using classes.
+	 *
+	 * @param {Array.<String>} classes
+	 * @private
+	 */
+	_setupConversionUsingClasses( classes ) {
 		const definition = {
 			model: {
 				key: 'indent',
@@ -158,7 +171,7 @@ export default class IndentBlock extends Plugin {
 			};
 		}
 
-		editor.conversion.attributeToAttribute( definition );
+		this.editor.conversion.attributeToAttribute( definition );
 	}
 }
 
