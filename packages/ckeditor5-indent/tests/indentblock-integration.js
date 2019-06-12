@@ -47,8 +47,8 @@ describe( 'IndentBlock - integration', () => {
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-			expect( paragraph.getAttribute( 'indent' ) ).to.equal( '50px' );
+			expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+			expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
 
 			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -73,8 +73,8 @@ describe( 'IndentBlock - integration', () => {
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-			expect( paragraph.getAttribute( 'indent' ) ).to.equal( '50px' );
+			expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+			expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
 
 			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )

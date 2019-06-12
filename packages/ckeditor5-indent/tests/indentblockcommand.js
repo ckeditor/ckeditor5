@@ -22,7 +22,7 @@ describe( 'IndentBlockCommand', () => {
 
 				model.schema.register( 'paragraph', {
 					inheritAllFrom: '$block',
-					allowAttributes: [ 'indent' ]
+					allowAttributes: [ 'blockIndent' ]
 				} );
 				model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			} );
@@ -60,12 +60,12 @@ describe( 'IndentBlockCommand', () => {
 				} );
 
 				it( 'should be true in indented block and there are still indentation classes', () => {
-					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="indent-2">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be false in indented block in last indentation class', () => {
-					setData( model, '<paragraph indent="indent-4">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="indent-4">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.false;
 				} );
 			} );
@@ -74,13 +74,13 @@ describe( 'IndentBlockCommand', () => {
 				it( 'should set first indent class for non-indented block', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="indent-1">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="indent-1">f[]oo</paragraph>' );
 				} );
 
 				it( 'should set next indent class for indented block', () => {
-					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="indent-2">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="indent-3">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="indent-3">f[]oo</paragraph>' );
 				} );
 			} );
 		} );
@@ -106,12 +106,12 @@ describe( 'IndentBlockCommand', () => {
 				} );
 
 				it( 'should be true in indented block', () => {
-					setData( model, '<paragraph indent="50px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be true in indented block with different unit', () => {
-					setData( model, '<paragraph indent="2em">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="2em">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 			} );
@@ -120,25 +120,25 @@ describe( 'IndentBlockCommand', () => {
 				it( 'should set first offset for non-indented block', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="50px">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 				} );
 
 				it( 'should calculate next offset for indented block', () => {
-					setData( model, '<paragraph indent="100px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="100px">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="150px">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="150px">f[]oo</paragraph>' );
 				} );
 
 				it( 'should calculate next offset for indented block even if current indent is not tied to offset', () => {
-					setData( model, '<paragraph indent="27px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="27px">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="77px">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="77px">f[]oo</paragraph>' );
 				} );
 
 				it( 'should set first offset if current indent has different unit', () => {
-					setData( model, '<paragraph indent="3mm">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="3mm">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="50px">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 				} );
 			} );
 		} );
@@ -170,21 +170,21 @@ describe( 'IndentBlockCommand', () => {
 				} );
 
 				it( 'should be true in indented block and there are still indentation classes', () => {
-					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="indent-2">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be true in indented block in last indentation class', () => {
-					setData( model, '<paragraph indent="indent-4">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="indent-4">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 			} );
 
 			describe( 'execute()', () => {
 				it( 'should set previous indent class for indented block', () => {
-					setData( model, '<paragraph indent="indent-2">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="indent-2">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="indent-1">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="indent-1">f[]oo</paragraph>' );
 				} );
 			} );
 		} );
@@ -210,37 +210,37 @@ describe( 'IndentBlockCommand', () => {
 				} );
 
 				it( 'should be true in indented block', () => {
-					setData( model, '<paragraph indent="50px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be true in indented block with different unit', () => {
-					setData( model, '<paragraph indent="2em">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="2em">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
 			} );
 
 			describe( 'execute()', () => {
 				it( 'should set remove offset if indent is on first offset', () => {
-					setData( model, '<paragraph indent="50px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 					command.execute();
 					expect( getData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 				} );
 
 				it( 'should calculate next offset for indented block', () => {
-					setData( model, '<paragraph indent="100px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="100px">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="50px">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 				} );
 
 				it( 'should calculate next offset for indented block even if current indent is not tied to offset', () => {
-					setData( model, '<paragraph indent="92px">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="92px">f[]oo</paragraph>' );
 					command.execute();
-					expect( getData( model ) ).to.equal( '<paragraph indent="42px">f[]oo</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph blockIndent="42px">f[]oo</paragraph>' );
 				} );
 
 				it( 'should remove offset if current indent has different unit', () => {
-					setData( model, '<paragraph indent="3mm">f[]oo</paragraph>' );
+					setData( model, '<paragraph blockIndent="3mm">f[]oo</paragraph>' );
 					command.execute();
 					expect( getData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 				} );

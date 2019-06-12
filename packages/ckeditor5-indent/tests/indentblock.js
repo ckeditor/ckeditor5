@@ -51,10 +51,10 @@ describe( 'IndentBlock', () => {
 			.then( newEditor => {
 				model = newEditor.model;
 
-				expect( model.schema.checkAttribute( [ 'paragraph' ], 'indent' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ 'heading1' ], 'indent' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ 'heading2' ], 'indent' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ 'heading3' ], 'indent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'paragraph' ], 'blockIndent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'heading1' ], 'blockIndent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'heading2' ], 'blockIndent' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ 'heading3' ], 'blockIndent' ) ).to.be.true;
 			} );
 	} );
 
@@ -93,8 +93,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '50px' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
 
 				expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -106,8 +106,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '42em' );
 
 				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -119,8 +119,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '42em' );
 
 				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -132,8 +132,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '42em' );
 
 				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -145,8 +145,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '42em' );
 
 				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -158,8 +158,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '42em' );
 
 				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -171,7 +171,7 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.false;
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.false;
 
 				const expectedView = '<p>foo</p>';
 
@@ -198,8 +198,8 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
-				expect( paragraph.getAttribute( 'indent' ) ).to.equal( 'indent-1' );
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( 'indent-1' );
 
 				const expectedView = '<p class="indent-1">foo</p>';
 
@@ -212,7 +212,7 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.false;
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.false;
 
 				const expectedView = '<p>foo</p>';
 
@@ -225,7 +225,7 @@ describe( 'IndentBlock', () => {
 
 				const paragraph = doc.getRoot().getChild( 0 );
 
-				expect( paragraph.hasAttribute( 'indent' ) ).to.be.false;
+				expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.false;
 
 				const expectedView = '<p>foo</p>';
 

@@ -56,13 +56,13 @@ export default class IndentBlockCommand extends Command {
 		const block = first( model.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !block || !model.schema.checkAttribute( block, 'indent' ) ) {
+		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) ) {
 			this.isEnabled = false;
 
 			return;
 		}
 
-		this.isEnabled = this._indentBehavior.checkEnabled( block.getAttribute( 'indent' ) );
+		this.isEnabled = this._indentBehavior.checkEnabled( block.getAttribute( 'blockIndent' ) );
 	}
 
 	/**
@@ -76,14 +76,14 @@ export default class IndentBlockCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of itemsToChange ) {
-				const currentIndent = item.getAttribute( 'indent' );
+				const currentIndent = item.getAttribute( 'blockIndent' );
 
 				const newIndent = this._indentBehavior.getNewIndent( currentIndent );
 
 				if ( newIndent ) {
-					writer.setAttribute( 'indent', newIndent, item );
+					writer.setAttribute( 'blockIndent', newIndent, item );
 				} else {
-					writer.removeAttribute( 'indent', item );
+					writer.removeAttribute( 'blockIndent', item );
 				}
 			}
 		} );

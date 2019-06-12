@@ -67,7 +67,7 @@ export default class IndentBlock extends Plugin {
 
 		knownElements.forEach( elementName => {
 			if ( schema.isRegistered( elementName ) ) {
-				schema.extend( elementName, { allowAttributes: 'indent' } );
+				schema.extend( elementName, { allowAttributes: 'blockIndent' } );
 			}
 		} );
 
@@ -128,7 +128,7 @@ export default class IndentBlock extends Plugin {
 				}
 			},
 			model: {
-				key: 'indent',
+				key: 'blockIndent',
 				value: viewElement => viewElement.getStyle( 'margin-left' )
 			}
 		} );
@@ -141,13 +141,13 @@ export default class IndentBlock extends Plugin {
 				}
 			},
 			model: {
-				key: 'indent',
+				key: 'blockIndent',
 				value: viewElement => normalizeToMarginLeftStyle( viewElement.getStyle( 'margin' ) )
 			}
 		} );
 
 		conversion.for( 'downcast' ).attributeToAttribute( {
-			model: 'indent',
+			model: 'blockIndent',
 			view: modelAttributeValue => {
 				return {
 					key: 'style',
@@ -168,7 +168,7 @@ export default class IndentBlock extends Plugin {
 	_setupConversionUsingClasses( classes ) {
 		const definition = {
 			model: {
-				key: 'indent',
+				key: 'blockIndent',
 				values: []
 			},
 			view: {}
