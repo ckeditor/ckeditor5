@@ -129,9 +129,20 @@ export default class IndentBlock extends Plugin {
 			},
 			model: {
 				key: 'indent',
-				value: viewElement => {
-					return viewElement.getStyle( 'margin-left' );
+				value: viewElement => viewElement.getStyle( 'margin-left' )
+			}
+		} );
+
+		// The margin shorthand should also work.
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				styles: {
+					'margin': /[\s\S]+/
 				}
+			},
+			model: {
+				key: 'indent',
+				value: viewElement => normalizeToMarginLeftStyle( viewElement.getStyle( 'margin' ) )
 			}
 		} );
 
@@ -173,6 +184,38 @@ export default class IndentBlock extends Plugin {
 
 		this.editor.conversion.attributeToAttribute( definition );
 	}
+}
+
+// Normalizes the margin shorthand value to the value of `margin-left` CSS property.
+//
+// As such it will return:
+// - '1em' for '1em'
+// - '1em' for '2px 1em'
+// - '1em' for '2px 1em 3px'
+// - '1em' for '2px 10px 3px 1em'
+//
+// @param {String} Margin style value.
+// @returns {String} Extracted value of margin-left.
+function normalizeToMarginLeftStyle( marginStyleValue ) {
+	// Splits the margin shorthand, ie margin: 2em 4em.
+	const marginEntries = marginStyleValue.split( ' ' );
+
+	let left;
+
+	// If only one value defined, ie: `margin: 1px`.
+	left = marginEntries[ 0 ];
+
+	// If only two values defined, ie: `margin: 1px 2px`.
+	if ( marginEntries[ 1 ] ) {
+		left = marginEntries[ 1 ];
+	}
+
+	// If four values defined, ie: `margin: 1px 2px 3px 4px`.
+	if ( marginEntries[ 3 ] ) {
+		left = marginEntries[ 3 ];
+	}
+
+	return left;
 }
 
 /**

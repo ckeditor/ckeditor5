@@ -114,6 +114,58 @@ describe( 'IndentBlock', () => {
 					.to.equal( '<p style="margin-left:42em">foo</p>' );
 			} );
 
+			it( 'should convert margin shortcut to indent attribute (one entry)', () => {
+				editor.setData( '<p style="margin:42em">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+
+				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p style="margin-left:42em">foo</p>' );
+			} );
+
+			it( 'should convert margin shortcut to indent attribute (two entries)', () => {
+				editor.setData( '<p style="margin:24em 42em">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+
+				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p style="margin-left:42em">foo</p>' );
+			} );
+
+			it( 'should convert margin shortcut to indent attribute (three entries)', () => {
+				editor.setData( '<p style="margin:24em 42em 20em">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+
+				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p style="margin-left:42em">foo</p>' );
+			} );
+
+			it( 'should convert margin shortcut to indent attribute (four entries)', () => {
+				editor.setData( '<p style="margin:24em 40em 24em 42em">foo</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.hasAttribute( 'indent' ) ).to.be.true;
+				expect( paragraph.getAttribute( 'indent' ) ).to.equal( '42em' );
+
+				expect( editor.getData() ).to.equal( '<p style="margin-left:42em;">foo</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<p style="margin-left:42em">foo</p>' );
+			} );
+
 			it( 'should not convert class to indent attribute', () => {
 				editor.setData( '<p class="indent-1">foo</p>' );
 
