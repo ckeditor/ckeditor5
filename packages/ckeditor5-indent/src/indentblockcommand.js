@@ -24,7 +24,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  *
  *		editor.execute( 'outdentBlock' );
  *
- * @extends module:core/plugin~Plugin
+ * @extends module:core/command~Command
  */
 export default class IndentBlockCommand extends Command {
 	/**
