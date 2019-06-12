@@ -20,10 +20,12 @@ import MultiCommand from './multicommand';
  * increase or decrease text indentation of supported elements.
  *
  * The compatible features are:
- * - the {@link module:list/list~List list} or {@link module:list/listediting~ListEditing list editing} feature for list indentation
- * - the {@link module:indent-block/indentblock~IndentBlock block indentation} feature for indenting text blocks like paragraphs or headings
+ * - the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
+ * - the {@link module:indent-block/indentblock~IndentBlock} feature for indenting text blocks like paragraphs or headings
  *
  * **Note**: In order the commands and buttons to work at least one of compatible features is required.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class Indent extends Plugin {
 	/**
