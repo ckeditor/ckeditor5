@@ -5,14 +5,8 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-:root {
-	--ck-link-form-max-width: 330px;
-}
-
 .ck.ck-link-form {
 	display: flex;
-	flex-wrap: wrap;
-	max-width: var(--ck-link-form-max-width);
 
 	& .ck-label {
 		display: none;
@@ -43,3 +37,27 @@
 		}
 	}
 }
+
+/* Style link form differently when manual decoratos are available.
+ * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
+ */
+.ck.ck-link-form_decorators {
+	flex-wrap: wrap;
+
+	& .ck-labeled-input {
+		flex-basis: 100%;
+	}
+
+
+	& .ck-button {
+		/* Let's move "Save" & "Cancel" buttons to the end of the link form view. */
+		order: 10;
+
+		flex-basis: 50%;
+	}
+
+	& .ck-list .ck-switchbutton {
+		margin-top: 0;
+	}
+}
+
