@@ -74,6 +74,11 @@
 		}
 	}
 
+	/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */
+	& .ck.ck-list {
+		margin-left: 0;
+	}
+
 	& .ck-list .ck-switchbutton {
 		border: 0;
 	}
