@@ -38,10 +38,10 @@ export default class LinkFormView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {module:utils/collection~Collection} [customAttributes] Reference to custom attributes in
-	 * {@link module:link/linkcommand~LinkCommand#customAttributes}.
+	 * @param {module:utils/collection~Collection} [manualDecorators] Reference to custom attributes in
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators}.
 	 */
-	constructor( locale, customAttributes ) {
+	constructor( locale, manualDecorators ) {
 		super( locale );
 
 		const t = locale.t;
@@ -85,21 +85,21 @@ export default class LinkFormView extends View {
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		/**
-		 * Keeps reference to {@link module:link/linkcommand~LinkCommand#customAttributes}.
+		 * Keeps reference to {@link module:link/linkcommand~LinkCommand#manualDecorators}.
 		 *
 		 * @readonly
 		 * @type {model:utils/collection~Collection}
 		 */
-		this.customAttributes = customAttributes;
+		this.manualDecorators = manualDecorators;
 
 		/**
-		 * Keeps reference to {@link module:ui/button/switchbuttonview~SwitchButtonView} made based on {@link #customAttributes}.
-		 * It use {@link #_createCustomAttributesView} to generate proper collection.
+		 * Keeps reference to {@link module:ui/button/switchbuttonview~SwitchButtonView} made based on {@link #manualDecorators}.
+		 * It use {@link #_createManualDecoratorsUIView} to generate proper collection.
 		 *
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
 		 */
-		this.customAttributesView = this._createCustomAttributesView();
+		this.manualDecoratorsUIView = this._createManualDecoratorsUIView();
 
 		/**
 		 * Collection of views used as children elements in {@link module:link/ui/linkformview~LinkFormView}.
@@ -168,7 +168,7 @@ export default class LinkFormView extends View {
 		// Focus order should be different than position in DOM. Save/Cancel buttons should be focused at the end.
 		const childViews = [
 			this.urlInputView,
-			...this.customAttributesView,
+			...this.manualDecoratorsUIView,
 			this.saveButtonView,
 			this.cancelButtonView
 		];
@@ -243,15 +243,15 @@ export default class LinkFormView extends View {
 
 	/**
 	 * Prepare {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
-	 * made based on {@link #customAttributes}
+	 * made based on {@link #manualDecorators}
 	 *
 	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
 	 */
-	_createCustomAttributesView() {
+	_createManualDecoratorsUIView() {
 		const switches = this.createCollection();
 
-		switches.bindTo( this.customAttributes ).using( item => {
+		switches.bindTo( this.manualDecorators ).using( item => {
 			const switchButton = new SwitchButtonView( this.locale );
 
 			switchButton.set( {
@@ -272,8 +272,8 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Creates {@link #children} for {@link module:link/ui/linkformview~LinkFormView}. If there exist {@link #customAttributes},
-	 * Then additional View wrapping all {@link #customAttributesView} will be added as a child of LinkFormView.
+	 * Creates {@link #children} for {@link module:link/ui/linkformview~LinkFormView}. If there exist {@link #manualDecorators},
+	 * Then additional View wrapping all {@link #manualDecoratorsUIView} will be added as a child of LinkFormView.
 	 *
 	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
@@ -285,11 +285,11 @@ export default class LinkFormView extends View {
 		children.add( this.saveButtonView );
 		children.add( this.cancelButtonView );
 
-		if ( this.customAttributes.length ) {
+		if ( this.manualDecorators.length ) {
 			const additionalButtonsView = new View();
 			additionalButtonsView.setTemplate( {
 				tag: 'ul',
-				children: this.customAttributesView.map( switchButton => ( {
+				children: this.manualDecoratorsUIView.map( switchButton => ( {
 					tag: 'li',
 					children: [ switchButton ],
 					attributes: {

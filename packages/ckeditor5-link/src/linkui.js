@@ -144,7 +144,7 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
-		const formView = new LinkFormView( editor.locale, linkCommand.customAttributes );
+		const formView = new LinkFormView( editor.locale, linkCommand.manualDecorators );
 
 		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -154,13 +154,13 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			const customAttributes = {};
+			const manualDecorators = {};
 
-			for ( const switchButton of formView.customAttributesView ) {
-				customAttributes[ switchButton.name ] = switchButton.isOn;
+			for ( const switchButton of formView.manualDecoratorsUIView ) {
+				manualDecorators[ switchButton.name ] = switchButton.isOn;
 			}
 
-			editor.execute( 'link', formView.urlInputView.inputView.element.value, customAttributes );
+			editor.execute( 'link', formView.urlInputView.inputView.element.value, manualDecorators );
 			this._closeFormView();
 		} );
 

@@ -226,17 +226,17 @@ describe( 'LinkFormView', () => {
 			collection.clear();
 		} );
 		it( 'switch buttons reflects state of customAttributes', () => {
-			expect( view.customAttributesView.length ).to.equal( 3 );
+			expect( view.manualDecoratorsUIView.length ).to.equal( 3 );
 
-			expect( view.customAttributesView.get( 0 ) ).to.deep.include( {
+			expect( view.manualDecoratorsUIView.get( 0 ) ).to.deep.include( {
 				name: 'decorator1',
 				label: 'Foo'
 			} );
-			expect( view.customAttributesView.get( 1 ) ).to.deep.include( {
+			expect( view.manualDecoratorsUIView.get( 1 ) ).to.deep.include( {
 				name: 'decorator2',
 				label: 'Download'
 			} );
-			expect( view.customAttributesView.get( 2 ) ).to.deep.include( {
+			expect( view.manualDecoratorsUIView.get( 2 ) ).to.deep.include( {
 				name: 'decorator3',
 				label: 'Multi'
 			} );
@@ -244,7 +244,7 @@ describe( 'LinkFormView', () => {
 
 		it( 'reacts on switch button changes', () => {
 			const modelItem = collection.first;
-			const viewItem = view.customAttributesView.first;
+			const viewItem = view.manualDecoratorsUIView.first;
 
 			expect( modelItem.value ).to.be.undefined;
 			expect( viewItem.isOn ).to.be.undefined;

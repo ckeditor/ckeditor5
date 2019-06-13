@@ -32,12 +32,12 @@ export default class LinkCommand extends Command {
 		/**
 		 * Keeps collection of {@link module:link/utils~ManualDecorator}
 		 * corresponding to {@link module:link/link~LinkConfig#decorators}.
-		 * You can consider it as a model of states for custom attributes added to links.
+		 * You can consider it as a model with states of manual decorators added to currently selected link.
 		 *
 		 * @readonly
 		 * @type {module:utils/collection~Collection}
 		 */
-		this.customAttributes = new Collection();
+		this.manualDecorators = new Collection();
 	}
 
 	/**
@@ -49,8 +49,8 @@ export default class LinkCommand extends Command {
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
 
-		for ( const customAttr of this.customAttributes ) {
-			customAttr.value = doc.selection.getAttribute( customAttr.id ) || false;
+		for ( const manualDecorator of this.manualDecorators ) {
+			manualDecorator.value = doc.selection.getAttribute( manualDecorator.id ) || false;
 		}
 
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
@@ -71,20 +71,20 @@ export default class LinkCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
+	 * @param {Object} [manualDecorators={}] Keeps information about turned on and off manual decorators applied with command.
 	 */
-	execute( href, customAttrs = {} ) {
+	execute( href, manualDecorators = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		// Stores information about manual decorators to turn them on/off when command is applied.
+		const truthyManualDecorators = [];
+		const falsyManualDecorators = [];
 
-		// Stores information about custom attributes to turn on/off.
-		const truthyCustomAttributes = [];
-		const falsyCustomAttributes = [];
-
-		for ( const name in customAttrs ) {
-			if ( customAttrs[ name ] ) {
-				truthyCustomAttributes.push( name );
+		for ( const name in manualDecorators ) {
+			if ( manualDecorators[ name ] ) {
+				truthyManualDecorators.push( name );
 			} else {
-				falsyCustomAttributes.push( name );
+				falsyManualDecorators.push( name );
 			}
 		}
 
@@ -99,10 +99,12 @@ export default class LinkCommand extends Command {
 					const linkRange = findLinkRange( position, selection.getAttribute( 'linkHref' ), model );
 
 					writer.setAttribute( 'linkHref', href, linkRange );
-					truthyCustomAttributes.forEach( item => {
+
+					truthyManualDecorators.forEach( item => {
 						writer.setAttribute( item, true, linkRange );
 					} );
-					falsyCustomAttributes.forEach( item => {
+
+					falsyManualDecorators.forEach( item => {
 						writer.removeAttribute( item, linkRange );
 					} );
 
@@ -117,7 +119,7 @@ export default class LinkCommand extends Command {
 
 					attributes.set( 'linkHref', href );
 
-					truthyCustomAttributes.forEach( item => {
+					truthyManualDecorators.forEach( item => {
 						attributes.set( item, true );
 					} );
 
@@ -135,10 +137,12 @@ export default class LinkCommand extends Command {
 
 				for ( const range of ranges ) {
 					writer.setAttribute( 'linkHref', href, range );
-					truthyCustomAttributes.forEach( item => {
+
+					truthyManualDecorators.forEach( item => {
 						writer.setAttribute( item, true, range );
 					} );
-					falsyCustomAttributes.forEach( item => {
+
+					falsyManualDecorators.forEach( item => {
 						writer.removeAttribute( item, range );
 					} );
 				}

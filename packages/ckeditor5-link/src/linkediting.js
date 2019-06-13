@@ -79,8 +79,8 @@ export default class LinkEditing extends Plugin {
 
 		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
 
-		this.enableAutomaticDecorators( linkDecorators.filter( item => item.mode === DECORATOR_AUTOMATIC ) );
-		this.enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
+		this._enableAutomaticDecorators( linkDecorators.filter( item => item.mode === DECORATOR_AUTOMATIC ) );
+		this._enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
 
 		// Enable two-step caret movement for `linkHref` attribute.
 		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
@@ -101,7 +101,7 @@ export default class LinkEditing extends Plugin {
 	 * @private
 	 * @param {Array.<module:link/link~LinkDecoratorAutomaticOption>} automaticDecoratorDefinitions
 	 */
-	enableAutomaticDecorators( automaticDecoratorDefinitions ) {
+	_enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
 		const automaticDecorators = new AutomaticDecorators();
 		// Adds default decorator for external links.
@@ -127,7 +127,7 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * Method process {@link module:link/link~LinkDecoratorManualOption} by transformation those configuration options into
 	 * {@link module:link/utils~ManualDecorator}. Manual decorators are added to
-	 * {@link module:link/linkcommand~LinkCommand#customAttributes} collections, which might be considered as a model
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collections, which might be considered as a model
 	 * for manual decorators state. It also provides proper
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement} converter for each
 	 * manual decorator and extends {@link module:engine/model/schema~Schema model's schema} with adequate model attributes.
@@ -135,27 +135,30 @@ export default class LinkEditing extends Plugin {
 	 * @private
 	 * @param {Array.<module:link/link~LinkDecoratorManualOption>} manualDecoratorDefinitions
 	 */
-	enableManualDecorators( manualDecoratorDefinitions ) {
+	_enableManualDecorators( manualDecoratorDefinitions ) {
 		if ( !manualDecoratorDefinitions.length ) {
 			return;
 		}
 
 		const editor = this.editor;
 		const command = editor.commands.get( 'link' );
-		const attrCollection = command.customAttributes;
+		const manualDecorators = command.manualDecorators;
 
 		manualDecoratorDefinitions.forEach( ( decorator, index ) => {
 			const decoratorName = `linkManualDecorator${ index }`;
+
 			editor.model.schema.extend( '$text', { allowAttributes: decoratorName } );
 
-			attrCollection.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
+			// Keeps reference to manual decorator to decode its name to attributes during downcast.
+			manualDecorators.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
+
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decoratorName,
 				view: ( manualDecoratorName, writer ) => {
 					if ( manualDecoratorName ) {
 						const element = writer.createAttributeElement(
 							'a',
-							attrCollection.get( decoratorName ).attributes,
+							manualDecorators.get( decoratorName ).attributes,
 							{
 								priority: 5
 							}
