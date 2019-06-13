@@ -67,4 +67,24 @@ describe( 'indent', () => {
 
 		expect( outdentButton ).to.be.instanceOf( ButtonView );
 	} );
+
+	it( 'should execute indent command on button execute', () => {
+		const button = editor.ui.componentFactory.create( 'indent' );
+		const spy = sinon.spy( editor, 'execute' );
+
+		button.fire( 'execute' );
+
+		sinon.assert.calledOnce( spy );
+		sinon.assert.calledWithExactly( spy, 'indent' );
+	} );
+
+	it( 'should execute outdent command on button execute', () => {
+		const button = editor.ui.componentFactory.create( 'outdent' );
+		const spy = sinon.spy( editor, 'execute' );
+
+		button.fire( 'execute' );
+
+		sinon.assert.calledOnce( spy );
+		sinon.assert.calledWithExactly( spy, 'outdent' );
+	} );
 } );
