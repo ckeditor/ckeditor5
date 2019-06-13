@@ -131,7 +131,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/_global.scss#L28-L37
  */
 .ck.ck-content ul,
-.ck.ck-content ul li{
+.ck.ck-content ul li {
   list-style-type: inherit;
 }
 
