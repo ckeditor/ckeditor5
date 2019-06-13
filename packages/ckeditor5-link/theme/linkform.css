@@ -12,19 +12,6 @@
 		display: none;
 	}
 
-	/* Buttons like `open in new window` with switch toggler.
-	Added div is a temporary solution to make stronger specificity than `.ck.ck-link-form > :not(:first-child)` in theme-lark. */
-	& ul.ck-list {
-		margin-left: 0;
-		width: 100%;
-	}
-
-	& .ck-list .ck-switchbutton {
-		width: 100%;
-		margin-left: 0;
-		margin-top: var(--ck-spacing-standard);
-	}
-
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
@@ -56,8 +43,8 @@
 		flex-basis: 50%;
 	}
 
-	& .ck-list .ck-switchbutton {
-		margin-top: 0;
+	& .ck-list {
+		flex-basis: 100%;
 	}
 }
 
