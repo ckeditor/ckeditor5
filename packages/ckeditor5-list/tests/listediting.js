@@ -5,6 +5,7 @@
 
 import ListEditing from '../src/listediting';
 import ListCommand from '../src/listcommand';
+import IndentCommand from '../src/indentcommand';
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
@@ -17,6 +18,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import IndentEditing from '@ckeditor/ckeditor5-core/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -78,6 +80,60 @@ describe( 'ListEditing', () => {
 
 			expect( command ).to.be.instanceOf( ListCommand );
 			expect( command ).to.have.property( 'type', 'numbered' );
+		} );
+
+		it( 'should register indent list command', () => {
+			const command = editor.commands.get( 'indentList' );
+
+			expect( command ).to.be.instanceOf( IndentCommand );
+		} );
+
+		it( 'should register outdent list command', () => {
+			const command = editor.commands.get( 'outdentList' );
+
+			expect( command ).to.be.instanceOf( IndentCommand );
+		} );
+
+		it( 'should add indent list command to indent command', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ ListEditing, IndentEditing ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} )
+				.then( () => {
+					const indentListCommand = editor.commands.get( 'indentList' );
+					const indentCommand = editor.commands.get( 'indent' );
+
+					const spy = sinon.spy( indentListCommand, 'execute' );
+
+					indentListCommand.isEnabled = true;
+					indentCommand.execute();
+
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
+
+		it( 'should add outdent list command to outdent command', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ ListEditing, IndentEditing ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} )
+				.then( () => {
+					const outdentListCommand = editor.commands.get( 'outdentList' );
+					const outdentCommand = editor.commands.get( 'outdent' );
+
+					const spy = sinon.spy( outdentListCommand, 'execute' );
+
+					outdentListCommand.isEnabled = true;
+					outdentCommand.execute();
+
+					sinon.assert.calledOnce( spy );
+				} );
 		} );
 	} );
 
