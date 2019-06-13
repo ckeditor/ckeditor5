@@ -138,14 +138,17 @@ export default class LinkFormView extends View {
 			}
 		} );
 
+		const classList = [ 'ck', 'ck-link-form' ];
+
+		if ( this.manualDecorators.length ) {
+			classList.push( 'ck-link-form_decorators' );
+		}
+
 		this.setTemplate( {
 			tag: 'form',
 
 			attributes: {
-				class: [
-					'ck',
-					'ck-link-form',
-				],
+				class: classList,
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
