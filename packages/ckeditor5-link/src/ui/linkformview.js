@@ -85,7 +85,9 @@ export default class LinkFormView extends View {
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		/**
-		 * Keeps reference to {@link module:link/linkcommand~LinkCommand#manualDecorators}.
+		 * Keeps reference to {@link module:link/linkcommand~LinkCommand#manualDecorators} in link command.
+		 * Collection is used to build proper UI element and synchronize its state between model located in
+		 * {@link module:link/linkcommand~LinkCommand#manualDecorators link command} and the {@link #manualDecoratorsUIView UI}.
 		 *
 		 * @readonly
 		 * @type {model:utils/collection~Collection}
@@ -93,8 +95,9 @@ export default class LinkFormView extends View {
 		this.manualDecorators = manualDecorators;
 
 		/**
-		 * Keeps reference to {@link module:ui/button/switchbuttonview~SwitchButtonView} made based on {@link #manualDecorators}.
-		 * It use {@link #_createManualDecoratorsUIView} to generate proper collection.
+		 * Preserves collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
+		 * which are made based on {@link #manualDecorators}. It use {@link #_createManualDecoratorsUIView} method
+		 * to generate proper collection.
 		 *
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}

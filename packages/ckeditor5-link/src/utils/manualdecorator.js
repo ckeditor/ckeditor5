@@ -11,8 +11,9 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class which stores manual decorators with observable {@link module:link/utils~ManualDecorator#value}
- * to handle integration with ui state.
+ * Helper class which stores manual decorators with observable {@link module:link/utils~ManualDecorator#value}
+ * to support integration with the UI state. An instance of this class is a model with state of single manual decorators.
+ * These decorators are kept as collections in {@link module:link/linkcommand~LinkCommand#manualDecorators}.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -21,14 +22,15 @@ export default class ManualDecorator {
 	 * Creates new instance of {@link module:link/utils~ManualDecorator}.
 	 *
 	 * @param {Object} config
-	 * @param {String} config.id Manual decorator id, which is a name of attribute in model, for example 'linkManualDecorator0'.
-	 * @param {String} config.label The label used in user interface to switch manual decorator.
-	 * @param {Object} config.attributes Set of attributes added to downcasted data, when decorator is activated for specific link.
-	 * Attributes should be added in a form of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
+	 * @param {String} config.id name of attribute used in model, which represents given manual decorator.
+	 * For example 'linkManualDecorator0'.
+	 * @param {String} config.label The label used in user interface to toggle manual decorator.
+	 * @param {Object} config.attributes Set of attributes added to output data, when decorator is active for specific link.
+	 * Attributes should keep format of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
 	 */
 	constructor( { id, label, attributes } ) {
 		/**
-		 * Manual decorator id, which is a name of attribute in model, for example 'linkManualDecorator0'.
+		 * Id of manual decorator, which is a name of attribute in model, for example 'linkManualDecorator0'.
 		 *
 		 * @type {String}
 		 */
@@ -43,7 +45,7 @@ export default class ManualDecorator {
 		this.set( 'value' );
 
 		/**
-		 * The label used in user interface to switch manual decorator.
+		 * The label used in user interface to toggle manual decorator.
 		 *
 		 * @type {String}
 		 */

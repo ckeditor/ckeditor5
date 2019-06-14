@@ -90,13 +90,11 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Method process {@link module:link/link~LinkDecoratorAutomaticOption} by creating instance of
-	 * {@link module:link/utils~AutomaticDecorators}. If there are available automatic decorators, then
-	 * there is registered {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} to handle
-	 * those configurations.
+	 * Method process array of {@link module:link/link~LinkDecoratorAutomaticOption} and register
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher} for them.
+	 * Downcast dispatcher is obtained with {@link module:link/utils~AutomaticDecorators#getDispatcher}.
 	 *
-	 * Please notice, that automatic decorator will be also added, when {@link module:link/link~LinkConfig#targetDecorator}
-	 * will be set to `true`.
+	 * Method also kept configuration of decorator activated with {@link module:link/link~LinkConfig#targetDecorator}.
 	 *
 	 * @private
 	 * @param {Array.<module:link/link~LinkDecoratorAutomaticOption>} automaticDecoratorDefinitions
@@ -125,12 +123,12 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Method process {@link module:link/link~LinkDecoratorManualOption} by transformation those configuration options into
-	 * {@link module:link/utils~ManualDecorator}. Manual decorators are added to
-	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collections, which might be considered as a model
-	 * for manual decorators state. It also provides proper
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement} converter for each
-	 * manual decorator and extends {@link module:engine/model/schema~Schema model's schema} with adequate model attributes.
+	 * Method process array of {@link module:link/link~LinkDecoratorManualOption} by transformation those configuration options into
+	 * {@link module:link/utils~ManualDecorator} objects. Then those objects are added to
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection, which is considered as a model for manual decorators state.
+	 * It also provides a proper {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement}
+	 * converter for each manual decorator and extends the {@link module:engine/model/schema~Schema model's schema}
+	 * with adequate model attributes.
 	 *
 	 * @private
 	 * @param {Array.<module:link/link~LinkDecoratorManualOption>} manualDecoratorDefinitions

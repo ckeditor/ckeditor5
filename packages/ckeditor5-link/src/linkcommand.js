@@ -69,19 +69,27 @@ export default class LinkCommand extends Command {
 	 *
 	 * When the selection is collapsed and inside the text with the `linkHref` attribute, the attribute value will be updated.
 	 *
+	 * # Decorators
+	 * Command has an optional second parameter, which can apply or remove {@link module:link/utils~ManualDecorator} together with href.
+	 * Decorators are representing in a corresponding way as href, which are attributes for {@link module:engine/model/text~Text Text node}.
+	 * Names of those attributes are stored as `id`s in {@link module:link/utils~ManualDecorator} and preserve convention of name:
+	 * `linkManualDecoratorN`, where `N` is replaced with a number (for example: `'linkManualDecorator0'`).
+	 *
+	 * More about decorators might be found in {@link module:link/link~LinkConfig#decorators}
+	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
-	 * @param {Object} [manualDecorators={}] Keeps information about turned on and off manual decorators applied with command.
+	 * @param {Object} [manualDecoratorIds={}] Keeps information about turned on and off manual decorators applied with command.
 	 */
-	execute( href, manualDecorators = {} ) {
+	execute( href, manualDecoratorIds = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators = [];
 		const falsyManualDecorators = [];
 
-		for ( const name in manualDecorators ) {
-			if ( manualDecorators[ name ] ) {
+		for ( const name in manualDecoratorIds ) {
+			if ( manualDecoratorIds[ name ] ) {
 				truthyManualDecorators.push( name );
 			} else {
 				falsyManualDecorators.push( name );
