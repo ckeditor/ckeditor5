@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console:false, document, window */
+/* globals console, document */
 
 import DecoupledEditor from '../../src/decouplededitor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -17,6 +17,8 @@ const editorData = '<h2>Hello world</h2><p>This is the decoupled editor.</p><img
  * - add event listeners with () => {} methods which reference other
  */
 function initEditor() {
+	let editor;
+
 	DecoupledEditor
 		.create( editorData, {
 			plugins: [ ArticlePluginSet ],
@@ -53,7 +55,7 @@ function initEditor() {
 			}
 		} )
 		.then( newEditor => {
-			window.editor = newEditor;
+			editor = newEditor;
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
 			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.view.editable.element );
@@ -65,8 +67,10 @@ function initEditor() {
 		} );
 
 	function destroyEditor() {
-		window.editor.destroy().then( () => console.log( 'Editor was destroyed' ) );
-		window.editor = null;
+		editor.destroy().then( () => console.log( 'Editor was destroyed' ) );
+		editor.ui.view.toolbar.element.remove();
+		editor.ui.view.editable.element.remove();
+		editor = null;
 		document.getElementById( 'destroyEditor' ).removeEventListener( 'click', destroyEditor );
 	}
 }
