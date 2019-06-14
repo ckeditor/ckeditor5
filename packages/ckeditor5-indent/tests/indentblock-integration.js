@@ -3,30 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Indent from '@ckeditor/ckeditor5-core/src/indent';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import IndentEditing from '@ckeditor/ckeditor5-core/src/indentediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 import IndentBlock from '../src/indentblock';
 
 describe( 'IndentBlock - integration', () => {
-	let editor, element, model, doc;
+	let editor, model, doc;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		element = document.createElement( 'div' );
-		document.body.appendChild( element );
-	} );
-
 	afterEach( () => {
-		element.remove();
-
 		if ( editor ) {
 			return editor.destroy();
 		}
@@ -59,7 +50,7 @@ describe( 'IndentBlock - integration', () => {
 	describe( 'with heading', () => {
 		beforeEach( () => {
 			return createTestEditor( {
-				plugins: [ Paragraph, Heading, Indent, IndentBlock ],
+				plugins: [ Paragraph, HeadingEditing, IndentEditing, IndentBlock ],
 				indentBlock: { offset: 50, unit: 'px' }
 			} ).then( newEditor => {
 				editor = newEditor;
@@ -83,9 +74,9 @@ describe( 'IndentBlock - integration', () => {
 	} );
 
 	function createTestEditor( extraConfig = {} ) {
-		return ClassicTestEditor
-			.create( element, Object.assign( {
-				plugins: [ Paragraph, Indent, IndentBlock ]
+		return VirtualTestEditor
+			.create( Object.assign( {
+				plugins: [ Paragraph, IndentEditing, IndentBlock ]
 			}, extraConfig ) );
 	}
 } );

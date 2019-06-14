@@ -7,13 +7,14 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-import IndentBlock from '../../src/indentblock';
-
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Indent from '@ckeditor/ckeditor5-core/src/indent';
+
+import IndentBlock from '../../src/indentblock';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, IndentBlock ],
+		plugins: [ ArticlePluginSet, Indent, IndentBlock ],
 		toolbar: [
 			'heading',
 			'|',

@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Indent from '@ckeditor/ckeditor5-core/src/indent';
 
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
@@ -42,13 +41,6 @@ export default class IndentBlock extends Plugin {
 	 */
 	static get pluginName() {
 		return 'IndentBlock';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ Indent ];
 	}
 
 	/**
