@@ -889,7 +889,8 @@ export default class DomConverter {
 	 *
 	 * * a space at the beginning is changed to `&nbsp;` if this is the first text node in its container
 	 * element or if a previous text node ends with a space character,
-	 * * space at the end of the text node is changed to `&nbsp;` if this is the last text node in its container,
+	 * * space at the end of the text node is changed to `&nbsp;` if there are two spaces at the end of a node or if next node
+	 * starts with a space,
 	 * * remaining spaces are replaced to a chain of spaces and `&nbsp;` (e.g. `'x   x'` becomes `'x &nbsp; x'`).
 	 *
 	 * Content of {@link #preElements} is not processed.
@@ -918,15 +919,17 @@ export default class DomConverter {
 			}
 		}
 
-		// 2. Replace the last space with a nbsp if this is the last text node (container element boundary).
+		// 2. Replace the last space with nbsp if there are two spaces at the end or if the next node starts with space or there is no
+		// next node (container element boundary).
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
 			const nextNode = this._getTouchingViewTextNode( node, true );
 
-			if ( !nextNode ) {
+			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextNode.data.charAt( 0 ) == ' ' ) {
 				data = data.substr( 0, data.length - 1 ) + '\u00A0';
 			}
 		}
 
+		// 3. Create space+nbsp pairs.
 		return data.replace( / {2}/g, ' \u00A0' );
 	}
 
@@ -955,7 +958,8 @@ export default class DomConverter {
 	 * * multiple whitespaces are replaced to a single space,
 	 * * space at the beginning of a text node is removed if it is the first text node in its container
 	 * element or if the previous text node ends with a space character,
-	 * * space at the end of the text node is removed, if it is the last text node in its container.
+	 * * space at the end of the text node is removed, if it is the last text node in its container,
+	 * * nbsps are converted to spaces.
 	 *
 	 * @param {Node} node DOM text node to process.
 	 * @returns {String} Processed data.
@@ -998,26 +1002,23 @@ export default class DomConverter {
 		data = getDataWithoutFiller( new Text( data ) );
 
 		// At this point we should have removed all whitespaces from DOM text data.
-
-		// Now we have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
-		// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view as
-		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them
-		// to `  ` which is what we expect to have in model/view.
+		//
+		// Now, We will reverse the process that happens in `_processDataFromViewText`.
+		//
+		// We have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
+		// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view to
+		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them back to `  `.
 		data = data.replace( / \u00A0/g, '  ' );
 
+		// Then, let's change the last nbsp to a space.
+		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || ( nextNode.data && nextNode.data.charAt( 0 ) == ' ' ) ) {
+			data = data.replace( /\u00A0$/, ' ' );
+		}
+
 		// Then, change &nbsp; character that is at the beginning of the text node to space character.
-		// As above, that &nbsp; was created for rendering reasons but it's real meaning is just a space character.
 		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
 		if ( shouldLeftTrim ) {
 			data = data.replace( /^\u00A0/, ' ' );
-		}
-
-		// Since input text data could be: `x_ _`, we would not replace the first &nbsp; after `x` character.
-		// We have to fix it. Since we already change all ` &nbsp;`, we will have something like this at the end of text data:
-		// `x_ _ _` -> `x_    `. Find &nbsp; at the end of string (can be followed only by spaces).
-		// We do that replacement only if this is the last node or the next node starts with &nbsp; or is a <br>.
-		if ( isText( nextNode ) ? nextNode.data.charAt( 0 ) == '\u00A0' : true ) {
-			data = data.replace( /\u00A0( *)$/, ' $1' );
 		}
 
 		// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
@@ -1048,7 +1049,7 @@ export default class DomConverter {
 	 * be trimmed from the right side.
 	 *
 	 * @param {Node} node
-	 * @param {Node} prevNode
+	 * @param {Node} nextNode
 	 */
 	_checkShouldRightTrimDomText( node, nextNode ) {
 		if ( nextNode ) {
