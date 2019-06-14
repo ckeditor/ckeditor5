@@ -220,26 +220,11 @@ module.exports = {
 		]
 	},
 
+	// Vue CLI would normally use its own loader to load .svg and .css files, however:
+	//	1. The icons used by CKEditor must be loaded using raw-loader,
+	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
 	chainWebpack: config => {
-		// Vue CLI would normally use its own loader to load .svg and .css files. The icons 
-		// used by CKEditor should be loaded using raw-loader instead.
-
-		//Add the ability to build the CSS files
-		config.module
-		  .rule('cke-css')
-		  .test(/(.*)ckeditor5-(.*).css/)
-		  .use('postcss-loader')
-		  .loader('postcss-loader')
-		  .tap(() => {
-			return styles.getPostCssConfig({
-			  themeImporter: {
-				themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
-			  },
-			  minify: true,
-			});
-		  });
-
-		// Get the default rule for *.svg files.
+		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
 
 		// Then you can either:
@@ -263,6 +248,22 @@ module.exports = {
 			.test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
 			.use( 'raw-loader' )
 			.loader( 'raw-loader' );
+
+		// (2.) Transpile the .css files imported by the editor using PostCSS.
+		// Make sure only the CSS belonging to ckeditor5-* packages is processed this way.
+		config.module
+			.rule( 'cke-css' )
+			.test( /ckeditor5-[^/\\]+[/\\].+\.css$/ )
+			.use( 'postcss-loader' )
+			.loader( 'postcss-loader' )
+			.tap( () => {
+				return styles.getPostCssConfig( {
+					themeImporter: {
+						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+					},
+					minify: true
+				} );
+			} );
 	}
 };
 ```
