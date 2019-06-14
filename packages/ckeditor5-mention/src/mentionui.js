@@ -287,6 +287,8 @@ export default class MentionUI extends Plugin {
 			const nodeBefore = focus.nodeBefore;
 
 			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
+				this._hideUIAndRemoveMarker();
+
 				return;
 			}
 
@@ -349,7 +351,8 @@ export default class MentionUI extends Plugin {
 			this._balloon.add( {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
-				withArrow: false
+				withArrow: false,
+				singleViewMode: true
 			} );
 		}
 
@@ -364,12 +367,13 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_hideUIAndRemoveMarker() {
-		if ( this.editor.model.markers.has( 'mention' ) ) {
-			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
+		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
+		if ( this._balloon.hasView( this._mentionsView ) ) {
+			this._balloon.remove( this._mentionsView );
 		}
 
-		if ( this._isUIVisible ) {
-			this._balloon.remove( this._mentionsView );
+		if ( this.editor.model.markers.has( 'mention' ) ) {
+			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
 		// Make the last matched position on panel view undefined so the #_getBalloonPanelPositionData() method will return all positions
@@ -424,14 +428,22 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_getBalloonPanelPositionData( mentionMarker, preferredPosition ) {
+		const editor = this.editor;
 		const editing = this.editor.editing;
 		const domConverter = editing.view.domConverter;
 		const mapper = editing.mapper;
 
 		return {
 			target: () => {
-				const viewRange = mapper.toViewRange( mentionMarker.getRange() );
+				let modelRange = mentionMarker.getRange();
 
+				// Target the UI to the model selection range - the marker has been removed so probably the UI will not be shown anyway.
+				// The logic is used by ContextualBalloon to display another panel in the same place.
+				if ( modelRange.start.root.rootName == '$graveyard' ) {
+					modelRange = editor.model.document.selection.getFirstRange();
+				}
+
+				const viewRange = mapper.toViewRange( modelRange );
 				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewRange ) );
 
 				return rangeRects.pop();
