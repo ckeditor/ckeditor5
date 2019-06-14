@@ -68,6 +68,10 @@ There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 {@link features/ckfinder **Learn how to integrate CKEditor 5 with CKFinder in your project**}.
 
+### Base64
+
+The {@link features/base64-upload-adapter Base64 Upload Adapter} allows inlining images into the editor as a string. If you cannot upload an image to a server, you could use the {@link features/base64-upload-adapter Base64 Upload Adapter} in order to store images directly in the editor's content.
+
 ## Implementing your own upload adapter
 
 CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take the **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
