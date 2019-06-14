@@ -9,8 +9,8 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import IndentEditing from '../src/indentediting';
-import IndentUI from '../src/indentui';
+import IndentEditing from '../../src/indent/indentediting';
+import IndentUI from '../../src/indent/indentui';
 
 describe( 'IndentUI', () => {
 	let editor, element;

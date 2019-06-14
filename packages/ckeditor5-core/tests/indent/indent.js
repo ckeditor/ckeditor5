@@ -8,9 +8,9 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import Indent from '../src/indent';
-import IndentEditing from '../src/indentediting';
-import IndentUI from '../src/indentui';
+import Indent from '../../src/indent/indent';
+import IndentEditing from '../../src/indent/indentediting';
+import IndentUI from '../../src/indent/indentui';
 
 describe( 'Indent', () => {
 	let editor, element;

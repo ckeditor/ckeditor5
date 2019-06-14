@@ -4,10 +4,10 @@
  */
 
 /**
- * @module core/indent
+ * @module core/indent/indent
  */
 
-import Plugin from './plugin';
+import Plugin from '../plugin';
 
 import IndentEditing from './indentediting';
 import IndentUI from './indentui';
@@ -23,8 +23,8 @@ import IndentUI from './indentui';
  *
  * This is a "glue" plugin which loads the following plugins:
  *
- * * The {@link module:core/indentediting~IndentEditing indent editing feature} and
- * * The {@link module:core/indentui~IndentUI indent UI feature}.
+ * * The {@link module:core/indent/indentediting~IndentEditing indent editing feature} and
+ * * The {@link module:core/indent/indentui~IndentUI indent UI feature}.
  *
  * The dependent plugins registers the `'indent'` and `'outdent'` commands and it introduces the `'indent'` and `'outdent'` buttons
  * that allow to increase or decrease text indentation of supported elements.

@@ -4,11 +4,11 @@
  */
 
 /**
- * @module core/indentui
+ * @module core/indent/indentui
  */
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import Plugin from './plugin';
+import Plugin from '../plugin';
 
 /**
  * The indent feature.
@@ -16,7 +16,7 @@ import Plugin from './plugin';
  * This plugin registers the `'indent'` and `'outdent'` buttons.
  *
  * **Note**: In order the commands to work at least one of compatible features is required. Read more in
- * {@link module:core/indent~Indent indent feature} api docs.
+ * {@link module:core/indent/indent~Indent indent feature} api docs.
  *
  * @extends module:core/plugin~Plugin
  */

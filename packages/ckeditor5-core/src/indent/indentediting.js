@@ -4,11 +4,11 @@
  */
 
 /**
- * @module core/indentediting
+ * @module core/indent/indentediting
  */
 
-import Plugin from './plugin';
-import MultiCommand from './multicommand';
+import Plugin from '../plugin';
+import MultiCommand from '../multicommand';
 
 /**
  * The indent editing feature.
@@ -16,7 +16,7 @@ import MultiCommand from './multicommand';
  * This plugin registers the `'indent'` and `'outdent'` commands.
  *
  * **Note**: In order the commands to work at least one of compatible features is required. Read more in
- * {@link module:core/indent~Indent indent feature} api docs.
+ * {@link module:core/indent/indent~Indent indent feature} api docs.
  *
  * @extends module:core/plugin~Plugin
  */
