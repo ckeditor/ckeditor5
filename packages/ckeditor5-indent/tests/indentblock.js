@@ -8,7 +8,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import IndentEditing from '@ckeditor/ckeditor5-core/src/indentediting';
+import IndentEditing from '@ckeditor/ckeditor5-core/src/indent/indentediting';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import IndentBlock from '../src/indentblock';
