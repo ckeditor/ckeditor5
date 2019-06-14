@@ -8,11 +8,10 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import Indent from '../src/indent';
+import MultiCommand from '../src/multicommand';
 import IndentEditing from '../src/indentediting';
-import IndentUI from '../src/indentui';
 
-describe( 'Indent', () => {
+describe( 'IndentEditing', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
@@ -22,7 +21,7 @@ describe( 'Indent', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Indent ] } )
+			.create( element, { plugins: [ IndentEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 			} );
@@ -37,14 +36,22 @@ describe( 'Indent', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( Indent.pluginName ).to.equal( 'Indent' );
+		expect( IndentEditing.pluginName ).to.equal( 'IndentEditing' );
 	} );
 
-	it( 'should load the IndentUI plugin', () => {
-		expect( editor.plugins.get( IndentUI ) ).to.be.instanceOf( IndentUI );
-	} );
-
-	it( 'should load the IndentEditing plugin', () => {
+	it( 'should be loaded', () => {
 		expect( editor.plugins.get( IndentEditing ) ).to.be.instanceOf( IndentEditing );
+	} );
+
+	it( 'should register indent command', () => {
+		const command = editor.commands.get( 'indent' );
+
+		expect( command ).to.be.instanceof( MultiCommand );
+	} );
+
+	it( 'should register outdent command', () => {
+		const command = editor.commands.get( 'outdent' );
+
+		expect( command ).to.be.instanceof( MultiCommand );
 	} );
 } );
