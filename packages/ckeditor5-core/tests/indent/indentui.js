@@ -5,8 +5,8 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '../_utils/classictesteditor';
+import testUtils from '../_utils/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import IndentEditing from '../../src/indent/indentediting';
