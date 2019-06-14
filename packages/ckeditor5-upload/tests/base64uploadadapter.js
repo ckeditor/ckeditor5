@@ -9,11 +9,7 @@ import Base64UploadAdapter from '../src/base64uploadadapter';
 import FileRepository from '../src/filerepository';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-const createNativeFileMock = () => ( {
-	type: 'image/jpeg',
-	size: 1024
-} );
+import { createNativeFileMock } from './_utils/mocks';
 
 describe( 'Base64UploadAdapter', () => {
 	let div, stubs;
@@ -65,7 +61,7 @@ describe( 'Base64UploadAdapter', () => {
 	} );
 
 	describe( 'Adapter', () => {
-		let editor, fileRepository;
+		let editor, fileRepository, adapter;
 
 		beforeEach( () => {
 			return ClassicTestEditor.create( div, {
@@ -73,6 +69,7 @@ describe( 'Base64UploadAdapter', () => {
 			} ).then( _editor => {
 				editor = _editor;
 				fileRepository = editor.plugins.get( FileRepository );
+				adapter = fileRepository.createLoader( createNativeFileMock() );
 			} );
 		} );
 
@@ -80,16 +77,20 @@ describe( 'Base64UploadAdapter', () => {
 			return editor.destroy();
 		} );
 
+		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
+			expect( adapter ).to.not.be.undefined;
+			expect( adapter.upload ).to.be.a( 'function' );
+			expect( adapter.abort ).to.be.a( 'function' );
+		} );
+
 		describe( 'upload()', () => {
 			it( 'returns a promise that resolves an image as base64 string', () => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
-
 				setTimeout( () => {
 					// FileReader has loaded the file.
 					stubs.onload();
 				} );
 
-				return loader.upload()
+				return adapter.upload()
 					.then( response => {
 						expect( response.default ).to.equal( 'data:image/png;base64' );
 						expect( stubs.readAsDataURL.calledOnce ).to.equal( true );
@@ -97,7 +98,6 @@ describe( 'Base64UploadAdapter', () => {
 			} );
 
 			it( 'returns a promise that rejects if something went wrong', () => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
 				const uploadError = new Error( 'Something went wrong.' );
 
 				setTimeout( () => {
@@ -105,7 +105,7 @@ describe( 'Base64UploadAdapter', () => {
 					stubs.onerror( uploadError );
 				} );
 
-				return loader.upload()
+				return adapter.upload()
 					.then(
 						() => {
 							return new Error( 'Supposed to be rejected.' );
@@ -118,14 +118,12 @@ describe( 'Base64UploadAdapter', () => {
 			} );
 
 			it( 'returns a promise that rejects if FileReader aborted reading a file', () => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
-
 				setTimeout( () => {
 					// FileReader aborted reading the file.
 					stubs.onabort();
 				} );
 
-				return loader.upload()
+				return adapter.upload()
 					.then(
 						() => {
 							return new Error( 'Supposed to be rejected.' );
@@ -139,24 +137,22 @@ describe( 'Base64UploadAdapter', () => {
 
 		describe( 'abort()', () => {
 			it( 'should not call abort on the non-existing FileReader uploader (`loader.file` not resolved)', () => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
+				const adapter = fileRepository.createLoader( createNativeFileMock() );
 
 				expect( () => {
-					loader.upload();
-					loader.abort();
+					adapter.upload();
+					adapter.abort();
 				} ).to.not.throw();
 
 				expect( stubs.abort.called ).to.equal( false );
 			} );
 
 			it( 'should call abort on the FileReader uploader (`loader.file` resolved)', done => {
-				const loader = fileRepository.createLoader( createNativeFileMock() );
-
-				loader.upload();
+				adapter.upload();
 
 				// Wait for the `loader.file` promise.
 				setTimeout( () => {
-					loader.abort();
+					adapter.abort();
 
 					expect( stubs.abort.called ).to.equal( true );
 
