@@ -302,21 +302,54 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				insert( node, docFrag );
-			} ).to.throw();
+			} ).to.throw( CKEditorError, /^model-writer-insert-forbidden-move/ );
 		} );
 
 		it( 'should transfer markers from given DocumentFragment', () => {
 			const root = doc.createRoot();
-
 			const docFrag = createDocumentFragment();
 
 			appendText( 'abcd', root );
+
 			appendElement( 'p', docFrag );
 			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
 			const marker = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) );
 
 			docFrag.markers.set( 'marker', marker );
+
+			insert( docFrag, new Position( root, [ 2 ] ) );
+
+			expect( Array.from( model.markers ).length ).to.equal( 1 );
+
+			const modelMarker = model.markers.get( 'marker' );
+			const range = modelMarker.getRange();
+			expect( range.root ).to.equal( root );
+			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
+			expect( modelMarker.managedUsingOperations ).to.be.true;
+			expect( modelMarker.affectsData ).to.be.true;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
+		it( 'should update a marker if DocumentFragment has a marker that is already in the model (markers have the same name)', () => {
+			const root = doc.createRoot();
+			const docFrag = createDocumentFragment();
+
+			// <root><p></p><p>[ab]cd</p></root>.
+			appendText( 'abcd', root );
+
+			// <docFrag><p>f[oo b]ar</p></docFrag>.
+			appendElement( 'p', docFrag );
+			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+
+			model.change( writer => {
+				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+
+				writer.addMarker( 'marker', { range, usingOperation: true } );
+			} );
+
+			docFrag.markers.set( 'marker', new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) ) );
 
 			insert( docFrag, new Position( root, [ 2 ] ) );
 
@@ -716,7 +749,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				append( node, docFrag );
-			} ).to.throw();
+			} ).to.throw( CKEditorError, /^model-writer-insert-forbidden-move/ );
 		} );
 	} );
 
@@ -1425,29 +1458,50 @@ describe( 'Writer', () => {
 			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
-		it( 'should create a marker operation if a marker was affected', () => {
-			const markerRange = new Range( Position._createAt( p2, 0 ), Position._createAt( p2, 0 ) );
-
-			addMarker( 'name', {
-				range: markerRange,
-				usingOperation: true
+		describe( 'should create a marker operation if a marker was affected', () => {
+			it( '<p>Foo[</p><p>Bar]</p>', () => {
+				test( p1, 'end', p2, 0 );
 			} );
 
-			const documentVersion = model.document.version;
+			it( '<p>[Foo</p><p>]Bar</p>', () => {
+				test( p1, 0, p2, 0 );
+			} );
 
-			merge( Position._createAfter( p1 ) );
+			it( '<p>[Foo</p>]<p>Bar</p>', () => {
+				test( p1, 0, root, 1 );
+			} );
 
-			const history = model.document.history;
+			it( '<p>Foo</p>[<p>Bar]</p>', () => {
+				test( root, 1, p2, 'end' );
+			} );
 
-			const lastOperation = history._operations[ history._operations.length - 1 ];
-			const secondLastOperation = history._operations[ history._operations.length - 2 ];
+			function test( startElement, startOffset, endElement, endOffset ) {
+				const markerRange = new Range(
+					Position._createAt( startElement, startOffset ),
+					Position._createAt( endElement, endOffset )
+				);
 
-			expect( secondLastOperation.type ).to.equal( 'marker' );
-			expect( secondLastOperation.oldRange.isEqual( markerRange ) );
-			expect( secondLastOperation.newRange.isEqual( markerRange ) );
+				addMarker( 'name', {
+					range: markerRange,
+					usingOperation: true
+				} );
 
-			expect( lastOperation.type ).to.equal( 'merge' );
-			expect( model.document.version ).to.equal( documentVersion + 2 );
+				const documentVersion = model.document.version;
+
+				merge( Position._createAfter( p1 ) );
+
+				const history = model.document.history;
+
+				const lastOperation = history._operations[ history._operations.length - 1 ];
+				const secondLastOperation = history._operations[ history._operations.length - 2 ];
+
+				expect( secondLastOperation.type ).to.equal( 'marker' );
+				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
+				expect( secondLastOperation.newRange.isEqual( markerRange ) );
+
+				expect( lastOperation.type ).to.equal( 'merge' );
+				expect( model.document.version ).to.equal( documentVersion + 2 );
+			}
 		} );
 
 		it( 'should not create a marker operation if affected marker was not using operations', () => {

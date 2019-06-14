@@ -1254,6 +1254,43 @@ describe( 'DataController utils', () => {
 			expect( getData( model ) ).to.equal( '<limit>ab[]foo</limit>' );
 			expect( stringify( root, affectedRange ) ).to.equal( '<limit>[ab]foo</limit>' );
 		} );
+
+		describe( 'when allowed element is above limit element in document tree', () => {
+			// $root > table > tableRow > tableCell > paragraph
+			// After inserting new table ( allowed in root ), empty paragraph shouldn't be removed from current tableCell.
+			beforeEach( () => {
+				const schema = model.schema;
+
+				schema.register( 'wrapper', {
+					isLimit: true,
+					isBlock: true,
+					isObject: true,
+					allowWhere: '$block'
+				} );
+
+				schema.extend( 'paragraph', { allowIn: 'limit' } );
+				schema.extend( 'limit', { allowIn: 'wrapper' } );
+			} );
+
+			it( 'should not remove empty elements when not-allowed element is paste', () => {
+				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				// pasted content is forbidden in current selection
+				const affectedRange = insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>' );
+
+				expect( getData( model ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+			} );
+
+			it( 'should correctly paste allowed nodes', () => {
+				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+
+				const affectedRange = insertHelper( '<paragraph>foo</paragraph>' );
+
+				expect( getData( model ) ).to.equal( '<wrapper><limit><paragraph>foo</paragraph>[]</limit></wrapper>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit>[<paragraph>foo</paragraph>]</limit></wrapper>' );
+			} );
+		} );
 	} );
 
 	// Helper function that parses given content and inserts it at the cursor position.

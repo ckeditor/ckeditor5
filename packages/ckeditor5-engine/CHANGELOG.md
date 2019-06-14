@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [13.1.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.0...v13.1.1) (2019-06-05)
+
+### Bug fixes
+
+* Prevented from losing selection attributes between operations (fixes a bug with text composition). Closes https://github.com/ckeditor/ckeditor5-typing/issues/188. ([42dcb25](https://github.com/ckeditor/ckeditor5-engine/commit/42dcb25))
+
+### Other changes
+
+* Added more cases of affected markers on merging in `model.Writer`. Closes [#1738](https://github.com/ckeditor/ckeditor5-engine/issues/1738). ([01ff6e6](https://github.com/ckeditor/ckeditor5-engine/commit/01ff6e6))
+
+
 ## [13.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.0.0...v13.1.0) (2019-04-10)
 
 ### Features

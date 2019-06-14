@@ -177,8 +177,16 @@ export default class Writer {
 			// If it isn't the same root.
 			else {
 				if ( item.root.document ) {
-					// It is forbidden to move a node that was already in a document outside of it.
-					throw new Error( 'model-writer-insert-forbidden-move: Cannot move a node from a document to a different tree.' );
+					/**
+					 * Cannot move a node from a document to a different tree.
+					 * It is forbidden to move a node that was already in a document outside of it.
+					 *
+					 * @error model-writer-insert-forbidden-move
+					 */
+					throw new CKEditorError(
+						'model-writer-insert-forbidden-move: ' +
+						'Cannot move a node from a document to a different tree. ' +
+						'It is forbidden to move a node that was already in a document outside of it.' );
 				} else {
 					// Move between two different document fragments or from document fragment to a document is possible.
 					// In that case, remove the item from it's original parent.
@@ -208,7 +216,13 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.addMarker( markerName, { range, usingOperation: true, affectsData: true } );
+				const options = { range, usingOperation: true, affectsData: true };
+
+				if ( this.model.markers.has( markerName ) ) {
+					this.updateMarker( markerName, options );
+				} else {
+					this.addMarker( markerName, options );
+				}
 			}
 		}
 	}
@@ -1349,10 +1363,31 @@ export default class Writer {
 				const elementBefore = positionOrRange.nodeBefore;
 				const elementAfter = positionOrRange.nodeAfter;
 
-				const affectedOnLeft = markerRange.start.parent == elementBefore && markerRange.start.isAtEnd;
-				const affectedOnRight = markerRange.end.parent == elementAfter && markerRange.end.offset == 0;
+				//               Start:  <p>Foo[</p><p>Bar]</p>
+				//         After merge:  <p>Foo[Bar]</p>
+				// After undoing split:  <p>Foo</p><p>[Bar]</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedInLeftElement = markerRange.start.parent == elementBefore && markerRange.start.isAtEnd;
 
-				isAffected = affectedOnLeft || affectedOnRight;
+				//               Start:  <p>[Foo</p><p>]Bar</p>
+				//         After merge:  <p>[Foo]Bar</p>
+				// After undoing split:  <p>[Foo]</p><p>Bar</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedInRightElement = markerRange.end.parent == elementAfter && markerRange.end.offset == 0;
+
+				//               Start:  <p>[Foo</p>]<p>Bar</p>
+				//         After merge:  <p>[Foo]Bar</p>
+				// After undoing split:  <p>[Foo]</p><p>Bar</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedAfterLeftElement = markerRange.end.nodeAfter == elementAfter;
+
+				//               Start:  <p>Foo</p>[<p>Bar]</p>
+				//         After merge:  <p>Foo[Bar]</p>
+				// After undoing split:  <p>Foo</p><p>[Bar]</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedBeforeRightElement = markerRange.start.nodeAfter == elementAfter;
+
+				isAffected = affectedInLeftElement || affectedInRightElement || affectedAfterLeftElement || affectedBeforeRightElement;
 			}
 
 			if ( isAffected ) {
