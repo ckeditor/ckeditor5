@@ -16,6 +16,20 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
  * This command is used to proxy multiple commands. The multi command is enabled when one of its registered child commands is enabled.
  * Whe executing multi command the first command that is enabled will be executed.
  *
+ *		const multiCommand = new MultiCommand( editor );
+ *
+ *		const commandFoo = new Command( editor );
+ *		const commandBar = new Command( editor );
+ *
+ *		// Register child commands.
+ *		multiCommand.registerChildCommand( commandFoo );
+ *		multiCommand.registerChildCommand( commandBar );
+ *
+ *		// Enable one of commands
+ *		commandBar.isEnabled = true;
+ *
+ *		multiCommand.execute(); // Will execute commandBar.
+ *
  * @extends module:core/command~Command
  */
 export default class MultiCommand extends Command {
