@@ -171,7 +171,6 @@ export default class LinkFormView extends View {
 			view: this
 		} );
 
-		// Focus order should be different than position in DOM. Save/Cancel buttons should be focused at the end.
 		const childViews = [
 			this.urlInputView,
 			...this.manualDecoratorsUIView,
@@ -288,8 +287,6 @@ export default class LinkFormView extends View {
 		const children = this.createCollection();
 
 		children.add( this.urlInputView );
-		children.add( this.saveButtonView );
-		children.add( this.cancelButtonView );
 
 		if ( this.manualDecorators.length ) {
 			const additionalButtonsView = new View();
@@ -315,6 +312,9 @@ export default class LinkFormView extends View {
 			} );
 			children.add( additionalButtonsView );
 		}
+
+		children.add( this.saveButtonView );
+		children.add( this.cancelButtonView );
 
 		return children;
 	}
