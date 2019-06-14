@@ -3,33 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import VirtualTestEditor from './_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import MultiCommand from '../src/multicommand';
 import IndentEditing from '../src/indentediting';
 
 describe( 'IndentEditing', () => {
-	let editor, element;
+	let editor;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		element = document.createElement( 'div' );
-		document.body.appendChild( element );
-
-		return ClassicTestEditor
-			.create( element, { plugins: [ IndentEditing ] } )
+		return VirtualTestEditor
+			.create( { plugins: [ IndentEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 			} );
 	} );
 
 	afterEach( () => {
-		element.remove();
-
 		if ( editor ) {
 			return editor.destroy();
 		}
