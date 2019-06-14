@@ -38,8 +38,6 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-{@link features/base64-upload-adapter Base64 Upload Adapter}
-
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-upload.
