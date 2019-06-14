@@ -10,27 +10,64 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-utils/src/textwatcher';
 
-// Set of default transformations provided by the feature.
-const DEFAULT_TRANSFORMATIONS = [
+const TRANSFORMATIONS = {
 	// Common symbols:
-	{ from: '(c)', to: '©' },
-	{ from: '(r)', to: '®' },
-	{ from: '(tm)', to: '™' },
+	copyright: { from: '(c)', to: '©' },
+	registered_trademark: { from: '(r)', to: '®' },
+	trademark: { from: '(tm)', to: '™' },
 
 	// Mathematical:
-	{ from: '1/2', to: '½' },
-	{ from: '<=', to: '≤' },
+	one_half: { from: '1/2', to: '½' },
+	one_third: { from: '1/3', to: '⅓' },
+	two_thirds: { from: '2/3', to: '⅔' },
+	one_forth: { from: '1/4', to: '¼' },
+	three_quarters: { from: '3/4', to: '¾' },
+	less_then_or_equal: { from: '<=', to: '≤' },
+	greater_then_or_equal: { from: '>=', to: '≥' },
+	not_equal: { from: '!=', to: '≠' },
+	arrow_left: { from: '<-', to: '→' },
+	arrow_right: { from: '->', to: '≠' },
+	// one_fifth: { from: '1/5', to: '⅕' },
+	// one_sixth: { from: '1/6', to: '⅙' },
+	// one_seventh: { from: '1/7', to: '⅐' },
+	// one_eight: { from: '1/8', to: '⅛' },
+	// one_ninth: { from: '1/9', to: '⅑' },
 
 	// Typography:
-	{ from: '...', to: '…' },
-	{ from: ' -- ', to: ' – ' },
-	{ from: ' --- ', to: ' — ' },
+	horizontal_ellipsis: { from: '...', to: '…' },
+	en_dash: { from: ' -- ', to: ' – ' },
+	em_dash: { from: ' --- ', to: ' — ' },
 
 	// Quotations:
-	// English primary.
-	{ from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
-	// English secondary.
-	{ from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' }
+	// English, US
+	quotes_primary: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
+	quotes_secondary: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
+
+	// English, UK
+	quotes_primary_en_gb: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
+	quotes_secondary_en_gb: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
+
+	// Polish
+	quotes_primary_pl: { from: buildQuotesRegExp( '"' ), to: '$1„$2”' },
+	quotes_secondary_pl: { from: buildQuotesRegExp( '\'' ), to: '$1‚$2’' },
+
+	// Groups (defined here to assure no conflicts with transformations.
+	symbols: [ 'copyright', 'registered_trademark', 'trademark' ],
+	mathematical: [
+		'one_half', 'one_third', 'two_thirds', 'one_forth', 'three_quarters',
+		'less_then_or_equal', 'greater_then_or_equal', 'not_equal',
+		'arrow_left', 'arrow_right'
+	],
+	typography: [ 'horizontal_ellipsis', 'en_dash', 'em_dash' ],
+	quotes: [ 'quotes_primary', 'quotes_secondary' ]
+};
+
+// Set of default transformations provided by the feature.
+const DEFAULT_TRANSFORMATIONS = [
+	'symbols',
+	'mathematical',
+	'typography',
+	'quotes'
 ];
 
 /**
@@ -47,8 +84,7 @@ export default class TextTransformation extends Plugin {
 
 		editor.config.define( 'typing', {
 			transformation: {
-				include: DEFAULT_TRANSFORMATIONS,
-				extra: []
+				include: DEFAULT_TRANSFORMATIONS
 			}
 		} );
 	}
@@ -67,10 +103,16 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const transformations = editor.config.get( 'typing.transformation.include' );
-		const extraTransformations = editor.config.get( 'typing.transformation.extra' );
+		const transformations = editor.config.get( 'typing.transformation.include' ) || [];
+		const extraTransformations = editor.config.get( 'typing.transformation.extra' ) || [];
+		const excludeTransformations = editor.config.get( 'typing.transformation.exclude' ) || [];
 
-		for ( const transformation of [ ...transformations, ...extraTransformations ] ) {
+		const configuredTransformations = [];
+
+		[ ...transformations, ...extraTransformations ]
+			.forEach( transformation => transformShortcut( transformation, configuredTransformations, excludeTransformations ) );
+
+		for ( const transformation of configuredTransformations ) {
 			const { from, to } = transformation;
 
 			let testCallback;
@@ -108,6 +150,29 @@ export default class TextTransformation extends Plugin {
 // @returns {String}
 function buildQuotesRegExp( quoteCharacter ) {
 	return new RegExp( `(^|\\s)${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$` );
+}
+
+function transformShortcut( transformationOrName, output, exclude ) {
+	if ( typeof transformationOrName !== 'string' ) {
+		output.push( transformationOrName );
+	} else {
+		const namedTransformation = TRANSFORMATIONS[ transformationOrName ];
+
+		// Skip undefined
+		if ( !namedTransformation ) {
+			return;
+		}
+
+		if ( exclude.includes( namedTransformation ) ) {
+			return;
+		}
+
+		if ( Array.isArray( namedTransformation ) ) {
+			namedTransformation.forEach( transformationOrName => transformShortcut( transformationOrName, output, exclude ) );
+		} else {
+			output.push( namedTransformation );
+		}
+	}
 }
 
 /**
