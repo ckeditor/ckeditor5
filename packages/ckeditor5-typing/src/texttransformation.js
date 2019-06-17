@@ -26,8 +26,8 @@ const TRANSFORMATIONS = {
 	less_then_or_equal: { from: '<=', to: '≤' },
 	greater_then_or_equal: { from: '>=', to: '≥' },
 	not_equal: { from: '!=', to: '≠' },
-	arrow_left: { from: '<-', to: '→' },
-	arrow_right: { from: '->', to: '≠' },
+	arrow_left: { from: '<-', to: '←' },
+	arrow_right: { from: '->', to: '→' },
 
 	// Typography:
 	horizontal_ellipsis: { from: '...', to: '…' },
@@ -242,8 +242,8 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *   - `less_then_or_equal`: `<=`, to: `≤`
  *   - `greater_then_or_equal`: `>=`, to: `≥`
  *   - `not_equal`: transforms `!=`, to: `≠`
- *   - `arrow_left`: transforms `<-`, to: `→`
- *   - `arrow_right`: transforms `->`, to: `≠`
+ *   - `arrow_left`: transforms `<-`, to: `←`
+ *   - `arrow_right`: transforms `->`, to: `→`
  *
  * The other defined named transformations are:
  * * `quotes_primary_en_gb`: transforms `'Foo bar'` to `‘Foo bar’`
