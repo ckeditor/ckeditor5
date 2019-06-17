@@ -1372,7 +1372,7 @@ describe( 'Renderer', () => {
 			expect( domFocusSpy.called ).to.be.false;
 		} );
 
-		it( 'should render NBSP as first space in inline element after another space', () => {
+		it( 'should render NBSP as last space in the previous inline element', () => {
 			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
 
 			viewRoot._appendChild( viewP );
@@ -1395,9 +1395,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x&nbsp;<b> y</b>' );
 		} );
 
 		it( 'should update sibling after, when node before is removed', () => {
@@ -1473,9 +1473,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x&nbsp;<b> y</b>' );
 		} );
 
 		// #1093
@@ -1502,9 +1502,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domP.childNodes[ 1 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( '<b>x </b>&nbsp;y' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x&nbsp;</b> y' );
 		} );
 
 		// #1093
@@ -1532,9 +1532,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domI.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( '<b>x </b><i>&nbsp;y</i>' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domI.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x&nbsp;</b><i> y</i>' );
 		} );
 
 		// #1125
