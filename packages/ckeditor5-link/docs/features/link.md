@@ -3,6 +3,8 @@ title: Link
 category: features
 ---
 
+{@snippet features/build-link-source}
+
 The {@link module:link/link~Link} feature brings support for link editing to the editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
 ## Demo
