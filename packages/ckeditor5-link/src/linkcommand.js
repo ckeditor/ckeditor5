@@ -30,12 +30,13 @@ export default class LinkCommand extends Command {
 		super( editor );
 
 		/**
-		 * Keeps collection of {@link module:link/utils~ManualDecorator}
-		 * corresponding to {@link module:link/link~LinkConfig#decorators}.
-		 * You can consider it as a model with states of manual decorators added to currently selected link.
+		 * A collection of {@link module:link/utils~ManualDecorator manual decorators}
+		 * corresponding to the {@link module:link/link~LinkConfig#decorators decorator configuration}.
+		 *
+		 * You can consider it a model with states of manual decorators added to currently selected link.
 		 *
 		 * @readonly
-		 * @type {module:utils/collection~Collection}
+		 * @type {module:utils/collection~Collection.<module:link/utils~ManualDecorator>}
 		 */
 		this.manualDecorators = new Collection();
 	}
@@ -69,17 +70,19 @@ export default class LinkCommand extends Command {
 	 *
 	 * When the selection is collapsed and inside the text with the `linkHref` attribute, the attribute value will be updated.
 	 *
-	 * # Decorators
-	 * Command has an optional second parameter, which can apply or remove {@link module:link/utils~ManualDecorator} together with href.
-	 * Decorators are representing in a corresponding way as href, which are attributes for {@link module:engine/model/text~Text Text node}.
-	 * Names of those attributes are stored as `id`s in {@link module:link/utils~ManualDecorator} and preserve convention of name:
-	 * `linkManualDecoratorN`, where `N` is replaced with a number (for example: `'linkManualDecorator0'`).
+	 * # Decorators and attribute management
 	 *
-	 * More about decorators might be found in {@link module:link/link~LinkConfig#decorators}
+	 * This command has an optional argument, which applies or removes model attributes brought by
+	 * {@link module:link/utils~ManualDecorator manual decorators}. Model attribute names correspond to
+	 * decorator {@link module:link/utils~ManualDecorator#id ids} and follow the incremental pattern:
+	 * `'linkManualDecorator0'`, `'linkManualDecorator1'`, `'linkManualDecorator2'`, etc..
+	 *
+	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
+	 * documentation.
 	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
-	 * @param {Object} [manualDecoratorIds={}] Keeps information about turned on and off manual decorators applied with command.
+	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.
 	 */
 	execute( href, manualDecoratorIds = {} ) {
 		const model = this.editor.model;

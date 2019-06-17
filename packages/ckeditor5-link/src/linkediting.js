@@ -90,11 +90,13 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Method process array of {@link module:link/link~LinkDecoratorAutomaticOption} and register
-	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher} for them.
-	 * Downcast dispatcher is obtained with {@link module:link/utils~AutomaticDecorators#getDispatcher}.
+	 * Processes an array of configured {@link module:link/link~LinkDecoratorAutomaticOption automatic decorators}
+	 * and registers a {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher}
+	 * for each one of them. Downcast dispatchers are obtained using the
+	 * {@link module:link/utils~AutomaticDecorators#getDispatcher} method.
 	 *
-	 * Method also kept configuration of decorator activated with {@link module:link/link~LinkConfig#targetDecorator}.
+	 * **Note**: This method also activates the automatic external link decorator if enabled via
+	 * {@link module:link/link~LinkConfig#targetDecorator `config.link.targetDecorator`}.
 	 *
 	 * @private
 	 * @param {Array.<module:link/link~LinkDecoratorAutomaticOption>} automaticDecoratorDefinitions
@@ -102,13 +104,12 @@ export default class LinkEditing extends Plugin {
 	_enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
 		const automaticDecorators = new AutomaticDecorators();
+
 		// Adds default decorator for external links.
 		if ( editor.config.get( 'link.targetDecorator' ) ) {
 			automaticDecorators.add( {
 				mode: DECORATOR_AUTOMATIC,
-				callback: url => {
-					return EXTERNAL_LINKS_REGEXP.test( url );
-				},
+				callback: url => EXTERNAL_LINKS_REGEXP.test( url ),
 				attributes: {
 					target: '_blank',
 					rel: 'noopener noreferrer'
@@ -117,16 +118,18 @@ export default class LinkEditing extends Plugin {
 		}
 
 		automaticDecorators.add( automaticDecoratorDefinitions );
+
 		if ( automaticDecorators.length ) {
 			editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
 		}
 	}
 
 	/**
-	 * Method process array of {@link module:link/link~LinkDecoratorManualOption} by transformation those configuration options into
-	 * {@link module:link/utils~ManualDecorator} objects. Then those objects are added to
-	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection, which is considered as a model for manual decorators state.
-	 * It also provides a proper {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement}
+	 * Processes an array of configured {@link module:link/link~LinkDecoratorManualOption manual decorators}
+	 * and transforms them into {@link module:link/utils~ManualDecorator} instances and stores them in the
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
+	 *
+	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement}
 	 * converter for each manual decorator and extends the {@link module:engine/model/schema~Schema model's schema}
 	 * with adequate model attributes.
 	 *

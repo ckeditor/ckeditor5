@@ -75,6 +75,7 @@ export default class Link extends Plugin {
  * More information about decorators can be found in the {@link module:link/link~LinkConfig#decorators decorators configuration}
  * reference.
  *
+ * @default false
  * @member {Boolean} module:link/link~LinkConfig#targetDecorator
  */
 
