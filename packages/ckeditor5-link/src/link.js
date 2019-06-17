@@ -127,6 +127,8 @@ export default class Link extends Plugin {
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
+ * See also {@glink features/link#decorators} guide.
+ *
  * @member {Object.<String, module:link/link~LinkDecoratorDefinition>} module:link/link~LinkConfig#decorators
  */
 
@@ -139,6 +141,8 @@ export default class Link extends Plugin {
 
 /**
  * The kind of the decorator. `'manual'` for all manual decorators and `'automatic'` for all automatic decorators.
+ *
+ * See also {@glink features/link#decorators} guide.
  *
  * @member {'manual'|'automatic'} module:link/link~LinkDecoratorDefinition#mode
  */

@@ -23,20 +23,27 @@ CKEditor 5 allows for typing both at inner and outer boundaries of links to make
 
 {@img assets/img/typing-before.gif 770 The animation showing typing before the link in CKEditor 5 rich text editor.}
 
-## Link decorators
+## Decorators
 
-Link decorators is a feature that allows on extending HTML anchor with custom predefined attributes. There are 2 types of decorators: "automatic" and "manual". More information about each of them might be found in sections below. There might be applied multiple decorators to the same link (including manual and automatic decorators in one editor).
+Decorator feature provides an easy way to configure and extend links with additional attributes. A decorator is an object defined in the configuration, which describes additional rules applied to the link feature. There are 2 types of decorators: "automatic" and "manual". More information about each of them might be found in sections below or in {@link module:link/link~LinkConfig#decorators the API documentation}.
+
 <info-box warning>
-	**Warning:** It is not recommended to modify the same attribute through two or more decorators. All decorators works independent and its state is not reflected between them in any way. This also includes mixing manual and automatic decorators.
+	**Warning:** It is not recommended to modify the same attribute through two or more decorators. All decorators work independent and its state is not reflected between them in any way. This also includes mixing manual and automatic decorators.
 </info-box>
+
+### Demo
+
+In editor below is presented automatic and manual decorator feature. All external links gets automatically `target="_blank"` and `rel="noopener noreferrer"` attributes, what is done with {@link module:link/link~LinkConfig#targetDecorator} feature described below. The second decorator is a manual one, which adds a UI switch button with `"Downloadable"` label. Output data can be found in container below editor (its content updates automatically).
 
 {@snippet features/linkdecorators}
 
 ### Automatic decorators
 
-These types of decorators work during downcasting data ({@link framework/guides/architecture/editing-engine#conversion read more about conversion}). You can specify your own rules as a callback function. Function gets a link's href as an input argument and when the callback function returns `true`, then given attributes are applied for a processed link. There might be applied multiple rules for the same link, however you should never process the same attribute through different decorators. Rules how to define automatic decorators can be found in {@linkapi module:link/link~LinkDecoratorAutomaticOption automatic decorator definition}.
+This type of decorator is applied automatically based on the link's URL. The automatic decorator has defined a callback function in {@link module:link/link~LinkDecoratorAutomaticOption the configuration}, which decides whether given decorators should be executed or not. There might be multiple decorators configured for the same link, however, each of them should implement different attribute's set without overlaps.
 
-For example this decorator will add `download="download"` attribute to every link ending with `.pdf`:
+Automatic decorators are applied during {@link framework/guides/architecture/editing-engine#conversion downcasting data}, which means that result of working decorator is visible neither in the editor's model nor the UI in any way.
+
+For example, this decorator will add `download="download"` attribute to every link ending with `.pdf`:
 ```js
 const config = {
 	link: {
@@ -55,8 +62,9 @@ const config = {
 
 #### Target decorator
 
-There is also predefined configuration option {@linkapi module:link/link~LinkConfig#targetDecorator} which adds automatic decorator. This decorator adds two attributes ( `target="_blank"` and `rel="noopener noreferrer"` ) to all external links.
-Target decorator comes with followed configuration underneath:
+Automatic decorators might be very handy in one particular situation. Mentioned case is to add `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in document. A request for this feature is quite common, and because of that, there is a {@link module:link/link~LinkConfig#targetDecorator configuration option}, which registers such automatic decorator. When `targetDecorator` option is set to `true`, then all links started with `http://`, `https://` or `//` are decorated with `target` and `rel` attributes, without need to implement own decorator.
+
+Code of automatic decorator comes with `targetDecorator` option:
 ```js
 {
 	mode: 'automatic',
@@ -68,11 +76,19 @@ Target decorator comes with followed configuration underneath:
 }
 ```
 
+<info-box>
+	If it is necessary to have a UI option, where the user decides, which links should be open in a new window, then `targetDecorator` options should remain `undefined` and there should be created a new **manual decorator** with proper configuration.
+</info-box>
+
+
+
 ### Manual decorators
 
-These types of decorators adds switch button in user interface, which allows on toggling predefined attributes over a link. Switch buttons are visible in editing option of a link and requires applying changes to be set up over the link. Manual decorators doesn't have a callback property and are available for every link in editor. There is required `label` property, which is using as label for switch button in UI.
+This type of decorator registers a UI element which can be switched by the user. Toggleable elements are located in editing view of the link. Modifying the state of this element and applying changes is reflected in the editor's model, what later is downcasted to attributes defined in {@link module:link/link~LinkDecoratorManualOption the manual decorator}.
 
-For example this decorator will add "Downloadable" switch button:
+Configuration of manual decorator contains a label field used in a UI to describe given attributes set. It should be a compact and descriptive name for the user convenience.
+
+For example, this decorator will add "Downloadable" switch button, which extends link with `download="download"` attribute when is turned on:
 ```js
 {
 	mode: 'manual',
