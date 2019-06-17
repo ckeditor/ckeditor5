@@ -921,6 +921,13 @@ export default class DomConverter {
 
 		// 2. Replace the last space with nbsp if there are two spaces at the end or if the next node starts with space or there is no
 		// next node (container element boundary).
+		//
+		// Keep in mind that Firefox prefers $nbsp; before tag, not inside it:
+		//
+		// Foo <span>&nbsp;bar</span>  <-- bad.
+		// Foo&nbsp;<span> bar</span>  <-- good.
+		//
+		// More here: https://github.com/ckeditor/ckeditor5-engine/issues/1747.
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
 			const nextNode = this._getTouchingViewTextNode( node, true );
 
