@@ -85,9 +85,12 @@ export default class LinkFormView extends View {
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		/**
-		 * Keeps reference to {@link module:link/linkcommand~LinkCommand#manualDecorators} in link command.
-		 * Collection is used to build proper UI element and synchronize its state between model located in
-		 * {@link module:link/linkcommand~LinkCommand#manualDecorators link command} and the {@link #manualDecoratorsUIView UI}.
+		 * A reference to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
+		 * collection of the {@link module:link/linkcommand~LinkCommand}.
+		 *
+		 * Helps bootstrap the {@link #manualDecoratorsUIView UI} so it corresponds with the global
+		 * configuration of manual decorators and to synchronize its state later on when the user
+		 * is editing the content.
 		 *
 		 * @readonly
 		 * @type {model:utils/collection~Collection}
@@ -95,9 +98,9 @@ export default class LinkFormView extends View {
 		this.manualDecorators = manualDecorators;
 
 		/**
-		 * Preserves collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
-		 * which are made based on {@link #manualDecorators}. It use {@link #_createManualDecoratorsUIView} method
-		 * to generate proper collection.
+		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
+		 * which corresponds to {@link #manualDecorators manual decorators} configured in the editor.
+		 * Populated by {@link #_createManualDecoratorsUIView}.
 		 *
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
@@ -105,7 +108,7 @@ export default class LinkFormView extends View {
 		this.manualDecoratorsUIView = this._createManualDecoratorsUIView();
 
 		/**
-		 * Collection of views used as children elements in {@link module:link/ui/linkformview~LinkFormView}.
+		 * Collection of child views in the form.
 		 *
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
@@ -247,7 +250,7 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Prepare {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
+	 * Populates {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
 	 * made based on {@link #manualDecorators}
 	 *
 	 * @private
@@ -273,12 +276,16 @@ export default class LinkFormView extends View {
 
 			return switchButton;
 		} );
+
 		return switches;
 	}
 
 	/**
-	 * Creates {@link #children} for {@link module:link/ui/linkformview~LinkFormView}. If there exist {@link #manualDecorators},
-	 * Then additional View wrapping all {@link #manualDecoratorsUIView} will be added as a child of LinkFormView.
+	 * Populates the {@link #children} collection of the form.
+	 *
+	 * If {@link #manualDecorators manual decorators} are configured in the editor, creates an
+	 * additional `View` wrapping all {@link #manualDecoratorsUIView} switch buttons corresponding
+	 * to those decorators.
 	 *
 	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
@@ -290,6 +297,7 @@ export default class LinkFormView extends View {
 
 		if ( this.manualDecorators.length ) {
 			const additionalButtonsView = new View();
+
 			additionalButtonsView.setTemplate( {
 				tag: 'ul',
 				children: this.manualDecoratorsUIView.map( switchButton => ( {
