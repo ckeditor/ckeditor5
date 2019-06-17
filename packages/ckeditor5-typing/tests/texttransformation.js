@@ -208,6 +208,84 @@ describe( 'Text transformation feature', () => {
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor(tm)</paragraph>' );
 			} );
 		} );
+
+		it( 'should remove rules from group when defining remove rules', () => {
+			return createEditorInstance( {
+				typing: {
+					transformation: {
+						include: [ 'symbols' ],
+						remove: [ 'trademark' ]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '(tm)', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '(r)', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)®</paragraph>' );
+			} );
+		} );
+
+		it( 'should remove all rules from group when group is in remove', () => {
+			return createEditorInstance( {
+				typing: {
+					transformation: {
+						include: [ 'symbols', 'typography' ],
+						remove: [ 'symbols' ]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '(tm)', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '...', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)…</paragraph>' );
+			} );
+		} );
+
+		it( 'should not fail for unknown rule name', () => {
+			return createEditorInstance( {
+				typing: {
+					transformation: {
+						include: [ 'symbols', 'typo' ]
+					}
+				}
+			} );
+		} );
+
+		it( 'should not fail for re-declared include rules config', () => {
+			return createEditorInstance( {
+				typing: {
+					transformation: {
+						extra: [ 'trademark' ]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '(tm)', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>™</paragraph>' );
+			} );
+		} );
 	} );
 
 	function createEditorInstance( additionalConfig = {} ) {

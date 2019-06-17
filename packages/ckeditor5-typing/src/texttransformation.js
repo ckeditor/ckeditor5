@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-utils/src/textwatcher';
 
+// All named transformations.
 const TRANSFORMATIONS = {
 	// Common symbols:
 	copyright: { from: '(c)', to: '©' },
@@ -49,9 +50,11 @@ const TRANSFORMATIONS = {
 
 	// Polish
 	quotes_primary_pl: { from: buildQuotesRegExp( '"' ), to: '$1„$2”' },
-	quotes_secondary_pl: { from: buildQuotesRegExp( '\'' ), to: '$1‚$2’' },
+	quotes_secondary_pl: { from: buildQuotesRegExp( '\'' ), to: '$1‚$2’' }
+};
 
-	// Groups (defined here to assure no conflicts with transformations.
+// Transformation groups.
+const TRANSFORMATION_GROUPS = {
 	symbols: [ 'copyright', 'registered_trademark', 'trademark' ],
 	mathematical: [
 		'one_half', 'one_third', 'two_thirds', 'one_forth', 'three_quarters',
@@ -103,14 +106,7 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const transformations = editor.config.get( 'typing.transformation.include' ) || [];
-		const extraTransformations = editor.config.get( 'typing.transformation.extra' ) || [];
-		const excludeTransformations = editor.config.get( 'typing.transformation.exclude' ) || [];
-
-		const configuredTransformations = [];
-
-		[ ...transformations, ...extraTransformations ]
-			.forEach( transformation => transformShortcut( transformation, configuredTransformations, excludeTransformations ) );
+		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformation' ) );
 
 		for ( const transformation of configuredTransformations ) {
 			const { from, to } = transformation;
@@ -152,27 +148,42 @@ function buildQuotesRegExp( quoteCharacter ) {
 	return new RegExp( `(^|\\s)${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$` );
 }
 
-function transformShortcut( transformationOrName, output, exclude ) {
-	if ( typeof transformationOrName !== 'string' ) {
-		output.push( transformationOrName );
-	} else {
-		const namedTransformation = TRANSFORMATIONS[ transformationOrName ];
+// Reads text transformation config and returns normalized array of transformations objects.
+//
+// @param {module:typing/texttransformation~TextTransformationDescription} config
+// @returns {Array.<module:typing/texttransformation~TextTransformationDescription>}
+function getConfiguredTransformations( config ) {
+	const extra = config.extra || [];
+	const remove = config.remove || [];
+	const isNotRemoved = transformation => !remove.includes( transformation );
 
-		// Skip undefined
-		if ( !namedTransformation ) {
-			return;
-		}
+	const configured = config.include.concat( extra ).filter( isNotRemoved );
 
-		if ( exclude.includes( namedTransformation ) ) {
-			return;
-		}
+	return expandGroupsAndRemoveDuplicates( configured )
+		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group
+		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation );
+}
 
-		if ( Array.isArray( namedTransformation ) ) {
-			namedTransformation.forEach( transformationOrName => transformShortcut( transformationOrName, output, exclude ) );
+// Reads definitions and expands named groups if needed to transformation names.
+// This method also removes duplicated named transformations if any.
+//
+// @param {Array.<String|Object>} definitions
+// @returns {Array.<String|Object>}
+function expandGroupsAndRemoveDuplicates( definitions ) {
+	// Set is using to make sure that transformation names are not duplicated.
+	const definedTransformations = new Set();
+
+	for ( const transformationOrGroup of definitions ) {
+		if ( TRANSFORMATION_GROUPS[ transformationOrGroup ] ) {
+			for ( const transformation of TRANSFORMATION_GROUPS[ transformationOrGroup ] ) {
+				definedTransformations.add( transformation );
+			}
 		} else {
-			output.push( namedTransformation );
+			definedTransformations.add( transformationOrGroup );
 		}
 	}
+
+	return Array.from( definedTransformations );
 }
 
 /**
@@ -258,7 +269,15 @@ function transformShortcut( transformationOrName, output, exclude ) {
  */
 
 /**
- * The extra text transformations that are added to the transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#include}.
+ * The extra text transformations that are added to the transformations defined in
+ * {@link module:typing/texttransformation~TextTransformationConfig#include}.
+ *
+ * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#extra
+ */
+
+/**
+ * The text transformations names that are removed from transformations defined in
+ * {@link module:typing/texttransformation~TextTransformationConfig#remove} or module:typing/texttransformation~TextTransformationConfig#extra.
  *
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#extra
  */
