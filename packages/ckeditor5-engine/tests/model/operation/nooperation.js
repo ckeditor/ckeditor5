@@ -33,24 +33,6 @@ describe( 'NoOperation', () => {
 		expect( clone.baseVersion ).to.equal( 0 );
 	} );
 
-	describe( 'is()', () => {
-		it( 'should return true for all valid names of "no" operation', () => {
-			expect( noop.is( 'operation' ) ).to.be.true;
-			expect( noop.is( 'model:operation' ) ).to.be.true;
-			expect( noop.is( 'noOperation' ) ).to.be.true;
-			expect( noop.is( 'model:operation:no' ) ).to.be.true;
-		} );
-
-		it( 'should return false for invalid parameters', () => {
-			expect( noop.is( 'operation:no' ) ).to.be.false;
-			expect( noop.is( 'model:operation:insert' ) ).to.be.false;
-			expect( noop.is( 'attributeOperation' ) ).to.be.false;
-			expect( noop.is( 'detachOperation' ) ).to.be.false;
-			expect( noop.is( 'rootAttributeOperation' ) ).to.be.false;
-			expect( noop.is( 'model:operation:rootAttribute' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const serialized = noop.toJSON();

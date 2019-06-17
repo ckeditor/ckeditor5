@@ -74,13 +74,6 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	is( type ) {
-		return type == 'moveOperation' || type == 'model:operation:move' || super.is( type );
-	}
-
-	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/moveoperation~MoveOperation} Clone of this operation.

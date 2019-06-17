@@ -257,36 +257,6 @@ describe( 'RootAttributeOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
-	describe( 'is()', () => {
-		let operation;
-
-		before( () => {
-			operation = new RootAttributeOperation(
-				root,
-				'key',
-				null,
-				'newValue',
-				doc.version
-			);
-		} );
-
-		it( 'should return true for all valid names of "rootAttribute" operation', () => {
-			expect( operation.is( 'operation' ) ).to.be.true;
-			expect( operation.is( 'model:operation' ) ).to.be.true;
-			expect( operation.is( 'rootAttributeOperation' ) ).to.be.true;
-			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.true;
-		} );
-
-		it( 'should return false for invalid parameters', () => {
-			expect( operation.is( 'operation:rootAttribute' ) ).to.be.false;
-			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
-			expect( operation.is( 'noOperation' ) ).to.be.false;
-			expect( operation.is( 'detachOperation' ) ).to.be.false;
-			expect( operation.is( 'attributeOperation' ) ).to.be.false;
-			expect( operation.is( 'model:operation:attribute' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new RootAttributeOperation(

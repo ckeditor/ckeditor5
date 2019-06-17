@@ -82,37 +82,6 @@ export default class Operation {
 	}
 
 	/**
-	 * Checks whether given object is of `operation` type. This method is useful when processing operations are of unknown type.
-	 * This method can be used to check what type of operation is returned. General rules how to check operation are presented for
-	 * attribute operation. You need to use analogical syntax for other {@link module:engine/model/operation/operation~Operation}.
-	 *
-	 * 	// Examples for AttributeOperation.
-	 *
-	 * 	operation instanceof AttributeOperation
-	 *
-	 * 	operation.is( 'operation' ) // true for AttributeOperation and other operations
-	 * 	operation.is( 'model:operation' ) // true for AttributeOperation and other operations
-	 * 	operation.is( 'attributeOperation' ) // true for AttributeOperation
-	 * 	operation.is( 'model:operation:attribute' ) // true for AttributeOperation
-	 *
-	 * 	// Disallowed syntax
-	 * 	operation.is( 'operation:attribute' ) // will return false
-	 *
-	 * 	// Few examples for other Operations
-	 * 	operation.is( 'model:operation:no ) // true for no-operation
-	 * 	operation.is( 'noOperation' ) // true for no-operation
-	 * 	operation.is( 'model:operation:marker ) // true for marker operation
-	 * 	operation.is( 'insertOperation' ) // true for insert operation
-	 * 	operation.is( 'model:operation:rootAttribute' ) // true for rootAttributeOperation
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'operation' || type == 'model:operation';
-	}
-
-	/**
 	 * Checks whether the operation's parameters are correct and the operation can be correctly executed. Throws
 	 * an error if operation is not valid.
 	 *

@@ -130,30 +130,6 @@ describe( 'MarkerOperation', () => {
 		expect( clone ).to.deep.equal( op );
 	} );
 
-	describe( 'is()', () => {
-		let operation;
-
-		before( () => {
-			operation = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );
-		} );
-
-		it( 'should return true for all valid names of "marker" operation', () => {
-			expect( operation.is( 'operation' ) ).to.be.true;
-			expect( operation.is( 'model:operation' ) ).to.be.true;
-			expect( operation.is( 'markerOperation' ) ).to.be.true;
-			expect( operation.is( 'model:operation:marker' ) ).to.be.true;
-		} );
-
-		it( 'should return false for invalid parameters', () => {
-			expect( operation.is( 'operation:marker' ) ).to.be.false;
-			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
-			expect( operation.is( 'noOperation' ) ).to.be.false;
-			expect( operation.is( 'detachOperation' ) ).to.be.false;
-			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
-			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );

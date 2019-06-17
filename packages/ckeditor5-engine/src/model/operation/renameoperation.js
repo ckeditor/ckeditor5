@@ -64,13 +64,6 @@ export default class RenameOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	is( type ) {
-		return type == 'renameOperation' || type == 'model:operation:rename' || super.is( type );
-	}
-
-	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/renameoperation~RenameOperation} Clone of this operation.

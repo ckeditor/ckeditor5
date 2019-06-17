@@ -77,13 +77,6 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	is( type ) {
-		return type == 'insertOperation' || type == 'model:operation:insert' || super.is( type );
-	}
-
-	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/insertoperation~InsertOperation} Clone of this operation.

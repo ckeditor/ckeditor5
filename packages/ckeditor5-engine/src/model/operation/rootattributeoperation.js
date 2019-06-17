@@ -84,15 +84,6 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	is( type ) {
-		return type == 'rootAttributeOperation' ||
-			type == 'model:operation:rootAttribute' ||
-			super.is( type );
-	}
-
-	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation} Clone of this operation.

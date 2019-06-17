@@ -77,13 +77,6 @@ export default class MarkerOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	is( type ) {
-		return type == 'markerOperation' || type == 'model:operation:marker' || super.is( type );
-	}
-
-	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation} Clone of this operation.

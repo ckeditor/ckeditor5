@@ -264,32 +264,6 @@ describe( 'MoveOperation', () => {
 		} );
 	} );
 
-	describe( 'is()', () => {
-		let operation;
-
-		before( () => {
-			const sourcePosition = new Position( root, [ 0, 0 ] );
-			const targetPosition = new Position( root, [ 1, 0 ] );
-			operation = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
-		} );
-
-		it( 'should return true for all valid names of "move" operation', () => {
-			expect( operation.is( 'operation' ) ).to.be.true;
-			expect( operation.is( 'model:operation' ) ).to.be.true;
-			expect( operation.is( 'moveOperation' ) ).to.be.true;
-			expect( operation.is( 'model:operation:move' ) ).to.be.true;
-		} );
-
-		it( 'should return false for invalid parameters', () => {
-			expect( operation.is( 'operation:move' ) ).to.be.false;
-			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
-			expect( operation.is( 'noOperation' ) ).to.be.false;
-			expect( operation.is( 'detachOperation' ) ).to.be.false;
-			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
-			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const sourcePosition = new Position( root, [ 0, 0 ] );
