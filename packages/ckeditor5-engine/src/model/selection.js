@@ -634,8 +634,6 @@ export default class Selection {
 	 *		selection.is( 'element' ); // false
 	 *		selection.is( 'view:selection' ); // false
 	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

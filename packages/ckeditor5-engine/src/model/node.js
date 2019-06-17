@@ -469,6 +469,10 @@ export default class Node {
 	 * that can be either text node or element. This method can be used to check what kind of object is returned.
 	 * All checked types might be prefixed with `model:` to narrow search exclusively to model's objects.
 	 * That should prevent of situation where `view:node` accidentally might be considered as `model:node`.
+	 * Types are defined as name of the class written in [camelCase](https://en.wikipedia.org/wiki/Camel_case) notation.
+	 * E.g. class `LiveRange` will get type `liveRange`.
+	 *
+	 * There is more classes in model which follows similar naming convention. Check corresponding elements documentation for more details.
 	 *
 	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
@@ -477,8 +481,6 @@ export default class Node {
 	 *		obj.is( 'paragraph' ); // shortcut for obj.is( 'element', 'paragraph' )
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *		obj.is( 'textProxy' ); // true for text proxy object
-	 *
-	 *	Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
 	 *
 	 * @method #is
 	 * @param {String} type

@@ -718,42 +718,6 @@ export default class Model {
 	}
 
 	/**
-	 * Checks whether given object is of `model` type.
-	 *
-	 * All classes related to {@link module:engine/model/model~Model} might contain `is` method,
-	 * which checks if given object belong to specific type. Types are defined as name of the class
-	 * written in [camelCase](https://en.wikipedia.org/wiki/Camel_case) notation. E.g. class `LiveRange`
-	 * will get type `liveRange`. There might appear some additional possibilities to test types which will be described in
-	 * related documentation.
-	 *
-	 * Method might simplify your code for cases, when you want to test unknown object for specific type.
-	 * Instead of using `instanceof` and importing entire class for testing, there might be used `is` method which test for given name.
-	 * There is also available `model:` prefix in each case, which gives more specific results.
-	 * It helps to distinguish model's classes from view's. Few examples how to use this method you can find below:
-	 *
-	 * 	const model = new Model();
-	 * 	model.is( 'model' ) // return true
-	 *
-	 * 	const range = new LiveRange( startPosition )
-	 * 	range.is( 'range' ) // return true
-	 * 	range.is( 'liveRange' ) // return true
-	 * 	range.is( 'model:range' ) // return true
-	 * 	range.is( 'model:liveRange' ) // return true
-	 * 	range.is( 'view:range' ) // return false
-	 *
-	 * 	const document = new Document();
-	 * 	document.is( 'model:document' ) // return true
-	 *
-	 * See also {@link module:engine/model/node~Node#is `Node#is()`} for some more details related to elements.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'model';
-	}
-
-	/**
 	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
 	 * which calls callbacks and returns array of values returned by these callbacks.
 	 *

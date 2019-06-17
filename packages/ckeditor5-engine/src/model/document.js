@@ -242,18 +242,6 @@ export default class Document {
 	}
 
 	/**
-	 * Checks whether given object is of `document` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'document' || type == 'model:document';
-	}
-
-	/**
 	 * Used to register a post-fixer callback. A post-fixer mechanism guarantees that the features
 	 * will operate on a correct model state.
 	 *

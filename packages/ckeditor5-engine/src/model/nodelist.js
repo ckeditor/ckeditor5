@@ -171,18 +171,6 @@ export default class NodeList {
 	}
 
 	/**
-	 * Checks whether given object is of `nodeList` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'nodeList' || type == 'model:nodeList';
-	}
-
-	/**
 	 * Inserts given nodes at given index.
 	 *
 	 * @protected

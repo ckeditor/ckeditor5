@@ -382,8 +382,6 @@ export default class DocumentSelection {
 	 *		selection.is( 'model:node' ); // false
 	 *		selection.is( 'element' ); // false
 	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

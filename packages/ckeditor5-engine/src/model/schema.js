@@ -188,18 +188,6 @@ export default class Schema {
 	}
 
 	/**
-	 * Checks whether given object is of `schema` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'schema' || type == 'model:schema';
-	}
-
-	/**
 	 * Returns `true` if the given item is registered in the schema.
 	 *
 	 *		schema.isRegistered( 'paragraph' ); // -> true

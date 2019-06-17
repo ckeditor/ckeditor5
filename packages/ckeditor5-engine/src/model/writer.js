@@ -80,18 +80,6 @@ export default class Writer {
 	}
 
 	/**
-	 * Checks whether given object is of `writer` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'writer' || type == 'model:writer';
-	}
-
-	/**
 	 * Creates a new {@link module:engine/model/text~Text text node}.
 	 *
 	 *		writer.createText( 'foo' );

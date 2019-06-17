@@ -505,7 +505,7 @@ export default class Position {
 	/**
 	 * Checks whether given object is of `position` type.
 	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
+	 * Read more at {@link module:engine/model/model~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

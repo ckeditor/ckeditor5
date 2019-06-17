@@ -98,18 +98,6 @@ export default class History {
 	}
 
 	/**
-	 * Checks whether given object is of `history` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'history' || type == 'model:history';
-	}
-
-	/**
 	 * Checks whether given `operation` is undoing any other operation.
 	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to check.

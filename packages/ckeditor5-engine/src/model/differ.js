@@ -520,18 +520,6 @@ export default class Differ {
 	}
 
 	/**
-	 * Checks whether given object is of `differ` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'differ' || type == 'model:differ';
-	}
-
-	/**
 	 * Resets `Differ`. Removes all buffered changes.
 	 */
 	reset() {

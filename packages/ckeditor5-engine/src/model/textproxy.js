@@ -175,7 +175,7 @@ export default class TextProxy {
 	/**
 	 * Checks whether given object is of `textProxy` type.
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`} and {@link module:engine/model/model~Model#is `Model#is()`}.
+	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

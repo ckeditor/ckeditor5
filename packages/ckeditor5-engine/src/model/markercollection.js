@@ -73,18 +73,6 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Checks whether given object is of `markerCollection` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'markerCollection' || type == 'model:markerCollection';
-	}
-
-	/**
 	 * Creates and adds a {@link ~Marker marker} to the `MarkerCollection` with given name on given
 	 * {@link module:engine/model/range~Range range}.
 	 *
@@ -463,7 +451,7 @@ class Marker {
 	/**
 	 * Checks whether given object is of `marker` type.
 	 *
-	 * Read more at {@link module:engine/model/model~Model#is}.
+	 * Read more at {@link module:engine/model/model~Node#is}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

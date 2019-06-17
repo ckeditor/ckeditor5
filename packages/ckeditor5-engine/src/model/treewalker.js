@@ -153,18 +153,6 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Checks whether given object is of `treeWalker` type.
-	 *
-	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'treeWalker' || type == 'model:treeWalker';
-	}
-
-	/**
 	 * Iterable interface.
 	 *
 	 * @returns {Iterable.<module:engine/model/treewalker~TreeWalkerValue>}
