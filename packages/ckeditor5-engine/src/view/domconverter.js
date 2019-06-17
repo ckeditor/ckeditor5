@@ -890,7 +890,7 @@ export default class DomConverter {
 	 * * a space at the beginning is changed to `&nbsp;` if this is the first text node in its container
 	 * element or if a previous text node ends with a space character,
 	 * * space at the end of the text node is changed to `&nbsp;` if there are two spaces at the end of a node or if next node
-	 * starts with a space,
+	 * starts with a space or if it is the last text node in its container,
 	 * * remaining spaces are replaced to a chain of spaces and `&nbsp;` (e.g. `'x   x'` becomes `'x &nbsp; x'`).
 	 *
 	 * Content of {@link #preElements} is not processed.
@@ -958,7 +958,8 @@ export default class DomConverter {
 	 * * multiple whitespaces are replaced to a single space,
 	 * * space at the beginning of a text node is removed if it is the first text node in its container
 	 * element or if the previous text node ends with a space character,
-	 * * space at the end of the text node is removed, if it is the last text node in its container,
+	 * * space at the end of the text node is removed if there are two spaces at the end of a node or if next node
+	 * starts with a space or if it is the last text node in its container
 	 * * nbsps are converted to spaces.
 	 *
 	 * @param {Node} node DOM text node to process.
