@@ -239,8 +239,8 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *   - `two_thirds`: transforms `2/3`, to: `⅔`
  *   - `one_forth`: transforms `1/4`, to: `¼`
  *   - `three_quarters`: transforms `3/4`, to: `¾`
- *   - `less_then_or_equal`: `<=`, to: `≤`
- *   - `greater_then_or_equal`: `>=`, to: `≥`
+ *   - `less_then_or_equal`: transforms `<=`, to: `≤`
+ *   - `greater_then_or_equal`: transforms `>=`, to: `≥`
  *   - `not_equal`: transforms `!=`, to: `≠`
  *   - `arrow_left`: transforms `<-`, to: `←`
  *   - `arrow_right`: transforms `->`, to: `→`
