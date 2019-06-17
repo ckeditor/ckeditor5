@@ -14,37 +14,39 @@ const editorConfig = {
 	plugins: [ Clipboard, PasteFromOffice ]
 };
 
-generateTests( {
-	input: 'basic-styles',
-	type: 'normalization',
-	browsers,
-	editorConfig
-} );
+describe( 'Paste from Office', () => {
+	generateTests( {
+		input: 'basic-styles',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 
-generateTests( {
-	input: 'image',
-	type: 'normalization',
-	browsers,
-	editorConfig
-} );
+	generateTests( {
+		input: 'image',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 
-generateTests( {
-	input: 'link',
-	type: 'normalization',
-	browsers,
-	editorConfig
-} );
+	generateTests( {
+		input: 'link',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 
-generateTests( {
-	input: 'list',
-	type: 'normalization',
-	browsers,
-	editorConfig
-} );
+	generateTests( {
+		input: 'list',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 
-generateTests( {
-	input: 'spacing',
-	type: 'normalization',
-	browsers,
-	editorConfig
+	generateTests( {
+		input: 'spacing',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 } );
