@@ -61,7 +61,7 @@ export default class Link extends Plugin {
  * When set `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
  * in the editor. By external are meant all links in the editor content starting with `http`, `https`, or `//`.
  *
- * Internally, this option activates a predefined {@link module:link/link~LinkDecoratorAutomaticOption automatic link decorator},
+ * Internally, this option activates a predefined {@link module:link/link~LinkConfig#decorators automatic link decorator},
  * which extends all external links with the `target` and `rel` attributes without additional configuration.
  *
  * **Note**: To control the `target` and `rel` attributes of specific links in the edited content, a dedicated
@@ -82,62 +82,44 @@ export default class Link extends Plugin {
  * Decorators provide an easy way to configure and manage additional link attributes in the editor content. There are
  * two types of link decorators:
  *
- * * **automatic** – they match links against pre–defined rules and manage the attributes based on the results,
- * * **manual** – they allow users to control link attributes individually using the editor UI.
+ * * {@link module:link/link~LinkDecoratorAutomaticOption automatic} – they match links against pre–defined rules and
+ * manage their attributes based on the results,
+ * * {@link module:link/link~LinkDecoratorManualOption manual} – they allow users to control link attributes individually
+ *  using the editor UI.
  *
- * The most common use case for decorators is applying the `target="_blank"` attribute to links in the content
- * (`<a href="..." target="_blank">Link</a>`).
+ * Link decorators are defined as an array of objects:
  *
- * # {@link module:link/link~LinkDecoratorAutomaticOption Automatic decorators}
+ *		const linkConfig = {
+ *			decorators: [
+ *				{
+ *					mode: 'automatic',
+ *					callback: url => url.startsWith( 'http://' ),
+ *					attributes: {
+ *						target: '_blank',
+ *						rel: 'noopener noreferrer'
+ *					}
+ *				},
+ *				{
+ *					mode: 'manual',
+ *					label: 'Downloadable',
+ *					attributes: {
+ *						download: 'file.png',
+ *					}
+ *				},
+ *				// ...
+ *			]
+ *		}
  *
- * This kind of a decorator matches all links in the editor content against a function which decides whether the link
- * should gain a pre–defined set of attributes or not.
+ * To learn more about the configuration syntax, check out the {@link module:link/link~LinkDecoratorAutomaticOption automatic}
+ * and {@link module:link/link~LinkDecoratorManualOption manual} decorator option reference.
  *
- * It takes an object with key-value pairs of attributes and a {@link module:link/link~LinkDecoratorAutomaticOption `callback`} function
- * which must return a boolean based on link's `href`. When the callback returns `true`, the `attributes` are applied
- * to the link.
- *
- * For example, to add the `target="_blank"` attribute to all links starting with the `http://` in the content,
- * the configuration could look as follows:
- *
- *		const link.decorators = [
- *			{
- *				mode: 'automatic',
- *				callback: url => url.startsWith( 'http://' ),
- *				attributes: {
- *					target: '_blank'
- *				}
- *			}
- *		]
+ * **Warning:** Currently, link decorators work independently and no conflict resolution mechanism exists.
+ * For example, configuring the `target` attribute using both an automatic and a manual decorator at a time could end up with a
+ * quirky results. The same applies if multiple manual or automatic decorators were defined for the same attribute.
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
  * dedicated for that purpose which can be enabled by turning a single option on. Check out the
  * {@link module:link/link~LinkConfig#targetDecorator `config.link.targetDecorator`} configuration description to learn more.
- *
- * # {@link module:link/link~LinkDecoratorManualOption Manual decorators}
- *
- * This type of a decorator takes an object with key-value pair of attributes, but those are applied based on the user choice.
- *
- * Manual decorators are represented as switch buttons in the {@link module:link/linkui user interface} of the link feature.
- * This is why each manual decorator requires a {@link module:link/link~LinkDecoratorManualOption label} which describes its purpose
- * to the users.
- *
- * For example, if users are to be allowed to control which particular links should be opened in a new window, the configuration
- * could look as follows:
- *
- *		const link.decorators = [
- *			{
- *				mode: 'manual',
- *				label: 'Open in new window',
- *				attributes: {
- *					target: '_blank'
- *				}
- *			}
- *		]
- *
- * **Warning:** Currently, link decorators work independently and no conflict resolution mechanism exists.
- * For example, configuring the `target` attribute using both an automatic and a manual decorator at a time could end up with a
- * quirky behavior. The same applies if multiple manual or automatic decorators were defined for the same attribute.
  *
  * @member {Array.<module:link/link~LinkDecoratorAutomaticOption|module:link/link~LinkDecoratorManualOption>}
  * module:link/link~LinkConfig#decorators
@@ -147,6 +129,9 @@ export default class Link extends Plugin {
  * Describes an automatic link {@link module:link/link~LinkConfig#decorators decorator}. This kind of a decorator matches
  * all links in the editor content against a function which decides whether the link should gain a pre–defined set of attributes
  * or not.
+ *
+ * It takes an object with key-value pairs of attributes and a callback function which must return a boolean based on link's
+ * `href` (URL). When the callback returns `true`, attributes are applied to the link.
  *
  * For example, to add the `target="_blank"` attribute to all links in the editor starting with the `http://`,
  * then configuration could look like this:
