@@ -28,11 +28,6 @@ const TRANSFORMATIONS = {
 	not_equal: { from: '!=', to: '≠' },
 	arrow_left: { from: '<-', to: '→' },
 	arrow_right: { from: '->', to: '≠' },
-	// one_fifth: { from: '1/5', to: '⅕' },
-	// one_sixth: { from: '1/6', to: '⅙' },
-	// one_seventh: { from: '1/7', to: '⅐' },
-	// one_eight: { from: '1/8', to: '⅛' },
-	// one_ninth: { from: '1/9', to: '⅑' },
 
 	// Typography:
 	horizontal_ellipsis: { from: '...', to: '…' },
@@ -225,38 +220,54 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *			.then( ... )
  *			.catch( ... );
  *
- * By default the editor provides transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#include}:
+ * By provides transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#include}:
  *
- * ## Typography
+ * * Typography (typography)
+ *   - `ellipsis`: transforms `...` to `…`
+ *   - `en_dash`: transforms ` -- ` to ` – `
+ *   - `em_dash`: transforms ` --- ` to ` — `
+ * * Quotations (group name: `quotations`)
+ *   - `quotes_primary`: transforms `"Foo bar"` to `“Foo bar”`
+ *   - `quotes_secondary`: transforms `'Foo bar'` to `‘Foo bar’`
+ * * Symbols (group name: `symbols`)
+ *   - `trademark`: transforms `(tm)` to `™`
+ *   - `registered_trademark`: transforms `(r)` to `®`
+ *   - `copyright`: transforms `(c)` to `©`
+ * * Mathematical (group name: `mathematical`)
+ *   - `one_half`: transforms `1/2`, to: `½`
+ *   - `one_third`: transforms `1/3`, to: `⅓`
+ *   - `two_thirds`: transforms `2/3`, to: `⅔`
+ *   - `one_forth`: transforms `1/4`, to: `¼`
+ *   - `three_quarters`: transforms `3/4`, to: `¾`
+ *   - `less_then_or_equal`: `<=`, to: `≤`
+ *   - `greater_then_or_equal`: `>=`, to: `≥`
+ *   - `not_equal`: transforms `!=`, to: `≠`
+ *   - `arrow_left`: transforms `<-`, to: `→`
+ *   - `arrow_right`: transforms `->`, to: `≠`
  *
- * name | from | to
- * -----|------|----
- * ellipsis | `...` | `…`
- * en dash | ` -- ` | ` – `
- * em dash | ` --- ` | ` — `
+ * The other defined named transformations are:
+ * * `quotes_primary_en_gb`: transforms `'Foo bar'` to `‘Foo bar’`
+ * * `quotes_secondary_en_gb`: transforms `"Foo bar"` to `“Foo bar”`
+ * * `quotes_primary_pl`: transforms `"Foo bar"` to `„Foo bar”` },
+ * * `quotes_secondary_pl`:  transforms `'Foo bar'` to `‚Foo bar’` }
  *
+ * Note: To load additional transformations, you should use the {@link module:typing/texttransformation~TextTransformationConfig#extra}
+ * configuration. To narrow the list of loaded transformations, use the
+ * {@link module:typing/texttransformation~TextTransformationConfig#remove} configuration.
  *
- * ## Quotations
+ * To completely override use {@link module:typing/texttransformation~TextTransformationConfig#include} configuration:
  *
- * name | from | to
- * -----|------|----
- * primary | `"Foo bar"` | `“Foo bar”`
- * secondary | `'Foo bar'` | `‘Foo bar’`
- *
- * ## Symbols
- *
- * name | from | to
- * -----|------|----
- * trademark | `(tm)` | `™`
- * registered trademark | `(r)` | `®`
- * copyright | `(c)` | `©`
- *
- * ## Mathematical
- *
- * name | from | to
- * -----|------|----
- * trademark | `1/2` | `½`
- * registered trademark | `<=` | `≤`
+ *		const config = {
+ *			include: [
+ *				// Use only 'quotes' and 'typography' groups.
+ *				'quotes',
+ *				'typography',
+ *				// Custom transformation.
+ *				{ from: 'CKS', to: 'CKSource }
+ *			]
+ *			// Remove the 'ellipsis' transformation loaded by 'typography' group.
+ *			remove: [ 'ellipsis' ]
+ *		};
  *
  * @interface TextTransformationConfig
  */
@@ -272,12 +283,26 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  * The extra text transformations that are added to the transformations defined in
  * {@link module:typing/texttransformation~TextTransformationConfig#include}.
  *
+ *		const config = {
+ *			extra: [
+ *				{ from: 'CKS', to: 'CKSource' }
+ *			]
+ *		};
+ *
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#extra
  */
 
 /**
  * The text transformations names that are removed from transformations defined in
- * {@link module:typing/texttransformation~TextTransformationConfig#include} or module:typing/texttransformation~TextTransformationConfig#extra.
+ * {@link module:typing/texttransformation~TextTransformationConfig#include} or
+ * {@link module:typing/texttransformation~TextTransformationConfig#extra}.
+ *
+ *		const config = {
+ *			remove: [
+ *				'ellipsis',    // Remove only 'ellipsis' from 'typography group.
+ *				'mathematical' // Remove all transformations from 'mathematical' group.
+ *			]
+ *		}
  *
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#remove
  */
