@@ -277,8 +277,8 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 
 /**
  * The text transformations names that are removed from transformations defined in
- * {@link module:typing/texttransformation~TextTransformationConfig#remove} or module:typing/texttransformation~TextTransformationConfig#extra.
+ * {@link module:typing/texttransformation~TextTransformationConfig#include} or module:typing/texttransformation~TextTransformationConfig#extra.
  *
- * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#extra
+ * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#remove
  */
 /* eslint-enable max-len */
