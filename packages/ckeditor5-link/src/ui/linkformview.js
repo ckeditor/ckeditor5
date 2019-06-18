@@ -147,7 +147,7 @@ export default class LinkFormView extends View {
 		const classList = [ 'ck', 'ck-link-form' ];
 
 		if ( this.manualDecorators.length ) {
-			classList.push( 'ck-link-form_decorators' );
+			classList.push( 'ck-link-form_layout-vertical' );
 		}
 
 		this.setTemplate( {
