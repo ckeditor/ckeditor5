@@ -68,6 +68,10 @@ There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 {@link features/ckfinder **Learn how to integrate CKEditor 5 with CKFinder in your project**}.
 
+### Simple Upload
+
+The {@link features/simple-upload-adapter Simple Upload Adapter} enables file uploads in CKEditor 5 using the external side-server connection.
+
 ## Implementing your own upload adapter
 
 CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take the **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
