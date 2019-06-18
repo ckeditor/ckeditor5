@@ -67,7 +67,7 @@ export default class Link extends Plugin {
  * **Note**: To control the `target` and `rel` attributes of specific links in the edited content, a dedicated
  * {@link module:link/link~LinkDecoratorManualOption manual} decorator must be defined in the
  * {@link module:link/link~LinkConfig#decorators `config.link.decodators`} array. In such scenario,
- * the `config.link.targetDecorator` option should remain `undefined` or `false` to not interfere with the manual decorator.
+ * the `config.link.addTargetToExternalLinks` option should remain `undefined` or `false` to not interfere with the manual decorator.
  *
  * **Note**: It is possible to add other {@link module:link/link~LinkDecoratorAutomaticOption automatic}
  * or {@link module:link/link~LinkDecoratorManualOption manual} link decorators when this option is active.
@@ -76,7 +76,7 @@ export default class Link extends Plugin {
  * reference.
  *
  * @default false
- * @member {Boolean} module:link/link~LinkConfig#targetDecorator
+ * @member {Boolean} module:link/link~LinkConfig#addTargetToExternalLinks
  */
 
 /**
@@ -120,7 +120,8 @@ export default class Link extends Plugin {
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
  * dedicated for that purpose which can be enabled by turning a single option on. Check out the
- * {@link module:link/link~LinkConfig#targetDecorator `config.link.targetDecorator`} configuration description to learn more.
+ * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
+ * configuration description to learn more.
  *
  * @member {Array.<module:link/link~LinkDecoratorAutomaticOption|module:link/link~LinkDecoratorManualOption>}
  * module:link/link~LinkConfig#decorators
@@ -147,7 +148,8 @@ export default class Link extends Plugin {
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
  * dedicated for that purpose which can be enabled by turning a single option on. Check out the
- * {@link module:link/link~LinkConfig#targetDecorator `config.link.targetDecorator`} configuration description to learn more.
+ * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
+ * configuration description to learn more.
  *
  * @typedef {Object} module:link/link~LinkDecoratorAutomaticOption
  * @property {'automatic'} mode The kind of the decorator. `'automatic'` for all automatic decorators.

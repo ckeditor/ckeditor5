@@ -38,7 +38,7 @@ export default class LinkEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'link', {
-			targetDecorator: false
+			addTargetToExternalLinks: false
 		} );
 	}
 
@@ -96,7 +96,7 @@ export default class LinkEditing extends Plugin {
 	 * {@link module:link/utils~AutomaticDecorators#getDispatcher} method.
 	 *
 	 * **Note**: This method also activates the automatic external link decorator if enabled via
-	 * {@link module:link/link~LinkConfig#targetDecorator `config.link.targetDecorator`}.
+	 * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}.
 	 *
 	 * @private
 	 * @param {Array.<module:link/link~LinkDecoratorAutomaticOption>} automaticDecoratorDefinitions
@@ -106,7 +106,7 @@ export default class LinkEditing extends Plugin {
 		const automaticDecorators = new AutomaticDecorators();
 
 		// Adds default decorator for external links.
-		if ( editor.config.get( 'link.targetDecorator' ) ) {
+		if ( editor.config.get( 'link.addTargetToExternalLinks' ) ) {
 			automaticDecorators.add( {
 				mode: DECORATOR_AUTOMATIC,
 				callback: url => EXTERNAL_LINKS_REGEXP.test( url ),

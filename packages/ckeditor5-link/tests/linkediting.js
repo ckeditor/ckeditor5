@@ -392,18 +392,18 @@ describe( 'LinkEditing', () => {
 					url: 'tel:123456789'
 				}
 			];
-			it( 'link.targetDecorator is predefined as false value', () => {
-				expect( editor.config.get( 'link.targetDecorator' ) ).to.be.false;
+			it( 'link.addTargetToExternalLinks is predefined as false value', () => {
+				expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.false;
 			} );
 
-			describe( 'for link.targetDecorator = false', () => {
+			describe( 'for link.addTargetToExternalLinks = false', () => {
 				let editor, model;
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
 							plugins: [ Paragraph, LinkEditing, Enter ],
 							link: {
-								targetDecorator: true
+								addTargetToExternalLinks: true
 							}
 						} )
 						.then( newEditor => {
@@ -417,8 +417,8 @@ describe( 'LinkEditing', () => {
 					editor.destroy();
 				} );
 
-				it( 'link.targetDecorator is set as true value', () => {
-					expect( editor.config.get( 'link.targetDecorator' ) ).to.be.true;
+				it( 'link.addTargetToExternalLinks is set as true value', () => {
+					expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.true;
 				} );
 
 				testLinks.forEach( link => {
@@ -480,7 +480,7 @@ describe( 'LinkEditing', () => {
 						.create( {
 							plugins: [ Paragraph, LinkEditing, Enter ],
 							link: {
-								targetDecorator: false,
+								addTargetToExternalLinks: false,
 								decorators: [
 									{
 										mode: 'automatic',
@@ -566,7 +566,7 @@ describe( 'LinkEditing', () => {
 					.create( {
 						plugins: [ Paragraph, LinkEditing, Enter, CustomLinks ],
 						link: {
-							targetDecorator: true,
+							addTargetToExternalLinks: true,
 						}
 					} )
 					.then( newEditor => {
