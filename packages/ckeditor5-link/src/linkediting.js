@@ -90,7 +90,7 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Processes an array of configured {@link module:link/link~LinkDecoratorAutomaticOption automatic decorators}
+	 * Processes an array of configured {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}
 	 * and registers a {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher}
 	 * for each one of them. Downcast dispatchers are obtained using the
 	 * {@link module:link/utils~AutomaticDecorators#getDispatcher} method.
@@ -99,7 +99,7 @@ export default class LinkEditing extends Plugin {
 	 * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}.
 	 *
 	 * @private
-	 * @param {Array.<module:link/link~LinkDecoratorAutomaticOption>} automaticDecoratorDefinitions
+	 * @param {Array.<module:link/link~LinkDecoratorAutomaticDefinition>} automaticDecoratorDefinitions
 	 */
 	_enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
@@ -125,7 +125,7 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Processes an array of configured {@link module:link/link~LinkDecoratorManualOption manual decorators}
+	 * Processes an array of configured {@link module:link/link~LinkDecoratorManualDefinition manual decorators}
 	 * and transforms them into {@link module:link/utils~ManualDecorator} instances and stores them in the
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
 	 *
@@ -134,7 +134,7 @@ export default class LinkEditing extends Plugin {
 	 * with adequate model attributes.
 	 *
 	 * @private
-	 * @param {Array.<module:link/link~LinkDecoratorManualOption>} manualDecoratorDefinitions
+	 * @param {Array.<module:link/link~LinkDecoratorManualDefinition>} manualDecoratorDefinitions
 	 */
 	_enableManualDecorators( manualDecoratorDefinitions ) {
 		if ( !manualDecoratorDefinitions.length ) {

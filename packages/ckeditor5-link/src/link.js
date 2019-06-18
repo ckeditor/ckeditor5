@@ -65,12 +65,12 @@ export default class Link extends Plugin {
  * which extends all external links with the `target` and `rel` attributes without additional configuration.
  *
  * **Note**: To control the `target` and `rel` attributes of specific links in the edited content, a dedicated
- * {@link module:link/link~LinkDecoratorManualOption manual} decorator must be defined in the
+ * {@link module:link/link~LinkDecoratorManualDefinition manual} decorator must be defined in the
  * {@link module:link/link~LinkConfig#decorators `config.link.decodators`} array. In such scenario,
  * the `config.link.addTargetToExternalLinks` option should remain `undefined` or `false` to not interfere with the manual decorator.
  *
- * **Note**: It is possible to add other {@link module:link/link~LinkDecoratorAutomaticOption automatic}
- * or {@link module:link/link~LinkDecoratorManualOption manual} link decorators when this option is active.
+ * **Note**: It is possible to add other {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
+ * or {@link module:link/link~LinkDecoratorManualDefinition manual} link decorators when this option is active.
  *
  * More information about decorators can be found in the {@link module:link/link~LinkConfig#decorators decorators configuration}
  * reference.
@@ -83,9 +83,9 @@ export default class Link extends Plugin {
  * Decorators provide an easy way to configure and manage additional link attributes in the editor content. There are
  * two types of link decorators:
  *
- * * {@link module:link/link~LinkDecoratorAutomaticOption automatic} – they match links against pre–defined rules and
+ * * {@link module:link/link~LinkDecoratorAutomaticDefinition automatic} – they match links against pre–defined rules and
  * manage their attributes based on the results,
- * * {@link module:link/link~LinkDecoratorManualOption manual} – they allow users to control link attributes individually
+ * * {@link module:link/link~LinkDecoratorManualDefinition manual} – they allow users to control link attributes individually
  *  using the editor UI.
  *
  * Link decorators are defined as an array of objects:
@@ -111,8 +111,8 @@ export default class Link extends Plugin {
  *			]
  *		}
  *
- * To learn more about the configuration syntax, check out the {@link module:link/link~LinkDecoratorAutomaticOption automatic}
- * and {@link module:link/link~LinkDecoratorManualOption manual} decorator option reference.
+ * To learn more about the configuration syntax, check out the {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
+ * and {@link module:link/link~LinkDecoratorManualDefinition manual} decorator option reference.
  *
  * **Warning:** Currently, link decorators work independently and no conflict resolution mechanism exists.
  * For example, configuring the `target` attribute using both an automatic and a manual decorator at a time could end up with a
@@ -123,7 +123,7 @@ export default class Link extends Plugin {
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
- * @member {Array.<module:link/link~LinkDecoratorAutomaticOption|module:link/link~LinkDecoratorManualOption>}
+ * @member {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
  * module:link/link~LinkConfig#decorators
  */
 
@@ -151,7 +151,7 @@ export default class Link extends Plugin {
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
- * @typedef {Object} module:link/link~LinkDecoratorAutomaticOption
+ * @typedef {Object} module:link/link~LinkDecoratorAutomaticDefinition
  * @property {'automatic'} mode The kind of the decorator. `'automatic'` for all automatic decorators.
  * @property {Function} callback Takes an `url` as a parameter and returns `true` if the `attributes` should be applied to the link.
  * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
@@ -176,7 +176,7 @@ export default class Link extends Plugin {
  *			}
  *		}
  *
- * @typedef {Object} module:link/link~LinkDecoratorManualOption
+ * @typedef {Object} module:link/link~LinkDecoratorManualDefinition
  * @property {'automatic'} mode The kind of the decorator. `'manual'` for all manual decorators.
  * @property {String} label The label of the UI button the user can use to control the presence of link attributes.
  * @property {Object} attributes Key-value pairs used as link attributes added to the output during the

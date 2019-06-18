@@ -8,13 +8,13 @@
  */
 
 /**
- * Helper class which tight together all {@link module:link/link~LinkDecoratorAutomaticOption} and provides
+ * Helper class which tight together all {@link module:link/link~LinkDecoratorAutomaticDefinition} and provides
  * a {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatcher} for them.
  */
 export default class AutomaticDecorators {
 	constructor() {
 		/**
-		 * Stores definition of {@link module:link/link~LinkDecoratorAutomaticOption automatic decorators}.
+		 * Stores definition of {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}.
 		 * Those data are used as source for a downcast dispatcher to make proper conversion to output data.
 		 *
 		 * @private
@@ -37,7 +37,7 @@ export default class AutomaticDecorators {
 	/**
 	 * Add automatic decorator objects or array with them to be used during downcasting.
 	 *
-	 * @param {module:link/link~LinkDecoratorAutomaticOption|Array.<module:link/link~LinkDecoratorAutomaticOption>} item
+	 * @param {module:link/link~LinkDecoratorAutomaticDefinition|Array.<module:link/link~LinkDecoratorAutomaticDefinition>} item
 	 * configuration object of automatic rules for decorating links. It might be also array of such objects.
 	 */
 	add( item ) {
