@@ -22,7 +22,7 @@ describe( 'LinkFormView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: val => val }, [] );
+		view = new LinkFormView( { t: val => val } );
 		view.render();
 	} );
 
@@ -106,7 +106,7 @@ describe( 'LinkFormView', () => {
 		it( 'should register child views\' #element in #focusTracker', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-			view = new LinkFormView( { t: () => {} }, [] );
+			view = new LinkFormView( { t: () => {} } );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
@@ -115,7 +115,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new LinkFormView( { t: () => {} }, [] );
+			view = new LinkFormView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 

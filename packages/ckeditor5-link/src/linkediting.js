@@ -143,7 +143,7 @@ export default class LinkEditing extends Plugin {
 
 		const editor = this.editor;
 		const command = editor.commands.get( 'link' );
-		const manualDecorators = command.manualDecorators;
+		const manualDecoratorCollection = command.manualDecoratorCollection;
 
 		manualDecoratorDefinitions.forEach( ( decorator, index ) => {
 			const decoratorName = `linkManualDecorator${ index }`;
@@ -151,7 +151,7 @@ export default class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decoratorName } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			manualDecorators.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
+			manualDecoratorCollection.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decoratorName,
@@ -159,7 +159,7 @@ export default class LinkEditing extends Plugin {
 					if ( manualDecoratorName ) {
 						const element = writer.createAttributeElement(
 							'a',
-							manualDecorators.get( decoratorName ).attributes,
+							manualDecoratorCollection.get( decoratorName ).attributes,
 							{
 								priority: 5
 							}
