@@ -154,13 +154,7 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			const manualDecorators = {};
-
-			for ( const switchButton of formView.manualDecoratorsUIView ) {
-				manualDecorators[ switchButton.name ] = switchButton.isOn;
-			}
-
-			editor.execute( 'link', formView.urlInputView.inputView.element.value, manualDecorators );
+			editor.execute( 'link', formView.urlInputView.inputView.element.value, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 

@@ -189,7 +189,7 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
-	describe( 'customAttributes', () => {
+	describe( 'manual decorators', () => {
 		let view, collection;
 		beforeEach( () => {
 			collection = new Collection();
@@ -225,18 +225,18 @@ describe( 'LinkFormView', () => {
 			view.destroy();
 			collection.clear();
 		} );
-		it( 'switch buttons reflects state of customAttributes', () => {
-			expect( view.manualDecoratorsUIView.length ).to.equal( 3 );
+		it( 'switch buttons reflects state of manual decorators', () => {
+			expect( view._manualDecoratorSwitches.length ).to.equal( 3 );
 
-			expect( view.manualDecoratorsUIView.get( 0 ) ).to.deep.include( {
+			expect( view._manualDecoratorSwitches.get( 0 ) ).to.deep.include( {
 				name: 'decorator1',
 				label: 'Foo'
 			} );
-			expect( view.manualDecoratorsUIView.get( 1 ) ).to.deep.include( {
+			expect( view._manualDecoratorSwitches.get( 1 ) ).to.deep.include( {
 				name: 'decorator2',
 				label: 'Download'
 			} );
-			expect( view.manualDecoratorsUIView.get( 2 ) ).to.deep.include( {
+			expect( view._manualDecoratorSwitches.get( 2 ) ).to.deep.include( {
 				name: 'decorator3',
 				label: 'Multi'
 			} );
@@ -244,7 +244,7 @@ describe( 'LinkFormView', () => {
 
 		it( 'reacts on switch button changes', () => {
 			const modelItem = collection.first;
-			const viewItem = view.manualDecoratorsUIView.first;
+			const viewItem = view._manualDecoratorSwitches.first;
 
 			expect( modelItem.value ).to.be.undefined;
 			expect( viewItem.isOn ).to.be.undefined;
@@ -258,6 +258,28 @@ describe( 'LinkFormView', () => {
 
 			expect( modelItem.value ).to.be.false;
 			expect( viewItem.isOn ).to.be.false;
+		} );
+
+		describe( 'getDecoratorSwitchesState()', () => {
+			it( 'should provide object with decorators states', () => {
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: undefined,
+					decorator2: undefined,
+					decorator3: undefined
+				} );
+
+				view._manualDecoratorSwitches.map( item => {
+					item.element.dispatchEvent( new Event( 'click' ) );
+				} );
+
+				view._manualDecoratorSwitches.get( 2 ).element.dispatchEvent( new Event( 'click' ) );
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: true,
+					decorator2: true,
+					decorator3: false
+				} );
+			} );
 		} );
 	} );
 } );

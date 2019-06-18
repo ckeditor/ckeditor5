@@ -102,10 +102,11 @@ export default class LinkFormView extends View {
 		 * which corresponds to {@link #manualDecorators manual decorators} configured in the editor.
 		 * Populated by {@link #_createManualDecoratorsUIView}.
 		 *
+		 * @private
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
 		 */
-		this.manualDecoratorsUIView = this._createManualDecoratorsUIView();
+		this._manualDecoratorSwitches = this._createManualDecoratorSwitches();
 
 		/**
 		 * Collection of child views in the form.
@@ -165,6 +166,18 @@ export default class LinkFormView extends View {
 	}
 
 	/**
+	 * Obtain state of the switch buttons in a currently opened {@link module:link/ui/linkformview~LinkFormView}.
+	 *
+	 * @returns {Object} key-value pairs, where key is the name of the decorator and value is its state.
+	 */
+	getDecoratorSwitchesState() {
+		return Array.from( this._manualDecoratorSwitches ).reduce( ( accumulator, switchButton ) => {
+			accumulator[ switchButton.name ] = switchButton.isOn;
+			return accumulator;
+		}, {} );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	render() {
@@ -176,7 +189,7 @@ export default class LinkFormView extends View {
 
 		const childViews = [
 			this.urlInputView,
-			...this.manualDecoratorsUIView,
+			...this._manualDecoratorSwitches,
 			this.saveButtonView,
 			this.cancelButtonView
 		];
@@ -256,7 +269,7 @@ export default class LinkFormView extends View {
 	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
 	 */
-	_createManualDecoratorsUIView() {
+	_createManualDecoratorSwitches() {
 		const switches = this.createCollection();
 
 		switches.bindTo( this.manualDecorators ).using( item => {
@@ -300,7 +313,7 @@ export default class LinkFormView extends View {
 
 			additionalButtonsView.setTemplate( {
 				tag: 'ul',
-				children: this.manualDecoratorsUIView.map( switchButton => ( {
+				children: this._manualDecoratorSwitches.map( switchButton => ( {
 					tag: 'li',
 					children: [ switchButton ],
 					attributes: {

@@ -1004,8 +1004,7 @@ describe( 'LinkUI', () => {
 
 						setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
 						expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
-						expect( formView.manualDecoratorsUIView.length ).to.equal( 1 );
-						expect( formView.manualDecoratorsUIView.first.isOn ).to.be.true;
+						expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkManualDecorator0: true } );
 
 						formView.fire( 'submit' );
 
