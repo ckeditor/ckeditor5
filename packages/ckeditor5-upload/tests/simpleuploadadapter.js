@@ -150,6 +150,48 @@ describe( 'SimpleUploadAdapter', () => {
 				} );
 			} );
 
+			it( 'should modify headers of uploading request if specified', () => {
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ SimpleUploadAdapter ],
+						simpleUpload: {
+							uploadUrl: 'http://example.com',
+							headers: {
+								'X-CSRF-TOKEN': 'foo',
+								Authorization: 'Bearer <token>'
+							}
+						}
+					} )
+					.then( editor => {
+						const adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
+						const validResponse = {
+							uploaded: 1
+						};
+
+						adapter.upload();
+
+						return loader.file
+							.then( () => {
+								const request = sinonXHR.requests[ 0 ];
+								request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
+
+								const requestHeaders = request.requestHeaders;
+
+								expect( requestHeaders ).to.be.a( 'object' );
+								expect( requestHeaders ).to.have.property( 'X-CSRF-TOKEN', 'foo' );
+								expect( requestHeaders ).to.have.property( 'Authorization', 'Bearer <token>' );
+
+								expect( request.url ).to.equal( 'http://example.com' );
+
+								editorElement.remove();
+							} )
+							.then( () => editor.destroy() );
+					} );
+			} );
+
 			it( 'should throw an error on generic request error', () => {
 				const promise = adapter.upload()
 					.then( () => {

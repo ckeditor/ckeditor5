@@ -14,6 +14,8 @@ import FileRepository from './filerepository';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
+ * A plugin that enables file uploads in CKEditor 5 using the external side-server connection.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class SimpleUploadAdapter extends Plugin {
@@ -70,7 +72,7 @@ class Adapter {
 	 * Creates a new adapter instance.
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {Object} options
+	 * @param {module:upload/simpleuploadadapter~SimpleUploadConfig} options
 	 * @param {String} options.uploadUrl A URL where the image will be sent.
 	 */
 	constructor( loader, options ) {
@@ -82,9 +84,9 @@ class Adapter {
 		this.loader = loader;
 
 		/**
-		 * Test.
+		 * The configuration of the adapter.
 		 *
-		 * @member {Object} #options
+		 * @member {module:upload/simpleuploadadapter~SimpleUploadConfig} #options
 		 */
 		this.options = options;
 	}
@@ -146,7 +148,7 @@ class Adapter {
 		xhr.addEventListener( 'load', () => {
 			const response = xhr.response;
 
-			// This example assumes the XHR server's "response" object will come with
+			// We assume the XHR server's "response" object will come with
 			// an "error" which has its own "message" that can be passed to reject()
 			// in the upload promise.
 			//
@@ -158,8 +160,7 @@ class Adapter {
 
 			// If the upload is successful, resolve the upload promise with an object containing
 			// at least the "default" URL, pointing to the image on the server.
-			// This URL will be used to display the image in the content. Learn more in the
-			// UploadAdapter#upload documentation.
+			// This URL will be used to display the image in the content.
 			resolve( {
 				default: response.url
 			} );
@@ -184,17 +185,73 @@ class Adapter {
 	 * @param {File} file File instance to be uploaded.
 	 */
 	_sendRequest( file ) {
+		// Set headers if specified.
+		const headers = this.options.headers || {};
+
+		for ( const headerName of Object.keys( headers ) ) {
+			this.xhr.setRequestHeader( headerName, headers[ headerName ] );
+		}
+
 		// Prepare the form data.
 		const data = new FormData();
 
 		data.append( 'upload', file );
 
-		// Important note: This is the right place to implement security mechanisms
-		// like authentication and CSRF protection. For instance, you can use
-		// XMLHttpRequest.setRequestHeader() to set the request headers containing
-		// the CSRF token generated earlier by your application.
-
 		// Send the request.
 		this.xhr.send( data );
 	}
 }
+
+/**
+ * The configuration of the {@link module:upload/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				simpleUpload: {
+ *					uploadUrl: '',
+ *					headers: {
+ *					    ...
+ *					}
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
+ *
+ * @interface SimpleUploadConfig
+ */
+
+/**
+ * The configuration of the {@link module:upload/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
+ *
+ * Read more in {@link module:upload/simpleuploadadapter~SimpleUploadConfig}.
+ *
+ * @member {module:upload/simpleuploadadapter~SimpleUploadConfig} module:core/editor/editorconfig~EditorConfig#simpleUpload
+ */
+
+/**
+ * The path (URL) to the server which handles the file upload. When specified, enables the automatic
+ * upload of resources such as images inserted into the content.
+ *
+ * @member {String} module:upload/simpleuploadadapter~SimpleUploadConfig#uploadUrl
+ */
+
+/**
+ * An object that defines additional headers for request that is being sent during the upload. This is the right place to
+ * implement security mechanisms like authentication and CSRF protection.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				simpleUpload: {
+ *					headers: {
+ *					    'X-CSRF-TOKEN': 'CSFR-Token',
+ *					    Authorization: 'Bearer <JSON Web Token>'
+ *					}
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Object.<String, String>} module:upload/simpleuploadadapter~SimpleUploadConfig#headers
+ */
