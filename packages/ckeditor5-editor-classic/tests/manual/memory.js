@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console:false, document, window */
+/* globals console, document */
 
 import ClassicEditor from '../../src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -15,6 +15,8 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
  * - add event listeners with () => {} methods which reference other
  */
 function initEditor() {
+	let editor;
+
 	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			plugins: [ ArticlePluginSet ],
@@ -51,7 +53,7 @@ function initEditor() {
 			}
 		} )
 		.then( newEditor => {
-			window.editor = newEditor;
+			editor = newEditor;
 
 			document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
 		} )
@@ -60,8 +62,8 @@ function initEditor() {
 		} );
 
 	function destroyEditor() {
-		window.editor.destroy().then( () => console.log( 'Editor was destroyed' ) );
-		window.editor = null;
+		editor.destroy().then( () => console.log( 'Editor was destroyed' ) );
+		editor = null;
 		document.getElementById( 'destroyEditor' ).removeEventListener( 'click', destroyEditor );
 	}
 }
