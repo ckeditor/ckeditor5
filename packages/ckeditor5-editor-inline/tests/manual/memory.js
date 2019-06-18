@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console:false, document, window */
+/* globals console, document */
 
 import InlineEditor from '../../src/inlineeditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-
-window.editors = {};
 
 /*
  * Memory-leak safe version of inline editor manual test does not:
@@ -17,6 +15,8 @@ window.editors = {};
  * - add event listeners with () => {} methods which reference other
  */
 function initEditors() {
+	const editors = {};
+
 	init( '#editor-1' );
 	init( '#editor-2' );
 
@@ -59,7 +59,7 @@ function initEditors() {
 				}
 			} )
 			.then( editor => {
-				window.editors[ selector ] = editor;
+				editors[ selector ] = editor;
 			} )
 			.catch( err => {
 				console.error( err.stack );
@@ -67,9 +67,9 @@ function initEditors() {
 	}
 
 	function destroyEditors() {
-		for ( const selector in window.editors ) {
-			window.editors[ selector ].destroy().then( () => {
-				window.editors[ selector ] = undefined;
+		for ( const selector in editors ) {
+			editors[ selector ].destroy().then( () => {
+				editors[ selector ] = undefined;
 			} );
 		}
 
