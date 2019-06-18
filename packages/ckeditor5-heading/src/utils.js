@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module heading/utils
+ */
+
+/**
  * Returns heading options as defined in `config.heading.options` but processed to consider
  * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
  * in the correct language.
