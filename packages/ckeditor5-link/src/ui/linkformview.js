@@ -272,23 +272,23 @@ export default class LinkFormView extends View {
 	_createManualDecoratorSwitches() {
 		const switches = this.createCollection();
 
-		switches.bindTo( this.manualDecorators ).using( item => {
+		for ( const manualDecorator of this.manualDecorators ) {
 			const switchButton = new SwitchButtonView( this.locale );
 
 			switchButton.set( {
-				name: item.id,
-				label: item.label,
+				name: manualDecorator.id,
+				label: manualDecorator.label,
 				withText: true
 			} );
 
-			switchButton.bind( 'isOn' ).to( item, 'value' );
+			switchButton.bind( 'isOn' ).to( manualDecorator, 'value' );
 
 			switchButton.on( 'execute', () => {
-				item.set( 'value', !switchButton.isOn );
+				manualDecorator.set( 'value', !switchButton.isOn );
 			} );
 
-			return switchButton;
-		} );
+			switches.add( switchButton );
+		}
 
 		return switches;
 	}
