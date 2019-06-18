@@ -7,7 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import SimpleUploadAdapter from '../src/simpleuploadadapter';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import FileRepository from '../src/filerepository';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
