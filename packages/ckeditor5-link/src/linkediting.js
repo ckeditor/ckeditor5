@@ -127,7 +127,7 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * Processes an array of configured {@link module:link/link~LinkDecoratorManualDefinition manual decorators}
 	 * and transforms them into {@link module:link/utils~ManualDecorator} instances and stores them in the
-	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
+	 * {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection} collection (a model for manual decorators state).
 	 *
 	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement}
 	 * converter for each manual decorator and extends the {@link module:engine/model/schema~Schema model's schema}

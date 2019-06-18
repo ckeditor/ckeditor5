@@ -80,6 +80,50 @@ export default class LinkCommand extends Command {
 	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
 	 * documentation.
 	 *
+	 * Usage of `manualDecoratorIds` in link command:
+	 *
+	 *		const linkCommand = editor.commands.get( 'link' );
+	 *
+	 *		// 1. Add new decorator ( empty model )
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkDecorator0: true
+	 *		} );
+	 *		// result: <$text href="http://example.com" linkDecorator0="true">http://example.com</$text>
+	 *
+	 *		// 2. Remove decorator over selection:
+	 *		// [<$text href="http://example.com" linkDecorator0="true">http://example.com</$text>]
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkDecorator0: false
+	 *		} );
+	 *		// result: <$text href="http://example.com">http://example.com</$text>
+	 *
+	 * There is possibility to modify multiple decorators at the same time:
+	 *
+	 *		const linkCommand = editor.commands.get( 'link' );
+	 *
+	 *		// 1. Add new decorator ( empty model )
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkDecorator0: true,
+	 *			linkDecorator2: true,
+	 *		} );
+	 *		// result:
+	 *		// <$text href="http://example.com" linkDecorator0="true" linkDecorator2="true">http://example.com</$text>
+	 *
+	 *		// 2. Remove and add new decorator over selection:
+	 *		// [<$text href="http://example.com" linkDecorator0="true" linkDecorator2="true">http://example.com</$text>]
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkDecorator0: false,
+	 *			linkDecorator1: true,
+	 *			linkDecorator2: false,
+	 *		} );
+	 *		// result:
+	 *		// <$text href="http://example.com" linkDecorator1="true">http://example.com</$text>
+	 *
+	 * **Note**: If decorator name is not passed to the command, then its state remains untouched.
+	 *
+	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} also removes all decorators
+	 * from the link.
+	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
 	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.

@@ -66,7 +66,7 @@ export default class Link extends Plugin {
  *
  * **Note**: To control the `target` and `rel` attributes of specific links in the edited content, a dedicated
  * {@link module:link/link~LinkDecoratorManualDefinition manual} decorator must be defined in the
- * {@link module:link/link~LinkConfig#decorators `config.link.decodators`} array. In such scenario,
+ * {@link module:link/link~LinkConfig#decorators `config.link.decorators`} array. In such scenario,
  * the `config.link.addTargetToExternalLinks` option should remain `undefined` or `false` to not interfere with the manual decorator.
  *
  * **Note**: It is possible to add other {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}

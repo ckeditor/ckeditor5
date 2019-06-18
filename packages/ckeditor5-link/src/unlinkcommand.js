@@ -29,6 +29,16 @@ export default class UnlinkCommand extends Command {
 	 * When the selection is collapsed, removes the `linkHref` attribute from each node with the same `linkHref` attribute value.
 	 * When the selection is non-collapsed, removes the `linkHref` attribute from each node in selected ranges.
 	 *
+	 * # Decorators
+	 * If there are defined {@link module:link/link~LinkConfig#decorators decorators} in the editor's configuration,
+	 * then all decorators are removed together with `linkHref` attribute.
+	 *
+	 *		const unlinkCommand = editor.commands.get( 'unlink' )'
+	 *
+	 *		// model: [<$text href="example.com" linkDecorator0="true">Foo bar</$text>]
+	 *		unlinkCommand.execute();
+	 *		// model: [Foo bar]
+	 *
 	 * @fires execute
 	 */
 	execute() {

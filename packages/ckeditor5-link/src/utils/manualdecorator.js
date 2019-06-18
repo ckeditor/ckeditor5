@@ -13,7 +13,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * Helper class which stores manual decorators with observable {@link module:link/utils~ManualDecorator#value}
  * to support integration with the UI state. An instance of this class is a model with state of single manual decorators.
- * These decorators are kept as collections in {@link module:link/linkcommand~LinkCommand#manualDecorators}.
+ * These decorators are kept as collections in {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection}.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
