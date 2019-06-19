@@ -286,7 +286,7 @@ describe( 'LinkFormView', () => {
 		} );
 	} );
 
-	describe( 'localization of custom attributes', () => {
+	describe( 'localization of manual decorators', () => {
 		before( () => {
 			addTranslations( 'pl', {
 				'Open in a new tab': 'Otwórz w nowym oknie'
