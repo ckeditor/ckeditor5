@@ -146,20 +146,6 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
-	describe( 'is()', () => {
-		it( 'should return true for "markerCollection"', () => {
-			expect( markers.is( 'markerCollection' ) ).to.be.true;
-			expect( markers.is( 'model:markerCollection' ) ).to.be.true;
-		} );
-
-		it( 'should return false for incorrect values', () => {
-			expect( markers.is( 'model' ) ).to.be.false;
-			expect( markers.is( 'model:node' ) ).to.be.false;
-			expect( markers.is( 'text' ) ).to.be.false;
-			expect( markers.is( 'element', 'paragraph' ) ).to.be.false;
-		} );
-	} );
-
 	describe( '_remove', () => {
 		it( 'should remove marker, return true and fire update:<markerName> event', () => {
 			const marker = markers._set( 'name', range );

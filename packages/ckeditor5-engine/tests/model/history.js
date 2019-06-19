@@ -178,20 +178,6 @@ describe( 'History', () => {
 			expect( history.getUndoneOperation( op ) ).to.be.undefined;
 		} );
 	} );
-
-	describe( 'is()', () => {
-		it( 'should return true for "history"', () => {
-			expect( history.is( 'history' ) ).to.be.true;
-			expect( history.is( 'model:history' ) ).to.be.true;
-		} );
-
-		it( 'should return false for incorrect values', () => {
-			expect( history.is( 'model' ) ).to.be.false;
-			expect( history.is( 'model:node' ) ).to.be.false;
-			expect( history.is( 'text' ) ).to.be.false;
-			expect( history.is( 'element', 'paragraph' ) ).to.be.false;
-		} );
-	} );
 } );
 
 function getOperations() {

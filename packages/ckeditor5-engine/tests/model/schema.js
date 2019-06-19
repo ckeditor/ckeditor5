@@ -311,20 +311,6 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'is()', () => {
-		it( 'should return true for "schema"', () => {
-			expect( schema.is( 'schema' ) ).to.be.true;
-			expect( schema.is( 'model:schema' ) ).to.be.true;
-		} );
-
-		it( 'should return false for incorrect values', () => {
-			expect( schema.is( 'model' ) ).to.be.false;
-			expect( schema.is( 'model:node' ) ).to.be.false;
-			expect( schema.is( 'text' ) ).to.be.false;
-			expect( schema.is( 'element', 'paragraph' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'isRegistered()', () => {
 		it( 'returns true if an item was registered', () => {
 			schema.register( 'foo' );

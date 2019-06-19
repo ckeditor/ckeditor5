@@ -32,20 +32,6 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
-	describe( 'is()', () => {
-		it( 'should return true for "nodeList"', () => {
-			expect( nodes.is( 'nodeList' ) ).to.be.true;
-			expect( nodes.is( 'model:nodeList' ) ).to.be.true;
-		} );
-
-		it( 'should return false for incorrect values', () => {
-			expect( nodes.is( 'model' ) ).to.be.false;
-			expect( nodes.is( 'model:node' ) ).to.be.false;
-			expect( nodes.is( 'text' ) ).to.be.false;
-			expect( nodes.is( 'element', 'paragraph' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'iterator', () => {
 		it( 'should iterate over all nodes from node list', () => {
 			expect( Array.from( nodes ) ).to.deep.equal( [ p, foo, img ] );

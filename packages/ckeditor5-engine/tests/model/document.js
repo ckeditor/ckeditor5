@@ -499,19 +499,4 @@ describe( 'Document', () => {
 		expect( serialized.selection ).to.equal( '[engine.model.DocumentSelection]' );
 		expect( serialized.model ).to.equal( '[engine.model.Model]' );
 	} );
-
-	describe( 'is()', () => {
-		it( 'should return true for "document"', () => {
-			expect( doc.is( 'document' ) ).to.be.true;
-			expect( doc.is( 'model:document' ) ).to.be.true;
-		} );
-
-		it( 'should return false for incorrect values', () => {
-			expect( doc.is( 'model' ) ).to.be.false;
-			expect( doc.is( 'node' ) ).to.be.false;
-			expect( doc.is( 'model:node' ) ).to.be.false;
-			expect( doc.is( 'view:document' ) ).to.be.false;
-			expect( doc.is( 'element', 'text' ) ).to.be.false;
-		} );
-	} );
 } );
