@@ -38,10 +38,10 @@ export default class LinkFormView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {module:utils/collection~Collection} [manualDecoratorCollection] Reference to manual decorators in
-	 * {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection}.
+	 * @param {module:utils/collection~Collection} [manualDecorators] Reference to manual decorators in
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators}.
 	 */
-	constructor( locale, manualDecoratorCollection = [] ) {
+	constructor( locale, manualDecorators = [] ) {
 		super( locale );
 
 		const t = locale.t;
@@ -86,14 +86,14 @@ export default class LinkFormView extends View {
 
 		/**
 		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
-		 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection manual decorators}
+		 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
 		 * configured in the editor.
 		 *
 		 * @private
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
 		 */
-		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( manualDecoratorCollection );
+		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( manualDecorators );
 
 		/**
 		 * Collection of child views in the form.
@@ -101,7 +101,7 @@ export default class LinkFormView extends View {
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
 		 */
-		this.children = this._createFormChildren( manualDecoratorCollection );
+		this.children = this._createFormChildren( manualDecorators );
 
 		/**
 		 * A collection of views which can be focused in the form.
@@ -134,7 +134,7 @@ export default class LinkFormView extends View {
 
 		const classList = [ 'ck', 'ck-link-form' ];
 
-		if ( manualDecoratorCollection.length ) {
+		if ( manualDecorators.length ) {
 			classList.push( 'ck-link-form_layout-vertical' );
 		}
 
@@ -153,11 +153,12 @@ export default class LinkFormView extends View {
 	}
 
 	/**
-	 * Obtain state of the {@link module:ui/button/switchbuttonview~SwitchButtonView switch buttons} representing
-	 * {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection manual decorators}
-	 * in a currently opened {@link module:link/ui/linkformview~LinkFormView}.
+	 * Obtains the state of the {@link module:ui/button/switchbuttonview~SwitchButtonView switch buttons} representing
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators manual link decorators}
+	 * in the {@link module:link/ui/linkformview~LinkFormView}.
 	 *
-	 * @returns {Object} key-value pairs, where the key is the name of the decorator and the value is its state.
+	 * @returns {Object.<String,Boolean>} key-value pairs, where the key is the name of the decorator and the value is
+	 * its state.
 	 */
 	getDecoratorSwitchesState() {
 		return Array.from( this._manualDecoratorSwitches ).reduce( ( accumulator, switchButton ) => {
@@ -253,17 +254,17 @@ export default class LinkFormView extends View {
 
 	/**
 	 * Populates {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
-	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection}
+	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}
 	 *
 	 * @private
-	 * @param {module:link/linkcommand~LinkCommand#manualDecoratorCollection} manualDecoratorCollection reference to
+	 * @param {module:link/linkcommand~LinkCommand#manualDecorators} manualDecorators reference to
 	 * collection of manual decorators stored in link's command.
 	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
 	 */
-	_createManualDecoratorSwitches( manualDecoratorCollection ) {
+	_createManualDecoratorSwitches( manualDecorators ) {
 		const switches = this.createCollection();
 
-		for ( const manualDecorator of manualDecoratorCollection ) {
+		for ( const manualDecorator of manualDecorators ) {
 			const switchButton = new SwitchButtonView( this.locale );
 
 			switchButton.set( {
@@ -287,21 +288,21 @@ export default class LinkFormView extends View {
 	/**
 	 * Populates the {@link #children} collection of the form.
 	 *
-	 * If {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection manual decorators} are configured in the editor, creates an
+	 * If {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators} are configured in the editor, creates an
 	 * additional `View` wrapping all {@link #_manualDecoratorSwitches} switch buttons corresponding
 	 * to those decorators.
 	 *
 	 * @private
-	 * @param {module:link/linkcommand~LinkCommand#manualDecoratorCollection} manualDecoratorCollection reference to
+	 * @param {module:link/linkcommand~LinkCommand#manualDecorators} manualDecorators reference to
 	 * collection of manual decorators stored in link's command.
 	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
 	 */
-	_createFormChildren( manualDecoratorCollection ) {
+	_createFormChildren( manualDecorators ) {
 		const children = this.createCollection();
 
 		children.add( this.urlInputView );
 
-		if ( manualDecoratorCollection.length ) {
+		if ( manualDecorators.length ) {
 			const additionalButtonsView = new View();
 
 			additionalButtonsView.setTemplate( {

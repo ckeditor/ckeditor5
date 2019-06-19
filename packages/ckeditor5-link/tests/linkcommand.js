@@ -270,14 +270,14 @@ describe( 'LinkCommand', () => {
 					model = editor.model;
 					command = new LinkCommand( editor );
 
-					command.manualDecoratorCollection.add( new ManualDecorator( {
+					command.manualDecorators.add( new ManualDecorator( {
 						id: 'linkManualDecorator0',
 						label: 'Foo',
 						attributes: {
 							class: 'Foo'
 						}
 					} ) );
-					command.manualDecoratorCollection.add( new ManualDecorator( {
+					command.manualDecorators.add( new ManualDecorator( {
 						id: 'linkManualDecorator1',
 						label: 'Bar',
 						attributes: {

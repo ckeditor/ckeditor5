@@ -38,7 +38,7 @@ export default class LinkCommand extends Command {
 		 * @readonly
 		 * @type {module:utils/collection~Collection.<module:link/utils~ManualDecorator>}
 		 */
-		this.manualDecoratorCollection = new Collection();
+		this.manualDecorators = new Collection();
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class LinkCommand extends Command {
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
 
-		for ( const manualDecorator of this.manualDecoratorCollection ) {
+		for ( const manualDecorator of this.manualDecorators ) {
 			manualDecorator.value = doc.selection.getAttribute( manualDecorator.id ) || false;
 		}
 

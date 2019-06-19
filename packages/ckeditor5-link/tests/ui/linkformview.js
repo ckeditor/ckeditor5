@@ -321,7 +321,7 @@ describe( 'LinkFormView', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).manualDecoratorCollection );
+					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).manualDecorators );
 				} );
 		} );
 

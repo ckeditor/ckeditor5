@@ -61,12 +61,12 @@ function isSafeUrl( url ) {
 }
 
 /**
- * Returns configuration options as defined in {@link module:link/link~LinkConfig#decorators `editor.config.decorators`} but processed
- * to respect localization of the editor, i.e. to display {@link module:link/link~LinkDecoratorManualDefinition label}
+ * Returns {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration processed
+ * to respect the locale of the editor, i.e. to display {@link module:link/link~LinkDecoratorManualDefinition label}
  * in the correct language.
  *
- * **Note:** Only few most commonly used labels has provided translations. In all other cases decorators configuration should be
- * directly translated in configuration.
+ * **Note**: Only the few most commonly used labels are translated automatically. Other labels should be manually
+ * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
  *
  * @param {module:core/editor/editor~Editor} editor An editor instance
  * @returns {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}

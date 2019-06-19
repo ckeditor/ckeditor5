@@ -127,7 +127,7 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * Processes an array of configured {@link module:link/link~LinkDecoratorManualDefinition manual decorators}
 	 * and transforms them into {@link module:link/utils~ManualDecorator} instances and stores them in the
-	 * {@link module:link/linkcommand~LinkCommand#manualDecoratorCollection} collection (a model for manual decorators state).
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
 	 *
 	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement}
 	 * converter for each manual decorator and extends the {@link module:engine/model/schema~Schema model's schema}
@@ -143,7 +143,7 @@ export default class LinkEditing extends Plugin {
 
 		const editor = this.editor;
 		const command = editor.commands.get( 'link' );
-		const manualDecoratorCollection = command.manualDecoratorCollection;
+		const manualDecorators = command.manualDecorators;
 
 		manualDecoratorDefinitions.forEach( ( decorator, index ) => {
 			const decoratorName = `linkManualDecorator${ index }`;
@@ -151,7 +151,7 @@ export default class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decoratorName } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			manualDecoratorCollection.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
+			manualDecorators.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decoratorName,
@@ -159,7 +159,7 @@ export default class LinkEditing extends Plugin {
 					if ( manualDecoratorName ) {
 						const element = writer.createAttributeElement(
 							'a',
-							manualDecoratorCollection.get( decoratorName ).attributes,
+							manualDecorators.get( decoratorName ).attributes,
 							{
 								priority: 5
 							}
