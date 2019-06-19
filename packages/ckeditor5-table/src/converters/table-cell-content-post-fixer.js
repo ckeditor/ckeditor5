@@ -15,19 +15,19 @@
  *
  * A table cells must contains at least one block as a child. The empty table cell will have empty `<paragraph>` as a child.
  *
- *        <table>
- *            <tableRow>
- *                <tableCell></tableCell>
- *            </tableRow>
- *        </table>
+ *		<table>
+ *			<tableRow>
+ *				<tableCell></tableCell>
+ *			</tableRow>
+ *		</table>
  *
  * Will be fixed to:
  *
- *        <table>
- *            <tableRow>
- *                <tableCell><paragraph></paragraph></tableCell>
- *            </tableRow>
- *        </table>
+ *		<table>
+ *			<tableRow>
+ *				<tableCell><paragraph></paragraph></tableCell>
+ *			</tableRow>
+ *		</table>
  *
  * @param {module:engine/model/model~Model} model
  */
