@@ -31,15 +31,24 @@ export default class Watchdog {
 
 		/**
 		 * @private
+		 * @type {Number}
+		 */
+		this._crashNumberLimit = crashNumberLimit || 3;
+
+		/**
+		 * @private
 		 * @type {Function}
 		 */
 		this._boundErrorWatcher = this._watchForEditorErrors.bind( this );
 
 		/**
+		 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
+		 * unless a new action happens in the meantime.
+		 *
 		 * @private
-		 * @type {Number}
+		 * @type {Function}
 		 */
-		this._crashNumberLimit = crashNumberLimit || 3;
+		this._debouncedSave = debounce( this._save.bind( this ), waitingTime || 5000 );
 
 		/**
 		 * @private
@@ -67,15 +76,6 @@ export default class Watchdog {
 		 * @private
 		 * @member {Number} _lastDocumentVersion
 		 */
-
-		/**
-		 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
-		 * unless a new action happens in the meantime.
-		 *
-		 * @private
-		 * @type {Function}
-		 */
-		this._debouncedSave = debounce( this._save.bind( this ), waitingTime || 5000 );
 	}
 
 	/**
@@ -154,7 +154,10 @@ export default class Watchdog {
 		return this._destructor( this._editor );
 	}
 
-	save() {
+	/**
+	 * @private
+	 */
+	_save() {
 		const version = this._editor.model.document.version;
 
 		// Change may not produce an operation, so the document's version

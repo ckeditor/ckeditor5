@@ -4,28 +4,15 @@
  */
 
 import Watchdog from '../src/watchdog';
-import { watch } from 'chokidar';
 
 describe( 'Watchdog', () => {
 	describe( 'simple scenarios', () => {
-		it( '#1', () => {
+		it( 'watchdog should expose `create()` and `destroy()` methods', () => {
 			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
 
 			const editorCreateSpy = sinon.spy( FakeEditor, 'create' );
 			const editorDestroySpy = sinon.spy( FakeEditor.prototype, 'destroy' );
-
-			class FakeEditor {
-				static create( el, config ) {
-					this.el = el;
-					this.config = config;
-
-					return Promise.resolve();
-				}
-
-				destroy() {
-					return Promise.resolve();
-				}
-			}
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -42,5 +29,92 @@ describe( 'Watchdog', () => {
 					sinon.assert.calledOnce( editorDestroySpy );
 				} )
 		} );
+
+	} );
+
+	describe( 'restart()', () => {
+		it( 'should restart the editor', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			const editorCreateSpy = sinon.spy( FakeEditor, 'create' );
+			const editorDestroySpy = sinon.spy( FakeEditor.prototype, 'destroy' );
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			return watchdog.create()
+				.then( () => {
+					sinon.assert.calledOnce( editorCreateSpy );
+					sinon.assert.notCalled( editorDestroySpy );
+
+					return watchdog.restart();
+				} )
+				.then( () => {
+					sinon.assert.calledTwice( editorCreateSpy );
+					sinon.assert.calledOnce( editorDestroySpy );
+
+					return watchdog.destroy();
+				} );
+		} );
+	} );
+
+	describe( 'editor', () => {
+		it( 'should be the current editor used by the Watchdog', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			expect( watchdog.editor ).to.be.undefined;
+
+			let oldEditor;
+
+			return watchdog.create()
+				.then( () => {
+					oldEditor = watchdog.editor;
+					expect( watchdog.editor ).to.be.instanceOf( FakeEditor );
+
+					return watchdog.restart();
+				} )
+				.then( () => {
+					expect( watchdog.editor ).to.be.instanceOf( FakeEditor );
+					expect( watchdog.editor ).to.not.equal( oldEditor );
+
+					return watchdog.destroy();
+				} );
+		} );
 	} );
 } );
+
+function getFakeEditor() {
+	return class FakeEditor {
+		static create( el, config ) {
+			this.el = el;
+			this.config = config;
+
+			return Promise.resolve( new this() );
+		}
+
+		constructor() {
+			this.model = {
+				document: {
+					version: 0
+				}
+			};
+		}
+
+		getData() {
+			return 'foo';
+		}
+
+		setData() {
+
+		}
+
+		destroy() {
+			return Promise.resolve();
+		}
+	}
+}
