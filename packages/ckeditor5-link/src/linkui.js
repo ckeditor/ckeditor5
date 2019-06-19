@@ -319,6 +319,10 @@ export default class LinkUI extends Plugin {
 	_closeFormView() {
 		const linkCommand = this.editor.commands.get( 'link' );
 
+		// Reset manual decorator states to represent current model state. This case is important to reset switch buttons,
+		// when user cancel editing form.
+		linkCommand.restoreManualDecoratorStates();
+
 		if ( linkCommand.value !== undefined ) {
 			this._removeFormView();
 		} else {

@@ -42,6 +42,15 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
+	 * Synchronize state of the decorator with actually present elements in the model.
+	 */
+	restoreManualDecoratorStates() {
+		for ( const manualDecorator of this.manualDecorators ) {
+			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
+		}
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	refresh() {
@@ -51,7 +60,7 @@ export default class LinkCommand extends Command {
 		this.value = doc.selection.getAttribute( 'linkHref' );
 
 		for ( const manualDecorator of this.manualDecorators ) {
-			manualDecorator.value = doc.selection.getAttribute( manualDecorator.id ) || false;
+			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
 		}
 
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
@@ -191,5 +200,17 @@ export default class LinkCommand extends Command {
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Method provides information if given decorator is present in currently processed selection.
+	 *
+	 * @private
+	 * @param {String} decoratorName name of a link decorator used in the model
+	 * @returns {Boolean} Information if a given decorator is currently present in a selection
+	 */
+	_getDecoratorStateFromModel( decoratorName ) {
+		const doc = this.editor.model.document;
+		return doc.selection.getAttribute( decoratorName ) || false;
 	}
 }
