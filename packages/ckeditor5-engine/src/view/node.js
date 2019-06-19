@@ -295,13 +295,17 @@ export default class Node {
 	 * This method is useful when processing view tree objects that are of unknown type. For example, a function
 	 * may return {@link module:engine/view/documentfragment~DocumentFragment} or {@link module:engine/view/node~Node}
 	 * that can be either text node or element. This method can be used to check what kind of object is returned.
+	 * All checked types might be prefixed with `view:` to narrow search exclusively to view's objects.
+	 * That should prevent of situation where `model:node` accidentally might be considered as `view:node`.
+	 * Types are defined as name of the class written in [camelCase](https://en.wikipedia.org/wiki/Camel_case) notation.
+	 * E.g. class `RootEditableElement` will get type `rootEditableElement`.
 	 *
 	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'view:node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
 	 *		obj.is( 'view:documentFragment' ); // true for document fragment, false for any node
 	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
-	 *		obj.is( 'ciew:element' ); // true for any element, false for text node or document fragment
+	 *		obj.is( 'view:element' ); // true for any element, false for text node or document fragment
 	 *		obj.is( 'element', 'p' ); // true only for element which name is 'p'
 	 *		obj.is( 'view:element', 'p' ); // true only for element which name is 'p'
 	 *		obj.is( 'p' ); // shortcut for obj.is( 'element', 'p' )

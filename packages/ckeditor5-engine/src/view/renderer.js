@@ -119,18 +119,6 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks whether given object is of `renderer` type.
-	 *
-	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
-	 *
-	 * @param {String} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'renderer' || type == 'view:renderer';
-	}
-
-	/**
 	 * Marks a view node to be updated in the DOM by {@link #render `render()`}.
 	 *
 	 * Note that only view nodes whose parents have corresponding DOM elements need to be marked to be synchronized.

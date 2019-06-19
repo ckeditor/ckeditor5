@@ -155,7 +155,7 @@ export default class Element extends Node {
 	 *		obj.is( 'text' ); // false
 	 *		obj.is( 'element', 'img' ); // false
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is `Node#is()`} and {@link module:engine/view/view~View#is `View#is()`}.
+	 * Read more in {@link module:engine/view/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @param {String} [name] Element name.

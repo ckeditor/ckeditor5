@@ -395,9 +395,8 @@ export default class Range {
 	}
 
 	/**
-	 * Checks whether given object is of `range` type.
-	 *
-	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 * Checks whether given object is of `range` type following the convention set by
+	 * {@link module:engine/view/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
