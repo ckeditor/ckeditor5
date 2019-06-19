@@ -77,7 +77,7 @@ export function getLocalizedDecorators( editor ) {
 
 	if ( decorators ) {
 		const localizedDecoratorsLabels = {
-			'Open in a new window': t( 'Open in a new window' ),
+			'Open in a new tab': t( 'Open in a new tab' ),
 			'Downloadable': t( 'Downloadable' )
 		};
 

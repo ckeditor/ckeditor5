@@ -169,7 +169,7 @@ export default class Link extends Plugin {
  *
  *		{
  *			mode: 'manual',
- *			label: 'Open link in new window',
+ *			label: 'Open in a new tab',
  *			attributes: {
  *				target: '_blank',
  *				rel: 'noopener noreferrer'

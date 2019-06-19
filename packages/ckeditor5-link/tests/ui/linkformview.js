@@ -289,7 +289,7 @@ describe( 'LinkFormView', () => {
 	describe( 'localization of custom attributes', () => {
 		before( () => {
 			addTranslations( 'pl', {
-				'Open in a new window': 'Otwórz w nowym oknie'
+				'Open in a new tab': 'Otwórz w nowym oknie'
 			} );
 		} );
 		after( () => {
@@ -311,7 +311,7 @@ describe( 'LinkFormView', () => {
 						decorators: [
 							{
 								mode: 'manual',
-								label: 'Open in a new window',
+								label: 'Open in a new tab',
 								attributes: {
 									target: '_blank'
 								}
