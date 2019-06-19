@@ -59,3 +59,35 @@ function isSafeUrl( url ) {
 
 	return normalizedUrl.match( SAFE_URL );
 }
+
+/**
+ * Returns configuration options as defined in {@link module:link/link~LinkConfig#decorators `editor.config.decorators`} but processed
+ * to respect localization of the editor, i.e. to display {@link module:link/link~LinkDecoratorManualDefinition label}
+ * in the correct language.
+ *
+ * **Note:** Only few most commonly used labels has provided translations. In all other cases decorators configuration should be
+ * directly translated in configuration.
+ *
+ * @param {module:core/editor/editor~Editor} editor An editor instance
+ * @returns {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
+ */
+export function getLocalizedDecorators( editor ) {
+	const t = editor.t;
+	const decorators = editor.config.get( 'link.decorators' );
+
+	if ( decorators ) {
+		const localizedDecoratorsLabels = {
+			'Open in a new window': t( 'Open in a new window' ),
+			'Downloadable': t( 'Downloadable' )
+		};
+
+		return decorators.map( decorator => {
+			if ( decorator.label && localizedDecoratorsLabels[ decorator.label ] ) {
+				decorator.label = localizedDecoratorsLabels[ decorator.label ];
+			}
+			return decorator;
+		} );
+	} else {
+		return [];
+	}
+}
