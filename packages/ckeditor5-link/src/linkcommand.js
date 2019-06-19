@@ -80,49 +80,37 @@ export default class LinkCommand extends Command {
 	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
 	 * documentation.
 	 *
-	 * Usage of `manualDecoratorIds` in link command:
+	 * Here is how to manage decorator attributes via the link command:
 	 *
 	 *		const linkCommand = editor.commands.get( 'link' );
 	 *
-	 *		// 1. Add new decorator ( empty model )
+	 *		// Adding a new decorator attribute.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkDecorator0: true
 	 *		} );
-	 *		// result: <$text href="http://example.com" linkDecorator0="true">http://example.com</$text>
 	 *
-	 *		// 2. Remove decorator over selection:
-	 *		// [<$text href="http://example.com" linkDecorator0="true">http://example.com</$text>]
+	 *		// Removing a decorator attribute from a selection.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkDecorator0: false
 	 *		} );
-	 *		// result: <$text href="http://example.com">http://example.com</$text>
 	 *
-	 * There is possibility to modify multiple decorators at the same time:
-	 *
-	 *		const linkCommand = editor.commands.get( 'link' );
-	 *
-	 *		// 1. Add new decorator ( empty model )
+	 *		// Adding multiple decorator attributes at a time.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkDecorator0: true,
 	 *			linkDecorator2: true,
 	 *		} );
-	 *		// result:
-	 *		// <$text href="http://example.com" linkDecorator0="true" linkDecorator2="true">http://example.com</$text>
 	 *
-	 *		// 2. Remove and add new decorator over selection:
-	 *		// [<$text href="http://example.com" linkDecorator0="true" linkDecorator2="true">http://example.com</$text>]
+	 *		// Removing and adding decorator attributes at a time.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkDecorator0: false,
 	 *			linkDecorator1: true,
 	 *			linkDecorator2: false,
 	 *		} );
-	 *		// result:
-	 *		// <$text href="http://example.com" linkDecorator1="true">http://example.com</$text>
 	 *
-	 * **Note**: If decorator name is not passed to the command, then its state remains untouched.
+	 * **Note**: If decorator attribute name is not specified its state remains untouched.
 	 *
-	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} also removes all decorators
-	 * from the link.
+	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} removes all
+	 * decorator attributes.
 	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
