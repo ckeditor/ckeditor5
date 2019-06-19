@@ -41,11 +41,11 @@
 	&.ck-splitbutton_open,
 	&:hover {
 		/* When the split button hovered as a whole, not as individual buttons. */
-		& > .ck-button:not(.ck-on):not(:hover) {
+		& > .ck-button:not(.ck-on):not(.ck-disabled):not(:hover) {
 			background: var(--ck-color-split-button-hover-background);
 		}
 
-		& > .ck-splitbutton__arrow {
+		& > .ck-splitbutton__arrow:not(.ck-disabled) {
 			border-left-color: var(--ck-color-split-button-hover-border);
 		}
 	}
