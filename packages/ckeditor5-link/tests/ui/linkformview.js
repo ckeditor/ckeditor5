@@ -289,7 +289,7 @@ describe( 'LinkFormView', () => {
 	describe( 'localization of custom attributes', () => {
 		before( () => {
 			addTranslations( 'pl', {
-				'Open in new window': 'Otwórz w nowym oknie'
+				'Open in a new window': 'Otwórz w nowym oknie'
 			} );
 		} );
 		after( () => {
@@ -311,7 +311,7 @@ describe( 'LinkFormView', () => {
 						decorators: [
 							{
 								mode: 'manual',
-								label: 'Open in new window',
+								label: 'Open in a new window',
 								attributes: {
 									target: '_blank'
 								}
@@ -321,7 +321,7 @@ describe( 'LinkFormView', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).customAttributes );
+					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).manualDecoratorCollection );
 				} );
 		} );
 
@@ -332,7 +332,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'translates labels of manual decorators UI', () => {
-			expect( linkFormView.customAttributesView.first.label ).to.equal( 'Otwórz w nowym oknie' );
+			expect( linkFormView._manualDecoratorSwitches.first.label ).to.equal( 'Otwórz w nowym oknie' );
 		} );
 	} );
 } );
