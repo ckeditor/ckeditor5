@@ -52,17 +52,18 @@ export default class Watchdog {
 
 		/**
 		 * @private
+		 * @type {Editor}
+		 */
+		this._editor = null;
+
+		/**
+		 * @private
 		 * @member {Function} _creator
 		 */
 
 		/**
 		 * @private
 		 * @member {Function} _destructor
-		 */
-
-		/**
-		 * @private
-		 * @member {Editor} _editor
 		 */
 
 		/**
@@ -76,10 +77,26 @@ export default class Watchdog {
 		 * @private
 		 * @member {Number} _lastDocumentVersion
 		 */
+
+		/**
+		* The editor source element.
+		*
+		* @private
+		* @member {HTMLElement} _element
+		*/
+
+		/**
+		* The editor configuration.
+		*
+		* @private
+		* @member {Object|undefined} _config
+		*/
 	}
 
 	/**
 	 * The current editor instance.
+	 *
+	 * @type {module:core/editor/editor~Editor}
 	 */
 	get editor() {
 		return this._editor;
@@ -113,14 +130,25 @@ export default class Watchdog {
 	restart() {
 		return Promise.resolve()
 			.then( () => this.destroy() )
-			.then( () => this.create() )
-			.then( () => this._editor.setData( this._data ) );
+			.then( () => {
+				const updatedConfig = Object.assign( {}, this._config, {
+					initialData: this._data
+				} );
+
+				return this.create( this._element, updatedConfig );
+			} )
+			.then( () => {
+				this.fire( 'restart' );
+			} );
 	}
 
 	/**
+	 * @param {HTMLElement} element
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
+	 *
 	 * @returns {Promise.<Watchdog>}
 	 */
-	create() {
+	create( element, config ) {
 		if ( !this._creator ) {
 			throw new Error( 'The watchdog creator is not defined' );
 		}
@@ -129,29 +157,36 @@ export default class Watchdog {
 			throw new Error( 'The watchdog destructor is not defined.' );
 		}
 
-		return this._creator().then( editor => {
-			this._editor = editor;
+		this._element = element;
+		this._config = config;
 
-			window.addEventListener( 'error', this._boundErrorWatcher );
-			this.listenTo( editor.model.document, 'change:data', this._debouncedSave );
+		return Promise.resolve()
+			.then( () => this._creator( element, config ) )
+			.then( editor => {
+				this._editor = editor;
 
-			this._lastDocumentVersion = editor.model.document.version;
-			this._data = editor.getData();
+				window.addEventListener( 'error', this._boundErrorWatcher );
+				this.listenTo( editor.model.document, 'change:data', this._debouncedSave );
 
-			return this;
-		} );
+				this._lastDocumentVersion = editor.model.document.version;
+				this._data = editor.getData();
+
+				return this;
+			} );
 	}
 
 	/**
 	 * Destroys the current editor.
 	 *
-	 * @return {Promise|undefined}
+	 * @returns {Promise}
 	 */
 	destroy() {
 		window.removeEventListener( 'error', this._boundErrorWatcher );
 		this.stopListening( this._editor.model.document, 'change:data', this._debouncedSave );
 
-		return this._destructor( this._editor );
+		return Promise.resolve()
+			.then( () => this._destructor( this._editor ) )
+			.then( () => this._editor = null );
 	}
 
 	/**
@@ -198,9 +233,7 @@ export default class Watchdog {
 			this.fire( 'error' );
 
 			if ( this.crashes.length <= this._crashNumberLimit ) {
-				this.restart().then( () => {
-					this.fire( 'restart' );
-				} );
+				this.restart();
 			}
 		}
 	}
