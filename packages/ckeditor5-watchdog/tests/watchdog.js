@@ -6,9 +6,18 @@
 import Watchdog from '../src/watchdog';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Watchdog', () => {
 	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+
+	} );
+
+	afterEach( () => {
+
+	} );
 
 	describe( 'create()', () => {
 		it( 'should create an editor instance', () => {
@@ -63,6 +72,7 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			// VirtualTestEditor doesn't handle the `config.initialData` properly.
+			// See https://github.com/ckeditor/ckeditor5-core/issues/180.
 			const FakeEditor = getFakeEditor();
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
@@ -145,6 +155,300 @@ describe( 'Watchdog', () => {
 					}
 				);
 		} );
+
+		it( 'Watchdog should catch editor errors and restart the editor during the runtime', done => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { watchdog.editor.throwEditorError() } );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					done();
+				} )
+			} );
+		} );
+
+		it( 'Watchdog should catch editor errors and restart the editor during the runtime', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+						res();
+					} )
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not catch other editor errors', () => {
+			const watchdog1 = new Watchdog();
+			const watchdog2 = new Watchdog();
+			const FakeEditor1 = getFakeEditor();
+			const FakeEditor2 = getFakeEditor();
+
+			watchdog1.setCreator( ( el, config ) => FakeEditor1.create( el, config ) );
+			watchdog1.setDestructor( editor => editor.destroy() );
+
+			watchdog2.setCreator( ( el, config ) => FakeEditor2.create( el, config ) );
+			watchdog2.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return Promise.all( [
+				watchdog1.create( document.createElement( 'div' ) ),
+				watchdog2.create( document.createElement( 'div' ) )
+			] ).then( () => {
+				return new Promise( res => {
+					let watchdog1ErrorSpy = sinon.spy();
+					let watchdog2ErrorSpy = sinon.spy();
+
+					watchdog1.on( 'restart', watchdog1ErrorSpy );
+					watchdog2.on( 'restart', watchdog2ErrorSpy );
+
+					setTimeout( () => {
+						throw new CKEditorError( 'foo', undefined, watchdog2.editor );
+					} );
+
+					// TODO - timing.
+					setTimeout( () => {
+						window.onerror = originalErrorHandler;
+
+						sinon.assert.notCalled( watchdog1ErrorSpy );
+						sinon.assert.calledOnce( watchdog2ErrorSpy );
+						res();
+					}, 5 );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should catch editor errors and restart the editor during the runtime', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+						res();
+					} )
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should catch editor errors and restart the editor during the runtime if the editor can be found from the ctx', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor.model.document ); } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+						res();
+					} )
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should catch editor errors and restart the editor during the runtime if the editor can be found from the ctx #2', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, { foo: [ 1, 2, 3, { bar: watchdog.editor } ] } ); } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+						res();
+					} )
+				} );
+			} );
+		} );
+
+		it( 'editor should be restarted maximum 3 times by default', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			const errorSpy = sinon.spy();
+			watchdog.on( 'error', errorSpy );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo1', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo2', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo3', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo4', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						expect( errorSpy.callCount ).to.equal( 4 );
+						expect( watchdog.crashes.length ).to.equal( 4 );
+						expect( restartSpy.callCount ).to.equal( 3 );
+
+						window.onerror = originalErrorHandler;
+						res();
+					}, 5 );
+				} );
+			} );
+		} );
+
+		it( 'editor should be restarted maximum of `crashNumberLimit` if the option is set', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			const errorSpy = sinon.spy();
+			watchdog.on( 'error', errorSpy );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo1', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo2', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo3', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo4', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						expect( errorSpy.callCount ).to.equal( 4 );
+						expect( watchdog.crashes.length ).to.equal( 4 );
+						expect( restartSpy.callCount ).to.equal( 2 );
+
+						window.onerror = originalErrorHandler;
+						res();
+					}, 5 );
+				} );
+			} );
+		} );
+
+		it( 'editor should be reinitialized with the last data ', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			const errorSpy = sinon.spy();
+			watchdog.on( 'error', errorSpy );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo1', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo2', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo3', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'foo4', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						expect( errorSpy.callCount ).to.equal( 4 );
+						expect( watchdog.crashes.length ).to.equal( 4 );
+						expect( restartSpy.callCount ).to.equal( 2 );
+
+						window.onerror = originalErrorHandler;
+						res();
+					}, 5 );
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'crashes', () => {
+		it( 'should be an array of caught errors by the Watchdog', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
+				setTimeout( () => { throw new CKEditorError( 'bar', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					// TODO - timing.
+					setTimeout( () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.crashes[ 0 ].message ).to.equal( 'Uncaught CKEditorError: foo' );
+						expect( watchdog.crashes[ 1 ].message ).to.equal( 'Uncaught CKEditorError: bar' );
+						res();
+					}, 5 );
+				} );
+			} );
+		} );
 	} );
 } );
 
@@ -157,7 +461,7 @@ function getFakeEditor() {
 				.then( () => editor.create( el, config ) );
 		}
 
-		create( el, config ) {
+		create( el, config = {} ) {
 			this.el = el;
 			this.config = config;
 			this._data = config.initialData || '';
@@ -181,6 +485,10 @@ function getFakeEditor() {
 			this.el.remove();
 
 			return Promise.resolve();
+		}
+
+		throwEditorError() {
+			throw new CKEditorError( 'foo', undefined, this );
 		}
 	}
 }

@@ -5,7 +5,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import { debounce } from 'lodash-es';
+import { throttle } from 'lodash-es';
 
 /**
  * A Watchdog for CKEditor 5 editors.
@@ -42,13 +42,13 @@ export default class Watchdog {
 		this._boundErrorWatcher = this._watchForEditorErrors.bind( this );
 
 		/**
-		 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
+		 * Throttled save method. The `save()` method is called the specified `waitingTime` after `throttledSave()` is called,
 		 * unless a new action happens in the meantime.
 		 *
 		 * @private
 		 * @type {Function}
 		 */
-		this._debouncedSave = debounce( this._save.bind( this ), waitingTime || 5000 );
+		this._throttledSave = throttle( this._save.bind( this ), waitingTime || 5000 );
 
 		/**
 		 * @private
@@ -166,7 +166,7 @@ export default class Watchdog {
 				this._editor = editor;
 
 				window.addEventListener( 'error', this._boundErrorWatcher );
-				this.listenTo( editor.model.document, 'change:data', this._debouncedSave );
+				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
 
 				this._lastDocumentVersion = editor.model.document.version;
 				this._data = editor.getData();
@@ -182,7 +182,7 @@ export default class Watchdog {
 	 */
 	destroy() {
 		window.removeEventListener( 'error', this._boundErrorWatcher );
-		this.stopListening( this._editor.model.document, 'change:data', this._debouncedSave );
+		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
 		return Promise.resolve()
 			.then( () => this._destructor( this._editor ) )
@@ -198,7 +198,7 @@ export default class Watchdog {
 		// Change may not produce an operation, so the document's version
 		// can be the same after that change.
 		if ( version < this._lastDocumentVersion ) {
-			this._debouncedSave.cancel();
+			this._throttledSave.cancel();
 
 			return;
 		}
@@ -258,7 +258,7 @@ function areElementsConnected( from, searchedElement ) {
 	const nodes = [ from ];
 
 	// Elements are stored to prevent infinite looping.
-	const storedElements = new WeakSet( nodes );
+	const storedElements = new WeakSet();
 
 	while ( nodes.length > 0 ) {
 		// BFS should be faster.
