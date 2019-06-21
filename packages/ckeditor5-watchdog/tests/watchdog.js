@@ -426,42 +426,6 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be reinitialized with the last data', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
-
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
-
-			const errorSpy = sinon.spy();
-			watchdog.on( 'error', errorSpy );
-
-			const restartSpy = sinon.spy();
-			watchdog.on( 'restart', restartSpy );
-
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
-
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => { throw new CKEditorError( 'foo1', undefined, watchdog.editor ); } );
-				setTimeout( () => { throw new CKEditorError( 'foo2', undefined, watchdog.editor ); } );
-				setTimeout( () => { throw new CKEditorError( 'foo3', undefined, watchdog.editor ); } );
-				setTimeout( () => { throw new CKEditorError( 'foo4', undefined, watchdog.editor ); } );
-
-				return new Promise( res => {
-					setTimeout( () => {
-						expect( errorSpy.callCount ).to.equal( 4 );
-						expect( watchdog.crashes.length ).to.equal( 4 );
-						expect( restartSpy.callCount ).to.equal( 2 );
-
-						window.onerror = originalErrorHandler;
-
-						watchdog.destroy().then( res );
-					}, 5 );
-				} );
-			} );
-		} );
-
 		it( 'Watchdog should warn if the CKEditorError missing its context', () => {
 			const watchdog = new Watchdog();
 
@@ -492,7 +456,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted with the correct data when an error occurs #1', () => {
+		it( 'editor should be restarted with the data before the crash #1', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
@@ -506,6 +470,76 @@ describe( 'Watchdog', () => {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'editor should be restarted with the data before the crash #2', () => {
+			const watchdog = new Watchdog();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ), {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const doc = watchdog.editor.model.document;
+
+				watchdog.editor.model.change( writer => {
+					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+				} );
+
+				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						console.log( watchdog.editor.getData() );
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'editor should be restarted with the data of the latest document version before the crash', () => {
+			const watchdog = new Watchdog();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ), {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const doc = watchdog.editor.model.document;
+
+				watchdog.editor.model.document.version = -1000;
+				watchdog.editor.model.change( writer => {
+					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+				} );
+
 				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
 
 				return new Promise( res => {

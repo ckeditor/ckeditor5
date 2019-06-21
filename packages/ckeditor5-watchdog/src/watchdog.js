@@ -129,6 +129,10 @@ export default class Watchdog {
 	 * @returns {Promise.<module:core/editor/editor~Editor>}
 	 */
 	restart() {
+		try {
+			this._throttledSave.flush();
+		} catch( err ) { }
+
 		return Promise.resolve()
 			.then( () => this.destroy() )
 			.then( () => {
