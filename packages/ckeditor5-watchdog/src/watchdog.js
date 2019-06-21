@@ -6,6 +6,7 @@
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { throttle } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * A Watchdog for CKEditor 5 editors.
@@ -150,11 +151,29 @@ export default class Watchdog {
 	 */
 	create( element, config ) {
 		if ( !this._creator ) {
-			throw new Error( 'The watchdog creator is not defined' );
+			/**
+			 * @error watchdog-creator-not-defined
+			 *
+			 * The watchdog creator is not defined, define it using `watchdog.setCreator()`.
+			 */
+			throw new CKEditorError(
+				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()`.',
+				undefined,
+				{}
+			);
 		}
 
 		if ( !this._destructor ) {
-			throw new Error( 'The watchdog destructor is not defined.' );
+			/**
+			 * @error watchdog-destructor-not-defined
+			 *
+			 * The watchdog destructor is not defined, define it using `watchdog.setDestructor()`.
+			 */
+			throw new CKEditorError(
+				'watchdog-destructor-not-defined: The watchdog destructor is not defined, define it using `watchdog.setDestructor()`',
+				undefined,
+				{}
+			);
 		}
 
 		this._element = element;
@@ -217,7 +236,7 @@ export default class Watchdog {
 		}
 
 		if ( !event.error.ctx ) {
-			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor' );
+			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
 
 			return;
 		}

@@ -32,6 +32,20 @@ describe( 'Watchdog', () => {
 					sinon.assert.calledOnce( editorDestroySpy );
 				} )
 		} );
+
+		it( 'should throw an error when the creator is not defined', () => {
+			const watchdog = new Watchdog();
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			expect( () => watchdog.create() ).to.throw( CKEditorError, /^watchdog-creator-not-defined/ );
+		} );
+
+		it( 'should throw an error when the destructor is not defined', () => {
+			const watchdog = new Watchdog();
+			watchdog.setCreator( ( el, config ) => VirtualTestEditor.create( el, config ) );
+
+			expect( () => watchdog.create() ).to.throw( CKEditorError, /^watchdog-destructor-not-defined/ );
+		} );
 	} );
 
 	describe( 'restart()', () => {
@@ -117,8 +131,11 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should not restart editor during the initialization', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( () => Promise.reject( new Error( 'foo' ) ) );
-			watchdog.setDestructor( () => { } );
+			watchdog.setCreator( el =>
+				VirtualTestEditor.create( el )
+					.then( () => Promise.reject( new Error( 'foo' ) ) )
+			);
+			watchdog.setDestructor( editor => editor.destroy() );
 
 			return watchdog.create( document.createElement( 'div' ) ).then(
 				() => { throw new Error( '`watchdog.create()` should throw an error.' ) },
@@ -164,7 +181,8 @@ describe( 'Watchdog', () => {
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
 					} );
 				} );
 			} );
@@ -192,7 +210,7 @@ describe( 'Watchdog', () => {
 						sinon.assert.calledOnce( windowErrorSpy );
 						expect( windowErrorSpy.getCall( 0 ).args[ 0 ] ).to.equal( 'Uncaught CKEditorError: foo' );
 
-						res();
+						watchdog.destroy().then( res );
 					} );
 				} );
 			} );
@@ -215,7 +233,8 @@ describe( 'Watchdog', () => {
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
 					} );
 				} );
 			} );
@@ -244,7 +263,7 @@ describe( 'Watchdog', () => {
 
 						sinon.assert.notCalled( editorErrorSpy );
 
-						res();
+						watchdog.destroy().then( res );
 					}, 5 );
 				} );
 			} );
@@ -287,7 +306,9 @@ describe( 'Watchdog', () => {
 
 						sinon.assert.notCalled( watchdog1ErrorSpy );
 						sinon.assert.calledOnce( watchdog2ErrorSpy );
-						res();
+
+						Promise.all( [ watchdog1.destroy(), watchdog2.destroy() ] )
+							.then( res );
 					}, 5 );
 				} );
 			} );
@@ -310,7 +331,8 @@ describe( 'Watchdog', () => {
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
 					} )
 				} );
 			} );
@@ -333,7 +355,8 @@ describe( 'Watchdog', () => {
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
 					} )
 				} );
 			} );
@@ -369,7 +392,8 @@ describe( 'Watchdog', () => {
 						expect( restartSpy.callCount ).to.equal( 3 );
 
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
 					}, 5 );
 				} );
 			} );
@@ -405,13 +429,14 @@ describe( 'Watchdog', () => {
 						expect( restartSpy.callCount ).to.equal( 2 );
 
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
 					}, 5 );
 				} );
 			} );
 		} );
 
-		it( 'editor should be reinitialized with the last data ', () => {
+		it( 'editor should be reinitialized with the last data', () => {
 			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
 			const FakeEditor = getFakeEditor();
 
@@ -441,7 +466,39 @@ describe( 'Watchdog', () => {
 						expect( restartSpy.callCount ).to.equal( 2 );
 
 						window.onerror = originalErrorHandler;
-						res();
+
+						watchdog.destroy().then( res );
+					}, 5 );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should warn if the CKEditorError missing its context', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			sinon.stub( console, 'error' );
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new CKEditorError( 'foo' ); } );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.crashes ).to.deep.equal( [] );
+
+						sinon.assert.calledOnce( console.error );
+						sinon.assert.calledWithExactly( console.error, 'The error is missing its context and Watchdog cannot restart the proper editor.' );
+
+						watchdog.destroy().then( res );
 					}, 5 );
 				} );
 			} );
@@ -471,7 +528,8 @@ describe( 'Watchdog', () => {
 
 						expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
 						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
-						res();
+
+						watchdog.destroy().then( res );
 					}, 5 );
 				} );
 			} );
