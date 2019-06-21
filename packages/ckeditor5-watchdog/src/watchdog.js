@@ -3,6 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module watchdog/watchdog
+ */
+
+/* globals console, window, EventTarget */
+
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { throttle } from 'lodash-es';
@@ -131,7 +137,12 @@ export default class Watchdog {
 	restart() {
 		try {
 			this._throttledSave.flush();
-		} catch( err ) { }
+		} catch ( err ) {
+			console.error(
+				'An error happened during restoring editor data. ' +
+				'Editor will be restored from the previously saved data.'
+			);
+		}
 
 		return Promise.resolve()
 			.then( () => this.destroy() )
@@ -209,7 +220,9 @@ export default class Watchdog {
 
 		return Promise.resolve()
 			.then( () => this._destructor( this._editor ) )
-			.then( () => this._editor = null );
+			.then( () => {
+				this._editor = null;
+			} );
 	}
 
 	/**
