@@ -144,7 +144,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * @param {HTMLElement} element
+	 * @param {HTMLElement|module:core/editor/editorconfig~EditorConfig} element
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
 	 *
 	 * @returns {Promise.<Watchdog>}
@@ -308,6 +308,7 @@ function shouldNodeBeSkipped( obj ) {
 
 	return (
 		type === '[object Number]' ||
+		type === '[object Boolean]' ||
 		type === '[object String]' ||
 		type === '[object Function]' ||
 		type === '[object Date]' ||
