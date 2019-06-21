@@ -135,14 +135,7 @@ export default class Watchdog {
 	 * @returns {Promise.<module:core/editor/editor~Editor>}
 	 */
 	restart() {
-		try {
-			this._throttledSave.flush();
-		} catch ( err ) {
-			console.error(
-				'An error happened during restoring editor data. ' +
-				'Editor will be restored from the previously saved data.'
-			);
-		}
+		this._throttledSave.flush();
 
 		return Promise.resolve()
 			.then( () => this.destroy() )
@@ -239,8 +232,16 @@ export default class Watchdog {
 			return;
 		}
 
-		this._lastDocumentVersion = version;
-		this._data = this._editor.getData();
+		try {
+			this._data = this._editor.getData();
+			this._lastDocumentVersion = version;
+		} catch ( err ) {
+			console.error(
+				err,
+				'An error happened during restoring editor data. ' +
+				'Editor will be restored from the previously saved data.'
+			);
+		}
 	}
 
 	/**

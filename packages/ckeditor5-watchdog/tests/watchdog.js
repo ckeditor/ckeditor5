@@ -527,7 +527,6 @@ describe( 'Watchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						console.log( watchdog.editor.getData() );
 						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
 
 						watchdog.destroy().then( res );
@@ -563,6 +562,44 @@ describe( 'Watchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'editor should be restarted with the latest available data before the crash', () => {
+			const watchdog = new Watchdog();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ), {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const getDataStub = sinon.stub( watchdog.editor, 'getData' )
+					.throwsException( new Error( 'Some error' ) );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				const doc = watchdog.editor.model.document;
+
+				watchdog.editor.model.change( writer => {
+					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+				} );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						sinon.assert.calledOnce( getDataStub );
 						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
 
 						watchdog.destroy().then( res );
