@@ -166,29 +166,6 @@ describe( 'Watchdog', () => {
 				);
 		} );
 
-		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
-			const watchdog = new Watchdog();
-
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
-
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
-
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
-
-				return new Promise( res => {
-					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-
-						watchdog.destroy().then( res );
-					} );
-				} );
-			} );
-		} );
-
 		it( 'Watchdog should not hide intercepted errors', () => {
 			const watchdog = new Watchdog();
 
@@ -344,7 +321,16 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo', { foo: [ 1, 2, 3, { bar: watchdog.editor } ] } ) );
+				setTimeout( () => throwCKEditorError( 'foo', {
+					foo: [ 1, 2, 3, {
+						bar: new Set( [
+							new Map( [
+								[ 'foo', 'bar' ],
+								[ 0, watchdog.editor ]
+							] )
+						] )
+					} ]
+				} ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {

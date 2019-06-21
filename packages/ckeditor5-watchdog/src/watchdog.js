@@ -294,8 +294,8 @@ mix( Watchdog, EmitterMixin );
 function areElementsConnected( from, searchedElement ) {
 	const nodes = [ from ];
 
-	// Elements are stored to prevent infinite looping.
-	const storedElements = new WeakSet();
+	// Nodes are stored to prevent infinite looping.
+	const storedNodes = new WeakSet();
 
 	while ( nodes.length > 0 ) {
 		// BFS should be faster.
@@ -305,13 +305,14 @@ function areElementsConnected( from, searchedElement ) {
 			return true;
 		}
 
-		if ( storedElements.has( node ) || shouldNodeBeSkipped( node ) ) {
+		if ( storedNodes.has( node ) || shouldNodeBeSkipped( node ) ) {
 			continue;
 		}
 
-		storedElements.add( node );
+		storedNodes.add( node );
 
-		if ( Array.isArray( node ) ) {
+		// Handle arrays, maps, sets, custom collections that implements `[ Symbol.iterator ]()`, etc.
+		if ( node[ Symbol.iterator ] ) {
 			nodes.push( ...node );
 		} else {
 			nodes.push( ...Object.values( node ) );
@@ -328,13 +329,14 @@ function shouldNodeBeSkipped( obj ) {
 		type === '[object Number]' ||
 		type === '[object Boolean]' ||
 		type === '[object String]' ||
+		type === '[object Symbol]' ||
 		type === '[object Function]' ||
 		type === '[object Date]' ||
 
 		obj === undefined ||
 		obj === null ||
 
-		// Skip native DOM objects, e.g. Window, nodes, events, etc.s
+		// Skip native DOM objects, e.g. Window, nodes, events, etc.
 		obj instanceof EventTarget
 	);
 }
