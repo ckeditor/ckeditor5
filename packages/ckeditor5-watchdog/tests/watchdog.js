@@ -580,12 +580,15 @@ describe( 'Watchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
+			const consoleErrorStub = sinon.stub( console, 'error' );
+
 			return watchdog.create( document.createElement( 'div' ), {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
+				const editorGetDataError = new Error( 'Some error' );
 				const getDataStub = sinon.stub( watchdog.editor, 'getData' )
-					.throwsException( new Error( 'Some error' ) );
+					.throwsException( editorGetDataError );
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -601,6 +604,12 @@ describe( 'Watchdog', () => {
 
 						sinon.assert.calledOnce( getDataStub );
 						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+						sinon.assert.calledWith(
+							consoleErrorStub,
+							editorGetDataError,
+							'An error happened during restoring editor data. Editor will be restored from the previously saved data.'
+						);
 
 						watchdog.destroy().then( res );
 					} );
