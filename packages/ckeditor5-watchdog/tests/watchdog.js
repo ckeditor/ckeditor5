@@ -177,9 +177,7 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => {
-					throw new CKEditorError( 'foo', undefined, watchdog.editor );
-				} );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
@@ -203,9 +201,7 @@ describe( 'Watchdog', () => {
 			window.onerror = windowErrorSpy;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => {
-					throw new CKEditorError( 'foo', undefined, watchdog.editor );
-				} );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
@@ -231,9 +227,7 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => {
-					throw new CKEditorError( 'foo', undefined, watchdog.editor );
-				} );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
@@ -300,9 +294,7 @@ describe( 'Watchdog', () => {
 					watchdog1.on( 'restart', watchdog1ErrorSpy );
 					watchdog2.on( 'restart', watchdog2ErrorSpy );
 
-					setTimeout( () => {
-						throw new CKEditorError( 'foo', undefined, watchdog2.editor );
-					} );
+					setTimeout( () => throwCKEditorError( 'foo', watchdog2.editor ) );
 
 					// TODO - timing.
 					setTimeout( () => {
@@ -329,9 +321,7 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => {
-					throw new CKEditorError( 'foo', undefined, watchdog.editor.model.document );
-				} );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor.model.document ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
@@ -354,9 +344,7 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => {
-					throw new CKEditorError( 'foo', undefined, { foo: [ 1, 2, 3, { bar: watchdog.editor } ] } );
-				} );
+				setTimeout( () => throwCKEditorError( 'foo', { foo: [ 1, 2, 3, { bar: watchdog.editor } ] } ) );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
@@ -580,7 +568,7 @@ describe( 'Watchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			const consoleErrorStub = sinon.stub( console, 'error' );
+			sinon.stub( console, 'error' );
 
 			return watchdog.create( document.createElement( 'div' ), {
 				initialData: '<p>foo</p>',
@@ -606,7 +594,7 @@ describe( 'Watchdog', () => {
 						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
 
 						sinon.assert.calledWith(
-							consoleErrorStub,
+							console.error,
 							editorGetDataError,
 							'An error happened during restoring editor data. Editor will be restored from the previously saved data.'
 						);
