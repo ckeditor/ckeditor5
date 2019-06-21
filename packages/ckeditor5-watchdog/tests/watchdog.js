@@ -640,7 +640,7 @@ describe( 'Watchdog', () => {
 	} );
 } );
 
-// Wrap Editor to follow the API.
+// Wrap Editor to align the API to the "full" editors.
 class FakeEditor extends VirtualTestEditor {
 	static create( elementOrData, config ) {
 		return super.create( config );
