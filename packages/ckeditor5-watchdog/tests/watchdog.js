@@ -5,26 +5,17 @@
 
 import Watchdog from '../src/watchdog';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Watchdog', () => {
-	testUtils.createSinonSandbox();
-
-	beforeEach( () => {
-
-	} );
-
-	afterEach( () => {
-
-	} );
+	afterEach( () => sinon.restore() );
 
 	describe( 'create()', () => {
 		it( 'should create an editor instance', () => {
 			const watchdog = new Watchdog();
 
-			const editorCreateSpy = testUtils.sinon.spy( VirtualTestEditor, 'create' );
-			const editorDestroySpy = testUtils.sinon.spy( VirtualTestEditor.prototype, 'destroy' );
+			const editorCreateSpy = sinon.spy( VirtualTestEditor, 'create' );
+			const editorDestroySpy = sinon.spy( VirtualTestEditor.prototype, 'destroy' );
 
 			watchdog.setCreator( ( el, config ) => VirtualTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -47,8 +38,8 @@ describe( 'Watchdog', () => {
 		it( 'should restart the editor', () => {
 			const watchdog = new Watchdog();
 
-			const editorCreateSpy = testUtils.sinon.spy( VirtualTestEditor, 'create' );
-			const editorDestroySpy = testUtils.sinon.spy( VirtualTestEditor.prototype, 'destroy' );
+			const editorCreateSpy = sinon.spy( VirtualTestEditor, 'create' );
+			const editorDestroySpy = sinon.spy( VirtualTestEditor.prototype, 'destroy' );
 
 			watchdog.setCreator( ( el, config ) => VirtualTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -156,27 +147,6 @@ describe( 'Watchdog', () => {
 				);
 		} );
 
-		it( 'Watchdog should catch editor errors and restart the editor during the runtime', done => {
-			const watchdog = new Watchdog();
-			const FakeEditor = getFakeEditor();
-
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
-
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
-
-			watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => { watchdog.editor.throwEditorError() } );
-
-				watchdog.on( 'restart', () => {
-					window.onerror = originalErrorHandler;
-					done();
-				} )
-			} );
-		} );
-
 		it( 'Watchdog should catch editor errors and restart the editor during the runtime', () => {
 			const watchdog = new Watchdog();
 			const FakeEditor = getFakeEditor();
@@ -189,13 +159,42 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
+				setTimeout( () => { watchdog.editor.throwEditorError() } );
 
 				return new Promise( res => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 						res();
-					} )
+					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not catch non-editor errors', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			const editorErrorSpy = sinon.spy();
+			watchdog.on( 'error', editorErrorSpy );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { throw new Error( 'foo' ); } );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						window.onerror = originalErrorHandler;
+
+						sinon.assert.notCalled( editorErrorSpy );
+
+						res();
+					}, 5 );
 				} );
 			} );
 		} );
@@ -239,29 +238,6 @@ describe( 'Watchdog', () => {
 						sinon.assert.calledOnce( watchdog2ErrorSpy );
 						res();
 					}, 5 );
-				} );
-			} );
-		} );
-
-		it( 'Watchdog should catch editor errors and restart the editor during the runtime', () => {
-			const watchdog = new Watchdog();
-			const FakeEditor = getFakeEditor();
-
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
-
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
-			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
-
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
-				setTimeout( () => { throw new CKEditorError( 'foo', undefined, watchdog.editor ); } );
-
-				return new Promise( res => {
-					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
-						res();
-					} )
 				} );
 			} );
 		} );
