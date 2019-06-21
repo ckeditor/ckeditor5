@@ -147,7 +147,7 @@ describe( 'Watchdog', () => {
 				);
 		} );
 
-		it( 'Watchdog should catch editor errors and restart the editor during the runtime', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
 			const watchdog = new Watchdog();
 			const FakeEditor = getFakeEditor();
 
@@ -170,7 +170,58 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should not catch non-editor errors', () => {
+		it( 'Watchdog should not hide intercepted errors', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { watchdog.editor.throwEditorError() } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						sinon.assert.calledOnce( windowErrorSpy );
+						expect( windowErrorSpy.getCall( 0 ).args[ 0 ] ).to.equal( 'Uncaught CKEditorError: foo' );
+
+						res();
+					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
+			const watchdog = new Watchdog();
+			const FakeEditor = getFakeEditor();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => { watchdog.editor.throwEditorError() } );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+						res();
+					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not intercept non-editor errors', () => {
 			const watchdog = new Watchdog();
 			const FakeEditor = getFakeEditor();
 
@@ -199,7 +250,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should not catch other editor errors', () => {
+		it( 'Watchdog should not intercept other editor errors', () => {
 			const watchdog1 = new Watchdog();
 			const watchdog2 = new Watchdog();
 			const FakeEditor1 = getFakeEditor();
@@ -242,7 +293,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should catch editor errors and restart the editor during the runtime if the editor can be found from the ctx', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor during the runtime if the editor can be found from the ctx', () => {
 			const watchdog = new Watchdog();
 			const FakeEditor = getFakeEditor();
 
@@ -265,7 +316,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should catch editor errors and restart the editor during the runtime if the editor can be found from the ctx #2', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor during the runtime if the editor can be found from the ctx #2', () => {
 			const watchdog = new Watchdog();
 			const FakeEditor = getFakeEditor();
 
@@ -418,8 +469,8 @@ describe( 'Watchdog', () => {
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.crashes[ 0 ].message ).to.equal( 'Uncaught CKEditorError: foo' );
-						expect( watchdog.crashes[ 1 ].message ).to.equal( 'Uncaught CKEditorError: bar' );
+						expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
 						res();
 					}, 5 );
 				} );

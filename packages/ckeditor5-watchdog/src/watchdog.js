@@ -224,7 +224,7 @@ export default class Watchdog {
 
 		if ( this._isErrorComingFromThisEditor( event.error ) ) {
 			this.crashes.push( {
-				message: event.message,
+				message: event.error.message,
 				source: event.source,
 				lineno: event.lineno,
 				colno: event.colno
