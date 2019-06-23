@@ -21,6 +21,15 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * restart it to the previous state.
  *
  * It does not handle errors during editor initialization and editor destruction.
+ *
+ * Basic Usage:
+ *
+ *		const watchdog = new Watchdog();
+ *
+ *		watchdog.setCreator( ( el, config ) => ClassicEditor.create( el, config ) );
+ *		watchdog.setDestructor( editor => editor.destroy() );
+ *
+ *		watchdog.create().then( editor => {} );
  */
 export default class Watchdog {
 	/**
@@ -30,6 +39,12 @@ export default class Watchdog {
 	 */
 	constructor( { crashNumberLimit, waitingTime } = {} ) {
 		/**
+		 * An array of crashes saved as object with the following props:
+		 * * message: String,
+		 * * source: String,
+		 * * lineno: String,
+		 * * colno: String
+		 *
 		 * @public
 		 * @readonly
 		 * @type {Array.<Object>}
@@ -37,6 +52,8 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
+		 * Crash number limit (default to 3). After the limit is reached the editor is not restarted by the watchdog.
+		 *
 		 * @private
 		 * @type {Number}
 		 */
@@ -58,22 +75,32 @@ export default class Watchdog {
 		this._throttledSave = throttle( this._save.bind( this ), waitingTime || 5000 );
 
 		/**
+		 * The current editor
+		 *
 		 * @private
 		 * @type {Editor}
 		 */
 		this._editor = null;
 
 		/**
+		 * The editor creation method.
+		 *
 		 * @private
 		 * @member {Function} _creator
+		 * @see #setCreator
 		 */
 
 		/**
+		 * The editor destruction method
+		 *
 		 * @private
 		 * @member {Function} _destructor
+		 * @see #setDestructor
 		 */
 
 		/**
+		 * The latest saved editor data.
+		 *
 		 * @private
 		 * @member {String} _data
 		 */
@@ -113,6 +140,8 @@ export default class Watchdog {
 	 * Sets the function that is responsible for editor creation.
 	 * It accepts functions that returns promises.
 	 *
+	 * 		watchdog.setCreator( ( el, config ) => ClassicEditor.create( el, config ) );
+	 *
 	 * @param {Function} creator
 	 */
 	setCreator( creator ) {
@@ -121,7 +150,9 @@ export default class Watchdog {
 
 	/**
 	 * Sets the function that is responsible for editor destruction.
-	 * It accepts functions that returns promises or undefined.
+	 * It accepts function that returns a promise or undefined.
+	 *
+	 *		watchdog.setDestructor( editor => editor.destroy() );
 	 *
 	 * @param {Function} destructor
 	 */
@@ -130,8 +161,10 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Restarts the editor instance.
+	 * Restarts the editor instance. This method is also called whenever an editor error occurs.
+	 * It fires the `restart` event.
 	 *
+	 * @fires restart
 	 * @returns {Promise.<module:core/editor/editor~Editor>}
 	 */
 	restart() {
@@ -152,6 +185,8 @@ export default class Watchdog {
 	}
 
 	/**
+	 * Creates a watched editor instance using the creator passed to {@link #setCreator} method.
+	 *
 	 * @param {HTMLElement|module:core/editor/editorconfig~EditorConfig} element
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
 	 *
@@ -203,7 +238,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Destroys the current editor.
+	 * Destroys the current editor using the destructor passed to {@link #setDestructor} method.
 	 *
 	 * @returns {Promise}
 	 */
@@ -219,6 +254,9 @@ export default class Watchdog {
 	}
 
 	/**
+	 * Saves the editor data, so it can be restored after the crash even if the data cannot be fetched at
+	 * the moment of a crash.
+	 *
 	 * @private
 	 */
 	_save() {
@@ -246,6 +284,7 @@ export default class Watchdog {
 
 	/**
 	 * @private
+	 * @fires error
 	 * @param {ErrorEvent} event
 	 */
 	_watchForEditorErrors( event ) {
@@ -285,12 +324,23 @@ export default class Watchdog {
 			areElementsConnected( error.ctx, this._editor )
 		);
 	}
+
+	/**
+	 * Fired when an error occurs and the watchdog will be restarting the editor.
+	 *
+	 * @event error
+	 */
+
+	/**
+	 * Fired after the watchdog restarts the error in case of a crash or when the `restart()` method was called explicitly.
+	 *
+	 * @event restart
+	 */
 }
 
 mix( Watchdog, EmitterMixin );
 
-// Returns `true` when the second parameter can be found from the first by walking through
-// the first argument.
+// Returns `true` when the second parameter can be found from the first by walking through the nodes.
 function areElementsConnected( from, searchedElement ) {
 	const nodes = [ from ];
 
