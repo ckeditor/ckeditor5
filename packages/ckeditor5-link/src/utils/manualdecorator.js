@@ -23,7 +23,7 @@ export default class ManualDecorator {
 	 *
 	 * @param {Object} config
 	 * @param {String} config.id name of attribute used in model, which represents given manual decorator.
-	 * For example 'linkManualDecorator0'.
+	 * For example 'linkIsExternal.
 	 * @param {String} config.label The label used in user interface to toggle manual decorator.
 	 * @param {Object} config.attributes Set of attributes added to output data, when decorator is active for specific link.
 	 * Attributes should keep format of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
