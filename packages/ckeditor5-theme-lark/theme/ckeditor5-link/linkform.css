@@ -46,7 +46,8 @@
 	}
 }
 
-/* Style link form differently when manual decoratos are available.
+/*
+ * Style link form differently when manual decorators are available.
  * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
  */
 .ck.ck-link-form_layout-vertical {
