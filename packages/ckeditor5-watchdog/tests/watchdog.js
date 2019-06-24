@@ -241,7 +241,7 @@ describe( 'Watchdog', () => {
 						sinon.assert.notCalled( editorErrorSpy );
 
 						watchdog.destroy().then( res );
-					}, 5 );
+					} );
 				} );
 			} );
 		} );
@@ -273,7 +273,6 @@ describe( 'Watchdog', () => {
 
 					setTimeout( () => throwCKEditorError( 'foo', watchdog2.editor ) );
 
-					// TODO - timing.
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
@@ -282,7 +281,7 @@ describe( 'Watchdog', () => {
 
 						Promise.all( [ watchdog1.destroy(), watchdog2.destroy() ] )
 							.then( res );
-					}, 5 );
+					} );
 				} );
 			} );
 		} );
@@ -373,7 +372,7 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						watchdog.destroy().then( res );
-					}, 5 );
+					} );
 				} );
 			} );
 		} );
@@ -409,7 +408,7 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						watchdog.destroy().then( res );
-					}, 5 );
+					} );
 				} );
 			} );
 		} );
@@ -442,7 +441,7 @@ describe( 'Watchdog', () => {
 						);
 
 						watchdog.destroy().then( res );
-					}, 5 );
+					} );
 				} );
 			} );
 		} );
@@ -640,7 +639,6 @@ describe( 'Watchdog', () => {
 				setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
 
 				return new Promise( res => {
-					// TODO - timing.
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
@@ -648,7 +646,7 @@ describe( 'Watchdog', () => {
 						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
 
 						watchdog.destroy().then( res );
-					}, 5 );
+					} );
 				} );
 			} );
 		} );
