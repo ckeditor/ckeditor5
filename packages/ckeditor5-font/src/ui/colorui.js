@@ -74,7 +74,7 @@ export default class ColorUI extends Plugin {
 		this.columns = editor.config.get( `${ this.componentName }.columns` );
 
 		/**
-		 * Keeps reference to {@link module:font/ui/colortableview~ColorTableView}.
+		 * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
 		 *
 		 * @member {module:font/ui/colortableview~ColorTableView}
 		 */

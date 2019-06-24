@@ -196,8 +196,8 @@ export default class ColorTableView extends View {
 	 *
 	 * All the previously stored document colors will be lost in the process.
 	 *
-	 * @param {module:engine/model/model~Model} model used as source to obtain document colors
-	 * @param {String} componentName determines what is name of related model's attribute for given dropdown
+	 * @param {module:engine/model/model~Model} model Model used as a source to obtain document colors.
+	 * @param {String} componentName Determines what is the name of related model's attribute for given dropdown.
 	 */
 	updateDocumentColors( model, componentName ) {
 		const document = model.document;
@@ -370,14 +370,11 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the
-	 * {@link #colorDefinitions} (label, color options). If color is found, then it is added to the
-	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
-	 * In other case it's created custom color, which is added to
-	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 * Method adds a given `color` to the document colors list. If possible, method will attempt to use
+	 * data from the {@link #colorDefinitions} (label, color options).
 	 *
 	 * @private
-	 * @param {String} color String which stores value of recently applied color
+	 * @param {String} color String which stores value of recently applied color.
 	 */
 	_addColorToDocumentColors( color ) {
 		const predefinedColor = this.colorDefinitions
