@@ -243,7 +243,7 @@ function getBalloonPositionData( editor, relatedElement ) {
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return {
-		target: editingView.domConverter.viewToDom( relatedElement ),
+		target: editingView.domConverter.mapViewToDom( relatedElement ),
 		positions: [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,
