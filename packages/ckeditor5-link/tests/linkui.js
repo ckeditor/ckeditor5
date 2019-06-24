@@ -969,15 +969,15 @@ describe( 'LinkUI', () => {
 						.create( editorElement, {
 							plugins: [ LinkEditing, LinkUI, Paragraph ],
 							link: {
-								decorators: [
-									{
+								decorators: {
+									IsFoo: {
 										mode: 'manual',
 										label: 'Foo',
 										attributes: {
 											foo: 'bar'
 										}
 									}
-								]
+								}
 							}
 						} )
 						.then( newEditor => {
@@ -1010,18 +1010,18 @@ describe( 'LinkUI', () => {
 				it( 'should gather information about manual decorators', () => {
 					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-					setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
+					setModelData( model, 'f[<$text linkHref="url" linkDecoratorIsFoo="true">ooba</$text>]r' );
 					expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
-					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkManualDecorator0: true } );
+					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkDecoratorIsFoo: true } );
 
 					formView.fire( 'submit' );
 
 					expect( executeSpy.calledOnce ).to.be.true;
-					expect( executeSpy.calledWithExactly( 'link', 'url', { linkManualDecorator0: true } ) ).to.be.true;
+					expect( executeSpy.calledWithExactly( 'link', 'url', { linkDecoratorIsFoo: true } ) ).to.be.true;
 				} );
 
 				it( 'should reset switch state when form view is closed', () => {
-					setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
+					setModelData( model, 'f[<$text linkHref="url" linkDecoratorIsFoo="true">ooba</$text>]r' );
 
 					const manualDecorators = editor.commands.get( 'link' ).manualDecorators;
 					const firstDecoratorModel = manualDecorators.first;

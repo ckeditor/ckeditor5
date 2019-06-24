@@ -481,27 +481,29 @@ describe( 'LinkEditing', () => {
 							plugins: [ Paragraph, LinkEditing, Enter ],
 							link: {
 								addTargetToExternalLinks: false,
-								decorators: [
-									{
+								decorators: {
+									IsExternal: {
 										mode: 'automatic',
 										callback: url => url.startsWith( 'http' ),
 										attributes: {
 											target: '_blank'
 										}
-									}, {
+									},
+									IsDownloadable: {
 										mode: 'automatic',
 										callback: url => url.includes( 'download' ),
 										attributes: {
 											download: 'download'
 										}
-									}, {
+									},
+									IsMail: {
 										mode: 'automatic',
 										callback: url => url.startsWith( 'mailto:' ),
 										attributes: {
 											class: 'mail-url'
 										}
 									}
-								]
+								}
 							}
 						} )
 						.then( newEditor => {

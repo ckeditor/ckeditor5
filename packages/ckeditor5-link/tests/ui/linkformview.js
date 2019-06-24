@@ -309,15 +309,15 @@ describe( 'LinkFormView', () => {
 					toolbar: [ 'link' ],
 					language: 'pl',
 					link: {
-						decorators: [
-							{
+						decorators: {
+							IsExternal: {
 								mode: 'manual',
 								label: 'Open in a new tab',
 								attributes: {
 									target: '_blank'
 								}
 							}
-						]
+						}
 					}
 				} )
 				.then( newEditor => {

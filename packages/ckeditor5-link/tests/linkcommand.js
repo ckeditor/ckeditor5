@@ -271,14 +271,14 @@ describe( 'LinkCommand', () => {
 					command = new LinkCommand( editor );
 
 					command.manualDecorators.add( new ManualDecorator( {
-						id: 'linkManualDecorator0',
+						id: 'linkDecoratorIsFoo',
 						label: 'Foo',
 						attributes: {
 							class: 'Foo'
 						}
 					} ) );
 					command.manualDecorators.add( new ManualDecorator( {
-						id: 'linkManualDecorator1',
+						id: 'linkDecoratorIsBar',
 						label: 'Bar',
 						attributes: {
 							target: '_blank'
@@ -287,7 +287,7 @@ describe( 'LinkCommand', () => {
 
 					model.schema.extend( '$text', {
 						allowIn: '$root',
-						allowAttributes: [ 'linkHref', 'linkManualDecorator0', 'linkManualDecorator1' ]
+						allowAttributes: [ 'linkHref', 'linkDecoratorIsFoo', 'linkDecoratorIsBar' ]
 					} );
 
 					model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -302,25 +302,25 @@ describe( 'LinkCommand', () => {
 			it( 'should insert additional attributes to link when it is created', () => {
 				setData( model, 'foo[]bar' );
 
-				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkDecoratorIsFoo: true, linkDecoratorIsBar: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">url</$text>]bar' );
+					.equal( 'foo[<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">url</$text>]bar' );
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
 				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
 
-				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkDecoratorIsFoo: true, linkDecoratorIsBar: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+					.equal( 'f[<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">ooba</$text>]r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
-				setData( model, 'foo<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >u[]rl</$text>bar' );
+				setData( model, 'foo<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">u[]rl</$text>bar' );
 
-				command.execute( 'url', { linkManualDecorator0: false, linkManualDecorator1: false } );
+				command.execute( 'url', { linkDecoratorIsFoo: false, linkDecoratorIsBar: false } );
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
@@ -330,25 +330,25 @@ describe( 'LinkCommand', () => {
 			it( 'should insert additional attributes to link when it is created', () => {
 				setData( model, 'f[ooba]r' );
 
-				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkDecoratorIsFoo: true, linkDecoratorIsBar: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+					.equal( 'f[<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">ooba</$text>]r' );
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
 				setData( model, 'f[<$text linkHref="foo">ooba</$text>]r' );
 
-				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkDecoratorIsFoo: true, linkDecoratorIsBar: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+					.equal( 'f[<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">ooba</$text>]r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
-				setData( model, 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >url</$text>]bar' );
+				setData( model, 'foo[<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">url</$text>]bar' );
 
-				command.execute( 'url', { linkManualDecorator0: false, linkManualDecorator1: false } );
+				command.execute( 'url', { linkDecoratorIsFoo: false, linkDecoratorIsBar: false } );
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
@@ -356,35 +356,35 @@ describe( 'LinkCommand', () => {
 
 		describe( 'restoreManualDecoratorStates()', () => {
 			it( 'synchronize values with current model state', () => {
-				setData( model, 'foo<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >u[]rl</$text>bar' );
+				setData( model, 'foo<$text linkDecoratorIsBar="true" linkDecoratorIsFoo="true" linkHref="url">u[]rl</$text>bar' );
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
-					linkManualDecorator0: true,
-					linkManualDecorator1: true
+					linkDecoratorIsFoo: true,
+					linkDecoratorIsBar: true
 				} );
 
 				command.manualDecorators.first.value = false;
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
-					linkManualDecorator0: false,
-					linkManualDecorator1: true,
+					linkDecoratorIsFoo: false,
+					linkDecoratorIsBar: true,
 				} );
 
 				command.restoreManualDecoratorStates();
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
-					linkManualDecorator0: true,
-					linkManualDecorator1: true,
+					linkDecoratorIsFoo: true,
+					linkDecoratorIsBar: true,
 				} );
 			} );
 		} );
 
 		describe( '_getDecoratorStateFromModel', () => {
 			it( 'obtain current values from the model', () => {
-				setData( model, 'foo[<$text linkHref="url" linkManualDecorator1="true" >url</$text>]bar' );
+				setData( model, 'foo[<$text linkDecoratorIsBar="true" linkHref="url">url</$text>]bar' );
 
-				expect( command._getDecoratorStateFromModel( 'linkManualDecorator0' ) ).to.be.false;
-				expect( command._getDecoratorStateFromModel( 'linkManualDecorator1' ) ).to.be.true;
+				expect( command._getDecoratorStateFromModel( 'linkDecoratorIsFoo' ) ).to.be.false;
+				expect( command._getDecoratorStateFromModel( 'linkDecoratorIsBar' ) ).to.be.true;
 			} );
 		} );
 	} );
