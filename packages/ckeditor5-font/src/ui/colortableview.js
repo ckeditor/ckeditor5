@@ -167,7 +167,7 @@ export default class ColorTableView extends View {
 		this.items.add( this.staticColorsGrid );
 
 		if ( documentColorsCount ) {
-			// Create Label for Document Colors
+			// Create Label for Document Colors.
 			const bind = Template.bind( this.documentColors, this.documentColors );
 			const label = new LabelView( this.locale );
 
@@ -184,7 +184,6 @@ export default class ColorTableView extends View {
 
 			this.items.add( label );
 
-			// Create Document Colors
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 			this.items.add( this.documentColorsGrid );
 		}

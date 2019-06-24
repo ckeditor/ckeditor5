@@ -68,6 +68,7 @@ export default class DocumentColorsCollection extends Collection {
 	 * Checks if object with given colors is present in collection.
 	 *
 	 * @param {String} color
+	 * @returns {Boolean}
 	 */
 	hasColor( color ) {
 		return !!this.find( item => item.color === color );
