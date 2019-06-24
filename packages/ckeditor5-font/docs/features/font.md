@@ -254,11 +254,9 @@ ClassicEditor
 
 ### Documents colors
 
-Plugin contains special section with document colors. In this additional grid are presented colors found in currently edited document. Colors are read from the beginning of document to its end. Duplicated colors are not inserted multiple times. Only limited number of colors is displayed in this grid. You can mange how many document colors is displayed by changing {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} value. By default its value equals to {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`}. This results with one row of document colors available in dropdown.
+In addition to predefined list of colors, the plugin also includes document colors feature. It lists the colors used in the document and lists them in the order of occurrence. Duplicated colors are not inserted multiple times. By default number of document colors is limited, but you can adjust it (or disable it) using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
 
-Setting `documentColors` value to `0` will disable this feature.
-
-If edited document doesn't contain any font color or background colors, then document colors section will be hidden until text with proper color value appear.
+In case the edited document doesn't contain any font color or background colors, the document colors section is skipped.
 
 ```js
 ClassicEditor
@@ -269,7 +267,7 @@ ClassicEditor
 			// ...
 		},
 		fontBackgroundColor: {
-			documentColors: 0, // disables feature
+			documentColors: 0, // Disables the feature.
 
 			// ...
 		},
