@@ -25,7 +25,8 @@
 	}
 }
 
-/* Style link form differently when manual decorators are available.
+/*
+ * Style link form differently when manual decorators are available.
  * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
  */
 .ck.ck-link-form_layout-vertical {
@@ -34,7 +35,6 @@
 	& .ck-labeled-input {
 		flex-basis: 100%;
 	}
-
 
 	& .ck-button {
 		/* Let's move "Save" & "Cancel" buttons to the end of the link form view. */
