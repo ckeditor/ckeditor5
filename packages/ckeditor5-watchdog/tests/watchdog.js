@@ -49,6 +49,41 @@ describe( 'Watchdog', () => {
 
 			expect( () => watchdog.create() ).to.throw( CKEditorError, /^watchdog-destructor-not-defined/ );
 		} );
+
+		it( 'supports editor data passed as the first argument', () => {
+			const watchdog = new Watchdog();
+
+			sinon.stub( FakeEditor, 'create' ).callsFake( ( data, config ) => {
+				return new Promise( resolve => {
+					const editor = new FakeEditor( config );
+
+					resolve(
+						editor.initPlugins()
+							.then( () => {
+								editor.data.init( data );
+								editor.data.fire( 'ready' );
+								editor.fire( 'ready' );
+							} )
+							.then( () => editor )
+					);
+				} );
+			} );
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			return watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } )
+				.then( () => {
+					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+					return watchdog.restart();
+				} )
+				.then( () => {
+					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+					return watchdog.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'restart()', () => {
