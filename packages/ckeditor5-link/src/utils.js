@@ -68,26 +68,46 @@ function isSafeUrl( url ) {
  * **Note**: Only the few most commonly used labels are translated automatically. Other labels should be manually
  * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
  *
- * @param {module:core/editor/editor~Editor} editor An editor instance
+ * @param {module:utils/locale~Locale#t} t shorthand for {@link module:utils/locale~Locale#t Locale#t}
+ * @param {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>} decorators reference
+ * where labels' values should be localized.
  * @returns {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
  */
-export function getLocalizedDecorators( editor ) {
-	const t = editor.t;
+export function getLocalizedDecorators( t, decorators ) {
+	const localizedDecoratorsLabels = {
+		'Open in a new tab': t( 'Open in a new tab' ),
+		'Downloadable': t( 'Downloadable' )
+	};
+
+	decorators.forEach( decorator => {
+		if ( decorator.label && localizedDecoratorsLabels[ decorator.label ] ) {
+			decorator.label = localizedDecoratorsLabels[ decorator.label ];
+		}
+		return decorator;
+	} );
+
+	return decorators;
+}
+
+/**
+ * Converts Obj of decorators to Array of decorators with nice identifiers.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ */
+export function getNormalizedDecorators( editor ) {
 	const decorators = editor.config.get( 'link.decorators' );
+	const retArray = [];
 
 	if ( decorators ) {
-		const localizedDecoratorsLabels = {
-			'Open in a new tab': t( 'Open in a new tab' ),
-			'Downloadable': t( 'Downloadable' )
-		};
-
-		return decorators.map( decorator => {
-			if ( decorator.label && localizedDecoratorsLabels[ decorator.label ] ) {
-				decorator.label = localizedDecoratorsLabels[ decorator.label ];
-			}
-			return decorator;
-		} );
-	} else {
-		return [];
+		for ( const [ key, value ] of Object.entries( decorators ) ) {
+			const decorator = Object.assign(
+				{},
+				value,
+				{ id: `linkDecorator${ key }` }
+			);
+			retArray.push( decorator );
+		}
 	}
+
+	return retArray;
 }

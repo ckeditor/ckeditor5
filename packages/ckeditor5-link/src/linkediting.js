@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
-import { createLinkElement, ensureSafeUrl, getLocalizedDecorators } from './utils';
+import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, getNormalizedDecorators } from './utils';
 import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
@@ -77,7 +77,7 @@ export default class LinkEditing extends Plugin {
 		editor.commands.add( 'link', new LinkCommand( editor ) );
 		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
 
-		const linkDecorators = getLocalizedDecorators( editor );
+		const linkDecorators = getLocalizedDecorators( editor.t, getNormalizedDecorators( editor ) );
 
 		this._enableAutomaticDecorators( linkDecorators.filter( item => item.mode === DECORATOR_AUTOMATIC ) );
 		this._enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
@@ -108,6 +108,7 @@ export default class LinkEditing extends Plugin {
 		// Adds default decorator for external links.
 		if ( editor.config.get( 'link.addTargetToExternalLinks' ) ) {
 			automaticDecorators.add( {
+				id: 'linkDecoratorIsExternal',
 				mode: DECORATOR_AUTOMATIC,
 				callback: url => EXTERNAL_LINKS_REGEXP.test( url ),
 				attributes: {
@@ -145,21 +146,19 @@ export default class LinkEditing extends Plugin {
 		const command = editor.commands.get( 'link' );
 		const manualDecorators = command.manualDecorators;
 
-		manualDecoratorDefinitions.forEach( ( decorator, index ) => {
-			const decoratorName = `linkManualDecorator${ index }`;
-
-			editor.model.schema.extend( '$text', { allowAttributes: decoratorName } );
+		manualDecoratorDefinitions.forEach( decorator => {
+			editor.model.schema.extend( '$text', { allowAttributes: decorator.id } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			manualDecorators.add( new ManualDecorator( Object.assign( { id: decoratorName }, decorator ) ) );
+			manualDecorators.add( new ManualDecorator( decorator ) );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
-				model: decoratorName,
+				model: decorator.id,
 				view: ( manualDecoratorName, writer ) => {
 					if ( manualDecoratorName ) {
 						const element = writer.createAttributeElement(
 							'a',
-							manualDecorators.get( decoratorName ).attributes,
+							manualDecorators.get( decorator.id ).attributes,
 							{
 								priority: 5
 							}

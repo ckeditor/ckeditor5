@@ -21,8 +21,8 @@ ClassicEditor
 		plugins: [ Link, Typing, Paragraph, Clipboard, Undo, Enter ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
-			decorators: [
-				{
+			decorators: {
+				IxExternal: {
 					mode: 'manual',
 					label: 'Open in new window',
 					attributes: {
@@ -30,21 +30,21 @@ ClassicEditor
 						rel: 'noopener noreferrer'
 					}
 				},
-				{
+				IsDownloadable: {
 					mode: 'manual',
 					label: 'Downloadable',
 					attributes: {
 						download: 'download'
 					}
 				},
-				{
+				IsGallery: {
 					mode: 'manual',
 					label: 'Gallery link',
 					attributes: {
 						class: 'gallery'
 					}
 				}
-			]
+			}
 		}
 	} )
 	.then( editor => {
@@ -63,30 +63,30 @@ ClassicEditor
 		plugins: [ Link, Typing, Paragraph, Clipboard, Undo, Enter ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
-			decorators: [
-				{
+			decorators: {
+				IsTelephone: {
 					mode: 'automatic',
 					callback: url => url.startsWith( 'tel:' ),
 					attributes: {
 						class: 'phone'
 					}
 				},
-				{
+				IsInternal: {
 					mode: 'automatic',
 					callback: url => url.startsWith( '#' ),
 					attributes: {
 						class: 'internal'
 					}
 				}
-			],
-			targetDecorator: true
+			},
+			addTargetToExternalLinks: true
 		}
 	} )
 	.then( editor => {
 		if ( !window.editors ) {
 			window.editors = {};
 		}
-		window.editors.autoamticDecorators = editor;
+		window.editors.automaticDecorators = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
