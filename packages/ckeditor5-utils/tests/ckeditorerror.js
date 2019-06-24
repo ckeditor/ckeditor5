@@ -7,20 +7,20 @@ import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerro
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
-		const error = new CKEditorError( 'foo' );
+		const error = new CKEditorError( 'foo', {} );
 
 		expect( error ).to.be.an.instanceOf( Error );
 		expect( error ).to.be.an.instanceOf( CKEditorError );
 	} );
 
 	it( 'sets the name', () => {
-		const error = new CKEditorError( 'foo' );
+		const error = new CKEditorError( 'foo', {} );
 
 		expect( error ).to.have.property( 'name', 'CKEditorError' );
 	} );
 
 	it( 'sets the message', () => {
-		const error = new CKEditorError( 'foo' );
+		const error = new CKEditorError( 'foo', {} );
 
 		expect( error ).to.have.property( 'message', 'foo' );
 		expect( error.data ).to.be.undefined;
@@ -28,10 +28,18 @@ describe( 'CKEditorError', () => {
 
 	it( 'sets the message and data', () => {
 		const data = { bar: 1 };
-		const error = new CKEditorError( 'foo', data );
+		const error = new CKEditorError( 'foo', {}, data );
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":1}' );
 		expect( error ).to.have.property( 'data', data );
+	} );
+
+	it( 'sets the context of the error', () => {
+		const data = { bar: 1 };
+		const editor = {};
+		const error = new CKEditorError( 'foo', editor, data );
+
+		expect( error.context ).to.equal( editor );
 	} );
 
 	it( 'appends stringified data to the message', () => {
@@ -46,14 +54,14 @@ describe( 'CKEditorError', () => {
 			bom: new Foo(),
 			bim: 10
 		};
-		const error = new CKEditorError( 'foo', data );
+		const error = new CKEditorError( 'foo', {}, data );
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":10}' );
 		expect( error ).to.have.property( 'data', data );
 	} );
 
 	it( 'contains a link which leads to the documentation', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.' );
+		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', {} );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
@@ -62,7 +70,7 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'link to documentation is added before the additional data message', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', { foo: 1, bar: 2 } );
+		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', {}, { foo: 1, bar: 2 } );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +
@@ -71,13 +79,13 @@ describe( 'CKEditorError', () => {
 		expect( error ).to.have.property( 'message', errorMessage );
 	} );
 
-	describe( 'isCKEditorError', () => {
+	describe( 'is()', () => {
 		it( 'checks if error is an instance of CKEditorError', () => {
-			const ckeditorError = new CKEditorError( 'foo' );
+			const ckeditorError = new CKEditorError( 'foo', {} );
 			const regularError = new Error( 'foo' );
 
-			expect( CKEditorError.isCKEditorError( ckeditorError ) ).to.be.true;
-			expect( CKEditorError.isCKEditorError( regularError ) ).to.be.false;
+			expect( ( !!ckeditorError.is && ckeditorError.is( 'CKEditorError' ) ) ).to.be.true;
+			expect( ( !!regularError.is && regularError.is( 'CKEditorError' ) ) ).to.be.false;
 		} );
 	} );
 } );
