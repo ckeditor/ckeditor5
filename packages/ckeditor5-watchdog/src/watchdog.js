@@ -36,6 +36,18 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *		watchdog.setDestructor( editor => editor.destroy() );
  *
  *		watchdog.create( elementOrData, editorConfig ).then( editor => {} );
+ *
+ * Other important APIs:
+ *
+ *		watchdog.on( 'crash', () => { console.log( 'Editor crashed.' ) } );
+ *		watchdog.on( 'restart', () => { console.log( 'Editor was restarted.' ) } );
+ *
+ *		watchdog.restart(); // Restarts the editor.
+ *		watchdog.destroy(); // Destroys the editor and global error event listeners.
+ *
+ * 		watchdog.editor; // Current editor instance.
+ *
+ * 		watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
  */
 export default class Watchdog {
 	/**
@@ -308,9 +320,14 @@ export default class Watchdog {
 			return;
 		}
 
-		if ( !event.error.context ) {
+		if ( event.error.context === undefined ) {
 			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
 
+			return;
+		}
+
+		// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
+		if ( event.error.context === null ) {
 			return;
 		}
 
@@ -352,6 +369,7 @@ export default class Watchdog {
 	 */
 	static for( Editor ) {
 		const watchdog = new Watchdog();
+
 		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
 		watchdog.setDestructor( editor => editor.destroy() );
 

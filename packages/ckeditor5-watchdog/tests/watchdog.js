@@ -481,6 +481,34 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
+		it( 'Watchdog should omit error if the CKEditorError context is equal to null', () => {
+			const watchdog = new Watchdog();
+
+			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			sinon.stub( console, 'error' );
+
+			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+				setTimeout( () => throwCKEditorError( 'foo', null ) );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.crashes ).to.deep.equal( [] );
+						sinon.assert.notCalled( console.error );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
 		it( 'editor should be restarted with the data before the crash #1', () => {
 			const watchdog = new Watchdog();
 
