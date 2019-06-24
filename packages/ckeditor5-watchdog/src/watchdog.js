@@ -7,12 +7,13 @@
  * @module watchdog/watchdog
  */
 
-/* globals console, window, EventTarget */
+/* globals console, window */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { throttle } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
 
 /**
  * A Watchdog for CKEditor 5 editors.
@@ -348,14 +349,14 @@ export default class Watchdog {
 	}
 
 	/**
+	 * Traverses both structures to find out whether the error context is connected
+	 * with the current editor.
+	 *
 	 * @private
 	 * @param {module:utils/ckeditorerror~CKEditorError} error
 	 */
 	_isErrorComingFromThisEditor( error ) {
-		return (
-			areElementsConnected( this._editor, error.context ) ||
-			areElementsConnected( error.context, this._editor )
-		);
+		return areConnectedThroughProperties( this._editor, error.context );
 	}
 
 	/**
@@ -390,59 +391,3 @@ export default class Watchdog {
 }
 
 mix( Watchdog, EmitterMixin );
-
-// Returns `true` when the second parameter can be found from the first by walking through the nodes.
-function areElementsConnected( from, searchedElement ) {
-	const nodes = [ from ];
-
-	// Nodes are stored to prevent infinite looping.
-	const storedNodes = new WeakSet();
-
-	while ( nodes.length > 0 ) {
-		// BFS should be faster.
-		const node = nodes.shift();
-
-		if ( node === searchedElement ) {
-			return true;
-		}
-
-		if ( storedNodes.has( node ) || shouldNodeBeSkipped( node ) ) {
-			continue;
-		}
-
-		storedNodes.add( node );
-
-		// Handle arrays, maps, sets, custom collections that implements `[ Symbol.iterator ]()`, etc.
-		if ( node[ Symbol.iterator ] ) {
-			// The custom editor iterators might cause some problems if the editor is crashed.
-			try {
-				nodes.push( ...node );
-			} catch ( err ) {
-				// eslint-disable-line no-empty
-			}
-		} else {
-			nodes.push( ...Object.values( node ) );
-		}
-	}
-
-	return false;
-}
-
-function shouldNodeBeSkipped( obj ) {
-	const type = Object.prototype.toString.call( obj );
-
-	return (
-		type === '[object Number]' ||
-		type === '[object Boolean]' ||
-		type === '[object String]' ||
-		type === '[object Symbol]' ||
-		type === '[object Function]' ||
-		type === '[object Date]' ||
-
-		obj === undefined ||
-		obj === null ||
-
-		// Skip native DOM objects, e.g. Window, nodes, events, etc.
-		obj instanceof EventTarget
-	);
-}

@@ -6,24 +6,34 @@
 /* globals setTimeout, window, console, document */
 
 import Watchdog from '../src/watchdog';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'Watchdog', () => {
-	afterEach( () => sinon.restore() );
+	let sourceElement;
+
+	beforeEach( () => {
+		sourceElement = document.createElement( 'div' );
+		document.body.appendChild( sourceElement );
+	} );
+
+	afterEach( () => {
+		sourceElement.remove();
+		sinon.restore();
+	} );
 
 	describe( 'create()', () => {
 		it( 'should create an editor instance', () => {
 			const watchdog = new Watchdog();
 
-			const editorCreateSpy = sinon.spy( FakeEditor, 'create' );
-			const editorDestroySpy = sinon.spy( FakeEditor.prototype, 'destroy' );
+			const editorCreateSpy = sinon.spy( ClassicTestEditor, 'create' );
+			const editorDestroySpy = sinon.spy( ClassicTestEditor.prototype, 'destroy' );
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			return watchdog.create( document.createElement( 'div' ), {} )
+			return watchdog.create( sourceElement, {} )
 				.then( () => {
 					sinon.assert.calledOnce( editorCreateSpy );
 					sinon.assert.notCalled( editorDestroySpy );
@@ -45,7 +55,7 @@ describe( 'Watchdog', () => {
 
 		it( 'should throw an error when the destructor is not defined', () => {
 			const watchdog = new Watchdog();
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
 			expect( () => watchdog.create() ).to.throw( CKEditorError, /^watchdog-destructor-not-defined/ );
 		} );
@@ -55,13 +65,13 @@ describe( 'Watchdog', () => {
 		it( 'should restart the editor', () => {
 			const watchdog = new Watchdog();
 
-			const editorCreateSpy = sinon.spy( FakeEditor, 'create' );
-			const editorDestroySpy = sinon.spy( FakeEditor.prototype, 'destroy' );
+			const editorCreateSpy = sinon.spy( ClassicTestEditor, 'create' );
+			const editorDestroySpy = sinon.spy( ClassicTestEditor.prototype, 'destroy' );
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			return watchdog.create( document.createElement( 'div' ), {} )
+			return watchdog.create( sourceElement, {} )
 				.then( () => {
 					sinon.assert.calledOnce( editorCreateSpy );
 					sinon.assert.notCalled( editorDestroySpy );
@@ -79,10 +89,10 @@ describe( 'Watchdog', () => {
 		it( 'should restart the editor with the same data', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			return watchdog.create( document.createElement( 'div' ), {
+			return watchdog.create( sourceElement, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} )
@@ -101,23 +111,7 @@ describe( 'Watchdog', () => {
 		it( 'should support editor data passed as the `Editor.create()` as the first argument', () => {
 			const watchdog = new Watchdog();
 
-			sinon.stub( FakeEditor, 'create' ).callsFake( ( data, config ) => {
-				return new Promise( resolve => {
-					const editor = new FakeEditor( config );
-
-					resolve(
-						editor.initPlugins()
-							.then( () => {
-								editor.data.init( data );
-								editor.data.fire( 'ready' );
-								editor.fire( 'ready' );
-							} )
-							.then( () => editor )
-					);
-				} );
-			} );
-
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			return watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } )
@@ -138,22 +132,22 @@ describe( 'Watchdog', () => {
 		it( 'should be the current editor instance', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			expect( watchdog.editor ).to.be.null;
 
 			let oldEditor;
 
-			return watchdog.create( document.createElement( 'div' ), {} )
+			return watchdog.create( sourceElement, {} )
 				.then( () => {
 					oldEditor = watchdog.editor;
-					expect( watchdog.editor ).to.be.instanceOf( FakeEditor );
+					expect( watchdog.editor ).to.be.instanceOf( ClassicTestEditor );
 
 					return watchdog.restart();
 				} )
 				.then( () => {
-					expect( watchdog.editor ).to.be.instanceOf( FakeEditor );
+					expect( watchdog.editor ).to.be.instanceOf( ClassicTestEditor );
 					expect( watchdog.editor ).to.not.equal( oldEditor );
 
 					return watchdog.destroy();
@@ -169,12 +163,12 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( el =>
-				FakeEditor.create( el )
+				ClassicTestEditor.create( el )
 					.then( () => Promise.reject( new Error( 'foo' ) ) )
 			);
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			return watchdog.create( document.createElement( 'div' ) ).then(
+			return watchdog.create( sourceElement ).then(
 				() => { throw new Error( '`watchdog.create()` should throw an error.' ); },
 				err => {
 					expect( err ).to.be.instanceOf( Error );
@@ -186,11 +180,11 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should not restart editor during the destroy', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( el => FakeEditor.create( el ) );
+			watchdog.setCreator( el => ClassicTestEditor.create( el ) );
 			watchdog.setDestructor( () => Promise.reject( new Error( 'foo' ) ) );
 
 			return Promise.resolve()
-				.then( () => watchdog.create( document.createElement( 'div' ) ) )
+				.then( () => watchdog.create( sourceElement ) )
 				.then( () => watchdog.destroy() )
 				.then(
 					() => { throw new Error( '`watchdog.create()` should throw an error.' ); },
@@ -204,7 +198,7 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should not hide intercepted errors', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -212,7 +206,7 @@ describe( 'Watchdog', () => {
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
@@ -231,14 +225,14 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				return new Promise( res => {
@@ -254,7 +248,7 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should not intercept non-editor errors', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			const editorErrorSpy = sinon.spy();
@@ -264,7 +258,7 @@ describe( 'Watchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => {
 					throw new Error( 'foo' );
 				} );
@@ -285,10 +279,10 @@ describe( 'Watchdog', () => {
 			const watchdog1 = new Watchdog();
 			const watchdog2 = new Watchdog();
 
-			watchdog1.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog1.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog1.setDestructor( editor => editor.destroy() );
 
-			watchdog2.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog2.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog2.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -296,8 +290,8 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return Promise.all( [
-				watchdog1.create( document.createElement( 'div' ) ),
-				watchdog2.create( document.createElement( 'div' ) )
+				watchdog1.create( sourceElement ),
+				watchdog2.create( sourceElement )
 			] ).then( () => {
 				return new Promise( res => {
 					const watchdog1ErrorSpy = sinon.spy();
@@ -324,14 +318,14 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor.model.document ) );
 
 				return new Promise( res => {
@@ -347,14 +341,14 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', {
 					foo: [ 1, 2, 3, {
 						bar: new Set( [
@@ -379,7 +373,7 @@ describe( 'Watchdog', () => {
 		it( 'editor should be restarted up to 3 times by default', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			const errorSpy = sinon.spy();
@@ -392,7 +386,7 @@ describe( 'Watchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
 				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
 				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
@@ -415,7 +409,7 @@ describe( 'Watchdog', () => {
 		it( 'editor should be restarted up to `crashNumberLimit` times if the option is set', () => {
 			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			const errorSpy = sinon.spy();
@@ -428,7 +422,7 @@ describe( 'Watchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
 				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
 				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
@@ -451,7 +445,7 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should warn if the CKEditorError missing its context', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -460,7 +454,7 @@ describe( 'Watchdog', () => {
 
 			sinon.stub( console, 'error' );
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo' ) );
 
 				return new Promise( res => {
@@ -484,7 +478,7 @@ describe( 'Watchdog', () => {
 		it( 'Watchdog should omit error if the CKEditorError context is equal to null', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -493,7 +487,7 @@ describe( 'Watchdog', () => {
 
 			sinon.stub( console, 'error' );
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', null ) );
 
 				return new Promise( res => {
@@ -512,14 +506,14 @@ describe( 'Watchdog', () => {
 		it( 'editor should be restarted with the data before the crash #1', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ), {
+			return watchdog.create( sourceElement, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
@@ -540,14 +534,14 @@ describe( 'Watchdog', () => {
 		it( 'editor should be restarted with the data before the crash #2', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ), {
+			return watchdog.create( sourceElement, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
@@ -574,14 +568,14 @@ describe( 'Watchdog', () => {
 		it( 'editor should be restarted with the data of the latest document version before the crash', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ), {
+			return watchdog.create( sourceElement, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
@@ -609,7 +603,7 @@ describe( 'Watchdog', () => {
 		it( 'editor should be restarted with the latest available data before the crash', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -618,7 +612,7 @@ describe( 'Watchdog', () => {
 
 			sinon.stub( console, 'error' );
 
-			return watchdog.create( document.createElement( 'div' ), {
+			return watchdog.create( sourceElement, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
@@ -656,18 +650,18 @@ describe( 'Watchdog', () => {
 
 	describe( 'static for()', () => {
 		it( 'should be a shortcut method for creating the watchdog', () => {
-			const watchdog = Watchdog.for( FakeEditor );
+			const watchdog = Watchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ), {
+			return watchdog.create( sourceElement, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
 				const oldEditor = watchdog.editor;
-				expect( watchdog.editor ).to.be.an.instanceOf( FakeEditor );
+				expect( watchdog.editor ).to.be.an.instanceOf( ClassicTestEditor );
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -675,7 +669,7 @@ describe( 'Watchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.editor ).to.be.an.instanceOf( FakeEditor );
+						expect( watchdog.editor ).to.be.an.instanceOf( ClassicTestEditor );
 						expect( watchdog.editor ).to.not.equal( oldEditor );
 						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
 
@@ -690,14 +684,14 @@ describe( 'Watchdog', () => {
 		it( 'should be an array of caught errors by the watchdog', () => {
 			const watchdog = new Watchdog();
 
-			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( document.createElement( 'div' ) ).then( () => {
+			return watchdog.create( sourceElement ).then( () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 				setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
 
@@ -715,13 +709,6 @@ describe( 'Watchdog', () => {
 		} );
 	} );
 } );
-
-// Wrap Editor to align the API to the "full" editors.
-class FakeEditor extends VirtualTestEditor {
-	static create( _elementOrData, config ) {
-		return super.create( config );
-	}
-}
 
 function throwCKEditorError( name, context ) {
 	throw new CKEditorError( name, context );
