@@ -71,9 +71,9 @@ function isSafeUrl( url ) {
  * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
  *
  * @param {module:utils/locale~Locale#t} t shorthand for {@link module:utils/locale~Locale#t Locale#t}
- * @param {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>} decorators reference
+ * @param {Array.<module:link/link~LinkDecoratorDefinition>} decorators reference
  * where labels' values should be localized.
- * @returns {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
+ * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
  */
 export function getLocalizedDecorators( t, decorators ) {
 	const localizedDecoratorsLabels = {
@@ -96,7 +96,7 @@ export function getLocalizedDecorators( t, decorators ) {
  * which is used as attribute's name in the model.
  *
  * @param {Object.<String, module:link/link~LinkDecoratorDefinition>} decorators
- * @returns {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
+ * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
  */
 export function normalizeDecorators( decorators ) {
 	const retArray = [];
