@@ -396,7 +396,12 @@ function areElementsConnected( from, searchedElement ) {
 
 		// Handle arrays, maps, sets, custom collections that implements `[ Symbol.iterator ]()`, etc.
 		if ( node[ Symbol.iterator ] ) {
-			nodes.push( ...node );
+			// The custom editor iterators might cause some problems if the editor is crashed.
+			try {
+				nodes.push( ...node );
+			} catch ( err ) {
+				// eslint-disable-line no-empty
+			}
 		} else {
 			nodes.push( ...Object.values( node ) );
 		}
