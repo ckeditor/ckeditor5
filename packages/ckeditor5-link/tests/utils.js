@@ -9,7 +9,7 @@ import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeeleme
 import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 
-import { createLinkElement, isLinkElement, ensureSafeUrl } from '../src/utils';
+import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators } from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {
@@ -155,6 +155,64 @@ describe( 'utils', () => {
 			const url = 'javascript:alert(1);http://xxx';
 
 			expect( ensureSafeUrl( url ) ).to.equal( '#' );
+		} );
+	} );
+
+	describe( 'normalizeDecorators()', () => {
+		it( 'should transform an entry object to a normalized array', () => {
+			const callback = () => {};
+			const entryObject = {
+				foo: {
+					mode: 'manual',
+					label: 'Foo',
+					attributes: {
+						foo: 'foo'
+					}
+				},
+				bar: {
+					mode: 'automatic',
+					callback,
+					attributes: {
+						bar: 'bar'
+					}
+				},
+				baz: {
+					mode: 'manual',
+					label: 'Baz label',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}
+				}
+			};
+
+			expect( normalizeDecorators( entryObject ) ).to.deep.equal( [
+				{
+					id: 'linkFoo',
+					mode: 'manual',
+					label: 'Foo',
+					attributes: {
+						foo: 'foo'
+					}
+				},
+				{
+					id: 'linkBar',
+					mode: 'automatic',
+					callback,
+					attributes: {
+						bar: 'bar'
+					}
+				},
+				{
+					id: 'linkBaz',
+					mode: 'manual',
+					label: 'Baz label',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}
+				}
+			] );
 		} );
 	} );
 } );

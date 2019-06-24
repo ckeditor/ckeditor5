@@ -94,10 +94,9 @@ export function getLocalizedDecorators( t, decorators ) {
 /**
  * Converts Obj of decorators to Array of decorators with nice identifiers.
  *
- * @param {module:core/editor/editor~Editor} editor
+ * @param {Object} decorators
  */
-export function getNormalizedDecorators( editor ) {
-	const decorators = editor.config.get( 'link.decorators' );
+export function normalizeDecorators( decorators ) {
 	const retArray = [];
 
 	if ( decorators ) {
