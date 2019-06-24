@@ -10,6 +10,7 @@ import ClassicTestEditor from '../../tests/_utils/classictesteditor';
 
 import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import EditorUI from '../../src/editor/editorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
@@ -171,6 +172,24 @@ describe( 'ClassicTestEditor', () => {
 			return ClassicTestEditor.create( editorElement )
 				.then( editor => {
 					expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'initializes the data with `config.initialData` if this option is provided', () => {
+			return ClassicTestEditor.create( editorElement, { initialData: '<p>foo</p>', plugins: [ Paragraph ] } )
+				.then( editor => {
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'initializes the data with an empty string if the `config.initialData` is not provided', () => {
+			return ClassicTestEditor.create( editorElement )
+				.then( editor => {
+					expect( editor.getData() ).to.equal( '' );
 
 					return editor.destroy();
 				} );

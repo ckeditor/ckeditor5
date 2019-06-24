@@ -54,7 +54,7 @@ export default class ClassicTestEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
-	static create( element, config ) {
+	static create( element, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( element, config );
 
@@ -64,7 +64,7 @@ export default class ClassicTestEditor extends Editor {
 					// should be rendered after plugins are initialized.
 					.then( () => editor.ui.init( element ) )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => editor.data.init( config.initialData || getDataFromElement( element ) ) )
 					.then( () => {
 						editor.state = 'ready';
 						editor.fire( 'ready' );
