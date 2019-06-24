@@ -286,7 +286,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the ctx', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
@@ -309,7 +309,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the ctx #2', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
@@ -660,6 +660,6 @@ class FakeEditor extends VirtualTestEditor {
 	}
 }
 
-function throwCKEditorError( name, ctx ) {
-	throw new CKEditorError( name, undefined, ctx );
+function throwCKEditorError( name, context ) {
+	throw new CKEditorError( name, context );
 }

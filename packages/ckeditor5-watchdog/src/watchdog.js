@@ -182,6 +182,10 @@ export default class Watchdog {
 		return Promise.resolve()
 			.then( () => this.destroy() )
 			.then( () => {
+				if ( typeof this._elementOrData === 'string' ) {
+					return this.create( this._data, this._config );
+				}
+
 				const updatedConfig = Object.assign( {}, this._config, {
 					initialData: this._data
 				} );
@@ -210,7 +214,6 @@ export default class Watchdog {
 			 */
 			throw new CKEditorError(
 				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()`.',
-				undefined,
 				{}
 			);
 		}
@@ -223,7 +226,6 @@ export default class Watchdog {
 			 */
 			throw new CKEditorError(
 				'watchdog-destructor-not-defined: The watchdog destructor is not defined, define it using `watchdog.setDestructor()`',
-				undefined,
 				{}
 			);
 		}
@@ -306,7 +308,7 @@ export default class Watchdog {
 			return;
 		}
 
-		if ( !event.error.ctx ) {
+		if ( !event.error.context ) {
 			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
 
 			return;
@@ -334,8 +336,8 @@ export default class Watchdog {
 	 */
 	_isErrorComingFromThisEditor( error ) {
 		return (
-			areElementsConnected( this._editor, error.ctx ) ||
-			areElementsConnected( error.ctx, this._editor )
+			areElementsConnected( this._editor, error.context ) ||
+			areElementsConnected( error.context, this._editor )
 		);
 	}
 
