@@ -341,7 +341,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted maximum 3 times by default', () => {
+		it( 'editor should be restarted up to 3 times by default', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
@@ -377,7 +377,7 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted maximum of `crashNumberLimit` if the option is set', () => {
+		it( 'editor should be restarted up to `crashNumberLimit` times if the option is set', () => {
 			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
