@@ -66,10 +66,13 @@ export default class Watchdog {
 		this._crashNumberLimit = crashNumberLimit || 3;
 
 		/**
+		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
+		 * and restarts the editor.
+		 *
 		 * @private
 		 * @type {Function}
 		 */
-		this._boundErrorWatcher = this._watchForEditorErrors.bind( this );
+		this._boundErrorHandler = this._handleGlobalErrorEvent.bind( this );
 
 		/**
 		 * Throttled save method. The `save()` method is called the specified `waitingTime` after `throttledSave()` is called,
@@ -92,7 +95,7 @@ export default class Watchdog {
 		 * The editor creation method.
 		 *
 		 * @private
-		 * @member {Function} _creator
+		 * @member {Function} #_creator
 		 * @see #setCreator
 		 */
 
@@ -100,7 +103,7 @@ export default class Watchdog {
 		 * The editor destruction method
 		 *
 		 * @private
-		 * @member {Function} _destructor
+		 * @member {Function} #_destructor
 		 * @see #setDestructor
 		 */
 
@@ -108,28 +111,28 @@ export default class Watchdog {
 		 * The latest saved editor data.
 		 *
 		 * @private
-		 * @member {String} _data
+		 * @member {String} #_data
 		 */
 
 		/**
 		 * The last document version.
 		 *
 		 * @private
-		 * @member {Number} _lastDocumentVersion
+		 * @member {Number} #_lastDocumentVersion
 		 */
 
 		/**
 		* The editor source element or data.
 		*
 		* @private
-		* @member {HTMLElement|String} _elementOrData
+		* @member {HTMLElement|String} #_elementOrData
 		*/
 
 		/**
 		* The editor configuration.
 		*
 		* @private
-		* @member {Object|undefined} _config
+		* @member {Object|undefined} #_config
 		*/
 	}
 
@@ -196,7 +199,7 @@ export default class Watchdog {
 	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
 	 *
-	 * @returns {Promise.<Watchdog>}
+	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
 	 */
 	create( elementOrData, config ) {
 		if ( !this._creator ) {
@@ -233,7 +236,7 @@ export default class Watchdog {
 			.then( editor => {
 				this._editor = editor;
 
-				window.addEventListener( 'error', this._boundErrorWatcher );
+				window.addEventListener( 'error', this._boundErrorHandler );
 				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
 
 				this._lastDocumentVersion = editor.model.document.version;
@@ -246,16 +249,18 @@ export default class Watchdog {
 	/**
 	 * Destroys the current editor using the destructor passed to {@link #setDestructor} method.
 	 *
-	 * @returns {Promise}
+	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
 	 */
 	destroy() {
-		window.removeEventListener( 'error', this._boundErrorWatcher );
+		window.removeEventListener( 'error', this._boundErrorHandler );
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
 		return Promise.resolve()
 			.then( () => this._destructor( this._editor ) )
 			.then( () => {
 				this._editor = null;
+
+				return this;
 			} );
 	}
 
@@ -289,11 +294,14 @@ export default class Watchdog {
 	}
 
 	/**
+	 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context) and
+	 * restarts the editor.
+	 *
 	 * @private
 	 * @fires error
-	 * @param {ErrorEvent} event
+	 * @param {Event} event Error event.
 	 */
-	_watchForEditorErrors( event ) {
+	_handleGlobalErrorEvent( event ) {
 		if ( !event.error.is || !event.error.is( 'CKEditorError' ) ) {
 			return;
 		}
