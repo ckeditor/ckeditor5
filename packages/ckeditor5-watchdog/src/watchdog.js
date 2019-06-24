@@ -342,7 +342,7 @@ export default class Watchdog {
 	 */
 	static for( Editor ) {
 		const watchdog = new Watchdog();
-		watchdog.setCreator( ( el, config ) => Editor.create( el, config ) );
+		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
 		watchdog.setDestructor( editor => editor.destroy() );
 
 		return watchdog;
