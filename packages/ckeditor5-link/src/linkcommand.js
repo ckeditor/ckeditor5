@@ -36,13 +36,13 @@ export default class LinkCommand extends Command {
 		 * You can consider it a model with states of manual decorators added to currently selected link.
 		 *
 		 * @readonly
-		 * @type {module:utils/collection~Collection.<module:link/utils~ManualDecorator>}
+		 * @type {module:utils/collection~Collection}
 		 */
 		this.manualDecorators = new Collection();
 	}
 
 	/**
-	 * Synchronize state of the decorator with actually present elements in the model.
+	 * Synchronize state of {@link #manualDecorators} with actually present elements in the model.
 	 */
 	restoreManualDecoratorStates() {
 		for ( const manualDecorator of this.manualDecorators ) {
@@ -83,8 +83,9 @@ export default class LinkCommand extends Command {
 	 *
 	 * This command has an optional argument, which applies or removes model attributes brought by
 	 * {@link module:link/utils~ManualDecorator manual decorators}. Model attribute names correspond to
-	 * decorator {@link module:link/utils~ManualDecorator#id ids} and follow the incremental pattern:
-	 * `'linkManualDecorator0'`, `'linkManualDecorator1'`, `'linkManualDecorator2'`, etc..
+	 * decorator {@link module:link/utils~ManualDecorator#id ids} and and they are created based on decorator's entry in configuration.
+	 * Attribute name is combination of `link` prefix with object's key used to define given decorator. For example,
+	 * `'linkIsExternal'`, `'linkIsDownloadable'`, `'linkFoo'`, etc..
 	 *
 	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
 	 * documentation.
@@ -95,25 +96,25 @@ export default class LinkCommand extends Command {
 	 *
 	 *		// Adding a new decorator attribute.
 	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkDecorator0: true
+	 *			linkIsExternal: true
 	 *		} );
 	 *
 	 *		// Removing a decorator attribute from a selection.
 	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkDecorator0: false
+	 *			linkIsExternal: false
 	 *		} );
 	 *
 	 *		// Adding multiple decorator attributes at a time.
 	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkDecorator0: true,
-	 *			linkDecorator2: true,
+	 *			linkIsExternal: true,
+	 *			linkIsDownloadable: true,
 	 *		} );
 	 *
 	 *		// Removing and adding decorator attributes at a time.
 	 *		linkCommand.execute( 'http://example.com', {
-	 *			linkDecorator0: false,
-	 *			linkDecorator1: true,
-	 *			linkDecorator2: false,
+	 *			linkIsExternal: false,
+	 *			linkFoo: true,
+	 *			linkIsDownloadable: false,
 	 *		} );
 	 *
 	 * **Note**: If decorator attribute name is not specified its state remains untouched.
@@ -203,11 +204,11 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
-	 * Method provides information if given decorator is present in currently processed selection.
+	 * Method provides the information if a decorator with given name is present in currently processed selection.
 	 *
 	 * @private
-	 * @param {String} decoratorName name of a link decorator used in the model
-	 * @returns {Boolean} Information if a given decorator is currently present in a selection
+	 * @param {String} decoratorName name of a manual decorator used in the model
+	 * @returns {Boolean} The information if a given decorator is currently present in a selection
 	 */
 	_getDecoratorStateFromModel( decoratorName ) {
 		const doc = this.editor.model.document;

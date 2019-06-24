@@ -88,11 +88,12 @@ export default class Link extends Plugin {
  * * {@link module:link/link~LinkDecoratorManualDefinition manual} – they allow users to control link attributes individually
  *  using the editor UI.
  *
- * Link decorators are defined as an array of objects:
+ * Link decorators are defined as an object with key-value pair, where key is a name provided for given decorator and value is decorator
+ * definition.
  *
  *		const linkConfig = {
- *			decorators: [
- *				{
+ *			decorators: {
+ *				isExternal: {
  *					mode: 'automatic',
  *					callback: url => url.startsWith( 'http://' ),
  *					attributes: {
@@ -100,7 +101,7 @@ export default class Link extends Plugin {
  *						rel: 'noopener noreferrer'
  *					}
  *				},
- *				{
+ *				isDownloadable: {
  *					mode: 'manual',
  *					label: 'Downloadable',
  *					attributes: {
@@ -108,7 +109,7 @@ export default class Link extends Plugin {
  *					}
  *				},
  *				// ...
- *			]
+ *			}
  *		}
  *
  * To learn more about the configuration syntax, check out the {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
@@ -123,8 +124,20 @@ export default class Link extends Plugin {
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
- * @member {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
- * module:link/link~LinkConfig#decorators
+ * @member {Object.<String, module:link/link~LinkDecoratorDefinition>} module:link/link~LinkConfig#decorators
+ */
+
+/**
+ * Represents a link decorator definition {@link module:link/link~LinkDecoratorManualDefinition `'manual'`} or
+ * {@link module:link/link~LinkDecoratorAutomaticDefinition `'automatic'`}.
+ *
+ * @interface LinkDecoratorDefinition
+ */
+
+/**
+ * The kind of the decorator. `'manual'` for all manual decorators and `'automatic'` for all automatic decorators.
+ *
+ * @member {'manual'|'automatic'} module:link/link~LinkDecoratorDefinition#mode
  */
 
 /**
@@ -177,7 +190,7 @@ export default class Link extends Plugin {
  *		}
  *
  * @typedef {Object} module:link/link~LinkDecoratorManualDefinition
- * @property {'automatic'} mode The kind of the decorator. `'manual'` for all manual decorators.
+ * @property {'manual'} mode The kind of the decorator. `'manual'` for all manual decorators.
  * @property {String} label The label of the UI button the user can use to control the presence of link attributes.
  * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
  * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.

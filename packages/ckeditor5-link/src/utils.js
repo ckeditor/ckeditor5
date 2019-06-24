@@ -92,9 +92,11 @@ export function getLocalizedDecorators( t, decorators ) {
 }
 
 /**
- * Converts Obj of decorators to Array of decorators with nice identifiers.
+ * Converts an object with defined decorators to a normalized array of decorators. There is also added `id` key for each decorator,
+ * which is used as attribute's name in the model.
  *
- * @param {Object} decorators
+ * @param {Object.<String, module:link/link~LinkDecoratorDefinition>} decorators
+ * @returns {Array.<module:link/link~LinkDecoratorAutomaticDefinition|module:link/link~LinkDecoratorManualDefinition>}
  */
 export function normalizeDecorators( decorators ) {
 	const retArray = [];
