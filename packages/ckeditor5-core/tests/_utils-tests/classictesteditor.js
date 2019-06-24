@@ -24,7 +24,7 @@ import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe.only( 'ClassicTestEditor', () => {
+describe( 'ClassicTestEditor', () => {
 	let editorElement;
 
 	testUtils.createSinonSandbox();
