@@ -50,8 +50,9 @@
  * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
  */
 .ck.ck-link-form_layout-vertical {
+	display: block;
 	padding: 0;
-	width: var(--ck-input-text-width);
+	min-width: var(--ck-input-text-width);
 
 	& .ck-labeled-input {
 		margin: var(--ck-spacing-standard);
@@ -68,6 +69,7 @@
 		border-radius: 0;
 		border: 0;
 		border-top: 1px solid var(--ck-color-base-border);
+		width: 50%;
 
 		&:first-of-type {
 			border-right: 1px solid var(--ck-color-base-border);
@@ -81,13 +83,6 @@
 
 	& .ck-list .ck-switchbutton {
 		border: 0;
-	}
-
-	/* Do not allow stretching switch button label (it breaks switch button). */
-	& .ck-list .ck-button__label {
-		text-overflow: ellipsis;
-		overflow: hidden;
-		max-width: calc( var(--ck-input-text-width) * .8 - var(--ck-switch-button-toggle-width) );
 	}
 }
 
