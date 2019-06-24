@@ -236,14 +236,14 @@ describe( 'UnlinkCommand', () => {
 				extraPlugins: [ LinkEditing ],
 				link: {
 					decorators: {
-						IsFoo: {
+						isFoo: {
 							mode: 'manual',
 							label: 'Foo',
 							attributes: {
 								class: 'foo'
 							}
 						},
-						IsBar: {
+						isBar: {
 							mode: 'manual',
 							label: 'Bar',
 							attributes: {
@@ -261,7 +261,7 @@ describe( 'UnlinkCommand', () => {
 
 					model.schema.extend( '$text', {
 						allowIn: '$root',
-						allowAttributes: [ 'linkHref', 'linkDecoratorIsFoo', 'linkDecoratorIsBar' ]
+						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar' ]
 					} );
 
 					model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -273,7 +273,7 @@ describe( 'UnlinkCommand', () => {
 		} );
 
 		it( 'should remove manual decorators from links together with linkHref', () => {
-			setData( model, '<$text linkHref="url" linkDecoratorIsFoo="true" linkDecoratorIsBar="true" >f[]oobar</$text>' );
+			setData( model, '<$text linkIsFoo="true" linkIsBar="true" linkHref="url">f[]oobar</$text>' );
 
 			command.execute();
 

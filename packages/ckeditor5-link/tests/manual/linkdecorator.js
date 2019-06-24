@@ -22,7 +22,7 @@ ClassicEditor
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
 			decorators: {
-				IxExternal: {
+				isExternal: {
 					mode: 'manual',
 					label: 'Open in new window',
 					attributes: {
@@ -30,14 +30,14 @@ ClassicEditor
 						rel: 'noopener noreferrer'
 					}
 				},
-				IsDownloadable: {
+				isDownloadable: {
 					mode: 'manual',
 					label: 'Downloadable',
 					attributes: {
 						download: 'download'
 					}
 				},
-				IsGallery: {
+				isGallery: {
 					mode: 'manual',
 					label: 'Gallery link',
 					attributes: {
@@ -64,14 +64,14 @@ ClassicEditor
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
 			decorators: {
-				IsTelephone: {
+				isTelephone: {
 					mode: 'automatic',
 					callback: url => url.startsWith( 'tel:' ),
 					attributes: {
 						class: 'phone'
 					}
 				},
-				IsInternal: {
+				isInternal: {
 					mode: 'automatic',
 					callback: url => url.startsWith( '#' ),
 					attributes: {

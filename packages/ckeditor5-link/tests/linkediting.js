@@ -482,21 +482,21 @@ describe( 'LinkEditing', () => {
 							link: {
 								addTargetToExternalLinks: false,
 								decorators: {
-									IsExternal: {
+									isExternal: {
 										mode: 'automatic',
 										callback: url => url.startsWith( 'http' ),
 										attributes: {
 											target: '_blank'
 										}
 									},
-									IsDownloadable: {
+									isDownloadable: {
 										mode: 'automatic',
 										callback: url => url.includes( 'download' ),
 										attributes: {
 											download: 'download'
 										}
 									},
-									IsMail: {
+									isMail: {
 										mode: 'automatic',
 										callback: url => url.startsWith( 'mailto:' ),
 										attributes: {

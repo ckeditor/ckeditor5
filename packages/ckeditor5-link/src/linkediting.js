@@ -108,7 +108,7 @@ export default class LinkEditing extends Plugin {
 		// Adds default decorator for external links.
 		if ( editor.config.get( 'link.addTargetToExternalLinks' ) ) {
 			automaticDecorators.add( {
-				id: 'linkDecoratorIsExternal',
+				id: 'linkIsExternal',
 				mode: DECORATOR_AUTOMATIC,
 				callback: url => EXTERNAL_LINKS_REGEXP.test( url ),
 				attributes: {
