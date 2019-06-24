@@ -177,7 +177,7 @@ describe( 'ClassicTestEditor', () => {
 				} );
 		} );
 
-		it( 'initializes the data with `config.initialData` if this option is provided', () => {
+		it( 'initializes the data controller with `config.initialData` if this option is provided', () => {
 			return ClassicTestEditor.create( editorElement, { initialData: '<p>foo</p>', plugins: [ Paragraph ] } )
 				.then( editor => {
 					expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -186,7 +186,7 @@ describe( 'ClassicTestEditor', () => {
 				} );
 		} );
 
-		it( 'initializes the data with an empty string if the `config.initialData` is not provided', () => {
+		it( 'initializes the data controller with an empty string if the `config.initialData` is not provided', () => {
 			return ClassicTestEditor.create( editorElement )
 				.then( editor => {
 					expect( editor.getData() ).to.equal( '' );
