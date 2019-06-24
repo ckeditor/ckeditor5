@@ -22,14 +22,20 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * It does not handle errors during editor initialization and editor destruction.
  *
- * Basic Usage:
+ * Basic usage:
+ *
+ * 		const watchdog = Watchdog.for( ClassicEditor );
+ *
+ * 		watchdog.create( elementOrData, editorConfig ).then( editor => {} );
+ *
+ * Full usage:
  *
  *		const watchdog = new Watchdog();
  *
- *		watchdog.setCreator( ( el, config ) => ClassicEditor.create( el, config ) );
+ *		watchdog.setCreator( ( elementOrData, editorConfig ) => ClassicEditor.create( elementOrData, editorConfig ) );
  *		watchdog.setDestructor( editor => editor.destroy() );
  *
- *		watchdog.create().then( editor => {} );
+ *		watchdog.create( elementOrData, editorConfig ).then( editor => {} );
  */
 export default class Watchdog {
 	/**
@@ -113,10 +119,10 @@ export default class Watchdog {
 		 */
 
 		/**
-		* The editor source element.
+		* The editor source element or data.
 		*
 		* @private
-		* @member {HTMLElement} _element
+		* @member {HTMLElement|String} _elementOrData
 		*/
 
 		/**
@@ -177,7 +183,7 @@ export default class Watchdog {
 					initialData: this._data
 				} );
 
-				return this.create( this._element, updatedConfig );
+				return this.create( this._elementOrData, updatedConfig );
 			} )
 			.then( () => {
 				this.fire( 'restart' );
@@ -187,12 +193,12 @@ export default class Watchdog {
 	/**
 	 * Creates a watched editor instance using the creator passed to {@link #setCreator} method.
 	 *
-	 * @param {HTMLElement|module:core/editor/editorconfig~EditorConfig} element
+	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
 	 *
 	 * @returns {Promise.<Watchdog>}
 	 */
-	create( element, config ) {
+	create( elementOrData, config ) {
 		if ( !this._creator ) {
 			/**
 			 * @error watchdog-creator-not-defined
@@ -219,11 +225,11 @@ export default class Watchdog {
 			);
 		}
 
-		this._element = element;
+		this._elementOrData = elementOrData;
 		this._config = config;
 
 		return Promise.resolve()
-			.then( () => this._creator( element, config ) )
+			.then( () => this._creator( elementOrData, config ) )
 			.then( editor => {
 				this._editor = editor;
 
@@ -323,6 +329,23 @@ export default class Watchdog {
 			areElementsConnected( this._editor, error.ctx ) ||
 			areElementsConnected( error.ctx, this._editor )
 		);
+	}
+
+	/**
+	 * A shortcut method for creating the Watchdog.
+	 *
+	 * 		const watchdog = Watchdog.for( ClassicEditor );
+	 *
+	 * 		watchdog.create( elementOrData, config ).then( editor => {} );
+	 *
+	 * @param {*} Editor
+	 */
+	static for( Editor ) {
+		const watchdog = new Watchdog();
+		watchdog.setCreator( ( el, config ) => Editor.create( el, config ) );
+		watchdog.setDestructor( editor => editor.destroy() );
+
+		return watchdog;
 	}
 
 	/**

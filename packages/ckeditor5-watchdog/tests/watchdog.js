@@ -172,7 +172,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
@@ -199,7 +199,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -225,7 +225,7 @@ describe( 'Watchdog', () => {
 			const editorErrorSpy = sinon.spy();
 			watchdog.on( 'error', editorErrorSpy );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -256,7 +256,7 @@ describe( 'Watchdog', () => {
 			watchdog2.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog2.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -293,7 +293,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -316,7 +316,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -354,7 +354,7 @@ describe( 'Watchdog', () => {
 			const restartSpy = sinon.spy();
 			watchdog.on( 'restart', restartSpy );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -390,7 +390,7 @@ describe( 'Watchdog', () => {
 			const restartSpy = sinon.spy();
 			watchdog.on( 'restart', restartSpy );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -420,7 +420,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -453,7 +453,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -481,7 +481,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -515,7 +515,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -550,7 +550,7 @@ describe( 'Watchdog', () => {
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -592,14 +592,46 @@ describe( 'Watchdog', () => {
 		} );
 	} );
 
+	describe( 'static for()', () => {
+		it( 'should be a shortcut method for creating the watchdog', () => {
+			const watchdog = Watchdog.for( FakeEditor );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( document.createElement( 'div' ), {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const oldEditor = watchdog.editor;
+				expect( watchdog.editor ).to.be.an.instanceOf( FakeEditor );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.editor ).to.be.an.instanceOf( FakeEditor );
+						expect( watchdog.editor ).to.not.equal( oldEditor );
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+	} );
+
 	describe( 'crashes', () => {
-		it( 'should be an array of caught errors by the Watchdog', () => {
+		it( 'should be an array of caught errors by the watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => FakeEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar don't work.
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -625,7 +657,7 @@ describe( 'Watchdog', () => {
 
 // Wrap Editor to align the API to the "full" editors.
 class FakeEditor extends VirtualTestEditor {
-	static create( elementOrData, config ) {
+	static create( _elementOrData, config ) {
 		return super.create( config );
 	}
 }
