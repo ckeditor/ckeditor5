@@ -22,8 +22,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'ClassicTestEditor', () => {
+describe.only( 'ClassicTestEditor', () => {
 	let editorElement;
 
 	testUtils.createSinonSandbox();
@@ -33,13 +34,17 @@ describe( 'ClassicTestEditor', () => {
 		document.body.appendChild( editorElement );
 	} );
 
+	afterEach( () => {
+		editorElement.remove();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new ClassicTestEditor( editorElement, { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-			expect( editor.element ).to.equal( editorElement );
+			expect( editor.sourceElement ).to.equal( editorElement );
 			expect( editor.ui ).to.be.instanceOf( EditorUI );
 			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
@@ -83,7 +88,7 @@ describe( 'ClassicTestEditor', () => {
 					expect( editor ).to.be.instanceof( ClassicTestEditor );
 
 					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-					expect( editor ).to.have.property( 'element', editorElement );
+					expect( editor.sourceElement ).to.equal( editorElement );
 				} );
 		} );
 
@@ -194,6 +199,36 @@ describe( 'ClassicTestEditor', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'initializes the data controller with the data from the source element', () => {
+			editorElement.innerHTML = '<p>foo</p>';
+
+			return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph ] } )
+				.then( editor => {
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'initializes the data controller with the data from the first argument if it is a string', () => {
+			return ClassicTestEditor.create( '<p>foo</p>', { plugins: [ Paragraph ] } )
+				.then( editor => {
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'throws when the data is passed from as the first argument and as a `config.initialData` at the same time', () => {
+			return ClassicTestEditor.create( '<p>foo</p>', { initialData: '<p>bar</p>' } )
+				.then( () => {
+					throw new Error( 'It should throw an error' );
+				}, err => {
+					expect( err.message ).to.match( /^editor-create-initial-data:/ );
+					expect( err ).to.be.instanceOf( CKEditorError );
+				} );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -214,11 +249,11 @@ describe( 'ClassicTestEditor', () => {
 		it( 'restores the editor element', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor.element.style.display ).to.equal( 'none' );
+					expect( editor.sourceElement.style.display ).to.equal( 'none' );
 
 					return editor.destroy()
 						.then( () => {
-							expect( editor.element.style.display ).to.equal( '' );
+							expect( editor.sourceElement.style.display ).to.equal( '' );
 						} );
 				} );
 		} );
