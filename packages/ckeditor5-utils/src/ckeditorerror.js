@@ -32,8 +32,9 @@ export default class CKEditorError extends Error {
 	 * @param {String} message The error message in an `error-name: Error message.` format.
 	 * During the minification process the "Error message" part will be removed to limit the code size
 	 * and a link to this error documentation will be added to the `message`.
-	 * @param {Object} context A context of the error by which the {@link module:watchdog/watchdog~Watchdog watchdog}
-	 * is able to determine which editor crashed. It should be an editor instance or a property connected to it.
+	 * @param {Object|null} context A context of the error by which the {@link module:watchdog/watchdog~Watchdog watchdog}
+	 * is able to determine which editor crashed. It should be an editor instance or a property connected to it. It can be also
+	 * a `null` value if the editor should not be restarted in case of the error (e.g. during the editor initialization).
 	 * @param {Object} [data] Additional data describing the error. A stringified version of this object
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
@@ -55,7 +56,7 @@ export default class CKEditorError extends Error {
 		/**
 		 * A context of the error by which the Watchdog is able to determine which editor crashed.
 		 *
-		 * @type {Object}
+		 * @type {Object|null}
 		 */
 		this.context = context;
 

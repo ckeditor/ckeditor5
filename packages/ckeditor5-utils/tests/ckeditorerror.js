@@ -14,13 +14,13 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'sets the name', () => {
-		const error = new CKEditorError( 'foo', {} );
+		const error = new CKEditorError( 'foo', null );
 
 		expect( error ).to.have.property( 'name', 'CKEditorError' );
 	} );
 
 	it( 'sets the message', () => {
-		const error = new CKEditorError( 'foo', {} );
+		const error = new CKEditorError( 'foo', null );
 
 		expect( error ).to.have.property( 'message', 'foo' );
 		expect( error.data ).to.be.undefined;
@@ -28,7 +28,7 @@ describe( 'CKEditorError', () => {
 
 	it( 'sets the message and data', () => {
 		const data = { bar: 1 };
-		const error = new CKEditorError( 'foo', {}, data );
+		const error = new CKEditorError( 'foo', null, data );
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":1}' );
 		expect( error ).to.have.property( 'data', data );
@@ -54,14 +54,14 @@ describe( 'CKEditorError', () => {
 			bom: new Foo(),
 			bim: 10
 		};
-		const error = new CKEditorError( 'foo', {}, data );
+		const error = new CKEditorError( 'foo', null, data );
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":10}' );
 		expect( error ).to.have.property( 'data', data );
 	} );
 
 	it( 'contains a link which leads to the documentation', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', {} );
+		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', null );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
@@ -70,7 +70,7 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'link to documentation is added before the additional data message', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', {}, { foo: 1, bar: 2 } );
+		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', null, { foo: 1, bar: 2 } );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +
@@ -81,7 +81,7 @@ describe( 'CKEditorError', () => {
 
 	describe( 'is()', () => {
 		it( 'checks if error is an instance of CKEditorError', () => {
-			const ckeditorError = new CKEditorError( 'foo', {} );
+			const ckeditorError = new CKEditorError( 'foo', null );
 			const regularError = new Error( 'foo' );
 
 			expect( ( !!ckeditorError.is && ckeditorError.is( 'CKEditorError' ) ) ).to.be.true;
