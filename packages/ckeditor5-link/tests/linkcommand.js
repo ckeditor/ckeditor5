@@ -353,5 +353,46 @@ describe( 'LinkCommand', () => {
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
 		} );
+
+		describe( 'restoreManualDecoratorStates()', () => {
+			it( 'synchronize values with current model state', () => {
+				setData( model, 'foo<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >u[]rl</$text>bar' );
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkManualDecorator0: true,
+					linkManualDecorator1: true
+				} );
+
+				command.manualDecorators.first.value = false;
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkManualDecorator0: false,
+					linkManualDecorator1: true,
+				} );
+
+				command.restoreManualDecoratorStates();
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkManualDecorator0: true,
+					linkManualDecorator1: true,
+				} );
+			} );
+		} );
+
+		describe( '_getDecoratorStateFromModel', () => {
+			it( 'obtain current values from the model', () => {
+				setData( model, 'foo[<$text linkHref="url" linkManualDecorator1="true" >url</$text>]bar' );
+
+				expect( command._getDecoratorStateFromModel( 'linkManualDecorator0' ) ).to.be.false;
+				expect( command._getDecoratorStateFromModel( 'linkManualDecorator1' ) ).to.be.true;
+			} );
+		} );
 	} );
 } );
+
+function decoratorStates( manualDecorators ) {
+	return Array.from( manualDecorators ).reduce( ( accumulator, currentValue ) => {
+		accumulator[ currentValue.id ] = currentValue.value;
+		return accumulator;
+	}, {} );
+}

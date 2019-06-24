@@ -228,6 +228,7 @@ describe( 'LinkFormView', () => {
 			view.destroy();
 			collection.clear();
 		} );
+
 		it( 'switch buttons reflects state of manual decorators', () => {
 			expect( view._manualDecoratorSwitches.length ).to.equal( 3 );
 

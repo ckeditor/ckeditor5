@@ -959,58 +959,85 @@ describe( 'LinkUI', () => {
 				expect( focusSpy.calledBefore( removeSpy ) ).to.equal( true );
 			} );
 
-			it( 'should gather information about manual decorators', () => {
-				let editor, model, formView;
-				const editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
+			describe( 'support manual decorators', () => {
+				let editorElement, editor, model, formView, linkUIFeature;
 
-				return ClassicTestEditor
-					.create( editorElement, {
-						plugins: [ LinkEditing, LinkUI, Paragraph ],
-						link: {
-							decorators: [
-								{
-									mode: 'manual',
-									label: 'Foo',
-									attributes: {
-										foo: 'bar'
+				beforeEach( () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+					return ClassicTestEditor
+						.create( editorElement, {
+							plugins: [ LinkEditing, LinkUI, Paragraph ],
+							link: {
+								decorators: [
+									{
+										mode: 'manual',
+										label: 'Foo',
+										attributes: {
+											foo: 'bar'
+										}
 									}
-								}
-							]
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
+								]
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
 
-						model.schema.extend( '$text', {
-							allowIn: '$root',
-							allowAttributes: 'linkHref'
+							model.schema.extend( '$text', {
+								allowIn: '$root',
+								allowAttributes: 'linkHref'
+							} );
+
+							linkUIFeature = editor.plugins.get( LinkUI );
+
+							const balloon = editor.plugins.get( ContextualBalloon );
+
+							formView = linkUIFeature.formView;
+
+							// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+							testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+							testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
+
+							formView.render();
 						} );
+				} );
 
-						const linkUIFeature = editor.plugins.get( LinkUI );
-						const balloon = editor.plugins.get( ContextualBalloon );
+				afterEach( () => {
+					editorElement.remove();
+				} );
 
-						formView = linkUIFeature.formView;
+				it( 'should gather information about manual decorators', () => {
+					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-						testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
-						testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
+					setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
+					expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
+					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkManualDecorator0: true } );
 
-						formView.render();
-					} )
-					.then( () => {
-						const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+					formView.fire( 'submit' );
 
-						setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
-						expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
-						expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkManualDecorator0: true } );
+					expect( executeSpy.calledOnce ).to.be.true;
+					expect( executeSpy.calledWithExactly( 'link', 'url', { linkManualDecorator0: true } ) ).to.be.true;
+				} );
 
-						formView.fire( 'submit' );
+				it( 'should reset switch state when form view is closed', () => {
+					setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
 
-						expect( executeSpy.calledOnce ).to.be.true;
-						expect( executeSpy.calledWithExactly( 'link', 'url', { linkManualDecorator0: true } ) ).to.be.true;
-					} );
+					const manualDecorators = editor.commands.get( 'link' ).manualDecorators;
+					const firstDecoratorModel = manualDecorators.first;
+					const firstDecoratorSwitch = formView._manualDecoratorSwitches.first;
+
+					expect( firstDecoratorModel.value, 'Initial value should be read from the model (true)' ).to.be.true;
+					expect( firstDecoratorSwitch.isOn, 'Initial value should be read from the model (true)' ).to.be.true;
+
+					firstDecoratorSwitch.fire( 'execute' );
+					expect( firstDecoratorModel.value, 'Pressing button toggles value' ).to.be.false;
+					expect( firstDecoratorSwitch.isOn, 'Pressing button toggles value' ).to.be.false;
+
+					linkUIFeature._closeFormView();
+					expect( firstDecoratorModel.value, 'Close form view without submit resets value to initial state' ).to.be.true;
+					expect( firstDecoratorSwitch.isOn, 'Close form view without submit resets value to initial state' ).to.be.true;
+				} );
 			} );
 		} );
 	} );
