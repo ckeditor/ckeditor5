@@ -51,7 +51,6 @@
  * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
  */
 .ck.ck-link-form_layout-vertical {
-	display: block;
 	padding: 0;
 	min-width: var(--ck-input-text-width);
 
