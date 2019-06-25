@@ -70,7 +70,7 @@ There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 ### Base64
 
-The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) stored directly in the {@link builds/guides/integration/saving-data editor output}.
+The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
 
 {@link features/base64-upload-adapter **Learn how to use Base64–encoded images in CKEditor 5**}.
 
