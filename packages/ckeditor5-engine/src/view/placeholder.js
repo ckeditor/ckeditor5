@@ -141,7 +141,6 @@ export function hidePlaceholder( writer, element ) {
  * sure the correct element is passed to the helper.
  *
  * @param {module:engine/view/element~Element} element
- * @param {String} text
  * @returns {Boolean}
  */
 export function needsPlaceholder( element ) {
