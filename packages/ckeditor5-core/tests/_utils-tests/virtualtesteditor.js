@@ -9,6 +9,7 @@ import VirtualTestEditor from '../../tests/_utils/virtualtesteditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import testUtils from '../../tests/_utils/utils';
 
@@ -32,6 +33,22 @@ describe( 'VirtualTestEditor', () => {
 
 		it( 'mixes DataApiMixin', () => {
 			expect( testUtils.isMixed( VirtualTestEditor, DataApiMixin ) ).to.true;
+		} );
+	} );
+
+	describe( 'static create()', () => {
+		it( 'initializes the data controller with the `config.initialData`', () => {
+			return VirtualTestEditor.create( { initialData: '<p>foo</p>', plugins: [ Paragraph ] } )
+				.then( editor => {
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+				} );
+		} );
+
+		it( 'initializes the data controller with an empty string if the `config.initialData` is not provided', () => {
+			return VirtualTestEditor.create()
+				.then( editor => {
+					expect( editor.getData() ).to.equal( '' );
+				} );
 		} );
 	} );
 } );
