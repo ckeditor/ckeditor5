@@ -70,7 +70,7 @@ There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 ### Simple adapter
 
-The {@link features/simple-upload-adapter Simple upload adapter} allows uploading images to the server using the minimal [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API and configuration.
+The {@link features/simple-upload-adapter Simple upload adapter} allows uploading images to the server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API and very little configuration.
 
 {@link features/simple-upload-adapter **Learn how to use the Simple upload adapter in CKEditor 5**}.
 
