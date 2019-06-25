@@ -48,7 +48,7 @@ const utils = {
 	},
 
 	/**
-	 * Checkes wether observable properties are properly bound to each other.
+	 * Checks whether observable properties are properly bound to each other.
 	 *
 	 * Syntax given that observable `A` is bound to observables [`B`, `C`, ...]:
 	 *
