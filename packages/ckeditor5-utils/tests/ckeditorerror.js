@@ -7,7 +7,7 @@ import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerro
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
-		const error = new CKEditorError( 'foo', {} );
+		const error = new CKEditorError( 'foo', null );
 
 		expect( error ).to.be.an.instanceOf( Error );
 		expect( error ).to.be.an.instanceOf( CKEditorError );

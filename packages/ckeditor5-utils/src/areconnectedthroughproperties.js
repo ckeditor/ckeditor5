@@ -7,7 +7,7 @@
  * @module utils/arestructuresconnected
  */
 
-/* globals EventTarget */
+/* globals EventTarget, Event */
 
 /**
  * Traverses both structures to find out whether there's some object that is shared between both structures.
@@ -82,7 +82,8 @@ function shouldNodeBeSkipped( node ) {
 		node === null ||
 
 		// Skip native DOM objects, e.g. Window, nodes, events, etc.
-		node instanceof EventTarget
+		node instanceof EventTarget ||
+		node instanceof Event
 	);
 }
 
