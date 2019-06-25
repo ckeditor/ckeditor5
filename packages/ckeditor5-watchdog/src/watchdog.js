@@ -16,12 +16,16 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
 
 /**
- * A Watchdog for CKEditor 5 editors.
+ * A watchdog for CKEditor 5 editors.
  *
- * It keeps the {@link module:core/editor/editor~Editor editor} instance running. If some error occurs in the editor it tries to
- * restart it to the previous state.
+ * It keeps an {@link module:core/editor/editor~Editor editor} instance running.
+ * If a {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` error}
+ * is thrown by the editor, it tries to restart the editor to the state before the crash. All other errors
+ * are transparent to the watchdog.
  *
- * It does not handle errors during editor initialization and editor destruction.
+ * Note that the watchdog does not handle errors during editor initialization (`Editor.create()`)
+ * and editor destruction (`editor.destroy()`). Errors at these stages mean that there is a serious
+ * problem in the code integrating the editor and such problem cannot be easily fixed restarting the editor.
  *
  * Basic usage:
  *
@@ -58,7 +62,7 @@ export default class Watchdog {
 	 */
 	constructor( { crashNumberLimit, waitingTime } = {} ) {
 		/**
-		 * An array of crashes saved as object with the following props:
+		 * An array of crashes saved as an object with the following props:
 		 * * message: String,
 		 * * source: String,
 		 * * lineno: String,
@@ -227,7 +231,7 @@ export default class Watchdog {
 			 */
 			throw new CKEditorError(
 				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()`.',
-				{}
+				null
 			);
 		}
 
@@ -239,7 +243,7 @@ export default class Watchdog {
 			 */
 			throw new CKEditorError(
 				'watchdog-destructor-not-defined: The watchdog destructor is not defined, define it using `watchdog.setDestructor()`',
-				{}
+				null
 			);
 		}
 
@@ -310,7 +314,7 @@ export default class Watchdog {
 
 	/**
 	 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context) and
-	 * restarts the editor.
+	 * restarts the editor. It handles {@link module:utils/ckeditorerror~CKEditorError CKEditorError errors} only.
 	 *
 	 * @private
 	 * @fires error
