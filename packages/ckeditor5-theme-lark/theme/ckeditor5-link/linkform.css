@@ -55,7 +55,7 @@
 	min-width: var(--ck-input-text-width);
 
 	& .ck-labeled-input {
-		margin: var(--ck-spacing-standard);
+		margin: var(--ck-spacing-standard) var(--ck-spacing-standard) var(--ck-spacing-small);
 
 		& .ck-input-text {
 			min-width: 0;
@@ -81,8 +81,12 @@
 		margin-left: 0;
 	}
 
-	& .ck-list .ck-switchbutton {
+	& .ck-list .ck-button.ck-switchbutton {
 		border: 0;
+
+		&:hover {
+			background: none;
+		}
 	}
 }
 
