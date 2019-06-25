@@ -16,7 +16,7 @@ See the {@link module:upload/filerepository~FileRepository} plugin documentation
 
 This repository contains the following upload adapters:
 
-* {@link module:upload/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) stored directly in the {@glink builds/guides/integration/saving-data editor output}.
+* {@link module:upload/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@glink builds/guides/integration/saving-data editor output}.
 
 ## Installation
 
