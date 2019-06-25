@@ -38,7 +38,7 @@ describe( 'Base64UploadAdapter', () => {
 		window.document.body.removeChild( div );
 	} );
 
-	it( 'should require FileRepository plugin', () => {
+	it( 'should require the FileRepository plugin', () => {
 		expect( Base64UploadAdapter.requires ).to.deep.equal( [ FileRepository ] );
 	} );
 
@@ -47,7 +47,7 @@ describe( 'Base64UploadAdapter', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should set loader', () => {
+		it( 'should set the loader', () => {
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [ Base64UploadAdapter ],
@@ -77,14 +77,14 @@ describe( 'Base64UploadAdapter', () => {
 			return editor.destroy();
 		} );
 
-		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
+		it( 'crateAdapter method should be registered and have upload() and abort() methods', () => {
 			expect( adapter ).to.not.be.undefined;
 			expect( adapter.upload ).to.be.a( 'function' );
 			expect( adapter.abort ).to.be.a( 'function' );
 		} );
 
 		describe( 'upload()', () => {
-			it( 'returns a promise that resolves an image as base64 string', () => {
+			it( 'returns a promise that resolves an image as a base64 string', () => {
 				setTimeout( () => {
 					// FileReader has loaded the file.
 					stubs.onload();
@@ -136,7 +136,7 @@ describe( 'Base64UploadAdapter', () => {
 		} );
 
 		describe( 'abort()', () => {
-			it( 'should not call abort on the non-existing FileReader uploader (`loader.file` not resolved)', () => {
+			it( 'should not call abort() on the non-existing FileReader uploader (loader#file not resolved)', () => {
 				const adapter = fileRepository.createLoader( createNativeFileMock() );
 
 				expect( () => {
@@ -147,7 +147,7 @@ describe( 'Base64UploadAdapter', () => {
 				expect( stubs.abort.called ).to.equal( false );
 			} );
 
-			it( 'should call abort on the FileReader uploader (`loader.file` resolved)', done => {
+			it( 'should call abort() on the FileReader uploader (loader#file resolved)', done => {
 				adapter.upload();
 
 				// Wait for the `loader.file` promise.

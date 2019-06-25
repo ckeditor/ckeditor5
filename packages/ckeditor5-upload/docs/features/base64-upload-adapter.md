@@ -22,6 +22,10 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 ## Installation
 
+<info-box info>
+	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
+</info-box>
+
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
 ```bash

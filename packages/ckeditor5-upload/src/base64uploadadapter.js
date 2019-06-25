@@ -13,6 +13,15 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from './filerepository';
 
 /**
+ * A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64)
+ * stored directly in the {@glink builds/guides/integration/saving-data editor output}.
+ *
+ * This kind of image upload does not require server processing – images are stored with the rest of the text and
+ * displayed by the web browser without additional requests.
+ *
+ * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * other ways to upload images into CKEditor 5.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class Base64UploadAdapter extends Plugin {
@@ -39,10 +48,10 @@ export default class Base64UploadAdapter extends Plugin {
 }
 
 /**
- * Upload adapter for Base64.
+ * The upload adapter that converts images inserted into the editor into Base64 strings.
  *
  * @private
- * @implements module:upload/base64uploadadapter~Adapter
+ * @implements module:upload/filerepository~UploadAdapter
  */
 class Adapter {
 	/**
@@ -52,7 +61,7 @@ class Adapter {
 	 */
 	constructor( loader ) {
 		/**
-		 * FileLoader instance to use during the upload.
+		 * `FileLoader` instance to use during the upload.
 		 *
 		 * @member {module:upload/filerepository~FileLoader} #loader
 		 */
