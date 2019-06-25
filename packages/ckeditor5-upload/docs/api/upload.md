@@ -12,6 +12,12 @@ This package implements various file upload utilities for CKEditor 5.
 
 See the {@link module:upload/filerepository~FileRepository} plugin documentation.
 
+## Upload Adapters
+
+This repository contains the following upload adapters:
+
+* {@link module:upload/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} - plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@glink builds/guides/integration/saving-data editor output}.
+
 ## Installation
 
 ```bash
