@@ -68,9 +68,17 @@ There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 {@link features/ckfinder **Learn how to integrate CKEditor 5 with CKFinder in your project**}.
 
-### Simple Upload
+### Simple adapter
 
-The {@link features/simple-upload-adapter Simple Upload Adapter} enables file uploads in CKEditor 5 using the external side-server connection.
+The {@link features/simple-upload-adapter Simple upload adapter} allows uploading images to the server using the minimal [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API and configuration.
+
+{@link features/simple-upload-adapter **Learn how to use the Simple upload adapter in CKEditor 5**}.
+
+### Base64 adapter
+
+The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
+
+{@link features/base64-upload-adapter **Learn how to use Base64–encoded images in CKEditor 5**}.
 
 ## Implementing your own upload adapter
 

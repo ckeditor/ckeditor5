@@ -199,6 +199,7 @@ npm install --save \
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
 
 ```js
+const path = require( 'path' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
@@ -234,7 +235,7 @@ module.exports = {
 		//		svgRule.uses.clear();
 		//
 		// * or exclude ckeditor directory from node_modules:
-		svgRule.exclude.add( __dirname + '/node_modules/@ckeditor' );
+		svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
 
 		// Add an entry for *.svg files belonging to CKEditor. You can either:
 		//
