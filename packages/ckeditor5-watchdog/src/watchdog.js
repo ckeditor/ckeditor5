@@ -100,7 +100,7 @@ export default class Watchdog {
 		 * The current editor
 		 *
 		 * @private
-		 * @type {Editor}
+		 * @type {module:core/editor/editor~Editor}
 		 */
 		this._editor = null;
 
@@ -360,13 +360,16 @@ export default class Watchdog {
 	}
 
 	/**
-	 * A shortcut method for creating the Watchdog.
+	 * A shortcut method for creating the Watchdog. For the full usage see the
+	 * {@link ~Watchdog Watchdog class description}.
+	 *
+	 * Usage:
 	 *
 	 * 		const watchdog = Watchdog.for( ClassicEditor );
 	 *
 	 * 		watchdog.create( elementOrData, config ).then( editor => {} );
 	 *
-	 * @param {*} Editor
+	 * @param {*} Editor The editor class.
 	 */
 	static for( Editor ) {
 		const watchdog = new Watchdog();
