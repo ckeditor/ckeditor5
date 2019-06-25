@@ -48,5 +48,5 @@ function updateText( styleName ) {
 	};
 }
 
-document.querySelector( '#color-box #color' ).addEventListener( 'change', updateText( 'color' ) );
-document.querySelector( '#color-box #bgcolor' ).addEventListener( 'change', updateText( 'backgroundColor' ) );
+document.getElementById( 'color' ).addEventListener( 'change', updateText( 'color' ) );
+document.getElementById( 'bgcolor' ).addEventListener( 'change', updateText( 'backgroundColor' ) );

@@ -167,7 +167,7 @@ export default class ColorTableView extends View {
 		this.items.add( this.staticColorsGrid );
 
 		if ( documentColorsCount ) {
-			// Create Label for Document Colors.
+			// Create a label for document colors.
 			const bind = Template.bind( this.documentColors, this.documentColors );
 			const label = new LabelView( this.locale );
 
@@ -190,15 +190,15 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method scans through editor's model and searches for text node attributes with componentName.
+	 * Method scans through the editor's model and searches for text node attributes with attributeName.
 	 * Found entries are set as document colors.
 	 *
 	 * All the previously stored document colors will be lost in the process.
 	 *
 	 * @param {module:engine/model/model~Model} model Model used as a source to obtain document colors.
-	 * @param {String} componentName Determines what is the name of related model's attribute for given dropdown.
+	 * @param {String} attributeName Determines what is the name of a related model's attribute for given dropdown.
 	 */
-	updateDocumentColors( model, componentName ) {
+	updateDocumentColors( model, attributeName ) {
 		const document = model.document;
 		const maxCount = this.documentColorsCount;
 
@@ -209,8 +209,8 @@ export default class ColorTableView extends View {
 			const range = model.createRangeIn( root );
 
 			for ( const node of range.getItems() ) {
-				if ( node.is( 'textProxy' ) && node.hasAttribute( componentName ) ) {
-					this._addColorToDocumentColors( node.getAttribute( componentName ) );
+				if ( node.is( 'textProxy' ) && node.hasAttribute( attributeName ) ) {
+					this._addColorToDocumentColors( node.getAttribute( attributeName ) );
 
 					if ( this.documentColors.length >= maxCount ) {
 						return;

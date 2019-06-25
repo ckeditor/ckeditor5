@@ -131,8 +131,8 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
-				if ( val ) {
+			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
+				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView.updateDocumentColors( editor.model, this.componentName );
 					}
