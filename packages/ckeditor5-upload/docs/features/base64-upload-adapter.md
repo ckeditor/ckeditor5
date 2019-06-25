@@ -1,12 +1,12 @@
 ---
 category: features-image-upload
-menu-title: Base64 Upload Adapter
+menu-title: Base64 upload adapter
 order: 40
 ---
 
-# Base64 Upload Adapter
+# Base64 upload adapter
 
-The {@link module:upload/base64uploadadapter~Base64UploadAdapter Base64 Upload Adapter} plugin converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) stored directly in the {@link builds/guides/integration/saving-data editor output}.
+The {@link module:upload/base64uploadadapter~Base64UploadAdapter Base64 image upload adapter} plugin converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) stored directly in the {@link builds/guides/integration/saving-data editor output}.
 
 This kind of image upload does not require server processing – images are stored with the rest of the text and displayed by the web browser without additional requests. On the downside, this approach can bloat your database with very long data strings which, in theory, could have a negative impact on the performance.
 
