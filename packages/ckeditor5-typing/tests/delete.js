@@ -3,16 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Delete from '../src/delete';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
+/* globals document */
 
 describe( 'Delete feature', () => {
-	let editor, viewDocument;
+	let element, editor, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( { plugins: [ Delete ] } )
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, { plugins: [ Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				viewDocument = editor.editing.view.document;
@@ -20,6 +25,7 @@ describe( 'Delete feature', () => {
 	} );
 
 	afterEach( () => {
+		element.remove();
 		return editor.destroy();
 	} );
 
