@@ -24,7 +24,7 @@ ClassicEditor
 			decorators: {
 				isExternal: {
 					mode: 'manual',
-					label: 'Open in new window',
+					label: 'Open in a new tab',
 					attributes: {
 						target: '_blank',
 						rel: 'noopener noreferrer'

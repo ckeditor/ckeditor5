@@ -79,13 +79,15 @@ export default class LinkCommand extends Command {
 	 *
 	 * When the selection is collapsed and inside the text with the `linkHref` attribute, the attribute value will be updated.
 	 *
-	 * # Decorators and attribute management
+	 * # Decorators and model attribute management
 	 *
-	 * This command has an optional argument, which applies or removes model attributes brought by
-	 * {@link module:link/utils~ManualDecorator manual decorators}. Model attribute names correspond to
-	 * decorator {@link module:link/utils~ManualDecorator#id ids} and and they are created based on decorator's entry in configuration.
-	 * Attribute name is combination of `link` prefix with object's key used to define given decorator. For example,
-	 * `'linkIsExternal'`, `'linkIsDownloadable'`, `'linkFoo'`, etc..
+	 * There is an optional argument to this command, which applies or removes model
+	 * {@glink framework/guides/architecture/editing-engine#text-attributes text attributes} brought by
+	 * {@link module:link/utils~ManualDecorator manual link decorators}.
+	 *
+	 * Text attribute names in the model correspond to the entries in the {@link module:link/link~LinkConfig#decorators configuration}.
+	 * For every decorator configured, a model text attribute exists with the "link" prefix. For example, a `'linkMyDecorator'` attribute
+	 * corresponds to the `'myDecorator'` in the configuration.
 	 *
 	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
 	 * documentation.

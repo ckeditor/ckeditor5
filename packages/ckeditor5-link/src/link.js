@@ -88,8 +88,11 @@ export default class Link extends Plugin {
  * * {@link module:link/link~LinkDecoratorManualDefinition manual} – they allow users to control link attributes individually
  *  using the editor UI.
  *
- * Link decorators are defined as an object with key-value pair, where key is a name provided for given decorator and value is decorator
- * definition.
+ * Link decorators are defined as an object with key-value pairs, where the key is a name provided for a given decorator and the
+ * value is the decorator definition.
+ *
+ * The name of the decorator also corresponds to the {@glink framework/guides/architecture/editing-engine#text-attributes text attribute}
+ * in the model. For instance, the `isExternal` decorator below is represented as a `linkIsExternal` attribute in the model.
  *
  *		const linkConfig = {
  *			decorators: {
