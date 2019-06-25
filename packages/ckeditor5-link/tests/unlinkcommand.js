@@ -5,6 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import UnlinkCommand from '../src/unlinkcommand';
+import LinkEditing from '../src/linkediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -225,6 +226,58 @@ describe( 'UnlinkCommand', () => {
 
 				expect( document.selection.hasAttribute( 'linkHref' ) ).to.false;
 			} );
+		} );
+	} );
+
+	describe( 'manual decorators', () => {
+		beforeEach( () => {
+			editor.destroy();
+			return ModelTestEditor.create( {
+				extraPlugins: [ LinkEditing ],
+				link: {
+					decorators: {
+						isFoo: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								class: 'foo'
+							}
+						},
+						isBar: {
+							mode: 'manual',
+							label: 'Bar',
+							attributes: {
+								target: '_blank'
+							}
+						}
+					}
+				}
+			} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					document = model.document;
+					command = new UnlinkCommand( editor );
+
+					model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar' ]
+					} );
+
+					model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should remove manual decorators from links together with linkHref', () => {
+			setData( model, '<$text linkIsFoo="true" linkIsBar="true" linkHref="url">f[]oobar</$text>' );
+
+			command.execute();
+
+			expect( getData( model ) ).to.equal( 'f[]oobar' );
 		} );
 	} );
 } );

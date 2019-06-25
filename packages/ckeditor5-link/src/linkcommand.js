@@ -10,6 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import findLinkRange from './findlinkrange';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -25,6 +26,30 @@ export default class LinkCommand extends Command {
 	 * @member {Object|undefined} #value
 	 */
 
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * A collection of {@link module:link/utils~ManualDecorator manual decorators}
+		 * corresponding to the {@link module:link/link~LinkConfig#decorators decorator configuration}.
+		 *
+		 * You can consider it a model with states of manual decorators added to currently selected link.
+		 *
+		 * @readonly
+		 * @type {module:utils/collection~Collection}
+		 */
+		this.manualDecorators = new Collection();
+	}
+
+	/**
+	 * Synchronize state of {@link #manualDecorators} with actually present elements in the model.
+	 */
+	restoreManualDecoratorStates() {
+		for ( const manualDecorator of this.manualDecorators ) {
+			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
+		}
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -33,6 +58,11 @@ export default class LinkCommand extends Command {
 		const doc = model.document;
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
+
+		for ( const manualDecorator of this.manualDecorators ) {
+			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
+		}
+
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
@@ -49,12 +79,69 @@ export default class LinkCommand extends Command {
 	 *
 	 * When the selection is collapsed and inside the text with the `linkHref` attribute, the attribute value will be updated.
 	 *
+	 * # Decorators and model attribute management
+	 *
+	 * There is an optional argument to this command, which applies or removes model
+	 * {@glink framework/guides/architecture/editing-engine#text-attributes text attributes} brought by
+	 * {@link module:link/utils~ManualDecorator manual link decorators}.
+	 *
+	 * Text attribute names in the model correspond to the entries in the {@link module:link/link~LinkConfig#decorators configuration}.
+	 * For every decorator configured, a model text attribute exists with the "link" prefix. For example, a `'linkMyDecorator'` attribute
+	 * corresponds to the `'myDecorator'` in the configuration.
+	 *
+	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
+	 * documentation.
+	 *
+	 * Here is how to manage decorator attributes via the link command:
+	 *
+	 *		const linkCommand = editor.commands.get( 'link' );
+	 *
+	 *		// Adding a new decorator attribute.
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkIsExternal: true
+	 *		} );
+	 *
+	 *		// Removing a decorator attribute from a selection.
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkIsExternal: false
+	 *		} );
+	 *
+	 *		// Adding multiple decorator attributes at a time.
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkIsExternal: true,
+	 *			linkIsDownloadable: true,
+	 *		} );
+	 *
+	 *		// Removing and adding decorator attributes at a time.
+	 *		linkCommand.execute( 'http://example.com', {
+	 *			linkIsExternal: false,
+	 *			linkFoo: true,
+	 *			linkIsDownloadable: false,
+	 *		} );
+	 *
+	 * **Note**: If decorator attribute name is not specified its state remains untouched.
+	 *
+	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} removes all
+	 * decorator attributes.
+	 *
 	 * @fires execute
 	 * @param {String} href Link destination.
+	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	execute( href ) {
+	execute( href, manualDecoratorIds = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		// Stores information about manual decorators to turn them on/off when command is applied.
+		const truthyManualDecorators = [];
+		const falsyManualDecorators = [];
+
+		for ( const name in manualDecoratorIds ) {
+			if ( manualDecoratorIds[ name ] ) {
+				truthyManualDecorators.push( name );
+			} else {
+				falsyManualDecorators.push( name );
+			}
+		}
 
 		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
@@ -64,9 +151,17 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), model );
+					const linkRange = findLinkRange( position, selection.getAttribute( 'linkHref' ), model );
 
 					writer.setAttribute( 'linkHref', href, linkRange );
+
+					truthyManualDecorators.forEach( item => {
+						writer.setAttribute( item, true, linkRange );
+					} );
+
+					falsyManualDecorators.forEach( item => {
+						writer.removeAttribute( item, linkRange );
+					} );
 
 					// Create new range wrapping changed link.
 					writer.setSelection( linkRange );
@@ -78,6 +173,10 @@ export default class LinkCommand extends Command {
 					const attributes = toMap( selection.getAttributes() );
 
 					attributes.set( 'linkHref', href );
+
+					truthyManualDecorators.forEach( item => {
+						attributes.set( item, true );
+					} );
 
 					const node = writer.createText( href, attributes );
 
@@ -93,8 +192,28 @@ export default class LinkCommand extends Command {
 
 				for ( const range of ranges ) {
 					writer.setAttribute( 'linkHref', href, range );
+
+					truthyManualDecorators.forEach( item => {
+						writer.setAttribute( item, true, range );
+					} );
+
+					falsyManualDecorators.forEach( item => {
+						writer.removeAttribute( item, range );
+					} );
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Method provides the information if a decorator with given name is present in currently processed selection.
+	 *
+	 * @private
+	 * @param {String} decoratorName name of a manual decorator used in the model
+	 * @returns {Boolean} The information if a given decorator is currently present in a selection
+	 */
+	_getDecoratorStateFromModel( decoratorName ) {
+		const doc = this.editor.model.document;
+		return doc.selection.getAttribute( decoratorName ) || false;
 	}
 }

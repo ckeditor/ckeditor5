@@ -5,6 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import LinkCommand from '../src/linkcommand';
+import ManualDecorator from '../src/utils/manualdecorator';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'LinkCommand', () => {
@@ -259,4 +260,139 @@ describe( 'LinkCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'manual decorators', () => {
+		beforeEach( () => {
+			editor.destroy();
+			return ModelTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					command = new LinkCommand( editor );
+
+					command.manualDecorators.add( new ManualDecorator( {
+						id: 'linkIsFoo',
+						label: 'Foo',
+						attributes: {
+							class: 'Foo'
+						}
+					} ) );
+					command.manualDecorators.add( new ManualDecorator( {
+						id: 'linkIsBar',
+						label: 'Bar',
+						attributes: {
+							target: '_blank'
+						}
+					} ) );
+
+					model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar' ]
+					} );
+
+					model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		describe( 'collapsed selection', () => {
+			it( 'should insert additional attributes to link when it is created', () => {
+				setData( model, 'foo[]bar' );
+
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+
+				expect( getData( model ) ).to
+					.equal( 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">url</$text>]bar' );
+			} );
+
+			it( 'should add additional attributes to link when link is modified', () => {
+				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
+
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+
+				expect( getData( model ) ).to
+					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">ooba</$text>]r' );
+			} );
+
+			it( 'should remove additional attributes to link if those are falsy', () => {
+				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true">u[]rl</$text>bar' );
+
+				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
+
+				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+			} );
+		} );
+
+		describe( 'range selection', () => {
+			it( 'should insert additional attributes to link when it is created', () => {
+				setData( model, 'f[ooba]r' );
+
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+
+				expect( getData( model ) ).to
+					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">ooba</$text>]r' );
+			} );
+
+			it( 'should add additional attributes to link when link is modified', () => {
+				setData( model, 'f[<$text linkHref="foo">ooba</$text>]r' );
+
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+
+				expect( getData( model ) ).to
+					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">ooba</$text>]r' );
+			} );
+
+			it( 'should remove additional attributes to link if those are falsy', () => {
+				setData( model, 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">url</$text>]bar' );
+
+				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
+
+				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+			} );
+		} );
+
+		describe( 'restoreManualDecoratorStates()', () => {
+			it( 'synchronize values with current model state', () => {
+				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true">u[]rl</$text>bar' );
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkIsFoo: true,
+					linkIsBar: true
+				} );
+
+				command.manualDecorators.first.value = false;
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkIsFoo: false,
+					linkIsBar: true,
+				} );
+
+				command.restoreManualDecoratorStates();
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkIsFoo: true,
+					linkIsBar: true,
+				} );
+			} );
+		} );
+
+		describe( '_getDecoratorStateFromModel', () => {
+			it( 'obtain current values from the model', () => {
+				setData( model, 'foo[<$text linkHref="url" linkIsBar="true">url</$text>]bar' );
+
+				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.false;
+				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
+			} );
+		} );
+	} );
 } );
+
+function decoratorStates( manualDecorators ) {
+	return Array.from( manualDecorators ).reduce( ( accumulator, currentValue ) => {
+		accumulator[ currentValue.id ] = currentValue.value;
+		return accumulator;
+	}, {} );
+}

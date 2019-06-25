@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals Event, document */
 
 import LinkFormView from '../../src/ui/linkformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -13,6 +13,11 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ManualDecorator from '../../src/utils/manualdecorator';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Link from '../../src/link';
 
 describe( 'LinkFormView', () => {
 	let view;
@@ -22,6 +27,10 @@ describe( 'LinkFormView', () => {
 	beforeEach( () => {
 		view = new LinkFormView( { t: val => val } );
 		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -39,9 +48,9 @@ describe( 'LinkFormView', () => {
 			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
 			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 
-			expect( view._unboundChildren.get( 0 ) ).to.equal( view.urlInputView );
-			expect( view._unboundChildren.get( 1 ) ).to.equal( view.saveButtonView );
-			expect( view._unboundChildren.get( 2 ) ).to.equal( view.cancelButtonView );
+			expect( view.children.get( 0 ) ).to.equal( view.urlInputView );
+			expect( view.children.get( 1 ) ).to.equal( view.saveButtonView );
+			expect( view.children.get( 2 ) ).to.equal( view.cancelButtonView );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -78,12 +87,12 @@ describe( 'LinkFormView', () => {
 
 		describe( 'template', () => {
 			it( 'has url input view', () => {
-				expect( view.template.children[ 0 ] ).to.equal( view.urlInputView );
+				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view.urlInputView );
 			} );
 
 			it( 'has button views', () => {
-				expect( view.template.children[ 1 ] ).to.equal( view.saveButtonView );
-				expect( view.template.children[ 2 ] ).to.equal( view.cancelButtonView );
+				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
+				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
 			} );
 		} );
 	} );
@@ -180,6 +189,151 @@ describe( 'LinkFormView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'manual decorators', () => {
+		let view, collection;
+		beforeEach( () => {
+			collection = new Collection();
+			collection.add( new ManualDecorator( {
+				id: 'decorator1',
+				label: 'Foo',
+				attributes: {
+					foo: 'bar'
+				}
+			} ) );
+			collection.add( new ManualDecorator( {
+				id: 'decorator2',
+				label: 'Download',
+				attributes: {
+					download: 'download'
+				}
+			} ) );
+			collection.add( new ManualDecorator( {
+				id: 'decorator3',
+				label: 'Multi',
+				attributes: {
+					class: 'fancy-class',
+					target: '_blank',
+					rel: 'noopener noreferrer'
+				}
+			} ) );
+
+			view = new LinkFormView( { t: val => val }, collection );
+			view.render();
+		} );
+
+		afterEach( () => {
+			view.destroy();
+			collection.clear();
+		} );
+
+		it( 'switch buttons reflects state of manual decorators', () => {
+			expect( view._manualDecoratorSwitches.length ).to.equal( 3 );
+
+			expect( view._manualDecoratorSwitches.get( 0 ) ).to.deep.include( {
+				name: 'decorator1',
+				label: 'Foo'
+			} );
+			expect( view._manualDecoratorSwitches.get( 1 ) ).to.deep.include( {
+				name: 'decorator2',
+				label: 'Download'
+			} );
+			expect( view._manualDecoratorSwitches.get( 2 ) ).to.deep.include( {
+				name: 'decorator3',
+				label: 'Multi'
+			} );
+		} );
+
+		it( 'reacts on switch button changes', () => {
+			const modelItem = collection.first;
+			const viewItem = view._manualDecoratorSwitches.first;
+
+			expect( modelItem.value ).to.be.undefined;
+			expect( viewItem.isOn ).to.be.undefined;
+
+			viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( modelItem.value ).to.be.true;
+			expect( viewItem.isOn ).to.be.true;
+
+			viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( modelItem.value ).to.be.false;
+			expect( viewItem.isOn ).to.be.false;
+		} );
+
+		describe( 'getDecoratorSwitchesState()', () => {
+			it( 'should provide object with decorators states', () => {
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: undefined,
+					decorator2: undefined,
+					decorator3: undefined
+				} );
+
+				view._manualDecoratorSwitches.map( item => {
+					item.element.dispatchEvent( new Event( 'click' ) );
+				} );
+
+				view._manualDecoratorSwitches.get( 2 ).element.dispatchEvent( new Event( 'click' ) );
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: true,
+					decorator2: true,
+					decorator3: false
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'localization of manual decorators', () => {
+		before( () => {
+			addTranslations( 'pl', {
+				'Open in a new tab': 'Otwórz w nowym oknie'
+			} );
+		} );
+		after( () => {
+			clearTranslations();
+		} );
+
+		let editor, editorElement, linkFormView;
+
+		beforeEach( () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Link ],
+					toolbar: [ 'link' ],
+					language: 'pl',
+					link: {
+						decorators: {
+							IsExternal: {
+								mode: 'manual',
+								label: 'Open in a new tab',
+								attributes: {
+									target: '_blank'
+								}
+							}
+						}
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).manualDecorators );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'translates labels of manual decorators UI', () => {
+			expect( linkFormView._manualDecoratorSwitches.first.label ).to.equal( 'Otwórz w nowym oknie' );
 		} );
 	} );
 } );

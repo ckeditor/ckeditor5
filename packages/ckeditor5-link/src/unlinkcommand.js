@@ -29,11 +29,18 @@ export default class UnlinkCommand extends Command {
 	 * When the selection is collapsed, removes the `linkHref` attribute from each node with the same `linkHref` attribute value.
 	 * When the selection is non-collapsed, removes the `linkHref` attribute from each node in selected ranges.
 	 *
+	 * # Decorators
+	 *
+	 * If {@link module:link/link~LinkConfig#decorators `config.link.decorators`} is specified,
+	 * all configured decorators are removed together with the `linkHref` attribute.
+	 *
 	 * @fires execute
 	 */
 	execute() {
+		const editor = this.editor;
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const linkCommand = editor.commands.get( 'link' );
 
 		model.change( writer => {
 			// Get ranges to unlink.
@@ -43,6 +50,12 @@ export default class UnlinkCommand extends Command {
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {
 				writer.removeAttribute( 'linkHref', range );
+				// If there are registered custom attributes, then remove them during unlink.
+				if ( linkCommand ) {
+					for ( const manualDecorator of linkCommand.manualDecorators ) {
+						writer.removeAttribute( manualDecorator.id, range );
+					}
+				}
 			}
 		} );
 	}

@@ -10,6 +10,7 @@ import UnlinkCommand from '../src/unlinkcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
@@ -30,6 +31,10 @@ describe( 'LinkEditing', () => {
 				model = editor.model;
 				view = editor.editing.view;
 			} );
+	} );
+
+	afterEach( () => {
+		editor.destroy();
 	} );
 
 	it( 'should be loaded', () => {
@@ -348,6 +353,238 @@ describe( 'LinkEditing', () => {
 				expect( getViewData( view ) ).to.equal(
 					'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
 				);
+			} );
+		} );
+	} );
+
+	describe( 'link attributes decorator', () => {
+		describe( 'default behavior', () => {
+			const testLinks = [
+				{
+					external: true,
+					url: 'http://example.com'
+				}, {
+					external: true,
+					url: 'https://cksource.com'
+				}, {
+					external: false,
+					url: 'ftp://server.io'
+				}, {
+					external: true,
+					url: '//schemaless.org'
+				}, {
+					external: false,
+					url: 'www.ckeditor.com'
+				}, {
+					external: false,
+					url: '/relative/url.html'
+				}, {
+					external: false,
+					url: 'another/relative/url.html'
+				}, {
+					external: false,
+					url: '#anchor'
+				}, {
+					external: false,
+					url: 'mailto:some@user.org'
+				}, {
+					external: false,
+					url: 'tel:123456789'
+				}
+			];
+			it( 'link.addTargetToExternalLinks is predefined as false value', () => {
+				expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.false;
+			} );
+
+			describe( 'for link.addTargetToExternalLinks = false', () => {
+				let editor, model;
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, LinkEditing, Enter ],
+							link: {
+								addTargetToExternalLinks: true
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							view = editor.editing.view;
+						} );
+				} );
+
+				afterEach( () => {
+					editor.destroy();
+				} );
+
+				it( 'link.addTargetToExternalLinks is set as true value', () => {
+					expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.true;
+				} );
+
+				testLinks.forEach( link => {
+					it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
+						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+
+						if ( link.external ) {
+							expect( editor.getData() )
+								.to.equal( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
+						} else {
+							expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+						}
+					} );
+				} );
+			} );
+			testLinks.forEach( link => {
+				it( `link: ${ link.url } should not get 'target' and 'rel' attributes`, () => {
+					editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
+
+					expect( getModelData( model, { withoutSelection: true } ) )
+						.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+
+					expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+				} );
+			} );
+		} );
+
+		describe( 'custom config', () => {
+			describe( 'mode: automatic', () => {
+				const testLinks = [
+					{
+						url: 'relative/url.html',
+						attributes: {}
+					}, {
+						url: 'http://exmaple.com',
+						attributes: {
+							target: '_blank'
+						}
+					}, {
+						url: 'https://example.com/download/link.pdf',
+						attributes: {
+							target: '_blank',
+							download: 'download'
+						}
+					}, {
+						url: 'mailto:some@person.io',
+						attributes: {
+							class: 'mail-url'
+						}
+					}
+				];
+
+				beforeEach( () => {
+					editor.destroy();
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, LinkEditing, Enter ],
+							link: {
+								addTargetToExternalLinks: false,
+								decorators: {
+									isExternal: {
+										mode: 'automatic',
+										callback: url => url.startsWith( 'http' ),
+										attributes: {
+											target: '_blank'
+										}
+									},
+									isDownloadable: {
+										mode: 'automatic',
+										callback: url => url.includes( 'download' ),
+										attributes: {
+											download: 'download'
+										}
+									},
+									isMail: {
+										mode: 'automatic',
+										callback: url => url.startsWith( 'mailto:' ),
+										attributes: {
+											class: 'mail-url'
+										}
+									}
+								}
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							view = editor.editing.view;
+						} );
+				} );
+
+				testLinks.forEach( link => {
+					it( `Link: ${ link.url } should get attributes: ${ JSON.stringify( link.attributes ) }`, () => {
+						const ORDER = [ 'target', 'download', 'class' ];
+						const attr = Object.entries( link.attributes ).sort( ( a, b ) => {
+							const aIndex = ORDER.indexOf( a[ 0 ] );
+							const bIndex = ORDER.indexOf( b[ 0 ] );
+							return aIndex - bIndex;
+						} );
+						const reducedAttr = attr.reduce( ( acc, cur ) => {
+							return acc + `${ cur[ 0 ] }="${ cur[ 1 ] }" `;
+						}, '' );
+
+						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+
+						// Order of attributes is important, that's why this is assert is construct in such way.
+						expect( editor.getData() ).to.equal( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'custom linkHref converter', () => {
+			beforeEach( () => {
+				class CustomLinks extends Plugin {
+					init() {
+						const editor = this.editor;
+
+						editor.conversion.for( 'downcast' ).add( dispatcher => {
+							dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.item, 'attribute:linkHref' );
+
+								// Very simplified downcast just for test assertion.
+								const viewWriter = conversionApi.writer;
+								const linkElement = viewWriter.createAttributeElement(
+									'a',
+									{
+										href: data.attributeNewValue
+									}, {
+										priority: 5
+									}
+								);
+								viewWriter.setCustomProperty( 'link', true, linkElement );
+								viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), linkElement );
+							}, { priority: 'highest' } );
+						} );
+					}
+				}
+				editor.destroy();
+				return VirtualTestEditor
+					.create( {
+						plugins: [ Paragraph, LinkEditing, Enter, CustomLinks ],
+						link: {
+							addTargetToExternalLinks: true,
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						view = editor.editing.view;
+					} );
+			} );
+
+			it( 'has possibility to override default one', () => {
+				editor.setData( '<p><a href="http://example.com">foo</a>bar</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><$text linkHref="http://example.com">foo</$text>bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><a href="http://example.com">foo</a>bar</p>' );
 			} );
 		} );
 	} );

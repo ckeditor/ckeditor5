@@ -142,8 +142,9 @@ export default class LinkUI extends Plugin {
 	 */
 	_createFormView() {
 		const editor = this.editor;
-		const formView = new LinkFormView( editor.locale );
 		const linkCommand = editor.commands.get( 'link' );
+
+		const formView = new LinkFormView( editor.locale, linkCommand.manualDecorators );
 
 		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -153,7 +154,7 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.inputView.element.value );
+			editor.execute( 'link', formView.urlInputView.inputView.element.value, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 
@@ -313,10 +314,17 @@ export default class LinkUI extends Plugin {
 	 * Closes form view. Decides whether the balloon should be hidden completely or if action view should be shown. This is decided upon
 	 * link command value (which has value if the document selection is in link).
 	 *
+	 * If there are defined {@link module:link/link~LinkConfig#decorators} in editor's config, then there are additionally
+	 * rest switch buttons state responsible for manual decorators handling.
+	 *
 	 * @private
 	 */
 	_closeFormView() {
 		const linkCommand = this.editor.commands.get( 'link' );
+
+		// Reset manual decorator states to represent current model state. This case is important to reset switch buttons,
+		// when user cancel editing form.
+		linkCommand.restoreManualDecoratorStates();
 
 		if ( linkCommand.value !== undefined ) {
 			this._removeFormView();

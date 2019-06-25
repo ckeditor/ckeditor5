@@ -7,6 +7,8 @@
  * @module link/utils
  */
 
+import { upperFirst } from 'lodash-es';
+
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
@@ -58,4 +60,57 @@ function isSafeUrl( url ) {
 	const normalizedUrl = url.replace( ATTRIBUTE_WHITESPACES, '' );
 
 	return normalizedUrl.match( SAFE_URL );
+}
+
+/**
+ * Returns {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration processed
+ * to respect the locale of the editor, i.e. to display {@link module:link/link~LinkDecoratorManualDefinition label}
+ * in the correct language.
+ *
+ * **Note**: Only the few most commonly used labels are translated automatically. Other labels should be manually
+ * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
+ *
+ * @param {module:utils/locale~Locale#t} t shorthand for {@link module:utils/locale~Locale#t Locale#t}
+ * @param {Array.<module:link/link~LinkDecoratorDefinition>} decorators reference
+ * where labels' values should be localized.
+ * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
+ */
+export function getLocalizedDecorators( t, decorators ) {
+	const localizedDecoratorsLabels = {
+		'Open in a new tab': t( 'Open in a new tab' ),
+		'Downloadable': t( 'Downloadable' )
+	};
+
+	decorators.forEach( decorator => {
+		if ( decorator.label && localizedDecoratorsLabels[ decorator.label ] ) {
+			decorator.label = localizedDecoratorsLabels[ decorator.label ];
+		}
+		return decorator;
+	} );
+
+	return decorators;
+}
+
+/**
+ * Converts an object with defined decorators to a normalized array of decorators. There is also added `id` key for each decorator,
+ * which is used as attribute's name in the model.
+ *
+ * @param {Object.<String, module:link/link~LinkDecoratorDefinition>} decorators
+ * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
+ */
+export function normalizeDecorators( decorators ) {
+	const retArray = [];
+
+	if ( decorators ) {
+		for ( const [ key, value ] of Object.entries( decorators ) ) {
+			const decorator = Object.assign(
+				{},
+				value,
+				{ id: `link${ upperFirst( key ) }` }
+			);
+			retArray.push( decorator );
+		}
+	}
+
+	return retArray;
 }

@@ -11,6 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
@@ -32,9 +33,15 @@ import '../../theme/linkform.css';
  */
 export default class LinkFormView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:link/ui/linkformview~LinkFormView} class.
+	 *
+	 * Also see {@link #render}.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:utils/collection~Collection} [manualDecorators] Reference to manual decorators in
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators}.
 	 */
-	constructor( locale ) {
+	constructor( locale, manualDecorators = [] ) {
 		super( locale );
 
 		const t = locale.t;
@@ -78,6 +85,25 @@ export default class LinkFormView extends View {
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		/**
+		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
+		 * which corresponds to {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators}
+		 * configured in the editor.
+		 *
+		 * @private
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
+		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( manualDecorators );
+
+		/**
+		 * Collection of child views in the form.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
+		this.children = this._createFormChildren( manualDecorators );
+
+		/**
 		 * A collection of views which can be focused in the form.
 		 *
 		 * @readonly
@@ -106,25 +132,39 @@ export default class LinkFormView extends View {
 			}
 		} );
 
+		const classList = [ 'ck', 'ck-link-form' ];
+
+		if ( manualDecorators.length ) {
+			classList.push( 'ck-link-form_layout-vertical' );
+		}
+
 		this.setTemplate( {
 			tag: 'form',
 
 			attributes: {
-				class: [
-					'ck',
-					'ck-link-form',
-				],
+				class: classList,
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
 			},
 
-			children: [
-				this.urlInputView,
-				this.saveButtonView,
-				this.cancelButtonView
-			]
+			children: this.children
 		} );
+	}
+
+	/**
+	 * Obtains the state of the {@link module:ui/button/switchbuttonview~SwitchButtonView switch buttons} representing
+	 * {@link module:link/linkcommand~LinkCommand#manualDecorators manual link decorators}
+	 * in the {@link module:link/ui/linkformview~LinkFormView}.
+	 *
+	 * @returns {Object.<String,Boolean>} key-value pairs, where the key is the name of the decorator and the value is
+	 * its state.
+	 */
+	getDecoratorSwitchesState() {
+		return Array.from( this._manualDecoratorSwitches ).reduce( ( accumulator, switchButton ) => {
+			accumulator[ switchButton.name ] = switchButton.isOn;
+			return accumulator;
+		}, {} );
 	}
 
 	/**
@@ -139,6 +179,7 @@ export default class LinkFormView extends View {
 
 		const childViews = [
 			this.urlInputView,
+			...this._manualDecoratorSwitches,
 			this.saveButtonView,
 			this.cancelButtonView
 		];
@@ -209,6 +250,88 @@ export default class LinkFormView extends View {
 		}
 
 		return button;
+	}
+
+	/**
+	 * Populates {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
+	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}
+	 *
+	 * @private
+	 * @param {module:link/linkcommand~LinkCommand#manualDecorators} manualDecorators reference to
+	 * collection of manual decorators stored in link's command.
+	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
+	 */
+	_createManualDecoratorSwitches( manualDecorators ) {
+		const switches = this.createCollection();
+
+		for ( const manualDecorator of manualDecorators ) {
+			const switchButton = new SwitchButtonView( this.locale );
+
+			switchButton.set( {
+				name: manualDecorator.id,
+				label: manualDecorator.label,
+				withText: true
+			} );
+
+			switchButton.bind( 'isOn' ).to( manualDecorator, 'value' );
+
+			switchButton.on( 'execute', () => {
+				manualDecorator.set( 'value', !switchButton.isOn );
+			} );
+
+			switches.add( switchButton );
+		}
+
+		return switches;
+	}
+
+	/**
+	 * Populates the {@link #children} collection of the form.
+	 *
+	 * If {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators} are configured in the editor, creates an
+	 * additional `View` wrapping all {@link #_manualDecoratorSwitches} switch buttons corresponding
+	 * to those decorators.
+	 *
+	 * @private
+	 * @param {module:link/linkcommand~LinkCommand#manualDecorators} manualDecorators reference to
+	 * collection of manual decorators stored in link's command.
+	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
+	 */
+	_createFormChildren( manualDecorators ) {
+		const children = this.createCollection();
+
+		children.add( this.urlInputView );
+
+		if ( manualDecorators.length ) {
+			const additionalButtonsView = new View();
+
+			additionalButtonsView.setTemplate( {
+				tag: 'ul',
+				children: this._manualDecoratorSwitches.map( switchButton => ( {
+					tag: 'li',
+					children: [ switchButton ],
+					attributes: {
+						class: [
+							'ck',
+							'ck-list__item'
+						]
+					}
+				} ) ),
+				attributes: {
+					class: [
+						'ck',
+						'ck-reset',
+						'ck-list'
+					]
+				}
+			} );
+			children.add( additionalButtonsView );
+		}
+
+		children.add( this.saveButtonView );
+		children.add( this.cancelButtonView );
+
+		return children;
 	}
 }
 
