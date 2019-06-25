@@ -215,7 +215,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Creates a watched editor instance using the creator passed to {@link #setCreator} method.
+	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method.
 	 *
 	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
@@ -332,6 +332,7 @@ export default class Watchdog {
 		}
 
 		// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
+		// That's why the `null` was introduced as a correct error context which does cause restarting.
 		if ( event.error.context === null ) {
 			return;
 		}
