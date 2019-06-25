@@ -22,3 +22,8 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// The "Log editor data" button logic.
+document.querySelector( '#log-data' ).addEventListener( 'click', () => {
+	console.log( window.editor.getData() );
+} );
