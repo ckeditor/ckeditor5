@@ -3,7 +3,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * @module font/documentcolorscollection
+ * @module font/documentcolorcollection
  */
 
 /**
@@ -12,7 +12,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @mixes module:utils/observablemixin~ObservableMixin
  * @extends module:utils/collection~Collection
  */
-export default class DocumentColorsCollection extends Collection {
+export default class DocumentColorCollection extends Collection {
 	constructor( options ) {
 		super( options );
 
@@ -75,4 +75,4 @@ export default class DocumentColorsCollection extends Collection {
 	}
 }
 
-mix( DocumentColorsCollection, ObservableMixin );
+mix( DocumentColorCollection, ObservableMixin );

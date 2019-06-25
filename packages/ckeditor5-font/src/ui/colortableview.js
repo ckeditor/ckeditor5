@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import DocumentColorsCollection from '../documentcolorscollection';
+import DocumentColorCollection from '../documentcolorcollection';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
@@ -101,9 +101,9 @@ export default class ColorTableView extends View {
 		 * A collection of definitions stores document colors.
 		 *
 		 * @readonly
-		 * @member {module:font/fontcolor/documentcolorscollection~DocumentColorsCollection}
+		 * @member {module:font/documentcolorcollection~DocumentColorCollection}
 		 */
-		this.documentColors = new DocumentColorsCollection();
+		this.documentColors = new DocumentColorCollection();
 
 		/**
 		 * Maximum number of colors in document colors section.
