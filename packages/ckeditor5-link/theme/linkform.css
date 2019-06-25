@@ -30,21 +30,6 @@
  * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
  */
 .ck.ck-link-form_layout-vertical {
-	flex-wrap: wrap;
-
-	& .ck-labeled-input {
-		flex-basis: 100%;
-	}
-
-	& .ck-button {
-		/* Let's move "Save" & "Cancel" buttons to the end of the link form view. */
-		order: 10;
-
-		flex-basis: 50%;
-	}
-
-	& .ck-list {
-		flex-basis: 100%;
-	}
+	display: block;
 }
 
