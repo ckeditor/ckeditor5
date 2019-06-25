@@ -39,6 +39,14 @@ of the component, floating–point numbers have been used which, for the default
 		width: var(--ck-switch-button-toggle-width);
 		background: var(--ck-color-switch-button-off-background);
 
+		&:hover {
+			background: var(--ck-color-switch-button-off-hover-background);
+
+			& .ck-button__toggle__inner {
+				box-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
+			}
+		}
+
 		& .ck-button__toggle__inner {
 			@mixin ck-rounded-corners {
 				border-radius: calc(.5*var(--ck-border-radius));
@@ -51,12 +59,16 @@ of the component, floating–point numbers have been used which, for the default
 			background: var(--ck-color-switch-button-inner-background);
 
 			/* Gently animate the inner part of the toggle switch */
-			transition: transform 300ms ease;
+			transition: all 300ms ease;
 		}
 	}
 
 	&.ck-on .ck-button__toggle {
 		background: var(--ck-color-switch-button-on-background);
+
+		&:hover {
+			background: var(--ck-color-switch-button-on-hover-background);
+		}
 
 		& .ck-button__toggle__inner {
 			/*
