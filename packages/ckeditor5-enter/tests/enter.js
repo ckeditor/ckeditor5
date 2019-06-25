@@ -3,24 +3,34 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* globals document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Enter from '../src/enter';
 import EnterCommand from '../src/entercommand';
 import EnterObserver from '../src/enterobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Enter feature', () => {
-	let editor, viewDocument;
+	let element, editor, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
 				plugins: [ Enter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				viewDocument = editor.editing.view.document;
 			} );
+	} );
+
+	afterEach( () => {
+		element.remove();
+		sinon.restore();
 	} );
 
 	it( 'creates the commands', () => {
@@ -36,6 +46,7 @@ describe( 'Enter feature', () => {
 	it( 'listens to the editing view enter event', () => {
 		const spy = editor.execute = sinon.spy();
 		const domEvt = getDomEvent();
+		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
 		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
