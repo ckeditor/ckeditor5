@@ -72,7 +72,7 @@ function generateFontPreset( fontDefinition ) {
 			styles: {
 				'font-family': cssFontNames
 			},
-			priority: 5
+			priority: 7
 		}
 	};
 }

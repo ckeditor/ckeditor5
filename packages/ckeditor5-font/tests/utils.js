@@ -7,88 +7,114 @@ import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
 	normalizeColorOptions,
-	addColorTableToDropdown
+	addColorTableToDropdown,
+	renderDowncastElement
 } from './../src/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'utils', () => {
-	describe( 'color and background color related', () => {
-		it( 'plugin names has proper values', () => {
-			expect( FONT_COLOR ).to.equal( 'fontColor' );
-			expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
+	testUtils.createSinonSandbox();
+
+	it( 'plugin names has proper values', () => {
+		expect( FONT_COLOR ).to.equal( 'fontColor' );
+		expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
+	} );
+
+	describe( 'normalizeColorOptions()', () => {
+		it( 'should return normalized config object from string', () => {
+			const normalizedOption = normalizeColorOptions( [ 'black' ] );
+
+			expect( normalizedOption ).to.deep.equal( [
+				{
+					model: 'black',
+					label: 'black',
+					hasBorder: false,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
 		} );
 
-		it( 'normalizeColorOptions can produce the same output object', () => {
-			const normalizedArray = normalizeColorOptions( [
-				'black',
+		it( 'should return normalized config object from object( color )', () => {
+			const normalizedOption = normalizeColorOptions( [ { color: 'black' } ] );
+
+			expect( normalizedOption ).to.deep.equal( [
 				{
-					color: 'black'
-				},
+					model: 'black',
+					label: 'black',
+					hasBorder: false,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
+		} );
+
+		it( 'should return normalized config object from object( color, label )', () => {
+			const normalizedOption = normalizeColorOptions( [
 				{
 					color: 'black',
 					label: 'Black'
-				},
+				}
+			] );
+
+			expect( normalizedOption ).to.deep.equal( [
+				{
+					model: 'black',
+					label: 'Black',
+					hasBorder: false,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
+		} );
+
+		it( 'should return normalized config object from object( color, label, hasBorder )', () => {
+			const normalizedOption = normalizeColorOptions( [
 				{
 					color: 'black',
 					label: 'Black',
 					hasBorder: true
-				},
+				}
+			] );
+
+			expect( normalizedOption ).to.deep.equal( [
+				{
+					model: 'black',
+					label: 'Black',
+					hasBorder: true,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
+		} );
+
+		it( 'should return normalized config object from object( color, hasBorder )', () => {
+			const normalizedOption = normalizeColorOptions( [
 				{
 					color: 'black',
 					hasBorder: true
 				}
 			] );
 
-			expect( normalizedArray ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						},
-						priority: 5
-					}
-				},
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						},
-						priority: 5
-					}
-				},
-				{
-					model: 'black',
-					label: 'Black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						},
-						priority: 5
-					}
-				},
-				{
-					model: 'black',
-					label: 'Black',
-					hasBorder: true,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						},
-						priority: 5
-					}
-				},
+			expect( normalizedOption ).to.deep.equal( [
 				{
 					model: 'black',
 					label: 'black',
@@ -97,14 +123,15 @@ describe( 'utils', () => {
 						name: 'span',
 						styles: {
 							color: 'black'
-						},
-						priority: 5
+						}
 					}
-				},
+				}
 			] );
 		} );
+	} );
 
-		it( 'adding colors table to dropdown works', () => {
+	describe( 'addColorTableToDropdown()', () => {
+		it( 'should create dropdown with color table', () => {
 			const dropdown = createDropdown();
 			dropdown.render();
 
@@ -132,6 +159,19 @@ describe( 'utils', () => {
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
+			expect( dropdown.colorTableView.element ).to.equal( dropdown.panelView.children.first.element );
+		} );
+	} );
+
+	describe( 'renderDowncastElement()', () => {
+		it( 'should create function executes viewWriter with proper arguments', () => {
+			const downcastViewConverterFn = renderDowncastElement( 'color' );
+			const fake = testUtils.sinon.fake();
+			const fakeViewWriter = { createAttributeElement: fake };
+
+			downcastViewConverterFn( 'blue', fakeViewWriter );
+
+			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 		} );
 	} );
 } );

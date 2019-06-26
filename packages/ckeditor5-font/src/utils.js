@@ -84,7 +84,7 @@ export function renderUpcastAttribute( styleAttr ) {
 export function renderDowncastElement( styleAttr ) {
 	return ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'span', {
 		style: `${ styleAttr }:${ modelAttributeValue }`
-	} );
+	}, { priority: 7 } );
 }
 
 /**
@@ -190,8 +190,7 @@ function normalizeSingleColorDefinition( color ) {
 				name: 'span',
 				styles: {
 					color
-				},
-				priority: 5
+				}
 			}
 		};
 	} else {
@@ -203,8 +202,7 @@ function normalizeSingleColorDefinition( color ) {
 				name: 'span',
 				styles: {
 					color: `${ color.color }`
-				},
-				priority: 5
+				}
 			}
 		};
 	}
