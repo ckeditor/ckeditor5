@@ -96,10 +96,15 @@ describe( 'MentionUI', () => {
 	} );
 
 	describe( 'contextual balloon', () => {
+		let balloonAddSpy;
+
 		beforeEach( () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
+					const contextualBalloon = editor.plugins.get( ContextualBalloon );
+
+					balloonAddSpy = sinon.spy( contextualBalloon, 'add' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -109,6 +114,8 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'should disable arrow', () => {
+			sinon.assert.calledOnce( balloonAddSpy );
+			sinon.assert.calledWithExactly( balloonAddSpy, sinon.match( data => data.singleViewMode ) );
 			expect( panelView.isVisible ).to.be.true;
 			expect( panelView.withArrow ).to.be.false;
 		} );
