@@ -27,7 +27,7 @@ CKEditor 5 allows for typing both at inner and outer boundaries of links to make
 
 ## Decorators
 
-Decorator feature provides an easy way to configure and extend links with additional attributes. A decorator is an object defined in the configuration, which describes additional rules applied to the link feature. There are 2 types of decorators: "automatic" and "manual". More information about each of them might be found in sections below or in {@link module:link/link~LinkConfig#decorators the API documentation}.
+Decorator feature provides easy in configuration way to extend links with additional HTML attributes. A decorator is an object defined in the editor's configuration, which describes additional rules of how and when those attributes should be added. There are 2 types of decorators: "automatic" and "manual". More information about each of them might be found in sections below or in {@link module:link/link~LinkConfig#decorators the API documentation}.
 
 <info-box warning>
 	**Warning:** It is not recommended to modify the same attribute through two or more decorators. All decorators work independent and its state is not reflected between them in any way. This also includes mixing manual and automatic decorators.
@@ -35,17 +35,17 @@ Decorator feature provides an easy way to configure and extend links with additi
 
 ### Demo
 
-In editor below is presented automatic and manual decorator feature. All external links gets automatically `target="_blank"` and `rel="noopener noreferrer"` attributes, what is done with {@link module:link/link~LinkConfig#targetDecorator} feature described below. The second decorator is a manual one, which adds a UI switch button with `"Downloadable"` label. Output data can be found in container below editor (its content updates automatically).
+In editor below is presented automatic and manual decorator feature. All external links gets automatically `target="_blank"` and `rel="noopener noreferrer"` attributes, what is done with {@link module:link/link~LinkConfig#addTargetToExternalLinks} feature described below. The second decorator is a manual one, which adds a UI switch button with `"Downloadable"` label. Output data can be found in the container below the editor (its content updates automatically).
 
 {@snippet features/linkdecorators}
 
 ### Automatic decorators
 
-This type of decorator is applied automatically based on the link's URL. The automatic decorator has defined a callback function in {@link module:link/link~LinkDecoratorAutomaticOption the configuration}, which decides whether given decorators should be executed or not. There might be multiple decorators configured for the same link, however, each of them should implement different attribute's set without overlaps.
+This type of decorator is applied automatically based on the link's URL. The automatic decorator has defined a callback function in {@link module:link/link~LinkDecoratorAutomaticDefinition the configuration}, which decides whether given decorators should be executed or not. There might be multiple decorators configured for the same link, however, each of them should implement a different set of attributes without overlaps.
 
-Automatic decorators are applied during {@link framework/guides/architecture/editing-engine#conversion downcasting data}, which means that result of working decorator is visible neither in the editor's model nor the UI in any way.
+Automatic decorators are applied during {@link framework/guides/architecture/editing-engine#conversion downcasting data}, which means that the result of working decorator is visible neither in the editor's model nor the UI in any way.
 
-For example, this decorator will add `download="download"` attribute to every link ending with `.pdf`:
+For example, this decorator will add `download="file.pdf"` attribute to every link ending with a `".pdf"` extension:
 ```js
 const config = {
 	link: {
@@ -54,7 +54,7 @@ const config = {
 				mode: 'automatic',
 				callback: url => url.endsWith( '.pdf' ),
 				attributes: {
-					download: 'download'
+					download: 'file.pdf'
 				}
 			}
 		]
@@ -62,11 +62,11 @@ const config = {
 }
 ```
 
-#### Target decorator
+#### "addTargetToExternalLinks" options
 
-Automatic decorators might be very handy in one particular situation. Mentioned case is to add `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in document. A request for this feature is quite common, and because of that, there is a {@link module:link/link~LinkConfig#targetDecorator configuration option}, which registers such automatic decorator. When `targetDecorator` option is set to `true`, then all links started with `http://`, `https://` or `//` are decorated with `target` and `rel` attributes, without need to implement own decorator.
+Automatic decorators might be very handy in one particular situation. The mentioned case is to add `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A request for this feature is quite common, and because of that, there is a {@link module:link/link~LinkConfig#addTargetToExternalLinks configuration option}, which registers such automatic decorator. When the `addTargetToExternalLinks` option is set to `true`, then all links started with `http://`, `https://` or `//` are decorated with `target` and `rel` attributes, without need to implement own decorator.
 
-Code of automatic decorator comes with `targetDecorator` option:
+Code of automatic decorator comes with `addTargetToExternalLinks` option:
 ```js
 {
 	mode: 'automatic',
@@ -79,24 +79,24 @@ Code of automatic decorator comes with `targetDecorator` option:
 ```
 
 <info-box>
-	If it is necessary to have a UI option, where the user decides, which links should be open in a new window, then `targetDecorator` options should remain `undefined` and there should be created a new **manual decorator** with proper configuration.
+	If it is necessary to have a UI option, where the user decides, which links should be open in a new window, then `addTargetToExternalLinks` options should remain `undefined` and there should be created a new **manual decorator** with proper configuration.
 </info-box>
 
 
 
 ### Manual decorators
 
-This type of decorator registers a UI element which can be switched by the user. Toggleable elements are located in editing view of the link. Modifying the state of this element and applying changes is reflected in the editor's model, what later is downcasted to attributes defined in {@link module:link/link~LinkDecoratorManualOption the manual decorator}.
+This type of decorator registers a UI element which can be switched by the user. Toggleable elements are located in editing view of the link. Modifying the state of this element and applying changes is reflected in the editor's model, what later is downcasted to attributes defined in {@link module:link/link~LinkDecoratorManualDefinition the manual decorator definition}.
 
-Configuration of manual decorator contains a label field used in a UI to describe given attributes set. It should be a compact and descriptive name for the user convenience.
+Configuration of manual decorator contains a label field used in a UI to describe given attributes set. It should be a compact and descriptive name for the user's convenience.
 
-For example, this decorator will add "Downloadable" switch button, which extends link with `download="download"` attribute when is turned on:
+For example, this decorator will add "Downloadable" switch button, which extends link with `download="file"` attribute when is turned on:
 ```js
 {
 	mode: 'manual',
 	label: 'Downloadable',
 	attributes: {
-		download: 'download'
+		download: 'file'
 	}
 }
 ```
@@ -141,7 +141,10 @@ The commands can be executed using the {@link module:core/editor/editor~Editor#e
 // When the selection is collapsed, it creates new text wrapped in a link.
 editor.execute( 'link', 'http://example.com' );
 
-// Removes the link from the selection.
+// If there are defined decorators then command can pass decorator's status as well:
+editor.execute( 'link', 'http://example.com', { linkIsExternal: true } );
+
+// Removes the link from the selection and all decorators if present.
 editor.execute( 'unlink' );
 ```
 
