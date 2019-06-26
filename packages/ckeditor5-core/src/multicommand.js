@@ -14,7 +14,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
  * A CKEditor command that aggregates other commands.
  *
  * This command is used to proxy multiple commands. The multi-command is enabled when at least one of its registered child commands is enabled.
- * Whe executing multi command the first command that is enabled will be executed.
+ * When executing a multi-command the first command that is enabled will be executed.
  *
  *		const multiCommand = new MultiCommand( editor );
  *
