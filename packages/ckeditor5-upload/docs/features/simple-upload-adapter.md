@@ -6,7 +6,7 @@ order: 50
 
 # Simple Upload Adapter
 
-The {@link module:upload/simpleuploadadapter~SimpleUploadAdapter} plugin that enables file uploads in CKEditor 5 using the external side-server connection.
+The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter} plugin that enables file uploads in CKEditor 5 using the external side-server connection.
 
 ## Installation
 
@@ -39,7 +39,7 @@ ClassicEditor
 
 ## Configuration
 
-All available options are defined in the {@link module:upload/simpleuploadadapter~SimpleUploadConfig} interface. 
+All available options are defined in the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} interface. 
 
  ## Contribute
 

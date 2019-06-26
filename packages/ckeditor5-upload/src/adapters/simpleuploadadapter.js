@@ -4,13 +4,13 @@
  */
 
 /**
- * @module upload/simpleuploadadapter
+ * @module upload/adapters/simpleuploadadapter
  */
 
 /* globals XMLHttpRequest, FormData */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from './filerepository';
+import FileRepository from '../filerepository';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
@@ -72,7 +72,7 @@ class Adapter {
 	 * Creates a new adapter instance.
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:upload/simpleuploadadapter~SimpleUploadConfig} options
+	 * @param {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} options
 	 * @param {String} options.uploadUrl A URL where the image will be sent.
 	 */
 	constructor( loader, options ) {
@@ -86,7 +86,7 @@ class Adapter {
 		/**
 		 * The configuration of the adapter.
 		 *
-		 * @member {module:upload/simpleuploadadapter~SimpleUploadConfig} #options
+		 * @member {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} #options
 		 */
 		this.options = options;
 	}
@@ -203,7 +203,7 @@ class Adapter {
 }
 
 /**
- * The configuration of the {@link module:upload/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
+ * The configuration of the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -223,18 +223,18 @@ class Adapter {
  */
 
 /**
- * The configuration of the {@link module:upload/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
+ * The configuration of the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter}.
  *
- * Read more in {@link module:upload/simpleuploadadapter~SimpleUploadConfig}.
+ * Read more in {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig}.
  *
- * @member {module:upload/simpleuploadadapter~SimpleUploadConfig} module:core/editor/editorconfig~EditorConfig#simpleUpload
+ * @member {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} module:core/editor/editorconfig~EditorConfig#simpleUpload
  */
 
 /**
  * The path (URL) to the server which handles the file upload. When specified, enables the automatic
  * upload of resources such as images inserted into the content.
  *
- * @member {String} module:upload/simpleuploadadapter~SimpleUploadConfig#uploadUrl
+ * @member {String} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl
  */
 
 /**
@@ -253,5 +253,5 @@ class Adapter {
  *			.then( ... )
  *			.catch( ... );
  *
- * @member {Object.<String, String>} module:upload/simpleuploadadapter~SimpleUploadConfig#headers
+ * @member {Object.<String, String>} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#headers
  */

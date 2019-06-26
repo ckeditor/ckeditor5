@@ -4,13 +4,13 @@
  */
 
 /**
- * @module upload/base64uploadadapter
+ * @module upload/adapters/base64uploadadapter
  */
 
 /* globals window */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from './filerepository';
+import FileRepository from '../filerepository';
 
 /**
  * A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64)

@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/base64uploadadapter';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
 ClassicEditor.builtinPlugins.push( Base64UploadAdapter );
 
