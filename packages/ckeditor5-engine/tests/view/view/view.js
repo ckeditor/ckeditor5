@@ -488,20 +488,6 @@ describe( 'view', () => {
 		} );
 	} );
 
-	describe( 'is()', () => {
-		it( 'should return true for "view"', () => {
-			expect( view.is( 'view' ) ).to.be.true;
-		} );
-
-		it( 'should return false for incorrect values', () => {
-			expect( view.is( 'model' ) ).to.be.false;
-			expect( view.is( 'model:document' ) ).to.be.false;
-			expect( view.is( 'node' ) ).to.be.false;
-			expect( view.is( 'view:node' ) ).to.be.false;
-			expect( view.is( 'element', 'text' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'isFocused', () => {
 		it( 'should change renderer.isFocused too', () => {
 			expect( viewDocument.isFocused ).to.equal( false );
