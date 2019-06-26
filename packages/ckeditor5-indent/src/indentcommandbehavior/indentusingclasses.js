@@ -31,7 +31,7 @@ export default class IndentUsingClasses {
 		/**
 		 * List of classes used for indentation.
 		 *
-		 * @type {Array<String>}
+		 * @type {Array.<String>}
 		 */
 		this.classes = config.classes;
 	}
