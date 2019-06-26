@@ -25,7 +25,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
  *		multiCommand.registerChildCommand( commandFoo );
  *		multiCommand.registerChildCommand( commandBar );
  *
- *		// Enable one of commands
+ *		// Enable one of the commands.
  *		commandBar.isEnabled = true;
  *
  *		multiCommand.execute(); // Will execute commandBar.
