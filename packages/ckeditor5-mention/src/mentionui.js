@@ -559,10 +559,11 @@ export function createRegExp( marker, minimumCharacters ) {
 	const openAfterCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 	const mentionCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
 
-	// The pattern is build from 3 groups:
-	// - 0 (non-capturing): Opening sequence - start of line, space or opening punctuation charcter like ( or ".
-	// - 1: Marker character.
-	// - 2: Mention input (with support of minimal lenght to trigger UI)
+	// The pattern consists of 3 groups:
+	// - 0 (non-capturing): Opening sequence - start of the line, space or opening punctuation character like ( or ",
+	// - 1: The marker character,
+	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
+	//
 	// The pattern matches up to the caret (end of string switch - $).
 	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                 )$
 	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([_${ mentionCharacters }]${ numberOfCharacters })$`;
