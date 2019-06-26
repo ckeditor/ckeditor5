@@ -20,16 +20,17 @@ export default {
 	 * @type {Boolean}
 	 */
 	isUnicodeGroupSupported: ( function() {
-		let unicodeGroup = false;
-		// Feature detection for Unicode groups. It's added in ES2018. Currently Firefox and Edge does not support it.
+		let isSupported = false;
+
+		// Feature detection for Unicode groups. Added in ES2018. Currently Firefox and Edge do not support it.
 		// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
 
 		try {
-			unicodeGroup = 'ć'.search( new RegExp( '[\\p{L}]', 'u' ) ) === 0;
+			isSupported = 'ć'.search( new RegExp( '[\\p{L}]', 'u' ) ) === 0;
 		} catch ( error ) {
 			// Firefox throws a SyntaxError when the group is unsupported.
 		}
 
-		return unicodeGroup;
+		return isSupported;
 	}() )
 };
