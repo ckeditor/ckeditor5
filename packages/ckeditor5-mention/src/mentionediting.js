@@ -101,10 +101,13 @@ export function _toMentionAttribute( viewElementOrMention, data ) {
 	return _addMentionAttributes( baseMentionData, data );
 }
 
-// Converter that prevents other converters from converting partial mentions.
+// A converter that blocks partial mention from being converted.
 //
-// This helper consumes partial mention which should not be downcasted to allow usage
-// of attributeToElement() converter to override default conversion without the need to write more specialised converter.
+// This converter is registered with 'highest' priority in order to consume mention attribute before it is converted by
+// any other converters. This converter only consumes partial mention - those whose `_text` attribute is not equal to text with mention
+// attribute. This may happen when copying part of mention text.
+//
+// @param {module:engine/conversion/dwoncastdispatcher~DowncastDispatcher}
 function preventPartialMentionDowncast( dispatcher ) {
 	dispatcher.on( 'attribute:mention', ( evt, data, conversionApi ) => {
 		const mention = data.attributeNewValue;
