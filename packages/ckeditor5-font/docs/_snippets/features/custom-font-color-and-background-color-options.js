@@ -174,7 +174,8 @@ ClassicEditor
 					hasBorder: true
 				},
 			],
-			columns: 9
+			columns: 9,
+			documentColors: 18
 		},
 		fontColor: {
 			colors: [
@@ -198,11 +199,15 @@ ClassicEditor
 				'teal',
 				'aqua'
 			],
-			columns: 4
+			columns: 4,
+			documentColors: 12
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		if ( !window.editors ) {
+			window.editors = {};
+		}
+		window.editors[ 'custom-font-color-and-background-color-options' ] = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

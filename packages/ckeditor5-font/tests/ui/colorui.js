@@ -5,31 +5,15 @@
 
 /* global document */
 
-import ColorUI from './../../src/ui/colorui';
-import FontColorCommand from './../../src/fontcolor/fontcolorcommand';
-
+import TestColorPlugin from '../_utils/testcolorplugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ColorUI', () => {
-	class TestColorPlugin extends ColorUI {
-		constructor( editor ) {
-			super( editor, {
-				commandName: 'testColorCommand',
-				componentName: 'testColor',
-				icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>',
-				dropdownLabel: editor.locale.t( 'Test Color' )
-			} );
-
-			editor.commands.add( 'testColorCommand', new FontColorCommand( editor ) );
-		}
-
-		static get pluginName() {
-			return 'TestColorPlugin';
-		}
-	}
-
 	const testColorConfig = {
 		colors: [
 			'yellow',
@@ -65,13 +49,21 @@ describe( 'ColorUI', () => {
 			'Red': 'Czerwony',
 			'Green': 'Zielony'
 		} );
+		addTranslations( 'en', {
+			'Test Color': 'Test Color',
+			'Remove color': 'Remove color',
+			'Yellow': 'Yellow',
+			'White': 'White',
+			'Red': 'Red',
+			'Green': 'Green'
+		} );
 	} );
 
 	after( () => {
 		clearTranslations();
 	} );
 
-	let editor, element, testColorPlugin, command;
+	let editor, element, model, testColorPlugin, command;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -79,11 +71,12 @@ describe( 'ColorUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TestColorPlugin ],
+				plugins: [ Paragraph, TestColorPlugin ],
 				testColor: testColorConfig
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				model = editor.model;
 				testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
 			} );
 	} );
@@ -108,7 +101,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'has assigned proper dropdownLabel', () => {
-			expect( testColorPlugin.dropdownLabel ).to.equal( 'Testowy plugin' );
+			expect( testColorPlugin.dropdownLabel ).to.equal( 'Test Color' );
 		} );
 
 		it( 'has assigned proper amount of columns', () => {
@@ -123,21 +116,23 @@ describe( 'ColorUI', () => {
 		beforeEach( () => {
 			command = editor.commands.get( 'testColorCommand' );
 			dropdown = editor.ui.componentFactory.create( 'testColor' );
+
+			dropdown.render();
+		} );
+
+		afterEach( () => {
+			dropdown.destroy();
 		} );
 
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Testowy plugin' );
+			expect( button ).to.have.property( 'label', 'Test Color' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-			dropdown.render();
-
 			expect( dropdown.element.classList.contains( 'ck-color-ui-dropdown' ) ).to.be.true;
 		} );
 
@@ -151,6 +146,12 @@ describe( 'ColorUI', () => {
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
+		it( 'colorTableView has set proper default attributes', () => {
+			const colorTableView = dropdown.colorTableView;
+
+			expect( colorTableView.documentColorsCount ).to.equal( 3 );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
@@ -159,6 +160,99 @@ describe( 'ColorUI', () => {
 
 				command.isEnabled = true;
 				expect( dropdown.buttonView.isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'properly detects document colors on dropdown open', () => {
+			let documentColorsModel, dropdown;
+			beforeEach( () => {
+				dropdown = editor.ui.componentFactory.create( 'testColor' );
+				dropdown.render();
+				documentColorsModel = dropdown.colorTableView.documentColors;
+				global.document.body.appendChild( dropdown.element );
+			} );
+			afterEach( () => {
+				dropdown.element.remove();
+				dropdown.destroy();
+			} );
+
+			it( 'adds to model colors from editor and not duplicates it', () => {
+				setModelData( model,
+					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+					'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+				);
+
+				dropdown.isOpen = true;
+
+				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
+					color: 'gold',
+					label: 'gold',
+					options: {
+						hasBorder: false
+					}
+				} );
+
+				expect( documentColorsModel.get( 1 ) ).to.deep.include( {
+					color: 'rgb(10,20,30)',
+					label: 'rgb(10,20,30)',
+					options: {
+						hasBorder: false
+					}
+				} );
+
+				expect( documentColorsModel.get( 2 ) ).to.deep.include( {
+					color: '#FFAACC',
+					label: '#FFAACC',
+					options: {
+						hasBorder: false
+					}
+				} );
+			} );
+
+			it( 'reacts on document model changes', () => {
+				setModelData( model,
+					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>'
+				);
+
+				dropdown.isOpen = true;
+
+				expect( documentColorsModel.length ).to.equal( 1 );
+				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
+					color: 'rgb(10,20,30)',
+					label: 'rgb(10,20,30)',
+					options: {
+						hasBorder: false
+					}
+				} );
+
+				dropdown.isOpen = false;
+
+				setModelData( model,
+					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+				);
+
+				dropdown.isOpen = true;
+
+				expect( documentColorsModel.length ).to.equal( 2 );
+
+				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
+					color: 'gold',
+					label: 'gold',
+					options: {
+						hasBorder: false
+					}
+				} );
+
+				expect( documentColorsModel.get( 1 ) ).to.deep.include( {
+					color: '#FFAACC',
+					label: '#FFAACC',
+					options: {
+						hasBorder: false
+					}
+				} );
 			} );
 		} );
 

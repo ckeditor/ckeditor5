@@ -8,3 +8,7 @@
 	align-items: center;
 	width: 100%;
 }
+
+label.ck.ck-color-grid__label {
+	font-weight: unset;
+}

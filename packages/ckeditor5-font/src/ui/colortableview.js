@@ -9,7 +9,11 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
+import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
+import DocumentColorCollection from '../documentcolorcollection';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -20,7 +24,8 @@ import '../../theme/fontcolor.css';
  * A class which represents a view with the following sub–components:
  *
  * * A remove color button,
- * * A {@link module:ui/colorgrid/colorgrid~ColorGridView}.
+ * * A static {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors defined in the configuration,
+ * * A dynamic {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors used in the document.
  *
  * @extends module:ui/view~View
  */
@@ -34,8 +39,10 @@ export default class ColorTableView extends View {
 	 * be displayed in the table.
 	 * @param {Number} config.columns The number of columns in the color grid.
 	 * @param {String} config.removeButtonLabel The label of the button responsible for removing the color.
+	 * @param {String} config.documentColorsLabel The label for the section with the document colors.
+	 * @param {String} config.documentColorsCount The number of colors in document colors section inside dropdown.
 	 */
-	constructor( locale, { colors, columns, removeButtonLabel } ) {
+	constructor( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {
 		super( locale );
 
 		/**
@@ -91,6 +98,41 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 
 		/**
+		 * A collection of definitions stores document colors.
+		 *
+		 * @readonly
+		 * @member {module:font/documentcolorcollection~DocumentColorCollection}
+		 */
+		this.documentColors = new DocumentColorCollection();
+
+		/**
+		 * Maximum number of colors in document colors section.
+		 * If equals 0, then document colors section is not added.
+		 *
+		 * @readonly
+		 * @type {Number}
+		 */
+		this.documentColorsCount = documentColorsCount;
+
+		/**
+		 * Preserves reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+		 * default (static) colors set.
+		 *
+		 * @readonly
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
+		 */
+		this.staticColorsGrid = this._createStaticColorsGrid();
+
+		/**
+		 * Preserves reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+		 * document colors. It remains undefined if document colors are disabled.
+		 *
+		 * @readonly
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
+		 */
+		this.documentColorGrid;
+
+		/**
 		 * Helps cycling over focusable {@link #items} in the list.
 		 *
 		 * @readonly
@@ -121,48 +163,83 @@ export default class ColorTableView extends View {
 			children: this.items
 		} );
 
-		this.items.add( this.removeColorButton() );
-		this.items.add( this.createStaticColorTable() );
+		this.items.add( this._removeColorButton() );
+		this.items.add( this.staticColorsGrid );
+
+		if ( documentColorsCount ) {
+			// Create a label for document colors.
+			const bind = Template.bind( this.documentColors, this.documentColors );
+			const label = new LabelView( this.locale );
+
+			label.text = documentColorsLabel;
+			label.extendTemplate( {
+				attributes: {
+					class: [
+						'ck',
+						'ck-color-grid__label',
+						bind.if( 'isEmpty', 'ck-hidden' )
+					]
+				}
+			} );
+
+			this.items.add( label );
+
+			this.documentColorsGrid = this._createDocumentColorsGrid();
+			this.items.add( this.documentColorsGrid );
+		}
 	}
 
 	/**
-	 * Adds the remove color button as a child of the current view.
+	 * Method scans through the editor's model and searches for text node attributes with attributeName.
+	 * Found entries are set as document colors.
 	 *
-	 * @private
+	 * All the previously stored document colors will be lost in the process.
+	 *
+	 * @param {module:engine/model/model~Model} model Model used as a source to obtain document colors.
+	 * @param {String} attributeName Determines what is the name of a related model's attribute for given dropdown.
 	 */
-	removeColorButton() {
-		const buttonView = new ButtonView();
+	updateDocumentColors( model, attributeName ) {
+		const document = model.document;
+		const maxCount = this.documentColorsCount;
 
-		buttonView.set( {
-			withText: true,
-			icon: removeButtonIcon,
-			tooltip: true,
-			label: this.removeButtonLabel
-		} );
+		this.documentColors.clear();
 
-		buttonView.class = 'ck-color-table__remove-color';
-		buttonView.on( 'execute', () => {
-			this.fire( 'execute', { value: null } );
-		} );
+		for ( const rootName of document.getRootNames() ) {
+			const root = document.getRoot( rootName );
+			const range = model.createRangeIn( root );
 
-		return buttonView;
+			for ( const node of range.getItems() ) {
+				if ( node.is( 'textProxy' ) && node.hasAttribute( attributeName ) ) {
+					this._addColorToDocumentColors( node.getAttribute( attributeName ) );
+
+					if ( this.documentColors.length >= maxCount ) {
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	/**
-	 * Creates a static color table grid based on the editor configuration.
-	 *
-	 * @private
+	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgrid~ColorGridView}
+	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
 	 */
-	createStaticColorTable() {
-		const colorGrid = new ColorGridView( this.locale, {
-			colorDefinitions: this.colorDefinitions,
-			columns: this.columns
-		} );
+	updateSelectedColors() {
+		const documentColorsGrid = this.documentColorsGrid;
+		const staticColorsGrid = this.staticColorsGrid;
+		const selectedColor = this.selectedColor;
 
-		colorGrid.delegate( 'execute' ).to( this );
-		colorGrid.bind( 'selectedColor' ).to( this );
-
-		return colorGrid;
+		if ( !this.documentColors.isEmpty ) {
+			if ( this.documentColors.hasColor( selectedColor ) ) {
+				staticColorsGrid.selectedColor = null;
+				documentColorsGrid.selectedColor = selectedColor;
+			} else {
+				staticColorsGrid.selectedColor = selectedColor;
+				documentColorsGrid.selectedColor = null;
+			}
+		} else {
+			staticColorsGrid.selectedColor = selectedColor;
+		}
 	}
 
 	/**
@@ -192,5 +269,126 @@ export default class ColorTableView extends View {
 	 */
 	focusLast() {
 		this._focusCycler.focusLast();
+	}
+
+	/**
+	 * Adds the remove color button as a child of the current view.
+	 *
+	 * @private
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
+	_removeColorButton() {
+		const buttonView = new ButtonView();
+
+		buttonView.set( {
+			withText: true,
+			icon: removeButtonIcon,
+			tooltip: true,
+			label: this.removeButtonLabel
+		} );
+
+		buttonView.class = 'ck-color-table__remove-color';
+		buttonView.on( 'execute', () => {
+			this.fire( 'execute', { value: null } );
+		} );
+
+		return buttonView;
+	}
+
+	/**
+	 * Creates a static color table grid based on the editor configuration.
+	 *
+	 * @private
+	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
+	 */
+	_createStaticColorsGrid() {
+		const colorGrid = new ColorGridView( this.locale, {
+			colorDefinitions: this.colorDefinitions,
+			columns: this.columns
+		} );
+
+		colorGrid.delegate( 'execute' ).to( this );
+
+		return colorGrid;
+	}
+
+	/**
+	 * Creates document colors section view and binds it to {@link #documentColors}.
+	 *
+	 * @private
+	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
+	 */
+	_createDocumentColorsGrid() {
+		const bind = Template.bind( this.documentColors, this.documentColors );
+		const documentColorsGrid = new ColorGridView( this.locale, {
+			columns: this.columns
+		} );
+
+		documentColorsGrid.delegate( 'execute' ).to( this );
+
+		documentColorsGrid.extendTemplate( {
+			attributes: {
+				class: bind.if( 'isEmpty', 'ck-hidden' )
+			}
+		} );
+
+		documentColorsGrid.items.bindTo( this.documentColors ).using(
+			colorObj => {
+				const colorTile = new ColorTileView();
+
+				colorTile.set( {
+					color: colorObj.color,
+					hasBorder: colorObj.options && colorObj.options.hasBorder
+				} );
+
+				if ( colorObj.label ) {
+					colorTile.set( {
+						label: colorObj.label,
+						tooltip: true
+					} );
+				}
+
+				colorTile.on( 'execute', () => {
+					this.fire( 'execute', {
+						value: colorObj.color
+					} );
+				} );
+
+				return colorTile;
+			}
+		);
+
+		// Selected color should be cleared when document colors became empty.
+		this.documentColors.on( 'change:isEmpty', ( evt, name, val ) => {
+			if ( val ) {
+				documentColorsGrid.selectedColor = null;
+			}
+		} );
+
+		return documentColorsGrid;
+	}
+
+	/**
+	 * Method adds a given `color` to the document colors list. If possible, method will attempt to use
+	 * data from the {@link #colorDefinitions} (label, color options).
+	 *
+	 * @private
+	 * @param {String} color String which stores value of recently applied color.
+	 */
+	_addColorToDocumentColors( color ) {
+		const predefinedColor = this.colorDefinitions
+			.find( definition => definition.color === color );
+
+		if ( !predefinedColor ) {
+			this.documentColors.add( {
+				color,
+				label: color,
+				options: {
+					hasBorder: false
+				}
+			} );
+		} else {
+			this.documentColors.add( Object.assign( {}, predefinedColor ) );
+		}
 	}
 }

@@ -12,3 +12,4 @@ The format in the editor content is: `N. [font color]; [background color]`.
 
 - Change the font color and font background color on selected text.
 - Change the font color and font background color across many paragraphs.
+- Check whether the colors are added to document colors list.

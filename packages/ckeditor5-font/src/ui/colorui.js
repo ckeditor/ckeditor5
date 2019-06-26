@@ -40,6 +40,7 @@ export default class ColorUI extends Plugin {
 
 		/**
 		 * The name of the command which will be executed when a color tile is clicked.
+		 *
 		 * @type {String}
 		 */
 		this.commandName = commandName;
@@ -47,6 +48,7 @@ export default class ColorUI extends Plugin {
 		/**
 		 * The name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
 		 * Also the configuration scope name in `editor.config`.
+		 *
 		 * @type {String}
 		 */
 		this.componentName = componentName;
@@ -59,15 +61,24 @@ export default class ColorUI extends Plugin {
 
 		/**
 		 * Label used by the dropdown.
+		 *
 		 * @type {String}
 		 */
 		this.dropdownLabel = dropdownLabel;
 
 		/**
 		 * The number of columns in the color grid.
+		 *
 		 * @type {Number}
 		 */
 		this.columns = editor.config.get( `${ this.componentName }.columns` );
+
+		/**
+		 * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
+		 *
+		 * @member {module:font/ui/colortableview~ColorTableView}
+		 */
+		this.colorTableView;
 	}
 
 	/**
@@ -79,11 +90,12 @@ export default class ColorUI extends Plugin {
 		const command = editor.commands.get( this.commandName );
 		const colorsConfig = normalizeColorOptions( editor.config.get( this.componentName ).colors );
 		const localizedColors = getLocalizedColorOptions( editor, colorsConfig );
+		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` );
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView = createDropdown( locale );
-			const colorTableView = addColorTableToDropdown( {
+			this.colorTableView = addColorTableToDropdown( {
 				dropdownView,
 				colors: localizedColors.map( option => ( {
 					label: option.label,
@@ -93,10 +105,12 @@ export default class ColorUI extends Plugin {
 					}
 				} ) ),
 				columns: this.columns,
-				removeButtonLabel: t( 'Remove color' )
+				removeButtonLabel: t( 'Remove color' ),
+				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : undefined,
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
 			} );
 
-			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
+			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
 			dropdownView.buttonView.set( {
 				label: this.dropdownLabel,
@@ -115,6 +129,15 @@ export default class ColorUI extends Plugin {
 			dropdownView.on( 'execute', ( evt, data ) => {
 				editor.execute( this.commandName, data );
 				editor.editing.view.focus();
+			} );
+
+			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
+				if ( isVisible ) {
+					if ( documentColorsCount !== 0 ) {
+						this.colorTableView.updateDocumentColors( editor.model, this.componentName );
+					}
+					this.colorTableView.updateSelectedColors();
+				}
 			} );
 
 			return dropdownView;

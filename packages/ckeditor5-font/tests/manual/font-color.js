@@ -38,3 +38,15 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function updateText( styleName ) {
+	return evt => {
+		const el = document.querySelector( '#color-box > p > span' );
+		if ( el ) {
+			el.style[ styleName ] = evt.target.value;
+		}
+	};
+}
+
+document.getElementById( 'color' ).addEventListener( 'change', updateText( 'color' ) );
+document.getElementById( 'bgcolor' ).addEventListener( 'change', updateText( 'backgroundColor' ) );

@@ -227,9 +227,40 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Documents colors
+
+The document colors feature is an additional section in a dropdown color panel. It lists the colors used in the document in the order of occurrence. Duplicated colors are not inserted multiple times. By default number of document colors is limited, but you can adjust it (or disable it) using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
+
+The document colors feature can help with identification of already used colors in a document. This provides a possibility of applying the same color further in the text without searching it over the entire section with predefined colors.
+
+<info-box info>
+**Note:** In case the edited document doesn't contain any font color or background colors, the document colors section is hidden.
+</info-box>
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontColor: {
+			documentColors: 10,
+
+			// ...
+		},
+		fontBackgroundColor: {
+			documentColors: 0, // Disables the feature.
+
+			// ...
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ### Changing the geometry of the color grid
 
-It is also possible to configure in how many columns the colors in the grid are displayed. Use the {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} options to do so.
+It is possible to configure how many colors' columns are displayed in the grid. Changing geometry of a color grid impacts on both section in a dropdown panel (available colors defined in the configuration and document colors sections). Setting {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} ( or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} ) shapes the color grid.
 
 ```js
 ClassicEditor
