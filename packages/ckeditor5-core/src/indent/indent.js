@@ -20,7 +20,7 @@ import IndentUI from './indentui';
  * The compatible features are:
  
  * - the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
- * - the {@link module:indent-block/indentblock~IndentBlock} feature for indenting text blocks like paragraphs or headings
+ * * the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
  *
  * This is a "glue" plugin which loads the following plugins:
  *
