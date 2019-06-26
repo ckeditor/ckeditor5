@@ -451,7 +451,7 @@ class Marker {
 	/**
 	 * Checks whether given object is of `marker` type.
 	 *
-	 * Read more at {@link module:engine/model/model~Node#is}.
+	 * Read more at {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

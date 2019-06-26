@@ -313,7 +313,6 @@ export default class Node {
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *		obj.is( 'view:text' ); // true for text node, false for element and document fragment
 	 *
-	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
