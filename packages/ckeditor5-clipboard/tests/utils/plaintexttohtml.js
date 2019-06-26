@@ -10,8 +10,12 @@ describe( 'plainTextToHtml()', () => {
 		expect( plainTextToHtml( 'x y <z>' ) ).to.equal( 'x y &lt;z&gt;' );
 	} );
 
-	it( 'turns single line breaks into paragraphs', () => {
+	it( 'turns a single line break into paragraphs', () => {
 		expect( plainTextToHtml( 'x\ny\nz' ) ).to.equal( '<p>x</p><p>y</p><p>z</p>' );
+	} );
+
+	it( 'turns double line breaks into paragraphs', () => {
+		expect( plainTextToHtml( 'x\n\ny\n\nz' ) ).to.equal( '<p>x</p><p></p><p>y</p><p></p><p>z</p>' );
 	} );
 
 	it( 'turns combination of different amount of line breaks to paragraphs', () => {
