@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck .ck-fake-panel {
+	position: absolute;
+
+	/* Fake panels should be placed under main balloon content. */
+	z-index: calc(var(--ck-z-modal) - 1);
+}
+
+.ck .ck-fake-panel div {
+	position: absolute;
+}
+
+.ck .ck-fake-panel div:nth-child( 1 ) {
+	z-index: 2;
+}
+
+.ck .ck-fake-panel div:nth-child( 2 ) {
+	z-index: 1;
+}

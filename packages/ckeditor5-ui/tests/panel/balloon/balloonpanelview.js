@@ -192,6 +192,19 @@ describe( 'BalloonPanelView', () => {
 			} ) );
 		} );
 
+		it( 'should parse optimal position offset to int', () => {
+			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+				top: 10.345,
+				left: 10.345,
+				name: 'position'
+			} );
+
+			view.attachTo( { target, limiter } );
+
+			expect( view.top ).to.equal( 10 );
+			expect( view.left ).to.equal( 10 );
+		} );
+
 		describe( 'limited by limiter element', () => {
 			beforeEach( () => {
 				// Mock limiter element dimensions.

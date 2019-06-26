@@ -11,11 +11,33 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 /* global document, Event */
 
 describe( 'ContextualBalloon', () => {
-	let editor, editorElement, balloon, viewA, viewB;
+	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
+
+	testUtils.createSinonSandbox();
+
+	before( () => {
+		addTranslations( 'en', {
+			'Choose heading': '%0 of %1',
+			'Previous': 'Previous',
+			'Next': 'Next'
+		} );
+
+		addTranslations( 'pl', {
+			'%0 of %1': '%0 z %1',
+			'Previous': 'Poprzedni',
+			'Next': 'Następny'
+		} );
+	} );
+
+	after( () => {
+		clearTranslations();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -36,6 +58,8 @@ describe( 'ContextualBalloon', () => {
 
 				viewA = new View();
 				viewB = new View();
+				viewC = new View();
+				viewD = new View();
 
 				// Add viewA to the pane and init viewB.
 				balloon.add( {
@@ -65,7 +89,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
-	describe( 'init()', () => {
+	describe( 'constructor()', () => {
 		it( 'should create a plugin instance with properties', () => {
 			expect( balloon.view ).to.instanceof( BalloonPanelView );
 		} );
@@ -161,14 +185,68 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'should add view to the stack and display in balloon attached using given position options', () => {
-			expect( balloon.view.content.length ).to.equal( 1 );
-			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
+		it( 'should add view to the `main` stack and display in balloon attached using given position options', () => {
+			const content = balloon.view.content.get( 0 ).content;
+
+			expect( content.length ).to.equal( 1 );
+			expect( content.get( 0 ) ).to.deep.equal( viewA );
 			expect( balloon.view.pin.calledOnce ).to.true;
 			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
 				target: 'fake',
 				limiter: balloon.positionLimiter
 			} );
+		} );
+
+		it( 'should add view to the custom stack but not display it when other stack is already visible', () => {
+			balloon.add( {
+				view: viewB,
+				stackId: 'second',
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'second',
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			const content = balloon.view.content.get( 0 ).content;
+
+			expect( content.length ).to.equal( 1 );
+			expect( content.get( 0 ) ).to.deep.equal( viewA );
+			expect( balloon.hasView( viewB ) );
+			expect( balloon.hasView( viewC ) );
+		} );
+
+		it( 'should add multiple views to he stack and display last one', () => {
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'fake',
+					limiter: balloon.positionLimiter
+				}
+			} );
+
+			const content = balloon.view.content.get( 0 ).content;
+
+			expect( content.length ).to.equal( 1 );
+			expect( content.get( 0 ) ).to.deep.equal( viewB );
+		} );
+
+		it( 'should throw an error when try to add the same view more than once', () => {
+			expect( () => {
+				balloon.add( {
+					view: viewA,
+					position: {
+						target: 'fake',
+						limiter: balloon.positionLimiter
+					}
+				} );
+			} ).to.throw( CKEditorError, /^contextualballoon-add-view-exist/ );
 		} );
 
 		it( 'should use a provided limiter instead of #positionLimiter', () => {
@@ -228,31 +306,6 @@ describe( 'ContextualBalloon', () => {
 
 		it( 'should pin balloon to the target element', () => {
 			sinon.assert.calledOnce( balloon.view.pin );
-		} );
-
-		it( 'should throw an error when try to add the same view more than once', () => {
-			expect( () => {
-				balloon.add( {
-					view: viewA,
-					position: {
-						target: 'fake',
-						limiter: balloon.positionLimiter
-					}
-				} );
-			} ).to.throw( CKEditorError, /^contextualballoon-add-view-exist/ );
-		} );
-
-		it( 'should add multiple views to he stack and display last one', () => {
-			balloon.add( {
-				view: viewB,
-				position: {
-					target: 'fake',
-					limiter: balloon.positionLimiter
-				}
-			} );
-
-			expect( balloon.view.content.length ).to.equal( 1 );
-			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewB );
 		} );
 
 		it( 'should use the position of the last view in the stack', () => {
@@ -363,6 +416,53 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewA );
 			expect( balloon.visibleView ).to.null;
 		} );
+
+		it( 'should be observable', () => {
+			const spy = sinon.spy();
+
+			balloon.on( 'change:visibleView', spy );
+
+			balloon.add( { view: viewB } );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, sinon.match.any, 'visibleView', viewB, viewA );
+		} );
+	} );
+
+	describe( 'showStack()', () => {
+		it( 'should hide current view and display last view from the given stack', () => {
+			balloon.add( {
+				stackId: 'second',
+				view: viewB
+			} );
+
+			balloon.add( {
+				stackId: 'second',
+				view: viewC
+			} );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+
+			balloon.showStack( 'second' );
+
+			expect( balloon.visibleView ).to.equal( viewC );
+
+			balloon.showStack( 'main' );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+		} );
+
+		it( 'should do nothing when given stack is already visible', () => {
+			expect( () => {
+				balloon.showStack( 'main' );
+			} ).to.not.throw();
+		} );
+
+		it( 'should throw an error when there is no stack of given id', () => {
+			expect( () => {
+				balloon.showStack( 'second' );
+			} ).to.throw( CKEditorError, 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.' );
+		} );
 	} );
 
 	describe( 'remove()', () => {
@@ -373,6 +473,53 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.visibleView ).to.null;
 			expect( balloon.view.isVisible ).to.false;
+		} );
+
+		it( 'should remove given view from not displayed stack', () => {
+			balloon.add( {
+				stackId: 'second',
+				view: viewB
+			} );
+
+			balloon.add( {
+				stackId: 'second',
+				view: viewC
+			} );
+
+			balloon.remove( viewB );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+			expect( () => {
+				balloon.showStack( 'second' );
+			} ).to.not.throw();
+		} );
+
+		it( 'should remove not displayed stack if a removed view was the only view in this stack', () => {
+			balloon.add( {
+				stackId: 'second',
+				view: viewB
+			} );
+
+			balloon.remove( viewB );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+			expect( () => {
+				balloon.showStack( 'second' );
+			} ).to.throw();
+		} );
+
+		it( 'should switch stack to the next one when removed view was the last one in the visible stack', () => {
+			balloon.add( {
+				stackId: 'second',
+				view: viewB
+			} );
+
+			balloon.remove( viewA );
+
+			expect( balloon.visibleView ).to.equal( viewB );
+			expect( () => {
+				balloon.showStack( 'main' );
+			} ).to.throw();
 		} );
 
 		it( 'should remove given view and set preceding in the stack as visible when removed view was visible', () => {
@@ -401,6 +548,53 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewA );
 
 			expect( balloon.visibleView ).to.equal( viewB );
+		} );
+
+		it( 'should remove given view from a not currently visible stack', () => {
+			balloon.add( {
+				view: viewB,
+				stackId: 'second',
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'second',
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			balloon.remove( viewB );
+
+			expect( balloon.hasView( viewB ) ).to.false;
+			expect( balloon.hasView( viewC ) ).to.true;
+
+			// Does not throw, so the stack is there.
+			expect( () => {
+				balloon.showStack( 'second' );
+			} ).to.not.throw();
+		} );
+
+		it( 'should remove not displayed stack when removied view was the last one in the stack', () => {
+			balloon.add( {
+				view: viewB,
+				stackId: 'second',
+				position: {
+					target: 'fake'
+				}
+			} );
+
+			balloon.remove( viewB );
+
+			expect( balloon.hasView( viewB ) ).to.false;
+
+			// Does throw, so the stack is not there.
+			expect( () => {
+				balloon.showStack( 'second' );
+			} ).to.throw();
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
@@ -531,6 +725,492 @@ describe( 'ContextualBalloon', () => {
 			balloon.destroy();
 
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.not.equal( -1 );
+		} );
+	} );
+
+	describe( 'rotator view', () => {
+		let rotatorView;
+
+		beforeEach( () => {
+			rotatorView = balloon.view.content.get( 0 );
+		} );
+
+		it( 'should display navigation when there is more than one stack', () => {
+			const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+			expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.equal( true );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
+		} );
+
+		it( 'should display counter', () => {
+			const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
+
+			expect( counterElement.textContent ).to.equal( '' );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			expect( counterElement.textContent ).to.equal( '1 of 2' );
+
+			balloon.showStack( 'second' );
+
+			expect( counterElement.textContent ).to.equal( '2 of 2' );
+		} );
+
+		it( 'should switch stack to the next one after clicking next button', () => {
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'third'
+			} );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+
+			rotatorView.buttonNextView.fire( 'execute' );
+
+			expect( balloon.visibleView ).to.equal( viewB );
+
+			rotatorView.buttonNextView.fire( 'execute' );
+
+			expect( balloon.visibleView ).to.equal( viewC );
+
+			rotatorView.buttonNextView.fire( 'execute' );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+		} );
+
+		it( 'should not move focus to the editable when switching not focused view to the next one', () => {
+			const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			rotatorView.buttonNextView.fire( 'execute' );
+
+			sinon.assert.notCalled( editableFocusSpy );
+		} );
+
+		it( 'should move focus to the editable when switching focused view to the next one', () => {
+			const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			rotatorView.focusTracker.isFocused = true;
+
+			rotatorView.buttonNextView.fire( 'execute' );
+
+			sinon.assert.calledOnce( editableFocusSpy );
+		} );
+
+		it( 'should switch stack to the prev one after clicking prev button', () => {
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'third'
+			} );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+
+			rotatorView.buttonPrevView.fire( 'execute' );
+
+			expect( balloon.visibleView ).to.equal( viewC );
+
+			rotatorView.buttonPrevView.fire( 'execute' );
+
+			expect( balloon.visibleView ).to.equal( viewB );
+
+			rotatorView.buttonPrevView.fire( 'execute' );
+
+			expect( balloon.visibleView ).to.equal( viewA );
+		} );
+
+		it( 'should not move focus to the editable when switching not focused view to the prev one', () => {
+			const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			rotatorView.buttonPrevView.fire( 'execute' );
+
+			sinon.assert.notCalled( editableFocusSpy );
+		} );
+
+		it( 'should move focus to the editable when switching focused view to the prev one', () => {
+			const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			rotatorView.focusTracker.isFocused = true;
+
+			rotatorView.buttonPrevView.fire( 'execute' );
+
+			sinon.assert.calledOnce( editableFocusSpy );
+		} );
+
+		it( 'should add hidden view with fake panels to editor body collection', () => {
+			const fakePanelsView = editor.ui.view.body.last;
+
+			expect( fakePanelsView.element.classList.contains( 'ck-fake-panel' ) ).to.equal( true );
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( true );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
+		} );
+
+		it( 'should show fake panels when more than one stack is added to the balloon (max to 2 panels)', () => {
+			const fakePanelsView = editor.ui.view.body.last;
+			const viewD = new View();
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'third'
+			} );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
+
+			balloon.add( {
+				view: viewD,
+				stackId: 'fourth'
+			} );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
+
+			balloon.remove( viewD );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
+
+			balloon.remove( viewC );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+			balloon.remove( viewB );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( true );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
+		} );
+
+		it( 'should keep position of fake panels up to date with balloon position when panels are visible', () => {
+			const fakePanelsView = editor.ui.view.body.last;
+
+			let width = 30;
+			let height = 40;
+
+			balloon.view.top = 10;
+			balloon.view.left = 20;
+
+			sinon.stub( balloon.view.element, 'getBoundingClientRect' ).callsFake( () => ( { width, height } ) );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			expect( fakePanelsView.element.style.top ).to.equal( '10px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
+
+			balloon.view.top = 15;
+			balloon.view.left = 25;
+			width = 35;
+			height = 45;
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'third'
+			} );
+
+			expect( fakePanelsView.element.style.top ).to.equal( '15px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '25px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '35px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '45px' );
+
+			balloon.view.top = 10;
+			balloon.view.left = 20;
+			width = 30;
+			height = 40;
+
+			balloon.updatePosition();
+
+			expect( fakePanelsView.element.style.top ).to.equal( '10px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
+
+			// Hide fake panels by removing additional stacks.
+			balloon.remove( viewC );
+			balloon.remove( viewB );
+
+			balloon.view.top = 15;
+			balloon.view.left = 25;
+			width = 35;
+			height = 45;
+
+			balloon.updatePosition();
+
+			// Old values because fake panels are hidden.
+			expect( fakePanelsView.element.style.top ).to.equal( '10px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
+		} );
+
+		it( 'should translate the views', () => {
+			// Cleanup the editor created by contextual balloon suite beforeEach.
+			return editor.destroy()
+				.then( () => {
+					editorElement.remove();
+
+					// Setup localized editor for language tests.
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					return ClassicTestEditor
+						.create( editorElement, {
+							plugins: [ Paragraph, ContextualBalloon ],
+							language: 'pl'
+						} );
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					balloon = editor.plugins.get( ContextualBalloon );
+					// We don't need to execute BalloonPanel pin and attachTo methods
+					// it's enough to check if was called with the proper data.
+					sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+					sinon.stub( balloon.view, 'pin' ).returns( {} );
+
+					balloon.add( {
+						view: new View()
+					} );
+
+					balloon.add( {
+						view: new View(),
+						stackId: 'second'
+					} );
+
+					const rotatorView = balloon.view.content.get( 0 );
+					const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
+
+					expect( counterElement.textContent ).to.equal( '1 z 2' );
+					expect( rotatorView.buttonPrevView.labelView.element.textContent ).to.equal( 'Poprzedni' );
+					expect( rotatorView.buttonNextView.labelView.element.textContent ).to.equal( 'Następny' );
+				} );
+		} );
+
+		describe( 'singleViewMode', () => {
+			it( 'should not display navigation when there is more than one stack', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			it( 'should hide display navigation after adding view', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			it( 'should display navigation after removing a view', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.remove( viewC );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
+			it( 'should not display navigation after removing a view if there is still some view with singleViewMode', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				balloon.add( {
+					view: viewD,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.remove( viewD );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.remove( viewC );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
+			it( 'should not show fake panels when more than one stack is added to the balloon (max to 2 panels)', () => {
+				const fakePanelsView = editor.ui.view.body.last;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+				expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
+
+				balloon.remove( viewC );
+
+				expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+				expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+				balloon.remove( viewB );
+			} );
+
+			it( 'should switch visible view when adding a view to new stack', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewA );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewC );
+
+				const viewD = new View();
+
+				balloon.add( {
+					view: viewD,
+					stackId: 'fifth',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewD );
+			} );
+
+			it( 'should switch visible view when adding a view to the same stack', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewA );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewC );
+
+				const viewD = new View();
+
+				balloon.add( {
+					view: viewD,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewD );
+			} );
 		} );
 	} );
 } );
