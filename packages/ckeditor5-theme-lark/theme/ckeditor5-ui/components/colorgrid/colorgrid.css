@@ -51,3 +51,6 @@
 	}
 }
 
+.ck.ck-color-grid__label {
+	padding: 0 var(--ck-spacing-standard);
+}
