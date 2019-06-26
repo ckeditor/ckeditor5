@@ -4,7 +4,7 @@
  */
 
 /**
- * @module indent-block/indentblock
+ * @module indent/indentblock
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -216,18 +216,18 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
 }
 
 /**
- * The configuration of the {@link module:indent-block/indentblock~IndentBlock block indentation feature}.
+ * The configuration of the {@link module:indent/indentblock~IndentBlock block indentation feature}.
  *
- * Read more in {@link module:indent-block/indentblock~IndentBlockConfig}.
+ * Read more in {@link module:indent/indentblock~IndentBlockConfig}.
  *
- * @member {module:indent-block/indentblock~IndentBlockConfig} module:core/editor/editorconfig~EditorConfig#indentBlock
+ * @member {module:indent/indentblock~IndentBlockConfig} module:core/editor/editorconfig~EditorConfig#indentBlock
  */
 
 /**
  * The configuration of the block indentation feature.
  *
- * If no {@link module:indent-block/indentblock~IndentBlockConfig#classes} are set the block indentation feature will use
- * {@link module:indent-block/indentblock~IndentBlockConfig#offset} and {@link module:indent-block/indentblock~IndentBlockConfig#unit} to
+ * If no {@link module:indent/indentblock~IndentBlockConfig#classes} are set the block indentation feature will use
+ * {@link module:indent/indentblock~IndentBlockConfig#offset} and {@link module:indent/indentblock~IndentBlockConfig#unit} to
  * create indentation steps.
  *
  *		ClassicEditor
@@ -240,7 +240,7 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
  *			.then( ... )
  *			.catch( ... );
  *
- * Alternatively the block indentation feature may set one of defined {@link module:indent-block/indentblock~IndentBlockConfig#classes} as
+ * Alternatively the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
  * indentation steps:
  *
  *		ClassicEditor
@@ -266,24 +266,24 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
  */
 
 /**
- * The size in indentation {@link module:indent-block/indentblock~IndentBlockConfig#unit units} of each indentation step.
+ * The size in indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} of each indentation step.
  *
  * @default 1
- * @member {Number} module:indent-block/indentblock~IndentBlockConfig#offset
+ * @member {Number} module:indent/indentblock~IndentBlockConfig#offset
  */
 
 /**
- * The unit used for indentation {@link module:indent-block/indentblock~IndentBlockConfig#offset}.
+ * The unit used for indentation {@link module:indent/indentblock~IndentBlockConfig#offset}.
  *
  * @default 'em'
- * @member {String} module:indent-block/indentblock~IndentBlockConfig#unit
+ * @member {String} module:indent/indentblock~IndentBlockConfig#unit
  */
 
 /**
  * An optional list of classes to use for indenting the contents. If not set or set to empty array, no classes will be used and instead
- * the {@link module:indent-block/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
- * {@link module:indent-block/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used.
+ * the {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
+ * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used.
  *
  * @default undefined
- * @member {Array.<String>|undefined} module:indent-block/indentblock~IndentBlockConfig#classes
+ * @member {Array.<String>|undefined} module:indent/indentblock~IndentBlockConfig#classes
  */

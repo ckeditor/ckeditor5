@@ -4,7 +4,7 @@
  */
 
 /**
- * @module indent-block/indentblockcommand
+ * @module indent/indentblockcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -13,7 +13,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 /**
  * The indent block command.
  *
- * The command is registered by the {@link module:indent-block/indentblock~IndentBlock} as `'indentBlock'` - for indenting blocks and
+ * The command is registered by the {@link module:indent/indentblock~IndentBlock} as `'indentBlock'` - for indenting blocks and
  * `'outdentBlock'` - for outdenting blocks.
  *
  * To increase block indentation at current selection execute the command:
@@ -31,7 +31,7 @@ export default class IndentBlockCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {module:indent-block/indentblockcommand~IndentBehavior} indentBehavior
+	 * @param {module:indent/indentblockcommand~IndentBehavior} indentBehavior
 	 */
 	constructor( editor, indentBehavior ) {
 		super( editor );
@@ -39,7 +39,7 @@ export default class IndentBlockCommand extends Command {
 		/**
 		 * Command's indentation behavior.
 		 *
-		 * @type {module:indent-block/indentblockcommand~IndentBehavior}
+		 * @type {module:indent/indentblockcommand~IndentBehavior}
 		 * @private
 		 */
 		this._indentBehavior = indentBehavior;
@@ -91,9 +91,9 @@ export default class IndentBlockCommand extends Command {
 }
 
 /**
- * Provides indentation behavior to {@link module:indent-block/indentblockcommand~IndentBlockCommand}.
+ * Provides indentation behavior to {@link module:indent/indentblockcommand~IndentBlockCommand}.
  *
- * @interface module:indent-block/indentblockcommand~IndentBehavior
+ * @interface module:indent/indentblockcommand~IndentBehavior
  */
 
 /**

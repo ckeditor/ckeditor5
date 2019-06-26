@@ -4,13 +4,13 @@
  */
 
 /**
- * @module indent-block/indentcommandbehavior/indentusingclasses
+ * @module indent/indentcommandbehavior/indentusingclasses
  */
 
 /**
  * The block indentation behavior that uses classes to set indentation.
  *
- * @implements module:indent-block/indentblockcommand~IndentBehavior
+ * @implements module:indent/indentblockcommand~IndentBehavior
  */
 export default class IndentUsingClasses {
 	/**

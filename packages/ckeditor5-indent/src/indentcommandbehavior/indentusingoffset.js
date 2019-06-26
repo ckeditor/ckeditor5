@@ -4,11 +4,11 @@
  */
 
 /**
- * @module indent-block/indentcommandbehavior/indentusingoffset
+ * @module indent/indentcommandbehavior/indentusingoffset
  */
 
 /**
- * @implements module:indent-block/indentblockcommand~IndentBehavior
+ * @implements module:indent/indentblockcommand~IndentBehavior
  */
 export default class IndentUsingOffset {
 	/**

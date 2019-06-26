@@ -97,7 +97,7 @@ npm install --save @ckeditor/ckeditor5-indent-block
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import Font from '@ckeditor/ckeditor5-indent-block/src/indentblock';
+import Font from '@ckeditor/ckeditor5-indent/src/indentblock';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -114,9 +114,9 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:indent-block/indentblock~IndentBlock} plugin registers the following components:
+The {@link module:indent/indentblock~IndentBlock} plugin registers the following components:
 
-* The {@link module:indent-block/indentblockcommand~IndentBlockCommand `'indentBlock'`} command.
+* The {@link module:indent/indentblockcommand~IndentBlockCommand `'indentBlock'`} command.
 
 	You can increase block indentation in which the selection is set by:
 
@@ -124,7 +124,7 @@ The {@link module:indent-block/indentblock~IndentBlock} plugin registers the fol
 	editor.execute( 'indentBlock' );
 	```
 
-* The {@link module:indent-block/indentblockcommand~IndentBlockCommand `'outdentBlock'`} command.
+* The {@link module:indent/indentblockcommand~IndentBlockCommand `'outdentBlock'`} command.
 
 	You can decrease block indentation in which the selection is set by:
 

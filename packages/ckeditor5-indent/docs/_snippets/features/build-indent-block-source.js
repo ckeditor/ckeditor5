@@ -7,7 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
-import IndentBlock from '@ckeditor/ckeditor5-indent-block/src/indentblock';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
 ClassicEditor.builtinPlugins.push( IndentBlock );
 
