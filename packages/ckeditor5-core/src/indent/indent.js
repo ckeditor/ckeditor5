@@ -18,6 +18,7 @@ import IndentUI from './indentui';
  * This plugin acts as a single entry point plugin for other features that implement indenting of elements like lists or paragraphs.
  *
  * The compatible features are:
+ 
  * - the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
  * - the {@link module:indent-block/indentblock~IndentBlock} feature for indenting text blocks like paragraphs or headings
  *
