@@ -28,7 +28,7 @@ import IndentUI from './indentui';
  * * The {@link module:core/indent/indentui~IndentUI indent UI feature}.
  *
  * The dependent plugins register the `'indent'` and `'outdent'` commands and it introduce the `'indent'` and `'outdent'` buttons
- * that allow to increase or decrease text indentation of supported elements.
+ * which allow to increase or decrease text indentation of supported elements.
  *
  * **Note**: In order the commands and buttons to work at least one of compatible features is required.
  *
