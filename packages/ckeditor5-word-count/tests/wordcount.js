@@ -58,7 +58,7 @@ describe( 'WordCount', () => {
 				'<paragraph>1234</paragraph>' +
 				'<paragraph>(-@#$%^*())</paragraph>' );
 
-			wordCountPlugin._calcWordsAndCharacters();
+			wordCountPlugin._calculateWordsAndCharacters();
 
 			expect( wordCountPlugin.words ).to.equal( 6 );
 		} );
@@ -66,7 +66,7 @@ describe( 'WordCount', () => {
 		it( 'counts characters', () => {
 			setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
-			wordCountPlugin._calcWordsAndCharacters();
+			wordCountPlugin._calculateWordsAndCharacters();
 
 			expect( wordCountPlugin.characters ).to.equal( 12 );
 		} );
@@ -76,14 +76,14 @@ describe( 'WordCount', () => {
 				const fake = sinon.fake();
 				wordCountPlugin.on( 'update', fake );
 
-				wordCountPlugin._calcWordsAndCharacters();
+				wordCountPlugin._calculateWordsAndCharacters();
 
 				sinon.assert.calledOnce( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 0, characters: 0 } );
 
-				// _calcWordsAndCharacters is throttled, so for this test case is run manually
+				// _calculateWordsAndCharacters is throttled, so for this test case is run manually
 				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				wordCountPlugin._calcWordsAndCharacters();
+				wordCountPlugin._calculateWordsAndCharacters();
 
 				sinon.assert.calledTwice( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 2, characters: 12 } );
@@ -120,7 +120,7 @@ describe( 'WordCount', () => {
 			setModelData( model, '<paragraph>Foo(bar)baz</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
-			wordCountPlugin._calcWordsAndCharacters();
+			wordCountPlugin._calculateWordsAndCharacters();
 
 			// There is \n between paragraph which has to be included into calculations
 			expect( container.innerText ).to.equal( 'Words: 5Characters: 24' );
@@ -133,7 +133,7 @@ describe( 'WordCount', () => {
 		} );
 
 		describe( 'destroy()', () => {
-			it( 'html element is removed and cleanup', done => {
+			it( 'html element is removed', done => {
 				const frag = document.createDocumentFragment();
 
 				frag.appendChild( container );
@@ -161,12 +161,10 @@ describe( 'WordCount', () => {
 		} );
 	} );
 
-	describe( '_calcWordsAndCharacters and throttle', () => {
+	describe( '_calculateWordsAndCharacters and throttle', () => {
 		beforeEach( done => {
 			// We need to flush initial throttle value after editor's initialization
-			setTimeout( () => {
-				done();
-			}, 255 );
+			setTimeout( done, 255 );
 		} );
 
 		it( 'gets update after model data change', done => {

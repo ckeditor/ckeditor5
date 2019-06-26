@@ -8,23 +8,22 @@
  */
 
 /**
- * Function walks through all the model's nodes. It obtains a plain text from each {@link module:engine/model/text~Text}
- * and {@link module:engine/model/textproxy~TextProxy}. All sections, which are not a text, are separated with a new line (`\n`).
+ * Returns plain text representation of an element and it's children. The blocks are separated by a newline (\n ).
  *
- * **Note:** Function walks through the entire model. There should be considered throttling during usage.
+ * **Note:** Function walks through the entire model, which might be very spread. There should be considered throttling it during usage.
  *
- * @param {module:engine/model/node~Node} node
+ * @param {module:engine/model/element~Element} element
  * @returns {String} Plain text representing model's data
  */
-export function modelElementToPlainText( node ) {
+export function modelElementToPlainText( element ) {
 	let text = '';
 
-	if ( node.is( 'text' ) || node.is( 'textProxy' ) ) {
-		text += node.data;
+	if ( element.is( 'text' ) || element.is( 'textProxy' ) ) {
+		text += element.data;
 	} else {
 		let prev = null;
 
-		for ( const child of node.getChildren() ) {
+		for ( const child of element.getChildren() ) {
 			const childText = modelElementToPlainText( child );
 
 			// If last block was finish, start from new line.

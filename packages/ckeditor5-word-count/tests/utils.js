@@ -8,17 +8,19 @@ import { modelElementToPlainText } from '../src/utils';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 
-describe( 'modelElementToPlainText()', () => {
-	it( 'should extract only plain text', () => {
-		const text1 = new Text( 'Foo' );
-		const text2 = new Text( 'Bar', { bold: true } );
-		const text3 = new Text( 'Baz', { bold: true, underline: true } );
+describe( 'utils', () => {
+	describe( 'modelElementToPlainText()', () => {
+		it( 'should extract only plain text', () => {
+			const text1 = new Text( 'Foo' );
+			const text2 = new Text( 'Bar', { bold: true } );
+			const text3 = new Text( 'Baz', { bold: true, underline: true } );
 
-		const innerElement1 = new Element( 'paragraph', null, [ text1 ] );
-		const innerElement2 = new Element( 'paragraph', null, [ text2, text3 ] );
+			const innerElement1 = new Element( 'paragraph', null, [ text1 ] );
+			const innerElement2 = new Element( 'paragraph', null, [ text2, text3 ] );
 
-		const mainElement = new Element( 'container', null, [ innerElement1, innerElement2 ] );
+			const mainElement = new Element( 'container', null, [ innerElement1, innerElement2 ] );
 
-		expect( modelElementToPlainText( mainElement ) ).to.equal( 'Foo\nBarBaz' );
+			expect( modelElementToPlainText( mainElement ) ).to.equal( 'Foo\nBarBaz' );
+		} );
 	} );
 } );

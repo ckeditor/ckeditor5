@@ -51,7 +51,7 @@ export default class WordCount extends Plugin {
 		super( editor );
 
 		/**
-		 * Property stores number of characters detected by {@link module:wordcount/wordcount~WordCount WordCount plugin}.
+		 * The number of characters in the editor.
 		 *
 		 * @observable
 		 * @readonly
@@ -60,7 +60,7 @@ export default class WordCount extends Plugin {
 		this.set( 'characters', 0 );
 
 		/**
-		 * Property stores number of words detected by {@link module:wordcount/wordcount~WordCount WordCount plugin}.
+		 * The number of words in the editor.
 		 *
 		 * @observable
 		 * @readonly
@@ -69,7 +69,7 @@ export default class WordCount extends Plugin {
 		this.set( 'words', 0 );
 
 		/**
-		 * Keeps reference to {@link module:ui/view~View view object} used to display self-updating HTML container.
+		 * A reference to a {@link module:ui/view~View view object} which contains self-updating HTML container.
 		 *
 		 * @private
 		 * @readonly
@@ -91,7 +91,7 @@ export default class WordCount extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.model.document.on( 'change', throttle( this._calcWordsAndCharacters.bind( this ), 250 ) );
+		editor.model.document.on( 'change:data', throttle( this._calculateWordsAndCharacters.bind( this ), 250 ) );
 	}
 
 	/**
@@ -116,15 +116,15 @@ export default class WordCount extends Plugin {
 	 * @returns {HTMLElement}
 	 */
 	getWordCountContainer() {
+		const editor = this.editor;
+		const t = editor.t;
+		const displayWords = editor.config.get( 'wordCount.displayWords' );
+		const displayCharacters = editor.config.get( 'wordCount.displayCharacters' );
+		const bind = Template.bind( this, this );
+		const children = [];
+
 		if ( !this._outputView ) {
 			this._outputView = new View();
-
-			const editor = this.editor;
-			const t = editor.t;
-			const displayWords = editor.config.get( 'wordCount.displayWords' );
-			const displayCharacters = editor.config.get( 'wordCount.displayCharacters' );
-			const bind = Template.bind( this, this );
-			const children = [];
 
 			if ( displayWords || displayWords === undefined ) {
 				const wordsLabel = t( 'Words' ) + ':';
@@ -182,7 +182,7 @@ export default class WordCount extends Plugin {
 	 * @private
 	 * @fires update
 	 */
-	_calcWordsAndCharacters() {
+	_calculateWordsAndCharacters() {
 		const txt = modelElementToPlainText( this.editor.model.document.getRoot() );
 
 		this.characters = txt.length;
@@ -197,7 +197,7 @@ export default class WordCount extends Plugin {
 }
 
 /**
- * Event is fired after {@link #words} and {@link #characters} are updated.
+ * Event fired after {@link #words} and {@link #characters} are updated.
  *
  * @event update
  * @param {Object} data
@@ -230,7 +230,7 @@ export default class WordCount extends Plugin {
  */
 
 /**
- * This option allows on hiding the word counter. The element obtained through
+ * This option allows for hiding the word counter. The element obtained through
  * {@link module:wordcount/wordcount~WordCount#getWordCountContainer} will only preserve
  * the characters part. Word counter is displayed by default when this configuration option is not defined.
  *
@@ -248,7 +248,7 @@ export default class WordCount extends Plugin {
  */
 
 /**
- * This option allows on hiding the character counter. The element obtained through
+ * This option allows for hiding the character counter. The element obtained through
  * {@link module:wordcount/wordcount~WordCount#getWordCountContainer} will only preserve
  * the words part. Character counter is displayed by default when this configuration option is not defined.
  *
@@ -256,7 +256,7 @@ export default class WordCount extends Plugin {
  *			displayCharacters = false
  *		}
  *
- * The mentioned configuration will result with the followed container:
+ * The mentioned configuration will result in the following container
  *
  *		<div class="ck ck-word-count">
  *			<div>Words: 4</div>
