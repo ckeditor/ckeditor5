@@ -12,6 +12,12 @@
 .ck.ck-tooltip {
 	left: 50%;
 
+	/*
+	 * Prevent blurry tooltips in LoDPI environments.
+	 * See https://github.com/ckeditor/ckeditor5/issues/1802.
+	 */
+	top: 0;
+
 	/**
 	 * A class once applied displays the tooltip south of the element.
 	 *
