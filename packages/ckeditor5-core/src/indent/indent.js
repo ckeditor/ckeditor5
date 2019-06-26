@@ -15,7 +15,7 @@ import IndentUI from './indentui';
 /**
  * The indent feature.
  *
- * This plugin acts as a single entry point plugin for other features that implements indenting of elements like list or paragraphs.
+ * This plugin acts as a single entry point plugin for other features that implement indenting of elements like lists or paragraphs.
  *
  * The compatible features are:
  * - the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
