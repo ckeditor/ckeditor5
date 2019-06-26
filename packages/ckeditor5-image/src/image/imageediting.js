@@ -59,7 +59,13 @@ export default class ImageEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'image',
-			view: ( modelElement, viewWriter ) => toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) )
+			view: ( modelElement, viewWriter ) => {
+				const ret = toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
+
+				editor.plugins.get( 'WidgetResizer' ).apply( ret, viewWriter );
+
+				return ret;
+			}
 		} );
 
 		conversion.for( 'downcast' )
