@@ -229,7 +229,7 @@ ClassicEditor
 
 ### Documents colors
 
-The document colors feature is an additional section in a dropdown color panel. It lists the colors used in the document and lists them in the order of occurrence. Duplicated colors are not inserted multiple times. By default number of document colors is limited, but you can adjust it (or disable it) using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
+The document colors feature is an additional section in a dropdown color panel. It lists the colors used in the document in the order of occurrence. Duplicated colors are not inserted multiple times. By default number of document colors is limited, but you can adjust it (or disable it) using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
 
 The document colors feature can help with identification of already used colors in a document. This provides a possibility of applying the same color further in the text without searching it over the entire section with predefined colors.
 
@@ -262,76 +262,26 @@ ClassicEditor
 
 It is possible to configure how many colors' columns are displayed in the grid. Changing geometry of a color grid impacts on both section in a dropdown panel (available colors defined in the configuration and document colors sections). Setting {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} ( or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} ) shapes the color grid.
 
-Below can be found examples of how those options work together. Examples show how to configure {@link module:font/fontcolor~FontColor `fontColor`} plugin, however, the same rules apply to {@link module:font/fontbackgroundcolor~FontBackgroundColor `fontBackgroundColor`} plugins. Font color and background color plugins can be shaped differently because each plugin is configured separately.
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontColor: {
+			columns: 3,
 
-* There is no configuration of the `columns` and the `documentColors` options. Default values are used for both options. In result, there will be a dropdown with 5 columns and a there will be a single row ( 5 colors ) in the document colors section.
-  ```js
-  ClassicEditor
-  	.create( document.querySelector( '#editor' ), {
-  		toolbar: [
-  			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-  		]
-  	} )
-  	.then( ... )
-  	.catch( ... );
-  ```
-* The value of `columns` option is changed and the value of `documentColors` option remains undefined. In this case, the `documentColors` option uses the value defined for `columns` option (`8`). In result, there will be a dropdown with 8 columns and there will be a single row ( 8 colors ) in the document colors section.
-  ```js
-  ClassicEditor
-  	.create( document.querySelector( '#editor' ), {
-  		fontColor: {
-  			columns: 8
-  		},
-  		toolbar: [
-  			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-  		]
-  	} )
-  	.then( ... )
-  	.catch( ... );
-  ```
-* The value of `documentColors` option is changed and the value of `columns` option remains undefined. In this case, the `columns` option has default value (`5`) and the `documentColors` option has the value from the configuration (`15`). In result, there will be a dropdown with 5 columns and there will be 3 rows ( 15 colors ) in the document colors section.
-  ```js
-  ClassicEditor
-  	.create( document.querySelector( '#editor' ), {
-  		fontColor: {
-  			documentColors: 15
-  		},
-  		toolbar: [
-  			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-  		]
-  	} )
-  	.then( ... )
-  	.catch( ... );
-  ```
-* The value of `documentColors` option is set to `0`. In this case, the document colors feature is disable and the `columns` option has a default value (`5`). In result, there will be a dropdown with 5 columns without the document colors section.
-  ```js
-  ClassicEditor
-  	.create( document.querySelector( '#editor' ), {
-  		fontColor: {
-  			documentColors: 0
-  		},
-  		toolbar: [
-  			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-  		]
-  	} )
-  	.then( ... )
-  	.catch( ... );
-  ```
-* The values of `columns` and `documentColors` options are changed. In this case, each feature has set own value in the configuration. In result, there will be a dropdown with `8` columns and there will be 2 rows ( 16 colors ) in the document colors section.
-  ```js
-  ClassicEditor
-  	.create( document.querySelector( '#editor' ), {
-  		fontColor: {
-  			columns: 8,
-  			documentColors: 16
-  		},
-  		toolbar: [
-  			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
-  		]
-  	} )
-  	.then( ... )
-  	.catch( ... );
-  ```
+			// ...
+		},
+		fontBackgroundColor: {
+			columns: 6,
+
+			// ...
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Installation
 
