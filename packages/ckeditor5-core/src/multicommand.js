@@ -65,7 +65,7 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Registers a command as child command.
+	 * Registers a child command.
 	 *
 	 * @param {module:core/command~Command} command
 	 */
