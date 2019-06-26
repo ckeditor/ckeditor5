@@ -49,19 +49,19 @@ const utils = {
 	 *
 	 * Usage:
 	 *
-	 *      it( 'test', () => {
-	 *          // Test bootstrapping...
+	 *		it( 'test', () => {
+	 *			// Test bootstrapping...
 	 *
-	 *          const assertEdge = () => {
-	 *              // expect();
-	 *          };
+	 *			const assertEdge = () => {
+	 *				// expect();
+	 *			};
 	 *
-	 *          const assertAll = () => {
-	 *              // expect();
-	 *          };
+	 *			const assertAll = () => {
+	 *				// expect();
+	 *			};
 	 *
-	 *          testUtils.checkAssertions( assertEdge, assertAll );
-	 *      } );
+	 *			testUtils.checkAssertions( assertEdge, assertAll );
+	 *		} );
 	 *
 	 * @param {...Function} assertions Functions that will be executed.
 	 */

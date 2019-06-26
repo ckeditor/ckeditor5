@@ -33,10 +33,10 @@
 /**
  * The initial editor data to be used instead of the provided element's HTML content.
  *
- *      ClassicEditor
- *          .create( document.querySelector( '#editor' ), {
- *              initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
- *          } )
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+ *			} )
  *			.then( ... )
  *			.catch( ... );
  *
