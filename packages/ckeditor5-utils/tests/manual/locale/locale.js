@@ -7,12 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-// import { add as addTranslations } from '../../../src/translation-service';
-
-// import '@ckeditor/ckeditor5-build-classic/build/translations/de.js';
-// import '@ckeditor/ckeditor5-build-classic/build/translations/ar.js';
-
-// addTranslations( 'de', window.CKEDITOR_TRANSLATIONS.de );
 
 const toolbarConfig = [
 	'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo'
@@ -23,7 +17,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet ],
 		toolbar: toolbarConfig,
 
-		language: 'de'
+		language: 'en'
 	} )
 	.then( newEditor => {
 		window.editorLanguage = newEditor;
