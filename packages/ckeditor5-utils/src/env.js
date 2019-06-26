@@ -21,7 +21,7 @@ const env = {
 	 * Indicates that the application is running on Macintosh.
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#isMac
+	 * @type {Boolean}
 	 */
 	isMac: isMac( userAgent ),
 
@@ -29,7 +29,7 @@ const env = {
 	 * Indicates that the application is running in Microsoft Edge.
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#isEdge
+	 * @type {Boolean}
 	 */
 	isEdge: isEdge( userAgent ),
 
@@ -37,7 +37,7 @@ const env = {
 	 * Indicates that the application is running in Firefox (Gecko).
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#isEdge
+	 * @type {Boolean}
 	 */
 	isGecko: isGecko( userAgent ),
 
@@ -45,7 +45,7 @@ const env = {
 	 * Indicates that the application is running in Safari.
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#isSafari
+	 * @type {Boolean}
 	 */
 	isSafari: isSafari( userAgent )
 };
