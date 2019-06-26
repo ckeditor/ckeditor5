@@ -560,7 +560,7 @@ export function createRegExp( marker, minimumCharacters ) {
 	const mentionCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
 
 	// The pattern consists of 3 groups:
-	// - 0 (non-capturing): Opening sequence - start of the line, space or opening punctuation character like ( or ",
+	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
 	// - 1: The marker character,
 	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
 	//
