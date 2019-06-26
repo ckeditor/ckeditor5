@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/indent/indent
+ * @module indent/indent
  */
 
 import Plugin from '../plugin';
@@ -18,14 +18,14 @@ import IndentUI from './indentui';
  * This plugin acts as a single entry point plugin for other features that implement indenting of elements like lists or paragraphs.
  *
  * The compatible features are:
- 
+ *
  * - the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
  * * the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
  *
  * This is a "glue" plugin which loads the following plugins:
  *
- * * The {@link module:core/indent/indentediting~IndentEditing indent editing feature} and
- * * The {@link module:core/indent/indentui~IndentUI indent UI feature}.
+ * * The {@link module:indent/indentediting~IndentEditing indent editing feature} and
+ * * The {@link module:indent/indentui~IndentUI indent UI feature}.
  *
  * The dependent plugins register the `'indent'` and `'outdent'` commands and it introduce the `'indent'` and `'outdent'` buttons
  * which allow to increase or decrease text indentation of supported elements.
