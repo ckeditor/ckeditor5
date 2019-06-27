@@ -17,7 +17,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
-import TextWatcher from '@ckeditor/ckeditor5-utils/src/textwatcher';
+import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
