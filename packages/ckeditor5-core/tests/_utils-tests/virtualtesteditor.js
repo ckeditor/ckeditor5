@@ -58,7 +58,7 @@ describe( 'VirtualTestEditor', () => {
 		it( 'fires the `data#ready` event once', () => {
 			const dataReadySpy = sinon.spy();
 
-			const Plugin = editor => {
+			const Plugin = function( editor ) {
 				editor.data.on( 'ready', dataReadySpy );
 			};
 
