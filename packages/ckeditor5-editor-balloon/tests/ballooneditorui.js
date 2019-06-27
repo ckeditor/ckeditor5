@@ -14,7 +14,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isElement } from 'lodash-es';
 
-import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonEditorUI', () => {
@@ -104,7 +104,7 @@ describe( 'BalloonEditorUI', () => {
 			} );
 
 			it( 'binds view.editable#isFocused', () => {
-				utils.assertBinding(
+				assertBinding(
 					view.editable,
 					{ isFocused: false },
 					[
