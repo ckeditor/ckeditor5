@@ -7,8 +7,8 @@
  * @module indent/indentui
  */
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import Plugin from '../plugin';
 
 /**
  * The indent feature.

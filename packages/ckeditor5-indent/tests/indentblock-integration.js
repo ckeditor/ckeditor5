@@ -7,9 +7,9 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import IndentEditing from '@ckeditor/ckeditor5-core/src/indent/indentediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
+import IndentEditing from '../src/indentediting';
 import IndentBlock from '../src/indentblock';
 
 describe( 'IndentBlock - integration', () => {
