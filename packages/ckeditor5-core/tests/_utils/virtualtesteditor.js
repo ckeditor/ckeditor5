@@ -33,11 +33,11 @@ export default class VirtualTestEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
+					.then( () => editor.data.init( config.initialData || '' ) )
 					.then( () => {
-						editor.data.init( config.initialData || '' );
 						editor.fire( 'ready' );
+						return editor;
 					} )
-					.then( () => editor )
 			);
 		} );
 	}
