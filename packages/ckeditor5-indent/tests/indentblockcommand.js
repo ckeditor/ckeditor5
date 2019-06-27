@@ -169,6 +169,11 @@ describe( 'IndentBlockCommand', () => {
 					expect( command.isEnabled ).to.be.false;
 				} );
 
+				it( 'should be true in indented block onf first indentation class', () => {
+					setData( model, '<paragraph blockIndent="indent-1">f[]oo</paragraph>' );
+					expect( command.isEnabled ).to.be.true;
+				} );
+
 				it( 'should be true in indented block and there are still indentation classes', () => {
 					setData( model, '<paragraph blockIndent="indent-2">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;

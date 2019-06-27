@@ -45,7 +45,7 @@ export default class IndentUsingClasses {
 		if ( this.isForward ) {
 			return currentIndex < this.classes.length - 1;
 		} else {
-			return currentIndex > 0;
+			return currentIndex >= 0;
 		}
 	}
 
