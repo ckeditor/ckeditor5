@@ -129,8 +129,8 @@ export default class WordCount extends Plugin {
 	 * Returned element has followed HTML structure:
 	 *
 	 * 		<div class="ck ck-word-count">
-	 * 			<div>Words: 4</div>
-	 * 			<div>Characters: 28</div>
+	 * 			<div class="ck-word-count__words">Words: 4</div>
+	 * 			<div class="ck-word-count__characters">Characters: 28</div>
 	 * 		</div>
 	 *
 	 * @returns {HTMLElement}
@@ -265,7 +265,7 @@ export default class WordCount extends Plugin {
  * The mentioned configuration will result with the followed container:
  *
  *		<div class="ck ck-word-count">
- *			<div>Characters: 28</div>
+ *			<div class="ck-word-count__characters">Characters: 28</div>
  *		</div>
  *
  * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayWords
@@ -283,7 +283,7 @@ export default class WordCount extends Plugin {
  * The mentioned configuration will result in the following container
  *
  *		<div class="ck ck-word-count">
- *			<div>Words: 4</div>
+ *			<div class="ck-word-count__words">Words: 4</div>
  *		</div>
  *
  * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayCharacters
