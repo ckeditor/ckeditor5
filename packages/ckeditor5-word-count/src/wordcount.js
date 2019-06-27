@@ -69,6 +69,26 @@ export default class WordCount extends Plugin {
 		this.set( 'words', 0 );
 
 		/**
+		 * Label used to display words value in {@link #getWordCountContainer output contianer}
+		 *
+		 * @observable
+		 * @private
+		 * @readonly
+		 * @member {String} module:wordcount/wordcount~WordCount#_wordsLabel
+		 */
+		this.set( '_wordsLabel' );
+
+		/**
+		 * Label used to display characters value in {@link #getWordCountContainer output contianer}
+		 *
+		 * @observable
+		 * @private
+		 * @readonly
+		 * @member {String} module:wordcount/wordcount~WordCount#_charactersLabel
+		 */
+		this.set( '_charactersLabel' );
+
+		/**
 		 * A reference to a {@link module:ui/view~View view object} which contains self-updating HTML container.
 		 *
 		 * @private
@@ -127,32 +147,30 @@ export default class WordCount extends Plugin {
 			this._outputView = new View();
 
 			if ( displayWords || displayWords === undefined ) {
-				const wordsLabel = t( 'Words' ) + ':';
+				this.bind( '_wordsLabel' ).to( this, 'words', words => {
+					return t( 'Words: %0', [ words ] );
+				} );
 
 				children.push( {
 					tag: 'div',
 					children: [
 						{
-							text: [
-								wordsLabel,
-								bind.to( 'words' )
-							]
+							text: [ bind.to( '_wordsLabel' ) ]
 						}
 					]
 				} );
 			}
 
 			if ( displayCharacters || displayCharacters === undefined ) {
-				const charactersLabel = t( 'Characters' ) + ':';
+				this.bind( '_charactersLabel' ).to( this, 'characters', words => {
+					return t( 'Characters: %0', [ words ] );
+				} );
 
 				children.push( {
 					tag: 'div',
 					children: [
 						{
-							text: [
-								charactersLabel,
-								bind.to( 'characters' )
-							]
+							text: [ bind.to( '_charactersLabel' ) ]
 						}
 					]
 				} );
