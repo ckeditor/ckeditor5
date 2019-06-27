@@ -33,19 +33,31 @@ function getAbsolutePosition( element ) {
 
 class ResizeContext {
 	constructor( handler ) {
-		const resizeWrapper = getAncestors( handler ).filter(
+		const widgetWrapper = getAncestors( handler ).filter(
 			element => element.classList.contains( 'ck-widget_with-resizer' )
 		)[ 0 ];
 
-		this.widgetWrapper = resizeWrapper;
-		this.shadowWrapper = resizeWrapper.querySelector( '.ck-widget__resizer-shadow' );
+		this.widgetWrapper = widgetWrapper;
+		this.shadowWrapper = widgetWrapper.querySelector( '.ck-widget__resizer-shadow' );
 
 		// Reference edge (corner) that should be used to calculate resize difference.
 		this.referenceCoordinates = getAbsolutePosition( handler );
 
 		// Initial height of resizing host / resized element.
 		// @todo: hardcoded img support
-		this.initialHeight = resizeWrapper.querySelector( 'img' ).height;
+		const resizingHost = widgetWrapper.querySelector( 'img' );
+		this.initialHeight = resizingHost.height;
+
+		const resizeWrapper = widgetWrapper.querySelector( '.ck-widget__resizer-wrapper' );
+
+		resizeWrapper.style.left = resizingHost.offsetLeft + 'px';
+		resizeWrapper.style.right = resizingHost.offsetLeft + 'px';
+
+		// Position of a clicked resize handler in x and y axes.
+		this.direction = {
+			y: 'top',
+			x: 'left'
+		};
 	}
 
 	initialize() {
