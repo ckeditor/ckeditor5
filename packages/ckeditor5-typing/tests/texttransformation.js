@@ -120,7 +120,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should allow adding own rules with string pattern', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						extra: [
 							{ from: 'CKE', to: 'CKEditor' }
 						]
@@ -140,7 +140,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should allow adding own rules with RegExp object', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						extra: [
 							{ from: /([a-z]+)@(example.com)$/, to: '$1.at.$2' }
 						]
@@ -160,7 +160,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should not alter include rules adding own rules as extra', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						extra: [
 							{ from: 'CKE', to: 'CKEditor' }
 						]
@@ -186,7 +186,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should overwrite all rules when defining include rules', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						include: [
 							{ from: 'CKE', to: 'CKEditor' }
 						]
@@ -212,7 +212,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should remove rules from group when defining remove rules', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						include: [ 'symbols' ],
 						remove: [ 'trademark' ]
 					}
@@ -237,7 +237,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should remove all rules from group when group is in remove', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						include: [ 'symbols', 'typography' ],
 						remove: [ 'symbols' ]
 					}
@@ -262,7 +262,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should not fail for unknown rule name', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						include: [ 'symbols', 'typo' ]
 					}
 				}
@@ -272,7 +272,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should not fail for re-declared include rules config', () => {
 			return createEditorInstance( {
 				typing: {
-					transformation: {
+					transformations: {
 						extra: [ 'trademark' ]
 					}
 				}

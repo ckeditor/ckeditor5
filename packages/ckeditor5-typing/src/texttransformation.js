@@ -77,21 +77,21 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		editor.config.define( 'typing', {
-			transformation: {
-				include: DEFAULT_TRANSFORMATIONS
-			}
-		} );
+	static get pluginName() {
+		return 'TextTransformation';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'TextTransformation';
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'typing', {
+			transformations: {
+				include: DEFAULT_TRANSFORMATIONS
+			}
+		} );
 	}
 
 	/**
@@ -101,7 +101,7 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformation' ) );
+		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
 
 		for ( const transformation of configuredTransformations ) {
 			const { from, to } = transformation;
@@ -185,15 +185,15 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  * Text transformation definition object.
  *
  *		const transformations = [
- *			// Will replace foo text before caret (ie typed) by user to bar:
+ *			// Will replace foo with bar:
  *			{ from: 'foo', to: 'bar' },
  *
- *			// Will remove @ from emails on example.com domain, ie from user@example.com -> user.at.example.com:
+ *			// Will remove @ from emails on example.com domain, e.g. from user@example.com -> user.at.example.com:
  *			{ from: /([a-z-])@(example.com)$/i, to: '$1.at.$2' }
  *		]
  *
- * *Note*: The text watcher always evaluates end of an input - a text before a caret in single node. If passing a RegExp object you must
- * include `$` token to match end of string.
+ * **Note:** The text watcher always evaluates the end of the input (the typed text). If you're passing a RegExp object you must
+ * include `$` token to match the end of string.
  *
  * @typedef {Object} module:typing/texttransformation~TextTransformationDescription
  * @property {String|RegExp} from The string or RegExp to transform.
@@ -205,7 +205,7 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *
  * Read more in {@link module:typing/texttransformation~TextTransformationConfig}.
  *
- * @member {module:typing/texttransformation~TextTransformationConfig} module:typing/typing~TypingConfig#transformation
+ * @member {module:typing/texttransformation~TextTransformationConfig} module:typing/typing~TypingConfig#transformations
  */
 
 /**
@@ -214,15 +214,17 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *		ClassicEditor
  *			.create( editorElement, {
  *				typing: {
- *					transformation:  ... // Text transformation feature options.
+ *					transformations: ... // Text transformation feature options.
  *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
  *
- * By provides transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#include}:
+ * By default, the feature comes pre-configured
+ * (via {@link module:typing/texttransformation~TextTransformationConfig#include `config.typing.transformations.include`}) with the
+ * following groups of transformations:
  *
- * * Typography (typography)
+ * * Typography (group name: `typography`)
  *   - `ellipsis`: transforms `...` to `…`
  *   - `enDash`: transforms ` -- ` to ` – `
  *   - `emDash`: transforms ` --- ` to ` — `
@@ -244,28 +246,34 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *   - `notEqual`: transforms `!=`, to: `≠`
  *   - `arrowLeft`: transforms `<-`, to: `←`
  *   - `arrowRight`: transforms `->`, to: `→`
+ * * Misc:
+ *   - `quotesPrimaryEnGb`: transforms `'Foo bar'` to `‘Foo bar’`
+ *   - `quotesSecondaryEnGb`: transforms `"Foo bar"` to `“Foo bar”`
+ *   - `quotesPrimaryPl`: transforms `"Foo bar"` to `„Foo bar”`
+ *   - `quotesSecondaryPl`:  transforms `'Foo bar'` to `‚Foo bar’`
  *
- * The other defined named transformations are:
- * * `quotesPrimaryEnGb`: transforms `'Foo bar'` to `‘Foo bar’`
- * * `quotesSecondaryEnGb`: transforms `"Foo bar"` to `“Foo bar”`
- * * `quotesPrimaryPl`: transforms `"Foo bar"` to `„Foo bar”` },
- * * `quotesSecondaryPl`:  transforms `'Foo bar'` to `‚Foo bar’` }
+ * In order to load additional transformations, use the
+ * {@link module:typing/texttransformation~TextTransformationConfig#extra `transformations.extra` option}.
  *
- * Note: To load additional transformations, you should use the {@link module:typing/texttransformation~TextTransformationConfig#extra}
- * configuration. To narrow the list of loaded transformations, use the
- * {@link module:typing/texttransformation~TextTransformationConfig#remove} configuration.
+ * In order to narrow down the list of transformations, use the
+ * {@link module:typing/texttransformation~TextTransformationConfig#remove `transformations.remove` option}.
  *
- * To completely override use {@link module:typing/texttransformation~TextTransformationConfig#include} configuration:
+ * In order to completely override the supported transformations, use the
+ * {@link module:typing/texttransformation~TextTransformationConfig#include `transformations.include` option}.
  *
- *		const config = {
+ * Example:
+ *
+ *		const transformationsConfig = {
  *			include: [
- *				// Use only 'quotes' and 'typography' groups.
+ *				// Use only the 'quotes' and 'typography' groups.
  *				'quotes',
  *				'typography',
- *				// Custom transformation.
+
+ *				// Plus, some custom transformation.
  *				{ from: 'CKS', to: 'CKSource }
- *			]
- *			// Remove the 'ellipsis' transformation loaded by 'typography' group.
+ *			],
+ *
+ *			// Remove the 'ellipsis' transformation loaded by the 'typography' group.
  *			remove: [ 'ellipsis' ]
  *		};
  *
@@ -274,16 +282,20 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 
 /* eslint-disable max-len */
 /**
- * The default text transformations supported by the editor.
+ * The standard list of text transformations supported by the editor. By default it comes pre-configured with a couple dozen of them
+ * (see {@link module:typing/texttransformation~TextTransformationConfig} for the full list of them). You can override this list completely
+ * by setting this option or use the other two options
+ * ({@link module:typing/texttransformation~TextTransformationConfig#extra `transformations.extra`},
+ * {@link module:typing/texttransformation~TextTransformationConfig#remove `transformations.remove`}) to fine tune the default list.
  *
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#include
  */
 
 /**
  * The extra text transformations that are added to the transformations defined in
- * {@link module:typing/texttransformation~TextTransformationConfig#include}.
+ * {@link module:typing/texttransformation~TextTransformationConfig#include `transformations.include`}.
  *
- *		const config = {
+ *		const transformationsConfig = {
  *			extra: [
  *				{ from: 'CKS', to: 'CKSource' }
  *			]
@@ -294,10 +306,10 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 
 /**
  * The text transformations names that are removed from transformations defined in
- * {@link module:typing/texttransformation~TextTransformationConfig#include} or
- * {@link module:typing/texttransformation~TextTransformationConfig#extra}.
+ * {@link module:typing/texttransformation~TextTransformationConfig#include `transformations.include`} or
+ * {@link module:typing/texttransformation~TextTransformationConfig#extra `transformations.extra`}.
  *
- *		const config = {
+ *		const transformationsConfig = {
  *			remove: [
  *				'ellipsis',    // Remove only 'ellipsis' from 'typography group.
  *				'mathematical' // Remove all transformations from 'mathematical' group.
