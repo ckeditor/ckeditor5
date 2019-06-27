@@ -197,7 +197,8 @@ export default class ClassicEditor extends Editor {
 							// Documented in core/editor/editorconfig.jdoc.
 							throw new CKEditorError(
 								'editor-create-initial-data: ' +
-								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
+								null
 							);
 						}
 
