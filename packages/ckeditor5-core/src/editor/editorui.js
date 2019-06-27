@@ -154,7 +154,7 @@ export default class EditorUI {
 	 */
 	get _editableElements() {
 		/**
-		 * The `EditorUI#_editableElements` property has been deprecated and will be remove in the near future.
+		 * The `EditorUI#_editableElements` property has been deprecated and will be removed in the near future.
 		 * Please use {@link #setEditableElement `setEditableElement()`} and {@link #getEditableElement `getEditableElement()`}
 		 * methods instead.
 		 *
