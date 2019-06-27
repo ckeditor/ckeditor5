@@ -4,7 +4,6 @@
  */
 
 import Command from './command';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * @module core/multicommand
