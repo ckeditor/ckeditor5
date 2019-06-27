@@ -52,7 +52,7 @@ export default class IndentUsingClasses {
 	/**
 	 * @inheritDoc
 	 */
-	getNewIndent( indentAttributeValue ) {
+	getNextIndent( indentAttributeValue ) {
 		const currentIndex = this.classes.indexOf( indentAttributeValue );
 		const indexStep = this.isForward ? 1 : -1;
 

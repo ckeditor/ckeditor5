@@ -55,7 +55,7 @@ export default class IndentUsingOffset {
 	/**
 	 * @inheritDoc
 	 */
-	getNewIndent( indentAttributeValue ) {
+	getNextIndent( indentAttributeValue ) {
 		const currentOffset = parseFloat( indentAttributeValue || 0 );
 		const isSameUnit = !indentAttributeValue || indentAttributeValue.endsWith( this.unit );
 

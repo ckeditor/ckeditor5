@@ -78,10 +78,10 @@ export default class IndentBlockCommand extends Command {
 			for ( const item of itemsToChange ) {
 				const currentIndent = item.getAttribute( 'blockIndent' );
 
-				const newIndent = this._indentBehavior.getNewIndent( currentIndent );
+				const nextIndent = this._indentBehavior.getNextIndent( currentIndent );
 
-				if ( newIndent ) {
-					writer.setAttribute( 'blockIndent', newIndent, item );
+				if ( nextIndent ) {
+					writer.setAttribute( 'blockIndent', nextIndent, item );
 				} else {
 					writer.removeAttribute( 'blockIndent', item );
 				}
@@ -107,7 +107,7 @@ export default class IndentBlockCommand extends Command {
 /**
  * Returns new indent attribute value based on current indent.
  *
- * @method #getNewIndent
+ * @method #getNextIndent
  * @param {String} indentAttributeValue Current indent attribute value.
  * @returns {String|undefined}
  */
