@@ -157,7 +157,10 @@ export default class WordCount extends Plugin {
 						{
 							text: [ bind.to( '_wordsLabel' ) ]
 						}
-					]
+					],
+					attributes: {
+						class: 'ck-word-count__words'
+					}
 				} );
 			}
 
@@ -172,7 +175,10 @@ export default class WordCount extends Plugin {
 						{
 							text: [ bind.to( '_charactersLabel' ) ]
 						}
-					]
+					],
+					attributes: {
+						class: 'ck-word-count__characters'
+					}
 				} );
 			}
 
