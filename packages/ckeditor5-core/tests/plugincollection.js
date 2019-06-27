@@ -269,7 +269,7 @@ describe( 'PluginCollection', () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					assertCKEditorError( err, /^plugincollection-plugin-not-found/, null );
+					assertCKEditorError( err, /^plugincollection-plugin-not-found/, editor );
 
 					sinon.assert.calledOnce( logSpy );
 					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );

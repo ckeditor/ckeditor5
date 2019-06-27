@@ -79,7 +79,8 @@ export default class ClassicTestEditor extends Editor {
 							// Documented in core/editor/editorconfig.jsdoc.
 							throw new CKEditorError(
 								'editor-create-initial-data: ' +
-								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
+								null
 							);
 						}
 
