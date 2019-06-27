@@ -119,7 +119,7 @@ export default class PluginCollection {
 				pluginName = key.pluginName || key.name;
 			}
 
-			throw new CKEditorError( errorMsg, { plugin: pluginName } );
+			throw new CKEditorError( errorMsg, this._editor, { plugin: pluginName } );
 		}
 
 		return plugin;
@@ -266,6 +266,7 @@ export default class PluginCollection {
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` option.',
+								editor,
 								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
 							);
 						}

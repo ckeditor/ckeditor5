@@ -11,6 +11,7 @@ import PluginCollection from '../src/plugincollection';
 import Plugin from '../src/plugin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
@@ -344,13 +345,12 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
-				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be still executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-required/ );
+					assertCKEditorError( err, /^plugincollection-required/, editor );
 
 					expect( logSpy.calledTwice ).to.equal( true );
 				} );
@@ -453,9 +453,9 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] ).then( () => {
-				expect( () => plugins.get( 'foo' ) )
-					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
-					.with.deep.property( 'data', { plugin: 'foo' } );
+				expectToThrowCKEditorError( () => plugins.get( 'foo' ),
+					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' }
+				);
 			} );
 		} );
 
@@ -466,9 +466,8 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] ).then( () => {
-				expect( () => plugins.get( SomePlugin ) )
-					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
-					.with.deep.property( 'data', { plugin: 'foo' } );
+				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
+					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' } );
 			} );
 		} );
 
@@ -478,9 +477,10 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] ).then( () => {
-				expect( () => plugins.get( SomePlugin ) )
-					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
-					.with.deep.property( 'data', { plugin: 'SomePlugin' } );
+				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
+					/^plugincollection-plugin-not-loaded:/,
+					editor, { plugin: 'SomePlugin' }
+				);
 			} );
 		} );
 	} );
