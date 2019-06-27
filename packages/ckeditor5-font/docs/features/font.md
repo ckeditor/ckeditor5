@@ -114,8 +114,7 @@ ClassicEditor
 
 The font feature also supports numerical values.
 
-In this case, each size is represented in the view as a `<span>` element with the `font-size` style set in `px`.
-For example, `14` will be represented in the editor data as:
+In this case, each size is represented in the view as a `<span>` element with the `font-size` style set in `px`. For example, `14` will be represented in the editor data as:
 
 ```html
 <span style="font-size: 14px">...</span>
@@ -227,26 +226,26 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### Documents colors
+### Changing the geometry of the color grid
 
-The document colors feature is an additional section in a dropdown color panel. It lists the colors used in the document in the order of occurrence. Duplicated colors are not inserted multiple times. By default number of document colors is limited, but you can adjust it (or disable it) using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
+You can set the number of columns in the color picker by setting {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`}.
 
-The document colors feature can help with identification of already used colors in a document. This provides a possibility of applying the same color further in the text without searching it over the entire section with predefined colors.
-
-<info-box info>
-**Note:** In case the edited document doesn't contain any font color or background colors, the document colors section is hidden.
-</info-box>
+Usually, you will want to use this option when changing the number of [available colors](#specifying-available-colors).
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		fontColor: {
-			documentColors: 10,
+			colors: [
+				// 9 colors defined here...
+			]
+
+			columns: 3, // so, let's display them in 3 columns
 
 			// ...
 		},
 		fontBackgroundColor: {
-			documentColors: 0, // Disables the feature.
+			columns: 6,
 
 			// ...
 		},
@@ -258,20 +257,27 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### Changing the geometry of the color grid
+### Documents colors
 
-It is possible to configure how many colors' columns are displayed in the grid. Changing geometry of a color grid impacts on both section in a dropdown panel (available colors defined in the configuration and document colors sections). Setting {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} ( or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} ) shapes the color grid.
+The font and font background color pickers contain the *Document colors* section. It lists the colors already used in the document for the users to be able to easily reuse them (for consistency purposes).
+
+By default the number of displayed document colors is limited to one row, but you can adjust it (or remove the whole section) by using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		fontColor: {
-			columns: 3,
+			// Display 6 columns in the color grid.
+			columns: 6,
+
+			// And 12 document colors (2 rows of them).
+			documentColors: 12,
 
 			// ...
 		},
 		fontBackgroundColor: {
-			columns: 6,
+			// Remove the "Document colors" section.
+			documentColors: 0,
 
 			// ...
 		},
