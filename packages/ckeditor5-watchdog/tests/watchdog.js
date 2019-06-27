@@ -9,6 +9,7 @@ import Watchdog from '../src/watchdog';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Watchdog', () => {
 	let sourceElement;
@@ -50,14 +51,22 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 			watchdog.setDestructor( editor => editor.destroy() );
 
-			expect( () => watchdog.create() ).to.throw( CKEditorError, /^watchdog-creator-not-defined/ );
+			expectToThrowCKEditorError(
+				() => watchdog.create(),
+				/^watchdog-creator-not-defined/,
+				null
+			);
 		} );
 
 		it( 'should throw an error when the destructor is not defined', () => {
 			const watchdog = new Watchdog();
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
-			expect( () => watchdog.create() ).to.throw( CKEditorError, /^watchdog-destructor-not-defined/ );
+			expectToThrowCKEditorError(
+				() => watchdog.create(),
+				/^watchdog-destructor-not-defined/,
+				null
+			);
 		} );
 	} );
 

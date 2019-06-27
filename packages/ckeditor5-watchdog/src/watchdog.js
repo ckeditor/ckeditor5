@@ -21,7 +21,7 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  * It keeps an {@link module:core/editor/editor~Editor editor} instance running.
  * If a {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` error}
  * is thrown by the editor, it tries to restart the editor to the state before the crash. All other errors
- * are transparent to the watchdog.
+ * are transparent to the watchdog. By looking at the error context, the Watchdog restarts only the editor which crashed.
  *
  * Note that the watchdog does not handle errors during editor initialization (`Editor.create()`)
  * and editor destruction (`editor.destroy()`). Errors at these stages mean that there is a serious
