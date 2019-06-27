@@ -805,7 +805,7 @@ describe( 'MentionUI', () => {
 					feeds: [
 						{
 							// Always return 5 items
-							feed: () => [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],
+							feed: [ '@תַפּוּחַ', '@אַגָס', '@apple', '@pear' ],
 							marker: '@'
 						}
 					]
@@ -820,14 +820,14 @@ describe( 'MentionUI', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
-					writer.insertText( '@ב', doc.selection.getFirstPosition() );
+					writer.insertText( '@ס', doc.selection.getFirstPosition() );
 				} );
 
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
-						expect( mentionsView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 1 );
 					} );
 			} );
 		} );
