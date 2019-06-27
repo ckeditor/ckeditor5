@@ -14,6 +14,23 @@ import MouseMoveObserver from './view/mousemoveobserver';
 
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 
+/**
+ * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
+ *
+ * @param {HTMLElement} element
+ * @returns {Object} return
+ * @returns {Number} return.x
+ * @returns {Number} return.y
+ */
+function getAbsolutePosition( element ) {
+	const nativeRectangle = element.getBoundingClientRect();
+
+	return {
+		x: nativeRectangle.left + element.ownerDocument.defaultView.scrollX,
+		y: nativeRectangle.top + element.ownerDocument.defaultView.scrollY
+	};
+}
+
 class ResizeContext {
 	constructor( handler ) {
 		const resizeWrapper = getAncestors( handler ).filter(
@@ -22,16 +39,22 @@ class ResizeContext {
 
 		this.widgetWrapper = resizeWrapper;
 		this.shadowWrapper = resizeWrapper.querySelector( '.ck-widget__resizer-shadow' );
+
+		// Reference edge (corner) that should be used to calculate resize difference.
+		this.referenceCoordinates = getAbsolutePosition( handler );
+
+		// Initial height of resizing host / resized element.
+		// @todo: hardcoded img support
+		this.initialHeight = resizeWrapper.querySelector( 'img' ).height;
 	}
 
-	initialize( domEventData ) {
-		this.initialClickCoordinates = this._extractCoordinates( domEventData );
-
+	initialize() {
 		this.shadowWrapper.classList.add( 'ck-widget__resizer-shadow-active' );
 	}
 
 	destroy() {
 		this.shadowWrapper.classList.remove( 'ck-widget__resizer-shadow-active' );
+		this.shadowWrapper.removeAttribute( 'style' );
 
 		this.shadowWrapper = null;
 		this.wrapper = null;
@@ -39,15 +62,18 @@ class ResizeContext {
 
 	updateSize( domEventData ) {
 		const currentCoordinates = this._extractCoordinates( domEventData );
-		const yDistance = this.initialClickCoordinates.y - currentCoordinates.y;
-		// for top, left handler:
+		const yDistance = this.referenceCoordinates.y - currentCoordinates.y;
+
+		// For top, left handler:
 		// yDistance > 0 - element is enlarged
 		// yDistance < 0 - element is shrinked
 
 		if ( yDistance > 0 ) {
 			// console.log( 'enlarging' );
+			this.shadowWrapper.style.top = ( yDistance * -1 ) + 'px';
 		} else {
 			// console.log( 'shrinking' );
+			this.shadowWrapper.style.top = ( yDistance * -1 ) + 'px';
 		}
 	}
 
