@@ -35,9 +35,6 @@ export default class VirtualTestEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.data.init( config.initialData || '' );
-
-						// Fire `data#ready` event manually as `data#init()` method is not used.
-						editor.data.fire( 'ready' );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )

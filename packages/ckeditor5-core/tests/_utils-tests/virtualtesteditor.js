@@ -41,6 +41,8 @@ describe( 'VirtualTestEditor', () => {
 			return VirtualTestEditor.create( { initialData: '<p>foo</p>', plugins: [ Paragraph ] } )
 				.then( editor => {
 					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -48,6 +50,23 @@ describe( 'VirtualTestEditor', () => {
 			return VirtualTestEditor.create()
 				.then( editor => {
 					expect( editor.getData() ).to.equal( '' );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'fires the `data#ready` event once', () => {
+			const dataReadySpy = sinon.spy();
+
+			const Plugin = editor => {
+				editor.data.on( 'ready', dataReadySpy );
+			};
+
+			return VirtualTestEditor.create( { plugins: [ Plugin ] } )
+				.then( editor => {
+					sinon.assert.calledOnce( dataReadySpy );
+
+					return editor.destroy();
 				} );
 		} );
 	} );
