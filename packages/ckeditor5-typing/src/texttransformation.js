@@ -14,50 +14,50 @@ import TextWatcher from './textwatcher';
 const TRANSFORMATIONS = {
 	// Common symbols:
 	copyright: { from: '(c)', to: '©' },
-	registered_trademark: { from: '(r)', to: '®' },
+	registeredTrademark: { from: '(r)', to: '®' },
 	trademark: { from: '(tm)', to: '™' },
 
 	// Mathematical:
-	one_half: { from: '1/2', to: '½' },
-	one_third: { from: '1/3', to: '⅓' },
-	two_thirds: { from: '2/3', to: '⅔' },
-	one_forth: { from: '1/4', to: '¼' },
-	three_quarters: { from: '3/4', to: '¾' },
-	less_then_or_equal: { from: '<=', to: '≤' },
-	greater_then_or_equal: { from: '>=', to: '≥' },
-	not_equal: { from: '!=', to: '≠' },
-	arrow_left: { from: '<-', to: '←' },
-	arrow_right: { from: '->', to: '→' },
+	oneHalf: { from: '1/2', to: '½' },
+	oneThird: { from: '1/3', to: '⅓' },
+	twoThirds: { from: '2/3', to: '⅔' },
+	oneForth: { from: '1/4', to: '¼' },
+	threeQuarters: { from: '3/4', to: '¾' },
+	lessThenOrEqual: { from: '<=', to: '≤' },
+	greaterThenOrEqual: { from: '>=', to: '≥' },
+	notEqual: { from: '!=', to: '≠' },
+	arrowLeft: { from: '<-', to: '←' },
+	arrowRight: { from: '->', to: '→' },
 
 	// Typography:
-	horizontal_ellipsis: { from: '...', to: '…' },
-	en_dash: { from: ' -- ', to: ' – ' },
-	em_dash: { from: ' --- ', to: ' — ' },
+	horizontalEllipsis: { from: '...', to: '…' },
+	enDash: { from: ' -- ', to: ' – ' },
+	emDash: { from: ' --- ', to: ' — ' },
 
 	// Quotations:
 	// English, US
-	quotes_primary: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
-	quotes_secondary: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
+	quotesPrimary: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
+	quotesSecondary: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
 
 	// English, UK
-	quotes_primary_en_gb: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
-	quotes_secondary_en_gb: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
+	quotesPrimaryEnGb: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
+	quotesSecondaryEnGb: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
 
 	// Polish
-	quotes_primary_pl: { from: buildQuotesRegExp( '"' ), to: '$1„$2”' },
-	quotes_secondary_pl: { from: buildQuotesRegExp( '\'' ), to: '$1‚$2’' }
+	quotesPrimaryPl: { from: buildQuotesRegExp( '"' ), to: '$1„$2”' },
+	quotesSecondaryPl: { from: buildQuotesRegExp( '\'' ), to: '$1‚$2’' }
 };
 
 // Transformation groups.
 const TRANSFORMATION_GROUPS = {
-	symbols: [ 'copyright', 'registered_trademark', 'trademark' ],
+	symbols: [ 'copyright', 'registeredTrademark', 'trademark' ],
 	mathematical: [
-		'one_half', 'one_third', 'two_thirds', 'one_forth', 'three_quarters',
-		'less_then_or_equal', 'greater_then_or_equal', 'not_equal',
-		'arrow_left', 'arrow_right'
+		'oneHalf', 'oneThird', 'twoThirds', 'oneForth', 'threeQuarters',
+		'lessThenOrEqual', 'greaterThenOrEqual', 'notEqual',
+		'arrowLeft', 'arrowRight'
 	],
-	typography: [ 'horizontal_ellipsis', 'en_dash', 'em_dash' ],
-	quotes: [ 'quotes_primary', 'quotes_secondary' ]
+	typography: [ 'horizontalEllipsis', 'enDash', 'emDash' ],
+	quotes: [ 'quotesPrimary', 'quotesSecondary' ]
 };
 
 // Set of default transformations provided by the feature.
@@ -224,32 +224,32 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *
  * * Typography (typography)
  *   - `ellipsis`: transforms `...` to `…`
- *   - `en_dash`: transforms ` -- ` to ` – `
- *   - `em_dash`: transforms ` --- ` to ` — `
+ *   - `enDash`: transforms ` -- ` to ` – `
+ *   - `emDash`: transforms ` --- ` to ` — `
  * * Quotations (group name: `quotations`)
- *   - `quotes_primary`: transforms `"Foo bar"` to `“Foo bar”`
- *   - `quotes_secondary`: transforms `'Foo bar'` to `‘Foo bar’`
+ *   - `quotesPrimary`: transforms `"Foo bar"` to `“Foo bar”`
+ *   - `quotesSecondary`: transforms `'Foo bar'` to `‘Foo bar’`
  * * Symbols (group name: `symbols`)
  *   - `trademark`: transforms `(tm)` to `™`
- *   - `registered_trademark`: transforms `(r)` to `®`
+ *   - `registeredTrademark`: transforms `(r)` to `®`
  *   - `copyright`: transforms `(c)` to `©`
  * * Mathematical (group name: `mathematical`)
- *   - `one_half`: transforms `1/2`, to: `½`
- *   - `one_third`: transforms `1/3`, to: `⅓`
- *   - `two_thirds`: transforms `2/3`, to: `⅔`
- *   - `one_forth`: transforms `1/4`, to: `¼`
- *   - `three_quarters`: transforms `3/4`, to: `¾`
- *   - `less_then_or_equal`: transforms `<=`, to: `≤`
- *   - `greater_then_or_equal`: transforms `>=`, to: `≥`
- *   - `not_equal`: transforms `!=`, to: `≠`
- *   - `arrow_left`: transforms `<-`, to: `←`
- *   - `arrow_right`: transforms `->`, to: `→`
+ *   - `oneHalf`: transforms `1/2`, to: `½`
+ *   - `oneThird`: transforms `1/3`, to: `⅓`
+ *   - `twoThirds`: transforms `2/3`, to: `⅔`
+ *   - `oneForth`: transforms `1/4`, to: `¼`
+ *   - `threeQuarters`: transforms `3/4`, to: `¾`
+ *   - `lessThenOrEqual`: transforms `<=`, to: `≤`
+ *   - `greaterThenOrEqual`: transforms `>=`, to: `≥`
+ *   - `notEqual`: transforms `!=`, to: `≠`
+ *   - `arrowLeft`: transforms `<-`, to: `←`
+ *   - `arrowRight`: transforms `->`, to: `→`
  *
  * The other defined named transformations are:
- * * `quotes_primary_en_gb`: transforms `'Foo bar'` to `‘Foo bar’`
- * * `quotes_secondary_en_gb`: transforms `"Foo bar"` to `“Foo bar”`
- * * `quotes_primary_pl`: transforms `"Foo bar"` to `„Foo bar”` },
- * * `quotes_secondary_pl`:  transforms `'Foo bar'` to `‚Foo bar’` }
+ * * `quotesPrimaryEnGb`: transforms `'Foo bar'` to `‘Foo bar’`
+ * * `quotesSecondaryEnGb`: transforms `"Foo bar"` to `“Foo bar”`
+ * * `quotesPrimaryPl`: transforms `"Foo bar"` to `„Foo bar”` },
+ * * `quotesSecondaryPl`:  transforms `'Foo bar'` to `‚Foo bar’` }
  *
  * Note: To load additional transformations, you should use the {@link module:typing/texttransformation~TextTransformationConfig#extra}
  * configuration. To narrow the list of loaded transformations, use the
