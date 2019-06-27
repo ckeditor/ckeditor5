@@ -558,6 +558,9 @@ describe( 'debug tools', () => {
 			const view = editor.editing.view;
 			const viewDoc = view.document;
 
+			// Reset model document version to ensure it will start at 0.
+			model.document.version = 0;
+
 			model.change( () => {
 				const insert = new InsertOperation( ModelPosition._createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
 				model.applyOperation( insert );
