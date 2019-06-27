@@ -6,25 +6,25 @@ Some of the transformations are:
 
 1. Symbols:
 
-    * Copyright: `(c)` -> `©`.
-    * Registered treademark: `(r)` -> `®`.
-    * Trade mark: `(tm)` -> `™.`
+    * Copyright: `(c)` to `©`.
+    * Registered treademark: `(r)` to `®`.
+    * Trade mark: `(tm)` to `™.`
 
 1. Mathematical:
 
-    * Fractions of 2, 3 & 4, like `½` -> `½` or `3/4` -> `¾`. (ps.: there's no `2/4` 😉)
+    * Fractions of 2, 3 & 4, like `½` to `½` or `3/4` to `¾`. (ps.: there's no `2/4` 😉)
     * Arrows: `->`, `<-`.
-    * Operators: `<=` -> `≤`, `>=` -> `≥`, `!=` -> `≠`.
+    * Operators: `<=` to `≤`, `>=` to `≥`, `!=` to `≠`.
 
 1. Typography:
     
-    * Dashes: ` -- ` & ` --- `.
-    * Ellipsis: `...` -> `…`
+    * Dashes: ` -- `, ` --- `.
+    * Ellipsis: `...` to `…`
     
 1. Quotes:
 
-    * Primary quotes (english): `'Foo bar'` -> `‘Foo bar’` 
-    * Secondary quotes (english): `"Foo bar's"` -> `“Foo bar's”`
+    * Primary quotes (english): `'Foo bar'` to `‘Foo bar’` 
+    * Secondary quotes (english): `"Foo bar's"` to `“Foo bar's”`
 
 ### Testing
 
