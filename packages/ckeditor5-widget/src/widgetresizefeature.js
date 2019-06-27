@@ -24,6 +24,10 @@ export default class WidgetResizeFeature extends WidgetFeature {
 			const domElement = this.toDomElement( domDocument );
 			const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
+			const shadowElement = domDocument.createElement( 'div' );
+			shadowElement.setAttribute( 'class', 'ck ck-widget__resizer-shadow' );
+			domElement.appendChild( shadowElement );
+
 			for ( const currentPosition of resizerPositions ) {
 				// Use the IconView from the UI library.
 				const icon = new IconView();

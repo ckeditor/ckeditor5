@@ -15,6 +15,23 @@
 		right: 0;
 		top: 0;
 		bottom: 0;
+
+		& .ck-widget__resizer-shadow {
+			display: none;
+			position: absolute;
+
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+
+			outline: 2px dashed red;
+
+			&.ck-widget__resizer-shadow-active {
+				display: block;
+				visibility: visible;
+			}
+		}
 	}
 
 	& .ck-widget__resizer {
@@ -84,4 +101,10 @@
 			visibility: visible;
 		}
 	}
+}
+
+.ck .ck-widget_resizer-shadow {
+	width: 60px;
+	height: 60px;
+	outline: 2px solid red !important;
 }
