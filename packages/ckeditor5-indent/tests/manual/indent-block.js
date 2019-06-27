@@ -8,8 +8,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Indent from '@ckeditor/ckeditor5-core/src/indent';
 
+import Indent from '../../src/indent';
 import IndentBlock from '../../src/indentblock';
 
 ClassicEditor
