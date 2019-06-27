@@ -18,7 +18,7 @@ import areConnectedThroughProperties from '../../src/areconnectedthroughproperti
  * * `{String} observableName` – Identifier for the observable object. E.g. `"Editable"` when
  * you observe one of editor's editables. This name will be displayed on the console.
  * * `{utils.Observable observable} – The object to observe.
- * * `{Array.<String>} filterNames` – Array of propery names to be observed.
+ * * `{Array.<String>} filterNames` – Array of property names to be observed.
  *
  * Typical usage:
  *
