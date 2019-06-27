@@ -23,6 +23,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InlineEditor', () => {
 	let editor, editorElement;
@@ -160,9 +161,11 @@ describe( 'InlineEditor', () => {
 						expect.fail( 'Inline editor should throw an error when both initial data are passed' );
 					},
 					err => {
-						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
-							// eslint-disable-next-line max-len
-							.match( /^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./ );
+						assertCKEditorError( err,
+							/* eslint-disable-next-line max-len */
+							/^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./,
+							null
+						);
 					}
 				)
 				.then( done )
@@ -203,8 +206,10 @@ describe( 'InlineEditor', () => {
 						expect.fail( 'Inline editor should throw an error when is initialized in textarea.' );
 					},
 					err => {
-						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
-							.match( /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+						assertCKEditorError( err,
+							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./,
+							null
+						);
 					}
 				)
 				.then( done )
