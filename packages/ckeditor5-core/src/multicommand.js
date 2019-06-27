@@ -13,7 +13,8 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 /**
  * A CKEditor command that aggregates other commands.
  *
- * This command is used to proxy multiple commands. The multi-command is enabled when at least one of its registered child commands is enabled.
+ * This command is used to proxy multiple commands. The multi-command is enabled when
+ * at least one of its registered child commands is enabled.
  * When executing a multi-command the first command that is enabled will be executed.
  *
  *		const multiCommand = new MultiCommand( editor );
@@ -42,10 +43,10 @@ export default class MultiCommand extends Command {
 		/**
 		 * Registered child commands.
 		 *
-		 * @type {module:utils/collection~Collection.<module:core/command~Command>}
+		 * @type {Array.<module:core/command~Command>}
 		 * @private
 		 */
-		this._childCommands = new Collection();
+		this._childCommands = [];
 	}
 
 	/**
@@ -59,7 +60,7 @@ export default class MultiCommand extends Command {
 	 * Executes the first of it registered child commands.
 	 */
 	execute( ...args ) {
-		const { command } = this._getFirstEnabledCommand();
+		const command = this._getFirstEnabledCommand();
 
 		command.execute( args );
 	}
@@ -70,7 +71,7 @@ export default class MultiCommand extends Command {
 	 * @param {module:core/command~Command} command
 	 */
 	registerChildCommand( command ) {
-		this._childCommands.add( { command } );
+		this._childCommands.push( command );
 
 		// Change multi command enabled state when one of registered commands changes state.
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
@@ -94,6 +95,6 @@ export default class MultiCommand extends Command {
 	 * @private
 	 */
 	_getFirstEnabledCommand() {
-		return this._childCommands.find( ( { command } ) => command.isEnabled );
+		return this._childCommands.find( command => command.isEnabled );
 	}
 }
