@@ -189,7 +189,7 @@ To a link:
 
 The converters must be defined with a `'high'` priority to be executed before the {@link features/link link} feature's converter and before the default converter of the mention feature. A mention is stored in the model as a {@link framework/guides/architecture/editing-engine#text-attributes text attribute} that stores an object (see {@link module:mention/mention~MentionFeedItem}).
 
-**Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:engine/conversion/conversion~ConverterDefinition#converterPriority `'highest'` priority} controls this behaviour; thus, we do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results. 
+**Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:engine/conversion/conversion~ConverterDefinition `'highest'` priority} controls this behaviour; thus, we do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
 ```js
 ClassicEditor
