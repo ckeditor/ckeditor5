@@ -18,7 +18,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import IndentEditing from '@ckeditor/ckeditor5-core/src/indent/indentediting';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
