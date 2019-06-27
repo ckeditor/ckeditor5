@@ -16,25 +16,24 @@
  * @returns {String} Plain text representing model's data
  */
 export function modelElementToPlainText( element ) {
-	let text = '';
-
 	if ( element.is( 'text' ) || element.is( 'textProxy' ) ) {
-		text += element.data;
-	} else {
-		let prev = null;
+		return element.data;
+	}
 
-		for ( const child of element.getChildren() ) {
-			const childText = modelElementToPlainText( child );
+	let text = '';
+	let prev = null;
 
-			// If last block was finish, start from new line.
-			if ( prev && prev.is( 'element' ) ) {
-				text += '\n';
-			}
+	for ( const child of element.getChildren() ) {
+		const childText = modelElementToPlainText( child );
 
-			text += childText;
-
-			prev = child;
+		// If last block was finish, start from new line.
+		if ( prev && prev.is( 'element' ) ) {
+			text += '\n';
 		}
+
+		text += childText;
+
+		prev = child;
 	}
 
 	return text;
