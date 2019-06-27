@@ -12,7 +12,6 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^12.1.1",
     "@ckeditor/ckeditor5-engine": "^13.1.1",
-    "@ckeditor/ckeditor5-mention": "^11.0.0",
     "@ckeditor/ckeditor5-utils": "^12.1.1"
   },
   "devDependencies": {
