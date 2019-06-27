@@ -52,14 +52,7 @@ export default class IndentBlock extends Plugin {
 		const conversion = editor.conversion;
 		const configuration = editor.config.get( 'indentBlock' );
 
-		// TODO: supported in CKE4:
-		//  - p,
-		//  - h1, h2, h3, h4, h5, h6,
-		//  - ul, ol,
-		//  - div,
-		//  - dl,
-		//  - pre,
-		//  - table
+		// Enable block indentation by default in paragraph and default headings.
 		const knownElements = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 
 		knownElements.forEach( elementName => {
@@ -82,20 +75,6 @@ export default class IndentBlock extends Plugin {
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
 		}
-
-		const getCommandExecuter = commandName => {
-			return ( data, cancel ) => {
-				const command = this.editor.commands.get( commandName );
-
-				if ( command.isEnabled ) {
-					this.editor.execute( commandName );
-					cancel();
-				}
-			};
-		};
-
-		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentBlock' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentBlock' ) );
 	}
 
 	/**
