@@ -3,25 +3,28 @@ title: Block indentation
 category: features
 ---
 
-{@snippet features/build-indent-block-source}
+{@snippet features/build-indent-source}
 
 ## Demo
 
-The block indentation feature allows to set indentation of text blocks like paragraphs or headings.
+The indentation feature allows to set indentation of text blocks like paragraphs or headings and lists.
 
-{@snippet features/indent-block}
+{@snippet features/indent}
 
 ## Configuring the block indentation feature
 
 ### Using offset and unit
 
-By default the block indentation is controlled by setting the indentation step offset and unit. Executing indent (or outdent) commands will increase (or decreas) current block indentation by given offset.
+By default the block indentation is controlled by setting the indentation step offset and unit. Executing indent (or outdent) commands will increase (or decrease) current block indentation by given offset.
 
-The editor ind the {@link features/indent-block#demo demo} section was configured using offset and unit:
+The editor ind the {@link features/indent#demo demo} section was configured using offset and unit:
 
 ```js
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, ... ],
 		toolbar: {
 			items: [ 'heading', '|', 'indent', 'outdent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
 		},
@@ -39,8 +42,12 @@ ClassicEditor
 Alternatively the block indentation feature can be configured to set indentation by applying one of defined CSS classes:
 
 ```js
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		plugins: [ Indent, IndentBlock, ... ],
 		toolbar: {
 			items: [ 'heading', '|', 'indent', 'outdent', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo' ]
 		},
@@ -97,11 +104,12 @@ npm install --save @ckeditor/ckeditor5-indent-block
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import Font from '@ckeditor/ckeditor5-indent/src/indentblock';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ IndentBlock, ... ],
+		plugins: [ Indent, IndentBlock, ... ],
 		toolbar: [ 'indent', 'outdent', ... ]
 	} )
 	.then( ... )

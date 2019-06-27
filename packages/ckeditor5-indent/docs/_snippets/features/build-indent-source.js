@@ -7,8 +7,10 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
+ClassicEditor.builtinPlugins.push( Indent );
 ClassicEditor.builtinPlugins.push( IndentBlock );
 
 window.ClassicEditor = ClassicEditor;
