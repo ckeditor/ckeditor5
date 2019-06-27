@@ -24,7 +24,9 @@ class ResizeContext {
 		this.shadowWrapper = resizeWrapper.querySelector( '.ck-widget__resizer-shadow' );
 	}
 
-	initialize() {
+	initialize( domEventData ) {
+		this.initialClickCoordinates = this._extractCoordinates( domEventData );
+
 		this.shadowWrapper.classList.add( 'ck-widget__resizer-shadow-active' );
 	}
 
@@ -35,7 +37,26 @@ class ResizeContext {
 		this.wrapper = null;
 	}
 
-	updateSize() {}
+	updateSize( domEventData ) {
+		const currentCoordinates = this._extractCoordinates( domEventData );
+		const yDistance = this.initialClickCoordinates.y - currentCoordinates.y;
+		// for top, left handler:
+		// yDistance > 0 - element is enlarged
+		// yDistance < 0 - element is shrinked
+
+		if ( yDistance > 0 ) {
+			// console.log( 'enlarging' );
+		} else {
+			// console.log( 'shrinking' );
+		}
+	}
+
+	_extractCoordinates( event ) {
+		return {
+			x: event.domEvent.pageX,
+			y: event.domEvent.pageY
+		};
+	}
 }
 
 /**
@@ -67,6 +88,11 @@ export default class WidgetResizer extends Plugin {
 
 		// Mouse move observer is only needed when the mouse button is pressed.
 		// this.listenTo( viewDocument, 'mousemove', () => console.log( 'move' ) );
+		this.listenTo( viewDocument, 'mousemove', ( event, domEventData ) => {
+			if ( resizeContext ) {
+				resizeContext.updateSize( domEventData );
+			}
+		} );
 
 		this.listenTo( viewDocument, 'mousedown', ( event, domEventData ) => {
 			const target = domEventData.domTarget;
@@ -78,11 +104,11 @@ export default class WidgetResizer extends Plugin {
 				this._observers.mouseMove.enable();
 
 				resizeContext = new ResizeContext( resizeHandler );
-				resizeContext.initialize();
+				resizeContext.initialize( domEventData );
 			}
 		} );
 
-		this.listenTo( viewDocument, 'mouseup', () => {
+		const finishResizing = () => {
 			// @todo listen also for mouse up outside of the editable.
 			if ( isActive ) {
 				isActive = false;
@@ -91,7 +117,10 @@ export default class WidgetResizer extends Plugin {
 				resizeContext.destroy();
 				resizeContext = null;
 			}
-		} );
+		};
+
+		// @todo: it should listen on the entire window.
+		this.listenTo( viewDocument, 'mouseup', finishResizing );
 
 		function isResizeWrapper( element ) {
 			return element.classList && element.classList.contains( 'ck-widget__resizer' );
