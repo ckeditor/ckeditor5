@@ -82,6 +82,27 @@ describe( 'UndoEditing', () => {
 		expect( undo._redoCommand.clearStack.called ).to.be.false;
 	} );
 
+	it( 'should add redo batch to undo', () => {
+		sinon.spy( undo._undoCommand, 'addBatch' );
+
+		model.change( writer => {
+			writer.insertText( 'foobar', root );
+		} );
+
+		model.change( writer => {
+			writer.insertText( 'baz', root );
+		} );
+
+		editor.execute( 'undo' );
+		editor.execute( 'undo' );
+
+		editor.execute( 'redo' );
+		sinon.assert.calledThrice( undo._undoCommand.addBatch );
+
+		editor.execute( 'redo' );
+		sinon.assert.callCount( undo._undoCommand.addBatch, 4 );
+	} );
+
 	it( 'should not add a batch that has only non-document operations', () => {
 		sinon.spy( undo._undoCommand, 'addBatch' );
 
@@ -90,6 +111,16 @@ describe( 'UndoEditing', () => {
 			const element = writer.createElement( 'paragraph' );
 			writer.insert( element, docFrag, 0 );
 			writer.insertText( 'foo', null, element, 0 );
+		} );
+
+		expect( undo._undoCommand.addBatch.called ).to.be.false;
+	} );
+
+	it( 'should not add a transparent batch', () => {
+		sinon.spy( undo._undoCommand, 'addBatch' );
+
+		model.enqueueChange( 'transparent', writer => {
+			writer.insertText( 'foobar', root );
 		} );
 
 		expect( undo._undoCommand.addBatch.called ).to.be.false;
