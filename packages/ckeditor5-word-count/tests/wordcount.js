@@ -260,7 +260,7 @@ describe( 'WordCount', () => {
 				.catch( done );
 		} );
 
-		it( 'should call function register under config.wordCount.onUpdate', () => {
+		it( 'should call function registered under config.wordCount.onUpdate', () => {
 			const fake = sinon.fake();
 			return VirtualTestEditor.create( {
 				plugins: [ WordCount, Paragraph ],

@@ -308,9 +308,9 @@ export default class WordCount extends Plugin {
  */
 
 /**
- * This configuration takes a function, which is executed whenever the word-count plugin update its values.
- * Function is called with one argument, which is object with `words` and `characters` keys containing
- * an amount of detected words and characters in the document.
+ * This configuration takes a function, which is executed whenever the word-count plugin updates its values.
+ * This function is called with one argument, which is an object with `words` and `characters` keys containing
+ * a number of detected words and characters in the document.
  *
  *		const wordCountConfig = {
  *			onUpdate: function( values ) {
@@ -324,11 +324,11 @@ export default class WordCount extends Plugin {
 
 /**
  * This option allows on providing an HTML element where
- * {@link module:wordcount/wordcount~WordCount#getWordCountContainer word count container} will be append autoamtically.
+ * {@link module:wordcount/wordcount~WordCount#getWordCountContainer word count container} will be appended automatically.
  *
  *		const wordCountConfig = {
  *			container: document.getElementById( 'container-for-word-count' );
  *		}
  *
- * @member {Function} module:wordcount/wordcount~WordCountConfig#container
+ * @member {HTMLElement} module:wordcount/wordcount~WordCountConfig#container
  */

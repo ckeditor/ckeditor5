@@ -97,7 +97,7 @@ describe( 'utils', () => {
 				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'FooBar' );
 			} );
 
-			it( 'extracts plain text from mixing structure', () => {
+			it( 'extracts plain text from mixed structure', () => {
 				setModelData( model, '<paragraph>' +
 						'<$text bold="true">111</$text><$text href="url" bold="true">222</$text>333' +
 					'</paragraph><blockQuote>' +
