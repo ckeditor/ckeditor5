@@ -167,6 +167,17 @@ export default class LinkEditing extends Plugin {
 						return element;
 					}
 				} } );
+
+			editor.conversion.for( 'upcast' ).elementToAttribute( {
+				view: {
+					name: 'a',
+					attributes: manualDecorators.get( decorator.id ).attributes
+				},
+				model: {
+					key: decorator.id,
+					value: true
+				}
+			} );
 		} );
 	}
 
