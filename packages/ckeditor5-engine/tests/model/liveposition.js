@@ -10,7 +10,7 @@ import Text from '../../src/model/text';
 import Position from '../../src/model/position';
 import LivePosition from '../../src/model/liveposition';
 import Range from '../../src/model/range';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'LivePosition', () =>
 {
@@ -42,9 +42,9 @@ describe( 'LivePosition', () =>
 	} );
 
 	it( 'should throw if given root is not a RootElement', () => {
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			new LivePosition( new DocumentFragment(), [ 1 ] ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, /model-liveposition-root-not-rootelement/ );
+		}, /model-liveposition-root-not-rootelement/, null );
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {

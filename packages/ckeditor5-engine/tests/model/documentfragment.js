@@ -7,7 +7,7 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import DocumentFragment from '../../src/model/documentfragment';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {
@@ -111,13 +111,13 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should throw if given offset is too high or too low', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				frag.offsetToIndex( -1 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, null );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				frag.offsetToIndex( 55 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, null );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

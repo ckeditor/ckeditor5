@@ -19,7 +19,7 @@ import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import DocumentFragment from '../../src/view/documentfragment';
 import DowncastWriter from '../../src/view/downcastwriter';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -106,9 +106,9 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should throw if the type is unknown', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				renderer.markToSync( 'UNKNOWN', viewRoot );
-			} ).to.throw( CKEditorError, /^view-renderer-unknown-type/ );
+			}, /^view-renderer-unknown-type/, selection );
 		} );
 	} );
 
@@ -1300,9 +1300,9 @@ describe( 'Renderer', () => {
 			selection._setTo( null );
 			renderer.markToSync( 'children', viewB );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				renderer.render();
-			} ).to.throw( CKEditorError, /^view-renderer-filler-was-lost/ );
+			}, /^view-renderer-filler-was-lost/, selection );
 		} );
 
 		// #1014.

@@ -7,7 +7,7 @@
 
 import UIElement from '../../src/view/uielement';
 import Element from '../../src/view/element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'UIElement', () => {
 	let uiElement;
@@ -31,9 +31,9 @@ describe( 'UIElement', () => {
 		} );
 
 		it( 'should throw if child elements are passed to constructor', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new UIElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 
@@ -68,17 +68,17 @@ describe( 'UIElement', () => {
 
 	describe( '_appendChild()', () => {
 		it( 'should throw when try to append new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				uiElement._appendChild( new Element( 'i' ) );
-			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 
 	describe( '_insertChild()', () => {
 		it( 'should throw when try to insert new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				uiElement._insertChild( 0, new Element( 'i' ) );
-			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 

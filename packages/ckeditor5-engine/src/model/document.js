@@ -127,6 +127,7 @@ export default class Document {
 				 */
 				throw new CKEditorError(
 					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					this,
 					{ operation }
 				);
 			}
@@ -201,6 +202,7 @@ export default class Document {
 			 */
 			throw new CKEditorError(
 				'model-document-createRoot-name-exists: Root with specified name already exists.',
+				this,
 				{ name: rootName }
 			);
 		}

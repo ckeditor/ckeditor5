@@ -8,7 +8,6 @@ import DocumentFragment from '../../src/model/documentfragment';
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'Node', () => {
@@ -128,11 +127,9 @@ describe( 'Node', () => {
 		it( 'should throw an error if parent does not contain element', () => {
 			node.parent = new Element( 'parent' );
 
-			expect(
-				() => {
-					node.index;
-				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				node.index;
+			}, /model-node-not-found-in-parent/, null );
 		} );
 	} );
 
@@ -188,11 +185,9 @@ describe( 'Node', () => {
 		it( 'should throw an error if parent does not contain element', () => {
 			node.parent = new Element( 'parent' );
 
-			expect(
-				() => {
-					node.startOffset;
-				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				node.startOffset;
+			}, /model-node-not-found-in-parent/, null );
 		} );
 	} );
 

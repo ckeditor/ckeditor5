@@ -5,7 +5,8 @@
 
 import EmptyElement from '../../src/view/emptyelement';
 import Element from '../../src/view/element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EmptyElement', () => {
 	let element, emptyElement;
@@ -49,24 +50,24 @@ describe( 'EmptyElement', () => {
 	} );
 
 	it( 'should throw if child elements are passed to constructor', () => {
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			new EmptyElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+		}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', null );
 	} );
 
 	describe( '_appendChild', () => {
 		it( 'should throw when try to append new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				emptyElement._appendChild( element );
-			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', null );
 		} );
 	} );
 
 	describe( '_insertChild', () => {
 		it( 'should throw when try to insert new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				emptyElement._insertChild( 0, element );
-			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', null );
 		} );
 	} );
 

@@ -149,28 +149,28 @@ export default class SplitOperation extends Operation {
 			 *
 			 * @error split-operation-position-invalid
 			 */
-			throw new CKEditorError( 'split-operation-position-invalid: Split position is invalid.' );
+			throw new CKEditorError( 'split-operation-position-invalid: Split position is invalid.', this );
 		} else if ( !element.parent ) {
 			/**
 			 * Cannot split root element.
 			 *
 			 * @error split-operation-split-in-root
 			 */
-			throw new CKEditorError( 'split-operation-split-in-root: Cannot split root element.' );
+			throw new CKEditorError( 'split-operation-split-in-root: Cannot split root element.', this );
 		} else if ( this.howMany != element.maxOffset - this.splitPosition.offset ) {
 			/**
 			 * Split operation specifies wrong number of nodes to move.
 			 *
 			 * @error split-operation-how-many-invalid
 			 */
-			throw new CKEditorError( 'split-operation-how-many-invalid: Split operation specifies wrong number of nodes to move.' );
+			throw new CKEditorError( 'split-operation-how-many-invalid: Split operation specifies wrong number of nodes to move.', this );
 		} else if ( this.graveyardPosition && !this.graveyardPosition.nodeAfter ) {
 			/**
 			 * Graveyard position invalid.
 			 *
 			 * @error split-operation-graveyard-position-invalid
 			 */
-			throw new CKEditorError( 'split-operation-graveyard-position-invalid: Graveyard position invalid.' );
+			throw new CKEditorError( 'split-operation-graveyard-position-invalid: Graveyard position invalid.', this );
 		}
 	}
 

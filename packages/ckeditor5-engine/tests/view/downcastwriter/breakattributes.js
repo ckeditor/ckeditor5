@@ -12,7 +12,8 @@ import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastWriter', () => {
 	describe( 'breakAttributes()', () => {
@@ -153,17 +154,17 @@ describe( 'DowncastWriter', () => {
 				const p1 = new ContainerElement( 'p' );
 				const p2 = new ContainerElement( 'p' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+				}, 'view-writer-invalid-range-container', view );
 			} );
 
 			it( 'should throw when range has no parent container', () => {
 				const el = new AttributeElement( 'b' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+				}, 'view-writer-invalid-range-container', view );
 			} );
 
 			it( 'should not break text nodes if they are not in attribute elements', () => {
@@ -243,9 +244,9 @@ describe( 'DowncastWriter', () => {
 				new ContainerElement( 'p', null, img ); // eslint-disable-line no-new
 				const position = new Position( img, 0 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
-				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+				}, 'view-writer-cannot-break-empty-element', view );
 			} );
 
 			it( 'should throw if breaking inside EmptyElement #2', () => {
@@ -254,9 +255,9 @@ describe( 'DowncastWriter', () => {
 				new ContainerElement( 'p', null, [ img, b ] ); // eslint-disable-line no-new
 				const range = Range._createFromParentsAndOffsets( img, 0, b, 0 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
-				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+				}, 'view-writer-cannot-break-empty-element', view );
 			} );
 
 			it( 'should throw if breaking inside UIElement #1', () => {
@@ -264,9 +265,9 @@ describe( 'DowncastWriter', () => {
 				new ContainerElement( 'p', null, span ); // eslint-disable-line no-new
 				const position = new Position( span, 0 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
-				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+				}, 'view-writer-cannot-break-ui-element', view );
 			} );
 
 			it( 'should throw if breaking inside UIElement #2', () => {
@@ -275,9 +276,9 @@ describe( 'DowncastWriter', () => {
 				new ContainerElement( 'p', null, [ span, b ] ); // eslint-disable-line no-new
 				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
-				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+				}, 'view-writer-cannot-break-ui-element', view );
 			} );
 		} );
 	} );

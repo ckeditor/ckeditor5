@@ -9,7 +9,7 @@ import SplitOperation from '../../../src/model/operation/splitoperation';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 
 describe( 'MergeOperation', () => {
 	let model, doc, root, gy, gyPos;
@@ -119,7 +119,7 @@ describe( 'MergeOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /merge-operation-target-position-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /merge-operation-target-position-invalid/, model );
 		} );
 
 		it( 'should throw an error if source position is in root', () => {
@@ -136,7 +136,7 @@ describe( 'MergeOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /merge-operation-source-position-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /merge-operation-source-position-invalid/, model );
 		} );
 
 		it( 'should throw an error if target position is invalid', () => {
@@ -153,7 +153,7 @@ describe( 'MergeOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /merge-operation-source-position-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /merge-operation-source-position-invalid/, model );
 		} );
 
 		it( 'should throw an error if number of nodes to move is invalid', () => {
@@ -170,7 +170,7 @@ describe( 'MergeOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /merge-operation-how-many-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /merge-operation-how-many-invalid/, model );
 		} );
 	} );
 

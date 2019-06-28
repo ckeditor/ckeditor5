@@ -10,8 +10,9 @@ import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import Document from '../../../src/view/document';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastWriter', () => {
 	describe( 'clear()', () => {
@@ -38,17 +39,17 @@ describe( 'DowncastWriter', () => {
 			const p1 = new ContainerElement( 'p' );
 			const p2 = new ContainerElement( 'p' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+			}, 'view-writer-invalid-range-container', view );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
 			const el = new AttributeElement( 'b' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+			}, 'view-writer-invalid-range-container', view );
 		} );
 
 		it( 'should remove matched element from range', () => {

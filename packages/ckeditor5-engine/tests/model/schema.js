@@ -5,7 +5,7 @@
 
 import Schema, { SchemaContext } from '../../src/model/schema';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 
 import Model from '../../src/model/model';
 
@@ -61,9 +61,9 @@ describe( 'Schema', () => {
 		it( 'throws when trying to register for a single item twice', () => {
 			schema.register( 'foo' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				schema.register( 'foo' );
-			} ).to.throw( CKEditorError, /^schema-cannot-register-item-twice:/ );
+			}, /^schema-cannot-register-item-twice:/, schema );
 		} );
 	} );
 
@@ -90,9 +90,9 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'throws when trying to extend a not yet registered item', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				schema.extend( 'foo' );
-			} ).to.throw( CKEditorError, /^schema-cannot-extend-missing-item:/ );
+			}, /^schema-cannot-extend-missing-item:/, schema );
 		} );
 	} );
 
@@ -846,9 +846,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createBefore( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+			}, /^schema-check-merge-no-element-before:/, schema );
 		} );
 
 		it( 'throws an error if the node before the position is not the element', () => {
@@ -864,9 +864,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createBefore( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+			}, /^schema-check-merge-no-element-before:/, schema );
 		} );
 
 		it( 'throws an error if there is no element after the position', () => {
@@ -881,9 +881,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createAfter( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-after:/ );
+			}, /^schema-check-merge-no-element-after:/, schema );
 		} );
 
 		it( 'throws an error if the node after the position is not the element', () => {
@@ -899,9 +899,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createBefore( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+			}, /^schema-check-merge-no-element-before:/, schema );
 		} );
 
 		// This is an invalid case by definition – the baseElement should not contain disallowed elements

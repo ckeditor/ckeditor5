@@ -17,9 +17,10 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import LivePosition from '../../src/model/liveposition';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Position', () => {
 	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
@@ -107,30 +108,30 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should throw error if given path is incorrect', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position( root, {} ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
+			}, /model-position-path-incorrect/, model );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position( root, [] ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
+			}, /model-position-path-incorrect/, model );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position( new Text( 'a' ) ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
+			}, /model-position-root-invalid/, model );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position(); // eslint-disable-line no-new
-			} ).to.throw();
+			}, model );
 		} );
 	} );
 
 	describe( 'static creators', () => {
 		describe( '_createAt()', () => {
 			it( 'should throw if no offset is passed', () => {
-				expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-createPositionAt-offset-required/ );
+				expectToThrowCKEditorError( () => Position._createAt( ul ), /model-createPositionAt-offset-required/, model );
 			} );
 
 			it( 'should create positions from positions', () => {
@@ -187,9 +188,9 @@ describe( 'Position', () => {
 			} );
 
 			it( 'throws when parent is not an element', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Position._createAt( b, 0 );
-				} ).to.throw( CKEditorError, /^model-position-parent-incorrect/ );
+				}, /^model-position-parent-incorrect/, model );
 			} );
 
 			it( 'works with a doc frag', () => {
@@ -223,9 +224,9 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should throw error if one try to create positions before root', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Position._createBefore( root );
-				} ).to.throw( CKEditorError, /model-position-before-root/ );
+				}, /model-position-before-root/, model );
 			} );
 		} );
 
@@ -253,9 +254,9 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should throw error if one try to make positions after root', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Position._createAfter( root );
-				} ).to.throw( CKEditorError, /model-position-after-root/ );
+				}, /model-position-after-root/, model );
 			} );
 		} );
 	} );
@@ -888,11 +889,11 @@ describe( 'Position', () => {
 
 		it( 'should not update path if insertion position parent is a node from that path and offset is ' +
 			'after next node on that path', () => {
-			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2 );
+				const position = new Position( root, [ 1, 2, 3 ] );
+				const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
-		} );
+				expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+			} );
 
 		it( 'should not update if insertion is in different path', () => {
 			const position = new Position( root, [ 1, 1 ] );
@@ -955,11 +956,11 @@ describe( 'Position', () => {
 
 		it( 'should not update path if deletion position parent is a node from that path and ' +
 			'offset is after next node on that path', () => {
-			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
+				const position = new Position( root, [ 1, 2, 3 ] );
+				const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
-		} );
+				expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+			} );
 	} );
 
 	describe( '_getTransformedByMove()', () => {
@@ -1088,11 +1089,9 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should throw error when creating object in document that does not have provided root', () => {
-			expect(
-				() => {
-					Position.fromJSON( { root: 'noroot', path: [ 0 ] }, doc );
-				}
-			).to.throw( CKEditorError, /model-position-fromjson-no-root/ );
+			expectToThrowCKEditorError( () => {
+				Position.fromJSON( { root: 'noroot', path: [ 0 ] }, doc );
+			}, /model-position-fromjson-no-root/, model );
 		} );
 	} );
 

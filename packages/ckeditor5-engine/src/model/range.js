@@ -877,7 +877,7 @@ export default class Range {
 			 *
 			 * @error range-create-from-ranges-empty-array
 			 */
-			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
+			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.', this );
 		} else if ( ranges.length == 1 ) {
 			return ranges[ 0 ].clone();
 		}

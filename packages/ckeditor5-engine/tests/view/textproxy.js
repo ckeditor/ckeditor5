@@ -8,9 +8,10 @@ import Text from '../../src/view/text';
 import ContainerElement from '../../src/view/containerelement';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy;
@@ -41,23 +42,23 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should throw if wrong offsetInText is passed', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
+			}, /view-textproxy-wrong-offsetintext/, null );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
+			}, /view-textproxy-wrong-offsetintext/, null );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
+			}, /view-textproxy-wrong-length/, null );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
+			}, /view-textproxy-wrong-length/, null );
 		} );
 	} );
 

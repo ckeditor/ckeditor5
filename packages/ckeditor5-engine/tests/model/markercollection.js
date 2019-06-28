@@ -9,7 +9,7 @@ import Range from '../../src/model/range';
 import LiveRange from '../../src/model/liverange';
 import Text from '../../src/model/text';
 import Model from '../../src/model/model';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MarkerCollection', () => {
 	let markers, range, range2, doc, root;
@@ -207,9 +207,9 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should throw if marker does not exist', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				markers._refresh( 'name' );
-			} ).to.throw( CKEditorError, 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
+			}, 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.', null );
 		} );
 	} );
 
@@ -292,25 +292,25 @@ describe( 'Marker', () => {
 
 		model.markers._remove( 'name' );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.getRange();
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/, null );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.getStart();
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/, null );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.getEnd();
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/, null );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.managedUsingOperations;
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/, null );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.affectsData;
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/, null );
 	} );
 
 	it( 'should attach live range to marker', () => {

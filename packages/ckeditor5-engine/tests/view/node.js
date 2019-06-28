@@ -8,9 +8,10 @@ import Text from '../../src/view/text';
 import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Node', () => {
 	let root,
@@ -215,11 +216,9 @@ describe( 'Node', () => {
 
 			f.parent = bar;
 
-			expect(
-				() => {
-					f.index;
-				}
-			).to.throw( CKEditorError, /view-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				f.index;
+			}, /view-node-not-found-in-parent/, root );
 		} );
 	} );
 
