@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { modelElementToPlainText } from './utils';
-import { throttle } from 'lodash-es';
+import { throttle, isElement } from 'lodash-es';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
@@ -89,6 +89,14 @@ export default class WordCount extends Plugin {
 		this.set( '_charactersLabel' );
 
 		/**
+		 * The configuration of this plugins.
+		 *
+		 * @private
+		 * @type {Object}
+		 */
+		this._config = editor.config.get( 'wordCount' ) || {};
+
+		/**
 		 * A reference to a {@link module:ui/view~View view object} which contains self-updating HTML container.
 		 *
 		 * @private
@@ -112,6 +120,16 @@ export default class WordCount extends Plugin {
 		const editor = this.editor;
 
 		editor.model.document.on( 'change:data', throttle( this._calculateWordsAndCharacters.bind( this ), 250 ) );
+
+		if ( typeof this._config.onUpdate == 'function' ) {
+			this.on( 'update', ( evt, data ) => {
+				this._config.onUpdate( data );
+			} );
+		}
+
+		if ( isElement( this._config.container ) ) {
+			this._config.container.appendChild( this.getWordCountContainer() );
+		}
 	}
 
 	/**
@@ -287,4 +305,30 @@ export default class WordCount extends Plugin {
  *		</div>
  *
  * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayCharacters
+ */
+
+/**
+ * This configuration takes a function, which is executed whenever the word-count plugin update its values.
+ * Function is called with one argument, which is object with `words` and `characters` keys containing
+ * an amount of detected words and characters in the document.
+ *
+ *		const wordCountConfig = {
+ *			onUpdate: function( values ) {
+ *				doSthWithWordNumber( values.words );
+ *				doSthWithCharacterNumber( values.characters );
+ *			}
+ *		}
+ *
+ * @member {Function} module:wordcount/wordcount~WordCountConfig#onUpdate
+ */
+
+/**
+ * This option allows on providing an HTML element where
+ * {@link module:wordcount/wordcount~WordCount#getWordCountContainer word count container} will be append autoamtically.
+ *
+ *		const wordCountConfig = {
+ *			container: document.getElementById( 'container-for-word-count' );
+ *		}
+ *
+ * @member {Function} module:wordcount/wordcount~WordCountConfig#container
  */
