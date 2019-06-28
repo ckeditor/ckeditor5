@@ -86,7 +86,7 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	}
 }
 
-export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFindableFromContext ) {
+export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFindableFromContext, data ) {
 	let err = null;
 
 	try {
@@ -94,22 +94,27 @@ export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFinda
 	} catch ( _err ) {
 		err = _err;
 
-		assertCKEditorError( err, message, editorThatShouldBeFindableFromContext );
+		assertCKEditorError( err, message, editorThatShouldBeFindableFromContext, data );
 	}
 
 	expect( err ).to.not.equal( null, 'Function did not throw any error' );
 }
 
-export function assertCKEditorError( err, message, editorThatShouldBeFindableFromContext ) {
+export function assertCKEditorError( err, message, editorThatShouldBeFindableFromContext, data ) {
 	expect( err ).to.be.instanceOf( CKEditorError );
 	expect( err.message ).to.match( message, 'Error message does not match the provided one.' );
 
+	// TODO: The `editorThatShouldBeFindableFromContext` is optional but should be required in the future.
 	if ( editorThatShouldBeFindableFromContext === null ) {
 		expect( err.context ).to.equal( null, 'Error context was expected to be `null`' );
-	} else {
+	} else if ( editorThatShouldBeFindableFromContext !== undefined ) {
 		expect(
 			areConnectedThroughProperties( editorThatShouldBeFindableFromContext, err.context ),
 			'Editor cannot be find from the error context'
 		);
+	}
+
+	if ( data ) {
+		expect( err.data ).to.deep.equal( data );
 	}
 }

@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import * as testUtils from '../../tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ObservableMixin from '../../src/observablemixin';
 import EmitterMixin from '../../src/emittermixin';
+import { createObserver } from '../_utils/utils';
 
 describe( 'utils - testUtils', () => {
 	afterEach( () => {
@@ -18,7 +19,7 @@ describe( 'utils - testUtils', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			observer = testUtils.createObserver();
+			observer = createObserver();
 
 			observable = Object.create( ObservableMixin );
 			observable.set( { foo: 0, bar: 0 } );
