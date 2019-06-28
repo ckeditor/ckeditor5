@@ -48,12 +48,16 @@ describe( 'IndentUI', () => {
 		const indentButton = editor.ui.componentFactory.create( 'indent' );
 
 		expect( indentButton ).to.be.instanceOf( ButtonView );
+		expect( indentButton.label ).to.equal( 'Increase indent' );
+		expect( indentButton.icon ).to.match( /<svg / );
 	} );
 
-	it( 'should set up button for indent', () => {
+	it( 'should set up button for outdent', () => {
 		const outdentButton = editor.ui.componentFactory.create( 'outdent' );
 
 		expect( outdentButton ).to.be.instanceOf( ButtonView );
+		expect( outdentButton.label ).to.equal( 'Decrease indent' );
+		expect( outdentButton.icon ).to.match( /<svg / );
 	} );
 
 	it( 'should execute indent command on button execute', () => {

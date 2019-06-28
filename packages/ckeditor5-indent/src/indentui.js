@@ -9,6 +9,8 @@
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import indentIcon from '../theme/icons/indent.svg';
+import outdentIcon from '../theme/icons/outdent.svg';
 
 /**
  * The indent feature.
@@ -35,8 +37,8 @@ export default class IndentUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._defineButton( 'indent', t( 'Increase indent' ) );
-		this._defineButton( 'outdent', t( 'Decrease indent' ) );
+		this._defineButton( 'indent', t( 'Increase indent' ), indentIcon );
+		this._defineButton( 'outdent', t( 'Decrease indent' ), outdentIcon );
 	}
 
 	/**
@@ -44,9 +46,10 @@ export default class IndentUI extends Plugin {
 	 *
 	 * @param {String} commandName
 	 * @param {String} label
+	 * @param {String} icon
 	 * @private
 	 */
-	_defineButton( commandName, label ) {
+	_defineButton( commandName, label, icon ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( commandName, locale => {
@@ -55,7 +58,7 @@ export default class IndentUI extends Plugin {
 
 			view.set( {
 				label,
-				withText: true,
+				icon,
 				tooltip: true
 			} );
 
