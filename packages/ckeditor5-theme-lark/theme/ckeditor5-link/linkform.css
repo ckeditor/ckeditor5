@@ -79,13 +79,14 @@
 	/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */
 	& .ck.ck-list {
 		margin-left: 0;
-	}
 
-	& .ck-list .ck-button.ck-switchbutton {
-		border: 0;
+		& .ck-button.ck-switchbutton {
+			border: 0;
+			width: 100%;
 
-		&:hover {
-			background: none;
+			&:hover {
+				background: none;
+			}
 		}
 	}
 }
