@@ -231,12 +231,12 @@ describe( 'WordCount', () => {
 	describe( 'translations', () => {
 		before( () => {
 			addTranslations( 'pl', {
-				Words: 'Słowa',
-				Characters: 'Znaki'
+				'Words: %0': 'Słowa: %0',
+				'Characters: %0': 'Znaki: %0'
 			} );
 			addTranslations( 'en', {
-				Words: 'Words',
-				Characters: 'Characters'
+				'Words: %0': 'Words: %0',
+				'Characters: %0': 'Characters: %0'
 			} );
 		} );
 
@@ -260,3 +260,4 @@ describe( 'WordCount', () => {
 		} );
 	} );
 } );
+
