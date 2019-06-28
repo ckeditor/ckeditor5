@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-indent-block",
+  "name": "@ckeditor/ckeditor5-indent",
   "version": "0.0.1",
-  "description": "Block indent feature for CKEditor 5.",
+  "description": "Block indentation feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -10,8 +10,12 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
+    "@ckeditor/ckeditor5-core": "^12.1.1",
+    "@ckeditor/ckeditor5-utils": "^12.1.1"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-ui": "^13.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^12.1.1",
     "eslint": "^5.15.3",
     "eslint-config-ckeditor5": "^1.0.11",
     "husky": "^1.3.1",
@@ -24,10 +28,10 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5-indent-block/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-indent/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-indent-block.git"
+    "url": "https://github.com/ckeditor/ckeditor5-indent.git"
   },
   "files": [
     "lang",
