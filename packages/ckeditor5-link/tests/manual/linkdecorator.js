@@ -16,9 +16,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 // Just to have nicely styles switchbutton;
 import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';
 
-if ( !window.editors ) {
-	window.editors = {};
-}
+window.editors = {};
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
