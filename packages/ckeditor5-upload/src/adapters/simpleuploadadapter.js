@@ -14,7 +14,54 @@ import FileRepository from '../filerepository';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
- * A plugin that enables file uploads in CKEditor 5 using the external side-server connection.
+ * The plugin that allows uploading images to the server using the
+ * [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API and very little configuration.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				simpleUpload: {
+ *					uploadUrl: 'http://example.com',
+ *					headers: {
+ *					    ...
+ *					}
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See the {@glink features/image-upload/simple-upload-adapter Simple upload adapter} guide to learn how to configure this feature.
+ *
+ * The plugin assumes that every response that will came from the XHR server will be a JSON.
+ *
+ * Note: During the upload process, the plugin will send a POST request under the URL specified as
+ * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`}
+ * in the editor's configuration.
+ *
+ * If the upload is successful, the XHR server should return an object that contains the `url` property which
+ * points out to the uploaded image:
+ *
+ *		{
+ *			"url": "https://example.com/images/foo.jpg"
+ *		}
+ *
+ * If something went wrong, the XHR server must return an object that contains the `error` property which has its own `message`
+ * that will be passed to the {@link module:ui/notification/notification~Notification#showWarning `Notification#showWarning`} method.
+ *
+ *		{
+ *			"error": {
+ *				"message": "The XHR server cannot handle the request."
+ *			}
+ *		}
+ *
+ * If the `message` property is missing in the `error` object,
+ * the {@link module:ui/notification/notification~Notification#showWarning `Notification#showWarning`} method will receive
+ * the default message: `Couldn't upload file: [filename].`
+ *
+ * Note: The plugin supports [`XHR.upload.progress`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload)
+ * via `evt.total` and `evt.loaded`.
+ *
+ * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -45,12 +92,15 @@ export default class SimpleUploadAdapter extends Plugin {
 
 		if ( !options.uploadUrl ) {
 			/**
-			 * Configuration passed to the editor is missing a URL specified as `simpleUpload.uploadUrl` which is required because,
-			 * under the specified URL, all images will be uploaded.
+			 * The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}
+			 * configuration required by the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`}
+			 * is missing. Make sure the correct URL is specified for the image upload to work properly.
 			 *
-			 * @error simple-upload-adapter
+			 * @error simple-upload-adapter-missing-uploadUrl
 			 */
-			log.warn( 'simple-upload-adapter-missing-uploadUrl: Missing "uploadUrl" in the "simpleUpload" editor configuration.' );
+			log.warn(
+				'simple-upload-adapter-missing-uploadUrl: Missing the "uploadUrl" property in the "simpleUpload" editor configuration.'
+			);
 
 			return;
 		}
@@ -73,7 +123,6 @@ class Adapter {
 	 *
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {module:upload/adapters/simpleuploadadapter~SimpleUploadConfig} options
-	 * @param {String} options.uploadUrl A URL where the image will be sent.
 	 */
 	constructor( loader, options ) {
 		/**
@@ -119,7 +168,9 @@ class Adapter {
 	}
 
 	/**
-	 * Initializes the XMLHttpRequest object using the URL passed to the constructor.
+	 * Initializes the `XMLHttpRequest` object using the URL specified as
+	 * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`} in the editor's
+	 * configuration.
 	 *
 	 * @private
 	 */
@@ -148,19 +199,10 @@ class Adapter {
 		xhr.addEventListener( 'load', () => {
 			const response = xhr.response;
 
-			// We assume the XHR server's "response" object will come with
-			// an "error" which has its own "message" that can be passed to reject()
-			// in the upload promise.
-			//
-			// Your integration may handle upload errors in a different way so make sure
-			// it is done properly. The reject() function must be called when the upload fails.
 			if ( !response || response.error ) {
 				return reject( response && response.error && response.error.message ? response.error.message : genericErrorText );
 			}
 
-			// If the upload is successful, resolve the upload promise with an object containing
-			// at least the "default" URL, pointing to the image on the server.
-			// This URL will be used to display the image in the content.
 			resolve( {
 				default: response.url
 			} );
@@ -238,14 +280,14 @@ class Adapter {
  */
 
 /**
- * An object that defines additional headers for request that is being sent during the upload. This is the right place to
- * implement security mechanisms like authentication and CSRF protection.
+ * An object that defines additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) for request
+ * that is being sent during the upload. This is the right place to implement security mechanisms like authentication and CSRF protection.
  *
  *		ClassicEditor
  *			.create( editorElement, {
  *				simpleUpload: {
  *					headers: {
- *					    'X-CSRF-TOKEN': 'CSFR-Token',
+ *					    'X-CSRF-TOKEN': 'CSRF-Token',
  *					    Authorization: 'Bearer <JSON Web Token>'
  *					}
  *				}
