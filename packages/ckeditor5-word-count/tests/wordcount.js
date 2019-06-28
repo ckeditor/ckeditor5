@@ -14,6 +14,9 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
+// Delay related to word-count throttling.
+const DELAY = 255;
+
 describe( 'WordCount', () => {
 	testUtils.createSinonSandbox();
 
@@ -41,12 +44,12 @@ describe( 'WordCount', () => {
 			expect( wordCountPlugin.characters ).to.equal( 0 );
 		} );
 
-		it( 'has defined "_outputView" property', () => {
-			expect( wordCountPlugin._outputView ).to.be.undefined;
-		} );
-
 		it( 'has "WordCount" plugin name', () => {
 			expect( WordCount.pluginName ).to.equal( 'WordCount' );
+		} );
+
+		it( 'has define "_config" object', () => {
+			expect( wordCountPlugin._config ).to.deep.equal( {} );
 		} );
 	} );
 
@@ -165,7 +168,7 @@ describe( 'WordCount', () => {
 	describe( '_calculateWordsAndCharacters and throttle', () => {
 		beforeEach( done => {
 			// We need to flush initial throttle value after editor's initialization
-			setTimeout( done, 255 );
+			setTimeout( done, DELAY );
 		} );
 
 		it( 'gets update after model data change', done => {
@@ -185,7 +188,7 @@ describe( 'WordCount', () => {
 				sinon.assert.calledWith( fake, sinon.match.any, { words: 2, characters: 9 } );
 
 				done();
-			}, 255 );
+			}, DELAY );
 
 			setModelData( model, '<paragraph>Hello world</paragraph>' );
 			setModelData( model, '<paragraph>Hello worl</paragraph>' );
@@ -218,7 +221,7 @@ describe( 'WordCount', () => {
 				sinon.assert.called( fakeSelectionChange );
 
 				done();
-			}, 255 );
+			}, DELAY );
 		} );
 	} );
 
@@ -255,6 +258,47 @@ describe( 'WordCount', () => {
 				} )
 				.then( done )
 				.catch( done );
+		} );
+
+		it( 'should call function register under config.wordCount.onUpdate', () => {
+			const fake = sinon.fake();
+			return VirtualTestEditor.create( {
+				plugins: [ WordCount, Paragraph ],
+				wordCount: {
+					onUpdate: fake
+				}
+			} )
+				.then( editor => {
+					sinon.assert.calledWithExactly( fake, { words: 0, characters: 0 } );
+
+					setModelData( editor.model, '<paragraph>Foo Bar</paragraph>' );
+				} )
+				.then( () => new Promise( resolve => {
+					setTimeout( resolve, DELAY );
+				} ) )
+				.then( () => {
+					sinon.assert.calledWithExactly( fake, { words: 2, characters: 7 } );
+				} );
+		} );
+
+		it( 'should append word count container in element referenced in config.wordCount.container', () => {
+			const element = document.createElement( 'div' );
+
+			expect( element.children.length ).to.equal( 0 );
+
+			return VirtualTestEditor.create( {
+				plugins: [ WordCount, Paragraph ],
+				wordCount: {
+					container: element
+				}
+			} )
+				.then( editor => {
+					expect( element.children.length ).to.equal( 1 );
+
+					const wordCountPlugin = editor.plugins.get( 'WordCount' );
+
+					expect( element.firstElementChild ).to.equal( wordCountPlugin.getWordCountContainer() );
+				} );
 		} );
 	} );
 
