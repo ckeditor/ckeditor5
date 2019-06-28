@@ -111,3 +111,51 @@ plugins: [
 You can also use the relative path which is resolved relative to the resource that imports `bold.svg` (the {@link module:basic-styles/bold/boldui~BoldUI `BoldUI`} class file in this scenario).
 
 Learn more about {@link builds/guides/integration/advanced-setup#webpack-configuration building CKEditor 5 using webpack}.
+
+## How to get the editor instance object from the DOM element?
+
+If you have a reference to the editor editable's DOM element (that's the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
+
+```html
+<!-- The editable element in the editor's DOM structure. -->
+<div class="... ck-editor__editable ..." contenteditable="true">
+	<!-- Editable content. -->
+</div>
+```
+
+```js
+// A reference to the editor editable element in DOM.
+const domEditableElement = document.querySelector( '.ck-editor__editable' );
+
+// Get the editor instance from the editable element.
+const editorInstance = domEditableElement.ckeditorInstance;
+
+// Use the editor instance API.
+editorInstance.setData( '<p>Hello world!<p>' );
+```
+
+## How to add an attribute to the editor editable in DOM?
+
+If you have a reference to the editor instance, simply use the {@link framework/guides/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
+
+```js
+editor.editing.view.change( writer => {
+	const viewEditableRoot = editor.editing.view.document.getRoot();
+
+	writer.setAttribute( 'myAttribute', 'value', viewEditableRoot );
+} );
+```
+
+If you do not have the reference to the editor instance but you have access to the editable element in DOM, you can [access it using the `ckeditorInstance` property](#how-to-get-the-editor-instance-object-from-the-dom-element) and then use the same API to set the attribute:
+
+```js
+const domEditableElement = document.querySelector( '.ck-editor__editable' );
+const editorInstance = domEditableElement.ckeditorInstance;
+
+editor.editing.view.change( writer => {
+	// Map the editable element in DOM to the editable element in editor's view.
+	const viewEditableRoot = editorInstance.editing.view.domConverter.mapDomToView( domEditableElement );
+
+	writer.setAttribute( 'myAttribute', 'value', viewEditableRoot );
+} );
+```
