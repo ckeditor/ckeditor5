@@ -156,14 +156,10 @@ export default class LinkEditing extends Plugin {
 				model: decorator.id,
 				view: ( manualDecoratorName, writer ) => {
 					if ( manualDecoratorName ) {
-						const element = writer.createAttributeElement(
-							'a',
-							manualDecorators.get( decorator.id ).attributes,
-							{
-								priority: 5
-							}
-						);
+						const attributes = manualDecorators.get( decorator.id ).attributes;
+						const element = writer.createAttributeElement( 'a', attributes, { priority: 5 } );
 						writer.setCustomProperty( 'link', true, element );
+
 						return element;
 					}
 				} } );
