@@ -8,7 +8,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import IndentEditing from '../src/indentediting';
 import IndentBlock from '../src/indentblock';
@@ -61,7 +60,7 @@ describe( 'IndentBlock', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
 				return createTestEditor().then( editor => {
-					expect( editor.config.get( 'indentBlock' ) ).to.deep.equal( { offset: 1, unit: 'em' } );
+					expect( editor.config.get( 'indentBlock' ) ).to.deep.equal( { offset: 40, unit: 'px' } );
 				} );
 			} );
 		} );

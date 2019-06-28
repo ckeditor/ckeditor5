@@ -31,8 +31,8 @@ export default class IndentBlock extends Plugin {
 		super( editor );
 
 		editor.config.define( 'indentBlock', {
-			offset: 1,
-			unit: 'em'
+			offset: 40,
+			unit: 'px'
 		} );
 	}
 
@@ -247,14 +247,14 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
 /**
  * The size in indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} of each indentation step.
  *
- * @default 1
+ * @default 40
  * @member {Number} module:indent/indentblock~IndentBlockConfig#offset
  */
 
 /**
  * The unit used for indentation {@link module:indent/indentblock~IndentBlockConfig#offset}.
  *
- * @default 'em'
+ * @default 'px'
  * @member {String} module:indent/indentblock~IndentBlockConfig#unit
  */
 
