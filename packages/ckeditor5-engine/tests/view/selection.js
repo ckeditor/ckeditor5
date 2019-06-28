@@ -600,7 +600,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for selection', () => {
 			expect( selection.is( 'selection' ) ).to.be.true;
 			expect( selection.is( 'view:selection' ) ).to.be.true;

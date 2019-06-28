@@ -61,7 +61,7 @@ describe( 'TextProxy', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for textProxy', () => {
 			expect( textProxy.is( 'textProxy' ) ).to.be.true;
 			expect( textProxy.is( 'view:textProxy' ) ).to.be.true;

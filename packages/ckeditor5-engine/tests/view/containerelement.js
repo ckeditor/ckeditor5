@@ -18,7 +18,7 @@ describe( 'ContainerElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {

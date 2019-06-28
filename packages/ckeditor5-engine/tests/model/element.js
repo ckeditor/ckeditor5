@@ -38,7 +38,7 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let element;
 
 		before( () => {

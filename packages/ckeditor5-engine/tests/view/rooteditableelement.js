@@ -38,7 +38,7 @@ describe( 'RootEditableElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {

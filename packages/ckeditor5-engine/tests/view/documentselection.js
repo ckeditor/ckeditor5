@@ -725,7 +725,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for selection', () => {
 			expect( documentSelection.is( 'selection' ) ).to.be.true;
 			expect( documentSelection.is( 'view:selection' ) ).to.be.true;

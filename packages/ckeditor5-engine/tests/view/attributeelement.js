@@ -21,7 +21,7 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {

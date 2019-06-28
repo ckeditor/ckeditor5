@@ -22,7 +22,7 @@ describe( 'RootElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let root;
 
 		before( () => {

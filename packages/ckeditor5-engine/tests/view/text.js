@@ -17,7 +17,7 @@ describe( 'Text', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let text;
 
 		before( () => {

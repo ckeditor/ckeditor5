@@ -102,7 +102,7 @@ describe( 'TextProxy', () => {
 		}, /model-textproxy-wrong-length/, model );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for textProxy', () => {
 			expect( textProxy.is( 'textProxy' ) ).to.be.true;
 			expect( textProxy.is( 'model:textProxy' ) ).to.be.true;

@@ -31,7 +31,7 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let position;
 
 		beforeEach( () => {

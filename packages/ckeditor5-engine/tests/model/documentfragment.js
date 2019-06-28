@@ -61,7 +61,7 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let frag;
 
 		before( () => {
