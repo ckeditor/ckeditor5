@@ -17,8 +17,8 @@ ClassicEditor
 		toolbar: [
 			'heading',
 			'|',
-			'indent',
 			'outdent',
+			'indent',
 			'|',
 			'bulletedList',
 			'numberedList',

@@ -2,7 +2,7 @@
 category: api-reference
 ---
 
-# CKEditor 5 indent feature
+# CKEditor 5 block indent feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-indent.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent)
 
@@ -10,11 +10,11 @@ This package implements the indent feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/indent#demo demo in the indent feature} guide.
+Check out the {@link features/indent#demo demo in the block indentation feature} guide.
 
 ## Documentation
 
-See the {@link module:indent/indent~Indent} plugin documentation.
+See the {@link features/indent Block indentation} guide and the {@link module:indent/indent~Indent} plugin documentation.
 
 ## Installation
 

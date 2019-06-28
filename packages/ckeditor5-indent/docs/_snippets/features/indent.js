@@ -14,8 +14,8 @@ ClassicEditor
 			items: [
 				'heading',
 				'|',
-				'indent',
 				'outdent',
+				'indent',
 				'|',
 				'bulletedList',
 				'numberedList',
@@ -24,10 +24,6 @@ ClassicEditor
 				'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
-		},
-		indentBlock: {
-			offset: 50,
-			unit: 'px'
 		}
 	} )
 	.then( editor => {

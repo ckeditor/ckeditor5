@@ -14,8 +14,8 @@ ClassicEditor
 			items: [
 				'heading',
 				'|',
-				'indent',
 				'outdent',
+				'indent',
 				'|',
 				'bulletedList',
 				'numberedList',

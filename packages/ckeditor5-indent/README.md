@@ -1,5 +1,5 @@
-CKEditor 5 indent block feature
-===========================
+CKEditor 5 block indentation feature
+====================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-indent.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent)
@@ -10,7 +10,7 @@ CKEditor 5 indent block feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-indent/status.svg)](https://david-dm.org/ckeditor/ckeditor5-indent)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-indent/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-indent?type=dev)
 
-This package implements indentation support for CKEditor 5.
+This package implements block indentation support for CKEditor 5.
 
 ## Documentation
 
