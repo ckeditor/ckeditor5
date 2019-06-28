@@ -47,7 +47,15 @@ const env = {
 	 * @static
 	 * @type {Boolean}
 	 */
-	isSafari: isSafari( userAgent )
+	isSafari: isSafari( userAgent ),
+
+	/**
+	 * Indicates that the application is running on Android mobile device.
+	 *
+	 * @static
+	 * @type {Boolean}
+	 */
+	isAndroid: isAndroid( userAgent )
 };
 
 export default env;
@@ -90,4 +98,14 @@ export function isGecko( userAgent ) {
  */
 export function isSafari( userAgent ) {
 	return userAgent.indexOf( ' applewebkit/' ) > -1 && userAgent.indexOf( 'chrome' ) === -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is Android mobile device.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Safari or not.
+ */
+export function isAndroid( userAgent ) {
+	return userAgent.indexOf( 'android' ) > -1;
 }
