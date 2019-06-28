@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false, window, document */
+/* globals console:false, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -15,6 +15,10 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 // Just to have nicely styles switchbutton;
 import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';
+
+if ( !window.editors ) {
+	window.editors = {};
+}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -48,10 +52,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		if ( !window.editors ) {
-			window.editors = {};
-		}
-		window.editor = editor;
+		CKEditorInspector.attach( 'manual', editor );
 		window.editors.manualDecorators = editor;
 	} )
 	.catch( err => {
@@ -83,9 +84,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		if ( !window.editors ) {
-			window.editors = {};
-		}
+		CKEditorInspector.attach( 'automatic', editor );
 		window.editors.automaticDecorators = editor;
 	} )
 	.catch( err => {
