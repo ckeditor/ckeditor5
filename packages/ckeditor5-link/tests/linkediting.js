@@ -589,7 +589,7 @@ describe( 'LinkEditing', () => {
 		} );
 
 		describe( 'upcast converter', () => {
-			it( 'attributes from initial data are upcast to model', done => {
+			it( 'should upcast attributes from initial data', done => {
 				VirtualTestEditor
 					.create( {
 						initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
@@ -630,7 +630,7 @@ describe( 'LinkEditing', () => {
 					.catch( done );
 			} );
 
-			it( 'partial and incorrect attributes are not upcast to the model', done => {
+			it( 'should not upcast partial and incorrect attributes', done => {
 				VirtualTestEditor
 					.create( {
 						initialData: '<p><a href="url" target="_blank" download="something">Foo</a>' +
