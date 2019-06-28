@@ -18,7 +18,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'WidgetToolbarRepository', () => {
 	let editor, model, balloon, widgetToolbarRepository, editorElement;
@@ -82,12 +82,12 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: () => null
 			} );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				widgetToolbarRepository.register( 'fake', {
 					items: editor.config.get( 'fake.toolbar' ),
 					getRelatedElement: () => null
 				} );
-			} ).to.throw( CKEditorError, /^widget-toolbar-duplicated/ );
+			}, /^widget-toolbar-duplicated/, editor );
 		} );
 	} );
 
