@@ -152,7 +152,7 @@ export default class DecoupledEditor extends Editor {
 	 *				document.body.appendChild( editor.ui.view.toolbar.element );
 	 *
 	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 *				document.body.appendChild( editor.ui.element );
+	 *				document.body.appendChild( editor.ui.view.editable.element );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
