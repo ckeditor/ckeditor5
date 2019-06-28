@@ -568,7 +568,7 @@ function getFeedText( marker, text ) {
 
 	const match = text.match( regExp );
 
-	return match[ 3 ];
+	return match[ 2 ];
 }
 
 // The default feed callback.
