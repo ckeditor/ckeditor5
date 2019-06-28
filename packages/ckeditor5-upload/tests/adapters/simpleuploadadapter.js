@@ -131,23 +131,33 @@ describe( 'SimpleUploadAdapter', () => {
 
 		describe( 'upload', () => {
 			it( 'should return promise', () => {
-				expect( adapter.upload() ).to.be.instanceof( Promise );
+				return loader.file
+					.then( () => {
+						expect( adapter.upload() ).to.be.instanceof( Promise );
+					} );
 			} );
 
 			it( 'should call url from config', () => {
 				let request;
 				const validResponse = {
-					uploaded: 1
+					url: 'http://example.com/images/image.jpeg'
 				};
 
-				adapter.upload();
+				const uploadPromise = adapter.upload();
 
-				return loader.file.then( () => {
-					request = sinonXHR.requests[ 0 ];
-					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
+				return loader.file
+					.then( () => {
+						request = sinonXHR.requests[ 0 ];
+						request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
-					expect( request.url ).to.equal( 'http://example.com' );
-				} );
+						expect( request.url ).to.equal( 'http://example.com' );
+
+						return uploadPromise;
+					} )
+					.then( uploadResponse => {
+						expect( uploadResponse ).to.be.a( 'object' );
+						expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+					} );
 			} );
 
 			it( 'should modify headers of uploading request if specified', () => {
@@ -168,10 +178,10 @@ describe( 'SimpleUploadAdapter', () => {
 					.then( editor => {
 						const adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
 						const validResponse = {
-							uploaded: 1
+							url: 'http://example.com/images/image.jpeg'
 						};
 
-						adapter.upload();
+						const uploadPromise = adapter.upload();
 
 						return loader.file
 							.then( () => {
@@ -184,7 +194,11 @@ describe( 'SimpleUploadAdapter', () => {
 								expect( requestHeaders ).to.have.property( 'X-CSRF-TOKEN', 'foo' );
 								expect( requestHeaders ).to.have.property( 'Authorization', 'Bearer <token>' );
 
-								expect( request.url ).to.equal( 'http://example.com' );
+								return uploadPromise;
+							} )
+							.then( uploadResponse => {
+								expect( uploadResponse ).to.be.a( 'object' );
+								expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
 
 								editorElement.remove();
 							} )
