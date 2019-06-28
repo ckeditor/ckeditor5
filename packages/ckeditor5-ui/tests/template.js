@@ -10,7 +10,7 @@ import { default as Template, TemplateToBinding, TemplateIfBinding } from '../sr
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
 import Model from '../src/model';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -142,16 +142,16 @@ describe( 'Template', () => {
 
 	describe( 'render()', () => {
 		it( 'throws when the template definition is wrong', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Template( {} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			}, /ui-template-wrong-syntax/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Template( {
 					tag: 'p',
 					text: 'foo'
 				} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			}, /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'sets #_isRendered true', () => {
@@ -645,7 +645,7 @@ describe( 'Template', () => {
 
 				strongView.set( 'id' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					getView( {
 						tag: 'div',
 						children: [
@@ -727,12 +727,12 @@ describe( 'Template', () => {
 		} );
 
 		it( 'throws when wrong template definition', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Template( {
 					tag: 'p',
 					text: 'foo'
 				} ).apply( el );
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			}, /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'accepts empty template definition', () => {
@@ -1119,15 +1119,15 @@ describe( 'Template', () => {
 				tag: 'div'
 			} );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				tpl.revert( el );
-			} ).to.throw( CKEditorError, /ui-template-revert-not-applied/ );
+			}, /ui-template-revert-not-applied/ );
 
 			tpl.render();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				tpl.revert( el );
-			} ).to.throw( CKEditorError, /ui-template-revert-not-applied/ );
+			}, /ui-template-revert-not-applied/ );
 		} );
 
 		describe( 'text', () => {
@@ -2691,7 +2691,7 @@ describe( 'Template', () => {
 
 		describe( 'children', () => {
 			it( 'should throw when the number of children does not correspond', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
 							tag: 'p',
@@ -2707,11 +2707,11 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				}, /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'should throw when no children in target but extending one', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
 							tag: 'p',
@@ -2725,11 +2725,11 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				}, /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'should throw when the number of children does not correspond on some deeper level', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
 							tag: 'p',
@@ -2768,7 +2768,7 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				}, /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'extends existing - simple', () => {

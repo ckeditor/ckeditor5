@@ -7,12 +7,13 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import View from '../../../src/view';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 /* global document, Event */
 
@@ -238,7 +239,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.add( {
 					view: viewA,
 					position: {
@@ -246,7 +247,7 @@ describe( 'ContextualBalloon', () => {
 						limiter: balloon.positionLimiter
 					}
 				} );
-			} ).to.throw( CKEditorError, /^contextualballoon-add-view-exist/ );
+			}, /^contextualballoon-add-view-exist/, editor );
 		} );
 
 		it( 'should use a provided limiter instead of #positionLimiter', () => {
@@ -453,15 +454,15 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should do nothing when given stack is already visible', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'main' );
 			} ).to.not.throw();
 		} );
 
 		it( 'should throw an error when there is no stack of given id', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw( CKEditorError, 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.' );
+			}, 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.', editor );
 		} );
 	} );
 
@@ -489,7 +490,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewB );
 
 			expect( balloon.visibleView ).to.equal( viewA );
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
 			} ).to.not.throw();
 		} );
@@ -503,7 +504,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewB );
 
 			expect( balloon.visibleView ).to.equal( viewA );
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
 			} ).to.throw();
 		} );
@@ -517,7 +518,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewA );
 
 			expect( balloon.visibleView ).to.equal( viewB );
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'main' );
 			} ).to.throw();
 		} );
@@ -573,7 +574,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.hasView( viewC ) ).to.true;
 
 			// Does not throw, so the stack is there.
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
 			} ).to.not.throw();
 		} );
@@ -592,15 +593,15 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.hasView( viewB ) ).to.false;
 
 			// Does throw, so the stack is not there.
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
 			} ).to.throw();
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.remove( viewB );
-			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
+			}, /^contextualballoon-remove-view-not-exist/, editor );
 		} );
 
 		it( 'should set additional css class of visible view to BalloonPanelView', () => {
@@ -707,15 +708,15 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.remove( viewB );
-			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
+			}, /^contextualballoon-remove-view-not-exist/, editor );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'can be called multiple times', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.destroy();
 				balloon.destroy();
 			} ).to.not.throw();
