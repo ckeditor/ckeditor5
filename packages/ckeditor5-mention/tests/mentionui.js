@@ -586,16 +586,29 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
-				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
-				} );
+				setData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
 
 				model.change( writer => {
-					writer.setSelection( doc.getRoot().getChild( 0 ), 7 );
+					const range = writer.createRange(
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 4 ),
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 )
+					);
+
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, range );
 				} );
 
 				return waitForDebounce()
+					.then( () => {
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+						} );
+
+						expect( panelView.isVisible ).to.be.false;
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 7 );
+						} );
+					} )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
@@ -603,16 +616,23 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
-				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
-				} );
+				setData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
 
 				model.change( writer => {
-					writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
+					const range = writer.createRange(
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 4 ),
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 )
+					);
+
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, range );
 				} );
 
 				return waitForDebounce()
+					.then( () => {
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
+						} );
+					} )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
@@ -696,10 +716,14 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection moves inside existing mention', () => {
-				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
+				setData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
 
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
+					const range = writer.createRange(
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 4 ),
+						writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 )
+					);
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, range );
 				} );
 
 				return waitForDebounce()
