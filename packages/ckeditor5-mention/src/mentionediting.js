@@ -149,7 +149,8 @@ function createViewMentionElement( mention, viewWriter ) {
 	return viewWriter.createAttributeElement( 'span', attributes, options );
 }
 
-// Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute.
+// Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
+// before a text node with mention attribute.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
@@ -158,15 +159,25 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
-	if ( selection.isCollapsed && selection.hasAttribute( 'mention' ) && isNodeBeforeAText( focus ) ) {
+	if ( selection.isCollapsed && selection.hasAttribute( 'mention' ) && shouldRemoveMentionAttribute( focus ) ) {
 		writer.removeSelectionAttribute( 'mention' );
 
 		return true;
 	}
+}
 
-	function isNodeBeforeAText( position ) {
-		return position.nodeBefore && position.nodeBefore.is( 'text' );
-	}
+// Helper function to detect if mention attribute should be removed from selection.
+// This check makes only sense if the selection has mention attribute.
+//
+// The mention attribute should be removed from a selection when selection focus is placed:
+// a) after a text node
+// b) the position is at parents start - the selection will set attributes from node after.
+function shouldRemoveMentionAttribute( position ) {
+	const isAtStart = position.isAtStart;
+
+	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( 'text' );
+
+	return isAfterAMention || isAtStart;
 }
 
 // Model post-fixer that removes the mention attribute from the modified text node.
