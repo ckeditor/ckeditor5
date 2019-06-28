@@ -12,6 +12,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'WordCount', () => {
 	testUtils.createSinonSandbox();
@@ -189,6 +190,35 @@ describe( 'WordCount', () => {
 			setModelData( model, '<paragraph>Hello world</paragraph>' );
 			setModelData( model, '<paragraph>Hello worl</paragraph>' );
 			setModelData( model, '<paragraph>Hello wor</paragraph>' );
+		} );
+
+		it( 'is not update after selection change', done => {
+			setModelData( model, '<paragraph>Hello[] world.</paragraph>' );
+
+			const fake = sinon.fake();
+			const fakeSelectionChange = sinon.fake();
+
+			wordCountPlugin.on( 'update', fake );
+			model.document.on( 'change', fakeSelectionChange );
+
+			model.change( writer => {
+				const range = writer.createRange( new Position( model.document.getRoot(), [ 0, 1 ] ) );
+
+				writer.setSelection( range );
+			} );
+
+			model.change( writer => {
+				const range = writer.createRange( new Position( model.document.getRoot(), [ 0, 10 ] ) );
+
+				writer.setSelection( range );
+			} );
+
+			setTimeout( () => {
+				sinon.assert.notCalled( fake );
+				sinon.assert.called( fakeSelectionChange );
+
+				done();
+			}, 255 );
 		} );
 	} );
 
