@@ -24,7 +24,7 @@ ClassicEditor
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		link: {
-			targetDecorator: true,
+			addTargetToExternalLinks: true,
 			decorators: [
 				{
 					mode: 'manual',
