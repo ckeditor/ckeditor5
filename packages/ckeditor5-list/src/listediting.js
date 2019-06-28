@@ -168,8 +168,23 @@ export default class ListEditing extends Plugin {
 			};
 		};
 
-		this.editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
-		this.editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
+		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
+	}
+
+	afterInit() {
+		const commands = this.editor.commands;
+
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentList' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
 	}
 }
 
