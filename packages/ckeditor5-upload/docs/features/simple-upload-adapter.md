@@ -48,7 +48,7 @@ ClassicEditor
 		plugins: [ SimpleUploadAdapter, ... ],
 		toolbar: [ ... ],
 		simpleUpload: {
-			uploadUrl: '' // <-- This value must be specified.
+			// Feature configuration.
 		}
 	} )
 	.then( ... )
