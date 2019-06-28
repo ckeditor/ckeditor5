@@ -170,8 +170,7 @@ export default class LinkEditing extends Plugin {
 					attributes: manualDecorators.get( decorator.id ).attributes
 				},
 				model: {
-					key: decorator.id,
-					value: true
+					key: decorator.id
 				}
 			} );
 		} );
