@@ -47,10 +47,6 @@ describe( 'WordCount', () => {
 		it( 'has "WordCount" plugin name', () => {
 			expect( WordCount.pluginName ).to.equal( 'WordCount' );
 		} );
-
-		it( 'has define "_config" object', () => {
-			expect( wordCountPlugin._config ).to.deep.equal( {} );
-		} );
 	} );
 
 	describe( 'functionality', () => {
