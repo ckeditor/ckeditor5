@@ -23,7 +23,7 @@ The {@link module:wordcount/wordcount~WordCount} feature provides a possibility 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// configuration details
+		// Configuration details.
 	} )
 	.then( editor => {
 		const wordCountPlugin = editor.plugins.get( 'WordCount' );
@@ -34,7 +34,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Configuring options
+## Configuration options
 
 There are two options which change the output container. If the {@link module:wordcount/wordcount~WordCountConfig#displayWords} is set to to `false`, then the section with word counter is hidden. Similarly, when the {@link module:wordcount/wordcount~WordCountConfig#displayCharacters} is set to `false` it will hide the character counter.
 
