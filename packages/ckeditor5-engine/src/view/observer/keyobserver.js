@@ -11,7 +11,7 @@ import DomEventObserver from './domeventobserver';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * {@link module:engine/view/document~Document#event:keydown Key down} event observer.
+ * Observer for events connected with pressing keyboard keys.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *

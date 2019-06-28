@@ -21,6 +21,7 @@ import FakeSelectionObserver from './observer/fakeselectionobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
+import InputObserver from './observer/inputobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -172,6 +173,7 @@ export default class View {
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
+		this.addObserver( InputObserver );
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );
