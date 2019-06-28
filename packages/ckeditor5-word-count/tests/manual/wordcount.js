@@ -14,19 +14,16 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, WordCount ],
 		toolbar: [
 			'heading', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
-		]
+		],
+		wordCount: {
+			onUpdate: values => {
+				console.log( `Values from 'onUpdate': ${ JSON.stringify( values ) }` );
+			},
+			container: document.getElementById( 'other-words-container' )
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		const wordCountPlugin = editor.plugins.get( 'WordCount' );
-		const wordCount = wordCountPlugin.getWordCountContainer();
-
-		wordCountPlugin.on( 'update', ( evt, payload ) => {
-			console.log( JSON.stringify( payload ) );
-		} );
-
-		document.getElementById( 'words' ).appendChild( wordCount );
 
 		document.getElementById( 'destroy-editor' ).addEventListener( 'click', () => {
 			editor.destroy();
