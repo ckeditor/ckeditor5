@@ -154,16 +154,16 @@ export default class EditorUI {
 	 */
 	get _editableElements() {
 		/**
-		 * The `EditorUI#_editableElements` property has been deprecated and will be removed in the near future.
-		 * Please use {@link #setEditableElement `setEditableElement()`} and {@link #getEditableElement `getEditableElement()`}
-		 * methods instead.
+		 * The {@link module:core/editor/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
+		 * deprecated and will be removed in the near future. Please use {@link #setEditableElement `setEditableElement()`} and
+		 * {@link #getEditableElement `getEditableElement()`} methods instead.
 		 *
-		 * @warning editor-ui-deprecated-editable-elements
-		 * @param {module:core/editor/editorui~EditorUI} editorUI Editor UI instance the property belongs to.
+		 * @error editor-ui-deprecated-editable-elements
+		 * @param {module:core/editor/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
 		 */
 		log.warn(
 			'editor-ui-deprecated-editable-elements: ' +
-			'The EditorUI#_editableElements property has been deprecated and will be remove in the near future.',
+			'The EditorUI#_editableElements property has been deprecated and will be removed in the near future.',
 			{ editorUI: this } );
 
 		return this._editableElementsMap;
