@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isEdge, isMac, isGecko, isSafari } from '../src/env';
+import env, { isEdge, isMac, isGecko, isSafari, isAndroid } from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -35,6 +35,12 @@ describe( 'Env', () => {
 	describe( 'isSafari', () => {
 		it( 'is a boolean', () => {
 			expect( env.isSafari ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isAndroid', () => {
+		it( 'is a boolean', () => {
+			expect( env.isAndroid ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -130,6 +136,35 @@ describe( 'Env', () => {
 
 			expect( isSafari( toLowerCase(
 				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
+			) ) ).to.be.false;
+		} );
+		/* eslint-enable max-len */
+	} );
+
+	describe( 'isAndroid()', () => {
+		/* eslint-disable max-len */
+		it( 'returns true for Android UA strings', () => {
+			// Strings taken from https://developer.chrome.com/multidevice/user-agent.
+			expect( isAndroid( toLowerCase(
+				'Mozilla/5.0 (Linux; <Android Version>; <Build Tag etc.>) AppleWebKit/<WebKit Rev> (KHTML, like Gecko) Chrome/<Chrome Rev> Mobile Safari/<WebKit Rev>'
+			) ) ).to.be.true;
+
+			expect( isAndroid( toLowerCase(
+				'Mozilla/5.0 (Linux; <Android Version>; <Build Tag etc.>) AppleWebKit/<WebKit Rev>(KHTML, like Gecko) Chrome/<Chrome Rev> Safari/<WebKit Rev>'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-Android UA strings', () => {
+			expect( isAndroid( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
+			) ) ).to.be.false;
+
+			expect( isAndroid( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+			) ) ).to.be.false;
+
+			expect( isAndroid( toLowerCase(
+				'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko'
 			) ) ).to.be.false;
 		} );
 		/* eslint-enable max-len */
