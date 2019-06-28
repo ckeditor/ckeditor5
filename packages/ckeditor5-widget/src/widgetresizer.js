@@ -48,11 +48,6 @@ class ResizeContext {
 		const resizingHost = widgetWrapper.querySelector( 'img' );
 		this.initialHeight = resizingHost.height;
 
-		const resizeWrapper = widgetWrapper.querySelector( '.ck-widget__resizer-wrapper' );
-
-		resizeWrapper.style.left = resizingHost.offsetLeft + 'px';
-		resizeWrapper.style.right = resizingHost.offsetLeft + 'px';
-
 		// Position of a clicked resize handler in x and y axes.
 		this.direction = {
 			y: 'top',
@@ -87,6 +82,20 @@ class ResizeContext {
 			// console.log( 'shrinking' );
 			this.shadowWrapper.style.top = ( yDistance * -1 ) + 'px';
 		}
+	}
+
+	// Accepts the proposed resize intent.
+	commit() {
+	}
+
+	/**
+	 *
+	 * @param {module:@ckeditor/ckeditor5-core/src/editor/editor~Editor} editor
+	 * @param {module:@ckeditor/ckeditor5-engine/src/view/element~Element} widgetWrapperElement
+	 * @returns {module:@ckeditor/ckeditor5-engine/src/model/element~Element|undefined}
+	 */
+	_getModel( editor, widgetWrapperElement ) {
+		return editor.editing.mapper.toModelElement( widgetWrapperElement );
 	}
 
 	_extractCoordinates( event ) {
@@ -152,6 +161,7 @@ export default class WidgetResizer extends Plugin {
 				isActive = false;
 				this._observers.mouseMove.disable();
 
+				resizeContext.commit();
 				resizeContext.destroy();
 				resizeContext = null;
 			}
@@ -169,7 +179,9 @@ export default class WidgetResizer extends Plugin {
 		// @todo inline the logic
 		const ret = new WidgetResizeFeature();
 
-		ret.apply( widgetElement, writer );
+		const renderRefresh = ret.apply( widgetElement, writer );
+
+		this.editor.editing.view.once( 'render', renderRefresh );
 
 		return ret;
 	}

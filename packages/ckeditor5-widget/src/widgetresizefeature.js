@@ -18,6 +18,8 @@ export default class WidgetResizeFeature extends WidgetFeature {
 	apply( widgetElement, writer ) {
 		super.apply( widgetElement, writer );
 
+		let domSelectionHandler = null;
+
 		const selectionHandler = writer.createUIElement( 'div', {
 			class: 'ck ck-widget__resizer-wrapper'
 		}, function( domDocument ) {
@@ -44,11 +46,20 @@ export default class WidgetResizeFeature extends WidgetFeature {
 				domElement.appendChild( icon.element );
 			}
 
+			domSelectionHandler = domElement;
+
 			return domElement;
 		} );
 
 		// Append resizer wrapper to the widget's wrapper.
 		writer.insert( writer.createPositionAt( widgetElement, widgetElement.childCount ), selectionHandler );
 		writer.addClass( [ 'ck-widget_with-resizer' ], widgetElement );
+
+		return () => {
+			const resizingHost = domSelectionHandler.parentElement.querySelector( 'img' );
+
+			domSelectionHandler.style.left = resizingHost.offsetLeft + 'px';
+			domSelectionHandler.style.right = resizingHost.offsetLeft + 'px';
+		};
 	}
 }
