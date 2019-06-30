@@ -60,6 +60,33 @@ describe( 'Delete feature', () => {
 		expect( spy.calledWithMatch( 'delete', { unit: 'character', sequence: 5 } ) ).to.be.true;
 	} );
 
+	it( 'passes options.selection parameter to delete command if selection to remove was specified', () => {
+		editor.setData( '<p>Foobar</p>' );
+
+		const spy = editor.execute = sinon.spy();
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const domEvt = getDomEvent();
+
+		const viewSelection = view.createSelection( view.createRangeIn( viewDocument.getRoot() ) );
+
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvt, {
+			direction: 'backward',
+			unit: 'character',
+			sequence: 1,
+			selectionToRemove: viewSelection
+		} ) );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		const commandName = spy.args[ 0 ][ 0 ];
+		const options = spy.args[ 0 ][ 1 ];
+		const expectedSelection = editor.model.createSelection( editor.model.createRangeIn( editor.model.document.getRoot() ) );
+
+		expect( commandName ).to.equal( 'delete' );
+		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
+	} );
+
 	it( 'scrolls the editing document to the selection after executing the command', () => {
 		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 		const executeSpy = editor.execute = sinon.spy();

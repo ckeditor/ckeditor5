@@ -8,6 +8,7 @@
  */
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Handles keystrokes which are unsafe for typing. This handler's logic is explained
@@ -22,7 +23,13 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 	const view = editor.editing.view;
 	const inputCommand = editor.commands.get( 'input' );
 
-	view.document.on( 'keydown', ( evt, evtData ) => handleKeydown( evtData ), { priority: 'lowest' } );
+	// For Android, we want to handle keystrokes on `beforeinput` to be sure that code in `DeleteObserver` already had a chance to be fired.
+	/* istanbul ignore if */
+	if ( env.isAndroid ) {
+		view.document.on( 'beforeinput', ( evt, evtData ) => handleUnsafeKeystroke( evtData ), { priority: 'lowest' } );
+	} else {
+		view.document.on( 'keydown', ( evt, evtData ) => handleUnsafeKeystroke( evtData ), { priority: 'lowest' } );
+	}
 
 	view.document.on( 'compositionstart', handleCompositionStart, { priority: 'lowest' } );
 
@@ -42,7 +49,7 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 	// to handle the event.
 	//
 	// @param {module:engine/view/observer/keyobserver~KeyEventData} evtData
-	function handleKeydown( evtData ) {
+	function handleUnsafeKeystroke( evtData ) {
 		const doc = model.document;
 		const isComposing = view.document.isComposing;
 		const isSelectionUnchanged = latestCompositionSelection && latestCompositionSelection.isEqual( doc.selection );
