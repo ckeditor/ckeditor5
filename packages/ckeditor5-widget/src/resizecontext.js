@@ -101,6 +101,9 @@ export default class ResizeContext {
 		editor.model.change( writer => {
 			writer.setAttribute( HEIGHT_ATTRIBUTE_NAME, newHeight, modelEntry );
 		} );
+
+		// Again, render will most likely change image size, so resizers needs a redraw.
+		editor.editing.view.once( 'render', () => this.redraw() );
 	}
 
 	cancel() {
