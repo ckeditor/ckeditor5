@@ -10,7 +10,7 @@ import InsertOperation from '../../../src/model/operation/insertoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
-
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;

@@ -110,21 +110,21 @@ describe( 'Position', () => {
 		it( 'should throw error if given path is incorrect', () => {
 			expectToThrowCKEditorError( () => {
 				new Position( root, {} ); // eslint-disable-line no-new
-			}, /model-position-path-incorrect/, model );
+			}, /model-position-path-incorrect/, null );
 
 			expectToThrowCKEditorError( () => {
 				new Position( root, [] ); // eslint-disable-line no-new
-			}, /model-position-path-incorrect/, model );
+			}, /model-position-path-incorrect/, null );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
 			expectToThrowCKEditorError( () => {
 				new Position( new Text( 'a' ) ); // eslint-disable-line no-new
-			}, /model-position-root-invalid/, model );
+			}, /model-position-root-invalid/, null );
 
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				new Position(); // eslint-disable-line no-new
-			}, model );
+			} ).to.throw();
 		} );
 	} );
 
@@ -889,11 +889,11 @@ describe( 'Position', () => {
 
 		it( 'should not update path if insertion position parent is a node from that path and offset is ' +
 			'after next node on that path', () => {
-				const position = new Position( root, [ 1, 2, 3 ] );
-				const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2 );
 
-				expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
-			} );
+			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+		} );
 
 		it( 'should not update if insertion is in different path', () => {
 			const position = new Position( root, [ 1, 1 ] );
@@ -955,12 +955,12 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and ' +
-			'offset is after next node on that path', () => {
-				const position = new Position( root, [ 1, 2, 3 ] );
-				const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
+		'offset is after next node on that path', () => {
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
-				expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
-			} );
+			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+		} );
 	} );
 
 	describe( '_getTransformedByMove()', () => {

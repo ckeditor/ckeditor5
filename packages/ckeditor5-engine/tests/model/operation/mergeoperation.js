@@ -9,7 +9,7 @@ import SplitOperation from '../../../src/model/operation/splitoperation';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
-
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MergeOperation', () => {
 	let model, doc, root, gy, gyPos;

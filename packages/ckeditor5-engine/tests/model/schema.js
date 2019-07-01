@@ -5,8 +5,6 @@
 
 import Schema, { SchemaContext } from '../../src/model/schema';
 
-
-
 import Model from '../../src/model/model';
 
 import DocumentFragment from '../../src/model/documentfragment';
@@ -19,6 +17,7 @@ import Range from '../../src/model/range';
 import { getData, setData, stringify, parse } from '../../src/dev-utils/model';
 
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -1005,16 +1004,16 @@ describe( 'Schema', () => {
 			setData(
 				model,
 				'<div>' +
-					'<section>' +
-						'<article>' +
-							'<paragraph>[foo]</paragraph>' +
-						'</article>' +
-					'</section>' +
-					'<widget>' +
-						'<image>' +
-							'<caption>b[a]r</caption>' +
-						'</image>' +
-					'</widget>' +
+				'<section>' +
+				'<article>' +
+				'<paragraph>[foo]</paragraph>' +
+				'</article>' +
+				'</section>' +
+				'<widget>' +
+				'<image>' +
+				'<caption>b[a]r</caption>' +
+				'</image>' +
+				'</widget>' +
 				'</div>'
 			);
 
@@ -1026,11 +1025,11 @@ describe( 'Schema', () => {
 			setData(
 				model,
 				'<div>' +
-					'<section>' +
-						'<article>' +
-							'<paragraph>[foo]</paragraph>' +
-						'</article>' +
-					'</section>' +
+				'<section>' +
+				'<article>' +
+				'<paragraph>[foo]</paragraph>' +
+				'</article>' +
+				'</section>' +
 				'</div>' +
 				'<section>b[]ar</section>'
 			);
@@ -1042,10 +1041,10 @@ describe( 'Schema', () => {
 			setData(
 				model,
 				'<image>' +
-					'<caption>[Foo</caption>' +
+				'<caption>[Foo</caption>' +
 				'</image>' +
 				'<article>' +
-					'<paragraph>Paragraph in article]</paragraph>' +
+				'<paragraph>Paragraph in article]</paragraph>' +
 				'</article>' +
 				'<paragraph>Paragraph item 1</paragraph>' +
 				'<paragraph>Paragraph [item 2]</paragraph>'
@@ -1060,10 +1059,10 @@ describe( 'Schema', () => {
 				'<paragraph>Paragraph item 1</paragraph>' +
 				'<paragraph>Paragraph [item 2]</paragraph>' +
 				'<image>' +
-					'<caption>[Foo</caption>' +
+				'<caption>[Foo</caption>' +
 				'</image>' +
 				'<article>' +
-					'<paragraph>Paragraph in article]</paragraph>' +
+				'<paragraph>Paragraph in article]</paragraph>' +
 				'</article>'
 			);
 
@@ -1814,12 +1813,12 @@ describe( 'Schema', () => {
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<div>' +
-							'<paragraph>' +
-								'<$text b="1">foo</$text>' +
-								'<image b="1"></image>' +
-							'</paragraph>' +
-							'<$text a="1">bar</$text>' +
-							'<image a="1"></image>' +
+						'<paragraph>' +
+						'<$text b="1">foo</$text>' +
+						'<image b="1"></image>' +
+						'</paragraph>' +
+						'<$text a="1">bar</$text>' +
+						'<image a="1"></image>' +
 						'</div>'
 					);
 			} );
@@ -2139,7 +2138,7 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'passes $root>paragraph and $root2>paragraph – where $root2 inherits content of $root' +
-				'and paragraph inherits allowWhere from $block', () => {
+			'and paragraph inherits allowWhere from $block', () => {
 				schema.register( '$root' );
 				schema.register( '$root2', {
 					allowContentOf: '$root'

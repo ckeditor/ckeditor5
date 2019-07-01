@@ -19,6 +19,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '../../src/dev-utils/model';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DocumentSelection', () => {
 	let model, doc, root, selection, liveRange, range;

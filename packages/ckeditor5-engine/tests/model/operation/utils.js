@@ -12,8 +12,7 @@ import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
 import * as utils from '../../../src/model/operation/utils';
 import { getData } from '../../../src/dev-utils/model';
-
-
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let model, doc, root;
 

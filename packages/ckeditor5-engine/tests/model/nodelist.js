@@ -85,11 +85,11 @@ describe( 'NodeList', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expectToThrowCKEditorError( () => {
 				nodes.indexToOffset( -1 );
-			}, /model-nodelist-index-out-of-bounds/, null );
+			}, /model-nodelist-index-out-of-bounds/, nodes );
 
 			expectToThrowCKEditorError( () => {
 				nodes.indexToOffset( 99 );
-			}, /model-nodelist-index-out-of-bounds/, null );
+			}, /model-nodelist-index-out-of-bounds/, nodes );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {
@@ -109,11 +109,11 @@ describe( 'NodeList', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expectToThrowCKEditorError( () => {
 				nodes.offsetToIndex( -1 );
-			}, /nodelist-offset-out-of-bounds/, null );
+			}, /nodelist-offset-out-of-bounds/, nodes );
 
 			expectToThrowCKEditorError( () => {
 				nodes.offsetToIndex( 55 );
-			}, /nodelist-offset-out-of-bounds/, null );
+			}, /nodelist-offset-out-of-bounds/, nodes );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {
@@ -160,7 +160,7 @@ describe( 'NodeList', () => {
 		it( 'should throw if not a Node is inserted', () => {
 			expectToThrowCKEditorError( () => {
 				nodes._insertNodes( 0, [ 'foo' ] );
-			}, /nodelist-insertNodes-not-node/, null );
+			}, /nodelist-insertNodes-not-node/, nodes );
 		} );
 	} );
 

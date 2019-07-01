@@ -303,11 +303,11 @@ describe( 'Element', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expectToThrowCKEditorError( () => {
 				element.offsetToIndex( -1 );
-			}, /nodelist-offset-out-of-bounds/, null );
+			}, /nodelist-offset-out-of-bounds/, element );
 
 			expectToThrowCKEditorError( () => {
 				element.offsetToIndex( 55 );
-			}, /nodelist-offset-out-of-bounds/, null );
+			}, /nodelist-offset-out-of-bounds/, element );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

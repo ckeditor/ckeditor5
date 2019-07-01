@@ -209,7 +209,7 @@ describe( 'MarkerCollection', () => {
 		it( 'should throw if marker does not exist', () => {
 			expectToThrowCKEditorError( () => {
 				markers._refresh( 'name' );
-			}, 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.', null );
+			}, /^markercollection-refresh-marker-not-exists:/, markers );
 		} );
 	} );
 
@@ -294,23 +294,23 @@ describe( 'Marker', () => {
 
 		expectToThrowCKEditorError( () => {
 			marker.getRange();
-		}, /^marker-destroyed/, null );
+		}, /^marker-destroyed/, model );
 
 		expectToThrowCKEditorError( () => {
 			marker.getStart();
-		}, /^marker-destroyed/, null );
+		}, /^marker-destroyed/, model );
 
 		expectToThrowCKEditorError( () => {
 			marker.getEnd();
-		}, /^marker-destroyed/, null );
+		}, /^marker-destroyed/, model );
 
 		expectToThrowCKEditorError( () => {
 			marker.managedUsingOperations;
-		}, /^marker-destroyed/, null );
+		}, /^marker-destroyed/, model );
 
 		expectToThrowCKEditorError( () => {
 			marker.affectsData;
-		}, /^marker-destroyed/, null );
+		}, /^marker-destroyed/, model );
 	} );
 
 	it( 'should attach live range to marker', () => {

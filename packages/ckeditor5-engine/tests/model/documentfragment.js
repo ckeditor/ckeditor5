@@ -113,11 +113,11 @@ describe( 'DocumentFragment', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expectToThrowCKEditorError( () => {
 				frag.offsetToIndex( -1 );
-			}, /nodelist-offset-out-of-bounds/, null );
+			}, /nodelist-offset-out-of-bounds/, frag );
 
 			expectToThrowCKEditorError( () => {
 				frag.offsetToIndex( 55 );
-			}, /nodelist-offset-out-of-bounds/, null );
+			}, /nodelist-offset-out-of-bounds/, frag );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

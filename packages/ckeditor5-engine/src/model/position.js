@@ -61,7 +61,7 @@ export default class Position {
 			 *
 			 * @error model-position-root-invalid
 			 */
-			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.', this );
+			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.', null );
 		}
 
 		if ( !( path instanceof Array ) || path.length === 0 ) {
@@ -71,7 +71,10 @@ export default class Position {
 			 * @error model-position-path-incorrect
 			 * @param path
 			 */
-			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an array with at least one item.', this, { path } );
+			throw new CKEditorError(
+				'model-position-path-incorrect: Position path must be an array with at least one item.',
+				null, { path }
+			);
 		}
 
 		// Normalize the root and path (if element was passed).
@@ -859,7 +862,8 @@ export default class Position {
 				throw new CKEditorError(
 					'model-createPositionAt-offset-required: ' +
 					'Model#createPositionAt() requires the offset when the first parameter is a model item.',
-					this );
+					this
+				);
 			}
 
 			if ( !node.is( 'element' ) && !node.is( 'documentFragment' ) ) {
@@ -868,7 +872,10 @@ export default class Position {
 				 *
 				 * @error model-position-parent-incorrect
 				 */
-				throw new CKEditorError( 'model-position-parent-incorrect: Position parent have to be a element or document fragment.', this );
+				throw new CKEditorError(
+					'model-position-parent-incorrect: Position parent have to be a element or document fragment.',
+					this
+				);
 			}
 
 			const path = node.getPath();

@@ -9,6 +9,7 @@ import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Node', () => {
 	let doc, root, node,
@@ -129,7 +130,7 @@ describe( 'Node', () => {
 
 			expectToThrowCKEditorError( () => {
 				node.index;
-			}, /model-node-not-found-in-parent/, null );
+			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 
@@ -187,7 +188,7 @@ describe( 'Node', () => {
 
 			expectToThrowCKEditorError( () => {
 				node.startOffset;
-			}, /model-node-not-found-in-parent/, null );
+			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 

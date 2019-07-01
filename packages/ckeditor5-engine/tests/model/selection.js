@@ -123,7 +123,7 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 	} );
 
@@ -282,13 +282,13 @@ describe( 'Selection', () => {
 		it( 'should throw an error when trying to set selection to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				selection.setTo( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable #2', () => {
 			expectToThrowCKEditorError( () => {
 				selection.setTo();
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 
 		it( 'should allow setting selection inside an element', () => {

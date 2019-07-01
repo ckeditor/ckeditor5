@@ -212,7 +212,8 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expectToThrowCKEditorError( () => operation._validate(),, model );
+			expect( () => operation._validate() ).not.to.throw();
+		} );
 
 		it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
 			const p = new Element( 'p' );
@@ -226,7 +227,8 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expectToThrowCKEditorError( () => operation._validate(),, model );
+			expect( () => operation._validate() ).not.to.throw();
+		} );
 	} );
 
 	it( 'should create MoveOperation with the same parameters when cloned', () => {

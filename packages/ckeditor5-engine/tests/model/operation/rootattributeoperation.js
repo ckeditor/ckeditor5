@@ -7,7 +7,7 @@ import Model from '../../../src/model/model';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
-
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
 	let model, doc, root;
