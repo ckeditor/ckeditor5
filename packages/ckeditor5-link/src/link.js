@@ -61,11 +61,14 @@ export default class Link extends Plugin {
  * When set `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
  * in the editor. By external are meant all links in the editor content starting with `http`, `https`, or `//`.
  *
- *		const config = {
- *			link: {
- *				addTargetToExternalLinks: true
- *			}
- *		};
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				link: {
+ *					addTargetToExternalLinks: true
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
  *
  * Internally, this option activates a predefined {@link module:link/link~LinkConfig#decorators automatic link decorator},
  * which extends all external links with the `target` and `rel` attributes without additional configuration.
@@ -100,26 +103,31 @@ export default class Link extends Plugin {
  * The name of the decorator also corresponds to the {@glink framework/guides/architecture/editing-engine#text-attributes text attribute}
  * in the model. For instance, the `isExternal` decorator below is represented as a `linkIsExternal` attribute in the model.
  *
- *		const linkConfig = {
- *			decorators: {
- *				isExternal: {
- *					mode: 'automatic',
- *					callback: url => url.startsWith( 'http://' ),
- *					attributes: {
- *						target: '_blank',
- *						rel: 'noopener noreferrer'
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				link: {
+ *					decorators: {
+ *						isExternal: {
+ *							mode: 'automatic',
+ *							callback: url => url.startsWith( 'http://' ),
+ *							attributes: {
+ *								target: '_blank',
+ *								rel: 'noopener noreferrer'
+ *							}
+ *						},
+ *						isDownloadable: {
+ *							mode: 'manual',
+ *							label: 'Downloadable',
+ *							attributes: {
+ *								download: 'file.png',
+ *							}
+ *						},
+ *						// ...
  *					}
- *				},
- *				isDownloadable: {
- *					mode: 'manual',
- *					label: 'Downloadable',
- *					attributes: {
- *						download: 'file.png',
- *					}
- *				},
- *				// ...
- *			}
- *		}
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
  *
  * To learn more about the configuration syntax, check out the {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
  * and {@link module:link/link~LinkDecoratorManualDefinition manual} decorator option reference.
