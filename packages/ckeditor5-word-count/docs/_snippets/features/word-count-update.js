@@ -10,6 +10,7 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'heading',
+				'|',
 				'bold',
 				'italic',
 				'bulletedList',
