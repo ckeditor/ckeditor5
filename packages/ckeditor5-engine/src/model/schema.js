@@ -356,7 +356,10 @@ export default class Schema {
 				 *
 				 * @error schema-check-merge-no-element-before
 				 */
-				throw new CKEditorError( 'schema-check-merge-no-element-before: The node before the merge position must be an element.', this );
+				throw new CKEditorError(
+					'schema-check-merge-no-element-before: The node before the merge position must be an element.',
+					this
+				);
 			}
 
 			if ( !( nodeAfter instanceof Element ) ) {
@@ -365,7 +368,10 @@ export default class Schema {
 				 *
 				 * @error schema-check-merge-no-element-after
 				 */
-				throw new CKEditorError( 'schema-check-merge-no-element-after: The node after the merge position must be an element.', this );
+				throw new CKEditorError(
+					'schema-check-merge-no-element-after: The node after the merge position must be an element.',
+					this
+				);
 			}
 
 			return this.checkMerge( nodeBefore, nodeAfter );

@@ -9,7 +9,6 @@ import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
 
-
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 

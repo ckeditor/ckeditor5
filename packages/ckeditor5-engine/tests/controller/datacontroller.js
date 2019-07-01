@@ -229,9 +229,7 @@ describe( 'DataController', () => {
 		it( 'should throw an error when non-existent root is used (single)', () => {
 			expectToThrowCKEditorError( () => {
 				data.init( { nonexistent: '<p>Bar</p>' } );
-			},
-				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
-			);
+			}, /^datacontroller-init-non-existent-root:/ );
 		} );
 
 		it( 'should throw an error when non-existent root is used (one of many)', () => {
@@ -239,7 +237,7 @@ describe( 'DataController', () => {
 
 			expectToThrowCKEditorError( () => {
 				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
-			}, /datacontroller-init-non-existent-root:/, model );
+			}, /^datacontroller-init-non-existent-root:/, model );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
 		} );
@@ -319,7 +317,7 @@ describe( 'DataController', () => {
 
 			expectToThrowCKEditorError( () => {
 				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
-			}, /datacontroller-set-non-existent-root:/, model )
+			}, /datacontroller-set-non-existent-root:/, model );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );

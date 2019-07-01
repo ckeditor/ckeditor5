@@ -42,7 +42,10 @@ export default class TreeWalker {
 			 *
 			 * @error model-tree-walker-no-start-position
 			 */
-			throw new CKEditorError( 'model-tree-walker-no-start-position: Neither boundaries nor starting position have been defined.', this );
+			throw new CKEditorError(
+				'model-tree-walker-no-start-position: Neither boundaries nor starting position have been defined.',
+				null
+			);
 		}
 
 		const direction = options.direction || 'forward';

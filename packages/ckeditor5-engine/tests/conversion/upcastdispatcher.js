@@ -19,6 +19,7 @@ import ModelRange from '../../src/model/range';
 import ModelWriter from '../../src/model/writer';
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'UpcastDispatcher', () => {
 	let model;

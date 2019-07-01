@@ -186,7 +186,10 @@ export default class NodeList {
 				 *
 				 * @error nodelist-insertNodes-not-node
 				 */
-				throw new CKEditorError( 'model-nodelist-insertNodes-not-node: Trying to insert an object which is not a Node instance.', this);
+				throw new CKEditorError(
+					'model-nodelist-insertNodes-not-node: Trying to insert an object which is not a Node instance.',
+					this
+				);
 			}
 		}
 
