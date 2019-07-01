@@ -159,7 +159,7 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
-	if ( selection.isCollapsed && selection.hasAttribute( 'mention' ) && shouldRemoveMentionAttribute( focus ) ) {
+	if ( selection.isCollapsed && selection.hasAttribute( 'mention' ) && shouldNotTypeWithMentionAt( focus ) ) {
 		writer.removeSelectionAttribute( 'mention' );
 
 		return true;
@@ -172,9 +172,8 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 // The mention attribute should be removed from a selection when selection focus is placed:
 // a) after a text node
 // b) the position is at parents start - the selection will set attributes from node after.
-function shouldRemoveMentionAttribute( position ) {
+function shouldNotTypeWithMentionAt( position ) {
 	const isAtStart = position.isAtStart;
-
 	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( 'text' );
 
 	return isAfterAMention || isAtStart;
