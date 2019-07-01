@@ -17,7 +17,7 @@ You can edit existing links by clicking them and using the balloon. Use the Link
 
 CKEditor 5 allows for typing both at inner and outer boundaries of links to make the editing easier for the users.
 
-**To type inside a link**, move the caret to its (start or end) boundary. As long as the link remains highlighted (by default: blue), typing and and applying formatting will be done within its boundaries:
+**To type inside a link**, move the caret to its (start or end) boundary. As long as the link remains highlighted (by default: blue), typing and applying formatting will be done within its boundaries:
 
 {@img assets/img/typing-inside.gif 770 The animation showing typing inside the link in CKEditor 5 rich text editor.}
 
@@ -83,7 +83,7 @@ Decorators are configured via definitions in {@link module:link/link~LinkConfig#
 
 #### Adding `target` and `rel` attributes to external links
 
-A very common use case for (automatic) link decorators is adding `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration has been created for that purpose. When this option is set `true`, all links staring with `http://`, `https://` or `//` are "decorated" with `target` and `rel` attributes.
+A very common use case for (automatic) link decorators is adding `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration has been created for that purpose. When this option is set `true`, all links starting with `http://`, `https://` or `//` are "decorated" with `target` and `rel` attributes.
 
 ```js
 ClassicEditor
