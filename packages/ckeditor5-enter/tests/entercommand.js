@@ -101,7 +101,7 @@ describe( 'EnterCommand', () => {
 				);
 
 				test(
-					'unknown attributes are disabled',
+					'unknown attributes are not copied',
 					'<p><$text bar="true">test[]</$text></p>',
 					'<p><$text bar="true">test</$text></p><p>[]</p>'
 				);
