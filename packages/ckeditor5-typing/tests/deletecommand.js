@@ -109,6 +109,16 @@ describe( 'DeleteCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 		} );
 
+		it( 'deletes contents of selection passed in options', () => {
+			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			const selection = model.createSelection( model.createRangeIn( model.document.getRoot() ) );
+
+			editor.execute( 'delete', { selection } );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		} );
+
 		it( 'merges elements', () => {
 			setData( model, '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 

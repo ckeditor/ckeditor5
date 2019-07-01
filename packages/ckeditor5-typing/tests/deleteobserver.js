@@ -117,6 +117,8 @@ describe( 'DeleteObserver', () => {
 				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 					keyCode: getCode( 'delete' )
 				} ) );
+
+				viewDocument.fire( 'input', getDomEvent() );
 			}
 
 			expect( spy.callCount ).to.equal( 5 );
@@ -138,6 +140,8 @@ describe( 'DeleteObserver', () => {
 				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 					keyCode: getCode( 'delete' )
 				} ) );
+
+				viewDocument.fire( 'input', getDomEvent() );
 			}
 
 			// Then the user has released the key.
@@ -149,6 +153,8 @@ describe( 'DeleteObserver', () => {
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'delete' )
 			} ) );
+
+			viewDocument.fire( 'input', getDomEvent() );
 
 			expect( spy.callCount ).to.equal( 4 );
 
@@ -167,6 +173,8 @@ describe( 'DeleteObserver', () => {
 				keyCode: getCode( 'backspace' )
 			} ) );
 
+			viewDocument.fire( 'input', getDomEvent() );
+
 			viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'backspace' )
 			} ) );
@@ -174,6 +182,8 @@ describe( 'DeleteObserver', () => {
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'backspace' )
 			} ) );
+
+			viewDocument.fire( 'input', getDomEvent() );
 
 			expect( spy.callCount ).to.equal( 2 );
 
@@ -190,6 +200,8 @@ describe( 'DeleteObserver', () => {
 				keyCode: getCode( 'delete' )
 			} ) );
 
+			viewDocument.fire( 'input', getDomEvent() );
+
 			viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'A' )
 			} ) );
@@ -197,6 +209,8 @@ describe( 'DeleteObserver', () => {
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'delete' )
 			} ) );
+
+			viewDocument.fire( 'input', getDomEvent() );
 
 			expect( spy.args[ 0 ][ 1 ] ).to.have.property( 'sequence', 1 );
 			expect( spy.args[ 1 ][ 1 ] ).to.have.property( 'sequence', 2 );

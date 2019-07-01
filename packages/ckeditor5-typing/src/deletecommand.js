@@ -66,6 +66,8 @@ export default class DeleteCommand extends Command {
 	 * @param {'character'} [options.unit='character'] See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
 	 * @param {Number} [options.sequence=1] A number describing which subsequent delete event it is without the key being released.
 	 * See the {@link module:engine/view/document~Document#event:delete} event data.
+	 * @param {module:engine/model/selection~Selection} [options.selection] Selection to remove. If not set, current model selection
+	 * will be used.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -74,7 +76,7 @@ export default class DeleteCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
-			const selection = writer.createSelection( doc.selection );
+			const selection = writer.createSelection( options.selection || doc.selection );
 
 			// Do not replace the whole selected content if selection was collapsed.
 			// This prevents such situation:

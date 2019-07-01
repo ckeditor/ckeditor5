@@ -47,19 +47,52 @@ export default class DeleteObserver extends Observer {
 			deleteData.unit = hasWordModifier ? 'word' : deleteData.unit;
 			deleteData.sequence = ++sequence;
 
+			fireViewDeleteEvent( evt, data.domEvent, deleteData );
+		} );
+
+		// `beforeinput` is handled only for Android devices. Desktop Chrome and iOS are skipped because they are working fine now.
+		/* istanbul ignore if */
+		if ( env.isAndroid ) {
+			document.on( 'beforeinput', ( evt, data ) => {
+				// If event type is other than `deleteContentBackward` then this is not deleting.
+				if ( data.domEvent.inputType != 'deleteContentBackward' ) {
+					return;
+				}
+
+				const deleteData = {
+					unit: 'codepoint',
+					direction: 'backward',
+					sequence: 1
+				};
+
+				// Android IMEs may change the DOM selection on `beforeinput` event so that the selection contains all the text
+				// that the IME wants to remove. We will pass this information to `delete` event so proper part of the content is removed.
+				//
+				// Sometimes it is only expanding by a one character (in case of collapsed selection). In this case we don't need to
+				// set a different selection to remove, it will work just fine.
+				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+
+				if ( domSelection.anchorNode == domSelection.focusNode && domSelection.anchorOffset + 1 != domSelection.focusOffset ) {
+					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );
+				}
+
+				fireViewDeleteEvent( evt, data.domEvent, deleteData );
+			} );
+		}
+
+		function fireViewDeleteEvent( originalEvent, domEvent, deleteData ) {
 			// Save the event object to check later if it was stopped or not.
 			let event;
 			document.once( 'delete', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
 
-			const domEvtData = new DomEventData( document, data.domEvent, deleteData );
-			document.fire( 'delete', domEvtData );
+			document.fire( 'delete', new DomEventData( document, domEvent, deleteData ) );
 
-			// Stop `keydown` event if `delete` event was stopped.
+			// Stop the original event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
 			if ( event && event.stop.called ) {
-				evt.stop();
+				originalEvent.stop();
 			}
-		} );
+		}
 	}
 
 	/**
@@ -80,4 +113,6 @@ export default class DeleteObserver extends Observer {
  * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
  * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
  * If it's 2 or more it means that the key was pressed and hold.
+ * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,
+ * current selection should be used.
  */
