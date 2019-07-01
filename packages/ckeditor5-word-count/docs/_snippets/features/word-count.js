@@ -32,7 +32,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		document.getElementById( 'demo-word-counter' ).appendChild( editor.plugins.get( 'WordCount' ).getWordCountContainer() );
+		document.getElementById( 'demo-word-counter' ).appendChild( editor.plugins.get( 'WordCount' ).wordCountContainer );
 	} )
 	.catch( err => {
 		console.error( err.stack );
