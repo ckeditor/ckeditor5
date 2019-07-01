@@ -61,6 +61,12 @@ export default class Link extends Plugin {
  * When set `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
  * in the editor. By external are meant all links in the editor content starting with `http`, `https`, or `//`.
  *
+ *		const config = {
+ *			link: {
+ *				addTargetToExternalLinks: true
+ *			}
+ *		};
+ *
  * Internally, this option activates a predefined {@link module:link/link~LinkConfig#decorators automatic link decorator},
  * which extends all external links with the `target` and `rel` attributes without additional configuration.
  *
@@ -119,7 +125,7 @@ export default class Link extends Plugin {
  * and {@link module:link/link~LinkDecoratorManualDefinition manual} decorator option reference.
  *
  * **Warning:** Currently, link decorators work independently and no conflict resolution mechanism exists.
- * For example, configuring the `target` attribute using both an automatic and a manual decorator at a time could end up with a
+ * For example, configuring the `target` attribute using both an automatic and a manual decorator at a time could end up with
  * quirky results. The same applies if multiple manual or automatic decorators were defined for the same attribute.
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
@@ -127,18 +133,22 @@ export default class Link extends Plugin {
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
+ * See also {@glink features/link#custom-link-attributes-decorators link's feature} guide for more information.
+ *
  * @member {Object.<String, module:link/link~LinkDecoratorDefinition>} module:link/link~LinkConfig#decorators
  */
 
 /**
- * Represents a link decorator definition {@link module:link/link~LinkDecoratorManualDefinition `'manual'`} or
- * {@link module:link/link~LinkDecoratorAutomaticDefinition `'automatic'`}.
+ * Represents a link decorator definition ({@link module:link/link~LinkDecoratorManualDefinition `'manual'`}
+ * or {@link module:link/link~LinkDecoratorAutomaticDefinition `'automatic'`}).
  *
  * @interface LinkDecoratorDefinition
  */
 
 /**
- * The kind of the decorator. `'manual'` for all manual decorators and `'automatic'` for all automatic decorators.
+ * The kind of the decorator.
+ *
+ * Check out the {@glink features/link#custom-link-attributes-decorators link feature} guide for more information.
  *
  * @member {'manual'|'automatic'} module:link/link~LinkDecoratorDefinition#mode
  */
