@@ -14,45 +14,9 @@ import ImagePlugin from '../../src/image';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-class ResizeFeaturePlugin extends Plugin {
-	init() {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
-
-		this.listenTo( viewDocument, 'selectionChange', ( ...args ) => this._onSelectionChange( ...args ) );
-		// viewDocument.selection.on( 'change', this._onSelectionChange );
-	}
-
-	_onSelectionChange( eventInfo, data ) {
-		console.log( 'sel change' );
-		const selection = data.newSelection;
-		const selectedElement = selection.getSelectedElement();
-
-		if ( selectedElement && selectedElement.hasClass( 'ck-widget' ) ) {
-
-			// const mapper = this.editor.editing.mapper;
-			// const modelElement = mapper.toModelElement( selectedElement );
-			// foo
-		}
-
-		console.log( selectedElement );
-	}
-}
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			EnterPlugin,
-			TypingPlugin,
-			ParagraphPlugin,
-			HeadingPlugin,
-			ImagePlugin,
-			UndoPlugin,
-			ClipboardPlugin,
-			ResizeFeaturePlugin
-		],
+		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
 		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {

@@ -22,11 +22,7 @@ import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/cked
 export function toImageWidget( viewElement, writer, label ) {
 	writer.setCustomProperty( 'image', true, viewElement );
 
-	return toWidget( viewElement, writer, {
-		label: labelCreator,
-		features: [
-		]
-	} );
+	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
 		const imgElement = viewElement.getChild( 0 );
