@@ -16,6 +16,8 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
 let el, text;
 const injectedElements = [];
 
@@ -645,7 +647,7 @@ describe( 'Template', () => {
 
 				strongView.set( 'id' );
 
-				expectToThrowCKEditorError( () => {
+				expect( () => {
 					getView( {
 						tag: 'div',
 						children: [

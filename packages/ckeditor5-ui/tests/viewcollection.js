@@ -5,7 +5,6 @@
 
 /* global document */
 
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
@@ -39,12 +38,12 @@ describe( 'ViewCollection', () => {
 
 				const viewA = new View();
 
-				expectToThrowCKEditorError( () => {
+				expect( () => {
 					collection.add( viewA );
 					collection.remove( viewA );
 				} ).to.not.throw();
 
-				expectToThrowCKEditorError( () => {
+				expect( () => {
 					collection.add( viewA );
 					collection.remove( viewA );
 				} ).to.not.throw();

@@ -454,7 +454,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should do nothing when given stack is already visible', () => {
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				balloon.showStack( 'main' );
 			} ).to.not.throw();
 		} );
@@ -462,7 +462,7 @@ describe( 'ContextualBalloon', () => {
 		it( 'should throw an error when there is no stack of given id', () => {
 			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			}, 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.', editor );
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 	} );
 
@@ -490,7 +490,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewB );
 
 			expect( balloon.visibleView ).to.equal( viewA );
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				balloon.showStack( 'second' );
 			} ).to.not.throw();
 		} );
@@ -506,7 +506,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.visibleView ).to.equal( viewA );
 			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw();
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 
 		it( 'should switch stack to the next one when removed view was the last one in the visible stack', () => {
@@ -520,7 +520,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.visibleView ).to.equal( viewB );
 			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'main' );
-			} ).to.throw();
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 
 		it( 'should remove given view and set preceding in the stack as visible when removed view was visible', () => {
@@ -574,7 +574,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.hasView( viewC ) ).to.true;
 
 			// Does not throw, so the stack is there.
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				balloon.showStack( 'second' );
 			} ).to.not.throw();
 		} );
@@ -595,7 +595,7 @@ describe( 'ContextualBalloon', () => {
 			// Does throw, so the stack is not there.
 			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw();
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
@@ -716,10 +716,10 @@ describe( 'ContextualBalloon', () => {
 
 	describe( 'destroy()', () => {
 		it( 'can be called multiple times', () => {
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				balloon.destroy();
 				balloon.destroy();
-			} ).to.not.throw();
+			} );
 		} );
 
 		it( 'should not touch the DOM', () => {
