@@ -29,7 +29,7 @@ ClassicEditor
 		const wordCountPlugin = editor.plugins.get( 'WordCount' );
 		const wordCountWrapper = document.getElementById( 'word-count' );
 
-		wordCountWrapper.appendChild( wordCounterPlugin.wordCountContainer );
+		wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
 	} )
 	.catch( ... );
 ```
