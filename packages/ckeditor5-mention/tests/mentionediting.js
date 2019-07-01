@@ -6,10 +6,11 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import MentionEditing from '../src/mentionediting';
+import MentionEditing, { _toMentionAttribute } from '../src/mentionediting';
 import MentionCommand from '../src/mentioncommand';
 
 describe( 'MentionEditing', () => {
@@ -84,6 +85,25 @@ describe( 'MentionEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
+		it( 'should be overridable', () => {
+			addCustomMentionConverters( editor );
+
+			editor.setData( '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>' );
+
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( textNode ).to.not.be.null;
+			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@Ted Mosby' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', 'Ted Mosby' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
+
+			const expectedView = '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
+
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
 			editor.setData(
 				'<p>' +
@@ -122,7 +142,7 @@ describe( 'MentionEditing', () => {
 			}
 		} );
 
-		it( 'should not convert partial mentions', () => {
+		it( 'should upcast partial mention', () => {
 			editor.setData( '<p><span class="mention" data-mention="@John">@Jo</span></p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 0 );
@@ -137,6 +157,72 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
+
+		it( 'should not downcast partial mention (default converter)', done => {
+			editor.setData( '<p>Hello <span class="mention" data-mention="@John">@John</span></p>' );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( doc.getRoot().getChild( 0 ), 0 );
+				const end = writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 );
+				writer.setSelection( writer.createRange( start, end ) );
+			} );
+
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+
+			editor.editing.view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).to.equal( 'Hello @Jo' );
+
+				done();
+			} );
+
+			editor.editing.view.document.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
+
+		it( 'should not downcast partial mention (custom converter)', done => {
+			addCustomMentionConverters( editor );
+
+			editor.conversion.for( 'downcast' ).attributeToElement( {
+				model: 'mention',
+				view: ( modelAttributeValue, viewWriter ) => {
+					if ( !modelAttributeValue ) {
+						return;
+					}
+
+					return viewWriter.createAttributeElement( 'a', {
+						class: 'mention',
+						'data-mention': modelAttributeValue.id,
+						'href': modelAttributeValue.link
+					}, { id: modelAttributeValue._uid } );
+				},
+				converterPriority: 'high'
+			} );
+
+			editor.setData( '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>' );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( doc.getRoot().getChild( 0 ), 0 );
+				const end = writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 );
+				writer.setSelection( writer.createRange( start, end ) );
+			} );
+
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+
+			editor.editing.view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).to.equal( 'Hello Ted' );
+
+				done();
+			} );
+
+			editor.editing.view.document.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
 		} );
 
 		it( 'should not convert empty mentions', () => {
@@ -185,6 +271,25 @@ describe( 'MentionEditing', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+		} );
+
+		it( 'should not allow to type with mention attribute before mention', () => {
+			editor.setData( '<p><span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			// Set selection before mention.
+			model.change( writer => {
+				writer.setSelection( paragraph, 0 );
+			} );
+
+			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [] );
+
+			model.change( writer => {
+				writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 0 ) );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>a<span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 	} );
 
@@ -526,8 +631,54 @@ describe( 'MentionEditing', () => {
 	function createTestEditor( mentionConfig ) {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, MentionEditing ],
+				plugins: [ Paragraph, MentionEditing, Clipboard ],
 				mention: mentionConfig
 			} );
 	}
+
+	function createDataTransfer() {
+		const store = new Map();
+
+		return {
+			setData( type, data ) {
+				store.set( type, data );
+			},
+
+			getData( type ) {
+				return store.get( type );
+			}
+		};
+	}
 } );
+
+function addCustomMentionConverters( editor ) {
+	editor.conversion.for( 'upcast' ).elementToAttribute( {
+		view: {
+			name: 'b',
+			key: 'data-mention',
+			classes: 'mention'
+		},
+		model: {
+			key: 'mention',
+			value: viewItem => {
+				return _toMentionAttribute( viewItem );
+			}
+		},
+		converterPriority: 'high'
+	} );
+
+	editor.conversion.for( 'downcast' ).attributeToElement( {
+		model: 'mention',
+		view: ( modelAttributeValue, viewWriter ) => {
+			if ( !modelAttributeValue ) {
+				return;
+			}
+
+			return viewWriter.createAttributeElement( 'b', {
+				class: 'mention',
+				'data-mention': modelAttributeValue.id
+			}, { id: modelAttributeValue._uid } );
+		},
+		converterPriority: 'high'
+	} );
+}

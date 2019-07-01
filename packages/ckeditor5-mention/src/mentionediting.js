@@ -40,6 +40,7 @@ export default class MentionEditing extends Plugin {
 		// Allow the mention attribute on all text nodes.
 		model.schema.extend( '$text', { allowAttributes: 'mention' } );
 
+		// Upcast conversion.
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'span',
@@ -52,10 +53,12 @@ export default class MentionEditing extends Plugin {
 			}
 		} );
 
+		// Downcast conversion.
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'mention',
 			view: createViewMentionElement
 		} );
+		editor.conversion.for( 'downcast' ).add( preventPartialMentionDowncast );
 
 		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc, model.schema ) );
 		doc.registerPostFixer( writer => extendAttributeOnMentionPostFixer( writer, doc ) );
@@ -98,6 +101,31 @@ export function _toMentionAttribute( viewElementOrMention, data ) {
 	return _addMentionAttributes( baseMentionData, data );
 }
 
+// A converter that blocks partial mention from being converted.
+//
+// This converter is registered with 'highest' priority in order to consume mention attribute before it is converted by
+// any other converters. This converter only consumes partial mention - those whose `_text` attribute is not equal to text with mention
+// attribute. This may happen when copying part of mention text.
+//
+// @param {module:engine/conversion/dwoncastdispatcher~DowncastDispatcher}
+function preventPartialMentionDowncast( dispatcher ) {
+	dispatcher.on( 'attribute:mention', ( evt, data, conversionApi ) => {
+		const mention = data.attributeNewValue;
+
+		if ( !data.item.is( 'textProxy' ) || !mention ) {
+			return;
+		}
+
+		const start = data.range.start;
+		const textNode = start.textNode || start.nodeAfter;
+
+		if ( textNode.data != mention._text ) {
+			// Consume item to prevent partial mention conversion.
+			conversionApi.consumable.consume( data.item, evt.name );
+		}
+	}, { priority: 'highest' } );
+}
+
 // Creates a mention element from the mention data.
 //
 // @param {Object} mention
@@ -121,7 +149,8 @@ function createViewMentionElement( mention, viewWriter ) {
 	return viewWriter.createAttributeElement( 'span', attributes, options );
 }
 
-// Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute.
+// Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
+// before a text node with mention attribute.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
@@ -130,15 +159,24 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
-	if ( selection.isCollapsed && selection.hasAttribute( 'mention' ) && isNodeBeforeAText( focus ) ) {
+	if ( selection.isCollapsed && selection.hasAttribute( 'mention' ) && shouldNotTypeWithMentionAt( focus ) ) {
 		writer.removeSelectionAttribute( 'mention' );
 
 		return true;
 	}
+}
 
-	function isNodeBeforeAText( position ) {
-		return position.nodeBefore && position.nodeBefore.is( 'text' );
-	}
+// Helper function to detect if mention attribute should be removed from selection.
+// This check makes only sense if the selection has mention attribute.
+//
+// The mention attribute should be removed from a selection when selection focus is placed:
+// a) after a text node
+// b) the position is at parents start - the selection will set attributes from node after.
+function shouldNotTypeWithMentionAt( position ) {
+	const isAtStart = position.isAtStart;
+	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( 'text' );
+
+	return isAfterAMention || isAtStart;
 }
 
 // Model post-fixer that removes the mention attribute from the modified text node.

@@ -17,7 +17,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
-import TextWatcher from './textwatcher';
+import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
@@ -213,17 +213,11 @@ export default class MentionUI extends Plugin {
 			const item = data.item;
 			const marker = data.marker;
 
-			const watcher = this._getWatcher( marker );
-
-			const text = watcher.last;
-
-			const textMatcher = createTextMatcher( marker );
-			const matched = textMatcher( text );
-			const matchedTextLength = matched.marker.length + matched.feedText.length;
+			const mentionMarker = editor.model.markers.get( 'mention' );
 
 			// Create a range on matched text.
 			const end = model.createPositionAt( model.document.selection.focus );
-			const start = end.getShiftedBy( -matchedTextLength );
+			const start = model.createPositionAt( mentionMarker.getStart() );
 			const range = model.createRange( start, end );
 
 			this._hideUIAndRemoveMarker();
@@ -274,18 +268,15 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 * @param {String} marker
 	 * @param {Number} minimumCharacters
-	 * @returns {module:mention/textwatcher~TextWatcher}
+	 * @returns {module:typing/textwatcher~TextWatcher}
 	 */
 	_setupTextWatcherForFeed( marker, minimumCharacters ) {
 		const editor = this.editor;
 
-		const watcher = new TextWatcher( editor, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
+		const watcher = new TextWatcher( editor.model, createTestCallback( marker, minimumCharacters ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
-			const matched = data.matched;
-
 			const selection = editor.model.document.selection;
-
 			const focus = selection.focus;
 
 			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
@@ -301,8 +292,7 @@ export default class MentionUI extends Plugin {
 				return;
 			}
 
-			const { feedText, marker } = matched;
-
+			const feedText = getFeedText( marker, data.text );
 			const matchedTextLength = marker.length + feedText.length;
 
 			// Create a marker range.
@@ -344,19 +334,6 @@ export default class MentionUI extends Plugin {
 		watcher.on( 'unmatched', () => {
 			this._hideUIAndRemoveMarker();
 		} );
-
-		return watcher;
-	}
-
-	/**
-	 * Returns the registered text watcher for the marker.
-	 *
-	 * @private
-	 * @param {String} marker
-	 * @returns {module:mention/textwatcher~TextWatcher}
-	 */
-	_getWatcher( marker ) {
-		const { watcher } = this._mentionsConfigurations.get( marker );
 
 		return watcher;
 	}
@@ -555,19 +532,20 @@ function getBalloonPanelPositions( preferredPosition ) {
 // @returns {RegExp}
 export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
-	const patternBase = featureDetection.isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
-	return new RegExp( buildPattern( patternBase, marker, numberOfCharacters ), 'u' );
-}
+	const openAfterCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
+	const mentionCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
 
-// Helper to build a RegExp pattern string for the marker.
-//
-// @param {String} whitelistedCharacters
-// @param {String} marker
-// @param {Number} minimumCharacters
-// @returns {String}
-function buildPattern( whitelistedCharacters, marker, numberOfCharacters ) {
-	return `(^|[ ${ whitelistedCharacters }])([${ marker }])([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	// The pattern consists of 3 groups:
+	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
+	// - 1: The marker character,
+	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
+	//
+	// The pattern matches up to the caret (end of string switch - $).
+	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                 )$
+	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([_${ mentionCharacters }]${ numberOfCharacters })$`;
+
+	return new RegExp( pattern, 'u' );
 }
 
 // Creates a test callback for the marker to be used in the text watcher instance.
@@ -585,17 +563,12 @@ function createTestCallback( marker, minimumCharacters ) {
 //
 // @param {String} marker
 // @returns {Function}
-function createTextMatcher( marker ) {
+function getFeedText( marker, text ) {
 	const regExp = createRegExp( marker, 0 );
 
-	return text => {
-		const match = text.match( regExp );
+	const match = text.match( regExp );
 
-		const marker = match[ 2 ];
-		const feedText = match[ 3 ];
-
-		return { marker, feedText };
-	};
+	return match[ 2 ];
 }
 
 // The default feed callback.
