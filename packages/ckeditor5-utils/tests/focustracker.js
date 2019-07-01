@@ -6,7 +6,6 @@
 /* global document, Event */
 
 import FocusTracker from '../src/focustracker';
-import CKEditorError from '../src/ckeditorerror';
 import global from '../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from './_utils/utils';
@@ -69,7 +68,7 @@ describe( 'FocusTracker', () => {
 
 			expectToThrowCKEditorError( () => {
 				focusTracker.add( containerFirstInput );
-			}, /focusTracker-add-element-already-exist/, null );
+			}, /focusTracker-add-element-already-exist/, focusTracker );
 		} );
 
 		describe( 'single element', () => {

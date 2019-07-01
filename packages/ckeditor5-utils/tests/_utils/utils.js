@@ -86,6 +86,16 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	}
 }
 
+/**
+ * An assertion util to test whether the given function throws error that has correct message,
+ * data and whether the context of the error and the `editorThatShouldBeFindableFromContext`
+ * have common props (So the watchdog will be able to find the correct editor instance and restart it).
+ *
+ * @param {Function} fn Tested function that should throw a `CKEditorError`.
+ * @param {RegExp} message  Expected message of the error.
+ * @param {*} editorThatShouldBeFindableFromContext An editor instance that should be findable from the error context.
+ * @param {Object} [data] Error data.
+ */
 export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFindableFromContext, data ) {
 	let err = null;
 
@@ -100,8 +110,20 @@ export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFinda
 	expect( err ).to.not.equal( null, 'Function did not throw any error' );
 }
 
+/**
+ * An assertion util to test whether a given error has correct message, data and whether the context of the
+ * error and the `editorThatShouldBeFindableFromContext` have common props (So the watchdog will be able to
+ * find the correct editor instance and restart it).
+ *
+ * @param {module:utils/ckeditorerror~CKEditorError} err The tested error.
+ * @param {RegExp} message Expected message of the error.
+ * @param {*} [editorThatShouldBeFindableFromContext] An editor instance that should be findable from the error context.
+ * @param {Object} [data] Error data.
+ */
 export function assertCKEditorError( err, message, editorThatShouldBeFindableFromContext, data ) {
 	expect( err ).to.be.instanceOf( CKEditorError );
+	expect( message ).to.be.a( 'regexp', `Error message should be a string. Got ${ typeof message }.` );
+
 	expect( err.message ).to.match( message, 'Error message does not match the provided one.' );
 
 	// TODO: The `editorThatShouldBeFindableFromContext` is optional but should be required in the future.

@@ -273,11 +273,11 @@ describe( 'Collection', () => {
 
 			expectToThrowCKEditorError( () => {
 				collection.add( item2, -1 );
-			} ).to.throw( /^collection-add-item-invalid-index/ );
+			}, /^collection-add-item-invalid-index/ );
 
 			expectToThrowCKEditorError( () => {
 				collection.add( item2, 2 );
-			} ).to.throw( /^collection-add-item-invalid-index/ );
+			}, /^collection-add-item-invalid-index/ );
 
 			collection.add( item2, 1 );
 			collection.add( item3, 0 );
