@@ -25,6 +25,10 @@
 			top: 0;
 			bottom: 0;
 
+			/* @todo: remove this dirty hack. It's purpose is that shadow element should not be
+			overlapped by elements that follow it in the DOM. */
+			z-index: 100;
+
 			outline: 2px dashed var(--ck-color-focus-border);
 			background-color: rgba(71, 164, 245, 0.25);
 

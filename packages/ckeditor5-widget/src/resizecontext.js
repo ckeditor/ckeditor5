@@ -7,17 +7,23 @@ const HEIGHT_ATTRIBUTE_NAME = 'height';
  * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
  *
  * @param {HTMLElement} element
+ * @param {String} resizerPosition Position of the resize handler, e.g. `"top-left"`, `"bottom-right"`.
  * @returns {Object} return
  * @returns {Number} return.x
  * @returns {Number} return.y
  */
-function getAbsolutePosition( element ) {
+// function getAbsoluteBoundaryPoint( element ) {
+function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	const nativeRectangle = element.getBoundingClientRect();
-
-	return {
+	const positionParts = resizerPosition.split( '-' );
+	const ret = {
 		x: nativeRectangle.left + element.ownerDocument.defaultView.scrollX,
-		y: nativeRectangle.top + element.ownerDocument.defaultView.scrollY
+		y: positionParts[ 0 ] == 'bottom' ? nativeRectangle.bottom : nativeRectangle.top
 	};
+
+	ret.y += element.ownerDocument.defaultView.scrollY;
+
+	return ret;
 }
 
 export default class ResizeContext {
@@ -89,7 +95,9 @@ export default class ResizeContext {
 	begin( domResizeHandler ) {
 		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
-		this.referenceCoordinates = getAbsolutePosition( domResizeHandler );
+		this.referenceHandlerPosition = this._getResizerPosition( domResizeHandler );
+
+		this.referenceCoordinates = getAbsoluteBoundaryPoint( domResizeHandler, this.referenceHandlerPosition );
 	}
 
 	commit( editor ) {
@@ -104,10 +112,14 @@ export default class ResizeContext {
 
 		// Again, render will most likely change image size, so resizers needs a redraw.
 		editor.editing.view.once( 'render', () => this.redraw() );
+
+		this.referenceHandlerPosition = null;
 	}
 
 	cancel() {
 		this._dismissShadow();
+
+		this.referenceHandlerPosition = null;
 	}
 
 	destroy() {
@@ -115,22 +127,30 @@ export default class ResizeContext {
 
 		this.domResizeShadow = null;
 		this.wrapper = null;
+		this.referenceHandlerPosition = null;
 	}
 
 	updateSize( domEventData ) {
 		const currentCoordinates = this._extractCoordinates( domEventData );
 		const yDistance = this.referenceCoordinates.y - currentCoordinates.y;
 
-		// For top, left handler:
-		// yDistance > 0 - element is enlarged
-		// yDistance < 0 - element is shrinked
-
-		if ( yDistance > 0 ) {
-			// console.log( 'enlarging' );
-			this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+		if ( this.referenceHandlerPosition.includes( 'bottom-' ) ) {
+			if ( yDistance < 0 ) {
+				// enlarging
+				this.domResizeShadow.style.bottom = `${ yDistance }px`;
+			} else {
+				// shrinking
+				this.domResizeShadow.style.bottom = `${ yDistance }px`;
+			}
 		} else {
-			// console.log( 'shrinking' );
-			this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+			// default handler: top-left.
+			if ( yDistance > 0 ) {
+				// enlarging
+				this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+			} else {
+				// shrinking
+				this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+			}
 		}
 	}
 
@@ -160,7 +180,7 @@ export default class ResizeContext {
 			icon.set( 'content', dragHandlerIcon );
 			icon.extendTemplate( {
 				attributes: {
-					'class': `ck-widget__resizer ck-widget__resizer-${ currentPosition }`
+					'class': `ck-widget__resizer ${ this._getResizerClass( currentPosition ) }`
 				}
 			} );
 
@@ -191,5 +211,31 @@ export default class ResizeContext {
 			x: event.domEvent.pageX,
 			y: event.domEvent.pageY
 		};
+	}
+
+	/**
+	 * @private
+	 * @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
+	 * @returns {String} A prefixed HTML class name for the resizer element
+	 */
+	_getResizerClass( resizerPosition ) {
+		return `ck-widget__resizer-${ resizerPosition }`;
+	}
+
+	/**
+	 * Determines the position of a given resize handler.
+	 *
+	 * @private
+	 * @param {HTMLElement} domResizeHandler Handler used to calculate reference point.
+	 * @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
+	 */
+	_getResizerPosition( domResizeHandler ) {
+		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
+
+		for ( const position of resizerPositions ) {
+			if ( domResizeHandler.classList.contains( this._getResizerClass( position ) ) ) {
+				return position;
+			}
+		}
 	}
 }
