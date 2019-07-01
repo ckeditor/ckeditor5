@@ -9,7 +9,7 @@ The {@link module:watchdog/watchdog~Watchdog} feature allows you to create a wra
 
 **Note**: The watchdog does not handle errors during editor initialization (`Editor.create()`) and editor destruction (`editor.destroy()`). Errors at these stages mean that there is a serious problem in the code integrating the editor and such problem cannot be easily fixed restarting the editor.
 
-**Note**: A new editor instance is created each time the watchdog is restarted. Thus the editor instance should not be kept internally. Use the `watchdog.editor` each time you need to access the editor. It also means that you should not execute any actions on `editor.create` because these actions will not be executed when the editor restarts. Use `watchdog.create` instead, or add a plugin and add your code in the `plugin#init`, or listen on `watchdog#restart` to handle restarts.
+**Note**: A new editor instance is created each time the watchdog is restarted. Thus the editor instance should not be kept internally. Use the `watchdog.editor` each time you need to access the editor. It also means that you should not execute any actions on `editor.create` because these actions will not be executed when the editor restarts. Use `watchdog.create` instead, add a plugin and add your code in the `plugin#init`, or listen on `watchdog#restart` to handle restarts.
 
 ## Basic implementation
 
