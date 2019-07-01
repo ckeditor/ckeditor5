@@ -8,9 +8,7 @@
  */
 
 /**
- * Returns plain text representation of an element and it's children. The blocks are separated by a newline (\n ).
- *
- * **Note:** Function walks through the entire model, which might be very spread. There should be considered throttling it during usage.
+ * Returns a plain text representation of an element and its children.
  *
  * @param {module:engine/model/element~Element} element
  * @returns {String} Plain text representing model's data
