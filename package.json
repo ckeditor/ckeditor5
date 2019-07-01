@@ -48,6 +48,7 @@
     "@ckeditor/ckeditor5-heading": "^11.0.2",
     "@ckeditor/ckeditor5-highlight": "^11.0.2",
     "@ckeditor/ckeditor5-image": "^13.1.0",
+    "@ckeditor/ckeditor5-indent": "^0.0.1",
     "@ckeditor/ckeditor5-link": "^11.0.2",
     "@ckeditor/ckeditor5-list": "^12.0.2",
     "@ckeditor/ckeditor5-markdown-gfm": "^11.0.2",
@@ -63,7 +64,8 @@
     "@ckeditor/ckeditor5-undo": "^11.0.2",
     "@ckeditor/ckeditor5-upload": "^11.0.2",
     "@ckeditor/ckeditor5-utils": "^12.1.1",
-    "@ckeditor/ckeditor5-widget": "^11.0.2"
+    "@ckeditor/ckeditor5-widget": "^11.0.2",
+    "@ckeditor/ckeditor5-word-count": "^0.0.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "^3.1.0",
