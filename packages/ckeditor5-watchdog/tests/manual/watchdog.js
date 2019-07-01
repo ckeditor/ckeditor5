@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
+/* globals document, console, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -14,13 +14,29 @@ const firstEditorElement = document.getElementById( 'editor-1' );
 const secondEditorElement = document.getElementById( 'editor-2' );
 
 const restartButton = document.getElementById( 'restart' );
-const firstEditorErrorButton = document.getElementById( 'error-1' );
-const secondEditorErrorButton = document.getElementById( 'error-2' );
 const randomErrorButton = document.getElementById( 'random-error' );
+
+class TypingError {
+	constructor( editor ) {
+		this.editor = editor;
+	}
+
+	init() {
+		const inputCommand = this.editor.commands.get( 'input' );
+
+		inputCommand.on( 'execute', ( evt, data ) => {
+			const commandArgs = data[ 0 ];
+
+			if ( commandArgs.text === '1' ) {
+				throw new CKEditorError( 'Fake error - input command executed with value `1`', this );
+			}
+		} );
+	}
+}
 
 const editorConfig = {
 	plugins: [
-		ArticlePluginSet,
+		ArticlePluginSet, TypingError
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote',
 		'insertTable', 'mediaEmbed', 'undo', 'redo' ],
@@ -36,13 +52,10 @@ const editorConfig = {
 // Watchdog 1
 
 const watchdog1 = Watchdog.for( ClassicEditor );
+window.watchdog1 = watchdog1;
 
 watchdog1.create( firstEditorElement, editorConfig ).then( () => {
 	console.log( 'First editor created.' );
-
-	firstEditorErrorButton.addEventListener( 'click', () => {
-		throw new CKEditorError( 'Crash on the first editor model document', watchdog1.editor.model.document );
-	} );
 } );
 
 watchdog1.on( 'error', () => {
@@ -56,13 +69,10 @@ watchdog1.on( 'restart', () => {
 // Watchdog 2
 
 const watchdog2 = Watchdog.for( ClassicEditor );
+window.watchdog2 = watchdog2;
 
 watchdog2.create( secondEditorElement, editorConfig ).then( () => {
 	console.log( 'Second editor created.' );
-
-	secondEditorErrorButton.addEventListener( 'click', () => {
-		throw new CKEditorError( 'Crash on the second editor model document', watchdog2.editor.model.document );
-	} );
 } );
 
 watchdog2.on( 'error', () => {

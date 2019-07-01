@@ -11,7 +11,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import { throttle } from 'lodash-es';
+import { throttle, cloneDeepWith, isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
 
@@ -248,7 +248,10 @@ export default class Watchdog {
 		}
 
 		this._elementOrData = elementOrData;
-		this._config = config;
+
+		this._config = cloneDeepWith( config, function leaveDOMReferences( value ) {
+			return isElement( value ) ? value : undefined;
+		} );
 
 		return Promise.resolve()
 			.then( () => this._creator( elementOrData, config ) )
