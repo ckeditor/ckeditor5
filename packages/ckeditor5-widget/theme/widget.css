@@ -10,6 +10,8 @@
 	& .ck-widget__resizer-wrapper {
 		visibility: hidden;
 		position: absolute;
+		/* The wrapper itself should not interfere with pointer device */
+		pointer-events: none;
 
 		left: 0;
 		right: 0;
@@ -41,6 +43,8 @@
 
 	& .ck-widget__resizer {
 		position: absolute;
+		/* Resizers are the only UI elements that should interfere with pointer device */
+		pointer-events: all;
 
 		&.ck-widget__resizer-top-left {
 			top: 0;
