@@ -228,6 +228,8 @@ export default class Watchdog {
 
 		this._elementOrData = elementOrData;
 
+		// Clone config because it might be shared within multiple watchdog instances. Otherwise
+		// when an error occurs in one of these editors the watchdog will restart all of them.
 		this._config = cloneDeepWith( config, function leaveDOMReferences( value ) {
 			return isElement( value ) ? value : undefined;
 		} );
