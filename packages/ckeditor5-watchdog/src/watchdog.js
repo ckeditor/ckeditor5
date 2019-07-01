@@ -59,7 +59,7 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  */
 export default class Watchdog {
 	/**
-	 * @param {Object} config The watchdog plugin configuration.
+	 * @param {Object} [config] The watchdog plugin configuration.
 	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of crashes
 	 * when the watchdog stops restarting the editor in case of errors.
 	 * @param {Number} [config.waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
