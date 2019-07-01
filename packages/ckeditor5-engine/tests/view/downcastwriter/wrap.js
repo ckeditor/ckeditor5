@@ -22,10 +22,11 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'wrap()', () => {
-		let writer;
+		let writer, document;
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		describe( 'non-collapsed range', () => {
@@ -70,7 +71,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
-				}, 'view-writer-wrap-invalid-attribute', writer );
+				}, 'view-writer-wrap-invalid-attribute', document );
 			} );
 
 			it( 'should throw error when range placed in two containers', () => {
@@ -84,7 +85,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
-				}, 'view-writer-invalid-range-container', writer );
+				}, 'view-writer-invalid-range-container', document );
 			} );
 
 			it( 'should throw when range has no parent container', () => {
@@ -93,7 +94,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
-				}, 'view-writer-invalid-range-container', writer );
+				}, 'view-writer-invalid-range-container', document );
 			} );
 
 			it( 'wraps part of a single text node #1', () => {
@@ -399,7 +400,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new AttributeElement( 'b' ) );
-				}, 'view-writer-cannot-break-empty-element', writer );
+				}, 'view-writer-cannot-break-empty-element', document );
 			} );
 
 			it( 'should wrap UIElement', () => {
@@ -417,7 +418,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new AttributeElement( 'b' ) );
-				}, 'view-writer-cannot-break-ui-element', writer );
+				}, 'view-writer-cannot-break-ui-element', document );
 			} );
 
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {
@@ -554,7 +555,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( new Range( position ), b );
-				}, 'view-writer-wrap-invalid-attribute', writer );
+				}, 'view-writer-wrap-invalid-attribute', document );
 			} );
 
 			it( 'should wrap position at the beginning of text node', () => {

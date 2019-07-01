@@ -44,7 +44,7 @@ describe( 'LivePosition', () =>
 	it( 'should throw if given root is not a RootElement', () => {
 		expectToThrowCKEditorError( () => {
 			new LivePosition( new DocumentFragment(), [ 1 ] ); // eslint-disable-line no-new
-		}, /model-liveposition-root-not-rootelement/, model );
+		}, /model-liveposition-root-not-rootelement/, null );
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {

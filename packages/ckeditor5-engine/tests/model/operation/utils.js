@@ -82,7 +82,7 @@ describe( 'Operation utils', () => {
 		it( 'should throw if given range is not flat', () => {
 			expectToThrowCKEditorError( () => {
 				utils._remove( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ) );
-			}, /operation-utils-remove-range-not-flat/, model );
+			}, /operation-utils-remove-range-not-flat/ );
 		} );
 	} );
 
@@ -104,7 +104,7 @@ describe( 'Operation utils', () => {
 		it( 'should throw if given range is not flat', () => {
 			expectToThrowCKEditorError( () => {
 				utils._move( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ), null );
-			}, /operation-utils-move-range-not-flat/, model );
+			}, /operation-utils-move-range-not-flat/ );
 		} );
 	} );
 

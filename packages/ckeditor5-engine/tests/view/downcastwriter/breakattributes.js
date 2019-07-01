@@ -17,10 +17,11 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'breakAttributes()', () => {
-		let writer;
+		let writer, document;
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		describe( 'break position', () => {
@@ -156,7 +157,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-				}, 'view-writer-invalid-range-container', writer );
+				}, 'view-writer-invalid-range-container', document );
 			} );
 
 			it( 'should throw when range has no parent container', () => {
@@ -164,7 +165,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-				}, 'view-writer-invalid-range-container', writer );
+				}, 'view-writer-invalid-range-container', document );
 			} );
 
 			it( 'should not break text nodes if they are not in attribute elements', () => {

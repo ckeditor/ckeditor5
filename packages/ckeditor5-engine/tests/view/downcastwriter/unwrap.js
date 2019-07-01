@@ -19,7 +19,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'unwrap()', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions.
 		//
@@ -33,8 +33,9 @@ describe( 'DowncastWriter', () => {
 			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 		}
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should do nothing on collapsed ranges', () => {
@@ -63,7 +64,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, b );
-			}, 'view-writer-unwrap-invalid-attribute', writer );
+			}, 'view-writer-unwrap-invalid-attribute', document );
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
@@ -77,7 +78,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, b );
-			}, 'view-writer-invalid-range-container', writer );
+			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
@@ -86,7 +87,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
-			}, 'view-writer-invalid-range-container', writer );
+			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should unwrap single node', () => {
@@ -402,7 +403,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, attribute );
-			}, 'view-writer-cannot-break-empty-element', writer );
+			}, 'view-writer-cannot-break-empty-element', document );
 		} );
 
 		it( 'should unwrap UIElement', () => {
@@ -421,7 +422,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, attribute );
-			}, 'view-writer-cannot-break-ui-element', writer );
+			}, 'view-writer-cannot-break-ui-element', document );
 		} );
 
 		it( 'should unwrap if both elements have same id', () => {

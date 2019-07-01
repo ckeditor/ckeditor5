@@ -382,7 +382,7 @@ describe( 'Position', () => {
 			it( 'should throw if no offset is passed', () => {
 				const element = new Element( 'p' );
 
-				expectToThrowCKEditorError( () => Position._createAt( element ), /view-createPositionAt-offset-required/, parentMock );
+				expectToThrowCKEditorError( () => Position._createAt( element ), /view-createPositionAt-offset-required/, element );
 			} );
 
 			it( 'should create positions from positions', () => {
@@ -448,9 +448,11 @@ describe( 'Position', () => {
 
 		describe( '_createBefore()', () => {
 			it( 'should throw error if one try to create positions before root', () => {
+				const paragraph = parse( '<p></p>' );
+
 				expectToThrowCKEditorError( () => {
-					Position._createBefore( parse( '<p></p>' ) );
-				}, /view-position-before-root/, parentMock );
+					Position._createBefore( paragraph );
+				}, /view-position-before-root/, paragraph );
 			} );
 
 			it( 'should create positions before `Node`', () => {
@@ -473,9 +475,11 @@ describe( 'Position', () => {
 
 		describe( '_createAfter()', () => {
 			it( 'should throw error if one try to create positions after root', () => {
+				const paragraph = parse( '<p></p>' );
+
 				expectToThrowCKEditorError( () => {
-					Position._createAfter( parse( '<p></p>' ) );
-				}, /view-position-after-root/, parentMock );
+					Position._createAfter( paragraph );
+				}, /view-position-after-root/, paragraph );
 			} );
 
 			it( 'should create positions after `Node`', () => {

@@ -17,7 +17,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'remove()', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 		// test ranges.
@@ -37,8 +37,9 @@ describe( 'DowncastWriter', () => {
 			expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
 		}
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter();
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
@@ -47,7 +48,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-			}, 'view-writer-invalid-range-container', writer );
+			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
@@ -55,7 +56,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-			}, 'view-writer-invalid-range-container', writer );
+			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
@@ -136,7 +137,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( range );
-			}, 'view-writer-cannot-break-empty-element', writer );
+			}, 'view-writer-cannot-break-empty-element', document );
 		} );
 
 		it( 'should remove UIElement', () => {
@@ -155,7 +156,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( range );
-			}, 'view-writer-cannot-break-ui-element', writer );
+			}, 'view-writer-cannot-break-ui-element', document );
 		} );
 
 		it( 'should remove single text node (as item)', () => {
@@ -204,7 +205,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( el );
-			}, 'view-position-before-root', writer );
+			}, 'view-position-before-root', document );
 		} );
 	} );
 } );

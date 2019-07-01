@@ -444,7 +444,8 @@ export default class DowncastWriter {
 			 * @error view-writer-break-non-container-element
 			 */
 			throw new CKEditorError(
-				'view-writer-break-non-container-element: Trying to break an element which is not a container element.'
+				'view-writer-break-non-container-element: Trying to break an element which is not a container element.',
+				this.document
 			);
 		}
 
@@ -454,7 +455,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-break-root
 			 */
-			throw new CKEditorError( 'view-writer-break-root: Trying to break root element.' );
+			throw new CKEditorError( 'view-writer-break-root: Trying to break root element.', this.document );
 		}
 
 		if ( position.isAtStart ) {
@@ -577,7 +578,7 @@ export default class DowncastWriter {
 			 * @error view-writer-merge-containers-invalid-position
 			 */
 			throw new CKEditorError( 'view-writer-merge-containers-invalid-position: ' +
-				'Element before and after given position cannot be merged.' );
+				'Element before and after given position cannot be merged.', this.document );
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
@@ -612,7 +613,7 @@ export default class DowncastWriter {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
-		validateNodesToInsert( nodes );
+		validateNodesToInsert( nodes, this.document );
 
 		const container = getParentContainer( position );
 
@@ -622,7 +623,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-invalid-position-container
 			 */
-			throw new CKEditorError( 'view-writer-invalid-position-container' );
+			throw new CKEditorError( 'view-writer-invalid-position-container', this.document );
 		}
 
 		const insertionPosition = this._breakAttributes( position, true );
@@ -665,7 +666,7 @@ export default class DowncastWriter {
 	remove( rangeOrItem ) {
 		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
 
-		validateRangeContainer( range );
+		validateRangeContainer( range, this.document );
 
 		// If range is collapsed - nothing to remove.
 		if ( range.isCollapsed ) {
@@ -705,7 +706,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/element~Element} element Element to remove.
 	 */
 	clear( range, element ) {
-		validateRangeContainer( range );
+		validateRangeContainer( range, this.document );
 
 		// Create walker on given range.
 		// We walk backward because when we remove element during walk it modifies range end position.
@@ -809,10 +810,10 @@ export default class DowncastWriter {
     */
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
-			throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
+			throw new CKEditorError( 'view-writer-wrap-invalid-attribute', this.document );
 		}
 
-		validateRangeContainer( range );
+		validateRangeContainer( range, this.document );
 
 		if ( !range.isCollapsed ) {
 			// Non-collapsed range. Wrap it with the attribute element.
@@ -854,10 +855,10 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-unwrap-invalid-attribute
 			 */
-			throw new CKEditorError( 'view-writer-unwrap-invalid-attribute' );
+			throw new CKEditorError( 'view-writer-unwrap-invalid-attribute', this.document );
 		}
 
-		validateRangeContainer( range );
+		validateRangeContainer( range, this.document );
 
 		// If range is collapsed - nothing to unwrap.
 		if ( range.isCollapsed ) {
@@ -1489,7 +1490,7 @@ export default class DowncastWriter {
 		const rangeStart = range.start;
 		const rangeEnd = range.end;
 
-		validateRangeContainer( range );
+		validateRangeContainer( range, this.document );
 
 		// Break at the collapsed position. Return new collapsed range.
 		if ( range.isCollapsed ) {
@@ -1534,7 +1535,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-empty-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-empty-element' );
+			throw new CKEditorError( 'view-writer-cannot-break-empty-element', this.document );
 		}
 
 		// If position is placed inside UIElement - throw an exception as we cannot break inside.
@@ -1544,7 +1545,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-ui-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-ui-element' );
+			throw new CKEditorError( 'view-writer-cannot-break-ui-element', this.document );
 		}
 
 		// There are no attributes to break and text nodes breaking is not forced.
@@ -1825,7 +1826,8 @@ function mergeTextNodes( t1, t2 ) {
 //
 // @param Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement
 // |module:engine/view/containerelement~ContainerElement> nodes
-function validateNodesToInsert( nodes ) {
+// @param {Object} errorContext
+function validateNodesToInsert( nodes, errorContext ) {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
 			/**
@@ -1836,7 +1838,7 @@ function validateNodesToInsert( nodes ) {
 			 *
 			 * @error view-writer-insert-invalid-node
 			 */
-			throw new CKEditorError( 'view-writer-insert-invalid-node' );
+			throw new CKEditorError( 'view-writer-insert-invalid-node', errorContext );
 		}
 
 		if ( !node.is( 'text' ) ) {
@@ -1860,7 +1862,8 @@ function isContainerOrFragment( node ) {
 // Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
 //
 // @param {module:engine/view/range~Range} range
-function validateRangeContainer( range ) {
+// @param {Object} errorContext
+function validateRangeContainer( range, errorContext ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 
@@ -1872,7 +1875,7 @@ function validateRangeContainer( range ) {
 		 *
 		 * @error view-writer-invalid-range-container
 		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container' );
+		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
 }
 

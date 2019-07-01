@@ -191,7 +191,7 @@ describe( 'RootAttributeOperation', () => {
 				);
 
 				op._validate();
-			}, /rootattribute-operation-not-a-root/, model );
+			}, /rootattribute-operation-not-a-root/ );
 		} );
 
 		it( 'should throw an error when trying to change document fragment', () => {
@@ -205,7 +205,7 @@ describe( 'RootAttributeOperation', () => {
 				);
 
 				op._validate();
-			}, /rootattribute-operation-not-a-root/, model );
+			}, /rootattribute-operation-not-a-root/ );
 		} );
 
 		it( 'should throw an error when trying to remove an attribute that does not exists', () => {
@@ -306,7 +306,7 @@ describe( 'RootAttributeOperation', () => {
 
 			expectToThrowCKEditorError( () => {
 				RootAttributeOperation.fromJSON( serialized, doc );
-			}, /rootattribute-operation-fromjson-no-root/, model );
+			}, /rootattribute-operation-fromjson-no-root/ );
 		} );
 	} );
 } );

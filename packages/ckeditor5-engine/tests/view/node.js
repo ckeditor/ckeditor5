@@ -217,7 +217,7 @@ describe( 'Node', () => {
 
 			expectToThrowCKEditorError( () => {
 				f.index;
-			}, /view-node-not-found-in-parent/, root );
+			}, /view-node-not-found-in-parent/, bar );
 		} );
 	} );
 

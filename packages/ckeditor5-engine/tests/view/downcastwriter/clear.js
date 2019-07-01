@@ -16,7 +16,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'clear()', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create ranges.
 		//
@@ -31,8 +31,9 @@ describe( 'DowncastWriter', () => {
 			expect( stringify( view, null, { showType: true } ) ).to.equal( expectedResult );
 		}
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
@@ -41,7 +42,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-			}, 'view-writer-invalid-range-container', writer );
+			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
@@ -49,7 +50,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-			}, 'view-writer-invalid-range-container', writer );
+			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should remove matched element from range', () => {

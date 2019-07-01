@@ -51,7 +51,7 @@ export default class TreeWalker {
 		if ( options.direction && options.direction != 'forward' && options.direction != 'backward' ) {
 			throw new CKEditorError(
 				'view-tree-walker-unknown-direction: Only `backward` and `forward` direction allowed.',
-				null,
+				this,
 				{ direction: options.direction }
 			);
 		}

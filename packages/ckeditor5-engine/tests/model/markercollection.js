@@ -294,23 +294,23 @@ describe( 'Marker', () => {
 
 		expectToThrowCKEditorError( () => {
 			marker.getRange();
-		}, /^marker-destroyed/, model );
+		}, /^marker-destroyed/ );
 
 		expectToThrowCKEditorError( () => {
 			marker.getStart();
-		}, /^marker-destroyed/, model );
+		}, /^marker-destroyed/ );
 
 		expectToThrowCKEditorError( () => {
 			marker.getEnd();
-		}, /^marker-destroyed/, model );
+		}, /^marker-destroyed/ );
 
 		expectToThrowCKEditorError( () => {
 			marker.managedUsingOperations;
-		}, /^marker-destroyed/, model );
+		}, /^marker-destroyed/ );
 
 		expectToThrowCKEditorError( () => {
 			marker.affectsData;
-		}, /^marker-destroyed/, model );
+		}, /^marker-destroyed/ );
 	} );
 
 	it( 'should attach live range to marker', () => {

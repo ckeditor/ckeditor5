@@ -17,7 +17,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'insert()', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions.
 		//
@@ -32,8 +32,9 @@ describe( 'DowncastWriter', () => {
 			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 		}
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should return collapsed range in insertion position when using empty array', () => {
@@ -159,7 +160,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, element );
-			}, 'view-writer-insert-invalid-node', writer );
+			}, 'view-writer-insert-invalid-node', document );
 		} );
 
 		it( 'should throw when Element is inserted as child node', () => {
@@ -170,7 +171,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, root );
-			}, 'view-writer-insert-invalid-node', writer );
+			}, 'view-writer-insert-invalid-node', document );
 		} );
 
 		it( 'should throw when position is not placed inside container', () => {
@@ -180,7 +181,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
-			}, 'view-writer-invalid-position-container', writer );
+			}, 'view-writer-invalid-position-container', document );
 		} );
 
 		it( 'should allow to insert EmptyElement into container', () => {
@@ -199,7 +200,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
-			}, 'view-writer-cannot-break-empty-element', writer );
+			}, 'view-writer-cannot-break-empty-element', document );
 		} );
 
 		it( 'should throw if trying to insert inside UIElement', () => {
@@ -210,7 +211,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
-			}, 'view-writer-cannot-break-ui-element', writer );
+			}, 'view-writer-cannot-break-ui-element', document );
 		} );
 	} );
 } );
