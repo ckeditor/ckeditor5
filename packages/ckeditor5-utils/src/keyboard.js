@@ -60,7 +60,7 @@ export function getCode( key ) {
 			 * @errror keyboard-unknown-key
 			 * @param {String} key
 			 */
-			throw new CKEditorError( 'keyboard-unknown-key: Unknown key name.', { key } );
+			throw new CKEditorError( 'keyboard-unknown-key: Unknown key name.', this, { key } );
 		}
 	} else {
 		keyCode = key.keyCode +
