@@ -26,7 +26,7 @@ msgstr "Impossible d'obtenir l'image redimensionnée"
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr ""
+msgstr "La sélection de l'image redimensionnée a échoué."
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
