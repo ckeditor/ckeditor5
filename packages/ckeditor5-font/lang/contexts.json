@@ -9,6 +9,7 @@
 	"Font Color": "Label of a button that allows selecting a font color.",
 	"Font Background Color": "Label of a button that allows selecting a font background color.",
 	"Remove color": "Label or a button that removes the color from the text (font color and background).",
+	"Document colors": "Title of a color picker section containing the colors currently used in the document.",
 	"Black": "Label of a button that applies a black text color (font color and background)",
 	"Dim grey": "Label of a button that applies a dim grey text color (font color and background)",
 	"Grey": "Label of a button that applies a grey text color (font color and background)",
