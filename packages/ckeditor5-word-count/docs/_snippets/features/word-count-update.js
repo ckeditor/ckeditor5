@@ -32,8 +32,8 @@ ClassicEditor
 	.then( editor => {
 		const wordCountPlugin = editor.plugins.get( 'WordCount' );
 
-		const progressBar = document.querySelector( '.customized-counter progress' );
-		const colorBox = document.querySelector( '.customized-counter__color-box' );
+		const progressBar = document.querySelector( '.customized-count progress' );
+		const colorBox = document.querySelector( '.customized-count__color-box' );
 
 		wordCountPlugin.on( 'update', updateHandler );
 

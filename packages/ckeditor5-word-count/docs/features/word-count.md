@@ -36,7 +36,7 @@ ClassicEditor
 
 ## Configuration options
 
-There are two options which change the output container. If the {@link module:wordcount/wordcount~WordCountConfig#displayWords} is set to to `false`, then the section with word counter is hidden. Similarly, when the {@link module:wordcount/wordcount~WordCountConfig#displayCharacters} is set to `false` it will hide the character counter.
+There are two options which change the output container. If the {@link module:wordcount/wordcount~WordCountConfig#displayWords} is set to to `false`, then the section with word count is hidden. Similarly, when the {@link module:wordcount/wordcount~WordCountConfig#displayCharacters} is set to `false` it will hide the character counter.
 
 ## Update event
 

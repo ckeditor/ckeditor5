@@ -272,9 +272,9 @@ export default class WordCount extends Plugin {
  */
 
 /**
- * This option allows for hiding the word counter. The element obtained through
+ * This option allows for hiding the word count. The element obtained through
  * {@link module:wordcount/wordcount~WordCount#wordCountContainer} will only preserve
- * the characters part. Word counter is displayed by default when this configuration option is not defined.
+ * the characters part. word count is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
  *			displayWords = false
