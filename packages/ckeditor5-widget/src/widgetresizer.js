@@ -152,5 +152,14 @@ export default class WidgetResizer extends Plugin {
 				}
 			} )
 		);
+
+		editor.conversion.for( 'upcast' )
+			.attributeToAttribute( {
+				view: {
+					name: 'img',
+					key: 'height'
+				},
+				model: 'height'
+			} );
 	}
 }
