@@ -31,7 +31,7 @@ const GARBAGE_COLLECTOR_TIMEOUT = 500;
  */
 export function describeMemoryUsage( callback ) {
 	// Skip all memory tests due to https://github.com/ckeditor/ckeditor5/issues/1731.
-	describe( 'memory usage', () => {
+	describe.skip( 'memory usage', () => {
 		skipIfNoGarbageCollector();
 
 		beforeEach( createEditorElement );
