@@ -75,7 +75,8 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Crash number limit (default to 3). After the limit is reached the editor is not restarted by the watchdog. This is to prevent an infinite crash loop.
+		 * Crash number limit (default to 3). After the limit is reached the editor is not restarted by the watchdog.
+		 * This is to prevent an infinite crash loop.
 		 *
 		 * @private
 		 * @type {Number}
@@ -187,6 +188,62 @@ export default class Watchdog {
 	}
 
 	/**
+	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method or `Watchdog.for` helper.
+	 *
+	 * @param {HTMLElement|String} elementOrData
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
+	 *
+	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
+	 */
+	create( elementOrData, config ) {
+		if ( !this._creator ) {
+			/**
+			 * @error watchdog-creator-not-defined
+			 *
+			 * The watchdog creator is not defined, define it using `watchdog.setCreator()` or `Watchdog.for` helper.
+			 */
+			throw new CKEditorError(
+				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()` ' +
+				'or `Watchdog.for` helper.',
+				null
+			);
+		}
+
+		if ( !this._destructor ) {
+			/**
+			 * @error watchdog-destructor-not-defined
+			 *
+			 * The watchdog destructor is not defined, define it using `watchdog.setDestructor()` or `Watchdog.for` helper.
+			 */
+			throw new CKEditorError(
+				'watchdog-destructor-not-defined: The watchdog destructor is not defined, define it using `watchdog.setDestructor()` ' +
+				'or `Watchdog.for` helper.',
+				null
+			);
+		}
+
+		this._elementOrData = elementOrData;
+
+		this._config = cloneDeepWith( config, function leaveDOMReferences( value ) {
+			return isElement( value ) ? value : undefined;
+		} );
+
+		return Promise.resolve()
+			.then( () => this._creator( elementOrData, config ) )
+			.then( editor => {
+				this._editor = editor;
+
+				window.addEventListener( 'error', this._boundErrorHandler );
+				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
+
+				this._lastDocumentVersion = editor.model.document.version;
+				this._data = editor.data.get();
+
+				return this;
+			} );
+	}
+
+	/**
 	 * Restarts the editor instance. This method is also called whenever an editor error occurs.
 	 * It fires the `restart` event.
 	 *
@@ -211,60 +268,6 @@ export default class Watchdog {
 			} )
 			.then( () => {
 				this.fire( 'restart' );
-			} );
-	}
-
-	/**
-	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method or `Watchdog.for` helper.
-	 *
-	 * @param {HTMLElement|String} elementOrData
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
-	 *
-	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
-	 */
-	create( elementOrData, config ) {
-		if ( !this._creator ) {
-			/**
-			 * @error watchdog-creator-not-defined
-			 *
-			 * The watchdog creator is not defined, define it using `watchdog.setCreator()`.
-			 */
-			throw new CKEditorError(
-				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()` or `Watchdog.for` helper.',
-				null
-			);
-		}
-
-		if ( !this._destructor ) {
-			/**
-			 * @error watchdog-destructor-not-defined
-			 *
-			 * The watchdog destructor is not defined, define it using `watchdog.setDestructor()`.
-			 */
-			throw new CKEditorError(
-				'watchdog-destructor-not-defined: The watchdog destructor is not defined, define it using `watchdog.setDestructor()`',
-				null
-			);
-		}
-
-		this._elementOrData = elementOrData;
-
-		this._config = cloneDeepWith( config, function leaveDOMReferences( value ) {
-			return isElement( value ) ? value : undefined;
-		} );
-
-		return Promise.resolve()
-			.then( () => this._creator( elementOrData, config ) )
-			.then( editor => {
-				this._editor = editor;
-
-				window.addEventListener( 'error', this._boundErrorHandler );
-				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
-
-				this._lastDocumentVersion = editor.model.document.version;
-				this._data = editor.data.get();
-
-				return this;
 			} );
 	}
 
