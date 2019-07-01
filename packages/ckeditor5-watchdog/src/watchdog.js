@@ -170,7 +170,7 @@ export default class Watchdog {
 
 	/**
 	 * Sets the function that is responsible for editor creation.
-	 * It accepts functions that returns promises.
+	 * It expects a function that should return a promise.
 	 *
 	 * 		watchdog.setCreator( ( el, config ) => ClassicEditor.create( el, config ) );
 	 *
