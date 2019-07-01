@@ -39,7 +39,7 @@ describe( 'DowncastWriter', () => {
 
 		beforeEach( () => {
 			document = new Document();
-			writer = new DowncastWriter();
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
@@ -205,7 +205,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( el );
-			}, 'view-position-before-root', document );
+			}, 'view-position-before-root' );
 		} );
 	} );
 } );

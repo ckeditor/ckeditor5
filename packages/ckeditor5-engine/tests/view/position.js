@@ -382,7 +382,9 @@ describe( 'Position', () => {
 			it( 'should throw if no offset is passed', () => {
 				const element = new Element( 'p' );
 
-				expectToThrowCKEditorError( () => Position._createAt( element ), /view-createPositionAt-offset-required/, element );
+				expectToThrowCKEditorError( () => {
+					Position._createAt( element );
+				}, /view-createPositionAt-offset-required/ );
 			} );
 
 			it( 'should create positions from positions', () => {

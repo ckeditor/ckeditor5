@@ -1094,7 +1094,7 @@ export default class DowncastWriter {
 			// <p><span class="bar">abc</span></p>  -->  <p><span class="foo bar">abc</span></p>
 			//
 			if ( isAttribute && this._wrapAttributeElement( wrapElement, child ) ) {
-				wrapPositions.push(	new Position( parent, i ) );
+				wrapPositions.push( new Position( parent, i ) );
 			}
 			//
 			// Wrap the child if it is not an attribute element or if it is an attribute element that should be inside
@@ -1114,7 +1114,7 @@ export default class DowncastWriter {
 				parent._insertChild( i, newAttribute );
 				this._addToClonedElementsGroup( newAttribute );
 
-				wrapPositions.push(	new Position( parent, i ) );
+				wrapPositions.push( new Position( parent, i ) );
 			}
 			//
 			// If other nested attribute is found and it wasn't wrapped (see above), continue wrapping inside it.
@@ -1572,40 +1572,41 @@ export default class DowncastWriter {
 			const newPosition = new Position( positionParent.parent, positionParent.index + 1 );
 
 			return this._breakAttributes( newPosition, forceSplitText );
-		} else
-		// <p>foo<b><u>{}bar</u></b></p>
-		// <p>foo<b>[]<u>bar</u></b></p>
-		// <p>foo{}<b><u>bar</u></b></p>
-		if ( positionOffset === 0 ) {
-			const newPosition = new Position( positionParent.parent, positionParent.index );
+		} else {
+			// <p>foo<b><u>{}bar</u></b></p>
+			// <p>foo<b>[]<u>bar</u></b></p>
+			// <p>foo{}<b><u>bar</u></b></p>
+			if ( positionOffset === 0 ) {
+				const newPosition = new Position( positionParent.parent, positionParent.index );
 
-			return this._breakAttributes( newPosition, forceSplitText );
-		}
-		// <p>foo<b><u>b{}ar</u></b></p>
-		// <p>foo<b><u>b[]ar</u></b></p>
-		// <p>foo<b><u>b</u>[]<u>ar</u></b></p>
-		// <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
-		else {
-			const offsetAfter = positionParent.index + 1;
+				return this._breakAttributes( newPosition, forceSplitText );
+			}
+			// <p>foo<b><u>b{}ar</u></b></p>
+			// <p>foo<b><u>b[]ar</u></b></p>
+			// <p>foo<b><u>b</u>[]<u>ar</u></b></p>
+			// <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+			else {
+				const offsetAfter = positionParent.index + 1;
 
-			// Break element.
-			const clonedNode = positionParent._clone();
+				// Break element.
+				const clonedNode = positionParent._clone();
 
-			// Insert cloned node to position's parent node.
-			positionParent.parent._insertChild( offsetAfter, clonedNode );
-			this._addToClonedElementsGroup( clonedNode );
+				// Insert cloned node to position's parent node.
+				positionParent.parent._insertChild( offsetAfter, clonedNode );
+				this._addToClonedElementsGroup( clonedNode );
 
-			// Get nodes to move.
-			const count = positionParent.childCount - positionOffset;
-			const nodesToMove = positionParent._removeChildren( positionOffset, count );
+				// Get nodes to move.
+				const count = positionParent.childCount - positionOffset;
+				const nodesToMove = positionParent._removeChildren( positionOffset, count );
 
-			// Move nodes to cloned node.
-			clonedNode._appendChild( nodesToMove );
+				// Move nodes to cloned node.
+				clonedNode._appendChild( nodesToMove );
 
-			// Create new position to work on.
-			const newPosition = new Position( positionParent.parent, offsetAfter );
+				// Create new position to work on.
+				const newPosition = new Position( positionParent.parent, offsetAfter );
 
-			return this._breakAttributes( newPosition, forceSplitText );
+				return this._breakAttributes( newPosition, forceSplitText );
+			}
 		}
 	}
 
@@ -1842,7 +1843,7 @@ function validateNodesToInsert( nodes, errorContext ) {
 		}
 
 		if ( !node.is( 'text' ) ) {
-			validateNodesToInsert( node.getChildren() );
+			validateNodesToInsert( node.getChildren(), errorContext );
 		}
 	}
 }
@@ -1875,6 +1876,7 @@ function validateRangeContainer( range, errorContext ) {
 		 *
 		 * @error view-writer-invalid-range-container
 		 */
+
 		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
 }

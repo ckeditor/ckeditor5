@@ -342,7 +342,7 @@ export default class Position {
 				throw new CKEditorError(
 					'view-createPositionAt-offset-required: ' +
 					'View#createPositionAt() requires the offset when the first parameter is a view item.',
-					this
+					node
 				);
 			}
 
