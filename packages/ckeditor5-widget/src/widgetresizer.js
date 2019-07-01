@@ -4,7 +4,7 @@
  */
 
 /**
- * @module widget/widget
+ * @module widget/widgetresizer
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -14,6 +14,18 @@ import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import ResizeContext2 from './resizecontext';
 
 const HEIGHT_ATTRIBUTE_NAME = 'height';
+
+/**
+ * Interface describing a resizer. It allows to define available resizer set, specify resizing host etc.
+ *
+ * @interface ResizerOptions
+ */
+
+/**
+ * List of available resizers like `"top-left"`, `"bottom-right"`, etc.
+ *
+ * @member {Array.<String>} module:widget/widgetresizer~ResizerOptions#resizers
+ */
 
 /**
  * The base class for widget features. This type provides a common API for reusable features of widgets.
@@ -93,8 +105,14 @@ export default class WidgetResizer extends Plugin {
 		}
 	}
 
-	apply( widgetElement, writer ) {
-		const context = new ResizeContext2();
+	/**
+	 * @param {module:engine/view/containerelement~ContainerElement} widgetElement
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
+	 * @memberof WidgetResizer
+	 */
+	apply( widgetElement, writer, options ) {
+		const context = new ResizeContext2( options );
 		context.attach( widgetElement, writer );
 
 		this.editor.editing.view.once( 'render', () => context.redraw() );

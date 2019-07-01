@@ -1,6 +1,10 @@
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
 
+/**
+ * @module widget/resizecontext
+ */
+
 const HEIGHT_ATTRIBUTE_NAME = 'height';
 
 /**
@@ -26,17 +30,36 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	return ret;
 }
 
+/**
+ * Stores the internal state of a single resizable object.
+ *
+ * @class ResizeContext
+ */
 export default class ResizeContext {
-	constructor() {
-		// HTMLElement???
-		this.resizeHost = null;
+	constructor( options ) {
+		// HTMLElement??? - @todo seems to be not needed.
+		// this.resizeHost = null;
 		// view/UiElement
 		this.resizeWrapperElement = null;
 		// view/Element
 		this.widgetWrapperElement = null;
-		// HTMLElement|null - might be uninitialized
+
+		/**
+		 * Container of entire resize UI.
+		 *
+		 * Note that this property is initialized only after the element bound with resizer is drawn
+		 * so it will be a `null` when uninitialized.
+		 *
+		 * @member {HTMLElement|null}
+		 */
 		this.domResizeWrapper = null;
+
+		/**
+		 * @member {HTMLElement|null}
+		 */
 		this.domResizeShadow = null;
+
+		this.options = options || {};
 
 		// @todo: ---- options below seems like a little outside of a scope of a single context ----
 		// Size before resizing.
@@ -158,10 +181,15 @@ export default class ResizeContext {
 
 	redraw() {
 		if ( this.domResizeWrapper ) {
-			const resizingHost = this.domResizeWrapper.parentElement.querySelector( 'img' );
+			const widgetWrapper = this.domResizeWrapper.parentElement;
 
-			this.domResizeWrapper.style.left = resizingHost.offsetLeft + 'px';
-			this.domResizeWrapper.style.right = resizingHost.offsetLeft + 'px';
+			const resizingHost = this.options.getResizeHost ?
+				this.options.getResizeHost( widgetWrapper ) : widgetWrapper;
+
+			if ( !widgetWrapper.isSameNode( resizingHost ) ) {
+				this.domResizeWrapper.style.left = resizingHost.offsetLeft + 'px';
+				this.domResizeWrapper.style.right = resizingHost.offsetLeft + 'px';
+			}
 		}
 	}
 
