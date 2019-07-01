@@ -36,13 +36,13 @@ describe( 'Conversion', () => {
 		it( 'should throw when trying to use same group name twice', () => {
 			expectToThrowCKEditorError( () => {
 				conversion.addAlias( 'upcast', upcastDispaA );
-			}, /conversion-group-exists/, null );
+			}, /conversion-group-exists/ );
 		} );
 
 		it( 'should throw when trying to add not registered dispatcher', () => {
 			expectToThrowCKEditorError( () => {
 				conversion.addAlias( 'foo', {} );
-			}, /conversion-add-alias-dispatcher-not-registered/, null );
+			}, /conversion-add-alias-dispatcher-not-registered/ );
 		} );
 	} );
 
@@ -55,7 +55,7 @@ describe( 'Conversion', () => {
 		it( 'should throw if non-existing group name has been used', () => {
 			expectToThrowCKEditorError( () => {
 				conversion.for( 'foo' );
-			}, /conversion-for-unknown-group/, null );
+			}, /conversion-for-unknown-group/ );
 		} );
 
 		it( 'should return proper helpers for group', () => {
