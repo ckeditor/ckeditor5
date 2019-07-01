@@ -51,15 +51,15 @@ describe( 'TreeWalker', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expectToThrowCKEditorError( () => {
 				new TreeWalker(); // eslint-disable-line no-new
-			}, /^model-tree-walker-no-start-position/, model );
+			}, /^model-tree-walker-no-start-position/, null );
 
 			expectToThrowCKEditorError( () => {
 				new TreeWalker( {} ); // eslint-disable-line no-new
-			}, /^model-tree-walker-no-start-position/, model );
+			}, /^model-tree-walker-no-start-position/, null );
 
 			expectToThrowCKEditorError( () => {
 				new TreeWalker( { singleCharacters: true } ); // eslint-disable-line no-new
-			}, /^model-tree-walker-no-start-position/, model );
+			}, /^model-tree-walker-no-start-position/, null );
 		} );
 
 		it( 'should throw if walking direction is unknown', () => {

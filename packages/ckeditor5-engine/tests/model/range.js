@@ -213,7 +213,7 @@ describe( 'Range', () => {
 			it( 'should throw if empty array is passed', () => {
 				expectToThrowCKEditorError( () => {
 					Range._createFromRanges( [] );
-				}, /^range-create-from-ranges-empty-array/, model );
+				}, /^range-create-from-ranges-empty-array/ );
 			} );
 
 			it( 'should return a copy of the range if only one range was passed', () => {

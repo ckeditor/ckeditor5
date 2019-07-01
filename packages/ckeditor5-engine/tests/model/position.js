@@ -110,17 +110,17 @@ describe( 'Position', () => {
 		it( 'should throw error if given path is incorrect', () => {
 			expectToThrowCKEditorError( () => {
 				new Position( root, {} ); // eslint-disable-line no-new
-			}, /model-position-path-incorrect/, null );
+			}, /model-position-path-incorrect/, model );
 
 			expectToThrowCKEditorError( () => {
 				new Position( root, [] ); // eslint-disable-line no-new
-			}, /model-position-path-incorrect/, null );
+			}, /model-position-path-incorrect/, model );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
 			expectToThrowCKEditorError( () => {
 				new Position( new Text( 'a' ) ); // eslint-disable-line no-new
-			}, /model-position-root-invalid/, null );
+			}, /model-position-root-invalid/ );
 
 			expect( () => {
 				new Position(); // eslint-disable-line no-new

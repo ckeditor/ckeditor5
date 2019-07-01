@@ -61,7 +61,10 @@ export default class Position {
 			 *
 			 * @error model-position-root-invalid
 			 */
-			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.', null );
+			throw new CKEditorError(
+				'model-position-root-invalid: Position root invalid.',
+				root
+			);
 		}
 
 		if ( !( path instanceof Array ) || path.length === 0 ) {
@@ -73,7 +76,8 @@ export default class Position {
 			 */
 			throw new CKEditorError(
 				'model-position-path-incorrect: Position path must be an array with at least one item.',
-				null, { path }
+				root,
+				{ path }
 			);
 		}
 
@@ -862,7 +866,7 @@ export default class Position {
 				throw new CKEditorError(
 					'model-createPositionAt-offset-required: ' +
 					'Model#createPositionAt() requires the offset when the first parameter is a model item.',
-					this
+					[ this, itemOrPosition ]
 				);
 			}
 
@@ -874,7 +878,7 @@ export default class Position {
 				 */
 				throw new CKEditorError(
 					'model-position-parent-incorrect: Position parent have to be a element or document fragment.',
-					this
+					[ this, itemOrPosition ]
 				);
 			}
 
@@ -902,7 +906,11 @@ export default class Position {
 			 * @error model-position-after-root
 			 * @param {module:engine/model/item~Item} root
 			 */
-			throw new CKEditorError( 'model-position-after-root: You cannot make a position after root.', this, { root: item } );
+			throw new CKEditorError(
+				'model-position-after-root: You cannot make a position after root.',
+				[ this, item ],
+				{ root: item }
+			);
 		}
 
 		return this._createAt( item.parent, item.endOffset, stickiness );
@@ -924,7 +932,11 @@ export default class Position {
 			 * @error model-position-before-root
 			 * @param {module:engine/model/item~Item} root
 			 */
-			throw new CKEditorError( 'model-position-before-root: You cannot make a position before root.', this, { root: item } );
+			throw new CKEditorError(
+				'model-position-before-root: You cannot make a position before root.',
+				item,
+				{ root: item }
+			);
 		}
 
 		return this._createAt( item.parent, item.startOffset, stickiness );
@@ -954,7 +966,7 @@ export default class Position {
 			 */
 			throw new CKEditorError(
 				'model-position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
-				this,
+				doc,
 				{ rootName: json.root }
 			);
 		}
