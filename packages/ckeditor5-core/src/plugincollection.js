@@ -191,7 +191,7 @@ export default class PluginCollection {
 			// Log the error so it's more visible on the console. Hopefully, for better DX.
 			log.error( errorMsg, { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorMsg, this._editor, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
