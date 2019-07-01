@@ -277,7 +277,7 @@ export default class WordCount extends Plugin {
  * the characters part. word count is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
- *			displayWords = false
+ *			displayWords: false
  *		}
  *
  * The mentioned configuration will result with the followed container:
@@ -295,7 +295,7 @@ export default class WordCount extends Plugin {
  * the words part. Character counter is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
- *			displayCharacters = false
+ *			displayCharacters: false
  *		}
  *
  * The mentioned configuration will result in the following container
@@ -313,9 +313,9 @@ export default class WordCount extends Plugin {
  * a number of detected words and characters in the document.
  *
  *		const wordCountConfig = {
- *			onUpdate: function( values ) {
- *				doSthWithWordNumber( values.words );
- *				doSthWithCharacterNumber( values.characters );
+ *			onUpdate: function( stats ) {
+ *				doSthWithWordNumber( stats.words );
+ *				doSthWithCharacterNumber( stats.characters );
  *			}
  *		}
  *
