@@ -461,7 +461,7 @@ describe( 'ContextualBalloon', () => {
 		it( 'should throw an error when there is no stack of given id', () => {
 			expect( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw( CKEditorError, 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.' );
+			} ).to.throw( CKEditorError, /^contextualballoon-showstack-stack-not-exist/ );
 		} );
 	} );
 
