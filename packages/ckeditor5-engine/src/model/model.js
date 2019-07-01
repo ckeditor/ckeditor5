@@ -702,10 +702,11 @@ export default class Model {
 	 * * {@link #change `change()`},
 	 * * {@link #enqueueChange `enqueueChange()`}.
 	 *
+	 * @param {'transparent'|'default'} [type='default'] The type of the batch.
 	 * @returns {module:engine/model/batch~Batch}
 	 */
-	createBatch() {
-		return new Batch();
+	createBatch( type ) {
+		return new Batch( type );
 	}
 
 	/**

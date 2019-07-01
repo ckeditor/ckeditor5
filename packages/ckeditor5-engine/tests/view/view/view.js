@@ -9,6 +9,7 @@ import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import KeyObserver from '../../../src/view/observer/keyobserver';
+import InputObserver from '../../../src/view/observer/inputobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
@@ -28,7 +29,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 6;
+	const DEFAULT_OBSERVERS_COUNT = 7;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	testUtils.createSinonSandbox();
@@ -85,6 +86,7 @@ describe( 'view', () => {
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
+		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 	} );
 
 	describe( 'attachDomRoot()', () => {
