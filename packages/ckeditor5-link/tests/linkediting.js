@@ -587,5 +587,89 @@ describe( 'LinkEditing', () => {
 				expect( editor.getData() ).to.equal( '<p><a href="http://example.com">foo</a>bar</p>' );
 			} );
 		} );
+
+		describe( 'upcast converter', () => {
+			it( 'should upcast attributes from initial data', done => {
+				VirtualTestEditor
+					.create( {
+						initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
+							'<a href="example.com" download="file">Bar</a></p>',
+						plugins: [ Paragraph, LinkEditing, Enter ],
+						link: {
+							decorators: {
+								isExternal: {
+									mode: 'manual',
+									label: 'Open in a new window',
+									attributes: {
+										target: '_blank',
+										rel: 'noopener noreferrer'
+									}
+								},
+								isDownloadable: {
+									mode: 'manual',
+									label: 'Downloadable',
+									attributes: {
+										download: 'file'
+									}
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph>' +
+								'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
+								'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
+							'</paragraph>'
+						);
+					} )
+					.then( done )
+					.catch( done );
+			} );
+
+			it( 'should not upcast partial and incorrect attributes', done => {
+				VirtualTestEditor
+					.create( {
+						initialData: '<p><a href="url" target="_blank" download="something">Foo</a>' +
+							'<a href="example.com" download="test">Bar</a></p>',
+						plugins: [ Paragraph, LinkEditing, Enter ],
+						link: {
+							decorators: {
+								isExternal: {
+									mode: 'manual',
+									label: 'Open in a new window',
+									attributes: {
+										target: '_blank',
+										rel: 'noopener noreferrer'
+									}
+								},
+								isDownloadable: {
+									mode: 'manual',
+									label: 'Downloadable',
+									attributes: {
+										download: 'file'
+									}
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph>' +
+								'<$text linkHref="url">Foo</$text>' +
+								'<$text linkHref="example.com">Bar</$text>' +
+							'</paragraph>'
+						);
+					} )
+					.then( done )
+					.catch( done );
+			} );
+		} );
 	} );
 } );
