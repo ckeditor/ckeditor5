@@ -22,7 +22,7 @@ msgstr "Linki sil"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "Link"
+msgstr "Əlaqələndir"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
