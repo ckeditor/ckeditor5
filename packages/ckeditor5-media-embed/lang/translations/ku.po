@@ -26,7 +26,7 @@ msgstr "بەستەری میدیا"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr ""
+msgstr "بەستەری میدیاکە لە خانەکە بلکێنە."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
@@ -34,11 +34,11 @@ msgstr ""
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr ""
+msgstr "پێویستە بەستەر بەتاڵ نەبێت."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr ""
+msgstr "ئەم بەستەری میدیایە پاڵپشتی ناکرێت."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
