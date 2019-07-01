@@ -60,9 +60,9 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
 export default class Watchdog {
 	/**
 	 * @param {Object} config The watchdog plugin configuration.
-	 * @param {Number} config.crashNumberLimit A threshold specifying the number of crashes
+	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of crashes
 	 * when the watchdog stops restarting the editor in case of errors.
-	 * @param {Number} config.waitingTime A minimum amount of time between saving editor data internally.
+	 * @param {Number} [config.waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
 	 */
 	constructor( { crashNumberLimit, waitingTime } = {} ) {
 		/**
@@ -161,6 +161,7 @@ export default class Watchdog {
 	/**
 	 * The current editor instance.
 	 *
+	 * @readonly
 	 * @type {module:core/editor/editor~Editor}
 	 */
 	get editor() {
@@ -192,7 +193,8 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method or `Watchdog.for` helper.
+	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method or
+	 * {@link module:watchdog/watchdog~Watchdog.for} helper.
 	 *
 	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
@@ -230,7 +232,8 @@ export default class Watchdog {
 
 		// Clone config because it might be shared within multiple watchdog instances. Otherwise
 		// when an error occurs in one of these editors the watchdog will restart all of them.
-		this._config = cloneDeepWith( config, function leaveDOMReferences( value ) {
+		this._config = cloneDeepWith( config, value => {
+			// Leave DOM references.
 			return isElement( value ) ? value : undefined;
 		} );
 
@@ -331,14 +334,14 @@ export default class Watchdog {
 	 *
 	 * @private
 	 * @fires error
-	 * @param {Event} event Error event.
+	 * @param {Event} evt Error event.
 	 */
-	_handleGlobalErrorEvent( event ) {
-		if ( !event.error.is || !event.error.is( 'CKEditorError' ) ) {
+	_handleGlobalErrorEvent( evt ) {
+		if ( !evt.error.is || !evt.error.is( 'CKEditorError' ) ) {
 			return;
 		}
 
-		if ( event.error.context === undefined ) {
+		if ( evt.error.context === undefined ) {
 			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
 
 			return;
@@ -346,16 +349,16 @@ export default class Watchdog {
 
 		// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
 		// That's why the `null` was introduced as a correct error context which does cause restarting.
-		if ( event.error.context === null ) {
+		if ( evt.error.context === null ) {
 			return;
 		}
 
-		if ( this._isErrorComingFromThisEditor( event.error ) ) {
+		if ( this._isErrorComingFromThisEditor( evt.error ) ) {
 			this.crashes.push( {
-				message: event.error.message,
-				source: event.source,
-				lineno: event.lineno,
-				colno: event.colno
+				message: evt.error.message,
+				source: evt.source,
+				lineno: evt.lineno,
+				colno: evt.colno
 			} );
 
 			this.fire( 'error' );

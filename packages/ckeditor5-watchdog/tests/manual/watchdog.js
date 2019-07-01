@@ -7,8 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Watchdog from '@ckeditor/ckeditor5-watchdog/src/watchdog';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import Watchdog from '../../src/watchdog';
 
 const firstEditorElement = document.getElementById( 'editor-1' );
 const secondEditorElement = document.getElementById( 'editor-2' );
