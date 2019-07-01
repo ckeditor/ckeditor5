@@ -56,10 +56,9 @@ function enterBlock( model, writer, selection, schema ) {
 	}
 
 	if ( isSelectionEmpty ) {
-		// List of text attributes copied to new line/block.
-		const filteredAttr = getAllowedAttributes( writer.model.schema, selection.getAttributes() );
+		const attributesToCopy = getCopyOnEnterAttributes( writer.model.schema, selection.getAttributes() );
 		splitBlock( writer, range.start );
-		writer.setSelectionAttribute( filteredAttr );
+		writer.setSelectionAttribute( attributesToCopy );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		const isContainedWithinOneElement = ( startElement == endElement );
@@ -88,10 +87,10 @@ function splitBlock( writer, splitPos ) {
 	writer.setSelection( splitPos.parent.nextSibling, 0 );
 }
 
-function* getAllowedAttributes( schema, allAttributes ) {
-	for ( const attr of allAttributes ) {
-		if ( attr && schema.getAttributeProperties( attr[ 0 ] ).copyOnEnter ) {
-			yield attr;
+function* getCopyOnEnterAttributes( schema, allAttributes ) {
+	for ( const attribute of allAttributes ) {
+		if ( attribute && schema.getAttributeProperties( attribute[ 0 ] ).copyOnEnter ) {
+			yield attribute;
 		}
 	}
 }

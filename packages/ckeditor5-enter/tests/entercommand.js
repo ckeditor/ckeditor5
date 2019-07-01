@@ -90,7 +90,7 @@ describe( 'EnterCommand', () => {
 
 			describe( 'copyOnEnter', () => {
 				beforeEach( () => {
-					schema.extend( '$text', { allowAttributes: 'foo' } );
+					schema.extend( '$text', { allowAttributes: [ 'foo', 'bar' ] } );
 					schema.setAttributeProperties( 'foo', { copyOnEnter: true } );
 				} );
 
