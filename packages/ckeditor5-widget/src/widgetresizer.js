@@ -13,6 +13,8 @@ import MouseMoveObserver from './view/mousemoveobserver';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import ResizeContext2 from './resizecontext';
 
+const HEIGHT_ATTRIBUTE_NAME = 'height';
+
 /**
  * The base class for widget features. This type provides a common API for reusable features of widgets.
  */
@@ -27,6 +29,9 @@ export default class WidgetResizer extends Plugin {
 	init() {
 		this.contexts = [];
 		this.activeContext = null;
+
+		this._registerSchema();
+		this._registerConverters();
 
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
@@ -113,5 +118,39 @@ export default class WidgetResizer extends Plugin {
 	_getContextByHandler( domResizeHandler ) {
 		return this._getContextByWrapper( getAncestors( domResizeHandler )
 			.filter( element => element.classList.contains( 'ck-widget__resizer-wrapper' ) )[ 0 ] );
+	}
+
+	_registerSchema() {
+		const editor = this.editor;
+		// Allow bold attribute on text nodes.
+		editor.model.schema.extend( 'image', {
+			allowAttributes: HEIGHT_ATTRIBUTE_NAME
+		} );
+
+		editor.model.schema.setAttributeProperties( HEIGHT_ATTRIBUTE_NAME, {
+			isFormatting: true
+		} );
+	}
+
+	_registerConverters() {
+		const editor = this.editor;
+
+		// Dedicated converter to propagate image's attribute to the img tag.
+		editor.conversion.for( 'downcast' ).add( dispatcher =>
+			dispatcher.on( 'attribute:height:image', ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const img = conversionApi.mapper.toViewElement( data.item ).getChild( 0 );
+
+				if ( data.attributeNewValue !== null ) {
+					viewWriter.setAttribute( HEIGHT_ATTRIBUTE_NAME, data.attributeNewValue, img );
+				} else {
+					viewWriter.removeAttribute( HEIGHT_ATTRIBUTE_NAME, img );
+				}
+			} )
+		);
 	}
 }
