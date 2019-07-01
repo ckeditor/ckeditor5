@@ -113,4 +113,6 @@ export default class DeleteObserver extends Observer {
  * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
  * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
  * If it's 2 or more it means that the key was pressed and hold.
+ * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,
+ * current selection should be used.
  */
