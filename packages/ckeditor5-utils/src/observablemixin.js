@@ -381,7 +381,10 @@ function bindTo( ...args ) {
 		 *
 		 * @error observable-bind-no-callback
 		 */
-		throw new CKEditorError( 'observable-bind-to-no-callback: Binding multiple observables only possible with callback.', this );
+		throw new CKEditorError(
+			'observable-bind-to-no-callback: Binding multiple observables only possible with callback.',
+			this
+		);
 	}
 
 	// Eliminate A.bind( 'x', 'y' ).to( B, callback )
@@ -505,7 +508,7 @@ function parseBindToArgs( ...args ) {
 		 *
 		 * @error observable-bind-to-parse-error
 		 */
-		throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', this );
+		throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', null );
 	}
 
 	const parsed = { to: [] };
@@ -522,7 +525,7 @@ function parseBindToArgs( ...args ) {
 			lastObservable = { observable: a, properties: [] };
 			parsed.to.push( lastObservable );
 		} else {
-			throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', this );
+			throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', null );
 		}
 	} );
 
