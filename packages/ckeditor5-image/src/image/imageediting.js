@@ -62,7 +62,11 @@ export default class ImageEditing extends Plugin {
 			view: ( modelElement, viewWriter ) => {
 				const ret = toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
 
-				editor.plugins.get( 'WidgetResizer' ).apply( ret, viewWriter );
+				editor.plugins.get( 'WidgetResizer' ).apply( ret, viewWriter, {
+					getResizeHost( wrapper ) {
+						return wrapper.querySelector( 'img' );
+					}
+				} );
 
 				return ret;
 			}
