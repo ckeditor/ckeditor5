@@ -35,6 +35,8 @@ export default class CKEditorError extends Error {
 	 * @param {Object|null} context A context of the error by which the {@link module:watchdog/watchdog~Watchdog watchdog}
 	 * is able to determine which editor crashed. It should be an editor instance or a property connected to it. It can be also
 	 * a `null` value if the editor should not be restarted in case of the error (e.g. during the editor initialization).
+	 * The error context should be checked using the `areConnectedThroughProperties( editor, context )` utility
+	 * to check if the object works as the context.
 	 * @param {Object} [data] Additional data describing the error. A stringified version of this object
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
