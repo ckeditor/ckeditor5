@@ -18,8 +18,8 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
-msgstr "Nömrələnmiş siyahısı"
+msgstr "Nömrələnmiş siyahı"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "Markerlənmiş siyahısı"
+msgstr "Markerlənmiş siyahı"
