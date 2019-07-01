@@ -5,7 +5,6 @@
 
 import env from '../src/env';
 import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from '../src/keyboard';
-import CKEditorError from '../src/ckeditorerror';
 import { expectToThrowCKEditorError } from './_utils/utils';
 
 describe( 'Keyboard', () => {
