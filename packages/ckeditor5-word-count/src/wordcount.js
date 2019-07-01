@@ -69,7 +69,7 @@ export default class WordCount extends Plugin {
 		this.set( 'words', 0 );
 
 		/**
-		 * Label used to display words value in {@link #getWordCountContainer output contianer}
+		 * Label used to display words value in {@link #wordCountContainer output container}
 		 *
 		 * @observable
 		 * @private
@@ -79,7 +79,7 @@ export default class WordCount extends Plugin {
 		this.set( '_wordsLabel' );
 
 		/**
-		 * Label used to display characters value in {@link #getWordCountContainer output contianer}
+		 * Label used to display characters value in {@link #wordCountContainer output container}
 		 *
 		 * @observable
 		 * @private
@@ -128,7 +128,7 @@ export default class WordCount extends Plugin {
 		}
 
 		if ( isElement( this._config.container ) ) {
-			this._config.container.appendChild( this.getWordCountContainer() );
+			this._config.container.appendChild( this.wordCountContainer );
 		}
 	}
 
@@ -143,7 +143,7 @@ export default class WordCount extends Plugin {
 	}
 
 	/**
-	 * Method creates self-updated HTML element. Repeated executions return the same element.
+	 * Creates self-updated HTML element. Repeated executions return the same element.
 	 * Returned element has followed HTML structure:
 	 *
 	 * 		<div class="ck ck-word-count">
@@ -151,9 +151,9 @@ export default class WordCount extends Plugin {
 	 * 			<div class="ck-word-count__characters">Characters: 28</div>
 	 * 		</div>
 	 *
-	 * @returns {HTMLElement}
+	 * @type {HTMLElement}
 	 */
-	getWordCountContainer() {
+	get wordCountContainer() {
 		const editor = this.editor;
 		const t = editor.t;
 		const displayWords = editor.config.get( 'wordCount.displayWords' );
@@ -273,7 +273,7 @@ export default class WordCount extends Plugin {
 
 /**
  * This option allows for hiding the word counter. The element obtained through
- * {@link module:wordcount/wordcount~WordCount#getWordCountContainer} will only preserve
+ * {@link module:wordcount/wordcount~WordCount#wordCountContainer} will only preserve
  * the characters part. Word counter is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
@@ -291,7 +291,7 @@ export default class WordCount extends Plugin {
 
 /**
  * This option allows for hiding the character counter. The element obtained through
- * {@link module:wordcount/wordcount~WordCount#getWordCountContainer} will only preserve
+ * {@link module:wordcount/wordcount~WordCount#wordCountContainer} will only preserve
  * the words part. Character counter is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
@@ -324,7 +324,7 @@ export default class WordCount extends Plugin {
 
 /**
  * This option allows on providing an HTML element where
- * {@link module:wordcount/wordcount~WordCount#getWordCountContainer word count container} will be appended automatically.
+ * {@link module:wordcount/wordcount~WordCount#wordCountContainer word count container} will be appended automatically.
  *
  *		const wordCountConfig = {
  *			container: document.getElementById( 'container-for-word-count' );

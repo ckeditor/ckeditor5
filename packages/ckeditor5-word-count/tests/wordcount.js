@@ -94,7 +94,7 @@ describe( 'WordCount', () => {
 	describe( 'self-updating element', () => {
 		let container;
 		beforeEach( () => {
-			container = wordCountPlugin.getWordCountContainer();
+			container = wordCountPlugin.wordCountContainer;
 		} );
 
 		it( 'provides html element', () => {
@@ -127,7 +127,7 @@ describe( 'WordCount', () => {
 		} );
 
 		it( 'subsequent calls provides the same element', () => {
-			const newContainer = wordCountPlugin.getWordCountContainer();
+			const newContainer = wordCountPlugin.wordCountContainer;
 
 			expect( container ).to.equal( newContainer );
 		} );
@@ -231,7 +231,7 @@ describe( 'WordCount', () => {
 			} )
 				.then( editor => {
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
-					const container = wordCountPlugin.getWordCountContainer();
+					const container = wordCountPlugin.wordCountContainer;
 
 					expect( container.innerText ).to.equal( 'Characters: 0' );
 				} )
@@ -248,7 +248,7 @@ describe( 'WordCount', () => {
 			} )
 				.then( editor => {
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
-					const container = wordCountPlugin.getWordCountContainer();
+					const container = wordCountPlugin.wordCountContainer;
 
 					expect( container.innerText ).to.equal( 'Words: 0' );
 				} )
@@ -293,7 +293,7 @@ describe( 'WordCount', () => {
 
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
 
-					expect( element.firstElementChild ).to.equal( wordCountPlugin.getWordCountContainer() );
+					expect( element.firstElementChild ).to.equal( wordCountPlugin.wordCountContainer );
 				} );
 		} );
 	} );
@@ -321,7 +321,7 @@ describe( 'WordCount', () => {
 			} )
 				.then( editor => {
 					const wordCountPlugin = editor.plugins.get( 'WordCount' );
-					const container = wordCountPlugin.getWordCountContainer();
+					const container = wordCountPlugin.wordCountContainer;
 
 					expect( container.innerText ).to.equal( 'Słowa: 0Znaki: 0' );
 				} )

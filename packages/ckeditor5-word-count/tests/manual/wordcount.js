@@ -19,7 +19,7 @@ ClassicEditor
 			onUpdate: values => {
 				console.log( `Values from 'onUpdate': ${ JSON.stringify( values ) }` );
 			},
-			container: document.getElementById( 'other-words-container' )
+			container: document.getElementById( 'words-container' )
 		}
 	} )
 	.then( editor => {
