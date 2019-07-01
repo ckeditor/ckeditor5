@@ -42,6 +42,37 @@ In the editor below, all **external** links get the `target="_blank"` and `rel="
 
 {@snippet features/linkdecorators}
 
+The following code was used to run the editor. Learn more about the [configuration](#configuration) of the feature.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		toolbar: {
+			items: [
+				// ...
+				'link'
+			],
+		},
+		link: {
+			// Automatically add target="_blank" and rel="noopener noreferrer" to all external links.
+			addTargetToExternalLinks: true,
+
+			// Allow users control the "downloadable" attribute of each link.
+			decorators: [
+				{
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				}
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ### Configuration
 
 Decorators are configured via definitions in {@link module:link/link~LinkConfig#decorators `config.link.decorators`}. Each decorator definition must have its own unique name. In case of [manual decorators](#adding-attributes-to-links-using-the-ui-manual-decorators), that name also represents the decorator in the {@link framework/guides/architecture/editing-engine#text-attributes document model}.
