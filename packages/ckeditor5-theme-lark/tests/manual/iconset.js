@@ -46,6 +46,9 @@ import heading4 from '@ckeditor/ckeditor5-heading/theme/icons/heading4.svg';
 import heading5 from '@ckeditor/ckeditor5-heading/theme/icons/heading5.svg';
 import heading6 from '@ckeditor/ckeditor5-heading/theme/icons/heading6.svg';
 
+import indent from '@ckeditor/ckeditor5-indent/theme/icons/indent.svg';
+import outdent from '@ckeditor/ckeditor5-indent/theme/icons/outdent.svg';
+
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
 
@@ -86,6 +89,9 @@ const icons = {
 
 	// heading
 	heading1, heading2, heading3, heading4, heading5, heading6,
+
+	// indent
+	indent, outdent,
 
 	// highlight
 	marker, pen,
