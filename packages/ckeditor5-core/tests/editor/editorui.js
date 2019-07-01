@@ -10,6 +10,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 
 import testUtils from '../_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /* global document */
 
@@ -85,14 +86,50 @@ describe( 'EditorUI', () => {
 		} );
 
 		it( 'should reset editables array', () => {
-			ui._editableElements.set( 'foo', {} );
-			ui._editableElements.set( 'bar', {} );
+			ui.setEditableElement( 'foo', {} );
+			ui.setEditableElement( 'bar', {} );
 
-			expect( ui._editableElements.size ).to.equal( 2 );
+			expect( [ ...ui.getEditableElementsNames() ] ).to.deep.equal( [ 'foo', 'bar' ] );
 
 			ui.destroy();
 
-			expect( ui._editableElements.size ).to.equal( 0 );
+			expect( [ ...ui.getEditableElementsNames() ] ).to.have.length( 0 );
+		} );
+
+		it( 'removes domElement#ckeditorInstance references from registered root elements', () => {
+			const fooElement = document.createElement( 'foo' );
+			const barElement = document.createElement( 'bar' );
+
+			ui.setEditableElement( 'foo', fooElement );
+			ui.setEditableElement( 'bar', barElement );
+
+			expect( fooElement.ckeditorInstance ).to.equal( editor );
+			expect( barElement.ckeditorInstance ).to.equal( editor );
+
+			ui.destroy();
+
+			expect( fooElement.ckeditorInstance ).to.be.null;
+			expect( barElement.ckeditorInstance ).to.be.null;
+		} );
+	} );
+
+	describe( 'setEditableElement()', () => {
+		it( 'should register the editable element under a name', () => {
+			const ui = new EditorUI( editor );
+			const element = document.createElement( 'div' );
+
+			ui.setEditableElement( 'main', element );
+
+			expect( ui.getEditableElement( 'main' ) ).to.equal( element );
+		} );
+
+		it( 'puts a reference to the editor instance in domElement#ckeditorInstance', () => {
+			const ui = new EditorUI( editor );
+			const element = document.createElement( 'div' );
+
+			ui.setEditableElement( 'main', element );
+
+			expect( element.ckeditorInstance ).to.equal( editor );
 		} );
 	} );
 
@@ -101,7 +138,7 @@ describe( 'EditorUI', () => {
 			const ui = new EditorUI( editor );
 			const editableMock = { name: 'main', element: document.createElement( 'div' ) };
 
-			ui._editableElements.set( editableMock.name, editableMock.element );
+			ui.setEditableElement( editableMock.name, editableMock.element );
 
 			expect( ui.getEditableElement() ).to.equal( editableMock.element );
 		} );
@@ -111,8 +148,8 @@ describe( 'EditorUI', () => {
 			const editableMock1 = { name: 'root1', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
-			ui._editableElements.set( editableMock1.name, editableMock1.element );
-			ui._editableElements.set( editableMock2.name, editableMock2.element );
+			ui.setEditableElement( editableMock1.name, editableMock1.element );
+			ui.setEditableElement( editableMock2.name, editableMock2.element );
 
 			expect( ui.getEditableElement( 'root1' ) ).to.equal( editableMock1.element );
 			expect( ui.getEditableElement( 'root2' ) ).to.equal( editableMock2.element );
@@ -131,8 +168,8 @@ describe( 'EditorUI', () => {
 			const editableMock1 = { name: 'main', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
-			ui._editableElements.set( editableMock1.name, editableMock1.element );
-			ui._editableElements.set( editableMock2.name, editableMock2.element );
+			ui.setEditableElement( editableMock1.name, editableMock1.element );
+			ui.setEditableElement( editableMock2.name, editableMock2.element );
 
 			const names = ui.getEditableElementsNames();
 			expect( names[ Symbol.iterator ] ).to.instanceof( Function );
@@ -143,6 +180,16 @@ describe( 'EditorUI', () => {
 			const ui = new EditorUI( editor );
 
 			expect( ui.getEditableElementsNames() ).to.be.empty;
+		} );
+	} );
+
+	describe( '_editableElements()', () => {
+		it( 'should warn about deprecation', () => {
+			const ui = new EditorUI( editor );
+			const stub = testUtils.sinon.stub( log, 'warn' );
+
+			expect( ui._editableElements ).to.be.instanceOf( Map );
+			sinon.assert.calledWithMatch( stub, 'editor-ui-deprecated-editable-elements' );
 		} );
 	} );
 } );
