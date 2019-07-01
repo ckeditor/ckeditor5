@@ -27,6 +27,9 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  * and editor destruction (`editor.destroy()`). Errors at these stages mean that there is a serious
  * problem in the code integrating the editor and such problem cannot be easily fixed restarting the editor.
  *
+ * A new editor instance is created each time the watchdog is restarted. Thus the editor instance should not be kept
+ * internally. Use the `watchdog.editor` each time you need to access the editor.
+ *
  * Basic usage:
  *
  * 		const watchdog = Watchdog.for( ClassicEditor );
@@ -56,9 +59,10 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  */
 export default class Watchdog {
 	/**
-	 * @param {Object} config
-	 * @param {Number} config.crashNumberLimit
-	 * @param {Number} config.waitingTime
+	 * @param {Object} config The watchdog plugin configuration.
+	 * @param {Number} config.crashNumberLimit A threshold specifying the number of crashes
+	 * when the watchdog stops restarting the editor in case of errors.
+	 * @param {Number} config.waitingTime A minimum amount of time between saving editor data internally.
 	 */
 	constructor( { crashNumberLimit, waitingTime } = {} ) {
 		/**
