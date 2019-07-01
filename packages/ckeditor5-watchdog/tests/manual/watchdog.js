@@ -45,7 +45,7 @@ watchdog1.create( firstEditorElement, editorConfig ).then( () => {
 	} );
 } );
 
-watchdog1.on( 'crash', () => {
+watchdog1.on( 'error', () => {
 	console.log( 'First editor crashed!' );
 } );
 
@@ -65,7 +65,7 @@ watchdog2.create( secondEditorElement, editorConfig ).then( () => {
 	} );
 } );
 
-watchdog2.on( 'crash', () => {
+watchdog2.on( 'error', () => {
 	console.log( 'Second editor crashed!' );
 } );
 

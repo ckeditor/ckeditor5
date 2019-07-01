@@ -44,7 +44,7 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  *
  * Other important APIs:
  *
- *		watchdog.on( 'crash', () => { console.log( 'Editor crashed.' ) } );
+ *		watchdog.on( 'error', () => { console.log( 'Editor crashed.' ) } );
  *		watchdog.on( 'restart', () => { console.log( 'Editor was restarted.' ) } );
  *
  *		watchdog.restart(); // Restarts the editor.
