@@ -25,7 +25,8 @@
 			top: 0;
 			bottom: 0;
 
-			outline: 2px dashed red;
+			outline: 2px dashed var(--ck-color-focus-border);
+			background-color: rgba(71, 164, 245, 0.25);
 
 			&.ck-widget__resizer-shadow-active {
 				display: block;
