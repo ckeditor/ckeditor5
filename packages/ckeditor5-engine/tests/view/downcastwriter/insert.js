@@ -156,9 +156,10 @@ describe( 'DowncastWriter', () => {
 			const element = new Element( 'b' );
 			const container = new ContainerElement( 'p' );
 			const position = new Position( container, 0 );
+
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, element );
-			}, 'view-writer-insert-invalid-node', view );
+			}, 'view-writer-insert-invalid-node', writer );
 		} );
 
 		it( 'should throw when Element is inserted as child node', () => {
@@ -169,7 +170,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, root );
-			}, 'view-writer-insert-invalid-node', view );
+			}, 'view-writer-insert-invalid-node', writer );
 		} );
 
 		it( 'should throw when position is not placed inside container', () => {
@@ -179,7 +180,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
-			}, 'view-writer-invalid-position-container', view );
+			}, 'view-writer-invalid-position-container', writer );
 		} );
 
 		it( 'should allow to insert EmptyElement into container', () => {
@@ -198,7 +199,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
-			}, 'view-writer-cannot-break-empty-element', view );
+			}, 'view-writer-cannot-break-empty-element', writer );
 		} );
 
 		it( 'should throw if trying to insert inside UIElement', () => {
@@ -209,7 +210,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
-			}, 'view-writer-cannot-break-ui-element', view );
+			}, 'view-writer-cannot-break-ui-element', writer );
 		} );
 	} );
 } );

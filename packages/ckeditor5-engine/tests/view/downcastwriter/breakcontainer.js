@@ -69,7 +69,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.breakContainer( selection.getFirstPosition() );
-			}, /view-writer-break-non-container-element/, view );
+			}, /view-writer-break-non-container-element/, writer );
 		} );
 
 		it( 'should throw if position parent is root', () => {
@@ -78,7 +78,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.breakContainer( position );
-			}, /view-writer-break-root/, view );
+			}, /view-writer-break-root/, writer );
 		} );
 	} );
 } );

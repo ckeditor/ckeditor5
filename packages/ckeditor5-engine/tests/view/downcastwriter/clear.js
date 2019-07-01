@@ -41,7 +41,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-			}, 'view-writer-invalid-range-container', view );
+			}, 'view-writer-invalid-range-container', writer );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
@@ -49,7 +49,7 @@ describe( 'DowncastWriter', () => {
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-			}, 'view-writer-invalid-range-container', view );
+			}, 'view-writer-invalid-range-container', writer );
 		} );
 
 		it( 'should remove matched element from range', () => {

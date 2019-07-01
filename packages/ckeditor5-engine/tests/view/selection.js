@@ -117,7 +117,7 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [ { invalid: 'range' } ] );
-			}, /view-selection-add-range-not-range/, null );
+			}, /view-selection-add-range-not-range/ );
 		} );
 
 		it( 'should throw an error when ranges intersects', () => {
@@ -127,14 +127,14 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [ range1, range2 ] );
-			}, 'view-selection-range-intersects', selection );
+			}, 'view-selection-range-intersects' );
 		} );
 
 		it( 'should throw an error when trying to set to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			} ).to.throw( /view-selection-setTo-not-selectable/ );
+			}, /view-selection-setTo-not-selectable/ );
 		} );
 	} );
 
@@ -206,7 +206,7 @@ describe( 'Selection', () => {
 
 			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
-			}, /view-selection-setFocus-no-ranges/, selection );
+			}, /view-selection-setFocus-no-ranges/ );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -682,7 +682,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection.setTo( {} );
-				} ).to.throw( /view-selection-setTo-not-selectable/ );
+				}, /view-selection-setTo-not-selectable/ );
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
@@ -690,7 +690,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection.setTo();
-				} ).to.throw( /view-selection-setTo-not-selectable/ );
+				}, /view-selection-setTo-not-selectable/ );
 			} );
 		} );
 
@@ -734,7 +734,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					selection.setTo( foo );
-				}, /view-selection-setTo-required-second-parameter/, selection );
+				}, /view-selection-setTo-required-second-parameter/ );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {
@@ -881,7 +881,7 @@ describe( 'Selection', () => {
 			it( 'should throw an error when range is invalid', () => {
 				expectToThrowCKEditorError( () => {
 					selection.setTo( [ { invalid: 'range' } ] );
-				}, /view-selection-add-range-not-range/, selection );
+				}, /view-selection-add-range-not-range/ );
 			} );
 
 			it( 'should throw when range is intersecting with already added range', () => {
@@ -890,7 +890,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					selection.setTo( [ range1, range2 ] );
-				}, 'view-selection-range-intersects', selection );
+				}, 'view-selection-range-intersects' );
 			} );
 		} );
 

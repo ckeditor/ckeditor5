@@ -156,7 +156,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-				}, 'view-writer-invalid-range-container', view );
+				}, 'view-writer-invalid-range-container', writer );
 			} );
 
 			it( 'should throw when range has no parent container', () => {
@@ -164,7 +164,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
-				}, 'view-writer-invalid-range-container', view );
+				}, 'view-writer-invalid-range-container', writer );
 			} );
 
 			it( 'should not break text nodes if they are not in attribute elements', () => {
@@ -246,7 +246,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
-				}, 'view-writer-cannot-break-empty-element', view );
+				}, 'view-writer-cannot-break-empty-element', writer );
 			} );
 
 			it( 'should throw if breaking inside EmptyElement #2', () => {
@@ -257,7 +257,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
-				}, 'view-writer-cannot-break-empty-element', view );
+				}, 'view-writer-cannot-break-empty-element', writer );
 			} );
 
 			it( 'should throw if breaking inside UIElement #1', () => {
@@ -267,7 +267,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
-				}, 'view-writer-cannot-break-ui-element', view );
+				}, 'view-writer-cannot-break-ui-element', writer );
 			} );
 
 			it( 'should throw if breaking inside UIElement #2', () => {
@@ -278,7 +278,7 @@ describe( 'DowncastWriter', () => {
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
-				}, 'view-writer-cannot-break-ui-element', view );
+				}, 'view-writer-cannot-break-ui-element', writer );
 			} );
 		} );
 	} );

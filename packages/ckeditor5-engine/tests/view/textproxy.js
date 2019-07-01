@@ -9,7 +9,6 @@ import ContainerElement from '../../src/view/containerelement';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
 
-
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -44,21 +43,21 @@ describe( 'TextProxy', () => {
 		it( 'should throw if wrong offsetInText is passed', () => {
 			expectToThrowCKEditorError( () => {
 				new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
-			}, /view-textproxy-wrong-offsetintext/, null );
+			}, /view-textproxy-wrong-offsetintext/ );
 
 			expectToThrowCKEditorError( () => {
 				new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
-			}, /view-textproxy-wrong-offsetintext/, null );
+			}, /view-textproxy-wrong-offsetintext/ );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
 			expectToThrowCKEditorError( () => {
 				new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
-			}, /view-textproxy-wrong-length/, null );
+			}, /view-textproxy-wrong-length/ );
 
 			expectToThrowCKEditorError( () => {
 				new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
-			}, /view-textproxy-wrong-length/, null );
+			}, /view-textproxy-wrong-length/ );
 		} );
 	} );
 

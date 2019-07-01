@@ -131,7 +131,7 @@ describe( 'AttributeElement', () => {
 
 			expectToThrowCKEditorError( () => {
 				attribute.getElementsWithSameId();
-			}, /attribute-element-get-elements-with-same-id-no-id/, null );
+			}, /attribute-element-get-elements-with-same-id-no-id/ );
 		} );
 	} );
 

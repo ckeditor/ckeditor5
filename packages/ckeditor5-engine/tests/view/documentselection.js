@@ -116,7 +116,7 @@ describe( 'DocumentSelection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new DocumentSelection( [ { invalid: 'range' } ] );
-			}, /view-selection-add-range-not-range/, view );
+			}, /view-selection-add-range-not-range/ );
 		} );
 
 		it( 'should throw an error when ranges intersects', () => {
@@ -126,14 +126,14 @@ describe( 'DocumentSelection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new DocumentSelection( [ range1, range2 ] );
-			}, 'view-selection-range-intersects', view );
+			}, 'view-selection-range-intersects' );
 		} );
 
 		it( 'should throw an error when trying to set to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new DocumentSelection( {} );
-			} ).to.throw( /view-selection-setTo-not-selectable/ );
+			}, /view-selection-setTo-not-selectable/ );
 		} );
 	} );
 
@@ -205,7 +205,7 @@ describe( 'DocumentSelection', () => {
 
 			expectToThrowCKEditorError( () => {
 				documentSelection._setFocus( endPos );
-			}, /view-selection-setFocus-no-ranges/, view );
+			}, /view-selection-setFocus-no-ranges/, documentSelection );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -810,7 +810,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection._setTo( {} );
-				} ).to.throw( /view-selection-setTo-not-selectable/ );
+				}, /view-selection-setTo-not-selectable/ );
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
@@ -818,7 +818,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection._setTo();
-				} ).to.throw( /view-selection-setTo-not-selectable/ );
+				}, /view-selection-setTo-not-selectable/ );
 			} );
 		} );
 
@@ -862,7 +862,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					documentSelection._setTo( foo );
-				}, /view-selection-setTo-required-second-parameter/, view );
+				}, /view-selection-setTo-required-second-parameter/, documentSelection );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {
@@ -1009,7 +1009,7 @@ describe( 'DocumentSelection', () => {
 			it( 'should throw an error when range is invalid', () => {
 				expectToThrowCKEditorError( () => {
 					documentSelection._setTo( [ { invalid: 'range' } ] );
-				}, /view-selection-add-range-not-range/, view );
+				}, /view-selection-add-range-not-range/, documentSelection );
 			} );
 
 			it( 'should throw when range is intersecting with already added range', () => {
@@ -1018,7 +1018,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					documentSelection._setTo( [ range1, range2 ] );
-				}, 'view-selection-range-intersects', view );
+				}, 'view-selection-range-intersects', documentSelection );
 			} );
 		} );
 
