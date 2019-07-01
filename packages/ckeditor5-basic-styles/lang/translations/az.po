@@ -22,7 +22,7 @@ msgstr "Yarıqalın"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Kursiv"
+msgstr "Maili"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"

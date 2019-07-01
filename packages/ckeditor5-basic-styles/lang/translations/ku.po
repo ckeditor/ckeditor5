@@ -38,8 +38,8 @@ msgstr "هێڵ بەسەرداهاتوو"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "ژێرنووس"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "سەرنووس"
