@@ -492,6 +492,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-indent"><code>@ckeditor/ckeditor5-indent</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-indent"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-indent.svg" alt="@ckeditor/ckeditor5-indent npm package badge"></a>
+	</td>
+	<td>
+		The indentation (of lists and blocks) feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-link"><code>@ckeditor/ckeditor5-link</code></a>
 	</td>
 	<td>
