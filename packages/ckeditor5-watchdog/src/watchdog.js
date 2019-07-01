@@ -75,7 +75,7 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Crash number limit (default to 3). After the limit is reached the editor is not restarted by the watchdog.
+		 * Crash number limit (default to 3). After the limit is reached the editor is not restarted by the watchdog. This is to prevent an infinite crash loop.
 		 *
 		 * @private
 		 * @type {Number}
@@ -101,7 +101,7 @@ export default class Watchdog {
 		this._throttledSave = throttle( this._save.bind( this ), waitingTime || 5000 );
 
 		/**
-		 * The current editor
+		 * The current editor.
 		 *
 		 * @private
 		 * @type {module:core/editor/editor~Editor}
@@ -117,7 +117,7 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * The editor destruction method
+		 * The editor destruction method.
 		 *
 		 * @private
 		 * @member {Function} #_destructor
@@ -215,7 +215,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method.
+	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method or `Watchdog.for` helper.
 	 *
 	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
@@ -230,7 +230,7 @@ export default class Watchdog {
 			 * The watchdog creator is not defined, define it using `watchdog.setCreator()`.
 			 */
 			throw new CKEditorError(
-				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()`.',
+				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()` or `Watchdog.for` helper.',
 				null
 			);
 		}
@@ -262,7 +262,7 @@ export default class Watchdog {
 				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
 
 				this._lastDocumentVersion = editor.model.document.version;
-				this._data = editor.getData();
+				this._data = editor.data.get();
 
 				return this;
 			} );
@@ -304,7 +304,7 @@ export default class Watchdog {
 		}
 
 		try {
-			this._data = this._editor.getData();
+			this._data = this._editor.data.get();
 			this._lastDocumentVersion = version;
 		} catch ( err ) {
 			console.error(
