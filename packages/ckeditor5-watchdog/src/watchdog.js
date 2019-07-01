@@ -235,7 +235,7 @@ export default class Watchdog {
 		} );
 
 		return Promise.resolve()
-			.then( () => this._creator( elementOrData, config ) )
+			.then( () => this._creator( elementOrData, this._config ) )
 			.then( editor => {
 				this._editor = editor;
 
@@ -261,6 +261,7 @@ export default class Watchdog {
 
 		return Promise.resolve()
 			.then( () => this.destroy() )
+			.catch( err => console.error( 'An error happened during the editor destructing.', err ) )
 			.then( () => {
 				if ( typeof this._elementOrData === 'string' ) {
 					return this.create( this._data, this._config );
