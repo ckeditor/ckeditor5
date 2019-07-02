@@ -239,7 +239,9 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						sinon.assert.calledOnce( windowErrorSpy );
-						expect( windowErrorSpy.getCall( 0 ).args[ 0 ] ).to.equal( 'Uncaught CKEditorError: foo' );
+
+						// Various browsers will display the error slightly differently.
+						expect( windowErrorSpy.getCall( 0 ).args[ 0 ] ).to.match( /foo/ );
 
 						watchdog.destroy().then( res );
 					} );
