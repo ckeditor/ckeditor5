@@ -10,18 +10,18 @@
 /* globals EventTarget, Event */
 
 /**
- * Traverses both structures to find out whether there's some object that is shared between both structures.
+ * Traverses both structures to find out whether there is a reference that is shared between both structures.
  *
- * @param {*} str1
- * @param {*} str2
+ * @param {Object|Array} obj1
+ * @param {Object|Array} obj2
  */
-export default function areConnectedThroughProperties( str1, str2 ) {
-	if ( str1 === str2 && isObject( str1 ) ) {
+export default function areConnectedThroughProperties( obj1, obj2 ) {
+	if ( obj1 === obj2 && isObject( obj1 ) ) {
 		return true;
 	}
 
-	const subNodes1 = getSubNodes( str1 );
-	const subNodes2 = getSubNodes( str2 );
+	const subNodes1 = getSubNodes( obj1 );
+	const subNodes2 = getSubNodes( obj2 );
 
 	for ( const node of subNodes1 ) {
 		if ( subNodes2.has( node ) ) {
