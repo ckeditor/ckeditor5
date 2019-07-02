@@ -8,7 +8,6 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
@@ -17,6 +16,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import CKFinderCommand from '../src/ckfindercommand';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'CKFinderCommand', () => {
 	let editor, command, model;
@@ -152,9 +152,9 @@ describe( 'CKFinderCommand', () => {
 		it( 'should throw if unsupported CKFinder opener method was set', () => {
 			editor.config.set( 'ckfinder.openerMethod', 'foobar' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				command.execute();
-			} ).to.throw( CKEditorError, /ckfinder-unknown-openerMethod/ );
+			}, /ckfinder-unknown-openerMethod/, editor );
 		} );
 
 		it( 'should insert single chosen image', () => {
