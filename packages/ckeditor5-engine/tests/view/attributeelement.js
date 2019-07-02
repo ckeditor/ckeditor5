@@ -6,7 +6,8 @@
 import AttributeElement from '../../src/view/attributeelement';
 import Element from '../../src/view/element';
 import { parse } from '../../src/dev-utils/view';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'AttributeElement', () => {
 	describe( 'constructor()', () => {
@@ -128,9 +129,9 @@ describe( 'AttributeElement', () => {
 		it( 'should throw if attribute element has no id', () => {
 			const attribute = new AttributeElement( 'b' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				attribute.getElementsWithSameId();
-			} ).to.throw( CKEditorError, /attribute-element-get-elements-with-same-id-no-id/ );
+			}, /attribute-element-get-elements-with-same-id-no-id/ );
 		} );
 	} );
 

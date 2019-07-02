@@ -524,7 +524,8 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'view-selection-setTo-required-second-parameter: ' +
-					'selection.setTo requires the second parameter when the first parameter is a node.'
+					'selection.setTo requires the second parameter when the first parameter is a node.',
+					this
 				);
 			} else if ( placeOrOffset == 'in' ) {
 				range = Range._createIn( selectable );
@@ -547,7 +548,7 @@ export default class Selection {
 			 *
 			 * @error view-selection-setTo-not-selectable
 			 */
-			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.' );
+			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.', this );
 		}
 
 		this.fire( 'change' );
@@ -572,7 +573,8 @@ export default class Selection {
 			 * @error view-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError(
-				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.',
+				this
 			);
 		}
 
@@ -680,7 +682,8 @@ export default class Selection {
 			 */
 			throw new CKEditorError(
 				'view-selection-add-range-not-range: ' +
-				'Selection range set to an object that is not an instance of view.Range'
+				'Selection range set to an object that is not an instance of view.Range',
+				this
 			);
 		}
 
@@ -709,6 +712,7 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'view-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					this,
 					{ addedRange: range, intersectingRange: storedRange }
 				);
 			}

@@ -5,10 +5,11 @@
 
 import Model from '../../../src/model/model';
 import DetachOperation from '../../../src/model/operation/detachoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import Position from '../../../src/model/position';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DetachOperation', () => {
 	let model, doc, docFrag, element;
@@ -43,9 +44,9 @@ describe( 'DetachOperation', () => {
 
 			const op = new DetachOperation( Position._createBefore( element ), 1 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				op._validate();
-			} ).to.throw( CKEditorError, /^detach-operation-on-document-node/ );
+			}, /^detach-operation-on-document-node/, model );
 		} );
 	} );
 

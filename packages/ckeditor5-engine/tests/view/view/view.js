@@ -19,7 +19,6 @@ import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -27,6 +26,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 7;
@@ -620,7 +620,9 @@ describe( 'view', () => {
 				const ui = writer.createUIElement( 'span', null, function( domDocument ) {
 					const element = this.toDomElement( domDocument );
 
-					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+					expectToThrowCKEditorError( () => {
+						view.change( () => {} );
+					}, /^cannot-change-view-tree/, view );
 					renderingCalled = true;
 
 					return element;
@@ -639,9 +641,9 @@ describe( 'view', () => {
 			view.attachDomRoot( domDiv );
 
 			viewDocument.registerPostFixer( () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					view.change( () => {} );
-				} ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+				}, /^cannot-change-view-tree/, view );
 			} );
 
 			view.forceRender();

@@ -9,7 +9,8 @@ import MergeOperation from '../../../src/model/operation/mergeoperation';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SplitOperation', () => {
 	let model, doc, root, gy, gyPos;
@@ -125,7 +126,7 @@ describe( 'SplitOperation', () => {
 
 			const operation = new SplitOperation( new Position( root, [ 0, 8 ] ), 3, null, doc.version );
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /split-operation-position-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /split-operation-position-invalid/, model );
 		} );
 
 		it( 'should throw an error if split position is in root', () => {
@@ -136,7 +137,7 @@ describe( 'SplitOperation', () => {
 			const operation = new SplitOperation( new Position( root, [ 0, 0 ] ), 3, null, doc.version );
 			operation.splitPosition = new Position( root, [ 1 ] );
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /split-operation-split-in-root/ );
+			expectToThrowCKEditorError( () => operation._validate(), /split-operation-split-in-root/, model );
 		} );
 
 		it( 'should throw an error if number of nodes to move is invalid', () => {
@@ -146,7 +147,7 @@ describe( 'SplitOperation', () => {
 
 			const operation = new SplitOperation( new Position( root, [ 0, 2 ] ), 6, null, doc.version );
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /split-operation-how-many-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /split-operation-how-many-invalid/, model );
 		} );
 
 		it( 'should throw an error if graveyard position is invalid', () => {
@@ -156,7 +157,7 @@ describe( 'SplitOperation', () => {
 
 			const operation = new SplitOperation( new Position( root, [ 0, 2 ] ), 4, gyPos, doc.version );
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /split-operation-graveyard-position-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /split-operation-graveyard-position-invalid/, model );
 		} );
 	} );
 

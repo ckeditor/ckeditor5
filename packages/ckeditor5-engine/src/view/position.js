@@ -341,7 +341,9 @@ export default class Position {
 				 */
 				throw new CKEditorError(
 					'view-createPositionAt-offset-required: ' +
-					'View#createPositionAt() requires the offset when the first parameter is a view item.' );
+					'View#createPositionAt() requires the offset when the first parameter is a view item.',
+					node
+				);
 			}
 
 			return new Position( node, offset );
@@ -368,7 +370,7 @@ export default class Position {
 			 * @error view-position-after-root
 			 * @param {module:engine/view/node~Node} root
 			 */
-			throw new CKEditorError( 'view-position-after-root: You can not make position after root.', { root: item } );
+			throw new CKEditorError( 'view-position-after-root: You can not make position after root.', item, { root: item } );
 		}
 
 		return new Position( item.parent, item.index + 1 );
@@ -394,7 +396,7 @@ export default class Position {
 			 * @error view-position-before-root
 			 * @param {module:engine/view/node~Node} root
 			 */
-			throw new CKEditorError( 'view-position-before-root: You can not make position before root.', { root: item } );
+			throw new CKEditorError( 'view-position-before-root: You can not make position before root.', item, { root: item } );
 		}
 
 		return new Position( item.parent, item.index );
