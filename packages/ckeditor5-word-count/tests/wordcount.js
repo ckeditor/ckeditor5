@@ -13,6 +13,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -24,7 +26,7 @@ describe( 'WordCount', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ WordCount, Paragraph ]
+			plugins: [ WordCount, Paragraph, ShiftEnter, TableEditing ]
 		} )
 			.then( _editor => {
 				editor = _editor;
@@ -56,7 +58,7 @@ describe( 'WordCount', () => {
 			setModelData( model, '<paragraph>Foo(bar)baz</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' +
 				'<paragraph>1234</paragraph>' +
-				'<paragraph>(-@#$%^*())</paragraph>' );
+				'<paragraph>(@#$%^*())</paragraph>' );
 
 			wordCountPlugin._calculateWordsAndCharacters();
 
@@ -69,6 +71,28 @@ describe( 'WordCount', () => {
 			wordCountPlugin._calculateWordsAndCharacters();
 
 			expect( wordCountPlugin.characters ).to.equal( 12 );
+		} );
+
+		it( 'should not count enter as a character', () => {
+			expect( wordCountPlugin.characters ).to.equal( 0 );
+
+			setModelData( model, '<paragraph>Fo<softBreak></softBreak>o</paragraph>' +
+				'<paragraph>Foo</paragraph>' +
+				'<table>' +
+				'<tableRow>' +
+					'<tableCell></tableCell><tableCell></tableCell><tableCell></tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell></tableCell><tableCell><paragraph>foo</paragraph></tableCell><tableCell></tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell></tableCell><tableCell></tableCell><tableCell></tableCell>' +
+				'</tableRow>' +
+				'</table>' );
+
+			wordCountPlugin._calculateWordsAndCharacters();
+
+			expect( wordCountPlugin.characters ).to.equal( 9 );
 		} );
 
 		describe( 'update event', () => {
@@ -123,7 +147,7 @@ describe( 'WordCount', () => {
 			wordCountPlugin._calculateWordsAndCharacters();
 
 			// There is \n between paragraph which has to be included into calculations
-			expect( container.innerText ).to.equal( 'Words: 5Characters: 24' );
+			expect( container.innerText ).to.equal( 'Words: 5Characters: 23' );
 		} );
 
 		it( 'subsequent calls provides the same element', () => {

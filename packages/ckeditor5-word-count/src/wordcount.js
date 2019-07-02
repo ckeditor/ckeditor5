@@ -12,6 +12,7 @@ import { modelElementToPlainText } from './utils';
 import { throttle, isElement } from 'lodash-es';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import featureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection';
 
 /**
  * The word count plugin.
@@ -229,9 +230,14 @@ export default class WordCount extends Plugin {
 	_calculateWordsAndCharacters() {
 		const txt = modelElementToPlainText( this.editor.model.document.getRoot() );
 
-		this.characters = txt.length;
+		this.characters = txt.replace( /\n/g, '' ).length;
 
-		this.words = ( txt.match( /[_a-zA-Z0-9À-ž]+/gu ) || [] ).length;
+		const wordsMatch = featureDetection.isUnicodePropertySupported ?
+			txt.match( new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) ) :
+			/* istanbul ignore next */
+			txt.match( /[_\-a-zA-Z0-9À-ž]+/gu );
+
+		this.words = ( wordsMatch || [] ).length;
 
 		this.fire( 'update', {
 			words: this.words,
