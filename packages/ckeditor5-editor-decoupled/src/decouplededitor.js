@@ -218,7 +218,8 @@ export default class DecoupledEditor extends Editor {
 
 			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
-				throw new CKEditorError( 'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.' );
+				throw new CKEditorError(
+					'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.', null );
 			}
 
 			const editor = new this( sourceElementOrData, config );
@@ -233,7 +234,8 @@ export default class DecoupledEditor extends Editor {
 							// Documented in core/editor/editorconfig.jdoc.
 							throw new CKEditorError(
 								'editor-create-initial-data: ' +
-								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
+								null
 							);
 						}
 

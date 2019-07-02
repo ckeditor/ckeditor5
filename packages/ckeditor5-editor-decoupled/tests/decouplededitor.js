@@ -22,6 +22,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -135,9 +136,11 @@ describe( 'DecoupledEditor', () => {
 						expect.fail( 'Decoupled editor should throw an error when both initial data are passed' );
 					},
 					err => {
-						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+						assertCKEditorError( err,
 							// eslint-disable-next-line max-len
-							.match( /^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./ );
+							/^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./,
+							null
+						);
 					}
 				)
 				.then( done )
@@ -151,8 +154,10 @@ describe( 'DecoupledEditor', () => {
 						expect.fail( 'Decoupled editor should throw an error when is initialized in textarea.' );
 					},
 					err => {
-						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
-							.match( /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+						assertCKEditorError( err,
+							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./,
+							null
+						);
 					}
 				)
 				.then( done )

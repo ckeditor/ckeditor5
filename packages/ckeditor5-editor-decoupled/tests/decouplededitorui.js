@@ -15,7 +15,7 @@ import DecoupledEditorUIView from '../src/decouplededitoruiview';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
 
 describe( 'DecoupledEditorUI', () => {
@@ -67,7 +67,7 @@ describe( 'DecoupledEditorUI', () => {
 			} );
 
 			it( 'binds view.editable#isFocused', () => {
-				utils.assertBinding(
+				assertBinding(
 					view.editable,
 					{ isFocused: false },
 					[
