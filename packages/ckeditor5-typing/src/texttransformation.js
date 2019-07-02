@@ -188,8 +188,10 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *			// Will replace foo with bar:
  *			{ from: 'foo', to: 'bar' },
  *
- *			// Will remove @ from emails on example.com domain, e.g. from user@example.com -> user.at.example.com:
- *			{ from: /([a-z-])@(example.com)$/i, to: '$1.at.$2' }
+ *
+ *			// The following (naive) rule will remove @ from emails.
+ *			// For example, user@example.com will become user.at.example.com.
+ *			{ from: /([a-z-]+)@([a-z]+\.[a-z]{2,})$/i, to: '$1.at.$2' }
  *		]
  *
  * **Note:** The text watcher always evaluates the end of the input (the typed text). If you're passing a RegExp object you must
@@ -270,7 +272,7 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *				'typography',
 
  *				// Plus, some custom transformation.
- *				{ from: 'CKS', to: 'CKSource }
+ *				{ from: 'CKE', to: 'CKEditor }
  *			],
  *
  *			// Remove the 'ellipsis' transformation loaded by the 'typography' group.
@@ -297,7 +299,7 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *
  *		const transformationsConfig = {
  *			extra: [
- *				{ from: 'CKS', to: 'CKSource' }
+ *				{ from: 'CKE', to: 'CKEditor' }
  *			]
  *		};
  *
