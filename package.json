@@ -64,6 +64,7 @@
     "@ckeditor/ckeditor5-undo": "^11.0.2",
     "@ckeditor/ckeditor5-upload": "^11.0.2",
     "@ckeditor/ckeditor5-utils": "^12.1.1",
+    "@ckeditor/ckeditor5-watchdog": "^0.0.1",
     "@ckeditor/ckeditor5-widget": "^11.0.2",
     "@ckeditor/ckeditor5-word-count": "^0.0.1"
   },
