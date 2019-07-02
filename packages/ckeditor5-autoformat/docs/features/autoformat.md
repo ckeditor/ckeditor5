@@ -36,6 +36,13 @@ Example:
 
 {@snippet features/autoformat}
 
+## Related productivity features
+
+In addition to enabling automatic text formatting, you may want to check the following productivity features:
+
+* {@link features/text-transformation Automatic text transformation} &mdash; allows automatically turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/mentions Mentions} &mdash; support for smart autocompletion.
+
 ## Installation
 
 <info-box info>
