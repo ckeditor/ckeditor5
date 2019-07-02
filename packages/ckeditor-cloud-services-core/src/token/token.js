@@ -38,7 +38,10 @@ class Token {
 			 *
 			 * @error token-missing-token-url
 			 */
-			throw new CKEditorError( 'token-missing-token-url: A `tokenUrl` must be provided as the first constructor argument.' );
+			throw new CKEditorError(
+				'token-missing-token-url: A `tokenUrl` must be provided as the first constructor argument.',
+				this
+			);
 		}
 
 		/**
