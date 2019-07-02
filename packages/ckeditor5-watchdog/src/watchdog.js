@@ -310,9 +310,7 @@ export default class Watchdog {
 
 		// Change may not produce an operation, so the document's version
 		// can be the same after that change.
-		if ( version < this._lastDocumentVersion ) {
-			this._throttledSave.cancel();
-
+		if ( version === this._lastDocumentVersion ) {
 			return;
 		}
 

@@ -601,10 +601,14 @@ describe( 'Watchdog', () => {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
 			} ).then( () => {
-				const doc = watchdog.editor.model.document;
+				const model = watchdog.editor.model;
+				const doc = model.document;
 
-				watchdog.editor.model.document.version = -1000;
-				watchdog.editor.model.change( writer => {
+				// Decrement the document version to simulate a situation when an operation
+				// don't produce new document version.
+				doc.version--;
+
+				model.change( writer => {
 					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
 				} );
 
