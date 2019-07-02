@@ -16,7 +16,7 @@ Views use [templates](#templates) to build the UI. They also provide observable 
 A simple input view class can be defined as follows:
 
 ```js
-class SampleInputView extends View {
+class SimpleInputView extends View {
 	constructor( locale ) {
 		super( locale );
 
@@ -66,8 +66,8 @@ class ParentView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		const childA = new SampleInputView( locale );
-		const childB = new SampleInputView( locale );
+		const childA = new SimpleInputView( locale );
+		const childB = new SimpleInputView( locale );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -90,7 +90,7 @@ document.body.appendChild( parent.element );
 It is also possible to create standalone views that do not belong to any collection. They must be {@link module:ui/view~View#render rendered} before injection into the DOM:
 
 ```js
-const view = new SampleInputView( locale );
+const view = new SimpleInputView( locale );
 
 view.render();
 
