@@ -7,12 +7,13 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import View from '../../../src/view';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 /* global document, Event */
 
@@ -238,7 +239,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.add( {
 					view: viewA,
 					position: {
@@ -246,7 +247,7 @@ describe( 'ContextualBalloon', () => {
 						limiter: balloon.positionLimiter
 					}
 				} );
-			} ).to.throw( CKEditorError, /^contextualballoon-add-view-exist/ );
+			}, /^contextualballoon-add-view-exist/, editor );
 		} );
 
 		it( 'should use a provided limiter instead of #positionLimiter', () => {
@@ -459,9 +460,9 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should throw an error when there is no stack of given id', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw( CKEditorError, /^contextualballoon-showstack-stack-not-exist/ );
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 	} );
 
@@ -503,9 +504,9 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewB );
 
 			expect( balloon.visibleView ).to.equal( viewA );
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw();
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 
 		it( 'should switch stack to the next one when removed view was the last one in the visible stack', () => {
@@ -517,9 +518,9 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewA );
 
 			expect( balloon.visibleView ).to.equal( viewB );
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'main' );
-			} ).to.throw();
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 
 		it( 'should remove given view and set preceding in the stack as visible when removed view was visible', () => {
@@ -592,15 +593,15 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.hasView( viewB ) ).to.false;
 
 			// Does throw, so the stack is not there.
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.showStack( 'second' );
-			} ).to.throw();
+			}, /^contextualballoon-showstack-stack-not-exist/, editor );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.remove( viewB );
-			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
+			}, /^contextualballoon-remove-view-not-exist/, editor );
 		} );
 
 		it( 'should set additional css class of visible view to BalloonPanelView', () => {
@@ -707,9 +708,9 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				balloon.remove( viewB );
-			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
+			}, /^contextualballoon-remove-view-not-exist/, editor );
 		} );
 	} );
 
@@ -718,7 +719,7 @@ describe( 'ContextualBalloon', () => {
 			expect( () => {
 				balloon.destroy();
 				balloon.destroy();
-			} ).to.not.throw();
+			} );
 		} );
 
 		it( 'should not touch the DOM', () => {

@@ -199,7 +199,10 @@ export default class ContextualBalloon extends Plugin {
 			 *
 			 * @error contextualballoon-add-view-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.' );
+			throw new CKEditorError(
+				'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.',
+				[ this, data ]
+			);
 		}
 
 		const stackId = data.stackId || 'main';
@@ -248,7 +251,10 @@ export default class ContextualBalloon extends Plugin {
 			 *
 			 * @error contextualballoon-remove-view-not-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-remove-view-not-exist: Cannot remove the configuration of a non-existent view.' );
+			throw new CKEditorError(
+				'contextualballoon-remove-view-not-exist: Cannot remove the configuration of a non-existent view.',
+				[ this, view ]
+			);
 		}
 
 		const stack = this._viewToStack.get( view );
@@ -313,7 +319,10 @@ export default class ContextualBalloon extends Plugin {
 			 *
 			 * @error contextualballoon-showstack-stack-not-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-showstack-stack-not-exist: Cannot show a stack that does not exist.' );
+			throw new CKEditorError(
+				'contextualballoon-showstack-stack-not-exist: Cannot show a stack that does not exist.',
+				this
+			);
 		}
 
 		if ( this._visibleStack === stack ) {

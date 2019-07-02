@@ -467,7 +467,10 @@ export default class View {
 			 *
 			 * @error ui-view-render-rendered
 			 */
-			throw new CKEditorError( 'ui-view-render-already-rendered: This View has already been rendered.' );
+			throw new CKEditorError(
+				'ui-view-render-already-rendered: This View has already been rendered.',
+				this
+			);
 		}
 
 		// Render #element of the view.

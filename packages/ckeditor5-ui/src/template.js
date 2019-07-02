@@ -208,7 +208,10 @@ export default class Template {
 			 *
 			 * @error ui-template-revert-not-applied
 			 */
-			throw new CKEditorError( 'ui-template-revert-not-applied: Attempting to revert a template which has not been applied yet.' );
+			throw new CKEditorError(
+				'ui-template-revert-not-applied: Attempting to revert a template which has not been applied yet.',
+				[ this, node ]
+			);
 		}
 
 		this._revertTemplateFromNode( node, this._revertData );
@@ -409,7 +412,8 @@ export default class Template {
 			 * @error ui-template-wrong-syntax
 			 */
 			throw new CKEditorError(
-				'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering a new Node.'
+				'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering a new Node.',
+				this
 			);
 		}
 
@@ -1356,6 +1360,7 @@ function extendObjectValueArray( obj, ext ) {
 //
 // @param {module:ui/template~Template} def A template instance to be extended.
 // @param {module:ui/template~TemplateDefinition} def A definition which is to extend the template instance.
+// @param {Object} Error context.
 function extendTemplate( template, def ) {
 	if ( def.attributes ) {
 		if ( !template.attributes ) {
@@ -1385,7 +1390,8 @@ function extendTemplate( template, def ) {
 			 * @error ui-template-extend-children-mismatch
 			 */
 			throw new CKEditorError(
-				'ui-template-extend-children-mismatch: The number of children in extended definition does not match.'
+				'ui-template-extend-children-mismatch: The number of children in extended definition does not match.',
+				template
 			);
 		}
 
