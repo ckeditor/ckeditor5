@@ -4,75 +4,81 @@
  */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import utilsTestUtils from '../../tests/_utils/utils';
-import ObesrvableMixin from '../../src/observablemixin';
+import ObservableMixin from '../../src/observablemixin';
 import EmitterMixin from '../../src/emittermixin';
+import { createObserver } from '../_utils/utils';
 
-describe( 'utilsTestUtils.createObserver()', () => {
-	let observable, observable2, observer;
-
-	testUtils.createSinonSandbox();
-
-	beforeEach( () => {
-		observer = utilsTestUtils.createObserver();
-
-		observable = Object.create( ObesrvableMixin );
-		observable.set( { foo: 0, bar: 0 } );
-
-		observable2 = Object.create( ObesrvableMixin );
-		observable2.set( { foo: 0, bar: 0 } );
+describe( 'utils - testUtils', () => {
+	afterEach( () => {
+		sinon.restore();
 	} );
 
-	it( 'should create an observer', () => {
-		function Emitter() {}
-		Emitter.prototype = EmitterMixin;
+	describe( 'createObserver()', () => {
+		let observable, observable2, observer;
 
-		expect( observer ).to.be.instanceof( Emitter );
-		expect( observer.observe ).is.a( 'function' );
-		expect( observer.stopListening ).is.a( 'function' );
-	} );
+		testUtils.createSinonSandbox();
 
-	describe( 'Observer', () => {
-		/* global console:false  */
+		beforeEach( () => {
+			observer = createObserver();
 
-		it( 'logs changes in the observable', () => {
-			const spy = testUtils.sinon.stub( console, 'log' );
+			observable = Object.create( ObservableMixin );
+			observable.set( { foo: 0, bar: 0 } );
 
-			observer.observe( 'Some observable', observable );
-			observer.observe( 'Some observable 2', observable2 );
-
-			observable.foo = 1;
-			expect( spy.callCount ).to.equal( 1 );
-
-			observable.foo = 2;
-			observable2.bar = 3;
-			expect( spy.callCount ).to.equal( 3 );
+			observable2 = Object.create( ObservableMixin );
+			observable2.set( { foo: 0, bar: 0 } );
 		} );
 
-		it( 'logs changes to specified properties', () => {
-			const spy = testUtils.sinon.stub( console, 'log' );
+		it( 'should create an observer', () => {
+			function Emitter() { }
+			Emitter.prototype = EmitterMixin;
 
-			observer.observe( 'Some observable', observable, [ 'foo' ] );
-
-			observable.foo = 1;
-			expect( spy.callCount ).to.equal( 1 );
-
-			observable.bar = 1;
-			expect( spy.callCount ).to.equal( 1 );
+			expect( observer ).to.be.instanceof( Emitter );
+			expect( observer.observe ).is.a( 'function' );
+			expect( observer.stopListening ).is.a( 'function' );
 		} );
 
-		it( 'stops listening when asked to do so', () => {
-			const spy = testUtils.sinon.stub( console, 'log' );
+		describe( 'Observer', () => {
+			/* global console:false  */
 
-			observer.observe( 'Some observable', observable );
+			it( 'logs changes in the observable', () => {
+				const spy = sinon.stub( console, 'log' );
 
-			observable.foo = 1;
-			expect( spy.callCount ).to.equal( 1 );
+				observer.observe( 'Some observable', observable );
+				observer.observe( 'Some observable 2', observable2 );
 
-			observer.stopListening();
+				observable.foo = 1;
+				expect( spy.callCount ).to.equal( 1 );
 
-			observable.foo = 2;
-			expect( spy.callCount ).to.equal( 1 );
+				observable.foo = 2;
+				observable2.bar = 3;
+				expect( spy.callCount ).to.equal( 3 );
+			} );
+
+			it( 'logs changes to specified properties', () => {
+				const spy = sinon.stub( console, 'log' );
+
+				observer.observe( 'Some observable', observable, [ 'foo' ] );
+
+				observable.foo = 1;
+				expect( spy.callCount ).to.equal( 1 );
+
+				observable.bar = 1;
+				expect( spy.callCount ).to.equal( 1 );
+			} );
+
+			it( 'stops listening when asked to do so', () => {
+				const spy = sinon.stub( console, 'log' );
+
+				observer.observe( 'Some observable', observable );
+
+				observable.foo = 1;
+				expect( spy.callCount ).to.equal( 1 );
+
+				observer.stopListening();
+
+				observable.foo = 2;
+				expect( spy.callCount ).to.equal( 1 );
+			} );
 		} );
 	} );
 } );

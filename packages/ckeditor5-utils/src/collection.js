@@ -148,7 +148,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-invalid-id
 				 */
-				throw new CKEditorError( 'collection-add-invalid-id' );
+				throw new CKEditorError( 'collection-add-invalid-id', this );
 			}
 
 			if ( this.get( itemId ) ) {
@@ -157,7 +157,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-item-already-exists
 				 */
-				throw new CKEditorError( 'collection-add-item-already-exists' );
+				throw new CKEditorError( 'collection-add-item-already-exists', this );
 			}
 		} else {
 			item[ idProperty ] = itemId = uid();
@@ -172,7 +172,7 @@ export default class Collection {
 			 *
 			 * @error collection-add-item-bad-index
 			 */
-			throw new CKEditorError( 'collection-add-item-invalid-index' );
+			throw new CKEditorError( 'collection-add-item-invalid-index', this );
 		}
 
 		this._items.splice( index, 0, item );
@@ -203,7 +203,7 @@ export default class Collection {
 			 *
 			 * @error collection-get-invalid-arg
 			 */
-			throw new CKEditorError( 'collection-get-invalid-arg: Index or id must be given.' );
+			throw new CKEditorError( 'collection-get-invalid-arg: Index or id must be given.', this );
 		}
 
 		return item || null;
@@ -286,7 +286,7 @@ export default class Collection {
 			 *
 			 * @error collection-remove-404
 			 */
-			throw new CKEditorError( 'collection-remove-404: Item not found.' );
+			throw new CKEditorError( 'collection-remove-404: Item not found.', this );
 		}
 
 		this._items.splice( index, 1 );
@@ -459,7 +459,7 @@ export default class Collection {
 			 *
 			 * @error collection-bind-to-rebind
 			 */
-			throw new CKEditorError( 'collection-bind-to-rebind: The collection cannot be bound more than once.' );
+			throw new CKEditorError( 'collection-bind-to-rebind: The collection cannot be bound more than once.', this );
 		}
 
 		this._bindToCollection = externalCollection;

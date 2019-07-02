@@ -5,7 +5,7 @@
 
 import env from '../src/env';
 import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from '../src/keyboard';
-import CKEditorError from '../src/ckeditorerror';
+import { expectToThrowCKEditorError } from './_utils/utils';
 
 describe( 'Keyboard', () => {
 	describe( 'keyCodes', () => {
@@ -55,9 +55,9 @@ describe( 'Keyboard', () => {
 		} );
 
 		it( 'throws when passed unknown key name', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				getCode( 'foo' );
-			} ).to.throw( CKEditorError, /^keyboard-unknown-key:/ );
+			}, /^keyboard-unknown-key:/, null );
 		} );
 
 		it( 'gets code of a keystroke info', () => {
@@ -96,9 +96,9 @@ describe( 'Keyboard', () => {
 		} );
 
 		it( 'throws on unknown name', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				parseKeystroke( 'foo' );
-			} ).to.throw( CKEditorError, /^keyboard-unknown-key:/ );
+			}, /^keyboard-unknown-key:/, null );
 		} );
 	} );
 

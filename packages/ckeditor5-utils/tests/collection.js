@@ -5,7 +5,7 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Collection from '../src/collection';
-import CKEditorError from '../src/ckeditorerror';
+import { expectToThrowCKEditorError } from '../tests/_utils/utils';
 
 function getItem( id, idProperty ) {
 	idProperty = idProperty || 'id';
@@ -165,17 +165,17 @@ describe( 'Collection', () => {
 
 			collection.add( item1 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.add( item2 );
-			} ).to.throw( CKEditorError, /^collection-add-item-already-exists/ );
+			}, /^collection-add-item-already-exists/ );
 		} );
 
 		it( 'should throw when item\'s id is not a string', () => {
 			const item = { id: 1 };
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.add( item );
-			} ).to.throw( CKEditorError, /^collection-add-invalid-id/ );
+			}, /^collection-add-invalid-id/ );
 		} );
 
 		it(
@@ -271,13 +271,13 @@ describe( 'Collection', () => {
 
 			collection.add( item1 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.add( item2, -1 );
-			} ).to.throw( /^collection-add-item-invalid-index/ );
+			}, /^collection-add-item-invalid-index/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.add( item2, 2 );
-			} ).to.throw( /^collection-add-item-invalid-index/ );
+			}, /^collection-add-item-invalid-index/ );
 
 			collection.add( item2, 1 );
 			collection.add( item3, 0 );
@@ -315,9 +315,9 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw if neither string or number given', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.get( true );
-			} ).to.throw( CKEditorError, /^collection-get-invalid-arg/ );
+			}, /^collection-get-invalid-arg/ );
 		} );
 	} );
 
@@ -484,9 +484,9 @@ describe( 'Collection', () => {
 		it( 'should throw an error on invalid index', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.remove( 1 );
-			} ).to.throw( CKEditorError, /^collection-remove-404/ );
+			}, /^collection-remove-404/ );
 
 			expect( collection ).to.have.length( 1 );
 		} );
@@ -494,9 +494,9 @@ describe( 'Collection', () => {
 		it( 'should throw an error on invalid id', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.remove( 'bar' );
-			} ).to.throw( CKEditorError, /^collection-remove-404/ );
+			}, /^collection-remove-404/ );
 
 			expect( collection ).to.have.length( 1 );
 		} );
@@ -504,9 +504,9 @@ describe( 'Collection', () => {
 		it( 'should throw an error on invalid model', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.remove( getItem( 'bar' ) );
-			} ).to.throw( CKEditorError, /^collection-remove-404/ );
+			}, /^collection-remove-404/ );
 
 			expect( collection ).to.have.length( 1 );
 		} );
@@ -522,7 +522,7 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ 'foo' ], 'ret value was forwarded' );
 
-			function callback() {}
+			function callback() { }
 		} );
 	} );
 
@@ -538,7 +538,7 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.equal( needl, 'ret value was forwarded' );
 
-			function callback() {}
+			function callback() { }
 		} );
 	} );
 
@@ -555,7 +555,7 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ needl ], 'ret value was forwarded' );
 
-			function callback() {}
+			function callback() { }
 		} );
 	} );
 
@@ -607,9 +607,9 @@ describe( 'Collection', () => {
 		it( 'throws when binding more than once', () => {
 			collection.bindTo( {} );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.bindTo( {} );
-			} ).to.throw( CKEditorError, /^collection-bind-to-rebind/ );
+			}, /^collection-bind-to-rebind/ );
 		} );
 
 		it( 'provides "using()" and "as()" interfaces', () => {
@@ -700,7 +700,7 @@ describe( 'Collection', () => {
 			} );
 
 			it( 'does not chain', () => {
-				const returned = collection.bindTo( new Collection() ).using( () => {} );
+				const returned = collection.bindTo( new Collection() ).using( () => { } );
 
 				expect( returned ).to.be.undefined;
 			} );

@@ -6,9 +6,9 @@
 /* global document, Event */
 
 import FocusTracker from '../src/focustracker';
-import CKEditorError from '../src/ckeditorerror';
 import global from '../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from './_utils/utils';
 
 describe( 'FocusTracker', () => {
 	let focusTracker, container, containerFirstInput, containerSecondInput;
@@ -66,9 +66,9 @@ describe( 'FocusTracker', () => {
 		it( 'should throw an error when element has been already added', () => {
 			focusTracker.add( containerFirstInput );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				focusTracker.add( containerFirstInput );
-			} ).to.throw( CKEditorError, /focusTracker-add-element-already-exist/ );
+			}, /focusTracker-add-element-already-exist/, focusTracker );
 		} );
 
 		describe( 'single element', () => {
