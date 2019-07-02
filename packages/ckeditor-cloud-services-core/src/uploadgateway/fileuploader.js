@@ -31,7 +31,7 @@ export default class FileUploader {
 			 *
 			 * @error fileuploader-missing-file
 			 */
-			throw new CKEditorError( 'fileuploader-missing-file: File must be provided as the first argument' );
+			throw new CKEditorError( 'fileuploader-missing-file: File must be provided as the first argument', null );
 		}
 
 		if ( !token ) {
@@ -40,7 +40,7 @@ export default class FileUploader {
 			 *
 			 * @error fileuploader-missing-token
 			 */
-			throw new CKEditorError( 'fileuploader-missing-token: Token must be provided as the second argument.' );
+			throw new CKEditorError( 'fileuploader-missing-token: Token must be provided as the second argument.', null );
 		}
 
 		if ( !apiAddress ) {
@@ -49,7 +49,7 @@ export default class FileUploader {
 			 *
 			 * @error fileuploader-missing-api-address
 			 */
-			throw new CKEditorError( 'fileuploader-missing-api-address: Api address must be provided as the third argument.' );
+			throw new CKEditorError( 'fileuploader-missing-api-address: Api address must be provided as the third argument.', null );
 		}
 
 		/**
@@ -267,7 +267,7 @@ function _base64ToBlob( base64, sliceSize = 512 ) {
 		 *
 		 * @error fileuploader-decoding-image-data-error
 		 */
-		throw new CKEditorError( 'fileuploader-decoding-image-data-error: Problem with decoding Base64 image data.' );
+		throw new CKEditorError( 'fileuploader-decoding-image-data-error: Problem with decoding Base64 image data.', null );
 	}
 }
 
