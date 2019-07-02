@@ -22,7 +22,7 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
@@ -225,8 +225,7 @@ describe( 'ClassicTestEditor', () => {
 				.then( () => {
 					throw new Error( 'It should throw an error' );
 				}, err => {
-					expect( err.message ).to.match( /^editor-create-initial-data:/ );
-					expect( err ).to.be.instanceOf( CKEditorError );
+					assertCKEditorError( err, /^editor-create-initial-data:/, null );
 				} );
 		} );
 	} );

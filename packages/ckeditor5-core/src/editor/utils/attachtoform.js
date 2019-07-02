@@ -26,7 +26,10 @@ export default function attachToForm( editor ) {
 		 *
 		 * @error attachtoform-missing-elementapi-interface
 		 */
-		throw new CKEditorError( 'attachtoform-missing-elementapi-interface: Editor passed to attachToForm() must implement ElementApi.' );
+		throw new CKEditorError(
+			'attachtoform-missing-elementapi-interface: Editor passed to attachToForm() must implement ElementApi.',
+			editor
+		);
 	}
 
 	const sourceElement = editor.sourceElement;

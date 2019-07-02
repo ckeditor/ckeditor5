@@ -119,7 +119,7 @@ export default class PluginCollection {
 				pluginName = key.pluginName || key.name;
 			}
 
-			throw new CKEditorError( errorMsg, { plugin: pluginName } );
+			throw new CKEditorError( errorMsg, this._editor, { plugin: pluginName } );
 		}
 
 		return plugin;
@@ -191,7 +191,7 @@ export default class PluginCollection {
 			// Log the error so it's more visible on the console. Hopefully, for better DX.
 			log.error( errorMsg, { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorMsg, this._editor, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
@@ -266,6 +266,7 @@ export default class PluginCollection {
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` option.',
+								editor,
 								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
 							);
 						}
