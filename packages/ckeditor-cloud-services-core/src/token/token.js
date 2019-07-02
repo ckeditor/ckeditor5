@@ -183,7 +183,7 @@ function defaultRefreshToken( tokenUrl ) {
 				 *
 				 * @error token-cannot-download-new-token
 				 */
-				return reject( new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.' ) );
+				return reject( new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.', null ) );
 			}
 
 			return resolve( xhrResponse );

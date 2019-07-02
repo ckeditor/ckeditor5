@@ -200,6 +200,7 @@ export default class FileUploader {
 						 */
 						return reject( new CKEditorError(
 							'fileuploader-uploading-data-failed: Uploading file failed.',
+							this,
 							{ message: xhrResponse.message }
 						) );
 					}
