@@ -257,7 +257,7 @@ export default class Watchdog {
 	 * It fires the `restart` event.
 	 *
 	 * @fires restart
-	 * @returns {Promise.<module:core/editor/editor~Editor>}
+	 * @returns {Promise}
 	 */
 	restart() {
 		this._throttledSave.flush();
