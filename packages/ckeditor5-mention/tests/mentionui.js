@@ -14,7 +14,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -22,6 +21,7 @@ import MentionUI, { createRegExp } from '../src/mentionui';
 import featureDetection from '../src/featuredetection';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
@@ -67,22 +67,19 @@ describe( 'MentionUI', () => {
 	describe( 'init()', () => {
 		it( 'should throw if marker was not provided for feed', () => {
 			return createClassicTestEditor( { feeds: [ { feed: [ 'a' ] } ] } ).catch( error => {
-				expect( error ).to.be.instanceOf( CKEditorError );
-				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
 			} );
 		} );
 
 		it( 'should throw if marker is empty string', () => {
 			return createClassicTestEditor( { feeds: [ { marker: '', feed: [ 'a' ] } ] } ).catch( error => {
-				expect( error ).to.be.instanceOf( CKEditorError );
-				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
 			} );
 		} );
 
 		it( 'should throw if marker is longer then 1 character', () => {
 			return createClassicTestEditor( { feeds: [ { marker: '$$', feed: [ 'a' ] } ] } ).catch( error => {
-				expect( error ).to.be.instanceOf( CKEditorError );
-				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
 			} );
 		} );
 	} );
