@@ -160,7 +160,6 @@ describe( 'WordCount', () => {
 
 			wordCountPlugin._calculateWordsAndCharacters();
 
-			// There is \n between paragraph which has to be included into calculations
 			expect( container.innerText ).to.equal( 'Words: 5Characters: 23' );
 		} );
 
