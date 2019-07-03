@@ -5,9 +5,15 @@
 
 import InputObserver from '../../../src/view/observer/inputobserver';
 import View from '../../../src/view/view';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'InputObserver', () => {
 	let view, viewDocument, observer;
+	const oldEnvIsAndroid = env.isAndroid;
+
+	before( () => {
+		env.isAndroid = true;
+	} );
 
 	beforeEach( () => {
 		view = new View();
@@ -17,6 +23,10 @@ describe( 'InputObserver', () => {
 
 	afterEach( () => {
 		view.destroy();
+	} );
+
+	after( () => {
+		env.isAndroid = oldEnvIsAndroid;
 	} );
 
 	it( 'should define domEventType', () => {

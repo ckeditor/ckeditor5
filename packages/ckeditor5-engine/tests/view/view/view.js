@@ -27,9 +27,10 @@ import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 7;
+	const DEFAULT_OBSERVERS_COUNT = 6;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	testUtils.createSinonSandbox();
@@ -86,7 +87,17 @@ describe( 'view', () => {
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
-		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
+	} );
+
+	it( 'should add InputObserver on Android devices', () => {
+		const oldEnvIsAndroid = env.isAndroid;
+		env.isAndroid = true;
+
+		const newView = new View();
+		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
+
+		env.isAndroid = oldEnvIsAndroid;
+		newView.destroy();
 	} );
 
 	describe( 'attachDomRoot()', () => {

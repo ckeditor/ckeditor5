@@ -175,7 +175,6 @@ export default class View {
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
 
-		/* istanbul ignore if */
 		if ( env.isAndroid ) {
 			this.addObserver( InputObserver );
 		}
