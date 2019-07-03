@@ -15,6 +15,7 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import featureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -93,6 +94,19 @@ describe( 'WordCount', () => {
 			wordCountPlugin._calculateWordsAndCharacters();
 
 			expect( wordCountPlugin.characters ).to.equal( 9 );
+		} );
+
+		it( 'should count international words', function() {
+			if ( !featureDetection.isUnicodePropertySupported ) {
+				this.skip();
+			}
+
+			expect( wordCountPlugin.words ).to.equal( 0 );
+
+			setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
+			wordCountPlugin._calculateWordsAndCharacters();
+
+			expect( wordCountPlugin.words ).to.equal( 6 );
 		} );
 
 		describe( 'update event', () => {
