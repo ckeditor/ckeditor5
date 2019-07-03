@@ -72,25 +72,25 @@ The editor will restrict indentation levels to a set of provided classes. The bi
 In the demo below the CSS classes are defined as follows:
 
 ```css
-	.custom-block-indent-a {
-		margin-left: 10%;
-	}
+.custom-block-indent-a {
+	margin-left: 10%;
+}
 
-	.custom-block-indent-b {
-		margin-left: 20%;
-	}
+.custom-block-indent-b {
+	margin-left: 20%;
+}
 
-	.custom-block-indent-c {
-		margin-left: 30%;
-	}
+.custom-block-indent-c {
+	margin-left: 30%;
+}
 
-	.custom-block-indent-d {
-		margin-left: 40%;
-	}
+.custom-block-indent-d {
+	margin-left: 40%;
+}
 
-	.custom-block-indent-e {
-		margin-left: 50%;
-	}
+.custom-block-indent-e {
+	margin-left: 50%;
+}
 ```
 
 {@snippet features/custom-indent-block-classes}

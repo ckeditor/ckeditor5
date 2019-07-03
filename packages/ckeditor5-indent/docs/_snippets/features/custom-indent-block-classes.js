@@ -20,6 +20,8 @@ ClassicEditor
 				'bulletedList',
 				'numberedList',
 				'|',
+				'code',
+				'|',
 				'undo',
 				'redo'
 			],
