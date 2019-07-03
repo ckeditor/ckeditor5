@@ -1028,7 +1028,7 @@ mix( Schema, ObservableMixin );
  * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
  *
  * By inheriting from the generic items you can define new items which will get extended by other editor features.
- * Read more about generic types in the {@linkTODO Defining schema} guide.
+ * Read more about generic types in the {@glink framework/guides/deep-dive/schema Defining schema} guide.
  *
  * # Example definitions
  *
