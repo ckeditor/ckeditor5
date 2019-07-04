@@ -10,12 +10,12 @@ Changelog
 
 ### Bug fixes
 
-* `Mode.writer#insert` will no longer crash when the data to set contains markers that are already in the editor content. Closes [#1721](https://github.com/ckeditor/ckeditor5-engine/issues/1721). ([4ff0656](https://github.com/ckeditor/ckeditor5-engine/commit/4ff0656))
+* `model.Writer#insert()` will no longer crash when the data to set contains markers that are already in the editor content. Closes [#1721](https://github.com/ckeditor/ckeditor5-engine/issues/1721). ([4ff0656](https://github.com/ckeditor/ckeditor5-engine/commit/4ff0656))
 * Selection will not change during forbidden copy-paste operation inside table cell. Closes [ckeditor/ckeditor5#1380](https://github.com/ckeditor/ckeditor5/issues/1380). ([ab15b17](https://github.com/ckeditor/ckeditor5-engine/commit/ab15b17))
 
 ### Other changes
 
-* Changed how &nbsp;s are generated on view->DOM rendering. Closes [#1747](https://github.com/ckeditor/ckeditor5-engine/issues/1747). ([da5670a](https://github.com/ckeditor/ckeditor5-engine/commit/da5670a))
+* Changed how `&nbsp;`s are generated on the view->DOM rendering. Closes [#1747](https://github.com/ckeditor/ckeditor5-engine/issues/1747). ([da5670a](https://github.com/ckeditor/ckeditor5-engine/commit/da5670a))
 
 
 ## [13.1.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.0...v13.1.1) (2019-06-05)
