@@ -222,6 +222,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-watchdog"><code>@ckeditor/ckeditor5-watchdog</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-watchdog.svg" alt="@ckeditor/ckeditor5-watchdog npm package badge"></a>
+	</td>
+	<td>
+		The watchdog feature, which keeps CKEditor 5 editors running.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-cloud-services"><code>@ckeditor/ckeditor5-cloud-services</code></a>
 	</td>
 	<td>
@@ -492,6 +504,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-indent"><code>@ckeditor/ckeditor5-indent</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-indent"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-indent.svg" alt="@ckeditor/ckeditor5-indent npm package badge"></a>
+	</td>
+	<td>
+		The indentation (of lists and blocks) feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-link"><code>@ckeditor/ckeditor5-link</code></a>
 	</td>
 	<td>
@@ -619,6 +643,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The undo feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-word-count"><code>@ckeditor/ckeditor5-word-count</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-word-count.svg" alt="@ckeditor/ckeditor5-word-count npm package badge"></a>
+	</td>
+	<td>
+		The word count feature.
 	</td>
 </tr>
 
