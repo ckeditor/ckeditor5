@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.3](https://github.com/ckeditor/ckeditor5-undo/compare/v11.0.2...v11.0.3) (2019-07-04)
+
+### Other changes
+
+* Use transparent batches in undo & redo commands. Closes [#97](https://github.com/ckeditor/ckeditor5-undo/issues/97). ([ef8b640](https://github.com/ckeditor/ckeditor5-undo/commit/ef8b640))
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-undo/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 ### Other changes
