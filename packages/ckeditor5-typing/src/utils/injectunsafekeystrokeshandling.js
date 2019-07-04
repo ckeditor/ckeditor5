@@ -24,7 +24,6 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 	const inputCommand = editor.commands.get( 'input' );
 
 	// For Android, we want to handle keystrokes on `beforeinput` to be sure that code in `DeleteObserver` already had a chance to be fired.
-	/* istanbul ignore if */
 	if ( env.isAndroid ) {
 		view.document.on( 'beforeinput', ( evt, evtData ) => handleUnsafeKeystroke( evtData ), { priority: 'lowest' } );
 	} else {

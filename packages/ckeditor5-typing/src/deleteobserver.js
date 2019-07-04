@@ -51,7 +51,6 @@ export default class DeleteObserver extends Observer {
 		} );
 
 		// `beforeinput` is handled only for Android devices. Desktop Chrome and iOS are skipped because they are working fine now.
-		/* istanbul ignore if */
 		if ( env.isAndroid ) {
 			document.on( 'beforeinput', ( evt, data ) => {
 				// If event type is other than `deleteContentBackward` then this is not deleting.

@@ -24,6 +24,7 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /* global document */
 
@@ -689,6 +690,8 @@ describe( 'Input feature', () => {
 			listenter.listenTo( viewDocument, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 			}, { priority: 'lowest' } );
+
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 		} );
 
 		// #97
@@ -995,3 +998,104 @@ describe( 'Input feature', () => {
 	} );
 } );
 
+describe( 'Input feature - Android', () => {
+	let editor, model, modelRoot, view, viewDocument, listenter, oldEnvIsAndroid;
+
+	testUtils.createSinonSandbox();
+
+	before( () => {
+		oldEnvIsAndroid = env.isAndroid;
+		env.isAndroid = true;
+	} );
+
+	beforeEach( () => {
+		listenter = Object.create( EmitterMixin );
+
+		const domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
+
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter, Link ] } )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				modelRoot = model.document.getRoot();
+				view = editor.editing.view;
+				viewDocument = view.document;
+
+				editor.setData( '<p>foobar</p>' );
+
+				model.change( writer => {
+					writer.setSelection( modelRoot.getChild( 0 ), 3 );
+				} );
+			} );
+	} );
+
+	afterEach( () => {
+		listenter.stopListening();
+
+		return editor.destroy();
+	} );
+
+	after( () => {
+		env.isAndroid = oldEnvIsAndroid;
+	} );
+
+	describe( 'keystroke handling', () => {
+		it( 'should remove contents', () => {
+			model.change( writer => {
+				writer.setSelection(
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
+			} );
+
+			listenter.listenTo( viewDocument, 'beforeinput', () => {
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			}, { priority: 'lowest' } );
+
+			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
+			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+		} );
+
+		it( 'should remove contents and merge blocks', () => {
+			setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
+
+			listenter.listenTo( viewDocument, 'beforeinput', () => {
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			}, { priority: 'lowest' } );
+
+			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
+			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+		} );
+
+		it( 'should do nothing if selection is collapsed', () => {
+			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'should not modify document when input command is disabled and selection is collapsed', () => {
+			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.commands.get( 'input' ).isEnabled = false;
+
+			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
+			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'should not modify document when input command is disabled and selection is non-collapsed', () => {
+			setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+			editor.commands.get( 'input' ).isEnabled = false;
+
+			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
+			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+		} );
+	} );
+} );

@@ -67,7 +67,6 @@ export default class Delete extends Plugin {
 		// on DOM selection level, because on `keyup` the model selection is still the same as it was just after deletion, so it
 		// wouldn't be changed and the fix would do nothing.
 		//
-		/* istanbul ignore if */
 		if ( env.isAndroid ) {
 			let domSelectionAfterDeletion = null;
 
@@ -83,14 +82,12 @@ export default class Delete extends Plugin {
 			}, { priority: 'lowest' } );
 
 			this.listenTo( viewDocument, 'keyup', ( evt, data ) => {
-				if ( domSelectionAfterDeletion ) {
-					const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 
-					domSelection.collapse( domSelectionAfterDeletion.anchorNode, domSelectionAfterDeletion.anchorOffset );
-					domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );
+				domSelection.collapse( domSelectionAfterDeletion.anchorNode, domSelectionAfterDeletion.anchorOffset );
+				domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );
 
-					domSelectionAfterDeletion = null;
-				}
+				domSelectionAfterDeletion = null;
 			} );
 		}
 	}
