@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.2...v11.1.0) (2019-07-04)
+
+### Features
+
+* Introduced the Base64 image upload adapter. Closes [ckeditor/ckeditor5#1378](https://github.com/ckeditor/ckeditor5/issues/1378). ([938f0f7](https://github.com/ckeditor/ckeditor5-upload/commit/938f0f7))
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 ### Other changes
