@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## [12.0.3](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.2...v12.0.3) (2019-07-04)
+
+### Other changes
+
+* Attach `'indentList'` and `'outdentList'` commands to `'indent'` and `'outdent'` commands. ([3a67531](https://github.com/ckeditor/ckeditor5-list/commit/3a67531))
+
+  The `@ckeditor/ckeditor5-indent` feature introduces the "indent" and "outdent" buttons which can be used to manipulate lists and other blocks.
+* Updated translations. ([6c4b520](https://github.com/ckeditor/ckeditor5-list/commit/6c4b520)) 
+
+
 ## [12.0.2](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.1...v12.0.2) (2019-06-05)
 
 ### Other changes
