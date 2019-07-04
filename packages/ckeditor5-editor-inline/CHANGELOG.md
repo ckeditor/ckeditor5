@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* `InlineEditor.create()` will throw an error, when textarea element is used. ([56c9f40](https://github.com/ckeditor/ckeditor5-editor-inline/commit/56c9f40))
+* `InlineEditor.create()` will throw an error, when a `<textarea>` element is used. ([56c9f40](https://github.com/ckeditor/ckeditor5-editor-inline/commit/56c9f40))
 
 
 ## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.1.0...v12.1.1) (2019-06-05)
