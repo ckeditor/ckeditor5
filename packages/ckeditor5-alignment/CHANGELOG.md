@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.1.2](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.1...v11.1.2) (2019-07-04)
+
+### Other changes
+
+* Updated translations. ([bb7f494](https://github.com/ckeditor/ckeditor5-alignment/commit/bb7f494)) 
+
+
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.0...v11.1.1) (2019-06-05)
 
 ### Other changes
