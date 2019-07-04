@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [13.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.1...v13.0.0) (2019-07-04)
+
+### Features
+
+* Added `env.isAndroid`. ([591f641](https://github.com/ckeditor/ckeditor5-utils/commit/591f641))
+
+### Other changes
+
+* Added context as second required argument to the `CKEditorError`'s constructor, changed `isCKEditorError()` method to `is()`. Introduced the `areConnectedThroughProperties()` utility. See [ckeditor/ckeditor5-watchdog#1](https://github.com/ckeditor/ckeditor5-watchdog/issues/1). ([bacc764](https://github.com/ckeditor/ckeditor5-utils/commit/bacc764))
+
+### BREAKING CHANGES
+
+* The list of `CKEditorError()`'s parameters was changed – now it requires the message, context and then data. The `isCKEditorError()` method was renamed to `is()`.
+
+
 ## [12.1.1](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.0...v12.1.1) (2019-06-05)
 
 Internal changes only (updated dependencies, documentation, etc.).

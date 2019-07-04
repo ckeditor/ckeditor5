@@ -4,14 +4,11 @@
  */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import utilsTestUtils from '../tests/_utils/utils';
+import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils';
 import ObservableMixin from '../src/observablemixin';
 import EmitterMixin from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
-import CKEditorError from '../src/ckeditorerror';
 import mix from '../src/mix';
-
-const assertBinding = utilsTestUtils.assertBinding;
 
 describe( 'ObservableMixin', () => {
 	testUtils.createSinonSandbox();
@@ -222,9 +219,9 @@ describe( 'Observable', () => {
 		it( 'should throw when overriding already existing property', () => {
 			car.normalProperty = 1;
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.set( 'normalProperty', 2 );
-			} ).to.throw( CKEditorError, /^observable-set-cannot-override/ );
+			}, /^observable-set-cannot-override/ );
 
 			expect( car ).to.have.property( 'normalProperty', 1 );
 		} );
@@ -236,9 +233,9 @@ describe( 'Observable', () => {
 
 			car = new Car();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.set( 'method', 2 );
-			} ).to.throw( CKEditorError, /^observable-set-cannot-override/ );
+			}, /^observable-set-cannot-override/ );
 
 			expect( car.method ).to.be.a( 'function' );
 		} );
@@ -274,30 +271,30 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'should throw when properties are not strings', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.bind();
-			} ).to.throw( CKEditorError, /observable-bind-wrong-properties/ );
+			}, /observable-bind-wrong-properties/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.bind( new Date() );
-			} ).to.throw( CKEditorError, /observable-bind-wrong-properties/ );
+			}, /observable-bind-wrong-properties/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.bind( 'color', new Date() );
-			} ).to.throw( CKEditorError, /observable-bind-wrong-properties/ );
+			}, /observable-bind-wrong-properties/ );
 		} );
 
 		it( 'should throw when the same property is used than once', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.bind( 'color', 'color' );
-			} ).to.throw( CKEditorError, /observable-bind-duplicate-properties/ );
+			}, /observable-bind-duplicate-properties/ );
 		} );
 
 		it( 'should throw when binding the same property more than once', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.bind( 'color' );
 				car.bind( 'color' );
-			} ).to.throw( CKEditorError, /observable-bind-rebind/ );
+			}, /observable-bind-rebind/ );
 		} );
 
 		describe( 'to()', () => {
@@ -308,11 +305,11 @@ describe( 'Observable', () => {
 			} );
 
 			it( 'should throw when arguments are of invalid type - empty', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					car = new Car();
 
 					car.bind( 'color' ).to();
-				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
+				}, /observable-bind-to-parse-error/ );
 			} );
 
 			it( 'should throw when binding multiple properties to multiple observables', () => {
@@ -320,87 +317,87 @@ describe( 'Observable', () => {
 				const car1 = new Car( { color: 'red', year: 1943 } );
 				const car2 = new Car( { color: 'yellow', year: 1932 } );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle.bind( 'color', 'year' ).to( car1, 'color', car2, 'year' );
-				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
+				}, /observable-bind-to-no-callback/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car1, car2 );
-				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
+				}, /observable-bind-to-no-callback/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car1, car2, 'year' );
-				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
+				}, /observable-bind-to-no-callback/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car1, 'color', car2 );
-				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
+				}, /observable-bind-to-no-callback/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year', 'custom' ).to( car, car );
-				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
+				}, /observable-bind-to-no-callback/ );
 			} );
 
 			it( 'should throw when binding multiple properties but passed a callback', () => {
 				let vehicle = new Car();
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle.bind( 'color', 'year' ).to( car, () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
+				}, /observable-bind-to-extra-callback/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, car, () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
+				}, /observable-bind-to-extra-callback/ );
 			} );
 
 			it( 'should throw when binding a single property but multiple callbacks', () => {
 				let vehicle = new Car();
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle.bind( 'color' ).to( car, () => {}, () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
+				}, /observable-bind-to-parse-error/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, car, () => {}, () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
+				}, /observable-bind-to-parse-error/ );
 			} );
 
 			it( 'should throw when a number of properties does not match', () => {
 				let vehicle = new Car();
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle.bind( 'color' ).to( car, 'color', 'year' );
-				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
+				}, /observable-bind-to-properties-length/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, 'color' );
-				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
+				}, /observable-bind-to-properties-length/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, 'color', 'year', () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
+				}, /observable-bind-to-properties-length/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, 'color', car, 'color', 'year', () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
+				}, /observable-bind-to-properties-length/ );
 			} );
 
 			it( 'should work when properties don\'t exist in to() observable #1', () => {
@@ -823,15 +820,15 @@ describe( 'Observable', () => {
 			it( 'should throw when binding multiple properties', () => {
 				let vehicle = new Car();
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle.bind( 'color', 'year' ).toMany( [ car ], 'foo', () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-many-not-one-binding/ );
+				}, /observable-bind-to-many-not-one-binding/ );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, car, () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
+				}, /observable-bind-to-extra-callback/ );
 			} );
 
 			it( 'binds observable property to collection property using callback', () => {
@@ -880,9 +877,9 @@ describe( 'Observable', () => {
 		} );
 
 		it( 'should throw when non-string property is passed', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				car.unbind( new Date() );
-			} ).to.throw( CKEditorError, /observable-unbind-wrong-properties/ );
+			}, /observable-unbind-wrong-properties/ );
 		} );
 
 		it( 'should remove all bindings', () => {
@@ -1054,9 +1051,9 @@ describe( 'Observable', () => {
 
 			const foo = new Foo();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				foo.decorate( 'method' );
-			} ).to.throw( CKEditorError, /^observablemixin-cannot-decorate-undefined:/ );
+			}, /^observablemixin-cannot-decorate-undefined:/ );
 		} );
 	} );
 } );
