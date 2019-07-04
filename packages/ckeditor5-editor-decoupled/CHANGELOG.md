@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* `DecoupledEditor.create()` will throw an error, when textarea element is used. ([af4daea](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/af4daea))
+* `DecoupledEditor.create()` will throw an error, when a `<textarea>` element is used. ([af4daea](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/af4daea))
 
 
 ## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.0...v12.1.1) (2019-06-05)
