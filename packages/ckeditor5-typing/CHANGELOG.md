@@ -5,8 +5,11 @@ Changelog
 
 ### Features
 
-* Improved typing on Android devices by handling `beforeinpnut` event. Introduced `options.selection` in `DeleteCommand` params. Introduced `selectionToRemove` parameter in `view.Document#event:delete` data. Closes [#167](https://github.com/ckeditor/ckeditor5-typing/issues/167). ([92ab3ff](https://github.com/ckeditor/ckeditor5-typing/commit/92ab3ff))
 * Introduced the text transformation feature. Additionally, the `TextWatcher` util was moved to this package from `@ckeditor/ckeditor5-mention`. Closes [ckeditor/ckeditor5#1490](https://github.com/ckeditor/ckeditor5/issues/1490). ([dafd16e](https://github.com/ckeditor/ckeditor5-typing/commit/dafd16e))
+
+### Bug fixes
+
+* Improved typing on Android devices by handling `beforeinput` event instead of mutations. Introduced `options.selection` in the `DeleteCommand#execute()` params. Introduced `selectionToRemove` parameter in the `view.Document#event:delete` data. Closes [#167](https://github.com/ckeditor/ckeditor5-typing/issues/167). ([92ab3ff](https://github.com/ckeditor/ckeditor5-typing/commit/92ab3ff))
 
 
 ## [12.0.2](https://github.com/ckeditor/ckeditor5-typing/compare/v12.0.1...v12.0.2) (2019-06-05)
