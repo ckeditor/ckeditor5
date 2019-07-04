@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v11.0.0...v12.0.0) (2019-07-04)
+
+### Bug fixes
+
+* It should be possible to type before a mention which is at the beginning of a block. Closes [#77](https://github.com/ckeditor/ckeditor5-mention/issues/77). ([946e762](https://github.com/ckeditor/ckeditor5-mention/commit/946e762))
+* Mentions should work when different UTF character classes are used in the feed configuration. Closes [#38](https://github.com/ckeditor/ckeditor5-mention/issues/38). ([764f099](https://github.com/ckeditor/ckeditor5-mention/commit/764f099))
+* Partial mentions should not be downcasted (e.g. not copied to clipboard). Closes [#24](https://github.com/ckeditor/ckeditor5-mention/issues/24). ([8956b1f](https://github.com/ckeditor/ckeditor5-mention/commit/8956b1f))
+
+### Other changes
+
+* Moved the `TextWatcher` util to `@ckeditor/ckeditor5-typing`. ([a644043](https://github.com/ckeditor/ckeditor5-mention/commit/a644043))
+
+### BREAKING CHANGES
+
+* The `TextWatcher` util was moved to `@ckeditor/ckeditor5-typing`.
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v10.0.0...v11.0.0) (2019-06-05)
 
 ### Bug fixes
