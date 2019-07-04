@@ -27,35 +27,36 @@ const toPx = toUnit( 'px' );
 /**
  * Provides the common contextual balloon for the editor.
  *
- * The role of this plugin is to unified contextual balloons logic, simplifies managing the views and helps
+ * The role of this plugin is to unify the contextual balloons logic, simplify views management and help
  * avoid the unnecessary complexity of handling multiple {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
  * instances in the editor.
  *
- * This plugin allows creating single or multiple panel stacks.
+ * This plugin allows for creating single or multiple panel stacks.
  *
- * Each stack may have multiple views, the one on the top is visible. When the visible view is removed from the stack,
- * the previous view becomes visible, etc. It might be useful to implement nested navigation in a balloon. For instance
- * toolbar view may have a link button. When you click it, link view (which let you set the URL) is created and put on
- * top of the toolbar view, so not link panel is displayed. When you finish editing link and close (remove) link view,
- * the toolbar view is visible back.
+ * Each stack may have multiple views, with the one on the top being visible. When the visible view is removed from the stack,
+ * the previous view becomes visible.
  *
- * However, there are cases when there are multiple independent balloons to be displayed. For instance, if the selection
+ * It might be useful to implement nested navigation in a balloon. For instance, a toolbar view may contain a link button.
+ * When you click it, a link view (which lets you set the URL) is created and put on top of the toolbar view, so the link panel
+ * is displayed. When you finish editing the link and close (remove) the link view, the toolbar view is visible again.
+ *
+ * However, there are cases when there are multiple independent balloons to be displayed, for instance, if the selection
  * is inside two inline comments at the same time. For such cases, you can create two independent panel stacks.
- * Contextual balloon plugin will create a navigation bar to let users switch between these panel stacks - "next balloon"
- * and "previous balloon" buttons.
+ * The contextual balloon plugin will create a navigation bar to let the users switch between these panel stacks using the "Next"
+ * and "Previous" buttons.
  *
  * If there are no views in the current stack, the balloon panel will try to switch to the next stack. If there are no
- * panels in any stack then balloon panel will be hidden.
+ * panels in any stack, the balloon panel will be hidden.
  *
- * **Note**: To force balloon panel to show only one view - even if there are other stacks - use `singleViewMode=true` option
- * when {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon#add adding} view to a panel.
+ * **Note**: To force the balloon panel to show only one view, even if there are other stacks, use the `singleViewMode=true` option
+ * when {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon#add adding} a view to a panel.
  *
- * From the implementation point of view, contextual ballon plugin is reusing a single
+ * From the implementation point of view, the contextual ballon plugin is reusing a single
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance to display multiple contextual balloon
  * panels in the editor. It also creates a special {@link module:ui/panel/balloon/contextualballoon~RotatorView rotator view},
  * used to manage multiple panel stacks. Rotator view is a child of the balloon panel view and the parent of the specific
- * view you want to display. If there is are more than one panel stack to be displayed, the rotator view will add a
- * navigation bar. If there is only one stack, rotator view is transparent (do not add any UI elements).
+ * view you want to display. If there is more than one panel stack to be displayed, the rotator view will add a
+ * navigation bar. If there is only one stack, the rotator view is transparent (it does not add any UI elements).
  *
  * @extends module:core/plugin~Plugin
  */
@@ -78,7 +79,7 @@ export default class ContextualBalloon extends Plugin {
 		 * for the {@link #view balloon}, used when no `limiter` has been passed into {@link #add}
 		 * or {@link #updatePosition}.
 		 *
-		 * By default, a function, which obtains the farthest DOM
+		 * By default, a function that obtains the farthest DOM
 		 * {@link module:engine/view/rooteditableelement~RootEditableElement}
 		 * of the {@link module:engine/view/document~Document#selection}.
 		 *
@@ -97,7 +98,7 @@ export default class ContextualBalloon extends Plugin {
 		};
 
 		/**
-		 * The currently visible view or `null` when there are no views in the any stack.
+		 * The currently visible view or `null` when there are no views in any stack.
 		 *
 		 * @readonly
 		 * @observable
@@ -116,7 +117,7 @@ export default class ContextualBalloon extends Plugin {
 		editor.ui.focusTracker.add( this.view.element );
 
 		/**
-		 * Map of views and its stacks.
+		 * The map of views and their stacks.
 		 *
 		 * @private
 		 * @type {Map.<module:ui/view~View,Set>}
@@ -124,7 +125,7 @@ export default class ContextualBalloon extends Plugin {
 		this._viewToStack = new Map();
 
 		/**
-		 * Map of ids and stacks.
+		 * The map of IDs and stacks.
 		 *
 		 * @private
 		 * @type {Map.<String,Set>}
@@ -142,7 +143,7 @@ export default class ContextualBalloon extends Plugin {
 		this.set( '_numberOfStacks', 0 );
 
 		/**
-		 * Flag that controls the single view mode.
+		 * A flag that controls the single view mode.
 		 *
 		 * @private
 		 * @readonly
@@ -153,7 +154,7 @@ export default class ContextualBalloon extends Plugin {
 
 		/**
 		 * Rotator view embedded in the contextual balloon.
-		 * Displays currently visible view in the balloon and provides navigation for switching stacks.
+		 * Displays the currently visible view in the balloon and provides navigation for switching stacks.
 		 *
 		 * @private
 		 * @type {module:ui/panel/balloon/contextualballoon~RotatorView}
@@ -170,7 +171,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when the given view is in one of the stack. Otherwise returns `false`.
+	 * Returns `true` when the given view is in one of the stacks. Otherwise returns `false`.
 	 *
 	 * @param {module:ui/view~View} view
 	 * @returns {Boolean}
@@ -180,16 +181,16 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Adds a new view to the stack and makes it visible if current stack is visible
-	 * or it is a first view in the balloon.
+	 * Adds a new view to the stack and makes it visible if the current stack is visible
+	 * or it is the first view in the balloon.
 	 *
-	 * @param {Object} data Configuration of the view.
-	 * @param {String} [data.stackId='main'] Id of a stack that view is added to.
-	 * @param {module:ui/view~View} [data.view] Content of the balloon.
+	 * @param {Object} data The configuration of the view.
+	 * @param {String} [data.stackId='main'] The ID of the stack that the view is added to.
+	 * @param {module:ui/view~View} [data.view] The content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
-	 * @param {String} [data.balloonClassName] Additional CSS class added to the {@link #view balloon} when visible.
+	 * @param {String} [data.balloonClassName] An additional CSS class added to the {@link #view balloon} when visible.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
-	 * @param {Boolean} [data.singleViewMode=false] Whether the view should be only visible view - even if other stacks were added.
+	 * @param {Boolean} [data.singleViewMode=false] Whether the view should be the only visible view even if other stacks were added.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -198,7 +199,10 @@ export default class ContextualBalloon extends Plugin {
 			 *
 			 * @error contextualballoon-add-view-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.' );
+			throw new CKEditorError(
+				'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.',
+				[ this, data ]
+			);
 		}
 
 		const stackId = data.stackId || 'main';
@@ -234,20 +238,23 @@ export default class ContextualBalloon extends Plugin {
 
 	/**
 	 * Removes the given view from the stack. If the removed view was visible,
-	 * then the view preceding it in the stack will become visible instead.
-	 * When there is no view in the stack then next stack will be displayed.
-	 * When there is not more stacks then balloon will hide.
+	 * the view preceding it in the stack will become visible instead.
+	 * When there is no view in the stack, the next stack will be displayed.
+	 * When there are no more stacks, the balloon will hide.
 	 *
 	 * @param {module:ui/view~View} view A view to be removed from the balloon.
 	 */
 	remove( view ) {
 		if ( !this.hasView( view ) ) {
 			/**
-			 * Trying to remove configuration of the view not defined in the stack.
+			 * Trying to remove the configuration of the view not defined in the stack.
 			 *
 			 * @error contextualballoon-remove-view-not-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-remove-view-not-exist: Cannot remove configuration of not existing view.' );
+			throw new CKEditorError(
+				'contextualballoon-remove-view-not-exist: Cannot remove the configuration of a non-existent view.',
+				[ this, view ]
+			);
 		}
 
 		const stack = this._viewToStack.get( view );
@@ -283,8 +290,8 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Updates the position of the balloon using position data of the first visible view in the stack.
-	 * When new position data is given then position data of currently visible view will be updated.
+	 * Updates the position of the balloon using the position data of the first visible view in the stack.
+	 * When new position data is given, the position data of the currently visible view will be updated.
 	 *
 	 * @param {module:utils/dom/position~Options} [position] position options.
 	 */
@@ -298,7 +305,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Shows last view from the stack of a given id.
+	 * Shows the last view from the stack of a given ID.
 	 *
 	 * @param {String} id
 	 */
@@ -308,11 +315,14 @@ export default class ContextualBalloon extends Plugin {
 
 		if ( !stack ) {
 			/**
-			 * Trying to show not existing stack.
+			 * Trying to show a stack that does not exist.
 			 *
 			 * @error contextualballoon-showstack-stack-not-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.' );
+			throw new CKEditorError(
+				'contextualballoon-showstack-stack-not-exist: Cannot show a stack that does not exist.',
+				this
+			);
 		}
 
 		if ( this._visibleStack === stack ) {
@@ -323,7 +333,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns the stack of currently visible view.
+	 * Returns the stack of the currently visible view.
 	 *
 	 * @private
 	 * @type {Set}
@@ -333,7 +343,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns id of given stack.
+	 * Returns the ID of the given stack.
 	 *
 	 * @private
 	 * @param {Set} stack
@@ -346,7 +356,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Shows last view from the next stack.
+	 * Shows the last view from the next stack.
 	 *
 	 * @private
 	 */
@@ -363,7 +373,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Shows last view from the previous stack.
+	 * Shows the last view from the previous stack.
 	 *
 	 * @private
 	 */
@@ -454,12 +464,12 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Sets the view as a content of the balloon and attaches balloon using position
+	 * Sets the view as the content of the balloon and attaches the balloon using position
 	 * options of the first view.
 	 *
 	 * @private
 	 * @param {Object} data Configuration.
-	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
+	 * @param {module:ui/view~View} [data.view] The view to show in the balloon.
 	 * @param {String} [data.balloonClassName=''] Additional class name which will be added to the {@link #view balloon}.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 */
@@ -479,7 +489,7 @@ export default class ContextualBalloon extends Plugin {
 
 	/**
 	 * Returns position options of the last view in the stack.
-	 * This keeps the balloon in the same position when view is changed.
+	 * This keeps the balloon in the same position when the view is changed.
 	 *
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
@@ -501,8 +511,8 @@ export default class ContextualBalloon extends Plugin {
 
 /**
  * Rotator view is a helper class for the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon}.
- * It is used for displaying last view from the current stack and providing navigation buttons for switching stacks.
- * See {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon} documentation to learn more.
+ * It is used for displaying the last view from the current stack and providing navigation buttons for switching stacks.
+ * See the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon} documentation to learn more.
  *
  * @extends module:ui/view~View
  */
@@ -524,28 +534,28 @@ class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		/**
-		 * Used for checking if view is focused or not.
+		 * Used for checking if a view is focused or not.
 		 *
 		 * @type {module:utils/focustracker~FocusTracker}
 		 */
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Navigation button for switching stack to the previous one.
+		 * Navigation button for switching the stack to the previous one.
 		 *
 		 * @type {module:ui/button/buttonview~ButtonView}
 		 */
 		this.buttonPrevView = this._createButtonView( t( 'Previous' ), prevIcon );
 
 		/**
-		 * Navigation button for switching stack to the next one.
+		 * Navigation button for switching the stack to the next one.
 		 *
 		 * @type {module:ui/button/buttonview~ButtonView}
 		 */
 		this.buttonNextView = this._createButtonView( t( 'Next' ), nextIcon );
 
 		/**
-		 * Collection of the child views which creates rotator content.
+		 * A collection of the child views that creates the rotator content.
 		 *
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
@@ -611,7 +621,7 @@ class RotatorView extends View {
 	}
 
 	/**
-	 * Shows given view.
+	 * Shows a given view.
 	 *
 	 * @param {module:ui/view~View} view The view to show.
 	 */
@@ -621,7 +631,7 @@ class RotatorView extends View {
 	}
 
 	/**
-	 * Hides currently displayed view.
+	 * Hides the currently displayed view.
 	 */
 	hideView() {
 		this.content.clear();
@@ -631,8 +641,8 @@ class RotatorView extends View {
 	 * Creates a navigation button view.
 	 *
 	 * @private
-	 * @param {String} label The button's label.
-	 * @param {String} icon The button's icon.
+	 * @param {String} label The button label.
+	 * @param {String} icon The button icon.
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	_createButtonView( label, icon ) {
