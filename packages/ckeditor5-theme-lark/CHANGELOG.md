@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [14.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.0.0...v14.1.0) (2019-07-04)
+
+### Features
+
+* Introduced styles for the decorators UI of the `LinkFormView` component (see [ckeditor/ckeditor5-link#186](https://github.com/ckeditor/ckeditor5-link/issues/186)). ([b28d360](https://github.com/ckeditor/ckeditor5-theme-lark/commit/b28d360))
+
+### Bug fixes
+
+* Background of splitbutton will not be highlighted on hover in read-only mode. Closes [ckeditor/ckeditor5#943](https://github.com/ckeditor/ckeditor5/issues/943). ([0579997](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0579997))
+* Tooltips should not render blurry in LoDPI environments. Closes [ckeditor/ckeditor5#1802](https://github.com/ckeditor/ckeditor5/issues/1802). ([53d7ca3](https://github.com/ckeditor/ckeditor5-theme-lark/commit/53d7ca3))
+
+
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.1...v14.0.0) (2019-06-05)
 
 ### Features
