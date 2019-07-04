@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.1.2](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.1...v11.1.2) (2019-07-04)
+
+### Other changes
+
+* Updated translations. ([dee6c82](https://github.com/ckeditor/ckeditor5-media-embed/commit/dee6c82)) ([404ae2f](https://github.com/ckeditor/ckeditor5-media-embed/commit/404ae2f))
+
+
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.0...v11.1.1) (2019-06-05)
 
 ### Other changes
