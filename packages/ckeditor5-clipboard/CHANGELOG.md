@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v11.0.2...v12.0.0) (2019-07-04)
+
+### Other changes
+
+* New lines pasted as a plain text will always create a new paragraph. Closes [ckeditor/ckeditor5#1727](https://github.com/ckeditor/ckeditor5/issues/1727). ([f0eb3a0](https://github.com/ckeditor/ckeditor5-clipboard/commit/f0eb3a0))
+
+### BREAKING CHANGES
+
+* From now on, every new line pasted in the editor as a plain text, will create a new paragraph. Read more at [ckeditor/ckeditor5#1727](https://github.com/ckeditor/ckeditor5/issues/1727).
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-clipboard/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 Internal changes only (updated dependencies, documentation, etc.).
