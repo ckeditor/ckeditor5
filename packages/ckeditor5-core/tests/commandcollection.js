@@ -4,9 +4,9 @@
  */
 
 import CommandCollection from '../src/commandcollection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Command from '../src/command';
 import ModelTestEditor from './_utils/modeltesteditor';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 class SomeCommand extends Command {
 	execute() {}
@@ -56,9 +56,12 @@ describe( 'CommandCollection', () => {
 		} );
 
 		it( 'throws an error if command does not exist', () => {
-			expect( () => {
+			const command = new SomeCommand( editor );
+			collection.add( 'bar', command );
+
+			expectToThrowCKEditorError( () => {
 				collection.execute( 'foo' );
-			} ).to.throw( CKEditorError, /^commandcollection-command-not-found:/ );
+			}, /^commandcollection-command-not-found:/, editor );
 		} );
 	} );
 

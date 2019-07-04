@@ -7,8 +7,8 @@ import attachToForm from '../../../src/editor/utils/attachtoform';
 import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 /* global document, Event */
 
@@ -47,9 +47,11 @@ describe( 'attachToForm()', () => {
 	} );
 
 	it( 'should throw an error when is used with editor without `ElementApiMixin`', () => {
-		expect( () => {
-			attachToForm( new Editor() );
-		} ).to.throw( CKEditorError, /^attachtoform-missing-elementapi-interface/ );
+		const editor = new Editor();
+
+		expectToThrowCKEditorError( () => {
+			attachToForm( editor );
+		}, /^attachtoform-missing-elementapi-interface/, editor );
 	} );
 
 	it( 'should update editor#element after the "submit" event', () => {

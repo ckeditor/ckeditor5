@@ -11,10 +11,10 @@ import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../../src/plugincollection';
 import CommandCollection from '../../src/commandcollection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import Command from '../../src/command';
 import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -368,9 +368,9 @@ describe( 'Editor', () => {
 		it( 'should throw an error if specified command has not been added', () => {
 			const editor = new TestEditor();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				editor.execute( 'command' );
-			} ).to.throw( CKEditorError, /^commandcollection-command-not-found:/ );
+			}, /^commandcollection-command-not-found:/, editor );
 		} );
 	} );
 

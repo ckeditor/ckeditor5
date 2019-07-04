@@ -5,7 +5,7 @@
 
 import VirtualTestEditor from './_utils/virtualtesteditor';
 import PendingActions from '../src/pendingactions';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, pendingActions;
 
@@ -69,9 +69,9 @@ describe( 'PendingActions', () => {
 		} );
 
 		it( 'should throw an error when invalid message is given', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				pendingActions.add( {} );
-			} ).to.throw( CKEditorError, /^pendingactions-add-invalid-message/ );
+			}, /^pendingactions-add-invalid-message/, editor );
 		} );
 
 		it( 'should fire add event with added item', () => {
