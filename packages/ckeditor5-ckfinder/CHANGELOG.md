@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.3](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.2...v11.0.3) (2019-07-04)
+
+### Other changes
+
+* Updated translations. ([e681af2](https://github.com/ckeditor/ckeditor5-ckfinder/commit/e681af2)) 
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 ### Other changes
