@@ -3,6 +3,10 @@ Changelog
 
 ## [11.1.2](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.1...v11.1.2) (2019-07-04)
 
+### Bug fixes
+
+* Clicking a media preview link should not open a new browser tab unless the media is already selected. Closes [#18](https://github.com/ckeditor/ckeditor5-media-embed/issues/18). ([12bd564](https://github.com/ckeditor/ckeditor5-media-embed/commit/12bd564)
+
 ### Other changes
 
 * Updated translations. ([dee6c82](https://github.com/ckeditor/ckeditor5-media-embed/commit/dee6c82)) ([404ae2f](https://github.com/ckeditor/ckeditor5-media-embed/commit/404ae2f))
@@ -12,7 +16,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([075d13f](https://github.com/ckeditor/ckeditor5-media-embed/commit/075d13f)) 
+* Updated translations. ([075d13f](https://github.com/ckeditor/ckeditor5-media-embed/commit/075d13f))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.0.0...v11.1.0) (2019-04-10)
@@ -24,7 +28,7 @@ Changelog
 ### Other changes
 
 * Optimized icons. ([05c3ba0](https://github.com/ckeditor/ckeditor5-media-embed/commit/05c3ba0))
-* Updated translations. ([53e6137](https://github.com/ckeditor/ckeditor5-media-embed/commit/53e6137)) 
+* Updated translations. ([53e6137](https://github.com/ckeditor/ckeditor5-media-embed/commit/53e6137))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.1.0...v11.0.0) (2019-02-28)
