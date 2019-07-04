@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## [11.1.2](https://github.com/ckeditor/ckeditor5-font/compare/v11.1.1...v11.1.2) (2019-07-04)
+## [11.2.0](https://github.com/ckeditor/ckeditor5-font/compare/v11.1.1...v11.2.0) (2019-07-04)
+
+### Features
+
+* Introduced the "document colors" section in the color picker dropdowns. Closes [#28](https://github.com/ckeditor/ckeditor5-font/issues/28)
 
 ### Other changes
 
@@ -13,7 +17,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([cca7b24](https://github.com/ckeditor/ckeditor5-font/commit/cca7b24)) 
+* Updated translations. ([cca7b24](https://github.com/ckeditor/ckeditor5-font/commit/cca7b24))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-font/compare/v11.0.0...v11.1.0) (2019-04-10)
