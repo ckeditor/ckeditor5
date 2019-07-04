@@ -341,6 +341,14 @@ describe( 'ToolbarView', () => {
 			expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
 			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor\'s toolbar' );
 		} );
+
+		it( 'should apply custom aria label', () => {
+			const view = new ToolbarView( locale, { ariaLabel: 'Custom label' } );
+
+			view.render();
+
+			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+		} );
 	} );
 
 	describe( 'localization', () => {
