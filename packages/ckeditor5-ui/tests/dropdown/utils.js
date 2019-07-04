@@ -27,7 +27,7 @@ describe( 'utils', () => {
 	let locale, dropdownView;
 
 	beforeEach( () => {
-		locale = { t() {} };
+		locale = { t: langString => langString };
 	} );
 
 	describe( 'createDropdown()', () => {
