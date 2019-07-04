@@ -16,14 +16,28 @@ import ViewCollection from '../../src/viewcollection';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import View from '../../src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
 
 	testUtils.createSinonSandbox();
 
+	before( () => {
+		addTranslations( 'pl', {
+			'Editor\'s toolbar': 'Pasek narzędzi edytora'
+		} );
+		addTranslations( 'en', {
+			'Editor\'s toolbar': 'Editor\'s toolbar'
+		} );
+	} );
+	after( () => {
+		clearTranslations();
+	} );
+
 	beforeEach( () => {
-		locale = {};
+		locale = new Locale( 'en' );
 		view = new ToolbarView( locale );
 		view.render();
 	} );
@@ -55,10 +69,6 @@ describe( 'ToolbarView', () => {
 
 		it( 'creates #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
-		} );
-
-		it( 'sets #labelView', () => {
-			expect( view.labelView ).to.be.instanceOf( View );
 		} );
 	} );
 
@@ -123,7 +133,7 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new ToolbarView();
+			const view = new ToolbarView( new Locale( 'en' ) );
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
@@ -327,30 +337,19 @@ describe( 'ToolbarView', () => {
 	} );
 
 	describe( 'aria', () => {
-		it( 'poses required attributes', () => {
+		it( 'should poses required attributes', () => {
 			expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
-			expect( view.element.getAttribute( 'aria-labelledby' ) ).to.equal( view.labelView.element.id )
-				.and.to.match( /^ck-editor__aria-label_[0-9a-f]{16}/ );
+			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor\'s toolbar' );
 		} );
 	} );
 
-	describe( '_createLabelView()', () => {
-		let labelElement;
+	describe( 'localization', () => {
+		it( 'should have translated aria label', () => {
+			const view = new ToolbarView( new Locale( 'pl' ) );
 
-		beforeEach( () => {
-			labelElement = view.labelView.element;
-		} );
+			view.render();
 
-		it( 'label is attached as last element in toolbar', () => {
-			expect( labelElement ).to.equal( view.element.lastElementChild );
-		} );
-
-		it( 'label has proper attributes', () => {
-			view.label = 'Foo';
-
-			expect( labelElement.innerHTML ).to.equal( 'Foo' );
-			expect( labelElement.classList.contains( 'ck' ) ).to.be.true;
-			expect( labelElement.classList.contains( 'ck-toolbar__label' ) ).to.be.true;
+			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
 		} );
 	} );
 } );

@@ -17,8 +17,7 @@ describe( 'normalizeToolbarConfig()', () => {
 	it( 'passes through an already normalized config', () => {
 		const cfg = {
 			items: [ 'foo', 'bar' ],
-			foo: 'bar',
-			label: 'Foo'
+			foo: 'bar'
 		};
 		const normalized = normalizeToolbarConfig( cfg );
 
@@ -34,8 +33,7 @@ describe( 'normalizeToolbarConfig()', () => {
 
 		expect( normalized ).to.deep.equal( {
 			items: [],
-			foo: 'bar',
-			label: 'Editor\'s toolbar'
+			foo: 'bar'
 		} );
 		expect( normalized ).to.not.equal( cfg ); // Make sure we don't modify an existing obj.
 	} );
