@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.1.2](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.1...v11.1.2) (2019-07-04)
+
+### Other changes
+
+* Updated translations. ([8914cfc](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8914cfc)) ([fb07a45](https://github.com/ckeditor/ckeditor5-basic-styles/commit/fb07a45))
+
+
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.0...v11.1.1) (2019-06-05)
 
 ### Other changes
