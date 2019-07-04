@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [12.2.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.1...v12.2.0) (2019-07-04)
+
+### Features
+
+* Added an editor instance reference to the native editable DOM element under the `ckeditorInstance` property. Closes [ckeditor/ckeditor5#1838](https://github.com/ckeditor/ckeditor5/issues/1838). ([fa94600](https://github.com/ckeditor/ckeditor5-core/commit/fa94600))
+
+  Implemented the `EditorUI#setEditableElement()` method. 
+  Deprecated the `EditorUI#_editableElements` property.
+* Introduced `MultiCommand` which acts as a composite command – can group multiple commands under the hood. ([ebcbd01](https://github.com/ckeditor/ckeditor5-core/commit/ebcbd01))
+
+### Other changes
+
+* Added support for the `config.initialData` option in `ClassicTestEditor` and `VirtualTestEditor`. Added support to data as the first parameter in`ClassicTestEditor.create` method. Closes [#180](https://github.com/ckeditor/ckeditor5-core/issues/180). ([21b3fd3](https://github.com/ckeditor/ckeditor5-core/commit/21b3fd3))
+* Introduce editor-wrong-element error thrown when editor is created over wrong element. Closes [ckeditor/ckeditor5#1591](https://github.com/ckeditor/ckeditor5/issues/1591). ([9945fc6](https://github.com/ckeditor/ckeditor5-core/commit/9945fc6))
+* Updated translations. ([43f5b6e](https://github.com/ckeditor/ckeditor5-core/commit/43f5b6e)) 
+
+
 ## [12.1.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.0...v12.1.1) (2019-06-05)
 
 ### Other changes
