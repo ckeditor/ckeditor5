@@ -7,10 +7,6 @@ Changelog
 
 * Introduced configurable link decorators allowing customization of link attributes in the editor data. Closes [#186](https://github.com/ckeditor/ckeditor5-link/issues/186). ([40d8266](https://github.com/ckeditor/ckeditor5-link/commit/40d8266))
 
-### Bug fixes
-
-* Provide missing upcast converter for link decorators. Closes [#233](https://github.com/ckeditor/ckeditor5-link/issues/233). ([4161eb1](https://github.com/ckeditor/ckeditor5-link/commit/4161eb1))
-
 ### Other changes
 
 * Updated translations. ([b1b157f](https://github.com/ckeditor/ckeditor5-link/commit/b1b157f)) ([77a2171](https://github.com/ckeditor/ckeditor5-link/commit/77a2171))
