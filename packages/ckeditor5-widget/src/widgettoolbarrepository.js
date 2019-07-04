@@ -117,7 +117,9 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	register( toolbarId, { items, getRelatedElement, balloonClassName = 'ck-toolbar-container' } ) {
 		const editor = this.editor;
-		const toolbarView = new ToolbarView();
+		const locale = this.editor.locale;
+		const t = locale.t;
+		const toolbarView = new ToolbarView( locale, { ariaLabel: t( 'Widget\'s toolbar' ) } );
 
 		if ( this._toolbarDefinitions.has( toolbarId ) ) {
 			/**
