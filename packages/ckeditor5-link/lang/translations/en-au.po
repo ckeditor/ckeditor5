@@ -39,3 +39,11 @@ msgstr "Open link in new tab"
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
 msgstr "This link has no URL"
+
+msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
+msgid "Open in a new tab"
+msgstr "Open in a new tab"
+
+msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
+msgid "Downloadable"
+msgstr "Downloadable"

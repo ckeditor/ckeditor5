@@ -39,3 +39,11 @@ msgstr "नयाँ ट्याबमा लिङ्क खोल्नुह
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
 msgstr "यो लिङ्कसँग यूआरएल छैन"
+
+msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
+msgid "Open in a new tab"
+msgstr "नयाँ ट्याबमा खोल्न"
+
+msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
+msgid "Downloadable"
+msgstr "डाउनलोड योग्य"

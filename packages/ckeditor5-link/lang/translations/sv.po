@@ -39,3 +39,11 @@ msgstr "Öppna länk i ny flik"
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
 msgstr "Denna länk saknar URL"
+
+msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
+msgid "Open in a new tab"
+msgstr ""
+
+msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
+msgid "Downloadable"
+msgstr ""
