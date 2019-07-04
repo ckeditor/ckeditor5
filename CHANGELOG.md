@@ -3,6 +3,10 @@ Changelog
 
 ## [12.3.0](https://github.com/ckeditor/ckeditor5/compare/v12.2.0...v12.3.0) (2019-07-04)
 
+We are happy to report the release of CKEditor 5 v12.3.0. This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+
+Blog post coming soon...
+
 ### Dependencies
 
 New packages:
@@ -63,13 +67,6 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v11.0.2 => [v11.0.3](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v11.0.3)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v11.0.2 => [v11.0.3](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v11.0.3)
 
-### Features
-
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Introduced the indent feature. ([5c9a84f](https://github.com/ckeditor/ckeditor5/commit/5c9a84f))
-* Introduced watchdog feature. ([dd4a9ac](https://github.com/ckeditor/ckeditor5/commit/dd4a9ac))
-
 
 ## [12.2.0](https://github.com/ckeditor/ckeditor5/compare/v12.1.0...v12.2.0) (2019-06-05)
 
@@ -77,7 +74,7 @@ We are happy to report the release of CKEditor 5 v12.2.0. This is a minor releas
 
 **Note:** The `config.table.toolbar` property that had been deprecated last year has now been completely removed. Use [`config.table.contentToolbar`](https://ckeditor.com/docs/ckeditor5/latest/api/module_table_table-TableConfig.html#member-contentToolbar) instead.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v12.2.0-with-mobile-friendly-comments-mode/
 
 ### Dependencies
 
