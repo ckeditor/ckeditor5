@@ -56,6 +56,10 @@ msgctxt "Label or a button that removes the color from the text (font color and 
 msgid "Remove color"
 msgstr "Zrušiť farbu"
 
+msgctxt "Title of a color picker section containing the colors currently used in the document."
+msgid "Document colors"
+msgstr ""
+
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
 msgstr "Čierna"

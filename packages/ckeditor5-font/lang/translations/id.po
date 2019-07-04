@@ -56,6 +56,10 @@ msgctxt "Label or a button that removes the color from the text (font color and 
 msgid "Remove color"
 msgstr "Hapus warna"
 
+msgctxt "Title of a color picker section containing the colors currently used in the document."
+msgid "Document colors"
+msgstr "Warna dokumen"
+
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
 msgstr "Hitam"
@@ -98,11 +102,11 @@ msgstr "Hijau"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr ""
+msgstr "Biru laut"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr ""
+msgstr "Turkish"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
