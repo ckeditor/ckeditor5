@@ -9,7 +9,11 @@ Changelog
 
 ### Other changes
 
-* Added context as second required argument to the `CKEditorError`'s constructor, changed `isCKEditorError()` method to `is()`. Introduced the `areConnectedThroughProperties()` utility Part of the [ckeditor/ckeditor5-watchdog#1](https://github.com/ckeditor/ckeditor5-watchdog/issues/1). ([bacc764](https://github.com/ckeditor/ckeditor5-utils/commit/bacc764))
+* Added context as second required argument to the `CKEditorError`'s constructor, changed `isCKEditorError()` method to `is()`. Introduced the `areConnectedThroughProperties()` utility. See [ckeditor/ckeditor5-watchdog#1](https://github.com/ckeditor/ckeditor5-watchdog/issues/1). ([bacc764](https://github.com/ckeditor/ckeditor5-utils/commit/bacc764))
+
+### BREAKING CHANGES
+
+* The list of `CKEditorError()`'s parameters was changed – now it requires the message, context and then data. The `isCKEditorError()` method was renamed to `is()`.
 
 
 ## [12.1.1](https://github.com/ckeditor/ckeditor5-utils/compare/v12.1.0...v12.1.1) (2019-06-05)
