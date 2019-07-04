@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [13.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.1...v13.2.0) (2019-07-04)
+
+### Features
+
+* Added `view.Document#event:beforeinput`. ([c74c3d6](https://github.com/ckeditor/ckeditor5-engine/commit/c74c3d6))
+* Introduced the `type` parameter to the `model.createBatch()` method. ([389b72e](https://github.com/ckeditor/ckeditor5-engine/commit/389b72e))
+
+### Bug fixes
+
+* `Mode.writer#insert` will no longer crash when the data to set contains markers that are already in the editor content. Closes [#1721](https://github.com/ckeditor/ckeditor5-engine/issues/1721). ([4ff0656](https://github.com/ckeditor/ckeditor5-engine/commit/4ff0656))
+* Selection will not change during forbidden copy-paste operation inside table cell. Closes [ckeditor/ckeditor5#1380](https://github.com/ckeditor/ckeditor5/issues/1380). ([ab15b17](https://github.com/ckeditor/ckeditor5-engine/commit/ab15b17))
+
+### Other changes
+
+* Changed how &nbsp;s are generated on view->DOM rendering. Closes [#1747](https://github.com/ckeditor/ckeditor5-engine/issues/1747). ([da5670a](https://github.com/ckeditor/ckeditor5-engine/commit/da5670a))
+
+
 ## [13.1.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.0...v13.1.1) (2019-06-05)
 
 ### Bug fixes
