@@ -4,6 +4,7 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-text-alternative-form {
 	padding: var(--ck-spacing-standard);
@@ -13,8 +14,16 @@
 		outline: none;
 	}
 
-	& > :not(:first-child) {
-		margin-left: var(--ck-spacing-standard);
+	@mixin ck-dir ltr {
+		& > :not(:first-child) {
+			margin-left: var(--ck-spacing-standard);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& > :not(:last-child) {
+			margin-left: var(--ck-spacing-standard);
+		}
 	}
 
 	@mixin ck-media-phone {
@@ -33,14 +42,25 @@
 		& .ck-button {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
-			margin-left: 0;
 
 			border-radius: 0;
 			border: 0;
 			border-top: 1px solid var(--ck-color-base-border);
 
-			&:first-of-type {
-				border-right: 1px solid var(--ck-color-base-border);
+			@mixin ck-dir ltr {
+				margin-left: 0;
+
+				&:first-of-type {
+					border-right: 1px solid var(--ck-color-base-border);
+				}
+			}
+
+			@mixin ck-dir rtl {
+				margin-left: 0;
+
+				&:last-of-type {
+					border-right: 1px solid var(--ck-color-base-border);
+				}
 			}
 		}
 	}

@@ -5,6 +5,7 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
@@ -56,8 +57,16 @@
 		outline: none;
 	}
 
-	& .ck-button:not(.ck-link-actions__preview) {
-		margin-left: var(--ck-spacing-standard);
+	@mixin ck-dir ltr {
+		& .ck-button:not(:first-child) {
+			margin-left: var(--ck-spacing-standard);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& .ck-button:not(:last-child) {
+			margin-left: var(--ck-spacing-standard);
+		}
 	}
 
 	@mixin ck-media-phone {
@@ -76,14 +85,25 @@
 		& .ck-button:not(.ck-link-actions__preview) {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
-			margin-left: 0;
 
 			border-radius: 0;
 			border: 0;
 			border-top: 1px solid var(--ck-color-base-border);
 
-			&:first-of-type {
-				border-right: 1px solid var(--ck-color-base-border);
+			@mixin ck-dir ltr {
+				margin-left: 0;
+
+				&:first-of-type {
+					border-right: 1px solid var(--ck-color-base-border);
+				}
+			}
+
+			@mixin ck-dir rtl {
+				margin-left: 0;
+
+				&:last-of-type {
+					border-right: 1px solid var(--ck-color-base-border);
+				}
 			}
 		}
 	}

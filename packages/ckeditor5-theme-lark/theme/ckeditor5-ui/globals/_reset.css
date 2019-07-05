@@ -82,3 +82,11 @@
 	    border: 0
 	}
 }
+
+/**
+ * Default rules for RTL languages.
+ */
+.ck[dir="rtl"],
+.ck[dir="rtl"] * {
+	text-align: right;
+}
