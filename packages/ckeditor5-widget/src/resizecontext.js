@@ -16,7 +16,6 @@ const HEIGHT_ATTRIBUTE_NAME = 'height';
  * @returns {Number} return.x
  * @returns {Number} return.y
  */
-// function getAbsoluteBoundaryPoint( element ) {
 function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	const nativeRectangle = element.getBoundingClientRect();
 	const positionParts = resizerPosition.split( '-' );
@@ -28,6 +27,12 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	ret.y += element.ownerDocument.defaultView.scrollY;
 
 	return ret;
+}
+
+function getAspectRatio( element ) {
+	const nativeRectangle = element.getBoundingClientRect();
+
+	return nativeRectangle.width / nativeRectangle.height;
 }
 
 /**
@@ -116,11 +121,17 @@ export default class ResizeContext {
 	 * @param {HTMLElement} domResizeHandler Handler used to calculate reference point.
 	 */
 	begin( domResizeHandler ) {
+		const resizeHost = this._getResizeHost();
+
 		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
 		this.referenceHandlerPosition = this._getResizerPosition( domResizeHandler );
 
 		this.referenceCoordinates = getAbsoluteBoundaryPoint( domResizeHandler, this.referenceHandlerPosition );
+
+		if ( resizeHost ) {
+			this.aspectRatio = getAspectRatio( resizeHost, this.referenceHandlerPosition );
+		}
 	}
 
 	commit( editor ) {
@@ -163,18 +174,22 @@ export default class ResizeContext {
 			if ( yDistance < 0 ) {
 				// enlarging
 				this.domResizeShadow.style.bottom = `${ yDistance }px`;
+				this.domResizeShadow.style.right = `${ yDistance * this.aspectRatio }px`;
 			} else {
 				// shrinking
 				this.domResizeShadow.style.bottom = `${ yDistance }px`;
+				this.domResizeShadow.style.right = `${ yDistance * this.aspectRatio }px`;
 			}
 		} else {
 			// default handler: top-left.
 			if ( yDistance > 0 ) {
 				// enlarging
 				this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+				this.domResizeShadow.style.left = ( yDistance * this.aspectRatio * -1 ) + 'px';
 			} else {
 				// shrinking
 				this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+				this.domResizeShadow.style.left = ( yDistance * this.aspectRatio * -1 ) + 'px';
 			}
 		}
 	}
@@ -183,14 +198,20 @@ export default class ResizeContext {
 		if ( this.domResizeWrapper ) {
 			const widgetWrapper = this.domResizeWrapper.parentElement;
 
-			const resizingHost = this.options.getResizeHost ?
-				this.options.getResizeHost( widgetWrapper ) : widgetWrapper;
+			const resizingHost = this._getResizeHost();
 
 			if ( !widgetWrapper.isSameNode( resizingHost ) ) {
 				this.domResizeWrapper.style.left = resizingHost.offsetLeft + 'px';
 				this.domResizeWrapper.style.right = resizingHost.offsetLeft + 'px';
 			}
 		}
+	}
+
+	_getResizeHost() {
+		const widgetWrapper = this.domResizeWrapper.parentElement;
+
+		return this.options.getResizeHost ?
+			this.options.getResizeHost( widgetWrapper ) : widgetWrapper;
 	}
 
 	_appendShadowElement( domDocument, domElement ) {
