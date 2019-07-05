@@ -171,26 +171,11 @@ export default class ResizeContext {
 		const yDistance = this.referenceCoordinates.y - currentCoordinates.y;
 
 		if ( this.referenceHandlerPosition.includes( 'bottom-' ) ) {
-			if ( yDistance < 0 ) {
-				// enlarging
-				this.domResizeShadow.style.bottom = `${ yDistance }px`;
-				this.domResizeShadow.style.right = `${ yDistance * this.aspectRatio }px`;
-			} else {
-				// shrinking
-				this.domResizeShadow.style.bottom = `${ yDistance }px`;
-				this.domResizeShadow.style.right = `${ yDistance * this.aspectRatio }px`;
-			}
+			this.domResizeShadow.style.bottom = `${ yDistance }px`;
+			this.domResizeShadow.style.right = `${ yDistance * this.aspectRatio }px`;
 		} else {
-			// default handler: top-left.
-			if ( yDistance > 0 ) {
-				// enlarging
-				this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
-				this.domResizeShadow.style.left = ( yDistance * this.aspectRatio * -1 ) + 'px';
-			} else {
-				// shrinking
-				this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
-				this.domResizeShadow.style.left = ( yDistance * this.aspectRatio * -1 ) + 'px';
-			}
+			this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
+			this.domResizeShadow.style.left = ( yDistance * this.aspectRatio * -1 ) + 'px';
 		}
 	}
 
