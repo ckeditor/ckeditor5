@@ -4,16 +4,13 @@
  */
 
 /**
- * @module table/converters/table-cell-content-post-fixer
+ * @module table/converters/table-cell-paragraph-post-fixer
  */
 
 /**
- * Injects a table cell post-fixer into the model.
+ * Injects a table cell post-fixer into the model which inserts `paragraph` element into empty table cells.
  *
- * The role of the table post-fixer is to ensure that the table cells have the correct content
- * after a {@link module:engine/model/model~Model#change `change()`} block was executed.
- *
- * A table cells must contains at least one block as a child. The empty table cell will have empty `<paragraph>` as a child.
+ * A table cell must contain at least one block element as a child. An empty table cell will have empty `paragraph` as a child.
  *
  *		<table>
  *			<tableRow>
@@ -31,7 +28,7 @@
  *
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTableCellContentPostFixer( model ) {
+export default function injectTableCellParagraphPostFixer( model ) {
 	model.document.registerPostFixer( writer => tableCellContentsPostFixer( writer, model ) );
 }
 
@@ -45,11 +42,6 @@ function tableCellContentsPostFixer( writer, model ) {
 	let wasFixed = false;
 
 	for ( const entry of changes ) {
-		// Enforce paragraph in tableCell even after other feature remove its contents.
-		if ( entry.type == 'remove' && entry.position.parent.is( 'tableCell' ) ) {
-			wasFixed = fixTableCellContent( entry.position.parent, writer ) || wasFixed;
-		}
-
 		// Analyze table cells on insertion.
 		if ( entry.type == 'insert' ) {
 			if ( entry.name == 'table' ) {
@@ -112,7 +104,7 @@ function fixTableCellContent( tableCell, writer ) {
 		return true;
 	}
 
-	// Check table cell children for directly placed $text nodes.
+	// Check table cell children for directly placed text nodes.
 	// Temporary solution. See https://github.com/ckeditor/ckeditor5/issues/1464.
 	const textNodes = Array.from( tableCell.getChildren() ).filter( child => child.is( 'text' ) );
 
