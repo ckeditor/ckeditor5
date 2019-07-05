@@ -93,11 +93,13 @@ describe( 'LabeledInputView', () => {
 					view.errorText = '';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
 					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.false;
+					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( '' );
 
 					view.errorText = 'foo';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
 					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.true;
+					expect( statusElement.getAttribute( 'role' ) ).to.equal( 'alert' );
 					expect( statusElement.innerHTML ).to.equal( 'foo' );
 				} );
 
@@ -107,11 +109,13 @@ describe( 'LabeledInputView', () => {
 					view.infoText = '';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
 					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.false;
+					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( '' );
 
 					view.infoText = 'foo';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
 					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.false;
+					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( 'foo' );
 				} );
 			} );
