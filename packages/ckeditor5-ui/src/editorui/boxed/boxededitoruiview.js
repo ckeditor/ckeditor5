@@ -66,7 +66,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 					'ck-rounded-corners'
 				],
 				role: 'application',
-				dir: 'ltr',
+				dir: locale.languageDirection,
 				lang: locale.language,
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`
 			},
