@@ -4,7 +4,7 @@
  */
 
 /**
- * @module wordcount/utils
+ * @module word-count/utils
  */
 
 /**
