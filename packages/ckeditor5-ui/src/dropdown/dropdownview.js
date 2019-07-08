@@ -253,7 +253,7 @@ export default class DropdownView extends View {
 			// If "auto", find the best position of the panel to fit into the viewport.
 			// Otherwise, simply assign the static position.
 			if ( this.panelPosition === 'auto' ) {
-				this.panelView.position = getOptimalPosition( {
+				this.panelView.position = DropdownView._getOptimalPosition( {
 					element: this.panelView.element,
 					target: this.buttonView.element,
 					fitInViewport: true,
@@ -403,3 +403,11 @@ DropdownView.defaultPanelPositions = {
 		};
 	}
 };
+
+/**
+ * A function used to calculate the optimal position for the dropdown panel.
+ *
+ * @protected
+ * @member {Function} module:ui/dropdown/dropdownview~DropdownView._getOptimalPosition
+ */
+DropdownView._getOptimalPosition = getOptimalPosition;
