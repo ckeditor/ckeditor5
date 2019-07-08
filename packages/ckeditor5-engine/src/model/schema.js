@@ -140,7 +140,7 @@ export default class Schema {
 			 * {@link #register registered} yet.
 			 *
 			 * @param itemName The name of the model element which is being extended.
-			 * @error schema-cannot-register-item-twice
+			 * @error schema-cannot-extend-missing-item
 			 */
 			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', this, {
 				itemName
