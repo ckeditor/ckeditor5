@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-link/compare/v11.0.2...v11.1.0) (2019-07-04)
+
+### Features
+
+* Introduced configurable link decorators allowing customization of link attributes in the editor data. Closes [#186](https://github.com/ckeditor/ckeditor5-link/issues/186). ([40d8266](https://github.com/ckeditor/ckeditor5-link/commit/40d8266))
+
+### Other changes
+
+* Updated translations. ([b1b157f](https://github.com/ckeditor/ckeditor5-link/commit/b1b157f)) ([77a2171](https://github.com/ckeditor/ckeditor5-link/commit/77a2171))
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-link/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 ### Bug fixes
