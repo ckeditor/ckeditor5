@@ -13,7 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { createObserver } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, editable, observer;
 
@@ -30,7 +30,7 @@ function initEditor() {
 			window.editor = editor = newEditor;
 			window.editable = editable = editor.editing.view.document.getRoot();
 
-			observer = testUtils.createObserver();
+			observer = createObserver();
 			observer.observe( 'Editable', editable, [ 'isFocused' ] );
 		} )
 		.catch( err => {
