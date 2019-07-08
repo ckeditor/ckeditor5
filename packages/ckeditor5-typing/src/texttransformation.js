@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from './textwatcher';
+import { escapeRegExp } from 'lodash-es';
 
 // All named transformations.
 const TRANSFORMATIONS = {
@@ -23,8 +24,8 @@ const TRANSFORMATIONS = {
 	twoThirds: { from: '2/3', to: '⅔' },
 	oneForth: { from: '1/4', to: '¼' },
 	threeQuarters: { from: '3/4', to: '¾' },
-	lessThenOrEqual: { from: '<=', to: '≤' },
-	greaterThenOrEqual: { from: '>=', to: '≥' },
+	lessThanOrEqual: { from: '<=', to: '≤' },
+	greaterThanOrEqual: { from: '>=', to: '≥' },
 	notEqual: { from: '!=', to: '≠' },
 	arrowLeft: { from: '<-', to: '←' },
 	arrowRight: { from: '->', to: '→' },
@@ -36,16 +37,16 @@ const TRANSFORMATIONS = {
 
 	// Quotations:
 	// English, US
-	quotesPrimary: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
-	quotesSecondary: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
+	quotesPrimary: { from: buildQuotesRegExp( '"' ), to: [ null, '“', null, '”' ] },
+	quotesSecondary: { from: buildQuotesRegExp( '\'' ), to: [ null, '‘', null, '’' ] },
 
 	// English, UK
-	quotesPrimaryEnGb: { from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' },
-	quotesSecondaryEnGb: { from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
+	quotesPrimaryEnGb: { from: buildQuotesRegExp( '\'' ), to: [ null, '‘', null, '’' ] },
+	quotesSecondaryEnGb: { from: buildQuotesRegExp( '"' ), to: [ null, '“', null, '”' ] },
 
 	// Polish
-	quotesPrimaryPl: { from: buildQuotesRegExp( '"' ), to: '$1„$2”' },
-	quotesSecondaryPl: { from: buildQuotesRegExp( '\'' ), to: '$1‚$2’' }
+	quotesPrimaryPl: { from: buildQuotesRegExp( '"' ), to: [ null, '„', null, '”' ] },
+	quotesSecondaryPl: { from: buildQuotesRegExp( '\'' ), to: [ null, '‚', null, '’' ] }
 };
 
 // Transformation groups.
@@ -53,7 +54,7 @@ const TRANSFORMATION_GROUPS = {
 	symbols: [ 'copyright', 'registeredTrademark', 'trademark' ],
 	mathematical: [
 		'oneHalf', 'oneThird', 'twoThirds', 'oneForth', 'threeQuarters',
-		'lessThenOrEqual', 'greaterThenOrEqual', 'notEqual',
+		'lessThanOrEqual', 'greaterThanOrEqual', 'notEqual',
 		'arrowLeft', 'arrowRight'
 	],
 	typography: [ 'horizontalEllipsis', 'enDash', 'emDash' ],
@@ -104,43 +105,93 @@ export default class TextTransformation extends Plugin {
 		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
 
 		for ( const transformation of configuredTransformations ) {
-			const { from, to } = transformation;
+			const from = normalizeFrom( transformation.from );
+			const to = normalizeTo( transformation.to );
 
-			let testCallback;
-			let textReplacer;
-
-			if ( from instanceof RegExp ) {
-				testCallback = text => from.test( text );
-				textReplacer = message => message.replace( from, to );
-			} else {
-				testCallback = text => text.endsWith( from );
-				textReplacer = message => message.slice( 0, message.length - from.length ) + to;
-			}
-
-			const watcher = new TextWatcher( editor.model, testCallback );
+			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
 
 			watcher.on( 'matched:data', ( evt, data ) => {
-				const selection = editor.model.document.selection;
-				const focus = selection.focus;
-				const textToReplaceLength = data.text.length;
-				const textToInsert = textReplacer( data.text );
+				const matches = from.exec( data.text );
+				const replaces = to( matches.slice( 1 ) );
 
-				model.enqueueChange( model.createBatch(), writer => {
-					const replaceRange = writer.createRange( focus.getShiftedBy( -textToReplaceLength ), focus );
+				// Used `focus` to be in line with `TextWatcher#_getText()`.
+				const selectionParent = editor.model.document.selection.focus.parent;
 
-					model.insertContent( writer.createText( textToInsert, selection.getAttributes() ), replaceRange );
+				let changeIndex = matches.index;
+
+				model.enqueueChange( writer => {
+					for ( let i = 1; i < matches.length; i++ ) {
+						const match = matches[ i ];
+						const replaceWith = replaces[ i - 1 ];
+
+						if ( replaceWith == null ) {
+							changeIndex += match.length;
+
+							continue;
+						}
+
+						const replacePosition = model.createPositionAt( selectionParent, changeIndex );
+						const replaceRange = model.createRange( replacePosition, replacePosition.getShiftedBy( match.length ) );
+						const attributes = getTextAttributesAfterPosition( replacePosition );
+
+						model.insertContent( writer.createText( replaceWith, attributes ), replaceRange );
+
+						changeIndex += replaceWith.length;
+					}
 				} );
 			} );
 		}
 	}
 }
 
+// Normalizes config `from` parameter value.
+// The normalized value for `from` parameter is a RegExp instance. If passed `from` is already a RegExp instance it is returned unchanged.
+//
+// @param {String|RegExp} from
+// @returns {RegExp}
+function normalizeFrom( from ) {
+	if ( typeof from == 'string' ) {
+		return new RegExp( '(' + escapeRegExp( from ) + ')$' );
+	}
+
+	// `from` is already a regular expression.
+	return from;
+}
+
+// Normalizes config `to` parameter value.
+// The normalized value for `to` parameter is a function that takes an array and returns an array. See more in configuration description.
+// If passed `to` is already a function it is returned unchanged.
+//
+// @param {String|Array.<null|String>|Function} to
+// @returns {Function}
+function normalizeTo( to ) {
+	if ( typeof to == 'string' ) {
+		return () => [ to ];
+	} else if ( to instanceof Array ) {
+		return () => to;
+	}
+
+	// `to` is already a function.
+	return to;
+}
+
+// For given `position` returns attributes for the text that is after that position.
+// The text can be in the same text node as the position (`foo[]bar`) or in the next text node (`foo[]<$text bold="true">bar</$text>`).
+//
+// @param {module:engine/model/position~Position} position
+// @returns {Iterable.<*>}
+function getTextAttributesAfterPosition( position ) {
+	const textNode = position.textNode ? position.textNode : position.nodeAfter;
+
+	return textNode.getAttributes();
+}
+
 // Returns a RegExp pattern string that detects a sentence inside a quote.
 //
-// @param {String} quoteCharacter a character to creat a pattern for.
+// @param {String} quoteCharacter The character to create a pattern for.
 // @returns {String}
 function buildQuotesRegExp( quoteCharacter ) {
-	return new RegExp( `(^|\\s)${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$` );
+	return new RegExp( `(^|\\s)(${ quoteCharacter })([^${ quoteCharacter }]*)(${ quoteCharacter })$` );
 }
 
 // Reads text transformation config and returns normalized array of transformations objects.
@@ -182,20 +233,42 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 }
 
 /**
- * Text transformation definition object.
+ * Text transformation definition object. Describes what should be replace with what.
  *
- *		const transformations = [
- *			// Will replace foo with bar:
- *			{ from: 'foo', to: 'bar' },
+ * Input value ("replace from") can be passed either as a `String` or a `RegExp` instance.
  *
+ * * If `String` is passed it will be simply checked if the end of the input matches it.
+ * * If `RegExp` is passed, all parts of it's parts have to be inside capturing groups. Also, since it is compared against the end of
+ * an input, it has to include `$` token to be correctly matched. See examples below.
  *
- *			// The following (naive) rule will remove @ from emails.
- *			// For example, user@example.com will become user.at.example.com.
- *			{ from: /([a-z-]+)@([a-z]+\.[a-z]{2,})$/i, to: '$1.at.$2' }
- *		]
+ * Output value ("replace to") can be passed either as a `String` or an `Array` or a `Function`.
  *
- * **Note:** The text watcher always evaluates the end of the input (the typed text). If you're passing a RegExp object you must
- * include `$` token to match the end of string.
+ * * If a `String` is passed, it will be used as a replacement value as-is. Note, that a `String` output value can be used only if
+ * the input value is a `String` too.
+ * * If an `Array` is passed it has to have the same number of elements as there are capturing groups in the input value `RegExp`.
+ * Each capture group will be replaced by a corresponding `String` from the passed `Array`. If given capturing group should not be replaced,
+ * use `null` instead of passing a `String`.
+ * * If a `Function` is used, it should return an array as described above. The function is passed one parameter - an array with matches
+ * for the input value `RegExp`. See examples below.
+ *
+ * Simple string-to-string replacement:
+ *
+ *		{ from: '(c)', to: '©' }
+ *
+ * Change quotes styles using regular expression. Note how all the parts are in separate capturing groups and the space at the beginning and
+ * the text inside quotes are not replaced (`null` passed as the first and the third value in `to` parameter):
+ *
+ *		{
+ *			from: /(\\s)(")([^"]*)(")$/,
+ *			to: [ null, '“', null, '”' ]
+ *		}
+ *
+ * Automatic uppercase after a dot using a callback:
+ *
+ *		{
+ *			from: /(\. )([a-z])$/,
+ *			to: matches => [ null, matches[ 1 ].toUpperCase() ]
+ *		}
  *
  * @typedef {Object} module:typing/texttransformation~TextTransformationDescription
  * @property {String|RegExp} from The string or RegExp to transform.
@@ -243,8 +316,8 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *   - `twoThirds`: transforms `2/3`, to: `⅔`
  *   - `oneForth`: transforms `1/4`, to: `¼`
  *   - `threeQuarters`: transforms `3/4`, to: `¾`
- *   - `lessThenOrEqual`: transforms `<=`, to: `≤`
- *   - `greaterThenOrEqual`: transforms `>=`, to: `≥`
+ *   - `lessThanOrEqual`: transforms `<=`, to: `≤`
+ *   - `greaterThanOrEqual`: transforms `>=`, to: `≥`
  *   - `notEqual`: transforms `!=`, to: `≠`
  *   - `arrowLeft`: transforms `<-`, to: `←`
  *   - `arrowRight`: transforms `->`, to: `→`
@@ -263,21 +336,23 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  * In order to completely override the supported transformations, use the
  * {@link module:typing/texttransformation~TextTransformationConfig#include `transformations.include` option}.
  *
- * Example:
+ * Examples:
  *
  *		const transformationsConfig = {
  *			include: [
  *				// Use only the 'quotes' and 'typography' groups.
  *				'quotes',
  *				'typography',
-
- *				// Plus, some custom transformation.
- *				{ from: 'CKE', to: 'CKEditor }
- *			],
  *
+ *				// Plus, some custom transformation.
+ *				{ from: 'CKE', to: 'CKEditor' }
+ *			]
+ *		};
+ *
+ *		const transformationsConfig = {
  *			// Remove the 'ellipsis' transformation loaded by the 'typography' group.
  *			remove: [ 'ellipsis' ]
- *		};
+ *		}
  *
  * @interface TextTransformationConfig
  */
@@ -313,7 +388,7 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *
  *		const transformationsConfig = {
  *			remove: [
- *				'ellipsis',    // Remove only 'ellipsis' from 'typography group.
+ *				'ellipsis',    // Remove only 'ellipsis' from 'typography' group.
  *				'mathematical' // Remove all transformations from 'mathematical' group.
  *			]
  *		}

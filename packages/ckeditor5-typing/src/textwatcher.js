@@ -78,6 +78,7 @@ export default class TextWatcher {
 	 * @fires unmatched
 	 *
 	 * @private
+	 * @param {'data'|'selection'} suffix Suffix used for generating event name.
 	 */
 	_evaluateTextBeforeSelection( suffix ) {
 		const text = this._getText();
@@ -101,6 +102,7 @@ export default class TextWatcher {
 			 *
 			 * @event matched:data
 			 */
+
 			/**
 			 * Fired whenever the text watcher found a match for selection changes.
 			 *
