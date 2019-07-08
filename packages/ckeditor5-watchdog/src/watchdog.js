@@ -18,44 +18,8 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
 /**
  * A watchdog for CKEditor 5 editors.
  *
- * It keeps an {@link module:core/editor/editor~Editor editor} instance running.
- * If a {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` error}
- * is thrown by the editor, it tries to restart the editor to the state before the crash. All other errors
- * are transparent to the watchdog. By looking at the error context, the Watchdog restarts only the editor which crashed.
- *
- * Note that the watchdog does not handle errors during editor initialization (`Editor.create()`)
- * and editor destruction (`editor.destroy()`). Errors at these stages mean that there is a serious
- * problem in the code integrating the editor and such problem cannot be easily fixed restarting the editor.
- *
- * A new editor instance is created each time the watchdog is restarted. Thus the editor instance should not be kept
- * internally. Use the `watchdog.editor` each time you need to access the editor.
- *
- * Basic usage:
- *
- * 		const watchdog = Watchdog.for( ClassicEditor );
- *
- * 		watchdog.create( elementOrData, editorConfig ).then( editor => {} );
- *
- * Full usage:
- *
- *		const watchdog = new Watchdog();
- *
- *		watchdog.setCreator( ( elementOrData, editorConfig ) => ClassicEditor.create( elementOrData, editorConfig ) );
- *		watchdog.setDestructor( editor => editor.destroy() );
- *
- *		watchdog.create( elementOrData, editorConfig ).then( editor => {} );
- *
- * Other important APIs:
- *
- *		watchdog.on( 'error', () => { console.log( 'Editor crashed.' ) } );
- *		watchdog.on( 'restart', () => { console.log( 'Editor was restarted.' ) } );
- *
- *		watchdog.restart(); // Restarts the editor.
- *		watchdog.destroy(); // Destroys the editor and global error event listeners.
- *
- * 		watchdog.editor; // Current editor instance.
- *
- * 		watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
+ * See the {@glink features/watchdog Watchdog} feature guide to learn the rationale behind it and
+ * how to use it.
  */
 export default class Watchdog {
 	/**
@@ -66,11 +30,12 @@ export default class Watchdog {
 	 */
 	constructor( { crashNumberLimit, waitingTime } = {} ) {
 		/**
-		 * An array of crashes saved as an object with the following props:
-		 * * message: String,
-		 * * source: String,
-		 * * lineno: String,
-		 * * colno: String
+		 * An array of crashes saved as an object with the following properties:
+		 *
+		 * * `message`: `String`,
+		 * * `source`: `String`,
+		 * * `lineno`: `String`,
+		 * * `colno`: `String`
 		 *
 		 * @public
 		 * @readonly
@@ -79,7 +44,7 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Crash number limit (default to 3). After the limit is reached the editor is not restarted by the watchdog.
+		 * Crash number limit (defaults to `3`). After this limit is reached the editor is not restarted by the watchdog.
 		 * This is to prevent an infinite crash loop.
 		 *
 		 * @private
@@ -106,7 +71,7 @@ export default class Watchdog {
 		this._throttledSave = throttle( this._save.bind( this ), waitingTime || 5000 );
 
 		/**
-		 * The current editor.
+		 * The current editor instance.
 		 *
 		 * @private
 		 * @type {module:core/editor/editor~Editor}
@@ -144,18 +109,18 @@ export default class Watchdog {
 		 */
 
 		/**
-		* The editor source element or data.
-		*
-		* @private
-		* @member {HTMLElement|String} #_elementOrData
-		*/
+		 * The editor source element or data.
+		 *
+		 * @private
+		 * @member {HTMLElement|String} #_elementOrData
+		 */
 
 		/**
-		* The editor configuration.
-		*
-		* @private
-		* @member {Object|undefined} #_config
-		*/
+		 * The editor configuration.
+		 *
+		 * @private
+		 * @member {Object|undefined} #_config
+		 */
 	}
 
 	/**
@@ -172,7 +137,7 @@ export default class Watchdog {
 	 * Sets the function that is responsible for editor creation.
 	 * It expects a function that should return a promise.
 	 *
-	 * 		watchdog.setCreator( ( el, config ) => ClassicEditor.create( el, config ) );
+	 *		watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
 	 *
 	 * @param {Function} creator
 	 */
@@ -193,8 +158,8 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Creates a watched editor instance using the creator passed to the {@link #setCreator} method or
-	 * {@link module:watchdog/watchdog~Watchdog.for} helper.
+	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
+	 * {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
 	 *
 	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
@@ -204,26 +169,28 @@ export default class Watchdog {
 	create( elementOrData, config ) {
 		if ( !this._creator ) {
 			/**
-			 * @error watchdog-creator-not-defined
+			 * The watchdog's editor creator is not defined. Define it by using
+			 * {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} or
+			 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
 			 *
-			 * The watchdog creator is not defined, define it using `watchdog.setCreator()` or `Watchdog.for` helper.
+			 * @error watchdog-creator-not-defined
 			 */
 			throw new CKEditorError(
-				'watchdog-creator-not-defined: The watchdog creator is not defined, define it using `watchdog.setCreator()` ' +
-				'or `Watchdog.for` helper.',
+				'watchdog-creator-not-defined: The watchdog\'s editor creator is not defined.',
 				null
 			);
 		}
 
 		if ( !this._destructor ) {
 			/**
-			 * @error watchdog-destructor-not-defined
+			 * The watchdog's editor destructor is not defined. Define it by using
+			 * {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`} or
+			 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
 			 *
-			 * The watchdog destructor is not defined, define it using `watchdog.setDestructor()` or `Watchdog.for` helper.
+			 * @error watchdog-destructor-not-defined
 			 */
 			throw new CKEditorError(
-				'watchdog-destructor-not-defined: The watchdog destructor is not defined, define it using `watchdog.setDestructor()` ' +
-				'or `Watchdog.for` helper.',
+				'watchdog-destructor-not-defined: The watchdog\'s editor destructor is not defined.',
 				null
 			);
 		}
@@ -282,7 +249,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Destroys the current editor using the destructor passed to {@link #setDestructor} method.
+	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method.
 	 *
 	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
 	 */
@@ -328,7 +295,7 @@ export default class Watchdog {
 
 	/**
 	 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context) and
-	 * restarts the editor. It handles {@link module:utils/ckeditorerror~CKEditorError CKEditorError errors} only.
+	 * restarts the editor. It handles {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
 	 * @private
 	 * @fires error
@@ -379,14 +346,14 @@ export default class Watchdog {
 	}
 
 	/**
-	 * A shortcut method for creating the Watchdog. For the full usage see the
-	 * {@link ~Watchdog Watchdog class description}.
+	 * A shorthand method for creating an instance of the watchdog. For the full usage see the
+	 * {@link ~Watchdog `Watchdog` class description}.
 	 *
 	 * Usage:
 	 *
-	 * 		const watchdog = Watchdog.for( ClassicEditor );
+	 *		const watchdog = Watchdog.for( ClassicEditor );
 	 *
-	 * 		watchdog.create( elementOrData, config ).then( editor => {} );
+	 *		watchdog.create( elementOrData, config );
 	 *
 	 * @param {*} Editor The editor class.
 	 */
