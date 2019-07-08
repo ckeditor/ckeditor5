@@ -68,17 +68,6 @@ export default class ResizeContext {
 		this.options = options || {};
 
 		// @todo: ---- options below seems like a little outside of a scope of a single context ----
-		// Size before resizing.
-		this.initialSize = {
-			x: 0,
-			y: 0
-		};
-
-		// Position of a clicked resize handler in x and y axes.
-		this.direction = {
-			y: 'top',
-			x: 'left'
-		};
 
 		// Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
 		// traveled, thus how much the image should be enlarged.
