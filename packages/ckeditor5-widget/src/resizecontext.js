@@ -20,10 +20,11 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	const nativeRectangle = element.getBoundingClientRect();
 	const positionParts = resizerPosition.split( '-' );
 	const ret = {
-		x: nativeRectangle.left + element.ownerDocument.defaultView.scrollX,
+		x: positionParts[ 1 ] == 'right' ? nativeRectangle.right : nativeRectangle.left,
 		y: positionParts[ 0 ] == 'bottom' ? nativeRectangle.bottom : nativeRectangle.top
 	};
 
+	ret.x += element.ownerDocument.defaultView.scrollX;
 	ret.y += element.ownerDocument.defaultView.scrollY;
 
 	return ret;
@@ -125,9 +126,17 @@ export default class ResizeContext {
 
 		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
+		/**
+		 * Position of the handler that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc of `null`
+		 * if unknown.
+		 *
+		 * @member {String|null}
+		 */
 		this.referenceHandlerPosition = this._getResizerPosition( domResizeHandler );
 
-		this.referenceCoordinates = getAbsoluteBoundaryPoint( domResizeHandler, this.referenceHandlerPosition );
+		const reversedPosition = this._invertPosition( this.referenceHandlerPosition );
+
+		this.referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
 
 		if ( resizeHost ) {
 			this.aspectRatio = getAspectRatio( resizeHost, this.referenceHandlerPosition );
@@ -168,15 +177,39 @@ export default class ResizeContext {
 
 	updateSize( domEventData ) {
 		const currentCoordinates = this._extractCoordinates( domEventData );
-		const yDistance = this.referenceCoordinates.y - currentCoordinates.y;
 
-		if ( this.referenceHandlerPosition.includes( 'bottom-' ) ) {
-			this.domResizeShadow.style.bottom = `${ yDistance }px`;
-			this.domResizeShadow.style.right = `${ yDistance * this.aspectRatio }px`;
+		const proposedSize = {
+			x: Math.abs( currentCoordinates.x - this.referenceCoordinates.x ),
+			y: Math.abs( currentCoordinates.y - this.referenceCoordinates.y )
+		};
+
+		// Dominant determination must take the ratio into account.
+		proposedSize.dominant = proposedSize.x / this.aspectRatio > proposedSize.y ? 'x' : 'y';
+		proposedSize.max = proposedSize[ proposedSize.dominant ];
+
+		const drawnSize = {
+			x: proposedSize.x,
+			y: proposedSize.y
+		};
+
+		if ( proposedSize.dominant == 'x' ) {
+			drawnSize.y = drawnSize.x / this.aspectRatio;
 		} else {
-			this.domResizeShadow.style.top = ( yDistance * -1 ) + 'px';
-			this.domResizeShadow.style.left = ( yDistance * this.aspectRatio * -1 ) + 'px';
+			drawnSize.x = drawnSize.y * this.aspectRatio;
 		}
+
+		// Reset shadow bounding.
+		this.domResizeShadow.style.top = 0;
+		this.domResizeShadow.style.left = 0;
+		this.domResizeShadow.style.bottom = 0;
+		this.domResizeShadow.style.right = 0;
+
+		this.domResizeShadow.style[ this.referenceHandlerPosition.split( '-' )[ 0 ] ] = 'auto';
+		this.domResizeShadow.style[ this.referenceHandlerPosition.split( '-' )[ 1 ] ] = 'auto';
+
+		// Apply the actual shadow dimensions.
+		this.domResizeShadow.style.width = `${ drawnSize.x }px`;
+		this.domResizeShadow.style.height = `${ drawnSize.y }px`;
 	}
 
 	redraw() {
@@ -273,5 +306,21 @@ export default class ResizeContext {
 				return position;
 			}
 		}
+	}
+
+	/**
+	 * @param {String} position Like `"top-left"`.
+	 * @returns {String} Inverted `position`.
+	 */
+	_invertPosition( position ) {
+		const parts = position.split( '-' );
+		const replacements = {
+			top: 'bottom',
+			bottom: 'top',
+			left: 'right',
+			right: 'left'
+		};
+
+		return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
 	}
 }
