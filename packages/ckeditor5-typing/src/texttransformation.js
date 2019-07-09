@@ -233,23 +233,24 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 }
 
 /**
- * Text transformation definition object. Describes what should be replace with what.
+ * Text transformation definition object. Describes what should be replaced with what.
  *
- * Input value ("replace from") can be passed either as a `String` or a `RegExp` instance.
+ * The input value (`from`) can be passed either as a string or a regexp.
  *
- * * If `String` is passed it will be simply checked if the end of the input matches it.
- * * If `RegExp` is passed, all parts of it's parts have to be inside capturing groups. Also, since it is compared against the end of
- * an input, it has to include `$` token to be correctly matched. See examples below.
+ * * If a string is passed it will be simply checked if the end of the input matches it.
+ * * If a regexp is passed, its entire length must be covered with capturing groups (e.g. `/(foo)(bar)$/`).
+ * Also, since it is compared against the end of the input, it has to end with  `$` to be correctly matched.
+ * See examples below.
  *
- * Output value ("replace to") can be passed either as a `String` or an `Array` or a `Function`.
+ * The output value (`to`) can be passed either as a string or an array or a function.
  *
- * * If a `String` is passed, it will be used as a replacement value as-is. Note, that a `String` output value can be used only if
- * the input value is a `String` too.
- * * If an `Array` is passed it has to have the same number of elements as there are capturing groups in the input value `RegExp`.
- * Each capture group will be replaced by a corresponding `String` from the passed `Array`. If given capturing group should not be replaced,
- * use `null` instead of passing a `String`.
- * * If a `Function` is used, it should return an array as described above. The function is passed one parameter - an array with matches
- * for the input value `RegExp`. See examples below.
+ * * If a string is passed, it will be used as a replacement value as-is. Note, that a string output value can be used only if
+ * the input value is a string too.
+ * * If an array is passed it has to have the same number of elements as there are capturing groups in the input value regexp.
+ * Each capture group will be replaced by a corresponding string from the passed array. If given capturing group should not be replaced,
+ * use `null` instead of passing a string.
+ * * If a function is used, it should return an array as described above. The function is passed one parameter &mdash; an array with matches
+ * by the regexp. See the examples below.
  *
  * Simple string-to-string replacement:
  *
@@ -259,7 +260,7 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  * the text inside quotes are not replaced (`null` passed as the first and the third value in `to` parameter):
  *
  *		{
- *			from: /(\\s)(")([^"]*)(")$/,
+ *			from: /(^|\s)(")([^"]*)(")$/,
  *			to: [ null, '“', null, '”' ]
  *		}
  *
@@ -303,7 +304,7 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *   - `ellipsis`: transforms `...` to `…`
  *   - `enDash`: transforms ` -- ` to ` – `
  *   - `emDash`: transforms ` --- ` to ` — `
- * * Quotations (group name: `quotations`)
+ * * Quotations (group name: `quotes`)
  *   - `quotesPrimary`: transforms `"Foo bar"` to `“Foo bar”`
  *   - `quotesSecondary`: transforms `'Foo bar'` to `‘Foo bar’`
  * * Symbols (group name: `symbols`)
