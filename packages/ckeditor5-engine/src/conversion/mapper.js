@@ -174,12 +174,21 @@ export default class Mapper {
 	}
 
 	/**
-	 * Unbinds all elements from given marker name.
+	 * Unbinds an element from given marker name.
 	 *
+	 * @param {module:engine/view/element~Element} element Element to unbind.
 	 * @param {String} name Marker name.
 	 */
-	unbindElementsFromMarkerName( name ) {
-		this._markerNameToElements.delete( name );
+	unbindElementFromMarkerName( element, name ) {
+		const elements = this._markerNameToElements.get( name );
+
+		if ( elements ) {
+			elements.delete( element );
+
+			if ( elements.size == 0 ) {
+				this._markerNameToElements.delete( name );
+			}
+		}
 	}
 
 	/**
