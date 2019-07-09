@@ -150,7 +150,7 @@
 	}
 	&.ck-orientation-bottom-left {
 		bottom: var( --ck-sizer-offset );
-		right: var( --ck-sizer-offset );
+		left: var( --ck-sizer-offset );
 	}
 }
 
