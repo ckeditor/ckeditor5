@@ -1,5 +1,9 @@
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
+
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * @module widget/resizecontext
@@ -76,6 +80,8 @@ export default class ResizeContext {
 			y: 0,
 			x: 0
 		};
+
+		this._cleanupContext();
 	}
 
 	/**
@@ -94,7 +100,8 @@ export default class ResizeContext {
 			const domElement = this.toDomElement( domDocument );
 
 			that.domResizeShadow = that._appendShadowElement( domDocument, domElement );
-			that._appendResizers( domElement );
+			that._appendResizers( that.domResizeShadow );
+			that._appendSizeUi( that.domResizeShadow );
 
 			that.domResizeWrapper = domElement;
 
@@ -147,13 +154,22 @@ export default class ResizeContext {
 		// Again, render will most likely change image size, so resizers needs a redraw.
 		editor.editing.view.once( 'render', () => this.redraw() );
 
-		this.referenceHandlerPosition = null;
+		this._cleanupContext();
 	}
 
 	cancel() {
 		this._dismissShadow();
 
+		this._cleanupContext();
+	}
+
+	_cleanupContext() {
 		this.referenceHandlerPosition = null;
+
+		this.set( {
+			proposedX: null,
+			proposedY: null
+		} );
 	}
 
 	destroy() {
@@ -161,7 +177,6 @@ export default class ResizeContext {
 
 		this.domResizeShadow = null;
 		this.wrapper = null;
-		this.referenceHandlerPosition = null;
 	}
 
 	updateSize( domEventData ) {
@@ -180,6 +195,11 @@ export default class ResizeContext {
 			x: proposedSize.x,
 			y: proposedSize.y
 		};
+
+		this.set( {
+			proposedX: proposedSize.x,
+			proposedY: proposedSize.y
+		} );
 
 		if ( proposedSize.dominant == 'x' ) {
 			drawnSize.y = drawnSize.x / this.aspectRatio;
@@ -249,6 +269,21 @@ export default class ResizeContext {
 		}
 	}
 
+	_appendSizeUi( domElement ) {
+		const sizeUi = new SizeView();
+
+		sizeUi.bind( 'isVisible' ).to( this, 'proposedX', this, 'proposedY', ( x, y ) =>
+			x !== null && y !== null );
+
+		sizeUi.bind( 'label' ).to( this, 'proposedX', this, 'proposedY', ( x, y ) =>
+			`${ Math.round( x ) } x ${ Math.round( y ) }` );
+
+		// Make sure icon#element is rendered before passing to appendChild().
+		sizeUi.render();
+
+		domElement.appendChild( sizeUi.element );
+	}
+
 	_dismissShadow() {
 		this.domResizeShadow.classList.remove( 'ck-widget__resizer-shadow-active' );
 		this.domResizeShadow.removeAttribute( 'style' );
@@ -311,5 +346,28 @@ export default class ResizeContext {
 		};
 
 		return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
+	}
+}
+
+mix( ResizeContext, ObservableMixin );
+
+class SizeView extends View {
+	constructor() {
+		super();
+
+		const bind = this.bindTemplate;
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [ 'ck ck-size-view' ],
+				style: {
+					display: bind.if( 'isVisible', 'none', visible => !visible )
+				}
+			},
+			children: [ {
+				text: bind.to( 'label' )
+			} ]
+		} );
 	}
 }
