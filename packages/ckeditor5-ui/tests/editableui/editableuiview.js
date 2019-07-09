@@ -12,7 +12,7 @@ import View from '../../src/view';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe.only( 'EditableUIView', () => {
+describe( 'EditableUIView', () => {
 	let view, editableElement, editingView, editingViewRoot, locale;
 
 	testUtils.createSinonSandbox();
