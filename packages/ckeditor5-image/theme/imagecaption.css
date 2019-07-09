@@ -4,6 +4,10 @@
  */
 
 .ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+
 	color: hsl(0, 0%, 20%);
 	background-color: hsl(0, 0%, 97%);
 	padding: .6em;
