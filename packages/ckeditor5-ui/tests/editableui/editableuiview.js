@@ -47,6 +47,8 @@ describe( 'EditableUIView', () => {
 			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( view._externalElement ).to.be.undefined;
 			expect( view.isRendered ).to.be.true;
 		} );
@@ -61,8 +63,20 @@ describe( 'EditableUIView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( view._hasExternalElement ).to.be.true;
 			expect( view.isRendered ).to.be.true;
+		} );
+
+		it( 'sets proper attributes when using RTL language', () => {
+			locale = new Locale( 'ar' );
+			view = new EditableUIView( locale, editingView, editableElement );
+			view.name = editingViewRoot.rootName;
+
+			view.render();
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'ar' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'rtl' );
 		} );
 	} );
 
