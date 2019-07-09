@@ -130,6 +130,8 @@ export default class ResizeContext {
 		 */
 		this.referenceHandlerPosition = this._getResizerPosition( domResizeHandler );
 
+		this.set( 'orientation', this.referenceHandlerPosition );
+
 		const reversedPosition = this._invertPosition( this.referenceHandlerPosition );
 
 		this.referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
@@ -168,7 +170,8 @@ export default class ResizeContext {
 
 		this.set( {
 			proposedX: null,
-			proposedY: null
+			proposedY: null,
+			orientation: null
 		} );
 	}
 
@@ -278,10 +281,14 @@ export default class ResizeContext {
 		sizeUi.bind( 'label' ).to( this, 'proposedX', this, 'proposedY', ( x, y ) =>
 			`${ Math.round( x ) } x ${ Math.round( y ) }` );
 
+		sizeUi.bind( 'orientation' ).to( this );
+
 		// Make sure icon#element is rendered before passing to appendChild().
 		sizeUi.render();
 
-		domElement.appendChild( sizeUi.element );
+		this.sizeElement = sizeUi.element;
+
+		domElement.appendChild( this.sizeElement );
 	}
 
 	_dismissShadow() {
@@ -360,7 +367,11 @@ class SizeView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck ck-size-view' ],
+				class: [
+					'ck',
+					'ck-size-view',
+					bind.to( 'orientation', value => value ? `ck-orientation-${ value }` : '' )
+				],
 				style: {
 					display: bind.if( 'isVisible', 'none', visible => !visible )
 				}

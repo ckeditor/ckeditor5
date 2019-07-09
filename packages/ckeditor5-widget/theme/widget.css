@@ -129,6 +129,29 @@
 	border: 2px solid var(--ck-color-focus-border);
 	display: inline-block;
 	padding: 3px;
+
+	--ck-sizer-offset: 20px;
+
+	&.ck-orientation-top-left, &.ck-orientation-top-right, &.ck-orientation-bottom-right, &.ck-orientation-bottom-left {
+		position: absolute;
+	}
+
+	&.ck-orientation-top-left {
+		top: var( --ck-sizer-offset );
+		left: var( --ck-sizer-offset );
+	}
+	&.ck-orientation-top-right {
+		top: var( --ck-sizer-offset );
+		right: var( --ck-sizer-offset );
+	}
+	&.ck-orientation-bottom-right {
+		bottom: var( --ck-sizer-offset );
+		right: var( --ck-sizer-offset );
+	}
+	&.ck-orientation-bottom-left {
+		bottom: var( --ck-sizer-offset );
+		right: var( --ck-sizer-offset );
+	}
 }
 
 .ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
