@@ -101,9 +101,9 @@ ClassicEditor
 			transformations: {
 				remove: [
 					// Don't use the transformations from the
-					// 'symbols' and 'mathematical' groups.
+					// 'symbols' and 'quotes' groups.
 					'symbols',
-					'mathematical',
+					'quotes',
 
 					// As well as the following transformations.
 					'arrowLeft',
@@ -117,10 +117,20 @@ ClassicEditor
 					{ from: ':tada:', to: '🎉' },
 
 					// You can also define patterns using regexp.
-					// Note: the pattern must end with `$`.
-					// The following (naive) rule will remove @ from emails.
-					// For example, user@example.com will become user.at.example.com.
-					{ from: /([a-z-]+)@([a-z]+\.[a-z]{2,})$/i, to: '$1.at.$2' }
+					// Note: the pattern must end with `$` and all its fragments must be wrapped
+					// with capturing groups.
+					// The following rule replaces ` "foo"` with ` «foo»`.
+					{
+						from: /(^|\s)(")([^"]*)(")$/,
+						to: [ null, '«', null, '»' ]
+					},
+
+					// Finally, you can define `to` as a callback.
+					// This (naive) rule will auto-capitalize first word after a period.
+					{
+						from: /(\. )([a-z])$/,
+						to: matches => [ null, matches[ 1 ].toUpperCase() ]
+					}
 				],
 			}
 		}
@@ -129,7 +139,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-You can test the above configuration here:
+You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
+
+Test the rules defined above:
 
 {@snippet features/text-transformation-extended}
 

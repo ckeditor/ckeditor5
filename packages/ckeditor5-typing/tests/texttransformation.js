@@ -9,6 +9,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import TextTransformation from '../src/texttransformation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -83,6 +84,40 @@ describe( 'Text transformation feature', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-typing/issues/203.
+		it( 'should replace only the parts of content which changed', () => {
+			setData( model, '<paragraph>Foo "<$text bold="true">Bar</$text>[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '"', doc.selection.focus );
+			} );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo “<$text bold="true">Bar</$text>”</paragraph>' );
+		} );
+
+		it( 'should keep styles of the replaced text #1', () => {
+			setData( model, '<paragraph>Foo <$text bold="true">"</$text>Bar[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '"', { bold: true }, doc.selection.focus );
+			} );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo <$text bold="true">“</$text>Bar<$text bold="true">”</$text></paragraph>' );
+		} );
+
+		it( 'should keep styles of the replaced text #2', () => {
+			setData( model, '<paragraph>F<$text bold="true">oo "B</$text>ar[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '"', doc.selection.focus );
+			} );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
+		} );
+
 		function testTransformation( transformFrom, transformTo ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, '<paragraph>A foo[]</paragraph>' );
@@ -142,7 +177,7 @@ describe( 'Text transformation feature', () => {
 				typing: {
 					transformations: {
 						extra: [
-							{ from: /([a-z]+)@(example.com)$/, to: '$1.at.$2' }
+							{ from: /([a-z]+)(@)(example.com)$/, to: [ null, '.at.', null ] }
 						]
 					}
 				}
@@ -154,6 +189,26 @@ describe( 'Text transformation feature', () => {
 				} );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+			} );
+		} );
+
+		it( 'should allow adding own rules with function as `to` value', () => {
+			return createEditorInstance( {
+				typing: {
+					transformations: {
+						extra: [
+							{ from: /(\. )([a-z])$/, to: matches => [ null, matches[ 1 ].toUpperCase() ] }
+						]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>Foo. []</paragraph>' );
+
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( 'b', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo. B</paragraph>' );
 			} );
 		} );
 
@@ -291,7 +346,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Paragraph, TextTransformation ]
+				plugins: [ Paragraph, Bold, TextTransformation ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
