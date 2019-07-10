@@ -13,16 +13,53 @@ describe( 'Locale', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'sets the language', () => {
+		it( 'sets the #language', () => {
 			const locale = new Locale( 'pl' );
 
 			expect( locale ).to.have.property( 'language', 'pl' );
 		} );
 
-		it( 'defaults language to en', () => {
+		it( 'sets the #contentLanguage', () => {
+			const locale = new Locale( 'pl', 'en' );
+
+			expect( locale ).to.have.property( 'language', 'pl' );
+			expect( locale ).to.have.property( 'contentLanguage', 'en' );
+		} );
+
+		it( 'defaults #language to en', () => {
 			const locale = new Locale();
 
 			expect( locale ).to.have.property( 'language', 'en' );
+		} );
+
+		it( 'inherits the #contentLanguage from the #language (if not passed)', () => {
+			const locale = new Locale( 'pl' );
+
+			expect( locale ).to.have.property( 'language', 'pl' );
+			expect( locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'determines the #languageDirection', () => {
+			expect( new Locale( 'pl' ) ).to.have.property( 'languageDirection', 'ltr' );
+			expect( new Locale( 'en' ) ).to.have.property( 'languageDirection', 'ltr' );
+
+			expect( new Locale( 'ar' ) ).to.have.property( 'languageDirection', 'rtl' );
+			expect( new Locale( 'fa' ) ).to.have.property( 'languageDirection', 'rtl' );
+			expect( new Locale( 'he' ) ).to.have.property( 'languageDirection', 'rtl' );
+			expect( new Locale( 'ku' ) ).to.have.property( 'languageDirection', 'rtl' );
+			expect( new Locale( 'ug' ) ).to.have.property( 'languageDirection', 'rtl' );
+		} );
+
+		it( 'determines the #contentLanguageDirection (not passed)', () => {
+			expect( new Locale( 'pl' ) ).to.have.property( 'contentLanguageDirection', 'auto' );
+			expect( new Locale( 'en' ) ).to.have.property( 'contentLanguageDirection', 'auto' );
+			expect( new Locale( 'ar' ) ).to.have.property( 'contentLanguageDirection', 'auto' );
+		} );
+
+		it( 'determines the #contentLanguageDirection (passed)', () => {
+			expect( new Locale( 'pl', 'pl' ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+			expect( new Locale( 'en', 'ar' ) ).to.have.property( 'contentLanguageDirection', 'rtl' );
+			expect( new Locale( 'ar', 'pl' ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
 		} );
 	} );
 

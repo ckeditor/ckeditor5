@@ -112,5 +112,5 @@ export default class Locale {
 // @param {String} language The ISO 639-1 language code.
 // @returns {String} 'ltr' or 'rtl
 function getLanguageDirection( languageCode ) {
-	return RTL_LANGUAGE_CODES.includes( languageCode );
+	return RTL_LANGUAGE_CODES.includes( languageCode ) ? 'rtl' : 'ltr';
 }
