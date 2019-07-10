@@ -7,12 +7,14 @@
  * @module utils/dom/rect
  */
 
+/* globals console */
+
 import isRange from './isrange';
 import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
-import log from '../log';
 import isText from './istext';
 import { isElement } from 'lodash-es';
+import { attachLinkToDocumentation } from '../ckeditorerror';
 
 const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -82,10 +84,9 @@ export default class Rect {
 				 * @error rect-source-not-in-dom
 				 * @param {String} source The source of the Rect instance.
 				 */
-				log.warn(
+				console.warn( attachLinkToDocumentation(
 					'rect-source-not-in-dom: The source of this rect does not belong to any rendered DOM tree.',
-					{ source }
-				);
+				), { source } );
 			}
 
 			if ( isSourceRange ) {
