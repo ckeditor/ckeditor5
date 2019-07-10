@@ -8,17 +8,32 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-const toolbarConfig = [
-	'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo'
-];
+const config = {
+	plugins: [ ArticlePluginSet ],
+	image: {
+		toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
+		]
+	},
+	toolbar: [
+		'heading',
+		'|',
+		'bold', 'italic', 'link',
+		'bulletedList', 'numberedList',
+		'blockQuote', 'insertTable', 'mediaEmbed',
+		'undo', 'redo'
+	]
+};
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: toolbarConfig,
-
+	.create( document.querySelector( '#editor-language' ), Object.assign( {}, config, {
 		language: 'en'
-	} )
+	} ) )
 	.then( newEditor => {
 		window.editorLanguage = newEditor;
 
@@ -29,12 +44,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language-rtl' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: toolbarConfig,
-
+	.create( document.querySelector( '#editor-language-rtl' ), Object.assign( {}, config, {
 		language: 'ar'
-	} )
+	} ) )
 	.then( newEditor => {
 		window.editorLanguageRTL = newEditor;
 
@@ -45,13 +57,10 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language-rtl-content' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: toolbarConfig,
-
+	.create( document.querySelector( '#editor-language-rtl-content' ), Object.assign( {}, config, {
 		language: 'en',
 		contentLanguage: 'ar'
-	} )
+	} ) )
 	.then( newEditor => {
 		window.editorLanguageRTLContent = newEditor;
 
@@ -62,13 +71,10 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language-rtl-ui' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: toolbarConfig,
-
+	.create( document.querySelector( '#editor-language-rtl-ui' ), Object.assign( {}, config, {
 		language: 'ar',
 		contentLanguage: 'en'
-	} )
+	} ) )
 	.then( newEditor => {
 		window.editorLanguageRTLUI = newEditor;
 
