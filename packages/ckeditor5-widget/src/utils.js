@@ -352,6 +352,29 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 	};
 }
 
+/**
+ * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
+ *
+ * @param {HTMLElement} element
+ * @param {String} resizerPosition Position of the resize handler, e.g. `"top-left"`, `"bottom-right"`.
+ * @returns {Object} return
+ * @returns {Number} return.x
+ * @returns {Number} return.y
+ */
+export function getAbsoluteBoundaryPoint( element, resizerPosition ) {
+	const nativeRectangle = element.getBoundingClientRect();
+	const positionParts = resizerPosition.split( '-' );
+	const ret = {
+		x: positionParts[ 1 ] == 'right' ? nativeRectangle.right : nativeRectangle.left,
+		y: positionParts[ 0 ] == 'bottom' ? nativeRectangle.bottom : nativeRectangle.top
+	};
+
+	ret.x += element.ownerDocument.defaultView.scrollX;
+	ret.y += element.ownerDocument.defaultView.scrollY;
+
+	return ret;
+}
+
 // Default filler offset function applied to all widget elements.
 //
 // @returns {null}

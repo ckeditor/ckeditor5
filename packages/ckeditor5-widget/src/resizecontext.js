@@ -1,6 +1,8 @@
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
+import ResizerCentral from './resizercentral';
+import { getAbsoluteBoundaryPoint } from './utils';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -10,29 +12,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  */
 
 const HEIGHT_ATTRIBUTE_NAME = 'height';
-
-/**
- * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
- *
- * @param {HTMLElement} element
- * @param {String} resizerPosition Position of the resize handler, e.g. `"top-left"`, `"bottom-right"`.
- * @returns {Object} return
- * @returns {Number} return.x
- * @returns {Number} return.y
- */
-function getAbsoluteBoundaryPoint( element, resizerPosition ) {
-	const nativeRectangle = element.getBoundingClientRect();
-	const positionParts = resizerPosition.split( '-' );
-	const ret = {
-		x: positionParts[ 1 ] == 'right' ? nativeRectangle.right : nativeRectangle.left,
-		y: positionParts[ 0 ] == 'bottom' ? nativeRectangle.bottom : nativeRectangle.top
-	};
-
-	ret.x += element.ownerDocument.defaultView.scrollX;
-	ret.y += element.ownerDocument.defaultView.scrollY;
-
-	return ret;
-}
 
 function getAspectRatio( element ) {
 	const nativeRectangle = element.getBoundingClientRect();
@@ -53,6 +32,8 @@ export default class ResizeContext {
 		this.resizeWrapperElement = null;
 		// view/Element
 		this.widgetWrapperElement = null;
+
+		this.resizeStrategy = new ResizerCentral( this, options );
 
 		/**
 		 * Container of entire resize UI.
@@ -139,6 +120,8 @@ export default class ResizeContext {
 		if ( resizeHost ) {
 			this.aspectRatio = getAspectRatio( resizeHost, this.referenceHandlerPosition );
 		}
+
+		this.resizeStrategy.begin( domResizeHandler );
 	}
 
 	commit( editor ) {
@@ -156,11 +139,15 @@ export default class ResizeContext {
 		// Again, render will most likely change image size, so resizers needs a redraw.
 		editor.editing.view.once( 'render', () => this.redraw() );
 
+		this.resizeStrategy.commit( editor );
+
 		this._cleanupContext();
 	}
 
 	cancel() {
 		this._dismissShadow();
+
+		this.resizeStrategy.cancel();
 
 		this._cleanupContext();
 	}
@@ -183,45 +170,12 @@ export default class ResizeContext {
 	}
 
 	updateSize( domEventData ) {
-		const currentCoordinates = this._extractCoordinates( domEventData );
-
-		const proposedSize = {
-			x: Math.abs( currentCoordinates.x - this.referenceCoordinates.x ),
-			y: Math.abs( currentCoordinates.y - this.referenceCoordinates.y )
-		};
-
-		// Dominant determination must take the ratio into account.
-		proposedSize.dominant = proposedSize.x / this.aspectRatio > proposedSize.y ? 'x' : 'y';
-		proposedSize.max = proposedSize[ proposedSize.dominant ];
-
-		const drawnSize = {
-			x: proposedSize.x,
-			y: proposedSize.y
-		};
+		const proposedSize = this.resizeStrategy.updateSize( domEventData );
 
 		this.set( {
 			proposedX: proposedSize.x,
 			proposedY: proposedSize.y
 		} );
-
-		if ( proposedSize.dominant == 'x' ) {
-			drawnSize.y = drawnSize.x / this.aspectRatio;
-		} else {
-			drawnSize.x = drawnSize.y * this.aspectRatio;
-		}
-
-		// Reset shadow bounding.
-		this.domResizeShadow.style.top = 0;
-		this.domResizeShadow.style.left = 0;
-		this.domResizeShadow.style.bottom = 0;
-		this.domResizeShadow.style.right = 0;
-
-		this.domResizeShadow.style[ this.referenceHandlerPosition.split( '-' )[ 0 ] ] = 'auto';
-		this.domResizeShadow.style[ this.referenceHandlerPosition.split( '-' )[ 1 ] ] = 'auto';
-
-		// Apply the actual shadow dimensions.
-		this.domResizeShadow.style.width = `${ drawnSize.x }px`;
-		this.domResizeShadow.style.height = `${ drawnSize.y }px`;
 	}
 
 	redraw() {
