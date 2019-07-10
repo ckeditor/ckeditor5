@@ -12,9 +12,9 @@ import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckedi
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
-class TestError extends Error { }
-class ChildPlugin extends Plugin { }
-class GrandPlugin extends ChildPlugin { }
+class TestError extends Error {}
+class ChildPlugin extends Plugin {}
+class GrandPlugin extends ChildPlugin {}
 
 describe( 'PluginCollection', () => {
 	before( () => {
@@ -194,7 +194,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should load plugin which does not extend the base Plugin class', () => {
-			class Y { }
+			class Y {}
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -325,7 +325,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should load chosen plugins (plugins are names, removePlugins contains an anonymous plugin)', () => {
-			class AnonymousPlugin { }
+			class AnonymousPlugin {}
 
 			const plugins = new PluginCollection( editor, [ AnonymousPlugin ].concat( availablePlugins ) );
 
@@ -418,7 +418,7 @@ describe( 'PluginCollection', () => {
 
 	describe( 'get()', () => {
 		it( 'retrieves plugin by its constructor', () => {
-			class SomePlugin extends Plugin { }
+			class SomePlugin extends Plugin {}
 
 			availablePlugins.push( SomePlugin );
 
@@ -431,7 +431,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'retrieves plugin by its name and constructor', () => {
-			class SomePlugin extends Plugin { }
+			class SomePlugin extends Plugin {}
 			SomePlugin.pluginName = 'foo/bar';
 
 			availablePlugins.push( SomePlugin );
@@ -456,7 +456,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'throws if plugin cannot be retrieved by class', () => {
-			class SomePlugin extends Plugin { }
+			class SomePlugin extends Plugin {}
 			SomePlugin.pluginName = 'foo';
 
 			const plugins = new PluginCollection( editor, availablePlugins );
@@ -468,7 +468,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'throws if plugin cannot be retrieved by class (class name in error)', () => {
-			class SomePlugin extends Plugin { }
+			class SomePlugin extends Plugin {}
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -595,8 +595,8 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'returns only plugins by constructors', () => {
-			class SomePlugin1 extends Plugin { }
-			class SomePlugin2 extends Plugin { }
+			class SomePlugin1 extends Plugin {}
+			class SomePlugin2 extends Plugin {}
 			SomePlugin2.pluginName = 'foo/bar';
 
 			availablePlugins.push( SomePlugin1 );
