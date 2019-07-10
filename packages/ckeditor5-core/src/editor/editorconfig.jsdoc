@@ -167,7 +167,7 @@
  */
 
 /**
- * The editor UI's language.
+ * The language of the editor UI and its content.
  *
  * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
  * CKEditor 5 currently supports around 20 languages and the number is growing.
@@ -179,6 +179,7 @@
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
+ *				// The UI of the editor as well as its content will be German.
  *				language: 'de'
  *			} )
  *			.then( editor => {
@@ -193,25 +194,29 @@
  *
  * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
  *
- * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
+ * By default, this configuration also affects the language of the edited content. If you want to control
+ * the language of the content separately (e.g. different languages for the UI and the content), check out
+ * {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`}.
  *
- * TODO: What's the difference between #language and #contentLanguage? Also link to #contentLanguage.
+ * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#language
  */
 
 /**
- * The editor content language.
+ * The editor content language defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
  *
- * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
- *
- * TODO: What is this setting and what's the difference between #language and #contentLanguage?  Also link to #language.
- *
- * Simple usage:
+ * You can separately configure the language of the UI and the language of the content. The language of the
+ * content has an impact on the editing experience, for instance it affects screen readers and spell
+ * checkers. It is also particularly useful for typing in certain languages (e.g. right–to–left ones) because
+ * it changes the default alignment of the text.
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
- *				language: 'de',
+ *				// The UI will be English.
+ *				language: 'en',
+ *
+ *				// But the content will be edited in Arabic.
  *				contentLanguage: 'ar'
  *			} )
  *			.then( editor => {
@@ -221,7 +226,15 @@
  *				console.error( error );
  *			} );
  *
- * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
+ * Leaving this configuration unset (default) will inherit the content language from
+ * {@link module:core/editor/editorconfig~EditorConfig#language UI language} and leave its direction
+ * up to the web browser based on the first strong (directional) character typed by the user in the block
+ * ([Unicode® Bidirectional Algorithm](http://www.unicode.org/reports/tr9/)).
+ *
+ * If you want to change the language of the entire editor's UI, check out
+ * {@link module:core/editor/editorconfig~EditorConfig#language `config.language`}.
+ *
+ * Check the {@glink features/ui-language UI language guide} for more information about the localization options.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#contentLanguage
  */
