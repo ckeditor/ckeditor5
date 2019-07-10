@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
@@ -15,7 +17,6 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import DowncastHelpers, {
@@ -614,7 +615,7 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements only)', () => {
-			const logStub = testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -626,7 +627,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p test="1"></p><p test="2"></p>' );
-			expect( logStub.callCount ).to.equal( 0 );
+			expect( consoleWarnStub.callCount ).to.equal( 0 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
@@ -637,7 +638,7 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements + text)', () => {
-			const logStub = testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -652,8 +653,8 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p>Foo</p><p test="1">Bar</p>' );
-			expect( logStub.callCount ).to.equal( 2 );
-			expect( logStub.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
+			expect( consoleWarnStub.callCount ).to.equal( 2 );
+			expect( consoleWarnStub.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
 
 			model.change( writer => {
 				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );

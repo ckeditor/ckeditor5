@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, console */
 
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
@@ -19,21 +19,17 @@ import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
@@ -75,6 +71,7 @@ describe( 'view', () => {
 	} );
 
 	afterEach( () => {
+		sinon.restore();
 		domRoot.remove();
 		view.destroy();
 	} );
@@ -366,11 +363,11 @@ describe( 'view', () => {
 	describe( 'scrollToTheSelection()', () => {
 		beforeEach( () => {
 			// Silence the Rect warnings.
-			testUtils.sinon.stub( log, 'warn' );
+			sinon.stub( console, 'warn' );
 		} );
 
 		it( 'does nothing when there are no ranges in the selection', () => {
-			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
+			const stub = sinon.stub( global.window, 'scrollTo' );
 
 			view.scrollToTheSelection();
 			sinon.assert.notCalled( stub );
@@ -378,7 +375,7 @@ describe( 'view', () => {
 
 		it( 'scrolls to the first range in selection with an offset', () => {
 			const root = createViewRoot( viewDocument, 'div', 'main' );
-			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
+			const stub = sinon.stub( global.window, 'scrollTo' );
 			const range = ViewRange._createIn( root );
 
 			view.attachDomRoot( domRoot );
@@ -449,8 +446,8 @@ describe( 'view', () => {
 		} );
 
 		it( 'should focus editable with selection', () => {
-			const converterFocusSpy = testUtils.sinon.spy( view.domConverter, 'focus' );
-			const renderSpy = testUtils.sinon.spy( view, 'forceRender' );
+			const converterFocusSpy = sinon.spy( view.domConverter, 'focus' );
+			const renderSpy = sinon.spy( view, 'forceRender' );
 
 			view.focus();
 
@@ -466,8 +463,8 @@ describe( 'view', () => {
 		} );
 
 		it( 'should not focus if document is already focused', () => {
-			const converterFocusSpy = testUtils.sinon.spy( view.domConverter, 'focus' );
-			const renderSpy = testUtils.sinon.spy( view, 'forceRender' );
+			const converterFocusSpy = sinon.spy( view.domConverter, 'focus' );
+			const renderSpy = sinon.spy( view, 'forceRender' );
 			viewDocument.isFocused = true;
 
 			view.focus();
@@ -476,15 +473,15 @@ describe( 'view', () => {
 			expect( renderSpy.called ).to.be.false;
 		} );
 
-		it( 'should log warning when no selection', () => {
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
+		it( 'should log warning when there is no selection', () => {
+			const consoleWarnSpy = sinon.stub( console, 'warn' );
 			view.change( writer => {
 				writer.setSelection( null );
 			} );
 
 			view.focus();
-			expect( logSpy.calledOnce ).to.be.true;
-			expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^view-focus-no-selection/ );
+			expect( consoleWarnSpy.calledOnce ).to.be.true;
+			expect( consoleWarnSpy.args[ 0 ][ 0 ] ).to.match( /^view-focus-no-selection/ );
 		} );
 	} );
 

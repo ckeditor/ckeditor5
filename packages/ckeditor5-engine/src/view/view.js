@@ -7,6 +7,8 @@
  * @module engine/view/view
  */
 
+/* globals console */
+
 import Document from './document';
 import DowncastWriter from './downcastwriter';
 import Renderer from './renderer';
@@ -24,12 +26,11 @@ import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
@@ -405,7 +406,9 @@ export default class View {
 				 *
 				 * @error view-focus-no-selection
 				 */
-				log.warn( 'view-focus-no-selection: There is no selection in any editable to focus.' );
+				console.warn( attachLinkToDocumentation(
+					'view-focus-no-selection: There is no selection in any editable to focus.'
+				) );
 			}
 		}
 	}
