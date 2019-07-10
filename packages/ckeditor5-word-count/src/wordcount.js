@@ -4,7 +4,7 @@
  */
 
 /**
- * @module wordcount/wordcount
+ * @module word-count/wordcount
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -19,7 +19,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
  * This plugin calculates all words and characters in all {@link module:engine/model/text~Text text nodes} available in the model.
  * It also provides an HTML element, which updates its states whenever the editor's content is changed.
  *
- * Firstly model's data are convert to plain text using {@link module:wordcount/utils.modelElementToPlainText}.
+ * Firstly model's data are convert to plain text using {@link module:word-count/utils.modelElementToPlainText}.
  * Based on such created plain text there are determined amount of words and characters in your text. Please keep in mind
  * that every block in the editor is separate with a newline character, which is included in the calculation.
  *
@@ -55,7 +55,7 @@ export default class WordCount extends Plugin {
 		 *
 		 * @observable
 		 * @readonly
-		 * @member {Number} module:wordcount/wordcount~WordCount#characters
+		 * @member {Number} module:word-count/wordcount~WordCount#characters
 		 */
 		this.set( 'characters', 0 );
 
@@ -64,7 +64,7 @@ export default class WordCount extends Plugin {
 		 *
 		 * @observable
 		 * @readonly
-		 * @member {Number} module:wordcount/wordcount~WordCount#words
+		 * @member {Number} module:word-count/wordcount~WordCount#words
 		 */
 		this.set( 'words', 0 );
 
@@ -74,7 +74,7 @@ export default class WordCount extends Plugin {
 		 * @observable
 		 * @private
 		 * @readonly
-		 * @member {String} module:wordcount/wordcount~WordCount#_wordsLabel
+		 * @member {String} module:word-count/wordcount~WordCount#_wordsLabel
 		 */
 		this.set( '_wordsLabel' );
 
@@ -84,7 +84,7 @@ export default class WordCount extends Plugin {
 		 * @observable
 		 * @private
 		 * @readonly
-		 * @member {String} module:wordcount/wordcount~WordCount#_charactersLabel
+		 * @member {String} module:word-count/wordcount~WordCount#_charactersLabel
 		 */
 		this.set( '_charactersLabel' );
 
@@ -259,21 +259,21 @@ export default class WordCount extends Plugin {
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
- * @interface module:wordcount/wordcount~WordCountConfig
+ * @interface module:word-count/wordcount~WordCountConfig
  */
 
 /**
  * The configuration of the word count feature.
- * It is introduced by the {@link module:wordcount/wordcount~WordCount} feature.
+ * It is introduced by the {@link module:word-count/wordcount~WordCount} feature.
  *
- * Read more in {@link module:wordcount/wordcount~WordCountConfig}.
+ * Read more in {@link module:word-count/wordcount~WordCountConfig}.
  *
- * @member {module:wordcount/wordcount~WordCountConfig} module:core/editor/editorconfig~EditorConfig#wordCount
+ * @member {module:word-count/wordcount~WordCountConfig} module:core/editor/editorconfig~EditorConfig#wordCount
  */
 
 /**
  * This option allows for hiding the word count. The element obtained through
- * {@link module:wordcount/wordcount~WordCount#wordCountContainer} will only preserve
+ * {@link module:word-count/wordcount~WordCount#wordCountContainer} will only preserve
  * the characters part. word count is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
@@ -286,12 +286,12 @@ export default class WordCount extends Plugin {
  *			<div class="ck-word-count__characters">Characters: 28</div>
  *		</div>
  *
- * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayWords
+ * @member {Boolean} module:word-count/wordcount~WordCountConfig#displayWords
  */
 
 /**
  * This option allows for hiding the character counter. The element obtained through
- * {@link module:wordcount/wordcount~WordCount#wordCountContainer} will only preserve
+ * {@link module:word-count/wordcount~WordCount#wordCountContainer} will only preserve
  * the words part. Character counter is displayed by default when this configuration option is not defined.
  *
  *		const wordCountConfig = {
@@ -304,7 +304,7 @@ export default class WordCount extends Plugin {
  *			<div class="ck-word-count__words">Words: 4</div>
  *		</div>
  *
- * @member {Boolean} module:wordcount/wordcount~WordCountConfig#displayCharacters
+ * @member {Boolean} module:word-count/wordcount~WordCountConfig#displayCharacters
  */
 
 /**
@@ -319,16 +319,16 @@ export default class WordCount extends Plugin {
  *			}
  *		}
  *
- * @member {Function} module:wordcount/wordcount~WordCountConfig#onUpdate
+ * @member {Function} module:word-count/wordcount~WordCountConfig#onUpdate
  */
 
 /**
  * This option allows on providing an HTML element where
- * {@link module:wordcount/wordcount~WordCount#wordCountContainer word count container} will be appended automatically.
+ * {@link module:word-count/wordcount~WordCount#wordCountContainer word count container} will be appended automatically.
  *
  *		const wordCountConfig = {
  *			container: document.getElementById( 'container-for-word-count' );
  *		}
  *
- * @member {HTMLElement} module:wordcount/wordcount~WordCountConfig#container
+ * @member {HTMLElement} module:word-count/wordcount~WordCountConfig#container
  */
