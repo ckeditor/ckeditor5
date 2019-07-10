@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 
 import { parseHtml } from './filters/parse';
 import { transformListItemLikeElementsIntoLists } from './filters/list';
@@ -40,8 +41,17 @@ export default class PasteFromOffice extends Plugin {
 		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
 			const html = data.dataTransfer.getData( 'text/html' );
 
-			if ( data.pasteFromOfficeProcessed !== true && isWordInput( html ) ) {
-				data.content = this._normalizeWordInput( html, data.dataTransfer );
+			if ( data.pasteFromOfficeProcessed !== true ) {
+				switch ( getInputType( html ) ) {
+					case 'msword':
+						data.content = this._normalizeWordInput( html, data.dataTransfer );
+						break;
+					case 'gdocs':
+						data.content = this._normalizeGDocsInput( data.content );
+						break;
+					default:
+						break;
+				}
 
 				// Set the flag so if `inputTransformation` is re-fired, PFO will not process it again (#44).
 				data.pasteFromOfficeProcessed = true;
@@ -67,13 +77,45 @@ export default class PasteFromOffice extends Plugin {
 
 		return body;
 	}
+
+	_normalizeGDocsInput( documentFragment ) {
+		// there is global wrapper with <b> element
+		return removeBoldTagWrapper( documentFragment );
+	}
 }
 
-// Checks if given HTML string is a result of pasting content from Word.
+function removeBoldTagWrapper( documentFragment ) {
+	if ( documentFragment.childCount === 1 ) {
+		const firstChild = documentFragment.getChild( 0 );
+
+		if ( firstChild.name === 'b' && firstChild.getStyle( 'font-weight' ) === 'normal' ) {
+			return new DocumentFragment( firstChild.getChildren() );
+		}
+	}
+
+	return documentFragment;
+}
+
+// Determines if given paste data came from specific office-like application
+// Recognized are:
+// * 'msword' for Microsoft Words desktop app
+// * 'gdocs' for Google Docs online app
 //
-// @param {String} html HTML string to test.
-// @returns {Boolean} True if given HTML string is a Word HTML.
-function isWordInput( html ) {
-	return !!( html && ( html.match( /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/gi ) ||
-		html.match( /xmlns:o="urn:schemas-microsoft-com/gi ) ) );
+// @param {String} html `text/html` string from data transfer
+// @return {String|null} type of app which is source of a data or null
+function getInputType( html ) {
+	if ( html ) {
+		if (
+			/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( html ) ||
+			/xmlns:o="urn:schemas-microsoft-com/i.test( html )
+		) {
+			// Microsoft Word detection
+			return 'msword';
+		} else if ( /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( html ) ) {
+			// Google Docs detection
+			return 'gdocs';
+		}
+	}
+
+	return null;
 }
