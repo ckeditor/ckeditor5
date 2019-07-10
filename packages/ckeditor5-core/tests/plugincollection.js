@@ -3,24 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout */
+/* globals setTimeout, console */
 
-import testUtils from '../tests/_utils/utils';
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
 import Plugin from '../src/plugin';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
-class TestError extends Error {}
-class ChildPlugin extends Plugin {}
-class GrandPlugin extends ChildPlugin {}
+class TestError extends Error { }
+class ChildPlugin extends Plugin { }
+class GrandPlugin extends ChildPlugin { }
 
 describe( 'PluginCollection', () => {
-	testUtils.createSinonSandbox();
-
 	before( () => {
 		PluginA = createPlugin( 'A' );
 		PluginB = createPlugin( 'B' );
@@ -71,6 +67,10 @@ describe( 'PluginCollection', () => {
 		];
 
 		PluginFoo.requires = [];
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	describe( 'load()', () => {
@@ -240,7 +240,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -253,13 +253,13 @@ describe( 'PluginCollection', () => {
 					expect( err ).to.be.an.instanceof( TestError );
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
 
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 				} );
 		} );
 
 		it( 'should reject when loading non-existent plugin', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -271,8 +271,8 @@ describe( 'PluginCollection', () => {
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-not-found/, editor );
 
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
 				} );
 		} );
 
@@ -325,7 +325,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should load chosen plugins (plugins are names, removePlugins contains an anonymous plugin)', () => {
-			class AnonymousPlugin {}
+			class AnonymousPlugin { }
 
 			const plugins = new PluginCollection( editor, [ AnonymousPlugin ].concat( availablePlugins ) );
 
@@ -339,7 +339,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
@@ -350,12 +350,12 @@ describe( 'PluginCollection', () => {
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-required/, editor );
 
-					expect( logSpy.calledTwice ).to.equal( true );
+					sinon.assert.calledTwice( consoleErrorStub );
 				} );
 		} );
 
 		it( 'logs if tries to load more than one plugin with the same name', () => {
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const plugins = new PluginCollection( editor );
 
 			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
@@ -366,10 +366,10 @@ describe( 'PluginCollection', () => {
 					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
 					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
 
-					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+					sinon.assert.calledOnce( consoleWarnStub );
+					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
 
-					const warnData = logSpy.firstCall.args[ 1 ];
+					const warnData = consoleWarnStub.firstCall.args[ 1 ];
 					expect( warnData.pluginName ).to.equal( 'Foo' );
 					expect( warnData.plugin1 ).to.equal( PluginFoo );
 					expect( warnData.plugin2 ).to.equal( AnotherPluginFoo );
@@ -379,7 +379,7 @@ describe( 'PluginCollection', () => {
 		it( 'logs if tries to load more than one plugin with the same name (plugin requires plugin with the same name)', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const plugins = new PluginCollection( editor );
 
 			return plugins.init( [ PluginFoo ] )
@@ -390,17 +390,16 @@ describe( 'PluginCollection', () => {
 					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
 					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
 
-					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+					expect( consoleWarnStub.calledOnce ).to.equal( true );
+					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
 				} );
 		} );
 
-		it(
-			'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
+		it( 'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
 			() => {
 				availablePlugins = [ PluginFoo ];
 
-				const logSpy = testUtils.sinon.stub( log, 'warn' );
+				const consoleWarnStub = sinon.stub( console, 'warn' );
 				const plugins = new PluginCollection( editor, availablePlugins );
 
 				return plugins.init( [ 'Foo', AnotherPluginFoo ] )
@@ -411,16 +410,15 @@ describe( 'PluginCollection', () => {
 						expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
 						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
 
-						expect( logSpy.calledOnce ).to.equal( true );
-						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+						expect( consoleWarnStub.calledOnce ).to.equal( true );
+						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
 					} );
-			}
-		);
+			} );
 	} );
 
 	describe( 'get()', () => {
 		it( 'retrieves plugin by its constructor', () => {
-			class SomePlugin extends Plugin {}
+			class SomePlugin extends Plugin { }
 
 			availablePlugins.push( SomePlugin );
 
@@ -433,7 +431,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'retrieves plugin by its name and constructor', () => {
-			class SomePlugin extends Plugin {}
+			class SomePlugin extends Plugin { }
 			SomePlugin.pluginName = 'foo/bar';
 
 			availablePlugins.push( SomePlugin );
@@ -458,7 +456,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'throws if plugin cannot be retrieved by class', () => {
-			class SomePlugin extends Plugin {}
+			class SomePlugin extends Plugin { }
 			SomePlugin.pluginName = 'foo';
 
 			const plugins = new PluginCollection( editor, availablePlugins );
@@ -470,7 +468,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'throws if plugin cannot be retrieved by class (class name in error)', () => {
-			class SomePlugin extends Plugin {}
+			class SomePlugin extends Plugin { }
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -597,8 +595,8 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'returns only plugins by constructors', () => {
-			class SomePlugin1 extends Plugin {}
-			class SomePlugin2 extends Plugin {}
+			class SomePlugin1 extends Plugin { }
+			class SomePlugin2 extends Plugin { }
 			SomePlugin2.pluginName = 'foo/bar';
 
 			availablePlugins.push( SomePlugin1 );
