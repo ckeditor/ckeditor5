@@ -29,7 +29,7 @@ describe( 'utils - testUtils', () => {
 		} );
 
 		it( 'should create an observer', () => {
-			function Emitter() { }
+			function Emitter() {}
 			Emitter.prototype = EmitterMixin;
 
 			expect( observer ).to.be.instanceof( Emitter );
