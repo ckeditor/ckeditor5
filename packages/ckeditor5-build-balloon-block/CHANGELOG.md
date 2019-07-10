@@ -3,6 +3,8 @@ Changelog
 
 ## [12.3.1](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.0...v12.3.1) (2019-07-10)
 
+We are happy to report the release of CKEditor 5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+
 ### Dependencies
 
 Patch releases (bug fixes, internal changes):
@@ -38,8 +40,6 @@ Patch releases (bug fixes, internal changes):
 
 
 ## [12.3.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.2.0...v12.3.0) (2019-07-04)
-
-We are happy to report the release of CKEditor 5 v12.3.0. This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
 ### Dependencies
 
