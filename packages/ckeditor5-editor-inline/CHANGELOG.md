@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.2.0...v12.2.1) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [12.2.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.1.1...v12.2.0) (2019-07-04)
 
 ### Features
