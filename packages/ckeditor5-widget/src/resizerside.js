@@ -63,7 +63,7 @@ export default class ResizerSide {
 		context.domResizeShadow.style.width = `${ drawnSize.x }px`;
 		context.domResizeShadow.style.height = `${ drawnSize.y }px`;
 
-		return proposedSize;
+		return drawnSize; // @todo decide what size should actually be returned.
 	}
 
 	redraw() {}

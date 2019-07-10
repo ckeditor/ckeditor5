@@ -13,12 +13,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 const HEIGHT_ATTRIBUTE_NAME = 'height';
 
-function getAspectRatio( element ) {
-	const nativeRectangle = element.getBoundingClientRect();
-
-	return nativeRectangle.width / nativeRectangle.height;
-}
-
 /**
  * Stores the internal state of a single resizable object.
  *
@@ -60,6 +54,16 @@ export default class ResizeContext {
 		this.referenceCoordinates = {
 			y: 0,
 			x: 0
+		};
+
+		/**
+		 * Size of an image before resize.
+		 *
+		 * This information is only known after DOM was rendered, so it will be updated later.
+		 */
+		this.originalSize = {
+			x: 0,
+			y: 0
 		};
 
 		this._cleanupContext();
@@ -117,9 +121,12 @@ export default class ResizeContext {
 
 		this.referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
 
-		if ( resizeHost ) {
-			this.aspectRatio = getAspectRatio( resizeHost, this.referenceHandlerPosition );
-		}
+		this.originalSize = {
+			x: resizeHost.width,
+			y: resizeHost.height
+		};
+
+		this.aspectRatio = this.originalSize.x / this.originalSize.y;
 
 		this.resizeStrategy.begin( domResizeHandler );
 	}
