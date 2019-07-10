@@ -197,6 +197,14 @@ describe( 'Editor', () => {
 			const editor = new TestEditor( { language: 'pl' } );
 
 			expect( editor.locale.language ).to.equal( 'pl' );
+			expect( editor.locale.contentLanguage ).to.equal( 'pl' );
+		} );
+
+		it( 'is configured with the config.contentLanguage', () => {
+			const editor = new TestEditor( { language: 'pl', contentLanguage: 'ar' } );
+
+			expect( editor.locale.language ).to.equal( 'pl' );
+			expect( editor.locale.contentLanguage ).to.equal( 'ar' );
 		} );
 	} );
 
