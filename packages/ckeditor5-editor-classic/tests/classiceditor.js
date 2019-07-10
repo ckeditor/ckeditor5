@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import ClassicEditorUI from '../src/classiceditorui';
 import ClassicEditorUIView from '../src/classiceditoruiview';
@@ -19,7 +19,6 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
@@ -35,7 +34,7 @@ describe( 'ClassicEditor', () => {
 
 		document.body.appendChild( editorElement );
 
-		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+		testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
 	} );
 
 	afterEach( () => {
