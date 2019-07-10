@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
+/* globals window, console */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -13,14 +13,10 @@ import FileRepository from '../src/filerepository';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { createNativeFileMock, UploadAdapterMock, NativeFileReaderMock } from './_utils/mocks';
-import log from '@ckeditor/ckeditor5-utils/src/log';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import FileReader from '../src/filereader';
 
 describe( 'FileRepository', () => {
 	let editor, fileRepository, adapterMock;
-
-	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -45,6 +41,8 @@ describe( 'FileRepository', () => {
 	} );
 
 	afterEach( () => {
+		sinon.restore();
+
 		return editor.destroy();
 	} );
 
@@ -171,16 +169,16 @@ describe( 'FileRepository', () => {
 
 	describe( 'createLoader()', () => {
 		it( 'should return null if adapter is not present', () => {
-			const stub = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			fileRepository.createUploadAdapter = undefined;
 
 			expect( fileRepository.createLoader( createNativeFileMock() ) ).to.be.null;
 
-			sinon.assert.calledOnce( stub );
+			sinon.assert.calledOnce( consoleErrorStub );
 			sinon.assert.calledWithExactly(
-				stub,
-				'filerepository-no-upload-adapter: Upload adapter is not defined.'
+				consoleErrorStub,
+				sinon.match( 'filerepository-no-upload-adapter: Upload adapter is not defined.' )
 			);
 		} );
 
@@ -202,7 +200,7 @@ describe( 'FileRepository', () => {
 		} );
 
 		it( 'should catch if file promise rejected (file)', () => {
-			const catchSpy = testUtils.sinon.spy( Promise.prototype, 'catch' );
+			const catchSpy = sinon.spy( Promise.prototype, 'catch' );
 
 			fileRepository.createLoader( createNativeFileMock() );
 
@@ -211,7 +209,7 @@ describe( 'FileRepository', () => {
 		} );
 
 		it( 'should catch if file promise rejected (promise)', () => {
-			const catchSpy = testUtils.sinon.spy( Promise.prototype, 'catch' );
+			const catchSpy = sinon.spy( Promise.prototype, 'catch' );
 
 			fileRepository.createLoader( new Promise( () => {} ) );
 
@@ -260,7 +258,7 @@ describe( 'FileRepository', () => {
 		beforeEach( () => {
 			file = createNativeFileMock();
 			loader = fileRepository.createLoader( file );
-			destroySpy = testUtils.sinon.spy( loader, '_destroy' );
+			destroySpy = sinon.spy( loader, '_destroy' );
 		} );
 
 		it( 'should destroy provided loader', () => {
@@ -287,7 +285,7 @@ describe( 'FileRepository', () => {
 			const promise = new Promise( resolve => resolve( createNativeFileMock() ) );
 			const newLoader = fileRepository.createLoader( promise );
 
-			destroySpy = testUtils.sinon.spy( newLoader, '_destroy' );
+			destroySpy = sinon.spy( newLoader, '_destroy' );
 
 			fileRepository.destroyLoader( promise );
 
@@ -303,7 +301,7 @@ describe( 'FileRepository', () => {
 			const promise = Promise.resolve( createNativeFileMock() );
 			const newLoader = fileRepository.createLoader( promise );
 
-			destroySpy = testUtils.sinon.spy( newLoader, '_destroy' );
+			destroySpy = sinon.spy( newLoader, '_destroy' );
 
 			return newLoader.file.then( fileInstance => {
 				expect( fileRepository.loaders.length ).to.equal( 1 );
@@ -324,7 +322,7 @@ describe( 'FileRepository', () => {
 		let loader, file, nativeReaderMock;
 
 		beforeEach( () => {
-			testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
+			sinon.stub( window, 'FileReader' ).callsFake( () => {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;
@@ -695,9 +693,9 @@ describe( 'FileRepository', () => {
 			let filePromiseRejecterSpy, readerAbortSpy, adapterAbortSpy;
 
 			beforeEach( () => {
-				filePromiseRejecterSpy = testUtils.sinon.spy( loader._filePromiseWrapper, 'rejecter' );
-				readerAbortSpy = testUtils.sinon.spy( loader._reader, 'abort' );
-				adapterAbortSpy = testUtils.sinon.spy( loader._adapter, 'abort' );
+				filePromiseRejecterSpy = sinon.spy( loader._filePromiseWrapper, 'rejecter' );
+				readerAbortSpy = sinon.spy( loader._reader, 'abort' );
+				adapterAbortSpy = sinon.spy( loader._adapter, 'abort' );
 			} );
 
 			it( 'should abort correctly before read/upload is called', () => {
