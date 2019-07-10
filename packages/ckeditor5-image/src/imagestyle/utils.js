@@ -7,12 +7,13 @@
  * @module image/imagestyle/utils
  */
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
+/* globals console */
 
 import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import centerIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Default image styles provided by the plugin that can be referred in the
@@ -115,8 +116,8 @@ function _normalizeStyle( style ) {
 		}
 		// If it's just a name but none of the defaults, warn because probably it's a mistake.
 		else {
-			log.warn(
-				'image-style-not-found: There is no such image style of given name.',
+			console.warn(
+				attachLinkToDocumentation( 'image-style-not-found: There is no such image style of given name.' ),
 				{ name: styleName }
 			);
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
+/* globals console */
 
 import fullWidthIcon from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import leftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
@@ -100,14 +100,14 @@ describe( 'ImageStyle utils', () => {
 			} );
 
 			it( 'should warn if a #name not found in default styles', () => {
-				testUtils.sinon.stub( log, 'warn' );
+				testUtils.sinon.stub( console, 'warn' );
 
 				expect( normalizeImageStyles( [ 'foo' ] ) ).to.deep.equal( [ {
 					name: 'foo'
 				} ] );
 
-				sinon.assert.calledOnce( log.warn );
-				sinon.assert.calledWithExactly( log.warn,
+				sinon.assert.calledOnce( console.warn );
+				sinon.assert.calledWithExactly( console.warn,
 					sinon.match( /^image-style-not-found/ ),
 					{ name: 'foo' }
 				);
