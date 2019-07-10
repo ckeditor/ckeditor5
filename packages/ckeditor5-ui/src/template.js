@@ -7,15 +7,14 @@
  * @module ui/template
  */
 
-/* global document */
+/* global document, console */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
 import ViewCollection from './viewcollection';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isObject, cloneDeepWith } from 'lodash-es';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
@@ -381,7 +380,9 @@ export default class Template {
 			 *
 			 * @error template-extend-render
 			 */
-			log.warn( 'template-extend-render: Attempting to extend a template which has already been rendered.' );
+			console.warn( attachLinkToDocumentation(
+				'template-extend-render: Attempting to extend a template which has already been rendered.'
+			) );
 		}
 
 		extendTemplate( template, normalize( clone( def ) ) );
