@@ -9,7 +9,7 @@
 
 import { translate } from './translation-service';
 
-const RTL_LANGUAGE_CODES = { ar: 1, fa: 1, he: 1, ku: 1, ug: 1 };
+const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
 
 /**
  * Represents the localization services.
@@ -46,20 +46,26 @@ export default class Locale {
 		this.contentLanguage = contentLanguage || this.language;
 
 		/**
-		 * Text direction of the {@link #language editor language}.
+		 * Text direction of the {@link #language editor language}. Either `'ltr'` or `'rtl'`.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.languageDirection = RTL_LANGUAGE_CODES[ this.language ] ? 'rtl' : 'ltr';
+		this.languageDirection = getLanguageDirection( this.language );
 
 		/**
 		 * Text direction of the {@link #contentLanguage editor content language}.
 		 *
+		 * If the content language was passed directly to the `Locale` constructor, this property represents the
+		 * direction of that language (either `'ltr'` or `'rtl'`).
+		 *
+		 * If the {@link #contentLanguage editor content language} was derived from the {@link #language editor language},
+		 * the content language direction is set to `'auto'`.
+		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.contentLanguageDirection = RTL_LANGUAGE_CODES[ this.contentLanguage ] ? 'rtl' : 'ltr';
+		this.contentLanguageDirection = contentLanguage ? getLanguageDirection( contentLanguage ) : 'auto';
 
 		/**
 		 * Translates the given string to the {@link #language}. This method is also available in {@link module:core/editor/editor~Editor#t}
@@ -99,4 +105,12 @@ export default class Locale {
 
 		return translatedString;
 	}
+}
+
+// Helps determine whether a language is LTR or RTL.
+//
+// @param {String} language The ISO 639-1 language code.
+// @returns {String} 'ltr' or 'rtl
+function getLanguageDirection( languageCode ) {
+	return RTL_LANGUAGE_CODES.includes( languageCode );
 }
