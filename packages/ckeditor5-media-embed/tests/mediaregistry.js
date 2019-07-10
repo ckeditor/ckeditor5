@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import MediaRegistry from '../src/mediaregistry';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'MediaRegistry', () => {
 	describe( 'constructor()', () => {
@@ -40,7 +41,7 @@ describe( 'MediaRegistry', () => {
 		} );
 
 		it( 'logs a warning when provider\'s name is not defined', () => {
-			const logStub = sinon.stub( log, 'warn' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			const providers = [
 				{ url: [ /dailymotion\.com/ ] },
@@ -53,11 +54,9 @@ describe( 'MediaRegistry', () => {
 			const availableProviders = mediaRegistry.providerDefinitions.map( provider => provider.name );
 
 			expect( availableProviders ).to.deep.equal( [ 'spotify', 'youtube', 'vimeo' ] );
-			expect( logStub.calledOnce ).to.equal( true );
-			expect( logStub.firstCall.args[ 0 ] ).to.equal(
-				'media-embed-no-provider-name: The configured media provider has no name and cannot be used.'
-			);
-			expect( logStub.firstCall.args[ 1 ] ).to.deep.equal( { provider: { url: [ /dailymotion\.com/ ] } } );
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name/ );
+			expect( consoleWarnStub.firstCall.args[ 1 ] ).to.deep.equal( { provider: { url: [ /dailymotion\.com/ ] } } );
 		} );
 	} );
 

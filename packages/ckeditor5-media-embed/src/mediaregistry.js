@@ -7,11 +7,13 @@
  * @module media-embed/mediaregistry
  */
 
+/* globals console */
+
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const mediaPlaceholderIconViewBox = '0 0 64 42';
 
@@ -46,8 +48,9 @@ export default class MediaRegistry {
 					 *
 					 * @warning media-embed-no-provider-name
 					 */
-					log.warn( 'media-embed-no-provider-name: The configured media provider has no name and cannot be used.',
-						{ provider } );
+					console.warn( attachLinkToDocumentation(
+						'media-embed-no-provider-name: The configured media provider has no name and cannot be used.'
+					), { provider } );
 
 					return false;
 				}

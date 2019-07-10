@@ -3,19 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import MediaEmbedEditing from '../src/mediaembedediting';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
-
-	testUtils.createSinonSandbox();
 
 	const testProviders = {
 		A: {
@@ -58,7 +56,11 @@ describe( 'MediaEmbedEditing', () => {
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+		sinon.stub( env, 'isEdge' ).get( () => false );
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	it( 'should be named', () => {
@@ -69,7 +71,7 @@ describe( 'MediaEmbedEditing', () => {
 		describe( 'configuration', () => {
 			describe( '#providers', () => {
 				it( 'should warn when provider has no name', () => {
-					const logSpy = testUtils.sinon.stub( log, 'warn' );
+					const consoleWarnStub = sinon.stub( console, 'warn' );
 					const provider = {
 						url: /.*/
 					};
@@ -77,9 +79,9 @@ describe( 'MediaEmbedEditing', () => {
 					return createTestEditor( {
 						providers: [ provider ]
 					} ).then( () => {
-						expect( logSpy.calledOnce ).to.equal( true );
-						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
-						expect( logSpy.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
+						expect( consoleWarnStub.calledOnce ).to.equal( true );
+						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
+						expect( consoleWarnStub.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
 
@@ -328,7 +330,7 @@ describe( 'MediaEmbedEditing', () => {
 
 			describe( '#extraProviders', () => {
 				it( 'should warn when provider has no name', () => {
-					const logSpy = testUtils.sinon.stub( log, 'warn' );
+					const consoleWarnStub = sinon.stub( console, 'warn' );
 					const provider = {
 						url: /.*/
 					};
@@ -336,9 +338,9 @@ describe( 'MediaEmbedEditing', () => {
 					return createTestEditor( {
 						extraProviders: [ provider ]
 					} ).then( () => {
-						expect( logSpy.calledOnce ).to.equal( true );
-						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
-						expect( logSpy.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
+						expect( consoleWarnStub.calledOnce ).to.equal( true );
+						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
+						expect( consoleWarnStub.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
 
