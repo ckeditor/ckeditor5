@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [14.1.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.0...v14.1.1) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [14.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.0.0...v14.1.0) (2019-07-04)
 
 ### Features
