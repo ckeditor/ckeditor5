@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [12.1.1](https://github.com/ckeditor/ckeditor5-typing/compare/v12.1.0...v12.1.1) (2019-07-10)
+
+### Bug fixes
+
+* Text transformations will not remove existing formatting. Closes [#203](https://github.com/ckeditor/ckeditor5-typing/issues/203). Closes [#196](https://github.com/ckeditor/ckeditor5-typing/issues/196). ([2279eee](https://github.com/ckeditor/ckeditor5-typing/commit/2279eee))
+
+
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-typing/compare/v12.0.2...v12.1.0) (2019-07-04)
 
 ### Features
