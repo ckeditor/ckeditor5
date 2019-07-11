@@ -8,7 +8,7 @@ The UI of the editor can be localized. CKEditor 5 currently supports around 20 l
 
 If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
 
-See the demo of the editor in German:
+See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
 
@@ -40,7 +40,7 @@ Next, you can configure the editor to use the chosen language:
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// The language code is defined in the https://en.wikipedia.org/wiki/ISO_639-1 standard.
-		language: 'de'
+		language: 'es'
 	} )
 	.then( editor => {
 		console.log( editor );
