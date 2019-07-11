@@ -92,7 +92,7 @@ ClassicEditor
 ## Common API
 
 The {@link module:word-count/wordcount~WordCount} plugin provides:
-  * {@link module:word-count/wordcount~WordCount#wordCountContainer} method. It returns a self-updating HTML element which is updated with the current number of words and characters in the editor. There is a possibility to remove "Words" or "Characters" counters with proper configuration of {@link module:word-count/wordcount~WordCountConfig#displayWords} and {@link module:word-count/wordcount~WordCountConfig#displayCharacters},
+  * {@link module:word-count/wordcount~WordCount#wordCountContainer} getter. It returns a self-updating HTML element which is updated with the current number of words and characters in the editor. There is a possibility to remove "Words" or "Characters" counters with proper configuration of {@link module:word-count/wordcount~WordCountConfig#displayWords} and {@link module:word-count/wordcount~WordCountConfig#displayCharacters},
   * {@link module:word-count/wordcount~WordCount#event:update update event} which is fired whenever the plugins update the number of counted words and characters. There is a possibility to run own callback function with updated values. Please note that update event is throttled.
 
 <info-box>
