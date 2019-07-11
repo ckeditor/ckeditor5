@@ -228,7 +228,7 @@
  *
  * Leaving this configuration unset (default) will inherit the content language from
  * {@link module:core/editor/editorconfig~EditorConfig#language UI language} and leave its direction
- * up to the web browser based on the first strong (directional) character typed by the user in the block
+ * up to the web browser based on the first strong (directional) character typed by the user
  * ([Unicode® Bidirectional Algorithm](http://www.unicode.org/reports/tr9/)).
  *
  * If you want to change the language of the entire editor's UI, check out
