@@ -308,7 +308,7 @@ export default class DropdownView extends View {
 
 	/**
 	 * Returns {@link #panelView panel} positions to be used by the
-	 * {@link module:utils/dom/position#getOptimalPosition `getOptimalPosition()`}
+	 * {@link module:utils/dom/position~getOptimalPosition `getOptimalPosition()`}
 	 * utility considering the direction of the language the UI of the editor is displayed in.
 	 *
 	 * @type {module:utils/dom/position~Options#positions}
