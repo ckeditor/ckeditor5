@@ -158,6 +158,23 @@ describe( 'WordCount', () => {
 					.then( done )
 					.catch( done );
 			} );
+
+			describe( 'container not created', () => {
+				let editor;
+
+				beforeEach( () => {
+					return VirtualTestEditor.create( {
+						plugins: [ WordCount, Paragraph ]
+					} )
+						.then( _editor => {
+							editor = _editor;
+						} );
+				} );
+
+				it( 'should not throw an error', () => {
+					return editor.destroy();
+				} );
+			} );
 		} );
 	} );
 
