@@ -166,7 +166,7 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 
 ## Setting the language of the content
 
-In CKEditor 5 you can separately configure the language of the UI and the language of the content. That means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (e.g. [right–to–left](#rtl-righttoleft-languages-support) ones) because it changes the default alignment of the text.
+In CKEditor 5 you can separately configure the language of the UI and the language of the content. That means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (e.g. [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
 
 Configure {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`} to change the language of the content. In this example, the UI of the editor will be English but the content will be Arabic:
 
