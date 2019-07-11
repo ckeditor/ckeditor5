@@ -23,6 +23,19 @@
 	padding: 0 var(--ck-spacing-standard);
 	border: 1px solid transparent;
 
+	/* https://github.com/ckeditor/ckeditor5/issues/1151 */
+	&[dir="auto"] {
+		text-align: initial;
+	}
+
+	&[dir="ltr"] {
+		text-align: left;
+	}
+
+	&[dir="rtl"] {
+		text-align: right;
+	}
+
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/116 */
 	& > *:first-child {
 		margin-top: var(--ck-spacing-large);
