@@ -7,7 +7,7 @@
 
 import InlineEditor from '../../src/inlineeditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { createObserver } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 window.editors = {};
 window.editables = [];
@@ -30,7 +30,7 @@ function initEditors() {
 				window.editors[ selector ] = editor;
 				window.editables.push( editor.editing.view.document.getRoot() );
 
-				const observer = testUtils.createObserver();
+				const observer = createObserver();
 
 				observer.observe(
 					`${ selector }.ui.focusTracker`,
