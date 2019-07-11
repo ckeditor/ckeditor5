@@ -152,7 +152,7 @@ If you do not have the reference to the editor instance but you have access to t
 const domEditableElement = document.querySelector( '.ck-editor__editable' );
 const editorInstance = domEditableElement.ckeditorInstance;
 
-editor.editing.view.change( writer => {
+editorInstance.editing.view.change( writer => {
 	// Map the editable element in DOM to the editable element in editor's view.
 	const viewEditableRoot = editorInstance.editing.view.domConverter.mapDomToView( domEditableElement );
 
