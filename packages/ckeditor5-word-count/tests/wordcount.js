@@ -159,21 +159,13 @@ describe( 'WordCount', () => {
 					.catch( done );
 			} );
 
-			describe( 'container not created', () => {
-				let editor;
-
-				beforeEach( () => {
-					return VirtualTestEditor.create( {
-						plugins: [ WordCount, Paragraph ]
-					} )
-						.then( _editor => {
-							editor = _editor;
-						} );
-				} );
-
-				it( 'should not throw an error', () => {
-					return editor.destroy();
-				} );
+			it( 'should not throw an error if container is not specified', () => {
+				return VirtualTestEditor.create( {
+					plugins: [ WordCount, Paragraph ]
+				} )
+					.then( editor => {
+						return editor.destroy();
+					} );
 			} );
 		} );
 	} );
