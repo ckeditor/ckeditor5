@@ -136,8 +136,10 @@ export default class WordCount extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._outputView.element.remove();
-		this._outputView.destroy();
+		if ( this._outputView ) {
+			this._outputView.element.remove();
+			this._outputView.destroy();
+		}
 
 		super.destroy();
 	}

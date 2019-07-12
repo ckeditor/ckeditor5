@@ -158,6 +158,15 @@ describe( 'WordCount', () => {
 					.then( done )
 					.catch( done );
 			} );
+
+			it( 'should not throw an error if container is not specified', () => {
+				return VirtualTestEditor.create( {
+					plugins: [ WordCount, Paragraph ]
+				} )
+					.then( editor => {
+						return editor.destroy();
+					} );
+			} );
 		} );
 	} );
 
