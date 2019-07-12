@@ -15,7 +15,7 @@ import Element from '../element';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
 import Selection from '../selection';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -438,7 +438,13 @@ class Insertion {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be after the node we'll merge. If it isn't,
 				// it should need to be secured as in the left merge case.
-				// @if CK_DEBUG // console.error( 'The insertion position should equal the merge position' );
+				/**
+				 * An internal error occured during merging insertion content with siblings.
+				 * The insertion position should equal to the merge position.
+				 *
+				 * @error insertcontent-invalid-insertion-position
+				 */
+				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
 			}
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.

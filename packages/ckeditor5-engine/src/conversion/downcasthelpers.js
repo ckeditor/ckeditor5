@@ -9,7 +9,7 @@
  * @module engine/conversion/downcasthelpers
  */
 
-/* globals console */
+/* globals */
 
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
@@ -20,7 +20,7 @@ import DocumentSelection from '../model/documentselection';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Downcast conversion helper functions.
@@ -826,12 +826,11 @@ function changeAttribute( attributeCreator ) {
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
-			console.warn( attachLinkToDocumentation(
+			throw new CKEditorError(
 				'conversion-attribute-to-attribute-on-text: ' +
-				'Trying to convert text node\'s attribute with attribute-to-attribute converter.'
-			) );
-
-			return;
+				'Trying to convert text node\'s attribute with attribute-to-attribute converter.',
+				[ data, conversionApi ]
+			);
 		}
 
 		// First remove the old attribute if there was one.

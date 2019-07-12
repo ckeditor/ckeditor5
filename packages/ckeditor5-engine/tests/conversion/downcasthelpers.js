@@ -33,6 +33,7 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import View from '../../src/view/view';
 import createViewRoot from '../view/_utils/createroot';
 import { setData as setModelData } from '../../src/dev-utils/model';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller;
@@ -638,29 +639,19 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements + text)', () => {
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
-
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			downcastHelpers.attributeToAttribute( { model: 'test', view: 'test' } );
 
-			model.change( writer => {
-				writer.insertElement( 'paragraph', modelRoot, 0 );
-				writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 1 );
+			expectToThrowCKEditorError( () => {
+				model.change( writer => {
+					writer.insertElement( 'paragraph', modelRoot, 0 );
+					writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 1 );
 
-				writer.insertText( 'Foo', { test: '2' }, modelRoot.getChild( 0 ), 0 );
-				writer.insertText( 'Bar', { test: '3' }, modelRoot.getChild( 1 ), 0 );
-			} );
-
-			expectResult( '<p>Foo</p><p test="1">Bar</p>' );
-			expect( consoleWarnStub.callCount ).to.equal( 2 );
-			expect( consoleWarnStub.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
-
-			model.change( writer => {
-				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
-			} );
-
-			expectResult( '<p>Foo</p><p>Bar</p>' );
+					writer.insertText( 'Foo', { test: '2' }, modelRoot.getChild( 0 ), 0 );
+					writer.insertText( 'Bar', { test: '3' }, modelRoot.getChild( 1 ), 0 );
+				} );
+			}, /^conversion-attribute-to-attribute-on-text/ );
 		} );
 
 		it( 'should convert attribute insert/change/remove on a model node', () => {
