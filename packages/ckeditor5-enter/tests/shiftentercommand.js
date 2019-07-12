@@ -101,6 +101,31 @@ describe( 'ShiftEnterCommand', () => {
 				'<p>x</p><p>[]foo</p><p>y</p>',
 				'<p>x</p><p><softBreak></softBreak>[]foo</p><p>y</p>'
 			);
+
+			describe( 'copyOnEnter', () => {
+				beforeEach( () => {
+					schema.extend( '$text', { allowAttributes: [ 'foo', 'bar' ] } );
+					schema.setAttributeProperties( 'foo', { copyOnEnter: true } );
+				} );
+
+				test(
+					'allowed attributes are copied',
+					'<p><$text foo="true">test[]</$text></p>',
+					'<p><$text foo="true">test</$text><softBreak></softBreak><$text foo="true">[]</$text></p>'
+				);
+
+				test(
+					'unknown attributes are not copied',
+					'<p><$text bar="true">test[]</$text></p>',
+					'<p><$text bar="true">test</$text><softBreak></softBreak>[]</p>'
+				);
+
+				test(
+					'only allowed attributes are copied from mix set',
+					'<p><$text bar="true" foo="true">test[]</$text></p>',
+					'<p><$text bar="true" foo="true">test</$text><softBreak></softBreak><$text foo="true">[]</$text></p>'
+				);
+			} );
 		} );
 
 		describe( 'non-collapsed selection', () => {
