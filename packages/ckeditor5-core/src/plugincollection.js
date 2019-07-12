@@ -7,8 +7,9 @@
  * @module core/plugincollection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
+/* globals console */
+
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -189,7 +190,7 @@ export default class PluginCollection {
 			const errorMsg = 'plugincollection-plugin-not-found: Some plugins are not available and could not be loaded.';
 
 			// Log the error so it's more visible on the console. Hopefully, for better DX.
-			log.error( errorMsg, { plugins: missingPlugins } );
+			console.error( attachLinkToDocumentation( errorMsg ), { plugins: missingPlugins } );
 
 			return Promise.reject( new CKEditorError( errorMsg, this._editor, { plugins: missingPlugins } ) );
 		}
@@ -231,7 +232,9 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructor } );
+					console.error( attachLinkToDocumentation(
+						'plugincollection-load: It was not possible to load the plugin.'
+					), { plugin: PluginConstructor } );
 
 					throw err;
 				} );
@@ -371,13 +374,14 @@ export default class PluginCollection {
 			 * @param {Function} plugin1 The first plugin constructor.
 			 * @param {Function} plugin2 The second plugin constructor.
 			 */
-			log.warn(
+			throw new CKEditorError(
 				'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.',
+				null,
 				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
 			);
-		} else {
-			this._plugins.set( pluginName, plugin );
 		}
+
+		this._plugins.set( pluginName, plugin );
 	}
 }
 

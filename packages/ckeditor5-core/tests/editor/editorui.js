@@ -10,9 +10,8 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 
 import testUtils from '../_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
-/* global document */
+/* global document, console */
 
 describe( 'EditorUI', () => {
 	let editor, ui;
@@ -186,7 +185,7 @@ describe( 'EditorUI', () => {
 	describe( '_editableElements()', () => {
 		it( 'should warn about deprecation', () => {
 			const ui = new EditorUI( editor );
-			const stub = testUtils.sinon.stub( log, 'warn' );
+			const stub = testUtils.sinon.stub( console, 'warn' );
 
 			expect( ui._editableElements ).to.be.instanceOf( Map );
 			sinon.assert.calledWithMatch( stub, 'editor-ui-deprecated-editable-elements' );
