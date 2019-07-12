@@ -183,8 +183,7 @@ export default class ToolbarView extends View {
 				 * @param {String} name The name of the component.
 				 */
 				console.warn( attachLinkToDocumentation(
-					'toolbarview-item-unavailable: The requested toolbar item is unavailable.',
-				), { name } );
+					'toolbarview-item-unavailable: The requested toolbar item is unavailable.', { name } ) );
 			}
 		} );
 	}
