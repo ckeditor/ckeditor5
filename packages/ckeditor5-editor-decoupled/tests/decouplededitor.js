@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout */
+/* globals document, setTimeout, console */
 
 import DecoupledEditorUI from '../src/decouplededitorui';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
@@ -18,7 +18,6 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -32,7 +31,7 @@ describe( 'DecoupledEditor', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+		testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
 	} );
 
 	describe( 'constructor()', () => {
