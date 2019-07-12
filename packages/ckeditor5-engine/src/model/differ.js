@@ -111,6 +111,32 @@ export default class Differ {
 	}
 
 	/**
+	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
+	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 *
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
+	refreshItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
+	}
+
+	/**
 	 * Buffers the given operation. An operation has to be buffered before it is executed.
 	 *
 	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
