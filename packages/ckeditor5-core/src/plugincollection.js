@@ -374,13 +374,14 @@ export default class PluginCollection {
 			 * @param {Function} plugin1 The first plugin constructor.
 			 * @param {Function} plugin2 The second plugin constructor.
 			 */
-			console.warn(
-				attachLinkToDocumentation( 'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.' ),
+			throw new CKEditorError(
+				'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.',
+				null,
 				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
 			);
-		} else {
-			this._plugins.set( pluginName, plugin );
 		}
+
+		this._plugins.set( pluginName, plugin );
 	}
 }
 

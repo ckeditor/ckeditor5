@@ -354,66 +354,50 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+		it( 'should reject when loading more than one plugin with the same name', () => {
 			const plugins = new PluginCollection( editor );
 
 			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
-					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-
-					sinon.assert.calledOnce( consoleWarnStub );
-					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
-
-					const warnData = consoleWarnStub.firstCall.args[ 1 ];
-					expect( warnData.pluginName ).to.equal( 'Foo' );
-					expect( warnData.plugin1 ).to.equal( PluginFoo );
-					expect( warnData.plugin2 ).to.equal( AnotherPluginFoo );
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null, {
+						pluginName: 'Foo',
+						plugin1: PluginFoo,
+						plugin2: AnotherPluginFoo
+					} );
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name (plugin requires plugin with the same name)', () => {
+		it( 'should reject when loading more than one plugin with the same name (plugin requires plugin with the same name)', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
-			const consoleWarnStub = sinon.stub( console, 'warn' );
 			const plugins = new PluginCollection( editor );
 
 			return plugins.init( [ PluginFoo ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( AnotherPluginFoo );
-					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-
-					expect( consoleWarnStub.calledOnce ).to.equal( true );
-					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
-			() => {
-				availablePlugins = [ PluginFoo ];
+		it( 'should reject when loading more than one plugin with the same name' +
+			'(plugin with the same name is built-in the PluginCollection)', () => {
+			availablePlugins = [ PluginFoo ];
 
-				const consoleWarnStub = sinon.stub( console, 'warn' );
-				const plugins = new PluginCollection( editor, availablePlugins );
+			const plugins = new PluginCollection( editor, availablePlugins );
 
-				return plugins.init( [ 'Foo', AnotherPluginFoo ] )
-					.then( () => {
-						expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-						expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
-						expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-
-						expect( consoleWarnStub.calledOnce ).to.equal( true );
-						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
-					} );
-			} );
+			return plugins.init( [ 'Foo', AnotherPluginFoo ] )
+				.then( () => {
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {
