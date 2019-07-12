@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals HTMLElement, Event, document, console */
+/* globals HTMLElement, Event, document */
 
 import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template';
 import View from '../src/view';
@@ -2331,9 +2331,7 @@ describe( 'Template', () => {
 			expect( tpl.attributes.b[ 0 ] ).to.equal( 'bar' );
 		} );
 
-		it( 'logs a warning if an element has already been rendered', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
-
+		it( 'throws an error if an element has already been rendered', () => {
 			const tpl = new Template( {
 				tag: 'p'
 			} );
@@ -2346,14 +2344,13 @@ describe( 'Template', () => {
 
 			tpl.render();
 
-			Template.extend( tpl, {
-				attributes: {
-					class: 'bar'
-				}
-			} );
-
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWithExactly( consoleWarnStub, sinon.match( /^template-extend-render/ ) );
+			expectToThrowCKEditorError( () => {
+				Template.extend( tpl, {
+					attributes: {
+						class: 'bar'
+					}
+				} );
+			}, /^template-extend-render/ );
 		} );
 
 		describe( 'attributes', () => {

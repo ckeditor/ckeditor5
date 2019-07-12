@@ -7,9 +7,9 @@
  * @module ui/template
  */
 
-/* global document, console */
+/* global document */
 
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
@@ -380,9 +380,10 @@ export default class Template {
 			 *
 			 * @error template-extend-render
 			 */
-			console.warn( attachLinkToDocumentation(
-				'template-extend-render: Attempting to extend a template which has already been rendered.'
-			) );
+			throw new CKEditorError(
+				'template-extend-render: Attempting to extend a template which has already been rendered.',
+				[ this, template ]
+			);
 		}
 
 		extendTemplate( template, normalize( clone( def ) ) );
