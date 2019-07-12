@@ -4,7 +4,7 @@
  */
 
 .ck-content .image {
-	display: block;
+	display: table;
 	clear: both;
 	text-align: center;
 
