@@ -210,7 +210,8 @@ export default class LabeledInputView extends View {
 					bind.if( 'errorText', 'ck-labeled-input__status_error' ),
 					bind.if( '_statusText', 'ck-hidden', value => !value )
 				],
-				id: statusUid
+				id: statusUid,
+				role: bind.if( 'errorText', 'alert' )
 			},
 			children: [
 				{
