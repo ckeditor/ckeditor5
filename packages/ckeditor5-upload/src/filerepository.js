@@ -7,14 +7,15 @@
  * @module upload/filerepository
  */
 
+/* globals console */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import FileReader from './filereader.js';
 
@@ -171,7 +172,9 @@ export default class FileRepository extends Plugin {
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
-			log.error( 'filerepository-no-upload-adapter: Upload adapter is not defined.' );
+			console.warn( attachLinkToDocumentation(
+				'filerepository-no-upload-adapter: Upload adapter is not defined.'
+			) );
 
 			return null;
 		}
