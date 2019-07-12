@@ -8,7 +8,7 @@
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { defaultConversion, defaultSchema, formatTable, formattedViewTable, viewTable } from '../_utils/utils';
-import injectTableCellPostFixer from '../../src/converters/tablecell-post-fixer';
+import injectTableCellRefreshPostFixer from '../../src/converters/table-cell-refresh-post-fixer';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -16,7 +16,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 
-describe( 'TableCell post-fixer', () => {
+describe( 'Table cell refresh post-fixer', () => {
 	let editor, model, doc, root, view;
 
 	testUtils.createSinonSandbox();
@@ -47,7 +47,7 @@ describe( 'TableCell post-fixer', () => {
 				model.schema.extend( '$block', { allowAttributes: 'foo' } );
 				editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
 
-				injectTableCellPostFixer( model, editor.editing );
+				injectTableCellRefreshPostFixer( model );
 			} );
 	} );
 
@@ -212,33 +212,6 @@ describe( 'TableCell post-fixer', () => {
 
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<div foo="bar">foo</div>' ]
-		], { asWidget: true } ) );
-	} );
-
-	it( 'should not crash when view.change() block was called in model.change()', () => {
-		editor.setData( viewTable( [ [ '<p>foobar</p>' ] ] ) );
-
-		const table = root.getChild( 0 );
-
-		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) )
-			.to.equal( formattedViewTable( [ [ 'foobar' ] ], { asWidget: true } ) );
-
-		expect( () => {
-			model.change( writer => {
-				const tableCell = table.getNodeByPath( [ 0, 0 ] );
-
-				writer.insertElement( 'paragraph', null, writer.createPositionAt( tableCell, 'end' ) );
-				writer.setSelection( writer.createRangeIn( tableCell ) );
-
-				// Do some change in the view while inside model change.
-				editor.editing.view.change( writer => {
-					writer.addClass( 'foo', editor.editing.mapper.toViewElement( tableCell ) );
-				} );
-			} );
-		} ).to.not.throw();
-
-		expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
-			[ { class: 'foo', contents: '<p>{foobar</p><p>]</p>' } ]
 		], { asWidget: true } ) );
 	} );
 
