@@ -7,10 +7,10 @@
  * @module utils/version
  */
 
-/* globals window, global, console */
+/* globals window, global */
 
 import { version } from 'ckeditor5/package.json';
-import { attachLinkToDocumentation } from './ckeditorerror';
+import CKEditorError from './ckeditorerror';
 
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
@@ -138,9 +138,10 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 *
 	 * @error ckeditor-duplicated-modules
 	 */
-	console.error( attachLinkToDocumentation(
-		'ckeditor-duplicated-modules: Some CKEditor 5 modules are duplicated.'
-	) );
+	throw new CKEditorError(
+		'ckeditor-duplicated-modules: Some CKEditor 5 modules are duplicated.',
+		null
+	);
 } else {
 	windowOrGlobal.CKEDITOR_VERSION = version;
 }
