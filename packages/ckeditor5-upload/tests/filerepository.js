@@ -169,15 +169,15 @@ describe( 'FileRepository', () => {
 
 	describe( 'createLoader()', () => {
 		it( 'should return null if adapter is not present', () => {
-			const consoleErrorStub = sinon.stub( console, 'error' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			fileRepository.createUploadAdapter = undefined;
 
 			expect( fileRepository.createLoader( createNativeFileMock() ) ).to.be.null;
 
-			sinon.assert.calledOnce( consoleErrorStub );
+			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly(
-				consoleErrorStub,
+				consoleWarnStub,
 				sinon.match( 'filerepository-no-upload-adapter: Upload adapter is not defined.' )
 			);
 		} );

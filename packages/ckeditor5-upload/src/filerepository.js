@@ -172,7 +172,7 @@ export default class FileRepository extends Plugin {
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
-			console.error( attachLinkToDocumentation(
+			console.warn( attachLinkToDocumentation(
 				'filerepository-no-upload-adapter: Upload adapter is not defined.'
 			) );
 
