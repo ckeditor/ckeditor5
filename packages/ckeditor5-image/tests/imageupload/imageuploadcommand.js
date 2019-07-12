@@ -178,12 +178,12 @@ describe( 'ImageUploadCommand', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
-		it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway)', () => {
+		it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway)', () => {
 			const file = createNativeFileMock();
 
 			fileRepository.createUploadAdapter = undefined;
 
-			const consoleErrorStub = sinon.stub( console, 'error' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
@@ -192,7 +192,7 @@ describe( 'ImageUploadCommand', () => {
 			} ).to.not.throw();
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
-			sinon.assert.calledOnce( consoleErrorStub );
+			sinon.assert.calledOnce( consoleWarnStub );
 		} );
 	} );
 } );

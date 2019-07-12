@@ -279,10 +279,10 @@ describe( 'ImageUploadEditing', () => {
 		expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 	} );
 
-	it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway) when image is pasted', () => {
+	it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway) when image is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
-		const consoleErrorStub = sinon.stub( console, 'error' );
+		const consoleWarnStub = sinon.stub( console, 'warn' );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -296,7 +296,7 @@ describe( 'ImageUploadEditing', () => {
 		} ).to.not.throw();
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-		sinon.assert.calledOnce( consoleErrorStub );
+		sinon.assert.calledOnce( consoleWarnStub );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5-upload/issues/70
