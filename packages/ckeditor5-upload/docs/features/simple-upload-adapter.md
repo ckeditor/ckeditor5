@@ -6,7 +6,7 @@ order: 50
 
 # Simple upload adapter
 
-The Simple upload adapter allows uploading images to an application running on your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API and minimal [editor configuration](#configuration).
+The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter Simple upload adapter} allows uploading images to an application running on your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
 
 See the ["Server–side configuration"](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
 
@@ -81,7 +81,7 @@ To use this upload adapter, you must provide a server–side application that wi
 
 When the image upload process is initiated, the adapter sends a [`POST`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request under {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}.
 
-You can sent additional headers along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
+You can sent additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
 
 The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType) of the request is always `json`. See the ["Successful upload"](#successful-upload) and ["Error handling"](#error-handling) sections to learn more.
 

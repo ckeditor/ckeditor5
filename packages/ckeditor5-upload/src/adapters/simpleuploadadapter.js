@@ -14,51 +14,24 @@ import FileRepository from '../filerepository';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
- * The plugin that allows uploading images to the server using the
- * [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API and very little configuration.
+ * The Simple upload adapter allows uploading images to an application running on your server using
+ * the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a
+ * minimal {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig editor configuration}.
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
  *				simpleUpload: {
  *					uploadUrl: 'http://example.com',
  *					headers: {
- *					    ...
+ *						...
  *					}
  *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
  *
- * See the {@glink features/image-upload/simple-upload-adapter Simple upload adapter} guide to learn how to configure this feature.
- *
- * The plugin assumes that every response that will came from the XHR server will be a JSON.
- *
- * Note: During the upload process, the plugin will send a POST request under the URL specified as
- * {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `simpleUpload.uploadUrl`}
- * in the editor's configuration.
- *
- * If the upload is successful, the XHR server should return an object that contains the `url` property which
- * points out to the uploaded image:
- *
- *		{
- *			"url": "https://example.com/images/foo.jpg"
- *		}
- *
- * If something went wrong, the XHR server must return an object that contains the `error` property which has its own `message`
- * that will be passed to the {@link module:ui/notification/notification~Notification#showWarning `Notification#showWarning`} method.
- *
- *		{
- *			"error": {
- *				"message": "The XHR server cannot handle the request."
- *			}
- *		}
- *
- * If the `message` property is missing in the `error` object,
- * the {@link module:ui/notification/notification~Notification#showWarning `Notification#showWarning`} method will receive
- * the default message: `Couldn't upload file: [filename].`
- *
- * Note: The plugin supports [`XHR.upload.progress`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload)
- * via `evt.total` and `evt.loaded`.
+ * See the {@glink features/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
+ * learn more about the feature (configuration, server–side requirements, etc.).
  *
  * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
@@ -250,14 +223,19 @@ class Adapter {
  *		ClassicEditor
  *			.create( editorElement, {
  *				simpleUpload: {
- *					uploadUrl: '',
+ *					// The URL the images are uploaded to.
+ *					uploadUrl: 'http://example.com',
+ *
+ *					// Headers sent along with the XMLHttpRequest to the upload server.
  *					headers: {
- *					    ...
+ *						...
  *					}
  *				}
  *			} );
  *			.then( ... )
  *			.catch( ... );
+ *
+ * See the {@glink features/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn more.
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
@@ -273,27 +251,36 @@ class Adapter {
  */
 
 /**
- * The path (URL) to the server which handles the file upload. When specified, enables the automatic
- * upload of resources such as images inserted into the content.
+ * The path (URL) to the server (application) which handles the file upload. When specified, enables the automatic
+ * upload of resources (images) inserted into the editor content.
+ *
+ * Learn more about the server application requirements in the
+ * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * of the feature guide.
  *
  * @member {String} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl
  */
 
 /**
- * An object that defines additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) for request
- * that is being sent during the upload. This is the right place to implement security mechanisms like authentication and CSRF protection.
+ * An object that defines additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) sent with
+ * the request to the server during the upload. This is the right place to implement security mechanisms like
+ * authentication and [CSRF](https://developer.mozilla.org/en-US/docs/Glossary/CSRF) protection.
  *
  *		ClassicEditor
  *			.create( editorElement, {
  *				simpleUpload: {
  *					headers: {
- *					    'X-CSRF-TOKEN': 'CSRF-Token',
- *					    Authorization: 'Bearer <JSON Web Token>'
+ *						'X-CSRF-TOKEN': 'CSRF-Token',
+ *						Authorization: 'Bearer <JSON Web Token>'
  *					}
  *				}
  *			} );
  *			.then( ... )
  *			.catch( ... );
+ *
+ * Learn more about the server application requirements in the
+ * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * of the feature guide.
  *
  * @member {Object.<String, String>} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#headers
  */
