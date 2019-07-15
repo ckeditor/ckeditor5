@@ -24,7 +24,7 @@ All that with virtually zero server setup.
 	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images in CKEditor 5.
 </info-box>
 
-### Demo
+## Demo
 
 The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
 
@@ -95,12 +95,6 @@ The `srcset` attribute specifies the image variants dedicated for the various sc
 
 The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. See the detailed {@link @cs guides/easy-image/service-details Easy Image service documentation} to learn more about responsive images and other features offered by the service.
 
-## What's next?
-
-Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
-
-See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
-
 ## Installation
 
 <info-box info>
@@ -132,3 +126,13 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+## What's next?
+
+Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
+
+See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+
+## Contribute
+
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-easy-image.
