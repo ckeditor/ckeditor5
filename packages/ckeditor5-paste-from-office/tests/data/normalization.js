@@ -14,10 +14,11 @@ const editorConfig = {
 	plugins: [ Clipboard, PasteFromOffice ]
 };
 
-describe( 'Paste from Office', () => {
+describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'normalization',
+		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -25,6 +26,7 @@ describe( 'Paste from Office', () => {
 	generateTests( {
 		input: 'image',
 		type: 'normalization',
+		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -32,6 +34,7 @@ describe( 'Paste from Office', () => {
 	generateTests( {
 		input: 'link',
 		type: 'normalization',
+		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -39,6 +42,7 @@ describe( 'Paste from Office', () => {
 	generateTests( {
 		input: 'list',
 		type: 'normalization',
+		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -46,6 +50,15 @@ describe( 'Paste from Office', () => {
 	generateTests( {
 		input: 'spacing',
 		type: 'normalization',
+		dataSource: 'MS Word',
+		browsers,
+		editorConfig
+	} );
+
+	generateTests( {
+		input: 'simpleText',
+		type: 'normalization',
+		dataSource: 'Google Docs',
 		browsers,
 		editorConfig
 	} );

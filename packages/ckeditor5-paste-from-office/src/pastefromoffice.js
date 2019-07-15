@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 
 import { parseHtml } from './filters/parse';
 import { transformListItemLikeElementsIntoLists } from './filters/list';
@@ -38,25 +37,32 @@ export default class PasteFromOffice extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
-			const html = data.dataTransfer.getData( 'text/html' );
+		this.listenTo(
+			editor.plugins.get( 'Clipboard' ),
+			'inputTransformation',
+			this._inputTransformationListener.bind( this ),
+			{ priority: 'high' }
+		);
+	}
 
-			if ( data.pasteFromOfficeProcessed !== true ) {
-				switch ( getInputType( html ) ) {
-					case 'msword':
-						data.content = this._normalizeWordInput( html, data.dataTransfer );
-						break;
-					case 'gdocs':
-						data.content = this._normalizeGDocsInput( data.content );
-						break;
-					default:
-						break;
-				}
+	_inputTransformationListener( evt, data ) {
+		const html = data.dataTransfer.getData( 'text/html' );
 
-				// Set the flag so if `inputTransformation` is re-fired, PFO will not process it again (#44).
-				data.pasteFromOfficeProcessed = true;
+		if ( data.pasteFromOfficeProcessed !== true ) {
+			switch ( getInputType( html ) ) {
+				case 'msword':
+					data.content = this._normalizeWordInput( html, data.dataTransfer );
+					break;
+				case 'gdocs':
+					data.content = this._normalizeGDocsInput( data.content );
+					break;
+				default:
+					break;
 			}
-		}, { priority: 'high' } );
+
+			// Set the flag so if `inputTransformation` is re-fired, PFO will not process it again (#44).
+			data.pasteFromOfficeProcessed = true;
+		}
 	}
 
 	/**
@@ -85,12 +91,13 @@ export default class PasteFromOffice extends Plugin {
 }
 
 function removeBoldTagWrapper( documentFragment ) {
-	if ( documentFragment.childCount === 1 ) {
-		const firstChild = documentFragment.getChild( 0 );
+	const firstChild = documentFragment.getChild( 0 );
 
-		if ( firstChild.name === 'b' && firstChild.getStyle( 'font-weight' ) === 'normal' ) {
-			return new DocumentFragment( firstChild.getChildren() );
-		}
+	if ( firstChild.name === 'b' && firstChild.getStyle( 'font-weight' ) === 'normal' ) {
+		const children = firstChild.getChildren();
+
+		documentFragment._removeChildren( 0 );
+		documentFragment._insertChild( 0, children );
 	}
 
 	return documentFragment;

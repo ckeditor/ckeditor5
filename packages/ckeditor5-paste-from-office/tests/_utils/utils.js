@@ -8,6 +8,9 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata';
+
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -42,6 +45,7 @@ export function createDataTransfer( data ) {
  * @param {Object} config
  * @param {String} config.type Type of tests to generate, could be 'normalization' or 'integration'.
  * @param {String} config.input Name of the fixtures group. Usually stored in `/tests/_data/groupname/`.
+ * @param {String} config.dataSource Name of the office app, which was used to generate data.
  * @param {Array.<String>} config.browsers List of all browsers for which to generate tests.
  * @param {Object} [config.editorConfig] Editor config which is passed to editor `create()` method.
  * @param {Object} [config.skip] List of fixtures for any browser to skip. The supported format is:
@@ -53,6 +57,10 @@ export function createDataTransfer( data ) {
 export function generateTests( config ) {
 	if ( [ 'normalization', 'integration' ].indexOf( config.type ) === -1 ) {
 		throw new Error( `Invalid tests type - \`config.type\`: '${ config.type }'.` );
+	}
+
+	if ( !config.dataSource ) {
+		throw new Error( 'No `config.dataSource` option provided.' );
 	}
 
 	if ( !config.input ) {
@@ -67,16 +75,18 @@ export function generateTests( config ) {
 	const generateSuiteFn = config.type === 'normalization' ? generateNormalizationTests : generateIntegrationTests;
 
 	describe( config.type, () => {
-		describe( config.input, () => {
-			const editorConfig = config.editorConfig || {};
+		describe( config.dataSource, () => {
+			describe( config.input, () => {
+				const editorConfig = config.editorConfig || {};
 
-			for ( const group of Object.keys( groups ) ) {
-				const skip = config.skip && config.skip[ group ] ? config.skip[ group ] : [];
+				for ( const group of Object.keys( groups ) ) {
+					const skip = config.skip && config.skip[ group ] ? config.skip[ group ] : [];
 
-				if ( groups[ group ] ) {
-					generateSuiteFn( group, groups[ group ], editorConfig, skip );
+					if ( groups[ group ] ) {
+						generateSuiteFn( group, groups[ group ], editorConfig, skip );
+					}
 				}
-			}
+			} );
 		} );
 	} );
 }
@@ -124,12 +134,16 @@ function groupFixturesByBrowsers( browsers, fixturesGroup, skipBrowsers ) {
 }
 
 // Generates normalization tests based on a provided fixtures. For each input fixture one test is generated.
+// Please notice that normalization compares generated Views, not DOM. That's why there might appear some not familiar structures,
+// like closing tags for void tags, for example `<br></br>`.
 //
 // @param {String} title Tests group title.
 // @param {Object} fixtures Object containing fixtures.
 // @param {Object} editorConfig Editor config with which test editor will be created.
 // @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
 function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
+	const htmlDataProcessor = new HtmlDataProcessor();
+
 	describe( title, () => {
 		let editor, pasteFromOfficePlugin;
 
@@ -151,12 +165,19 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
-				const dataTransfer = createDataTransfer( {
-					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
-				} );
+				// Simulate data from Clipboard event
+				const data = {
+					content: htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) ),
+					dataTransfer: createDataTransfer( {
+						'text/html': fixtures.input[ name ],
+						'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
+					} )
+				};
+
+				pasteFromOfficePlugin._inputTransformationListener( null, data );
 
 				expectNormalized(
-					pasteFromOfficePlugin._normalizeWordInput( fixtures.input[ name ], dataTransfer ),
+					data.content,
 					fixtures.normalized[ name ]
 				);
 			} );
