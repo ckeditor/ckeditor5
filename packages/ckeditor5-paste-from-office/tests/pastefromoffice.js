@@ -16,74 +16,76 @@ describe( 'Paste from Office plugin', () => {
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
-		content = new DocumentFragment();
-	} );
+	describe( '_normalizeWordInput()', () => {
+		before( () => {
+			content = new DocumentFragment();
+		} );
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ Clipboard, PasteFromOffice ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				normalizeSpy = testUtils.sinon.spy( editor.plugins.get( 'PasteFromOffice' ), '_normalizeWordInput' );
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Clipboard, PasteFromOffice ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					normalizeSpy = testUtils.sinon.spy( PasteFromOffice, '_normalizeWordInput' );
+				} );
+		} );
+
+		it( 'runs normalizations if Word meta tag detected #1', () => {
+			const dataTransfer = createDataTransfer( {
+				'text/html': '<meta name=Generator content="Microsoft Word 15">'
 			} );
-	} );
 
-	it( 'runs normalizations if Word meta tag detected #1', () => {
-		const dataTransfer = createDataTransfer( {
-			'text/html': '<meta name=Generator content="Microsoft Word 15">'
-		} );
+			editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
 
-		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
-
-		expect( normalizeSpy.calledOnce ).to.true;
-	} );
-
-	it( 'runs normalizations if Word meta tag detected #2', () => {
-		const dataTransfer = createDataTransfer( {
-			'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
-		} );
-
-		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
-
-		expect( normalizeSpy.calledOnce ).to.true;
-	} );
-
-	it( 'does not normalize the content without Word meta tag', () => {
-		const dataTransfer = createDataTransfer( {
-			'text/html': '<meta name=Generator content="Other">'
-		} );
-
-		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
-
-		expect( normalizeSpy.called ).to.false;
-	} );
-
-	it( 'does not process content many times for the same `inputTransformation` event', () => {
-		const clipboard = editor.plugins.get( 'Clipboard' );
-
-		const dataTransfer = createDataTransfer( {
-			'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
-		} );
-
-		let eventRefired = false;
-		clipboard.on( 'inputTransformation', ( evt, data ) => {
-			if ( !eventRefired ) {
-				eventRefired = true;
-
-				evt.stop();
-
-				clipboard.fire( 'inputTransformation', data );
-			}
-
-			expect( data.pasteFromOfficeProcessed ).to.true;
 			expect( normalizeSpy.calledOnce ).to.true;
-		}, { priority: 'low' } );
+		} );
 
-		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
+		it( 'runs normalizations if Word meta tag detected #2', () => {
+			const dataTransfer = createDataTransfer( {
+				'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
+			} );
 
-		expect( normalizeSpy.calledOnce ).to.true;
+			editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
+
+			expect( normalizeSpy.calledOnce ).to.true;
+		} );
+
+		it( 'does not normalize the content without Word meta tag', () => {
+			const dataTransfer = createDataTransfer( {
+				'text/html': '<meta name=Generator content="Other">'
+			} );
+
+			editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
+
+			expect( normalizeSpy.called ).to.false;
+		} );
+
+		it( 'does not process content many times for the same `inputTransformation` event', () => {
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			const dataTransfer = createDataTransfer( {
+				'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
+			} );
+
+			let eventRefired = false;
+			clipboard.on( 'inputTransformation', ( evt, data ) => {
+				if ( !eventRefired ) {
+					eventRefired = true;
+
+					evt.stop();
+
+					clipboard.fire( 'inputTransformation', data );
+				}
+
+				expect( data.pasteFromOfficeProcessed ).to.true;
+				expect( normalizeSpy.calledOnce ).to.true;
+			}, { priority: 'low' } );
+
+			editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
+
+			expect( normalizeSpy.calledOnce ).to.true;
+		} );
 	} );
 } );

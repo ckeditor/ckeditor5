@@ -8,9 +8,9 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import PasteFromOffice from '../../src/pastefromoffice';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata';
-
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -145,22 +145,18 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 	const htmlDataProcessor = new HtmlDataProcessor();
 
 	describe( title, () => {
-		let editor, pasteFromOfficePlugin;
+		let editor;
 
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( editorConfig )
 				.then( newEditor => {
 					editor = newEditor;
-
-					pasteFromOfficePlugin = editor.plugins.get( 'PasteFromOffice' );
 				} );
 		} );
 
 		afterEach( () => {
 			editor.destroy();
-
-			pasteFromOfficePlugin = null;
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
@@ -174,7 +170,7 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 					} )
 				};
 
-				pasteFromOfficePlugin._inputTransformationListener( null, data );
+				PasteFromOffice._inputTransformationListener( null, data );
 
 				expectNormalized(
 					data.content,
