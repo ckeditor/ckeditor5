@@ -203,6 +203,12 @@ Additionally, in the "image upload only" integration, you can use the following 
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## What's next?
+
+Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
+
+See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-ckfinder.
