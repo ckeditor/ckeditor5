@@ -29,7 +29,7 @@ npm install --save @ckeditor/ckeditor5-upload
 Then add the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter SimpleUploadAdapter} to your plugin list and [configure](#configuration) the feature. For instance:
 
  ```js
-import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/simpleuploadadapter';
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
