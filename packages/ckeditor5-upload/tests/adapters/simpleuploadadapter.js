@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import SimpleUploadAdapter from '../../src/adapters/simpleuploadadapter';
 import FileRepository from '../../src/filerepository';
 import log from '@ckeditor/ckeditor5-utils/src/log';
-import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { createNativeFileMock } from '../_utils/mocks';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'SimpleUploadAdapter', () => {
