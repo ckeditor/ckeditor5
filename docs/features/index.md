@@ -2,6 +2,7 @@
 category: features
 order: 10
 toc: false
+feedback-widget: false
 ---
 
 # Features
@@ -23,6 +24,6 @@ Please bear in mind that the stable version of CKEditor 5 has not been officiall
 ## How about creating your own features?
 
 Probably the most exciting features are the ones you can develop on top of CKEditor 5 Framework!
-We are slowly enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/quick-start#creating-a-simple-plugin creating custom features}.
+We are slowly enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/guides/creating-simple-plugin creating custom features}.
 
 The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor 5!

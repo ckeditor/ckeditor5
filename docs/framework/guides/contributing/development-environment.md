@@ -139,13 +139,19 @@ git pull
 
 # To update pull changes to all the packages:
 mgit sync
-```
 
-From time to time, if the list of dependencies in any of the packages changed, you will need to call Yarn again to symlink them:
-
-```bash
+# To install missing dependencies:
 yarn install
 ```
+
+From time to time, if the list of dependencies in any of the packages changed, new package has been added to `ckeditor5` or you just want to make sure that you have the repository up to date, run the `reinstall` script:
+
+```bash
+git pull
+yarn run reinstall
+```
+
+The `reinstall` script first calls `yarn run clean` to remove `node_modules/` directories from all packages (including `ckeditor5`) and then `yarn run bootstrap` which is a shorthand for `mgit sync && yarn install`.
 
 ### Working with multiple repositories
 
@@ -205,6 +211,7 @@ This task accepts the following arguments:
 
 * `--skip-api` &mdash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &mdash; Skips building live snippets.
+* `--snippets=snippet-name` &mdash; Whitelist snippets to build (accepts glob patterns).
 * `--skip-validation` &mdash; Skips the final link validation.
 * `--watch` &mdash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
 * `--production` &mdash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.

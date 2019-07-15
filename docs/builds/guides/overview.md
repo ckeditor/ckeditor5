@@ -20,6 +20,7 @@ The following CKEditor 5 Builds are currently available:
  * [Classic editor](#classic-editor)
  * [Inline editor](#inline-editor)
  * [Balloon editor](#balloon-editor)
+ * [Balloon block editor](#balloon-block-editor)
  * [Document editor](#document-editor)
 
 ### Classic editor
@@ -55,6 +56,14 @@ Balloon editor is very similar to inline editor. The difference between them is 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
 To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#balloon-editor Quick start} to start using it.
+
+### Balloon block editor
+
+Balloon block is essentially the [balloon editor](#balloon-editor) with an extra block toolbar which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives an access to additional, block–level editing features.
+
+{@img assets/img/editor-balloon-block.png 813 Screenshot of a balloon block toolbar editor.}
+
+To try it out online, check the {@link examples/builds/balloon-block-editor balloon block editor example}. Jump to {@link builds/guides/quick-start#balloon-block-editor Quick start} to start using it.
 
 ### Document editor
 

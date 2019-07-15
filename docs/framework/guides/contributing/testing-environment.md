@@ -117,11 +117,15 @@ ClassicEditor
 	Do not forget to add all dependencies of your manual test as `devDependencies` (in `package.json`).
 </info-box>
 
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ## Test suite and CI
 
 To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of May 2018, this means over 8000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
 
-Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform and [BrowserStack](https://www.browserstack.com/) to be able to run tests on all browsers. These services ensure seamless and fast developer experience and allow us to focus on the job.
+Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform. This service ensures seamless and fast developer experience and allow us to focus on the job.
 
 Besides automated tests, we also maintain a smaller set of manual tests. They help us verify whether something unexpected happens that might have been missed by the automated tests.
 

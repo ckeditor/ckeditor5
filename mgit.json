@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon",
+    "@ckeditor/ckeditor5-build-balloon-block": "ckeditor/ckeditor5-build-balloon-block",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic",
     "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document",
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline",
@@ -32,12 +33,15 @@
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image",
+    "@ckeditor/ckeditor5-indent": "ckeditor/ckeditor5-indent",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed",
+    "@ckeditor/ckeditor5-mention": "ckeditor/ckeditor5-mention",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office",
+    "@ckeditor/ckeditor5-remove-format": "ckeditor/ckeditor5-remove-format",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing",
@@ -45,7 +49,9 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget",
+    "@ckeditor/ckeditor5-watchdog": "ckeditor/ckeditor5-watchdog",
+    "@ckeditor/ckeditor5-word-count": "ckeditor/ckeditor5-word-count"
   },
   "overrideDirectoryNames": {
     "@ckeditor/ckeditor-cloud-services-core": "ckeditor5-cloud-services-core"

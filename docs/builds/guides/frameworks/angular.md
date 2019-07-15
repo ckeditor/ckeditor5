@@ -1,10 +1,10 @@
 ---
-menu-title: Angular 2+ component
+menu-title: Angular component
 category: builds-integration-frameworks
 order: 20
 ---
 
-# Rich text editor component for Angular 2+
+# Rich text editor component for Angular
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular)
 
@@ -18,7 +18,7 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 
 ## Quick start
 
-In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-angular
@@ -39,11 +39,10 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule( {
 	imports: [
-		...
 		CKEditorModule,
-		...
+		// ...
 	],
-	...
+	// ...
 } )
 ```
 
@@ -53,11 +52,11 @@ Import the editor build in your Angular component and assign it to a `public` pr
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
-	...
+	// ...
 }
 ```
 
@@ -71,21 +70,20 @@ Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
 ### Note: Using the Document editor build
 
-If you want to use the {@link framework/guides/document-editor Document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
+If you want to use the {@link framework/guides/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
 
 ```ts
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component( {
-	...
-} )
+	// ...
 export class MyComponent {
 	public Editor = DecoupledEditor;
 
 	public onReady( editor ) {
-		editor.ui.view.editable.element.parentElement.insertBefore(
+		editor.ui.getEditableElement().parentElement.insertBefore(
 			editor.ui.view.toolbar.element,
-			editor.ui.view.editable.element
+			editor.ui.getEditableElement()
 		);
 	}
 }
@@ -105,13 +103,13 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 
 	```ts
 	@Component( {
-		...
+		// ...
 	} )
 	export class MyComponent {
 		public model = {
 			editorData: '<p>Hello, world!</p>'
 		};
-		...
+		// ...
 	}
 	```
 
@@ -123,7 +121,7 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 
 ## Supported `@Input` properties
 
-The following `@Input` properties are supported by the CKEditor 5 component for Angular 2+:
+The following `@Input` properties are supported by the CKEditor 5 rich text editor component for Angular:
 
 ### `editor` (required)
 
@@ -153,11 +151,11 @@ or a shared parent component's property
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public editorData = '<p>Hello, world!</p>';
-	...
+	// ...
 }
 ```
 
@@ -167,7 +165,7 @@ export class MyComponent {
 
 ### `tagName`
 
-Specifies the tag name of the HTML element on which the editor will be created.
+The tag name of the HTML element on which the rich text editor will be created.
 
 The default tag is `<div>`.
 
@@ -181,11 +179,11 @@ Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public isDisabled = false;
-	...
+	// ...
 	toggleDisabled() {
 		this.isDisabled = !this.isDisabled
 	}
@@ -202,16 +200,17 @@ export class MyComponent {
 
 ## Supported `@Output` properties
 
-The following `@Output` properties are supported by the CKEditor 5 component for Angular 2+:
+The following `@Output` properties are supported by the CKEditor 5 rich text editor component for Angular:
 
 ### `ready`
 
-Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event. Fired with the editor instance.
+Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
+It is fired with the editor instance.
 
 ### `change`
 
 Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
-Fired with an object containing the editor and the CKEditor 5 `change:data` event object.
+It is fired with an object containing the editor and the CKEditor 5 `change:data` event object.
 
 ```html
 <ckeditor [editor]="Editor" (change)="onChange($event)"></ckeditor>
@@ -222,7 +221,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
@@ -239,30 +238,30 @@ export class MyComponent {
 ### `blur`
 
 Fired when the editing view of the editor is blurred. It corresponds with the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
-Fired with an object containing the editor and the CKEditor 5 `blur` event data.
+It is fired with an object containing the editor and the CKEditor 5 `blur` event data.
 
 ### `focus`
 
 Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
-Fired with an object containing the editor and the CKEditor 5 `focus` event data.
+It is fired with an object containing the editor and the CKEditor 5 `focus` event data.
 
 ## Styling
 
-The CKEditor 5 component for Angular can be styled using the component stylesheet or using a global stylesheet. Let's see how to set the CKEditor 5 component's height using these two approaches.
+The CKEditor 5 rich text editor component for Angular can be styled using the component stylesheet or using a global stylesheet. See how to set the CKEditor 5 component's height using these two approaches.
 
 ### Setting the height via the component stylesheet
 
-First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors.
+First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors:
 
 ```css
 /* src/app/app.component.css */
 
-:host ::ng-deep .ck-editor__editable {
+:host ::ng-deep .ck-editor__editable_inline {
 	min-height: 500px;
 }
 ```
 
-Then in the parent component add the relative path to the above stylesheet.
+Then in the parent component add the relative path to the above stylesheet:
 
 ```ts
 /* src/app/app.component.ts */
@@ -280,12 +279,12 @@ To style the component using a global stylesheet, first, create it:
 ```css
 /* src/styles.css */
 
-.ck-editor__editable {
+.ck-editor__editable_inline {
 	min-height: 500px;
 }
 ```
 
-Then, add it in the `angular.json` configuration file.
+Then, add it in the `angular.json` configuration file:
 
 ```json
 "architect": {
@@ -299,9 +298,24 @@ Then, add it in the `angular.json` configuration file.
 }
 ```
 
+### Setting the placeholder
+
+To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `placeholder` field in the CKEditor 5 rich text editor component configuration:
+
+```ts
+@Component( {
+	// ...
+} )
+export class MyComponent {
+	public config = {
+		placeholder: 'Type the content here!'
+	}
+}
+```
+
 ## Localization
 
-CKEditor 5 can be localized in two steps.
+The CKEditor 5 rich text editor component can be localized in two steps.
 
 ### 1. Loading translation files
 
@@ -333,7 +347,7 @@ Then, you need to configure the editor to use the given language:
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
@@ -347,4 +361,4 @@ For advanced usage see the {@link features/ui-language Setting UI language} guid
 
 ## Contributing and reporting issues
 
-The source code of the rich text editor component for Angular 2+ is available on GitHub in https://github.com/ckeditor/ckeditor5-angular.
+The source code of the CKEditor 5 rich text editor component for Angular is available on GitHub in https://github.com/ckeditor/ckeditor5-angular.
