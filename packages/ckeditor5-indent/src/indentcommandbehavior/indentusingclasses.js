@@ -18,7 +18,7 @@ export default class IndentUsingClasses {
 	 *
 	 * @param {Object} config
 	 * @param {String} config.direction The direction of indentation.
-	 * @param {Array.<String>} config.classes List of classes used for indentation.
+	 * @param {Array.<String>} config.classes A list of classes used for indentation.
 	 */
 	constructor( config ) {
 		/**
@@ -29,7 +29,7 @@ export default class IndentUsingClasses {
 		this.isForward = config.direction === 'forward';
 
 		/**
-		 * List of classes used for indentation.
+		 * A list of classes used for indentation.
 		 *
 		 * @type {Array.<String>}
 		 */
