@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import { getCopyOnEnterAttributes } from './utils';
 
 /**
  * ShiftEnter command. It is used by the {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature} to handle
@@ -81,7 +82,11 @@ function softBreakAction( model, writer, selection ) {
 	const isContainedWithinOneElement = ( startElement == endElement );
 
 	if ( isSelectionEmpty ) {
+		const attributesToCopy = getCopyOnEnterAttributes( model.schema, selection.getAttributes() );
 		insertBreak( writer, range.end );
+
+		writer.removeSelectionAttribute( selection.getAttributeKeys() );
+		writer.setSelectionAttribute( attributesToCopy );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		model.deleteContent( selection, { leaveUnmerged } );

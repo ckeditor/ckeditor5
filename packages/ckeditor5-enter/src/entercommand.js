@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import { getCopyOnEnterAttributes } from './utils';
 
 /**
  * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
@@ -56,7 +57,9 @@ function enterBlock( model, writer, selection, schema ) {
 	}
 
 	if ( isSelectionEmpty ) {
+		const attributesToCopy = getCopyOnEnterAttributes( writer.model.schema, selection.getAttributes() );
 		splitBlock( writer, range.start );
+		writer.setSelectionAttribute( attributesToCopy );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		const isContainedWithinOneElement = ( startElement == endElement );
