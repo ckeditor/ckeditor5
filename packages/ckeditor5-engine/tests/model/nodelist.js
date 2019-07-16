@@ -6,7 +6,8 @@
 import NodeList from '../../src/model/nodelist';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'NodeList', () => {
 	let nodes, p, foo, img;
@@ -82,13 +83,13 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should throw if given offset is too high or too low', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				nodes.indexToOffset( -1 );
-			} ).to.throw( CKEditorError, /model-nodelist-index-out-of-bounds/ );
+			}, /model-nodelist-index-out-of-bounds/, nodes );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				nodes.indexToOffset( 99 );
-			} ).to.throw( CKEditorError, /model-nodelist-index-out-of-bounds/ );
+			}, /model-nodelist-index-out-of-bounds/, nodes );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {
@@ -106,13 +107,13 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should throw if given offset is too high or too low', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				nodes.offsetToIndex( -1 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, nodes );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				nodes.offsetToIndex( 55 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, nodes );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {
@@ -157,9 +158,9 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should throw if not a Node is inserted', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				nodes._insertNodes( 0, [ 'foo' ] );
-			} ).to.throw( CKEditorError, /nodelist-insertNodes-not-node/ );
+			}, /nodelist-insertNodes-not-node/, nodes );
 		} );
 	} );
 

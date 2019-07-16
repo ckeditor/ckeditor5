@@ -62,7 +62,7 @@ export default class Node {
 			 *
 			 * @error view-node-not-found-in-parent
 			 */
-			throw new CKEditorError( 'view-node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			throw new CKEditorError( 'view-node-not-found-in-parent: The node\'s parent does not contain this node.', this );
 		}
 
 		return pos;

@@ -142,7 +142,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-get-non-existent-root
 			 */
-			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.' );
+			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.', this );
 		}
 
 		const root = this.model.document.getRoot( rootName );
@@ -240,7 +240,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-init-document-not-empty
 			 */
-			throw new CKEditorError( 'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.' );
+			throw new CKEditorError( 'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.', this );
 		}
 
 		let initialData = {};
@@ -262,7 +262,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-init-non-existent-root
 			 */
-			throw new CKEditorError( 'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.' );
+			throw new CKEditorError( 'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.', this );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
@@ -297,6 +297,7 @@ export default class DataController {
 	 */
 	set( data ) {
 		let newData = {};
+
 		if ( typeof data === 'string' ) {
 			newData.main = data; // Default root is 'main'. To set data on a different root, object should be passed.
 		} else {
@@ -315,7 +316,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-set-non-existent-root
 			 */
-			throw new CKEditorError( 'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.' );
+			throw new CKEditorError( 'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.', this );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
