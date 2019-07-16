@@ -40,8 +40,14 @@ describe( 'SuperEditing', () => {
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( model.schema.getAttributeProperties( 'superscript' ) ).to.deep.equal( {
+		expect( model.schema.getAttributeProperties( 'superscript' ) ).to.include( {
 			isFormatting: true
+		} );
+	} );
+
+	it( 'its attribute is marked with a copOnEnter property', () => {
+		expect( model.schema.getAttributeProperties( 'superscript' ) ).to.include( {
+			copyOnEnter: true
 		} );
 	} );
 

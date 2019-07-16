@@ -40,8 +40,14 @@ describe( 'CodeEditing', () => {
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( model.schema.getAttributeProperties( 'code' ) ).to.deep.equal( {
+		expect( model.schema.getAttributeProperties( 'code' ) ).to.include( {
 			isFormatting: true
+		} );
+	} );
+
+	it( 'its attribute is marked with a copOnEnter property', () => {
+		expect( model.schema.getAttributeProperties( 'code' ) ).to.include( {
+			copyOnEnter: true
 		} );
 	} );
 

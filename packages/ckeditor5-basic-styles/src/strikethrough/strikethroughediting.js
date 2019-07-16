@@ -30,7 +30,10 @@ export default class StrikethroughEditing extends Plugin {
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: STRIKETHROUGH } );
-		editor.model.schema.setAttributeProperties( STRIKETHROUGH, { isFormatting: true } );
+		editor.model.schema.setAttributeProperties( STRIKETHROUGH, {
+			isFormatting: true,
+			copyOnEnter: true
+		} );
 
 		editor.conversion.attributeToElement( {
 			model: STRIKETHROUGH,

@@ -40,8 +40,14 @@ describe( 'SubEditing', () => {
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( model.schema.getAttributeProperties( 'subscript' ) ).to.deep.equal( {
+		expect( model.schema.getAttributeProperties( 'subscript' ) ).to.include( {
 			isFormatting: true
+		} );
+	} );
+
+	it( 'its attribute is marked with a copOnEnter property', () => {
+		expect( model.schema.getAttributeProperties( 'subscript' ) ).to.include( {
+			copyOnEnter: true
 		} );
 	} );
 

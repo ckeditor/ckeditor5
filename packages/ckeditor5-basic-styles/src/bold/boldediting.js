@@ -28,7 +28,10 @@ export default class BoldEditing extends Plugin {
 		const editor = this.editor;
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
-		editor.model.schema.setAttributeProperties( BOLD, { isFormatting: true } );
+		editor.model.schema.setAttributeProperties( BOLD, {
+			isFormatting: true,
+			copyOnEnter: true
+		} );
 
 		// Build converter from model to view for data and editing pipelines.
 
