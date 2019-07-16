@@ -105,9 +105,9 @@ export default class IndentBlockCommand extends Command {
  */
 
 /**
- * Returns new indent attribute value based on current indent.
+ * Returns a new indent attribute value based on the current indent. This method returns `undefined` when the indentation should be removed.
  *
  * @method #getNextIndent
- * @param {String} indentAttributeValue Current indent attribute value.
+ * @param {String} indentAttributeValue The current indent attribute value.
  * @returns {String|undefined}
  */
