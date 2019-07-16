@@ -5,11 +5,11 @@
 
 /* globals window, setTimeout */
 
-import Base64UploadAdapter from '../src/base64uploadadapter';
-import FileRepository from '../src/filerepository';
+import Base64UploadAdapter from '../../src/adapters/base64uploadadapter';
+import FileRepository from '../../src/filerepository';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { createNativeFileMock } from './_utils/mocks';
+import { createNativeFileMock } from '../_utils/mocks';
 
 describe( 'Base64UploadAdapter', () => {
 	let div, stubs;

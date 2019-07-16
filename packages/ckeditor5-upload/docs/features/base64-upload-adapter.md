@@ -6,7 +6,7 @@ order: 40
 
 # Base64 upload adapter
 
-The {@link module:upload/base64uploadadapter~Base64UploadAdapter Base64 image upload adapter} plugin converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
+The {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter Base64 image upload adapter} plugin converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
 
 This kind of image upload does not require server processing – images are stored with the rest of the text and displayed by the web browser without additional requests. On the downside, this approach can bloat your database with very long data strings which, in theory, could have a negative impact on the performance.
 
@@ -22,20 +22,20 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 ## Installation
 
-<info-box info>
-	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
+First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-upload
 ```
 
-Then add the {@link module:upload/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
+<info-box info>
+	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all {@link builds/guides/overview#available-builds official editor builds}. You do not have to install it, if you are {@link builds/guides/integration/advanced-setup#scenario-1-integrating-existing-builds extending one}.
+</info-box>
+
+Add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
 
 ```js
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/base64uploadadapter';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
