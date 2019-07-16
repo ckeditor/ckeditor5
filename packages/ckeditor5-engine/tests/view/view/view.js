@@ -472,17 +472,6 @@ describe( 'view', () => {
 			expect( converterFocusSpy.called ).to.be.false;
 			expect( renderSpy.called ).to.be.false;
 		} );
-
-		it( 'should log warning when there is no selection', () => {
-			const consoleWarnSpy = sinon.stub( console, 'warn' );
-			view.change( writer => {
-				writer.setSelection( null );
-			} );
-
-			view.focus();
-			expect( consoleWarnSpy.calledOnce ).to.be.true;
-			expect( consoleWarnSpy.args[ 0 ][ 0 ] ).to.match( /^view-focus-no-selection/ );
-		} );
 	} );
 
 	describe( 'isFocused', () => {

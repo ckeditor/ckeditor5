@@ -7,8 +7,6 @@
  * @module engine/view/view
  */
 
-/* globals console */
-
 import Document from './document';
 import DowncastWriter from './downcastwriter';
 import Renderer from './renderer';
@@ -30,7 +28,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
@@ -399,16 +397,11 @@ export default class View {
 				this.domConverter.focus( editable );
 				this.forceRender();
 			} else {
-				/**
-				 * Before focusing view document, selection should be placed inside one of the view's editables.
-				 * Normally its selection will be converted from model document (which have default selection), but
-				 * when using view document on its own, we need to manually place selection before focusing it.
-				 *
-				 * @error view-focus-no-selection
-				 */
-				console.warn( attachLinkToDocumentation(
-					'view-focus-no-selection: There is no selection in any editable to focus.'
-				) );
+				// Before focusing view document, selection should be placed inside one of the view's editables.
+				// Normally its selection will be converted from model document (which have default selection), but
+				// when using view document on its own, we need to manually place selection before focusing it.
+				//
+				// @if CK_DEBUG // console.warn( 'There is no selection in any editable to focus.' );
 			}
 		}
 	}

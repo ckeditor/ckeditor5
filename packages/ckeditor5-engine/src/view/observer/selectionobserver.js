@@ -153,6 +153,7 @@ export default class SelectionObserver extends Observer {
 			// Most probably you try to put the selection in the position which is not allowed
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
 			// which a loopback through a model tries to re-render the wrong selection and again.
+			//
 			// @if CK_DEBUG // console.warn( 'Selection change observer detected an infinite rendering loop.' );
 
 			return;

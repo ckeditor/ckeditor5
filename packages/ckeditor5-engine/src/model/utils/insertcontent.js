@@ -7,15 +7,13 @@
  * @module engine/model/utils/insertcontent
  */
 
-/* globals console */
-
 import Position from '../position';
 import LivePosition from '../liveposition';
 import Element from '../element';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
 import Selection from '../selection';
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -87,7 +85,8 @@ export default function insertContent( model, content, selectable, placeOrOffset
 		} else {
 			// We are not testing else because it's a safe check for unpredictable edge cases:
 			// an insertion without proper range to select.
-			// @if CK_DEBUG // console.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
+			//
+			// @if CK_DEBUG // console.warn( 'Cannot determine a proper selection range after insertion.' );
 		}
 
 		const affectedRange = insertion.getAffectedRange() || model.createRange( insertionPosition );
@@ -318,12 +317,19 @@ class Insertion {
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
-			console.error(
-				attachLinkToDocumentation( 'insertcontent-wrong-position: The node cannot be inserted on the given position.' ),
+
+			/**
+			 * Given node cannot be inserted on the given position.
+			 *
+			 * @error insertcontent-wrong-position
+			 * @param {module:engine/model/node~Node} node Node to insert.
+			 * @param {module:engine/model/position~Position} position Position to insert the node at.
+			 */
+			throw new CKEditorError(
+				'insertcontent-wrong-position: Given node cannot be inserted on the given position.',
+				this,
 				{ node, position: this.position }
 			);
-
-			return;
 		}
 
 		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
