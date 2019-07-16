@@ -85,7 +85,7 @@ function softBreakAction( model, writer, selection ) {
 		const attributesToCopy = getCopyOnEnterAttributes( model.schema, selection.getAttributes() );
 		insertBreak( writer, range.end );
 
-		writer.removeSelectionAttribute( Array.from( selection.getAttributeKeys() ) );
+		writer.removeSelectionAttribute( selection.getAttributeKeys() );
 		writer.setSelectionAttribute( attributesToCopy );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
