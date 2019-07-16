@@ -18,7 +18,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'normalization',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -26,7 +25,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'image',
 		type: 'normalization',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -34,7 +32,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'link',
 		type: 'normalization',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -42,7 +39,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'list',
 		type: 'normalization',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
@@ -50,15 +46,13 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'spacing',
 		type: 'normalization',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig
 	} );
 
 	generateTests( {
-		input: 'simpleText',
+		input: 'google-docs',
 		type: 'normalization',
-		dataSource: 'Google Docs',
 		browsers,
 		editorConfig
 	} );

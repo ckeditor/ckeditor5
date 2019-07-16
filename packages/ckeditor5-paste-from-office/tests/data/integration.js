@@ -26,7 +26,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'integration',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Strikethrough, PasteFromOffice ]
@@ -39,7 +38,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'image',
 		type: 'integration',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
@@ -55,7 +53,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'link',
 		type: 'integration',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Heading, Bold, Link, ShiftEnter, PasteFromOffice ]
@@ -68,7 +65,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'list',
 		type: 'integration',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, PasteFromOffice ]
@@ -81,7 +77,6 @@ describe( 'Paste from Office - automatic', () => {
 	generateTests( {
 		input: 'spacing',
 		type: 'integration',
-		dataSource: 'MS Word',
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, Italic, Underline, PasteFromOffice ]
@@ -89,9 +84,8 @@ describe( 'Paste from Office - automatic', () => {
 	} );
 
 	generateTests( {
-		input: 'simpleText',
+		input: 'google-docs',
 		type: 'integration',
-		dataSource: 'Google Docs',
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice ]

@@ -4,20 +4,26 @@
  */
 
 import simpleText from './simple-text/input.html';
+import simpleTextFromFirefox from './simple-text-from-firefox/input.html';
 
 import simpleTextNormalized from './simple-text/normalized.html';
+import simpleTextFromFirefoxNormalized from './simple-text-from-firefox/normalized.html';
 
 import simpleTextModel from './simple-text/model.html';
+import simpleTextFromFirefoxModel from './simple-text-from-firefox/model.html';
 
 export const fixtures = {
 	input: {
-		simpleText
+		simpleText,
+		simpleTextFromFirefox
 	},
 	normalized: {
-		simpleText: simpleTextNormalized
+		simpleText: simpleTextNormalized,
+		simpleTextFromFirefox: simpleTextFromFirefoxNormalized
 	},
 	model: {
-		simpleText: simpleTextModel
+		simpleText: simpleTextModel,
+		simpleTextFromFirefox: simpleTextFromFirefoxModel
 	}
 };
 

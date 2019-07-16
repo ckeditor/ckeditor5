@@ -120,17 +120,15 @@ export default class PasteFromOffice extends Plugin {
 	 * @return {String|null} type of app which is source of a data or null
 	 */
 	static _getInputType( html ) {
-		if ( html ) {
-			if (
-				/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( html ) ||
-				/xmlns:o="urn:schemas-microsoft-com/i.test( html )
-			) {
-				// Microsoft Word detection
-				return 'msword';
-			} else if ( /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( html ) ) {
-				// Google Docs detection
-				return 'gdocs';
-			}
+		if (
+			/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( html ) ||
+			/xmlns:o="urn:schemas-microsoft-com/i.test( html )
+		) {
+			// Microsoft Word detection
+			return 'msword';
+		} else if ( /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( html ) ) {
+			// Google Docs detection
+			return 'gdocs';
 		}
 
 		return null;

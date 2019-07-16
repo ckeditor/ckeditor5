@@ -45,7 +45,6 @@ export function createDataTransfer( data ) {
  * @param {Object} config
  * @param {String} config.type Type of tests to generate, could be 'normalization' or 'integration'.
  * @param {String} config.input Name of the fixtures group. Usually stored in `/tests/_data/groupname/`.
- * @param {String} config.dataSource Name of the office app, which was used to generate data.
  * @param {Array.<String>} config.browsers List of all browsers for which to generate tests.
  * @param {Object} [config.editorConfig] Editor config which is passed to editor `create()` method.
  * @param {Object} [config.skip] List of fixtures for any browser to skip. The supported format is:
@@ -57,10 +56,6 @@ export function createDataTransfer( data ) {
 export function generateTests( config ) {
 	if ( [ 'normalization', 'integration' ].indexOf( config.type ) === -1 ) {
 		throw new Error( `Invalid tests type - \`config.type\`: '${ config.type }'.` );
-	}
-
-	if ( !config.dataSource ) {
-		throw new Error( 'No `config.dataSource` option provided.' );
 	}
 
 	if ( !config.input ) {
@@ -75,18 +70,16 @@ export function generateTests( config ) {
 	const generateSuiteFn = config.type === 'normalization' ? generateNormalizationTests : generateIntegrationTests;
 
 	describe( config.type, () => {
-		describe( config.dataSource, () => {
-			describe( config.input, () => {
-				const editorConfig = config.editorConfig || {};
+		describe( config.input, () => {
+			const editorConfig = config.editorConfig || {};
 
-				for ( const group of Object.keys( groups ) ) {
-					const skip = config.skip && config.skip[ group ] ? config.skip[ group ] : [];
+			for ( const group of Object.keys( groups ) ) {
+				const skip = config.skip && config.skip[ group ] ? config.skip[ group ] : [];
 
-					if ( groups[ group ] ) {
-						generateSuiteFn( group, groups[ group ], editorConfig, skip );
-					}
+				if ( groups[ group ] ) {
+					generateSuiteFn( group, groups[ group ], editorConfig, skip );
 				}
-			} );
+			}
 		} );
 	} );
 }
