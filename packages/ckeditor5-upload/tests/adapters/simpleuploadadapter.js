@@ -41,7 +41,7 @@ describe( 'SimpleUploadAdapter', () => {
 		sinonXHR.restore();
 	} );
 
-	it( 'should require FileRepository plugin', () => {
+	it( 'should require the FileRepository plugin', () => {
 		expect( SimpleUploadAdapter.requires ).to.deep.equal( [ FileRepository ] );
 	} );
 
@@ -50,7 +50,7 @@ describe( 'SimpleUploadAdapter', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should set loader', () => {
+		it( 'should activate the adapter', () => {
 			return ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ SimpleUploadAdapter ],
@@ -78,13 +78,13 @@ describe( 'SimpleUploadAdapter', () => {
 			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
 		} );
 
-		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
+		it( 'the crateAdapter() method should be registered and have upload() and abort methods()', () => {
 			expect( adapter ).to.not.be.undefined;
 			expect( adapter.upload ).to.be.a( 'function' );
 			expect( adapter.abort ).to.be.a( 'function' );
 		} );
 
-		it( 'should not set the FileRepository.createUploadAdapter factory if not configured', () => {
+		it( 'should not set the FileRepository.createUploadAdapter() factory if not configured', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -103,7 +103,7 @@ describe( 'SimpleUploadAdapter', () => {
 				} );
 		} );
 
-		it( 'should not set the FileRepository.createUploadAdapter factory if not configured properly', () => {
+		it( 'should not set the FileRepository.createUploadAdapter() factory if not configured properly', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -129,8 +129,8 @@ describe( 'SimpleUploadAdapter', () => {
 				} );
 		} );
 
-		describe( 'upload', () => {
-			it( 'should return promise', () => {
+		describe( 'upload()', () => {
+			it( 'should return a Promise', () => {
 				return loader.file
 					.then( () => {
 						expect( adapter.upload() ).to.be.instanceof( Promise );
@@ -206,7 +206,7 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 			} );
 
-			it( 'should throw an error on generic request error', () => {
+			it( 'should throw on a generic request error', () => {
 				const promise = adapter.upload()
 					.then( () => {
 						throw new Error( 'Promise should throw.' );
@@ -223,7 +223,7 @@ describe( 'SimpleUploadAdapter', () => {
 				return promise;
 			} );
 
-			it( 'should throw an error on error from server', () => {
+			it( 'should throw on an error from server', () => {
 				const responseError = {
 					error: {
 						message: 'Foo bar baz.'
@@ -246,7 +246,7 @@ describe( 'SimpleUploadAdapter', () => {
 				return promise;
 			} );
 
-			it( 'should throw a generic error on error from server without message', () => {
+			it( 'should throw a generic error on an error from server without a message', () => {
 				const responseError = {
 					error: {}
 				};
@@ -267,7 +267,7 @@ describe( 'SimpleUploadAdapter', () => {
 				return promise;
 			} );
 
-			it( 'should throw an error on abort', () => {
+			it( 'should throw an error on abort()', () => {
 				let request;
 
 				const promise = adapter.upload()
@@ -286,7 +286,7 @@ describe( 'SimpleUploadAdapter', () => {
 				return promise;
 			} );
 
-			it( 'abort should not throw before upload', () => {
+			it( 'abort() should not throw before upload', () => {
 				expect( () => {
 					adapter.abort();
 				} ).to.not.throw();
