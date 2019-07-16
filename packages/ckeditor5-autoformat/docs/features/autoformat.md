@@ -40,8 +40,8 @@ Example:
 
 In addition to enabling automatic text formatting, you may want to check the following productivity features:
 
-* {@link features/text-transformation Automatic text transformation} &mdash; allows automatically turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
-* {@link features/mentions Mentions} &mdash; support for smart autocompletion.
+* {@link features/text-transformation Automatic text transformation} &ndash; It enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/mentions Mentions} &ndash; It brings support for smart autocompletion.
 
 ## Installation
 
@@ -51,7 +51,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-autoformat`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat) package:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-autoformat
 ```
 
