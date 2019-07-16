@@ -108,21 +108,30 @@ export default class Document {
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
-	 * View post-fixers are useful when you wants to update view structure whenever it changes, for instance add some classes
-	 * to elements based on the view structure or selection. However, if you need DOM elements to be already updated, use
-	 * {@link module:engine/view/view~View#event:render render event}.
+	 * View post-fixers are useful when you wants to apply some fixes whenever view structure changes. Keep in mind that
+	 * changes executed in the view post-fixer may break model-view mapping, which may cause bugs. To
+	 * avoid them make sure that your post-fixer do only save changes, for instance:
+	 *  - add or remove attribute or class to an element,
+	 *  - change inside of the {@link module:engine/view/uielement~UIElement UIElement},
+	 *  - mark some model elements to convert using {@link  module:engine/model/differ~Differ#refreshItem differ API}.
+	 *
+	 * Try to avoid changes which touch view structure:
+	 *  - you should not add or remove nor wrap or unwrap any view elements,
+	 *  - you should not change the editor data model in view post-fixer.
+	 *
+	 * If you need DOM elements to be already updated, use {@link module:engine/view/view~View#event:render render event}.
 	 *
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
 	 * instance connected with the executed changes block.
 	 *
-	 * Here is an example from the link plugin which adds highlight class to the link in the selection is in the link:
-	 *
+	 * Here is an example from the link plugin which adds highlight class to the link if the selection is in that link:
 	 *
 	 *		editor.editing.view.document.registerPostFixer( writer => {
-	 *			const selection = editor.model.document.selection;
+	 *			const modelSelection = editor.model.document.selection;
 	 *
-	 *			if ( selection.hasAttribute( 'linkHref' ) ) {
-	 *				const viewRange = findLinkRange( selection );
+	 *			if ( modelSelection.hasAttribute( 'linkHref' ) ) {
+	 *				const modelRange = findLinkRange( modelSelection );
+	 *				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 	 *
 	 *				// There might be multiple `a` elements in the `viewRange`, for example,
 	 *				//  when the `a` element is broken by a UIElement.
@@ -142,16 +151,6 @@ export default class Document {
 	 * It will be executed as soon as any change in the document causes rendering. If you want to re-render the editor's
 	 * view after registering the post-fixer then you should do it manually calling
 	 * {@link module:engine/view/view~View#forceRender `view.forceRender();`}.
-	 *
-	 * Keep in mind that changes executed in the view post-fixer may break model-view mapping, which may cases bugs. To
-	 * avoid them make sure that your post-fixer do only save changes, for instance:
-	 *  - add or remove attribute or class to an element,
-	 *  - change inside of the {@link module:engine/view/uielement~UIElement UIElement},
-	 *  - mark some element to convert using {@link  module:engine/model/differ~Differ#refreshItem differ API}.
-	 *
-	 * Try to avoid changes which touch view structure:
-	 *  - you should not add or remove any view elements nor wrap or unwrap in the view post-fixer,
-	 *  - you should not change the editor data model in view post-fixer.
 	 *
 	 * @param {Function} postFixer
 	 */
