@@ -88,6 +88,13 @@ export default class LabeledInputView extends View {
 		this.set( 'infoText', null );
 
 		/**
+		 * TODO
+		 *
+		 * @observable
+		 */
+		this.set( 'isFocused', false );
+
+		/**
 		 * The label view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
@@ -127,6 +134,8 @@ export default class LabeledInputView extends View {
 			( errorText, infoText ) => errorText || infoText
 		);
 
+		this.bind( 'isFocused' ).to( this.inputView );
+
 		const bind = this.bindTemplate;
 
 		this.setTemplate( {
@@ -135,12 +144,13 @@ export default class LabeledInputView extends View {
 				class: [
 					'ck',
 					'ck-labeled-input',
-					bind.if( 'isReadOnly', 'ck-disabled' )
+					bind.if( 'isReadOnly', 'ck-disabled' ),
+					bind.if( 'isFocused', 'ck-labeled-input_focused' ),
 				]
 			},
 			children: [
-				this.labelView,
 				this.inputView,
+				this.labelView,
 				this.statusView
 			]
 		} );
