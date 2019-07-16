@@ -1,11 +1,12 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import EmptyElement from '../../src/view/emptyelement';
 import Element from '../../src/view/element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EmptyElement', () => {
 	let element, emptyElement;
@@ -49,24 +50,26 @@ describe( 'EmptyElement', () => {
 	} );
 
 	it( 'should throw if child elements are passed to constructor', () => {
-		expect( () => {
-			new EmptyElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+		const el = new Element( 'i' );
+
+		expectToThrowCKEditorError( () => {
+			new EmptyElement( 'img', null, [ el ] ); // eslint-disable-line no-new
+		}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', el );
 	} );
 
 	describe( '_appendChild', () => {
 		it( 'should throw when try to append new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				emptyElement._appendChild( element );
-			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', element );
 		} );
 	} );
 
 	describe( '_insertChild', () => {
 		it( 'should throw when try to insert new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				emptyElement._insertChild( 0, element );
-			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', element );
 		} );
 	} );
 

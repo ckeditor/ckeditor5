@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -147,21 +147,21 @@ export default class MergeOperation extends Operation {
 			 *
 			 * @error merge-operation-source-position-invalid
 			 */
-			throw new CKEditorError( 'merge-operation-source-position-invalid: Merge source position is invalid.' );
+			throw new CKEditorError( 'merge-operation-source-position-invalid: Merge source position is invalid.', this );
 		} else if ( !targetElement || !targetElement.is( 'element' ) || !targetElement.parent ) {
 			/**
 			 * Merge target position is invalid.
 			 *
 			 * @error merge-operation-target-position-invalid
 			 */
-			throw new CKEditorError( 'merge-operation-target-position-invalid: Merge target position is invalid.' );
+			throw new CKEditorError( 'merge-operation-target-position-invalid: Merge target position is invalid.', this );
 		} else if ( this.howMany != sourceElement.maxOffset ) {
 			/**
 			 * Merge operation specifies wrong number of nodes to move.
 			 *
 			 * @error merge-operation-how-many-invalid
 			 */
-			throw new CKEditorError( 'merge-operation-how-many-invalid: Merge operation specifies wrong number of nodes to move.' );
+			throw new CKEditorError( 'merge-operation-how-many-invalid: Merge operation specifies wrong number of nodes to move.', this );
 		}
 	}
 

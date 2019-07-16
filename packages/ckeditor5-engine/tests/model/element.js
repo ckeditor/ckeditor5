@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Node from '../../src/model/node';
@@ -8,7 +8,7 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {
@@ -301,13 +301,13 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should throw if given offset is too high or too low', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				element.offsetToIndex( -1 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, element );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				element.offsetToIndex( 55 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, element );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -50,7 +50,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
-		const insertionPosition = selection.anchor.clone();
+		const insertionPosition = selection.getFirstPosition();
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
@@ -561,8 +561,15 @@ class Insertion {
 				this.position = this.writer.createPositionBefore( parent );
 
 				// Special case – parent is empty (<p>^</p>).
+				//
+				// 1. parent.isEmpty
 				// We can remove the element after moving insertion position out of it.
-				if ( parent.isEmpty ) {
+				//
+				// 2. parent.parent === allowedIn
+				// However parent should remain in place when allowed element is above limit element in document tree.
+				// For example there shouldn't be allowed to remove empty paragraph from tableCell, when is pasted
+				// content allowed in $root.
+				if ( parent.isEmpty && parent.parent === allowedIn ) {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {

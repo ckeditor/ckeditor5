@@ -1,14 +1,15 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import DowncastWriter from '../../../src/view/downcastwriter';
 import { stringify, parse } from '../../../src/dev-utils/view';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import ContainerElement from '../../../src/view/containerelement';
 import Position from '../../../src/view/position';
 import Document from '../../../src/view/document';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastWriter', () => {
 	describe( 'breakContainer()', () => {
@@ -66,18 +67,18 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if position parent is not container', () => {
 			const { selection } = parse( '<container:div>foo{}bar</container:div>' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.breakContainer( selection.getFirstPosition() );
-			} ).to.throw( CKEditorError, /view-writer-break-non-container-element/ );
+			}, /view-writer-break-non-container-element/, writer );
 		} );
 
 		it( 'should throw if position parent is root', () => {
 			const element = new ContainerElement( 'div' );
 			const position = Position._createAt( element, 0 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.breakContainer( position );
-			} ).to.throw( CKEditorError, /view-writer-break-root/ );
+			}, /view-writer-break-root/, writer );
 		} );
 	} );
 } );

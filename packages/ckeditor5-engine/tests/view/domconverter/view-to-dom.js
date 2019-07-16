@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals Range, DocumentFragment, HTMLElement, document, Text */
@@ -212,7 +212,7 @@ describe( 'DomConverter', () => {
 
 				const domDiv = converter.viewToDom( viewDiv, document );
 
-				expect( domDiv.innerHTML ).to.equal( 'x &nbsp;x &nbsp; x x <b>&nbsp;x </b><i><b><u>&nbsp;x</u></b></i>' );
+				expect( domDiv.innerHTML ).to.equal( 'x &nbsp;x &nbsp; x x&nbsp;<b> x&nbsp;</b><i><b><u> x</u></b></i>' );
 			} );
 
 			it( 'all together', () => {
@@ -232,7 +232,7 @@ describe( 'DomConverter', () => {
 				const domDiv = converter.viewToDom( viewDiv, document );
 
 				expect( domDiv.innerHTML ).to.equal(
-					'<p>&nbsp;x &nbsp;x &nbsp; x x <b>&nbsp;x </b><i><b><u>&nbsp;x&nbsp;</u></b></i></p><p>&nbsp; x &nbsp;</p>'
+					'<p>&nbsp;x &nbsp;x &nbsp; x x&nbsp;<b> x&nbsp;</b><i><b><u> x&nbsp;</u></b></i></p><p>&nbsp; x &nbsp;</p>'
 				);
 			} );
 
@@ -321,86 +321,87 @@ describe( 'DomConverter', () => {
 			test( 'x _ x', 'x _ x' );
 			test( 'x  _  x', 'x __ _x' );
 
-			// Two text nodes.
 			test( [ 'x', 'y' ], 'xy' );
 			test( [ 'x ', 'y' ], 'x y' );
 			test( [ 'x  ', 'y' ], 'x _y' );
-			test( [ 'x   ', 'y' ], 'x _ y' );
+			test( [ 'x   ', 'y' ], 'x __y' );
 			test( [ 'x    ', 'y' ], 'x _ _y' );
 
 			test( [ 'x', ' y' ], 'x y' );
-			test( [ 'x ', ' y' ], 'x _y' );
+			test( [ 'x ', ' y' ], 'x_ y' );
 			test( [ 'x  ', ' y' ], 'x _ y' );
-			test( [ 'x   ', ' y' ], 'x _ _y' );
+			test( [ 'x   ', ' y' ], 'x __ y' );
 			test( [ 'x    ', ' y' ], 'x _ _ y' );
 
 			test( [ 'x', '_y' ], 'x_y' );
 			test( [ 'x ', '_y' ], 'x _y' );
 			test( [ 'x  ', '_y' ], 'x __y' );
-			test( [ 'x   ', '_y' ], 'x _ _y' );
+
+			// Two text nodes.
+			test( [ 'x   ', '_y' ], 'x ___y' );
 			test( [ 'x    ', '_y' ], 'x _ __y' );
 
 			test( [ 'x', '  y' ], 'x _y' );
-			test( [ 'x ', '  y' ], 'x _ y' );
+			test( [ 'x ', '  y' ], 'x_ _y' );
 			test( [ 'x  ', '  y' ], 'x _ _y' );
-			test( [ 'x   ', '  y' ], 'x _ _ y' );
+			test( [ 'x   ', '  y' ], 'x __ _y' );
 			test( [ 'x    ', '  y' ], 'x _ _ _y' );
 
 			test( [ 'x', '   y' ], 'x _ y' );
-			test( [ 'x ', '   y' ], 'x _ _y' );
+			test( [ 'x ', '   y' ], 'x_ _ y' );
 			test( [ 'x  ', '   y' ], 'x _ _ y' );
-			test( [ 'x   ', '   y' ], 'x _ _ _y' );
+			test( [ 'x   ', '   y' ], 'x __ _ y' );
 			test( [ 'x    ', '   y' ], 'x _ _ _ y' );
 
-			// "Non-empty" + "empty" text nodes.
 			test( [ 'x',	' '		], 'x_' );
 			test( [ 'x',	'  '	], 'x _' );
 			test( [ 'x',	'   '	], 'x __' );
-			test( [ 'x ',	' '		], 'x _' );
-			test( [ 'x ',	'  '	], 'x __' );
-			test( [ 'x ',	'   '	], 'x _ _' );
+			test( [ 'x ',	' '		], 'x__' );
+			test( [ 'x ',	'  '	], 'x_ _' );
+			test( [ 'x ',	'   '	], 'x_ __' );
 			test( [ 'x  ',	' '		], 'x __' );
 			test( [ 'x  ',	'  '	], 'x _ _' );
 			test( [ 'x  ',	'   '	], 'x _ __' );
-			test( [ 'x   ',	' '		], 'x _ _' );
-			test( [ 'x   ',	'  '	], 'x _ __' );
-			test( [ 'x   ',	'   '	], 'x _ _ _' );
+			test( [ 'x   ',	' '		], 'x ___' );
+			test( [ 'x   ',	'  '	], 'x __ _' );
+			test( [ 'x   ',	'   '	], 'x __ __' );
 
 			test( [ ' ',	'x'		], '_x' );
 			test( [ '  ',	'x'		], '_ x' );
 			test( [ '   ',	'x'		], '_ _x' );
 			test( [ ' ',	' x'	], '_ x' );
-			test( [ '  ',	' x'	], '_ _x' );
+			test( [ '  ',	' x'	], '__ x' );
 			test( [ '   ',	' x'	], '_ _ x' );
 			test( [ ' ',	'  x'	], '_ _x' );
-			test( [ '  ',	'  x'	], '_ _ x' );
+			test( [ '  ',	'  x'	], '__ _x' );
 			test( [ '   ',	'  x'	], '_ _ _x' );
 			test( [ ' ',	'   x'	], '_ _ x' );
-			test( [ '  ',	'   x'	], '_ _ _x' );
+			test( [ '  ',	'   x'	], '__ _ x' );
 			test( [ '   ',	'   x'	], '_ _ _ x' );
 
+			// "Non-empty" + "empty" text nodes.
 			test( [ 'x',	' ',		'x'		],	'x x' );
-			test( [ 'x',	' ',		' x'	],	'x _x' );
+			test( [ 'x',	' ',		' x'	],	'x_ x' );
 			test( [ 'x',	'  ',		' x'	],	'x _ x' );
-			test( [ 'x',	'   ',		'  x'	],	'x _ _ x' );
-			test( [ 'x ',	' ',		' x'	],	'x _ x' );
-			test( [ 'x ',	'  ',		' x'	],	'x _ _x' );
-			test( [ 'x ',	'   ',		'  x'	],	'x _ _ _x' );
-			test( [ 'x  ',	' ',		' x'	],	'x _ _x' );
+			test( [ 'x',	'   ',		'  x'	],	'x __ _x' );
+			test( [ 'x ',	' ',		' x'	],	'x__ x' );
+			test( [ 'x ',	'  ',		' x'	],	'x_ _ x' );
+			test( [ 'x ',	'   ',		'  x'	],	'x_ __ _x' );
+			test( [ 'x  ',	' ',		' x'	],	'x __ x' );
 			test( [ 'x  ',	'  ',		' x'	],	'x _ _ x' );
-			test( [ 'x  ',	'   ',		'  x'	],	'x _ _ _ x' );
-			test( [ 'x   ',	' ',		' x'	],	'x _ _ x' );
-			test( [ 'x   ',	'  ',		' x'	],	'x _ _ _x' );
-			test( [ 'x   ',	'   ',		'  x'	],	'x _ _ _ _x' );
+			test( [ 'x  ',	'   ',		'  x'	],	'x _ __ _x' );
+			test( [ 'x   ',	' ',		' x'	],	'x ___ x' );
+			test( [ 'x   ',	'  ',		' x'	],	'x __ _ x' );
+			test( [ 'x   ',	'   ',		'  x'	],	'x __ __ _x' );
 
 			// "Empty" + "empty" text nodes.
 			test( [ ' ', ' ' ], '__' );
-			test( [ '  ', ' ' ], '_ _' );
+			test( [ '  ', ' ' ], '___' );
 			test( [ '   ', ' ' ], '_ __' );
 			test( [ ' ', '  ' ], '_ _' );
 			test( [ ' ', '   ' ], '_ __' );
-			test( [ '  ', '  ' ], '_ __' );
-			test( [ '  ', '   ' ], '_ _ _' );
+			test( [ '  ', '  ' ], '__ _' );
+			test( [ '  ', '   ' ], '__ __' );
 			test( [ '   ', '  ' ], '_ _ _' );
 			test( [ '   ', '   ' ], '_ _ __' );
 

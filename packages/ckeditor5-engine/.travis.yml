@@ -1,12 +1,8 @@
 sudo: required
 dist: trusty
 addons:
+  chrome: stable
   firefox: latest
-  apt:
-    sources:
-    - google-chrome
-    packages:
-    - google-chrome-stable
 language: node_js
 node_js:
 - '8'
@@ -16,6 +12,7 @@ branches:
   except:
   - stable
 before_install:
+- export START_TIME=$( date +%s )
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
@@ -26,7 +23,9 @@ script:
 - ckeditor5-dev-tests-travis
 after_success:
 - ckeditor5-dev-tests-save-revision
+after_script:
+- export END_TIME=$( date +%s )
+- ckeditor5-dev-tests-notify-travis-status
 env:
   global:
-  - secure: CSFKXnTb2oQW8YIjh+SWXYSYzx1jcIg1wGcl6jWrbaOU06JHEO77YLKlhMxLfRniFtilBEksK4ugIcn+lihykhHleMxI27+kifILdLLZKvwWlZiDrtpJSzLk08SpRNDwwthSlHVKrxbHVFE1K9SYpX4s3qTpxullDMPgc13OP4c=
-  - secure: WGdwDEavTOIE/yw8pdpWmx3Cehm2/GN8gZMimuot8sWPbOZRuPh+2lnVWpASLe25qJUKKeLWYLRHccpMLKbyweiordSEBwzNrOGOFyUuaDPITNZZrp5ekh2vHBp1+mwhRpRekdyWdzzVsm01RkFrnJqQlaXxX9i/r9Tu4EsK54M=
+  - secure: GMesvAe0tAa8QfdhGApzmzjhf9mpfjL6jMx8aFqpRli5tuyX9JsjNjFELnU/MMlNDyySPwXAuQVrvcWkCFy9a3n705tGt/VdmStCrTdwV2oRNmNKqGgFovmiK3an+RAIts2PX2iguDjwiogqkAW0FstWAMdG0Yk4AVUxKC1niIo=

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -11,7 +11,7 @@ import DomEventObserver from './domeventobserver';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * {@link module:engine/view/document~Document#event:keydown Key down} event observer.
+ * Observer for events connected with pressing keyboard keys.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -9,6 +9,7 @@ import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import KeyObserver from '../../../src/view/observer/keyobserver';
+import InputObserver from '../../../src/view/observer/inputobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
@@ -18,7 +19,6 @@ import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -26,6 +26,8 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
@@ -85,6 +87,17 @@ describe( 'view', () => {
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
+	} );
+
+	it( 'should add InputObserver on Android devices', () => {
+		const oldEnvIsAndroid = env.isAndroid;
+		env.isAndroid = true;
+
+		const newView = new View();
+		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
+
+		env.isAndroid = oldEnvIsAndroid;
+		newView.destroy();
 	} );
 
 	describe( 'attachDomRoot()', () => {
@@ -618,7 +631,9 @@ describe( 'view', () => {
 				const ui = writer.createUIElement( 'span', null, function( domDocument ) {
 					const element = this.toDomElement( domDocument );
 
-					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+					expectToThrowCKEditorError( () => {
+						view.change( () => {} );
+					}, /^cannot-change-view-tree/, view );
 					renderingCalled = true;
 
 					return element;
@@ -637,9 +652,9 @@ describe( 'view', () => {
 			view.attachDomRoot( domDiv );
 
 			viewDocument.registerPostFixer( () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					view.change( () => {} );
-				} ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+				}, /^cannot-change-view-tree/, view );
 			} );
 
 			view.forceRender();

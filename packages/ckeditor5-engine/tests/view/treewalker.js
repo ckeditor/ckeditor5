@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Document from '../../src/view/document';
@@ -12,7 +12,7 @@ import TreeWalker from '../../src/view/treewalker';
 import Position from '../../src/view/position';
 import Range from '../../src/view/range';
 import createViewRoot from './_utils/createroot';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
@@ -50,23 +50,23 @@ describe( 'TreeWalker', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TreeWalker(); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^view-tree-walker-no-start-position/ );
+			}, /^view-tree-walker-no-start-position/, null );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TreeWalker( {} ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^view-tree-walker-no-start-position/ );
+			}, /^view-tree-walker-no-start-position/, null );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TreeWalker( { singleCharacters: true } ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^view-tree-walker-no-start-position/ );
+			}, /^view-tree-walker-no-start-position/, null );
 		} );
 
 		it( 'should throw if walking direction is unknown', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new TreeWalker( { startPosition: rootBeginning, direction: 'unknown' } ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^view-tree-walker-unknown-direction/ );
+			}, /^view-tree-walker-unknown-direction/, doc );
 		} );
 	} );
 

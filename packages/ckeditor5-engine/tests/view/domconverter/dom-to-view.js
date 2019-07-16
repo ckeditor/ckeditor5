@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -451,7 +451,7 @@ describe( 'DomConverter', () => {
 			// At the end.
 			test( 'x_', 'x ' );
 			test( 'x _', 'x  ' );
-			test( 'x_ _', 'x   ' );
+			test( 'x __', 'x   ' );
 			test( 'x _ _', 'x    ' );
 
 			// In the middle.
@@ -464,7 +464,7 @@ describe( 'DomConverter', () => {
 			test( '_x_', ' x ' );
 			test( '_ x _x _', '  x  x  ' );
 			test( '_ _x x _', '   x x  ' );
-			test( '_ _x x_ _', '   x x   ' );
+			test( '_ _x x __', '   x x   ' );
 			test( '_ _x _ _x_', '   x    x ' );
 			test( '_', ' ' );
 
@@ -477,10 +477,6 @@ describe( 'DomConverter', () => {
 			test( 'x_', 'x ' );
 			test( 'x__', 'x_ ' );
 			test( 'x___', 'x__ ' );
-			// This is an edge case, but it's impossible to write elegant and compact algorithm that is also
-			// 100% correct. We might assume that expected result is `x  _` but it will be converted to `x   `
-			// by the algorithm. This is acceptable, though.
-			test( 'x __', 'x   ' );
 
 			test( 'x_x', 'x_x' );
 			test( 'x___x', 'x___x' );
@@ -496,26 +492,25 @@ describe( 'DomConverter', () => {
 			test( [ 'x', 'y' ], 'xy' );
 			test( [ 'x ', 'y' ], 'x y' );
 			test( [ 'x _', 'y' ], 'x  y' );
-			test( [ 'x _ ', 'y' ], 'x   y' );
+			test( [ 'x __', 'y' ], 'x   y' );
 			test( [ 'x _  _', 'y' ], 'x    y' );
 
 			test( [ 'x', ' y' ], 'x y' );
-			test( [ 'x ', '_y' ], 'x  y' );
-			test( [ 'x_ ', '_y' ], 'x   y' );
-			test( [ 'x _ ', '_y' ], 'x    y' );
-			test( [ 'x_ _ ', '_y' ], 'x     y' );
+			test( [ 'x_', ' y' ], 'x  y' );
+			test( [ 'x _', ' y' ], 'x   y' );
+			test( [ 'x __', ' y' ], 'x    y' );
+			test( [ 'x _ _', ' y' ], 'x     y' );
 
 			test( [ 'x', ' _y' ], 'x  y' );
-			test( [ 'x ', '_ y' ], 'x   y' );
-			test( [ 'x_ ', '_ y' ], 'x    y' );
-			test( [ 'x _ ', '_ y' ], 'x     y' );
-			test( [ 'x_ _ ', '_ y' ], 'x      y' );
+			test( [ 'x_', ' _y' ], 'x   y' );
+			test( [ 'x _', ' _y' ], 'x    y' );
+			test( [ 'x __', ' _y' ], 'x     y' );
+			test( [ 'x _ _', ' _y' ], 'x      y' );
 
 			// Some tests with hard &nbsp;
 			test( [ 'x', '_y' ], 'x_y' );
 			test( [ 'x_', 'y' ], 'x_y' );
-			test( [ 'x_', ' y' ], 'x_ y' );
-			test( [ 'x__', ' y' ], 'x__ y' );
+			test( [ 'x__', ' y' ], 'x_  y' );
 			test( [ 'x_ _', ' y' ], 'x_   y' );
 
 			it( 'not in preformatted blocks', () => {
@@ -605,9 +600,9 @@ describe( 'DomConverter', () => {
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
 			} );
 
-			it( 'not before a <br> (nbsp+space)', () => {
+			it( 'not before a <br> (space+nbsp)', () => {
 				const domP = createElement( document, 'p', {}, [
-					document.createTextNode( 'foo\u00a0 ' ),
+					document.createTextNode( 'foo \u00a0' ),
 					createElement( document, 'br' )
 				] );
 

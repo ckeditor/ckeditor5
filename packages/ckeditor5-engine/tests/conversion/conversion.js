@@ -1,10 +1,9 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Conversion from '../../src/conversion/conversion';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
@@ -18,6 +17,7 @@ import Model from '../../src/model/model';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 import ConversionHelpers from '../../src/conversion/conversionhelpers';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Conversion', () => {
 	let conversion, downcastDispA, upcastDispaA, downcastDispB;
@@ -34,15 +34,15 @@ describe( 'Conversion', () => {
 
 	describe( 'addAlias()', () => {
 		it( 'should throw when trying to use same group name twice', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				conversion.addAlias( 'upcast', upcastDispaA );
-			} ).to.throw( CKEditorError, /conversion-group-exists/ );
+			}, /conversion-group-exists/ );
 		} );
 
 		it( 'should throw when trying to add not registered dispatcher', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				conversion.addAlias( 'foo', {} );
-			} ).to.throw( CKEditorError, /conversion-add-alias-dispatcher-not-registered/ );
+			}, /conversion-add-alias-dispatcher-not-registered/ );
 		} );
 	} );
 
@@ -53,9 +53,9 @@ describe( 'Conversion', () => {
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				conversion.for( 'foo' );
-			} ).to.throw( CKEditorError, /conversion-for-unknown-group/ );
+			}, /conversion-for-unknown-group/ );
 		} );
 
 		it( 'should return proper helpers for group', () => {
@@ -81,7 +81,7 @@ describe( 'Conversion', () => {
 
 		it( 'should be chainable', () => {
 			const helpers = conversion.for( 'upcast' );
-			const addResult = helpers.add( () => {} );
+			const addResult = helpers.add( () => { } );
 
 			expect( addResult ).to.equal( helpers );
 		} );

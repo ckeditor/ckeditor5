@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -774,7 +774,15 @@ describe( 'Model', () => {
 
 	describe( 'createBatch()', () => {
 		it( 'should return instance of Batch', () => {
-			expect( model.createBatch() ).to.be.instanceof( Batch );
+			const batch = model.createBatch();
+			expect( batch ).to.be.instanceof( Batch );
+			expect( batch.type ).to.equal( 'default' );
+		} );
+
+		it( 'should allow to define type of Batch', () => {
+			const batch = model.createBatch( 'transparent' );
+			expect( batch ).to.be.instanceof( Batch );
+			expect( batch.type ).to.equal( 'transparent' );
 		} );
 	} );
 

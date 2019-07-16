@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -69,8 +69,11 @@ export function _remove( range ) {
 		 *
 		 * @error operation-utils-remove-range-not-flat
 		 */
-		throw new CKEditorError( 'operation-utils-remove-range-not-flat: ' +
-			'Trying to remove a range which starts and ends in different element.' );
+		throw new CKEditorError(
+			'operation-utils-remove-range-not-flat: ' +
+			'Trying to remove a range which starts and ends in different element.',
+			this
+		);
 	}
 
 	const parent = range.start.parent;
@@ -105,8 +108,11 @@ export function _move( sourceRange, targetPosition ) {
 		 *
 		 * @error operation-utils-move-range-not-flat
 		 */
-		throw new CKEditorError( 'operation-utils-move-range-not-flat: ' +
-			'Trying to move a range which starts and ends in different element.' );
+		throw new CKEditorError(
+			'operation-utils-move-range-not-flat: ' +
+			'Trying to move a range which starts and ends in different element.',
+			this
+		);
 	}
 
 	const nodes = _remove( sourceRange );

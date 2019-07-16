@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -702,10 +702,11 @@ export default class Model {
 	 * * {@link #change `change()`},
 	 * * {@link #enqueueChange `enqueueChange()`}.
 	 *
+	 * @param {'transparent'|'default'} [type='default'] The type of the batch.
 	 * @returns {module:engine/model/batch~Batch}
 	 */
-	createBatch() {
-		return new Batch();
+	createBatch( type ) {
+		return new Batch( type );
 	}
 
 	/**

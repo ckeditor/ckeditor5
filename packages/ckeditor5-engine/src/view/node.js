@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -62,7 +62,7 @@ export default class Node {
 			 *
 			 * @error view-node-not-found-in-parent
 			 */
-			throw new CKEditorError( 'view-node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			throw new CKEditorError( 'view-node-not-found-in-parent: The node\'s parent does not contain this node.', this );
 		}
 
 		return pos;

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -127,6 +127,7 @@ export default class Document {
 				 */
 				throw new CKEditorError(
 					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					this,
 					{ operation }
 				);
 			}
@@ -201,6 +202,7 @@ export default class Document {
 			 */
 			throw new CKEditorError(
 				'model-document-createRoot-name-exists: Root with specified name already exists.',
+				this,
 				{ name: rootName }
 			);
 		}
@@ -307,11 +309,18 @@ export default class Document {
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
 			this._callPostFixers( writer );
 
+			// Refresh selection attributes according to the final position in the model after the change.
+			this.selection.refresh();
+
 			if ( this.differ.hasDataChanges() ) {
 				this.fire( 'change:data', writer.batch );
 			} else {
 				this.fire( 'change', writer.batch );
 			}
+
+			// Theoretically, it is not necessary to refresh selection after change event because
+			// post-fixers are the last who should change the model, but just in case...
+			this.selection.refresh();
 
 			this.differ.reset();
 		}
@@ -391,6 +400,14 @@ export default class Document {
 
 		do {
 			for ( const callback of this._postFixers ) {
+				// Ensure selection attributes are up to date before each post-fixer.
+				// https://github.com/ckeditor/ckeditor5-engine/issues/1673.
+				//
+				// It might be good to refresh the selection after each operation but at the moment it leads
+				// to losing attributes for composition or and spell checking
+				// https://github.com/ckeditor/ckeditor5-typing/issues/188
+				this.selection.refresh();
+
 				wasFixed = callback( writer );
 
 				if ( wasFixed ) {

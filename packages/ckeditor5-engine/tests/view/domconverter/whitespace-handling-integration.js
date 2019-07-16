@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -165,20 +165,20 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			return editor.destroy();
 		} );
 
-		it( 'single spaces around <br>', () => {
+		it( 'single spaces around <br> #1', () => {
 			editor.setData( '<p>foo&nbsp;<br>&nbsp;bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo <softBreak></softBreak> bar</paragraph>' );
+				.to.equal( '<paragraph>foo\u00A0<softBreak></softBreak> bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo&nbsp;<br>&nbsp;bar</p>' );
 		} );
 
-		it( 'single spaces around <br> (normalization)', () => {
+		it( 'single spaces around <br> #2', () => {
 			editor.setData( '<p>foo&nbsp;<br> bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo <softBreak></softBreak>bar</paragraph>' );
+				.to.equal( '<paragraph>foo\u00A0<softBreak></softBreak>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo&nbsp;<br>bar</p>' );
 		} );
@@ -192,16 +192,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo &nbsp;<br>bar</p>' );
 		} );
 
-		it( 'two spaces before a <br> (normalization)', () => {
-			editor.setData( '<p>foo&nbsp; <br>bar</p>' );
-
-			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo  <softBreak></softBreak>bar</paragraph>' );
-
-			expect( editor.getData() ).to.equal( '<p>foo &nbsp;<br>bar</p>' );
-		} );
-
-		it( 'two spaces before a <br> (normalization to a model nbsp)', () => {
+		it( 'two nbsps before a <br>', () => {
 			editor.setData( '<p>foo&nbsp;&nbsp;<br>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )

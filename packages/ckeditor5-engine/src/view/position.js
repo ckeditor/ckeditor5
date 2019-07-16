@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -21,9 +21,9 @@ import '@ckeditor/ckeditor5-utils/src/version';
  *
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
- * * {@module:engine/view/view~View}
- * * {@module:engine/view/downcastwriter~DowncastWriter}
- * * {@module:engine/view/upcastwriter~UpcastWriter}
+ * * {@link module:engine/view/view~View}
+ * * {@link module:engine/view/downcastwriter~DowncastWriter}
+ * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Position {
 	/**
@@ -341,7 +341,9 @@ export default class Position {
 				 */
 				throw new CKEditorError(
 					'view-createPositionAt-offset-required: ' +
-					'View#createPositionAt() requires the offset when the first parameter is a view item.' );
+					'View#createPositionAt() requires the offset when the first parameter is a view item.',
+					node
+				);
 			}
 
 			return new Position( node, offset );
@@ -368,7 +370,7 @@ export default class Position {
 			 * @error view-position-after-root
 			 * @param {module:engine/view/node~Node} root
 			 */
-			throw new CKEditorError( 'view-position-after-root: You can not make position after root.', { root: item } );
+			throw new CKEditorError( 'view-position-after-root: You can not make position after root.', item, { root: item } );
 		}
 
 		return new Position( item.parent, item.index + 1 );
@@ -394,7 +396,7 @@ export default class Position {
 			 * @error view-position-before-root
 			 * @param {module:engine/view/node~Node} root
 			 */
-			throw new CKEditorError( 'view-position-before-root: You can not make position before root.', { root: item } );
+			throw new CKEditorError( 'view-position-before-root: You can not make position before root.', item, { root: item } );
 		}
 
 		return new Position( item.parent, item.index );

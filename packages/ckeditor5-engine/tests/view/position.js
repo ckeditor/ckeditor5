@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Position from '../../src/view/position';
@@ -12,13 +12,12 @@ import Document from '../../src/view/document';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import { parse, stringify } from '../../src/dev-utils/view';
 import TreeWalker from '../../src/view/treewalker';
 import createViewRoot from './_utils/createroot';
 import AttributeElement from '../../src/view/attributeelement';
 import ContainerElement from '../../src/view/containerelement';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Position', () => {
 	const parentMock = {};
@@ -383,7 +382,9 @@ describe( 'Position', () => {
 			it( 'should throw if no offset is passed', () => {
 				const element = new Element( 'p' );
 
-				expect( () => Position._createAt( element ) ).to.throw( CKEditorError, /view-createPositionAt-offset-required/ );
+				expectToThrowCKEditorError( () => {
+					Position._createAt( element );
+				}, /view-createPositionAt-offset-required/ );
 			} );
 
 			it( 'should create positions from positions', () => {
@@ -449,9 +450,11 @@ describe( 'Position', () => {
 
 		describe( '_createBefore()', () => {
 			it( 'should throw error if one try to create positions before root', () => {
-				expect( () => {
-					Position._createBefore( parse( '<p></p>' ) );
-				} ).to.throw( CKEditorError, /view-position-before-root/ );
+				const paragraph = parse( '<p></p>' );
+
+				expectToThrowCKEditorError( () => {
+					Position._createBefore( paragraph );
+				}, /view-position-before-root/, paragraph );
 			} );
 
 			it( 'should create positions before `Node`', () => {
@@ -474,9 +477,11 @@ describe( 'Position', () => {
 
 		describe( '_createAfter()', () => {
 			it( 'should throw error if one try to create positions after root', () => {
-				expect( () => {
-					Position._createAfter( parse( '<p></p>' ) );
-				} ).to.throw( CKEditorError, /view-position-after-root/ );
+				const paragraph = parse( '<p></p>' );
+
+				expectToThrowCKEditorError( () => {
+					Position._createAfter( paragraph );
+				}, /view-position-after-root/, paragraph );
 			} );
 
 			it( 'should create positions after `Node`', () => {

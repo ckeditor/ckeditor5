@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -116,7 +116,8 @@ export default class AttributeElement extends Element {
 			 */
 			throw new CKEditorError(
 				'attribute-element-get-elements-with-same-id-no-id: ' +
-				'Cannot get elements with the same id for an attribute element without id.'
+				'Cannot get elements with the same id for an attribute element without id.',
+				this
 			);
 		}
 

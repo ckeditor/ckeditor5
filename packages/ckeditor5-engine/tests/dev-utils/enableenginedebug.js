@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { default as enableEngineDebug, disableEngineDebug } from '../../src/dev-utils/enableenginedebug';
@@ -557,6 +557,9 @@ describe( 'debug tools', () => {
 			const modelRoot = modelDoc.getRoot();
 			const view = editor.editing.view;
 			const viewDoc = view.document;
+
+			// Reset model document version to ensure it will start at 0.
+			model.document.version = 0;
 
 			model.change( () => {
 				const insert = new InsertOperation( ModelPosition._createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );

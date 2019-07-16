@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -21,7 +21,10 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Maps elements, positions and markers between {@link module:engine/view/document~Document the view} and
  * {@link module:engine/model/model the model}.
  *
- * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
+ * The instance of the Mapper used for the editing pipeline is available in
+ * {@link module:engine/controller/editingcontroller~EditingController#mapper `editor.editing.mapper`}.
+ *
+ * Mapper uses bound elements to find corresponding elements and positions, so, to get proper results,
  * all model elements should be {@link module:engine/conversion/mapper~Mapper#bindElements bound}.
  *
  * To map complex model to/from view relations, you may provide custom callbacks for
@@ -171,12 +174,21 @@ export default class Mapper {
 	}
 
 	/**
-	 * Unbinds all elements from given marker name.
+	 * Unbinds an element from given marker name.
 	 *
+	 * @param {module:engine/view/element~Element} element Element to unbind.
 	 * @param {String} name Marker name.
 	 */
-	unbindElementsFromMarkerName( name ) {
-		this._markerNameToElements.delete( name );
+	unbindElementFromMarkerName( element, name ) {
+		const elements = this._markerNameToElements.get( name );
+
+		if ( elements ) {
+			elements.delete( element );
+
+			if ( elements.size == 0 ) {
+				this._markerNameToElements.delete( name );
+			}
+		}
 	}
 
 	/**

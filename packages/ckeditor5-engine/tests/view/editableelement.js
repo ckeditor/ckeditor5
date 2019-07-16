@@ -1,12 +1,13 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import RootEditableElement from '../../src/view/rooteditableelement';
 import Range from '../../src/view/range';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EditableElement', () => {
 	describe( 'document', () => {
@@ -31,9 +32,9 @@ describe( 'EditableElement', () => {
 			element._document = docMock;
 			const newDoc = createDocumentMock();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				element._document = newDoc;
-			} ).to.throw( CKEditorError, 'view-editableelement-document-already-set: View document is already set.' );
+			}, 'view-editableelement-document-already-set: View document is already set.', docMock );
 		} );
 
 		it( 'should be cloned properly', () => {

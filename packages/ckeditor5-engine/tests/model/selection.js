@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../src/model/model';
@@ -10,11 +10,11 @@ import Range from '../../src/model/range';
 import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
 import Selection from '../../src/model/selection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import { parse, setData } from '../../src/dev-utils/model';
 import Schema from '../../src/model/schema';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Selection', () => {
 	let model, doc, root, selection, liveRange, range, range1, range2, range3;
@@ -107,7 +107,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error if added ranges intersects', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [
 					liveRange,
@@ -116,14 +116,14 @@ describe( 'Selection', () => {
 						new Position( root, [ 1, 2 ] )
 					)
 				] );
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+			}, /model-selection-range-intersects/, model );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 	} );
 
@@ -268,7 +268,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error if added ranges intersects', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setTo( [
 					liveRange,
 					new Range(
@@ -276,19 +276,19 @@ describe( 'Selection', () => {
 						new Position( root, [ 1, 2 ] )
 					)
 				] );
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+			}, /model-selection-range-intersects/, model );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setTo( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable #2', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setTo();
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
@@ -352,9 +352,9 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw if second parameter is not passed', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					selection.setTo( root );
-				} ).to.throw( CKEditorError, /model-selection-setTo-required-second-parameter/ );
+				}, /model-selection-setTo-required-second-parameter/, model );
 			} );
 
 			it( 'should set selection at given offset in given parent', () => {
@@ -438,9 +438,9 @@ describe( 'Selection', () => {
 		it( 'throws if there are no ranges in selection', () => {
 			const endPos = Position._createAt( root, 'end' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
-			} ).to.throw( CKEditorError, /model-selection-setFocus-no-ranges/ );
+			}, /model-selection-setFocus-no-ranges/, model );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -617,9 +617,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection._setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-set-ranges-not-range/ );
+			}, /model-selection-set-ranges-not-range/, model );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {

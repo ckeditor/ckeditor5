@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals Node */
@@ -152,7 +152,7 @@ export default class Renderer {
 				 *
 				 * @error renderer-unknown-type
 				 */
-				throw new CKEditorError( 'view-renderer-unknown-type: Unknown type passed to Renderer.markToSync.' );
+				throw new CKEditorError( 'view-renderer-unknown-type: Unknown type passed to Renderer.markToSync.', this );
 			}
 		}
 	}
@@ -387,7 +387,7 @@ export default class Renderer {
 			 *
 			 * @error view-renderer-filler-was-lost
 			 */
-			throw new CKEditorError( 'view-renderer-filler-was-lost: The inline filler node was lost.' );
+			throw new CKEditorError( 'view-renderer-filler-was-lost: The inline filler node was lost.', this );
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {

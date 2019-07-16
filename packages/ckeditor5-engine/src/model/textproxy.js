@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -64,7 +64,7 @@ export default class TextProxy {
 			 *
 			 * @error model-textproxy-wrong-offsetintext
 			 */
-			throw new CKEditorError( 'model-textproxy-wrong-offsetintext: Given offsetInText value is incorrect.' );
+			throw new CKEditorError( 'model-textproxy-wrong-offsetintext: Given offsetInText value is incorrect.', this );
 		}
 
 		if ( length < 0 || offsetInText + length > textNode.offsetSize ) {
@@ -73,7 +73,7 @@ export default class TextProxy {
 			 *
 			 * @error model-textproxy-wrong-length
 			 */
-			throw new CKEditorError( 'model-textproxy-wrong-length: Given length value is incorrect.' );
+			throw new CKEditorError( 'model-textproxy-wrong-length: Given length value is incorrect.', this );
 		}
 
 		/**

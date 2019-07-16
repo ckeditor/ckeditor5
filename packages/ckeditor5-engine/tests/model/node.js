@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../src/model/model';
@@ -8,8 +8,8 @@ import DocumentFragment from '../../src/model/documentfragment';
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Node', () => {
 	let doc, root, node,
@@ -128,11 +128,9 @@ describe( 'Node', () => {
 		it( 'should throw an error if parent does not contain element', () => {
 			node.parent = new Element( 'parent' );
 
-			expect(
-				() => {
-					node.index;
-				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				node.index;
+			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 
@@ -188,11 +186,9 @@ describe( 'Node', () => {
 		it( 'should throw an error if parent does not contain element', () => {
 			node.parent = new Element( 'parent' );
 
-			expect(
-				() => {
-					node.startOffset;
-				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				node.startOffset;
+			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 

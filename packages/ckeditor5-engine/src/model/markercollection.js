@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -167,7 +167,7 @@ export default class MarkerCollection {
 		const marker = this._markers.get( markerName );
 
 		if ( !marker ) {
-			throw new CKEditorError( 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
+			throw new CKEditorError( 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.', this );
 		}
 
 		const range = marker.getRange();
@@ -383,7 +383,7 @@ class Marker {
 	 */
 	get managedUsingOperations() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
 		}
 
 		return this._managedUsingOperations;
@@ -396,7 +396,7 @@ class Marker {
 	 */
 	get affectsData() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
 		}
 
 		return this._affectsData;
@@ -409,7 +409,7 @@ class Marker {
 	 */
 	getStart() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
 		}
 
 		return this._liveRange.start.clone();
@@ -422,7 +422,7 @@ class Marker {
 	 */
 	getEnd() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
 		}
 
 		return this._liveRange.end.clone();
@@ -442,7 +442,7 @@ class Marker {
 	 */
 	getRange() {
 		if ( !this._liveRange ) {
-			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.', this );
 		}
 
 		return this._liveRange.toRange();

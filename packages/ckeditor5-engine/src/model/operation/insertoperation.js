@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -115,7 +115,8 @@ export default class InsertOperation extends Operation {
 			 * @error insert-operation-position-invalid
 			 */
 			throw new CKEditorError(
-				'insert-operation-position-invalid: Insertion position is invalid.'
+				'insert-operation-position-invalid: Insertion position is invalid.',
+				this
 			);
 		}
 	}

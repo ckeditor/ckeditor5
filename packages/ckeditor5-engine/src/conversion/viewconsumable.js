@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -503,7 +503,7 @@ class ViewElementConsumables {
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */
-				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
+				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.', this );
 			}
 
 			consumables.set( name, true );

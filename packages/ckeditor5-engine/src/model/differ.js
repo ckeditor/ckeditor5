@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -108,6 +108,32 @@ export default class Differ {
 	 */
 	get isEmpty() {
 		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
+	}
+
+	/**
+	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
+	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 *
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
+	refreshItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
 	}
 
 	/**

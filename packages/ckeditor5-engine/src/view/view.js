@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -21,6 +21,7 @@ import FakeSelectionObserver from './observer/fakeselectionobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
+import InputObserver from './observer/inputobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -29,6 +30,7 @@ import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/sc
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -172,6 +174,10 @@ export default class View {
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
+
+		if ( env.isAndroid ) {
+			this.addObserver( InputObserver );
+		}
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );
@@ -449,7 +455,8 @@ export default class View {
 			throw new CKEditorError(
 				'cannot-change-view-tree: ' +
 				'Attempting to make changes to the view when it is in an incorrect state: rendering or post-fixers are in progress. ' +
-				'This may cause some unexpected behavior and inconsistency between the DOM and the view.'
+				'This may cause some unexpected behavior and inconsistency between the DOM and the view.',
+				this
 			);
 		}
 
