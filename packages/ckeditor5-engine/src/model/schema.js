@@ -1353,7 +1353,7 @@ export class SchemaContext {
  * @typedef {Object} module:engine/model/schema~AttributeProperties
  * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting, like `bold`, `italic` or
  * `fontSize` rather than semantic attribute (such as `src`, `listType`, etc.). For example, it is used by the "Remove format" feature.
- * @property {Boolean} [copyOnEnter] Indicates that given text attribute should be copied to the next block, when enter is pressed.
+ * @property {Boolean} [copyOnEnter] Indicates that given text attribute should be copied to the next block when enter is pressed.
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {
