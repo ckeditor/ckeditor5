@@ -32,8 +32,8 @@ export default class ColorUI extends Plugin {
 	 * @param {String} config.commandName The name of the command which will be executed when a color tile is clicked.
 	 * @param {String} config.componentName The name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
 	 * and the configuration scope name in `editor.config`.
-	 * @param {String} config.icon SVG icon used by the dropdown.
-	 * @param {String} config.dropdownLabel Label used by the dropdown.
+	 * @param {String} config.icon The SVG icon used by the dropdown.
+	 * @param {String} config.dropdownLabel The label used by the dropdown.
 	 */
 	constructor( editor, { commandName, icon, componentName, dropdownLabel } ) {
 		super( editor );
@@ -54,13 +54,13 @@ export default class ColorUI extends Plugin {
 		this.componentName = componentName;
 
 		/**
-		 * SVG icon used by the dropdown.
+		 * The SVG icon used by the dropdown.
 		 * @type {String}
 		 */
 		this.icon = icon;
 
 		/**
-		 * Label used by the dropdown.
+		 * The label used by the dropdown.
 		 *
 		 * @type {String}
 		 */
