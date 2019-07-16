@@ -9,6 +9,7 @@
 
 /**
  * Returns attributes that should be preserved on the enter key.
+ *
  * Filtering is realized based on `copyOnEnter` attribute property. Read more about attribute properties
  * {@link module:engine/model/schema~Schema#setAttributeProperties here}.
  *
