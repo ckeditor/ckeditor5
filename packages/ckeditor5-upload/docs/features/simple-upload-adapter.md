@@ -16,17 +16,17 @@ See the ["Server–side configuration"](#server-side-configuration) section to l
 
 ## Installation
 
-<info-box info>
-	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
-</info-box>
-
-To add this feature to your editor install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
+First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
  ```bash
 npm install --save @ckeditor/ckeditor5-upload
 ```
 
-Then add the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter SimpleUploadAdapter} to your plugin list and [configure](#configuration) the feature. For instance:
+<info-box info>
+	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all {@link builds/guides/overview#available-builds official editor builds}. You do not have to install it, if you are {@link builds/guides/integration/advanced-setup#scenario-1-integrating-existing-builds extending one}.
+</info-box>
+
+Add the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter SimpleUploadAdapter} to your plugin list and [configure](#configuration) the feature. For instance:
 
  ```js
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
@@ -118,18 +118,7 @@ If the `message` property is missing in the `error` object, the {@link module:ui
 
 ### Upload progress
 
-<info-box>
-	The upload progress feature is optional but highly recommended for the best experience of the editor users.
-</info-box>
-
-The adapter supports [file upload progress](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/progress_event) using `total` and `loaded` properties of the `progress` event fired periodically by the server during the upload.
-
-* `total` — represents the number of total bytes to upload; for instance, an image of 1KB should have `total` of 1000 (bytes).
-* `progress` — represents the number of bytes already uploaded; for instance, if 250 bytes were uploaded of the 1000 (total), the editor will display a 25% upload progress to the user.
-
-<info-box>
-	The `progress` event fired by the server must have the [`lengthComputable`](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent/lengthComputable) property set `true` for the editor to support the image upload progress.
-</info-box>
+This upload adapter will notify users about the [file upload progress](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/progress_event) out–of–the–box.
 
 ## What's next?
 
