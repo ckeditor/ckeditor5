@@ -8,13 +8,13 @@
  */
 
 /**
- * Returns iterator which has filtered attributes read from {@link module:engine/model/selection~Selection#getAttributes selection}.
+ * Returns attributes that should be preserved on the enter key.
  * Filtering is realized based on `copyOnEnter` attribute property. Read more about attribute properties
  * {@link module:engine/model/schema~Schema#setAttributeProperties here}.
  *
  * @param {module:engine/model/schema~Schema} schema
- * @param {Iterable.<*>} allAttributes iterator with attributes of current selection.
- * @returns {Iterable.<*>} filtered attributes which has `copyOnEnter` property.
+ * @param {Iterable.<*>} allAttributes attributes to filter.
+ * @returns {Iterable.<*>}
  */
 export function* getCopyOnEnterAttributes( schema, allAttributes ) {
 	for ( const attribute of allAttributes ) {

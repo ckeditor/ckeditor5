@@ -84,7 +84,7 @@ function softBreakAction( model, writer, selection ) {
 	if ( isSelectionEmpty ) {
 		const attributesToCopy = getCopyOnEnterAttributes( model.schema, selection.getAttributes() );
 		insertBreak( writer, range.end );
-		// transforms: [ [ key1, value1 ], ... ] => [ key1, ... ]
+
 		writer.removeSelectionAttribute( Array.from( selection.getAttributes() ).map( x => x[ 0 ] ) );
 		writer.setSelectionAttribute( attributesToCopy );
 	} else {

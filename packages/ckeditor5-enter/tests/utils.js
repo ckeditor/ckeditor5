@@ -13,9 +13,9 @@ describe( 'utils', () => {
 				.then( editor => {
 					const schema = editor.model.schema;
 
-					schema.register( 'foo', { inheritAllFrom: '$block' } );
-					schema.register( 'bar', { inheritAllFrom: '$block' } );
-					schema.register( 'baz', { inheritAllFrom: '$block' } );
+					schema.extend( '$text', {
+						allowAttributes: [ 'foo', 'bar', 'baz' ]
+					} );
 
 					schema.setAttributeProperties( 'foo', { copyOnEnter: true } );
 					schema.setAttributeProperties( 'baz', { copyOnEnter: true } );
