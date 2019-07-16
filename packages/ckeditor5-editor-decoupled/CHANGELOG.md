@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.0...v12.2.1) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [12.2.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.1...v12.2.0) (2019-07-04)
+
+### Features
+
+* `DecoupledEditor.create()` will throw an error, when a `<textarea>` element is used. ([af4daea](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/af4daea))
+
+
+## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.1.0...v12.1.1) (2019-06-05)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.0.0...v12.1.0) (2019-04-10)
 
 ### Features

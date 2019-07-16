@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout */
+/* globals document, setTimeout, console */
 
 import DecoupledEditorUI from '../src/decouplededitorui';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
@@ -18,11 +18,11 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -32,7 +32,7 @@ describe( 'DecoupledEditor', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+		testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
 	} );
 
 	describe( 'constructor()', () => {
@@ -144,9 +144,38 @@ describe( 'DecoupledEditor', () => {
 			DecoupledEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
-			} ).catch( () => {
-				done();
-			} );
+			} )
+				.then(
+					() => {
+						expect.fail( 'Decoupled editor should throw an error when both initial data are passed' );
+					},
+					err => {
+						assertCKEditorError( err,
+							// eslint-disable-next-line max-len
+							/^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./,
+							null
+						);
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'throws error if it is initialized in textarea', done => {
+			DecoupledEditor.create( document.createElement( 'textarea' ) )
+				.then(
+					() => {
+						expect.fail( 'Decoupled editor should throw an error when is initialized in textarea.' );
+					},
+					err => {
+						assertCKEditorError( err,
+							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./,
+							null
+						);
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 
 		function test( getElementOrData ) {
