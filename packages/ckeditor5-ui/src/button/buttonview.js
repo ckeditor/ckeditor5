@@ -37,9 +37,15 @@ import '../../theme/components/button/button.css';
  */
 export default class ButtonView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:ui/view~View} class.
+	 *
+	 * Also see {@link #render}.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {Object} [config] additional configuration
+	 * @param {Boolean} [config.toggle=false] set button as a toggle
 	 */
-	constructor( locale ) {
+	constructor( locale, { toggle = false } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -131,8 +137,7 @@ export default class ButtonView extends View {
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
-				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
-				'aria-pressed': bind.to( 'isOn', value => value ? 'true' : 'false' )
+				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
 			},
 
 			children: this.children,
@@ -155,6 +160,14 @@ export default class ButtonView extends View {
 				} )
 			}
 		} );
+
+		if ( toggle ) {
+			this.extendTemplate( {
+				attributes: {
+					'aria-pressed': bind.to( 'isOn', value => value ? 'true' : 'false' )
+				}
+			} );
+		}
 	}
 
 	/**
