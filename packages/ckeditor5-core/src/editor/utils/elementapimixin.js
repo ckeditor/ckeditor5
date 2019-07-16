@@ -30,7 +30,10 @@ const ElementApiMixin = {
 			 *
 			 * @error editor-missing-sourceelement
 			 */
-			throw new CKEditorError( 'editor-missing-sourceelement: Cannot update the source element of a detached editor.' );
+			throw new CKEditorError(
+				'editor-missing-sourceelement: Cannot update the source element of a detached editor.',
+				this
+			);
 		}
 
 		setDataInElement( this.sourceElement, this.data.get() );

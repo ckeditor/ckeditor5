@@ -7,6 +7,8 @@
  * @module core/editor/editorui
  */
 
+/* globals console */
+
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
@@ -54,10 +56,10 @@ export default class EditorUI {
 		/**
 		 * Stores all editable elements used by the editor instance.
 		 *
-		 * @protected
+		 * @private
 		 * @member {Map.<String,HTMLElement>}
 		 */
-		this._editableElements = new Map();
+		this._editableElementsMap = new Map();
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
@@ -100,7 +102,29 @@ export default class EditorUI {
 
 		this.focusTracker.destroy();
 
-		this._editableElements = new Map();
+		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
+		for ( const domElement of this._editableElementsMap.values() ) {
+			domElement.ckeditorInstance = null;
+		}
+
+		this._editableElementsMap = new Map();
+	}
+
+	/**
+	 * Store the native DOM editable element used by the editor under
+	 * a unique name.
+	 *
+	 * @param {String} rootName The unique name of the editable element.
+	 * @param {HTMLElement} domElement The native DOM editable element.
+	 */
+	setEditableElement( rootName, domElement ) {
+		this._editableElementsMap.set( rootName, domElement );
+
+		// Put a reference to the CKEditor instance in the editable native DOM element.
+		// It helps 3rd–party software (browser extensions, other libraries) access and recognize
+		// CKEditor 5 instances (editing roots) and use their API (there is no global editor
+		// instance registry).
+		domElement.ckeditorInstance = this.editor;
 	}
 
 	/**
@@ -110,7 +134,7 @@ export default class EditorUI {
 	 * @returns {HTMLElement|undefined}
 	 */
 	getEditableElement( rootName = 'main' ) {
-		return this._editableElements.get( rootName );
+		return this._editableElementsMap.get( rootName );
 	}
 
 	/**
@@ -119,7 +143,31 @@ export default class EditorUI {
 	 * @returns {Iterable.<String>}
 	 */
 	getEditableElementsNames() {
-		return this._editableElements.keys();
+		return this._editableElementsMap.keys();
+	}
+
+	/**
+	 * Stores all editable elements used by the editor instance.
+	 *
+	 * @protected
+	 * @deprecated
+	 * @member {Map.<String,HTMLElement>}
+	 */
+	get _editableElements() {
+		/**
+		 * The {@link module:core/editor/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
+		 * deprecated and will be removed in the near future. Please use {@link #setEditableElement `setEditableElement()`} and
+		 * {@link #getEditableElement `getEditableElement()`} methods instead.
+		 *
+		 * @error editor-ui-deprecated-editable-elements
+		 * @param {module:core/editor/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
+		 */
+		console.warn(
+			'editor-ui-deprecated-editable-elements: ' +
+			'The EditorUI#_editableElements property has been deprecated and will be removed in the near future.',
+			{ editorUI: this } );
+
+		return this._editableElementsMap;
 	}
 
 	/**

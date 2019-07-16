@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout */
+/* globals setTimeout, console */
 
-import testUtils from '../tests/_utils/utils';
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
 import Plugin from '../src/plugin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
+import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
@@ -19,8 +17,6 @@ class ChildPlugin extends Plugin {}
 class GrandPlugin extends ChildPlugin {}
 
 describe( 'PluginCollection', () => {
-	testUtils.createSinonSandbox();
-
 	before( () => {
 		PluginA = createPlugin( 'A' );
 		PluginB = createPlugin( 'B' );
@@ -71,6 +67,10 @@ describe( 'PluginCollection', () => {
 		];
 
 		PluginFoo.requires = [];
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	describe( 'load()', () => {
@@ -194,7 +194,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should load plugin which does not extend the base Plugin class', () => {
-			class Y { }
+			class Y {}
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -240,7 +240,7 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -253,13 +253,13 @@ describe( 'PluginCollection', () => {
 					expect( err ).to.be.an.instanceof( TestError );
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
 
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 				} );
 		} );
 
 		it( 'should reject when loading non-existent plugin', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
@@ -269,11 +269,10 @@ describe( 'PluginCollection', () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-plugin-not-found/ );
+					assertCKEditorError( err, /^plugincollection-plugin-not-found/, editor );
 
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
 				} );
 		} );
 
@@ -340,84 +339,65 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
-				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be still executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-required/ );
+					assertCKEditorError( err, /^plugincollection-required/, editor );
 
-					expect( logSpy.calledTwice ).to.equal( true );
+					sinon.assert.calledTwice( consoleErrorStub );
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name', () => {
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
+		it( 'should reject when loading more than one plugin with the same name', () => {
 			const plugins = new PluginCollection( editor );
 
 			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
-					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-
-					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
-
-					const warnData = logSpy.firstCall.args[ 1 ];
-					expect( warnData.pluginName ).to.equal( 'Foo' );
-					expect( warnData.plugin1 ).to.equal( PluginFoo );
-					expect( warnData.plugin2 ).to.equal( AnotherPluginFoo );
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null, {
+						pluginName: 'Foo',
+						plugin1: PluginFoo,
+						plugin2: AnotherPluginFoo
+					} );
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name (plugin requires plugin with the same name)', () => {
+		it( 'should reject when loading more than one plugin with the same name (plugin requires plugin with the same name)', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
 			const plugins = new PluginCollection( editor );
 
 			return plugins.init( [ PluginFoo ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( AnotherPluginFoo );
-					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-
-					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
 				} );
 		} );
 
-		it(
-			'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
-			() => {
-				availablePlugins = [ PluginFoo ];
+		it( 'should reject when loading more than one plugin with the same name' +
+			'(plugin with the same name is built-in the PluginCollection)', () => {
+			availablePlugins = [ PluginFoo ];
 
-				const logSpy = testUtils.sinon.stub( log, 'warn' );
-				const plugins = new PluginCollection( editor, availablePlugins );
+			const plugins = new PluginCollection( editor, availablePlugins );
 
-				return plugins.init( [ 'Foo', AnotherPluginFoo ] )
-					.then( () => {
-						expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-						expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
-						expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-
-						expect( logSpy.calledOnce ).to.equal( true );
-						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
-					} );
-			}
-		);
+			return plugins.init( [ 'Foo', AnotherPluginFoo ] )
+				.then( () => {
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {
@@ -453,9 +433,9 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] ).then( () => {
-				expect( () => plugins.get( 'foo' ) )
-					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
-					.with.deep.property( 'data', { plugin: 'foo' } );
+				expectToThrowCKEditorError( () => plugins.get( 'foo' ),
+					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' }
+				);
 			} );
 		} );
 
@@ -466,9 +446,8 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] ).then( () => {
-				expect( () => plugins.get( SomePlugin ) )
-					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
-					.with.deep.property( 'data', { plugin: 'foo' } );
+				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
+					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' } );
 			} );
 		} );
 
@@ -478,9 +457,10 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] ).then( () => {
-				expect( () => plugins.get( SomePlugin ) )
-					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
-					.with.deep.property( 'data', { plugin: 'SomePlugin' } );
+				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
+					/^plugincollection-plugin-not-loaded:/,
+					editor, { plugin: 'SomePlugin' }
+				);
 			} );
 		} );
 	} );

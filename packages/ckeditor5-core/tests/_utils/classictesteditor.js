@@ -13,6 +13,8 @@ import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { isElement } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * A simplified classic editor. Useful for testing features.
@@ -24,51 +26,67 @@ export default class ClassicTestEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( element, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		// The element on which the editor has been initialized.
-		this.element = element;
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
 
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
+
+		// Create the ("main") root element of the model tree.
+		this.model.document.createRoot();
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
 		// Expose properties normally exposed by the ClassicEditorUI.
 		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale, this.editing.view );
-
-		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
+		if ( this.sourceElement ) {
+			this.updateSourceElement();
+		}
+
 		this.ui.destroy();
 
 		return super.destroy();
 	}
 
 	/**
-	 * @inheritDoc
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * or the editor's initial data.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	static create( element, config ) {
+	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
 					// should be rendered after plugins are initialized.
-					.then( () => editor.ui.init( element ) )
+					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
-						editor.state = 'ready';
-						editor.fire( 'ready' );
+						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							// Documented in core/editor/editorconfig.jsdoc.
+							throw new CKEditorError(
+								'editor-create-initial-data: ' +
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
+								null
+							);
+						}
+
+						editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
 					} )
+					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
@@ -104,7 +122,12 @@ class ClassicTestEditorUI extends EditorUI {
 		return this._view;
 	}
 
-	init( element ) {
+	/**
+	 * Initializes the UI.
+	 *
+	 * @param {HTMLElement|null} replacementElement The DOM element that will be the source for the created editor.
+	 */
+	init( replacementElement ) {
 		const view = this.view;
 		const editable = view.editable;
 		const editingView = this.editor.editing.view;
@@ -116,9 +139,11 @@ class ClassicTestEditorUI extends EditorUI {
 
 		view.main.add( view.editable );
 
-		this._editableElements.set( 'main', view.editable.element );
+		this.setEditableElement( 'main', view.editable.element );
 
-		this._elementReplacer.replace( element, view.element );
+		if ( replacementElement ) {
+			this._elementReplacer.replace( replacementElement, view.element );
+		}
 
 		this.fire( 'ready' );
 	}
@@ -137,3 +162,7 @@ class ClassicTestEditorUI extends EditorUI {
 
 mix( ClassicTestEditor, DataApiMixin );
 mix( ClassicTestEditor, ElementApiMixin );
+
+function getInitialData( sourceElementOrData ) {
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
