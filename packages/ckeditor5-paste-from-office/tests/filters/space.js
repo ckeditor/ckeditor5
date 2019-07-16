@@ -6,100 +6,99 @@
 /* globals DOMParser */
 
 import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space';
-describe( 'Paste from Office', () => {
-	describe( 'Filters', () => {
-		describe( 'space', () => {
-			describe( 'normalizeSpacing()', () => {
-				it( 'should replace last space before closing tag with NBSP', () => {
-					const input = '<p>Foo </p><p><span> Bar  </span> Baz </p>';
-					const expected = '<p>Foo\u00A0</p><p><span> Bar \u00A0</span> Baz\u00A0</p>';
 
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
+describe( 'Paste from Office - filters', () => {
+	describe( 'space', () => {
+		describe( 'normalizeSpacing()', () => {
+			it( 'should replace last space before closing tag with NBSP', () => {
+				const input = '<p>Foo </p><p><span> Bar  </span> Baz </p>';
+				const expected = '<p>Foo\u00A0</p><p><span> Bar \u00A0</span> Baz\u00A0</p>';
 
-				it( 'should replace last space before special "o:p" tag with NBSP', () => {
-					const input = '<p>Foo  <o:p></o:p><span> <o:p></o:p> Bar</span></p>';
-					const expected = '<p>Foo \u00A0<o:p></o:p><span>\u00A0<o:p></o:p> Bar</span></p>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should remove newlines from spacerun spans #1', () => {
-					const input = '<span style=\'mso-spacerun:yes\'>  \n</span>';
-					const expected = '<span style=\'mso-spacerun:yes\'> \u00A0</span>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should remove newlines from spacerun spans #2', () => {
-					const input = '<span style=\'mso-spacerun:yes\'> \r\n</span>';
-					const expected = '<span style=\'mso-spacerun:yes\'>\u00A0</span>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should remove newlines from spacerun spans #3', () => {
-					const input = '<span style=\'mso-spacerun:yes\'>  \r\n\n  </span>';
-					const expected = '<span style=\'mso-spacerun:yes\'>   \u00A0</span>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should remove newlines from spacerun spans #4', () => {
-					const input = '<span style=\'mso-spacerun:yes\'>\n\n\n  </span>';
-					const expected = '<span style=\'mso-spacerun:yes\'> \u00A0</span>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should remove newlines from spacerun spans #5', () => {
-					const input = '<span style=\'mso-spacerun:yes\'>\n\n</span>';
-					const expected = '';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should remove multiline sequences of whitespaces', () => {
-					const input = '<p>Foo</p> \n\n   \n<p>Bar</p>   \r\n\r\n  <p>Baz</p>';
-					const expected = '<p>Foo</p><p>Bar</p><p>Baz</p>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should normalize Safari "space spans"', () => {
-					const input = '<p>Foo <span class="Apple-converted-space">   </span> Baz <span>  </span></p>';
-					const expected = '<p>Foo \u00A0 \u00A0 Baz \u00A0\u00A0</p>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
-
-				it( 'should normalize nested Safari "space spans"', () => {
-					const input =
-						'<p> Foo <span class="Apple-converted-space"> <span class="Apple-converted-space">    </span></span> Baz</p>';
-
-					const expected = '<p> Foo \u00A0 \u00A0 \u00A0 Baz</p>';
-
-					expect( normalizeSpacing( input ) ).to.equal( expected );
-				} );
+				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 
-			describe( 'normalizeSpacerunSpans()', () => {
-				it( 'should normalize spaces inside special "span.spacerun" elements', () => {
-					const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
-						'<p> Baz <span style=\'mso-spacerun:yes\'>      </span></p>';
+			it( 'should replace last space before special "o:p" tag with NBSP', () => {
+				const input = '<p>Foo  <o:p></o:p><span> <o:p></o:p> Bar</span></p>';
+				const expected = '<p>Foo \u00A0<o:p></o:p><span>\u00A0<o:p></o:p> Bar</span></p>';
 
-					const expected = '<p> <span style="mso-spacerun:yes">&nbsp; &nbsp;</span>Foo</p>' +
-						'<p> Baz <span style="mso-spacerun:yes">&nbsp; &nbsp; &nbsp; </span></p>';
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
 
-					const domParser = new DOMParser();
-					const htmlDocument = domParser.parseFromString( input, 'text/html' );
+			it( 'should remove newlines from spacerun spans #1', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>  \n</span>';
+				const expected = '<span style=\'mso-spacerun:yes\'> \u00A0</span>';
 
-					expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.not.equal( expected );
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
 
-					normalizeSpacerunSpans( htmlDocument );
+			it( 'should remove newlines from spacerun spans #2', () => {
+				const input = '<span style=\'mso-spacerun:yes\'> \r\n</span>';
+				const expected = '<span style=\'mso-spacerun:yes\'>\u00A0</span>';
 
-					expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
-				} );
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #3', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>  \r\n\n  </span>';
+				const expected = '<span style=\'mso-spacerun:yes\'>   \u00A0</span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #4', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>\n\n\n  </span>';
+				const expected = '<span style=\'mso-spacerun:yes\'> \u00A0</span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #5', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>\n\n</span>';
+				const expected = '';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove multiline sequences of whitespaces', () => {
+				const input = '<p>Foo</p> \n\n   \n<p>Bar</p>   \r\n\r\n  <p>Baz</p>';
+				const expected = '<p>Foo</p><p>Bar</p><p>Baz</p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should normalize Safari "space spans"', () => {
+				const input = '<p>Foo <span class="Apple-converted-space">   </span> Baz <span>  </span></p>';
+				const expected = '<p>Foo \u00A0 \u00A0 Baz \u00A0\u00A0</p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should normalize nested Safari "space spans"', () => {
+				const input =
+					'<p> Foo <span class="Apple-converted-space"> <span class="Apple-converted-space">    </span></span> Baz</p>';
+
+				const expected = '<p> Foo \u00A0 \u00A0 \u00A0 Baz</p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+		} );
+
+		describe( 'normalizeSpacerunSpans()', () => {
+			it( 'should normalize spaces inside special "span.spacerun" elements', () => {
+				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
+					'<p> Baz <span style=\'mso-spacerun:yes\'>      </span></p>';
+
+				const expected = '<p> <span style="mso-spacerun:yes">&nbsp; &nbsp;</span>Foo</p>' +
+					'<p> Baz <span style="mso-spacerun:yes">&nbsp; &nbsp; &nbsp; </span></p>';
+
+				const domParser = new DOMParser();
+				const htmlDocument = domParser.parseFromString( input, 'text/html' );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.not.equal( expected );
+
+				normalizeSpacerunSpans( htmlDocument );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
 		} );
 	} );
