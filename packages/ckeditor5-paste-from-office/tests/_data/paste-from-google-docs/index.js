@@ -21,4 +21,20 @@ export const fixtures = {
 	}
 };
 
-export const browserFixtures = {};
+import simpleTextFirefox from './simple-text/input.firefox.html';
+
+import simpleTextNormalizedFirefox from './simple-text/normalized.firefox.html';
+
+export const browserFixtures = {
+	firefox: {
+		input: {
+			simpleText: simpleTextFirefox
+		},
+		normalized: {
+			simpleText: simpleTextNormalizedFirefox
+		},
+		model: {
+			simpleText: simpleTextModel
+		}
+	}
+};

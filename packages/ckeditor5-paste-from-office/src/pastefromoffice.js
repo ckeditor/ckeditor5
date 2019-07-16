@@ -47,14 +47,14 @@ export default class PasteFromOffice extends Plugin {
 	}
 
 	/**
-	 * Listener fired during {@link module:clipboard/clipboard~Clipboard#event:inputTransformation} event. Detects if content comes
-	 * from recognized source and normalize it.
+	 * Listener fired during {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `inputTransformation` event}.
+	 * Detects if content comes from a recognized source and normalize it.
 	 *
 	 * **Note**: this function was exposed mainly for testing purposes and should not be called directly.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} evt
-	 * @param {Object} data passed with {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}
+	 * @param {Object} data same structure like {@link module:clipboard/clipboard~Clipboard#event:inputTransformation input transformation}
 	 */
 	static _inputTransformationListener( evt, data ) {
 		const html = data.dataTransfer.getData( 'text/html' );
@@ -110,14 +110,16 @@ export default class PasteFromOffice extends Plugin {
 	}
 
 	/**
-	 * Determines if given paste data came from specific office-like application
-	 * Recognized are:
-	 * * 'msword' for Microsoft Words desktop app
-	 * * 'gdocs' for Google Docs online app
+	 * Determines if given paste data came from the specific office-like application.
+	 * Currently recognized are:
+	 * * `'msword'` for Microsoft Words desktop app
+	 * * `'gdocs'` for Google Docs online app
+	 *
+	 * **Note**: this function is exposed mainly for testing purposes and should not be called directly.
 	 *
 	 * @private
-	 * @param {String} html `text/html` string from data transfer
-	 * @return {String|null} type of app which is source of a data or null
+	 * @param {String} html the `text/html` string from data transfer
+	 * @return {String|null} name of source app of an html data or null
 	 */
 	static _getInputType( html ) {
 		if (

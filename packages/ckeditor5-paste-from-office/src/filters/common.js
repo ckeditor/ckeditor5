@@ -8,7 +8,7 @@
  */
 
 /**
- * Removes <b> tag wrapper added by Google Docs for copied content.
+ * The filter removes `<b>` tag wrapper added by Google Docs for copied content.
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  * @returns {module:engine/view/documentfragment~DocumentFragment}
@@ -16,7 +16,7 @@
 export function removeBoldTagWrapper( documentFragment ) {
 	const firstChild = documentFragment.getChild( 0 );
 
-	if ( firstChild.name === 'b' && firstChild.getStyle( 'font-weight' ) === 'normal' ) {
+	if ( firstChild && firstChild.is( 'b' ) && firstChild.getStyle( 'font-weight' ) === 'normal' ) {
 		const children = firstChild.getChildren();
 
 		documentFragment._removeChildren( 0 );
