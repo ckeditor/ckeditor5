@@ -8,6 +8,8 @@
  */
 
 /**
+ * The block indentation behavior that uses offsets to set indentation.
+ *
  * @implements module:indent/indentblockcommand~IndentBehavior
  */
 export default class IndentUsingOffset {

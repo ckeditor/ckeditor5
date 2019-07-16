@@ -19,8 +19,8 @@ import IndentUI from './indentui';
  *
  * The compatible features are:
  *
- * - the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
- * * the {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation
+ * * The {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation.
+ * * The {@link module:indent/indentblock~IndentBlock} feature for block indentation.
  *
  * This is a "glue" plugin which loads the following plugins:
  *
