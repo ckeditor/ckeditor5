@@ -37,8 +37,14 @@ describe( 'FontSizeEditing', () => {
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( editor.model.schema.getAttributeProperties( 'fontSize' ) ).to.deep.equal( {
+		expect( editor.model.schema.getAttributeProperties( 'fontSize' ) ).to.include( {
 			isFormatting: true
+		} );
+	} );
+
+	it( 'its attribute is marked with a copOnEnter property', () => {
+		expect( editor.model.schema.getAttributeProperties( 'fontSize' ) ).to.include( {
+			copyOnEnter: true
 		} );
 	} );
 

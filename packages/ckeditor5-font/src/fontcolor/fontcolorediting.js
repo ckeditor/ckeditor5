@@ -118,6 +118,9 @@ export default class FontColorEditing extends Plugin {
 		// Allow the font color attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_COLOR } );
 
-		editor.model.schema.setAttributeProperties( FONT_COLOR, { isFormatting: true } );
+		editor.model.schema.setAttributeProperties( FONT_COLOR, {
+			isFormatting: true,
+			copyOnEnter: true
+		} );
 	}
 }
