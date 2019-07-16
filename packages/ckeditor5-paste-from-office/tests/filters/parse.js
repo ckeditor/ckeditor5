@@ -9,7 +9,7 @@ import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragme
 
 import { parseHtml } from '../../src/filters/parse';
 
-describe( 'Paste from Office - filters', () => {
+describe( 'PasteFromOffice/filters', () => {
 	describe( 'parse', () => {
 		describe( 'parseHtml()', () => {
 			it( 'correctly parses HTML with body and one style tag', () => {

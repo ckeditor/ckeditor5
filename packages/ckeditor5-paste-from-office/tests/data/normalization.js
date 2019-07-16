@@ -14,7 +14,7 @@ const editorConfig = {
 	plugins: [ Clipboard, PasteFromOffice ]
 };
 
-describe( 'Paste from Office - automatic', () => {
+describe( 'PasteFromOffice/data - automatic', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'normalization',

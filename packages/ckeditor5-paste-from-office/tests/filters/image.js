@@ -12,7 +12,7 @@ import { parseHtml } from '../../src/filters/parse';
 import { replaceImagesSourceWithBase64, _convertHexToBase64 } from '../../src/filters/image';
 import { browserFixtures } from '../_data/image/index';
 
-describe( 'Paste from Office - filters', () => {
+describe( 'PasteFromOffice/filters', () => {
 	describe( 'image', () => {
 		let editor;
 

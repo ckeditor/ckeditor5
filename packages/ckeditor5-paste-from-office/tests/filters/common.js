@@ -6,7 +6,7 @@
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { removeBoldTagWrapper } from '../../src/filters/common';
 
-describe( 'Paste from Office - filters', () => {
+describe( 'PasteFromOffice/filters', () => {
 	const htmlDataProcessor = new HtmlDataProcessor();
 	describe( 'common', () => {
 		describe( 'removeBoldTagWrapper', () => {
