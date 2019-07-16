@@ -14,7 +14,7 @@
  */
 export default class IndentUsingClasses {
 	/**
-	 * Creates an instance of the behavior.
+	 * Creates an instance of the indentation behavior.
 	 *
 	 * @param {Object} config
 	 * @param {String} config.direction The direction of indentation.
