@@ -26,8 +26,8 @@ export default class UnlinkCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When the selection is collapsed, removes the `linkHref` attribute from each node with the same `linkHref` attribute value.
-	 * When the selection is non-collapsed, removes the `linkHref` attribute from each node in selected ranges.
+	 * When the selection is collapsed, it removes the `linkHref` attribute from each node with the same `linkHref` attribute value.
+	 * When the selection is non-collapsed, it removes the `linkHref` attribute from each node in selected ranges.
 	 *
 	 * # Decorators
 	 *

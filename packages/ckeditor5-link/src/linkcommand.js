@@ -33,7 +33,7 @@ export default class LinkCommand extends Command {
 		 * A collection of {@link module:link/utils~ManualDecorator manual decorators}
 		 * corresponding to the {@link module:link/link~LinkConfig#decorators decorator configuration}.
 		 *
-		 * You can consider it a model with states of manual decorators added to currently selected link.
+		 * You can consider it a model with states of manual decorators added to the currently selected link.
 		 *
 		 * @readonly
 		 * @type {module:utils/collection~Collection}
@@ -42,7 +42,7 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
-	 * Synchronize state of {@link #manualDecorators} with actually present elements in the model.
+	 * Synchronizes the state of {@link #manualDecorators} with the currently present elements in the model.
 	 */
 	restoreManualDecoratorStates() {
 		for ( const manualDecorator of this.manualDecorators ) {
@@ -72,8 +72,8 @@ export default class LinkCommand extends Command {
 	 * When the selection is non-collapsed, the `linkHref` attribute will be applied to nodes inside the selection, but only to
 	 * those nodes where the `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When the selection is collapsed and is not inside the text with the `linkHref` attribute, the
-	 * new {@link module:engine/model/text~Text Text node} with the `linkHref` attribute will be inserted in place of caret, but
+	 * When the selection is collapsed and is not inside the text with the `linkHref` attribute, a
+	 * new {@link module:engine/model/text~Text text node} with the `linkHref` attribute will be inserted in place of the caret, but
 	 * only if such element is allowed in this place. The `_data` of the inserted text will equal the `href` parameter.
 	 * The selection will be updated to wrap the just inserted text node.
 	 *
@@ -81,18 +81,18 @@ export default class LinkCommand extends Command {
 	 *
 	 * # Decorators and model attribute management
 	 *
-	 * There is an optional argument to this command, which applies or removes model
+	 * There is an optional argument to this command that applies or removes model
 	 * {@glink framework/guides/architecture/editing-engine#text-attributes text attributes} brought by
 	 * {@link module:link/utils~ManualDecorator manual link decorators}.
 	 *
 	 * Text attribute names in the model correspond to the entries in the {@link module:link/link~LinkConfig#decorators configuration}.
 	 * For every decorator configured, a model text attribute exists with the "link" prefix. For example, a `'linkMyDecorator'` attribute
-	 * corresponds to the `'myDecorator'` in the configuration.
+	 * corresponds to `'myDecorator'` in the configuration.
 	 *
 	 * To learn more about link decorators, check out the {@link module:link/link~LinkConfig#decorators `config.link.decorators`}
 	 * documentation.
 	 *
-	 * Here is how to manage decorator attributes via the link command:
+	 * Here is how to manage decorator attributes with the link command:
 	 *
 	 *		const linkCommand = editor.commands.get( 'link' );
 	 *
@@ -101,25 +101,25 @@ export default class LinkCommand extends Command {
 	 *			linkIsExternal: true
 	 *		} );
 	 *
-	 *		// Removing a decorator attribute from a selection.
+	 *		// Removing a decorator attribute from the selection.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkIsExternal: false
 	 *		} );
 	 *
-	 *		// Adding multiple decorator attributes at a time.
+	 *		// Adding multiple decorator attributes at the same time.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkIsExternal: true,
 	 *			linkIsDownloadable: true,
 	 *		} );
 	 *
-	 *		// Removing and adding decorator attributes at a time.
+	 *		// Removing and adding decorator attributes at the same time.
 	 *		linkCommand.execute( 'http://example.com', {
 	 *			linkIsExternal: false,
 	 *			linkFoo: true,
 	 *			linkIsDownloadable: false,
 	 *		} );
 	 *
-	 * **Note**: If decorator attribute name is not specified its state remains untouched.
+	 * **Note**: If the decorator attribute name is not specified, its state remains untouched.
 	 *
 	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} removes all
 	 * decorator attributes.
@@ -206,11 +206,11 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
-	 * Method provides the information if a decorator with given name is present in currently processed selection.
+	 * Provides information whether a decorator with a given name is present in the currently processed selection.
 	 *
 	 * @private
-	 * @param {String} decoratorName name of a manual decorator used in the model
-	 * @returns {Boolean} The information if a given decorator is currently present in a selection
+	 * @param {String} decoratorName The name of the manual decorator used in the model
+	 * @returns {Boolean} The information whether a given decorator is currently present in the selection.
 	 */
 	_getDecoratorStateFromModel( decoratorName ) {
 		const doc = this.editor.model.document;

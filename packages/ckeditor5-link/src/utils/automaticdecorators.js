@@ -8,14 +8,14 @@
  */
 
 /**
- * Helper class which tight together all {@link module:link/link~LinkDecoratorAutomaticDefinition} and provides
+ * Helper class that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition} and provides
  * a {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatcher} for them.
  */
 export default class AutomaticDecorators {
 	constructor() {
 		/**
-		 * Stores definition of {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}.
-		 * Those data are used as source for a downcast dispatcher to make proper conversion to output data.
+		 * Stores the definition of {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators}.
+		 * This data is used as a source for a downcast dispatcher to create a proper conversion to output data.
 		 *
 		 * @private
 		 * @type {Set}
@@ -24,7 +24,7 @@ export default class AutomaticDecorators {
 	}
 
 	/**
-	 * Gives information how many decorators is stored in {@link module:link/utils~AutomaticDecorators} instance.
+	 * Gives information about the number of decorators stored in the {@link module:link/utils~AutomaticDecorators} instance.
 	 *
 	 * @readonly
 	 * @protected
@@ -35,10 +35,10 @@ export default class AutomaticDecorators {
 	}
 
 	/**
-	 * Add automatic decorator objects or array with them to be used during downcasting.
+	 * Adds automatic decorator objects or an array with them to be used during downcasting.
 	 *
 	 * @param {module:link/link~LinkDecoratorAutomaticDefinition|Array.<module:link/link~LinkDecoratorAutomaticDefinition>} item
-	 * configuration object of automatic rules for decorating links. It might be also array of such objects.
+	 * A configuration object of automatic rules for decorating links. It might also be an array of such objects.
 	 */
 	add( item ) {
 		if ( Array.isArray( item ) ) {
@@ -49,10 +49,10 @@ export default class AutomaticDecorators {
 	}
 
 	/**
-	 * Provides the conversion helper used in an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method.
+	 * Provides the conversion helper used in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method.
 	 *
-	 * @returns {Function} dispatcher function used as conversion helper
-	 * in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}
+	 * @returns {Function} A dispatcher function used as conversion helper
+	 * in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
 	 */
 	getDispatcher() {
 		return dispatcher => {

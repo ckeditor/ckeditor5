@@ -23,7 +23,7 @@ import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import '../../theme/linkactions.css';
 
 /**
- * The link actions view class. This view displays link preview, allows
+ * The link actions view class. This view displays the link preview, allows
  * unlinking or editing the link.
  *
  * @extends module:ui/view~View
@@ -75,7 +75,7 @@ export default class LinkActionsView extends View {
 		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon, 'edit' );
 
 		/**
-		 * Value of the "href" attribute of the link to use in the {@link #previewButtonView}.
+		 * The value of the "href" attribute of the link to use in the {@link #previewButtonView}.
 		 *
 		 * @observable
 		 * @member {String}
@@ -83,7 +83,7 @@ export default class LinkActionsView extends View {
 		this.set( 'href' );
 
 		/**
-		 * A collection of views which can be focused in the view.
+		 * A collection of views that can be focused in the view.
 		 *
 		 * @readonly
 		 * @protected
@@ -168,7 +168,7 @@ export default class LinkActionsView extends View {
 	 *
 	 * @private
 	 * @param {String} label The button label.
-	 * @param {String} icon The button's icon.
+	 * @param {String} icon The button icon.
 	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
