@@ -22,20 +22,20 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 ## Installation
 
-<info-box info>
-	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
+First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-upload
 ```
 
-Then add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
+<info-box info>
+	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all {@link builds/guides/overview#available-builds official editor builds}. You do not have to install it, if you are {@link builds/guides/integration/advanced-setup#scenario-1-integrating-existing-builds extending one}.
+</info-box>
+
+Add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
 
 ```js
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/base64uploadadapter';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
