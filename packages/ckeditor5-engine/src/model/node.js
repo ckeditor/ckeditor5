@@ -88,7 +88,7 @@ export default class Node {
 		}
 
 		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.', this );
 		}
 
 		return pos;
@@ -112,7 +112,7 @@ export default class Node {
 		}
 
 		if ( ( pos = this.parent.getChildStartOffset( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.', this );
 		}
 
 		return pos;

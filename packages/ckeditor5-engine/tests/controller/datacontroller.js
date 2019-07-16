@@ -8,7 +8,6 @@ import ModelRange from '../../src/model/range';
 import ViewRange from '../../src/view/range';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ViewDocumentFragment from '../../src/view/documentfragment';
@@ -20,6 +19,7 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 
 import UpcastHelpers from '../../src/conversion/upcasthelpers';
 import DowncastHelpers from '../../src/conversion/downcasthelpers';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers;
@@ -173,12 +173,9 @@ describe( 'DataController', () => {
 		it( 'should throw an error when document data is already initialized', () => {
 			data.init( '<p>Foo</p>' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				data.init( '<p>Bar</p>' );
-			} ).to.throw(
-				CKEditorError,
-				'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.'
-			);
+			}, /datacontroller-init-document-not-empty:/, model );
 		} );
 
 		it( 'should set data to default main root', () => {
@@ -230,23 +227,17 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should throw an error when non-existent root is used (single)', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				data.init( { nonexistent: '<p>Bar</p>' } );
-			} ).to.throw(
-				CKEditorError,
-				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
-			);
+			}, /^datacontroller-init-non-existent-root:/ );
 		} );
 
 		it( 'should throw an error when non-existent root is used (one of many)', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
-			} ).to.throw(
-				CKEditorError,
-				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
-			);
+			}, /^datacontroller-init-non-existent-root:/, model );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
 		} );
@@ -315,26 +306,38 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should throw an error when non-existent root is used (single)', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				data.set( { nonexistent: '<p>Bar</p>' } );
-			} ).to.throw(
-				CKEditorError,
-				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
-			);
+			}, /datacontroller-set-non-existent-root:/, model );
 		} );
 
 		it( 'should throw an error when non-existent root is used (one of many) without touching any roots data', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
-			} ).to.throw(
-				CKEditorError,
-				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
-			);
+			}, /datacontroller-set-non-existent-root:/, model );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
+		it( 'should not throw when setting the data with markers that already exist in the editor', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+
+			data.set( 'foo' );
+
+			downcastHelpers.markerToElement( { model: 'marker', view: 'marker' } );
+			upcastHelpers.elementToMarker( { view: 'marker', model: 'marker' } );
+
+			model.change( writer => {
+				writer.addMarker( 'marker', { range: writer.createRangeIn( modelDocument.getRoot() ), usingOperation: true } );
+			} );
+
+			expect( () => {
+				data.set( data.get() );
+			} ).not.to.throw();
 		} );
 	} );
 
@@ -423,12 +426,9 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should throw an error when non-existent root is used', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				data.get( { rootName: 'nonexistent' } );
-			} ).to.throw(
-				CKEditorError,
-				'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.'
-			);
+			}, /datacontroller-get-non-existent-root:/ );
 		} );
 	} );
 

@@ -116,7 +116,8 @@ export default class AttributeElement extends Element {
 			 */
 			throw new CKEditorError(
 				'attribute-element-get-elements-with-same-id-no-id: ' +
-				'Cannot get elements with the same id for an attribute element without id.'
+				'Cannot get elements with the same id for an attribute element without id.',
+				this
 			);
 		}
 

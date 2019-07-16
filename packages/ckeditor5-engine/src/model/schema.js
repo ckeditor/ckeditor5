@@ -91,9 +91,13 @@ export default class Schema {
 			 * @param itemName The name of the model element that is being registered twice.
 			 * @error schema-cannot-register-item-twice
 			 */
-			throw new CKEditorError( 'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.', {
-				itemName
-			} );
+			throw new CKEditorError(
+				'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.',
+				this,
+				{
+					itemName
+				}
+			);
 		}
 
 		this._sourceDefinitions[ itemName ] = [
@@ -136,9 +140,9 @@ export default class Schema {
 			 * {@link #register registered} yet.
 			 *
 			 * @param itemName The name of the model element which is being extended.
-			 * @error schema-cannot-register-item-twice
+			 * @error schema-cannot-extend-missing-item
 			 */
-			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', {
+			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', this, {
 				itemName
 			} );
 		}
@@ -352,7 +356,10 @@ export default class Schema {
 				 *
 				 * @error schema-check-merge-no-element-before
 				 */
-				throw new CKEditorError( 'schema-check-merge-no-element-before: The node before the merge position must be an element.' );
+				throw new CKEditorError(
+					'schema-check-merge-no-element-before: The node before the merge position must be an element.',
+					this
+				);
 			}
 
 			if ( !( nodeAfter instanceof Element ) ) {
@@ -361,7 +368,10 @@ export default class Schema {
 				 *
 				 * @error schema-check-merge-no-element-after
 				 */
-				throw new CKEditorError( 'schema-check-merge-no-element-after: The node after the merge position must be an element.' );
+				throw new CKEditorError(
+					'schema-check-merge-no-element-after: The node after the merge position must be an element.',
+					this
+				);
 			}
 
 			return this.checkMerge( nodeBefore, nodeAfter );
@@ -1018,7 +1028,7 @@ mix( Schema, ObservableMixin );
  * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
  *
  * By inheriting from the generic items you can define new items which will get extended by other editor features.
- * Read more about generic types in the {@linkTODO Defining schema} guide.
+ * Read more about generic types in the {@glink framework/guides/deep-dive/schema Defining schema} guide.
  *
  * # Example definitions
  *

@@ -7,7 +7,7 @@ import Model from '../../../src/model/model';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
 	let model, doc, root;
@@ -181,7 +181,7 @@ describe( 'RootAttributeOperation', () => {
 			const parent = new Element( 'p' );
 			parent._appendChild( child );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const op = new RootAttributeOperation(
 					child,
 					'foo',
@@ -191,11 +191,11 @@ describe( 'RootAttributeOperation', () => {
 				);
 
 				op._validate();
-			} ).to.throw( CKEditorError, /rootattribute-operation-not-a-root/ );
+			}, /rootattribute-operation-not-a-root/ );
 		} );
 
 		it( 'should throw an error when trying to change document fragment', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const op = new RootAttributeOperation(
 					new DocumentFragment(),
 					'foo',
@@ -205,11 +205,11 @@ describe( 'RootAttributeOperation', () => {
 				);
 
 				op._validate();
-			} ).to.throw( CKEditorError, /rootattribute-operation-not-a-root/ );
+			}, /rootattribute-operation-not-a-root/ );
 		} );
 
 		it( 'should throw an error when trying to remove an attribute that does not exists', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const op = new RootAttributeOperation(
 					root,
 					'foo',
@@ -219,13 +219,13 @@ describe( 'RootAttributeOperation', () => {
 				);
 
 				op._validate();
-			} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
+			}, /rootattribute-operation-wrong-old-value/, model );
 		} );
 
 		it( 'should throw an error when trying to add an attribute that already exists', () => {
 			root._setAttribute( 'x', 1 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const op = new RootAttributeOperation(
 					root,
 					'x',
@@ -235,7 +235,7 @@ describe( 'RootAttributeOperation', () => {
 				);
 
 				op._validate();
-			} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
+			}, /rootattribute-operation-attribute-exists/, model );
 		} );
 	} );
 
@@ -304,9 +304,9 @@ describe( 'RootAttributeOperation', () => {
 
 			serialized.root = 'no-root';
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				RootAttributeOperation.fromJSON( serialized, doc );
-			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-root/ );
+			}, /rootattribute-operation-fromjson-no-root/ );
 		} );
 	} );
 } );

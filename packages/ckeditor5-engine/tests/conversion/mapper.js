@@ -643,20 +643,25 @@ describe( 'Mapper', () => {
 			expect( elements ).to.deep.equal( [ viewA, viewB, viewC ] );
 		} );
 
-		it( 'should unbind all elements from a marker name', () => {
+		it( 'should unbind element from a marker name', () => {
 			const viewA = new ViewElement( 'a' );
 			const viewB = new ViewElement( 'b' );
-			const viewC = new ViewElement( 'c' );
 
 			mapper.bindElementToMarker( viewA, 'marker' );
 			mapper.bindElementToMarker( viewB, 'marker' );
-			mapper.bindElementToMarker( viewC, 'marker' );
 
-			mapper.unbindElementsFromMarkerName( 'marker' );
+			mapper.unbindElementFromMarkerName( viewA, 'marker' );
 
-			const elements = mapper.markerNameToElements( 'marker' );
+			expect( Array.from( mapper.markerNameToElements( 'marker' ) ) ).to.deep.equal( [ viewB ] );
 
-			expect( elements ).to.be.null;
+			mapper.unbindElementFromMarkerName( viewB, 'marker' );
+
+			expect( mapper.markerNameToElements( 'marker' ) ).to.be.null;
+
+			// Removing an element from non-existing group or non-bound element should not cause a crash.
+			mapper.unbindElementFromMarkerName( viewB, 'marker' );
+
+			expect( mapper.markerNameToElements( 'marker' ) ).to.be.null;
 		} );
 	} );
 

@@ -1759,6 +1759,76 @@ describe( 'Differ', () => {
 		} );
 	} );
 
+	describe( 'refreshItem()', () => {
+		it( 'should mark given element to be removed and added again', () => {
+			const p = root.getChild( 0 );
+
+			differ.refreshItem( p );
+
+			expectChanges( [
+				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
+				{ type: 'insert', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
+			], true );
+		} );
+
+		it( 'should mark given text proxy to be removed and added again', () => {
+			const p = root.getChild( 0 );
+			const range = model.createRangeIn( p );
+			const textProxy = [ ...range.getItems() ][ 0 ];
+
+			differ.refreshItem( textProxy );
+
+			expectChanges( [
+				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
+				{ type: 'insert', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) }
+			], true );
+		} );
+
+		it( 'inside a new element', () => {
+			// Since the refreshed element is inside a new element, it should not be listed on changes list.
+			model.change( () => {
+				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
+
+				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'markers refreshing', () => {
+			model.change( () => {
+				// Refreshed element contains marker.
+				model.markers._set( 'markerA', new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) );
+
+				// Marker contains refreshed element.
+				model.markers._set( 'markerB', new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ) );
+
+				// Intersecting.
+				model.markers._set( 'markerC', new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ) );
+
+				// Not intersecting.
+				model.markers._set( 'markerD', new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 1 ] ) ) );
+			} );
+
+			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
+
+			differ.refreshItem( root.getChild( 1 ) );
+
+			expectChanges( [
+				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
+				{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+			] );
+
+			const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
+			const markersToAdd = differ.getMarkersToAdd().map( entry => entry.name );
+
+			expect( markersToRefresh ).to.deep.equal( markersToRemove );
+			expect( markersToRefresh ).to.deep.equal( markersToAdd );
+		} );
+	} );
+
 	describe( 'getChanges()', () => {
 		let position, p1, rangeAttrChange, range;
 

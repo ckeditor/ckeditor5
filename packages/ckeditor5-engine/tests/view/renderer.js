@@ -19,7 +19,7 @@ import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import DocumentFragment from '../../src/view/documentfragment';
 import DowncastWriter from '../../src/view/downcastwriter';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -27,6 +27,7 @@ import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
@@ -106,9 +107,9 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should throw if the type is unknown', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				renderer.markToSync( 'UNKNOWN', viewRoot );
-			} ).to.throw( CKEditorError, /^view-renderer-unknown-type/ );
+			}, /^view-renderer-unknown-type/, selection );
 		} );
 	} );
 
@@ -1300,9 +1301,9 @@ describe( 'Renderer', () => {
 			selection._setTo( null );
 			renderer.markToSync( 'children', viewB );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				renderer.render();
-			} ).to.throw( CKEditorError, /^view-renderer-filler-was-lost/ );
+			}, /^view-renderer-filler-was-lost/, selection );
 		} );
 
 		// #1014.
@@ -1372,7 +1373,7 @@ describe( 'Renderer', () => {
 			expect( domFocusSpy.called ).to.be.false;
 		} );
 
-		it( 'should render NBSP as first space in inline element after another space', () => {
+		it( 'should render NBSP as last space in the previous inline element', () => {
 			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
 
 			viewRoot._appendChild( viewP );
@@ -1395,9 +1396,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x&nbsp;<b> y</b>' );
 		} );
 
 		it( 'should update sibling after, when node before is removed', () => {
@@ -1473,9 +1474,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x&nbsp;<b> y</b>' );
 		} );
 
 		// #1093
@@ -1502,9 +1503,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domP.childNodes[ 1 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( '<b>x </b>&nbsp;y' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x&nbsp;</b> y' );
 		} );
 
 		// #1093
@@ -1532,9 +1533,9 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
-			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
-			expect( domI.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
-			expect( domP.innerHTML ).to.equal( '<b>x </b><i>&nbsp;y</i>' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domI.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x&nbsp;</b><i> y</i>' );
 		} );
 
 		// #1125

@@ -73,7 +73,7 @@ export default class DetachOperation extends Operation {
 			 *
 			 * @error detach-operation-on-document-node
 			 */
-			throw new CKEditorError( 'detach-operation-on-document-node: Cannot detach document node.' );
+			throw new CKEditorError( 'detach-operation-on-document-node: Cannot detach document node.', this );
 		}
 	}
 

@@ -16,7 +16,8 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot, gy, model;
@@ -210,9 +211,9 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should throw if empty array is passed', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Range._createFromRanges( [] );
-				} ).to.throw( CKEditorError, /^range-create-from-ranges-empty-array/ );
+				}, /^range-create-from-ranges-empty-array/ );
 			} );
 
 			it( 'should return a copy of the range if only one range was passed', () => {

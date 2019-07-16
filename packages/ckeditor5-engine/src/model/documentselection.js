@@ -639,6 +639,7 @@ class LiveSelection extends Selection {
 					 */
 					throw new CKEditorError(
 						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						this,
 						{ range }
 					);
 				}
@@ -767,6 +768,7 @@ class LiveSelection extends Selection {
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
+				this,
 				{ uid }
 			);
 		}
