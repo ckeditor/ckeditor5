@@ -115,34 +115,26 @@ export default class Document {
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
 	 * instance connected with the executed changes block.
 	 *
-	 * Here is an example which wraps all spaces into spans to add a gray background to all of them:
+	 * Here is an example from the link plugin which adds highlight class to the link in the selection is in the link:
 	 *
 	 *
 	 *		editor.editing.view.document.registerPostFixer( writer => {
-	 *			let changed = false;
+	 *			const selection = editor.model.document.selection;
 	 *
-	 *			let range = editor.editing.view.createRangeIn( editor.editing.view.document.getRoot() );
-	 *			const items = range.getWalker( { singleCharacters: true, direction: 'backward' } );
+	 *			if ( selection.hasAttribute( 'linkHref' ) ) {
+	 *				const viewRange = findLinkRange( selection );
 	 *
-	 *			for( let item of items ) {
-	 *				if( item.type == 'text' && item.item.data == ' ' ) {
-	 *					if ( !isWrapped( item.nextPosition ) ) {
-	 *						const rangeToWrap = writer.createRange( item.nextPosition, item.previousPosition );
-	 *						const span = writer.createAttributeElement( 'span', { 'style': 'background-color: gray;' } );
-	 *
-	 *						writer.wrap( rangeToWrap, span );
-	 *						writer.setSelection( item.nextPosition );
-	 *
-	 *						changed = true;
+	 *				// There might be multiple `a` elements in the `viewRange`, for example,
+	 *				//  when the `a` element is broken by a UIElement.
+	 *				for ( const item of viewRange.getItems() ) {
+	 *					if ( item.is( 'a' ) ) {
+	 *						writer.addClass( HIGHLIGHT_CLASS, item );
+	 *						highlightedLinks.add( item );
 	 *					}
 	 *				}
-	 *			}
 	 *
-	 *			return changed;
-	 *
-	 *			function isWrapped( position ) {
-	 *				return position.getAncestors()
-	 *					.find( element => element.getStyle && element.getStyle( 'background-color' ) === 'gray' );
+	 *				// Let other post-fixers know that something changed.
+	 *				return true;
 	 *			}
 	 *		} );
 	 *
@@ -150,6 +142,16 @@ export default class Document {
 	 * It will be executed as soon as any change in the document causes rendering. If you want to re-render the editor's
 	 * view after registering the post-fixer then you should do it manually calling
 	 * {@link module:engine/view/view~View#forceRender `view.forceRender();`}.
+	 *
+	 * Keep in mind that changes executed in the view post-fixer may break model-view mapping, which may cases bugs. To
+	 * avoid them make sure that your post-fixer do only save changes, for instance:
+	 *  - add or remove attribute or class to an element,
+	 *  - change inside of the {@link module:engine/view/uielement~UIElement UIElement},
+	 *  - mark some element to convert using {@link  module:engine/model/differ~Differ#refreshItem differ API}.
+	 *
+	 * Try to avoid changes which touch view structure:
+	 *  - you should not add or remove any view elements nor wrap or unwrap in the view post-fixer,
+	 *  - you should not change the editor data model in view post-fixer.
 	 *
 	 * @param {Function} postFixer
 	 */
