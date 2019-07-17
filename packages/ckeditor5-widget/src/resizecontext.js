@@ -125,7 +125,8 @@ export default class ResizeContext {
 			y: resizeHost.height
 		};
 
-		this.aspectRatio = this.originalSize.x / this.originalSize.y;
+		this.aspectRatio = this.options.getAspectRatio ?
+			this.options.getAspectRatio( resizeHost ) : this.originalSize.x / this.originalSize.y;
 
 		this.resizeStrategy.begin( domResizeHandler );
 	}
