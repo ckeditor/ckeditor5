@@ -16,9 +16,9 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
 
 import MentionUI, { createRegExp } from '../src/mentionui';
-import featureDetection from '../src/featuredetection';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -449,10 +449,10 @@ describe( 'MentionUI', () => {
 			let regExpStub;
 
 			// Cache the original value to restore it after the tests.
-			const originalGroupSupport = featureDetection.isUnicodeGroupSupported;
+			const originalGroupSupport = regExpFeatureDetection.isUnicodeGroupSupported;
 
 			before( () => {
-				featureDetection.isUnicodeGroupSupported = false;
+				regExpFeatureDetection.isUnicodeGroupSupported = false;
 			} );
 
 			beforeEach( () => {
@@ -465,18 +465,18 @@ describe( 'MentionUI', () => {
 			} );
 
 			after( () => {
-				featureDetection.isUnicodeGroupSupported = originalGroupSupport;
+				regExpFeatureDetection.isUnicodeGroupSupported = originalGroupSupport;
 			} );
 
 			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
-				featureDetection.isUnicodeGroupSupported = false;
+				regExpFeatureDetection.isUnicodeGroupSupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
 				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
-				featureDetection.isUnicodeGroupSupported = true;
+				regExpFeatureDetection.isUnicodeGroupSupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
 				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,})$', 'u' );
@@ -564,7 +564,7 @@ describe( 'MentionUI', () => {
 				// Belongs to Pi (Punctuation, Initial quote) group:
 				'«', '‹', '⸌', ' ⸂', '⸠'
 			] ) {
-				testOpeningPunctuationCharacter( character, !featureDetection.isUnicodeGroupSupported );
+				testOpeningPunctuationCharacter( character, !regExpFeatureDetection.isUnicodeGroupSupported );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -834,7 +834,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should open panel for unicode character ב', function() {
-				if ( !featureDetection.isUnicodeGroupSupported ) {
+				if ( !regExpFeatureDetection.isUnicodeGroupSupported ) {
 					this.skip();
 				}
 
