@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,14 +17,8 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import Image from '../../src/image/imageediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
 describe( 'ImageUploadCommand', () => {
 	let editor, command, model, fileRepository;
-
-	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -50,6 +46,8 @@ describe( 'ImageUploadCommand', () => {
 	} );
 
 	afterEach( () => {
+		sinon.restore();
+
 		return editor.destroy();
 	} );
 
@@ -180,12 +178,12 @@ describe( 'ImageUploadCommand', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
-		it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway)', () => {
+		it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway)', () => {
 			const file = createNativeFileMock();
 
 			fileRepository.createUploadAdapter = undefined;
 
-			const logStub = testUtils.sinon.stub( log, 'error' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
@@ -194,7 +192,7 @@ describe( 'ImageUploadCommand', () => {
 			} ).to.not.throw();
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
-			expect( logStub.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( consoleWarnStub );
 		} );
 	} );
 } );

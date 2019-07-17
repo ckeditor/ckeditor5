@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout, atob, URL, Blob */
+/* globals window, setTimeout, atob, URL, Blob, console */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -23,9 +23,7 @@ import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 describe( 'ImageUploadEditing', () => {
@@ -35,8 +33,6 @@ describe( 'ImageUploadEditing', () => {
 
 	let adapterMocks = [];
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
-
-	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -54,15 +50,15 @@ describe( 'ImageUploadEditing', () => {
 
 	beforeEach( () => {
 		if ( isEdgeEnv ) {
-			testUtils.sinon.stub( window, 'File' ).callsFake( () => {
+			sinon.stub( window, 'File' ).callsFake( () => {
 				return { name: 'file.jpg' };
 			} );
 		}
 
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
-		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
+		sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 
 			return nativeReaderMock;
@@ -80,11 +76,12 @@ describe( 'ImageUploadEditing', () => {
 				viewDocument = view.document;
 
 				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-				testUtils.sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+				sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
 			} );
 	} );
 
 	afterEach( () => {
+		sinon.restore();
 		adapterMocks = [];
 
 		return editor.destroy();
@@ -282,10 +279,10 @@ describe( 'ImageUploadEditing', () => {
 		expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 	} );
 
-	it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway) when image is pasted', () => {
+	it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway) when image is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
-		const logStub = testUtils.sinon.stub( log, 'error' );
+		const consoleWarnStub = sinon.stub( console, 'warn' );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -299,7 +296,7 @@ describe( 'ImageUploadEditing', () => {
 		} ).to.not.throw();
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
-		sinon.assert.calledOnce( logStub );
+		sinon.assert.calledOnce( consoleWarnStub );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5-upload/issues/70
@@ -402,7 +399,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should not fire notification on abort', done => {
 		const notification = editor.plugins.get( Notification );
 		const file = createNativeFileMock();
-		const spy = testUtils.sinon.spy();
+		const spy = sinon.spy();
 
 		notification.on( 'show:warning', evt => {
 			spy();
@@ -467,7 +464,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should remove image in case of upload error', done => {
 		const file = createNativeFileMock();
-		const spy = testUtils.sinon.spy();
+		const spy = sinon.spy();
 		const notification = editor.plugins.get( Notification );
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 
@@ -495,7 +492,7 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
+		const abortSpy = sinon.spy( loader, 'abort' );
 
 		expect( loader.status ).to.equal( 'reading' );
 
@@ -517,8 +514,8 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
-		const loadSpy = testUtils.sinon.spy( loader, 'read' );
+		const abortSpy = sinon.spy( loader, 'abort' );
+		const loadSpy = sinon.spy( loader, 'read' );
 
 		const image = doc.getRoot().getChild( 0 );
 
@@ -589,7 +586,7 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
-		const spy = testUtils.sinon.spy();
+		const spy = sinon.spy();
 
 		editor.editing.view.document.fire( 'dragover', {
 			preventDefault: spy
@@ -646,7 +643,7 @@ describe( 'ImageUploadEditing', () => {
 			expectModel( done, getModelData( model ), expected );
 		}, { priority: 'low' } );
 
-		testUtils.sinon.stub( fileRepository, 'createLoader' ).callsFake( () => null );
+		sinon.stub( fileRepository, 'createLoader' ).callsFake( () => null );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -684,7 +681,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` so it can be rejected.
-		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+		sinon.stub( window, 'fetch' ).callsFake( () => {
 			return new Promise( ( res, rej ) => rej() );
 		} );
 
@@ -728,7 +725,7 @@ describe( 'ImageUploadEditing', () => {
 		// Stub `fetch` in a way that 2 first calls are successful and 3rd fails.
 		let counter = 0;
 		const fetch = window.fetch;
-		testUtils.sinon.stub( window, 'fetch' ).callsFake( src => {
+		sinon.stub( window, 'fetch' ).callsFake( src => {
 			counter++;
 			if ( counter < 3 ) {
 				return fetch( src );
@@ -777,11 +774,11 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
 		if ( isEdgeEnv ) {
 			// Since on Edge `File` is already stubbed, restore it to it native form so that exception will be thrown.
-			testUtils.sinon.restore();
+			sinon.restore();
 			// Since all stubs were restored, re-stub `scrollToTheSelection`.
-			testUtils.sinon.stub( editor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+			sinon.stub( editor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
 		} else {
-			testUtils.sinon.stub( window, 'File' ).throws( 'Function expected.' );
+			sinon.stub( window, 'File' ).throws( 'Function expected.' );
 		}
 
 		const notification = editor.plugins.get( Notification );
@@ -827,7 +824,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` to return custom blob without type.
-		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+		sinon.stub( window, 'fetch' ).callsFake( () => {
 			return new Promise( res => res( {
 				blob() {
 					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
@@ -855,7 +852,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` to return custom blob without type.
-		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+		sinon.stub( window, 'fetch' ).callsFake( () => {
 			return new Promise( res => res( {
 				blob() {
 					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
@@ -898,7 +895,7 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		// Stub `fetch` in a way that it always fails.
-		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
+		sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
