@@ -239,21 +239,14 @@ Add some CSS styles for `.my-green-link` to see the customization in action:
 In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.com" in their `href="..."` get the `target="_blank"` attribute. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
 <info-box>
-	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+	Note that similar behavior can be obtained with {@link module:link/link~LinkConfig#addTargetToExternalLinks link decorators}:
 	
 	```js
 	ClassicEditor
 		.create( ..., {
 			// ...
 			link: {
-				decorators: {
-					addGreenLink: {
-						mode: 'automatic',
-						attributes: {
-							class: 'my-green-link'
-						}
-					}
-				}
+				addTargetToExternalLinks: true
 			}
 		} )
 	```
