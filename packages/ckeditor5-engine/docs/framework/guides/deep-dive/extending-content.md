@@ -593,7 +593,7 @@ Allowing all attributes on `div` elements is achieved by custom "upcast" and "do
 Allowing every possible attribute on div in the model is done by adding a {@link module:engine/model/schema~Schema#addAttributeCheck addAttributeCheck()} callback. 
 
 <info-box>
-	Allowing every attribute on `<div>` elements might introduce security issues - ise XSS attacks. The production code should use only application related attributes and/or properly encode data. 
+	Allowing every attribute on `<div>` elements might introduce security issues - ise XSS attacks. The production code should use only application related attributes and/or properly encode data.
 </info-box>
 
 Adding "upcast" and "downcast" converters for the `<div>` element is enough for cases where its attributes does not change. If attributes in the model are modified those `elementToElement()` converters will not be called as `div` is already converted. To overcome this a lower-level API is used.
