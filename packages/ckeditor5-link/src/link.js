@@ -58,7 +58,7 @@ export default class Link extends Plugin {
  */
 
 /**
- * When set `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
+ * When set `true`, the `target="_blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
  * in the editor. By external are meant all links in the editor content starting with `http`, `https`, or `//`.
  *
  *		ClassicEditor
