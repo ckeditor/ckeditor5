@@ -16,7 +16,7 @@ ClassicEditor
 		typing: {
 			transformations: {
 				remove: [
-					// Don't use the transformations from the
+					// Do not use the transformations from the
 					// 'symbols' and 'quotes' groups.
 					'symbols',
 					'quotes',
@@ -32,8 +32,8 @@ ClassicEditor
 					{ from: ':+1:', to: '👍' },
 					{ from: ':tada:', to: '🎉' },
 
-					// You can also define patterns using regexp.
-					// Note: the pattern must end with `$` and all its fragments must be wrapped
+					// You can also define patterns using regular expressions.
+					// Note: The pattern must end with `$` and all its fragments must be wrapped
 					// with capturing groups.
 					// The following rule replaces ` "foo"` with ` «foo»`.
 					{
@@ -42,7 +42,7 @@ ClassicEditor
 					},
 
 					// Finally, you can define `to` as a callback.
-					// This (naive) rule will auto-capitalize first word after a period.
+					// This (naive) rule will auto-capitalize the first word after a period.
 					{
 						from: /(\. )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
