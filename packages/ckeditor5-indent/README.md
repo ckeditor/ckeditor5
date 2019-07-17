@@ -12,6 +12,10 @@ CKEditor 5 block indentation feature
 
 This package implements block indentation support for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Block indentation feature](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-indent` package](https://ckeditor.com/docs/ckeditor5/latest/api/indent.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
