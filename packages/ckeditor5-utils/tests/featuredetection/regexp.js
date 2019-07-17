@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import featureDetection from '../src/featuredetection';
+import regExpFeatureDetection from '../../src/featuredetection/regexp';
 
 describe( 'featuredetection', () => {
 	describe( 'isUnicodePropertySupported', () => {
 		it( 'should detect accessibility of unicode properties', () => {
 			const testFn = () => ( new RegExp( '\\p{L}', 'u' ) ).test( 'ć' );
 
-			if ( featureDetection.isUnicodePropertySupported ) {
+			if ( regExpFeatureDetection.isUnicodePropertySupported ) {
 				expect( testFn() ).to.be.true;
 			} else {
 				expect( testFn ).to.throw();

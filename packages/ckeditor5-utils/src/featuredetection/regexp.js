@@ -4,11 +4,11 @@
  */
 
 /**
- * @module utils/featuredetection
+ * @module utils/featuredetection/regexp
  */
 
 /**
- * Holds feature detection used by the editor.
+ * Holds feature detection related to regular expressions used by the editor.
  *
  * @protected
  * @namespace
@@ -16,6 +16,7 @@
 export default {
 	/**
 	 * Indicates whether the current browser supports ES2018 Unicode properties like `\p{P}` or `\p{L}`.
+	 * More information about unicode properties might be found [here](https://www.unicode.org/reports/tr44/#GC_Values_Table).
 	 *
 	 * @type {Boolean}
 	 */
