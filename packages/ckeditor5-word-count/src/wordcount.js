@@ -232,6 +232,12 @@ export default class WordCount extends Plugin {
 
 		this.characters = txt.replace( /\n/g, '' ).length;
 
+		// Groups:
+		// {L} - Any kind of letter from any language.
+		// {N} - Any kind of numeric character in any script.
+		// {M} - A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.).
+		// {Pd} - Any kind of hyphen or dash.
+		// {Pc} - A punctuation character such as an underscore that connects words.
 		const wordsMatch = regExpFeatureDetection.isUnicodePropertySupported ?
 			txt.match( new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) ) :
 			txt.match( /[_\-a-zA-Z0-9À-ž]+/gu );
