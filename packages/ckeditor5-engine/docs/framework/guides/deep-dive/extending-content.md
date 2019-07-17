@@ -149,6 +149,27 @@ If you want to learn how to load some extra content (element, attributes, classe
 
 In this example all links (`<a href="...">...</a>`) get the `.my-green-link` CSS class. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
+<info-box>
+	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+	
+	```js
+	ClassicEditor
+		.create( ..., {
+			// ...
+			link: {
+				decorators: {
+					addGreenLink: {
+						mode: 'automatic',
+						attributes: {
+							class: 'my-green-link'
+						}
+					}
+				}
+			}
+		} )
+	```
+</info-box>
+
 ##### Demo
 
 {@snippet framework/extending-content-add-link-class}
@@ -216,6 +237,27 @@ Add some CSS styles for `.my-green-link` to see the customization in action:
 #### Adding an HTML attribute to certain inline elements
 
 In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.com" in their `href="..."` get the `target="_blank"` attribute. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
+
+<info-box>
+	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+	
+	```js
+	ClassicEditor
+		.create( ..., {
+			// ...
+			link: {
+				decorators: {
+					addGreenLink: {
+						mode: 'automatic',
+						attributes: {
+							class: 'my-green-link'
+						}
+					}
+				}
+			}
+		} )
+	```
+</info-box>
 
 ##### Demo
 
@@ -286,6 +328,28 @@ a[target="_blank"]::after {
 #### Adding a CSS class to certain inline elements
 
 In this example all links (`<a href="...">...</a>`) which do not have "https://" in their `href="..."` attribute get the `.unsafe-link` CSS class. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
+
+<info-box>
+	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+	
+	```js
+	ClassicEditor
+		.create( ..., {
+			// ...
+			link: {
+				decorators: {
+					markUnsafeLink: {
+						mode: 'automatic',
+						callback: url => /^(http:)?\/\//.test( url ),
+						attributes: {
+							class: 'unsafe-link'
+						}
+					}
+				}
+			}
+		} )
+	```
+</info-box>
 
 ##### Demo
 
@@ -424,6 +488,27 @@ Eventually, this knowledge will allow you to create your custom features on top 
 In this example links (`<a href="...">...</a>`) loaded in editor content will preserve their `target` attribute, which is not supported by the {@link features/link Link} feature. The DOM `target` attribute will be stored in the editor model as a `linkTarget` attribute.
 
 Unlike the [downcast–only solution](#adding-an-html-attribute-to-certain-inline-elements), this approach does not change the content loaded into the editor. Links without the `target` attribute will not get one and links with the attribute will preserve its value.
+
+<info-box>
+	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+	
+	```js
+	ClassicEditor
+		.create( ..., {
+			// ...
+			link: {
+				decorators: {
+					addGreenLink: {
+						mode: 'automatic',
+						attributes: {
+							class: 'my-green-link'
+						}
+					}
+				}
+			}
+		} )
+	```
+</info-box>
 
 ##### Demo
 
