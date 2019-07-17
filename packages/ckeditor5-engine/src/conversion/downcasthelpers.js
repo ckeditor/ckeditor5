@@ -9,7 +9,6 @@
  * @module engine/conversion/downcasthelpers
  */
 
-
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
