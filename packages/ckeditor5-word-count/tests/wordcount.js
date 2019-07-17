@@ -109,6 +109,27 @@ describe( 'WordCount', () => {
 			expect( wordCountPlugin.words ).to.equal( 6 );
 		} );
 
+		describe( 'ES2018 RegExp Unicode property fallback', () => {
+			const originalPropertiesSupport = regExpFeatureDetection.isUnicodePropertySupported;
+
+			before( () => {
+				regExpFeatureDetection.isUnicodePropertySupported = false;
+			} );
+
+			after( () => {
+				regExpFeatureDetection.isUnicodePropertySupported = originalPropertiesSupport;
+			} );
+
+			it( 'should use different regexp when unicode properties are not supported', () => {
+				expect( wordCountPlugin.words ).to.equal( 0 );
+
+				setModelData( model, '<paragraph>hello world.</paragraph>' );
+				wordCountPlugin._calculateWordsAndCharacters();
+
+				expect( wordCountPlugin.words ).to.equal( 2 );
+			} );
+		} );
+
 		describe( 'update event', () => {
 			it( 'fires update event with actual amount of characters and words', () => {
 				const fake = sinon.fake();

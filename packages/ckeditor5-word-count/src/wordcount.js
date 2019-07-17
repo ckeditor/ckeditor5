@@ -234,7 +234,6 @@ export default class WordCount extends Plugin {
 
 		const wordsMatch = regExpFeatureDetection.isUnicodePropertySupported ?
 			txt.match( new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) ) :
-			/* istanbul ignore next */
 			txt.match( /[_\-a-zA-Z0-9À-ž]+/gu );
 
 		this.words = ( wordsMatch || [] ).length;
