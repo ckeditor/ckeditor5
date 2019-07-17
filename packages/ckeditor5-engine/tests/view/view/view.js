@@ -472,6 +472,16 @@ describe( 'view', () => {
 			expect( converterFocusSpy.called ).to.be.false;
 			expect( renderSpy.called ).to.be.false;
 		} );
+
+		it( 'should not crash when there is no selection', () => {
+			expect( () => {
+				view.change( writer => {
+					writer.setSelection( null );
+				} );
+
+				view.focus();
+			} ).not.to.throw();
+		} );
 	} );
 
 	describe( 'isFocused', () => {
