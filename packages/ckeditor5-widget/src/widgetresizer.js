@@ -70,7 +70,7 @@ export default class WidgetResizer extends Plugin {
 		this.listenTo( viewDocument, 'mousedown', ( event, domEventData ) => {
 			const target = domEventData.domTarget;
 
-			const resizeHandler = isResizeHandler( target ) || getAncestors( target ).filter( isResizeHandler )[ 0 ];
+			const resizeHandler = isResizeHandler( target ) ? target : getAncestors( target ).filter( isResizeHandler )[ 0 ];
 
 			if ( resizeHandler ) {
 				isActive = true;

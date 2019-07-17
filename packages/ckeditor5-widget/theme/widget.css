@@ -22,6 +22,10 @@
 		top: 0;
 		bottom: 0;
 
+		--ck-resizer-size: 14px;
+		--ck-resizer-border-width: 2px;
+		--ck-resizer-offset: -2px;
+
 		& .ck-widget__resizer-shadow {
 			display: none;
 			position: absolute;
@@ -49,24 +53,26 @@
 		position: absolute;
 		/* Resizers are the only UI elements that should interfere with pointer device */
 		pointer-events: all;
-		/* background: red; */
+		width: var( --ck-resizer-size );
+		height: var( --ck-resizer-size );
 		background: var( --ck-color-focus-border );
+		outline: var( --ck-resizer-border-width ) solid white;
 
 		&.ck-widget__resizer-top-left {
-			top: -5px;
-			left: -5px;
+			top: var( --ck-resizer-offset );
+			left: var( --ck-resizer-offset );
 		}
 		&.ck-widget__resizer-top-right {
-			top: -5px;
-			right: -5px;
+			top: var( --ck-resizer-offset );
+			right: var( --ck-resizer-offset );
 		}
 		&.ck-widget__resizer-bottom-right {
-			bottom: -5px;
-			right: -5px;
+			bottom: var( --ck-resizer-offset );
+			right: var( --ck-resizer-offset );
 		}
 		&.ck-widget__resizer-bottom-left {
-			bottom: -5px;
-			left: -5px;
+			bottom: var( --ck-resizer-offset );
+			left: var( --ck-resizer-offset );
 		}
 
 		&.ck-widget__resizer-top-left, &.ck-widget__resizer-bottom-right {

@@ -1,8 +1,7 @@
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import dragHandlerIcon from '../theme/icons/drag-handler.svg';
 import ResizerCentral from './resizercentral';
 import { getAbsoluteBoundaryPoint } from './utils';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -217,19 +216,12 @@ export default class ResizeContext {
 		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
 		for ( const currentPosition of resizerPositions ) {
-			// Use the IconView from the UI library.
-			const icon = new IconView();
-			icon.set( 'content', dragHandlerIcon );
-			icon.extendTemplate( {
+			domElement.appendChild( ( new Template( {
+				tag: 'div',
 				attributes: {
-					'class': `ck-widget__resizer ${ this._getResizerClass( currentPosition ) }`
+					class: `ck-widget__resizer ${ this._getResizerClass( currentPosition ) }`
 				}
-			} );
-
-			// Make sure icon#element is rendered before passing to appendChild().
-			icon.render();
-
-			domElement.appendChild( icon.element );
+			} ).render() ) );
 		}
 	}
 
