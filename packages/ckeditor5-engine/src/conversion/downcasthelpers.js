@@ -9,7 +9,6 @@
  * @module engine/conversion/downcasthelpers
  */
 
-/* globals */
 
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
