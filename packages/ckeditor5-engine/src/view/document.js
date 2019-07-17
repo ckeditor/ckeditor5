@@ -130,6 +130,7 @@ export default class Document {
 	 *			const modelSelection = editor.model.document.selection;
 	 *
 	 *			if ( modelSelection.hasAttribute( 'linkHref' ) ) {
+	 *				// Get a range containing the entire link in which the given selection is placed.
 	 *				const modelRange = findLinkRange( modelSelection );
 	 *				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 	 *
