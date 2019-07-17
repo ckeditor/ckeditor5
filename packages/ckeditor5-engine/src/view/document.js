@@ -131,6 +131,7 @@ export default class Document {
 	 *
 	 *			if ( modelSelection.hasAttribute( 'linkHref' ) ) {
 	 *				// Get a range containing the entire link in which the given selection is placed.
+	 *				// See @ckeditor/ckeditor5-link/src/findlinkrange.
 	 *				const modelRange = findLinkRange( modelSelection );
 	 *				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 	 *
