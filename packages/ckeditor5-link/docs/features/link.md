@@ -134,7 +134,7 @@ ClassicEditor
 			decorators: {
 				addTargetToLinks: {
 					mode: 'manual',
-					label: 'Open link in a new tab',
+					label: 'Open in a new tab',
 					attributes: {
 						target: '_blank',
 						rel: 'noopener noreferrer'
