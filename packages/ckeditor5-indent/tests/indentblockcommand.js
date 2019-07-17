@@ -20,11 +20,22 @@ describe( 'IndentBlockCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
+				model.schema.register( 'parentBlock', {
+					allowWhere: '$block',
+					isLimit: true,
+					isObject: true,
+					isBlock: true
+				} );
+
 				model.schema.register( 'paragraph', {
 					inheritAllFrom: '$block',
-					allowAttributes: [ 'blockIndent' ]
+					allowAttributes: [ 'blockIndent' ],
+					allowIn: 'parentBlock'
 				} );
-				model.schema.register( 'block', { inheritAllFrom: '$block' } );
+
+				model.schema.register( 'block', {
+					inheritAllFrom: '$block'
+				} );
 			} );
 	} );
 
@@ -46,6 +57,14 @@ describe( 'IndentBlockCommand', () => {
 			command = new IndentBlockCommand( editor, indentBehavior );
 		} );
 
+		describe( 'refresh()', () => {
+			it( 'should be executed for a top-most selected block', () => {
+				setData( model, '[<parentBlock><paragraph>foo</paragraph></parentBlock>]' );
+				command.refresh();
+				sinon.assert.notCalled( indentBehavior.checkEnabled );
+			} );
+		} );
+
 		describe( 'execute()', () => {
 			it( 'should be executed for all selected blocks', () => {
 				setData( model,
@@ -61,6 +80,16 @@ describe( 'IndentBlockCommand', () => {
 				setData( model,
 					'<paragraph>f[oo</paragraph>' +
 					'<block>foo</block>' +
+					'<paragraph>f]oo</paragraph>'
+				);
+				command.execute();
+				sinon.assert.calledTwice( indentBehavior.getNextIndent );
+			} );
+
+			it( 'should be executed only for top-most blocks that can have indentBlock attribute', () => {
+				setData( model,
+					'<paragraph>f[oo</paragraph>' +
+					'<parentBlock><paragraph>foo</paragraph><paragraph>foo</paragraph></parentBlock>' +
 					'<paragraph>f]oo</paragraph>'
 				);
 				command.execute();
