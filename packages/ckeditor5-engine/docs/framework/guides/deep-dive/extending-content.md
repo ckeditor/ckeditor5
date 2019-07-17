@@ -505,7 +505,7 @@ In this example divs (`<div>...</div>`) loaded in editor content will preserve t
 
 Allowing all attributes on `div` elements is achieved by custom "upcast" and "downcast" converters that copies each attribute one by one.
 
-Allowing every possible attribute on div in the model is done by adding a {@link module:engine/model/schema~Schema#addAttriubuteCheck()} callback. 
+Allowing every possible attribute on div in the model is done by adding a {@link module:engine/model/schema~Schema#addAttributeCheck addAttributeCheck()} callback. 
 
 <info-box>
 	Allowing every attribute on `<div>` elements might introduce security issues - ise XSS attacks. The production code should use only application related attributes and/or properly encode data. 
@@ -662,9 +662,9 @@ ClassicEditor
 	} );
 ```
 
-#### Adding extra attributes to elements contained in figure
+#### Adding extra attributes to elements contained in a figure
 
-The {@link features/image Image} and {@link features/table Table} features wraps view elements (`<img>` for Image nad `<table>` for Table) in `<figure>`. During the downcast conversion the model element is mapped to `<figure>` not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lost information on which element the attribute should be set. To overcome this limitation it is sufficient to write a custom converter that add custom attributes to elements already converted by base features. The key point is to add those converters with lower priority the base conversters so they will be called after the base ones. 
+The {@link features/image Image} and {@link features/table Table} features wraps view elements (`<img>` for Image nad `<table>` for Table) in `<figure>`. During the downcast conversion the model element is mapped to `<figure>` not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lost information on which element the attribute should be set. To overcome this limitation it is sufficient to write a custom converter that add custom attributes to elements already converted by base features. The key point is to add those converters with lower priority the base converters so they will be called after the base ones. 
 
 ##### Demo
 
