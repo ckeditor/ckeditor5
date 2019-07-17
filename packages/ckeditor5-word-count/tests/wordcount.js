@@ -15,7 +15,7 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import featureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection';
+import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -97,7 +97,7 @@ describe( 'WordCount', () => {
 		} );
 
 		it( 'should count international words', function() {
-			if ( !featureDetection.isUnicodePropertySupported ) {
+			if ( !regExpFeatureDetection.isUnicodePropertySupported ) {
 				this.skip();
 			}
 

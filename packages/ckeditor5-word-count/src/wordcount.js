@@ -12,7 +12,7 @@ import { modelElementToPlainText } from './utils';
 import { throttle, isElement } from 'lodash-es';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-import featureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection';
+import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
 
 /**
  * The word count plugin.
@@ -232,7 +232,7 @@ export default class WordCount extends Plugin {
 
 		this.characters = txt.replace( /\n/g, '' ).length;
 
-		const wordsMatch = featureDetection.isUnicodePropertySupported ?
+		const wordsMatch = regExpFeatureDetection.isUnicodePropertySupported ?
 			txt.match( new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) ) :
 			/* istanbul ignore next */
 			txt.match( /[_\-a-zA-Z0-9À-ž]+/gu );
