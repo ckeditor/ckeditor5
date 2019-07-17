@@ -138,7 +138,6 @@ export default class Document {
 	 *				for ( const item of viewRange.getItems() ) {
 	 *					if ( item.is( 'a' ) ) {
 	 *						writer.addClass( HIGHLIGHT_CLASS, item );
-	 *						highlightedLinks.add( item );
 	 *					}
 	 *				}
 	 *
