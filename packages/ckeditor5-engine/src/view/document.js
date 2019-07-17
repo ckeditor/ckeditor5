@@ -100,29 +100,29 @@ export default class Document {
 	}
 
 	/**
-	 * Used to register a post-fixer callback. A post-fixers mechanism allows to update view tree just before rendering
+	 * Allows registering post-fixer callbacks. A post-fixers mechanism allows to update the view tree just before it is rendered
 	 * to the DOM.
 	 *
-	 * Post-fixers are fired just after all changes from the outermost change block were applied but
+	 * Post-fixers are executed right after all changes from the outermost change block were applied but
 	 * before the {@link module:engine/view/view~View#event:render render event} is fired. If a post-fixer callback made
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
-	 * View post-fixers are useful when you wants to apply some fixes whenever view structure changes. Keep in mind that
-	 * changes executed in the view post-fixer may break model-view mapping, which may cause bugs. To
-	 * avoid them make sure that your post-fixer do only save changes, for instance:
-	 *  - add or remove attribute or class to an element,
-	 *  - change inside of the {@link module:engine/view/uielement~UIElement UIElement},
-	 *  - mark some model elements to convert using {@link  module:engine/model/differ~Differ#refreshItem differ API}.
+	 * View post-fixers are useful when you want to apply some fixes whenever the view structure changes. Keep in mind that
+	 * changes executed in a view post-fixer should not break model-view mapping.
+	 *
+	 * The types of changes which should be safe:
+	 *
+	 * * adding or removing attribute from elements,
+	 * * changes inside of {@link module:engine/view/uielement~UIElement UI elements},
+	 * * {@link module:engine/model/differ~Differ#refreshItem marking some of the model elements to be re-converted}.
 	 *
 	 * Try to avoid changes which touch view structure:
-	 *  - you should not add or remove nor wrap or unwrap any view elements,
-	 *  - you should not change the editor data model in view post-fixer.
 	 *
-	 * If you need DOM elements to be already updated, use {@link module:engine/view/view~View#event:render render event}.
+	 * * you should not add or remove nor wrap or unwrap any view elements,
+	 * * you should not change the editor data model in a view post-fixer.
 	 *
-	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
-	 * instance connected with the executed changes block.
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
 	 *
 	 * Here is an example from the link plugin which adds highlight class to the link if the selection is in that link:
 	 *
@@ -146,10 +146,13 @@ export default class Document {
 	 *			}
 	 *		} );
 	 *
-	 * Note that nothing happens when you execute this code in the console. It is because adding post-fixer will not execute it.
+	 * Note that nothing will happen when you will execute this code in the console. It is because adding a post-fixer will not execute it.
 	 * It will be executed as soon as any change in the document causes rendering. If you want to re-render the editor's
 	 * view after registering the post-fixer then you should do it manually calling
-	 * {@link module:engine/view/view~View#forceRender `view.forceRender();`}.
+	 * {@link module:engine/view/view~View#forceRender `view.forceRender()`}.
+	 *
+	 * If you need to register a callback which is executed when DOM elements are already updated,
+	 * use {@link module:engine/view/view~View#event:render render event}.
 	 *
 	 * @param {Function} postFixer
 	 */
