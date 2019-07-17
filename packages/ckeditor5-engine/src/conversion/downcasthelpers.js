@@ -732,9 +732,8 @@ function removeUIElement() {
 			return;
 		}
 
-		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
-
 		for ( const element of elements ) {
+			conversionApi.mapper.unbindElementFromMarkerName( element, data.markerName );
 			conversionApi.writer.clear( conversionApi.writer.createRangeOn( element ), element );
 		}
 
@@ -1033,9 +1032,9 @@ function removeHighlight( highlightDescriptor ) {
 			return;
 		}
 
-		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
-
 		for ( const element of elements ) {
+			conversionApi.mapper.unbindElementFromMarkerName( element, data.markerName );
+
 			if ( element.is( 'attributeElement' ) ) {
 				conversionApi.writer.unwrap( conversionApi.writer.createRangeOn( element ), viewHighlightElement );
 			} else {
