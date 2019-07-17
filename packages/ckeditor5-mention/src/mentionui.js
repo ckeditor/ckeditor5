@@ -536,8 +536,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	const openAfterCharacters = regExpFeatureDetection.isUnicodeGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
-	const mentionCharacters = regExpFeatureDetection.isUnicodeGroupSupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
+	const openAfterCharacters = regExpFeatureDetection.isUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
+	const mentionCharacters = regExpFeatureDetection.isUnicodePropertySupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
 
 	// The pattern consists of 3 groups:
 	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",

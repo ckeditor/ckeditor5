@@ -449,10 +449,10 @@ describe( 'MentionUI', () => {
 			let regExpStub;
 
 			// Cache the original value to restore it after the tests.
-			const originalGroupSupport = regExpFeatureDetection.isUnicodeGroupSupported;
+			const originalGroupSupport = regExpFeatureDetection.isUnicodePropertySupported;
 
 			before( () => {
-				regExpFeatureDetection.isUnicodeGroupSupported = false;
+				regExpFeatureDetection.isUnicodePropertySupported = false;
 			} );
 
 			beforeEach( () => {
@@ -465,18 +465,18 @@ describe( 'MentionUI', () => {
 			} );
 
 			after( () => {
-				regExpFeatureDetection.isUnicodeGroupSupported = originalGroupSupport;
+				regExpFeatureDetection.isUnicodePropertySupported = originalGroupSupport;
 			} );
 
 			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
-				regExpFeatureDetection.isUnicodeGroupSupported = false;
+				regExpFeatureDetection.isUnicodePropertySupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
 				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
-				regExpFeatureDetection.isUnicodeGroupSupported = true;
+				regExpFeatureDetection.isUnicodePropertySupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
 				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,})$', 'u' );
@@ -564,7 +564,7 @@ describe( 'MentionUI', () => {
 				// Belongs to Pi (Punctuation, Initial quote) group:
 				'«', '‹', '⸌', ' ⸂', '⸠'
 			] ) {
-				testOpeningPunctuationCharacter( character, !regExpFeatureDetection.isUnicodeGroupSupported );
+				testOpeningPunctuationCharacter( character, !regExpFeatureDetection.isUnicodePropertySupported );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -834,7 +834,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should open panel for unicode character ב', function() {
-				if ( !regExpFeatureDetection.isUnicodeGroupSupported ) {
+				if ( !regExpFeatureDetection.isUnicodePropertySupported ) {
 					this.skip();
 				}
 
