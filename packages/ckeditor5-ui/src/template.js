@@ -39,7 +39,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  *			},
  *			on: {
  *				click: bind.to( 'clicked' )
- *			}
+ *			},
  *			children: [
  *				'A paragraph.'
  *			]
