@@ -3,6 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * Contains downcast (model-to-view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
+ *
+ * @module engine/conversion/downcasthelpers
+ */
+
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
@@ -11,14 +17,8 @@ import ViewAttributeElement from '../view/attributeelement';
 import DocumentSelection from '../model/documentselection';
 import ConversionHelpers from './conversionhelpers';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { cloneDeep } from 'lodash-es';
-
-/**
- * Contains downcast (model-to-view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
- *
- * @module engine/conversion/downcasthelpers
- */
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Downcast conversion helper functions.
@@ -823,10 +823,11 @@ function changeAttribute( attributeCreator ) {
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
-			log.warn( 'conversion-attribute-to-attribute-on-text: ' +
-				'Trying to convert text node\'s attribute with attribute-to-attribute converter.' );
-
-			return;
+			throw new CKEditorError(
+				'conversion-attribute-to-attribute-on-text: ' +
+				'Trying to convert text node\'s attribute with attribute-to-attribute converter.',
+				[ data, conversionApi ]
+			);
 		}
 
 		// First remove the old attribute if there was one.

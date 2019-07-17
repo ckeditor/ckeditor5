@@ -81,7 +81,7 @@ describe( 'Conversion', () => {
 
 		it( 'should be chainable', () => {
 			const helpers = conversion.for( 'upcast' );
-			const addResult = helpers.add( () => { } );
+			const addResult = helpers.add( () => {} );
 
 			expect( addResult ).to.equal( helpers );
 		} );
