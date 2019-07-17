@@ -65,6 +65,9 @@ export default class ImageEditing extends Plugin {
 				editor.plugins.get( 'WidgetResizer' ).apply( ret, viewWriter, {
 					getResizeHost( wrapper ) {
 						return wrapper.querySelector( 'img' );
+					},
+					getAspectRatio( resizeHost ) {
+						return resizeHost.naturalWidth / resizeHost.naturalHeight;
 					}
 				} );
 
