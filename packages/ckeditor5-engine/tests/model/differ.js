@@ -90,21 +90,6 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		// https://github.com/ckeditor/ckeditor5/issues/1875.
-		it( 'a character to a large node', () => {
-			root._appendChild( [
-				new Element( 'paragraph', null, [
-					new Text( 'a'.repeat( 1000000 ) )
-				] )
-			] );
-
-			const position = new Position( root, [ 2, 500000 ] );
-
-			expect( () => {
-				model.change( () => insert( new Text( 'x' ), position ) );
-			} ).to.not.throw();
-		} );
-
 		it( 'multiple characters', () => {
 			const position = new Position( root, [ 0, 2 ] );
 
