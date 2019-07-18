@@ -27,7 +27,7 @@ export default {
 		// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
 
 		try {
-			isSupported = 'ć'.search( new RegExp( '[\\p{L}]', 'u' ) ) === 0;
+			isSupported = 'ć'.search( new RegExp( '[\\p{L}]', 'u' ) ) === 0; // Usage of regular expression literal cause error during build
 		} catch ( error ) {
 			// Firefox throws a SyntaxError when the group is unsupported.
 		}
