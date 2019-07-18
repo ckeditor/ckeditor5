@@ -239,7 +239,7 @@ export default class WordCount extends Plugin {
 		// {Pd} - Any kind of hyphen or dash.
 		// {Pc} - A punctuation character such as an underscore that connects words.
 		const wordsMatchRegExp = regExpFeatureDetection.isUnicodePropertySupported ?
-			/[\p{L}\p{N}\p{M}\p{Pd}\p{Pc}]+/gu :
+			new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) : // Usage of regular expression literal cause error during build
 			/[_\-a-zA-Z0-9À-ž]+/gu;
 
 		const detectedWords = txt.match( wordsMatchRegExp ) || [];
