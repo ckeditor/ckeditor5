@@ -9,7 +9,8 @@ import { fixtures as image, browserFixtures as imageBrowser } from '../_data/ima
 import { fixtures as link, browserFixtures as linkBrowser } from '../_data/link/index.js';
 import { fixtures as list, browserFixtures as listBrowser } from '../_data/list/index.js';
 import { fixtures as spacing, browserFixtures as spacingBrowser } from '../_data/spacing/index.js';
-import { fixtures as googleDocs, browserFixtures as googleDocsBrowser } from '../_data/paste-from-google-docs/index';
+import { fixtures as googleDocsBoldWrapper, browserFixtures as googleDocsBoldWrapperBrowser }
+	from '../_data/paste-from-google-docs/bold-wrapper/index';
 
 // Generic fixtures.
 export const fixtures = {
@@ -18,7 +19,7 @@ export const fixtures = {
 	link,
 	list,
 	spacing,
-	'google-docs': googleDocs
+	'google-docs-bold-wrapper': googleDocsBoldWrapper
 };
 
 // Browser specific fixtures.
@@ -28,5 +29,5 @@ export const browserFixtures = {
 	link: linkBrowser,
 	list: listBrowser,
 	spacing: spacingBrowser,
-	'google-docs': googleDocsBrowser
+	'google-docs-bold-wrapper': googleDocsBoldWrapperBrowser
 };

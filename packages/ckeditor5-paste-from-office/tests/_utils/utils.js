@@ -17,6 +17,8 @@ import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-u
 
 import { fixtures, browserFixtures } from './fixtures';
 
+const htmlDataProcessor = new HtmlDataProcessor();
+
 /**
  * Mocks dataTransfer object which can be used for simulating paste.
  *
@@ -135,8 +137,6 @@ function groupFixturesByBrowsers( browsers, fixturesGroup, skipBrowsers ) {
 // @param {Object} editorConfig Editor config with which test editor will be created.
 // @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
 function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
-	const htmlDataProcessor = new HtmlDataProcessor();
-
 	describe( title, () => {
 		let editor;
 

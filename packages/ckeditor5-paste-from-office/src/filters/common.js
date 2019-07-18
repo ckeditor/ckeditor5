@@ -14,13 +14,13 @@
  * @returns {module:engine/view/documentfragment~DocumentFragment}
  */
 export function removeBoldTagWrapper( documentFragment ) {
-	const firstChild = documentFragment.getChild( 0 );
+	for ( const childWithWrapper of documentFragment.getChildren() ) {
+		if ( childWithWrapper.is( 'b' ) && childWithWrapper.getStyle( 'font-weight' ) === 'normal' ) {
+			const childIndex = documentFragment.getChildIndex( childWithWrapper );
 
-	if ( firstChild && firstChild.is( 'b' ) && firstChild.getStyle( 'font-weight' ) === 'normal' ) {
-		const children = firstChild.getChildren();
-
-		documentFragment._removeChildren( 0 );
-		documentFragment._insertChild( 0, children );
+			documentFragment._removeChildren( childIndex );
+			documentFragment._insertChild( childIndex, childWithWrapper.getChildren() );
+		}
 	}
 
 	return documentFragment;

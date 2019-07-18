@@ -51,7 +51,7 @@ describe( 'PasteFromOffice/data - automatic', () => {
 	} );
 
 	generateTests( {
-		input: 'google-docs',
+		input: 'google-docs-bold-wrapper',
 		type: 'normalization',
 		browsers,
 		editorConfig
