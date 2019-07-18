@@ -1,5 +1,6 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ResizerCentral from './resizercentral';
+// import ResizerCentral from './resizercentral';
+import ResizerTopBound from './resizertopbound';
 import { getAbsoluteBoundaryPoint } from './utils';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
@@ -26,7 +27,8 @@ export default class ResizeContext {
 		// view/Element
 		this.widgetWrapperElement = null;
 
-		this.resizeStrategy = new ResizerCentral( this, options );
+		// this.resizeStrategy = new ResizerCentral( this, options );
+		this.resizeStrategy = new ResizerTopBound( this, options );
 
 		/**
 		 * Container of entire resize UI.
@@ -233,7 +235,7 @@ export default class ResizeContext {
 			x !== null && y !== null );
 
 		sizeUi.bind( 'label' ).to( this, 'proposedX', this, 'proposedY', ( x, y ) =>
-			`${ Math.round( x ) } x ${ Math.round( y ) }` );
+			`${ Math.round( x ) }x${ Math.round( y ) }` );
 
 		sizeUi.bind( 'orientation' ).to( this );
 

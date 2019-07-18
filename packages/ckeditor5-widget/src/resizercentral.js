@@ -75,6 +75,11 @@ export default class ResizerCentral {
 		context.domResizeShadow.style.width = `${ drawnSize.x }px`;
 		context.domResizeShadow.style.height = `${ drawnSize.y }px`;
 
+		// const resizingHost = this.context._getResizeHost();
+
+		// resizingHost.style.width = `${ drawnSize.x }px`;
+		// resizingHost.style.height = `${ drawnSize.y }px`;
+
 		return drawnSize; // @todo decide what size should actually be returned, drawn or intended.
 	}
 
