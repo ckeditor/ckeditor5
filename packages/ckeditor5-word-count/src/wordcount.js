@@ -238,11 +238,13 @@ export default class WordCount extends Plugin {
 		// {M} - A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.).
 		// {Pd} - Any kind of hyphen or dash.
 		// {Pc} - A punctuation character such as an underscore that connects words.
-		const wordsMatch = regExpFeatureDetection.isUnicodePropertySupported ?
-			txt.match( new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) ) :
-			txt.match( /[_\-a-zA-Z0-9À-ž]+/gu );
+		const wordsMatchRegExp = regExpFeatureDetection.isUnicodePropertySupported ?
+			/[\p{L}\p{N}\p{M}\p{Pd}\p{Pc}]+/gu :
+			/[_\-a-zA-Z0-9À-ž]+/gu;
 
-		this.words = ( wordsMatch || [] ).length;
+		const detectedWords = txt.match( wordsMatchRegExp ) || [];
+
+		this.words = detectedWords.length;
 
 		this.fire( 'update', {
 			words: this.words,
