@@ -1112,19 +1112,25 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	for ( const change of changes ) {
 		// First, fill "holes" between changes with "equal" actions.
 		if ( change.offset > offset ) {
-			actions.push( ...'e'.repeat( change.offset - offset ).split( '' ) );
+			for ( let i = 0; i < change.offset - offset; i++ ) {
+				actions.push( 'e' );
+			}
 
 			oldChildrenHandled += change.offset - offset;
 		}
 
 		// Then, fill up actions accordingly to change type.
 		if ( change.type == 'insert' ) {
-			actions.push( ...'i'.repeat( change.howMany ).split( '' ) );
+			for ( let i = 0; i < change.howMany; i++ ) {
+				actions.push( 'i' );
+			}
 
 			// The last handled offset is after inserted range.
 			offset = change.offset + change.howMany;
 		} else if ( change.type == 'remove' ) {
-			actions.push( ...'r'.repeat( change.howMany ).split( '' ) );
+			for ( let i = 0; i < change.howMany; i++ ) {
+				actions.push( 'r' );
+			}
 
 			// The last handled offset is at the position where the nodes were removed.
 			offset = change.offset;
@@ -1143,7 +1149,9 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	// Fill "equal" actions at the end of actions set. Use `oldChildrenHandled` to see how many children
 	// has not been changed / removed at the end of their parent.
 	if ( oldChildrenHandled < oldChildrenLength ) {
-		actions.push( ...'e'.repeat( oldChildrenLength - oldChildrenHandled ).split( '' ) );
+		for ( let i = 0; i < oldChildrenLength - oldChildrenHandled - offset; i++ ) {
+			actions.push( 'e' );
+		}
 	}
 
 	return actions;
