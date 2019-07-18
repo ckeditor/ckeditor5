@@ -8,7 +8,7 @@ import regExpFeatureDetection from '../../src/featuredetection/regexp';
 describe( 'featuredetection', () => {
 	describe( 'isUnicodePropertySupported', () => {
 		it( 'should detect accessibility of unicode properties', () => {
-			// Usage of regular expression literal cause error during build
+			// Usage of regular expression literal cause error during build (ckeditor/ckeditor5-dev#534)
 			const testFn = () => ( new RegExp( '\\p{L}', 'u' ) ).test( 'ć' );
 
 			if ( regExpFeatureDetection.isUnicodePropertySupported ) {
