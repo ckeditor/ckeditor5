@@ -1,12 +1,13 @@
 ---
 category: features
+menu-title: Automatic text transformation
 ---
 
-# Automatic text transformation
+# Automatic text transformation (autocorrect)
 
 {@snippet features/build-text-transformation-source}
 
-The {@link module:typing/texttransformation~TextTransformation} feature brings support for automatically turning predefined snippets into their improved forms. Here are some examples that will be transformed in your WYSIWYG editor:
+The {@link module:typing/texttransformation~TextTransformation} feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms. Here are some examples that will be transformed in your WYSIWYG editor:
 
 <table style="width: unset">
 	<thead>
@@ -39,9 +40,9 @@ The {@link module:typing/texttransformation~TextTransformation} feature brings s
 	</tbody>
 </table>
 
-This feature comes pre-configured with a set of the most popular transformations. You can, however, disable existing ones or add your own.
+This feature comes pre-configured with a set of the most popular transformations. You can, however, disable existing ones or add your own autocorrect entries.
 
-While most often this feature is used to easily insert characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
+While most often this feature is used to easily insert special characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
 
 ## Demo
 
