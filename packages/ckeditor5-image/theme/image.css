@@ -20,5 +20,8 @@
 
 		/* Make sure the image never exceeds the size of the parent container (ckeditor/ckeditor5-ui#67). */
 		max-width: 100%;
+
+		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
+		min-width: 50px;
 	}
 }
