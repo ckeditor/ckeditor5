@@ -92,7 +92,7 @@ describe( 'BalloonEditor', () => {
 		it( 'should throw when trying to create the editor using the same source element more than once', () => {
 			expect( () => {
 				new BalloonEditor( editorElement, { plugins: [] } ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^securesourceelement-source-element-used-more-than-once/ );
+			} ).to.throw( CKEditorError, /^editor-source-element-used-more-than-once/ );
 		} );
 	} );
 
