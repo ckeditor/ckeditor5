@@ -67,6 +67,8 @@ describe( 'Text transformation feature', () => {
 			testTransformation( '...', '…' );
 			testTransformation( ' -- ', ' – ' );
 			testTransformation( ' --- ', ' — ' );
+			testTransformation( '-- ', '– ', '' );
+			testTransformation( '--- ', '— ', '' );
 		} );
 
 		describe( 'quotations', () => {
@@ -75,11 +77,13 @@ describe( 'Text transformation feature', () => {
 					testTransformation( ' "Foo 1992 — bar(1) baz: xyz."', ' “Foo 1992 — bar(1) baz: xyz.”' );
 					testTransformation( '\' foo "bar"', '\' foo “bar”' );
 					testTransformation( 'Foo "Bar bar\'s it\'s a baz"', 'Foo “Bar bar\'s it\'s a baz”' );
+					testTransformation( ' ""', ' “”' );
 				} );
 
 				describe( 'secondary', () => {
 					testTransformation( ' \'Foo 1992 — bar(1) baz: xyz.\'', ' ‘Foo 1992 — bar(1) baz: xyz.’' );
 					testTransformation( '" foo \'bar\'', '" foo ‘bar’' );
+					testTransformation( ' \'\'', ' ‘’' );
 				} );
 			} );
 		} );
@@ -118,9 +122,9 @@ describe( 'Text transformation feature', () => {
 				.to.equal( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
 		} );
 
-		function testTransformation( transformFrom, transformTo ) {
+		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
-				setData( model, '<paragraph>A foo[]</paragraph>' );
+				setData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
 
 				const letters = transformFrom.split( '' );
 
@@ -130,7 +134,8 @@ describe( 'Text transformation feature', () => {
 					} );
 				}
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>A foo${ transformTo }</paragraph>` );
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ textInParagraph }${ transformTo }</paragraph>` );
 			} );
 
 			it( `should not transform "${ transformFrom }" to "${ transformTo }" inside text`, () => {
@@ -138,7 +143,7 @@ describe( 'Text transformation feature', () => {
 
 				// Insert text - should not be transformed.
 				model.enqueueChange( model.createBatch(), writer => {
-					writer.insertText( `foo ${ transformFrom } bar`, doc.selection.focus );
+					writer.insertText( `${ textInParagraph }${ transformFrom } bar`, doc.selection.focus );
 				} );
 
 				// Enforce text watcher check after insertion.
@@ -146,7 +151,8 @@ describe( 'Text transformation feature', () => {
 					writer.insertText( ' ', doc.selection.focus );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>foo ${ transformFrom } bar </paragraph>` );
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
 			} );
 		}
 	} );
