@@ -40,9 +40,11 @@ ClassicEditor
 
 ## Configuration
 
+The word count and character count feature is quite flexible and there are a few configuration options available.
+
 ### Configuring the container
 
-There are two ways how you can inject the word count stats into your page:
+There are two ways how you can inject the word count statistics into your page:
 
 * By using the {@link module:word-count/wordcount~WordCount#wordCountContainer `WordCount#wordCountContainer`} property as shown in the example above.
 * Or, by specifying where the word count feature should insert its container which can be done by using {@link module:word-count/wordcount~WordCountConfig#container `config.wordCount.container`}.
@@ -56,20 +58,20 @@ The word count plugin renders its output as:
 </div>
 ```
 
-If you wish to render those statistics differently, see the [`update` event](#the-update-event).
+If you wish to render the statistics differently, see the [`update` event](#the-update-event).
 
 ### Changing the output
 
 There are two configuration options available that change the output of the word count and character count features:
 
-* If the {@link module:word-count/wordcount~WordCountConfig#displayWords} option is set to to `false`, the word counter will be hidden.
-* If the {@link module:word-count/wordcount~WordCountConfig#displayCharacters} option is set to `false`, the character counter will be hidden.
+* If the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} option is set to `false`, the word counter will be hidden.
+* If the {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} option is set to `false`, the character counter will be hidden.
 
 ## The `update` event
 
 The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `WordCount#update` event}. It allows implementing customized behaviors that react to word and character count updates.
 
-Below you can find an example where the color of the circle goes through green to red as you close to the limit of 120 characters. The progress bar indicates the number of words.
+Below you can find an example where the color of the circle goes from green to red as you approach the limit of 120 characters. The progress bar indicates the number of words.
 
 {@snippet features/word-count-update}
 
@@ -97,11 +99,11 @@ ClassicEditor
 
 		// Calculates the hue based on the number of characters.
 		//
-		// For a character count:
+		// For the character counter:
 		//
-		// * below greenUntil: returns green hue
-		// * between greenUntil and maxCharacters: returns a hue between green and red
-		// * above maxCharacters: returns red
+		// * below greenUntil - Returns green.
+		// * between greenUntil and maxCharacters - Returns a hue between green and red.
+		// * above maxCharacters - Returns red.
 		function calculateHue( { characters, greenUntil, maxCharacters } ) {
 			const greenHue = 70;
 			const redHue = 0;
@@ -113,6 +115,8 @@ ClassicEditor
 	} )
 	.catch( ... );
 ```
+
+The HTML structure used to create the customized word and character count implementation above:
 
 ```html
 <style>

@@ -49,11 +49,11 @@ ClassicEditor
 
 		// Calculates the hue based on the number of characters.
 		//
-		// For a character count:
+		// For the character counter:
 		//
-		// * below greenUntil: returns green hue
-		// * between greenUntil and maxCharacters: returns a hue between green and red
-		// * above maxCharacters: returns red
+		// * below greenUntil - Returns green.
+		// * between greenUntil and maxCharacters - Returns a hue between green and red.
+		// * above maxCharacters - Returns red.
 		function calculateHue( { characters, greenUntil, maxCharacters } ) {
 			const greenHue = 70;
 			const redHue = 0;
