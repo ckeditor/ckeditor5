@@ -134,7 +134,7 @@ describe( 'DecoupledEditor', () => {
 				.then( editor => {
 					expect( () => {
 						new DecoupledEditor( sourceElement ); // eslint-disable-line no-new
-					} ).to.throw( CKEditorError, /^securesourceelement-source-element-used-more-than-once/ );
+					} ).to.throw( CKEditorError, /^editor-source-element-used-more-than-once/ );
 
 					return editor.destroy();
 				} );
