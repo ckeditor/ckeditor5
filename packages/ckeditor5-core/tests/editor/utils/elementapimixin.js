@@ -53,4 +53,52 @@ describe( 'ElementApiMixin', () => {
 			);
 		} );
 	} );
+
+	describe( 'secureSourceElement()', () => {
+		let sourceElement;
+
+		beforeEach( () => {
+			sourceElement = document.createElement( 'div' );
+
+			editor.sourceElement = sourceElement;
+			editor.state = 'ready';
+		} );
+
+		it( 'does not throw if the editor was not initialized using the source element', () => {
+			delete editor.sourceElement;
+
+			expect( () => {
+				editor.secureSourceElement();
+			} ).to.not.throw();
+		} );
+
+		it( 'does not throw if the editor was initialized using the element for the first time', () => {
+			expect( () => {
+				editor.secureSourceElement();
+			} ).to.not.throw();
+		} );
+
+		it( 'sets the data attribute after initializing the editor', () => {
+			editor.secureSourceElement();
+
+			expect( sourceElement.hasAttribute( 'data-ckeditor5-element' ) ).to.equal( true );
+		} );
+
+		it( 'removes the data attribute after destroying the editor', () => {
+			editor.secureSourceElement();
+
+			return editor.destroy()
+				.then( () => {
+					expect( sourceElement.hasAttribute( 'data-ckeditor5-element' ) ).to.equal( false );
+				} );
+		} );
+
+		it( 'throws an error if the same element was used twice', () => {
+			sourceElement.setAttribute( 'data-ckeditor5-element', 'true' );
+
+			expectToThrowCKEditorError(
+				() => editor.secureSourceElement(),
+				/^editor-source-element-used-more-than-once/ );
+		} );
+	} );
 } );
