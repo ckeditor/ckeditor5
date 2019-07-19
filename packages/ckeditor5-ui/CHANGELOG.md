@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [13.0.2](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.1...v13.0.2) (2019-07-10)
+
+### Other changes
+
+* Updated translations. ([ad189b6](https://github.com/ckeditor/ckeditor5-ui/commit/ad189b6)) 
+
+
 ## [13.0.1](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.0...v13.0.1) (2019-07-04)
 
 ### Other changes

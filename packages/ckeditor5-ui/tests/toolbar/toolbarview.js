@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, console */
 
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
@@ -13,7 +13,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ViewCollection from '../../src/viewcollection';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import View from '../../src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
@@ -43,6 +42,7 @@ describe( 'ToolbarView', () => {
 	} );
 
 	afterEach( () => {
+		sinon.restore();
 		view.destroy();
 	} );
 
@@ -320,7 +320,7 @@ describe( 'ToolbarView', () => {
 
 		it( 'warns if there is no such component in the factory', () => {
 			const items = view.items;
-			testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			view.fillFromConfig( [ 'foo', 'bar', 'baz' ], factory );
 
@@ -328,8 +328,8 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ).name ).to.equal( 'bar' );
 
-			sinon.assert.calledOnce( log.warn );
-			sinon.assert.calledWithExactly( log.warn,
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
 				{ name: 'baz' }
 			);
