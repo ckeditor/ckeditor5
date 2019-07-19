@@ -106,14 +106,16 @@ export default class TextWatcher {
 			 * Fired whenever the text watcher found a match for data changes.
 			 *
 			 * @event matched:data
-			 * @param {String} text The full text before selection.
-			 * @param {Boolean} isTyping Set to true for user typing changes.
+			 * @param {Object} data Event data.
+			 * @param {String} data.text The full text before selection.
+			 * @param {Boolean} data.isTyping Set to true for user typing changes.
 			 */
 			/**
 			 * Fired whenever the text watcher found a match for selection changes.
 			 *
 			 * @event matched:selection
-			 * @param {String} text The full text before selection.
+			 * @param {Object} data Event data.
+			 * @param {String} data.text The full text before selection.
 			 */
 			this.fire( `matched:${ suffix }`, eventData );
 		}
