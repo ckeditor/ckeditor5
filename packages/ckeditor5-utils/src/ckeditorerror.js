@@ -14,19 +14,17 @@ export const DOCUMENTATION_URL =
 	'https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/error-codes.html';
 
 /**
- * The CKEditor error class. Throw `CKEditorError` when:
+ * The CKEditor error class.
  *
- *  - an unexpected situation occurred and the editor most probably will not work properly. Such exception will be handled
- *  by the {@link module:watchdog/watchdog~Watchdog watchdog}, if it is integrated, which will restart the editor,
+ * You should throw `CKEditorError` when:
  *
- *  - if the initialization of the editor is incorrect or the editor API is used in the wrong way. This way you will give
- *  feedback to the developer as soon as possible. Keep in mind that for common integration issues which do not
- *  stop editor initialization (like missing adapter, wrong name of a toolbar component) we use `console.warn` with
- *  {@link module:utils/ckeditorerror~attachLinkToDocumentation} to improve developers experience and let him see the
- *  working editor as soon as possible.
- *
- * All errors will be shortened during the minification process in order to reduce the code size. Because of it, they
- * should be documented in the following way:
+ * * An unexpected situation occurred and the editor (most probably) will not work properly. Such exception will be handled
+ * by the {@link module:watchdog/watchdog~Watchdog watchdog} (if it is integrated),
+ * * If the editor is incorrectly integrated or the editor API is used in the wrong way. This way you will give
+ * feedback to the developer as soon as possible. Keep in mind that for common integration issues which should not
+ * stop editor initialization (like missing upload adapter, wrong name of a toolbar component) we use `console.warn()` with
+ * {@link module:utils/ckeditorerror~attachLinkToDocumentation `attachLinkToDocumentation()`}
+ * to improve developers experience and let them see the working editor as soon as possible.
  *
  *		/**
  *		 * Error thrown when a plugin cannot be loaded due to JavaScript errors, lack of plugins with a given name, etc.
@@ -96,13 +94,8 @@ export default class CKEditorError extends Error {
 }
 
 /**
- * Attaches the link to the documentation at the end of the error message. Use, whenever you log a warning or error on the
+ * Attaches the link to the documentation at the end of the error message. Use whenever you log a warning or error on the
  * console. It is also used by {@link module:utils/ckeditorerror~CKEditorError}.
- *
- * You should use `console.warn` together with this method to let developers know that he is integrating the editor or
- * a plugin in a wrong way, without preventing the editor loading, for instance, the developer is using deprecated API,
- * does not add an upload adapted or want to add not unavailable competent to the toolbar. You should not use console
- * warning for errors addressed to end-users.
  *
  *		 /**
  *		  * There was a problem processing the configuration of the toolbar. The item with the given
