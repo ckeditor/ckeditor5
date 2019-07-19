@@ -12,6 +12,7 @@ import MouseObserver from './view/mouseobserver';
 import MouseMoveObserver from './view/mousemoveobserver';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import ResizeContext2 from './resizecontext';
+import ResizerTopBound from './resizertopbound';
 
 const HEIGHT_ATTRIBUTE_NAME = 'height';
 
@@ -39,6 +40,14 @@ export default class WidgetResizer extends Plugin {
 	}
 
 	init() {
+		this.set( 'resizerStrategy', null );
+
+		this.on( 'change:resizerStrategy', ( event, name, value ) => {
+			for ( const context of this.contexts ) {
+				context.resizeStrategy = new ( value || ResizerTopBound )( context, context.options );
+			}
+		} );
+
 		this.contexts = [];
 		this.activeContext = null;
 
