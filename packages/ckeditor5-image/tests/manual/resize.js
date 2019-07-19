@@ -13,6 +13,9 @@ import ImagePlugin from '../../src/image';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
+import ResizerCentral from '@ckeditor/ckeditor5-widget/src/resizercentral';
+import ResizerSide from '@ckeditor/ckeditor5-widget/src/resizerside';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
@@ -57,5 +60,17 @@ ClassicEditor
 	// Resize using image
 	document.getElementById( 'resize-image' ).addEventListener( 'change', function() {
 		window.pocResizeUsingImage = this.checked;
+	} );
+
+	// Resize strategy
+	document.getElementById( 'strategy' ).addEventListener( 'change', function() {
+		const strategies = {
+			'center': ResizerCentral,
+			'side': ResizerSide
+		};
+
+		window.editor.plugins.get( 'WidgetResizer' ).set( 'resizerStrategy', strategies[ this.value ] );
+
+		console.log( this.value, window.pocResizeStrategy );
 	} );
 }() );
