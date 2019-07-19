@@ -45,7 +45,7 @@ export default class ButtonView extends View {
 	 * @param {Object} [config] additional configuration
 	 * @param {Boolean} [config.toggle=false] set button as a toggle
 	 */
-	constructor( locale, { toggle = false } = {} ) {
+	constructor( locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -58,6 +58,7 @@ export default class ButtonView extends View {
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
 		this.set( 'isVisible', true );
+		this.set( 'isToggleable', false );
 		this.set( 'keystroke' );
 		this.set( 'label' );
 		this.set( 'tabindex', -1 );
@@ -137,7 +138,8 @@ export default class ButtonView extends View {
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
-				'aria-disabled': bind.if( 'isEnabled', true, value => !value )
+				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
+				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( value ) : false )
 			},
 
 			children: this.children,
@@ -160,14 +162,6 @@ export default class ButtonView extends View {
 				} )
 			}
 		} );
-
-		if ( toggle ) {
-			this.extendTemplate( {
-				attributes: {
-					'aria-pressed': bind.to( 'isOn', value => value ? 'true' : 'false' )
-				}
-			} );
-		}
 	}
 
 	/**

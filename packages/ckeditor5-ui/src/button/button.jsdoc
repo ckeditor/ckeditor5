@@ -96,6 +96,14 @@
  */
 
 /**
+ * Controls whether the button view is recognized as toggle button for assistive technologies.
+ *
+ * @observable
+ * @default false
+ * @member {Boolean} #isToggleable
+ */
+
+/**
  * (Optional) Controls whether the label of the button is hidden (e.g. an icon–only button).
  *
  * @observable

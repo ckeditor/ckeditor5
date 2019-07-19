@@ -43,6 +43,15 @@ export default class SwitchButtonView extends ButtonView {
 		 */
 		this.toggleSwitchView = this._createToggleView();
 
+		/**
+		 * Controls whether the button view is recognized as toggle button for assistive technologies.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #isToggleable
+		 */
+		this.isToggleable = true;
+
 		this.extendTemplate( {
 			attributes: {
 				class: 'ck-switchbutton'
