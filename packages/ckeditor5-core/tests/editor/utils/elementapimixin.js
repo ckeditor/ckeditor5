@@ -81,7 +81,7 @@ describe( 'ElementApiMixin', () => {
 		it( 'sets the data attribute after initializing the editor', () => {
 			editor.secureSourceElement();
 
-			expect( sourceElement.hasAttribute( 'data-ckeditor5-element' ) ).to.equal( true );
+			expect( sourceElement.dataset.ckeditorSecuredElement ).to.equal( 'true' );
 		} );
 
 		it( 'removes the data attribute after destroying the editor', () => {
@@ -89,12 +89,12 @@ describe( 'ElementApiMixin', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( sourceElement.hasAttribute( 'data-ckeditor5-element' ) ).to.equal( false );
+					expect( sourceElement.dataset.ckeditorSecuredElement ).to.be.undefined;
 				} );
 		} );
 
 		it( 'throws an error if the same element was used twice', () => {
-			sourceElement.setAttribute( 'data-ckeditor5-element', 'true' );
+			sourceElement.dataset.ckeditorSecuredElement = true;
 
 			expectToThrowCKEditorError(
 				() => editor.secureSourceElement(),

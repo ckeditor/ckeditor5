@@ -10,8 +10,6 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
  * @module core/editor/utils/elementapimixin
  */
 
-const SECURE_SOURCE_ELEMENT_ATTRIBUTE = 'data-ckeditor5-element';
-
 /**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
  *
@@ -56,7 +54,7 @@ const ElementApiMixin = {
 			return;
 		}
 
-		if ( sourceElement.hasAttribute( SECURE_SOURCE_ELEMENT_ATTRIBUTE ) ) {
+		if ( sourceElement.dataset.ckeditorSecuredElement ) {
 			/**
 			 * A DOM element used to create the editor (e.g.
 			 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`})
@@ -71,10 +69,10 @@ const ElementApiMixin = {
 			);
 		}
 
-		sourceElement.setAttribute( SECURE_SOURCE_ELEMENT_ATTRIBUTE, 'true' );
+		sourceElement.dataset.ckeditorSecuredElement = true;
 
 		this.once( 'destroy', () => {
-			sourceElement.removeAttribute( SECURE_SOURCE_ELEMENT_ATTRIBUTE );
+			delete sourceElement.dataset.ckeditorSecuredElement;
 		} );
 	}
 };
