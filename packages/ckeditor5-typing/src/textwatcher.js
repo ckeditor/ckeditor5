@@ -66,7 +66,9 @@ export default class TextWatcher {
 				return;
 			}
 
-			this._evaluateTextBeforeSelection( 'data' );
+			const isTyping = checkTyping( model );
+
+			this._evaluateTextBeforeSelection( 'data', { isTyping } );
 		} );
 	}
 
@@ -79,8 +81,9 @@ export default class TextWatcher {
 	 *
 	 * @private
 	 * @param {'data'|'selection'} suffix Suffix used for generating event name.
+	 * @param {Object} data Data object for event.
 	 */
-	_evaluateTextBeforeSelection( suffix ) {
+	_evaluateTextBeforeSelection( suffix, data = {} ) {
 		const text = this._getText();
 
 		const textHasMatch = this.testCallback( text );
@@ -97,18 +100,22 @@ export default class TextWatcher {
 		this.hasMatch = textHasMatch;
 
 		if ( textHasMatch ) {
+			const eventData = Object.assign( data, { text } );
+
 			/**
 			 * Fired whenever the text watcher found a match for data changes.
 			 *
 			 * @event matched:data
+			 * @param {String} text The full text before selection.
+			 * @param {Boolean} isTyping Set to true for user typing changes.
 			 */
-
 			/**
 			 * Fired whenever the text watcher found a match for selection changes.
 			 *
 			 * @event matched:selection
+			 * @param {String} text The full text before selection.
 			 */
-			this.fire( `matched:${ suffix }`, { text } );
+			this.fire( `matched:${ suffix }`, eventData );
 		}
 	}
 
@@ -142,6 +149,23 @@ function _getText( range ) {
 
 		return rangeText + node.data;
 	}, '' );
+}
+
+// Returns true if the change was done by typing.
+//
+// @param {module:engine/model/model~Model} model
+function checkTyping( model ) {
+	const changes = Array.from( model.document.differ.getChanges() );
+
+	// Typing is represented by only a single change...
+	if ( changes.length != 1 ) {
+		return false;
+	}
+
+	const entry = changes[ 0 ];
+
+	// ...and is an insert of a text.
+	return entry.type === 'insert' && entry.name == '$text' && entry.length == 1;
 }
 
 mix( TextWatcher, EmitterMixin );

@@ -111,6 +111,10 @@ export default class TextTransformation extends Plugin {
 			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
 
 			watcher.on( 'matched:data', ( evt, data ) => {
+				if ( !data.isTyping ) {
+					return;
+				}
+
 				const matches = from.exec( data.text );
 				const replaces = to( matches.slice( 1 ) );
 

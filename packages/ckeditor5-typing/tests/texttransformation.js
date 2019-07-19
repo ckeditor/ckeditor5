@@ -52,6 +52,30 @@ describe( 'Text transformation feature', () => {
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
 		} );
 
+		it( 'should not work for deletion changes', () => {
+			setData( model, '<paragraph>foo bar(tm) []</paragraph>' );
+
+			// Simulate delete command.
+			model.change( writer => {
+				const selection = writer.createSelection( doc.selection );
+				model.modifySelection( selection, { direction: 'backward', unit: 'character' } );
+				model.deleteContent( selection, { doNotResetEntireContent: true } );
+			} );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm)</paragraph>' );
+		} );
+
+		it( 'should not work for merging changes', () => {
+			setData( model, '<paragraph>foo bar(tm)</paragraph><paragraph>[] baz</paragraph>' );
+
+			// Simulate delete command.
+			model.change( writer => {
+				writer.merge( writer.createPositionAfter( doc.getRoot().getChild( 0 ) ) );
+			} );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
+		} );
+
 		describe( 'symbols', () => {
 			testTransformation( '(c)', '©' );
 			testTransformation( '(r)', '®' );
@@ -88,9 +112,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should replace only the parts of content which changed', () => {
 			setData( model, '<paragraph>Foo "<$text bold="true">Bar</$text>[]</paragraph>' );
 
-			model.change( writer => {
-				writer.insertText( '"', doc.selection.focus );
-			} );
+			simulateTyping( '"' );
 
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>Foo “<$text bold="true">Bar</$text>”</paragraph>' );
@@ -110,9 +132,7 @@ describe( 'Text transformation feature', () => {
 		it( 'should keep styles of the replaced text #2', () => {
 			setData( model, '<paragraph>F<$text bold="true">oo "B</$text>ar[]</paragraph>' );
 
-			model.change( writer => {
-				writer.insertText( '"', doc.selection.focus );
-			} );
+			simulateTyping( '"' );
 
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
@@ -122,13 +142,7 @@ describe( 'Text transformation feature', () => {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, '<paragraph>A foo[]</paragraph>' );
 
-				const letters = transformFrom.split( '' );
-
-				for ( const letter of letters ) {
-					model.enqueueChange( model.createBatch(), writer => {
-						writer.insertText( letter, doc.selection.focus );
-					} );
-				}
+				simulateTyping( transformFrom );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>A foo${ transformTo }</paragraph>` );
 			} );
@@ -164,9 +178,7 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.enqueueChange( model.createBatch(), writer => {
-					writer.insertText( 'CKE', doc.selection.focus );
-				} );
+				simulateTyping( 'CKE' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 			} );
@@ -184,9 +196,7 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.enqueueChange( model.createBatch(), writer => {
-					writer.insertText( 'user@example.com', doc.selection.focus );
-				} );
+				simulateTyping( 'user@example.com' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
 			} );
@@ -204,9 +214,7 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>Foo. []</paragraph>' );
 
-				model.enqueueChange( model.createBatch(), writer => {
-					writer.insertText( 'b', doc.selection.focus );
-				} );
+				simulateTyping( 'b' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo. B</paragraph>' );
 			} );
@@ -224,15 +232,11 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( 'CKE', doc.selection.focus );
-				} );
+				simulateTyping( 'CKE' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '(tm)', doc.selection.focus );
-				} );
+				simulateTyping( '(tm)' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor™</paragraph>' );
 			} );
@@ -250,15 +254,11 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( 'CKE', doc.selection.focus );
-				} );
+				simulateTyping( 'CKE' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '(tm)', doc.selection.focus );
-				} );
+				simulateTyping( '(tm)' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor(tm)</paragraph>' );
 			} );
@@ -275,15 +275,11 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '(tm)', doc.selection.focus );
-				} );
+				simulateTyping( '(tm)' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '(r)', doc.selection.focus );
-				} );
+				simulateTyping( '(r)' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)®</paragraph>' );
 			} );
@@ -300,15 +296,11 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '(tm)', doc.selection.focus );
-				} );
+				simulateTyping( '(tm)' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '...', doc.selection.focus );
-				} );
+				simulateTyping( '...' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)…</paragraph>' );
 			} );
@@ -334,9 +326,7 @@ describe( 'Text transformation feature', () => {
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '(tm)', doc.selection.focus );
-				} );
+				simulateTyping( '(tm)' );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>™</paragraph>' );
 			} );
@@ -354,5 +344,15 @@ describe( 'Text transformation feature', () => {
 				model = editor.model;
 				doc = model.document;
 			} );
+	}
+
+	function simulateTyping( transformFrom ) {
+		const letters = transformFrom.split( '' );
+
+		for ( const letter of letters ) {
+			model.enqueueChange( model.createBatch(), writer => {
+				writer.insertText( letter, doc.selection.focus );
+			} );
+		}
 	}
 } );
