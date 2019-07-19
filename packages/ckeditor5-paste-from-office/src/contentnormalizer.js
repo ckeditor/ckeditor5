@@ -22,7 +22,7 @@ export default class ContentNormalizer {
 		return this._active;
 	}
 
-	addData( data ) {
+	setInputData( data ) {
 		const html = data.dataTransfer.getData( 'text/html' );
 
 		if ( html && this.activationTrigger( html ) ) {
@@ -48,7 +48,7 @@ export default class ContentNormalizer {
 		}
 	}
 
-	filter() {
+	exec() {
 		if ( this.data && !this.data.isTransformedWithPasteFromOffice ) {
 			this._applyFullContentFilters();
 
