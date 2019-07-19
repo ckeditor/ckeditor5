@@ -3,16 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document */
+/* global window, document, console */
 
 import Rect from '../../src/dom/rect';
-import log from '../../src/log';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Rect', () => {
 	let geometry;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		geometry = {
@@ -24,7 +20,11 @@ describe( 'Rect', () => {
 			height: 20
 		};
 
-		testUtils.sinon.stub( log, 'warn' );
+		sinon.stub( console, 'warn' );
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	describe( 'constructor()', () => {
@@ -38,7 +38,7 @@ describe( 'Rect', () => {
 		it( 'should accept HTMLElement', () => {
 			const element = document.createElement( 'div' );
 
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 
 			assertRect( new Rect( element ), geometry );
 		} );
@@ -47,7 +47,7 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.selectNode( document.body );
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
 
 			assertRect( new Rect( range ), geometry );
 		} );
@@ -57,7 +57,7 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.collapse();
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
 
 			assertRect( new Rect( range ), geometry );
 		} );
@@ -69,8 +69,8 @@ describe( 'Rect', () => {
 
 			range.setStart( element, 0 );
 			range.collapse();
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			sinon.stub( range, 'getClientRects' ).returns( [] );
+			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
 			expectedGeometry.right = expectedGeometry.left;
@@ -80,10 +80,10 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should accept the window (viewport)', () => {
-			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
-			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
-			testUtils.sinon.stub( window, 'scrollY' ).value( 200 );
+			sinon.stub( window, 'innerWidth' ).value( 1000 );
+			sinon.stub( window, 'innerHeight' ).value( 500 );
+			sinon.stub( window, 'scrollX' ).value( 100 );
+			sinon.stub( window, 'scrollY' ).value( 200 );
 
 			assertRect( new Rect( window ), {
 				top: 0,
@@ -124,10 +124,10 @@ describe( 'Rect', () => {
 				const range = document.createRange();
 				range.selectNode( iframeWindow.document.body );
 
-				testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+				sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
 				assertRect( new Rect( range ), geometry );
 
-				testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+				sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 				assertRect( new Rect( element ), geometry );
 
 				iframe.remove();
@@ -160,29 +160,6 @@ describe( 'Rect', () => {
 			rect.width = 200;
 
 			assertRect( geometry, sourceGeometry );
-		} );
-
-		it( 'should warn if the source does not belong to rendered DOM tree (HTML element)', () => {
-			const element = document.createElement( 'div' );
-
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-
-			const rect = new Rect( element );
-			sinon.assert.calledOnce( log.warn );
-			sinon.assert.calledWithExactly( log.warn, sinon.match( /^rect-source-not-in-dom/ ), { source: element } );
-			assertRect( rect, geometry );
-		} );
-
-		it( 'should warn if the source does not belong to rendered DOM tree (DOM Range)', () => {
-			const range = document.createRange();
-
-			range.collapse();
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
-
-			const rect = new Rect( range );
-			sinon.assert.calledOnce( log.warn );
-			sinon.assert.calledWithExactly( log.warn, sinon.match( /^rect-source-not-in-dom/ ), { source: range } );
-			assertRect( rect, geometry );
 		} );
 	} );
 
@@ -452,7 +429,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should not fail when the rect is for document#body', () => {
-			testUtils.sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
+			sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -482,7 +459,7 @@ describe( 'Rect', () => {
 				ancestor.appendChild( element );
 				iframeWindow.document.body.appendChild( ancestor );
 
-				testUtils.sinon.stub( ancestor, 'getBoundingClientRect' ).returns( {
+				sinon.stub( ancestor, 'getBoundingClientRect' ).returns( {
 					top: 0,
 					right: 50,
 					bottom: 50,
@@ -491,7 +468,7 @@ describe( 'Rect', () => {
 					height: 50
 				} );
 
-				testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				sinon.stub( element, 'getBoundingClientRect' ).returns( {
 					top: 0,
 					right: 100,
 					bottom: 100,
@@ -517,7 +494,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -526,7 +503,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -546,7 +523,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the visible rect (HTMLElement), fully visible', () => {
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -555,7 +532,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 150,
 				bottom: 150,
@@ -578,7 +555,7 @@ describe( 'Rect', () => {
 			ancestorB.appendChild( ancestorA );
 			document.body.appendChild( ancestorB );
 
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -587,7 +564,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 50,
 				right: 100,
 				bottom: 100,
@@ -596,7 +573,7 @@ describe( 'Rect', () => {
 				height: 50
 			} );
 
-			testUtils.sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 150,
 				bottom: 100,
@@ -619,7 +596,7 @@ describe( 'Rect', () => {
 			range.setStart( ancestorA, 0 );
 			range.setEnd( ancestorA, 1 );
 
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ {
+			sinon.stub( range, 'getClientRects' ).returns( [ {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -628,7 +605,7 @@ describe( 'Rect', () => {
 				height: 100
 			} ] );
 
-			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -648,7 +625,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return null if there\'s no visible rect', () => {
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -657,7 +634,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 150,
 				right: 200,
 				bottom: 200,
@@ -818,8 +795,8 @@ describe( 'Rect', () => {
 		it( 'should exclude scrollbars and borders of a HTMLElement', () => {
 			const element = document.createElement( 'div' );
 
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-			testUtils.sinon.stub( window, 'getComputedStyle' ).returns( {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			sinon.stub( window, 'getComputedStyle' ).returns( {
 				borderTopWidth: '5px',
 				borderRightWidth: '10px',
 				borderLeftWidth: '5px',
@@ -853,12 +830,12 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should exclude scrollbars from viewport\'s rect', () => {
-			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
-			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
-			testUtils.sinon.stub( window, 'scrollY' ).value( 200 );
+			sinon.stub( window, 'innerWidth' ).value( 1000 );
+			sinon.stub( window, 'innerHeight' ).value( 500 );
+			sinon.stub( window, 'scrollX' ).value( 100 );
+			sinon.stub( window, 'scrollY' ).value( 200 );
 
-			testUtils.sinon.stub( document, 'documentElement' ).value( {
+			sinon.stub( document, 'documentElement' ).value( {
 				clientWidth: 990,
 				clientHeight: 490
 			} );
@@ -878,11 +855,11 @@ describe( 'Rect', () => {
 
 			// Mock the properties of the top window. Then make sure the ones
 			// from the child are used.
-			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
-			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
-			testUtils.sinon.stub( window, 'scrollY' ).value( 200 );
-			testUtils.sinon.stub( document, 'documentElement' ).value( {
+			sinon.stub( window, 'innerWidth' ).value( 1000 );
+			sinon.stub( window, 'innerHeight' ).value( 500 );
+			sinon.stub( window, 'scrollX' ).value( 100 );
+			sinon.stub( window, 'scrollY' ).value( 200 );
+			sinon.stub( document, 'documentElement' ).value( {
 				clientWidth: 990,
 				clientHeight: 490
 			} );
@@ -890,12 +867,12 @@ describe( 'Rect', () => {
 			iframe.addEventListener( 'load', () => {
 				const iframeWindow = iframe.contentWindow;
 
-				testUtils.sinon.stub( iframeWindow, 'innerWidth' ).value( 500 );
-				testUtils.sinon.stub( iframeWindow, 'innerHeight' ).value( 250 );
-				testUtils.sinon.stub( iframeWindow, 'scrollX' ).value( 50 );
-				testUtils.sinon.stub( iframeWindow, 'scrollY' ).value( 100 );
+				sinon.stub( iframeWindow, 'innerWidth' ).value( 500 );
+				sinon.stub( iframeWindow, 'innerHeight' ).value( 250 );
+				sinon.stub( iframeWindow, 'scrollX' ).value( 50 );
+				sinon.stub( iframeWindow, 'scrollY' ).value( 100 );
 
-				testUtils.sinon.stub( iframeWindow.document, 'documentElement' ).value( {
+				sinon.stub( iframeWindow.document, 'documentElement' ).value( {
 					clientWidth: 480,
 					clientHeight: 230
 				} );
@@ -911,7 +888,7 @@ describe( 'Rect', () => {
 
 				// Safari fails because of "afterEach()" hook tries to restore values from removed element.
 				// We need to restore these values manually.
-				testUtils.sinon.restore();
+				sinon.restore();
 				iframe.remove();
 				done();
 			} );
@@ -925,7 +902,7 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.selectNode( document.body );
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
 
 			const rects = Rect.getDomRangeRects( range );
 			expect( rects ).to.have.length( 1 );
@@ -938,7 +915,7 @@ describe( 'Rect', () => {
 			const secondGeometry = { top: 20, right: 80, bottom: 60, left: 40, width: 40, height: 40 };
 
 			range.collapse();
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry, secondGeometry ] );
+			sinon.stub( range, 'getClientRects' ).returns( [ geometry, secondGeometry ] );
 
 			const rects = Rect.getDomRangeRects( range );
 			expect( rects ).to.have.length( 2 );
@@ -954,8 +931,8 @@ describe( 'Rect', () => {
 
 			range.setStart( element, 0 );
 			range.collapse();
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			sinon.stub( range, 'getClientRects' ).returns( [] );
+			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
 			expectedGeometry.right = expectedGeometry.left;
@@ -975,8 +952,8 @@ describe( 'Rect', () => {
 
 			range.setStart( textNode, 3 );
 			range.collapse();
-			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
-			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			sinon.stub( range, 'getClientRects' ).returns( [] );
+			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
 			expectedGeometry.right = expectedGeometry.left;
