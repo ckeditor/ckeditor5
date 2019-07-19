@@ -32,9 +32,8 @@ const TRANSFORMATIONS = {
 
 	// Typography:
 	horizontalEllipsis: { from: '...', to: '…' },
-	enDash: { from: ' -- ', to: ' – ' },
-	emDash: { from: ' --- ', to: ' — ' },
-
+	enDash: { from: /(^| )(--)( )$/, to: [ null, '–', null ] },
+	emDash: { from: /(^| )(---)( )$/, to: [ null, '—', null ] },
 	// Quotations:
 	// English, US
 	quotesPrimary: { from: buildQuotesRegExp( '"' ), to: [ null, '“', null, '”' ] },
@@ -151,7 +150,7 @@ export default class TextTransformation extends Plugin {
 // @returns {RegExp}
 function normalizeFrom( from ) {
 	if ( typeof from == 'string' ) {
-		return new RegExp( '(' + escapeRegExp( from ) + ')$' );
+		return new RegExp( `(${ escapeRegExp( from ) })$` );
 	}
 
 	// `from` is already a regular expression.
