@@ -19,8 +19,7 @@ The example above was created by using the following HTML page structure:
 <div id="editor">
 	<p>Hello world.</p>
 </div>
-<div id="word-count">
-</div>
+<div id="word-count"></div>
 ```
 
 You can use the code below to set up the WYSIWYG editor with the word and character count features as in the example above.
@@ -39,18 +38,38 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Configuration options
+## Configuration
 
-There are two configuration options available that change the output container of the word count and character count features:
+### Configuring the container
+
+There are two ways how you can inject the word count stats into your page:
+
+* By using the {@link module:word-count/wordcount~WordCount#wordCountContainer `WordCount#wordCountContainer`} property as shown in the example above.
+* Or, by specifying where the word count feature should insert its container which can be done by using {@link module:word-count/wordcount~WordCountConfig#container `config.wordCount.container`}.
+
+The word count plugin renders its output as:
+
+```html
+<div class="ck ck-word-count">
+	<div class="ck-word-count__words">Words: %%</div>
+	<div class="ck-word-count__characters">Characters: %%</div>
+</div>
+```
+
+If you wish to render those statistics differently, see the [`update` event](#the-update-event).
+
+### Changing the output
+
+There are two configuration options available that change the output of the word count and character count features:
 
 * If the {@link module:word-count/wordcount~WordCountConfig#displayWords} option is set to to `false`, the word counter will be hidden.
 * If the {@link module:word-count/wordcount~WordCountConfig#displayCharacters} option is set to `false`, the character counter will be hidden.
 
-## Update event
+## The `update` event
 
-The Word count and character count feature emits an {@link module:word-count/wordcount~WordCount#event:update `update` event} whenever there is a change in the model. This allows implementing customized behaviors that react to word and character count updates.
+The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `WordCount#update` event}. It allows implementing customized behaviors that react to word and character count updates.
 
-Below you can find an example where the background color of the circle is changed according to the number of characters in the editor. There is also a progress bar which indicates how many words are in it. The maximum value of the progress bar is set to 100, however, you can write further and the progress bar will remain in the maximum state.
+Below you can find an example where the color of the circle goes through green to red as you close to the limit of 120 characters. The progress bar indicates the number of words.
 
 {@snippet features/word-count-update}
 
@@ -62,14 +81,63 @@ ClassicEditor
 	.then( editor => {
 		const wordCountPlugin = editor.plugins.get( 'WordCount' );
 
+		const progressBar = document.querySelector( '.word-count progress' );
+		const colorBox = document.querySelector( '.word-count__color-box' );
+
 		wordCountPlugin.on( 'update', ( evt, data ) => {
-			// "data" is an object with "words" and "characters" fields.
-			doSthWithNewWordsNumber( data.words );
-			doSthWithNewCharactersNumber( data.characters );
+			const charactersHue = calculateHue( {
+				characters: data.characters,
+				greenUntil: 70,
+				maxCharacters: 120
+			} );
+
+			progressBar.value = data.words;
+			colorBox.style.setProperty( '--hue', charactersHue );
 		} );
 
+		// Calculates the hue based on the number of characters.
+		//
+		// For a character count:
+		//
+		// * below greenUntil: returns green hue
+		// * between greenUntil and maxCharacters: returns a hue between green and red
+		// * above maxCharacters: returns red
+		function calculateHue( { characters, greenUntil, maxCharacters } ) {
+			const greenHue = 70;
+			const redHue = 0;
+			const progress = Math.max( 0, Math.min( 1, ( characters - greenUntil ) / ( maxCharacters - greenUntil ) ) ); // 0-1
+			const discreetProgress = Math.floor( progress * 10 ) / 10; // 0, 0.1, 0.2, ..., 1
+
+			return ( redHue - greenHue ) * discreetProgress + greenHue;
+		}
 	} )
 	.catch( ... );
+```
+
+```html
+<style>
+	.word-count__color-box {
+		width: 20px;
+		height: 20px;
+		background-color: hsl( var( --hue ), 100%, 50% );
+		display: inline-block;
+		vertical-align: middle;
+		border-radius: 100%;
+	}
+</style>
+
+<div class="word-count">
+	<div class="word-count__words">
+		<label>
+			<span>Words:</span>
+			<progress max="20"></progress>
+		</label>
+	</div>
+	<div class="word-count__characters">
+		<span>Characters:</span>
+		<div class="word-count__color-box"></div>
+	</div>
+</div>
 ```
 
 ## Installation
@@ -100,9 +168,10 @@ ClassicEditor
 ## Common API
 
 The {@link module:word-count/wordcount~WordCount} plugin provides:
-  
-  * The {@link module:word-count/wordcount~WordCount#wordCountContainer} method. It returns a self-updating HTML element which is updated with the current number of words and characters in the editor. You can remove the "Words" or "Characters" counters with a proper configuration of the {@link module:word-count/wordcount~WordCountConfig#displayWords} and {@link module:word-count/wordcount~WordCountConfig#displayCharacters} options.
-  * The {@link module:word-count/wordcount~WordCount#event:update `update` event}, fired whenever the plugins update the number of counted words and characters. You can run a custom callback function with updated values. Please note that the `update` event is throttled.
+
+* The {@link module:word-count/wordcount~WordCount#wordCountContainer} property. It returns a self-updating HTML element which is updated with the current number of words and characters in the editor. You can remove the "Words" or "Characters" counters with a proper configuration of the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} and {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} options.
+* The {@link module:word-count/wordcount~WordCount#event:update `update` event}, fired whenever the plugins update the number of counted words and characters. You can run a custom callback function with updated values. Please note that the `update` event is throttled.
+* The {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} properties from which you can retrieve the stats at any moment.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
