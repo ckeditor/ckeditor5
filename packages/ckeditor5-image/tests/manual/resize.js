@@ -53,4 +53,9 @@ ClassicEditor
 	}
 
 	document.head.appendChild( dynamicStylesheet );
+
+	// Resize using image
+	document.getElementById( 'resize-image' ).addEventListener( 'change', function() {
+		window.pocResizeUsingImage = this.checked;
+	} );
 }() );
