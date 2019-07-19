@@ -75,11 +75,13 @@ describe( 'Text transformation feature', () => {
 					testTransformation( ' "Foo 1992 — bar(1) baz: xyz."', ' “Foo 1992 — bar(1) baz: xyz.”' );
 					testTransformation( '\' foo "bar"', '\' foo “bar”' );
 					testTransformation( 'Foo "Bar bar\'s it\'s a baz"', 'Foo “Bar bar\'s it\'s a baz”' );
+					testTransformation( ' ""', ' “”' );
 				} );
 
 				describe( 'secondary', () => {
 					testTransformation( ' \'Foo 1992 — bar(1) baz: xyz.\'', ' ‘Foo 1992 — bar(1) baz: xyz.’' );
 					testTransformation( '" foo \'bar\'', '" foo ‘bar’' );
+					testTransformation( ' \'\'', ' ‘’' );
 				} );
 			} );
 		} );
