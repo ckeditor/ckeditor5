@@ -13,6 +13,8 @@ import { parseHtml } from './filters/parse';
 import { transformListItemLikeElementsIntoLists } from './filters/list';
 import { replaceImagesSourceWithBase64 } from './filters/image';
 import { removeBoldTagWrapper } from './filters/common';
+import ContentNormalizer from './contentnormalizer';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The Paste from Office plugin.
@@ -25,6 +27,18 @@ import { removeBoldTagWrapper } from './filters/common';
  * @extends module:core/plugin~Plugin
  */
 export default class PasteFromOffice extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		this._normalizers = new Collection();
+
+		this._normalizers.add( this._getWordNormalizer() );
+		this._normalizers.add( this._getGoogleDocsNormalizer() );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -41,9 +55,43 @@ export default class PasteFromOffice extends Plugin {
 		this.listenTo(
 			editor.plugins.get( 'Clipboard' ),
 			'inputTransformation',
-			PasteFromOffice._inputTransformationListener,
+			this._inputTransformationListener.bind( this ),
 			{ priority: 'high' }
 		);
+	}
+
+	_getWordNormalizer() {
+		const wordNormalizer = new ContentNormalizer( {
+			activationTrigger: contentString =>
+				/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( contentString ) ||
+				/xmlns:o="urn:schemas-microsoft-com/i.test( contentString )
+		} );
+
+		wordNormalizer.addFilter( {
+			fullContent: true,
+			exec: data => {
+				const html = data.dataTransfer.getData( 'text/html' );
+
+				data.content = PasteFromOffice._normalizeWordInput( html, data.dataTransfer );
+			}
+		} );
+
+		return wordNormalizer;
+	}
+
+	_getGoogleDocsNormalizer() {
+		const googleDocsNormalizer = new ContentNormalizer( {
+			activationTrigger: contentString => /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( contentString )
+		} );
+
+		googleDocsNormalizer.addFilter( {
+			fullContent: true,
+			exec: data => {
+				removeBoldTagWrapper( data.content );
+			}
+		} );
+
+		return googleDocsNormalizer;
 	}
 
 	/**
@@ -56,23 +104,13 @@ export default class PasteFromOffice extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} evt
 	 * @param {Object} data same structure like {@link module:clipboard/clipboard~Clipboard#event:inputTransformation input transformation}
 	 */
-	static _inputTransformationListener( evt, data ) {
-		const html = data.dataTransfer.getData( 'text/html' );
+	_inputTransformationListener( evt, data ) {
+		for ( const normalizer of this._normalizers ) {
+			normalizer.addData( data );
 
-		if ( data.pasteFromOfficeProcessed !== true ) {
-			switch ( PasteFromOffice._getInputType( html ) ) {
-				case 'msword':
-					data.content = PasteFromOffice._normalizeWordInput( html, data.dataTransfer );
-					break;
-				case 'gdocs':
-					data.content = PasteFromOffice._normalizeGoogleDocsInput( data.content );
-					break;
-				default:
-					break;
+			if ( normalizer.isActive ) {
+				normalizer.filter();
 			}
-
-			// Set the flag so if `inputTransformation` is re-fired, PFO will not process it again (#44).
-			data.pasteFromOfficeProcessed = true;
 		}
 	}
 
