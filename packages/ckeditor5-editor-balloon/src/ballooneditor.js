@@ -66,6 +66,7 @@ export default class BalloonEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
+			this.secureSourceElement();
 		}
 
 		const plugins = this.config.get( 'plugins' );
@@ -83,7 +84,6 @@ export default class BalloonEditor extends Editor {
 		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );
-		this.secureSourceElement();
 	}
 
 	/**
