@@ -161,29 +161,6 @@ describe( 'Rect', () => {
 
 			assertRect( geometry, sourceGeometry );
 		} );
-
-		it( 'should warn if the source does not belong to rendered DOM tree (HTML element)', () => {
-			const element = document.createElement( 'div' );
-
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-
-			const rect = new Rect( element );
-			sinon.assert.calledOnce( console.warn );
-			sinon.assert.calledWithExactly( console.warn, sinon.match( /^rect-source-not-in-dom/ ), { source: element } );
-			assertRect( rect, geometry );
-		} );
-
-		it( 'should warn if the source does not belong to rendered DOM tree (DOM Range)', () => {
-			const range = document.createRange();
-
-			range.collapse();
-			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
-
-			const rect = new Rect( range );
-			sinon.assert.calledOnce( console.warn );
-			sinon.assert.calledWithExactly( console.warn, sinon.match( /^rect-source-not-in-dom/ ), { source: range } );
-			assertRect( rect, geometry );
-		} );
 	} );
 
 	describe( 'clone()', () => {
