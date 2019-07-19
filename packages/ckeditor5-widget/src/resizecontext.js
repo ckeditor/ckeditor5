@@ -122,9 +122,10 @@ export default class ResizeContext {
 
 		this.referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
 
+		// @todo: this part might be lazy used only in case if getAspectRatio is not given as it might force repaint.
 		this.originalSize = {
-			x: resizeHost.width,
-			y: resizeHost.height
+			x: resizeHost.clientWidth,
+			y: resizeHost.clientHeight
 		};
 
 		this.aspectRatio = this.options.getAspectRatio ?
