@@ -69,13 +69,13 @@ export default class InlineEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
+			this.secureSourceElement();
 		}
 
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement );
 		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );
-		this.secureSourceElement();
 	}
 
 	/**
