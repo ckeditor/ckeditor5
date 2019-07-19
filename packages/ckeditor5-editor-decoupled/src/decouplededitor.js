@@ -152,7 +152,7 @@ export default class DecoupledEditor extends Editor {
 	 *				document.body.appendChild( editor.ui.view.toolbar.element );
 	 *
 	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
-	 *				document.body.appendChild( editor.ui.view.editable.element );
+	 *				document.body.appendChild( editor.ui.getEditableElement() );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
@@ -207,7 +207,8 @@ export default class DecoupledEditor extends Editor {
 	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
-	 * It is available under the {@link module:editor-decoupled/decouplededitorui~DecoupledEditorUI#element `editor.ui.element`} property.
+	 * It is available via
+	 * {@link module:editor-decoupled/decouplededitorui~DecoupledEditorUI#getEditableElement `editor.ui.getEditableElement()`}.
 	 *
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
