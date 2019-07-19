@@ -36,11 +36,31 @@ ClassicEditor
 		const progressBar = document.querySelector( '.customized-count progress' );
 		const colorBox = document.querySelector( '.customized-count__color-box' );
 
-		wordCountPlugin.on( 'update', updateHandler );
+		wordCountPlugin.on( 'update', ( evt, data ) => {
+			const charactersHue = calculateHue( {
+				characters: data.characters,
+				greenUntil: 70,
+				maxCharacters: 120
+			} );
 
-		function updateHandler( evt, payload ) {
-			progressBar.value = payload.words;
-			colorBox.style.setProperty( '--hue', payload.characters * 3 );
+			progressBar.value = data.words;
+			colorBox.style.setProperty( '--hue', charactersHue );
+		} );
+
+		// Calculates the hue based on the number of characters.
+		//
+		// For the character counter:
+		//
+		// * below greenUntil - Returns green.
+		// * between greenUntil and maxCharacters - Returns a hue between green and red.
+		// * above maxCharacters - Returns red.
+		function calculateHue( { characters, greenUntil, maxCharacters } ) {
+			const greenHue = 70;
+			const redHue = 0;
+			const progress = Math.max( 0, Math.min( 1, ( characters - greenUntil ) / ( maxCharacters - greenUntil ) ) ); // 0-1
+			const discreetProgress = Math.floor( progress * 10 ) / 10; // 0, 0.1, 0.2, ..., 1
+
+			return ( redHue - greenHue ) * discreetProgress + greenHue;
 		}
 	} )
 	.catch( err => {

@@ -278,7 +278,7 @@ export default class WordCount extends Plugin {
  *
  *		const wordCountConfig = {
  *			displayWords: false
- *		}
+ *		};
  *
  * The configuration above will result in the following container:
  *
@@ -296,7 +296,7 @@ export default class WordCount extends Plugin {
  *
  *		const wordCountConfig = {
  *			displayCharacters: false
- *		}
+ *		};
  *
  * The configuration above will result in the following container:
  *
@@ -317,7 +317,7 @@ export default class WordCount extends Plugin {
  *				doSthWithWordNumber( stats.words );
  *				doSthWithCharacterNumber( stats.characters );
  *			}
- *		}
+ *		};
  *
  * @member {Function} module:word-count/wordcount~WordCountConfig#onUpdate
  */
@@ -328,7 +328,7 @@ export default class WordCount extends Plugin {
  *
  *		const wordCountConfig = {
  *			container: document.getElementById( 'container-for-word-count' );
- *		}
+ *		};
  *
  * @member {HTMLElement} module:word-count/wordcount~WordCountConfig#container
  */
