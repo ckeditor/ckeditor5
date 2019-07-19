@@ -70,6 +70,7 @@ export default class DecoupledEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
+			this.secureSourceElement();
 		}
 
 		this.data.processor = new HtmlDataProcessor();
@@ -78,8 +79,6 @@ export default class DecoupledEditor extends Editor {
 
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, this.sourceElement );
 		this.ui = new DecoupledEditorUI( this, view );
-
-		this.secureSourceElement();
 	}
 
 	/**
