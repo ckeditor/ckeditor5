@@ -17,7 +17,7 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 
 ## ⚠ This package does not contain any source code
 
-CKEditor 5 is distributed as [four ready-to-use rich text editor builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm).
+CKEditor 5 is distributed as [several ready-to-use rich text editor builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm).
 
 You can also [customize the existing builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html).
 
@@ -217,6 +217,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The widget API.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-watchdog"><code>@ckeditor/ckeditor5-watchdog</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-watchdog.svg" alt="@ckeditor/ckeditor5-watchdog npm package badge"></a>
+	</td>
+	<td>
+		The watchdog feature, which keeps CKEditor 5 editors running.
 	</td>
 </tr>
 
@@ -492,6 +504,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-indent"><code>@ckeditor/ckeditor5-indent</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-indent"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-indent.svg" alt="@ckeditor/ckeditor5-indent npm package badge"></a>
+	</td>
+	<td>
+		The indentation (of lists and blocks) feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-link"><code>@ckeditor/ckeditor5-link</code></a>
 	</td>
 	<td>
@@ -619,6 +643,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The undo feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-word-count"><code>@ckeditor/ckeditor5-word-count</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-word-count.svg" alt="@ckeditor/ckeditor5-word-count npm package badge"></a>
+	</td>
+	<td>
+		The word count feature.
 	</td>
 </tr>
 
