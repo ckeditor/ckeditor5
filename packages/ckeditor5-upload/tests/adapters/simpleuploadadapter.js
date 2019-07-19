@@ -3,17 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import SimpleUploadAdapter from '../../src/adapters/simpleuploadadapter';
 import FileRepository from '../../src/filerepository';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { createNativeFileMock } from '../_utils/mocks';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'SimpleUploadAdapter', () => {
-	let editor, editorElement, sinonXHR, logStub, fileRepository;
+	let editor, editorElement, sinonXHR, consoleWarnStub, fileRepository;
 
 	testUtils.createSinonSandbox();
 
@@ -22,7 +21,7 @@ describe( 'SimpleUploadAdapter', () => {
 		document.body.appendChild( editorElement );
 
 		sinonXHR = testUtils.sinon.useFakeServer();
-		logStub = testUtils.sinon.stub( log, 'warn' );
+		consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -116,8 +115,8 @@ describe( 'SimpleUploadAdapter', () => {
 					}
 				} )
 				.then( editor => {
-					expect( logStub.callCount ).to.equal( 1 );
-					expect( logStub.firstCall.args[ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadUrl/ );
+					expect( consoleWarnStub.callCount ).to.equal( 1 );
+					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadUrl/ );
 
 					const fileRepository = editor.plugins.get( FileRepository );
 

@@ -7,11 +7,11 @@
  * @module upload/adapters/simpleuploadadapter
  */
 
-/* globals XMLHttpRequest, FormData */
+/* globals XMLHttpRequest, FormData, console */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '../filerepository';
-import log from '@ckeditor/ckeditor5-utils/src/log';
+import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The Simple upload adapter allows uploading images to an application running on your server using
@@ -71,9 +71,9 @@ export default class SimpleUploadAdapter extends Plugin {
 			 *
 			 * @error simple-upload-adapter-missing-uploadUrl
 			 */
-			log.warn(
+			console.warn( attachLinkToDocumentation(
 				'simple-upload-adapter-missing-uploadUrl: Missing the "uploadUrl" property in the "simpleUpload" editor configuration.'
-			);
+			) );
 
 			return;
 		}
