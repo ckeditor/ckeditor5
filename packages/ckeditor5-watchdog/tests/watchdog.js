@@ -84,66 +84,30 @@ describe( 'Watchdog', () => {
 				expect( watchdog.editor.config._config.bar ).to.equal( config.bar );
 			} );
 		} );
-	} );
 
-	describe( 'restart()', () => {
-		it( 'should restart the editor', () => {
-			const watchdog = new Watchdog();
-
-			const editorCreateSpy = sinon.spy( ClassicTestEditor, 'create' );
-			const editorDestroySpy = sinon.spy( ClassicTestEditor.prototype, 'destroy' );
-
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
-
-			return watchdog.create( element, {} )
-				.then( () => {
-					sinon.assert.calledOnce( editorCreateSpy );
-					sinon.assert.notCalled( editorDestroySpy );
-
-					return watchdog.restart();
-				} )
-				.then( () => {
-					sinon.assert.calledTwice( editorCreateSpy );
-					sinon.assert.calledOnce( editorDestroySpy );
-
-					return watchdog.destroy();
-				} );
-		} );
-
-		it( 'should restart the editor with the same data', () => {
-			const watchdog = new Watchdog();
-
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
-
-			return watchdog.create( element, {
-				initialData: '<p>foo</p>',
-				plugins: [ Paragraph ]
-			} )
-				.then( () => {
-					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
-
-					return watchdog.restart();
-				} )
-				.then( () => {
-					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
-
-					return watchdog.destroy();
-				} );
-		} );
-
-		it( 'should support editor data passed as the `Editor.create()` as the first argument', () => {
+		it( 'should support editor data passed as the first argument', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
 
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
 			return watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } )
 				.then( () => {
 					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
 
-					return watchdog.restart();
+					return new Promise( res => {
+						setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+						watchdog.on( 'restart', () => {
+							window.onerror = originalErrorHandler;
+							res();
+						} );
+					} );
 				} )
 				.then( () => {
 					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
@@ -155,10 +119,12 @@ describe( 'Watchdog', () => {
 
 	describe( 'editor', () => {
 		it( 'should be the current editor instance', () => {
-			const watchdog = new Watchdog();
+			const watchdog = Watchdog.for( ClassicTestEditor );
 
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
 
 			expect( watchdog.editor ).to.be.null;
 
@@ -169,7 +135,14 @@ describe( 'Watchdog', () => {
 					oldEditor = watchdog.editor;
 					expect( watchdog.editor ).to.be.instanceOf( ClassicTestEditor );
 
-					return watchdog.restart();
+					return new Promise( res => {
+						setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+						watchdog.on( 'restart', () => {
+							window.onerror = originalErrorHandler;
+							res();
+						} );
+					} );
 				} )
 				.then( () => {
 					expect( watchdog.editor ).to.be.instanceOf( ClassicTestEditor );

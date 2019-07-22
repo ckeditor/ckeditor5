@@ -14,7 +14,6 @@ import Watchdog from '../../src/watchdog';
 const firstEditorElement = document.getElementById( 'editor-1' );
 const secondEditorElement = document.getElementById( 'editor-2' );
 
-const restartButton = document.getElementById( 'restart' );
 const randomErrorButton = document.getElementById( 'random-error' );
 
 class TypingError {
@@ -55,9 +54,7 @@ const editorConfig = {
 const watchdog1 = Watchdog.for( ClassicEditor );
 window.watchdog1 = watchdog1;
 
-watchdog1.create( firstEditorElement, editorConfig ).then( () => {
-	console.log( 'First editor created.' );
-} );
+watchdog1.create( firstEditorElement, editorConfig );
 
 watchdog1.on( 'error', () => {
 	console.log( 'First editor crashed!' );
@@ -72,9 +69,7 @@ watchdog1.on( 'restart', () => {
 const watchdog2 = Watchdog.for( ClassicEditor );
 window.watchdog2 = watchdog2;
 
-watchdog2.create( secondEditorElement, editorConfig ).then( () => {
-	console.log( 'Second editor created.' );
-} );
+watchdog2.create( secondEditorElement, editorConfig );
 
 watchdog2.on( 'error', () => {
 	console.log( 'Second editor crashed!' );
@@ -82,11 +77,6 @@ watchdog2.on( 'error', () => {
 
 watchdog2.on( 'restart', () => {
 	console.log( 'Second editor restarted.' );
-} );
-
-restartButton.addEventListener( 'click', () => {
-	watchdog1.restart();
-	watchdog2.restart();
 } );
 
 randomErrorButton.addEventListener( 'click', () => {

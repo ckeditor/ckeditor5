@@ -164,7 +164,7 @@ export default class Watchdog {
 	 * @param {HTMLElement|String} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
 	 *
-	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
+	 * @returns {Promise}
 	 */
 	create( elementOrData, config ) {
 		if ( !this._creator ) {
@@ -214,44 +214,13 @@ export default class Watchdog {
 
 				this._lastDocumentVersion = editor.model.document.version;
 				this._data = editor.data.get();
-
-				return this;
-			} );
-	}
-
-	/**
-	 * Restarts the editor instance. This method is also called whenever an editor error occurs.
-	 * It fires the `restart` event.
-	 *
-	 * @fires restart
-	 * @returns {Promise}
-	 */
-	restart() {
-		this._throttledSave.flush();
-
-		return Promise.resolve()
-			.then( () => this.destroy() )
-			.catch( err => console.error( 'An error happened during the editor destructing.', err ) )
-			.then( () => {
-				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( this._data, this._config );
-				}
-
-				const updatedConfig = Object.assign( {}, this._config, {
-					initialData: this._data
-				} );
-
-				return this.create( this._elementOrData, updatedConfig );
-			} )
-			.then( () => {
-				this.fire( 'restart' );
 			} );
 	}
 
 	/**
 	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method.
 	 *
-	 * @returns {Promise.<module:watchdog/watchdog~Watchdog>}
+	 * @returns {Promise}
 	 */
 	destroy() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
@@ -261,8 +230,6 @@ export default class Watchdog {
 			.then( () => this._destructor( this._editor ) )
 			.then( () => {
 				this._editor = null;
-
-				return this;
 			} );
 	}
 
@@ -329,9 +296,38 @@ export default class Watchdog {
 			this.fire( 'error' );
 
 			if ( this.crashes.length <= this._crashNumberLimit ) {
-				this.restart();
+				this._restart();
 			}
 		}
+	}
+
+	/**
+	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event.
+	 *
+	 * @private
+	 * @fires restart
+	 * @returns {Promise}
+	 */
+	_restart() {
+		this._throttledSave.flush();
+
+		return Promise.resolve()
+			.then( () => this.destroy() )
+			.catch( err => console.error( 'An error happened during the editor destructing.', err ) )
+			.then( () => {
+				if ( typeof this._elementOrData === 'string' ) {
+					return this.create( this._data, this._config );
+				}
+
+				const updatedConfig = Object.assign( {}, this._config, {
+					initialData: this._data
+				} );
+
+				return this.create( this._elementOrData, updatedConfig );
+			} )
+			.then( () => {
+				this.fire( 'restart' );
+			} );
 	}
 
 	/**
@@ -373,7 +369,7 @@ export default class Watchdog {
 	 */
 
 	/**
-	 * Fired after the watchdog restarts the error in case of a crash or when the `restart()` method was called explicitly.
+	 * Fired after the watchdog restarts the error in case of a crash.
 	 *
 	 * @event restart
 	 */
