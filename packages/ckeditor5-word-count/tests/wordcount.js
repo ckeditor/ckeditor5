@@ -15,7 +15,7 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -97,7 +97,7 @@ describe( 'WordCount', () => {
 		} );
 
 		it( 'should count international words', function() {
-			if ( !regExpFeatureDetection.isUnicodePropertySupported ) {
+			if ( !env.features.isRegExpUnicodePropertySupported ) {
 				this.skip();
 			}
 
@@ -110,14 +110,14 @@ describe( 'WordCount', () => {
 		} );
 
 		describe( 'ES2018 RegExp Unicode property fallback', () => {
-			const originalPropertiesSupport = regExpFeatureDetection.isUnicodePropertySupported;
+			const originalPropertiesSupport = env.features.isRegExpUnicodePropertySupported;
 
 			before( () => {
-				regExpFeatureDetection.isUnicodePropertySupported = false;
+				env.features.isRegExpUnicodePropertySupported = false;
 			} );
 
 			after( () => {
-				regExpFeatureDetection.isUnicodePropertySupported = originalPropertiesSupport;
+				env.features.isRegExpUnicodePropertySupported = originalPropertiesSupport;
 			} );
 
 			it( 'should use different regexp when unicode properties are not supported', () => {

@@ -12,7 +12,7 @@ import { modelElementToPlainText } from './utils';
 import { throttle, isElement } from 'lodash-es';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * The word count plugin.
@@ -238,7 +238,7 @@ export default class WordCount extends Plugin {
 		// {M} - A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.).
 		// {Pd} - Any kind of hyphen or dash.
 		// {Pc} - A punctuation character such as an underscore that connects words.
-		const wordsMatchRegExp = regExpFeatureDetection.isUnicodePropertySupported ?
+		const wordsMatchRegExp = env.features.isRegExpUnicodePropertySupported ?
 			// Usage of regular expression literal cause error during build (ckeditor/ckeditor5-dev#534).
 			new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) :
 			/[_\-a-zA-Z0-9À-ž]+/gu;
