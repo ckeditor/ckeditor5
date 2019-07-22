@@ -58,15 +58,16 @@ const env = {
 	isAndroid: isAndroid( userAgent ),
 
 	/**
-	 * Environment feature checks. Indicates if specific functionalities are available.
+	 * Environment features information.
 	 *
 	 * @memberOf module:utils/env~env
 	 * @namespace
 	 */
 	features: {
 		/**
-		 * Indicates whether the current browser supports ES2018 Unicode properties like `\p{P}` or `\p{L}`.
-		 * More information about unicode properties might be found [here](https://www.unicode.org/reports/tr44/#GC_Values_Table).
+		 * Indicates that the environment supports ES2018 Unicode property escapes — like `\p{P}` or `\p{L}`.
+		 * More information about unicode properties might be found
+		 * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
 		 *
 		 * @type {Boolean}
 		 */
@@ -127,8 +128,9 @@ export function isAndroid( userAgent ) {
 }
 
 /**
- * Checks if current environment supports ES2018 Unicode properties like `\p{P}` or `\p{L}`.
- * More information about unicode properties might be found [here](https://www.unicode.org/reports/tr44/#GC_Values_Table).
+ * Checks if the current environment supports ES2018 Unicode properties like `\p{P}` or `\p{L}`.
+ * More information about unicode properties might be found
+ * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
  *
  * @returns {Boolean}
  */
