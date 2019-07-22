@@ -12,7 +12,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import PasteFromOffice from '../src/pastefromoffice';
 import { createDataTransfer } from './_utils/utils';
 
-describe( 'PasteFromOffice', () => {
+describe.skip( 'PasteFromOffice', () => {
 	let editor, content, normalizeSpy;
 
 	testUtils.createSinonSandbox();

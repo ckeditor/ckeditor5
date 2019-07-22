@@ -8,7 +8,6 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import PasteFromOffice from '../../src/pastefromoffice';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -155,18 +154,22 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
 				// Simulate data from Clipboard event
-				const data = {
-					content: htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) ),
-					dataTransfer: createDataTransfer( {
-						'text/html': fixtures.input[ name ],
-						'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
-					} )
-				};
+				const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
+				const dataTransfer = createDataTransfer( {
+					'text/html': fixtures.input[ name ],
+					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
+				} );
 
-				PasteFromOffice._inputTransformationListener( null, data );
+				// data.content might be completely overwritten with a new object, so we need obtain final result for comparison.
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					evt.return = data.content;
+				}, { priority: 'lowest' } );
+
+				const transformedContent = clipboardPlugin.fire( 'inputTransformation', { content, dataTransfer } );
 
 				expectNormalized(
-					data.content,
+					transformedContent,
 					fixtures.normalized[ name ]
 				);
 			} );
