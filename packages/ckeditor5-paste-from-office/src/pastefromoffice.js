@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { googleDocsNormalizer } from './normalizers/googledocs';
 import { mswordNormalizer } from './normalizers/msword';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 /**
  * The Paste from Office plugin.
@@ -40,6 +41,13 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	static get pluginName() {
 		return 'PasteFromOffice';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Clipboard ];
 	}
 
 	/**
