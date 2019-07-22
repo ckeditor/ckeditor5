@@ -4,6 +4,7 @@ import {
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
  * Implements a resizer that enlarges/shrinks in all directions.
@@ -68,17 +69,21 @@ export default class ResizerCentral {
 
 		const invertedPosition = this.context._invertPosition( context.referenceHandlerPosition );
 
-		context.domResizeShadow.style[ invertedPosition.split( '-' )[ 0 ] ] = `${ ( originalSize.y - drawnSize.y ) / 2 }px`;
-		context.domResizeShadow.style[ invertedPosition.split( '-' )[ 1 ] ] = `${ ( originalSize.x - drawnSize.x ) / 2 }px`;
+		const resizeUsingImage = global.window.pocResizeUsingImage !== false;
+
+		if ( !resizeUsingImage ) {
+			context.domResizeShadow.style[ invertedPosition.split( '-' )[ 0 ] ] = `${ ( originalSize.y - drawnSize.y ) / 2 }px`;
+			context.domResizeShadow.style[ invertedPosition.split( '-' )[ 1 ] ] = `${ ( originalSize.x - drawnSize.x ) / 2 }px`;
+		} else {
+			const resizingHost = this.context._getResizeHost();
+
+			resizingHost.style.width = `${ drawnSize.x }px`;
+			resizingHost.style.height = `${ drawnSize.y }px`;
+		}
 
 		// Apply the actual shadow dimensions.
 		context.domResizeShadow.style.width = `${ drawnSize.x }px`;
 		context.domResizeShadow.style.height = `${ drawnSize.y }px`;
-
-		// const resizingHost = this.context._getResizeHost();
-
-		// resizingHost.style.width = `${ drawnSize.x }px`;
-		// resizingHost.style.height = `${ drawnSize.y }px`;
 
 		return drawnSize; // @todo decide what size should actually be returned, drawn or intended.
 	}
