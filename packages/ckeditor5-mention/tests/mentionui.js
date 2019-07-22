@@ -16,7 +16,6 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
 
 import MentionUI, { createRegExp } from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
@@ -449,10 +448,10 @@ describe( 'MentionUI', () => {
 			let regExpStub;
 
 			// Cache the original value to restore it after the tests.
-			const originalGroupSupport = regExpFeatureDetection.isUnicodePropertySupported;
+			const originalGroupSupport = env.features.isRegExpUnicodePropertySupported;
 
 			before( () => {
-				regExpFeatureDetection.isUnicodePropertySupported = false;
+				env.features.isRegExpUnicodePropertySupported = false;
 			} );
 
 			beforeEach( () => {
@@ -465,18 +464,18 @@ describe( 'MentionUI', () => {
 			} );
 
 			after( () => {
-				regExpFeatureDetection.isUnicodePropertySupported = originalGroupSupport;
+				env.features.isRegExpUnicodePropertySupported = originalGroupSupport;
 			} );
 
 			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
-				regExpFeatureDetection.isUnicodePropertySupported = false;
+				env.features.isRegExpUnicodePropertySupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
 				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
-				regExpFeatureDetection.isUnicodePropertySupported = true;
+				env.features.isRegExpUnicodePropertySupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
 				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,})$', 'u' );
@@ -564,7 +563,7 @@ describe( 'MentionUI', () => {
 				// Belongs to Pi (Punctuation, Initial quote) group:
 				'«', '‹', '⸌', ' ⸂', '⸠'
 			] ) {
-				testOpeningPunctuationCharacter( character, !regExpFeatureDetection.isUnicodePropertySupported );
+				testOpeningPunctuationCharacter( character, !env.features.isRegExpUnicodePropertySupported );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -834,7 +833,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should open panel for unicode character ב', function() {
-				if ( !regExpFeatureDetection.isUnicodePropertySupported ) {
+				if ( !env.features.isRegExpUnicodePropertySupported ) {
 					this.skip();
 				}
 

@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import regExpFeatureDetection from '@ckeditor/ckeditor5-utils/src/featuredetection/regexp';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -536,8 +536,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	const openAfterCharacters = regExpFeatureDetection.isUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
-	const mentionCharacters = regExpFeatureDetection.isUnicodePropertySupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
+	const openAfterCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
+	const mentionCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
 
 	// The pattern consists of 3 groups:
 	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
