@@ -213,7 +213,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 			// Update toolbar position each time stack with toolbar view is switched to visible.
 			// This is in a case target element has changed when toolbar was in invisible stack
-			// e.g. target image was wrapper by a block quote.
+			// e.g. target image was wrapped by a block quote.
 			// See https://github.com/ckeditor/ckeditor5-widget/issues/92.
 			this.listenTo( this._balloon, 'change:visibleView', () => {
 				for ( const definition of this._toolbarDefinitions.values() ) {

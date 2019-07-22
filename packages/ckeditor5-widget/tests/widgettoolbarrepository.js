@@ -333,7 +333,42 @@ describe( 'WidgetToolbarRepository', () => {
 				view.domConverter.viewToDom( fakeChildViewElement ) );
 		} );
 
-		it( 'should update position when is switched in rotator to a visible panel', () => {
+		it( 'should not update balloon position when toolbar is in not visible stack', () => {
+			const customView = new View();
+
+			sinon.spy( balloon.view, 'pin' );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'[<fake-widget></fake-widget>]'
+			);
+
+			balloon.add( {
+				stackId: 'custom',
+				view: customView,
+				position: { target: {} }
+			} );
+
+			balloon.showStack( 'custom' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			expect( balloon.visibleView ).to.equal( customView );
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( true );
+
+			const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
+
+			editor.ui.fire( 'update' );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should update balloon position when stack with toolbar is switched in rotator to visible', () => {
 			const view = editor.editing.view;
 			const customView = new View();
 
