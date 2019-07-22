@@ -16,7 +16,6 @@ import Range from '../range';
 import Position from '../position';
 
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 const transformations = new Map();
 
@@ -102,14 +101,14 @@ export function transform( a, b, context = {} ) {
 
 		return transformationFunction( a, b, context );
 	} catch ( e ) {
-		log.error( 'Error during operation transformation!', e.message );
-		log.error( 'Transformed operation', a );
-		log.error( 'Operation transformed by', b );
-		log.error( 'context.aIsStrong', context.aIsStrong );
-		log.error( 'context.aWasUndone', context.aWasUndone );
-		log.error( 'context.bWasUndone', context.bWasUndone );
-		log.error( 'context.abRelation', context.abRelation );
-		log.error( 'context.baRelation', context.baRelation );
+		// @if CK_DEBUG // console.error( 'Error during operation transformation!', e.message );
+		// @if CK_DEBUG // console.error( 'Transformed operation', a );
+		// @if CK_DEBUG // console.error( 'Operation transformed by', b );
+		// @if CK_DEBUG // console.error( 'context.aIsStrong', context.aIsStrong );
+		// @if CK_DEBUG // console.error( 'context.aWasUndone', context.aWasUndone );
+		// @if CK_DEBUG // console.error( 'context.bWasUndone', context.bWasUndone );
+		// @if CK_DEBUG // console.error( 'context.abRelation', context.abRelation );
+		// @if CK_DEBUG // console.error( 'context.baRelation', context.baRelation );
 
 		throw e;
 	}

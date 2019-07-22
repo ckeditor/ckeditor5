@@ -19,8 +19,6 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
 describe( 'transform', () => {
 	let model, doc, root, op, nodeA, nodeB, expected;
 
@@ -31,6 +29,10 @@ describe( 'transform', () => {
 
 		nodeA = new Node();
 		nodeB = new Node();
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	function expectOperation( op, params ) {
@@ -58,9 +60,7 @@ describe( 'transform', () => {
 		aIsStrong: true
 	};
 
-	it( 'error logging', () => {
-		const spy = sinon.stub( log, 'error' );
-
+	it( 'should throw an error when one of operations is invalid', () => {
 		const nodeA = new Node();
 		const nodeB = new Node();
 
@@ -81,10 +81,6 @@ describe( 'transform', () => {
 				baRelation: null
 			} );
 		} ).to.throw();
-
-		sinon.assert.called( spy );
-
-		log.error.restore();
 	} );
 
 	describe( 'InsertOperation', () => {

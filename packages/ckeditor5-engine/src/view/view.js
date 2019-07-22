@@ -24,7 +24,6 @@ import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
@@ -398,14 +397,11 @@ export default class View {
 				this.domConverter.focus( editable );
 				this.forceRender();
 			} else {
-				/**
-				 * Before focusing view document, selection should be placed inside one of the view's editables.
-				 * Normally its selection will be converted from model document (which have default selection), but
-				 * when using view document on its own, we need to manually place selection before focusing it.
-				 *
-				 * @error view-focus-no-selection
-				 */
-				log.warn( 'view-focus-no-selection: There is no selection in any editable to focus.' );
+				// Before focusing view document, selection should be placed inside one of the view's editables.
+				// Normally its selection will be converted from model document (which have default selection), but
+				// when using view document on its own, we need to manually place selection before focusing it.
+				//
+				// @if CK_DEBUG // console.warn( 'There is no selection in any editable to focus.' );
 			}
 		}
 	}

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
@@ -15,7 +17,6 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import DowncastHelpers, {
@@ -32,6 +33,7 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import View from '../../src/view/view';
 import createViewRoot from '../view/_utils/createroot';
 import { setData as setModelData } from '../../src/dev-utils/model';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller;
@@ -614,7 +616,7 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements only)', () => {
-			const logStub = testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -626,7 +628,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p test="1"></p><p test="2"></p>' );
-			expect( logStub.callCount ).to.equal( 0 );
+			expect( consoleWarnStub.callCount ).to.equal( 0 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
@@ -637,29 +639,19 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements + text)', () => {
-			const logStub = testUtils.sinon.stub( log, 'warn' );
-
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			downcastHelpers.attributeToAttribute( { model: 'test', view: 'test' } );
 
-			model.change( writer => {
-				writer.insertElement( 'paragraph', modelRoot, 0 );
-				writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 1 );
+			expectToThrowCKEditorError( () => {
+				model.change( writer => {
+					writer.insertElement( 'paragraph', modelRoot, 0 );
+					writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 1 );
 
-				writer.insertText( 'Foo', { test: '2' }, modelRoot.getChild( 0 ), 0 );
-				writer.insertText( 'Bar', { test: '3' }, modelRoot.getChild( 1 ), 0 );
-			} );
-
-			expectResult( '<p>Foo</p><p test="1">Bar</p>' );
-			expect( logStub.callCount ).to.equal( 2 );
-			expect( logStub.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
-
-			model.change( writer => {
-				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
-			} );
-
-			expectResult( '<p>Foo</p><p>Bar</p>' );
+					writer.insertText( 'Foo', { test: '2' }, modelRoot.getChild( 0 ), 0 );
+					writer.insertText( 'Bar', { test: '3' }, modelRoot.getChild( 1 ), 0 );
+				} );
+			}, /^conversion-attribute-to-attribute-on-text/ );
 		} );
 
 		it( 'should convert attribute insert/change/remove on a model node', () => {
