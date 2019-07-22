@@ -722,15 +722,13 @@ function HandleFontSizeValue( editor ) {
 Activate the plugin in the editor:
 
 ```js
-import Font from '@ckeditor/ckeditor5-font/src/font';
-
 ClassicEditor
 	.create( ..., {
 		items: [ 'heading', '|', 'bold', 'italic', '|', 'fontSize' ],
 		fontsize: {
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ]
 		},
-		extraPlugins: [ Font, HandleFontSizeValue ],
+		extraPlugins: [ HandleFontSizeValue ],
 	} )
 	.then( editor => {
 		// ...
@@ -756,20 +754,16 @@ The sample below is extensible - to add own attributes to preserve just add anot
 /**
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
-class CustomFigureAttributes extends Plugin {
-	init() {
-		const editor = this.editor;
+function CustomFigureAttributes( editor ) {
+	// Define on which elements the css classes should be preserved:
+	setupCustomClassConversion( 'img', 'image', editor );
+	setupCustomClassConversion( 'table', 'table', editor );
 
-		// Define on wchich elements the css classes should be preserved:
-		setupCustomClassConversion( 'img', 'image', editor );
-		setupCustomClassConversion( 'table', 'table', editor );
+	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
 
-		editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
-
-		// Define custom attributes that should be preserved.
-		setupCustomAttributeConversion( 'img', 'image', 'id', editor );
-		setupCustomAttributeConversion( 'table', 'table', 'id', editor );
-	}
+	// Define custom attributes that should be preserved.
+	setupCustomAttributeConversion( 'img', 'image', 'id', editor );
+	setupCustomAttributeConversion( 'table', 'table', 'id', editor );
 }
 
 /**

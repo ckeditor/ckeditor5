@@ -6,25 +6,20 @@
 /* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
-class CustomFigureAttributes extends Plugin {
-	init() {
-		const editor = this.editor;
+function CustomFigureAttributes( editor ) {
+	// Define on which elements the css classes should be preserved:
+	setupCustomClassConversion( 'img', 'image', editor );
+	setupCustomClassConversion( 'table', 'table', editor );
 
-		// Define on wchich elements the css classes should be preserved:
-		setupCustomClassConversion( 'img', 'image', editor );
-		setupCustomClassConversion( 'table', 'table', editor );
+	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
 
-		editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
-
-		// Define custom attributes that should be preserved.
-		setupCustomAttributeConversion( 'img', 'image', 'id', editor );
-		setupCustomAttributeConversion( 'table', 'table', 'id', editor );
-	}
+	// Define custom attributes that should be preserved.
+	setupCustomAttributeConversion( 'img', 'image', 'id', editor );
+	setupCustomAttributeConversion( 'table', 'table', 'id', editor );
 }
 
 /**

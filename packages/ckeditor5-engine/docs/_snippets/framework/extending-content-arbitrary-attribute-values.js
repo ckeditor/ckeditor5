@@ -6,7 +6,6 @@
 /* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import Font from '@ckeditor/ckeditor5-font/src/font';
 
 function HandleFontSizeValue( editor ) {
 	// Add special catch-all converter for font-size feature.
@@ -51,7 +50,7 @@ function HandleFontSizeValue( editor ) {
 ClassicEditor
 	.create( document.querySelector( '#snippet-arbitrary-attribute-values' ), {
 		cloudServices: CS_CONFIG,
-		extraPlugins: [ Font, HandleFontSizeValue ],
+		extraPlugins: [ HandleFontSizeValue ],
 		toolbar: {
 			items: [ 'heading', '|', 'bold', 'italic', '|', 'fontSize' ],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
