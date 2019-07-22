@@ -20,7 +20,6 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -86,10 +85,20 @@ describe( 'InlineEditor', () => {
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
-		it( 'should throw when trying to create the editor using the same source element more than once', () => {
-			expect( () => {
-				new InlineEditor( editorElement ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^editor-source-element-used-more-than-once/ );
+		it( 'should throw when trying to create the editor using the same source element more than once', done => {
+			InlineEditor.create( editorElement )
+				.then(
+					() => {
+						expect.fail( 'Inline editor should not initialize on an element already used by other instance.' );
+					},
+					err => {
+						assertCKEditorError( err,
+							/^editor-source-element-used-more-than-once/
+						);
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 	} );
 
