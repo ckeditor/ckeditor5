@@ -26,7 +26,7 @@ export default function secureSourceElement( editor ) {
 		return;
 	}
 
-	if ( sourceElement.dataset.ckeditorSecuredElement ) {
+	if ( sourceElement.ckeditorInstance ) {
 		/**
 		 * A DOM element used to create the editor (e.g.
 		 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`})
@@ -39,14 +39,13 @@ export default function secureSourceElement( editor ) {
 		throw new CKEditorError(
 			'securesourceelement-element-used-more-than-once: ' +
 			'The DOM element cannot be used to create multiple editor instances.',
-			editor,
-			{ element: sourceElement }
+			editor
 		);
 	}
 
-	sourceElement.dataset.ckeditorSecuredElement = true;
+	sourceElement.ckeditorInstance = editor;
 
 	editor.once( 'destroy', () => {
-		delete sourceElement.dataset.ckeditorSecuredElement;
+		delete sourceElement.ckeditorInstance;
 	} );
 }

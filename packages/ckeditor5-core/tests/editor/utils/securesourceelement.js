@@ -42,26 +42,26 @@ describe( 'secureSourceElement()', () => {
 		} ).to.not.throw();
 	} );
 
-	it( 'sets the data attribute after initializing the editor', () => {
+	it( 'sets the property after initializing the editor', () => {
 		secureSourceElement( editor );
 
-		expect( sourceElement.dataset.ckeditorSecuredElement ).to.equal( 'true' );
+		expect( sourceElement.ckeditorInstance ).to.equal( editor );
 	} );
 
-	it( 'removes the data attribute after destroying the editor', () => {
+	it( 'removes the property after destroying the editor', () => {
 		secureSourceElement( editor );
 
 		return editor.destroy()
 			.then( () => {
-				expect( sourceElement.dataset.ckeditorSecuredElement ).to.be.undefined;
+				expect( sourceElement.ckeditorInstance ).to.be.undefined;
 			} );
 	} );
 
 	it( 'throws an error if the same element was used twice', () => {
-		sourceElement.dataset.ckeditorSecuredElement = true;
+		sourceElement.ckeditorInstance = 'foo';
 
 		expectToThrowCKEditorError( () => {
 			secureSourceElement( editor );
-		}, /^securesourceelement-element-used-more-than-once/, editor, { element: sourceElement } );
+		}, /^securesourceelement-element-used-more-than-once/, editor );
 	} );
 } );
