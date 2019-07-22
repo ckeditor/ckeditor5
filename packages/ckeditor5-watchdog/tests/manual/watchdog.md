@@ -5,5 +5,3 @@
 1. Click `Simulate a random error` No editor should be restarted.
 
 1. Refresh page and type `1` in the first editor 4 times. The last time the editor should not be restarted.
-
-1. Run `restart both editor`. Both editors should be restarted.
