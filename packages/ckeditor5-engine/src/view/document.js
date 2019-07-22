@@ -124,33 +124,21 @@ export default class Document {
 	 *
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
 	 *
-	 * Here is an example from the link plugin which adds highlight class to the link if the selection is in that link:
+	 * Typically, a post-fixer will look like this:
 	 *
 	 *		editor.editing.view.document.registerPostFixer( writer => {
-	 *			const modelSelection = editor.model.document.selection;
-	 *
-	 *			if ( modelSelection.hasAttribute( 'linkHref' ) ) {
-	 *				// Get a range containing the entire link in which the given selection is placed.
-	 *				// See @ckeditor/ckeditor5-link/src/findlinkrange.
-	 *				const modelRange = findLinkRange( modelSelection );
-	 *				const viewRange = editor.editing.mapper.toViewRange( modelRange );
-	 *
-	 *				// There might be multiple `a` elements in the `viewRange`, for example,
-	 *				//  when the `a` element is broken by a UIElement.
-	 *				for ( const item of viewRange.getItems() ) {
-	 *					if ( item.is( 'a' ) ) {
-	 *						writer.addClass( HIGHLIGHT_CLASS, item );
-	 *					}
-	 *				}
+	 *			if ( checkSomeCondition() ) {
+	 *				writer.doSomething();
 	 *
 	 *				// Let other post-fixers know that something changed.
 	 *				return true;
 	 *			}
 	 *		} );
 	 *
-	 * Note that nothing will happen when you will execute this code in the console. It is because adding a post-fixer will not execute it.
-	 * It will be executed as soon as any change in the document causes rendering. If you want to re-render the editor's
-	 * view after registering the post-fixer then you should do it manually calling
+	 * Note that nothing happens right after you register a post-fixer (e.g. execute such a code in the console).
+	 * That is because adding a post-fixer does not execute it.
+	 * The post-fixer will be executed as soon as any change in the document needs to cause its rendering.
+	 * If you want to re-render the editor's view after registering the post-fixer then you should do it manually by calling
 	 * {@link module:engine/view/view~View#forceRender `view.forceRender()`}.
 	 *
 	 * If you need to register a callback which is executed when DOM elements are already updated,
