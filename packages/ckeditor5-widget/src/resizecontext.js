@@ -1,6 +1,5 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
-// import ResizerCentral from './resizercentral';
-import ResizerTopBound from './resizertopbound';
+import ResizerCentral from './resizercentral';
 import { getAbsoluteBoundaryPoint } from './utils';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
@@ -27,8 +26,7 @@ export default class ResizeContext {
 		// view/Element
 		this.widgetWrapperElement = null;
 
-		// this.resizeStrategy = new ResizerCentral( this, options );
-		this.resizeStrategy = new ResizerTopBound( this, options );
+		this.resizeStrategy = new ResizerCentral( this, options );
 
 		/**
 		 * Container of entire resize UI.
