@@ -6,6 +6,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
+import Typing from '../src/typing';
 import TextTransformation from '../src/texttransformation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -115,15 +116,17 @@ describe( 'Text transformation feature', () => {
 			simulateTyping( '"' );
 
 			expect( getData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo “<$text bold="true">Bar</$text>”</paragraph>' );
+				.to.equal( '<paragraph>Foo “<$text bold="true">Bar”</$text></paragraph>' );
 		} );
 
 		it( 'should keep styles of the replaced text #1', () => {
 			setData( model, '<paragraph>Foo <$text bold="true">"</$text>Bar[]</paragraph>' );
 
 			model.change( writer => {
-				writer.insertText( '"', { bold: true }, doc.selection.focus );
+				writer.setSelectionAttribute( { bold: true } );
 			} );
+
+			simulateTyping( '"' );
 
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>Foo <$text bold="true">“</$text>Bar<$text bold="true">”</$text></paragraph>' );
@@ -336,7 +339,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Paragraph, Bold, TextTransformation ]
+				plugins: [ Typing, Paragraph, Bold, TextTransformation ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
@@ -350,9 +353,7 @@ describe( 'Text transformation feature', () => {
 		const letters = transformFrom.split( '' );
 
 		for ( const letter of letters ) {
-			model.enqueueChange( model.createBatch(), writer => {
-				writer.insertText( letter, doc.selection.focus );
-			} );
+			editor.execute( 'input', { text: letter } );
 		}
 	}
 } );

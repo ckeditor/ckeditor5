@@ -66,9 +66,7 @@ export default class TextWatcher {
 				return;
 			}
 
-			const isTyping = checkTyping( model );
-
-			this._evaluateTextBeforeSelection( 'data', { isTyping } );
+			this._evaluateTextBeforeSelection( 'data', { batch } );
 		} );
 	}
 
@@ -151,23 +149,6 @@ function _getText( range ) {
 
 		return rangeText + node.data;
 	}, '' );
-}
-
-// Returns true if the change was done by typing.
-//
-// @param {module:engine/model/model~Model} model
-function checkTyping( model ) {
-	const changes = Array.from( model.document.differ.getChanges() );
-
-	// Typing is represented by only a single change...
-	if ( changes.length != 1 ) {
-		return false;
-	}
-
-	const entry = changes[ 0 ];
-
-	// ...and is an insert of a text.
-	return entry.type === 'insert' && entry.name == '$text' && entry.length == 1;
 }
 
 mix( TextWatcher, EmitterMixin );

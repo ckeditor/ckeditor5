@@ -101,6 +101,7 @@ export default class TextTransformation extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const input = editor.plugins.get( 'Input' );
 
 		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
 
@@ -111,7 +112,7 @@ export default class TextTransformation extends Plugin {
 			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
 
 			watcher.on( 'matched:data', ( evt, data ) => {
-				if ( !data.isTyping ) {
+				if ( !input.isInput( data.batch ) ) {
 					return;
 				}
 

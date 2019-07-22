@@ -35,6 +35,8 @@ export default class InputCommand extends Command {
 		 * @member {module:typing/utils/changebuffer~ChangeBuffer} #_buffer
 		 */
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
+
+		this._batches = new WeakSet();
 	}
 
 	/**
@@ -98,6 +100,8 @@ export default class InputCommand extends Command {
 			this._buffer.unlock();
 
 			this._buffer.input( textInsertions );
+
+			this._batches.add( this._buffer.batch );
 		} );
 	}
 }

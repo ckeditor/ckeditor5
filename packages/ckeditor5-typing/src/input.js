@@ -40,4 +40,10 @@ export default class Input extends Plugin {
 		injectUnsafeKeystrokesHandling( editor );
 		injectTypingMutationsHandling( editor );
 	}
+
+	isInput( batch ) {
+		const inputCommand = this.editor.commands.get( 'input' );
+
+		return inputCommand._batches.has( batch );
+	}
 }
