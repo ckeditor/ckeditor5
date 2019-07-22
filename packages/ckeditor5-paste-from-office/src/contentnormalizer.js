@@ -13,28 +13,23 @@ export default class ContentNormalizer {
 
 		this.activationTrigger = activationTrigger;
 
-		this._active = false;
+		this.isActive = false;
 		this._filters = new Set();
 		this._fullContentFilters = new Set();
 	}
 
-	get isActive() {
-		return this._active;
-	}
-
 	setInputData( data ) {
 		const html = data.dataTransfer.getData( 'text/html' );
+		const dataReadFirstTime = data.isTransformedWithPasteFromOffice === undefined;
+		const hasHtmlData = !!html;
 
-		if ( html && this.activationTrigger( html ) ) {
+		if ( hasHtmlData && dataReadFirstTime && this.activationTrigger( html ) ) {
 			this.data = data;
-			this._active = true;
-
-			if ( this.data.isTransformedWithPasteFromOffice === undefined ) {
-				this.data.isTransformedWithPasteFromOffice = false;
-			}
+			this.isActive = true;
+			this.data.isTransformedWithPasteFromOffice = false;
 		} else {
-			this.data = undefined;
-			this._active = false;
+			this.data = null;
+			this.isActive = false;
 		}
 
 		return this;
@@ -51,9 +46,9 @@ export default class ContentNormalizer {
 	exec() {
 		if ( this.data && !this.data.isTransformedWithPasteFromOffice ) {
 			this._applyFullContentFilters();
-
-			this.data.isTransformedWithPasteFromOffice = true;
 		}
+
+		this.data.isTransformedWithPasteFromOffice = true;
 
 		return this;
 	}
