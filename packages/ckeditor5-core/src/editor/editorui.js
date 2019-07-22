@@ -124,7 +124,9 @@ export default class EditorUI {
 		// It helps 3rd–party software (browser extensions, other libraries) access and recognize
 		// CKEditor 5 instances (editing roots) and use their API (there is no global editor
 		// instance registry).
-		domElement.ckeditorInstance = this.editor;
+		if ( !domElement.ckeditorInstance ) {
+			domElement.ckeditorInstance = this.editor;
+		}
 	}
 
 	/**

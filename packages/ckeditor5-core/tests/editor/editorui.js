@@ -130,6 +130,17 @@ describe( 'EditorUI', () => {
 
 			expect( element.ckeditorInstance ).to.equal( editor );
 		} );
+
+		it( 'does not override a reference to the editor instance in domElement#ckeditorInstance', () => {
+			const ui = new EditorUI( editor );
+			const element = document.createElement( 'div' );
+
+			element.ckeditorInstance = 'foo';
+
+			ui.setEditableElement( 'main', element );
+
+			expect( element.ckeditorInstance ).to.equal( 'foo' );
+		} );
 	} );
 
 	describe( 'getEditableElement()', () => {
