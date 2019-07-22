@@ -15,14 +15,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
@@ -47,10 +45,6 @@ describe( 'DecoupledEditor', () => {
 
 		it( 'has a Data Interface', () => {
 			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
-		} );
-
-		it( 'has an Element Interface', () => {
-			testUtils.isMixed( DecoupledEditor, ElementApiMixin );
 		} );
 
 		it( 'creates main root element', () => {
@@ -134,13 +128,21 @@ describe( 'DecoupledEditor', () => {
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
 		it( 'should throw when trying to create the editor using the same source element more than once', () => {
 			const sourceElement = document.createElement( 'div' );
+			let editor;
 
 			return DecoupledEditor.create( sourceElement )
-				.then( editor => {
-					expect( () => {
-						new DecoupledEditor( sourceElement ); // eslint-disable-line no-new
-					} ).to.throw( CKEditorError, /^editor-source-element-used-more-than-once/ );
+				.then( newEditor => {
+					editor = newEditor;
 
+					return new DecoupledEditor( sourceElement );
+				} )
+				.then( () => {
+					expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^editor-source-element-used-more-than-once/ );
+				} )
+				.finally( () => {
 					return editor.destroy();
 				} );
 		} );

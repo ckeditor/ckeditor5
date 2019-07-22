@@ -14,10 +14,10 @@ import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
  * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
@@ -48,7 +48,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
  *
  * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
- * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
  * @implements module:core/editor/editorwithui~EditorWithUI
  * @extends module:core/editor/editor~Editor
  */
@@ -70,7 +69,7 @@ export default class DecoupledEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-			this.secureSourceElement();
+			secureSourceElement( this );
 		}
 
 		this.data.processor = new HtmlDataProcessor();
@@ -254,7 +253,6 @@ export default class DecoupledEditor extends Editor {
 }
 
 mix( DecoupledEditor, DataApiMixin );
-mix( DecoupledEditor, ElementApiMixin );
 
 function getInitialData( sourceElementOrData ) {
 	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
