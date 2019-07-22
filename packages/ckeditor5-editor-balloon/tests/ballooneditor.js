@@ -96,7 +96,7 @@ describe( 'BalloonEditor', () => {
 					},
 					err => {
 						assertCKEditorError( err,
-							/^editor-source-element-used-more-than-once/
+							/^securesourceelement-element-used-more-than-once/
 						);
 					}
 				)
