@@ -29,15 +29,18 @@ export default function secureSourceElement( editor ) {
 	if ( sourceElement.dataset.ckeditorSecuredElement ) {
 		/**
 		 * A DOM element used to create the editor (e.g.
-		 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`})
+		 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`})
 		 * has already been used to create another editor instance. Make sure each editor is
 		 * created with an unique DOM element.
 		 *
-		 * @error editor-source-element-used-more-than-once
+		 * @error securesourceelement-element-used-more-than-once
+		 * @param {HTMLElement} element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
-			'editor-source-element-used-more-than-once: ' +
-			'The DOM source element cannot be used to create an editor more than once.'
+			'securesourceelement-element-used-more-than-once: ' +
+			'The DOM element cannot be used to create multiple editor instances.',
+			editor,
+			{ element: sourceElement }
 		);
 	}
 

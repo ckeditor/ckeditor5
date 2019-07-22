@@ -60,8 +60,8 @@ describe( 'secureSourceElement()', () => {
 	it( 'throws an error if the same element was used twice', () => {
 		sourceElement.dataset.ckeditorSecuredElement = true;
 
-		expectToThrowCKEditorError(
-			() => secureSourceElement( editor ),
-			/^editor-source-element-used-more-than-once/ );
+		expectToThrowCKEditorError( () => {
+			secureSourceElement( editor );
+		}, /^securesourceelement-element-used-more-than-once/, editor, { element: sourceElement } );
 	} );
 } );
