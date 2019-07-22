@@ -19,7 +19,6 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -89,10 +88,20 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
-		it( 'should throw when trying to create the editor using the same source element more than once', () => {
-			expect( () => {
-				new BalloonEditor( editorElement, { plugins: [] } ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /^editor-source-element-used-more-than-once/ );
+		it( 'should throw when trying to create the editor using the same source element more than once', done => {
+			BalloonEditor.create( editorElement )
+				.then(
+					() => {
+						expect.fail( 'Balloon editor should not initialize on an element already used by other instance.' );
+					},
+					err => {
+						assertCKEditorError( err,
+							/^editor-source-element-used-more-than-once/
+						);
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 	} );
 
