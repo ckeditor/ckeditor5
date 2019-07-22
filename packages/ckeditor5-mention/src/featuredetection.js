@@ -15,21 +15,22 @@
  */
 export default {
 	/**
-	 * Indicates whether the current browser supports ES2018 Unicode punctuation groups `\p{P}`.
+	 * Indicates whether the current browser supports ES2018 Unicode groups like `\p{P}` or `\p{L}`.
 	 *
 	 * @type {Boolean}
 	 */
-	isPunctuationGroupSupported: ( function() {
-		let punctuationSupported = false;
-		// Feature detection for Unicode punctuation groups. It's added in ES2018. Currently Firefox and Edge does not support it.
+	isUnicodeGroupSupported: ( function() {
+		let isSupported = false;
+
+		// Feature detection for Unicode groups. Added in ES2018. Currently Firefox and Edge do not support it.
 		// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
 
 		try {
-			punctuationSupported = '.'.search( new RegExp( '[\\p{P}]', 'u' ) ) === 0;
+			isSupported = 'ć'.search( new RegExp( '[\\p{L}]', 'u' ) ) === 0;
 		} catch ( error ) {
 			// Firefox throws a SyntaxError when the group is unsupported.
 		}
 
-		return punctuationSupported;
+		return isSupported;
 	}() )
 };

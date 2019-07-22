@@ -19,6 +19,13 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 	Check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
 </info-box>
 
+## Related productivity features
+
+In addition to enabling mentions, you may want to check the following productivity features:
+
+* {@link features/text-transformation Automatic text transformation} &mdash; allows automatically turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/autoformat Autoformatting} &mdash; allows quickly applying formatting to the content you are writing.
+
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define `minimumCharacters` after which the autocomplete panel will show up.

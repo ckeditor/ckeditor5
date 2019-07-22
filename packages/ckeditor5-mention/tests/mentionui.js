@@ -14,7 +14,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -23,6 +22,7 @@ import MentionUI, { createRegExp } from '../src/mentionui';
 import featureDetection from '../src/featuredetection';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
@@ -68,22 +68,19 @@ describe( 'MentionUI', () => {
 	describe( 'init()', () => {
 		it( 'should throw if marker was not provided for feed', () => {
 			return createClassicTestEditor( { feeds: [ { feed: [ 'a' ] } ] } ).catch( error => {
-				expect( error ).to.be.instanceOf( CKEditorError );
-				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
 			} );
 		} );
 
 		it( 'should throw if marker is empty string', () => {
 			return createClassicTestEditor( { feeds: [ { marker: '', feed: [ 'a' ] } ] } ).catch( error => {
-				expect( error ).to.be.instanceOf( CKEditorError );
-				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
 			} );
 		} );
 
 		it( 'should throw if marker is longer then 1 character', () => {
 			return createClassicTestEditor( { feeds: [ { marker: '$$', feed: [ 'a' ] } ] } ).catch( error => {
-				expect( error ).to.be.instanceOf( CKEditorError );
-				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
 			} );
 		} );
 	} );
@@ -453,10 +450,10 @@ describe( 'MentionUI', () => {
 			let regExpStub;
 
 			// Cache the original value to restore it after the tests.
-			const originalPunctuationSupport = featureDetection.isPunctuationGroupSupported;
+			const originalGroupSupport = featureDetection.isUnicodeGroupSupported;
 
 			before( () => {
-				featureDetection.isPunctuationGroupSupported = false;
+				featureDetection.isUnicodeGroupSupported = false;
 			} );
 
 			beforeEach( () => {
@@ -469,21 +466,21 @@ describe( 'MentionUI', () => {
 			} );
 
 			after( () => {
-				featureDetection.isPunctuationGroupSupported = originalPunctuationSupport;
+				featureDetection.isUnicodeGroupSupported = originalGroupSupport;
 			} );
 
 			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
-				featureDetection.isPunctuationGroupSupported = false;
+				featureDetection.isUnicodeGroupSupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(^|[ \\(\\[{"\'])([@])([_a-zA-Z0-9À-ž]{2,}?)$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
-				featureDetection.isPunctuationGroupSupported = true;
+				featureDetection.isUnicodeGroupSupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(^|[ \\p{Ps}\\p{Pi}"\'])([@])([_a-zA-Z0-9À-ž]{2,}?)$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,})$', 'u' );
 			} );
 		} );
 
@@ -568,7 +565,7 @@ describe( 'MentionUI', () => {
 				// Belongs to Pi (Punctuation, Initial quote) group:
 				'«', '‹', '⸌', ' ⸂', '⸠'
 			] ) {
-				testOpeningPunctuationCharacter( character, !featureDetection.isPunctuationGroupSupported );
+				testOpeningPunctuationCharacter( character, !featureDetection.isUnicodeGroupSupported );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -821,6 +818,39 @@ describe( 'MentionUI', () => {
 					} )
 					.then( waitForDebounce )
 					.then( () => expect( panelView.isVisible ).to.be.false );
+			} );
+		} );
+
+		describe( 'unicode', () => {
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							// Always return 5 items
+							feed: [ '@תַפּוּחַ', '@אַגָס', '@apple', '@pear' ],
+							marker: '@'
+						}
+					]
+				} );
+			} );
+
+			it( 'should open panel for unicode character ב', function() {
+				if ( !featureDetection.isUnicodeGroupSupported ) {
+					this.skip();
+				}
+
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@ס', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
+					} );
 			} );
 		} );
 

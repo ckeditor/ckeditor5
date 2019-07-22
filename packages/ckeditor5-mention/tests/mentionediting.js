@@ -272,6 +272,25 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
+
+		it( 'should not allow to type with mention attribute before mention', () => {
+			editor.setData( '<p><span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			// Set selection before mention.
+			model.change( writer => {
+				writer.setSelection( paragraph, 0 );
+			} );
+
+			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [] );
+
+			model.change( writer => {
+				writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 0 ) );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>a<span class="mention" data-mention="@John">@John</span> bar</p>' );
+		} );
 	} );
 
 	describe( 'removing partial mention post-fixer', () => {

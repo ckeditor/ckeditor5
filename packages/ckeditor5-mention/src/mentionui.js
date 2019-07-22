@@ -186,7 +186,10 @@ export default class MentionUI extends Plugin {
 				 *
 				 * @error mentionconfig-incorrect-marker
 				 */
-				throw new CKEditorError( 'mentionconfig-incorrect-marker: The marker must be provided and it must be a single character.' );
+				throw new CKEditorError(
+					'mentionconfig-incorrect-marker: The marker must be provided and it must be a single character.',
+					null
+				);
 			}
 
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
@@ -592,19 +595,20 @@ function getBalloonPanelPositions( preferredPosition ) {
 // @returns {RegExp}
 export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
-	const patternBase = featureDetection.isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
-	return new RegExp( buildPattern( patternBase, marker, numberOfCharacters ), 'u' );
-}
+	const openAfterCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
+	const mentionCharacters = featureDetection.isUnicodeGroupSupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
 
-// Helper to build a RegExp pattern string for the marker.
-//
-// @param {String} whitelistedCharacters
-// @param {String} marker
-// @param {Number} minimumCharacters
-// @returns {String}
-function buildPattern( whitelistedCharacters, marker, numberOfCharacters ) {
-	return `(^|[ ${ whitelistedCharacters }])([${ marker }])([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	// The pattern consists of 3 groups:
+	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
+	// - 1: The marker character,
+	// - 2: Mention input (taking the minimal length into consideration to trigger the UI),
+	//
+	// The pattern matches up to the caret (end of string switch - $).
+	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                 )$
+	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([_${ mentionCharacters }]${ numberOfCharacters })$`;
+
+	return new RegExp( pattern, 'u' );
 }
 
 // Creates a test callback for the marker to be used in the text watcher instance.
@@ -627,7 +631,7 @@ function getFeedText( marker, text ) {
 
 	const match = text.match( regExp );
 
-	return match[ 3 ];
+	return match[ 2 ];
 }
 
 // The default feed callback.

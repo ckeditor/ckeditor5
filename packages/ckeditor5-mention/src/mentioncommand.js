@@ -98,7 +98,10 @@ export default class MentionCommand extends Command {
 			 *
 			 * @error mentioncommand-incorrect-marker
 			 */
-			throw new CKEditorError( 'mentioncommand-incorrect-marker: The marker must be a single character.' );
+			throw new CKEditorError(
+				'mentioncommand-incorrect-marker: The marker must be a single character.',
+				this
+			);
 		}
 
 		if ( mentionID.charAt( 0 ) != options.marker ) {
@@ -127,7 +130,10 @@ export default class MentionCommand extends Command {
 			 *
 			 * @error mentioncommand-incorrect-id
 			 */
-			throw new CKEditorError( 'mentioncommand-incorrect-id: The item id must start with the marker character.' );
+			throw new CKEditorError(
+				'mentioncommand-incorrect-id: The item id must start with the marker character.',
+				this
+			);
 		}
 
 		model.change( writer => {
