@@ -82,6 +82,7 @@ If you want to use CKEditor 5 with [Materialize.css](https://materializecss.com/
 
 * Configure the base `z-index` of the floating editor UI so it is displayed over the Materialize modals.
 * Bring back the default `.ck-input` class appearance (because Materialize overrides it with a higher specificity).
+* Bring back the default `<ul>` and `<li>` appearance (because Materialize overrides it).
 * Configure modals so they stop "stealing" the focus from the rich-text editor input fields.
 
 Use the following CSS to address the issues with the `z-index` and selector specificity:
@@ -120,6 +121,23 @@ Use the following CSS to address the issues with the `z-index` and selector spec
 .ck input.ck-input.ck-input-text:focus {
 	border: var(--ck-focus-ring);
 	box-shadow: var(--ck-focus-outer-shadow),var(--ck-inner-shadow);
+}
+```
+
+```css
+/*
+ * Bring back the default <ul> and <li> appearance.
+ *
+ * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/_global.scss#L28-L37
+ */
+.ck.ck-content ul,
+.ck.ck-content ul li {
+  list-style-type: inherit;
+}
+
+.ck.ck-content ul {
+  /* Default user agent stylesheet, you can change it to your needs. */
+  padding-left: 40px;
 }
 ```
 

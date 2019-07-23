@@ -211,7 +211,7 @@ class MultirootEditorUI extends EditorUI {
 
 			// Register the editable UI view in the editor. A single editor instance can aggregate multiple
 			// editable areas (roots) but the decoupled editor has only one.
-			this._editableElements.set( editable.name, editableElement );
+			this.setEditableElement( editable.name, editableElement );
 
 			// Let the global focus tracker know that the editable UI element is focusable and
 			// belongs to the editor. From now on, the focus tracker will sustain the editor focus
