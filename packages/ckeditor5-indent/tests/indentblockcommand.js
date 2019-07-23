@@ -58,10 +58,10 @@ describe( 'IndentBlockCommand', () => {
 		} );
 
 		describe( 'refresh()', () => {
-			it( 'should not call indentBehavior.checkEnabled() for a selected block that cannot have indentBlock attribute', () => {
+			it( 'should be disabled if a top-most block disallows indentBlock attribute', () => {
 				setData( model, '[<parentBlock><paragraph>foo</paragraph></parentBlock>]' );
 				command.refresh();
-				sinon.assert.notCalled( indentBehavior.checkEnabled );
+				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
 
