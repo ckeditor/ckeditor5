@@ -10,8 +10,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 
 /**
- * Marks the source element the editor was initialized on preventing other editor instances from
- * using this element.
+ * Marks the source element on which the editor was initialized. This prevents other editor instances from using this element.
  *
  * Running multiple editor instances on the same source element causes various issues and it is
  * crucial this helper is called as soon as the source element is known to prevent collisions.
