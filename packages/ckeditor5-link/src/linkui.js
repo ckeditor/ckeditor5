@@ -414,6 +414,7 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
+		this.stopListening( this._balloon, 'change:visibleView' );
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
@@ -441,7 +442,7 @@ export default class LinkUI extends Plugin {
 		let prevSelectedLink = this._getSelectedLinkElement();
 		let prevSelectionParent = getSelectionParent();
 
-		this.listenTo( editor.ui, 'update', () => {
+		const update = () => {
 			const selectedLink = this._getSelectedLinkElement();
 			const selectionParent = getSelectionParent();
 
@@ -460,9 +461,10 @@ export default class LinkUI extends Plugin {
 				this._hideUI();
 			}
 			// Update the position of the panel when:
+			//  * link panel is in the visible stack
 			//  * the selection remains in the original link element,
 			//  * there was no link element in the first place, i.e. creating a new link
-			else {
+			else if ( this._isUIVisible ) {
 				// If still in a link element, simply update the position of the balloon.
 				// If there was no link (e.g. inserting one), the balloon must be moved
 				// to the new position in the editing view (a new native DOM range).
@@ -471,13 +473,16 @@ export default class LinkUI extends Plugin {
 
 			prevSelectedLink = selectedLink;
 			prevSelectionParent = selectionParent;
-		} );
+		};
 
 		function getSelectionParent() {
 			return viewDocument.selection.focus.getAncestors()
 				.reverse()
 				.find( node => node.is( 'element' ) );
 		}
+
+		this.listenTo( editor.ui, 'update', update );
+		this.listenTo( this._balloon, 'change:visibleView', update );
 	}
 
 	/**
