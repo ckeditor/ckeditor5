@@ -5,13 +5,14 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ContentNormalizer from '../src/contentnormalizer';
+import { createDataTransfer } from './_utils/utils';
 
 describe( 'ContentNormalizer', () => {
 	let normalizer, sinonTrigger;
 	const templateData = {
-		dataTransfer: {
-			getData: () => 'test data'
-		}
+		dataTransfer: createDataTransfer( {
+			'text/html': 'test data'
+		} )
 	};
 
 	testUtils.createSinonSandbox();

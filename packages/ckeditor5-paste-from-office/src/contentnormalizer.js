@@ -9,17 +9,18 @@
 
 export default class ContentNormalizer {
 	constructor( { activationTrigger } ) {
-		this.data = null;
-
 		this.activationTrigger = activationTrigger;
 
-		this.isActive = false;
+		this._reset();
+
 		this._filters = new Set();
 		this._fullContentFilters = new Set();
 	}
 
 	setInputData( data ) {
-		const html = data.dataTransfer.getData( 'text/html' );
+		this._reset();
+
+		const html = data.dataTransfer && data.dataTransfer.getData( 'text/html' );
 		const dataReadFirstTime = data.isTransformedWithPasteFromOffice === undefined;
 		const hasHtmlData = !!html;
 
@@ -27,9 +28,6 @@ export default class ContentNormalizer {
 			this.data = data;
 			this.isActive = true;
 			this.data.isTransformedWithPasteFromOffice = false;
-		} else {
-			this.data = null;
-			this.isActive = false;
 		}
 
 		return this;
@@ -44,13 +42,22 @@ export default class ContentNormalizer {
 	}
 
 	exec() {
-		if ( this.data && !this.data.isTransformedWithPasteFromOffice ) {
+		if ( !this.isActive ) {
+			return;
+		}
+
+		if ( !this.data.isTransformedWithPasteFromOffice ) {
 			this._applyFullContentFilters();
 		}
 
 		this.data.isTransformedWithPasteFromOffice = true;
 
 		return this;
+	}
+
+	_reset() {
+		this.data = null;
+		this.isActive = false;
 	}
 
 	_applyFullContentFilters() {
