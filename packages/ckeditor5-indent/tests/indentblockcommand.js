@@ -58,7 +58,7 @@ describe( 'IndentBlockCommand', () => {
 		} );
 
 		describe( 'refresh()', () => {
-			it( 'should not call indentBehavior.checkEnabled() for a selected block', () => {
+			it( 'should not call indentBehavior.checkEnabled() for a selected block that cannot have indentBlock attribute', () => {
 				setData( model, '[<parentBlock><paragraph>foo</paragraph></parentBlock>]' );
 				command.refresh();
 				sinon.assert.notCalled( indentBehavior.checkEnabled );
