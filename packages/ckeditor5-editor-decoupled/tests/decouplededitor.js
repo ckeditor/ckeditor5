@@ -138,7 +138,7 @@ describe( 'DecoupledEditor', () => {
 						expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
 					},
 					err => {
-						assertCKEditorError( err, /^securesourceelement-element-used-more-than-once/ );
+						assertCKEditorError( err, /^editor-source-element-already-used/ );
 					}
 				)
 				.then( done )
