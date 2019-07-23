@@ -44,6 +44,14 @@ export default class Input extends Plugin {
 	/**
 	 * Checks batch if it is a result of user input - e.g. typing.
 	 *
+	 *		const input = editor.plugins.get( 'Input' );
+	 *
+	 *		editor.model.document.on( 'change:data', ( evt, batch ) => {
+	 *			if ( input.isTyping( batch) ) {
+	 *				console.log( 'The user typed something...' );
+	 *			}
+	 *		} );
+	 *
 	 * **Note:** This method checks if the batch was created using {@link module:typing/inputcommand~InputCommand 'input'}
 	 * command as typing changes coming from user input are inserted to the document using that command.
 	 *

@@ -106,7 +106,7 @@ export default class TextWatcher {
 			 * @event matched:data
 			 * @param {Object} data Event data.
 			 * @param {String} data.text The full text before selection.
-			 * @param {Boolean} data.isTyping Set to true for user typing changes.
+			 * @param {module:engine/model/batch~Batch} data.batch A batch associated with a change.
 			 */
 			/**
 			 * Fired whenever the text watcher found a match for selection changes.
