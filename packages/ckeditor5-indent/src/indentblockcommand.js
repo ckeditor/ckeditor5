@@ -70,24 +70,34 @@ export default class IndentBlockCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const doc = model.document;
 
-		const itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
+		const blocksToChange = getBlocksToChange( model );
 
 		model.change( writer => {
-			for ( const item of itemsToChange ) {
-				const currentIndent = item.getAttribute( 'blockIndent' );
+			for ( const block of blocksToChange ) {
+				const currentIndent = block.getAttribute( 'blockIndent' );
 
 				const nextIndent = this._indentBehavior.getNextIndent( currentIndent );
 
 				if ( nextIndent ) {
-					writer.setAttribute( 'blockIndent', nextIndent, item );
+					writer.setAttribute( 'blockIndent', nextIndent, block );
 				} else {
-					writer.removeAttribute( 'blockIndent', item );
+					writer.removeAttribute( 'blockIndent', block );
 				}
 			}
 		} );
 	}
+}
+
+// Returns blocks from selection that should have blockIndent selection set.
+//
+// @param {module:engine/model/model~model} model A model.
+function getBlocksToChange( model ) {
+	const selection = model.document.selection;
+	const schema = model.schema;
+	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
+
+	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) );
 }
 
 /**

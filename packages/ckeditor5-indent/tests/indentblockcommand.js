@@ -34,6 +34,41 @@ describe( 'IndentBlockCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'common behavior', () => {
+		let indentBehavior;
+
+		beforeEach( () => {
+			indentBehavior = {
+				checkEnabled: sinon.stub().returns( true ),
+				getNextIndent: sinon.stub()
+			};
+
+			command = new IndentBlockCommand( editor, indentBehavior );
+		} );
+
+		describe( 'execute()', () => {
+			it( 'should be executed for all selected blocks', () => {
+				setData( model,
+					'<paragraph>f[oo</paragraph>' +
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>f]oo</paragraph>'
+				);
+				command.execute();
+				sinon.assert.calledThrice( indentBehavior.getNextIndent );
+			} );
+
+			it( 'should be executed only for blocks that can have indentBlock attribute', () => {
+				setData( model,
+					'<paragraph>f[oo</paragraph>' +
+					'<block>foo</block>' +
+					'<paragraph>f]oo</paragraph>'
+				);
+				command.execute();
+				sinon.assert.calledTwice( indentBehavior.getNextIndent );
+			} );
+		} );
+	} );
+
 	describe( 'indent', () => {
 		describe( 'using classes', () => {
 			beforeEach( () => {
