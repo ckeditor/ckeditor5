@@ -47,7 +47,6 @@ describe( 'Text transformation feature - integration', () => {
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( '(c', doc.selection.focus );
-				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 			} );
 
 			editor.execute( 'input', { text: ')' } );
@@ -69,7 +68,6 @@ describe( 'Text transformation feature - integration', () => {
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( 'foo bar baz(c', doc.selection.focus );
-				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 			} );
 
 			editor.execute( 'input', { text: ')' } );
