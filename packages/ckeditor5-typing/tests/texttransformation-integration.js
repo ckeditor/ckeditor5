@@ -47,12 +47,10 @@ describe( 'Text transformation feature - integration', () => {
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( '(c', doc.selection.focus );
+				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 			} );
 
-			model.enqueueChange( model.createBatch(), writer => {
-				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( ')', doc.selection.focus );
-			} );
+			editor.execute( 'input', { text: ')' } );
 
 			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo©</p>' );
 
@@ -71,12 +69,11 @@ describe( 'Text transformation feature - integration', () => {
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( 'foo bar baz(c', doc.selection.focus );
+				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 			} );
 
-			model.enqueueChange( model.createBatch(), writer => {
-				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( ')', doc.selection.focus );
-			} );
+			editor.execute( 'input', { text: ')' } );
+
 			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
 
 			editor.execute( 'undo' );
