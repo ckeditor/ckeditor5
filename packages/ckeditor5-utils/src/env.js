@@ -55,7 +55,24 @@ const env = {
 	 * @static
 	 * @type {Boolean}
 	 */
-	isAndroid: isAndroid( userAgent )
+	isAndroid: isAndroid( userAgent ),
+
+	/**
+	 * Environment features information.
+	 *
+	 * @memberOf module:utils/env~env
+	 * @namespace
+	 */
+	features: {
+		/**
+		 * Indicates that the environment supports ES2018 Unicode property escapes — like `\p{P}` or `\p{L}`.
+		 * More information about unicode properties might be found
+		 * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
+		 *
+		 * @type {Boolean}
+		 */
+		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
+	}
 };
 
 export default env;
@@ -108,4 +125,27 @@ export function isSafari( userAgent ) {
  */
 export function isAndroid( userAgent ) {
 	return userAgent.indexOf( 'android' ) > -1;
+}
+
+/**
+ * Checks if the current environment supports ES2018 Unicode properties like `\p{P}` or `\p{L}`.
+ * More information about unicode properties might be found
+ * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
+ *
+ * @returns {Boolean}
+ */
+export function isRegExpUnicodePropertySupported() {
+	let isSupported = false;
+
+	// Feature detection for Unicode properties. Added in ES2018. Currently Firefox and Edge do not support it.
+	// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
+
+	try {
+		// Usage of regular expression literal cause error during build (ckeditor/ckeditor5-dev#534).
+		isSupported = 'ć'.search( new RegExp( '[\\p{L}]', 'u' ) ) === 0;
+	} catch ( error ) {
+		// Firefox throws a SyntaxError when the group is unsupported.
+	}
+
+	return isSupported;
 }

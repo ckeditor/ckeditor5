@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isEdge, isMac, isGecko, isSafari, isAndroid } from '../src/env';
+import env, { isEdge, isMac, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported } from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -41,6 +41,18 @@ describe( 'Env', () => {
 	describe( 'isAndroid', () => {
 		it( 'is a boolean', () => {
 			expect( env.isAndroid ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'features', () => {
+		it( 'is an object', () => {
+			expect( env.features ).to.be.an( 'object' );
+		} );
+
+		describe( 'isRegExpUnicodePropertySupported', () => {
+			it( 'is a boolean', () => {
+				expect( env.features.isRegExpUnicodePropertySupported ).to.be.a( 'boolean' );
+			} );
 		} );
 	} );
 
@@ -168,5 +180,18 @@ describe( 'Env', () => {
 			) ) ).to.be.false;
 		} );
 		/* eslint-enable max-len */
+	} );
+
+	describe( 'isRegExpUnicodePropertySupported()', () => {
+		it( 'should detect accessibility of unicode properties', () => {
+			// Usage of regular expression literal cause error during build (ckeditor/ckeditor5-dev#534)
+			const testFn = () => ( new RegExp( '\\p{L}', 'u' ) ).test( 'ć' );
+
+			if ( isRegExpUnicodePropertySupported() ) {
+				expect( testFn() ).to.be.true;
+			} else {
+				expect( testFn ).to.throw();
+			}
+		} );
 	} );
 } );
