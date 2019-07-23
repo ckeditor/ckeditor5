@@ -17,6 +17,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
  * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
@@ -68,6 +69,7 @@ export default class DecoupledEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
+			secureSourceElement( this );
 		}
 
 		this.data.processor = new HtmlDataProcessor();

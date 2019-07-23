@@ -125,6 +125,26 @@ describe( 'DecoupledEditor', () => {
 			} );
 		} );
 
+		// See: https://github.com/ckeditor/ckeditor5/issues/746
+		it( 'should throw when trying to create the editor using the same source element more than once', done => {
+			const sourceElement = document.createElement( 'div' );
+
+			// eslint-disable-next-line no-new
+			new DecoupledEditor( sourceElement );
+
+			DecoupledEditor.create( sourceElement )
+				.then(
+					() => {
+						expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
+					},
+					err => {
+						assertCKEditorError( err, /^editor-source-element-already-used/ );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
 			DecoupledEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
