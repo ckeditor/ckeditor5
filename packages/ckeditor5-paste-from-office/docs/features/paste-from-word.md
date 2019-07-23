@@ -13,6 +13,10 @@ This feature allows you to paste content from Microsoft Word and maintain the or
 
 When the plugin is enabled, it automatically detects Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
+<info-box info>
+	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor 5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+</info-box>
+
 ## Demo
 
 To test how Paste from Office works, download the [sample Word document](../assets/CKEditor5.PFO.Sample.Recognition_of_Achievement.docx), open it in Microsoft Word, copy the content and paste it into CKEditor 5 below.
