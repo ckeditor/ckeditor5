@@ -20,6 +20,7 @@ import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
  * The {@glink builds/guides/overview#balloon-editor balloon editor} implementation (Medium-like editor).
@@ -66,10 +67,12 @@ export default class BalloonEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
+			secureSourceElement( this );
 		}
 
 		const plugins = this.config.get( 'plugins' );
 		plugins.push( BalloonToolbar );
+
 		this.config.set( 'plugins', plugins );
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );

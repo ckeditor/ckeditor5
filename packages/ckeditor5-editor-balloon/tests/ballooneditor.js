@@ -86,6 +86,23 @@ describe( 'BalloonEditor', () => {
 					return newEditor.destroy();
 				} );
 		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/746
+		it( 'should throw when trying to create the editor using the same source element more than once', done => {
+			BalloonEditor.create( editorElement )
+				.then(
+					() => {
+						expect.fail( 'Balloon editor should not initialize on an element already used by other instance.' );
+					},
+					err => {
+						assertCKEditorError( err,
+							/^editor-source-element-already-used/
+						);
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -127,6 +144,9 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'should not require config object', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
 			// Just being safe with `builtinPlugins` static property.
 			class CustomBalloonEditor extends BalloonEditor {}
 			CustomBalloonEditor.builtinPlugins = [ Paragraph, Bold ];
@@ -136,6 +156,9 @@ describe( 'BalloonEditor', () => {
 					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
 					return newEditor.destroy();
+				} )
+				.then( () => {
+					editorElement.remove();
 				} );
 		} );
 
@@ -150,13 +173,18 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'initializes with config.initialData', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
 			return BalloonEditor.create( editorElement, {
 				initialData: '<p>Hello world!</p>',
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 
-				editor.destroy();
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
 			} );
 		} );
 
