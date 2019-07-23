@@ -11,62 +11,29 @@ export default class ContentNormalizer {
 	constructor( { activationTrigger } ) {
 		this.activationTrigger = activationTrigger;
 
-		this._reset();
-
 		this._filters = new Set();
-		this._fullContentFilters = new Set();
 	}
 
-	setInputData( data ) {
-		this._reset();
-
+	transform( data ) {
 		const html = data.dataTransfer && data.dataTransfer.getData( 'text/html' );
 		const dataReadFirstTime = data.isTransformedWithPasteFromOffice === undefined;
 		const hasHtmlData = !!html;
 
 		if ( hasHtmlData && dataReadFirstTime && this.activationTrigger( html ) ) {
-			this.data = data;
-			this.isActive = true;
-			this.data.isTransformedWithPasteFromOffice = false;
+			this._applyFilters( data );
+			data.isTransformedWithPasteFromOffice = true;
 		}
 
 		return this;
 	}
 
-	addFilter( filterDefinition ) {
-		if ( filterDefinition.fullContent ) {
-			this._fullContentFilters.add( filterDefinition );
-		} else {
-			this._filters.add( filterDefinition );
-		}
+	addFilter( filterFn ) {
+		this._filters.add( filterFn );
 	}
 
-	exec() {
-		if ( !this.isActive ) {
-			return;
-		}
-
-		if ( !this.data.isTransformedWithPasteFromOffice ) {
-			this._applyFullContentFilters();
-		}
-
-		this.data.isTransformedWithPasteFromOffice = true;
-
-		return this;
-	}
-
-	_reset() {
-		this.data = null;
-		this.isActive = false;
-	}
-
-	_applyFullContentFilters() {
-		if ( !this._fullContentFilters.size ) {
-			return;
-		}
-
-		for ( const filter of this._fullContentFilters ) {
-			filter.exec( this.data );
+	_applyFilters( data ) {
+		for ( const filter of this._filters ) {
+			filter( data );
 		}
 	}
 }

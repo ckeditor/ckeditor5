@@ -61,11 +61,7 @@ export default class PasteFromOffice extends Plugin {
 			'inputTransformation',
 			( evt, data ) => {
 				for ( const normalizer of this._normalizers ) {
-					normalizer.setInputData( data );
-
-					if ( normalizer.isActive ) {
-						normalizer.exec();
-					}
+					normalizer.transform( data );
 				}
 			},
 			{ priority: 'high' }

@@ -19,13 +19,10 @@ export const mswordNormalizer = ( () => {
 			/xmlns:o="urn:schemas-microsoft-com/i.test( contentString )
 	} );
 
-	normalizer.addFilter( {
-		fullContent: true,
-		exec: data => {
-			const html = data.dataTransfer.getData( 'text/html' );
+	normalizer.addFilter( data => {
+		const html = data.dataTransfer.getData( 'text/html' );
 
-			data.content = _normalizeWordInput( html, data.dataTransfer );
-		}
+		data.content = _normalizeWordInput( html, data.dataTransfer );
 	} );
 
 	return normalizer;

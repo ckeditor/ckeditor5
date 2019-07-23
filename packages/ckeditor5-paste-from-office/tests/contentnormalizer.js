@@ -81,7 +81,7 @@ describe( 'ContentNormalizer', () => {
 					activationTrigger: sinonTrigger
 				} );
 
-				normalizer.setInputData( data );
+				normalizer.transform( data );
 			} );
 
 			it( 'should not be active', () => {
