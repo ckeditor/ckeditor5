@@ -1243,6 +1243,36 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'on an element that got some nodes inserted', () => {
+			const p = root.getChild( 0 );
+
+			model.change( () => {
+				insert( new Text( 'x' ), Position._createAt( p, 3 ) );
+				insert( new Text( 'x' ), Position._createAt( p, 4 ) );
+				insert( new Text( 'x' ), Position._createAt( p, 5 ) );
+
+				attribute( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ), 'a', null, true );
+
+				insert( new Text( 'y' ), Position._createAt( p, 6 ) );
+
+				expectChanges( [
+					{
+						type: 'attribute',
+						range: new Range( Position._createAt( root, 0 ), Position._createAt( p, 0 ) ),
+						attributeKey: 'a',
+						attributeOldValue: null,
+						attributeNewValue: true
+					},
+					{
+						type: 'insert',
+						position: Position._createAt( p, 3 ),
+						length: 4,
+						name: '$text'
+					}
+				] );
+			} );
+		} );
+
 		it( 'over all changed nodes and some not changed nodes', () => {
 			const p = root.getChild( 0 );
 
