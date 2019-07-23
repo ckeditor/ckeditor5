@@ -58,7 +58,7 @@ describe( 'IndentBlockCommand', () => {
 		} );
 
 		describe( 'refresh()', () => {
-			it( 'should be executed for a top-most selected block', () => {
+			it( 'should not call indentBehavior.checkEnabled() for a selected block', () => {
 				setData( model, '[<parentBlock><paragraph>foo</paragraph></parentBlock>]' );
 				command.refresh();
 				sinon.assert.notCalled( indentBehavior.checkEnabled );

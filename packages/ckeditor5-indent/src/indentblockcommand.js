@@ -55,7 +55,6 @@ export default class IndentBlockCommand extends Command {
 
 		const block = first( model.document.selection.getTopMostBlocks() );
 
-		// If selection is not in a list item, the command is disabled.
 		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) ) {
 			this.isEnabled = false;
 
