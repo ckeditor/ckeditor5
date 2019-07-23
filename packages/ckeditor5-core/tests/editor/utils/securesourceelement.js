@@ -62,6 +62,6 @@ describe( 'secureSourceElement()', () => {
 
 		expectToThrowCKEditorError( () => {
 			secureSourceElement( editor );
-		}, /^securesourceelement-element-used-more-than-once/, editor );
+		}, /^editor-source-element-already-used/, editor );
 	} );
 } );
