@@ -70,6 +70,29 @@ describe( 'Input feature', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'isInput()', () => {
+		let input;
+
+		beforeEach( () => {
+			input = editor.plugins.get( 'Input' );
+		} );
+
+		it( 'returns true for batch created using "input" command', done => {
+			model.document.once( 'change:data', ( evt, batch ) => {
+				expect( input.isInput( batch ) ).to.be.true;
+				done();
+			} );
+
+			editor.execute( 'input', { text: 'foo' } );
+		} );
+
+		it( 'returns false for batch not created using "input" command', () => {
+			const batch = model.createBatch();
+
+			expect( input.isInput( batch ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'mutations handling', () => {
 		it( 'should handle text mutation', () => {
 			viewDocument.fire( 'mutations', [
