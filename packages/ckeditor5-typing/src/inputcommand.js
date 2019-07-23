@@ -36,6 +36,13 @@ export default class InputCommand extends Command {
 		 */
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 
+		/**
+		 * Stores batches created by the input command. The batches are used to differentiate input batches from other batches using
+		 * {@link module:typing/input~Input#isInput} method.
+		 *
+		 * @type {WeakSet<module:engine/model/batch~Batch>}
+		 * @private
+		 */
 		this._batches = new WeakSet();
 	}
 
@@ -101,6 +108,7 @@ export default class InputCommand extends Command {
 
 			this._buffer.input( textInsertions );
 
+			// Store the batch as an 'input' batch for the Input.isInput( batch ) check.
 			this._batches.add( this._buffer.batch );
 		} );
 	}

@@ -41,6 +41,15 @@ export default class Input extends Plugin {
 		injectTypingMutationsHandling( editor );
 	}
 
+	/**
+	 * Checks batch if is a result of user input - ie typing.
+	 *
+	 * **Note:** This method checks if the batch was created using {@link module:typing/inputcommand~InputCommand 'input'}
+	 * command as typing changes coming from user input are inserted to the document using that command.
+	 *
+	 * @param {module:engine/model/batch~Batch} batch A batch to check.
+	 * @returns {Boolean}
+	 */
 	isInput( batch ) {
 		const inputCommand = this.editor.commands.get( 'input' );
 
