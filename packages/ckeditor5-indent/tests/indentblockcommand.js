@@ -146,6 +146,20 @@ describe( 'IndentBlockCommand', () => {
 					command.execute();
 					expect( getData( model ) ).to.equal( '<paragraph blockIndent="indent-3">f[]oo</paragraph>' );
 				} );
+
+				it( 'should be executed only for top-most blocks that can have indentBlock attribute', () => {
+					setData( model,
+						'<paragraph>f[oo</paragraph>' +
+						'<parentBlock><paragraph>foo</paragraph><paragraph>foo</paragraph></parentBlock>' +
+						'<paragraph>f]oo</paragraph>'
+					);
+					command.execute();
+					expect( getData( model ) ).to.equal(
+						'<paragraph blockIndent="indent-1">f[oo</paragraph>' +
+						'<parentBlock><paragraph>foo</paragraph><paragraph>foo</paragraph></parentBlock>' +
+						'<paragraph blockIndent="indent-1">f]oo</paragraph>'
+					);
+				} );
 			} );
 		} );
 
