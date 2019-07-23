@@ -12,6 +12,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TextTransformation from '../src/texttransformation';
+import Typing from '../src/typing';
 
 describe( 'Text transformation feature - integration', () => {
 	let editorElement, editor, model, doc;
@@ -32,7 +33,7 @@ describe( 'Text transformation feature - integration', () => {
 	describe( 'with undo', () => {
 		beforeEach( () => {
 			return ClassicTestEditor
-				.create( editorElement, { plugins: [ Paragraph, TextTransformation, UndoEditing ] } )
+				.create( editorElement, { plugins: [ Typing, Paragraph, TextTransformation, UndoEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
