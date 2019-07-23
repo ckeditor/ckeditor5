@@ -41,7 +41,7 @@ export default class InputCommand extends Command {
 		 * {@link module:typing/input~Input#isInput} method.
 		 *
 		 * @type {WeakSet<module:engine/model/batch~Batch>}
-		 * @private
+		 * @protected
 		 */
 		this._batches = new WeakSet();
 	}
