@@ -121,7 +121,7 @@ export default class InputTextView extends View {
 			on: {
 				input: bind.to( 'input' ),
 				change: bind.to( () => {
-					this.isEmpty = this._isEmpty;
+					this.isEmpty = isInputElementEmpty( this.element );
 				} )
 			}
 		} );
@@ -147,7 +147,7 @@ export default class InputTextView extends View {
 		};
 
 		const setIsEmpty = () => {
-			this.isEmpty = this._isEmpty;
+			this.isEmpty = isInputElementEmpty( this.element );
 		};
 
 		setValue( this.value );
@@ -174,11 +174,11 @@ export default class InputTextView extends View {
 	focus() {
 		this.element.focus();
 	}
+}
 
-	/**
-	 * TODO
-	 */
-	get _isEmpty() {
-		return this.element.value === '';
-	}
+/**
+ * TODO
+ */
+function isInputElementEmpty( element ) {
+	return element.value === '';
 }

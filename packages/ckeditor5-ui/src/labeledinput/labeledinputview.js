@@ -146,11 +146,20 @@ export default class LabeledInputView extends View {
 					'ck-labeled-input',
 					bind.if( 'isReadOnly', 'ck-disabled' ),
 					bind.if( 'isFocused', 'ck-labeled-input_focused' ),
+					bind.if( 'errorText', 'ck-error' )
 				]
 			},
 			children: [
-				this.inputView,
-				this.labelView,
+				{
+					tag: 'div',
+					attributes: {
+						class: [ 'ck-labeled-input__wrapper' ]
+					},
+					children: [
+						this.inputView,
+						this.labelView,
+					]
+				},
 				this.statusView
 			]
 		} );
