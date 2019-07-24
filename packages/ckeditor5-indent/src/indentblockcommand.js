@@ -53,9 +53,8 @@ export default class IndentBlockCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const block = first( model.document.selection.getSelectedBlocks() );
+		const block = first( model.document.selection.getTopMostBlocks() );
 
-		// If selection is not in a list item, the command is disabled.
 		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) ) {
 			this.isEnabled = false;
 
@@ -95,7 +94,7 @@ export default class IndentBlockCommand extends Command {
 function getBlocksToChange( model ) {
 	const selection = model.document.selection;
 	const schema = model.schema;
-	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
+	const blocksInSelection = Array.from( selection.getTopMostBlocks() );
 
 	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) );
 }
