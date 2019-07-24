@@ -62,6 +62,11 @@ mix( Plugin, ObservableMixin );
  *			editor.data.processor = new MyDataProcessor();
  *		}
  *
+ * **Note:** The simple plugin form is treated as an constructor of a plugin. Most importantly - it is called on the time
+ * as any other plugins' constructors. Thus it will be executed before any {@link module:core/plugin~PluginInterface#init `init()`}
+ * or {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} methods of other plugins.
+ * This is important because you cannot extend other plugin schema rule as they are defined in `init()` stage.
+ *
  * In most cases, however, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
  * {@link module:utils/observablemixin~ObservableMixin} and is, therefore, more convenient:
  *
