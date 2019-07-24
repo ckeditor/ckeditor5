@@ -3,94 +3,97 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
- .ck .ck-widget_with-resizer:hover .ck-widget__resizer-shadow {
-	display: block !important;
- }
+:root {
+	--ck-color-resizer: var(--ck-color-focus-border);
+	--ck-resizer-size: 10px;
+	--ck-resizer-border-width: 2px;
+
+	/* Set resizer with 50% offset. */
+	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 1px );
+}
 
 .ck .ck-widget_with-resizer {
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
+}
 
+.ck .ck-widget_with-resizer.ck-widget_selected {
 	& .ck-widget__resizer-wrapper {
-		visibility: hidden;
-		position: absolute;
-		/* The wrapper itself should not interfere with pointer device */
-		pointer-events: none;
-
-		left: 0;
-		right: 0;
-		top: 0;
-		bottom: 0;
-
-		--ck-resizer-size: 14px;
-		--ck-resizer-border-width: 2px;
-		--ck-resizer-offset: -2px;
-
-		& .ck-widget__resizer-shadow {
-			display: none;
-			position: absolute;
-
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-
-			/* @todo: remove this dirty hack. It's purpose is that shadow element should not be
-			overlapped by elements that follow it in the DOM. */
-			z-index: 100;
-
-			outline: 2px solid var(--ck-color-focus-border);
-			/* background-color: rgba(71, 164, 245, 0.25); */
-
-			&.ck-widget__resizer-shadow-active {
-				display: block;
-				visibility: visible;
-			}
-		}
+		visibility: visible;
 	}
 
-	& .ck-widget__resizer {
-		position: absolute;
-		/* Resizers are the only UI elements that should interfere with pointer device */
-		pointer-events: all;
-		width: var( --ck-resizer-size );
-		height: var( --ck-resizer-size );
-		background: var( --ck-color-focus-border );
-		outline: var( --ck-resizer-border-width ) solid white;
+	& .ck-widget__resizer-shadow {
+		display: block;
+	}
+}
 
-		&.ck-widget__resizer-top-left {
-			top: var( --ck-resizer-offset );
-			left: var( --ck-resizer-offset );
-		}
-		&.ck-widget__resizer-top-right {
-			top: var( --ck-resizer-offset );
-			right: var( --ck-resizer-offset );
-		}
-		&.ck-widget__resizer-bottom-right {
-			bottom: var( --ck-resizer-offset );
-			right: var( --ck-resizer-offset );
-		}
-		&.ck-widget__resizer-bottom-left {
-			bottom: var( --ck-resizer-offset );
-			left: var( --ck-resizer-offset );
-		}
+.ck .ck-widget__resizer-wrapper {
+	visibility: hidden;
+	position: absolute;
 
-		&.ck-widget__resizer-top-left, &.ck-widget__resizer-bottom-right {
-			&:hover {
-				cursor: nwse-resize;
-			}
-		}
+	/* The wrapper itself should not interfere with pointer device */
+	pointer-events: none;
 
-		/* Show the selection handler on mouse hover over the widget. */
-		&:hover {
-			cursor: nesw-resize;
-		}
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+.ck .ck-widget__resizer-shadow {
+	display: none;
+	position: absolute;
+
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+
+	outline: 2px solid var(--ck-color-resizer);
+
+	/* @todo: remove this dirty hack. It's purpose is that shadow element should not be
+	overlapped by elements that follow it in the DOM. */
+	z-index: var(--ck-z-default);
+
+	&.ck-widget__resizer-shadow-active {
+		display: block;
+		visibility: visible;
+	}
+}
+
+.ck .ck-widget__resizer {
+	position: absolute;
+
+	/* Resizers are the only UI elements that should interfere with pointer device */
+	pointer-events: all;
+
+	width: var(--ck-resizer-size);
+	height: var(--ck-resizer-size);
+	background: var(--ck-color-focus-border);
+	outline: var(--ck-resizer-border-width) solid #fff;
+
+	&.ck-widget__resizer-top-left {
+		top: var( --ck-resizer-offset );
+		left: var( --ck-resizer-offset );
+		cursor: nw-resize;
 	}
 
-	&:hover {
-		& .ck-widget__resizer-wrapper {
-			visibility: visible;
-		}
+	&.ck-widget__resizer-top-right {
+		top: var( --ck-resizer-offset );
+		right: var( --ck-resizer-offset );
+		cursor: ne-resize;
+	}
+
+	&.ck-widget__resizer-bottom-right {
+		bottom: var( --ck-resizer-offset );
+		right: var( --ck-resizer-offset );
+		cursor: se-resize;
+	}
+
+	&.ck-widget__resizer-bottom-left {
+		bottom: var( --ck-resizer-offset );
+		left: var( --ck-resizer-offset );
+		cursor: sw-resize;
 	}
 }
 
@@ -98,21 +101,20 @@
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
 
-	& .ck-widget__selection-handler {
-		/* visibility: hidden; */
-		position: absolute;
-
-		& .ck-icon {
-			/* Make sure the icon in not a subject to fon-size/line-height to avoid
-			unnecessary spacing around it. */
-			display: block;
-		}
-	}
-
 	/* Show the selection handler on mouse hover over the widget. */
 	&:hover {
 		& .ck-widget__selection-handler {
 			visibility: visible;
+		}
+	}
+
+	& .ck-widget__selection-handler {
+		position: absolute;
+
+		& .ck-icon {
+			/* Make sure the icon in not a subject to font-size/line-height to avoid
+			unnecessary spacing around it. */
+			display: block;
 		}
 	}
 
@@ -124,21 +126,18 @@
 	}
 }
 
-.ck .ck-widget_resizer-shadow {
-	width: 60px;
-	height: 60px;
-	outline: 2px solid red !important;
-}
-
 .ck .ck-size-view {
-	background: lightyellow;
+	background: #fff;
 	border: 2px solid var(--ck-color-focus-border);
-	display: inline-block;
-	padding: 3px;
+	display: block;
+	padding: var(--ck-spacing-small);
 
-	--ck-sizer-offset: 20px;
+	--ck-sizer-offset: 10px;
 
-	&.ck-orientation-top-left, &.ck-orientation-top-right, &.ck-orientation-bottom-right, &.ck-orientation-bottom-left {
+	&.ck-orientation-top-left,
+	&.ck-orientation-top-right,
+	&.ck-orientation-bottom-right,
+	&.ck-orientation-bottom-left {
 		position: absolute;
 	}
 
@@ -146,20 +145,19 @@
 		top: var( --ck-sizer-offset );
 		left: var( --ck-sizer-offset );
 	}
+
 	&.ck-orientation-top-right {
 		top: var( --ck-sizer-offset );
 		right: var( --ck-sizer-offset );
 	}
+
 	&.ck-orientation-bottom-right {
 		bottom: var( --ck-sizer-offset );
 		right: var( --ck-sizer-offset );
 	}
+
 	&.ck-orientation-bottom-left {
 		bottom: var( --ck-sizer-offset );
 		left: var( --ck-sizer-offset );
 	}
-}
-
-.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
-	/* padding: 100px !important; */
 }
