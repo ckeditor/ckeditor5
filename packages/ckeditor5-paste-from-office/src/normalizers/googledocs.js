@@ -10,14 +10,18 @@
 import ContentNormalizer from '../contentnormalizer';
 import { removeBoldTagWrapper } from '../filters/common';
 
+/**
+ * {@link module:paste-from-office/contentnormalizer~ContentNormalizer} instance dedicated to transforming data obtained from Google Docs.
+ * It stores filters which fix quirks detected in Google Docs content.
+ *
+ * @type {module:paste-from-office/contentnormalizer~ContentNormalizer}
+ */
 export const googleDocsNormalizer = ( () => {
-	const normalizer = new ContentNormalizer( {
-		activationTrigger: contentString => /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( contentString )
-	} );
+	const normalizer = new ContentNormalizer( contentString =>
+		/id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( contentString )
+	);
 
-	normalizer.addFilter( ( { data } ) => {
-		removeBoldTagWrapper( data.content );
-	} );
+	normalizer.addFilter( removeBoldTagWrapper );
 
 	return normalizer;
 } )();

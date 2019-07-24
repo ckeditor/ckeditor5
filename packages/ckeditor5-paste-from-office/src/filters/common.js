@@ -11,17 +11,14 @@
  * The filter removes `<b>` tag wrapper added by Google Docs for copied content.
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
- * @returns {module:engine/view/documentfragment~DocumentFragment}
  */
-export function removeBoldTagWrapper( documentFragment ) {
+export function removeBoldTagWrapper( { documentFragment, writer } ) {
 	for ( const childWithWrapper of documentFragment.getChildren() ) {
 		if ( childWithWrapper.is( 'b' ) && childWithWrapper.getStyle( 'font-weight' ) === 'normal' ) {
 			const childIndex = documentFragment.getChildIndex( childWithWrapper );
+			const removedElement = writer.remove( childWithWrapper )[ 0 ];
 
-			documentFragment._removeChildren( childIndex );
-			documentFragment._insertChild( childIndex, childWithWrapper.getChildren() );
+			writer.insertChild( childIndex, removedElement.getChildren(), documentFragment );
 		}
 	}
-
-	return documentFragment;
 }

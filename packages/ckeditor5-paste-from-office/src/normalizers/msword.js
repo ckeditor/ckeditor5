@@ -12,12 +12,17 @@ import { parseHtml } from '../filters/parse';
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
 
+/**
+ * {@link module:paste-from-office/contentnormalizer~ContentNormalizer} instance dedicated to transforming data obtained from MS Word.
+ * It stores filters which fix quirks detected in MS Word content.
+ *
+ * @type {module:paste-from-office/contentnormalizer~ContentNormalizer}
+ */
 export const mswordNormalizer = ( () => {
-	const normalizer = new ContentNormalizer( {
-		activationTrigger: contentString =>
-			/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( contentString ) ||
-			/xmlns:o="urn:schemas-microsoft-com/i.test( contentString )
-	} );
+	const normalizer = new ContentNormalizer( contentString =>
+		/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( contentString ) ||
+		/xmlns:o="urn:schemas-microsoft-com/i.test( contentString )
+	);
 
 	normalizer.addFilter( ( { data } ) => {
 		const html = data.dataTransfer.getData( 'text/html' );

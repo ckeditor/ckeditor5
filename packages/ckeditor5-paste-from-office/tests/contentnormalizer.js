@@ -6,6 +6,7 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ContentNormalizer from '../src/contentnormalizer';
 import { createDataTransfer } from './_utils/utils';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 describe( 'ContentNormalizer', () => {
 	let normalizer, sinonTrigger;
@@ -20,15 +21,13 @@ describe( 'ContentNormalizer', () => {
 	beforeEach( () => {
 		sinonTrigger = sinon.fake.returns( true );
 
-		normalizer = new ContentNormalizer( {
-			activationTrigger: sinonTrigger
-		} );
+		normalizer = new ContentNormalizer( sinonTrigger );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should have assigned activation trigger', () => {
-			expect( normalizer.activationTrigger ).to.be.a( 'function' );
-			expect( normalizer.activationTrigger ).to.equal( sinonTrigger );
+			expect( normalizer._activationTrigger ).to.be.a( 'function' );
+			expect( normalizer._activationTrigger ).to.equal( sinonTrigger );
 		} );
 	} );
 
@@ -59,12 +58,20 @@ describe( 'ContentNormalizer', () => {
 
 			it( 'should execute filters over data', () => {
 				const filter = sinon.fake();
+				const writer = new UpcastWriter();
+				const documentFragment = writer.createDocumentFragment();
+
+				data.content = documentFragment;
 
 				normalizer.addFilter( filter );
 				normalizer.transform( data );
 
 				sinon.assert.calledOnce( filter );
-				sinon.assert.calledWith( filter, { data } );
+				sinon.assert.calledWithMatch( filter, {
+					documentFragment,
+					data,
+					writer: sinon.match.instanceOf( UpcastWriter )
+				} );
 			} );
 
 			it( 'should not process again already transformed data', () => {
@@ -86,7 +93,7 @@ describe( 'ContentNormalizer', () => {
 			beforeEach( () => {
 				sinonTrigger = sinon.fake.returns( false );
 
-				normalizer = new ContentNormalizer( { activationTrigger: sinonTrigger } );
+				normalizer = new ContentNormalizer( sinonTrigger );
 			} );
 
 			it( 'should not change data content', () => {
@@ -112,9 +119,7 @@ describe( 'ContentNormalizer', () => {
 		let filter;
 
 		beforeEach( () => {
-			filter = {
-				exec: () => {}
-			};
+			filter = () => {};
 
 			normalizer.addFilter( filter );
 		} );
