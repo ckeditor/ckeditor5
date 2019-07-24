@@ -13,10 +13,6 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 describe( 'PasteFromOffice/normalizers/googledocs', () => {
 	const htmlDataProcessor = new HtmlDataProcessor();
 
-	afterEach( () => {
-		normalizer.setInputData( {} );
-	} );
-
 	it( 'should be instance of content normalizers', () => {
 		expect( normalizer ).to.be.instanceOf( ContentNormalizer );
 	} );
@@ -30,7 +26,7 @@ describe( 'PasteFromOffice/normalizers/googledocs', () => {
 			content: htmlDataProcessor.toView( gDocs )
 		};
 
-		normalizer.setInputData( data ).exec();
+		normalizer.transform( data );
 
 		expect( data.isTransformedWithPasteFromOffice ).to.be.true;
 	} );
@@ -40,7 +36,7 @@ describe( 'PasteFromOffice/normalizers/googledocs', () => {
 			dataTransfer: createDataTransfer( { 'text/html': 'foo bar' } )
 		};
 
-		normalizer.setInputData( data ).exec();
+		normalizer.transform( data );
 
 		expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
 	} );
@@ -54,7 +50,7 @@ describe( 'PasteFromOffice/normalizers/googledocs', () => {
 			content: htmlDataProcessor.toView( gDocs )
 		};
 
-		normalizer.setInputData( data ).exec();
+		normalizer.transform( data );
 
 		expect( data.isTransformedWithPasteFromOffice ).to.be.true;
 		expect( data.content ).to.be.instanceOf( DocumentFragment );
@@ -70,15 +66,18 @@ describe( 'PasteFromOffice/normalizers/googledocs', () => {
 					// eslint-disable-next-line max-len
 					'text/html': '<meta charset="utf-8"><b style="font-weight:normal;" id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"></b>'
 				}
-			].forEach( ( data, index ) => {
+			].forEach( ( html, index ) => {
 				it( `should be active for markup #${ index }`, () => {
-					expect( normalizer.isActive ).to.be.false;
+					const data = {
+						dataTransfer: createDataTransfer( html ),
+						content: htmlDataProcessor.toView( html[ 'text/html' ] )
+					};
 
-					normalizer.setInputData( {
-						dataTransfer: createDataTransfer( data )
-					} );
+					expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
 
-					expect( normalizer.isActive ).to.be.true;
+					normalizer.transform( data );
+
+					expect( data.isTransformedWithPasteFromOffice ).to.be.true;
 				} );
 			} );
 		} );
@@ -91,15 +90,18 @@ describe( 'PasteFromOffice/normalizers/googledocs', () => {
 				{
 					'text/html': '<meta name=Generator content="Microsoft Word 15">'
 				}
-			].forEach( ( data, index ) => {
+			].forEach( ( html, index ) => {
 				it( `should be not active for wrong markup #${ index }`, () => {
-					expect( normalizer.isActive ).to.be.false;
+					const data = {
+						dataTransfer: createDataTransfer( html ),
+						content: htmlDataProcessor.toView( html[ 'text/html' ] )
+					};
 
-					normalizer.setInputData( {
-						dataTransfer: createDataTransfer( data )
-					} );
+					expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
 
-					expect( normalizer.isActive ).to.be.false;
+					normalizer.transform( data );
+
+					expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
 				} );
 			} );
 		} );

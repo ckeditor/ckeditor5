@@ -15,7 +15,7 @@ export const googleDocsNormalizer = ( () => {
 		activationTrigger: contentString => /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( contentString )
 	} );
 
-	normalizer.addFilter( data => {
+	normalizer.addFilter( ( { data } ) => {
 		removeBoldTagWrapper( data.content );
 	} );
 

@@ -19,7 +19,7 @@ export const mswordNormalizer = ( () => {
 			/xmlns:o="urn:schemas-microsoft-com/i.test( contentString )
 	} );
 
-	normalizer.addFilter( data => {
+	normalizer.addFilter( ( { data } ) => {
 		const html = data.dataTransfer.getData( 'text/html' );
 
 		data.content = _normalizeWordInput( html, data.dataTransfer );
