@@ -66,7 +66,7 @@ export default class TextWatcher {
 				return;
 			}
 
-			this._evaluateTextBeforeSelection( 'data' );
+			this._evaluateTextBeforeSelection( 'data', { batch } );
 		} );
 	}
 
@@ -79,8 +79,9 @@ export default class TextWatcher {
 	 *
 	 * @private
 	 * @param {'data'|'selection'} suffix Suffix used for generating event name.
+	 * @param {Object} data Data object for event.
 	 */
-	_evaluateTextBeforeSelection( suffix ) {
+	_evaluateTextBeforeSelection( suffix, data = {} ) {
 		const text = this._getText();
 
 		const textHasMatch = this.testCallback( text );
@@ -97,18 +98,24 @@ export default class TextWatcher {
 		this.hasMatch = textHasMatch;
 
 		if ( textHasMatch ) {
+			const eventData = Object.assign( data, { text } );
+
 			/**
 			 * Fired whenever the text watcher found a match for data changes.
 			 *
 			 * @event matched:data
+			 * @param {Object} data Event data.
+			 * @param {String} data.text The full text before selection.
+			 * @param {module:engine/model/batch~Batch} data.batch A batch associated with a change.
 			 */
-
 			/**
 			 * Fired whenever the text watcher found a match for selection changes.
 			 *
 			 * @event matched:selection
+			 * @param {Object} data Event data.
+			 * @param {String} data.text The full text before selection.
 			 */
-			this.fire( `matched:${ suffix }`, { text } );
+			this.fire( `matched:${ suffix }`, eventData );
 		}
 	}
 
