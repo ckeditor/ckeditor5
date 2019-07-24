@@ -6,7 +6,6 @@
 import PasteFromOffice from '../src/pastefromoffice';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ContentNormalizer from '../src/contentnormalizer';
 
 describe( 'PasteFromOffice', () => {
 	let editor, pasteFromOffice;
@@ -30,16 +29,5 @@ describe( 'PasteFromOffice', () => {
 
 	it( 'should load Clipboard plugin', () => {
 		expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
-	} );
-
-	describe( 'constructor()', () => {
-		it( 'should initialize 2 normalizers', () => {
-			expect( pasteFromOffice._normalizers ).to.be.a( 'set' );
-			expect( pasteFromOffice._normalizers.size ).to.equal( 2 );
-
-			pasteFromOffice._normalizers.forEach( value => {
-				expect( value ).to.be.instanceOf( ContentNormalizer );
-			} );
-		} );
 	} );
 } );

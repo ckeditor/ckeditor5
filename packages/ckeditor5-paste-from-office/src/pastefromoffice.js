@@ -27,18 +27,6 @@ export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		this._normalizers = new Set();
-
-		this._normalizers.add( mswordNormalizer );
-		this._normalizers.add( googleDocsNormalizer );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	static get pluginName() {
 		return 'PasteFromOffice';
 	}
@@ -55,12 +43,16 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const normalizers = new Set();
+
+		normalizers.add( mswordNormalizer );
+		normalizers.add( googleDocsNormalizer );
 
 		this.listenTo(
 			editor.plugins.get( 'Clipboard' ),
 			'inputTransformation',
 			( evt, data ) => {
-				for ( const normalizer of this._normalizers ) {
+				for ( const normalizer of normalizers ) {
 					normalizer.transform( data );
 				}
 			},
