@@ -26,200 +26,104 @@ describe( 'ContentNormalizer', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should be not active at start', () => {
-			expect( normalizer.isActive ).to.be.false;
-		} );
-
-		it( 'should not have assigned data', () => {
-			expect( normalizer.data ).to.be.null;
-		} );
-
 		it( 'should have assigned activation trigger', () => {
 			expect( normalizer.activationTrigger ).to.be.a( 'function' );
 			expect( normalizer.activationTrigger ).to.equal( sinonTrigger );
 		} );
-
-		it( 'should initialize sets for filters', () => {
-			expect( normalizer._filters ).to.be.a( 'set' );
-			expect( normalizer._fullContentFilters ).to.be.a( 'set' );
-		} );
 	} );
 
-	describe( 'setInputData()', () => {
+	describe( 'transform()', () => {
 		let data;
 
 		beforeEach( () => {
 			data = Object.assign( {}, templateData );
 		} );
 
-		describe( 'trigger activated', () => {
-			beforeEach( () => {
-				normalizer.setInputData( data );
+		describe( 'valid data', () => {
+			it( 'should mark data as transformed', () => {
+				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+
+				normalizer.transform( data );
+
+				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
 			} );
 
-			it( 'should set data', () => {
-				expect( normalizer.data ).to.equal = data;
-			} );
+			it( 'should call for activation trigger to check input data', () => {
+				sinon.assert.notCalled( sinonTrigger );
 
-			it( 'should check if activates normalizer', () => {
+				normalizer.transform( data );
+
 				sinon.assert.calledOnce( sinonTrigger );
 				sinon.assert.calledWith( sinonTrigger, 'test data' );
-
-				expect( normalizer.isActive ).to.be.true;
 			} );
 
-			it( 'should add flag to data processed by paste from office plugin', () => {
-				expect( data.isTransformedWithPasteFromOffice ).to.be.false;
+			it( 'should execute filters over data', () => {
+				const filter = sinon.fake();
+
+				normalizer.addFilter( filter );
+				normalizer.transform( data );
+
+				sinon.assert.calledOnce( filter );
+				sinon.assert.calledWith( filter, { data } );
+			} );
+
+			it( 'should not process again already transformed data', () => {
+				const filter = sinon.fake();
+
+				// Filters should not be executed
+				data.isTransformedWithPasteFromOffice = true;
+
+				normalizer.addFilter( filter );
+				normalizer.transform( data );
+
+				sinon.assert.notCalled( filter );
 			} );
 		} );
 
-		describe( 'trigger not activated', () => {
+		describe( 'invalid data', () => {
+			let normalizer, sinonTrigger;
+
 			beforeEach( () => {
 				sinonTrigger = sinon.fake.returns( false );
 
-				normalizer = new ContentNormalizer( {
-					activationTrigger: sinonTrigger
-				} );
+				normalizer = new ContentNormalizer( { activationTrigger: sinonTrigger } );
+			} );
 
+			it( 'should not change data content', () => {
 				normalizer.transform( data );
-			} );
 
-			it( 'should not be active', () => {
-				sinon.assert.calledOnce( sinonTrigger );
-				sinon.assert.calledWith( sinonTrigger, 'test data' );
-
-				expect( normalizer.isActive ).to.be.false;
-			} );
-
-			it( 'should not keep reference to data when is not active', () => {
-				expect( normalizer.data ).to.be.null;
-			} );
-
-			it( 'should not add flag to not processed data', () => {
 				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'already processed data', () => {
-			beforeEach( () => {
-				data.isTransformedWithPasteFromOffice = true;
-
-				normalizer.addFilter( {
-					fullContent: true,
-					// eslint-disable-next-line no-unused-vars
-					exec: d => { d = {}; }
-				} );
+				expect( data ).to.deep.equal( templateData );
 			} );
 
-			it( 'should not change data', () => {
-				normalizer.setInputData( data );
+			it( 'should not fire any filter', () => {
+				const filter = sinon.fake();
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-				expect( data ).to.deep.include( templateData );
+				normalizer.addFilter( filter );
+				normalizer.transform( data );
+
+				expect( normalizer._filters.size ).to.equal( 1 );
+				sinon.assert.notCalled( filter );
 			} );
 		} );
 	} );
 
 	describe( 'addFilter()', () => {
 		let filter;
-		describe( 'fullContentFilters', () => {
-			beforeEach( () => {
-				filter = {
-					fullContent: true,
-					exec: () => {}
-				};
 
-				normalizer.addFilter( filter );
-			} );
-
-			it( 'should add filter to fullContentFilters set', () => {
-				expect( normalizer._fullContentFilters.size ).to.equal( 1 );
-				expect( normalizer._filters.size ).to.equal( 0 );
-
-				const firstFilter = [ ...normalizer._fullContentFilters ][ 0 ];
-				expect( firstFilter ).to.equal( filter );
-			} );
-		} );
-	} );
-
-	describe( 'exec()', () => {
-		let data, filter;
 		beforeEach( () => {
-			data = Object.assign( {}, templateData );
 			filter = {
-				fullContent: true,
-				exec: data => {
-					data.content = 'Foo bar baz.';
-				}
+				exec: () => {}
 			};
 
 			normalizer.addFilter( filter );
 		} );
 
-		it( 'should apply filter#exec to data', () => {
-			normalizer.setInputData( data );
+		it( 'should add filter to fullContentFilters set', () => {
+			expect( normalizer._filters.size ).to.equal( 1 );
 
-			expect( data.content ).to.be.undefined;
-
-			normalizer.exec();
-
-			expect( data.content ).to.equal( 'Foo bar baz.' );
-		} );
-
-		it( 'should mark data as processed with paste from office', () => {
-			normalizer.setInputData( data );
-
-			expect( data.isTransformedWithPasteFromOffice ).to.be.false;
-
-			normalizer.exec();
-
-			expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-		} );
-
-		describe( 'already processed data', () => {
-			let execFake;
-			beforeEach( () => {
-				execFake = sinon.fake();
-				normalizer = new ContentNormalizer( { activationTrigger: () => true } );
-
-				normalizer.addFilter( {
-					fullContent: true,
-					exec: execFake
-				} );
-			} );
-
-			it( 'should not apply filter on already processed data', () => {
-				normalizer.setInputData( data );
-
-				sinon.assert.notCalled( execFake );
-				expect( data.isTransformedWithPasteFromOffice ).to.be.false;
-
-				normalizer.exec();
-				sinon.assert.calledOnce( execFake );
-				sinon.assert.calledWith( execFake, data );
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-
-				normalizer.exec();
-				sinon.assert.calledOnce( execFake );
-			} );
-		} );
-
-		describe( 'normalizer without filter', () => {
-			beforeEach( () => {
-				normalizer = new ContentNormalizer( { activationTrigger: () => true } );
-			} );
-
-			it( 'should do nothing with data', () => {
-				normalizer.setInputData( data );
-
-				expect( data ).to.deep.include( templateData );
-				expect( data.isTransformedWithPasteFromOffice ).to.be.false;
-
-				normalizer.exec();
-
-				expect( data ).to.deep.include( templateData );
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-			} );
+			const firstFilter = [ ...normalizer._filters ][ 0 ];
+			expect( firstFilter ).to.equal( filter );
 		} );
 	} );
 } );

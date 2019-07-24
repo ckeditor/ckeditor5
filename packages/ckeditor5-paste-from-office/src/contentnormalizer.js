@@ -33,7 +33,7 @@ export default class ContentNormalizer {
 
 	_applyFilters( data ) {
 		for ( const filter of this._filters ) {
-			filter( data );
+			filter( { data } );
 		}
 	}
 }
