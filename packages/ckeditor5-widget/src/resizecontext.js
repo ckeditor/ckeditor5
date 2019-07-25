@@ -263,8 +263,8 @@ export default class ResizeContext {
 
 	_extractCoordinates( event ) {
 		return {
-			x: event.domEvent.pageX,
-			y: event.domEvent.pageY
+			x: event.pageX,
+			y: event.pageY
 		};
 	}
 
