@@ -350,6 +350,7 @@ export default class MentionUI extends Plugin {
 		watcher.on( 'matched', ( evt, data ) => {
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
+
 			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
 			// and you cannot use selection.hasAttribute( 'mention' ) just yet.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
@@ -373,17 +374,17 @@ export default class MentionUI extends Plugin {
 			const markerRange = editor.model.createRange( start, end );
 
 			if ( editor.model.markers.has( 'mention' ) ) {
-				const marker = editor.model.markers.get( 'mention' );
+				const currentMentionMarker = editor.model.markers.get( 'mention' );
 
-				editor.model.change( writer => writer.updateMarker( marker, { range: markerRange } ) );
-			}
-
-			if ( !editor.model.markers.has( 'mention' ) ) {
-				editor.model.change( writer => writer.addMarker( 'mention', {
-					range: markerRange,
-					usingOperation: false,
-					affectsData: false
-				} ) );
+				// TODO - there's no tests for this
+				// Update the marker - user might've moved the selection to other mention trigger.
+				editor.model.change( writer => {
+					writer.updateMarker( currentMentionMarker, { range: markerRange } );
+				} );
+			} else {
+				editor.model.change( writer => {
+					writer.addMarker( 'mention', { range: markerRange, usingOperation: false, affectsData: false } );
+				} );
 			}
 
 			this._getFeedDebounced( marker, feedText );
