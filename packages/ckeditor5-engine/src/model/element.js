@@ -113,7 +113,8 @@ export default class Element extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( 'model:', '' );
+		const cutType = type.replace( /^model:/, '' );
+
 		if ( !name ) {
 			return cutType == 'element' || cutType == this.name || super.is( type );
 		} else {

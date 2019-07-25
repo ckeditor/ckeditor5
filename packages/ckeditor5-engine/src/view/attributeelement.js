@@ -128,7 +128,8 @@ export default class AttributeElement extends Element {
 	 * @inheritDoc
 	 */
 	is( type, name = null ) {
-		const cutType = type && type.replace( 'view:', '' );
+		const cutType = type && type.replace( /^view:/, '' );
+
 		if ( !name ) {
 			return cutType == 'attributeElement' || super.is( type );
 		} else {
