@@ -14,7 +14,7 @@ import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import ResizeContext2 from './resizecontext';
 import ResizerTopBound from './resizertopbound';
 
-const HEIGHT_ATTRIBUTE_NAME = 'height';
+const WIDTH_ATTRIBUTE_NAME = 'width';
 
 /**
  * Interface describing a resizer. It allows to define available resizer set, specify resizing host etc.
@@ -151,10 +151,10 @@ export default class WidgetResizer extends Plugin {
 		const editor = this.editor;
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( 'image', {
-			allowAttributes: HEIGHT_ATTRIBUTE_NAME
+			allowAttributes: WIDTH_ATTRIBUTE_NAME
 		} );
 
-		editor.model.schema.setAttributeProperties( HEIGHT_ATTRIBUTE_NAME, {
+		editor.model.schema.setAttributeProperties( WIDTH_ATTRIBUTE_NAME, {
 			isFormatting: true
 		} );
 	}
@@ -164,7 +164,7 @@ export default class WidgetResizer extends Plugin {
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( 'attribute:height:image', ( evt, data, conversionApi ) => {
+			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -173,9 +173,9 @@ export default class WidgetResizer extends Plugin {
 				const img = conversionApi.mapper.toViewElement( data.item ).getChild( 0 );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setAttribute( HEIGHT_ATTRIBUTE_NAME, data.attributeNewValue, img );
+					viewWriter.setStyle( WIDTH_ATTRIBUTE_NAME, data.attributeNewValue + 'px', img );
 				} else {
-					viewWriter.removeAttribute( HEIGHT_ATTRIBUTE_NAME, img );
+					viewWriter.removeStyle( WIDTH_ATTRIBUTE_NAME, img );
 				}
 			} )
 		);
@@ -184,9 +184,14 @@ export default class WidgetResizer extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: 'img',
-					key: 'height'
+					styles: {
+						'width': /[\d.]+(px)?/
+					}
 				},
-				model: 'height'
+				model: {
+					key: WIDTH_ATTRIBUTE_NAME,
+					value: viewElement => viewElement.getStyle( 'width' ).replace( 'px', '' )
+				}
 			} );
 	}
 }

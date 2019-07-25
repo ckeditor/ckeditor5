@@ -10,7 +10,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @module widget/resizecontext
  */
 
-const HEIGHT_ATTRIBUTE_NAME = 'height';
+const WIDTH_ATTRIBUTE_NAME = 'width';
 
 /**
  * Stores the internal state of a single resizable object.
@@ -134,12 +134,12 @@ export default class ResizeContext {
 
 	commit( editor ) {
 		const modelEntry = this._getModel( editor, this.widgetWrapperElement );
-		const newHeight = this.domResizeShadow.clientHeight;
+		const newWidth = this.domResizeShadow.clientWidth;
 
 		this._dismissShadow();
 
 		editor.model.change( writer => {
-			writer.setAttribute( HEIGHT_ATTRIBUTE_NAME, newHeight, modelEntry );
+			writer.setAttribute( WIDTH_ATTRIBUTE_NAME, newWidth, modelEntry );
 		} );
 
 		this.redraw();
