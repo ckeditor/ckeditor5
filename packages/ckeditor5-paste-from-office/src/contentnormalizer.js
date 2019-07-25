@@ -19,7 +19,8 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
  * initialized with an activation trigger. Activation trigger is a function which gets content of `text/html` dataTransfer (String) and
  * returns `true` or `false`. Based on this result normalizer applies filters to given data.
  *
- * Filters are function, which are run sequentially, as they were added. Each filter gets data transformed by the previous one.
+ * {@link module:paste-from-office/contentnormalizer~FilterFunction Filters} are function, which are run sequentially, as they were added.
+ * Each filter gets data transformed by the previous one.
  *
  * Example definition:
  *
@@ -27,18 +28,14 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
  * 		contentHtml.includes( 'docs-internal-guid' )
  * 	);
  *
- * 	normalizer.addFilter( ( { data } ) => {
- * 		removeBoldTagWrapper( data.content );
- * 	} )
- *
- * 	normalizer.addFilter( ( { data } ) => {
- * 		// ...
- * 		// another modification of data's content
+ * 	normalizer.addFilter( ( { data, documentFragment, writer } ) => {
+ * 		// filter's content, which transforms data in clipboard
  * 	} );
  *
  * Normalizers are stored inside Paste from Office plugin and are run on
  * {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. Below example is simplified and show
- * how to call normalizer directly on clipboard event.
+ * how to call normalizer directly on clipboard event, what has happen inside
+ * {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin.
  *
  * 	editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
  * 		normalizer.transform( data );
@@ -51,7 +48,7 @@ export default class ContentNormalizer {
 	 * Initialize Content Normalizer.
 	 *
 	 * @param {Function} activationTrigger The function which checks for what content should be applied this normalizer.
-	 * It takes an HTML string from the `text/html` dataTarnsfer as an argument and have to return a boolean value
+	 * It takes an HTML string from the `text/html` dataTransfer as an argument and have to return a boolean value
 	 */
 	constructor( activationTrigger ) {
 		/**
@@ -74,7 +71,7 @@ export default class ContentNormalizer {
 
 	/**
 	 * Method checks if passed data should have applied {@link #_filters} registerd in this Content Normalizer.
-	 * If yes, then data are transformed and marked with a flag `isTransformedWithPasteFromOffice = true`.
+	 * If yes, then data are transformed and marked with a flag `isTransformedWithPasteFromOffice=true`.
 	 * In other case data are not modified.
 	 *
 	 * Please notice that presence of `isTransformedWithPasteFromOffice` flag in input data prevent transformation.
@@ -130,7 +127,7 @@ export default class ContentNormalizer {
  *
  * Filters are used by {@link module:paste-from-office/contentnormalizer~ContentNormalizer}.
  *
- * Example:
+ * Examples:
  *
  * 	function removeBoldTagWrapper( { documentFragment, writer } ) {
  * 		for ( const childWithWrapper of documentFragment.getChildren() ) {
@@ -141,6 +138,12 @@ export default class ContentNormalizer {
  * 				writer.insertChild( childIndex, removedElement.getChildren(), documentFragment );
  * 			}
  * 		}
+ * 	}
+ *
+ * 	function transformWordContent( { data } ) {
+ * 		const html = data.dataTransfer.getData( 'text/html' );
+ *
+ * 		data.content = _normalizeWordInput( html, data.dataTransfer );
  * 	}
  *
  * @callback module:paste-from-office/contentnormalizer~FilterFunction
