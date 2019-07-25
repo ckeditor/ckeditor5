@@ -49,7 +49,7 @@
 	top: 0;
 	bottom: 0;
 
-	outline: 2px solid var(--ck-color-resizer);
+	outline: 1px solid var(--ck-color-resizer);
 
 	/* @todo: remove this dirty hack. It's purpose is that shadow element should not be
 	overlapped by elements that follow it in the DOM. */
