@@ -163,7 +163,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const labeledInput = this._form.labeledInput;
 
-		if ( !this._balloon.hasView( this._form ) ) {
+		if ( !this._isInBalloon ) {
 			this._balloon.add( {
 				view: this._form,
 				position: getBalloonPositionData( editor )
@@ -187,7 +187,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 * @private
 	 */
 	_hideForm( focusEditable ) {
-		if ( !this._isVisible ) {
+		if ( !this._isInBalloon ) {
 			return;
 		}
 
@@ -212,5 +212,15 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 */
 	get _isVisible() {
 		return this._balloon.visibleView === this._form;
+	}
+
+	/**
+	 * Returns `true` when the {@link #_form} is in the {@link #_balloon}.
+	 *
+	 * @private
+	 * @type {Boolean}
+	 */
+	get _isInBalloon() {
+		return this._balloon.hasView( this._form );
 	}
 }

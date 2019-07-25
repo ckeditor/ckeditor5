@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Image from '../../src/image';
 import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
 import ImageTextAlternativeUI from '../../src/imagetextalternative/imagetextalternativeui';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -24,7 +25,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageTextAlternativeEditing, ImageTextAlternativeUI, Image ]
+				plugins: [ ImageTextAlternativeEditing, ImageTextAlternativeUI, Image, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -189,6 +190,30 @@ describe( 'ImageTextAlternativeUI', () => {
 			form.fire( 'cancel' );
 
 			sinon.assert.notCalled( buttonFocusSpy );
+		} );
+
+		it( 'should be removed from balloon when is in not visible stack', () => {
+			setData( model, '<paragraph>foo</paragraph>[<image src="" alt="foo bar"></image>]' );
+
+			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
+
+			const customView = new View();
+
+			balloon.add( {
+				view: customView,
+				position: { target: {} },
+				stackId: 'custom'
+			} );
+
+			balloon.showStack( 'custom' );
+
+			model.change( writer => {
+				const root = model.document.getRoot();
+
+				writer.setSelection( root.getChild( 0 ), 0 );
+			} );
+
+			expect( balloon.hasView( form ) ).to.equal( false );
 		} );
 
 		describe( 'integration with the editor selection (ui#update event)', () => {
