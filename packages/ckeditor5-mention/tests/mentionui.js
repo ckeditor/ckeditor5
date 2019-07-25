@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, setTimeout, Event */
+/* global window, document, setTimeout, Event, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,7 +15,6 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import MentionUI, { createRegExp } from '../src/mentionui';
@@ -1079,12 +1078,12 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
-			it( 'should show warning if requested feed failed', () => {
+			it( 'should log warning if requested feed failed', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
-				feedCallbackStub.throws( 'Request timeout' );
+				feedCallbackStub.returns( Promise.reject( 'Request timeout' ) );
 
-				const spy = sinon.spy( log, 'warn' );
+				const spy = sinon.spy( console, 'warn' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );

@@ -72,8 +72,6 @@ export default class MentionUI extends Plugin {
 
 		editor.config.define( 'mention', { feeds: [] } );
 
-		this.on( 'getFeed', evt => console.log( '!' + evt.name ) );
-
 		this._getFeedDebounced = debounce( this._getFeed, 100 );
 	}
 
@@ -157,6 +155,10 @@ export default class MentionUI extends Plugin {
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
+
+		this.on( 'getFeed:error', () => {
+			this._hideUIAndRemoveMarker();
+		} );
 
 		this.on( 'getFeed:response', ( evt, data ) => {
 			const { response: feed, marker } = data;
@@ -302,10 +304,13 @@ export default class MentionUI extends Plugin {
 		this._lastRequested = feedText;
 
 		const response = feedCallback( feedText );
+
 		const isAsynchronous = response instanceof Promise;
 
 		if ( !isAsynchronous ) {
-			this.fire( 'getFeed:response', { response } );
+			this.fire( 'getFeed:response', { response, marker, feedText } );
+
+			return;
 		}
 
 		response
@@ -398,8 +403,6 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_showUI( markerMarker ) {
-		console.log( 'request show UI', this._isUIVisible );
-
 		if ( this._isUIVisible ) {
 			// Update balloon position as the mention list view may change its size.
 			this._balloon.updatePosition( this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ) );
@@ -422,8 +425,6 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_hideUIAndRemoveMarker() {
-		console.log( 'request hide UI' );
-
 		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
 		if ( this._balloon.hasView( this._mentionsView ) ) {
 			this._balloon.remove( this._mentionsView );
