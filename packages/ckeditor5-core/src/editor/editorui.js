@@ -7,12 +7,13 @@
  * @module core/editor/editorui
  */
 
+/* globals console */
+
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -123,7 +124,9 @@ export default class EditorUI {
 		// It helps 3rd–party software (browser extensions, other libraries) access and recognize
 		// CKEditor 5 instances (editing roots) and use their API (there is no global editor
 		// instance registry).
-		domElement.ckeditorInstance = this.editor;
+		if ( !domElement.ckeditorInstance ) {
+			domElement.ckeditorInstance = this.editor;
+		}
 	}
 
 	/**
@@ -161,7 +164,7 @@ export default class EditorUI {
 		 * @error editor-ui-deprecated-editable-elements
 		 * @param {module:core/editor/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
 		 */
-		log.warn(
+		console.warn(
 			'editor-ui-deprecated-editable-elements: ' +
 			'The EditorUI#_editableElements property has been deprecated and will be removed in the near future.',
 			{ editorUI: this } );
