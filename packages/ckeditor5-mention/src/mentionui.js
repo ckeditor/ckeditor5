@@ -7,6 +7,8 @@
  * @module mention/mentionui
  */
 
+/* global console */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -16,7 +18,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { debounce } from 'lodash-es';
 
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
@@ -71,54 +72,9 @@ export default class MentionUI extends Plugin {
 
 		editor.config.define( 'mention', { feeds: [] } );
 
-		this._requestFeedDebounced = debounce( ( marker, feedText ) => {
-			this._getFeed( marker, feedText )
-				.catch( error => {
-					if ( error.feedDiscarded ) {
-						// Do nothing on discarded feeds as they might come after another one was requested.
-						return;
-					}
+		this.on( 'getFeed', evt => console.log( '!' + evt.name ) );
 
-					// At this point something bad happened - most likely unreachable host or some feed callback error.
-					// So cleanup marker, remove the UI and...
-					this._hideUIAndRemoveMarker();
-
-					// ...log warning.
-					/**
-					 * The callback used for obtaining mention autocomplete feed thrown and error and the mention UI was hidden or
-					 * not displayed at all.
-					 *
-					 * @error mention-feed-callback-error
-					 */
-					log.warn( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
-				} )
-				.then( feed => {
-					// Do nothing if :
-					// - feed was discarded or empty feed was passed.
-					// - if the marker is not in the document - the selection might have already changed.
-					if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
-						return;
-					}
-
-					// Remove old entries.
-					this._items.clear();
-
-					for ( const feedItem of feed ) {
-						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
-
-						this._items.add( { item, marker } );
-					}
-
-					const markerMarker = editor.model.markers.get( 'mention' );
-
-					if ( this._items.length && markerMarker ) {
-						this._showUI( markerMarker );
-					} else {
-						// Do not show empty mention UI.
-						this._hideUIAndRemoveMarker();
-					}
-				} );
-		}, 100 );
+		this._getFeedDebounced = debounce( this._getFeed, 100 );
 	}
 
 	/**
@@ -201,6 +157,35 @@ export default class MentionUI extends Plugin {
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
+
+		this.on( 'getFeed:response', ( evt, data ) => {
+			const { response: feed, marker } = data;
+
+			// Do nothing if :
+			// - feed was discarded or empty feed was passed.
+			// - if the marker is not in the document - the selection might have already changed.
+			if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
+				return;
+			}
+
+			// Remove old entries.
+			this._items.clear();
+
+			for ( const feedItem of feed ) {
+				const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
+
+				this._items.add( { item, marker } );
+			}
+
+			const markerMarker = editor.model.markers.get( 'mention' );
+
+			if ( this._items.length && markerMarker ) {
+				this._showUI( markerMarker );
+			} else {
+				// Do not show empty mention UI.
+				this._hideUIAndRemoveMarker();
+			}
+		} );
 	}
 
 	/**
@@ -309,7 +294,6 @@ export default class MentionUI extends Plugin {
 	 *
 	 * @param {String} marker
 	 * @param {String} feedText
-	 * @returns {Promise<module:mention/mention~MentionFeedItem>}
 	 * @private
 	 */
 	_getFeed( marker, feedText ) {
@@ -317,27 +301,33 @@ export default class MentionUI extends Plugin {
 
 		this._lastRequested = feedText;
 
-		// To unify later processing the _getFeed should return a promise even if feed callback returns an array.
-		return new Promise( ( resolve, reject ) => {
-			const response = feedCallback( feedText );
+		const response = feedCallback( feedText );
+		const isAsynchronous = response instanceof Promise;
 
-			const isAsynchronous = response instanceof Promise;
+		if ( !isAsynchronous ) {
+			this.fire( 'getFeed:response', { response } );
+		}
 
-			if ( !isAsynchronous ) {
-				resolve( response );
-			}
+		response
+			.then( response => {
+				if ( this._lastRequested == feedText ) {
+					this.fire( 'getFeed:response', { response, marker, feedText } );
+				} else {
+					// Discard a response that is not for the last requested feed.
+					this.fire( 'getFeed:discarded', { response, marker, feedText } );
+				}
+			} )
+			.catch( error => {
+				this.fire( 'getFeed:error', { error } );
 
-			response
-				.then( response => {
-					if ( this._lastRequested == feedText ) {
-						resolve( response );
-					} else {
-						// Discard a response that is not for the last requested feed.
-						reject( { feedDiscarded: true } );
-					}
-				} )
-				.catch( reject ); // Re-reject any errors from feed callback.
-		} );
+				/**
+				 * The callback used for obtaining mention autocomplete feed thrown and error and the mention UI was hidden or
+				 * not displayed at all.
+				 *
+				 * @error mention-feed-callback-error
+				 */
+				console.warn( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
+			} );
 	}
 
 	/**
@@ -392,7 +382,7 @@ export default class MentionUI extends Plugin {
 				} ) );
 			}
 
-			this._requestFeedDebounced( marker, feedText );
+			this._getFeedDebounced( marker, feedText );
 		} );
 
 		watcher.on( 'unmatched', () => {
@@ -408,6 +398,8 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_showUI( markerMarker ) {
+		console.log( 'request show UI', this._isUIVisible );
+
 		if ( this._isUIVisible ) {
 			// Update balloon position as the mention list view may change its size.
 			this._balloon.updatePosition( this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ) );
@@ -430,6 +422,8 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_hideUIAndRemoveMarker() {
+		console.log( 'request hide UI' );
+
 		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
 		if ( this._balloon.hasView( this._mentionsView ) ) {
 			this._balloon.remove( this._mentionsView );
