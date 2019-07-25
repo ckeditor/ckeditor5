@@ -23,7 +23,7 @@ export default class MouseMoveObserver extends DomEventObserver {
 
 		this.domEventType = 'mousemove';
 
-		this._fireMouseMoveEvent = throttle( domEvent => this.fire( domEvent.type, domEvent ), 60 );
+		this._fireMouseMoveEvent = throttle( domEvent => this.fire( domEvent.type, domEvent ), 33.3 );
 	}
 
 	/**
