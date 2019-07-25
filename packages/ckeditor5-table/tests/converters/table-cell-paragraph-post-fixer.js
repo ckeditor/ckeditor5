@@ -11,7 +11,7 @@ import TableEditing from '../../src/tableediting';
 import { formatTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-describe( 'Table cell content post-fixer', () => {
+describe( 'Table cell paragraph post-fixer', () => {
 	let editor, model, root;
 
 	beforeEach( () => {
