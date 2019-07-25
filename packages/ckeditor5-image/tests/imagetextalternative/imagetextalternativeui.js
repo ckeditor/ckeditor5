@@ -169,9 +169,26 @@ describe( 'ImageTextAlternativeUI', () => {
 			const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
 			const buttonFocusSpy = sinon.spy( form.saveButtonView, 'focus' );
 
+			form.focusTracker.isFocused = true;
+
 			form.fire( 'submit' );
 
 			expect( buttonFocusSpy.calledBefore( editableFocusSpy ) ).to.equal( true );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-image/issues/299
+		it( 'should not blur url input element before hiding the view when view was not focused', () => {
+			setData( model, '[<image src="" alt="foo bar"></image>]' );
+
+			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
+
+			const buttonFocusSpy = sinon.spy( form.saveButtonView, 'focus' );
+
+			form.focusTracker.isFocused = false;
+
+			form.fire( 'cancel' );
+
+			sinon.assert.notCalled( buttonFocusSpy );
 		} );
 
 		describe( 'integration with the editor selection (ui#update event)', () => {
