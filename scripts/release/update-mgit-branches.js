@@ -18,12 +18,12 @@ if ( !branchName ) {
 const path = require( 'path' );
 const { tools, logger } = require( '@ckeditor/ckeditor5-dev-utils' );
 const log = logger();
-const mgitJsonPath = path.resolve( __dirname, '..', '..', 'mgit.json' );
+const mrgitJsonPath = path.resolve( __dirname, '..', '..', 'mrgit.json' );
 
-log.info( 'Updating the "mgit.json"...' );
+log.info( 'Updating the "mrgit.json"...' );
 
-tools.updateJSONFile( mgitJsonPath, mgitJson => {
-	const dependencies = mgitJson.dependencies;
+tools.updateJSONFile( mrgitJsonPath, mrgitJson => {
+	const dependencies = mrgitJson.dependencies;
 
 	for ( const packageName of Object.keys( dependencies ) ) {
 		dependencies[ packageName ] = dependencies[ packageName ].split( '#' )[ 0 ];
@@ -33,7 +33,7 @@ tools.updateJSONFile( mgitJsonPath, mgitJson => {
 		}
 	}
 
-	return mgitJson;
+	return mrgitJson;
 } );
 
-log.info( `Done. "mgit.json" uses the "${ branchName }" branch now.` );
+log.info( `Done. "mrgit.json" uses the "${ branchName }" branch now.` );
