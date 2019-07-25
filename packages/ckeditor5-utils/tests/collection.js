@@ -522,7 +522,7 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ 'foo' ], 'ret value was forwarded' );
 
-			function callback() { }
+			function callback() {}
 		} );
 	} );
 
@@ -538,7 +538,7 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.equal( needl, 'ret value was forwarded' );
 
-			function callback() { }
+			function callback() {}
 		} );
 	} );
 
@@ -555,7 +555,7 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ needl ], 'ret value was forwarded' );
 
-			function callback() { }
+			function callback() {}
 		} );
 	} );
 
@@ -700,7 +700,7 @@ describe( 'Collection', () => {
 			} );
 
 			it( 'does not chain', () => {
-				const returned = collection.bindTo( new Collection() ).using( () => { } );
+				const returned = collection.bindTo( new Collection() ).using( () => {} );
 
 				expect( returned ).to.be.undefined;
 			} );

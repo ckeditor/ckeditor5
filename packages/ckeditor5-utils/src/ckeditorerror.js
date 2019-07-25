@@ -16,18 +16,33 @@ export const DOCUMENTATION_URL =
 /**
  * The CKEditor error class.
  *
- * All errors will be shortened during the minification process in order to reduce the code size.
- * Therefore, all error messages should be documented in the same way as those in {@link module:utils/log}.
+ * You should throw `CKEditorError` when:
  *
- * Read more in the {@link module:utils/log} module.
+ * * An unexpected situation occurred and the editor (most probably) will not work properly. Such exception will be handled
+ * by the {@link module:watchdog/watchdog~Watchdog watchdog} (if it is integrated),
+ * * If the editor is incorrectly integrated or the editor API is used in the wrong way. This way you will give
+ * feedback to the developer as soon as possible. Keep in mind that for common integration issues which should not
+ * stop editor initialization (like missing upload adapter, wrong name of a toolbar component) we use `console.warn()` with
+ * {@link module:utils/ckeditorerror~attachLinkToDocumentation `attachLinkToDocumentation()`}
+ * to improve developers experience and let them see the working editor as soon as possible.
+ *
+ *		/**
+ *		 * Error thrown when a plugin cannot be loaded due to JavaScript errors, lack of plugins with a given name, etc.
+ *		 *
+ *		 * @error plugin-load
+ *		 * @param pluginName The name of the plugin that could not be loaded.
+ *		 * @param moduleName The name of the module which tried to load this plugin.
+ *		 * /
+ *		throw new CKEditorError( 'plugin-load: It was not possible to load the "{$pluginName}" plugin in module "{$moduleName}', {
+ *			pluginName: 'foo',
+ *			moduleName: 'bar'
+ *		} );
  *
  * @extends Error
  */
 export default class CKEditorError extends Error {
 	/**
 	 * Creates an instance of the CKEditorError class.
-	 *
-	 * Read more about error logging in the {@link module:utils/log} module.
 	 *
 	 * @param {String} message The error message in an `error-name: Error message.` format.
 	 * During the minification process the "Error message" part will be removed to limit the code size
@@ -79,7 +94,18 @@ export default class CKEditorError extends Error {
 }
 
 /**
- * Attaches link to the documentation at the end of the error message.
+ * Attaches the link to the documentation at the end of the error message. Use whenever you log a warning or error on the
+ * console. It is also used by {@link module:utils/ckeditorerror~CKEditorError}.
+ *
+ *		 /**
+ *		  * There was a problem processing the configuration of the toolbar. The item with the given
+ *		  * name does not exist so it was omitted when rendering the toolbar.
+ *		  *
+ *		  * @error toolbarview-item-unavailable
+ *		  * @param {String} name The name of the component.
+ *		  * /
+ *		 console.warn( attachLinkToDocumentation(
+ *		 	'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
  *
  * @param {String} message Message to be logged.
  * @returns {String}
