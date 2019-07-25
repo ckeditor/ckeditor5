@@ -8,7 +8,7 @@
  */
 
 /**
- * The filter removes `<b>` tag wrapper added by Google Docs for copied content.
+ * Removes `<b>` tag wrapper added by Google Docs to a copied content.
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  */
