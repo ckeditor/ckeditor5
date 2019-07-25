@@ -61,7 +61,7 @@ describe( 'WordCount', () => {
 				'<paragraph>1234</paragraph>' +
 				'<paragraph>(@#$%^*())</paragraph>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( wordCountPlugin.words ).to.equal( 6 );
 		} );
@@ -69,7 +69,7 @@ describe( 'WordCount', () => {
 		it( 'counts characters', () => {
 			setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( wordCountPlugin.characters ).to.equal( 12 );
 		} );
@@ -91,7 +91,7 @@ describe( 'WordCount', () => {
 				'</tableRow>' +
 				'</table>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( wordCountPlugin.characters ).to.equal( 9 );
 		} );
@@ -104,7 +104,7 @@ describe( 'WordCount', () => {
 			expect( wordCountPlugin.words ).to.equal( 0 );
 
 			setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( wordCountPlugin.words ).to.equal( 6 );
 		} );
@@ -124,7 +124,7 @@ describe( 'WordCount', () => {
 				expect( wordCountPlugin.words ).to.equal( 0 );
 
 				setModelData( model, '<paragraph>hello world.</paragraph>' );
-				wordCountPlugin._calculateWordsAndCharacters();
+				wordCountPlugin._refreshStats();
 
 				expect( wordCountPlugin.words ).to.equal( 2 );
 			} );
@@ -135,14 +135,14 @@ describe( 'WordCount', () => {
 				const fake = sinon.fake();
 				wordCountPlugin.on( 'update', fake );
 
-				wordCountPlugin._calculateWordsAndCharacters();
+				wordCountPlugin._refreshStats();
 
 				sinon.assert.calledOnce( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 0, characters: 0 } );
 
-				// _calculateWordsAndCharacters is throttled, so for this test case is run manually
+				// _refreshStats is throttled, so for this test case is run manually
 				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				wordCountPlugin._calculateWordsAndCharacters();
+				wordCountPlugin._refreshStats();
 
 				sinon.assert.calledTwice( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 2, characters: 12 } );
@@ -179,7 +179,7 @@ describe( 'WordCount', () => {
 			setModelData( model, '<paragraph>Foo(bar)baz</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( container.innerText ).to.equal( 'Words: 5Characters: 23' );
 		} );
@@ -228,7 +228,7 @@ describe( 'WordCount', () => {
 		} );
 	} );
 
-	describe( '_calculateWordsAndCharacters and throttle', () => {
+	describe( '_refreshStats and throttle', () => {
 		beforeEach( done => {
 			// We need to flush initial throttle value after editor's initialization
 			setTimeout( done, DELAY );
