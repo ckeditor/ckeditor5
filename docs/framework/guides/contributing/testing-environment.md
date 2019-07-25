@@ -25,6 +25,7 @@ It accepts the following arguments (must be passed after the `--` option):
 * `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
 * `--files` &ndash; Specifies tests files to run. Accepts a package name or a glob. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
 * `--browsers` &ndash; Browsers which will be used to run the tests. Defaults to `Chrome`.
+* `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example the `--debug engine` option uncomments the `// CK_DEBUG_ENGINE //` lines in the code. The `--debug false` turns off debugging (by default uncomments lines starting with `// CK_DEBUG //` in manual and automated tests).
 
 ### Examples
 
