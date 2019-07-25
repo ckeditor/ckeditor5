@@ -156,38 +156,8 @@ export default class MentionUI extends Plugin {
 			this._mentionsConfigurations.set( marker, definition );
 		}
 
-		this.on( 'getFeed:error', () => {
-			this._hideUIAndRemoveMarker();
-		} );
-
-		this.on( 'getFeed:response', ( evt, data ) => {
-			const { response: feed, marker } = data;
-
-			// Do nothing if :
-			// - feed was discarded or empty feed was passed.
-			// - if the marker is not in the document - the selection might have already changed.
-			if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
-				return;
-			}
-
-			// Remove old entries.
-			this._items.clear();
-
-			for ( const feedItem of feed ) {
-				const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
-
-				this._items.add( { item, marker } );
-			}
-
-			const markerMarker = editor.model.markers.get( 'mention' );
-
-			if ( this._items.length && markerMarker ) {
-				this._showUI( markerMarker );
-			} else {
-				// Do not show empty mention UI.
-				this._hideUIAndRemoveMarker();
-			}
-		} );
+		this.on( 'getFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
+		this.on( 'getFeed:error', () => this._hideUIAndRemoveMarker() );
 	}
 
 	/**
@@ -333,6 +303,35 @@ export default class MentionUI extends Plugin {
 				 */
 				console.warn( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
 			} );
+	}
+
+	_handleFeedResponse( data ) {
+		const { response: feed, marker } = data;
+
+		// Do nothing if :
+		// - feed was discarded or empty feed was passed.
+		// - if the marker is not in the document - the selection might have already changed.
+		if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
+			return;
+		}
+
+		// Remove old entries.
+		this._items.clear();
+
+		for ( const feedItem of feed ) {
+			const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
+
+			this._items.add( { item, marker } );
+		}
+
+		const markerMarker = this.editor.model.markers.get( 'mention' );
+
+		if ( this._items.length && markerMarker ) {
+			this._showUI( markerMarker );
+		} else {
+			// Do not show empty mention UI.
+			this._hideUIAndRemoveMarker();
+		}
 	}
 
 	/**
