@@ -75,25 +75,25 @@
 	&.ck-widget__resizer-top-left {
 		top: var( --ck-resizer-offset );
 		left: var( --ck-resizer-offset );
-		cursor: nw-resize;
+		cursor: nwse-resize;
 	}
 
 	&.ck-widget__resizer-top-right {
 		top: var( --ck-resizer-offset );
 		right: var( --ck-resizer-offset );
-		cursor: ne-resize;
+		cursor: nesw-resize;
 	}
 
 	&.ck-widget__resizer-bottom-right {
 		bottom: var( --ck-resizer-offset );
 		right: var( --ck-resizer-offset );
-		cursor: se-resize;
+		cursor: nwse-resize;
 	}
 
 	&.ck-widget__resizer-bottom-left {
 		bottom: var( --ck-resizer-offset );
 		left: var( --ck-resizer-offset );
-		cursor: sw-resize;
+		cursor: nesw-resize;
 	}
 }
 
