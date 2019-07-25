@@ -7,15 +7,17 @@
  * @module ui/toolbar/toolbarview
  */
 
+/* globals console */
+
 import View from '../view';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import '../../theme/components/toolbar/toolbar.css';
+import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The toolbar view class.
@@ -180,10 +182,8 @@ export default class ToolbarView extends View {
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
 				 */
-				log.warn(
-					'toolbarview-item-unavailable: The requested toolbar item is unavailable.',
-					{ name }
-				);
+				console.warn( attachLinkToDocumentation(
+					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
 			}
 		} );
 	}
