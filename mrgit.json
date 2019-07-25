@@ -7,7 +7,7 @@
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
-    "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote",
+    "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#t/ckeditor5/1151",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon",
     "@ckeditor/ckeditor5-build-balloon-block": "ckeditor/ckeditor5-build-balloon-block",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic",
