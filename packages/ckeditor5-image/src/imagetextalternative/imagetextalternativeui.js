@@ -163,7 +163,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command = editor.commands.get( 'imageTextAlternative' );
 		const labeledInput = this._form.labeledInput;
 
-		if ( !this._balloon.hasView( this._form ) ) {
+		if ( !this._isInBalloon ) {
 			this._balloon.add( {
 				view: this._form,
 				position: getBalloonPositionData( editor )
@@ -187,13 +187,15 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 * @private
 	 */
 	_hideForm( focusEditable ) {
-		if ( !this._isVisible ) {
+		if ( !this._isInBalloon ) {
 			return;
 		}
 
 		// Blur the input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
-		this._form.saveButtonView.focus();
+		if ( this._form.focusTracker.isFocused ) {
+			this._form.saveButtonView.focus();
+		}
 
 		this._balloon.remove( this._form );
 
@@ -209,6 +211,16 @@ export default class ImageTextAlternativeUI extends Plugin {
 	 * @type {Boolean}
 	 */
 	get _isVisible() {
-		return this._balloon.visibleView == this._form;
+		return this._balloon.visibleView === this._form;
+	}
+
+	/**
+	 * Returns `true` when the {@link #_form} is in the {@link #_balloon}.
+	 *
+	 * @private
+	 * @type {Boolean}
+	 */
+	get _isInBalloon() {
+		return this._balloon.hasView( this._form );
 	}
 }
