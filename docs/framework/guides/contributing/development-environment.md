@@ -193,7 +193,7 @@ To create a server for manual tests use the `manual` task:
 yarn run manual
 ```
 
-It accepts the `--source-map` (`-s`) option. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
+It accepts the `--source-map` (`-s`) and `--additionalLanguages="ar,pl,..."` options. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
 
