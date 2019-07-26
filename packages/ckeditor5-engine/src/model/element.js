@@ -89,7 +89,13 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks whether this model object is of the given type.
+	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `model:` string,
+	 * for example `model:element`. Type is a string which usually equal to a name of the class written in camelCase convention.
+	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
+	 * for any type match for an entire child-parent chain.
+	 *
+	 * There is also possibility to check element's {@link #name} rather than just type. Name might be provided as second attribute
+	 * or might replace the type.
 	 *
 	 *		obj.name; // 'listItem'
 	 *		obj instanceof Element; // true
@@ -105,7 +111,9 @@ export default class Element extends Node {
 	 *		obj.is( 'view:element' ); // false
 	 *		obj.is( 'element', 'image' ); // false
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Acceptable type for this class is `element` and its prefixed version, element's name or combination of both arguments.
+	 *
+	 * See also: {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.

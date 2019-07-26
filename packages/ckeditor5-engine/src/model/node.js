@@ -482,6 +482,8 @@ export default class Node {
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *		obj.is( 'textProxy' ); // true for text proxy object
 	 *
+	 * Acceptable types for this class is `node` and its prefixed version.
+	 *
 	 * @method #is
 	 * @param {String} type
 	 * @returns {Boolean}

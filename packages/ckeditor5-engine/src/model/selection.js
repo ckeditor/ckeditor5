@@ -623,8 +623,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `model:` string,
+	 * for example `model:selection`. Type is a string which usually equal to a name of the class written in camelCase convention.
+	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
+	 * for any type match for an entire child-parent chain.
 	 *
 	 *		const selection = new Selection( ... );
 	 *
@@ -634,6 +636,9 @@ export default class Selection {
 	 *		selection.is( 'element' ); // false
 	 *		selection.is( 'view:selection' ); // false
 	 *
+	 * Acceptable type for this class is `selection` and its prefixed version.
+	 *
+	 * See also: {@link module:engine/model/node~Node#is `Node#is()`}.
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

@@ -173,9 +173,14 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Checks whether given object is of `textProxy` type.
+	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `model:` string,
+	 * for example `model:textProxy`. Type is a string which usually equal to a name of the class written in camelCase convention.
+	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
+	 * for any type match for an entire child-parent chain.
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Acceptable type for this class is `textProxy` and its prefixed version.
+	 *
+	 * See also: {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
