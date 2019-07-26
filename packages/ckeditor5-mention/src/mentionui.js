@@ -136,7 +136,7 @@ export default class MentionUI extends Plugin {
 
 			const marker = mentionDescription.marker;
 
-			if ( !marker || marker.length != 1 ) {
+			if ( !isValidMentionMarker( marker ) ) {
 				/**
 				 * The marker must be a single character.
 				 *
@@ -347,7 +347,7 @@ export default class MentionUI extends Plugin {
 
 			const markerRange = editor.model.createRange( start, end );
 
-			if ( editor.model.markers.has( 'mention' ) ) {
+			if ( checkIfStillInCompletionMode( editor ) ) {
 				const mentionMarker = editor.model.markers.get( 'mention' );
 
 				// Update the marker - user might've moved the selection to other mention trigger.
@@ -380,7 +380,7 @@ export default class MentionUI extends Plugin {
 		const { feed, marker } = data;
 
 		// If the marker is not in the document happens when the selection had changed and the 'mention' marker was removed.
-		if ( !this.editor.model.markers.has( 'mention' ) ) {
+		if ( !checkIfStillInCompletionMode( this.editor ) ) {
 			return;
 		}
 
@@ -436,7 +436,7 @@ export default class MentionUI extends Plugin {
 			this._balloon.remove( this._mentionsView );
 		}
 
-		if ( this.editor.model.markers.has( 'mention' ) ) {
+		if ( checkIfStillInCompletionMode( this.editor ) ) {
 			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
@@ -684,4 +684,19 @@ function hasExistingMention( position ) {
 	const nodeBefore = position.nodeBefore;
 
 	return hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' );
+}
+
+// Checks if string is a valid mention marker.
+//
+// @param {String} marker
+// @returns {Boolean}
+function isValidMentionMarker( marker ) {
+	return marker && marker.length == 1;
+}
+
+// Checks the mention plugins is in completion mode (e.g. when typing is after a valid mention string like @foo).
+//
+// @returns {Boolean}
+function checkIfStillInCompletionMode( editor ) {
+	return editor.model.markers.has( 'mention' );
 }
