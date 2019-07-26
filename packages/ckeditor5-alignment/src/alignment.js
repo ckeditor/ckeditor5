@@ -69,8 +69,9 @@ export default class Alignment extends Plugin {
  *
  * The available options are: `'left'`, `'right'`, `'center'` and `'justify'`. Other values are ignored.
  *
- * **Note:** It is recommended to always use `'left'` as it is the default value which the user should
- * normally be able to choose.
+ * **Note:** It is recommended to always use `'left'` or `'right'` as these are default values which the user should
+ * normally be able to choose depending on the
+ * {@glink features/ui-language#setting-the-language-of-the-content language of the editor content}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
