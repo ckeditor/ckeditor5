@@ -8,15 +8,15 @@
  */
 
 /**
- * Normalizer interface is description of a mechanism which transforms input data send through
- * an {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. Input content is transformed
- * for data came from office-like applications, for example, : MS Word, Google Docs, etc. These applications generate content,
- * which frequently has an invalid HTML syntax. Normalizers detects environment specific quirks and transform it to proper HTML syntax,
- * what later might be properly upcast to the {@link module:engine/model/model~Model}.
+ * Normalizer interface is a description of a mechanism which transforms input data send through
+ * an {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. Input data is transformed
+ * for paste event came from office-like applications, for example, MS Word, Google Docs, etc. These applications generate content,
+ * which frequently has an invalid HTML syntax. Normalizers detects environment-specific quirks and transform it into proper HTML syntax,
+ * what later might be correctly upcast to the {@link module:engine/model/model~Model}.
  *
- * Content Normalizers are registered by {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin. Each instance is
- * initialized with an activation trigger. Activation trigger is a function which gets content of `text/html` dataTransfer (String) and
- * returns `true` or `false`. Based on this result normalizer applies filters to given data.
+ * Normalizers are registered by {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin. Each instance has the
+ * {@link #isActive} method, which checks if given normalizer should be applied for current data content. It is chosen first active
+ * normalizer for the transformation process. If there is none, then data remain untouched.
  *
  * @interface Normalizer
  */
