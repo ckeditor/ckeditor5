@@ -24,6 +24,8 @@ export default class AlignmentCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
+		const editor = this.editor;
+		const locale = editor.locale;
 		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// As first check whether to enable or disable the command as the value will always be false if the command cannot be enabled.
@@ -36,7 +38,11 @@ export default class AlignmentCommand extends Command {
 		 * @readonly
 		 * @member {String} #value
 		 */
-		this.value = ( this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ) ? firstBlock.getAttribute( 'alignment' ) : 'left';
+		if ( this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ) {
+			this.value = firstBlock.getAttribute( 'alignment' );
+		} else {
+			this.value = locale.contentLanguageDirection === 'rtl' ? 'right' : 'left';
+		}
 	}
 
 	/**
@@ -50,6 +56,7 @@ export default class AlignmentCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const editor = this.editor;
+		const locale = editor.locale;
 		const model = editor.model;
 		const doc = model.document;
 
@@ -64,7 +71,7 @@ export default class AlignmentCommand extends Command {
 			// - default (should not be stored in model as it will bloat model data)
 			// - equal to currently set
 			// - or no value is passed - denotes default alignment.
-			const removeAlignment = isDefault( value ) || currentAlignment === value || !value;
+			const removeAlignment = isDefault( value, locale ) || currentAlignment === value || !value;
 
 			if ( removeAlignment ) {
 				removeAlignmentFromSelection( blocks, writer );

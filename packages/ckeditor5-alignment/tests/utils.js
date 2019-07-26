@@ -7,11 +7,26 @@ import { isDefault, isSupported, supportedOptions } from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isDefault()', () => {
-		it( 'should return true for "left" alignment only', () => {
-			expect( isDefault( 'left' ) ).to.be.true;
-			expect( isDefault( 'right' ) ).to.be.false;
-			expect( isDefault( 'center' ) ).to.be.false;
-			expect( isDefault( 'justify' ) ).to.be.false;
+		it( 'should return true for "left" alignment only (LTR)', () => {
+			const locale = {
+				contentLanguageDirection: 'ltr'
+			};
+
+			expect( isDefault( 'left', locale ) ).to.be.true;
+			expect( isDefault( 'right', locale ) ).to.be.false;
+			expect( isDefault( 'center', locale ) ).to.be.false;
+			expect( isDefault( 'justify', locale ) ).to.be.false;
+		} );
+
+		it( 'should return true for "right" alignment only (RTL)', () => {
+			const locale = {
+				contentLanguageDirection: 'rtl'
+			};
+
+			expect( isDefault( 'left', locale ) ).to.be.false;
+			expect( isDefault( 'right', locale ) ).to.be.true;
+			expect( isDefault( 'center', locale ) ).to.be.false;
+			expect( isDefault( 'justify', locale ) ).to.be.false;
 		} );
 	} );
 
