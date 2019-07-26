@@ -881,11 +881,11 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'asynchronous list with custom trigger', () => {
+			const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
+
 			let feedCallbackStub, feedCallbackTimeout, feedCallbackCallTimes;
 
 			beforeEach( () => {
-				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
-
 				feedCallbackTimeout = 20;
 				feedCallbackCallTimes = 0;
 
@@ -919,6 +919,33 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
+					} );
+			} );
+
+			it( 'should fire requestFeed:response when request feed return a response', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+				const eventSpy = sinon.spy();
+				mentionUI.on( 'requestFeed:response', eventSpy );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						sinon.assert.calledOnce( eventSpy );
+						sinon.assert.calledWithExactly(
+							eventSpy,
+							sinon.match.any,
+							{
+								feed: issuesNumbers,
+								marker: '#',
+								feedText: ''
+							}
+						);
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( mentionsView.items ).to.have.length( 4 );
@@ -1077,6 +1104,69 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
+			it( 'should fire requestFeed:discarded event when requested feed came out of order', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				const panelShowSpy = sinon.spy( panelView, 'show' );
+				const eventSpy = sinon.spy();
+				mentionUI.on( 'requestFeed:discarded', eventSpy );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 300;
+
+				return Promise.resolve()
+					.then( wait( 20 ) )
+					.then( () => {
+						sinon.assert.notCalled( feedCallbackStub );
+
+						model.change( writer => {
+							writer.insertText( '1', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						sinon.assert.calledOnce( feedCallbackStub );
+						sinon.assert.calledWithExactly( feedCallbackStub, '1' );
+
+						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+
+						// Make second callback resolve before first.
+						feedCallbackTimeout = 50;
+
+						model.change( writer => {
+							writer.insertText( '0', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( wait( 300 ) ) // Wait longer so the longer callback will be resolved.
+					.then( () => {
+						sinon.assert.calledTwice( feedCallbackStub );
+						sinon.assert.calledWithExactly( feedCallbackStub.getCall( 1 ), '10' );
+						sinon.assert.calledOnce( panelShowSpy );
+						sinon.assert.calledOnce( eventSpy );
+						sinon.assert.calledWithExactly(
+							eventSpy,
+							sinon.match.any,
+							{
+								feed: issuesNumbers,
+								marker: '#',
+								feedText: '1'
+							}
+						);
+						expect( feedCallbackCallTimes ).to.equal( 2 );
+
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
+					} );
+			} );
+
 			it( 'should discard requested feed if mention UI is hidden', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
@@ -1106,12 +1196,14 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
-			it( 'should log warning if requested feed failed', () => {
+			it( 'should fire requestFeed:error and log warning if requested feed failed', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
 				feedCallbackStub.returns( Promise.reject( 'Request timeout' ) );
 
-				const spy = sinon.spy( console, 'warn' );
+				const warnSpy = sinon.spy( console, 'warn' );
+				const eventSpy = sinon.spy();
+				mentionUI.on( 'requestFeed:error', eventSpy );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1122,7 +1214,8 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
 
-						sinon.assert.calledWithExactly( spy, 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
+						sinon.assert.calledWithExactly( warnSpy, sinon.match( /^mention-feed-callback-error:/ ) );
+						sinon.assert.calledOnce( eventSpy );
 					} );
 			} );
 
