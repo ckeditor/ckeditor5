@@ -302,9 +302,10 @@ export default class MentionUI extends Plugin {
 			 * Fired whenever requested feed has a response.
 			 *
 			 * @event requestFeed:response
-			 * @param {Array.<module:mention/mention~MentionFeedItem>} feed Autocomplete items.
-			 * @param {String} marker The character which triggers autocompletion for mention.
-			 * @param {String} feedText The text for which feed items were requested.
+			 * @param {Object} data Event data.
+			 * @param {Array.<module:mention/mention~MentionFeedItem>} data.feed Autocomplete items.
+			 * @param {String} data.marker The character which triggers autocompletion for mention.
+			 * @param {String} data.feedText The text for which feed items were requested.
 			 */
 			this.fire( 'requestFeed:response', { feed: feedResponse, marker, feedText } );
 
@@ -325,9 +326,10 @@ export default class MentionUI extends Plugin {
 					 * other feed was already requested.
 					 *
 					 * @event requestFeed:discarded
-					 * @param {Array.<module:mention/mention~MentionFeedItem>} feed Autocomplete items.
-					 * @param {String} marker The character which triggers autocompletion for mention.
-					 * @param {String} feedText The text for which feed items were requested.
+					 * @param {Object} data Event data.
+					 * @param {Array.<module:mention/mention~MentionFeedItem>} data.feed Autocomplete items.
+					 * @param {String} data.marker The character which triggers autocompletion for mention.
+					 * @param {String} data.feedText The text for which feed items were requested.
 					 */
 					this.fire( 'requestFeed:discarded', { feed: response, marker, feedText } );
 				}
