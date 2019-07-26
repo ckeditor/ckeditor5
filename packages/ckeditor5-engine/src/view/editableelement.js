@@ -70,7 +70,7 @@ export default class EditableElement extends ContainerElement {
 	 * @inheritDoc
 	 */
 	is( type, name = null ) {
-		const cutType = type && type.replace( 'view:', '' );
+		const cutType = type && type.replace( /^view:/, '' );
 		if ( !name ) {
 			return cutType == 'editableElement' || super.is( type );
 		} else {

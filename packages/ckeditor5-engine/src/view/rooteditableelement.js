@@ -41,7 +41,7 @@ export default class RootEditableElement extends EditableElement {
 	 * @inheritDoc
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( 'view:', '' );
+		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
 			return cutType == 'rootElement' || super.is( type );
 		} else {

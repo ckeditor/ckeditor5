@@ -47,7 +47,7 @@ export default class EmptyElement extends Element {
 	 * @inheritDoc
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( 'view:', '' );
+		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
 			return cutType == 'emptyElement' || super.is( type );
 		} else {

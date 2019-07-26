@@ -314,6 +314,8 @@ export default class Node {
 	 *		obj.is( 'view:text' ); // true for text node, false for element and document fragment
 	 *
 	 *
+	 * Acceptable types for this class is `node` and its prefixed version.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
