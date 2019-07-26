@@ -11,14 +11,43 @@ const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
+const VARIABLE_REGEXP = /(--[\w-]+):\s+(.*);/g;
 
-const contentRules = [];
+const contentRules = {
+	selector: [],
+	variables: []
+};
+
 const webpackConfig = getWebpackConfig();
 const parentCwd = path.join( process.cwd(), '..' );
 
 runWebpack( webpackConfig )
 	.then( () => {
-		const data = contentRules
+		// All variables are placed inside `:root` selector.
+		const variablesCss = contentRules.variables
+			.map( rule => {
+				// Let's extract all of them as an array of simple strings.
+				const allRules = [];
+				let match;
+
+				while ( ( match = VARIABLE_REGEXP.exec( rule.css ) ) ) {
+					allRules.push( `${ match[ 1 ] }: ${ match[ 2 ] };` );
+				}
+
+				return allRules;
+			} )
+			.reduce( ( previousValue, currentValue ) => {
+				// And simplify nested arrays as a single array.
+				previousValue.push( ...currentValue );
+
+				return previousValue;
+			}, [] )
+			.map( rule => {
+				return `\t${ rule }`;
+			} )
+			.join( '\n' );
+
+		const selectorCss = contentRules.selector
 			.map( rule => {
 				// Removes all comments from the rule definition.
 				const cssAsArray = rule.css.replace( /\/\*[^*]+\*\//g, '' ).split( '\n' );
@@ -47,6 +76,8 @@ runWebpack( webpackConfig )
 				return rule.split( '\n' ).length > 3;
 			} )
 			.join( '\n' );
+
+		const data = `:root {\n${ variablesCss }\n}\n\n${ selectorCss }`;
 
 		return writeFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ), data );
 	} )
