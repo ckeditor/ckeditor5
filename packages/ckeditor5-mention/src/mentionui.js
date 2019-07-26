@@ -350,7 +350,6 @@ export default class MentionUI extends Plugin {
 			if ( editor.model.markers.has( 'mention' ) ) {
 				const mentionMarker = editor.model.markers.get( 'mention' );
 
-				// TODO - there's no tests for this
 				// Update the marker - user might've moved the selection to other mention trigger.
 				editor.model.change( writer => {
 					writer.updateMarker( mentionMarker, { range: markerRange } );

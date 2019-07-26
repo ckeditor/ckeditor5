@@ -323,6 +323,34 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
+		it( 'should update the marker if the selection was moved from one valid position to another', () => {
+			const spy = sinon.spy();
+
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo @ bar []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+				} )
+				.then( () => {
+					editor.model.markers.on( 'update', spy );
+
+					model.change( writer => {
+						writer.setSelection( doc.getRoot().getChild( 0 ), 5 );
+					} );
+
+					sinon.assert.calledOnce( spy );
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+				} );
+		} );
+
 		describe( 'static list with large set of results', () => {
 			const bigList = {
 				marker: '@',
