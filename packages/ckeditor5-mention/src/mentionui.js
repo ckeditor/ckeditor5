@@ -339,7 +339,8 @@ export default class MentionUI extends Plugin {
 				 * Fired whenever requested feed method errors.
 				 *
 				 * @event requestFeed:error
-				 * @param {Error} error The error that was caught.
+				 * @param {Object} data Event data.
+				 * @param {Error} data.error The error that was caught.
 				 */
 				this.fire( 'requestFeed:error', { error } );
 
