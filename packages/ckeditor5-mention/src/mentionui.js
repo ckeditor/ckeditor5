@@ -28,6 +28,16 @@ import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 3;
 
+// The key codes that mention UI handles when it is open.
+const handledKeyCodes = [
+	keyCodes.arrowup,
+	keyCodes.arrowdown,
+	keyCodes.enter,
+	keyCodes.tab,
+	keyCodes.space,
+	keyCodes.esc
+];
+
 /**
  * The mention UI feature.
  *
@@ -659,15 +669,6 @@ function createFeedCallback( feedItems ) {
 // @param {Number}
 // @returns {Boolean}
 function isHandledKey( keyCode ) {
-	const handledKeyCodes = [
-		keyCodes.arrowup,
-		keyCodes.arrowdown,
-		keyCodes.enter,
-		keyCodes.tab,
-		keyCodes.space,
-		keyCodes.esc
-	];
-
 	return handledKeyCodes.includes( keyCode );
 }
 
