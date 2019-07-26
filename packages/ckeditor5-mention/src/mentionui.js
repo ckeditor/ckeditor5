@@ -280,9 +280,12 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Requests a feed from a configured callbacks.
 	 *
+	 * @private
+	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:response
+	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:discarded
+	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:error
 	 * @param {String} marker
 	 * @param {String} feedText
-	 * @private
 	 */
 	_requestFeed( marker, feedText ) {
 		// Store the last requested feed - it is used to discard any out-of order requests.
@@ -293,8 +296,16 @@ export default class MentionUI extends Plugin {
 
 		const isAsynchronous = feedResponse instanceof Promise;
 
+		// For synchronous feeds (e.g. callbacks, arrays) fire the response event immediately.
 		if ( !isAsynchronous ) {
-			// For synchronous feeds (e.g. callbacks, arrays) fire the response event immediately.
+			/**
+			 * Fired whenever requested feed has a response.
+			 *
+			 * @event requestFeed:response
+			 * @param {Array.<module:mention/mention~MentionFeedItem>} feed Autocomplete items.
+			 * @param {String} marker The character which triggers autocompletion for mention.
+			 * @param {String} feedText The text for which feed items were requested.
+			 */
 			this.fire( 'requestFeed:response', { feed: feedResponse, marker, feedText } );
 
 			return;
@@ -309,10 +320,25 @@ export default class MentionUI extends Plugin {
 					this.fire( 'requestFeed:response', { feed: response, marker, feedText } );
 				} else {
 					// It is different - most probably out-of-order one, so fire the discarded event.
+					/**
+					 * Fired whenever requested feed was discarded. This happens when response was delayed and
+					 * other feed was already requested.
+					 *
+					 * @event requestFeed:discarded
+					 * @param {Array.<module:mention/mention~MentionFeedItem>} feed Autocomplete items.
+					 * @param {String} marker The character which triggers autocompletion for mention.
+					 * @param {String} feedText The text for which feed items were requested.
+					 */
 					this.fire( 'requestFeed:discarded', { feed: response, marker, feedText } );
 				}
 			} )
 			.catch( error => {
+				/**
+				 * Fired whenever requested feed method errors.
+				 *
+				 * @event requestFeed:error
+				 * @param {Error} error The error that was caught.
+				 */
 				this.fire( 'requestFeed:error', { error } );
 
 				/**
