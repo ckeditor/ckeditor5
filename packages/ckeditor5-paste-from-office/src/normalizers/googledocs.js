@@ -7,21 +7,31 @@
  * @module paste-from-office/normalizer
  */
 
-import ContentNormalizer from '../contentnormalizer';
 import { removeBoldTagWrapper } from '../filters/common';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
- * {@link module:paste-from-office/contentnormalizer~ContentNormalizer} instance dedicated to transforming data obtained from Google Docs.
- * It stores filters which fix quirks detected in Google Docs content.
+ * Normalizer fixing HTML syntax obtained from Google Docs.
  *
- * @type {module:paste-from-office/contentnormalizer~ContentNormalizer}
+ * @implements module:paste-from-office/normalizer~Normalizer
  */
-export const googleDocsNormalizer = ( () => {
-	const normalizer = new ContentNormalizer( contentString =>
-		/id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( contentString )
-	);
+export default class GoogleDocsNormalizer {
+	/**
+	 * @inheritDoc
+	 */
+	isActive( htmlString ) {
+		return /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( htmlString );
+	}
 
-	normalizer.addFilter( removeBoldTagWrapper );
+	/**
+	 * @inheritDoc
+	 */
+	exec( data ) {
+		const writer = new UpcastWriter();
 
-	return normalizer;
-} )();
+		removeBoldTagWrapper( {
+			writer,
+			documentFragment: data.content
+		} );
+	}
+}

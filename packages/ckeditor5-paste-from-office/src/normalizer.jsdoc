@@ -1,0 +1,39 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module paste-from-office/normalizer
+ */
+
+/**
+ * Normalizer interface is description of a mechanism which transforms input data send through
+ * an {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. Input content is transformed
+ * for data came from office-like applications, for example, : MS Word, Google Docs, etc. These applications generate content,
+ * which frequently has an invalid HTML syntax. Normalizers detects environment specific quirks and transform it to proper HTML syntax,
+ * what later might be properly upcast to the {@link module:engine/model/model~Model}.
+ *
+ * Content Normalizers are registered by {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin. Each instance is
+ * initialized with an activation trigger. Activation trigger is a function which gets content of `text/html` dataTransfer (String) and
+ * returns `true` or `false`. Based on this result normalizer applies filters to given data.
+ *
+ * @interface Normalizer
+ */
+
+/**
+ * Method determines if current normalizer should be run for given content. It takes an HTML string from `data.dataTransfer` as an argument
+ * and it should return a boolean value.
+ *
+ * @method #isActive
+ * @param {String} htmlString full content of `dataTransfer.getData( 'text/html' )`
+ * @returns {Boolean}
+ */
+
+/**
+ * Method applies normalization to given data.
+ *
+ * @method #exec
+ * @param {Object} data object obtained from
+ * {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}
+ */

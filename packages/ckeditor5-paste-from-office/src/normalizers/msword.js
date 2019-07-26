@@ -7,31 +7,33 @@
  * @module paste-from-office/normalizer
  */
 
-import ContentNormalizer from '../contentnormalizer';
 import { parseHtml } from '../filters/parse';
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
 
 /**
- * {@link module:paste-from-office/contentnormalizer~ContentNormalizer} instance dedicated to transforming data obtained from MS Word.
- * It stores filters which fix quirks detected in MS Word content.
+ * Normalizer fixing HTML syntax obtained from Microsoft Word documents.
  *
- * @type {module:paste-from-office/contentnormalizer~ContentNormalizer}
+ * @implements module:paste-from-office/normalizer~Normalizer
  */
-export const mswordNormalizer = ( () => {
-	const normalizer = new ContentNormalizer( contentString =>
-		/<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( contentString ) ||
-		/xmlns:o="urn:schemas-microsoft-com/i.test( contentString )
-	);
+export default class MSWordNormalizer {
+	/**
+	 * @inheritDoc
+	 */
+	isActive( htmlString ) {
+		return /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( htmlString ) ||
+				/xmlns:o="urn:schemas-microsoft-com/i.test( htmlString );
+	}
 
-	normalizer.addFilter( ( { data } ) => {
+	/**
+	 * @inheritDoc
+	 */
+	exec( data ) {
 		const html = data.dataTransfer.getData( 'text/html' );
 
-		data.content = _normalizeWordInput( html, data.dataTransfer );
-	} );
-
-	return normalizer;
-} )();
+		data.content = normalizeWordInput( html, data.dataTransfer );
+	}
+}
 
 //
 // Normalizes input pasted from Word to format suitable for editor {@link module:engine/model/model~Model}.
@@ -41,7 +43,7 @@ export const mswordNormalizer = ( () => {
 // @param {module:clipboard/datatransfer~DataTransfer} dataTransfer Data transfer instance.
 // @returns {module:engine/view/documentfragment~DocumentFragment} Normalized input.
 //
-function _normalizeWordInput( input, dataTransfer ) {
+function normalizeWordInput( input, dataTransfer ) {
 	const { body, stylesString } = parseHtml( input );
 
 	transformListItemLikeElementsIntoLists( body, stylesString );
