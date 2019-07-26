@@ -14,6 +14,7 @@ const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'conten
 
 const contentRules = [];
 const webpackConfig = getWebpackConfig();
+const parentCwd = path.join( process.cwd(), '..' );
 
 runWebpack( webpackConfig )
 	.then( () => {
@@ -38,7 +39,7 @@ runWebpack( webpackConfig )
 					} )
 					.join( '\n' );
 
-				return `/* ${ rule.file } */\n${ css }`;
+				return `/* ${ rule.file.replace( parentCwd + path.sep, '' ) } */\n${ css }`;
 			} )
 			.filter( rule => {
 				// 1st: path to the css file, 2nd: selector definition - start block, 3rd: end block
