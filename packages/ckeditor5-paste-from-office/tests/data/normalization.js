@@ -14,7 +14,7 @@ const editorConfig = {
 	plugins: [ Clipboard, PasteFromOffice ]
 };
 
-describe( 'Paste from Office', () => {
+describe( 'PasteFromOffice - normalization', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'normalization',
@@ -45,6 +45,13 @@ describe( 'Paste from Office', () => {
 
 	generateTests( {
 		input: 'spacing',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
+
+	generateTests( {
+		input: 'google-docs-bold-wrapper',
 		type: 'normalization',
 		browsers,
 		editorConfig

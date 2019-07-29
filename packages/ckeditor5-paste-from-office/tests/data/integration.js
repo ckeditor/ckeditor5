@@ -22,7 +22,7 @@ import { generateTests } from '../_utils/utils';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
-describe( 'Paste from Office', () => {
+describe( 'PasteFromOffice - integration', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'integration',
@@ -80,6 +80,15 @@ describe( 'Paste from Office', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, Italic, Underline, PasteFromOffice ]
+		}
+	} );
+
+	generateTests( {
+		input: 'google-docs-bold-wrapper',
+		type: 'integration',
+		browsers,
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice ]
 		}
 	} );
 } );

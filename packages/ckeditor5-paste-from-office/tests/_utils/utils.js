@@ -8,11 +8,15 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { fixtures, browserFixtures } from './fixtures';
+
+const htmlDataProcessor = new HtmlDataProcessor();
 
 /**
  * Mocks dataTransfer object which can be used for simulating paste.
@@ -124,6 +128,8 @@ function groupFixturesByBrowsers( browsers, fixturesGroup, skipBrowsers ) {
 }
 
 // Generates normalization tests based on a provided fixtures. For each input fixture one test is generated.
+// Please notice that normalization compares generated Views, not DOM. That's why there might appear some not familiar structures,
+// like closing tags for void tags, for example `<br></br>`.
 //
 // @param {String} title Tests group title.
 // @param {Object} fixtures Object containing fixtures.
@@ -131,32 +137,39 @@ function groupFixturesByBrowsers( browsers, fixturesGroup, skipBrowsers ) {
 // @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
 function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 	describe( title, () => {
-		let editor, pasteFromOfficePlugin;
+		let editor;
 
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( editorConfig )
 				.then( newEditor => {
 					editor = newEditor;
-
-					pasteFromOfficePlugin = editor.plugins.get( 'PasteFromOffice' );
 				} );
 		} );
 
 		afterEach( () => {
 			editor.destroy();
-
-			pasteFromOfficePlugin = null;
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+				// Simulate data from Clipboard event
+				const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
 				const dataTransfer = createDataTransfer( {
+					'text/html': fixtures.input[ name ],
 					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
 				} );
 
+				// data.content might be completely overwritten with a new object, so we need obtain final result for comparison.
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					evt.return = data.content;
+				}, { priority: 'lowest' } );
+
+				const transformedContent = clipboardPlugin.fire( 'inputTransformation', { content, dataTransfer } );
+
 				expectNormalized(
-					pasteFromOfficePlugin._normalizeWordInput( fixtures.input[ name ], dataTransfer ),
+					transformedContent,
 					fixtures.normalized[ name ]
 				);
 			} );
