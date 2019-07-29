@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { transform } from '../../../src/model/operation/transform';
-import { transformSets } from '@ckeditor/ckeditor5-engine/src/model/operation/transform';
+import { transform, transformSets } from '../../../src/model/operation/transform';
 
 import Model from '../../../src/model/model';
 import RootElement from '../../../src/model/rootelement';
