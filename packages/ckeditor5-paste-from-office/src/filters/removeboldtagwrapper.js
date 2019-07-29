@@ -13,12 +13,12 @@
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  */
 export default function removeBoldTagWrapper( { documentFragment, writer } ) {
-	for ( const childWithWrapper of documentFragment.getChildren() ) {
-		if ( childWithWrapper.is( 'b' ) && childWithWrapper.getStyle( 'font-weight' ) === 'normal' ) {
-			const childIndex = documentFragment.getChildIndex( childWithWrapper );
-			const removedElement = writer.remove( childWithWrapper )[ 0 ];
+	for ( const child of documentFragment.getChildren() ) {
+		if ( child.is( 'b' ) && child.getStyle( 'font-weight' ) === 'normal' ) {
+			const childIndex = documentFragment.getChildIndex( child );
 
-			writer.insertChild( childIndex, removedElement.getChildren(), documentFragment );
+			writer.remove( child );
+			writer.insertChild( childIndex, child.getChildren(), documentFragment );
 		}
 	}
 }
