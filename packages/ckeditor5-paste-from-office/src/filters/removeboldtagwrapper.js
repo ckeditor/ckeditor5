@@ -4,7 +4,7 @@
  */
 
 /**
- * @module paste-from-office/filters/common
+ * @module paste-from-office/filters/removeboldtagwrapper
  */
 
 /**
@@ -12,7 +12,7 @@
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  */
-export function removeBoldTagWrapper( { documentFragment, writer } ) {
+export default function removeBoldTagWrapper( { documentFragment, writer } ) {
 	for ( const childWithWrapper of documentFragment.getChildren() ) {
 		if ( childWithWrapper.is( 'b' ) && childWithWrapper.getStyle( 'font-weight' ) === 'normal' ) {
 			const childIndex = documentFragment.getChildIndex( childWithWrapper );

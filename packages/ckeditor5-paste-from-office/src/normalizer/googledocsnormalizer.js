@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizer/googledocsnormalizer
  */
 
-import { removeBoldTagWrapper } from '../filters/common';
+import removeBoldTagWrapper from '../filters/removeboldtagwrapper';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
