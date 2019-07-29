@@ -40,62 +40,86 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	describe( 'isTransformedWithPasteFromOffice - flag', () => {
-		it( 'should process data with microsoft word header', () => {
-			checkDataProcessing( '<meta name=Generator content="Microsoft Word 15">', true );
+		describe( 'data which should be marked with flag', () => {
+			it( 'should process data with microsoft word header', () => {
+				checkCorrectData( '<meta name=Generator content="Microsoft Word 15">' );
+			} );
+
+			it( 'should process data with nested microsoft header', () => {
+				checkCorrectData( '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>' );
+			} );
+
+			it( 'should process data from google docs', () => {
+				checkCorrectData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
+			} );
+
+			function checkCorrectData( inputString ) {
+				const data = setUpData( inputString );
+				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+
+				clipboard.fire( 'inputTransformation', data );
+
+				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				sinon.assert.called( getDataSpy );
+			}
 		} );
 
-		it( 'should process data with nested microsoft header', () => {
-			checkDataProcessing( '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>', true );
+		describe( 'data which should not be marked with flag', () => {
+			it( 'should not process data with regular html', () => {
+				checkInvalidData( '<p>Hello world</p>' );
+			} );
+
+			it( 'should not process data with similar headers to MS Word', () => {
+				checkInvalidData( '<meta name=Generator content="Other">' );
+			} );
+
+			function checkInvalidData( inputString ) {
+				const data = setUpData( inputString );
+				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+
+				clipboard.fire( 'inputTransformation', data );
+
+				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+				sinon.assert.called( getDataSpy );
+			}
 		} );
 
-		it( 'should process data from google docs', () => {
-			checkDataProcessing( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>', true );
-		} );
+		describe( 'data which already have the flag', () => {
+			it( 'should not process again ms word data containing a flag', () => {
+				checkAlreadyProcessedData( '<meta name=Generator content="Microsoft Word 15">' +
+					'<p class="MsoNormal">Hello world<o:p></o:p></p>' );
+			} );
 
-		it( 'should not process data with regular html', () => {
-			checkDataProcessing( '<p>Hello world</p>', false );
-		} );
+			it( 'should not process again google docs data containing a flag', () => {
+				checkAlreadyProcessedData( '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
+					'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>' );
+			} );
 
-		it( 'should not process data with similar headers to MS Word', () => {
-			checkDataProcessing( '<meta name=Generator content="Other">', false );
-		} );
+			function checkAlreadyProcessedData( inputString ) {
+				const data = setUpData( inputString, true );
+				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 
-		it( 'should not process again ms word data containing a flag', () => {
-			checkDataProcessing( '<meta name=Generator content="Microsoft Word 15"><p class="MsoNormal">Hello world<o:p></o:p></p>',
-				false, true );
-		} );
+				clipboard.fire( 'inputTransformation', data );
 
-		it( 'should not process again google docs data containing a flag', () => {
-			checkDataProcessing( '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
-				'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>', false, true );
+				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				sinon.assert.notCalled( getDataSpy );
+			}
 		} );
 	} );
 
 	// @param {String} inputString html to be processed by paste from office
-	// @param {Boolean} shouldBeProcessed determines if data should be marked as processed with isTransformedWithPasteFromOffice flag
-	// @param {Boolean} [isAlreadyProcessed=false] apply flag before paste from office plugin will transform the data object
-	function checkDataProcessing( inputString, shouldBeProcessed, isAlreadyProcessed = false ) {
+	// @param {Boolean} [isTransformedWithPasteFromOffice=false] if set, marks output data with isTransformedWithPasteFromOffice flag
+	// @returns {Object} data object simulating content obtained from the clipboard
+	function setUpData( inputString, isTransformedWithPasteFromOffice = false ) {
 		const data = {
 			content: htmlDataProcessor.toView( inputString ),
 			dataTransfer: createDataTransfer( { 'text/html': inputString } )
 		};
-		const getData = sinon.spy( data.dataTransfer, 'getData' );
 
-		if ( isAlreadyProcessed ) {
+		if ( isTransformedWithPasteFromOffice ) {
 			data.isTransformedWithPasteFromOffice = true;
 		}
 
-		clipboard.fire( 'inputTransformation', data );
-
-		if ( shouldBeProcessed ) {
-			expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-			sinon.assert.called( getData );
-		} else if ( isAlreadyProcessed ) {
-			expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-			sinon.assert.notCalled( getData );
-		} else {
-			expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
-			sinon.assert.called( getData );
-		}
+		return data;
 	}
 } );
