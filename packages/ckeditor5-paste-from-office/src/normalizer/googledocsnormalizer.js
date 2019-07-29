@@ -11,7 +11,7 @@ import { removeBoldTagWrapper } from '../filters/common';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
- * Normalizer fixing HTML syntax obtained from Google Docs.
+ * Normalizer for the content pasted from Google Docs.
  *
  * @implements module:paste-from-office/normalizer~Normalizer
  */

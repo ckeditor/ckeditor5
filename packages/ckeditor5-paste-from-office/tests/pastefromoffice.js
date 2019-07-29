@@ -26,11 +26,11 @@ describe( 'PasteFromOffice', () => {
 			} );
 	} );
 
-	it( 'is Paste from Office', () => {
+	it( 'should be loaded', () => {
 		expect( pasteFromOffice ).to.be.instanceOf( PasteFromOffice );
 	} );
 
-	it( 'should have static name', () => {
+	it( 'has proper name', () => {
 		expect( PasteFromOffice.pluginName ).to.equal( 'PasteFromOffice' );
 	} );
 

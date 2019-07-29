@@ -12,7 +12,7 @@ import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
 
 /**
- * Normalizer fixing HTML syntax obtained from Microsoft Word documents.
+ * Normalizer for the content pasted from Microsoft Word.
  *
  * @implements module:paste-from-office/normalizer~Normalizer
  */

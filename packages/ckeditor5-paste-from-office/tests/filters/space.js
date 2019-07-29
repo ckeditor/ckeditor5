@@ -7,7 +7,7 @@
 
 import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space';
 
-describe( 'PasteFromOffice/filters', () => {
+describe( 'PasteFromOffice - filters', () => {
 	describe( 'space', () => {
 		describe( 'normalizeSpacing()', () => {
 			it( 'should replace last space before closing tag with NBSP', () => {

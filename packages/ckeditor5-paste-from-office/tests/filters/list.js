@@ -9,7 +9,7 @@ import View from '@ckeditor/ckeditor5-engine/src/view/view';
 
 import { transformListItemLikeElementsIntoLists } from '../../src/filters/list';
 
-describe( 'PasteFromOffice/filters', () => {
+describe( 'PasteFromOffice - filters', () => {
 	describe( 'list', () => {
 		const htmlDataProcessor = new HtmlDataProcessor();
 

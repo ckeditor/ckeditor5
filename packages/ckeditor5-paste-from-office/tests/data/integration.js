@@ -22,7 +22,7 @@ import { generateTests } from '../_utils/utils';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
-describe( 'PasteFromOffice/data - automatic', () => {
+describe( 'PasteFromOffice - integration', () => {
 	generateTests( {
 		input: 'basic-styles',
 		type: 'integration',

@@ -19,9 +19,9 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
  * This plugin handles content pasted from Office apps and transforms it (if necessary)
  * to a valid structure which can then be understood by the editor features.
  *
- * Transformation is made by a set of predefined {@link module:paste-from-office/normalizer~Normalizer}.
- * Currently, there are included followed normalizers:
- *   * {@link module:paste-from-office/normalizer/mswordnormalizer~MSWordNormalizer MS Word normalizer}
+ * Transformation is made by a set of predefined {@link module:paste-from-office/normalizer~Normalizer normalizers}.
+ * This plugin includes following normalizers:
+ *   * {@link module:paste-from-office/normalizer/mswordnormalizer~MSWordNormalizer Microsoft Word normalizer}
  *   * {@link module:paste-from-office/normalizer/googledocsnormalizer~GoogleDocsNormalizer Google Docs normalizer}
  *
  * For more information about this feature check the {@glink api/paste-from-office package page}.

@@ -7,7 +7,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import { removeBoldTagWrapper } from '../../src/filters/common';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
-describe( 'PasteFromOffice/filters', () => {
+describe( 'PasteFromOffice - filters', () => {
 	const htmlDataProcessor = new HtmlDataProcessor();
 	describe( 'common', () => {
 		describe( 'removeBoldTagWrapper', () => {
