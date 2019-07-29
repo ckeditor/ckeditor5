@@ -7,6 +7,12 @@
  * @module paste-from-office/filters/common
  */
 
+/**
+ * Removes paragraph wrapping content inside list item.
+ *
+ * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
+ * @param {module:engine/view/upcastwriter~UpcastWriter} writer
+ */
 export function unwrapParagraph( elementOrDocumentFragment, writer ) {
 	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
 
@@ -25,6 +31,12 @@ export function unwrapParagraph( elementOrDocumentFragment, writer ) {
 	}
 }
 
+/**
+ * Moves nested list inside previous sibling element, what is an HTML standard.
+ *
+ * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
+ * @param {module:engine/view/upcastwriter~UpcastWriter} writer
+ */
 export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
 	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
 

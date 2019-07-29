@@ -37,7 +37,7 @@ export default class GoogleDocsNormalizer {
 
 		removeBoldWrapper( data.content, writer );
 
-		unwrapParagraph( data.content, writer );
 		moveNestedListToListItem( data.content, writer );
+		unwrapParagraph( data.content, writer );
 	}
 }
