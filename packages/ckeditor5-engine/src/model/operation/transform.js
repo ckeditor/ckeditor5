@@ -155,17 +155,15 @@ export function transformSets( operationsA, operationsB, options ) {
 	operationsA = operationsA.slice();
 	operationsB = operationsB.slice();
 
-	const originalOperations = new Map();
-	const receivedOperations = operationsA.concat( operationsB );
-
-	for ( const operation of receivedOperations ) {
-		const originalOperation = this._originalOperations.get( operation );
-
-		originalOperations.set( operation, originalOperation );
-	}
-
 	// If one of sets is empty there is simply nothing to transform, so return sets as they are.
 	if ( operationsA.length == 0 || operationsB.length == 0 ) {
+		const originalOperations = new Map();
+		const receivedOperations = operationsA.concat( operationsB );
+
+		for ( const operation of receivedOperations ) {
+			originalOperations.set( operation, operation );
+		}
+
 		return { operationsA, operationsB, originalOperations };
 	}
 	//
@@ -379,6 +377,8 @@ export function transformSets( operationsA, operationsB, options ) {
 		padWithNoOps( operationsB, brokenOperationsACount - brokenOperationsBCount );
 	}
 
+	const originalOperations = contextFactory.originalOperations;
+
 	// Finally, update base versions of transformed operations.
 	updateBaseVersions( operationsA, data.nextBaseVersionB );
 	updateBaseVersions( operationsB, data.nextBaseVersionA );
@@ -410,7 +410,7 @@ class ContextFactory {
 		// gathered during transformation that we want to save for given operation, is actually saved for the original operation.
 		// This way no matter if operation `a` is cloned, then transformed, even breaks, we still have access to the previously
 		// gathered data through original operation reference.
-		this._originalOperations = new Map();
+		this.originalOperations = new Map();
 
 		// Relations is a double-map structure (maps in map) where for two operations we store how those operations were related
 		// to each other. Those relations are evaluated during transformation process. For every transformated pair of operations
@@ -437,10 +437,10 @@ class ContextFactory {
 	// @param {Array.<module:engine/model/operation/operation~Operation>} operations
 	// @param {module:engine/model/operation/operation~Operation|null} [takeFrom=null]
 	setOriginalOperations( operations, takeFrom = null ) {
-		const originalOperation = takeFrom ? this._originalOperations.get( takeFrom ) : null;
+		const originalOperation = takeFrom ? this.originalOperations.get( takeFrom ) : null;
 
 		for ( const operation of operations ) {
-			this._originalOperations.set( operation, originalOperation || operation );
+			this.originalOperations.set( operation, originalOperation || operation );
 		}
 	}
 
@@ -614,7 +614,7 @@ class ContextFactory {
 		// For `op`, get its original operation. After all, if `op` is a clone (or even transformed clone) of another
 		// operation, literally `op` couldn't be undone. It was just generated. If anything, it was the operation it origins
 		// from which was undone. So get that original operation.
-		const originalOp = this._originalOperations.get( op );
+		const originalOp = this.originalOperations.get( op );
 
 		// And check with the document if the original operation was undone.
 		return originalOp.wasUndone || this._history.isUndoneOperation( originalOp );
@@ -646,7 +646,7 @@ class ContextFactory {
 	// @returns {String|null}
 	_getRelation( opA, opB ) {
 		// Get the original operation. Similarly as in `wasUndone()` it is used as an universal identifier for stored data.
-		const origB = this._originalOperations.get( opB );
+		const origB = this.originalOperations.get( opB );
 		const undoneB = this._history.getUndoneOperation( origB );
 
 		// If `opB` is not undoing any operation, there is no relation.
@@ -654,7 +654,7 @@ class ContextFactory {
 			return null;
 		}
 
-		const origA = this._originalOperations.get( opA );
+		const origA = this.originalOperations.get( opA );
 		const relationsA = this._relations.get( origA );
 
 		// Get all relations for `opA`, and check if there is a relation with `opB`-undone-counterpart. If so, return it.
@@ -673,8 +673,8 @@ class ContextFactory {
 	// @param {String} relation
 	_setRelation( opA, opB, relation ) {
 		// As always, setting is for original operations, not the clones/transformed operations.
-		const origA = this._originalOperations.get( opA );
-		const origB = this._originalOperations.get( opB );
+		const origA = this.originalOperations.get( opA );
+		const origB = this.originalOperations.get( opB );
 
 		let relationsA = this._relations.get( origA );
 
