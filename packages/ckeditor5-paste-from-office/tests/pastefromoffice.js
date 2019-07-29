@@ -91,8 +91,8 @@ describe( 'PasteFromOffice', () => {
 		describe( 'already processed data', () => {
 			[
 				{
-					// eslint-disable-next-line max-len
-					'text/html': '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab" style="font-weight:normal;"><p dir="ltr">Hello world</p></b>'
+					'text/html': '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
+						'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>'
 				},
 				{
 					'text/html': '<meta name=Generator content="Microsoft Word 15"><p class="MsoNormal">Hello world<o:p></o:p></p>'

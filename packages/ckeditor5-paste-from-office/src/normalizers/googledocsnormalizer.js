@@ -10,6 +10,8 @@
 import removeBoldWrapper from '../filters/removeboldwrapper';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
+const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
+
 /**
  * Normalizer for the content pasted from Google Docs.
  *
@@ -20,7 +22,7 @@ export default class GoogleDocsNormalizer {
 	 * @inheritDoc
 	 */
 	isActive( htmlString ) {
-		return /id=("|')docs-internal-guid-[-0-9a-f]+("|')/.test( htmlString );
+		return googleDocsMatch.test( htmlString );
 	}
 
 	/**

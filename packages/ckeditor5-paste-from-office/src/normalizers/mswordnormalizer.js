@@ -11,6 +11,9 @@ import { parseHtml } from '../filters/parse';
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
 
+const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
+const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
+
 /**
  * Normalizer for the content pasted from Microsoft Word.
  *
@@ -21,8 +24,7 @@ export default class MSWordNormalizer {
 	 * @inheritDoc
 	 */
 	isActive( htmlString ) {
-		return /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i.test( htmlString ) ||
-				/xmlns:o="urn:schemas-microsoft-com/i.test( htmlString );
+		return msWordMatch1.test( htmlString ) || msWordMatch2.test( htmlString );
 	}
 
 	/**
