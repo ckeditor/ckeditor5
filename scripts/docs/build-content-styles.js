@@ -11,7 +11,8 @@ const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
-const VARIABLE_REGEXP = /(--[\w-]+):\s+(.*);/g;
+const VARIABLE_DEFINITION_REGEXP = /(--[\w-]+):\s+(.*);/g;
+const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
 
 const contentRules = {
 	selector: [],
@@ -23,29 +24,28 @@ const parentCwd = path.join( process.cwd(), '..' );
 
 runWebpack( webpackConfig )
 	.then( () => {
-		// All variables are placed inside `:root` selector.
-		const variablesCss = contentRules.variables
+		// All variables are placed inside `:root` selector. Let's extract their names and values as a map.
+		const cssVariables = new Map( contentRules.variables
 			.map( rule => {
-				// Let's extract all of them as an array of simple strings.
+				// Let's extract all of them as an array of pairs: [ name, value ]
 				const allRules = [];
 				let match;
 
-				while ( ( match = VARIABLE_REGEXP.exec( rule.css ) ) ) {
-					allRules.push( `${ match[ 1 ] }: ${ match[ 2 ] };` );
+				while ( ( match = VARIABLE_DEFINITION_REGEXP.exec( rule.css ) ) ) {
+					allRules.push( [ match[ 1 ], match[ 2 ] ] );
 				}
 
 				return allRules;
 			} )
 			.reduce( ( previousValue, currentValue ) => {
-				// And simplify nested arrays as a single array.
+				// And simplify nested arrays as a flattened array.
 				previousValue.push( ...currentValue );
 
 				return previousValue;
-			}, [] )
-			.map( rule => {
-				return `\t${ rule }`;
-			} )
-			.join( '\n' );
+			}, [] ) );
+
+		// CSS variables that are used by the `.ck-content` selector.
+		const usedVariables = new Set();
 
 		const selectorCss = contentRules.selector
 			.map( rule => {
@@ -77,7 +77,47 @@ runWebpack( webpackConfig )
 			} )
 			.join( '\n' );
 
-		const data = `:root {\n${ variablesCss }\n}\n\n${ selectorCss }`;
+		// Find all CSS variables inside `.ck-content` selector.
+		let match;
+
+		while ( ( match = VARIABLE_USAGE_REGEXP.exec( selectorCss ) ) ) {
+			usedVariables.add( match[ 1 ] );
+		}
+
+		// We need to also look at whether any of the used variables requires the value of other variables.
+		let clearRun = false;
+
+		// We need to process all variables as long as the entire collection won't be changed.
+		while ( !clearRun ) {
+			clearRun = true;
+
+			// For the every used variable...
+			for ( const variable of usedVariables ) {
+				const value = cssVariables.get( variable );
+
+				let match;
+
+				// ...find its value and check whether it requires another variable.
+				while ( ( match = VARIABLE_USAGE_REGEXP.exec( value ) ) ) {
+					// If so, mark the entire `while()` block should be run once again.
+					// Also, add the new variable to used variables collection.
+					if ( !usedVariables.has( match[ 1 ] ) ) {
+						clearRun = false;
+						usedVariables.add( match[ 1 ] );
+					}
+				}
+			}
+		}
+
+		// Build the final content of the CSS file.
+		let data = ':root {\n';
+
+		for ( const variable of [ ...usedVariables ].sort() ) {
+			data += `\t${ variable }: ${ cssVariables.get( variable ) };\n`;
+		}
+
+		data += '}\n\n';
+		data += selectorCss;
 
 		return writeFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ), data );
 	} )
