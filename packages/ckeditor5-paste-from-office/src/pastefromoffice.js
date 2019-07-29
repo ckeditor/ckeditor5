@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import GoogleDocsNormalizer from './normalizer/googledocsnormalizer';
-import MSWordNormalizer from './normalizer/mswordnormalizer';
+import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
+import MSWordNormalizer from './normalizers/mswordnormalizer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 /**

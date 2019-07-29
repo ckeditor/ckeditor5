@@ -4,7 +4,7 @@
  */
 
 /**
- * @module paste-from-office/normalizer/mswordnormalizer
+ * @module paste-from-office/normalizers/mswordnormalizer
  */
 
 import { parseHtml } from '../filters/parse';

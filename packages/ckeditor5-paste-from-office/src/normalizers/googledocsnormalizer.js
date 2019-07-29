@@ -4,7 +4,7 @@
  */
 
 /**
- * @module paste-from-office/normalizer/googledocsnormalizer
+ * @module paste-from-office/normalizers/googledocsnormalizer
  */
 
 import removeBoldWrapper from '../filters/removeboldwrapper';
