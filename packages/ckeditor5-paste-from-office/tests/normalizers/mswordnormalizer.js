@@ -10,26 +10,23 @@ describe( 'MSWordNormalizer', () => {
 	const normalizer = new MSWordNormalizer();
 
 	describe( 'isActive()', () => {
-		describe( 'correct data set', () => {
-			[
-				'<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>',
-				'<meta name=Generator content="Microsoft Word 15">'
-			].forEach( ( htmlString, index ) => {
-				it( `should be active for: #${ index } data set`, () => {
-					expect( normalizer.isActive( htmlString ) ).to.be.true;
-				} );
-			} );
+		it( 'should return true for microsoft word content', () => {
+			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>' ) ).to.be.true;
 		} );
 
-		describe( 'wrong data set', () => {
-			[
-				'<p>foo</p>',
-				'<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>'
-			].forEach( ( htmlString, index ) => {
-				it( `should be inactive to for: #${ index } data set`, () => {
-					expect( normalizer.isActive( htmlString ) ).to.be.false;
-				} );
-			} );
+		it( 'should return true for microsoft word content - safari', () => {
+			expect( normalizer.isActive( '<html xmlns:o="urn:schemas-microsoft-com:office:office"' +
+				'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
+				'xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" ' +
+				'xmlns="http://www.w3.org/TR/REC-html40">' ) ).to.be.true;
+		} );
+
+		it( 'should return false for google docs content', () => {
+			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).to.be.false;
+		} );
+
+		it( 'should return false for content fromother sources', () => {
+			expect( normalizer.isActive( '<p>foo</p>' ) ).to.be.false;
 		} );
 	} );
 } );

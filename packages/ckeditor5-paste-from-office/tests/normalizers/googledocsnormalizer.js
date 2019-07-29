@@ -10,24 +10,16 @@ describe( 'GoogleDocsNormalizer', () => {
 	const normalizer = new GoogleDocsNormalizer();
 
 	describe( 'isActive()', () => {
-		describe( 'correct data set', () => {
-			it( 'should be active for google docs data', () => {
-				const gDocs = '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>';
-
-				expect( normalizer.isActive( gDocs ) ).to.be.true;
-			} );
+		it( 'should return true from google docs content', () => {
+			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).to.be.true;
 		} );
 
-		describe( 'wrong data set', () => {
-			[
-				'<p>foo</p>',
-				'<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>',
-				'<meta name=Generator content="Microsoft Word 15">'
-			].forEach( ( htmlString, index ) => {
-				it( `should be inactive for: #${ index } data set`, () => {
-					expect( normalizer.isActive( htmlString ) ).to.be.false;
-				} );
-			} );
+		it( 'should return false for microsoft word content', () => {
+			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Word 15"><p>Foo bar</p>' ) ).to.be.false;
+		} );
+
+		it( 'should return false for content form other sources', () => {
+			expect( normalizer.isActive( '<p>foo</p>' ) ).to.be.false;
 		} );
 	} );
 } );
