@@ -107,7 +107,7 @@ export default class WordCount extends Plugin {
 		this._outputView;
 
 		/**
-		 * The regular expression used to recognize words in the editor's content.
+		 * A regular expression used to recognize words in the editor's content.
 		 *
 		 * @readonly
 		 * @private
@@ -240,7 +240,7 @@ export default class WordCount extends Plugin {
 
 	/**
 	 * Determines the number of words and characters in the current editor's model and assigns it to {@link #characters} and {@link #words}.
-	 * It also fires an {@link #event:update}.
+	 * It also fires the {@link #event:update}.
 	 *
 	 * @private
 	 * @fires update
