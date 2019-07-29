@@ -8,22 +8,17 @@
  */
 
 /**
- * Normalizer interface is a description of a mechanism which transforms input data send through
- * an {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. Input data is transformed
- * for paste event came from office-like applications, for example, MS Word, Google Docs, etc. These applications generate content,
- * which frequently has an invalid HTML syntax. Normalizers detect environment-specific quirks and transform it into proper HTML syntax,
- * what later might be correctly upcast to the {@link module:engine/model/model~Model}.
+ * Interface defining a content transformation pasted from an external editor.
  *
- * Normalizers are registered by {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin. Each instance has the
- * {@link #isActive} method, which checks if given normalizer should be applied for current data content. It is chosen first active
- * normalizer for the transformation process. If there is none, then data remain untouched.
+ * Normalizers are registered by the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin and run on
+ * {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. They detect environment-specific
+ * quirks and transform it into a form compatible with other CKEditor features.
  *
  * @interface Normalizer
  */
 
 /**
- * Method determines if current normalizer should be run for given content. It takes an HTML string from `data.dataTransfer` as an argument
- * and it should return a boolean value.
+ * Must return `true` if the `htmlString` contains content which this normalizer can transform.
  *
  * @method #isActive
  * @param {String} htmlString full content of `dataTransfer.getData( 'text/html' )`
@@ -31,9 +26,9 @@
  */
 
 /**
- * Method applies normalization to given data.
+ * Executes the normalization of a given data.
  *
  * @method #exec
  * @param {Object} data object obtained from
- * {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}
+ * {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}.
  */
