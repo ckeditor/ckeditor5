@@ -13,6 +13,9 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -24,7 +27,7 @@ describe( 'WordCount', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ WordCount, Paragraph ]
+			plugins: [ WordCount, Paragraph, ShiftEnter, TableEditing ]
 		} )
 			.then( _editor => {
 				editor = _editor;
@@ -56,9 +59,9 @@ describe( 'WordCount', () => {
 			setModelData( model, '<paragraph>Foo(bar)baz</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' +
 				'<paragraph>1234</paragraph>' +
-				'<paragraph>(-@#$%^*())</paragraph>' );
+				'<paragraph>(@#$%^*())</paragraph>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( wordCountPlugin.words ).to.equal( 6 );
 		} );
@@ -66,9 +69,65 @@ describe( 'WordCount', () => {
 		it( 'counts characters', () => {
 			setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
 			expect( wordCountPlugin.characters ).to.equal( 12 );
+		} );
+
+		it( 'should not count enter as a character', () => {
+			expect( wordCountPlugin.characters ).to.equal( 0 );
+
+			setModelData( model, '<paragraph>Fo<softBreak></softBreak>o</paragraph>' +
+				'<paragraph>Foo</paragraph>' +
+				'<table>' +
+				'<tableRow>' +
+					'<tableCell></tableCell><tableCell></tableCell><tableCell></tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell></tableCell><tableCell><paragraph>foo</paragraph></tableCell><tableCell></tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell></tableCell><tableCell></tableCell><tableCell></tableCell>' +
+				'</tableRow>' +
+				'</table>' );
+
+			wordCountPlugin._refreshStats();
+
+			expect( wordCountPlugin.characters ).to.equal( 9 );
+		} );
+
+		it( 'should count international words', function() {
+			if ( !env.features.isRegExpUnicodePropertySupported ) {
+				this.skip();
+			}
+
+			expect( wordCountPlugin.words ).to.equal( 0 );
+
+			setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
+			wordCountPlugin._refreshStats();
+
+			expect( wordCountPlugin.words ).to.equal( 6 );
+		} );
+
+		describe( 'ES2018 RegExp Unicode property fallback', () => {
+			const originalPropertiesSupport = env.features.isRegExpUnicodePropertySupported;
+
+			before( () => {
+				env.features.isRegExpUnicodePropertySupported = false;
+			} );
+
+			after( () => {
+				env.features.isRegExpUnicodePropertySupported = originalPropertiesSupport;
+			} );
+
+			it( 'should use different regexp when unicode properties are not supported', () => {
+				expect( wordCountPlugin.words ).to.equal( 0 );
+
+				setModelData( model, '<paragraph>hello world.</paragraph>' );
+				wordCountPlugin._refreshStats();
+
+				expect( wordCountPlugin.words ).to.equal( 2 );
+			} );
 		} );
 
 		describe( 'update event', () => {
@@ -76,14 +135,14 @@ describe( 'WordCount', () => {
 				const fake = sinon.fake();
 				wordCountPlugin.on( 'update', fake );
 
-				wordCountPlugin._calculateWordsAndCharacters();
+				wordCountPlugin._refreshStats();
 
 				sinon.assert.calledOnce( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 0, characters: 0 } );
 
-				// _calculateWordsAndCharacters is throttled, so for this test case is run manually
+				// _refreshStats is throttled, so for this test case is run manually
 				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				wordCountPlugin._calculateWordsAndCharacters();
+				wordCountPlugin._refreshStats();
 
 				sinon.assert.calledTwice( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 2, characters: 12 } );
@@ -120,10 +179,9 @@ describe( 'WordCount', () => {
 			setModelData( model, '<paragraph>Foo(bar)baz</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
-			wordCountPlugin._calculateWordsAndCharacters();
+			wordCountPlugin._refreshStats();
 
-			// There is \n between paragraph which has to be included into calculations
-			expect( container.innerText ).to.equal( 'Words: 5Characters: 24' );
+			expect( container.innerText ).to.equal( 'Words: 5Characters: 23' );
 		} );
 
 		it( 'subsequent calls provides the same element', () => {
@@ -170,7 +228,7 @@ describe( 'WordCount', () => {
 		} );
 	} );
 
-	describe( '_calculateWordsAndCharacters and throttle', () => {
+	describe( '_refreshStats and throttle', () => {
 		beforeEach( done => {
 			// We need to flush initial throttle value after editor's initialization
 			setTimeout( done, DELAY );

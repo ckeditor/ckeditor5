@@ -12,6 +12,7 @@ import { modelElementToPlainText } from './utils';
 import { throttle, isElement } from 'lodash-es';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * The word count plugin.
@@ -104,6 +105,24 @@ export default class WordCount extends Plugin {
 		 * @type {module:ui/view~View}
 		 */
 		this._outputView;
+
+		/**
+		 * A regular expression used to recognize words in the editor's content.
+		 *
+		 * @readonly
+		 * @private
+		 * @type {RegExp}
+		 */
+		this._wordsMatchRegExp = env.features.isRegExpUnicodePropertySupported ?
+			// Usage of regular expression literal cause error during build (ckeditor/ckeditor5-dev#534).
+			// Groups:
+			// {L} - Any kind of letter from any language.
+			// {N} - Any kind of numeric character in any script.
+			// {M} - A character intended to be combined with another character (e.g. accents, umlauts, enclosing boxes, etc.).
+			// {Pd} - Any kind of hyphen or dash.
+			// {Pc} - A punctuation character such as an underscore that connects words.
+			new RegExp( '[\\p{L}\\p{N}\\p{M}\\p{Pd}\\p{Pc}]+', 'gu' ) :
+			/[_\-a-zA-Z0-9À-ž]+/gu;
 	}
 
 	/**
@@ -119,7 +138,7 @@ export default class WordCount extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.model.document.on( 'change:data', throttle( this._calculateWordsAndCharacters.bind( this ), 250 ) );
+		editor.model.document.on( 'change:data', throttle( this._refreshStats.bind( this ), 250 ) );
 
 		if ( typeof this._config.onUpdate == 'function' ) {
 			this.on( 'update', ( evt, data ) => {
@@ -221,17 +240,17 @@ export default class WordCount extends Plugin {
 
 	/**
 	 * Determines the number of words and characters in the current editor's model and assigns it to {@link #characters} and {@link #words}.
-	 * It also fires {@link #event:update}.
+	 * It also fires the {@link #event:update}.
 	 *
 	 * @private
 	 * @fires update
 	 */
-	_calculateWordsAndCharacters() {
+	_refreshStats() {
 		const txt = modelElementToPlainText( this.editor.model.document.getRoot() );
+		const detectedWords = txt.match( this._wordsMatchRegExp ) || [];
 
-		this.characters = txt.length;
-
-		this.words = ( txt.match( /[_a-zA-Z0-9À-ž]+/gu ) || [] ).length;
+		this.characters = txt.replace( /\n/g, '' ).length;
+		this.words = detectedWords.length;
 
 		this.fire( 'update', {
 			words: this.words,
