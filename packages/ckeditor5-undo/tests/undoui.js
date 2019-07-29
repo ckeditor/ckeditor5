@@ -11,6 +11,9 @@ import UndoUI from '../src/undoui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import undoIcon from '../theme/icons/undo.svg';
+import redoIcon from '../theme/icons/redo.svg';
+
 describe( 'UndoUI', () => {
 	let editor, editorElement;
 
@@ -34,6 +37,66 @@ describe( 'UndoUI', () => {
 
 	testButton( 'undo', 'Undo', 'CTRL+Z' );
 	testButton( 'redo', 'Redo', 'CTRL+Y' );
+
+	describe( 'icons', () => {
+		describe( 'left–to–right UI', () => {
+			it( 'should display the right icon for undo', () => {
+				const undoButton = editor.ui.componentFactory.create( 'undo' );
+
+				expect( undoButton.icon ).to.equal( undoIcon );
+			} );
+
+			it( 'should display the right icon for redo', () => {
+				const redoButton = editor.ui.componentFactory.create( 'redo' );
+
+				expect( redoButton.icon ).to.equal( redoIcon );
+			} );
+		} );
+
+		describe( 'right–to–left UI', () => {
+			it( 'should display the right icon for undo', () => {
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				return ClassicTestEditor
+					.create( element, {
+						plugins: [ UndoEditing, UndoUI ],
+						language: 'ar'
+					} )
+					.then( newEditor => {
+						const undoButton = newEditor.ui.componentFactory.create( 'undo' );
+
+						expect( undoButton.icon ).to.equal( redoIcon );
+
+						return newEditor.destroy();
+					} )
+					.then( () => {
+						element.remove();
+					} );
+			} );
+
+			it( 'should display the right icon for redo', () => {
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				return ClassicTestEditor
+					.create( element, {
+						plugins: [ UndoEditing, UndoUI ],
+						language: 'ar'
+					} )
+					.then( newEditor => {
+						const redoButton = newEditor.ui.componentFactory.create( 'redo' );
+
+						expect( redoButton.icon ).to.equal( undoIcon );
+
+						return newEditor.destroy();
+					} )
+					.then( () => {
+						element.remove();
+					} );
+			} );
+		} );
+	} );
 
 	function testButton( featureName, label, featureKeystroke ) {
 		describe( `${ featureName } button`, () => {

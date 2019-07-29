@@ -24,10 +24,14 @@ export default class UndoUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const locale = editor.locale;
 		const t = editor.t;
 
-		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', undoIcon );
-		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', redoIcon );
+		const localizedUndoIcon = locale.languageDirection == 'ltr' ? undoIcon : redoIcon;
+		const localizedRedoIcon = locale.languageDirection == 'ltr' ? redoIcon : undoIcon;
+
+		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
+		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );
 	}
 
 	/**
