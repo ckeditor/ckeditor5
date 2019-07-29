@@ -10,7 +10,8 @@
 /**
  * Removes `<b>` tag wrapper added by Google Docs to a copied content.
  *
- * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
+ * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment element `data.content` obtained from clipboard
+ * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
 export default function removeBoldWrapper( documentFragment, writer ) {
 	for ( const child of documentFragment.getChildren() ) {
