@@ -11,7 +11,7 @@
  * Normalizer interface is a description of a mechanism which transforms input data send through
  * an {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}. Input data is transformed
  * for paste event came from office-like applications, for example, MS Word, Google Docs, etc. These applications generate content,
- * which frequently has an invalid HTML syntax. Normalizers detects environment-specific quirks and transform it into proper HTML syntax,
+ * which frequently has an invalid HTML syntax. Normalizers detect environment-specific quirks and transform it into proper HTML syntax,
  * what later might be correctly upcast to the {@link module:engine/model/model~Model}.
  *
  * Normalizers are registered by {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin. Each instance has the
