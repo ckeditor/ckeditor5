@@ -99,7 +99,7 @@ runWebpack( webpackConfig )
 
 				// ...find its value and check whether it requires another variable.
 				while ( ( match = VARIABLE_USAGE_REGEXP.exec( value ) ) ) {
-					// If so, mark the entire `while()` block should be run once again.
+					// If so, mark the entire `while()` block as it should be checked once again.
 					// Also, add the new variable to used variables collection.
 					if ( !usedVariables.has( match[ 1 ] ) ) {
 						clearRun = false;
