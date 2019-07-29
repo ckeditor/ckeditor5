@@ -4,12 +4,12 @@
  */
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import removeBoldTagWrapper from '../../src/filters/removeboldtagwrapper';
+import removeBoldWrapper from '../../src/filters/removeboldwrapper';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 describe( 'PasteFromOffice - filters', () => {
 	const htmlDataProcessor = new HtmlDataProcessor();
-	describe( 'removeBoldTagWrapper', () => {
+	describe( 'removeBoldWrapper', () => {
 		let writer;
 
 		before( () => {
@@ -22,7 +22,7 @@ describe( 'PasteFromOffice - filters', () => {
 				'</b>';
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			removeBoldTagWrapper( { documentFragment, writer } );
+			removeBoldWrapper( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>Hello world</p>' );
 		} );
@@ -31,7 +31,7 @@ describe( 'PasteFromOffice - filters', () => {
 			const inputData = '<p id="docs-internal-guid-e4b9bad6-7fff-c086-3135-1234567890ab">Hello world</p>';
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			removeBoldTagWrapper( { documentFragment, writer } );
+			removeBoldWrapper( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<p id="docs-internal-guid-e4b9bad6-7fff-c086-3135-1234567890ab">Hello world</p>' );
@@ -41,7 +41,7 @@ describe( 'PasteFromOffice - filters', () => {
 			const inputData = '<b>Hello world</b>';
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			removeBoldTagWrapper( { documentFragment, writer } );
+			removeBoldWrapper( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<b>Hello world</b>' );

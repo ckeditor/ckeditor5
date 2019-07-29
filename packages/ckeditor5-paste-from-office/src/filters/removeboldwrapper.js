@@ -12,7 +12,7 @@
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  */
-export default function removeBoldTagWrapper( { documentFragment, writer } ) {
+export default function removeBoldWrapper( documentFragment, writer ) {
 	for ( const child of documentFragment.getChildren() ) {
 		if ( child.is( 'b' ) && child.getStyle( 'font-weight' ) === 'normal' ) {
 			const childIndex = documentFragment.getChildIndex( child );

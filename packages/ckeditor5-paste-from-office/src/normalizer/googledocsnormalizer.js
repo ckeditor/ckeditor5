@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizer/googledocsnormalizer
  */
 
-import removeBoldTagWrapper from '../filters/removeboldtagwrapper';
+import removeBoldWrapper from '../filters/removeboldwrapper';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
@@ -29,9 +29,6 @@ export default class GoogleDocsNormalizer {
 	execute( data ) {
 		const writer = new UpcastWriter();
 
-		removeBoldTagWrapper( {
-			writer,
-			documentFragment: data.content
-		} );
+		removeBoldWrapper( data.content, writer );
 	}
 }
