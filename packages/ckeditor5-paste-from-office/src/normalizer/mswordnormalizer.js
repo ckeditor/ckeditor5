@@ -28,7 +28,7 @@ export default class MSWordNormalizer {
 	/**
 	 * @inheritDoc
 	 */
-	exec( data ) {
+	execute( data ) {
 		const html = data.dataTransfer.getData( 'text/html' );
 
 		data.content = normalizeWordInput( html, data.dataTransfer );

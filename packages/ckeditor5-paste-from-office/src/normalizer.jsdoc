@@ -28,7 +28,7 @@
 /**
  * Executes the normalization of a given data.
  *
- * @method #exec
+ * @method #execute
  * @param {Object} data object obtained from
  * {@link module:clipboard/clipboard~Clipboard#event:inputTransformation inputTransformation event}.
  */

@@ -26,7 +26,7 @@ export default class GoogleDocsNormalizer {
 	/**
 	 * @inheritDoc
 	 */
-	exec( data ) {
+	execute( data ) {
 		const writer = new UpcastWriter();
 
 		removeBoldTagWrapper( {
