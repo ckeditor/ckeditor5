@@ -29,25 +29,11 @@ export default class MSWordNormalizer {
 	 * @inheritDoc
 	 */
 	execute( data ) {
-		const html = data.dataTransfer.getData( 'text/html' );
+		const { body, stylesString } = parseHtml( data.dataTransfer.getData( 'text/html' ) );
 
-		data.content = normalizeWordInput( html, data.dataTransfer );
+		transformListItemLikeElementsIntoLists( body, stylesString );
+		replaceImagesSourceWithBase64( body, data.dataTransfer.getData( 'text/rtf' ) );
+
+		data.content = body;
 	}
-}
-
-//
-// Normalizes input pasted from Word to format suitable for editor {@link module:engine/model/model~Model}.
-//
-// @private
-// @param {String} input Word input.
-// @param {module:clipboard/datatransfer~DataTransfer} dataTransfer Data transfer instance.
-// @returns {module:engine/view/documentfragment~DocumentFragment} Normalized input.
-//
-function normalizeWordInput( input, dataTransfer ) {
-	const { body, stylesString } = parseHtml( input );
-
-	transformListItemLikeElementsIntoLists( body, stylesString );
-	replaceImagesSourceWithBase64( body, dataTransfer.getData( 'text/rtf' ) );
-
-	return body;
 }
