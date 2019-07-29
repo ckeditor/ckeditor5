@@ -11,7 +11,6 @@
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { debounce } from 'lodash-es';
 
 /**
@@ -150,15 +149,12 @@ export default class SelectionObserver extends Observer {
 		// This counter is reset each second. 60 selection changes in 1 second is enough high number
 		// to be very difficult (impossible) to achieve using just keyboard keys (during normal editor use).
 		if ( ++this._loopbackCounter > 60 ) {
-			/**
-			 * Selection change observer detected an infinite rendering loop.
-			 * Most probably you try to put the selection in the position which is not allowed
-			 * by the browser and browser fixes it automatically what causes `selectionchange` event on
-			 * which a loopback through a model tries to re-render the wrong selection and again.
-			 *
-			 * @error selectionchange-infinite-loop
-			 */
-			log.warn( 'selectionchange-infinite-loop: Selection change observer detected an infinite rendering loop.' );
+			// Selection change observer detected an infinite rendering loop.
+			// Most probably you try to put the selection in the position which is not allowed
+			// by the browser and browser fixes it automatically what causes `selectionchange` event on
+			// which a loopback through a model tries to re-render the wrong selection and again.
+			//
+			// @if CK_DEBUG // console.warn( 'Selection change observer detected an infinite rendering loop.' );
 
 			return;
 		}

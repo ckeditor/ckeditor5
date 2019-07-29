@@ -111,6 +111,32 @@ export default class Differ {
 	}
 
 	/**
+	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
+	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 *
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
+	refreshItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
+	}
+
+	/**
 	 * Buffers the given operation. An operation has to be buffered before it is executed.
 	 *
 	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
@@ -136,7 +162,7 @@ export default class Differ {
 			case 'addAttribute':
 			case 'removeAttribute':
 			case 'changeAttribute': {
-				for ( const item of operation.range.getItems() ) {
+				for ( const item of operation.range.getItems( { shallow: true } ) ) {
 					if ( this._isInInsertedElement( item.parent ) ) {
 						continue;
 					}
@@ -1086,19 +1112,25 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	for ( const change of changes ) {
 		// First, fill "holes" between changes with "equal" actions.
 		if ( change.offset > offset ) {
-			actions.push( ...'e'.repeat( change.offset - offset ).split( '' ) );
+			for ( let i = 0; i < change.offset - offset; i++ ) {
+				actions.push( 'e' );
+			}
 
 			oldChildrenHandled += change.offset - offset;
 		}
 
 		// Then, fill up actions accordingly to change type.
 		if ( change.type == 'insert' ) {
-			actions.push( ...'i'.repeat( change.howMany ).split( '' ) );
+			for ( let i = 0; i < change.howMany; i++ ) {
+				actions.push( 'i' );
+			}
 
 			// The last handled offset is after inserted range.
 			offset = change.offset + change.howMany;
 		} else if ( change.type == 'remove' ) {
-			actions.push( ...'r'.repeat( change.howMany ).split( '' ) );
+			for ( let i = 0; i < change.howMany; i++ ) {
+				actions.push( 'r' );
+			}
 
 			// The last handled offset is at the position where the nodes were removed.
 			offset = change.offset;
@@ -1117,7 +1149,9 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 	// Fill "equal" actions at the end of actions set. Use `oldChildrenHandled` to see how many children
 	// has not been changed / removed at the end of their parent.
 	if ( oldChildrenHandled < oldChildrenLength ) {
-		actions.push( ...'e'.repeat( oldChildrenLength - oldChildrenHandled ).split( '' ) );
+		for ( let i = 0; i < oldChildrenLength - oldChildrenHandled - offset; i++ ) {
+			actions.push( 'e' );
+		}
 	}
 
 	return actions;
