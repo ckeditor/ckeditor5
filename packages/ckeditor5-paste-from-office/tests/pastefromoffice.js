@@ -11,6 +11,7 @@ import { createDataTransfer } from './_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'PasteFromOffice', () => {
+	const htmlDataProcessor = new HtmlDataProcessor();
 	let editor, pasteFromOffice, clipboard;
 
 	testUtils.createSinonSandbox();
@@ -39,80 +40,63 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	describe( 'isTransformedWithPasteFromOffice - flag', () => {
-		const htmlDataProcessor = new HtmlDataProcessor();
-
-		describe( 'data which should be processed', () => {
-			[
-				{
-					'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
-				},
-				{
-					'text/html': '<meta name=Generator content="Microsoft Word 15">'
-				},
-				{
-					'text/html': '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>'
-				}
-			].forEach( ( inputData, index ) => {
-				it( `should mark data as transformed with paste from office - data set: #${ index }`, () => {
-					const data = {
-						content: htmlDataProcessor.toView( inputData[ 'text/html' ] ),
-						dataTransfer: createDataTransfer( inputData )
-					};
-
-					clipboard.fire( 'inputTransformation', data );
-
-					expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-				} );
-			} );
+		it( 'should process data with microsoft word header', () => {
+			checkDataProcessing( '<meta name=Generator content="Microsoft Word 15">', true );
 		} );
 
-		describe( 'not recognized data', () => {
-			[
-				{
-					'text/html': '<p>Hello world</p>'
-				},
-				{
-					'text/html': '<meta name=Generator content="Other">'
-				}
-			].forEach( ( inputData, index ) => {
-				it( `should not modify data set: #${ index }`, () => {
-					const data = {
-						content: htmlDataProcessor.toView( inputData[ 'text/html' ] ),
-						dataTransfer: createDataTransfer( inputData )
-					};
-
-					clipboard.fire( 'inputTransformation', data );
-
-					expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
-				} );
-			} );
+		it( 'should process data with nested microsoft header', () => {
+			checkDataProcessing( '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>', true );
 		} );
 
-		describe( 'already processed data', () => {
-			[
-				{
-					'text/html': '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
-						'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>'
-				},
-				{
-					'text/html': '<meta name=Generator content="Microsoft Word 15"><p class="MsoNormal">Hello world<o:p></o:p></p>'
-				}
-			].forEach( ( inputData, index ) => {
-				it( `should not modify already processed data: #${ index }`, () => {
-					const data = {
-						content: htmlDataProcessor.toView( inputData[ 'text/html' ] ),
-						dataTransfer: createDataTransfer( inputData ),
-						isTransformedWithPasteFromOffice: true
-					};
+		it( 'should process data from google docs', () => {
+			checkDataProcessing( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>', true );
+		} );
 
-					const getData = sinon.spy( data.dataTransfer, 'getData' );
+		it( 'should not process data with regular html', () => {
+			checkDataProcessing( '<p>Hello world</p>', false );
+		} );
 
-					clipboard.fire( 'inputTransformation', data );
+		it( 'should not process data with similar headers to MS Word', () => {
+			checkDataProcessing( '<meta name=Generator content="Other">', false );
+		} );
 
-					// Data object should not be processed
-					sinon.assert.notCalled( getData );
-				} );
-			} );
+		it( 'should not process again ms word data containing a flag', () => {
+			checkDataProcessing( '<meta name=Generator content="Microsoft Word 15"><p class="MsoNormal">Hello world<o:p></o:p></p>',
+				false, true );
+		} );
+
+		it( 'should not process again google docs data containing a flag', () => {
+			checkDataProcessing( '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
+				'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>', false, true );
 		} );
 	} );
+
+	// @param {String} inputString html to be processed by paste from office
+	// @param {Boolean} shouldBeProcessed determines if data should be marked as processed with isTransformedWithPasteFromOffice flag
+	// @param {Boolean} [isAlreadyProcessed=false] apply flag before paste from office plugin will transform the data object
+	function checkDataProcessing( inputString, shouldBeProcessed, isAlreadyProcessed = false ) {
+		// const htmlDataProcessor = new HtmlDataProcessor();
+		const data = {
+			content: htmlDataProcessor.toView( inputString ),
+			dataTransfer: createDataTransfer( { 'text/html': inputString } )
+		};
+		const getData = sinon.spy( data.dataTransfer, 'getData' );
+
+		if ( isAlreadyProcessed ) {
+			data.isTransformedWithPasteFromOffice = true;
+		}
+
+		clipboard.fire( 'inputTransformation', data );
+
+		if ( shouldBeProcessed ) {
+			expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+			sinon.assert.called( getData );
+		} else if ( isAlreadyProcessed ) {
+			expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+			sinon.assert.notCalled( getData );
+		} else {
+			expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+			sinon.assert.called( getData );
+		}
+	}
 } );
