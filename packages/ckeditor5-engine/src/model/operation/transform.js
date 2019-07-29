@@ -155,9 +155,18 @@ export function transformSets( operationsA, operationsB, options ) {
 	operationsA = operationsA.slice();
 	operationsB = operationsB.slice();
 
+	const originalOperations = new Map();
+	const receivedOperations = operationsA.concat( operationsB );
+
+	for ( const operation of receivedOperations ) {
+		const originalOperation = this._originalOperations.get( operation );
+
+		originalOperations.set( operation, originalOperation );
+	}
+
 	// If one of sets is empty there is simply nothing to transform, so return sets as they are.
 	if ( operationsA.length == 0 || operationsB.length == 0 ) {
-		return { operationsA, operationsB };
+		return { operationsA, operationsB, originalOperations };
 	}
 	//
 	// Following is a description of transformation process:
@@ -374,7 +383,7 @@ export function transformSets( operationsA, operationsB, options ) {
 	updateBaseVersions( operationsA, data.nextBaseVersionB );
 	updateBaseVersions( operationsB, data.nextBaseVersionA );
 
-	return { operationsA, operationsB };
+	return { operationsA, operationsB, originalOperations };
 }
 
 // Gathers additional data about operations processed during transformation. Can be used to obtain contextual information
