@@ -158,9 +158,8 @@ export function transformSets( operationsA, operationsB, options ) {
 	// If one of sets is empty there is simply nothing to transform, so return sets as they are.
 	if ( operationsA.length == 0 || operationsB.length == 0 ) {
 		const originalOperations = new Map();
-		const receivedOperations = operationsA.concat( operationsB );
 
-		for ( const operation of receivedOperations ) {
+		for ( const operation of operationsA.concat( operationsB ) ) {
 			originalOperations.set( operation, operation );
 		}
 
