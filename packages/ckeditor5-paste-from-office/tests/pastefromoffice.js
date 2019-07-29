@@ -75,7 +75,6 @@ describe( 'PasteFromOffice', () => {
 	// @param {Boolean} shouldBeProcessed determines if data should be marked as processed with isTransformedWithPasteFromOffice flag
 	// @param {Boolean} [isAlreadyProcessed=false] apply flag before paste from office plugin will transform the data object
 	function checkDataProcessing( inputString, shouldBeProcessed, isAlreadyProcessed = false ) {
-		// const htmlDataProcessor = new HtmlDataProcessor();
 		const data = {
 			content: htmlDataProcessor.toView( inputString ),
 			dataTransfer: createDataTransfer( { 'text/html': inputString } )

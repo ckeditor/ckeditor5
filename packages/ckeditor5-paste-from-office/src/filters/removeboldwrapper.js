@@ -4,7 +4,7 @@
  */
 
 /**
- * @module paste-from-office/filters/removeboldtagwrapper
+ * @module paste-from-office/filters/removeboldwrapper
  */
 
 /**
