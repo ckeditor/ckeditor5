@@ -1010,7 +1010,7 @@ export default class Writer {
 	 *		updateMarker( markerName, { affectsData: false } );
 	 *
 	 * @see module:engine/model/markercollection~Marker
-	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
+	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of a marker to update, or a marker instance.
 	 * @param {Object} [options] If options object is not defined then marker will be refreshed by triggering
 	 * downcast conversion for this marker with the same data.
 	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
