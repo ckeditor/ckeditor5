@@ -155,14 +155,14 @@ export function transformSets( operationsA, operationsB, options ) {
 	operationsA = operationsA.slice();
 	operationsB = operationsB.slice();
 
+	const contextFactory = new ContextFactory( options.document, options.useRelations, options.forceWeakRemove );
+	contextFactory.setOriginalOperations( operationsA );
+	contextFactory.setOriginalOperations( operationsB );
+
+	const originalOperations = contextFactory.originalOperations;
+
 	// If one of sets is empty there is simply nothing to transform, so return sets as they are.
 	if ( operationsA.length == 0 || operationsB.length == 0 ) {
-		const originalOperations = new Map();
-
-		for ( const operation of operationsA.concat( operationsB ) ) {
-			originalOperations.set( operation, operation );
-		}
-
 		return { operationsA, operationsB, originalOperations };
 	}
 	//
@@ -311,10 +311,6 @@ export function transformSets( operationsA, operationsB, options ) {
 		originalOperationsBCount: operationsB.length
 	};
 
-	const contextFactory = new ContextFactory( options.document, options.useRelations, options.forceWeakRemove );
-	contextFactory.setOriginalOperations( operationsA );
-	contextFactory.setOriginalOperations( operationsB );
-
 	// Index of currently transformed operation `a`.
 	let i = 0;
 
@@ -375,8 +371,6 @@ export function transformSets( operationsA, operationsB, options ) {
 		padWithNoOps( operationsA, brokenOperationsBCount - brokenOperationsACount );
 		padWithNoOps( operationsB, brokenOperationsACount - brokenOperationsBCount );
 	}
-
-	const originalOperations = contextFactory.originalOperations;
 
 	// Finally, update base versions of transformed operations.
 	updateBaseVersions( operationsA, data.nextBaseVersionB );
