@@ -95,7 +95,7 @@ And then, in the template:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
-### Using strict mode
+### Strict mode project tips
 
 If you have the strict mode set in your project, then you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
 
