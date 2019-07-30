@@ -43,25 +43,27 @@ describe( 'Highlight', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does work inside image caption', () => {
-			setModelData( model, '<image src="foo.png"><caption>foo[bar]baz</caption></image>' );
+			setModelData( model, '<image src="/assets/sample.png"><caption>foo[bar]baz</caption></image>' );
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
 			expect( getModelData( model ) )
-				.to.equal( '<image src="foo.png"><caption>foo[<$text highlight="yellowMarker">bar</$text>]baz</caption></image>' );
+				.to.equal(
+					'<image src="/assets/sample.png"><caption>foo[<$text highlight="yellowMarker">bar</$text>]baz</caption></image>'
+				);
 		} );
 
 		it( 'does work on selection with image', () => {
 			setModelData(
 				model,
-				'<paragraph>foo[foo</paragraph><image src="foo.png"><caption>abc</caption></image><paragraph>bar]bar</paragraph>'
+				'<paragraph>foo[foo</paragraph><image src="/assets/sample.png"><caption>abc</caption></image><paragraph>bar]bar</paragraph>'
 			);
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo[<$text highlight="yellowMarker">foo</$text></paragraph>' +
-				'<image src="foo.png"><caption><$text highlight="yellowMarker">abc</$text></caption></image>' +
+				'<image src="/assets/sample.png"><caption><$text highlight="yellowMarker">abc</$text></caption></image>' +
 				'<paragraph><$text highlight="yellowMarker">bar</$text>]bar</paragraph>'
 			);
 		} );
