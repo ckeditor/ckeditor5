@@ -97,9 +97,9 @@ And then, in the template:
 
 ### Note: Using strict mode
 
-If you have the strict mode set in your `tsconfig.json` file then you need to specify types for CKEditor 5 imports. Otherwise you will get the `Could not find a declaration file for module` error.
+If you have the strict mode set in your project, then you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
 
-To fix that you need to create a TS declaration file and declare modules which miss them:
+To fix that you need to create a TS declaration file and declare modules which miss their types:
 
 ```ts
 // typings.d.ts
@@ -112,7 +112,7 @@ declare module '@ckeditor/ckeditor5-build-classic' {
 }
 ```
 
-Unfortunately, CKEditor 5 builds do not ship with corresponding TS typings. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
+Unfortunately, CKEditor 5 builds do not ship with corresponding TS typings yet. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
 
 ## Using CKEditor 5 custom builds
 
