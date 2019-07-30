@@ -746,7 +746,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
 	} );
 
-	describe.only( 'left–to–right and right–to–left content', () => {
+	describe( 'left–to–right and right–to–left content', () => {
 		it( 'should call methods associated with the keys (LTR content direction)', () => {
 			const forwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleForwardMovement' );
 			const backwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleBackwardMovement' );
