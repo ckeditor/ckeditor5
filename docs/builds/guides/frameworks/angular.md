@@ -24,7 +24,7 @@ In your existing Angular project, install the [CKEditor 5 WYSIWYG editor compone
 npm install --save @ckeditor/ckeditor5-angular
 ```
 
-Install one of the {@link builds/guides/overview#available-builds official editor builds} or {@link builds/guides/development/custom-builds create a custom one} (e.g. if you want to install more plugins or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration}).
+Install one of the {@link builds/guides/overview#available-builds official editor builds} or [create a custom one](#using-ckeditor-5-custom-builds).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -94,6 +94,54 @@ And then, in the template:
 ```html
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
+
+### Note: Using strict mode
+
+If you have the strict mode set in your `tsconfig.json` file then you need to specify types for CKEditor 5 imports. Otherwise you will get the `Could not find a declaration file for module` error.
+
+To fix that you need to create a TS declaration file and declare modules which miss them:
+
+```ts
+// typings.d.ts
+
+// You should specify the CKEditor 5 build you use here:
+declare module '@ckeditor/ckeditor5-build-classic' {
+	const ClassicEditorBuild: any;
+
+	export = ClassicEditorBuild;
+}
+```
+
+Unfortunately, CKEditor 5 builds do not ship with corresponding TS typings. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
+
+## Using CKEditor 5 custom builds
+
+If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration}) you should create the custom build first, using the {@link builds/guides/development/custom-builds create a custom build guide} first.
+
+You should finish the above tutorial having the `ckeditor.js` file (and corresponding translation files) generated. In the next step you should copy it to the `src` directory and import from the component file.
+
+```ts
+import * as Editor from 'path/to/the/ckeditor';
+
+@Component( {
+	// ...
+export class MyComponent {
+	public Editor = Editor;
+	// ...
+}
+```
+
+Note that to allow importing JS files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you targets the `ES6` or higher, otherwise you are likely to end up with [a weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
+
+```json
+"compilerOptions": {
+	"allowJs": true,
+	"target": "es2015"
+	// other options
+}
+```
+
+Note: If you cannot set the target higher than the `es5`, then try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
 
 ## Integration with `ngModel`
 
