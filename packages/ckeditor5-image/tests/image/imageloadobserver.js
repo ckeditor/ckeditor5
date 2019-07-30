@@ -37,7 +37,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="foo.png" />' );
+		setData( view, '<img src="/assets/sample.png" />' );
 
 		sinon.assert.notCalled( spy );
 
@@ -79,7 +79,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="foo.png" />' );
+		setData( view, '<img src="/assets/sample.png" />' );
 
 		sinon.assert.notCalled( spy );
 
@@ -93,7 +93,10 @@ describe( 'ImageLoadObserver', () => {
 	} );
 
 	it( 'should do nothing with an image when changes are in the other parent', () => {
-		setData( view, '<container:p><attribute:b>foo</attribute:b></container:p><container:div><img src="foo.png" /></container:div>' );
+		setData(
+			view,
+			'<container:p><attribute:b>foo</attribute:b></container:p><container:div><img src="/assets/sample.png" /></container:div>'
+		);
 
 		const viewP = viewRoot.getChild( 0 );
 		const viewDiv = viewRoot.getChild( 1 );
@@ -133,7 +136,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="foo.png" />' );
+		setData( view, '<img src="/assets/sample.png" />' );
 
 		observer.destroy();
 

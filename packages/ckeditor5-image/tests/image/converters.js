@@ -88,9 +88,9 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should find img element among children and convert it using already defined converters', () => {
-			editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
-			expectModel( '<image src="foo.png"></image>' );
+			expectModel( '<image src="/assets/sample.png"></image>' );
 			expect( imgConverterCalled ).to.be.true;
 		} );
 
@@ -102,10 +102,10 @@ describe( 'Image converters', () => {
 			// Is allowed in root, but should not try to split image element.
 			schema.register( 'bar', { allowIn: '$root' } );
 
-			editor.setData( '<figure class="image">x<img src="foo.png" />y<foo></foo><bar></bar></figure>' );
+			editor.setData( '<figure class="image">x<img src="/assets/sample.png" />y<foo></foo><bar></bar></figure>' );
 
 			// Element bar not converted because schema does not allow it.
-			expectModel( '<image src="foo.png">xy<foo></foo></image>' );
+			expectModel( '<image src="/assets/sample.png">xy<foo></foo></image>' );
 		} );
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
@@ -178,18 +178,18 @@ describe( 'Image converters', () => {
 				data.modelCursor = data.modelRange.end;
 			}, { priority: 'high' } );
 
-			editor.setData( '<figure class="image"><img src="foo.png" />xyz</figure>' );
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" />xyz</figure>' );
 
-			expectModel( '<myImage data="{"src":"foo.png"}"></myImage>' );
+			expectModel( '<myImage data="{"src":"/assets/sample.png"}"></myImage>' );
 		} );
 
 		// Test exactly what figure converter does, which is putting it's children element to image element.
 		// If this has not been done, it means that figure converter was not used.
 		it( 'should not convert if figure do not have class="image" attribute', () => {
-			editor.setData( '<figure><img src="foo.png" />xyz</figure>' );
+			editor.setData( '<figure><img src="/assets/sample.png" />xyz</figure>' );
 
 			// Default image converter will be fired.
-			expectModel( '<image src="foo.png"></image>' );
+			expectModel( '<image src="/assets/sample.png"></image>' );
 		} );
 
 		it( 'should not convert if there is no img element among children', () => {

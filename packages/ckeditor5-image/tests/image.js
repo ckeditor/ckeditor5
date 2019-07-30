@@ -63,11 +63,11 @@ describe( 'Image', () => {
 
 	describe( 'selection', () => {
 		it( 'should create fake selection', () => {
-			setModelData( model, '[<image alt="alt text" src="foo.png"></image>]' );
+			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-					'<img alt="alt text" src="foo.png"></img>' +
+					'<img alt="alt text" src="/assets/sample.png"></img>' +
 				'</figure>]'
 			);
 
@@ -76,11 +76,11 @@ describe( 'Image', () => {
 		} );
 
 		it( 'should create proper fake selection label when alt attribute is empty', () => {
-			setModelData( model, '[<image src="foo.png" alt=""></image>]' );
+			setModelData( model, '[<image src="/assets/sample.png" alt=""></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-				'<img alt="" src="foo.png"></img>' +
+				'<img alt="" src="/assets/sample.png"></img>' +
 				'</figure>]'
 			);
 
@@ -90,16 +90,16 @@ describe( 'Image', () => {
 
 		it( 'should remove selected class from previously selected element', () => {
 			setModelData( model,
-				'[<image src="foo.png" alt="alt text"></image>]' +
-				'<image src="foo.png" alt="alt text"></image>'
+				'[<image src="/assets/sample.png" alt="alt text"></image>]' +
+				'<image src="/assets/sample.png" alt="alt text"></image>'
 			);
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-				'<img alt="alt text" src="foo.png"></img>' +
+				'<img alt="alt text" src="/assets/sample.png"></img>' +
 				'</figure>]' +
 				'<figure class="ck-widget image" contenteditable="false">' +
-				'<img alt="alt text" src="foo.png"></img>' +
+				'<img alt="alt text" src="/assets/sample.png"></img>' +
 				'</figure>'
 			);
 
@@ -110,10 +110,10 @@ describe( 'Image', () => {
 
 			expect( getViewData( view ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false">' +
-				'<img alt="alt text" src="foo.png"></img>' +
+				'<img alt="alt text" src="/assets/sample.png"></img>' +
 				'</figure>' +
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-				'<img alt="alt text" src="foo.png"></img>' +
+				'<img alt="alt text" src="/assets/sample.png"></img>' +
 				'</figure>]'
 			);
 		} );

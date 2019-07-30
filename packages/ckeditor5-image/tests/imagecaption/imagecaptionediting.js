@@ -64,17 +64,17 @@ describe( 'ImageCaptionEditing', () => {
 	describe( 'data pipeline', () => {
 		describe( 'view to model', () => {
 			it( 'should convert figcaption inside image figure', () => {
-				editor.setData( '<figure class="image"><img src="foo.png" /><figcaption>foo bar</figcaption></figure>' );
+				editor.setData( '<figure class="image"><img src="/assets/sample.png" /><figcaption>foo bar</figcaption></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image src="foo.png"><caption>foo bar</caption></image>' );
+					.to.equal( '<image src="/assets/sample.png"><caption>foo bar</caption></image>' );
 			} );
 
 			it( 'should add empty caption if there is no figcaption', () => {
-				editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
+				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image src="foo.png"><caption></caption></image>' );
+					.to.equal( '<image src="/assets/sample.png"><caption></caption></image>' );
 			} );
 
 			it( 'should not convert figcaption inside other elements than image', () => {
@@ -563,12 +563,14 @@ describe( 'ImageCaptionEditing', () => {
 				setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 				model.change( writer => {
-					const image = writer.createElement( 'image', { src: '/foo.png' } );
+					const image = writer.createElement( 'image', { src: '/assets/sample.png' } );
 
 					writer.insert( image, doc.getRoot() );
 				} );
 
-				expect( getModelData( model ) ).to.equal( '<image src="/foo.png"><caption></caption></image><paragraph>foo[]</paragraph>' );
+				expect( getModelData( model ) ).to.equal(
+					'<image src="/assets/sample.png"><caption></caption></image><paragraph>foo[]</paragraph>'
+				);
 
 				editor.execute( 'undo' );
 
