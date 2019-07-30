@@ -11,11 +11,14 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
- * This helper enabled the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
+ * This helper enables the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
  * attribute on arrow right (<kbd>→</kbd>) and left (<kbd>←</kbd>) key press.
  *
  * Thanks to this (phantom) caret movement the user is able to type before/after as well as at the
  * beginning/end of an attribute.
+ *
+ * **Note:** This helper support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
+ * but for the sake of simplicity examples showcase only left–to–right use–cases.
  *
  * # Forward movement
  *
@@ -83,8 +86,10 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added
  * (e.g. a plugin instance).
  * @param {String} attribute Attribute for which this behavior will be added.
+ * @param {String} contentDirection Either "ltr" or "rtl" depending on the editor content direction.
+ * Please refer to the {@link module:utils/locale~Locale editor locale} class to learn more.
  */
-export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute ) {
+export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute, contentDirection ) {
 	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 	const modelSelection = model.document.selection;
 
@@ -122,13 +127,21 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		const position = modelSelection.getFirstPosition();
 		let isMovementHandled;
 
-		if ( arrowRightPressed ) {
-			isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
+		if ( contentDirection === 'rtl' ) {
+			if ( arrowRightPressed ) {
+				isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
+			} else {
+				isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
+			}
 		} else {
-			isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
+			if ( arrowRightPressed ) {
+				isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
+			} else {
+				isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
+			}
 		}
 
-		// Stop the keydown event if the two-step arent movement handled it. Avoid collisions
+		// Stop the keydown event if the two-step caret movement handled it. Avoid collisions
 		// with other features which may also take over the caret movement (e.g. Widget).
 		if ( isMovementHandled ) {
 			evt.stop();
@@ -137,13 +150,13 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 }
 
 /**
- * This is a private helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
+ * This is a protected helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
  * It handles the state of the 2-step caret movement for a single {@link module:engine/model/model~Model}
  * attribute upon the `keypress` in the {@link module:engine/view/view~View}.
  *
- * @private
+ * @protected
  */
-class TwoStepCaretHandler {
+export class TwoStepCaretHandler {
 	/*
 	 * Creates two step handler instance.
 	 *
