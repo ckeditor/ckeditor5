@@ -233,38 +233,6 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Gets elements of type "block" touched by the selection.
-	 *
-	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
-	 *
-	 * **Note:** `getSelectedBlocks()` always returns the deepest block.
-	 *
-	 * In this case the function will return exactly all 3 paragraphs:
-	 *
-	 *		<paragraph>[a</paragraph>
-	 *		<quote>
-	 *			<paragraph>b</paragraph>
-	 *		</quote>
-	 *		<paragraph>c]d</paragraph>
-	 *
-	 * In this case the paragraph will also be returned, despite the collapsed selection:
-	 *
-	 *		<paragraph>[]a</paragraph>
-	 *
-	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
-	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
-	 *
-	 *		<paragraph>[a</paragraph>
-	 *		<paragraph>b</paragraph>
-	 *		<paragraph>]c</paragraph> // this block will not be returned
-	 *
-	 * @returns {Iterable.<module:engine/model/element~Element>}
-	 */
-	getSelectedBlocks() {
-		return this._selection.getSelectedBlocks();
-	}
-
-	/**
 	 * Returns blocks that aren't nested in other selected blocks.
 	 *
 	 * In this case the method will return blocks A, B and E because C & D are children of block B:
@@ -280,8 +248,8 @@ export default class DocumentSelection {
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
-	getTopMostBlocks() {
-		return this._selection.getTopMostBlocks();
+	getSelectedBlocks( config ) {
+		return this._selection.getSelectedBlocks( config );
 	}
 
 	/**

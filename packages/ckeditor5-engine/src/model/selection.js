@@ -667,7 +667,7 @@ export default class Selection {
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
-	* getSelectedBlocks() {
+	* getBlocks() {
 		const visited = new WeakSet();
 
 		for ( const range of this.getRanges() ) {
@@ -708,14 +708,15 @@ export default class Selection {
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
-	* getTopMostBlocks() {
-		const selected = Array.from( this.getSelectedBlocks() );
+	* getSelectedBlocks( config = { deep: false } ) {
+		const selected = Array.from( this.getBlocks() );
+		const { deep } = config;
 
 		for ( const block of selected ) {
 			const parentBlock = findAncestorBlock( block );
 
 			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
-			if ( !parentBlock || !selected.includes( parentBlock ) ) {
+			if ( deep || ( !parentBlock || !selected.includes( parentBlock ) ) ) {
 				yield block;
 			}
 		}
