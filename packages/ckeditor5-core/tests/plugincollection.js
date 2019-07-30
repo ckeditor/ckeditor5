@@ -356,6 +356,7 @@ describe( 'PluginCollection', () => {
 
 		it( 'should reject when loading more than one plugin with the same name', () => {
 			const plugins = new PluginCollection( editor );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
 				.then( () => {
@@ -367,6 +368,7 @@ describe( 'PluginCollection', () => {
 						plugin1: PluginFoo,
 						plugin2: AnotherPluginFoo
 					} );
+					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
@@ -374,6 +376,7 @@ describe( 'PluginCollection', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
 			const plugins = new PluginCollection( editor );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ PluginFoo ] )
 				.then( () => {
@@ -381,6 +384,8 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+
+					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
@@ -389,6 +394,7 @@ describe( 'PluginCollection', () => {
 			availablePlugins = [ PluginFoo ];
 
 			const plugins = new PluginCollection( editor, availablePlugins );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			return plugins.init( [ 'Foo', AnotherPluginFoo ] )
 				.then( () => {
@@ -396,6 +402,7 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( err => {
 					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 	} );
