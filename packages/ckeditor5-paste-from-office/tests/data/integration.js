@@ -91,4 +91,13 @@ describe( 'PasteFromOffice - integration', () => {
 			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice ]
 		}
 	} );
+
+	generateTests( {
+		input: 'google-docs-list',
+		type: 'integration',
+		browsers,
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, List, PasteFromOffice ]
+		}
+	} );
 } );

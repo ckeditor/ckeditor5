@@ -56,4 +56,11 @@ describe( 'PasteFromOffice - normalization', () => {
 		browsers,
 		editorConfig
 	} );
+
+	generateTests( {
+		input: 'google-docs-list',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 } );
