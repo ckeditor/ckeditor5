@@ -63,4 +63,11 @@ describe( 'PasteFromOffice - normalization', () => {
 		browsers,
 		editorConfig
 	} );
+
+	generateTests( {
+		input: 'generic-list-in-table',
+		type: 'normalization',
+		browsers,
+		editorConfig
+	} );
 } );

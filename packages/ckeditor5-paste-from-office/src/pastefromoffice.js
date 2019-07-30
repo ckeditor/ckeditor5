@@ -12,6 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
 import MSWordNormalizer from './normalizers/mswordnormalizer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import GenericNormalizer from './normalizers/genericnormalizer';
 
 /**
  * The Paste from Office plugin.
@@ -49,6 +50,7 @@ export default class PasteFromOffice extends Plugin {
 	init() {
 		const editor = this.editor;
 		const normalizers = [];
+		const genericNormalizer = new GenericNormalizer();
 
 		normalizers.push( new MSWordNormalizer() );
 		normalizers.push( new GoogleDocsNormalizer() );
@@ -65,6 +67,10 @@ export default class PasteFromOffice extends Plugin {
 
 				if ( activeNormalizer ) {
 					activeNormalizer.execute( data );
+
+					data.isTransformedWithPasteFromOffice = true;
+				} else {
+					genericNormalizer.execute( data );
 
 					data.isTransformedWithPasteFromOffice = true;
 				}

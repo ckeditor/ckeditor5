@@ -100,4 +100,13 @@ describe( 'PasteFromOffice - integration', () => {
 			plugins: [ Clipboard, Paragraph, List, PasteFromOffice ]
 		}
 	} );
+
+	generateTests( {
+		input: 'generic-list-in-table',
+		type: 'integration',
+		browsers,
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, List, Table, Bold, PasteFromOffice ]
+		}
+	} );
 } );
