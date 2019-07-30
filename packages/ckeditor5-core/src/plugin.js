@@ -53,21 +53,15 @@ mix( Plugin, ObservableMixin );
 /**
  * The base interface for CKEditor plugins.
  *
- * In its minimal form it can be a simple function (it will be used as a constructor) that accepts
- * {@link module:core/editor/editor~Editor the editor} as a parameter.
- * It can also implement a few methods which, when present, will be used to properly initialize and destroy the plugin.
+ * In its minimal form a plugin can be a simple function that accepts {@link module:core/editor/editor~Editor the editor}
+ * as a parameter:
  *
  *		// A simple plugin that enables a data processor.
  *		function MyPlugin( editor ) {
  *			editor.data.processor = new MyDataProcessor();
  *		}
  *
- * **Note:** The simple plugin form is treated as an constructor of a plugin. Most importantly - it is called on the time
- * as any other plugins' constructors. Thus it will be executed before any {@link module:core/plugin~PluginInterface#init `init()`}
- * or {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} methods of other plugins.
- * This is important because you cannot extend other plugin schema rule as they are defined in `init()` stage.
- *
- * In most cases, however, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
+ * In most cases however, you will want to inherit from the {@link module:core/plugin~Plugin} class which implements the
  * {@link module:utils/observablemixin~ObservableMixin} and is, therefore, more convenient:
  *
  *		class MyPlugin extends Plugin {
@@ -80,6 +74,17 @@ mix( Plugin, ObservableMixin );
  *				} );
  *			}
  *		}
+ *
+ * The plugin can also implement methods (e.g. {@link module:core/plugin~PluginInterface#init `init()`} or
+ * {@link module:core/plugin~PluginInterface#destroy `destroy()`}) which, when present, will be used to properly
+ * initialize and destroy the plugin.
+ *
+ * **Note:** When defined as a plain function, the plugin acts as a constructor and will be
+ * called in parallel with other plugins' {@link module:core/plugin~PluginInterface#constructor constructors}.
+ * This means the code of that plugin will be executed **before** {@link module:core/plugin~PluginInterface#init `init()`} and
+ * {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} methods of other plugins and, for instance,
+ * you cannot use it to extend other plugins' {@glink framework/guides/architecture/editing-engine#schema schema}
+ * rules as they are defined later on during the `init()` stage.
  *
  * @interface PluginInterface
  */
