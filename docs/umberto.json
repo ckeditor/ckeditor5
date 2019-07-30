@@ -24,7 +24,8 @@
 		"features/image-upload.html": "features/image-upload/image-upload.html",
 		"features/ckfinder.html": "features/image-upload/ckfinder.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
-		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html"
+		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html",
+		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
