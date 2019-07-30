@@ -32,7 +32,7 @@ export function unwrapParagraph( elementOrDocumentFragment, writer ) {
 }
 
 /**
- * Moves nested list inside previous sibling element, what is an HTML standard.
+ * Moves nested list inside previous sibling element, what is a proper HTML standard.
  *
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer

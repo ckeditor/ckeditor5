@@ -8,10 +8,7 @@
  */
 
 import removeBoldWrapper from '../filters/removeboldwrapper';
-import {
-	unwrapParagraph,
-	moveNestedListToListItem
-} from '../filters/common';
+import { unwrapParagraph, moveNestedListToListItem } from '../filters/common';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
@@ -36,7 +33,6 @@ export default class GoogleDocsNormalizer {
 		const writer = new UpcastWriter();
 
 		removeBoldWrapper( data.content, writer );
-
 		moveNestedListToListItem( data.content, writer );
 		unwrapParagraph( data.content, writer );
 	}
