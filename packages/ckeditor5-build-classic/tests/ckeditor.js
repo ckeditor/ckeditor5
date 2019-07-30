@@ -137,7 +137,7 @@ describe( 'ClassicEditor build', () => {
 		} );
 
 		it( 'image works', () => {
-			const data = '<figure class="image"><img src="./manual/sample.jpg"></figure>';
+			const data = '<figure class="image"><img src="/assets/sample.png"></figure>';
 
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
