@@ -68,7 +68,7 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
-### Note: Using the Document editor build
+### Using the Document editor build
 
 If you want to use the {@link framework/guides/document-editor document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
 
@@ -95,7 +95,7 @@ And then, in the template:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
-### Note: Using strict mode
+### Using strict mode
 
 If you have the strict mode set in your project, then you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
 
@@ -141,7 +141,9 @@ Note that to allow importing JS files without providing their corresponding type
 }
 ```
 
-Note: If you cannot set the target higher than the `es5`, then try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
+<info-box>
+	If you cannot set the target higher than the `es5`, then try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
+</info-box>
 
 ## Integration with `ngModel`
 
