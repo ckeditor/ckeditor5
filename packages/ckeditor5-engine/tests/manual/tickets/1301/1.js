@@ -21,7 +21,7 @@ ClassicEditor
 	.then( editor => {
 		const bold = editor.plugins.get( Bold );
 
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'bold' );
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'bold', 'ltr' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
