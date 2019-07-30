@@ -15,7 +15,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor-ltr' ), {
 		plugins: [ Essentials, Paragraph, Underline, Bold, Italic ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
 	} )
@@ -23,8 +23,25 @@ ClassicEditor
 		const bold = editor.plugins.get( Italic );
 		const underline = editor.plugins.get( Underline );
 
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'italic' );
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, underline, 'underline' );
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'italic', 'ltr' );
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, underline, 'underline', 'ltr' );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-rtl' ), {
+		contentLanguage: 'he',
+		plugins: [ Essentials, Paragraph, Underline, Bold, Italic ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
+	} )
+	.then( editor => {
+		const bold = editor.plugins.get( Italic );
+		const underline = editor.plugins.get( Underline );
+
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'italic', 'rtl' );
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, underline, 'underline', 'rtl' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
