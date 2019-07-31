@@ -390,6 +390,13 @@ class ContextFactory {
 	// @param {Boolean} [forceWeakRemove=false] If set to `false`, remove operation will be always stronger than move operation,
 	// so the removed nodes won't end up back in the document root. When set to `true`, context data will be used.
 	constructor( document, useRelations, forceWeakRemove = false ) {
+		// For each operation that is created during transformation process, we keep a reference to the original operation
+		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
+		// gathered during transformation that we want to save for given operation, is actually saved for the original operation.
+		// This way no matter if operation `a` is cloned, then transformed, even breaks, we still have access to the previously
+		// gathered data through original operation reference.
+		this.originalOperations = new Map();
+
 		// `model.History` instance which information about undone operations will be taken from.
 		this._history = document.history;
 
@@ -397,13 +404,6 @@ class ContextFactory {
 		this._useRelations = useRelations;
 
 		this._forceWeakRemove = !!forceWeakRemove;
-
-		// For each operation that is created during transformation process, we keep a reference to the original operation
-		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
-		// gathered during transformation that we want to save for given operation, is actually saved for the original operation.
-		// This way no matter if operation `a` is cloned, then transformed, even breaks, we still have access to the previously
-		// gathered data through original operation reference.
-		this.originalOperations = new Map();
 
 		// Relations is a double-map structure (maps in map) where for two operations we store how those operations were related
 		// to each other. Those relations are evaluated during transformation process. For every transformated pair of operations
