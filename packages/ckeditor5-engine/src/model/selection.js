@@ -673,27 +673,23 @@ export default class Selection {
 		for ( const range of this.getRanges() ) {
 			const startBlock = getParentBlock( range.start, visited );
 
-			if ( startBlock ) {
-				if ( checkBlock( startBlock, range ) ) {
-					yield startBlock;
-				}
+			if ( startBlock && isTopBlockInRange( startBlock, range ) ) {
+				yield startBlock;
 			}
 
 			for ( const value of range.getWalker() ) {
-				if ( value.type == 'elementEnd' && isUnvisitedBlockContainer( value.item, visited ) ) {
-					if ( checkBlock( value.item, range ) ) {
-						yield value.item;
-					}
+				const block = value.item;
+
+				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block, visited, range ) ) {
+					yield block;
 				}
 			}
 
 			const endBlock = getParentBlock( range.end, visited );
 
 			// #984. Don't return the end block if the range ends right at its beginning.
-			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
-				if ( checkBlock( endBlock, range ) ) {
-					yield endBlock;
-				}
+			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) && isTopBlockInRange( endBlock, range ) ) {
+				yield endBlock;
 			}
 		}
 	}
@@ -824,7 +820,7 @@ mix( Selection, EmitterMixin );
 
 // Checks whether the given element extends $block in the schema and has a parent (is not a root).
 // Marks it as already visited.
-function isUnvisitedBlockContainer( element, visited ) {
+function isUnvisitedBlock( element, visited ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -832,6 +828,11 @@ function isUnvisitedBlockContainer( element, visited ) {
 	visited.add( element );
 
 	return element.document.model.schema.isBlock( element ) && element.parent;
+}
+
+// Checks if the given element is a $block was not previously visited and is a top block in a range.
+function isUnvisitedTopBlock( element, visited, range ) {
+	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
 // Finds the lowest element in position's ancestors which is a block.
@@ -852,7 +853,7 @@ function getParentBlock( position, visited ) {
 
 		hasParentLimit = schema.isLimit( element );
 
-		return !hasParentLimit && isUnvisitedBlockContainer( element, visited );
+		return !hasParentLimit && isUnvisitedBlock( element, visited );
 	} );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
@@ -860,6 +861,23 @@ function getParentBlock( position, visited ) {
 	ancestors.forEach( element => visited.add( element ) );
 
 	return block;
+}
+
+// Checks if the blocks is not nested in other block inside a range.
+//
+// @param {module:engine/model/elmenent~Element} block Block to check.
+// @param {module:engine/model/range~Range} range Range to check.
+function isTopBlockInRange( block, range ) {
+	const parentBlock = findAncestorBlock( block );
+
+	if ( !parentBlock ) {
+		return true;
+	}
+
+	// Add loose flag to check as parentRange can be equal to range.
+	const isParentInRange = range.containsRange( Range._createOn( parentBlock ), true );
+
+	return !isParentInRange;
 }
 
 // Returns first ancestor block of a node.
@@ -895,17 +913,3 @@ function findAncestorBlock( node ) {
  *     null
  * } module:engine/model/selection~Selectable
  */
-
-function checkBlock( block, range ) {
-	const parent = findAncestorBlock( block );
-
-	if ( parent === block || !parent ) {
-		return true;
-	}
-
-	// Check if element is nested in other block from a range.
-	const parentRange = Range._createOn( parent );
-	const isParentSomething = !( range.containsRange( parentRange ) || range.isEqual( parentRange ) );
-
-	return isParentSomething;
-}
