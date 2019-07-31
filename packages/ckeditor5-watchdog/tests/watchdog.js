@@ -369,7 +369,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
-		' and the average time between errors is lower than `minNonErrorTimePeriod` (default values)', () => {
+		' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -406,8 +406,8 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
-		' and the average time between errors is lower than `minNonErrorTimePeriod` (custom values)', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2, minNonErrorTimePeriod: 1000 } );
+		' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -442,8 +442,8 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should not crash permantently when average time between errors is longer than `minNonErrorTimePeriod`', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2, minNonErrorTimePeriod: 0 } );
+		it( 'Watchdog should not crash permantently when average time between errors is longer than `minimumNonErrorTimePeriod`', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -459,10 +459,10 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ), 5 );
+				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ), 10 );
+				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ), 15 );
+				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ), 20 );
 
 				return new Promise( res => {
 					setTimeout( () => {
@@ -473,7 +473,7 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						watchdog.destroy().then( res );
-					} );
+					}, 20 );
 				} );
 			} );
 		} );
