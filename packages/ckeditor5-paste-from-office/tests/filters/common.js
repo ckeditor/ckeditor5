@@ -77,5 +77,80 @@ describe( 'PasteFromOffice/filters', () => {
 				);
 			} );
 		} );
+
+		describe( 'repeatedly nested lists are normalized', () => {
+			it( 'should unwrap single nested list', () => {
+				const inputData = '<ul><li>foo</li><ul><ul><ul><ul><li>bar</li></ul></ul></ul></ul></ul>';
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				moveNestedListToListItem( documentFragment, writer );
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+					'<ul><li>foo<ul><li>bar</li></ul></li></ul>'
+				);
+			} );
+
+			it( 'should preserve sibling elements in correct relation', () => {
+				const inputData = '<ol>' +
+						'<li>foo</li>' +
+						'<ol>' +
+							'<ol>' +
+								'<ol>' +
+									'<li>one</li>' +
+								'</ol>' +
+								'<li>two</li>' +
+							'</ol>' +
+							'<li>three</li>' +
+							'<ol>' +
+								'<ol>' +
+									'<ol>' +
+										'<li>four</li>' +
+									'</ol>' +
+								'</ol>' +
+							'</ol>' +
+						'</ol>' +
+						'<li>correct' +
+							'<ol>' +
+								'<li>AAA' +
+									'<ol>' +
+										'<li>BBB</li>' +
+										'<li>CCC</li>' +
+									'</ol>' +
+								'</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>';
+
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				moveNestedListToListItem( documentFragment, writer );
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+					'<ol>' +
+						'<li>foo' +
+							'<ol>' +
+								'<li>one</li>' +
+								'<li>two</li>' +
+								'<li>three' +
+										'<ol>' +
+											'<li>four</li>' +
+										'</ol>' +
+								'</li>' +
+							'</ol>' +
+						'</li>' +
+						'<li>correct' +
+							'<ol>' +
+								'<li>AAA' +
+									'<ol>' +
+										'<li>BBB</li>' +
+										'<li>CCC</li>' +
+									'</ol>' +
+								'</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
+		} );
 	} );
 } );
