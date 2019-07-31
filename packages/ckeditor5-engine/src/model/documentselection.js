@@ -233,9 +233,26 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Returns blocks that aren't nested in other selected blocks.
+	 * Gets elements of type "block" touched by the selection.
 	 *
-	 * In this case the method will return blocks A, B and E because C & D are children of block B:
+	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
+	 *
+	 * **Note:** `getSelectedBlocks()` returns blocks that are nested in other non-block elements
+	 * but will not return blocks nested in other blocks.
+	 *
+	 * In this case the function will return exactly all 3 paragraphs:
+	 *
+	 *		<paragraph>[a</paragraph>
+	 *		<quote>
+	 *			<paragraph>b</paragraph>
+	 *		</quote>
+	 *		<paragraph>c]d</paragraph>
+	 *
+	 * In this case the paragraph will also be returned, despite the collapsed selection:
+	 *
+	 *		<paragraph>[]a</paragraph>
+	 *
+	 *	In such scenario however, only blocks A, B & E will be returned:
 	 *
 	 *		[<blockA></blockA>
 	 *		<blockB>
@@ -244,7 +261,12 @@ export default class DocumentSelection {
 	 *		</blockB>
 	 *		<blockE></blockE>]
 	 *
-	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
+	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
+	 *
+	 *		<paragraph>[a</paragraph>
+	 *		<paragraph>b</paragraph>
+	 *		<paragraph>]c</paragraph> // this block will not be returned
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */

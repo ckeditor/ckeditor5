@@ -644,7 +644,8 @@ export default class Selection {
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
-	 * **Note:** `getSelectedBlocks()` always returns the deepest block.
+	 * **Note:** `getSelectedBlocks()` returns blocks that are nested in other non-block elements
+	 * but will not return blocks nested in other blocks.
 	 *
 	 * In this case the function will return exactly all 3 paragraphs:
 	 *
@@ -657,6 +658,15 @@ export default class Selection {
 	 * In this case the paragraph will also be returned, despite the collapsed selection:
 	 *
 	 *		<paragraph>[]a</paragraph>
+	 *
+	 *	In such scenario however, only blocks A, B & E will be returned:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
 	 *
 	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
 	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
@@ -693,23 +703,6 @@ export default class Selection {
 			}
 		}
 	}
-
-	/**
-	 * Returns blocks that aren't nested in other selected blocks.
-	 *
-	 * In this case the method will return blocks A, B and E because C & D are children of block B:
-	 *
-	 *		[<blockA></blockA>
-	 *		<blockB>
-	 *			<blockC></blockC>
-	 *			<blockD></blockD>
-	 *		</blockB>
-	 *		<blockE></blockE>]
-	 *
-	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
-	 *
-	 * @returns {Iterable.<module:engine/model/element~Element>}
-	 */
 
 	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
