@@ -277,10 +277,8 @@ function getWebpackConfig( snippets, config ) {
 
 	// Find additional languages that must be built.
 	for ( const snippetData of snippets ) {
-		if ( snippetData.snippetConfig.additionalLanguages ) {
-			snippetData.snippetConfig.additionalLanguages.forEach( language => {
-				additionalLanguages.add( language );
-			} );
+		for ( const language of snippetData.snippetConfig.additionalLanguages || [] ) {
+			additionalLanguages.add( language );
 		}
 	}
 
