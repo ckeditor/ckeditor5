@@ -24,18 +24,23 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
 export default class Watchdog {
 	/**
 	 * @param {Object} [config] The watchdog plugin configuration.
-	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of crashes
-	 * when the watchdog stops restarting the editor in case of errors.
+	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
+	 * After this limit is reached and the `minNonErrorTimePeriod` is also reached the editor is not restarted
+	 * by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
+	 * @param {Number} [config.minNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors.
+	 * When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the editor is not
+	 * restarted by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
 	 * @param {Number} [config.waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
 	 */
-	constructor( { crashNumberLimit, waitingTime } = {} ) {
+	constructor( { crashNumberLimit, minNonErrorTimePeriod, waitingTime } = {} ) {
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
 		 * * `message`: `String`,
 		 * * `source`: `String`,
 		 * * `lineno`: `String`,
-		 * * `colno`: `String`
+		 * * `colno`: `String`,
+		 * * `date`: `Number`,
 		 *
 		 * @public
 		 * @readonly
@@ -44,13 +49,22 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Crash number limit (defaults to `3`). After this limit is reached the editor is not restarted by the watchdog.
-		 * This is to prevent an infinite crash loop.
+		 * Crash number limit (defaults to `3`). After this limit is reached and the {@link #_minNonErrorTimePeriod}
+		 * is also reached the editor is not restarted by the watchdog and the watchdog fires
+		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
 		 *
 		 * @private
 		 * @type {Number}
 		 */
 		this._crashNumberLimit = crashNumberLimit || 3;
+
+		/**
+		 * Minumum non-error time period (defaults to `5000`). When the period of time between errors is lower than that,
+		 * and the {@link #_crashNumberLimit} is also reached the editor is not restarted by the watchdog and the watchdog fires
+		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
+		 *
+		 */
+		this._minNonErrorTimePeriod = minNonErrorTimePeriod || 5000;
 
 		/**
 		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
@@ -290,15 +304,32 @@ export default class Watchdog {
 				message: evt.error.message,
 				source: evt.source,
 				lineno: evt.lineno,
-				colno: evt.colno
+				colno: evt.colno,
+				date: Date.now()
 			} );
 
-			this.fire( 'error' );
+			this.fire( 'error', { error: evt.error } );
 
-			if ( this.crashes.length <= this._crashNumberLimit ) {
-				this._restart();
+			if ( this._shouldRestartEditor() ) {
+				this.restart();
+			} else {
+				this.fire( 'crash', { error: evt.error } );
 			}
 		}
+	}
+
+	/**
+	 * Checks if the editor should be restared.
+	 */
+	_shouldRestartEditor() {
+		if ( this.crashes.length <= this._crashNumberLimit ) {
+			return true;
+		}
+
+		return (
+			this.crashes[ this.crashes.length - 1 ].date -
+			this.crashes[ this.crashes.length - 1 - this._crashNumberLimit ].date
+		) / this._crashNumberLimit > this._minNonErrorTimePeriod;
 	}
 
 	/**
@@ -363,9 +394,16 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Fired when an error occurs and the watchdog will be restarting the editor.
+	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog editor occurs.
 	 *
 	 * @event error
+	 */
+
+	/**
+	 * Fired when the error stack is greater than crash number limit and the error frequency threshold was exceeded.
+	 *
+	 * @event crash
+	 * @see #constructor
 	 */
 
 	/**
