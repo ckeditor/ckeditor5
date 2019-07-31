@@ -178,6 +178,13 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					if ( wasCSSGenerated ) {
 						cssFiles.unshift( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.css' ) );
 					}
+
+					// Additional languages must be imported by the HTML code.
+					if ( snippetData.snippetConfig.additionalLanguages ) {
+						snippetData.snippetConfig.additionalLanguages.forEach( language => {
+							jsFiles.push( path.join( snippetData.relativeOutputPath, 'translations', `${ language }.js` ) );
+						} );
+					}
 				}
 
 				const cssImportsHTML = getHTMLImports( cssFiles, importPath => {
@@ -261,6 +268,27 @@ function getWebpackConfig( snippets, config ) {
 		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
 	}
 
+	const additionalLanguages = new Set();
+
+	// Find additional languages that must be built.
+	for ( const snippetData of snippets ) {
+		if ( snippetData.snippetConfig.additionalLanguages ) {
+			snippetData.snippetConfig.additionalLanguages.forEach( language => {
+				additionalLanguages.add( language );
+			} );
+		}
+	}
+
+	const ckeditorWebpackPluginOptions = {
+		language: config.language
+	};
+
+	// Pass `additionalLanguages` to `CKEditorWebpackPlugin` only if at least one is defined.
+	if ( additionalLanguages.size ) {
+		// Also, we want to get unique values only.
+		ckeditorWebpackPluginOptions.additionalLanguages = [ ...additionalLanguages ];
+	}
+
 	const webpackConfig = {
 		mode: config.production ? 'production' : 'development',
 
@@ -288,9 +316,7 @@ function getWebpackConfig( snippets, config ) {
 
 		plugins: [
 			new MiniCssExtractPlugin( { filename: '[name]/snippet.css' } ),
-			new CKEditorWebpackPlugin( {
-				language: config.language
-			} ),
+			new CKEditorWebpackPlugin( ckeditorWebpackPluginOptions ),
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
@@ -451,4 +477,6 @@ function getHTMLImports( files, mapFunction ) {
  * @property {String} [language] A language that will be used for building the editor.
  *
  * @property {Array.<String>} [dependencies] Names of samples that are required to working.
+ *
+ * @property {Array.<String>} [additionalLanguages] Additional languages that are required by the snippet.
  */
