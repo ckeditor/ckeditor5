@@ -69,6 +69,22 @@ export default class WordCount extends Plugin {
 		 */
 		this.set( 'words', 0 );
 
+		// Don't wait for #update event to set the value of the properties but obtain it right away.
+		// This way, accessing the properties directly returns precise numbers, e.g. for validation, etc..
+		// If not accessed directly, the properties will be refreshed upon #update anyway.
+		Object.defineProperties( this, {
+			characters: {
+				get() {
+					return ( this.characters = this._getCharacters() );
+				}
+			},
+			words: {
+				get() {
+					return ( this.words = this._getWords() );
+				}
+			}
+		} );
+
 		/**
 		 * Label used to display words value in {@link #wordCountContainer output container}
 		 *
@@ -239,6 +255,31 @@ export default class WordCount extends Plugin {
 	}
 
 	/**
+	 * Determines the number of characters in the current editor's model.
+	 *
+	 * @private
+	 * @returns {Number}
+	 */
+	_getCharacters() {
+		const txt = modelElementToPlainText( this.editor.model.document.getRoot() );
+
+		return txt.replace( /\n/g, '' ).length;
+	}
+
+	/**
+	 * Determines the number of words in the current editor's model.
+	 *
+	 * @private
+	 * @returns {Number}
+	 */
+	_getWords() {
+		const txt = modelElementToPlainText( this.editor.model.document.getRoot() );
+		const detectedWords = txt.match( this._wordsMatchRegExp ) || [];
+
+		return detectedWords.length;
+	}
+
+	/**
 	 * Determines the number of words and characters in the current editor's model and assigns it to {@link #characters} and {@link #words}.
 	 * It also fires the {@link #event:update}.
 	 *
@@ -246,15 +287,12 @@ export default class WordCount extends Plugin {
 	 * @fires update
 	 */
 	_refreshStats() {
-		const txt = modelElementToPlainText( this.editor.model.document.getRoot() );
-		const detectedWords = txt.match( this._wordsMatchRegExp ) || [];
-
-		this.characters = txt.replace( /\n/g, '' ).length;
-		this.words = detectedWords.length;
+		const words = this.words = this._getWords();
+		const characters = this.characters = this._getCharacters();
 
 		this.fire( 'update', {
-			words: this.words,
-			characters: this.characters
+			words,
+			characters
 		} );
 	}
 }
