@@ -9,8 +9,10 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { version } = require( '../../package.json' );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
+const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/index.html';
 const VARIABLE_DEFINITION_REGEXP = /(--[\w-]+):\s+(.*);/g;
 const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
 
@@ -20,7 +22,7 @@ const contentRules = {
 };
 
 const webpackConfig = getWebpackConfig();
-const parentCwd = path.join( process.cwd(), '..' );
+const packagesPath = path.join( process.cwd(), 'packages' );
 
 runWebpack( webpackConfig )
 	.then( () => {
@@ -68,7 +70,7 @@ runWebpack( webpackConfig )
 					} )
 					.join( '\n' );
 
-				return `/* ${ rule.file.replace( parentCwd + path.sep, '' ) } */\n${ css }`;
+				return `/* ${ rule.file.replace( packagesPath + path.sep, '' ) } */\n${ css }`;
 			} )
 			.filter( rule => {
 				// 1st: path to the css file, 2nd: selector definition - start block, 3rd: end block
@@ -110,7 +112,15 @@ runWebpack( webpackConfig )
 		}
 
 		// Build the final content of the CSS file.
-		let data = ':root {\n';
+		let data = [
+			'/*',
+			` * CKEditor 5 (v${ version }) content styles.`,
+			` * Generated on ${ new Date().toUTCString() }.`,
+			` * For more information, check out ${ DOCUMENTATION_URL }`,
+			' */\n\n',
+		].join( '\n' );
+
+		data += ':root {\n';
 
 		for ( const variable of [ ...usedVariables ].sort() ) {
 			data += `\t${ variable }: ${ cssVariables.get( variable ) };\n`;
