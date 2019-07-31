@@ -3,11 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* Infinite progress bar default width. */
-:root {
-	--ck-image-upload-progress-line-width: 30px;
-}
-
 .ck-content .image {
 	position: relative;
 	overflow: hidden;
