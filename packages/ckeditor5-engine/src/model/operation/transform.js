@@ -148,6 +148,8 @@ export function transform( a, b, context = {} ) {
  * @returns {Object} Transformation result.
  * @returns {Array.<module:engine/model/operation/operation~Operation>} return.operationsA Transformed `operationsA`.
  * @returns {Array.<module:engine/model/operation/operation~Operation>} return.operationsB Transformed `operationsB`.
+ * @returns {Map} return.originalOperations A map that links transformed operations to original operations. The keys are the transformed
+ * operations and the values are the original operations from the input (`operationsA` and `operationsB`).
  */
 export function transformSets( operationsA, operationsB, options ) {
 	// Create new arrays so the originally passed arguments are not changed.
