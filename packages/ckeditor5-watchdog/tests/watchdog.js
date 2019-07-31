@@ -368,7 +368,8 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted up to 3 times by default', () => {
+		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
+		' and the average time between errors is lower than `minNonErrorTimePeriod` (default values)', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -404,8 +405,45 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted up to `crashNumberLimit` times if the option is set', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
+		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
+		' and the average time between errors is lower than `minNonErrorTimePeriod` (custom values)', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2, minNonErrorTimePeriod: 1000 } );
+
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			const errorSpy = sinon.spy();
+			watchdog.on( 'error', errorSpy );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( element ).then( () => {
+				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ) );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						expect( errorSpy.callCount ).to.equal( 3 );
+						expect( watchdog.crashes.length ).to.equal( 3 );
+						expect( restartSpy.callCount ).to.equal( 2 );
+
+						window.onerror = originalErrorHandler;
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not crash permantently when average time between errors is longer than `minNonErrorTimePeriod`', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2, minNonErrorTimePeriod: 0 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -430,7 +468,7 @@ describe( 'Watchdog', () => {
 					setTimeout( () => {
 						expect( errorSpy.callCount ).to.equal( 4 );
 						expect( watchdog.crashes.length ).to.equal( 4 );
-						expect( restartSpy.callCount ).to.equal( 2 );
+						expect( restartSpy.callCount ).to.equal( 4 );
 
 						window.onerror = originalErrorHandler;
 
