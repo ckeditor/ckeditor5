@@ -25,14 +25,14 @@ export default class Watchdog {
 	/**
 	 * @param {Object} [config] The watchdog plugin configuration.
 	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
-	 * After this limit is reached and the `minNonErrorTimePeriod` is also reached the editor is not restarted
+	 * After this limit is reached and the `minimumNonErrorTimePeriod` is also reached the editor is not restarted
 	 * by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
-	 * @param {Number} [config.minNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors.
+	 * @param {Number} [config.minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors.
 	 * When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the editor is not
 	 * restarted by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
 	 * @param {Number} [config.waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
 	 */
-	constructor( { crashNumberLimit, minNonErrorTimePeriod, waitingTime } = {} ) {
+	constructor( { crashNumberLimit, minimumNonErrorTimePeriod, waitingTime } = {} ) {
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
@@ -58,7 +58,7 @@ export default class Watchdog {
 		this.set( 'state', 'initializing' );
 
 		/**
-		 * Crash number limit (defaults to `3`). After this limit is reached and the {@link #_minNonErrorTimePeriod}
+		 * Crash number limit (defaults to `3`). After this limit is reached and the {@link #_miimumnNonErrorTimePeriod}
 		 * is also reached the editor is not restarted by the watchdog and the watchdog fires
 		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
 		 *
@@ -73,7 +73,7 @@ export default class Watchdog {
 		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
 		 *
 		 */
-		this._minNonErrorTimePeriod = typeof minNonErrorTimePeriod === 'number' ? minNonErrorTimePeriod : 5000;
+		this._minimumNonErrorTimePeriod = typeof minimumNonErrorTimePeriod === 'number' ? minimumNonErrorTimePeriod : 5000;
 
 		/**
 		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
@@ -348,10 +348,12 @@ export default class Watchdog {
 			return true;
 		}
 
-		return ( (
-			this.crashes[ this.crashes.length - 1 ].date -
-			this.crashes[ this.crashes.length - 1 - this._crashNumberLimit ].date
-		) / this._crashNumberLimit ) > this._minNonErrorTimePeriod;
+		const lastErrorTime = this.crashes[ this.crashes.length - 1 ].date;
+		const firstMeaningfulErrorTime = this.crashes[ this.crashes.length - 1 - this._crashNumberLimit ].date;
+
+		const averageNonErrorTimePeriod = ( lastErrorTime - firstMeaningfulErrorTime ) / this._crashNumberLimit;
+
+		return averageNonErrorTimePeriod > this._minimumNonErrorTimePeriod;
 	}
 
 	/**
