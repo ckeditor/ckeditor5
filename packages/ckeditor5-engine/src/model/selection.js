@@ -904,5 +904,8 @@ function checkBlock( block, range ) {
 	}
 
 	// Check if element is nested in other block from a range.
-	return !range.containsRange( Range._createOn( parent ) );
+	const parentRange = Range._createOn( parent );
+	const isParentSomething = !( range.containsRange( parentRange ) || range.isEqual( parentRange ) );
+
+	return isParentSomething;
 }

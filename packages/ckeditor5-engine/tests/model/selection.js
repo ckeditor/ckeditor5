@@ -1134,10 +1134,16 @@ describe( 'Selection', () => {
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
 
-		it( 'returns only top most blocks', () => {
+		it( 'returns only top most blocks (multiple selected)', () => {
 			setData( model, '<p>[foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
+		} );
+
+		it( 'returns only top most block (one selected)', () => {
+			setData( model, '[<table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table>]' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'table' ] );
 		} );
 
 		it( 'returns only selected blocks even if nested in other blocks', () => {
