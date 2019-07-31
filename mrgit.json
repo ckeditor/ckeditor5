@@ -1,6 +1,7 @@
 {
   "packages": "packages/",
   "packagesPrefix": "@ckeditor/ckeditor5-",
+  "baseBranches": [ "master", "stable" ],
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#t/ckeditor5/1151",
