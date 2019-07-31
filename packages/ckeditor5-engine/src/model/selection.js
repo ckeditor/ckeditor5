@@ -667,19 +667,23 @@ export default class Selection {
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
-	* getBlocks() {
+	* getSelectedBlocks() {
 		const visited = new WeakSet();
 
 		for ( const range of this.getRanges() ) {
 			const startBlock = getParentBlock( range.start, visited );
 
 			if ( startBlock ) {
-				yield startBlock;
+				if ( checkBlock( startBlock, range ) ) {
+					yield startBlock;
+				}
 			}
 
 			for ( const value of range.getWalker() ) {
 				if ( value.type == 'elementEnd' && isUnvisitedBlockContainer( value.item, visited ) ) {
-					yield value.item;
+					if ( checkBlock( value.item, range ) ) {
+						yield value.item;
+					}
 				}
 			}
 
@@ -687,7 +691,9 @@ export default class Selection {
 
 			// #984. Don't return the end block if the range ends right at its beginning.
 			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
-				yield endBlock;
+				if ( checkBlock( endBlock, range ) ) {
+					yield endBlock;
+				}
 			}
 		}
 	}
@@ -708,19 +714,6 @@ export default class Selection {
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
-	* getSelectedBlocks( config = { deep: false } ) {
-		const selected = Array.from( this.getBlocks() );
-		const { deep } = config;
-
-		for ( const block of selected ) {
-			const parentBlock = findAncestorBlock( block );
-
-			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
-			if ( deep || ( !parentBlock || !selected.includes( parentBlock ) ) ) {
-				yield block;
-			}
-		}
-	}
 
 	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
@@ -902,3 +895,14 @@ function findAncestorBlock( node ) {
  *     null
  * } module:engine/model/selection~Selectable
  */
+
+function checkBlock( block, range ) {
+	const parent = findAncestorBlock( block );
+
+	if ( parent === block || !parent ) {
+		return true;
+	}
+
+	// Check if element is nested in other block from a range.
+	return !range.containsRange( Range._createOn( parent ) );
+}
