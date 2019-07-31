@@ -2,6 +2,8 @@
 category: features
 ---
 
+{@snippet features/build-ui-language-source}
+
 # Setting the UI language
 
 The UI of the editor can be localized. CKEditor 5 currently supports around 20 languages and the number is growing.
