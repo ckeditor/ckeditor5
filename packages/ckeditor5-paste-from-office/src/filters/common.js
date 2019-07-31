@@ -18,11 +18,7 @@ export function unwrapParagraph( elementOrDocumentFragment, writer ) {
 
 	for ( const element of iterableNodes ) {
 		if ( element.is( 'element', 'p' ) && element.parent.is( 'element', 'li' ) ) {
-			const parent = element.parent;
-			const childIndex = parent.getChildIndex( element );
-			const removedElement = writer.remove( element )[ 0 ];
-
-			writer.insertChild( childIndex, removedElement.getChildren(), parent );
+			unwrapSingleElement( element, writer );
 		}
 
 		if ( element.is( 'element' ) && element.childCount ) {
@@ -38,14 +34,40 @@ export function unwrapParagraph( elementOrDocumentFragment, writer ) {
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
 export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
+	// There are 2 situations which are fixed in the for loop:
+	//
+	// 1. Move list to previous list item:
+	// OL                      OL
+	// |-> LI                  |-> LI
+	// |-> OL                      |-> OL
+	//     |-> LI                      |-> LI
+	//
+	// 2. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
+	// OL                     OL
+	// |-> LI                 |-> LI
+	//     |-> OL                  |-> OL
+	//         |-> OL                   |-> LI
+	//         |   |-> OL               |-> LI
+	//         |       |-> OL
+	//         |           |-> LI
+	//         |-> LI
 	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
 
 	for ( const element of iterableNodes ) {
 		if ( isList( element ) && isList( element.parent ) ) {
+			// 1.
 			const previous = element.previousSibling;
-			const removedElement = writer.remove( element )[ 0 ];
 
-			writer.insertChild( previous.childCount, removedElement, previous );
+			writer.remove( element );
+			writer.insertChild( previous.childCount, element, previous );
+
+			// 2.
+			let firstChild = element.getChild( 0 );
+
+			while ( isList( firstChild ) ) {
+				unwrapSingleElement( firstChild, writer );
+				firstChild = element.getChild( 0 );
+			}
 		}
 
 		if ( element.is( 'element' ) && element.childCount ) {
@@ -56,4 +78,12 @@ export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
 
 function isList( element ) {
 	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
+}
+
+function unwrapSingleElement( element, writer ) {
+	const parent = element.parent;
+	const childIndex = parent.getChildIndex( element );
+
+	writer.remove( element );
+	writer.insertChild( childIndex, element.getChildren(), parent );
 }
