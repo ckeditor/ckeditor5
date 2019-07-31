@@ -729,10 +729,7 @@ describe( 'Watchdog', () => {
 
 	describe( 'crashes', () => {
 		it( 'should be an array of caught errors by the watchdog', () => {
-			const watchdog = new Watchdog();
-
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
+			const watchdog = Watchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -750,6 +747,82 @@ describe( 'Watchdog', () => {
 						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
 
 						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'state', () => {
+		it( 'should reflect the state of the watchdog', () => {
+			const watchdog = Watchdog.for( ClassicTestEditor );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			expect( watchdog.state ).to.equal( 'initializing' );
+
+			return watchdog.create( element ).then( () => {
+				expect( watchdog.state ).to.equal( 'ready' );
+
+				return watchdog.create( element ).then( () => {
+					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
+
+					return new Promise( res => {
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							expect( watchdog.state ).to.equal( 'ready' );
+
+							watchdog.destroy().then( res );
+						} );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'should be observable', () => {
+			const watchdog = Watchdog.for( ClassicTestEditor );
+			const states = [];
+
+			watchdog.on( 'change:state', ( evt, propName, newValue ) => {
+				states.push( newValue );
+			} );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( element ).then( () => {
+				return watchdog.create( element ).then( () => {
+					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'baz', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'biz', watchdog.editor ) );
+
+					return new Promise( res => {
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							expect( states ).to.deep.equal( [
+								'ready',
+								'crashed',
+								'initializing',
+								'ready',
+								'crashed',
+								'initializing',
+								'ready',
+								'crashed',
+								'initializing',
+								'ready',
+								'crashed',
+								'crashedPermanently'
+							] );
+
+							watchdog.destroy().then( res );
+						} );
 					} );
 				} );
 			} );

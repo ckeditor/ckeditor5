@@ -10,7 +10,7 @@
 /* globals console, window */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { throttle, cloneDeepWith, isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
@@ -53,9 +53,9 @@ export default class Watchdog {
 		 *
 		 * @public
 		 * @observable
-		 * @type {'initializing'|'ready'|'crashed'|'crashedPermanently'}
+		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'} #state
 		 */
-		this.state = 'initializing';
+		this.set( 'state', 'initializing' );
 
 		/**
 		 * Crash number limit (defaults to `3`). After this limit is reached and the {@link #_minNonErrorTimePeriod}
@@ -307,9 +307,9 @@ export default class Watchdog {
 			} );
 
 			this.fire( 'error', { error: evt.error } );
+			this.state = 'crashed';
 
 			if ( this._shouldRestartEditor() ) {
-				this.state = 'crashed';
 				this._restart();
 			} else {
 				this.state = 'crashedPermanently';
@@ -341,7 +341,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the editor should be restared.
+	 * Checks if the editor should be restared or if it should be marked as crashed.
 	 */
 	_shouldRestartEditor() {
 		if ( this.crashes.length <= this._crashNumberLimit ) {
@@ -431,4 +431,4 @@ export default class Watchdog {
 	 */
 }
 
-mix( Watchdog, EmitterMixin );
+mix( Watchdog, ObservableMixin );
