@@ -184,6 +184,11 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 						snippetData.snippetConfig.additionalLanguages.forEach( language => {
 							jsFiles.push( path.join( snippetData.relativeOutputPath, 'translations', `${ language }.js` ) );
 						} );
+
+						// The default language must be imported as well.
+						jsFiles.push(
+							path.join( snippetData.relativeOutputPath, 'translations', `${ snippetData.snippetConfig.language }.js` )
+						);
 					}
 				}
 
