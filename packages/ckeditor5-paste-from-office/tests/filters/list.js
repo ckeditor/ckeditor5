@@ -10,8 +10,8 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 import {
 	transformListItemLikeElementsIntoLists,
-	unwrapParagraph,
-	moveNestedListToListItem
+	unwrapParagraphInListItem,
+	fixListIndentation
 } from '../../src/filters/list';
 
 describe( 'PasteFromOffice - filters', () => {
@@ -81,12 +81,12 @@ describe( 'PasteFromOffice - filters', () => {
 			writer = new UpcastWriter();
 		} );
 
-		describe( 'unwrapParagraph', () => {
+		describe( 'unwrapParagraphInListItem', () => {
 			it( 'should remove paragraph from list item remaining nested elements', () => {
 				const inputData = '<ul><li><p>foo</p></li><li><p><span>bar</span></p></li></ul>';
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				unwrapParagraph( documentFragment, writer );
+				unwrapParagraphInListItem( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<ul><li>foo</li><li><span>bar</span></li></ul>'
@@ -111,7 +111,7 @@ describe( 'PasteFromOffice - filters', () => {
 					'</ul>';
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				unwrapParagraph( documentFragment, writer );
+				unwrapParagraphInListItem( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<ul><li>one<ol><li>two<ul><li>three</li></ul></li></ol></li></ul>'
@@ -119,7 +119,7 @@ describe( 'PasteFromOffice - filters', () => {
 			} );
 		} );
 
-		describe( 'moveNestedListToListItem', () => {
+		describe( 'fixListIndentation', () => {
 			it( 'should move nested list to previous list item', () => {
 				const inputData = '<ul>' +
 						'<li>one</li>' +
@@ -132,7 +132,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				moveNestedListToListItem( documentFragment, writer );
+				fixListIndentation( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<ul><li>one<ul><li>two</li><li>three</li></ul></li><li>four</li></ul>'
@@ -145,7 +145,7 @@ describe( 'PasteFromOffice - filters', () => {
 				const inputData = '<ul><li>foo</li><ul><ul><ul><ul><li>bar</li></ul></ul></ul></ul></ul>';
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				moveNestedListToListItem( documentFragment, writer );
+				fixListIndentation( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<ul><li>foo<ul><li>bar</li></ul></li></ul>'
@@ -185,7 +185,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				moveNestedListToListItem( documentFragment, writer );
+				fixListIndentation( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<ol>' +
@@ -226,7 +226,7 @@ describe( 'PasteFromOffice - filters', () => {
 					'</ol>';
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				moveNestedListToListItem( documentFragment, writer );
+				fixListIndentation( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol>' );
 			} );
@@ -240,7 +240,7 @@ describe( 'PasteFromOffice - filters', () => {
 					'</ul>';
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				moveNestedListToListItem( documentFragment, writer );
+				fixListIndentation( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol><ul><li>bar</li></ul>' );
 			} );

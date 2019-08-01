@@ -238,16 +238,16 @@ function isNewListNeeded( previousItem, currentItem ) {
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
-export function unwrapParagraph( elementOrDocumentFragment, writer ) {
+export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
 	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
 
 	for ( const element of iterableNodes ) {
-		if ( element.is( 'element', 'p' ) && element.parent.is( 'element', 'li' ) ) {
+		if ( element.is( 'p' ) && element.parent.is( 'li' ) ) {
 			unwrapSingleElement( element, writer );
 		}
 
 		if ( element.is( 'element' ) && element.childCount ) {
-			unwrapParagraph( element, writer );
+			unwrapParagraphInListItem( element, writer );
 		}
 	}
 }
@@ -258,7 +258,7 @@ export function unwrapParagraph( elementOrDocumentFragment, writer ) {
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
-export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
+export function fixListIndentation( elementOrDocumentFragment, writer ) {
 	// There are 2 situations which are fixed in the for loop:
 	//
 	// 1. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
@@ -299,20 +299,20 @@ export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
 			// 2.
 			const previous = element.previousSibling;
 
-			if ( previous && previous.is( 'element', 'li' ) ) {
+			if ( previous && previous.is( 'li' ) ) {
 				writer.remove( element );
 				writer.insertChild( previous.childCount, element, previous );
 			}
 		}
 
 		if ( element.is( 'element' ) && element.childCount ) {
-			moveNestedListToListItem( element, writer );
+			fixListIndentation( element, writer );
 		}
 	}
 }
 
 function isList( element ) {
-	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
+	return element.is( 'ol' ) || element.is( 'ul' );
 }
 
 function unwrapSingleElement( element, writer ) {

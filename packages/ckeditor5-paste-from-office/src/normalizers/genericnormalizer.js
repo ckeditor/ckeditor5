@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizers/genericnormalizer
  */
 
-import { unwrapParagraph, moveNestedListToListItem } from '../filters/list';
+import { unwrapParagraphInListItem, fixListIndentation } from '../filters/list';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
@@ -29,7 +29,7 @@ export default class GenericNormalizer {
 	execute( data ) {
 		const writer = new UpcastWriter();
 
-		moveNestedListToListItem( data.content, writer );
-		unwrapParagraph( data.content, writer );
+		fixListIndentation( data.content, writer );
+		unwrapParagraphInListItem( data.content, writer );
 	}
 }
