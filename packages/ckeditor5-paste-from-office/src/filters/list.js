@@ -254,34 +254,39 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
 
 /**
  * Moves nested list inside previous sibling element, what is a proper HTML standard.
+ * There are 2 situations which are fixed in the for loop:
+ *
+ * 1. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
+ *
+ *		before                            after:
+ *		OL                                OL
+ *		|-> LI                            |-> LI
+ *		    |-> OL                            |-> OL
+ *		        |-> OL                            |-> LI
+ *		        |   |-> OL                        |-> LI
+ *		        |       |-> OL
+ *		        |           |-> LI
+ *		        |-> LI
+ *
+ *		before                            after:
+ *		OL                                OL
+ *		|-> OL                            |-> LI
+ *		    |-> OL
+ *		         |-> OL
+ *		             |-> LI
+ *
+ * 2. Move list to previous list item:
+ *
+ *		before                            after:
+ *		OL                                OL
+ *		|-> LI                            |-> LI
+ *		|-> OL                                |-> OL
+ *		    |-> LI                                |-> LI
  *
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
 export function fixListIndentation( elementOrDocumentFragment, writer ) {
-	// There are 2 situations which are fixed in the for loop:
-	//
-	// 1. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
-	// OL                                OL
-	// |-> LI                            |-> LI
-	//     |-> OL                            |-> OL
-	//         |-> OL                            |-> LI
-	//         |   |-> OL                        |-> LI
-	//         |       |-> OL
-	//         |           |-> LI
-	//         |-> LI
-	// or list like:
-	// OL                                OL
-	// |-> OL                            |-> LI
-	//     |-> OL
-	//          |-> OL
-	//              |-> LI
-	//
-	// 2. Move list to previous list item:
-	// OL                                OL
-	// |-> LI                            |-> LI
-	// |-> OL                                |-> OL
-	//     |-> LI                                |-> LI
 	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
 
 	for ( const element of iterableNodes ) {
