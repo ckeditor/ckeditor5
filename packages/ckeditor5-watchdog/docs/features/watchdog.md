@@ -121,6 +121,14 @@ Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constru
 * `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
 * `waitingTime` - A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
 
+```js
+const watchdog = new Watchdog( {
+	minimumNonErrorTimePeriod: 2000,
+	crashNumberLimit: 4,
+	waitingTime: 1000
+} )
+```
+
 ## Limitations
 
 The CKEditor 5 watchdog listens to uncaught errors which can be associated with the editor instance created by that watchdog. Currently, these errors are {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} so ones explicitly thrown by the editor (by its internal checks). This means that not every runtime error which crashed the editor can be caught which, in turn, means that not every crash can be detected.

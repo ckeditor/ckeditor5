@@ -53,14 +53,14 @@ export default class Watchdog {
 		/**
 		 * @private
 		 * @type {Number}
-		 * @see {module:watchdog/watchdog~WatchdogConfig}
+		 * @see module:watchdog/watchdog~WatchdogConfig
 		 */
 		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
 
 		/**
 		 * @private
 		 * @type {Number}
-		 * @see {module:watchdog/watchdog~WatchdogConfig}
+		 * @see module:watchdog/watchdog~WatchdogConfig
 		 */
 		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
