@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizers/genericnormalizer
  */
 
-import { unwrapParagraph, moveNestedListToListItem } from '../filters/common';
+import { unwrapParagraph, moveNestedListToListItem } from '../filters/list';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
