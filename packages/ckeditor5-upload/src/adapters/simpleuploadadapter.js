@@ -176,9 +176,7 @@ class Adapter {
 				return reject( response && response.error && response.error.message ? response.error.message : genericErrorText );
 			}
 
-			resolve( {
-				default: response.url
-			} );
+			resolve( response.url ? { default: response.url } : response.urls );
 		} );
 
 		// Upload progress when it is supported.
