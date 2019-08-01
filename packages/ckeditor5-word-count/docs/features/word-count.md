@@ -67,9 +67,30 @@ There are two configuration options available that change the output of the word
 * If the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} option is set to `false`, the word counter will be hidden.
 * If the {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} option is set to `false`, the character counter will be hidden.
 
+### Reacting to changes in statistics
+
+You can execute your custom callback every time content statistics change by defining {@link module:word-count/wordcount~WordCountConfig#onUpdate `config.wordCount.onUpdate`} in the editor configuration:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ WordCount, ... ],
+		wordCount: {
+			onUpdate: stats => {
+				// Prints the current content statistics.
+				console.log( `Characters: ${ stats.characters }\nWords:      ${ stats.words }` );
+			}
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+**Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
+
 ## The `update` event
 
-The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `WordCount#update` event}. It allows implementing customized behaviors that react to word and character count updates.
+The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `update` event}. It allows implementing customized behaviors that react to word and character count updates.
 
 Below you can find an example where the color of the circle goes from green to red as you approach the limit of 120 characters. The progress bar indicates the number of words.
 
@@ -174,7 +195,18 @@ ClassicEditor
 The {@link module:word-count/wordcount~WordCount} plugin provides:
 
 * The {@link module:word-count/wordcount~WordCount#wordCountContainer} property. It returns a self-updating HTML element which is updated with the current number of words and characters in the editor. You can remove the "Words" or "Characters" counters with a proper configuration of the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} and {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} options.
-* The {@link module:word-count/wordcount~WordCount#event:update `update` event}, fired whenever the plugins update the number of counted words and characters. You can run a custom callback function with updated values. Please note that the `update` event is throttled.
+* The {@link module:word-count/wordcount~WordCount#event:update `update` event}, fired whenever the plugins update the number of counted words and characters. You can use it to run a custom callback function with updated values:
+
+	```js
+	editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
+		// Prints the current content statistics.
+		console.log( `Characters: ${ stats.characters }\nWords:      ${ stats.words }` );
+	} );
+	```
+
+	Alternatively, you can use [`editor.config.wordCount.onUpdate`](#reacting-to-changes-in-statistics) to register a similar callback in editor configuration.
+
+	**Note**: For performance reasons, the `update` event is throttled so the statistics may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 * The {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} properties from which you can retrieve the stats at any moment.
 
 <info-box>
