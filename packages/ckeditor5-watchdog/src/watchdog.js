@@ -23,16 +23,9 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  */
 export default class Watchdog {
 	/**
-	 * @param {Object} [config] The watchdog plugin configuration.
-	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
-	 * After this limit is reached and the `minimumNonErrorTimePeriod` is also reached the editor is not restarted
-	 * by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
-	 * @param {Number} [config.minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors.
-	 * When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the editor is not
-	 * restarted by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
-	 * @param {Number} [config.waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
 	 */
-	constructor( { crashNumberLimit, minimumNonErrorTimePeriod, waitingTime } = {} ) {
+	constructor( config = {} ) {
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
@@ -65,7 +58,7 @@ export default class Watchdog {
 		 * @private
 		 * @type {Number}
 		 */
-		this._crashNumberLimit = typeof crashNumberLimit === 'number' ? crashNumberLimit : 3;
+		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
 
 		/**
 		 * Minumum non-error time period (defaults to `5000`). When the period of time between errors is lower than that,
@@ -73,7 +66,7 @@ export default class Watchdog {
 		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
 		 *
 		 */
-		this._minimumNonErrorTimePeriod = typeof minimumNonErrorTimePeriod === 'number' ? minimumNonErrorTimePeriod : 5000;
+		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
 		/**
 		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
@@ -91,7 +84,7 @@ export default class Watchdog {
 		 * @private
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), waitingTime || 5000 );
+		this._throttledSave = throttle( this._save.bind( this ), config.waitingTime || 5000 );
 
 		/**
 		 * The current editor instance.
@@ -409,9 +402,10 @@ export default class Watchdog {
 	 *		watchdog.create( elementOrData, config );
 	 *
 	 * @param {*} Editor The editor class.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
-	static for( Editor ) {
-		const watchdog = new Watchdog();
+	static for( Editor, watchdogConfig ) {
+		const watchdog = new Watchdog( watchdogConfig );
 
 		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
 		watchdog.setDestructor( editor => editor.destroy() );
@@ -434,3 +428,17 @@ export default class Watchdog {
 }
 
 mix( Watchdog, ObservableMixin );
+
+/**
+ * The watchdog plugin configuration.
+ *
+ * @typedef {Object} WatchdogConfig
+ *
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
+ * After this limit is reached and the `minimumNonErrorTimePeriod` is also reached the editor is not restarted
+ * by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors.
+ * When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the editor is not
+ * restarted by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
+ * @property {Number} [waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
+ */
