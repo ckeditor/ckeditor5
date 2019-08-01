@@ -22,8 +22,8 @@ import GenericNormalizer from './normalizers/genericnormalizer';
  *
  * Transformation is made by a set of predefined {@link module:paste-from-office/normalizer~Normalizer normalizers}.
  * This plugin includes following normalizers:
- *   * {@link module:paste-from-office/normalizer/mswordnormalizer~MSWordNormalizer Microsoft Word normalizer}
- *   * {@link module:paste-from-office/normalizer/googledocsnormalizer~GoogleDocsNormalizer Google Docs normalizer}
+ *   * {@link module:paste-from-office/normalizers/mswordnormalizer~MSWordNormalizer Microsoft Word normalizer}
+ *   * {@link module:paste-from-office/normalizers/googledocsnormalizer~GoogleDocsNormalizer Google Docs normalizer}
  *
  * For more information about this feature check the {@glink api/paste-from-office package page}.
  *
