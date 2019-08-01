@@ -435,10 +435,10 @@ mix( Watchdog, ObservableMixin );
  * @typedef {Object} WatchdogConfig
  *
  * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
- * After this limit is reached and the `minimumNonErrorTimePeriod` is also reached the editor is not restarted
- * by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors.
- * When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the editor is not
- * restarted by the watchdog and the watchdog fires the {@link #crash `crash` event}. This prevents an infinite restart loop.
- * @property {Number} [waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
+ * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors
+ * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+ * @property {Number} [waitingTime=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
  */
