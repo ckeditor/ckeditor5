@@ -107,6 +107,10 @@ watchdog.state;
 // Listen to state changes.
 watchdog.on( 'change:state' ( evt, name, currentState, prevState ) => {
 	console.log( `Editor changed from ${ currentState } to ${ prevState }` );
+
+	if ( currentState === 'crashedPermanently' ) {
+		watchdog.editor.isReadOnly = true;
+	}
 } );
 
 // An array of editor crashes info.
