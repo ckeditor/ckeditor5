@@ -74,7 +74,7 @@ export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
 			// 2.
 			const previous = element.previousSibling;
 
-			if ( previous ) {
+			if ( previous && previous.is( 'element', 'li' ) ) {
 				writer.remove( element );
 				writer.insertChild( previous.childCount, element, previous );
 			}

@@ -151,6 +151,23 @@ describe( 'PasteFromOffice/filters', () => {
 					'</ol>'
 				);
 			} );
+
+			it( 'should normalize lists which are start from nested elements', () => {
+				const inputData = '<ol>' +
+						'<ol>' +
+							'<ol>' +
+								'<ol>' +
+									'<li>foo</li>' +
+								'</ol>' +
+							'</ol>' +
+						'</ol>' +
+					'</ol>';
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				moveNestedListToListItem( documentFragment, writer );
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol>' );
+			} );
 		} );
 	} );
 } );
