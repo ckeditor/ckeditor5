@@ -6,4 +6,4 @@
 
 1. Refresh page and quickly type `1` in the first editor 4 times. After the last error the editor should be crashed and it should not restart.
 
-1. Refresh page and slowly (slower 1 per 5 seconds) type `1` in the first editor 4 times. After the last error the editor should be restarted and it should still work.
+1. Refresh page and slowly (slower than 1 per 5 seconds) type `1` in the first editor 4 times. After the last error the editor should be restarted and it should still work.

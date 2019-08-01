@@ -44,8 +44,17 @@ const editorConfig = {
 	}
 };
 
-const watchdog1 = createWatchdog( document.getElementById( 'editor-1' ), 'First' );
-const watchdog2 = createWatchdog( document.getElementById( 'editor-2' ), 'Second' );
+const watchdog1 = createWatchdog(
+	document.getElementById( 'editor-1' ),
+	document.getElementById( 'editor-1-state' ),
+	'First'
+);
+
+const watchdog2 = createWatchdog(
+	document.getElementById( 'editor-2' ),
+	document.getElementById( 'editor-2-state' ),
+	'Second'
+);
 
 Object.assign( window, { watchdog1, watchdog2 } );
 
@@ -53,24 +62,28 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 	throw new Error( 'foo' );
 } );
 
-function createWatchdog( element, which ) {
+function createWatchdog( editorElement, stateElement, name ) {
 	const watchdog = Watchdog.for( ClassicEditor );
 
-	watchdog.create( element, editorConfig );
+	watchdog.create( editorElement, editorConfig );
 
 	watchdog.on( 'error', () => {
-		console.log( `${ which } editor crashed!` );
+		console.log( `${ name } editor crashed!` );
 	} );
 
 	watchdog.on( 'restart', () => {
-		console.log( `${ which } editor restarted.` );
+		console.log( `${ name } editor restarted.` );
 	} );
 
-	watchdog.on( 'change:state', ( evt, name, currentValue, prevValue ) => {
-		console.log( `${ which } watchdog changed state from ${ prevValue } to ${ currentValue }` );
+	watchdog.on( 'change:state', ( evt, paramName, currentValue, prevValue ) => {
+		console.log( `${ name } watchdog changed state from ${ prevValue } to ${ currentValue }` );
+
+		stateElement.innerText = currentValue;
 
 		if ( currentValue === 'crashedPermanently' ) {
 			watchdog.editor.isReadOnly = true;
 		}
 	} );
+
+	stateElement.innerText = watchdog.state;
 }
