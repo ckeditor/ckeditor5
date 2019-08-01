@@ -31,6 +31,20 @@ ClassicEditor
 		},
 		wordCount: {
 			onUpdate: ( () => {
+				const progressBar = document.querySelector( '.customized-count progress' );
+				const colorBox = document.querySelector( '.customized-count__color-box' );
+
+				return data => {
+					const charactersHue = calculateHue( {
+						characters: data.characters,
+						greenUntil: 70,
+						maxCharacters: 120
+					} );
+
+					progressBar.value = data.words;
+					colorBox.style.setProperty( '--hue', charactersHue );
+				};
+
 				// Calculates the hue based on the number of characters.
 				//
 				// For the character counter:
@@ -46,20 +60,6 @@ ClassicEditor
 
 					return ( redHue - greenHue ) * discreetProgress + greenHue;
 				}
-
-				const progressBar = document.querySelector( '.customized-count progress' );
-				const colorBox = document.querySelector( '.customized-count__color-box' );
-
-				return data => {
-					const charactersHue = calculateHue( {
-						characters: data.characters,
-						greenUntil: 70,
-						maxCharacters: 120
-					} );
-
-					progressBar.value = data.words;
-					colorBox.style.setProperty( '--hue', charactersHue );
-				};
 			} )()
 		}
 	} )
