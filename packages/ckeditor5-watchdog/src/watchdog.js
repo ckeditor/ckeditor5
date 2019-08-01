@@ -51,20 +51,16 @@ export default class Watchdog {
 		this.set( 'state', 'initializing' );
 
 		/**
-		 * Crash number limit (defaults to `3`). After this limit is reached and the {@link #_miimumnNonErrorTimePeriod}
-		 * is also reached the editor is not restarted by the watchdog and the watchdog fires
-		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
-		 *
 		 * @private
 		 * @type {Number}
+		 * @see {module:watchdog/watchdog~WatchdogConfig}
 		 */
 		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
 
 		/**
-		 * Minumum non-error time period (defaults to `5000`). When the period of time between errors is lower than that,
-		 * and the {@link #_crashNumberLimit} is also reached the editor is not restarted by the watchdog and the watchdog fires
-		 * the {@link #crash `crash` event}. This prevents an infinite restart loop.
-		 *
+		 * @private
+		 * @type {Number}
+		 * @see {module:watchdog/watchdog~WatchdogConfig}
 		 */
 		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
