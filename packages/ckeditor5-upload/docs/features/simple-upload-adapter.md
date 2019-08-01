@@ -87,15 +87,32 @@ The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpReq
 
 ### Successful upload
 
-If the upload is successful, the server should return an object containing the `url` property which points out to the uploaded image on the server:
+If the upload is successful, the server should either return:
 
-```json
-{
-	"url": "https://example.com/images/foo.jpg"
-}
-```
+* an object containing the `url` property which points out to the uploaded image on the server:
 
-That image URL is essential because it will be used:
+	```json
+	{
+		"url": "https://example.com/images/foo.jpg"
+	}
+	```
+
+* an object with the `urls` property, if you want to use [responsive images](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images) and the server supports it:
+
+	```json
+	{
+		"urls": {
+			"default": "https://example.com/images/foo.jpg",
+			"800": "https://example.com/images/foo-800.jpg",
+			"1024": "https://example.com/images/foo-1024.jpg",
+			"1920": "https://example.com/images/foo-1920.jpg"
+		}
+	}
+	```
+
+	The `"default"` URL will be used in the `src` attribute of the image in the editor content. Other URLs will be used in the `srcset` attribute allowing the web browser to select the best one for the geometry of the viewport.
+
+URL(s) in the server response are used:
 
 * to display the image during the editing (as seen by the user in the editor),
 * in the editor content {@link builds/guides/integration/saving-data saved to the databse}.

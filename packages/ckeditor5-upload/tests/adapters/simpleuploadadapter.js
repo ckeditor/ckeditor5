@@ -136,8 +136,7 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 			} );
 
-			it( 'should call url from config', () => {
-				let request;
+			it( 'should send a request to config#uploadUrl', () => {
 				const validResponse = {
 					url: 'http://example.com/images/image.jpeg'
 				};
@@ -146,7 +145,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 				return loader.file
 					.then( () => {
-						request = sinonXHR.requests[ 0 ];
+						const request = sinonXHR.requests[ 0 ];
 						request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 						expect( request.url ).to.equal( 'http://example.com' );
@@ -159,7 +158,31 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 			} );
 
-			it( 'should modify headers of uploading request if specified', () => {
+			it( 'should support responsive image URLs returned in the server response', () => {
+				const validResponse = {
+					urls: {
+						default: 'http://example.com/images/image.jpeg',
+						'120': 'http://example.com/images/image-120.jpeg',
+						'240': 'http://example.com/images/image-240.jpeg'
+					}
+				};
+
+				const uploadPromise = adapter.upload();
+
+				return loader.file
+					.then( () => {
+						sinonXHR.requests[ 0 ].respond( 200, {
+							'Content-Type': 'application/json'
+						}, JSON.stringify( validResponse ) );
+
+						return uploadPromise;
+					} )
+					.then( uploadResponse => {
+						expect( uploadResponse ).to.deep.equal( validResponse.urls );
+					} );
+			} );
+
+			it( 'should use config#headers in the request (when specified)', () => {
 				const editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
