@@ -42,7 +42,13 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Specifies the watchdog state.
+		 * Specifies the state of the editor handled by the watchdog. The state can be one of the following values:
+		 *
+		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready.
+		 * * `ready` - a state when a user can interact with the editor
+		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPernamently`
+		 * depending on how many and how frequency errors have been caught recently.
+		 * * `crashedPernamently` - a state when the watchdog stops reacting to errors and keeps the editor crashed.
 		 *
 		 * @public
 		 * @observable
