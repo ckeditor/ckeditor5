@@ -16,7 +16,6 @@ import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import PasteFromOffice from '../../src/pastefromoffice';
 
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -33,7 +32,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		window.getModelData = getModelData;
 
 		const clipboard = editor.plugins.get( 'Clipboard' );
 
