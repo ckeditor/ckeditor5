@@ -11,7 +11,7 @@
  * Returns a plain text representation of an element and its children.
  *
  * @param {module:engine/model/element~Element} element
- * @returns {String} Plain text representing model's data
+ * @returns {String} Plain text representing the model's data.
  */
 export function modelElementToPlainText( element ) {
 	if ( element.is( 'text' ) || element.is( 'textProxy' ) ) {

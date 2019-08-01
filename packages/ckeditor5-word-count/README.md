@@ -1,4 +1,4 @@
-CKEditor 5 word count feature
+CKEditor 5 word count and character count feature
 ===========================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -10,11 +10,11 @@ CKEditor 5 word count feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-word-count/status.svg)](https://david-dm.org/ckeditor/ckeditor5-word-count)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-word-count/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-word-count?type=dev)
 
-This package implements word count support for CKEditor 5.
+This package implements word count and character count support for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Word count feature](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html) guide.
+Check out the demo in the [Word count and character count feature](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html) guide.
 
 ## Documentation
 
