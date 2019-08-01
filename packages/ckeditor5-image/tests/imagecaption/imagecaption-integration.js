@@ -50,7 +50,7 @@ describe( 'ImageCaption integration', () => {
 		it( 'does nothing if soft enter was pressed', () => {
 			setModelData(
 				model,
-				'<paragraph>Foo.</paragraph><image src="foo.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
+				'<paragraph>Foo.</paragraph><image src="/assets/sample.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
 			);
 
 			const domEvent = new DomEventData( viewDocument, getDomEvent(), { isSoft: true } );
@@ -63,7 +63,7 @@ describe( 'ImageCaption integration', () => {
 
 			assertModelData(
 				'<paragraph>Foo.</paragraph>' +
-				'<image src="foo.png">' +
+				'<image src="/assets/sample.png">' +
 					'<caption>Foo.[]</caption>' +
 				'</image>' +
 				'<paragraph>Bar.</paragraph>'
@@ -94,7 +94,7 @@ describe( 'ImageCaption integration', () => {
 		it( 'inserts a soft break when soft enter was pressed', () => {
 			setModelData(
 				model,
-				'<paragraph>Foo.</paragraph><image src="foo.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
+				'<paragraph>Foo.</paragraph><image src="/assets/sample.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
 			);
 
 			const domEvent = new DomEventData( viewDocument, getDomEvent(), { isSoft: true } );
@@ -108,7 +108,7 @@ describe( 'ImageCaption integration', () => {
 
 			assertModelData(
 				'<paragraph>Foo.</paragraph>' +
-					'<image src="foo.png">' +
+					'<image src="/assets/sample.png">' +
 						'<caption>Foo.<softBreak></softBreak>[]</caption>' +
 					'</image>' +
 				'<paragraph>Bar.</paragraph>'

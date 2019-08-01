@@ -88,23 +88,23 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should convert from view to model', () => {
-			editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
+			editor.setData( '<figure class="image side-class"><img src="/assets/sample.png" /></figure>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<image imageStyle="sideStyle" src="foo.png"></image>' );
+				.to.equal( '<image imageStyle="sideStyle" src="/assets/sample.png"></image>' );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image side-class" contenteditable="false">' +
-					'<img src="foo.png"></img>' +
+					'<img src="/assets/sample.png"></img>' +
 				'</figure>' );
 		} );
 
 		it( 'should not convert from view to model if class is not defined', () => {
-			editor.setData( '<figure class="image foo-bar"><img src="foo.png" /></figure>' );
+			editor.setData( '<figure class="image foo-bar"><img src="/assets/sample.png" /></figure>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
@@ -122,66 +122,66 @@ describe( 'ImageStyleEditing', () => {
 				}
 			} );
 
-			editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
+			editor.setData( '<figure class="image side-class"><img src="/assets/sample.png" /></figure>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<image src="/assets/sample.png"></image>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
 		it( 'should convert model to view: adding attribute', () => {
-			setModelData( model, '<image src="foo.png"></image>' );
+			setModelData( model, '<image src="/assets/sample.png"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="/assets/sample.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image side-class" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
 		it( 'should convert model to view: removing attribute', () => {
-			setModelData( model, '<image src="foo.png" imageStyle="sideStyle"></image>' );
+			setModelData( model, '<image src="/assets/sample.png" imageStyle="sideStyle"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', null, image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
 		it( 'should convert model to view: change attribute', () => {
-			setModelData( model, '<image src="foo.png" imageStyle="dummy"></image>' );
+			setModelData( model, '<image src="/assets/sample.png" imageStyle="dummy"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', 'sideStyle', image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="/assets/sample.png"></figure>' );
 
 			// https://github.com/ckeditor/ckeditor5-image/issues/132
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image side-class" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image side-class" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', 'dummyStyle', image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image dummy-class"><img src="/assets/sample.png"></figure>' );
 
 			// https://github.com/ckeditor/ckeditor5-image/issues/132
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget dummy-class image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget dummy-class image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
@@ -190,7 +190,7 @@ describe( 'ImageStyleEditing', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( model, '<image src="foo.png"></image>' );
+			setModelData( model, '<image src="/assets/sample.png"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -198,7 +198,7 @@ describe( 'ImageStyleEditing', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
@@ -207,52 +207,52 @@ describe( 'ImageStyleEditing', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:imageStyle' );
 			}, { priority: 'high' } );
 
-			setModelData( model, '<image src="foo.png" imageStyle="dummyStyle"></image>' );
+			setModelData( model, '<image src="/assets/sample.png" imageStyle="dummyStyle"></image>' );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
 		it( 'should not convert from model to view if style is not present: adding attribute', () => {
-			setModelData( model, '<image src="foo.png"></image>' );
+			setModelData( model, '<image src="/assets/sample.png"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', 'foo', image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
 		it( 'should not convert from model to view if style is not present: change attribute', () => {
-			setModelData( model, '<image src="foo.png" imageStyle="dummy"></image>' );
+			setModelData( model, '<image src="/assets/sample.png" imageStyle="dummy"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', 'foo', image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 
 		it( 'should not convert from model to view if style is not present: remove attribute', () => {
-			setModelData( model, '<image src="foo.png" imageStyle="foo"></image>' );
+			setModelData( model, '<image src="/assets/sample.png" imageStyle="foo"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'imageStyle', null, image );
 			} );
 
-			expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
+			expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
 	} );
