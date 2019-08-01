@@ -168,6 +168,20 @@ describe( 'PasteFromOffice/filters', () => {
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol>' );
 			} );
+
+			it( 'should normalize 2 sibling list independently', () => {
+				const inputData = '<ol>' +
+						'<li>foo</li>' +
+					'</ol>' +
+					'<ul>' +
+						'<li>bar</li>' +
+					'</ul>';
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				moveNestedListToListItem( documentFragment, writer );
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol><ul><li>bar</li></ul>' );
+			} );
 		} );
 	} );
 } );

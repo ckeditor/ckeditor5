@@ -15,21 +15,28 @@ import repeatedlyNestedList from './repeatedly-nested-list/input.html';
 import repeatedlyNestedListNormalized from './repeatedly-nested-list/normalized.html';
 import repeatedlyNestedListModel from './repeatedly-nested-list/model.html';
 
+import partiallySelected from './partially-selected/input.html';
+import partiallySelectedNormalized from './partially-selected/normalized.html';
+import partiallySelectedModel from './partially-selected/model.html';
+
 export const fixtures = {
 	input: {
 		nestedOrderedList,
 		mixedList,
-		repeatedlyNestedList
+		repeatedlyNestedList,
+		partiallySelected
 	},
 	normalized: {
 		nestedOrderedList: nestedOrderedListNormalized,
 		mixedList: mixedListNormalized,
-		repeatedlyNestedList: repeatedlyNestedListNormalized
+		repeatedlyNestedList: repeatedlyNestedListNormalized,
+		partiallySelected: partiallySelectedNormalized
 	},
 	model: {
 		nestedOrderedList: nestedOrderedListModel,
 		mixedList: mixedListModel,
-		repeatedlyNestedList: repeatedlyNestedListModel
+		repeatedlyNestedList: repeatedlyNestedListModel,
+		partiallySelected: partiallySelectedModel
 	}
 };
 
