@@ -148,6 +148,30 @@ describe( 'WordCount', () => {
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 2, characters: 12 } );
 			} );
 		} );
+
+		describe( 'immediate access to values', () => {
+			it( 'should get updated values regardless of update\'s event status', () => {
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+
+				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.characters ).to.equal( 12 );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
+
+				expect( wordCountPlugin.words ).to.equal( 2 );
+				expect( wordCountPlugin.characters ).to.equal( 11 );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+
+				expect( wordCountPlugin.words ).to.equal( 1 );
+				expect( wordCountPlugin.characters ).to.equal( 5 );
+
+				setModelData( model, '' );
+
+				expect( wordCountPlugin.words ).to.equal( 0 );
+				expect( wordCountPlugin.characters ).to.equal( 0 );
+			} );
+		} );
 	} );
 
 	describe( 'self-updating element', () => {
