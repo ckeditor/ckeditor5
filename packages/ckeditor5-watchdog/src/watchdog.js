@@ -80,13 +80,13 @@ export default class Watchdog {
 		this._boundErrorHandler = this._handleGlobalErrorEvent.bind( this );
 
 		/**
-		 * Throttled save method. The `save()` method is called the specified `waitingTime` after `throttledSave()` is called,
+		 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
 		 * unless a new action happens in the meantime.
 		 *
 		 * @private
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), config.waitingTime || 5000 );
+		this._throttledSave = throttle( this._save.bind( this ), config.saveInterval || 5000 );
 
 		/**
 		 * The current editor instance.
@@ -442,5 +442,6 @@ mix( Watchdog, ObservableMixin );
  * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors
  * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
- * @property {Number} [waitingTime=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
+ * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
+ * Note that for large documents this might have an impact on the editor performance.
  */
