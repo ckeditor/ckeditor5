@@ -50,10 +50,12 @@ export default class PasteFromOffice extends Plugin {
 	init() {
 		const editor = this.editor;
 		const normalizers = [];
-		const genericNormalizer = new GenericNormalizer();
 
 		normalizers.push( new MSWordNormalizer() );
 		normalizers.push( new GoogleDocsNormalizer() );
+
+		// GenericNormalizers has to be added as last one, as it always will be activated.
+		normalizers.push( new GenericNormalizer() );
 
 		editor.plugins.get( 'Clipboard' ).on(
 			'inputTransformation',
@@ -67,10 +69,6 @@ export default class PasteFromOffice extends Plugin {
 
 				if ( activeNormalizer ) {
 					activeNormalizer.execute( data );
-
-					data.isTransformedWithPasteFromOffice = true;
-				} else {
-					genericNormalizer.execute( data );
 
 					data.isTransformedWithPasteFromOffice = true;
 				}
