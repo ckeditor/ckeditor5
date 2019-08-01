@@ -239,15 +239,15 @@ function isNewListNeeded( previousItem, currentItem ) {
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
 export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
-	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
+	for ( const value of writer.createRangeIn( elementOrDocumentFragment ) ) {
+		const element = value.item;
 
-	for ( const element of iterableNodes ) {
-		if ( element.is( 'p' ) && element.parent.is( 'li' ) ) {
-			unwrapSingleElement( element, writer );
-		}
+		if ( element.is( 'li' ) ) {
+			const firstChild = element.getChild( 0 );
 
-		if ( element.is( 'element' ) && element.childCount ) {
-			unwrapParagraphInListItem( element, writer );
+			if ( firstChild.is( 'p' ) ) {
+				unwrapSingleElement( firstChild, writer );
+			}
 		}
 	}
 }

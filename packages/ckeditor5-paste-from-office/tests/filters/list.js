@@ -117,6 +117,15 @@ describe( 'PasteFromOffice - filters', () => {
 					'<ul><li>one<ol><li>two<ul><li>three</li></ul></li></ol></li></ul>'
 				);
 			} );
+
+			it( 'should do nothing for correct lists', () => {
+				const inputData = '<ol><li>foo</li><li>bar<ul><li>baz</li></ul></li></ol>';
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				unwrapParagraphInListItem( documentFragment, writer );
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li><li>bar<ul><li>baz</li></ul></li></ol>' );
+			} );
 		} );
 
 		describe( 'fixListIndentation', () => {
