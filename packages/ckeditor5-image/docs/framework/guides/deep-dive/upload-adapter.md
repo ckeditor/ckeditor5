@@ -11,6 +11,10 @@ In this guide you will learn the basic concepts of the file upload architecture 
 While this guide is mainly focused on the image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow developing all sorts of file upload adapters for different file types like PDFs, movies, etc.
 
 <info-box>
+	If you do not feel like getting through this guide but you want a simple upload adapter that works, check out the {@link features/simple-upload-adapter Simple upload adapter} plugin we implemented for you.
+</info-box>
+
+<info-box>
 	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
@@ -152,13 +156,17 @@ editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
 In this section, you are going to implement and enable a custom upload adapter. The adapter will use the native [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to send files returned by the loader to a pre–configured URL on the server, handling the `error`, `abort`, `load`, and `progress` events fired by the request.
 
 <info-box>
-	Note that this is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
-
-	Use the provided code snippets as an inspiration for your own custom upload adapter &mdash; it is up to you to choose the technologies and APIs to use. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out of the box.
+	If you do not feel like getting through this guide but you want a simple `XMLHttpRequest`–based upload adapter that works, check out the {@link features/simple-upload-adapter Simple upload adapter} plugin we implemented for you. It comes with pretty much the same functionality. Just install it, configure it, and you are ready to go.
 </info-box>
 
 <info-box>
-	If you do not want to read through this entire guide, you can simply go and check out the [full source code](#the-complete-implementation) of an `XMLHttpRequest`–based upload adapter that you can use in your application.
+	If the {@link features/simple-upload-adapter Simple upload adapter} is not enough for you and you want a custom upload adapter developed on top this guide, go straight to the [full source code](#the-complete-implementation) and start experimenting.
+</info-box>
+
+<info-box>
+	Note that this is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
+
+	Use the provided code snippets as an inspiration for your own custom upload adapter &mdash; it is up to you to choose the technologies and APIs to use. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out of the box.
 </info-box>
 
 To start off, define the `MyUploadAdapter` class with its constructor.
