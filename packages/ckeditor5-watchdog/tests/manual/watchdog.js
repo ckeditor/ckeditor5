@@ -11,11 +11,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import Watchdog from '../../src/watchdog';
 
-const firstEditorElement = document.getElementById( 'editor-1' );
-const secondEditorElement = document.getElementById( 'editor-2' );
-
-const randomErrorButton = document.getElementById( 'random-error' );
-
 class TypingError {
 	constructor( editor ) {
 		this.editor = editor;
@@ -49,36 +44,33 @@ const editorConfig = {
 	}
 };
 
-// Watchdog 1
+const watchdog1 = createWatchdog( document.getElementById( 'editor-1' ), 'First' );
+const watchdog2 = createWatchdog( document.getElementById( 'editor-2' ), 'Second' );
 
-const watchdog1 = Watchdog.for( ClassicEditor );
-window.watchdog1 = watchdog1;
+Object.assign( window, { watchdog1, watchdog2 } );
 
-watchdog1.create( firstEditorElement, editorConfig );
-
-watchdog1.on( 'error', () => {
-	console.log( 'First editor crashed!' );
-} );
-
-watchdog1.on( 'restart', () => {
-	console.log( 'First editor restarted.' );
-} );
-
-// Watchdog 2
-
-const watchdog2 = Watchdog.for( ClassicEditor );
-window.watchdog2 = watchdog2;
-
-watchdog2.create( secondEditorElement, editorConfig );
-
-watchdog2.on( 'error', () => {
-	console.log( 'Second editor crashed!' );
-} );
-
-watchdog2.on( 'restart', () => {
-	console.log( 'Second editor restarted.' );
-} );
-
-randomErrorButton.addEventListener( 'click', () => {
+document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 	throw new Error( 'foo' );
 } );
+
+function createWatchdog( element, which ) {
+	const watchdog = Watchdog.for( ClassicEditor );
+
+	watchdog.create( element, editorConfig );
+
+	watchdog.on( 'error', () => {
+		console.log( `${ which } editor crashed!` );
+	} );
+
+	watchdog.on( 'restart', () => {
+		console.log( `${ which } editor restarted.` );
+	} );
+
+	watchdog.on( 'change:state', ( evt, name, currentValue, prevValue ) => {
+		console.log( `${ which } watchdog changed state from ${ prevValue } to ${ currentValue }` );
+
+		if ( currentValue === 'crashedPermanently' ) {
+			watchdog.editor.isReadOnly = true;
+		}
+	} );
+}
