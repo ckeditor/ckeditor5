@@ -16,6 +16,7 @@ const UglifyJsWebpackPlugin = require( 'uglifyjs-webpack-plugin' );
 const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
 
 const DEFAULT_LANGUAGE = 'en';
+const MULTI_LANGUAGE = 'multi-language';
 
 /**
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -91,6 +92,12 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 	// Group snippets by language. There is no way to build different languages in a single Webpack process.
 	// Webpack must be called as many times as different languages are being used in snippets.
 	for ( const snippetData of snippets ) {
+		// Multi-languages editors must be built separately.
+		if ( snippetData.snippetConfig.additionalLanguages ) {
+			snippetData.snippetConfig.additionalLanguages.push( snippetData.snippetConfig.language );
+			snippetData.snippetConfig.language = MULTI_LANGUAGE;
+		}
+
 		if ( !groupedSnippetsByLanguage[ snippetData.snippetConfig.language ] ) {
 			groupedSnippetsByLanguage[ snippetData.snippetConfig.language ] = new Set();
 		}
@@ -184,11 +191,6 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 						snippetData.snippetConfig.additionalLanguages.forEach( language => {
 							jsFiles.push( path.join( snippetData.relativeOutputPath, 'translations', `${ language }.js` ) );
 						} );
-
-						// The default language must be imported as well.
-						jsFiles.push(
-							path.join( snippetData.relativeOutputPath, 'translations', `${ snippetData.snippetConfig.language }.js` )
-						);
 					}
 				}
 
@@ -273,23 +275,25 @@ function getWebpackConfig( snippets, config ) {
 		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
 	}
 
-	const additionalLanguages = new Set();
+	const ckeditorWebpackPluginOptions = {};
 
-	// Find additional languages that must be built.
-	for ( const snippetData of snippets ) {
-		for ( const language of snippetData.snippetConfig.additionalLanguages || [] ) {
-			additionalLanguages.add( language );
+	if ( config.language === MULTI_LANGUAGE ) {
+		const additionalLanguages = new Set();
+
+		// Find all additional languages that must be built.
+		for ( const snippetData of snippets ) {
+			for ( const language of snippetData.snippetConfig.additionalLanguages ) {
+				additionalLanguages.add( language );
+			}
 		}
-	}
 
-	const ckeditorWebpackPluginOptions = {
-		language: config.language
-	};
-
-	// Pass `additionalLanguages` to `CKEditorWebpackPlugin` only if at least one is defined.
-	if ( additionalLanguages.size ) {
-		// Also, we want to get unique values only.
+		// Pass unique values of `additionalLanguages` to `CKEditorWebpackPlugin`.
 		ckeditorWebpackPluginOptions.additionalLanguages = [ ...additionalLanguages ];
+
+		// Also, set the default language because of the warning that comes from the plugin.
+		ckeditorWebpackPluginOptions.language = DEFAULT_LANGUAGE;
+	} else {
+		ckeditorWebpackPluginOptions.language = config.language;
 	}
 
 	const webpackConfig = {
