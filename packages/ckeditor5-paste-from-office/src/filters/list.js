@@ -290,7 +290,7 @@ export function fixListIndentation( elementOrDocumentFragment, writer ) {
 	for ( const value of writer.createRangeIn( elementOrDocumentFragment ) ) {
 		const element = value.item;
 
-		// 1. List should not be a sibling of a list item. This is the nested list which should go inside the list item.
+		// 1. Move nested list as child of sibling list item.
 		if ( element.is( 'li' ) ) {
 			const next = element.nextSibling;
 
@@ -300,7 +300,7 @@ export function fixListIndentation( elementOrDocumentFragment, writer ) {
 			}
 		}
 
-		// 2. List cannot contain another list as a child.
+		// 2. Unwrap nested list
 		if ( isList( element ) ) {
 			let firstChild = element.getChild( 0 );
 
