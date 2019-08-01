@@ -28,39 +28,39 @@ ClassicEditor
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-		}
-	} )
-	.then( editor => {
-		const wordCountPlugin = editor.plugins.get( 'WordCount' );
+		},
+		wordCount: {
+			onUpdate: ( () => {
+				// Calculates the hue based on the number of characters.
+				//
+				// For the character counter:
+				//
+				// * below greenUntil - Returns green.
+				// * between greenUntil and maxCharacters - Returns a hue between green and red.
+				// * above maxCharacters - Returns red.
+				function calculateHue( { characters, greenUntil, maxCharacters } ) {
+					const greenHue = 70;
+					const redHue = 0;
+					const progress = Math.max( 0, Math.min( 1, ( characters - greenUntil ) / ( maxCharacters - greenUntil ) ) ); // 0-1
+					const discreetProgress = Math.floor( progress * 10 ) / 10; // 0, 0.1, 0.2, ..., 1
 
-		const progressBar = document.querySelector( '.customized-count progress' );
-		const colorBox = document.querySelector( '.customized-count__color-box' );
+					return ( redHue - greenHue ) * discreetProgress + greenHue;
+				}
 
-		wordCountPlugin.on( 'update', ( evt, data ) => {
-			const charactersHue = calculateHue( {
-				characters: data.characters,
-				greenUntil: 70,
-				maxCharacters: 120
-			} );
+				const progressBar = document.querySelector( '.customized-count progress' );
+				const colorBox = document.querySelector( '.customized-count__color-box' );
 
-			progressBar.value = data.words;
-			colorBox.style.setProperty( '--hue', charactersHue );
-		} );
+				return data => {
+					const charactersHue = calculateHue( {
+						characters: data.characters,
+						greenUntil: 70,
+						maxCharacters: 120
+					} );
 
-		// Calculates the hue based on the number of characters.
-		//
-		// For the character counter:
-		//
-		// * below greenUntil - Returns green.
-		// * between greenUntil and maxCharacters - Returns a hue between green and red.
-		// * above maxCharacters - Returns red.
-		function calculateHue( { characters, greenUntil, maxCharacters } ) {
-			const greenHue = 70;
-			const redHue = 0;
-			const progress = Math.max( 0, Math.min( 1, ( characters - greenUntil ) / ( maxCharacters - greenUntil ) ) ); // 0-1
-			const discreetProgress = Math.floor( progress * 10 ) / 10; // 0, 0.1, 0.2, ..., 1
-
-			return ( redHue - greenHue ) * discreetProgress + greenHue;
+					progressBar.value = data.words;
+					colorBox.style.setProperty( '--hue', charactersHue );
+				};
+			} )()
 		}
 	} )
 	.catch( err => {
