@@ -307,7 +307,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks whether the evt should be handled.
+	 * Checks whether the error event should be handled.
 	 *
 	 * @private
 	 * @param {Event} evt Error event.
