@@ -36,37 +36,47 @@ export function unwrapParagraph( elementOrDocumentFragment, writer ) {
 export function moveNestedListToListItem( elementOrDocumentFragment, writer ) {
 	// There are 2 situations which are fixed in the for loop:
 	//
-	// 1. Move list to previous list item:
-	// OL                      OL
-	// |-> LI                  |-> LI
-	// |-> OL                      |-> OL
-	//     |-> LI                      |-> LI
-	//
-	// 2. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
-	// OL                     OL
-	// |-> LI                 |-> LI
-	//     |-> OL                  |-> OL
-	//         |-> OL                   |-> LI
-	//         |   |-> OL               |-> LI
+	// 1. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
+	// OL                                OL
+	// |-> LI                            |-> LI
+	//     |-> OL                            |-> OL
+	//         |-> OL                            |-> LI
+	//         |   |-> OL                        |-> LI
 	//         |       |-> OL
 	//         |           |-> LI
 	//         |-> LI
+	// or list like:
+	// OL                                OL
+	// |-> OL                            |-> LI
+	//     |-> OL
+	//          |-> OL
+	//              |-> LI
+	//
+	// 2. Move list to previous list item:
+	// OL                                OL
+	// |-> LI                            |-> LI
+	// |-> OL                                |-> OL
+	//     |-> LI                                |-> LI
 	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
 
 	for ( const element of iterableNodes ) {
-		if ( isList( element ) && isList( element.parent ) ) {
+		if ( isList( element ) ) {
 			// 1.
-			const previous = element.previousSibling;
+			if ( isList( element.getChild( 0 ) ) ) {
+				let firstChild = element.getChild( 0 );
 
-			writer.remove( element );
-			writer.insertChild( previous.childCount, element, previous );
+				while ( isList( firstChild ) ) {
+					unwrapSingleElement( firstChild, writer );
+					firstChild = element.getChild( 0 );
+				}
+			}
 
 			// 2.
-			let firstChild = element.getChild( 0 );
+			const previous = element.previousSibling;
 
-			while ( isList( firstChild ) ) {
-				unwrapSingleElement( firstChild, writer );
-				firstChild = element.getChild( 0 );
+			if ( previous ) {
+				writer.remove( element );
+				writer.insertChild( previous.childCount, element, previous );
 			}
 		}
 
