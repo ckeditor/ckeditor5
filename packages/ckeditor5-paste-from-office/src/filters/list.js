@@ -256,7 +256,15 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
  * Moves nested list inside previous sibling element, what is a proper HTML standard.
  * There are 2 situations which are fixed in the for loop:
  *
- * 1. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
+ * 1. Move list to previous list item:
+ *
+ *		before                            after:
+ *		OL                                OL
+ *		|-> LI                            |-> LI
+ *		|-> OL                                |-> OL
+ *		    |-> LI                                |-> LI
+ *
+ * 2. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
  *
  *		before                            after:
  *		OL                                OL
@@ -275,43 +283,31 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
  *		         |-> OL
  *		             |-> LI
  *
- * 2. Move list to previous list item:
- *
- *		before                            after:
- *		OL                                OL
- *		|-> LI                            |-> LI
- *		|-> OL                                |-> OL
- *		    |-> LI                                |-> LI
- *
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
 export function fixListIndentation( elementOrDocumentFragment, writer ) {
-	const iterableNodes = elementOrDocumentFragment.is( 'element' ) ? elementOrDocumentFragment.getChildren() : elementOrDocumentFragment;
+	for ( const value of writer.createRangeIn( elementOrDocumentFragment ) ) {
+		const element = value.item;
 
-	for ( const element of iterableNodes ) {
-		if ( isList( element ) ) {
-			// 1.
-			if ( isList( element.getChild( 0 ) ) ) {
-				let firstChild = element.getChild( 0 );
+		// 1. List should not be a sibling of a list item. This is the nested list which should go inside the list item.
+		if ( element.is( 'li' ) ) {
+			const next = element.nextSibling;
 
-				while ( isList( firstChild ) ) {
-					unwrapSingleElement( firstChild, writer );
-					firstChild = element.getChild( 0 );
-				}
-			}
-
-			// 2.
-			const previous = element.previousSibling;
-
-			if ( previous && previous.is( 'li' ) ) {
-				writer.remove( element );
-				writer.insertChild( previous.childCount, element, previous );
+			if ( next && isList( next ) ) {
+				writer.remove( next );
+				writer.insertChild( element.childCount, next, element );
 			}
 		}
 
-		if ( element.is( 'element' ) && element.childCount ) {
-			fixListIndentation( element, writer );
+		// 2. List cannot contain another list as a child.
+		if ( isList( element ) ) {
+			let firstChild = element.getChild( 0 );
+
+			while ( isList( firstChild ) ) {
+				unwrapSingleElement( firstChild, writer );
+				firstChild = element.getChild( 0 );
+			}
 		}
 	}
 }
