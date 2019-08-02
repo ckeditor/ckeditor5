@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -28,7 +28,7 @@ export default class LabeledInputView extends View {
 		super( locale );
 
 		const inputUid = `ck-input-${ uid() }`;
-		const errorUid = `ck-error-${ uid() }`;
+		const statusUid = `ck-status-${ uid() }`;
 
 		/**
 		 * The text of the label.
@@ -73,6 +73,21 @@ export default class LabeledInputView extends View {
 		this.set( 'errorText', null );
 
 		/**
+		 * The additional information text displayed next to the {@link #inputView} which can
+		 * be used to inform the user about the purpose of the input, provide help or hints.
+		 *
+		 * Set it to `null` to hide the message.
+		 *
+		 * **Note:** This text will be displayed in the same place as {@link #errorText} but the
+		 * latter always takes precedence: if the {@link #errorText} is set, it replaces
+		 * {@link #errorText} for as long as the value of the input is invalid.
+		 *
+		 * @observable
+		 * @member {String|null} #infoText
+		 */
+		this.set( 'infoText', null );
+
+		/**
 		 * The label view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
@@ -84,14 +99,33 @@ export default class LabeledInputView extends View {
 		 *
 		 * @member {module:ui/inputtext/inputtextview~InputTextView} #inputView
 		 */
-		this.inputView = this._createInputView( InputView, inputUid, errorUid );
+		this.inputView = this._createInputView( InputView, inputUid, statusUid );
 
 		/**
-		 * The error view for the {@link #inputView}.
+		 * The status view for the {@link #inputView}. It displays {@link #errorText} and
+		 * {@link #infoText}.
 		 *
-		 * @member {module:ui/view~View} #errorView
+		 * @member {module:ui/view~View} #statusView
 		 */
-		this.errorView = this._createErrorView( errorUid );
+		this.statusView = this._createStatusView( statusUid );
+
+		/**
+		 * The combined status text made of {@link #errorText} and {@link #infoText}.
+		 * Note that when present, {@link #errorText} always takes precedence in the
+		 * status.
+		 *
+		 * @see #errorText
+		 * @see #infoText
+		 * @see #statusView
+		 * @private
+		 * @observable
+		 * @member {String|null} #_statusText
+		 */
+		this.bind( '_statusText' ).to(
+			this, 'errorText',
+			this, 'infoText',
+			( errorText, infoText ) => errorText || infoText
+		);
 
 		const bind = this.bindTemplate;
 
@@ -107,7 +141,7 @@ export default class LabeledInputView extends View {
 			children: [
 				this.labelView,
 				this.inputView,
-				this.errorView
+				this.statusView
 			]
 		} );
 	}
@@ -134,14 +168,14 @@ export default class LabeledInputView extends View {
 	 * @private
 	 * @param {Function} InputView Input view constructor.
 	 * @param {String} inputUid Unique id to set as inputView#id attribute.
-	 * @param {String} errorUid Unique id of the error for the input's `aria-describedby` attribute.
+	 * @param {String} statusUid Unique id of the status for the input's `aria-describedby` attribute.
 	 * @returns {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	_createInputView( InputView, inputUid, errorUid ) {
-		const inputView = new InputView( this.locale, errorUid );
+	_createInputView( InputView, inputUid, statusUid ) {
+		const inputView = new InputView( this.locale, statusUid );
 
 		inputView.id = inputUid;
-		inputView.ariaDesribedById = errorUid;
+		inputView.ariaDescribedById = statusUid;
 		inputView.bind( 'value' ).to( this );
 		inputView.bind( 'isReadOnly' ).to( this );
 		inputView.bind( 'hasError' ).to( this, 'errorText', value => !!value );
@@ -156,34 +190,37 @@ export default class LabeledInputView extends View {
 	}
 
 	/**
-	 * Creates the error view instance.
+	 * Creates the status view instance. It displays {@link #errorText} and {@link #infoText}
+	 * next to the {@link #inputView}. See {@link #_statusText}.
 	 *
 	 * @private
-	 * @param {String} errorUid Unique id of the error, shared with the input's `aria-describedby` attribute.
+	 * @param {String} statusUid Unique id of the status, shared with the input's `aria-describedby` attribute.
 	 * @returns {module:ui/view~View}
 	 */
-	_createErrorView( errorUid ) {
-		const errorView = new View( this.locale );
+	_createStatusView( statusUid ) {
+		const statusView = new View( this.locale );
 		const bind = this.bindTemplate;
 
-		errorView.setTemplate( 				{
+		statusView.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
 					'ck',
-					'ck-labeled-input__error',
-					bind.if( 'errorText', 'ck-hidden', value => !value )
+					'ck-labeled-input__status',
+					bind.if( 'errorText', 'ck-labeled-input__status_error' ),
+					bind.if( '_statusText', 'ck-hidden', value => !value )
 				],
-				id: errorUid
+				id: statusUid,
+				role: bind.if( 'errorText', 'alert' )
 			},
 			children: [
 				{
-					text: bind.to( 'errorText' )
+					text: bind.to( '_statusText' )
 				}
 			]
 		} );
 
-		return errorView;
+		return statusView;
 	}
 
 	/**

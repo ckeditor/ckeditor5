@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import ComponentFactory from '../src/componentfactory';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ComponentFactory', () => {
 	let editor, factory;
@@ -41,17 +42,17 @@ describe( 'ComponentFactory', () => {
 		it( 'throws when trying to override already registered component', () => {
 			factory.add( 'foo', () => {} );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				factory.add( 'foo', () => {} );
-			} ).to.throw( CKEditorError, /^componentfactory-item-exists/ );
+			}, /^componentfactory-item-exists/, editor );
 		} );
 
 		it( 'throws when trying to override already registered component added with different case', () => {
 			factory.add( 'Foo', () => {} );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				factory.add( 'foo', () => {} );
-			} ).to.throw( CKEditorError, /^componentfactory-item-exists/ );
+			}, /^componentfactory-item-exists/, editor );
 		} );
 
 		it( 'does not normalize component names', () => {
@@ -63,9 +64,9 @@ describe( 'ComponentFactory', () => {
 
 	describe( 'create()', () => {
 		it( 'throws when trying to create a component which has not been registered', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				factory.create( 'foo' );
-			} ).to.throw( CKEditorError, /^componentfactory-item-missing/ );
+			}, /^componentfactory-item-missing/, editor );
 		} );
 
 		it( 'creates an instance', () => {

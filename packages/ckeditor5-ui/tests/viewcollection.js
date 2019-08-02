@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let collection;
 
@@ -169,17 +169,17 @@ describe( 'ViewCollection', () => {
 
 	describe( 'delegate()', () => {
 		it( 'should throw when event names are not strings', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.delegate();
-			} ).to.throw( CKEditorError, /ui-viewcollection-delegate-wrong-events/ );
+			}, /ui-viewcollection-delegate-wrong-events/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.delegate( new Date() );
-			} ).to.throw( CKEditorError, /ui-viewcollection-delegate-wrong-events/ );
+			}, /ui-viewcollection-delegate-wrong-events/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				collection.delegate( 'color', new Date() );
-			} ).to.throw( CKEditorError, /ui-viewcollection-delegate-wrong-events/ );
+			}, /ui-viewcollection-delegate-wrong-events/ );
 		} );
 
 		it( 'returns object', () => {

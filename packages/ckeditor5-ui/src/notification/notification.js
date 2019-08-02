@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -14,11 +14,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 /**
  * The Notification plugin.
  *
- * This plugin sends few base types of notifications: `success`, `info` and `warning`. This notifications need to be
- * handled and displayed by plugin responsible for showing UI of the notifications. Using this plugin for dispatching
- * notifications makes possible to switch the notifications UI.
+ * This plugin sends a few types of notifications: `success`, `info` and `warning`. The notifications need to be
+ * handled and displayed by a plugin responsible for showing the UI of the notifications. Using this plugin for dispatching
+ * notifications makes it possible to switch the notifications UI.
  *
- * Note that every unhandled and not stopped `warning` notification will be displayed as system alert.
+ * Note that every unhandled and not stopped `warning` notification will be displayed as a system alert.
  * See {@link module:ui/notification/notification~Notification#showWarning}.
  *
  * @extends module:core/plugin~Plugin
@@ -35,33 +35,34 @@ export default class Notification extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		// Each unhandled and not stopped `show:warning` event is displayed as system alert.
+		// Each unhandled and not stopped `show:warning` event is displayed as a system alert.
 		this.on( 'show:warning', ( evt, data ) => {
 			window.alert( data.message ); // eslint-disable-line no-alert
 		}, { priority: 'lowest' } );
 	}
 
 	/**
-	 * Shows success notification.
+	 * Shows a success notification.
 	 *
-	 * At default it fires `show:success` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default, it fires the {@link #event:show:success `show:success` event} with the given `data`. The event namespace can be extended
+	 * using the `data.namespace` option. For example:
 	 *
 	 * 		showSuccess( 'Image is uploaded.', {
 	 * 			namespace: 'upload:image'
 	 * 		} );
 	 *
-	 * will fire `show:success:upload:image` event.
-	 * Title of the notification can be provided:
+	 * will fire the `show:success:upload:image` event.
+	 *
+	 * You can provide the title of the notification:
 	 *
 	 *		showSuccess( 'Image is uploaded.', {
 	 *			title: 'Image upload success'
-	 *		});
+	 *		} );
 	 *
-	 * @param {String} message Content of the notification.
+	 * @param {String} message The content of the notification.
 	 * @param {Object} [data={}] Additional data.
 	 * @param {String} [data.namespace] Additional event namespace.
-	 * @param {String} [data.title] Title of the notification.
+	 * @param {String} [data.title] The title of the notification.
 	 */
 	showSuccess( message, data = {} ) {
 		this._showNotification( {
@@ -73,26 +74,27 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Shows info notification.
+	 * Shows an information notification.
 	 *
-	 * At default it fires `show:info` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default, it fires the {@link #event:show:info `show:info` event} with the given `data`. The event namespace can be extended
+	 * using the `data.namespace` option. For example:
 	 *
 	 * 		showInfo( 'Editor is offline.', {
 	 * 			namespace: 'editor:status'
 	 * 		} );
 	 *
-	 * will fire `show:info:editor:status` event.
-	 * Title of the notification can be provided:
+	 * will fire the `show:info:editor:status` event.
+	 *
+	 * You can provide the title of the notification:
 	 *
 	 *		showInfo( 'Editor is offline.', {
 	 *			title: 'Network information'
-	 *		});
+	 *		} );
 	 *
-	 * @param {String} message Content of the notification.
+	 * @param {String} message The content of the notification.
 	 * @param {Object} [data={}] Additional data.
 	 * @param {String} [data.namespace] Additional event namespace.
-	 * @param {String} [data.title] Title of the notification.
+	 * @param {String} [data.title] The title of the notification.
 	 */
 	showInfo( message, data = {} ) {
 		this._showNotification( {
@@ -104,49 +106,50 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Shows warning notification.
+	 * Shows a warning notification.
 	 *
-	 * At default it fires `show:warning` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default, it fires the {@link #event:show:warning `show:warning` event}
+	 * with the given `data`. The event namespace can be extended using the `data.namespace` option. For example:
 	 *
 	 * 		showWarning( 'Image upload error.', {
 	 * 			namespace: 'upload:image'
 	 * 		} );
 	 *
-	 * will fire `show:warning:upload:image` event.
-	 * Title of the notification can be provided:
+	 * will fire the `show:warning:upload:image` event.
+	 *
+	 * You can provide the title of the notification:
 	 *
 	 *		showWarning( 'Image upload error.', {
 	 *			title: 'Upload failed'
-	 *		});
+	 *		} );
 	 *
-	 * Note that each unhandled and not stopped `warning` notification will be displayed as system alert.
-	 * Plugin responsible for displaying warnings should `stop()` the event to prevent of displaying it as alert:
+	 * Note that each unhandled and not stopped `warning` notification will be displayed as a system alert.
+	 * The plugin responsible for displaying warnings should `stop()` the event to prevent displaying it as an alert:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Do something with data.
+	 * 			// Do something with the data.
 	 *
-	 * 			// Stop this event to prevent of displaying as alert.
+	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
 	 * 		} );
 	 *
-	 * You can attach many listeners to the same event and `stop()` this event in the listener with the low priority:
+	 * You can attach many listeners to the same event and `stop()` this event in a listener with a low priority:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Show warning in the UI, but not stop it.
+	 * 			// Show the warning in the UI, but do not stop it.
 	 * 		} );
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Log warning to some error tracker.
+	 * 			// Log the warning to some error tracker.
 	 *
-	 * 			// Stop this event to prevent of displaying as alert.
+	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
 	 * 		}, { priority: 'low' } );
 	 *
-	 * @param {String} message Content of the notification.
+	 * @param {String} message The content of the notification.
 	 * @param {Object} [data={}] Additional data.
 	 * @param {String} [data.namespace] Additional event namespace.
-	 * @param {String} [data.title] Title of the notification.
+	 * @param {String} [data.title] The title of the notification.
 	 */
 	showWarning( message, data = {} ) {
 		this._showNotification( {
@@ -158,14 +161,14 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Fires `show` event with specified type, namespace and message.
+	 * Fires the `show` event with the specified type, namespace and message.
 	 *
 	 * @private
-	 * @param {Object} data Message data.
-	 * @param {String} data.message Content of the notification.
-	 * @param {'success'|'info'|'warning'} data.type Type of message.
+	 * @param {Object} data The message data.
+	 * @param {String} data.message The content of the notification.
+	 * @param {'success'|'info'|'warning'} data.type The type of the message.
 	 * @param {String} [data.namespace] Additional event namespace.
-	 * @param {String} [data.title=''] Title of the notification.
+	 * @param {String} [data.title=''] The title of the notification.
 	 */
 	_showNotification( data ) {
 		const event = `show:${ data.type }` + ( data.namespace ? `:${ data.namespace }` : '' );
@@ -178,45 +181,45 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Fired when one of `showSuccess`, `showInfo`, `showWarning` methods is called.
+	 * Fired when one of the `showSuccess()`, `showInfo()`, `showWarning()` methods is called.
 	 *
 	 * @event show
-	 * @param {Object} data Notification data.
-	 * @param {String} data.message Content of the notification.
-	 * @param {String} data.title Title of the notification.
-	 * @param {'success'|'info'|'warning'} data.type Type of notification.
+	 * @param {Object} data The notification data.
+	 * @param {String} data.message The content of the notification.
+	 * @param {String} data.title The title of the notification.
+	 * @param {'success'|'info'|'warning'} data.type The type of the notification.
 	 */
 
 	/**
-	 * Fired when `showSuccess` method is called.
+	 * Fired when the `showSuccess()` method is called.
 	 *
 	 * @event show:success
-	 * @param {Object} data Notification data.
-	 * @param {String} data.message Content of the notification.
-	 * @param {String} data.title Title of the notification.
-	 * @param {'success'} data.type Type of notification.
+	 * @param {Object} data The notification data.
+	 * @param {String} data.message The content of the notification.
+	 * @param {String} data.title The title of the notification.
+	 * @param {'success'} data.type The type of the notification.
 	 */
 
 	/**
-	 * Fired when `showInfo` method is called.
+	 * Fired when the `showInfo()` method is called.
 	 *
 	 * @event show:info
-	 * @param {Object} data Notification data.
-	 * @param {String} data.message Content of the notification.
-	 * @param {String} data.title Title of the notification.
-	 * @param {'info'} data.type Type of notification.
+	 * @param {Object} data The notification data.
+	 * @param {String} data.message The content of the notification.
+	 * @param {String} data.title The title of the notification.
+	 * @param {'info'} data.type The type of the notification.
 	 */
 
 	/**
-	 * Fired when `showWarning` method is called.
+	 * Fired when the `showWarning()` method is called.
 	 *
-	 * When this event won't be handled and stopped by `event.stop()` then data.message of this event will
-	 * be automatically displayed as system alert.
+	 * When this event is not handled or stopped by `event.stop()`, the `data.message` of this event will
+	 * be automatically displayed as a system alert.
 	 *
 	 * @event show:warning
-	 * @param {Object} data Notification data.
-	 * @param {String} data.message Content of the notification.
-	 * @param {String} data.title Title of the notification.
-	 * @param {'warning'} data.type Type of notification.
+	 * @param {Object} data The notification data.
+	 * @param {String} data.message The content of the notification.
+	 * @param {String} data.title The title of the notification.
+	 * @param {'warning'} data.type The type of the notification.
 	 */
 }

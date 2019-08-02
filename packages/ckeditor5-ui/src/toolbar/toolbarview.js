@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module ui/toolbar/toolbarview
  */
+
+/* globals console */
 
 import View from '../view';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -13,13 +15,13 @@ import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
+import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import doubleRightArrowIcon from '@ckeditor/ckeditor5-core/theme/icons/double-right-arrow.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
-import doubleRightArrowIcon from '@ckeditor/ckeditor5-core/theme/icons/double-right-arrow.svg';
 
 const SUDDEN_SCROLL_GROUP_SAFETY_OFFSET = 25;
 
@@ -87,9 +89,9 @@ export default class ToolbarView extends View {
 		 * An additional CSS class added to the {@link #element}.
 		 *
 		 * @observable
-		 * @member {String} #className
+		 * @member {String} #class
 		 */
-		this.set( 'className' );
+		this.set( 'class' );
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
@@ -135,7 +137,7 @@ export default class ToolbarView extends View {
 					'ck',
 					'ck-toolbar',
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
-					bind.to( 'className' )
+					bind.to( 'class' )
 				]
 			},
 
@@ -229,10 +231,8 @@ export default class ToolbarView extends View {
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
 				 */
-				log.warn(
-					'toolbarview-item-unavailable: The requested toolbar item is unavailable.',
-					{ name }
-				);
+				console.warn( attachLinkToDocumentation(
+					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
 			}
 		} );
 	}

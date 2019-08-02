@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window, document, Event */
@@ -97,13 +97,13 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
-		describe( 'className', () => {
+		describe( 'class', () => {
 			it( 'should set additional class to the view#element', () => {
-				view.className = 'foo';
+				view.class = 'foo';
 
 				expect( view.element.classList.contains( 'foo' ) ).to.true;
 
-				view.className = '';
+				view.class = '';
 
 				expect( view.element.classList.contains( 'foo' ) ).to.false;
 			} );
@@ -190,6 +190,19 @@ describe( 'BalloonPanelView', () => {
 				limiter: document.body,
 				fitInViewport: true
 			} ) );
+		} );
+
+		it( 'should parse optimal position offset to int', () => {
+			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+				top: 10.345,
+				left: 10.345,
+				name: 'position'
+			} );
+
+			view.attachTo( { target, limiter } );
+
+			expect( view.top ).to.equal( 10 );
+			expect( view.left ).to.equal( 10 );
 		} );
 
 		describe( 'limited by limiter element', () => {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global Event */
@@ -8,10 +8,10 @@
 import InputTextView from '../../src/inputtext/inputtextview';
 
 describe( 'InputTextView', () => {
-	let view, ariaDesribedById;
+	let view, ariaDescribedById;
 
 	beforeEach( () => {
-		ariaDesribedById = 'ck-error-1234567890';
+		ariaDescribedById = 'ck-error-1234567890';
 		view = new InputTextView();
 
 		view.render();
@@ -126,9 +126,9 @@ describe( 'InputTextView', () => {
 			it( 'should react on view#hasError', () => {
 				expect( view.element.getAttribute( 'aria-describedby' ) ).to.be.null;
 
-				view.ariaDesribedById = ariaDesribedById;
+				view.ariaDescribedById = ariaDescribedById;
 
-				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( ariaDesribedById );
+				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( ariaDescribedById );
 			} );
 		} );
 

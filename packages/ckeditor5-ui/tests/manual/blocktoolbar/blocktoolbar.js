@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals window, document, console:false, setTimeout */
@@ -15,9 +15,6 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
-
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
@@ -59,7 +56,7 @@ function createExternalChangesSimulator( editor ) {
 
 	function insertNewLine( path ) {
 		model.enqueueChange( 'transparent', writer => {
-			writer.insertElement( 'paragraph', new Position( model.document.getRoot(), path ) );
+			writer.insertElement( 'paragraph', writer.createPositionFromPath( model.document.getRoot(), path ) );
 		} );
 
 		return Promise.resolve();
@@ -67,7 +64,7 @@ function createExternalChangesSimulator( editor ) {
 
 	function type( path, text ) {
 		return new Promise( resolve => {
-			let position = new Position( model.document.getRoot(), path );
+			let position = model.createPositionFromPath( model.document.getRoot(), path );
 			let index = 0;
 
 			function typing() {
@@ -94,7 +91,9 @@ function createExternalChangesSimulator( editor ) {
 
 	function removeElement( path ) {
 		model.enqueueChange( 'transparent', writer => {
-			writer.remove( Range.createFromPositionAndShift( new Position( model.document.getRoot(), path ), 1 ) );
+			const start = writer.createPositionFromPath( model.document.getRoot(), path );
+
+			writer.remove( writer.createRange( start, start.getShiftedBy( 1 ) ) );
 		} );
 
 		return Promise.resolve();

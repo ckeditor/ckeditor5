@@ -1,0 +1,41 @@
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "Raiškiojo teksto redaktorius, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "Raiškiojo teksto redaktorius"
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr "Redaguoti bloką"
+
+msgctxt "Label for a button showing the next thing (tab, page, etc.)."
+msgid "Next"
+msgstr ""
+
+msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
+msgid "Previous"
+msgstr ""
+
+msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
+msgid "%0 of %1"
+msgstr ""

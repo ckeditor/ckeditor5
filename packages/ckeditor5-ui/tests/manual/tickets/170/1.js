@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals window, document, console:false */
@@ -28,7 +28,7 @@ ClassicEditor
 
 		panel.attachTo( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
-			limiter: editor.ui.view.editableElement
+			limiter: editor.ui.getEditableElement()
 		} );
 
 		window.attachEditor = editor;
@@ -53,7 +53,7 @@ ClassicEditor
 
 		panel.pin( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
-			limiter: editor.ui.view.editableElement
+			limiter: editor.ui.getEditableElement()
 		} );
 
 		window.stickEditor = editor;

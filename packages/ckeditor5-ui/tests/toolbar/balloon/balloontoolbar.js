@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -147,7 +147,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'it should track the focus of the #editableElement', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
 
-			editor.ui.view.editableElement.dispatchEvent( new Event( 'focus' ) );
+			editor.ui.getEditableElement().dispatchEvent( new Event( 'focus' ) );
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 		} );
@@ -230,7 +230,7 @@ describe( 'BalloonToolbar', () => {
 
 			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
 
-			expect( viewStringify( targetViewRange.root, targetViewRange ) ).to.equal( '<div><p>bar</p><p>{bi}z</p></div>' );
+			expect( viewStringify( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>bar</p><p>{bi}z</p>' );
 			expect( targetRect ).to.deep.equal( forwardSelectionRect );
 		} );
 
@@ -289,7 +289,7 @@ describe( 'BalloonToolbar', () => {
 
 			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
 
-			expect( viewStringify( targetViewRange.root, targetViewRange ) ).to.equal( '<div><p>b{ar}</p><p>biz</p></div>' );
+			expect( viewStringify( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>b{ar}</p><p>biz</p>' );
 			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 

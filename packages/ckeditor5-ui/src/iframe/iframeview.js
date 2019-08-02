@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -11,6 +11,17 @@ import View from '../view';
 
 /**
  * The iframe view class.
+ *
+ * 		const iframe = new IframeView();
+ *
+ *		iframe.render();
+ *		document.body.appendChild( iframe.element );
+ *
+ * 		iframe.on( 'loaded', () => {
+ *			console.log( 'The iframe has loaded', iframe.element.contentWindow );
+ *		} );
+ *
+ * 		iframe.element.src = 'https://ckeditor.com';
  *
  * @extends module:ui/view~View
  */

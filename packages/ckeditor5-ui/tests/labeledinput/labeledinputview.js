@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import View from '../../src/view';
@@ -28,6 +28,10 @@ describe( 'LabeledInputView', () => {
 			expect( view.errorText ).to.be.null;
 		} );
 
+		it( 'should set view#infoText', () => {
+			expect( view.infoText ).to.be.null;
+		} );
+
 		it( 'should create view#inputView', () => {
 			expect( view.inputView ).to.instanceOf( InputView );
 		} );
@@ -36,20 +40,20 @@ describe( 'LabeledInputView', () => {
 			expect( view.labelView ).to.instanceOf( LabelView );
 		} );
 
-		it( 'should create view#errorView', () => {
-			expect( view.errorView ).to.instanceOf( View );
+		it( 'should create view#statusView', () => {
+			expect( view.statusView ).to.instanceOf( View );
 
-			expect( view.errorView.element.tagName ).to.equal( 'DIV' );
-			expect( view.errorView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.errorView.element.classList.contains( 'ck-labeled-input__error' ) ).to.be.true;
+			expect( view.statusView.element.tagName ).to.equal( 'DIV' );
+			expect( view.statusView.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.statusView.element.classList.contains( 'ck-labeled-input__status' ) ).to.be.true;
 		} );
 
 		it( 'should pair #inputView and #labelView by unique id', () => {
 			expect( view.labelView.for ).to.equal( view.inputView.id );
 		} );
 
-		it( 'should pair #inputView and #errorView by unique id', () => {
-			expect( view.inputView.ariaDesribedById ).to.equal( view.errorView.element.id );
+		it( 'should pair #inputView and #statusView by unique id', () => {
+			expect( view.inputView.ariaDescribedById ).to.equal( view.statusView.element.id );
 		} );
 	} );
 
@@ -67,8 +71,8 @@ describe( 'LabeledInputView', () => {
 			expect( view.template.children[ 1 ] ).to.equal( view.inputView );
 		} );
 
-		it( 'should have the error container', () => {
-			expect( view.template.children[ 2 ] ).to.equal( view.errorView );
+		it( 'should have the status container', () => {
+			expect( view.template.children[ 2 ] ).to.equal( view.statusView );
 		} );
 
 		describe( 'DOM bindings', () => {
@@ -82,17 +86,37 @@ describe( 'LabeledInputView', () => {
 				} );
 			} );
 
-			describe( 'error container', () => {
+			describe( 'status container', () => {
 				it( 'should react on view#errorText', () => {
-					const errorContainer = view.element.lastChild;
+					const statusElement = view.statusView.element;
 
 					view.errorText = '';
-					expect( errorContainer.classList.contains( 'ck-hidden' ) ).to.be.true;
-					expect( errorContainer.innerHTML ).to.equal( '' );
+					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.false;
+					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
+					expect( statusElement.innerHTML ).to.equal( '' );
 
 					view.errorText = 'foo';
-					expect( errorContainer.classList.contains( 'ck-hidden' ) ).to.be.false;
-					expect( errorContainer.innerHTML ).to.equal( 'foo' );
+					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.true;
+					expect( statusElement.getAttribute( 'role' ) ).to.equal( 'alert' );
+					expect( statusElement.innerHTML ).to.equal( 'foo' );
+				} );
+
+				it( 'should react on view#infoText', () => {
+					const statusElement = view.statusView.element;
+
+					view.infoText = '';
+					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.false;
+					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
+					expect( statusElement.innerHTML ).to.equal( '' );
+
+					view.infoText = 'foo';
+					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( statusElement.classList.contains( 'ck-labeled-input__status_error' ) ).to.be.false;
+					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
+					expect( statusElement.innerHTML ).to.equal( 'foo' );
 				} );
 			} );
 		} );

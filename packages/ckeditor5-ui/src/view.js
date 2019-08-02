@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -467,7 +467,10 @@ export default class View {
 			 *
 			 * @error ui-view-render-rendered
 			 */
-			throw new CKEditorError( 'ui-view-render-already-rendered: This View has already been rendered.' );
+			throw new CKEditorError(
+				'ui-view-render-already-rendered: This View has already been rendered.',
+				this
+			);
 		}
 
 		// Render #element of the view.
@@ -493,13 +496,18 @@ export default class View {
 		this.stopListening();
 
 		this._viewCollections.map( c => c.destroy() );
+
+		// Template isn't obligatory for views.
+		if ( this.template && this.template._revertData ) {
+			this.template.revert( this.element );
+		}
 	}
 
 	/**
 	 * Event fired by the {@link #render} method. Actual rendering is executed as a listener to
 	 * this event with the default priority.
 	 *
-	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event render
 	 */

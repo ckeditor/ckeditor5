@@ -1,29 +1,29 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals HTMLElement, Event, document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
 import Model from '../src/model';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let el, text;
 const injectedElements = [];
 
 describe( 'Template', () => {
-	testUtils.createSinonSandbox();
-
 	// Clean-up document.body from the rendered elements.
 	afterEach( () => {
+		sinon.restore();
+
 		for ( const el of injectedElements ) {
 			el.remove();
 		}
@@ -142,16 +142,16 @@ describe( 'Template', () => {
 
 	describe( 'render()', () => {
 		it( 'throws when the template definition is wrong', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Template( {} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			}, /ui-template-wrong-syntax/ );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Template( {
 					tag: 'p',
 					text: 'foo'
 				} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			}, /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'sets #_isRendered true', () => {
@@ -727,12 +727,12 @@ describe( 'Template', () => {
 		} );
 
 		it( 'throws when wrong template definition', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Template( {
 					tag: 'p',
 					text: 'foo'
 				} ).apply( el );
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			}, /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'accepts empty template definition', () => {
@@ -1024,9 +1024,9 @@ describe( 'Template', () => {
 					'<div><a class="a1 a2">a</a><b class="b1 b2">b</b></div>'
 				);
 
-				const spy1 = testUtils.sinon.spy();
-				const spy2 = testUtils.sinon.spy();
-				const spy3 = testUtils.sinon.spy();
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
+				const spy3 = sinon.spy();
 
 				observable.on( 'ku', spy1 );
 				observable.on( 'kd', spy2 );
@@ -1119,15 +1119,15 @@ describe( 'Template', () => {
 				tag: 'div'
 			} );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				tpl.revert( el );
-			} ).to.throw( CKEditorError, /ui-template-revert-not-applied/ );
+			}, /ui-template-revert-not-applied/ );
 
 			tpl.render();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				tpl.revert( el );
-			} ).to.throw( CKEditorError, /ui-template-revert-not-applied/ );
+			}, /ui-template-revert-not-applied/ );
 		} );
 
 		describe( 'text', () => {
@@ -1591,7 +1591,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'accepts plain binding', () => {
-				const spy = testUtils.sinon.spy();
+				const spy = sinon.spy();
 
 				setElement( {
 					tag: 'p',
@@ -1610,8 +1610,8 @@ describe( 'Template', () => {
 			} );
 
 			it( 'accepts an array of event bindings', () => {
-				const spy1 = testUtils.sinon.spy();
-				const spy2 = testUtils.sinon.spy();
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
 
 				setElement( {
 					tag: 'p',
@@ -1638,9 +1638,9 @@ describe( 'Template', () => {
 			} );
 
 			it( 'accepts DOM selectors', () => {
-				const spy1 = testUtils.sinon.spy();
-				const spy2 = testUtils.sinon.spy();
-				const spy3 = testUtils.sinon.spy();
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
+				const spy3 = sinon.spy();
 
 				setElement( {
 					tag: 'p',
@@ -1719,8 +1719,8 @@ describe( 'Template', () => {
 			} );
 
 			it( 'accepts function callbacks', () => {
-				const spy1 = testUtils.sinon.spy();
-				const spy2 = testUtils.sinon.spy();
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
 
 				setElement( {
 					tag: 'p',
@@ -1751,7 +1751,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'supports event delegation', () => {
-				const spy = testUtils.sinon.spy();
+				const spy = sinon.spy();
 
 				setElement( {
 					tag: 'p',
@@ -1775,7 +1775,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'works for future elements', () => {
-				const spy = testUtils.sinon.spy();
+				const spy = sinon.spy();
 
 				setElement( {
 					tag: 'p',
@@ -1809,7 +1809,7 @@ describe( 'Template', () => {
 
 			describe( 'to', () => {
 				it( 'returns an instance of TemplateToBinding', () => {
-					const spy = testUtils.sinon.spy();
+					const spy = sinon.spy();
 					const binding = bind.to( 'foo', spy );
 
 					expect( binding ).to.be.instanceof( TemplateToBinding );
@@ -2032,7 +2032,7 @@ describe( 'Template', () => {
 
 			describe( 'if', () => {
 				it( 'returns an object which describes the binding', () => {
-					const spy = testUtils.sinon.spy();
+					const spy = sinon.spy();
 					const binding = bind.if( 'foo', 'whenTrue', spy );
 
 					expect( binding ).to.be.instanceof( TemplateIfBinding );
@@ -2331,9 +2331,7 @@ describe( 'Template', () => {
 			expect( tpl.attributes.b[ 0 ] ).to.equal( 'bar' );
 		} );
 
-		it( 'logs a warning if an element has already been rendered', () => {
-			const spy = testUtils.sinon.stub( log, 'warn' );
-
+		it( 'throws an error if an element has already been rendered', () => {
 			const tpl = new Template( {
 				tag: 'p'
 			} );
@@ -2346,14 +2344,13 @@ describe( 'Template', () => {
 
 			tpl.render();
 
-			Template.extend( tpl, {
-				attributes: {
-					class: 'bar'
-				}
-			} );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match( /^template-extend-render/ ) );
+			expectToThrowCKEditorError( () => {
+				Template.extend( tpl, {
+					attributes: {
+						class: 'bar'
+					}
+				} );
+			}, /^template-extend-render/ );
 		} );
 
 		describe( 'attributes', () => {
@@ -2691,7 +2688,7 @@ describe( 'Template', () => {
 
 		describe( 'children', () => {
 			it( 'should throw when the number of children does not correspond', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
 							tag: 'p',
@@ -2707,11 +2704,11 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				}, /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'should throw when no children in target but extending one', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
 							tag: 'p',
@@ -2725,11 +2722,11 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				}, /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'should throw when the number of children does not correspond on some deeper level', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
 							tag: 'p',
@@ -2768,7 +2765,7 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				}, /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'extends existing - simple', () => {
@@ -2916,11 +2913,11 @@ describe( 'Template', () => {
 
 		describe( 'listeners', () => {
 			it( 'extends existing', () => {
-				const spy1 = testUtils.sinon.spy();
-				const spy2 = testUtils.sinon.spy();
-				const spy3 = testUtils.sinon.spy();
-				const spy4 = testUtils.sinon.spy();
-				const spy5 = testUtils.sinon.spy();
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
+				const spy3 = sinon.spy();
+				const spy4 = sinon.spy();
+				const spy5 = sinon.spy();
 
 				observable.on( 'A', spy1 );
 				observable.on( 'C', spy2 );
@@ -2971,9 +2968,9 @@ describe( 'Template', () => {
 			} );
 
 			it( 'creates new', () => {
-				const spy1 = testUtils.sinon.spy();
-				const spy2 = testUtils.sinon.spy();
-				const spy3 = testUtils.sinon.spy();
+				const spy1 = sinon.spy();
+				const spy2 = sinon.spy();
+				const spy3 = sinon.spy();
 
 				observable.on( 'A', spy1 );
 				observable.on( 'B', spy2 );

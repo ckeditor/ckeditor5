@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, console */
 
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
@@ -13,14 +13,10 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ViewCollection from '../../src/viewcollection';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import View from '../../src/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = {};
@@ -29,6 +25,7 @@ describe( 'ToolbarView', () => {
 	} );
 
 	afterEach( () => {
+		sinon.restore();
 		view.destroy();
 	} );
 
@@ -85,14 +82,14 @@ describe( 'ToolbarView', () => {
 				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
 			} );
 
-			it( 'reacts on view#className', () => {
-				view.className = 'foo';
+			it( 'reacts on view#class', () => {
+				view.class = 'foo';
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
 
-				view.className = 'bar';
+				view.class = 'bar';
 				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
 
-				view.className = false;
+				view.class = false;
 				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
 				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
 			} );
@@ -306,7 +303,7 @@ describe( 'ToolbarView', () => {
 
 		it( 'warns if there is no such component in the factory', () => {
 			const items = view.items;
-			testUtils.sinon.stub( log, 'warn' );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
 			view.fillFromConfig( [ 'foo', 'bar', 'baz' ], factory );
 
@@ -314,8 +311,8 @@ describe( 'ToolbarView', () => {
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
 			expect( items.get( 1 ).name ).to.equal( 'bar' );
 
-			sinon.assert.calledOnce( log.warn );
-			sinon.assert.calledWithExactly( log.warn,
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
 				{ name: 'baz' }
 			);

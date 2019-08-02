@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, HTMLElement */
@@ -8,10 +8,11 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
 import Template from '../src/template';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '../src/viewcollection';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let TestView, view, childA, childB;
 
@@ -215,8 +216,8 @@ describe( 'View', () => {
 				view.render();
 				throw new Error( 'This should not be executed.' );
 			} catch ( err ) {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /^ui-view-render-already-rendered:/ );
+				// TODO
+				assertCKEditorError( err, /^ui-view-render-already-rendered:/, view );
 			}
 		} );
 
@@ -324,6 +325,8 @@ describe( 'View', () => {
 
 		it( 'can be called multiple times', () => {
 			expect( () => {
+				view.destroy();
+				view.destroy();
 				view.destroy();
 			} ).to.not.throw();
 		} );

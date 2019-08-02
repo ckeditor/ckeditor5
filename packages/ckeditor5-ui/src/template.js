@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -15,7 +15,6 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
 import ViewCollection from './viewcollection';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isObject, cloneDeepWith } from 'lodash-es';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
@@ -39,7 +38,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  *			},
  *			on: {
  *				click: bind.to( 'clicked' )
- *			}
+ *			},
  *			children: [
  *				'A paragraph.'
  *			]
@@ -147,9 +146,11 @@ export default class Template {
 	/**
 	 * Applies the template to an existing DOM Node, either HTML element or text.
 	 *
-	 * **Note:** No new DOM nodes will be created. Applying extends
-	 * {@link module:ui/template~TemplateDefinition attributes} and
-	 * {@link module:ui/template~TemplateDefinition event listeners} only.
+	 * **Note:** No new DOM nodes will be created. Applying extends:
+	 *
+	 * {@link module:ui/template~TemplateDefinition attributes},
+	 * {@link module:ui/template~TemplateDefinition event listeners}, and
+	 * `textContent` of {@link module:ui/template~TemplateDefinition children} only.
 	 *
 	 * **Note:** Existing `class` and `style` attributes are extended when a template
 	 * is applied to an HTML element, while other attributes and `textContent` are overridden.
@@ -158,22 +159,24 @@ export default class Template {
 	 * {@link module:ui/template~Template#revert} method.
 	 *
 	 *		const element = document.createElement( 'div' );
+	 *		const observable = new Model( { divClass: 'my-div' } );
+	 *		const emitter = Object.create( EmitterMixin );
 	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
-	 *			attrs: {
+	 *			attributes: {
 	 *				id: 'first-div',
 	 *				class: bind.to( 'divClass' )
 	 *			},
 	 *			on: {
 	 *				click: bind( 'elementClicked' ) // Will be fired by the observable.
-	 *			}
+	 *			},
 	 *			children: [
 	 *				'Div text.'
 	 *			]
 	 *		} ).apply( element );
 	 *
-	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
+	 *		console.log( element.outerHTML ); // -> '<div id="first-div" class="my-div"></div>'
 	 *
 	 * @see module:ui/template~Template#render
 	 * @see module:ui/template~Template#revert
@@ -204,7 +207,10 @@ export default class Template {
 			 *
 			 * @error ui-template-revert-not-applied
 			 */
-			throw new CKEditorError( 'ui-template-revert-not-applied: Attempting to revert a template which has not been applied yet.' );
+			throw new CKEditorError(
+				'ui-template-revert-not-applied: Attempting to revert a template which has not been applied yet.',
+				[ this, node ]
+			);
 		}
 
 		this._revertTemplateFromNode( node, this._revertData );
@@ -266,7 +272,7 @@ export default class Template {
 	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
-	 *			attrs: {
+	 *			attributes: {
 	 *				// Binds the element "class" attribute to observable#classAttribute.
 	 *				class: bind.to( 'classAttribute' )
 	 *			}
@@ -374,7 +380,10 @@ export default class Template {
 			 *
 			 * @error template-extend-render
 			 */
-			log.warn( 'template-extend-render: Attempting to extend a template which has already been rendered.' );
+			throw new CKEditorError(
+				'template-extend-render: Attempting to extend a template which has already been rendered.',
+				[ this, template ]
+			);
 		}
 
 		extendTemplate( template, normalize( clone( def ) ) );
@@ -405,7 +414,8 @@ export default class Template {
 			 * @error ui-template-wrong-syntax
 			 */
 			throw new CKEditorError(
-				'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering a new Node.'
+				'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering a new Node.',
+				this
 			);
 		}
 
@@ -1211,14 +1221,14 @@ function normalize( def ) {
 //			}
 //		}
 //
-// @param {Object} attrs
-function normalizeAttributes( attrs ) {
-	for ( const a in attrs ) {
-		if ( attrs[ a ].value ) {
-			attrs[ a ].value = [].concat( attrs[ a ].value );
+// @param {Object} attributes
+function normalizeAttributes( attributes ) {
+	for ( const a in attributes ) {
+		if ( attributes[ a ].value ) {
+			attributes[ a ].value = [].concat( attributes[ a ].value );
 		}
 
-		arrayify( attrs, a );
+		arrayify( attributes, a );
 	}
 }
 
@@ -1352,6 +1362,7 @@ function extendObjectValueArray( obj, ext ) {
 //
 // @param {module:ui/template~Template} def A template instance to be extended.
 // @param {module:ui/template~TemplateDefinition} def A definition which is to extend the template instance.
+// @param {Object} Error context.
 function extendTemplate( template, def ) {
 	if ( def.attributes ) {
 		if ( !template.attributes ) {
@@ -1381,7 +1392,8 @@ function extendTemplate( template, def ) {
 			 * @error ui-template-extend-children-mismatch
 			 */
 			throw new CKEditorError(
-				'ui-template-extend-children-mismatch: The number of children in extended definition does not match.'
+				'ui-template-extend-children-mismatch: The number of children in extended definition does not match.',
+				template
 			);
 		}
 

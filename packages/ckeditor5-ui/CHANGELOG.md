@@ -1,6 +1,93 @@
 Changelog
 =========
 
+## [13.0.2](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.1...v13.0.2) (2019-07-10)
+
+### Other changes
+
+* Updated translations. ([ad189b6](https://github.com/ckeditor/ckeditor5-ui/commit/ad189b6)) 
+
+
+## [13.0.1](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.0...v13.0.1) (2019-07-04)
+
+### Other changes
+
+* Updated translations. ([1964cc0](https://github.com/ckeditor/ckeditor5-ui/commit/1964cc0)) ([11cfd41](https://github.com/ckeditor/ckeditor5-ui/commit/11cfd41))
+
+
+## [13.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.1.0...v13.0.0) (2019-06-05)
+
+### Features
+
+* Implemented the single view mode for the `ContextualBalloon` plugin. See https://github.com/ckeditor/ckeditor5-mention/issues/74. ([c000c93](https://github.com/ckeditor/ckeditor5-ui/commit/c000c93))
+* Introduced rotatable panels for `ContextualBalloon`. Closes https://github.com/ckeditor/ckeditor5-ui/issues/491. ([581d8f7](https://github.com/ckeditor/ckeditor5-ui/commit/581d8f7))
+
+### Other changes
+
+* Renamed a misspelled `InputTextViewariaDesribedById` property to `InputTextView#ariaDescribedById`. Closes [#483](https://github.com/ckeditor/ckeditor5-ui/issues/483). ([2288bf3](https://github.com/ckeditor/ckeditor5-ui/commit/2288bf3))
+* The `_rwd.css` mixin was moved to this package from `@ckeditor/ckeditor5-theme-lark`. See [ckeditor/ckeditor5#1662](https://github.com/ckeditor/ckeditor5/issues/1662). ([96e3a3c](https://github.com/ckeditor/ckeditor5-ui/commit/96e3a3c))
+* The `ContextualBalloon#add()` method should accept the `withArrow` option. Closes [#487](https://github.com/ckeditor/ckeditor5-ui/issues/487). ([0e7f670](https://github.com/ckeditor/ckeditor5-ui/commit/0e7f670))
+* Updated translations. ([4699d8b](https://github.com/ckeditor/ckeditor5-ui/commit/4699d8b)) ([d4c5714](https://github.com/ckeditor/ckeditor5-ui/commit/d4c5714))
+
+### BREAKING CHANGES
+
+* The (misspelled) `InputTextView#ariaDesribedById` property is no longer available. Use `ariaDescribedById` instead.
+
+
+## [12.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Implemented `ColorGridView` and `ColorTileView` components. See [ckeditor/ckeditor5#1457](https://github.com/ckeditor/ckeditor5/issues/1457). ([6be52b4](https://github.com/ckeditor/ckeditor5-ui/commit/6be52b4))
+
+### Bug fixes
+
+* Fixed `View#render` collision when moving focus from a one editable to the other in multi-root editor. Closes https://github.com/ckeditor/ckeditor5/issues/1676. ([17e86f9](https://github.com/ckeditor/ckeditor5-ui/commit/17e86f9))
+
+### Other changes
+
+* Optimized icons. ([5325ea8](https://github.com/ckeditor/ckeditor5-ui/commit/5325ea8))
+* Updated translations. ([dcdca2e](https://github.com/ckeditor/ckeditor5-ui/commit/dcdca2e))
+
+
+## [12.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.2.0...v12.0.0) (2019-02-28)
+
+### Bug fixes
+
+* Prevented from changing the view document during the render phase. Closes https://github.com/ckeditor/ckeditor5/issues/1530. ([7cf835e](https://github.com/ckeditor/ckeditor5-ui/commit/7cf835e))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([fd18fb9](https://github.com/ckeditor/ckeditor5-ui/commit/fd18fb9))
+
+### Other changes
+
+* The `class` property should control the DOM class attribute in all UI components. Closes [#450](https://github.com/ckeditor/ckeditor5-ui/issues/450). ([b9b68c6](https://github.com/ckeditor/ckeditor5-ui/commit/b9b68c6))
+* Updated translations. ([b9caee9](https://github.com/ckeditor/ckeditor5-ui/commit/b9caee9)) ([a3afaaa](https://github.com/ckeditor/ckeditor5-ui/commit/a3afaaa)) ([909e676](https://github.com/ckeditor/ckeditor5-ui/commit/909e676))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `BallonPanelView#className` property was renamed to `#class`.
+* The `ToolbarView#className` property was renamed to `#class`.
+* The `EditableUIView#externalElement` property (which held the element on which the editor was created if it was explicitly passed) was removed.
+* The `EditorUIView#editableElement` property was made private. Use `editor.ui.getEditableElement()` method instead.
+
+
+## [11.2.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.1.0...v11.2.0) (2018-12-05)
+
+### Features
+
+* Added the `.ck-read-only` CSS class to the `EditableUIView` when `#isReadOnly` is `true`. ([4119822](https://github.com/ckeditor/ckeditor5-ui/commit/4119822))
+* Added the optional `DropdownView#class` property to set a custom CSS class on the main element in DOM. Closes [#447](https://github.com/ckeditor/ckeditor5-ui/issues/447). ([9cdcd4a](https://github.com/ckeditor/ckeditor5-ui/commit/9cdcd4a))
+
+  Thanks to [@lucasreppewelander](https://github.com/lucasreppewelander)!
+* Implemented `LabeledInputView#infoText` to display useful hints next to the input (see [ckeditor/ckeditor5-media-embed#35](https://github.com/ckeditor/ckeditor5-media-embed/issues/35)). ([6ac03ea](https://github.com/ckeditor/ckeditor5-ui/commit/6ac03ea))
+* Implemented configurable, smart `DropdownView` panel positioning. Closes [#123](https://github.com/ckeditor/ckeditor5-ui/issues/123). ([8094f19](https://github.com/ckeditor/ckeditor5-ui/commit/8094f19))
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([ed88305](https://github.com/ckeditor/ckeditor5-ui/commit/ed88305))
+* Updated translations. ([2e409a9](https://github.com/ckeditor/ckeditor5-ui/commit/2e409a9)) ([611bd04](https://github.com/ckeditor/ckeditor5-ui/commit/611bd04)) ([c6689e4](https://github.com/ckeditor/ckeditor5-ui/commit/c6689e4)) ([07c4fdb](https://github.com/ckeditor/ckeditor5-ui/commit/07c4fdb))
+
+
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.0.0...v11.1.0) (2018-10-08)
 
 ### Features

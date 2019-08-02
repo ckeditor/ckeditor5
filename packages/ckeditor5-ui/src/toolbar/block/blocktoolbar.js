@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -151,6 +152,18 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		this.panelView.destroy();
+		this.buttonView.destroy();
+		this.toolbarView.destroy();
+	}
+
+	/**
 	 * Creates the {@link #toolbarView}.
 	 *
 	 * @private
@@ -187,7 +200,7 @@ export default class BlockToolbar extends Plugin {
 		const panelView = new BalloonPanelView( editor.locale );
 
 		panelView.content.add( this.toolbarView );
-		panelView.className = 'ck-toolbar-container';
+		panelView.class = 'ck-toolbar-container';
 		editor.ui.view.body.add( panelView );
 		editor.ui.focusTracker.add( panelView.element );
 
@@ -306,7 +319,7 @@ export default class BlockToolbar extends Plugin {
 
 		this.panelView.pin( {
 			target: this.buttonView.element,
-			limiter: this.editor.ui.view.editableElement
+			limiter: this.editor.ui.getEditableElement()
 		} );
 
 		if ( !wasVisible ) {
@@ -337,7 +350,7 @@ export default class BlockToolbar extends Plugin {
 	_attachButtonToElement( targetElement ) {
 		const contentStyles = window.getComputedStyle( targetElement );
 
-		const editableRect = new Rect( this.editor.ui.view.editableElement );
+		const editableRect = new Rect( this.editor.ui.getEditableElement() );
 		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
 		// When line height is not an integer then thread it as "normal".
 		// MDN says that 'normal' == ~1.2 on desktop browsers.

@@ -1,0 +1,41 @@
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Indonesian (https://www.transifex.com/ckeditor/teams/11143/id/)\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "Editor Teks Kaya, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "Editor Teks Kaya"
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr "Sunting blok"
+
+msgctxt "Label for a button showing the next thing (tab, page, etc.)."
+msgid "Next"
+msgstr "Berikutnya"
+
+msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
+msgid "Previous"
+msgstr "Sebelumnya"
+
+msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
+msgid "%0 of %1"
+msgstr "%0 dari %1"

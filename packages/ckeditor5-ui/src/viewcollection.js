@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -8,9 +8,7 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -156,7 +154,10 @@ export default class ViewCollection extends Collection {
 			 *
 			 * @error ui-viewcollection-delegate-wrong-events
 			 */
-			throw new CKEditorError( 'ui-viewcollection-delegate-wrong-events: All event names must be strings.' );
+			throw new CKEditorError(
+				'ui-viewcollection-delegate-wrong-events: All event names must be strings.',
+				this
+			);
 		}
 
 		return {
@@ -205,8 +206,6 @@ export default class ViewCollection extends Collection {
 	 * @returns {Object} The removed view.
 	 */
 }
-
-mix( Collection, ObservableMixin );
 
 // Check if all entries of the array are of `String` type.
 //

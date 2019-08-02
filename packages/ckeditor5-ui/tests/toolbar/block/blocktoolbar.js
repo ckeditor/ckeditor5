@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document, window, Event */
@@ -43,6 +44,9 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	afterEach( () => {
+		// Blur editor so `blockToolbar.buttonView` `window.resize` listener is detached.
+		editor.ui.focusTracker.isFocused = false;
+
 		element.remove();
 		return editor.destroy();
 	} );
@@ -58,7 +62,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should have an additional class name', () => {
-				expect( blockToolbar.panelView.className ).to.equal( 'ck-toolbar-container' );
+				expect( blockToolbar.panelView.class ).to.equal( 'ck-toolbar-container' );
 			} );
 
 			it( 'should be added to the ui.view.body collection', () => {
@@ -175,7 +179,7 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.panelView.isVisible ).to.be.true;
 				sinon.assert.calledWith( pinSpy, {
 					target: blockToolbar.buttonView.element,
-					limiter: editor.ui.view.editableElement
+					limiter: editor.ui.getEditableElement()
 				} );
 				sinon.assert.calledOnce( focusSpy );
 			} );
@@ -223,15 +227,16 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should display the button when the first selected block is an object', () => {
-			setData( editor.model, '[<image src="foo.jpg"><caption>foo</caption></image>]' );
+			setData( editor.model, '[<image src="/assets/sample.png"><caption>foo</caption></image>]' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
-		it( 'should display the button when the selection is inside the object', () => {
-			setData( editor.model, '<image src="foo.jpg"><caption>f[]oo</caption></image>' );
+		// This test makes no sense now, but so do all other tests here (see https://github.com/ckeditor/ckeditor5/issues/1522).
+		it( 'should not display the button when the selection is inside a limit element', () => {
+			setData( editor.model, '<image src="/assets/sample.png"><caption>f[]oo</caption></image>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.be.true;
+			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
 
 		it( 'should not display the button when the selection is placed in the root element', () => {
@@ -253,7 +258,7 @@ describe( 'BlockToolbar', () => {
 			} ).then( editor => {
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 
-				setData( editor.model, '[<image src="foo.jpg"></image>]' );
+				setData( editor.model, '[<image src="/assets/sample.png"></image>]' );
 
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 
@@ -275,7 +280,7 @@ describe( 'BlockToolbar', () => {
 			'of the selected block #1', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
-			const target = editor.ui.view.editableElement.querySelector( 'p' );
+			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
 			styleMock.withArgs( target ).returns( {
@@ -285,7 +290,7 @@ describe( 'BlockToolbar', () => {
 
 			styleMock.callThrough();
 
-			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( editor.ui.getEditableElement(), 'getBoundingClientRect' ).returns( {
 				left: 200
 			} );
 
@@ -309,7 +314,7 @@ describe( 'BlockToolbar', () => {
 			'of the selected block #2', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
-			const target = editor.ui.view.editableElement.querySelector( 'p' );
+			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
 			styleMock.withArgs( target ).returns( {
@@ -320,7 +325,7 @@ describe( 'BlockToolbar', () => {
 
 			styleMock.callThrough();
 
-			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( editor.ui.getEditableElement(), 'getBoundingClientRect' ).returns( {
 				left: 200
 			} );
 
@@ -355,7 +360,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.calledWith( spy, {
 				target: blockToolbar.buttonView.element,
-				limiter: editor.ui.view.editableElement
+				limiter: editor.ui.getEditableElement()
 			} );
 		} );
 

@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document Event */
 
-import utilsTestUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
@@ -22,8 +22,6 @@ import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../s
 import ListItemView from '../../src/list/listitemview';
 import ListSeparatorView from '../../src/list/listseparatorview';
 import ListView from '../../src/list/listview';
-
-const assertBinding = utilsTestUtils.assertBinding;
 
 describe( 'utils', () => {
 	let locale, dropdownView;
