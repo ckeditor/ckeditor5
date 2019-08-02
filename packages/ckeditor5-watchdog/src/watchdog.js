@@ -238,7 +238,8 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method.
+	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method
+	 * and set state to `destroyed`.
 	 *
 	 * @returns {Promise}
 	 */
@@ -248,6 +249,11 @@ export default class Watchdog {
 		} );
 	}
 
+	/**
+	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method.
+	 *
+	 * @private
+	 */
 	_destroy() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );

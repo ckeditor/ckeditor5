@@ -776,7 +776,11 @@ describe( 'Watchdog', () => {
 
 							expect( watchdog.state ).to.equal( 'ready' );
 
-							watchdog.destroy().then( res );
+							watchdog.destroy().then( () => {
+								expect( watchdog.state ).to.equal( 'destroyed' );
+
+								res();
+							} );
 						} );
 					} );
 				} );
@@ -806,22 +810,25 @@ describe( 'Watchdog', () => {
 						setTimeout( () => {
 							window.onerror = originalErrorHandler;
 
-							expect( states ).to.deep.equal( [
-								'ready',
-								'crashed',
-								'initializing',
-								'ready',
-								'crashed',
-								'initializing',
-								'ready',
-								'crashed',
-								'initializing',
-								'ready',
-								'crashed',
-								'crashedPermanently'
-							] );
+							watchdog.destroy().then( () => {
+								expect( states ).to.deep.equal( [
+									'ready',
+									'crashed',
+									'initializing',
+									'ready',
+									'crashed',
+									'initializing',
+									'ready',
+									'crashed',
+									'initializing',
+									'ready',
+									'crashed',
+									'crashedPermanently',
+									'destroyed'
+								] );
 
-							watchdog.destroy().then( res );
+								res();
+							} );
 						} );
 					} );
 				} );
