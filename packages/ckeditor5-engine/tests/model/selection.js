@@ -1056,7 +1056,7 @@ describe( 'Selection', () => {
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'nestedBlock#b' ] );
 		} );
 
-		// Like above but trickier.
+		// Like above but - with multiple ranges.
 		it( 'returns only the lowest block if blocks are nested (case #2)', () => {
 			setData(
 				model,
@@ -1064,7 +1064,20 @@ describe( 'Selection', () => {
 				'<nestedBlock>c<nestedBlock>d]</nestedBlock></nestedBlock>'
 			);
 
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'nestedBlock#b', 'nestedBlock#d' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'nestedBlock#b', 'nestedBlock#d' ] );
+		} );
+
+		// Like above but - with multiple collapsed ranges.
+		it( 'returns only the lowest block if blocks are nested (case #3)', () => {
+			setData(
+				model,
+				'<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' +
+				'<nestedBlock>c<nestedBlock>d[]</nestedBlock></nestedBlock>'
+			);
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'nestedBlock#b', 'nestedBlock#d' ] );
 		} );
 
 		it( 'returns nothing if directly in a root', () => {
@@ -1073,6 +1086,40 @@ describe( 'Selection', () => {
 			setData( model, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		it( 'does not go cross limit elements', () => {
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
+		} );
+
+		it( 'returns only top most blocks (multiple selected)', () => {
+			setData( model, '<p>[foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz]</p>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
+		} );
+
+		it( 'returns only top most block (one selected)', () => {
+			setData( model, '[<table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table>]' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'table' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks', () => {
+			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
 
 		describe( '#984', () => {
@@ -1124,40 +1171,6 @@ describe( 'Selection', () => {
 					expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
 				}
 			);
-		} );
-
-		it( 'does not go cross limit elements', () => {
-			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
-
-			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
-
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
-		} );
-
-		it( 'returns only top most blocks (multiple selected)', () => {
-			setData( model, '<p>[foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz]</p>' );
-
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
-		} );
-
-		it( 'returns only top most block (one selected)', () => {
-			setData( model, '[<table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table>]' );
-
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'table' ] );
-		} );
-
-		it( 'returns only selected blocks even if nested in other blocks', () => {
-			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
-
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
-		} );
-
-		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
-			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
-
-			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
-
-			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
 	} );
 
