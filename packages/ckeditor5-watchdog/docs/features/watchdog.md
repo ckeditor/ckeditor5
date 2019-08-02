@@ -123,7 +123,7 @@ Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constru
 
 * `crashNumberLimit` - A threshold specifying the number of editor errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
 * `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
-* `saveInterval` - A minimum number of milliseconds between saving editor data internally, (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
+* `saveInterval` - A minimum number of milliseconds between saving editor data internally (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
 
 ```js
 const watchdog = new Watchdog( {
