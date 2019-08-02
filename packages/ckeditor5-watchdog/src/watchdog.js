@@ -44,11 +44,12 @@ export default class Watchdog {
 		/**
 		 * Specifies the state of the editor handled by the watchdog. The state can be one of the following values:
 		 *
-		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready.
-		 * * `ready` - a state when a user can interact with the editor
+		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready,
+		 * * `ready` - a state when a user can interact with the editor,
 		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
-		 * depending on how many and how frequency errors have been caught recently.
-		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed.
+		 * depending on how many and how frequency errors have been caught recently,
+		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
+		 * * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`
 		 *
 		 * @public
 		 * @observable
@@ -242,6 +243,12 @@ export default class Watchdog {
 	 * @returns {Promise}
 	 */
 	destroy() {
+		return this._destroy().then( () => {
+			this.state = 'destroyed';
+		} );
+	}
+
+	_destroy() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
@@ -364,7 +371,7 @@ export default class Watchdog {
 		this._throttledSave.flush();
 
 		return Promise.resolve()
-			.then( () => this.destroy() )
+			.then( () => this._destroy() )
 			.catch( err => console.error( 'An error happened during the editor destructing.', err ) )
 			.then( () => {
 				if ( typeof this._elementOrData === 'string' ) {

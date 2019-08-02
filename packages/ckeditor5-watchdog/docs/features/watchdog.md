@@ -100,7 +100,8 @@ watchdog.editor;
 // * `initializing` - before the first initialization, and after crashes, before the editor is ready,
 // * `ready` - a state when a user can interact with the editor,
 // * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently` depending on how many and how frequency errors have been caught recently,
-// * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed.
+// * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
+// * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`.
 // This property is observable.
 watchdog.state;
 
