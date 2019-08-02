@@ -10,7 +10,7 @@
 /* globals console, window */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { throttle, cloneDeepWith, isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
@@ -23,19 +23,17 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
  */
 export default class Watchdog {
 	/**
-	 * @param {Object} [config] The watchdog plugin configuration.
-	 * @param {Number} [config.crashNumberLimit=3] A threshold specifying the number of crashes
-	 * when the watchdog stops restarting the editor in case of errors.
-	 * @param {Number} [config.waitingTime=5000] A minimum amount of milliseconds between saving editor data internally.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
 	 */
-	constructor( { crashNumberLimit, waitingTime } = {} ) {
+	constructor( config = {} ) {
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
 		 * * `message`: `String`,
 		 * * `source`: `String`,
 		 * * `lineno`: `String`,
-		 * * `colno`: `String`
+		 * * `colno`: `String`,
+		 * * `date`: `Number`,
 		 *
 		 * @public
 		 * @readonly
@@ -44,13 +42,34 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Crash number limit (defaults to `3`). After this limit is reached the editor is not restarted by the watchdog.
-		 * This is to prevent an infinite crash loop.
+		 * Specifies the state of the editor handled by the watchdog. The state can be one of the following values:
 		 *
+		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready,
+		 * * `ready` - a state when a user can interact with the editor,
+		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
+		 * depending on how many and how frequency errors have been caught recently,
+		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
+		 * * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`
+		 *
+		 * @public
+		 * @observable
+		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} #state
+		 */
+		this.set( 'state', 'initializing' );
+
+		/**
 		 * @private
 		 * @type {Number}
+		 * @see module:watchdog/watchdog~WatchdogConfig
 		 */
-		this._crashNumberLimit = crashNumberLimit || 3;
+		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
+
+		/**
+		 * @private
+		 * @type {Number}
+		 * @see module:watchdog/watchdog~WatchdogConfig
+		 */
+		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
 		/**
 		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
@@ -62,13 +81,13 @@ export default class Watchdog {
 		this._boundErrorHandler = this._handleGlobalErrorEvent.bind( this );
 
 		/**
-		 * Throttled save method. The `save()` method is called the specified `waitingTime` after `throttledSave()` is called,
+		 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
 		 * unless a new action happens in the meantime.
 		 *
 		 * @private
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), waitingTime || 5000 );
+		this._throttledSave = throttle( this._save.bind( this ), config.saveInterval || 5000 );
 
 		/**
 		 * The current editor instance.
@@ -214,15 +233,28 @@ export default class Watchdog {
 
 				this._lastDocumentVersion = editor.model.document.version;
 				this._data = editor.data.get();
+				this.state = 'ready';
 			} );
+	}
+
+	/**
+	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method
+	 * and sets state to `destroyed`.
+	 *
+	 * @returns {Promise}
+	 */
+	destroy() {
+		this.state = 'destroyed';
+
+		return this._destroy();
 	}
 
 	/**
 	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method.
 	 *
-	 * @returns {Promise}
+	 * @private
 	 */
-	destroy() {
+	_destroy() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
@@ -269,50 +301,83 @@ export default class Watchdog {
 	 * @param {Event} evt Error event.
 	 */
 	_handleGlobalErrorEvent( evt ) {
-		if ( !evt.error.is || !evt.error.is( 'CKEditorError' ) ) {
-			return;
-		}
-
-		if ( evt.error.context === undefined ) {
+		if ( evt.error.is && evt.error.is( 'CKEditorError' ) && evt.error.context === undefined ) {
 			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
-
-			return;
 		}
 
-		// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
-		// That's why the `null` was introduced as a correct error context which does cause restarting.
-		if ( evt.error.context === null ) {
-			return;
-		}
-
-		if ( this._isErrorComingFromThisEditor( evt.error ) ) {
+		if ( this._shouldReactToErrorEvent( evt ) ) {
 			this.crashes.push( {
 				message: evt.error.message,
 				source: evt.source,
 				lineno: evt.lineno,
-				colno: evt.colno
+				colno: evt.colno,
+				date: Date.now()
 			} );
 
-			this.fire( 'error' );
+			this.fire( 'error', { error: evt.error } );
+			this.state = 'crashed';
 
-			if ( this.crashes.length <= this._crashNumberLimit ) {
+			if ( this._shouldRestartEditor() ) {
 				this._restart();
+			} else {
+				this.state = 'crashedPermanently';
 			}
 		}
 	}
 
 	/**
-	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event.
+	 * Checks whether the error event should be handled.
+	 *
+	 * @private
+	 * @param {Event} evt Error event.
+	 */
+	_shouldReactToErrorEvent( evt ) {
+		return (
+			evt.error.is &&
+			evt.error.is( 'CKEditorError' ) &&
+			evt.error.context !== undefined &&
+
+			// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
+			// That's why the `null` was introduced as a correct error context which does cause restarting.
+			evt.error.context !== null &&
+
+			// Do not react to errors if the watchdog is in states other than `ready`.
+			this.state === 'ready' &&
+
+			this._isErrorComingFromThisEditor( evt.error )
+		);
+	}
+
+	/**
+	 * Checks if the editor should be restared or if it should be marked as crashed.
+	 */
+	_shouldRestartEditor() {
+		if ( this.crashes.length <= this._crashNumberLimit ) {
+			return true;
+		}
+
+		const lastErrorTime = this.crashes[ this.crashes.length - 1 ].date;
+		const firstMeaningfulErrorTime = this.crashes[ this.crashes.length - 1 - this._crashNumberLimit ].date;
+
+		const averageNonErrorTimePeriod = ( lastErrorTime - firstMeaningfulErrorTime ) / this._crashNumberLimit;
+
+		return averageNonErrorTimePeriod > this._minimumNonErrorTimePeriod;
+	}
+
+	/**
+	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
+	 * the state to `initializing`.
 	 *
 	 * @private
 	 * @fires restart
 	 * @returns {Promise}
 	 */
 	_restart() {
+		this.state = 'initializing';
 		this._throttledSave.flush();
 
 		return Promise.resolve()
-			.then( () => this.destroy() )
+			.then( () => this._destroy() )
 			.catch( err => console.error( 'An error happened during the editor destructing.', err ) )
 			.then( () => {
 				if ( typeof this._elementOrData === 'string' ) {
@@ -352,9 +417,10 @@ export default class Watchdog {
 	 *		watchdog.create( elementOrData, config );
 	 *
 	 * @param {*} Editor The editor class.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
-	static for( Editor ) {
-		const watchdog = new Watchdog();
+	static for( Editor, watchdogConfig ) {
+		const watchdog = new Watchdog( watchdogConfig );
 
 		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
 		watchdog.setDestructor( editor => editor.destroy() );
@@ -363,7 +429,8 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Fired when an error occurs and the watchdog will be restarting the editor.
+	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog editor occurs
+	 * and the watchdog will react to it.
 	 *
 	 * @event error
 	 */
@@ -375,4 +442,19 @@ export default class Watchdog {
 	 */
 }
 
-mix( Watchdog, EmitterMixin );
+mix( Watchdog, ObservableMixin );
+
+/**
+ * The watchdog plugin configuration.
+ *
+ * @typedef {Object} WatchdogConfig
+ *
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
+ * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors
+ * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+ * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
+ * Note that for large documents this might have an impact on the editor performance.
+ */

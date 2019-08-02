@@ -47,7 +47,7 @@ watchdog.create( document.querySelector( '#editor' ), {
 In other words, your goal is to create a watchdog instance and make the watchdog create an instance of the editor you want to use. Watchdog will then create a new editor and if it ever crashes restart it by creating a new editor.
 
 <info-box>
-	A new editor instance is created every time the watchdog detects a crash. Thus, the editor instance should not be kept in your application's state. Use the {@link module:watchdog/watchdog~Watchdog#editor Watchdog#editor`} property instead.
+	A new editor instance is created every time the watchdog detects a crash. Thus, the editor instance should not be kept in your application's state. Use the {@link module:watchdog/watchdog~Watchdog#editor `Watchdog#editor`} property instead.
 
 	It also means that any code that should be executed for any new editor instance should be either loaded as an editor plugin or executed in the callbacks defined by {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`}. Read more about controlling editor creation/destruction in the next section.
 </info-box>
@@ -85,7 +85,7 @@ watchdog.create( elementOrData, editorConfig );
 
 Other useful {@link module:watchdog/watchdog~Watchdog methods, properties and events}:
 
- ```js
+```js
 watchdog.on( 'error', () => { console.log( 'Editor crashed.' ) } );
 watchdog.on( 'restart', () => { console.log( 'Editor was restarted.' ) } );
 
@@ -95,7 +95,43 @@ watchdog.destroy();
 // The current editor instance.
 watchdog.editor;
 
+// The current state of the editor.
+// The editor might be in one of the following states:
+// * `initializing` - before the first initialization, and after crashes, before the editor is ready,
+// * `ready` - a state when a user can interact with the editor,
+// * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently` depending on how many and how frequency errors have been caught recently,
+// * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
+// * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`.
+// This property is observable.
+watchdog.state;
+
+// Listen to state changes.
+watchdog.on( 'change:state' ( evt, name, currentState, prevState ) => {
+	console.log( `State changed from ${ currentState } to ${ prevState }` );
+
+	if ( currentState === 'crashedPermanently' ) {
+		watchdog.editor.isReadOnly = true;
+	}
+} );
+
+// An array of editor crashes info.
 watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
+```
+
+### Configuration
+
+Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constructor`} and the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for`} methods accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} with the following optional properties:
+
+* `crashNumberLimit` - A threshold specifying the number of editor errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+* `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+* `saveInterval` - A minimum number of milliseconds between saving editor data internally (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
+
+```js
+const watchdog = new Watchdog( {
+	minimumNonErrorTimePeriod: 2000,
+	crashNumberLimit: 4,
+	saveInterval: 1000
+} )
 ```
 
 ## Limitations

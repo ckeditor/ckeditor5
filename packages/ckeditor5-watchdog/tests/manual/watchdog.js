@@ -11,11 +11,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import Watchdog from '../../src/watchdog';
 
-const firstEditorElement = document.getElementById( 'editor-1' );
-const secondEditorElement = document.getElementById( 'editor-2' );
-
-const randomErrorButton = document.getElementById( 'random-error' );
-
 class TypingError {
 	constructor( editor ) {
 		this.editor = editor;
@@ -49,36 +44,48 @@ const editorConfig = {
 	}
 };
 
-// Watchdog 1
+const watchdog1 = createWatchdog(
+	document.getElementById( 'editor-1' ),
+	document.getElementById( 'editor-1-state' ),
+	'First'
+);
 
-const watchdog1 = Watchdog.for( ClassicEditor );
-window.watchdog1 = watchdog1;
+const watchdog2 = createWatchdog(
+	document.getElementById( 'editor-2' ),
+	document.getElementById( 'editor-2-state' ),
+	'Second'
+);
 
-watchdog1.create( firstEditorElement, editorConfig );
+Object.assign( window, { watchdog1, watchdog2 } );
 
-watchdog1.on( 'error', () => {
-	console.log( 'First editor crashed!' );
-} );
-
-watchdog1.on( 'restart', () => {
-	console.log( 'First editor restarted.' );
-} );
-
-// Watchdog 2
-
-const watchdog2 = Watchdog.for( ClassicEditor );
-window.watchdog2 = watchdog2;
-
-watchdog2.create( secondEditorElement, editorConfig );
-
-watchdog2.on( 'error', () => {
-	console.log( 'Second editor crashed!' );
-} );
-
-watchdog2.on( 'restart', () => {
-	console.log( 'Second editor restarted.' );
-} );
-
-randomErrorButton.addEventListener( 'click', () => {
+document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 	throw new Error( 'foo' );
 } );
+
+function createWatchdog( editorElement, stateElement, name ) {
+	const watchdog = Watchdog.for( ClassicEditor );
+
+	watchdog.create( editorElement, editorConfig );
+
+	watchdog.on( 'error', () => {
+		console.log( `${ name } editor crashed!` );
+	} );
+
+	watchdog.on( 'restart', () => {
+		console.log( `${ name } editor restarted.` );
+	} );
+
+	watchdog.on( 'change:state', ( evt, paramName, currentValue, prevValue ) => {
+		console.log( `${ name } watchdog changed state from ${ prevValue } to ${ currentValue }` );
+
+		stateElement.innerText = currentValue;
+
+		if ( currentValue === 'crashedPermanently' ) {
+			watchdog.editor.isReadOnly = true;
+		}
+	} );
+
+	stateElement.innerText = watchdog.state;
+
+	return watchdog;
+}

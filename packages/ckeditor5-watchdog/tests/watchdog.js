@@ -368,7 +368,8 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted up to 3 times by default', () => {
+		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
+		' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -404,8 +405,9 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted up to `crashNumberLimit` times if the option is set', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2 } );
+		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
+		' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -428,14 +430,50 @@ describe( 'Watchdog', () => {
 
 				return new Promise( res => {
 					setTimeout( () => {
-						expect( errorSpy.callCount ).to.equal( 4 );
-						expect( watchdog.crashes.length ).to.equal( 4 );
+						expect( errorSpy.callCount ).to.equal( 3 );
+						expect( watchdog.crashes.length ).to.equal( 3 );
 						expect( restartSpy.callCount ).to.equal( 2 );
 
 						window.onerror = originalErrorHandler;
 
 						watchdog.destroy().then( res );
 					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not crash permantently when average time between errors is longer than `minimumNonErrorTimePeriod`', () => {
+			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
+
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			const errorSpy = sinon.spy();
+			watchdog.on( 'error', errorSpy );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( element ).then( () => {
+				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ), 5 );
+				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ), 10 );
+				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ), 15 );
+				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ), 20 );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						expect( errorSpy.callCount ).to.equal( 4 );
+						expect( watchdog.crashes.length ).to.equal( 4 );
+						expect( restartSpy.callCount ).to.equal( 4 );
+
+						window.onerror = originalErrorHandler;
+
+						watchdog.destroy().then( res );
+					}, 20 );
 				} );
 			} );
 		} );
@@ -691,10 +729,7 @@ describe( 'Watchdog', () => {
 
 	describe( 'crashes', () => {
 		it( 'should be an array of caught errors by the watchdog', () => {
-			const watchdog = new Watchdog();
-
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
+			const watchdog = Watchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -712,6 +747,89 @@ describe( 'Watchdog', () => {
 						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
 
 						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'state', () => {
+		it( 'should reflect the state of the watchdog', () => {
+			const watchdog = Watchdog.for( ClassicTestEditor );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			expect( watchdog.state ).to.equal( 'initializing' );
+
+			return watchdog.create( element ).then( () => {
+				expect( watchdog.state ).to.equal( 'ready' );
+
+				return watchdog.create( element ).then( () => {
+					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
+
+					return new Promise( res => {
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							expect( watchdog.state ).to.equal( 'ready' );
+
+							watchdog.destroy().then( () => {
+								expect( watchdog.state ).to.equal( 'destroyed' );
+
+								res();
+							} );
+						} );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'should be observable', () => {
+			const watchdog = Watchdog.for( ClassicTestEditor );
+			const states = [];
+
+			watchdog.on( 'change:state', ( evt, propName, newValue ) => {
+				states.push( newValue );
+			} );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( element ).then( () => {
+				return watchdog.create( element ).then( () => {
+					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'baz', watchdog.editor ) );
+					setTimeout( () => throwCKEditorError( 'biz', watchdog.editor ) );
+
+					return new Promise( res => {
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							watchdog.destroy().then( () => {
+								expect( states ).to.deep.equal( [
+									'ready',
+									'crashed',
+									'initializing',
+									'ready',
+									'crashed',
+									'initializing',
+									'ready',
+									'crashed',
+									'initializing',
+									'ready',
+									'crashed',
+									'crashedPermanently',
+									'destroyed'
+								] );
+
+								res();
+							} );
+						} );
 					} );
 				} );
 			} );
