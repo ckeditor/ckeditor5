@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -31,6 +31,35 @@
  */
 
 /**
+ * The initial editor data to be used instead of the provided element's HTML content.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * By default, the editor is initialized with the content of the element on which this editor is initialized.
+ * See {@link module:core/editor/editor~Editor.create Editor.create()}.
+ *
+ * This configuration option lets you override initial data if an element is passed to `Editor.create()`.
+ * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
+ *
+ * **Note:** If initial data is passed to `Editor.create()` as a parameter and, at the same time, via this configuration option,
+ * an error will be thrown as those two options exclude themselves.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#initialData
+ */
+
+/**
+ * The `config.initialData` option cannot be used together with initial data passed as the first parameter of
+ * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
+ *
+ * @error editor-create-initial-data
+ */
+
+/**
  * The list of plugins to load.
  *
  * If you use an {@glink builds/guides/overview editor build} you can define the list of plugins to load
@@ -57,7 +86,32 @@
  *			plugins: [ Essentials, Bold ]
  *		};
  *
+ * **Note:** To load additional plugins, you should use the {@link #extraPlugins `extraPlugins`} configuration.
+ * To narrow the list of loaded plugins, use the {@link #removePlugins `removePlugins`} configuration.
+ *
  * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#plugins
+ */
+
+/**
+ * The list of additional plugins to load along those already available in the
+ * {@glink builds/guides/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
+ *
+ *		function MyPlugin( editor ) {
+ *			// ...
+ *		}
+ *
+ *		const config = {
+ *			extraPlugins: [ MyPlugin ]
+ *		};
+ *
+ * **Note:** This configuration works only for simple plugins which utilize the
+ * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
+ * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
+ *
+ * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
+ * about {@glink builds/guides/integration/configuration#toolbar-setup toolbar setup}.
+ *
+ * @member {Array.<Function>} module:core/editor/editorconfig~EditorConfig#extraPlugins
  */
 
 /**
@@ -142,4 +196,33 @@
  * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#language
+ */
+
+/**
+ * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
+ * help users locate the editor in the application (form) and prompt them to input the content. Work similarly
+ * as to the native DOM
+ * [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute)
+ * used by inputs.
+ *
+ *		const config = {
+ *			placeholder: 'Type some text...'
+ *		};
+ *
+ * The placeholder text is displayed as a pseudo–element of an empty paragraph in the editor content.
+ * The paragraph has the `.ck-placeholder` CSS class and the `data-placeholder` attribute.
+ *
+ *		<p data-placeholder="Type some text..." class="ck-placeholder">
+ *			::before
+ *		</p>
+ *
+ * **Note**: Placeholder text can also be set using the `placeholder` attribute if a `<textarea>` is passed to
+ * the `create()` method, e.g. {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
+ *
+ * **Note**: This configuration has precedence over the value of the `placeholder` attribute of a `<textarea>`
+ * element passed to the `create()` method.
+ *
+ * See the {@glink features/editor-placeholder "Editor placeholder" guide} for more information and live examples.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#placeholder
  */

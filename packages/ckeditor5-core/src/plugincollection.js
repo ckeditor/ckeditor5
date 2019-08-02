@@ -1,17 +1,23 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module core/plugincollection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
+/* globals console */
+
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
+ *
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class PluginCollection {
 	/**
@@ -20,7 +26,7 @@ export default class PluginCollection {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
-	 * when {@link module:core/plugincollection~PluginCollection#load} is used with plugin names (strings, instead of constructors).
+	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
 	 */
@@ -72,26 +78,84 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
+	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *			// Get clipboard plugin instance
+	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *
+	 *			this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
+	 *				// Do something on clipboard input.
+	 *			} );
+	 *		}
+	 *
+	 * **Note**: This method will throw error if plugin is not loaded. Use `{@link #has editor.plugins.has()}`
+	 * to check if plugin is available.
+	 *
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
 	get( key ) {
-		return this._plugins.get( key );
+		const plugin = this._plugins.get( key );
+
+		if ( !plugin ) {
+			/**
+			 * The plugin is not loaded and could not be obtained.
+			 *
+			 * Plugin classes (constructors) need to be provided to the editor and must be loaded before they can be obtained from
+			 * the plugin collection.
+			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
+			 * property.
+			 *
+			 * **Note**: You can use `{@link module:core/plugincollection~PluginCollection#has editor.plugins.has()}`
+			 * to check if plugin was loaded.
+			 *
+			 * @error plugincollection-plugin-not-loaded
+			 * @param {String} plugin The name of the plugin which is not loaded.
+			 */
+			const errorMsg = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
+
+			let pluginName = key;
+
+			if ( typeof key == 'function' ) {
+				pluginName = key.pluginName || key.name;
+			}
+
+			throw new CKEditorError( errorMsg, this._editor, { plugin: pluginName } );
+		}
+
+		return plugin;
 	}
 
 	/**
-	 * Loads a set of plugins and adds them to the collection.
+	 * Checks if plugin is loaded.
+	 *
+	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *			// Now use clipboard plugin instance:
+	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *
+	 *			// ...
+	 *		}
+	 *
+	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
+	 * @returns {Boolean}
+	 */
+	has( key ) {
+		return this._plugins.has( key );
+	}
+
+	/**
+	 * Initializes a set of plugins and adds them to the collection.
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) works only if
 	 * `availablePlugins` were passed to the {@link #constructor}.
 	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available in the
-	 * collection.
-	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins The array of loaded plugins.
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
+	 * and available in the collection.
 	 */
-	load( plugins, removePlugins = [] ) {
+	init( plugins, removePlugins = [] ) {
 		const that = this;
 		const editor = this._editor;
 		const loading = new Set();
@@ -126,12 +190,14 @@ export default class PluginCollection {
 			const errorMsg = 'plugincollection-plugin-not-found: Some plugins are not available and could not be loaded.';
 
 			// Log the error so it's more visible on the console. Hopefully, for better DX.
-			log.error( errorMsg, { plugins: missingPlugins } );
+			console.error( attachLinkToDocumentation( errorMsg ), { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorMsg, this._editor, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
+			.then( () => initPlugins( loaded, 'init' ) )
+			.then( () => initPlugins( loaded, 'afterInit' ) )
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructor ) {
@@ -140,7 +206,7 @@ export default class PluginCollection {
 			}
 
 			// The plugin is already loaded or being loaded - do nothing.
-			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
+			if ( that._plugins.has( PluginConstructor ) || loading.has( PluginConstructor ) ) {
 				return;
 			}
 
@@ -166,10 +232,22 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructor } );
+					console.error( attachLinkToDocumentation(
+						'plugincollection-load: It was not possible to load the plugin.'
+					), { plugin: PluginConstructor } );
 
 					throw err;
 				} );
+		}
+
+		function initPlugins( loadedPlugins, method ) {
+			return loadedPlugins.reduce( ( promise, plugin ) => {
+				if ( !plugin[ method ] ) {
+					return promise;
+				}
+
+				return promise.then( plugin[ method ].bind( plugin ) );
+			}, Promise.resolve() );
 		}
 
 		function instantiatePlugin( PluginConstructor ) {
@@ -191,6 +269,7 @@ export default class PluginCollection {
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` option.',
+								editor,
 								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
 							);
 						}
@@ -295,12 +374,15 @@ export default class PluginCollection {
 			 * @param {Function} plugin1 The first plugin constructor.
 			 * @param {Function} plugin2 The second plugin constructor.
 			 */
-			log.warn(
+			throw new CKEditorError(
 				'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.',
+				null,
 				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
 			);
-		} else {
-			this._plugins.set( pluginName, plugin );
 		}
+
+		this._plugins.set( pluginName, plugin );
 	}
 }
+
+mix( PluginCollection, EmitterMixin );

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Editor from '../../src/editor/editor';
@@ -25,6 +25,21 @@ export default class VirtualTestEditor extends Editor {
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
+	}
+
+	static create( config = {} ) {
+		return new Promise( resolve => {
+			const editor = new this( config );
+
+			resolve(
+				editor.initPlugins()
+					.then( () => editor.data.init( config.initialData || '' ) )
+					.then( () => {
+						editor.fire( 'ready' );
+						return editor;
+					} )
+			);
+		} );
 	}
 }
 

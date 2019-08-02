@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -20,8 +20,6 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-import '@ckeditor/ckeditor5-utils/src/version';
-
 /**
  * Class representing a basic, generic editor.
  *
@@ -40,6 +38,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  * the specific editor implements also the {@link module:core/editor/editorwithui~EditorWithUI} interface
  * (as most editor implementations do).
  *
+ * @abstract
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
@@ -48,7 +47,7 @@ export default class Editor {
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
-	 * @param {Object} config The editor config.
+	 * @param {Object} [config] The editor config.
 	 */
 	constructor( config ) {
 		const availablePlugins = this.constructor.builtinPlugins;
@@ -176,13 +175,9 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/conversion/conversion~Conversion}
 		 */
-		this.conversion = new Conversion();
-
-		this.conversion.register( 'downcast', [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] );
-		this.conversion.register( 'editingDowncast', [ this.editing.downcastDispatcher ] );
-		this.conversion.register( 'dataDowncast', [ this.data.downcastDispatcher ] );
-
-		this.conversion.register( 'upcast', [ this.data.upcastDispatcher ] );
+		this.conversion = new Conversion( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ], this.data.upcastDispatcher );
+		this.conversion.addAlias( 'dataDowncast', this.data.downcastDispatcher );
+		this.conversion.addAlias( 'editingDowncast', this.editing.downcastDispatcher );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
@@ -216,35 +211,16 @@ export default class Editor {
 	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
-	 * @returns {Promise} A promise which resolves once the initialization is completed.
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
+	 * once the initialization is completed providing an array of loaded plugins.
 	 */
 	initPlugins() {
-		const that = this;
 		const config = this.config;
+		const plugins = config.get( 'plugins' ) || [];
+		const removePlugins = config.get( 'removePlugins' ) || [];
+		const extraPlugins = config.get( 'extraPlugins' ) || [];
 
-		return loadPlugins()
-			.then( loadedPlugins => {
-				return initPlugins( loadedPlugins, 'init' )
-					.then( () => initPlugins( loadedPlugins, 'afterInit' ) );
-			} )
-			.then( () => this.fire( 'pluginsReady' ) );
-
-		function loadPlugins() {
-			const plugins = config.get( 'plugins' ) || [];
-			const removePlugins = config.get( 'removePlugins' ) || [];
-
-			return that.plugins.load( plugins, removePlugins );
-		}
-
-		function initPlugins( loadedPlugins, method ) {
-			return loadedPlugins.reduce( ( promise, plugin ) => {
-				if ( !plugin[ method ] ) {
-					return promise;
-				}
-
-				return promise.then( plugin[ method ].bind( plugin ) );
-			}, Promise.resolve() );
-		}
+		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
 	}
 
 	/**
@@ -295,44 +271,24 @@ export default class Editor {
 	/**
 	 * Creates and initializes a new editor instance.
 	 *
-	 * @param {Object} config The editor config. You can find the list of config options in
-	 * {@link module:core/editor/editorconfig~EditorConfig}.
-	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
+	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
+	 *
+	 * See the `create()` methods of the existing editor types to learn how to use them:
+	 *
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
+	 *
+	 * @abstract
+	 * @method module:core/editor/editor~Editor.create
 	 */
-	static create( config ) {
-		return new Promise( resolve => {
-			const editor = new this( config );
-
-			resolve(
-				editor.initPlugins()
-					.then( () => {
-						editor.fire( 'dataReady' );
-						editor.fire( 'ready' );
-					} )
-					.then( () => editor )
-			);
-		} );
-	}
 }
 
 mix( Editor, ObservableMixin );
 
 /**
- * Fired after {@link #initPlugins plugins are initialized}.
- *
- * @event pluginsReady
- */
-
-/**
- * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
- * any data initially, this event will be fired right before {@link #event:ready}.
- *
- * @event dataReady
- */
-
-/**
- * Fired when {@link #event:pluginsReady plugins}, and {@link #event:dataReady data} and all additional
+ * Fired when {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional
  * editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
@@ -354,6 +310,22 @@ mix( Editor, ObservableMixin );
  * See also the {@link #state `editor.state`} property.
  *
  * @event destroy
+ */
+
+/**
+ * This error is thrown when a user tries to use a `<textarea>` element to create a non-classic editor in it.
+ *
+ * Textarea element represents a plain-text and cannot be used as a editable root element with included CKEditor5.
+ * Content of an editor should be nicely present to the user and show him how it's going to looks like. Textarea element
+ * doesn't support such behavior.
+ *
+ * Only {@glink builds/guides/overview#classic-editor Classic Editor} has implemented a special system, which
+ * **replace** DOM element and load data from it
+ * ({@link module:editor-classic/classiceditor~ClassicEditor.create more information}). All other editors
+ * use an existing element, load data from it and make this element editable. Details about behaviour of each editor
+ * might be found in an associated description of a `create` method of each editor.
+ *
+ * @error editor-wrong-element
  */
 
 /**

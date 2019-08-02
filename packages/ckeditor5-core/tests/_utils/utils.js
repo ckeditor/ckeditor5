@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -49,19 +49,19 @@ const utils = {
 	 *
 	 * Usage:
 	 *
-	 *      it( 'test', () => {
-	 *          // Test bootstrapping...
+	 *		it( 'test', () => {
+	 *			// Test bootstrapping...
 	 *
-	 *          const assertEdge = () => {
-	 *              // expect();
-	 *          };
+	 *			const assertEdge = () => {
+	 *				// expect();
+	 *			};
 	 *
-	 *          const assertAll = () => {
-	 *              // expect();
-	 *          };
+	 *			const assertAll = () => {
+	 *				// expect();
+	 *			};
 	 *
-	 *          testUtils.checkAssertions( assertEdge, assertAll );
-	 *      } );
+	 *			testUtils.checkAssertions( assertEdge, assertAll );
+	 *		} );
 	 *
 	 * @param {...Function} assertions Functions that will be executed.
 	 */

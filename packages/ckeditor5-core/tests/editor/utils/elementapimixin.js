@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
@@ -9,7 +9,7 @@ import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ElementApiMixin', () => {
 	let editor;
@@ -46,7 +46,11 @@ describe( 'ElementApiMixin', () => {
 		} );
 
 		it( 'throws an error if "sourceElement" has not been set', () => {
-			expect( () => editor.updateSourceElement() ).to.throw( CKEditorError, /editor-missing-sourceelement/ );
+			expectToThrowCKEditorError(
+				() => editor.updateSourceElement(),
+				/editor-missing-sourceelement/,
+				editor
+			);
 		} );
 	} );
 } );

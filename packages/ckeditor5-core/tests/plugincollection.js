@@ -1,16 +1,14 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout */
+/* globals setTimeout, console */
 
-import testUtils from '../tests/_utils/utils';
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
 import Plugin from '../src/plugin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
+import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
@@ -19,8 +17,6 @@ class ChildPlugin extends Plugin {}
 class GrandPlugin extends ChildPlugin {}
 
 describe( 'PluginCollection', () => {
-	testUtils.createSinonSandbox();
-
 	before( () => {
 		PluginA = createPlugin( 'A' );
 		PluginB = createPlugin( 'B' );
@@ -73,11 +69,15 @@ describe( 'PluginCollection', () => {
 		PluginFoo.requires = [];
 	} );
 
+	afterEach( () => {
+		sinon.restore();
+	} );
+
 	describe( 'load()', () => {
 		it( 'should not fail when trying to load 0 plugins (empty array)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [] )
+			return plugins.init( [] )
 				.then( () => {
 					expect( getPlugins( plugins ) ).to.be.empty;
 				} );
@@ -86,7 +86,7 @@ describe( 'PluginCollection', () => {
 		it( 'should add collection items for loaded plugins', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginA, PluginB ] )
+			return plugins.init( [ PluginA, PluginB ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -98,7 +98,7 @@ describe( 'PluginCollection', () => {
 		it( 'should add collection items for loaded plugins using plugin names', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ 'A', 'B' ] )
+			return plugins.init( [ 'A', 'B' ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -111,7 +111,7 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 			const spy = sinon.spy( plugins, '_add' );
 
-			return plugins.load( [ PluginA, PluginC ] )
+			return plugins.init( [ PluginA, PluginC ] )
 				.then( loadedPlugins => {
 					expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -126,7 +126,7 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 			const spy = sinon.spy( plugins, '_add' );
 
-			return plugins.load( [ 'J' ] )
+			return plugins.init( [ 'J' ] )
 				.then( loadedPlugins => {
 					expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -141,7 +141,7 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 			const spy = sinon.spy( plugins, '_add' );
 
-			return plugins.load( [ PluginA, PluginB, PluginC ] )
+			return plugins.init( [ PluginA, PluginB, PluginC ] )
 				.then( loadedPlugins => {
 					expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -156,7 +156,7 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 			const spy = sinon.spy( plugins, '_add' );
 
-			return plugins.load( [ PluginD ] )
+			return plugins.init( [ PluginD ] )
 				.then( loadedPlugins => {
 					expect( getPlugins( plugins ).length ).to.equal( 4 );
 
@@ -172,7 +172,7 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 			const spy = sinon.spy( plugins, '_add' );
 
-			return plugins.load( [ PluginA, PluginE ] )
+			return plugins.init( [ PluginA, PluginE ] )
 				.then( loadedPlugins => {
 					expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -187,18 +187,18 @@ describe( 'PluginCollection', () => {
 		it( 'should load grand child classes', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginG ] )
+			return plugins.init( [ PluginG ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 1 );
 				} );
 		} );
 
 		it( 'should load plugin which does not extend the base Plugin class', () => {
-			class Y { }
+			class Y {}
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ Y ] )
+			return plugins.init( [ Y ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 1 );
 				} );
@@ -211,7 +211,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ pluginAsFunction ] )
+			return plugins.init( [ pluginAsFunction ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 1 );
 				} );
@@ -230,7 +230,7 @@ describe( 'PluginCollection', () => {
 				}
 			}
 
-			return plugins.load( [ PluginA, PluginB, pluginAsFunction, Y ] )
+			return plugins.init( [ PluginA, PluginB, pluginAsFunction, Y ] )
 				.then( () => {
 					expect( plugins.get( PluginA ).editor ).to.equal( editor );
 					expect( plugins.get( PluginB ).editor ).to.equal( editor );
@@ -240,12 +240,12 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginA, PluginX, PluginB ] )
-				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+			return plugins.init( [ PluginA, PluginX, PluginB ] )
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
@@ -253,34 +253,33 @@ describe( 'PluginCollection', () => {
 					expect( err ).to.be.an.instanceof( TestError );
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
 
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 				} );
 		} );
 
 		it( 'should reject when loading non-existent plugin', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ 'NonExistentPlugin' ] )
-				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+			return plugins.init( [ 'NonExistentPlugin' ] )
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-plugin-not-found/ );
+					assertCKEditorError( err, /^plugincollection-plugin-not-found/, editor );
 
-					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
 				} );
 		} );
 
 		it( 'should load chosen plugins (plugins and removePlugins are constructors)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginA, PluginB, PluginC ], [ PluginA ] )
+			return plugins.init( [ PluginA, PluginB, PluginC ], [ PluginA ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -292,7 +291,7 @@ describe( 'PluginCollection', () => {
 		it( 'should load chosen plugins (plugins are constructors, removePlugins are names)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginA, PluginB, PluginC ], [ 'A' ] )
+			return plugins.init( [ PluginA, PluginB, PluginC ], [ 'A' ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -304,7 +303,7 @@ describe( 'PluginCollection', () => {
 		it( 'should load chosen plugins (plugins and removePlugins are names)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ 'A', 'B', 'C' ], [ 'A' ] )
+			return plugins.init( [ 'A', 'B', 'C' ], [ 'A' ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -316,7 +315,7 @@ describe( 'PluginCollection', () => {
 		it( 'should load chosen plugins (plugins are names, removePlugins are constructors)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ 'A', 'B', 'C' ], [ PluginA ] )
+			return plugins.init( [ 'A', 'B', 'C' ], [ PluginA ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -330,7 +329,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, [ AnonymousPlugin ].concat( availablePlugins ) );
 
-			return plugins.load( [ AnonymousPlugin, 'A', 'B' ], [ AnonymousPlugin ] )
+			return plugins.init( [ AnonymousPlugin, 'A', 'B' ], [ AnonymousPlugin ] )
 				.then( () => {
 					expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -340,84 +339,72 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', () => {
-			const logSpy = testUtils.sinon.stub( log, 'error' );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
-				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+			return plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be still executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-required/ );
+					assertCKEditorError( err, /^plugincollection-required/, editor );
 
-					expect( logSpy.calledTwice ).to.equal( true );
+					sinon.assert.calledTwice( consoleErrorStub );
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name', () => {
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
+		it( 'should reject when loading more than one plugin with the same name', () => {
 			const plugins = new PluginCollection( editor );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
-			return plugins.load( [ PluginFoo, AnotherPluginFoo ] )
+			return plugins.init( [ PluginFoo, AnotherPluginFoo ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
-					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-
-					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
-
-					const warnData = logSpy.firstCall.args[ 1 ];
-					expect( warnData.pluginName ).to.equal( 'Foo' );
-					expect( warnData.plugin1 ).to.equal( PluginFoo );
-					expect( warnData.plugin2 ).to.equal( AnotherPluginFoo );
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null, {
+						pluginName: 'Foo',
+						plugin1: PluginFoo,
+						plugin2: AnotherPluginFoo
+					} );
+					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
-		it( 'logs if tries to load more than one plugin with the same name (plugin requires plugin with the same name)', () => {
+		it( 'should reject when loading more than one plugin with the same name (plugin requires plugin with the same name)', () => {
 			PluginFoo.requires = [ AnotherPluginFoo ];
 
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
 			const plugins = new PluginCollection( editor );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
-			return plugins.load( [ PluginFoo ] )
+			return plugins.init( [ PluginFoo ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
 
-					expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( AnotherPluginFoo );
-					expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-					expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-
-					expect( logSpy.calledOnce ).to.equal( true );
-					expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
+					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
 
-		it(
-			'logs if tries to load more than one plugin with the same name (plugin with the same name is built-in the PluginCollection)',
-			() => {
-				availablePlugins = [ PluginFoo ];
+		it( 'should reject when loading more than one plugin with the same name' +
+			'(plugin with the same name is built-in the PluginCollection)', () => {
+			availablePlugins = [ PluginFoo ];
 
-				const logSpy = testUtils.sinon.stub( log, 'warn' );
-				const plugins = new PluginCollection( editor, availablePlugins );
+			const plugins = new PluginCollection( editor, availablePlugins );
+			const consoleErrorStub = sinon.stub( console, 'error' );
 
-				return plugins.load( [ 'Foo', AnotherPluginFoo ] )
-					.then( () => {
-						expect( getPlugins( plugins ).length ).to.equal( 2 );
-
-						expect( plugins.get( 'Foo' ) ).to.be.an.instanceof( PluginFoo );
-						expect( plugins.get( PluginFoo ) ).to.be.an.instanceof( PluginFoo );
-						expect( plugins.get( AnotherPluginFoo ) ).to.be.an.instanceof( AnotherPluginFoo );
-
-						expect( logSpy.calledOnce ).to.equal( true );
-						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-name-conflict:/ );
-					} );
-			}
-		);
+			return plugins.init( [ 'Foo', AnotherPluginFoo ] )
+				.then( () => {
+					throw new Error( 'The `init()` method should fail.' );
+				} )
+				.catch( err => {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+					sinon.assert.calledOnce( consoleErrorStub );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {
@@ -428,7 +415,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ SomePlugin ] )
+			return plugins.init( [ SomePlugin ] )
 				.then( () => {
 					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
 				} );
@@ -442,11 +429,77 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ SomePlugin ] )
+			return plugins.init( [ SomePlugin ] )
 				.then( () => {
 					expect( plugins.get( 'foo/bar' ) ).to.be.instanceOf( SomePlugin );
 					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
 				} );
+		} );
+
+		it( 'throws if plugin cannot be retrieved by name', () => {
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.init( [] ).then( () => {
+				expectToThrowCKEditorError( () => plugins.get( 'foo' ),
+					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' }
+				);
+			} );
+		} );
+
+		it( 'throws if plugin cannot be retrieved by class', () => {
+			class SomePlugin extends Plugin {}
+			SomePlugin.pluginName = 'foo';
+
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.init( [] ).then( () => {
+				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
+					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' } );
+			} );
+		} );
+
+		it( 'throws if plugin cannot be retrieved by class (class name in error)', () => {
+			class SomePlugin extends Plugin {}
+
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.init( [] ).then( () => {
+				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
+					/^plugincollection-plugin-not-loaded:/,
+					editor, { plugin: 'SomePlugin' }
+				);
+			} );
+		} );
+	} );
+
+	describe( 'has()', () => {
+		let plugins;
+
+		beforeEach( () => {
+			plugins = new PluginCollection( editor, availablePlugins );
+		} );
+
+		it( 'returns false if plugins is not loaded (retrieved by name)', () => {
+			expect( plugins.has( 'foobar' ) ).to.be.false;
+		} );
+
+		it( 'returns false if plugins is not loaded (retrieved by class)', () => {
+			class SomePlugin extends Plugin {
+			}
+
+			expect( plugins.has( SomePlugin ) ).to.be.false;
+		} );
+
+		it( 'returns true if plugins is loaded (retrieved by name)', () => {
+			return plugins.init( [ PluginA ] ).then( () => {
+				expect( plugins.has( 'A' ) ).to.be.true;
+			} );
+		} );
+
+		it( 'returns true if plugins is loaded (retrieved by class)', () => {
+			return plugins.init( [ PluginA ] ).then( () => {
+				expect( plugins.has( PluginA ) ).to.be.true;
+			} );
 		} );
 	} );
 
@@ -456,7 +509,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, [] );
 
-			return plugins.load( [ PluginA, PluginB ] )
+			return plugins.init( [ PluginA, PluginB ] )
 				.then( () => {
 					destroySpyForPluginA = sinon.spy( plugins.get( PluginA ), 'destroy' );
 					destroySpyForPluginB = sinon.spy( plugins.get( PluginB ), 'destroy' );
@@ -500,7 +553,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, [] );
 
-			return plugins.load( [ AsynchronousPluginA, AsynchronousPluginB ] )
+			return plugins.init( [ AsynchronousPluginA, AsynchronousPluginB ] )
 				.then( () => plugins.destroy() )
 				.then( () => {
 					expect( destroyedPlugins ).to.contain( 'AsynchronousPluginB.destroy()' );
@@ -517,7 +570,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, [] );
 
-			return plugins.load( [ PluginA, FooPlugin ] )
+			return plugins.init( [ PluginA, FooPlugin ] )
 				.then( () => plugins.destroy() )
 				.then( destroyedPlugins => {
 					expect( destroyedPlugins.length ).to.equal( 1 );
@@ -542,7 +595,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ SomePlugin1, SomePlugin2 ] )
+			return plugins.init( [ SomePlugin1, SomePlugin2 ] )
 				.then( () => {
 					const pluginConstructors = Array.from( plugins )
 						.map( entry => entry[ 0 ] );

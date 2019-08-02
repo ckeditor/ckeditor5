@@ -1,6 +1,83 @@
 Changelog
 =========
 
+## [12.2.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.0...v12.2.1) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [12.2.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.1...v12.2.0) (2019-07-04)
+
+### Features
+
+* Added an editor instance reference to the native editable DOM element under the `ckeditorInstance` property. Closes [ckeditor/ckeditor5#1838](https://github.com/ckeditor/ckeditor5/issues/1838). ([fa94600](https://github.com/ckeditor/ckeditor5-core/commit/fa94600))
+
+  Implemented the `EditorUI#setEditableElement()` method.
+  Deprecated the `EditorUI#_editableElements` property.
+* Introduced `MultiCommand` which acts as a composite command – it can group multiple commands under the hood. ([ebcbd01](https://github.com/ckeditor/ckeditor5-core/commit/ebcbd01))
+
+### Other changes
+
+* Introduce the `editor-wrong-element` error thrown when the editor is created over a wrong element. Closes [ckeditor/ckeditor5#1591](https://github.com/ckeditor/ckeditor5/issues/1591). ([9945fc6](https://github.com/ckeditor/ckeditor5-core/commit/9945fc6))
+* Updated translations. ([43f5b6e](https://github.com/ckeditor/ckeditor5-core/commit/43f5b6e))
+
+
+## [12.1.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.0...v12.1.1) (2019-06-05)
+
+### Other changes
+
+* Updated translations. ([ed6bd3c](https://github.com/ckeditor/ckeditor5-core/commit/ed6bd3c))
+
+
+## [12.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Introduced `Command#disable()` and `Command#enable()`. Closes [#165](https://github.com/ckeditor/ckeditor5-core/issues/165). ([030ca2b](https://github.com/ckeditor/ckeditor5-core/commit/030ca2b))
+
+### Other changes
+
+* Optimized icons. ([a5f8d34](https://github.com/ckeditor/ckeditor5-core/commit/a5f8d34))
+* Updated translations. ([2dedc43](https://github.com/ckeditor/ckeditor5-core/commit/2dedc43))
+
+
+## [12.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.1.0...v12.0.0) (2019-02-28)
+
+### Bug fixes
+
+* Fixed memory leaks during editor initialization and destruction. Created helpers for testing memory usage. Closes [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341). ([11ca135](https://github.com/ckeditor/ckeditor5-core/commit/11ca135))
+
+### Other changes
+
+* Editor UI classes API refactoring. See breaking changes. Closes [ckeditor/ckeditor5#1449](https://github.com/ckeditor/ckeditor5/issues/1449). ([aca1ff1](https://github.com/ckeditor/ckeditor5-core/commit/aca1ff1))
+* Remove `editor#pluginsReady` event. Closes [ckeditor/ckeditor5#1477](https://github.com/ckeditor/ckeditor5/issues/1477). ([6d63538](https://github.com/ckeditor/ckeditor5-core/commit/6d63538))
+* The `Editor#getData()` method now accepts `options.trim` parameter. By default it will now return an empty string when the editor is empty (instead of returning `'<p>&nbsp;</p>'` as before). ([4f8abd1](https://github.com/ckeditor/ckeditor5-core/commit/4f8abd1))
+* Throw an error from `editor.plugins.get()` if the plugin is not loaded. Closes [#148](https://github.com/ckeditor/ckeditor5-core/issues/148). ([a56b47a](https://github.com/ckeditor/ckeditor5-core/commit/a56b47a))
+* Updated translations. ([4cf6f4f](https://github.com/ckeditor/ckeditor5-core/commit/4cf6f4f)) ([a8367a5](https://github.com/ckeditor/ckeditor5-core/commit/a8367a5)) ([0e09317](https://github.com/ckeditor/ckeditor5-core/commit/0e09317))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `Editor#getData()` method now returns an empty string by default when editor content is empty (instead of returning `'<p>&nbsp;</p>'` as before).
+* The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
+* Removed `EditorWithUI#element` property.  The `EditorUI#element` property should be used instead.
+* Removed `EditorWithUI#uiReady` event.  The `EditorUI#ready` event should be used instead.
+* Removed `view` parameter in `EditorUI` constructor. Only subclasses should use it without passing it further to `EditorUI`.
+* Removed `EditorUI#view` property. The `view` property from subclasses (like `ClassicEditorUI#view`) should be used directly instead.
+* The `editor.plugins.get()` will now throw an error if the plugin is not loaded. Use `editor.plugins.has()` to check if plugin is available.
+
+
+## [11.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.1...v11.1.0) (2018-12-05)
+
+### Features
+
+* Implemented the `config.extraPlugins` option. Closes [#146](https://github.com/ckeditor/ckeditor5-core/issues/146). ([4b5c3d4](https://github.com/ckeditor/ckeditor5-core/commit/4b5c3d4))
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([c4795fb](https://github.com/ckeditor/ckeditor5-core/commit/c4795fb))
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.0...v11.0.1) (2018-10-08)
 
 ### Other changes

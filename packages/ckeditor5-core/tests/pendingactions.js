@@ -1,28 +1,28 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtaulTestEditor from './_utils/virtualtesteditor';
+import VirtualTestEditor from './_utils/virtualtesteditor';
 import PendingActions from '../src/pendingactions';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, pendingActions;
 
-beforeEach( () => {
-	return VirtaulTestEditor.create( {
-		plugins: [ PendingActions ],
-	} ).then( newEditor => {
-		editor = newEditor;
-		pendingActions = editor.plugins.get( PendingActions );
-	} );
-} );
-
-afterEach( () => {
-	return editor.destroy();
-} );
-
 describe( 'PendingActions', () => {
+	beforeEach( () => {
+		return VirtualTestEditor.create( {
+			plugins: [ PendingActions ],
+		} ).then( newEditor => {
+			editor = newEditor;
+			pendingActions = editor.plugins.get( PendingActions );
+		} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should define static pluginName property', () => {
 		expect( PendingActions ).to.have.property( 'pluginName', 'PendingActions' );
 	} );
@@ -69,9 +69,9 @@ describe( 'PendingActions', () => {
 		} );
 
 		it( 'should throw an error when invalid message is given', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				pendingActions.add( {} );
-			} ).to.throw( CKEditorError, /^pendingactions-add-invalid-message/ );
+			}, /^pendingactions-add-invalid-message/, editor );
 		} );
 
 		it( 'should fire add event with added item', () => {
@@ -116,6 +116,8 @@ describe( 'PendingActions', () => {
 
 	describe( 'first', () => {
 		it( 'should return first pending action from the list', () => {
+			expect( pendingActions.first ).to.be.null;
+
 			const action = pendingActions.add( 'Action 1' );
 
 			pendingActions.add( 'Action 2' );

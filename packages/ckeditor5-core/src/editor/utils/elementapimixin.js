@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -30,7 +30,10 @@ const ElementApiMixin = {
 			 *
 			 * @error editor-missing-sourceelement
 			 */
-			throw new CKEditorError( 'editor-missing-sourceelement: Cannot update the source element of a detached editor.' );
+			throw new CKEditorError(
+				'editor-missing-sourceelement: Cannot update the source element of a detached editor.',
+				this
+			);
 		}
 
 		setDataInElement( this.sourceElement, this.data.get() );

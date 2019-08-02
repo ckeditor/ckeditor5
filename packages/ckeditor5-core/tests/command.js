@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Command from '../src/command';
@@ -181,6 +181,64 @@ describe( 'Command', () => {
 
 				evt.stop();
 			}
+		} );
+	} );
+
+	describe( 'forceDisabled() / clearForceDisabled()', () => {
+		it( 'forceDisabled() should disable the command', () => {
+			command.forceDisabled( 'foo' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'clearForceDisabled() should enable the command', () => {
+			command.forceDisabled( 'foo' );
+			command.clearForceDisabled( 'foo' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'clearForceDisabled() used with wrong identifier should not enable the command', () => {
+			command.forceDisabled( 'foo' );
+			command.clearForceDisabled( 'bar' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'using forceDisabled() twice with the same identifier should not have any effect', () => {
+			command.forceDisabled( 'foo' );
+			command.forceDisabled( 'foo' );
+			command.clearForceDisabled( 'foo' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'command is enabled only after all disables were cleared', () => {
+			command.forceDisabled( 'foo' );
+			command.forceDisabled( 'bar' );
+			command.clearForceDisabled( 'foo' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
+
+			command.clearForceDisabled( 'bar' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'command should remain disabled if isEnabled has a callback disabling it', () => {
+			command.on( 'set:isEnabled', evt => {
+				evt.return = false;
+				evt.stop();
+			} );
+
+			command.forceDisabled( 'foo' );
+			command.clearForceDisabled( 'foo' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 } );

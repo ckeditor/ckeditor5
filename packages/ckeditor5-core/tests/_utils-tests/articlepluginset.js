@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
@@ -82,7 +82,7 @@ describe( 'ArticlePluginSet', () => {
 				'<li>OL List item 2</li>' +
 			'</ol>' +
 			'<figure class="image image-style-side">' +
-				'<img alt="bar" src="foo">' +
+				'<img alt="bar" src="/assets/sample.png">' +
 				'<figcaption>Caption</figcaption>' +
 			'</figure>' +
 			'<blockquote>' +
@@ -118,7 +118,7 @@ describe( 'ArticlePluginSet', () => {
 				'<li>OL List item 2</li>' +
 			'</ol>' +
 			'<figure class="image image-style-side">' +
-				'<img alt="bar" src="foo"></img>' +
+				'<img alt="bar" src="/assets/sample.png"></img>' +
 				'<figcaption>Caption</figcaption>' +
 			'</figure>' +
 			'<blockquote>' +

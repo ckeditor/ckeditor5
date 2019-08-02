@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { isFunction } from 'lodash-es';
@@ -26,7 +26,10 @@ export default function attachToForm( editor ) {
 		 *
 		 * @error attachtoform-missing-elementapi-interface
 		 */
-		throw new CKEditorError( 'attachtoform-missing-elementapi-interface: Editor passed to attachToForm() must implement ElementApi.' );
+		throw new CKEditorError(
+			'attachtoform-missing-elementapi-interface: Editor passed to attachToForm() must implement ElementApi.',
+			editor
+		);
 	}
 
 	const sourceElement = editor.sourceElement;
