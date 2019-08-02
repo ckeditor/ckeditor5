@@ -10,6 +10,8 @@ import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter';
 import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
+import ImageStyle from '../../src/imagestyle';
+import ImageToolbar from '../../src/imagetoolbar';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
@@ -18,8 +20,11 @@ import ResizerSide from '@ckeditor/ckeditor5-widget/src/resizerside';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
-		toolbar: [ 'undo', 'redo' ]
+		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, ImageStyle, ImageToolbar, UndoPlugin, ClipboardPlugin ],
+		toolbar: [ 'undo', 'redo' ],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -70,7 +75,5 @@ ClassicEditor
 		};
 
 		window.editor.plugins.get( 'WidgetResizer' ).set( 'resizerStrategy', strategies[ this.value ] );
-
-		console.log( this.value, window.pocResizeStrategy );
 	} );
 }() );

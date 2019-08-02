@@ -9,12 +9,13 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
+import ImageStyle from '../../src/imagestyle';
 
 import {
 	getData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Image resizer', () => {
+describe.only( 'Image resizer', () => {
 	const FIXTURE_WIDTH = 100;
 	const FIXTURE_HEIGHT = 50;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
@@ -31,7 +32,7 @@ describe( 'Image resizer', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImagePlugin, ParagraphPlugin ]
+				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -82,7 +83,7 @@ describe( 'Image resizer', () => {
 		let widget;
 
 		beforeEach( async () => {
-			await editor.setData( `<p>foo</p><figure class="image image-style-side"><img src="${ imageFixture }"></figure>` );
+			await editor.setData( `<p>foo</p><figure><img src="${ imageFixture }"></figure>` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 			const domEventDataMock = {
@@ -91,6 +92,46 @@ describe( 'Image resizer', () => {
 			};
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
+		} );
+
+		it( 'shrinks correctly with left-bottom handler', () => {
+			const expectedWidth = 80;
+
+			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
+			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
+			const imageTopLeftPosition = getElementPosition( domImage );
+
+			const initialPointerPosition = {
+				pageX: imageTopLeftPosition.x,
+				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT
+			};
+
+			const finishPointerPosition = {
+				pageX: imageTopLeftPosition.x + 10,
+				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT - 10
+			};
+
+			fireMouseEvent( domBottomLeftResizer, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
+
+			// We need to wait as mousemove events are throttled.
+			return wait( 30 )
+				.then( () => {
+					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
+
+					expect( domImage.width ).to.be.closeTo( expectedWidth, 1, 'View width check' );
+
+					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
+
+					expect( getData( editor.model, {
+						withoutSelection: true
+					} ) ).to.match( /<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/ );
+
+					const modelItem = editor.model.document.getRoot().getChild( 1 );
+
+					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( expectedWidth, 1, 'Model check' );
+				} );
 		} );
 	} );
 
@@ -135,13 +176,13 @@ describe( 'Image resizer', () => {
 				.then( () => {
 					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
 
-					expect( domImage.width ).to.be.closeTo( 80, 1, 'View width check' );
+					expect( domImage.width ).to.be.closeTo( expectedWidth, 1, 'View width check' );
 
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
 					expect( getData( editor.model, {
 						withoutSelection: true
-					} ) ).to.match( /<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/ );
+					} ) ).to.match( /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)"><\/image>/ );
 
 					const modelItem = editor.model.document.getRoot().getChild( 1 );
 
@@ -181,7 +222,11 @@ describe( 'Image resizer', () => {
 
 					expect( getData( editor.model, {
 						withoutSelection: true
-					} ) ).to.equal( `<paragraph>foo</paragraph><image src="${ imageFixture }" width="${ expectedWidth }"></image>` );
+					} ) ).to.match( /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)"><\/image>/ );
+
+					const modelItem = editor.model.document.getRoot().getChild( 1 );
+
+					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( expectedWidth, 1, 'Model check' );
 				} );
 		} );
 	} );

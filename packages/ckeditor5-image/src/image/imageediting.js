@@ -68,6 +68,11 @@ export default class ImageEditing extends Plugin {
 					},
 					getAspectRatio( resizeHost ) {
 						return resizeHost.naturalWidth / resizeHost.naturalHeight;
+					},
+					isCentered( context ) {
+						const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
+
+						return !imageStyle || imageStyle == 'full';
 					}
 				} );
 
