@@ -67,51 +67,90 @@ There are two configuration options available that change the output of the word
 * If the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} option is set to `false`, the word counter will be hidden.
 * If the {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} option is set to `false`, the character counter will be hidden.
 
-## The `update` event
+### Reacting to changes in statistics
 
-The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `WordCount#update` event}. It allows implementing customized behaviors that react to word and character count updates.
-
-Below you can find an example where the color of the circle goes from green to red as you approach the limit of 120 characters. The progress bar indicates the number of words.
-
-{@snippet features/word-count-update}
+You can execute your custom callback every time content statistics change by defining {@link module:word-count/wordcount~WordCountConfig#onUpdate `config.wordCount.onUpdate`} in the editor configuration:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// Configuration details.
+		plugins: [ WordCount, ... ],
+		wordCount: {
+			onUpdate: stats => {
+				// Prints the current content statistics.
+				console.log( `Characters: ${ stats.characters }\nWords:      ${ stats.words }` );
+			}
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+**Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
+
+## The `update` event
+
+The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `update` event}. It allows implementing customized behaviors that react to word and character count updates.
+
+Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature it in action. See the code used to create the demo listed later in this section.
+
+{@snippet features/word-count-update}
+
+```js
+BalloonEditor
+	.create( document.querySelector( '#demo-update__editor' ), {
+		// Editor configuration.
 	} )
 	.then( editor => {
+		const maxCharacters = 120;
 		const wordCountPlugin = editor.plugins.get( 'WordCount' );
+		const container = document.querySelector( '.demo-update' );
+		const progressCircle = document.querySelector( '.demo-update__chart__circle' );
+		const charactersBox = document.querySelector( '.demo-update__chart__characters' );
+		const wordsBox = document.querySelector( '.demo-update__words' );
+		const sendButton = document.querySelector( '.demo-update__send' );
+		const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribute( 'r' ) );
 
-		const progressBar = document.querySelector( '.word-count progress' );
-		const colorBox = document.querySelector( '.word-count__color-box' );
+		// Update the UI on editor load.
+		updateWordCountStatsUI( wordCountPlugin.characters, wordCountPlugin.words );
 
+		// Update the UI as the content of the editor changes.
 		wordCountPlugin.on( 'update', ( evt, data ) => {
-			const charactersHue = calculateHue( {
-				characters: data.characters,
-				greenUntil: 70,
-				maxCharacters: 120
-			} );
-
-			progressBar.value = data.words;
-			colorBox.style.setProperty( '--hue', charactersHue );
+			updateWordCountStatsUI( data.characters, data.words );
 		} );
 
-		// Calculates the hue based on the number of characters.
-		//
-		// For the character counter:
-		//
-		// * below greenUntil - Returns green.
-		// * between greenUntil and maxCharacters - Returns a hue between green and red.
-		// * above maxCharacters - Returns red.
-		function calculateHue( { characters, greenUntil, maxCharacters } ) {
-			const greenHue = 70;
-			const redHue = 0;
-			const progress = Math.max( 0, Math.min( 1, ( characters - greenUntil ) / ( maxCharacters - greenUntil ) ) ); // 0-1
-			const discreetProgress = Math.floor( progress * 10 ) / 10; // 0, 0.1, 0.2, ..., 1
+		function updateWordCountStatsUI( currentCharacters, currentWords ) {
+			const charactersProgress = currentCharacters / maxCharacters * circleCircumference;
+			const isLimitExceeded = currentCharacters > maxCharacters;
+			const isCloseToLimit = !isLimitExceeded && currentCharacters > maxCharacters * .8;
+			const circleDashArray = Math.min( charactersProgress, circleCircumference );
 
-			return ( redHue - greenHue ) * discreetProgress + greenHue;
+			// Set the stroke of the circle to show the how many characters were typed.
+			progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
+
+			// Display the number of characters in the progress chart. When exceeded the limit,
+			// display how many characters should be removed.
+			if ( isLimitExceeded ) {
+				charactersBox.textContent = `-${ currentCharacters - maxCharacters }`;
+			} else {
+				charactersBox.textContent = currentCharacters;
+			}
+
+			wordsBox.textContent = `Words in the post: ${ currentWords }`;
+
+			// If the content length is close to the characters limit, add a CSS class to warns the user.
+			container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
+
+			// If exceeded the characters limit, add a CSS class that makes the content's background red.
+			container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
+
+			// If exceeded the characters limit, disable the send button.
+			sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 		}
+
+		sendButton.addEventListener( 'click', () => {
+			window.alert( 'Post sent!' ); // eslint-disable-line no-alert
+		} );
 	} )
 	.catch( ... );
 ```
@@ -120,26 +159,83 @@ The HTML structure used to create the customized word and character count implem
 
 ```html
 <style>
-	.word-count__color-box {
-		width: 20px;
-		height: 20px;
-		background-color: hsl( var( --hue ), 100%, 50% );
-		display: inline-block;
-		vertical-align: middle;
-		border-radius: 100%;
+	.demo-update {
+		border: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius);
+		box-shadow: 2px 2px 0px hsla( 0, 0%, 0%, 0.1 );
+		margin: 1.5em 0;
+		padding: 1em;
+	}
+
+	.demo-update h3 {
+		font-size: 18px;
+		font-weight: bold;
+		margin: 0 0 .5em;
+		padding: 0;
+	}
+
+	.demo-update .ck.ck-editor__editable_inline {
+		border: 1px solid hsla( 0, 0%, 0%, 0.15 );
+		transition: background .5s ease-out;
+		min-height: 6em;
+		margin-bottom: 1em;
+	}
+
+	.demo-update__controls {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.demo-update__chart {
+		margin-right: 1em;
+	}
+
+	.demo-update__chart__circle {
+		transform: rotate(-90deg);
+		transform-origin: center;
+	}
+
+	.demo-update__chart__characters {
+		font-size: 13px;
+		font-weight: bold;
+	}
+
+	.demo-update__words {
+		flex-grow: 1;
+		opacity: .5;
+	}
+
+	.demo-update__limit-close .demo-update__chart__circle {
+		stroke: hsl( 30, 100%, 52% );
+	}
+
+	.demo-update__limit-exceeded .ck.ck-editor__editable_inline {
+		background: hsl( 0, 100%, 97% );
+	}
+
+	.demo-update__limit-exceeded .demo-update__chart__circle {
+		stroke: hsl( 0, 100%, 52% );
+	}
+
+	.demo-update__limit-exceeded .demo-update__chart__characters {
+		fill: hsl( 0, 100%, 52% );
 	}
 </style>
 
-<div class="word-count">
-	<div class="word-count__words">
-		<label>
-			<span>Words:</span>
-			<progress max="20"></progress>
-		</label>
+<div class="demo-update">
+	<h3>Post editor with word count</h3>
+	<div id="demo-update__editor">
+		<p>Tourists frequently admit that <a href="https://en.wikipedia.org/wiki/Taj_Mahal">Taj Mahal</a> “simply cannot be described with words”.</p>
 	</div>
-	<div class="word-count__characters">
-		<span>Characters:</span>
-		<div class="word-count__color-box"></div>
+	<div class="demo-update__controls">
+		<span class="demo-update__words"></span>
+		<svg class="demo-update__chart" viewbox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+			<circle stroke="hsl(0, 0%, 93%)" stroke-width="3" fill="none" cx="20" cy="20" r="17" />
+			<circle class="demo-update__chart__circle" stroke="hsl(202, 92%, 59%)" stroke-width="3" stroke-dasharray="134,534" stroke-linecap="round" fill="none" cx="20" cy="20" r="17" />
+			<text class="demo-update__chart__characters" x="50%" y="50%" dominant-baseline="central" text-anchor="middle"></text>
+		</svg>
+		<button type="button" class="demo-update__send">Send post</button>
 	</div>
 </div>
 ```
@@ -174,7 +270,18 @@ ClassicEditor
 The {@link module:word-count/wordcount~WordCount} plugin provides:
 
 * The {@link module:word-count/wordcount~WordCount#wordCountContainer} property. It returns a self-updating HTML element which is updated with the current number of words and characters in the editor. You can remove the "Words" or "Characters" counters with a proper configuration of the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} and {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} options.
-* The {@link module:word-count/wordcount~WordCount#event:update `update` event}, fired whenever the plugins update the number of counted words and characters. You can run a custom callback function with updated values. Please note that the `update` event is throttled.
+* The {@link module:word-count/wordcount~WordCount#event:update `update` event}, fired whenever the plugins update the number of counted words and characters. You can use it to run a custom callback function with updated values:
+
+	```js
+	editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {
+		// Prints the current content statistics.
+		console.log( `Characters: ${ stats.characters }\nWords:      ${ stats.words }` );
+	} );
+	```
+
+	Alternatively, you can use [`editor.config.wordCount.onUpdate`](#reacting-to-changes-in-statistics) to register a similar callback in editor configuration.
+
+	**Note**: For performance reasons, the `update` event is throttled so the statistics may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 * The {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} properties from which you can retrieve the stats at any moment.
 
 <info-box>
