@@ -239,14 +239,14 @@ export default class Watchdog {
 
 	/**
 	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method
-	 * and set state to `destroyed`.
+	 * and sets state to `destroyed`.
 	 *
 	 * @returns {Promise}
 	 */
 	destroy() {
-		return this._destroy().then( () => {
-			this.state = 'destroyed';
-		} );
+		this.state = 'destroyed';
+
+		return this._destroy();
 	}
 
 	/**
