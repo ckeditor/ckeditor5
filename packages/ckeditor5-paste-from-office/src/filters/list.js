@@ -233,7 +233,7 @@ function isNewListNeeded( previousItem, currentItem ) {
 
 // Paste from Google Docs
 /**
- * Removes paragraph wrapping content inside list item.
+ * Removes paragraph wrapping content inside a list item.
  *
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
@@ -256,7 +256,7 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
  * Moves nested list inside previous sibling element, what is a proper HTML standard.
  * There are 2 situations which are fixed in the for loop:
  *
- * 1. Move list to previous list item:
+ * 1. Move the list to a previous list item:
  *
  *		before                            after:
  *		OL                                OL
@@ -264,7 +264,7 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
  *		|-> OL                                |-> OL
  *		    |-> LI                                |-> LI
  *
- * 2. Unwrap nested list to avoid situation that UL or OL is direct child of another UL or OL.
+ * 2. Unwrap nested list if a list is a direct child of another list.
  *
  *		before                            after:
  *		OL                                OL
@@ -290,7 +290,7 @@ export function fixListIndentation( elementOrDocumentFragment, writer ) {
 	for ( const value of writer.createRangeIn( elementOrDocumentFragment ) ) {
 		const element = value.item;
 
-		// 1. Move nested list as child of sibling list item.
+		// case 1: The previous sibling of a list is a list item.
 		if ( element.is( 'li' ) ) {
 			const next = element.nextSibling;
 
@@ -300,7 +300,7 @@ export function fixListIndentation( elementOrDocumentFragment, writer ) {
 			}
 		}
 
-		// 2. Unwrap nested list
+		// case 2: The list is the first child of another list.
 		if ( isList( element ) ) {
 			let firstChild = element.getChild( 0 );
 
