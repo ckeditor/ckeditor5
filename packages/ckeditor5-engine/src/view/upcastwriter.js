@@ -174,6 +174,7 @@ export default class UpcastWriter {
 
 	/**
 	 * Removes given element from view structure and places its children in its position.
+	 * It does nothing if element has no parent.
 	 *
 	 * @param {module:engine/view/element~Element} element Element which will be unwrapped
 	 * @returns {Booolean} Whether element was successfully unwrapped.
@@ -186,11 +187,7 @@ export default class UpcastWriter {
 
 			this.remove( element );
 			this.insertChild( index, element.getChildren(), parent );
-
-			return true;
 		}
-
-		return false;
 	}
 
 	/**
