@@ -12,7 +12,6 @@ import { fixtures as spacing, browserFixtures as spacingBrowser } from '../_data
 import { fixtures as googleDocsBoldWrapper, browserFixtures as googleDocsBoldWrapperBrowser }
 	from '../_data/paste-from-google-docs/bold-wrapper/index';
 import { fixtures as googleDocsList, browserFixtures as googleDocsListBrowser } from '../_data/paste-from-google-docs/lists/index.js';
-import { fixtures as listInTable, browserFixtures as listInTableBrowser } from '../_data/generic/index.js';
 
 // Generic fixtures.
 export const fixtures = {
@@ -22,8 +21,7 @@ export const fixtures = {
 	list,
 	spacing,
 	'google-docs-bold-wrapper': googleDocsBoldWrapper,
-	'google-docs-list': googleDocsList,
-	'generic-list-in-table': listInTable
+	'google-docs-list': googleDocsList
 };
 
 // Browser specific fixtures.
@@ -34,6 +32,5 @@ export const browserFixtures = {
 	list: listBrowser,
 	spacing: spacingBrowser,
 	'google-docs-bold-wrapper': googleDocsBoldWrapperBrowser,
-	'google-docs-list': googleDocsListBrowser,
-	'generic-list-in-table': listInTableBrowser
+	'google-docs-list': googleDocsListBrowser
 };

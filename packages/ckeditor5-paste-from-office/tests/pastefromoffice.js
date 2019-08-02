@@ -52,16 +52,36 @@ describe( 'PasteFromOffice', () => {
 			it( 'should process data from google docs', () => {
 				checkCorrectData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
 			} );
+
+			function checkCorrectData( inputString ) {
+				const data = setUpData( inputString );
+				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+
+				clipboard.fire( 'inputTransformation', data );
+
+				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				sinon.assert.called( getDataSpy );
+			}
 		} );
 
-		describe( 'data which should be marked with flag by generic normalizer', () => {
+		describe( 'data which should not be marked with flag', () => {
 			it( 'should process data with regular html', () => {
-				checkCorrectData( '<p>Hello world</p>' );
+				checkNotProcessedData( '<p>Hello world</p>' );
 			} );
 
 			it( 'should process data with similar headers to MS Word', () => {
-				checkCorrectData( '<meta name=Generator content="Other">' );
+				checkNotProcessedData( '<meta name=Generator content="Other">' );
 			} );
+
+			function checkNotProcessedData( inputString ) {
+				const data = setUpData( inputString );
+				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
+
+				clipboard.fire( 'inputTransformation', data );
+
+				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+				sinon.assert.called( getDataSpy );
+			}
 		} );
 
 		describe( 'data which already have the flag', () => {
@@ -85,16 +105,6 @@ describe( 'PasteFromOffice', () => {
 				sinon.assert.notCalled( getDataSpy );
 			}
 		} );
-
-		function checkCorrectData( inputString ) {
-			const data = setUpData( inputString );
-			const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
-
-			clipboard.fire( 'inputTransformation', data );
-
-			expect( data.isTransformedWithPasteFromOffice ).to.be.true;
-			sinon.assert.called( getDataSpy );
-		}
 	} );
 
 	// @param {String} inputString html to be processed by paste from office
