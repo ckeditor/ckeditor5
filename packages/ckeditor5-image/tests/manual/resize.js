@@ -12,22 +12,40 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
 import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
+import ImageCaption from '../../src/imagecaption';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import ResizerCentral from '@ckeditor/ckeditor5-widget/src/resizercentral';
 import ResizerSide from '@ckeditor/ckeditor5-widget/src/resizerside';
 
+const commonConfig = {
+	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, ImageStyle, ImageToolbar, ImageCaption,
+		UndoPlugin, ClipboardPlugin ],
+	toolbar: [ 'undo', 'redo' ],
+	image: {
+		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side' ],
+		styles: [
+			'full',
+			'alignLeft',
+			'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
+		]
+	}
+};
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, ImageStyle, ImageToolbar, UndoPlugin, ClipboardPlugin ],
-		toolbar: [ 'undo', 'redo' ],
-		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
-		}
-	} )
+	.create( document.querySelector( '#editor' ), commonConfig )
 	.then( editor => {
 		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#fancyEditor' ), commonConfig )
+	.then( editor => {
+		window.fancyEditor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
