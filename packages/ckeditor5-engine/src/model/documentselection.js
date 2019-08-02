@@ -243,16 +243,16 @@ export default class DocumentSelection {
 	 * In this case the function will return exactly all 3 paragraphs:
 	 *
 	 *		<paragraph>[a</paragraph>
-	 *		<quote>
+	 *		<blockQuote>
 	 *			<paragraph>b</paragraph>
-	 *		</quote>
+	 *		</blockQuote>
 	 *		<paragraph>c]d</paragraph>
 	 *
 	 * In this case the paragraph will also be returned, despite the collapsed selection:
 	 *
 	 *		<paragraph>[]a</paragraph>
 	 *
-	 *	In such scenario however, only blocks A, B & E will be returned:
+	 *	In such scenario however, only blocks A, B & E will be returned as blocks C & D are nested in block B:
 	 *
 	 *		[<blockA></blockA>
 	 *		<blockB>
@@ -260,6 +260,13 @@ export default class DocumentSelection {
 	 *			<blockD></blockD>
 	 *		</blockB>
 	 *		<blockE></blockE>]
+	 *
+	 *	If the selection is inside a block all the inner blocks (A & B) are returned:
+	 *
+	 * 		<block>
+	 *			<blockA>[a</blockA>
+	 * 			<blockB>b]</blockB>
+	 * 		</block>
 	 *
 	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
 	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
