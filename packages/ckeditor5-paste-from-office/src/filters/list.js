@@ -235,11 +235,11 @@ function isNewListNeeded( previousItem, currentItem ) {
 /**
  * Removes paragraph wrapping content inside a list item.
  *
- * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
+ * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
-export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
-	for ( const value of writer.createRangeIn( elementOrDocumentFragment ) ) {
+export function unwrapParagraphInListItem( documentFragment, writer ) {
+	for ( const value of writer.createRangeIn( documentFragment ) ) {
 		const element = value.item;
 
 		if ( element.is( 'li' ) ) {
@@ -283,11 +283,11 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
  *		         |-> OL
  *		             |-> LI
  *
- * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
+ * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
  * @param {module:engine/view/upcastwriter~UpcastWriter} writer
  */
-export function fixListIndentation( elementOrDocumentFragment, writer ) {
-	for ( const value of writer.createRangeIn( elementOrDocumentFragment ) ) {
+export function fixListIndentation( documentFragment, writer ) {
+	for ( const value of writer.createRangeIn( documentFragment ) ) {
 		const element = value.item;
 
 		// case 1: The previous sibling of a list is a list item.
