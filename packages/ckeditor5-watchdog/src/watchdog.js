@@ -53,7 +53,7 @@ export default class Watchdog {
 		 *
 		 * @public
 		 * @observable
-		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'} #state
+		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} #state
 		 */
 		this.set( 'state', 'initializing' );
 
