@@ -243,6 +243,7 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
 		const element = value.item;
 
 		if ( element.is( 'li' ) ) {
+			// Google Docs allows on single paragraph inside LI.
 			const firstChild = element.getChild( 0 );
 
 			if ( firstChild.is( 'p' ) ) {
@@ -253,20 +254,19 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
 }
 
 /**
- * Moves nested list inside previous sibling element, what is a proper HTML standard.
- * There are 2 situations which are fixed in the for loop:
+ * Fix structure of nested lists to follow HTML guidelines and normalize content in predictable way.
  *
- * 1. Move the list to a previous list item:
+ * 1. Move nested lists to have sure that list items are the only children of lists.
  *
- *		before                            after:
+ *		before:                           after:
  *		OL                                OL
  *		|-> LI                            |-> LI
  *		|-> OL                                |-> OL
  *		    |-> LI                                |-> LI
  *
- * 2. Unwrap nested list if a list is a direct child of another list.
+ * 2. Remove additional indentation which cannot be recreated in HTML structure.
  *
- *		before                            after:
+ *		before:                           after:
  *		OL                                OL
  *		|-> LI                            |-> LI
  *		    |-> OL                            |-> OL
@@ -276,8 +276,8 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
  *		        |           |-> LI
  *		        |-> LI
  *
- *		before                            after:
- *		OL                                OL
+ *		before:                            after:
+ *		OL                               OL
  *		|-> OL                            |-> LI
  *		    |-> OL
  *		         |-> OL
