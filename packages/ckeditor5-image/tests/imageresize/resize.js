@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Image resizer', () => {
-	// const FIXTURE_WIDTH = 60;
+	const FIXTURE_WIDTH = 60;
 	const FIXTURE_HEIGHT = 30;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
 	// 60x30 black png image
@@ -100,8 +100,7 @@ describe( 'Image resizer', () => {
 		it.only( 'shrinks correctly with left-bottom handler', () => {
 			const expectedWidth = 50;
 
-			const viewResizeWrapper = widget.getChild( 1 );
-			const domResizeWrapper = view.domConverter.mapViewToDom( viewResizeWrapper );
+			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
 			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
 			const imageTopLeftPosition = getElementPosition( domImage );
@@ -113,6 +112,42 @@ describe( 'Image resizer', () => {
 
 			const finishPointerPosition = {
 				pageX: imageTopLeftPosition.x + 20,
+				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT - 10
+			};
+
+			fireMouseEvent( domBottomLeftResizer, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
+
+			// We need to wait as mousemove events are throttled.
+			return wait( 30 )
+				.then( () => {
+					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
+
+					expect( domImage.width ).to.be.equal( expectedWidth );
+
+					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
+
+					expect( getData( editor.model, {
+						withoutSelection: true
+					} ) ).to.equal( `<paragraph>foo</paragraph><image src="${ imageFixture }" width="${ expectedWidth }"></image>` );
+				} );
+		} );
+
+		it.only( 'shrinks correctly with right-bottom handler', () => {
+			const expectedWidth = 50;
+
+			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
+			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
+			const imageTopLeftPosition = getElementPosition( domImage );
+
+			const initialPointerPosition = {
+				pageX: imageTopLeftPosition.x + FIXTURE_WIDTH,
+				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT
+			};
+
+			const finishPointerPosition = {
+				pageX: imageTopLeftPosition.x + FIXTURE_WIDTH - 20,
 				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT - 10
 			};
 
