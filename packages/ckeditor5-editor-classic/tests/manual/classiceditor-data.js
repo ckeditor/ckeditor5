@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console:false, document, window */
@@ -28,7 +28,7 @@ function initEditor() {
 		.then( editor => {
 			counter += 1;
 			window.editors.push( editor );
-			container.appendChild( editor.element );
+			container.appendChild( editor.ui.element );
 		} )
 		.catch( err => {
 			console.error( err.stack );
@@ -39,7 +39,7 @@ function destroyEditors() {
 	window.editors.forEach( editor => {
 		editor.destroy()
 			.then( () => {
-				editor.element.remove();
+				editor.ui.element.remove();
 			} );
 	} );
 	window.editors = [];

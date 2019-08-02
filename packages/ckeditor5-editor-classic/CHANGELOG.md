@@ -1,6 +1,57 @@
 Changelog
 =========
 
+## [12.1.3](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v12.1.2...v12.1.3) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [12.1.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v12.1.1...v12.1.2) (2019-07-04)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [12.1.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v12.1.0...v12.1.1) (2019-06-05)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Introduced `EditorConfig#initialData`. ([fce3edc](https://github.com/ckeditor/ckeditor5-editor-classic/commit/fce3edc))
+
+
+## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.2...v12.0.0) (2019-02-28)
+
+### Features
+
+* Added support for the `config.placeholder` option which allows configuring the empty editor content placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([3450c23](https://github.com/ckeditor/ckeditor5-editor-classic/commit/3450c23))
+
+### Bug fixes
+
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([a3c5c82](https://github.com/ckeditor/ckeditor5-editor-classic/commit/a3c5c82))
+
+### Other changes
+
+* Adjustments to new editor initialization events. See breaking changes. ([61ccab0](https://github.com/ckeditor/ckeditor5-editor-classic/commit/61ccab0))
+* Editor UI classes API refactoring. See breaking changes. ([74e27ae](https://github.com/ckeditor/ckeditor5-editor-classic/commit/74e27ae))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
+* The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
+* Removed `ClassicEditor#element` property. The `ClassicEditorUI#element` property should be used instead.
+* Removed `ClassicEditorUIView#editableElement`. Instead `ClassicEditorUI#getEditableElement()` method should be used.
+
+
+## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.1...v11.0.2) (2018-12-05)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.0...v11.0.1) (2018-10-08)
 
 Internal changes only (updated dependencies, documentation, etc.).

@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import ClassicEditorUI from '../src/classiceditorui';
 import ClassicEditorUIView from '../src/classiceditoruiview';
@@ -20,6 +20,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
 
@@ -30,6 +33,8 @@ describe( 'ClassicEditor', () => {
 		editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
 
 		document.body.appendChild( editorElement );
+
+		testUtils.sinon.stub( console, 'warn' ).callsFake( () => {} );
 	} );
 
 	afterEach( () => {
@@ -92,14 +97,6 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
-		it( 'allows to pass data to the constructor', () => {
-			return ClassicEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
-			} );
-		} );
-
 		describe( 'ui', () => {
 			it( 'creates the UI using BoxedEditorUI classes', () => {
 				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
@@ -149,6 +146,49 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
+		it( 'should not require config object', () => {
+			// Just being safe with `builtinPlugins` static property.
+			class CustomClassicEditor extends ClassicEditor {}
+			CustomClassicEditor.builtinPlugins = [ Paragraph, Bold ];
+
+			return CustomClassicEditor.create( editorElement )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return ClassicEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'initializes with config.initialData', () => {
+			return ClassicEditor.create( editorElement, {
+				initialData: '<p>Hello world!</p>',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
+			ClassicEditor.create( '<p>Hello world!</p>', {
+				initialData: '<p>I am evil!</p>',
+				plugins: [ Paragraph ]
+			} ).catch( () => {
+				done();
+			} );
+		} );
+
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
 			return ClassicEditor
 				.create( '<p>Foo.</p>', {
@@ -169,20 +209,6 @@ describe( 'ClassicEditor', () => {
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
 			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized on the DOM element', () => {
-				expect( editor.element ).to.equal( editor.ui.view.element );
-			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized with data', () => {
-				return ClassicEditor.create( '<p>Hello world!</p>', {
-					plugins: [ Paragraph ]
-				} ).then( editor => {
-					expect( editor.element ).to.equal( editor.ui.view.element );
-
-					return editor.destroy();
-				} );
-			} );
 		} );
 	} );
 
@@ -195,14 +221,13 @@ describe( 'ClassicEditor', () => {
 			const fired = [];
 
 			function spy( evt ) {
-				fired.push( evt.name );
+				fired.push( `${ evt.name }-${ evt.source.constructor.name.toLowerCase() }` );
 			}
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'pluginsReady', spy );
-					this.editor.on( 'uiReady', spy );
-					this.editor.on( 'dataReady', spy );
+					this.editor.ui.on( 'ready', spy );
+					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
 				}
 			}
@@ -212,40 +237,19 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal(
+						[ 'ready-classiceditorui', 'ready-datacontroller', 'ready-classiceditor' ] );
 
 					editor = newEditor;
 				} );
 		} );
 
-		it( 'fires dataReady once data is loaded', () => {
-			let data;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'dataReady', () => {
-						data = this.editor.getData();
-					} );
-				}
-			}
-
-			return ClassicEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher, Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is rendered', () => {
+		it( 'fires ready once UI is rendered', () => {
 			let isReady;
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'uiReady', () => {
+					this.editor.ui.on( 'ready', () => {
 						isReady = this.editor.ui.view.isRendered;
 					} );
 				}
@@ -306,5 +310,18 @@ describe( 'ClassicEditor', () => {
 					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => ClassicEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );
