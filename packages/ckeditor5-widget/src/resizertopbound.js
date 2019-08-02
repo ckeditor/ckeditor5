@@ -31,6 +31,12 @@ export default class ResizerCentral {
 	begin() {
 		const resizeHost = this.context._getResizeHost();
 		this.closestReferencePoint = getAbsoluteBoundaryPoint( resizeHost, this.context.referenceHandlerPosition );
+
+		// Size of resize host before current resizing transaction.
+		this.initialSize = {
+			width: resizeHost.width,
+			height: resizeHost.height
+		};
 	}
 
 	commit() {}
@@ -42,11 +48,17 @@ export default class ResizerCentral {
 	updateSize( domEventData ) {
 		const context = this.context;
 		const currentCoordinates = context._extractCoordinates( domEventData );
+		const isCentered = this.options.isCentered ? this.options.isCentered( this.context ) : true;
 
 		const enlargement = {
-			x: ( currentCoordinates.x - this.closestReferencePoint.x ) * 2,
-			y: ( currentCoordinates.y - this.closestReferencePoint.y )
+			// @todo it could be simplified if context.referenceCoordinates was an inverted corner (at least for bottom-left).
+			x: this.context.referenceCoordinates.x - ( currentCoordinates.x + this.initialSize.width ),
+			y: ( currentCoordinates.y - this.initialSize.height ) - this.context.referenceCoordinates.y
 		};
+
+		if ( isCentered ) {
+			enlargement.x *= 2;
+		}
 
 		const resizeHost = this.context._getResizeHost();
 
@@ -56,8 +68,8 @@ export default class ResizerCentral {
 		};
 
 		const proposedSize = {
-			x: Math.abs( this.closestReferencePoint.x - context.referenceCoordinates.x + enlargement.x ),
-			y: Math.abs( this.closestReferencePoint.y - context.referenceCoordinates.y + enlargement.y )
+			x: Math.abs( this.initialSize.width + enlargement.x ),
+			y: Math.abs( this.initialSize.height + enlargement.y )
 		};
 
 		// Dominant determination must take the ratio into account.
@@ -99,7 +111,6 @@ export default class ResizerCentral {
 				y: parseFloat( originalSize.y ) - drawnSize.y
 			};
 
-			context.domResizeShadow.style[ invertedPosition.split( '-' )[ 0 ] ] = `${ diff2.y / 2 }px`;
 			context.domResizeShadow.style[ invertedPosition.split( '-' )[ 0 ] ] = '0px';
 			context.domResizeShadow.style[ invertedPosition.split( '-' )[ 1 ] ] = `${ diff2.x / 2 }px`;
 

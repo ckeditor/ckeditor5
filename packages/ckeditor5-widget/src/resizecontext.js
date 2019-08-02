@@ -107,7 +107,7 @@ export default class ResizeContext {
 		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
 		/**
-		 * Position of the handler that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc of `null`
+		 * Position of the handler that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
 		 * if unknown.
 		 *
 		 * @member {String|null}
