@@ -3,18 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
 
+import {
+	getData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
 describe( 'Image resizer', () => {
-	// 40x20 black png image
-	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAUCAQAAABVT7cwAAAAHUlEQVR42mNk' +
-		'+MlAVcA4auCogaMGjho4auBINRAAxoATiYvKC7IAAAAASUVORK5CYII=';
-	let editor, viewDocument, editorElement;
+	// const FIXTURE_WIDTH = 60;
+	const FIXTURE_HEIGHT = 30;
+	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
+	// 60x30 black png image
+	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAeCAQAAADakbXEAAAAKElEQVR42u3NMQEAAAgDoK1/' +
+		'aI2hBxSgmZyoWCwWi8VisVgsFov/xguoPx4B+tNoGwAAAABJRU5ErkJggg==';
+	let editor, view, viewDocument, editorElement;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -28,7 +35,8 @@ describe( 'Image resizer', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				viewDocument = editor.editing.view.document;
+				view = editor.editing.view;
+				viewDocument = view.document;
 			} );
 	} );
 
@@ -74,10 +82,85 @@ describe( 'Image resizer', () => {
 		it( 'works', () => {} );
 	} );
 
-	describe( 'side image', () => {} );
+	describe( 'side image', () => {
+		let widget;
+
+		beforeEach( async () => {
+			await editor.setData( `<p>foo</p><figure class="image image-style-side"><img src="${ imageFixture }"></figure>` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+			const domEventDataMock = {
+				target: widget,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+		} );
+
+		it.only( 'shrinks correctly with left-bottom handler', () => {
+			const expectedWidth = 50;
+
+			const viewResizeWrapper = widget.getChild( 1 );
+			const domResizeWrapper = view.domConverter.mapViewToDom( viewResizeWrapper );
+			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
+			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
+			const imageTopLeftPosition = getElementPosition( domImage );
+
+			const initialPointerPosition = {
+				pageX: imageTopLeftPosition.x,
+				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT
+			};
+
+			const finishPointerPosition = {
+				pageX: imageTopLeftPosition.x + 20,
+				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT - 10
+			};
+
+			fireMouseEvent( domBottomLeftResizer, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
+
+			// We need to wait as mousemove events are throttled.
+			return wait( 30 )
+				.then( () => {
+					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
+
+					expect( domImage.width ).to.be.equal( expectedWidth );
+
+					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
+
+					expect( getData( editor.model, {
+						withoutSelection: true
+					} ) ).to.equal( `<paragraph>foo</paragraph><image src="${ imageFixture }" width="${ expectedWidth }"></image>` );
+				} );
+		} );
+	} );
 
 	function isVisible( element ) {
 		// Checks if the DOM element is visible to the end user.
 		return element.offsetParent !== null;
+	}
+
+	function fireMouseEvent( target, eventType, eventData ) {
+		// Using initMouseEvent instead of MouseEvent constructor, as MouseEvent constructor doesn't support passing pageX
+		// and pageY. See https://stackoverflow.com/questions/45843458/setting-click-events-pagex-and-pagey-always-reverts-to-0
+		const event = document.createEvent( 'MouseEvent' );
+		event.initMouseEvent( eventType, true, true, window, null, 0, 0, eventData.pageX, eventData.pageY, false, false, false, false,
+			MOUSE_BUTTON_MAIN, null );
+
+		target.dispatchEvent( event );
+	}
+
+	function getElementPosition( element ) {
+		// Returns top left corner point.
+		const viewportPosition = element.getBoundingClientRect();
+
+		return {
+			x: viewportPosition.left + window.scrollX,
+			y: viewportPosition.top + window.scrollY
+		};
+	}
+
+	function wait( delay ) {
+		return new Promise( resolve => window.setTimeout( () => resolve(), delay ) );
 	}
 } );
