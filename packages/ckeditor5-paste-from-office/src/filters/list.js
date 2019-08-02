@@ -246,7 +246,7 @@ export function unwrapParagraphInListItem( elementOrDocumentFragment, writer ) {
 			const firstChild = element.getChild( 0 );
 
 			if ( firstChild.is( 'p' ) ) {
-				unwrapSingleElement( firstChild, writer );
+				writer.unwrapElement( firstChild );
 			}
 		}
 	}
@@ -305,7 +305,7 @@ export function fixListIndentation( elementOrDocumentFragment, writer ) {
 			let firstChild = element.getChild( 0 );
 
 			while ( isList( firstChild ) ) {
-				unwrapSingleElement( firstChild, writer );
+				writer.unwrapElement( firstChild );
 				firstChild = element.getChild( 0 );
 			}
 		}
@@ -314,12 +314,4 @@ export function fixListIndentation( elementOrDocumentFragment, writer ) {
 
 function isList( element ) {
 	return element.is( 'ol' ) || element.is( 'ul' );
-}
-
-function unwrapSingleElement( element, writer ) {
-	const parent = element.parent;
-	const childIndex = parent.getChildIndex( element );
-
-	writer.remove( element );
-	writer.insertChild( childIndex, element.getChildren(), parent );
 }
