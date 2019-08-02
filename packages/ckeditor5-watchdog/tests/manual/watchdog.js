@@ -86,4 +86,6 @@ function createWatchdog( editorElement, stateElement, name ) {
 	} );
 
 	stateElement.innerText = watchdog.state;
+
+	return watchdog;
 }
