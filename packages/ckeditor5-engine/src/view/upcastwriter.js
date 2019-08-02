@@ -177,7 +177,7 @@ export default class UpcastWriter {
 	 * It does nothing if element has no parent.
 	 *
 	 * @param {module:engine/view/element~Element} element Element which will be unwrapped
-	 * @returns {Booolean} Whether element was successfully unwrapped.
+	 * @returns {Boolean} Whether element was successfully unwrapped.
 	 */
 	unwrapElement( element ) {
 		const parent = element.parent;
