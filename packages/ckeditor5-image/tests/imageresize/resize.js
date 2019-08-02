@@ -15,12 +15,12 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Image resizer', () => {
-	const FIXTURE_WIDTH = 60;
-	const FIXTURE_HEIGHT = 30;
+	const FIXTURE_WIDTH = 100;
+	const FIXTURE_HEIGHT = 50;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
 	// 60x30 black png image
-	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAeCAQAAADakbXEAAAAKElEQVR42u3NMQEAAAgDoK1/' +
-		'aI2hBxSgmZyoWCwWi8VisVgsFov/xguoPx4B+tNoGwAAAABJRU5ErkJggg==';
+	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
+		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 	let editor, view, viewDocument, editorElement;
 
 	beforeEach( () => {
@@ -79,7 +79,19 @@ describe( 'Image resizer', () => {
 	} );
 
 	describe( 'standard image', () => {
-		it( 'works', () => {} );
+		let widget;
+
+		beforeEach( async () => {
+			await editor.setData( `<p>foo</p><figure class="image image-style-side"><img src="${ imageFixture }"></figure>` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+			const domEventDataMock = {
+				target: widget,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+		} );
 	} );
 
 	describe( 'side image', () => {
@@ -97,8 +109,8 @@ describe( 'Image resizer', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
-		it.only( 'shrinks correctly with left-bottom handler', () => {
-			const expectedWidth = 50;
+		it( 'shrinks correctly with left-bottom handler', () => {
+			const expectedWidth = 80;
 
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
@@ -123,18 +135,22 @@ describe( 'Image resizer', () => {
 				.then( () => {
 					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
 
-					expect( domImage.width ).to.be.equal( expectedWidth );
+					expect( domImage.width ).to.be.closeTo( 80, 1, 'View width check' );
 
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
 					expect( getData( editor.model, {
 						withoutSelection: true
-					} ) ).to.equal( `<paragraph>foo</paragraph><image src="${ imageFixture }" width="${ expectedWidth }"></image>` );
+					} ) ).to.match( /<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/ );
+
+					const modelItem = editor.model.document.getRoot().getChild( 1 );
+
+					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( expectedWidth, 1, 'Model check' );
 				} );
 		} );
 
-		it.only( 'shrinks correctly with right-bottom handler', () => {
-			const expectedWidth = 50;
+		it( 'shrinks correctly with right-bottom handler', () => {
+			const expectedWidth = 80;
 
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
@@ -159,7 +175,7 @@ describe( 'Image resizer', () => {
 				.then( () => {
 					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
 
-					expect( domImage.width ).to.be.equal( expectedWidth );
+					expect( domImage.width ).to.be.closeTo( expectedWidth, 1 );
 
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
@@ -178,6 +194,7 @@ describe( 'Image resizer', () => {
 	function fireMouseEvent( target, eventType, eventData ) {
 		// Using initMouseEvent instead of MouseEvent constructor, as MouseEvent constructor doesn't support passing pageX
 		// and pageY. See https://stackoverflow.com/questions/45843458/setting-click-events-pagex-and-pagey-always-reverts-to-0
+		// However there's still a problem, that events created with `initMouseEvent` have **floored** pageX, pageY numbers.
 		const event = document.createEvent( 'MouseEvent' );
 		event.initMouseEvent( eventType, true, true, window, null, 0, 0, eventData.pageX, eventData.pageY, false, false, false, false,
 			MOUSE_BUTTON_MAIN, null );
