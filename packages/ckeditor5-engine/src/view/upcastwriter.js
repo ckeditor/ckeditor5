@@ -176,8 +176,7 @@ export default class UpcastWriter {
 	 * Removes given element from view structure and places its children in its position.
 	 * It does nothing if element has no parent.
 	 *
-	 * @param {module:engine/view/element~Element} element Element which will be unwrapped
-	 * @returns {Boolean} Whether element was successfully unwrapped.
+	 * @param {module:engine/view/element~Element} element Element to unwrap.
 	 */
 	unwrapElement( element ) {
 		const parent = element.parent;
