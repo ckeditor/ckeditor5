@@ -27,7 +27,7 @@ import Selection from './selection';
  * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  *
  * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
- * `UpcastWriter` can wherever you need it:
+ * `UpcastWriter` can be created wherever you need it:
  *
  *		const writer = new UpcastWriter();
  *		const text = writer.createText( 'foo!' );
