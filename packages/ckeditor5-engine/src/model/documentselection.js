@@ -277,8 +277,8 @@ export default class DocumentSelection {
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
-	getSelectedBlocks( config ) {
-		return this._selection.getSelectedBlocks( config );
+	getSelectedBlocks() {
+		return this._selection.getSelectedBlocks();
 	}
 
 	/**
