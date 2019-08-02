@@ -173,6 +173,24 @@ export default class UpcastWriter {
 	}
 
 	/**
+	 * Removes given element from view structure and places its children in its position.
+	 * It does nothing if element has no parent.
+	 *
+	 * @param {module:engine/view/element~Element} element Element which will be unwrapped
+	 * @returns {Booolean} Whether element was successfully unwrapped.
+	 */
+	unwrapElement( element ) {
+		const parent = element.parent;
+
+		if ( parent ) {
+			const index = parent.getChildIndex( element );
+
+			this.remove( element );
+			this.insertChild( index, element.getChildren(), parent );
+		}
+	}
+
+	/**
 	 * Renames element by creating a copy of a given element but with its name changed and then moving contents of the
 	 * old element to the new one.
 	 *
