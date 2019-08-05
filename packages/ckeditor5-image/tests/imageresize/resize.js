@@ -10,6 +10,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
 import ImageStyle from '../../src/imagestyle';
+import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 
 import {
 	getData
@@ -32,7 +33,7 @@ describe.only( 'Image resizer', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin ]
+				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin, UndoPlugin ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -305,6 +306,43 @@ describe.only( 'Image resizer', () => {
 			},
 			resizerPosition: 'top-right'
 		} ) );
+	} );
+
+	describe( 'undo integration', function() {
+		let widget;
+
+		beforeEach( async function() {
+			await editor.setData( `<p>foo</p><figure><img src="${ imageFixture }"></figure>` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+			const domEventDataMock = {
+				target: widget,
+				preventDefault: sinon.spy()
+			};
+
+			this.widget = widget;
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+		} );
+
+		it( 'has correct border size after undo', function() {
+			return generateResizeTest( {
+				expectedWidth: 120,
+				pointerOffset: {
+					x: 0,
+					y: 10
+				},
+				resizerPosition: 'bottom-left'
+			} ).call( this ).then( () => {
+				editor.commands.get( 'undo' ).execute();
+
+				const resizerShadow = document.querySelector( '.ck-widget__resizer-shadow' );
+				const shadowBoundingRect = resizerShadow.getBoundingClientRect();
+
+				expect( shadowBoundingRect.width ).to.be.equal( 100 );
+				expect( shadowBoundingRect.height ).to.be.equal( 50 );
+			} );
+		} );
 	} );
 
 	function isVisible( element ) {
