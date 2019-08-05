@@ -227,14 +227,14 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should display the button when the first selected block is an object', () => {
-			setData( editor.model, '[<image src="foo.jpg"><caption>foo</caption></image>]' );
+			setData( editor.model, '[<image src="/assets/sample.png"><caption>foo</caption></image>]' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		// This test makes no sense now, but so do all other tests here (see https://github.com/ckeditor/ckeditor5/issues/1522).
 		it( 'should not display the button when the selection is inside a limit element', () => {
-			setData( editor.model, '<image src="foo.jpg"><caption>f[]oo</caption></image>' );
+			setData( editor.model, '<image src="/assets/sample.png"><caption>f[]oo</caption></image>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
@@ -258,7 +258,7 @@ describe( 'BlockToolbar', () => {
 			} ).then( editor => {
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 
-				setData( editor.model, '[<image src="foo.jpg"></image>]' );
+				setData( editor.model, '[<image src="/assets/sample.png"></image>]' );
 
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 
