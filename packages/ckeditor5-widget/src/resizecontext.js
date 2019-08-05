@@ -180,6 +180,9 @@ export default class ResizeContext {
 	updateSize( domEventData ) {
 		const proposedSize = this.resizeStrategy.updateSize( domEventData );
 
+		this.domResizeWrapper.style.width = proposedSize.x + 'px';
+		this.domResizeWrapper.style.height = proposedSize.y + 'px';
+
 		this.set( {
 			proposedX: proposedSize.x,
 			proposedY: proposedSize.y
@@ -194,7 +197,10 @@ export default class ResizeContext {
 
 			if ( !widgetWrapper.isSameNode( resizingHost ) ) {
 				this.domResizeWrapper.style.left = resizingHost.offsetLeft + 'px';
-				this.domResizeWrapper.style.right = resizingHost.offsetLeft + 'px';
+				this.domResizeWrapper.style.top = resizingHost.offsetTop + 'px';
+
+				this.domResizeWrapper.style.height = resizingHost.offsetHeight + 'px';
+				this.domResizeWrapper.style.width = resizingHost.offsetWidth + 'px';
 			}
 		}
 	}
