@@ -235,6 +235,36 @@ describe.only( 'Image resizer', () => {
 			},
 			resizerPosition: 'bottom-left'
 		} ) );
+
+		it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 120,
+			pointerOffset: {
+				x: 10,
+				y: 10
+			},
+			resizerPosition: 'bottom-right'
+		} ) );
+
+		it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 140,
+			pointerOffset: {
+				x: 0,
+				y: 20
+			},
+			resizerPosition: 'bottom-right'
+		} ) );
+
+		it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 140,
+			pointerOffset: {
+				x: 40,
+				y: 0
+			},
+			resizerPosition: 'bottom-right'
+		} ) );
 	} );
 
 	function isVisible( element ) {
