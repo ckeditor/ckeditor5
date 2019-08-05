@@ -266,6 +266,9 @@ export default class Watchdog {
 		window.removeEventListener( 'error', this._boundErrorHandler );
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
+		// Save data if there are remaining changes.
+		this._throttledSave.flush();
+
 		return Promise.resolve()
 			.then( () => this._destructor( this._editor ) )
 			.then( () => {
@@ -382,7 +385,6 @@ export default class Watchdog {
 	 */
 	_restart() {
 		this.state = 'initializing';
-		this._throttledSave.flush();
 
 		return Promise.resolve()
 			.then( () => this._destroy() )
