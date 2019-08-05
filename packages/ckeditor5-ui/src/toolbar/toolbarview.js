@@ -14,20 +14,14 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
+import RectObserver from '../rectobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
-
-// This is the offset for the enableWrappedItemsGroupping() method. It estimates the width of the
-// scrollbar. There's no way to tell when the vertical page scrollbar appears using the DOM API so
-// when wrapping toolbar items to the next line we must consider it may show up at any time
-// (e.g. user wrote more content). This is the h–distance the scrollbar will consume when it appears.
-const SUDDEN_SCROLL_SAFETY_OFFSET = 25;
 
 /**
  * The toolbar view class.
@@ -257,49 +251,29 @@ export default class ToolbarView extends View {
 	 * the geometry of the toolbar items — they depend on the toolbar to be visible in DOM.
 	 */
 	enableWrappedItemsGroupping() {
+		let oldRect;
+
 		this._checkItemsWrappingAndUnwrapping();
 
-		this.listenTo( global.window, 'resize', () => {
-			this._checkItemsWrappingAndUnwrapping();
+		// TODO: stopObserving on destroy();
+		new RectObserver( this.element ).observe( newRect => {
+			if ( oldRect && oldRect.width !== newRect.width ) {
+				this._checkItemsWrappingAndUnwrapping();
+			}
+
+			oldRect = newRect;
 		} );
 	}
 
-	/**
-	 * Returns the last of {@link #items} which is not {@link #wrappedItemsDropdown}.
-	 *
-	 * @protected
-	 */
-	get _lastRegularItem() {
-		if ( this._isWrappedItemsDropdownInItems ) {
-			if ( this.items.length > 1 ) {
-				return this.items.get( this.items.length - 2 );
-			} else {
-				return null;
-			}
-		} else {
-			if ( this.items.length ) {
-				return this.items.last;
-			} else {
-				return null;
-			}
-		}
-	}
-
-	/**
-	 * Returns `true` when {@link #wrappedItemsDropdown} exists and currently is in {@link #items}.
-	 * `false` otherwise.
-	 *
-	 * @protected
-	 */
-	get _isWrappedItemsDropdownInItems() {
-		return this.wrappedItemsDropdown && this.items.has( this.wrappedItemsDropdown );
+	get _grouppedItems() {
+		return this.wrappedItemsDropdown.toolbarView.items;
 	}
 
 	/**
 	 * Creates the {@link #wrappedItemsDropdown} on demand. Used when the space in the toolbar
 	 * is scarce and some items start wrapping and need grouping.
 	 *
-	 * See {@link #_groupLastRegularItem}.
+	 * See {@link #_groupLastItem}.
 	 *
 	 * @protected
 	 */
@@ -319,7 +293,7 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * When called it will remove the last {@link #_lastRegularItem regular item} from {@link #items}
+	 * When called it will remove the last {@link #_lastNonGrouppedItem regular item} from {@link #items}
 	 * and move it to the {@link #wrappedItemsDropdown}.
 	 *
 	 * If the dropdown does not exist or does not
@@ -327,66 +301,39 @@ export default class ToolbarView extends View {
 	 *
 	 * @protected
 	 */
-	_groupLastRegularItem() {
-		// Add the groupped list dropdown if not already there.
-		if ( !this._isWrappedItemsDropdownInItems ) {
-			if ( !this.wrappedItemsDropdown ) {
-				this._createWrappedItemsDropdown();
-			}
+	_groupLastItem() {
+		if ( !this.wrappedItemsDropdown ) {
+			this._createWrappedItemsDropdown();
+		}
 
+		if ( !this.items.has( this.wrappedItemsDropdown ) ) {
 			this.items.add( this.wrappedItemsDropdown );
 		}
 
-		const lastItem = this._lastRegularItem;
+		let lastNonGrouppedItem;
 
-		this._grouppedItemRects.set( lastItem, new Rect( lastItem.element ) );
+		if ( this.items.has( this.wrappedItemsDropdown ) ) {
+			lastNonGrouppedItem = this.items.length > 1 ? this.items.get( this.items.length - 2 ) : null;
+		} else {
+			lastNonGrouppedItem = this.items.last;
+		}
 
-		this.wrappedItemsDropdown.toolbarView.items.add( this.items.remove( lastItem ), 0 );
+		this._grouppedItems.add( this.items.remove( lastNonGrouppedItem ), 0 );
 	}
 
 	/**
 	 * Moves the very first item from the toolbar belonging to {@link #wrappedItemsDropdown} back
 	 * to the {@link #items} collection.
 	 *
-	 * In some way, it's the opposite of {@link #_groupLastRegularItem}.
+	 * In some way, it's the opposite of {@link #_groupLastItem}.
 	 *
 	 * @protected
 	 */
-	_ungroupFirstGrouppedItem() {
-		this.items.add( this.wrappedItemsDropdown.toolbarView.items.remove( 0 ), this.items.length - 1 );
-	}
+	_ungroupFirstItem() {
+		this.items.add( this._grouppedItems.remove( 0 ), this.items.length - 1 );
 
-	/**
-	 * When called it will try to moves the very first item from the toolbar belonging to {@link #wrappedItemsDropdown}
-	 * back to the {@link #items} collection.
-	 *
-	 * Whether the items is moved or not, it depends on the remaining space in the toolbar, which is
-	 * verified using {@link #_grouppedItemRects}.
-	 *
-	 * @protected
-	 */
-	_tryUngroupLastItem() {
-		const firstGrouppedItem = this.wrappedItemsDropdown.toolbarView.items.get( 0 );
-		const firstGrouppedItemRect = this._grouppedItemRects.get( firstGrouppedItem );
-		const wrappedItemsDropdownRect = new Rect( this.wrappedItemsDropdown.element );
-		const lastRegularItem = this._lastRegularItem;
-		let leftBoundary;
-
-		if ( lastRegularItem ) {
-			leftBoundary = new Rect( lastRegularItem.element ).right;
-		} else {
-			leftBoundary = new Rect( this.element ).left;
-		}
-
-		// If there's only one grouped item, then when ungrouped, it should replace the wrapped items
-		// dropdown. Consider that fact when analyzing rects, because the conditions are different.
-		if ( this.wrappedItemsDropdown.toolbarView.items.length === 1 ) {
-			if ( leftBoundary + firstGrouppedItemRect.width + SUDDEN_SCROLL_SAFETY_OFFSET < wrappedItemsDropdownRect.right ) {
-				this._ungroupFirstGrouppedItem();
-				this.items.remove( this.wrappedItemsDropdown );
-			}
-		} else if ( leftBoundary + firstGrouppedItemRect.width + SUDDEN_SCROLL_SAFETY_OFFSET < wrappedItemsDropdownRect.left ) {
-			this._ungroupFirstGrouppedItem();
+		if ( !this._grouppedItems.length ) {
+			this.items.remove( this.wrappedItemsDropdown );
 		}
 	}
 
@@ -401,12 +348,11 @@ export default class ToolbarView extends View {
 			return false;
 		}
 
-		const firstItem = this.items.first;
-
 		if ( this.items.length === 1 ) {
 			return false;
 		}
 
+		const firstItem = this.items.first;
 		const firstItemRect = new Rect( firstItem.element );
 		const lastItemRect = new Rect( this.items.last.element );
 
@@ -427,26 +373,25 @@ export default class ToolbarView extends View {
 			return;
 		}
 
+		let wereItemsGroupped;
+
 		while ( this._areItemsWrapping ) {
-			this._groupLastRegularItem();
+			this._groupLastItem();
+			wereItemsGroupped = true;
 		}
 
-		if ( this._isWrappedItemsDropdownInItems ) {
-			// Post-fixing just in case the page content grows up and a scrollbar appears.
-			// If the last item is too close to the wrapped items dropdown, put it in the
-			// dropdown too: if scrollbar shows up, it could push the dropdown to the next line.
-			const wrappedItemsDropdownRect = new Rect( this.wrappedItemsDropdown.element );
-			const lastRegularItem = this._lastRegularItem;
+		if ( !wereItemsGroupped && this.wrappedItemsDropdown && this._grouppedItems.length ) {
+			while ( !this._areItemsWrapping ) {
+				this._ungroupFirstItem();
 
-			if ( lastRegularItem ) {
-				const lastRegularItemRect = new Rect( lastRegularItem.element );
-
-				if ( lastRegularItemRect.right + SUDDEN_SCROLL_SAFETY_OFFSET > wrappedItemsDropdownRect.left ) {
-					this._groupLastRegularItem();
+				if ( !this._grouppedItems.length ) {
+					break;
 				}
 			}
 
-			this._tryUngroupLastItem();
+			if ( this._areItemsWrapping ) {
+				this._groupLastItem();
+			}
 		}
 	}
 }

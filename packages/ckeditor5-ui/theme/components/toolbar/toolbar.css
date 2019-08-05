@@ -5,6 +5,10 @@
 
 @import "../../mixins/_unselectable.css";
 
+:root {
+	--ck-toolbar-groupped-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
+}
+
 .ck.ck-toolbar {
 	@mixin ck-unselectable;
 
