@@ -49,7 +49,6 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 	} );
 }
 
-// Paste from Google Docs
 /**
  * Removes paragraph wrapping content inside a list item.
  *
