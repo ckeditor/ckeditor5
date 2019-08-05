@@ -39,15 +39,81 @@ describe( 'WordCount', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'has defined "words" property', () => {
-			expect( wordCountPlugin.words ).to.equal( 0 );
+		describe( '#words property', () => {
+			it( 'is defined', () => {
+				expect( wordCountPlugin.words ).to.equal( 0 );
+			} );
+
+			it( 'returns the number of words right away', () => {
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				expect( wordCountPlugin.words ).to.equal( 2 );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
+				expect( wordCountPlugin.words ).to.equal( 2 );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+				expect( wordCountPlugin.words ).to.equal( 1 );
+
+				setModelData( model, '' );
+				expect( wordCountPlugin.words ).to.equal( 0 );
+			} );
+
+			it( 'is observable', done => {
+				const spy = sinon.spy();
+
+				wordCountPlugin.on( 'change:words', spy );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+
+				setTimeout( () => {
+					// The #update event fired once because it is throttled.
+					sinon.assert.calledOnce( spy );
+					expect( spy.firstCall.args[ 2 ] ).to.equal( 1 );
+
+					done();
+				}, DELAY );
+			} );
 		} );
 
-		it( 'has defined "characters" property', () => {
-			expect( wordCountPlugin.characters ).to.equal( 0 );
+		describe( '#characters property', () => {
+			it( 'is defined', () => {
+				expect( wordCountPlugin.characters ).to.equal( 0 );
+			} );
+
+			it( 'returns the number of characters right away', () => {
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				expect( wordCountPlugin.characters ).to.equal( 12 );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
+				expect( wordCountPlugin.characters ).to.equal( 11 );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+				expect( wordCountPlugin.characters ).to.equal( 5 );
+
+				setModelData( model, '' );
+				expect( wordCountPlugin.characters ).to.equal( 0 );
+			} );
+
+			it( 'is observable', done => {
+				const spy = sinon.spy();
+
+				wordCountPlugin.on( 'change:characters', spy );
+
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+
+				setTimeout( () => {
+					// The #update event fired once because it is throttled.
+					sinon.assert.calledOnce( spy );
+					expect( spy.firstCall.args[ 2 ] ).to.equal( 5 );
+
+					done();
+				}, DELAY );
+			} );
 		} );
 
-		it( 'has "WordCount" plugin name', () => {
+		it( 'has a name', () => {
 			expect( WordCount.pluginName ).to.equal( 'WordCount' );
 		} );
 	} );
@@ -130,8 +196,8 @@ describe( 'WordCount', () => {
 			} );
 		} );
 
-		describe( 'update event', () => {
-			it( 'fires update event with actual amount of characters and words', () => {
+		describe( '#update event', () => {
+			it( 'fires with the actual number of characters and words', () => {
 				const fake = sinon.fake();
 				wordCountPlugin.on( 'update', fake );
 

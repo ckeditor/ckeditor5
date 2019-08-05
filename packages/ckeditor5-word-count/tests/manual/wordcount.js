@@ -28,6 +28,14 @@ ClassicEditor
 		document.getElementById( 'destroy-editor' ).addEventListener( 'click', () => {
 			editor.destroy();
 		} );
+
+		editor.plugins.get( 'WordCount' ).on( 'change:words', ( evt, name, value ) => {
+			console.log( 'WordCount:change:words', value );
+		} );
+
+		editor.plugins.get( 'WordCount' ).on( 'change:characters', ( evt, name, value ) => {
+			console.log( 'WordCount:change:characters', value );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
