@@ -14,7 +14,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
 	modelViewInsertion,
+	dataModelViewInsertion,
 	modelViewTextInsertion,
+	dataModelViewTextInsertion,
 	modelViewChangeChecked,
 	modelViewChangeType
 } from './todolistconverters';
@@ -35,7 +37,7 @@ export default class TodoListEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const { editing } = editor;
+		const { editing, data } = editor;
 		const viewDocument = editing.view.document;
 
 		editor.model.schema.extend( 'listItem', {
@@ -45,6 +47,8 @@ export default class TodoListEditing extends Plugin {
 		// Converters.
 		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ), { priority: 'high' } );
 		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion, { priority: 'high' } );
+		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( editor.model ), { priority: 'high' } );
+		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( editor.model ) );
 		editing.downcastDispatcher.on( 'attribute:listChecked:listItem', modelViewChangeChecked( editor.model ) );

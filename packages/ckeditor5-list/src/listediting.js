@@ -80,7 +80,8 @@ export default class ListEditing extends Plugin {
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
+		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
+		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
 		editing.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
 		data.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
 
