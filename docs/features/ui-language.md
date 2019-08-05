@@ -192,7 +192,5 @@ ClassicEditor
 {@snippet features/ui-language-content}
 
 <info-box>
-	If unsure what language the content will be typed in or when the document is multilingual, do not set {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`}.
-
-	The language of the content will be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI} and the control over the language direction of the content will be left up to the web browser, which is the safest option for most of the integrations.
+	If unsure what language the content will be typed in, do not set {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`}. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
 </info-box>
