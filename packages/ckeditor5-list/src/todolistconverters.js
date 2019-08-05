@@ -7,8 +7,53 @@
  * @module list/todolistconverters
  */
 
-import { createCheckMarkElement } from './todolistutils';
+import { addTodoElementsToListItem, createCheckMarkElement, removeTodoElementsFromListItem } from './todolistutils';
+import { generateLiInUl, injectViewList } from './utils';
 
+/**
+ * A model-to-view converter for `listItem` model element insertion.
+ *
+ * It creates a `<ul><li></li><ul>` (or `<ol>`) view structure out of a `listItem` model element, inserts it at the correct
+ * position, and merges the list with surrounding lists (if available).
+ *
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
+ */
+export function modelViewInsertion( model ) {
+	return ( evt, data, conversionApi ) => {
+		const consumable = conversionApi.consumable;
+
+		if ( !consumable.test( data.item, 'insert' ) ||
+			!consumable.test( data.item, 'attribute:listType' ) ||
+			!consumable.test( data.item, 'attribute:listIndent' )
+		) {
+			return;
+		}
+
+		if ( data.item.getAttribute( 'listType' ) != 'todo' ) {
+			return;
+		}
+
+		consumable.consume( data.item, 'insert' );
+		consumable.consume( data.item, 'attribute:listType' );
+		consumable.consume( data.item, 'attribute:listIndent' );
+
+		const viewWriter = conversionApi.writer;
+		const modelItem = data.item;
+		const viewItem = generateLiInUl( modelItem, conversionApi );
+
+		addTodoElementsToListItem( viewWriter, viewItem, modelItem, model );
+		injectViewList( modelItem, viewItem, conversionApi, model );
+	};
+}
+
+/**
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
+ * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
+ */
 export function modelViewTextInsertion( evt, data, conversionApi ) {
 	const parent = data.range.start.parent;
 
@@ -25,6 +70,30 @@ export function modelViewTextInsertion( evt, data, conversionApi ) {
 	viewWriter.insert( viewPosition.offset ? viewPosition : viewPosition.getShiftedBy( 1 ), viewText );
 }
 
+/**
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
+ */
+export function modelViewChangeType( model ) {
+	return ( evt, data, conversionApi ) => {
+		const viewItem = conversionApi.mapper.toViewElement( data.item );
+		const viewWriter = conversionApi.writer;
+
+		// Add or remove checkbox for toto list.
+		if ( data.attributeNewValue == 'todo' ) {
+			addTodoElementsToListItem( viewWriter, viewItem, data.item, model );
+		} else if ( data.attributeOldValue == 'todo' ) {
+			removeTodoElementsFromListItem( viewWriter, viewItem, data.item, model );
+		}
+	};
+}
+
+/**
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
+ */
 export function modelViewChangeChecked( model ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, 'attribute:listChecked' ) ) {

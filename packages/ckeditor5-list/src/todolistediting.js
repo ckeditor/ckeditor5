@@ -13,8 +13,10 @@ import ListEditing from './listediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
+	modelViewInsertion,
 	modelViewTextInsertion,
-	modelViewChangeChecked
+	modelViewChangeChecked,
+	modelViewChangeType
 } from './todolistconverters';
 
 /**
@@ -33,7 +35,7 @@ export default class TodoListEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const editing = editor.editing;
+		const { editing } = editor;
 		const viewDocument = editing.view.document;
 
 		editor.model.schema.extend( 'listItem', {
@@ -41,7 +43,10 @@ export default class TodoListEditing extends Plugin {
 		} );
 
 		// Converters.
+		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ), { priority: 'high' } );
 		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion, { priority: 'high' } );
+
+		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( editor.model ) );
 		editing.downcastDispatcher.on( 'attribute:listChecked:listItem', modelViewChangeChecked( editor.model ) );
 
 		// Register command for todo list.
