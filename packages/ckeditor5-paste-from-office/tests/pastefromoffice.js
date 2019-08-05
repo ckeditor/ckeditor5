@@ -65,15 +65,15 @@ describe( 'PasteFromOffice', () => {
 		} );
 
 		describe( 'data which should not be marked with flag', () => {
-			it( 'should not process data with regular html', () => {
-				checkInvalidData( '<p>Hello world</p>' );
+			it( 'should process data with regular html', () => {
+				checkNotProcessedData( '<p>Hello world</p>' );
 			} );
 
-			it( 'should not process data with similar headers to MS Word', () => {
-				checkInvalidData( '<meta name=Generator content="Other">' );
+			it( 'should process data with similar headers to MS Word', () => {
+				checkNotProcessedData( '<meta name=Generator content="Other">' );
 			} );
 
-			function checkInvalidData( inputString ) {
+			function checkNotProcessedData( inputString ) {
 				const data = setUpData( inputString );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 

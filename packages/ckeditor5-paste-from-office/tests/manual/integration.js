@@ -32,6 +32,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
 		const clipboard = editor.plugins.get( 'Clipboard' );
 
 		editor.editing.view.document.on( 'paste', ( evt, data ) => {
