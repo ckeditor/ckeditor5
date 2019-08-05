@@ -228,7 +228,7 @@ function isNewListNeeded( previousItem, currentItem ) {
 	}
 
 	// Even with the same id the list does not have to be continuous (#43).
-	return !previousSibling.is( 'ul' ) && !previousSibling.is( 'ol' );
+	return !isList( previousSibling );
 }
 
 // Paste from Google Docs
