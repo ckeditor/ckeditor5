@@ -65,6 +65,14 @@ export default class Watchdog {
 		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
 
 		/**
+		 * Returns the result of `Date.now()` call. It can be overridden in tests to mock time as the popular
+		 * approaches like `sinon.useFakeTimers()` does not work well with error handling.
+		 *
+		 * @protected
+		 */
+		this._now = () => Date.now();
+
+		/**
 		 * @private
 		 * @type {Number}
 		 * @see module:watchdog/watchdog~WatchdogConfig
@@ -311,7 +319,7 @@ export default class Watchdog {
 				source: evt.source,
 				lineno: evt.lineno,
 				colno: evt.colno,
-				date: Date.now()
+				date: this._now()
 			} );
 
 			this.fire( 'error', { error: evt.error } );
