@@ -4,7 +4,6 @@
  */
 
 /* global window, document, console, BalloonEditor */
-const sendButton = document.querySelector( '.demo-update__send' );
 
 BalloonEditor
 	.create( document.querySelector( '#demo-update__editor' ), {
@@ -39,7 +38,11 @@ BalloonEditor
 				const charactersBox = document.querySelector( '.demo-update__chart__characters' );
 				const wordsBox = document.querySelector( '.demo-update__words' );
 				const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribute( 'r' ) );
+				const sendButton = document.querySelector( '.demo-update__send' );
 
+				sendButton.addEventListener( 'click', () => {
+					window.alert( 'Post sent!' ); // eslint-disable-line no-alert
+				} );
 				// Update the UI as the content of the editor changes.
 				return data => {
 					const currentCharacters = data.characters;
@@ -73,11 +76,6 @@ BalloonEditor
 				};
 			} )()
 		}
-	} )
-	.then( () => {
-		sendButton.addEventListener( 'click', () => {
-			window.alert( 'Post sent!' ); // eslint-disable-line no-alert
-		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

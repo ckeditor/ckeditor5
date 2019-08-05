@@ -88,9 +88,9 @@ ClassicEditor
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 
-## The `update` event
+## The `onUpdate` option
 
-The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `update` event}. It allows implementing customized behaviors that react to word and character count updates.
+The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `update` event}. It allows implementing customized behaviors that react to word and character count updates. The {@link module:word-count/wordcount~WordCountConfig#onUpdate} is a configuration option, which executes a defined function whenever the word count plugin updates its values.
 
 Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature it in action. See the code used to create the demo listed later in this section.
 
@@ -100,57 +100,53 @@ Below you can play with a demo post editor with a soft 120 characters limit and 
 BalloonEditor
 	.create( document.querySelector( '#demo-update__editor' ), {
 		// Editor configuration.
-	} )
-	.then( editor => {
-		const maxCharacters = 120;
-		const wordCountPlugin = editor.plugins.get( 'WordCount' );
-		const container = document.querySelector( '.demo-update' );
-		const progressCircle = document.querySelector( '.demo-update__chart__circle' );
-		const charactersBox = document.querySelector( '.demo-update__chart__characters' );
-		const wordsBox = document.querySelector( '.demo-update__words' );
-		const sendButton = document.querySelector( '.demo-update__send' );
-		const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribute( 'r' ) );
+		wordCount: {
+			onUpdate: ( () => {
+				const maxCharacters = 120;
+				const container = document.querySelector( '.demo-update' );
+				const progressCircle = document.querySelector( '.demo-update__chart__circle' );
+				const charactersBox = document.querySelector( '.demo-update__chart__characters' );
+				const wordsBox = document.querySelector( '.demo-update__words' );
+				const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribute( 'r' ) );
+				const sendButton = document.querySelector( '.demo-update__send' );
 
-		// Update the UI on editor load.
-		updateWordCountStatsUI( wordCountPlugin.characters, wordCountPlugin.words );
+				sendButton.addEventListener( 'click', () => {
+					window.alert( 'Post sent!' ); // eslint-disable-line no-alert
+				} );
+				// Update the UI as the content of the editor changes.
+				return data => {
+					const currentCharacters = data.characters;
+					const currentWords = data.words;
+					const charactersProgress = currentCharacters / maxCharacters * circleCircumference;
+					const isLimitExceeded = currentCharacters > maxCharacters;
+					const isCloseToLimit = !isLimitExceeded && currentCharacters > maxCharacters * .8;
+					const circleDashArray = Math.min( charactersProgress, circleCircumference );
 
-		// Update the UI as the content of the editor changes.
-		wordCountPlugin.on( 'update', ( evt, data ) => {
-			updateWordCountStatsUI( data.characters, data.words );
-		} );
+					// Set the stroke of the circle to show the how many characters were typed.
+					progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
 
-		function updateWordCountStatsUI( currentCharacters, currentWords ) {
-			const charactersProgress = currentCharacters / maxCharacters * circleCircumference;
-			const isLimitExceeded = currentCharacters > maxCharacters;
-			const isCloseToLimit = !isLimitExceeded && currentCharacters > maxCharacters * .8;
-			const circleDashArray = Math.min( charactersProgress, circleCircumference );
+					// Display the number of characters in the progress chart. When exceeded the limit,
+					// display how many characters should be removed.
+					if ( isLimitExceeded ) {
+						charactersBox.textContent = `-${ currentCharacters - maxCharacters }`;
+					} else {
+						charactersBox.textContent = currentCharacters;
+					}
 
-			// Set the stroke of the circle to show the how many characters were typed.
-			progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
+					wordsBox.textContent = `Words in the post: ${ currentWords }`;
 
-			// Display the number of characters in the progress chart. When exceeded the limit,
-			// display how many characters should be removed.
-			if ( isLimitExceeded ) {
-				charactersBox.textContent = `-${ currentCharacters - maxCharacters }`;
-			} else {
-				charactersBox.textContent = currentCharacters;
-			}
+					// If the content length is close to the characters limit, add a CSS class to warns the user.
+					container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
 
-			wordsBox.textContent = `Words in the post: ${ currentWords }`;
+					// If exceeded the characters limit, add a CSS class that makes the content's background red.
+					container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
 
-			// If the content length is close to the characters limit, add a CSS class to warns the user.
-			container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
-
-			// If exceeded the characters limit, add a CSS class that makes the content's background red.
-			container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
-
-			// If exceeded the characters limit, disable the send button.
-			sendButton.toggleAttribute( 'disabled', isLimitExceeded );
+					// If exceeded the characters limit, disable the send button.
+					sendButton.toggleAttribute( 'disabled', isLimitExceeded );
+				};
+			} )()
 		}
-
-		sendButton.addEventListener( 'click', () => {
-			window.alert( 'Post sent!' ); // eslint-disable-line no-alert
-		} );
+		// Editor configuration...
 	} )
 	.catch( ... );
 ```
