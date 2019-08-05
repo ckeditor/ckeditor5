@@ -1,5 +1,9 @@
 ## Editor locales
 
+**Note**: For the best testing, run manual tests adding Arabic to [additional languages configuration](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/testing-environment.html#running-manual-tests).
+
+---
+
 Play with different editor configurations to make sure localization and the right–to–left language support work fine.
 
 ### language = 'en' (LTR)
