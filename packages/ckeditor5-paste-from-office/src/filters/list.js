@@ -276,9 +276,9 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
  *		        |           |-> LI
  *		        |-> LI
  *
- *		before:                            after:
- *		OL                               OL
- *		|-> OL                            |-> LI
+ *		before:                           after:
+ *		OL                                OL
+ *		|-> OL                             |-> LI
  *		    |-> OL
  *		         |-> OL
  *		             |-> LI
