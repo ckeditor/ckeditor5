@@ -3,24 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* Infinite progress bar default width. */
-:root {
-	--ck-image-upload-progress-line-width: 30px;
-}
-
 .ck-content .image {
 	/* Showing animation. */
 	&.ck-appear {
 		animation: fadeIn 700ms;
 	}
+}
 
-	/* Upload progress bar. */
-	& .ck-progress-bar {
-		height: 2px;
-		width: 0;
-		background: var(--ck-color-upload-bar-background);
-		transition: width 100ms;
-	}
+/* Upload progress bar. */
+.ck .ck-progress-bar {
+	height: 2px;
+	width: 0;
+	background: var(--ck-color-upload-bar-background);
+	transition: width 100ms;
 }
 
 @keyframes fadeIn {
