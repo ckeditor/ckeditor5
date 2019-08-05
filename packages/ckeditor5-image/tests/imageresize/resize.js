@@ -226,6 +226,26 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-right'
 		} ) );
 
+		it( 'shrinks correctly with left-top handler', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 80,
+			pointerOffset: {
+				x: 20,
+				y: 10
+			},
+			resizerPosition: 'top-left'
+		} ) );
+
+		it( 'shrinks correctly with right-top handler', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 80,
+			pointerOffset: {
+				x: -20,
+				y: 10
+			},
+			resizerPosition: 'top-right'
+		} ) );
+
 		it( 'enlarges correctly with left-bottom handler', generateResizeTest( {
 			isSideImage: true,
 			expectedWidth: 120,
@@ -264,6 +284,26 @@ describe.only( 'Image resizer', () => {
 				y: 0
 			},
 			resizerPosition: 'bottom-right'
+		} ) );
+
+		it( 'enlarges correctly with left-top handler', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 120,
+			pointerOffset: {
+				x: -20,
+				y: -10
+			},
+			resizerPosition: 'top-left'
+		} ) );
+
+		it( 'enlarges correctly with right-top handler', generateResizeTest( {
+			isSideImage: true,
+			expectedWidth: 120,
+			pointerOffset: {
+				x: 20,
+				y: 10
+			},
+			resizerPosition: 'top-right'
 		} ) );
 	} );
 
