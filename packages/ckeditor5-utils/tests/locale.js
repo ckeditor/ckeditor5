@@ -51,9 +51,9 @@ describe( 'Locale', () => {
 		} );
 
 		it( 'determines the #contentLanguageDirection (not passed)', () => {
-			expect( new Locale( 'pl' ) ).to.have.property( 'contentLanguageDirection', 'auto' );
-			expect( new Locale( 'en' ) ).to.have.property( 'contentLanguageDirection', 'auto' );
-			expect( new Locale( 'ar' ) ).to.have.property( 'contentLanguageDirection', 'auto' );
+			expect( new Locale( 'pl' ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+			expect( new Locale( 'en' ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+			expect( new Locale( 'ar' ) ).to.have.property( 'contentLanguageDirection', 'rtl' );
 		} );
 
 		it( 'determines the #contentLanguageDirection (passed)', () => {

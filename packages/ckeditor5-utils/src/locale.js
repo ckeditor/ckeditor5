@@ -46,7 +46,7 @@ export default class Locale {
 		this.contentLanguage = contentLanguage || this.language;
 
 		/**
-		 * Text direction of the {@link #language editor language}. Either `'ltr'` or `'rtl'`.
+		 * Text direction of the {@link #language editor UI language}. Either `'ltr'` or `'rtl'`.
 		 *
 		 * @readonly
 		 * @member {String}
@@ -57,15 +57,17 @@ export default class Locale {
 		 * Text direction of the {@link #contentLanguage editor content language}.
 		 *
 		 * If the content language was passed directly to the `Locale` constructor, this property represents the
-		 * direction of that language (either `'ltr'` or `'rtl'`).
+		 * direction of that language.
 		 *
 		 * If the {@link #contentLanguage editor content language} was derived from the {@link #language editor language},
-		 * the content language direction is set to `'auto'`.
+		 * the content language direction is the same as the {@link #languageDirection UI language direction}.
+		 *
+		 * The value is either `'ltr'` or `'rtl'`.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.contentLanguageDirection = contentLanguage ? getLanguageDirection( contentLanguage ) : 'auto';
+		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 
 		/**
 		 * Translates the given string to the {@link #language}. This method is also available in {@link module:core/editor/editor~Editor#t}
