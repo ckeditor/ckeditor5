@@ -199,6 +199,7 @@ export default class LinkEditing extends Plugin {
 		// Adding the class.
 		view.document.registerPostFixer( writer => {
 			const selection = editor.model.document.selection;
+			let changed = false;
 
 			if ( selection.hasAttribute( 'linkHref' ) ) {
 				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), editor.model );
@@ -207,12 +208,15 @@ export default class LinkEditing extends Plugin {
 				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
 				// broken by a UIElement.
 				for ( const item of viewRange.getItems() ) {
-					if ( item.is( 'a' ) ) {
+					if ( item.is( 'a' ) && !item.hasClass( HIGHLIGHT_CLASS ) ) {
 						writer.addClass( HIGHLIGHT_CLASS, item );
 						highlightedLinks.add( item );
+						changed = true;
 					}
 				}
 			}
+
+			return changed;
 		} );
 
 		// Removing the class.
