@@ -4,20 +4,16 @@
  */
 
 /**
- * @module list/list
+ * @module list/todolist
  */
 
-import ListEditing from './listediting';
-import ListUI from './listui';
-import TodoList from './todolist';
+import TodoListEditing from './todolistediting';
+import TodoListUI from './todolistui';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
- * The list feature.
- *
- * This is a "glue" plugin which loads the {@link module:list/listediting~ListEditing list editing feature}
- * and {@link module:list/listui~ListUI list UI feature}.
+ * The todo list feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -26,13 +22,13 @@ export default class List extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ListEditing, ListUI, TodoList ];
+		return [ TodoListEditing, TodoListUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'List';
+		return 'TodoList';
 	}
 }

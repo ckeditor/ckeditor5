@@ -29,9 +29,9 @@ export default class ListCommand extends Command {
 		 * The type of the list created by the command.
 		 *
 		 * @readonly
-		 * @member {'numbered'|'bulleted'}
+		 * @member {'numbered'|'bulleted'|'todo'}
 		 */
-		this.type = type == 'bulleted' ? 'bulleted' : 'numbered';
+		this.type = type;
 
 		/**
 		 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.

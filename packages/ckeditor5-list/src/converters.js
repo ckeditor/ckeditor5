@@ -8,6 +8,7 @@
  */
 
 import { createViewListItemElement } from './utils';
+import { addTodoElementsToListItem, removeTodoElementsFromListItem } from './todolistutils';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
@@ -36,7 +37,7 @@ export function modelViewInsertion( model ) {
 		consumable.consume( data.item, 'attribute:listIndent' );
 
 		const modelItem = data.item;
-		const viewItem = generateLiInUl( modelItem, conversionApi );
+		const viewItem = generateLiInUl( modelItem, conversionApi, model );
 
 		injectViewList( modelItem, viewItem, conversionApi, model );
 	};
@@ -92,37 +93,44 @@ export function modelViewRemove( model ) {
  * by breaking view elements, changing their name and merging them.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
+ * @param {module:engine/model/model~Model} model Model instance.
  */
-export function modelViewChangeType( evt, data, conversionApi ) {
-	if ( !conversionApi.consumable.consume( data.item, 'attribute:listType' ) ) {
-		return;
-	}
+export function modelViewChangeType( model ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, 'attribute:listType' ) ) {
+			return;
+		}
 
-	const viewItem = conversionApi.mapper.toViewElement( data.item );
-	const viewWriter = conversionApi.writer;
+		const viewItem = conversionApi.mapper.toViewElement( data.item );
+		const viewWriter = conversionApi.writer;
 
-	// 1. Break the container after and before the list item.
-	// This will create a view list with one view list item -- the one that changed type.
-	viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
-	viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
+		// Break the container after and before the list item.
+		// This will create a view list with one view list item -- the one that changed type.
+		viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
+		viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
 
-	// 2. Change name of the view list that holds the changed view item.
-	// We cannot just change name property, because that would not render properly.
-	let viewList = viewItem.parent;
-	const listName = data.attributeNewValue == 'numbered' ? 'ol' : 'ul';
-	viewList = viewWriter.rename( listName, viewList );
+		// Change name of the view list that holds the changed view item.
+		// We cannot just change name property, because that would not render properly.
+		let viewList = viewItem.parent;
+		const listName = data.attributeNewValue == 'numbered' ? 'ol' : 'ul';
+		viewList = viewWriter.rename( listName, viewList );
 
-	// 3. Merge the changed view list with other lists, if possible.
-	mergeViewLists( viewWriter, viewList, viewList.nextSibling );
-	mergeViewLists( viewWriter, viewList.previousSibling, viewList );
+		// Add or remove checkbox for toto list.
+		if ( data.attributeNewValue == 'todo' ) {
+			addTodoElementsToListItem( viewWriter, viewItem, data.item, model );
+		} else if ( data.attributeOldValue == 'todo' ) {
+			removeTodoElementsFromListItem( viewWriter, viewItem, data.item, model );
+		}
 
-	// 4. Consumable insertion of children inside the item. They are already handled by re-building the item in view.
-	for ( const child of data.item.getChildren() ) {
-		conversionApi.consumable.consume( child, 'insert' );
-	}
+		// Merge the changed view list with other lists, if possible.
+		mergeViewLists( viewWriter, viewList, viewList.nextSibling );
+		mergeViewLists( viewWriter, viewList.previousSibling, viewList );
+
+		// Consumable insertion of children inside the item. They are already handled by re-building the item in view.
+		for ( const child of data.item.getChildren() ) {
+			conversionApi.consumable.consume( child, 'insert' );
+		}
+	};
 }
 
 /**
@@ -787,14 +795,19 @@ export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 // Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of given `modelItem` model `listItem` element.
 // Then, it binds created view list item (<li>) with model `listItem` element.
 // The function then returns created view list item (<li>).
-function generateLiInUl( modelItem, conversionApi ) {
+function generateLiInUl( modelItem, conversionApi, model ) {
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
 	const viewItem = createViewListItemElement( viewWriter );
 
 	const viewList = viewWriter.createContainerElement( listType, null );
+
 	viewWriter.insert( viewWriter.createPositionAt( viewList, 0 ), viewItem );
+
+	if ( modelItem.getAttribute( 'listType' ) == 'todo' ) {
+		addTodoElementsToListItem( viewWriter, viewItem, modelItem, model );
+	}
 
 	mapper.bindElements( modelItem, viewItem );
 
@@ -915,13 +928,19 @@ function getSiblingListItem( modelItem, options ) {
 }
 
 // Helper function that takes two parameters, that are expected to be view list elements, and merges them.
-// The merge happen only if both parameters are UL or OL elements.
+// The merge happen only if both parameters are list elements of the same types (the same element name and the same class attributes).
 function mergeViewLists( viewWriter, firstList, secondList ) {
-	if ( firstList && secondList && ( firstList.name == 'ul' || firstList.name == 'ol' ) && firstList.name == secondList.name ) {
-		return viewWriter.mergeContainers( viewWriter.createPositionAfter( firstList ) );
+	// Check if two lists are going to be merged.
+	if ( !firstList || !secondList || ( firstList.name != 'ul' && firstList.name != 'ol' ) ) {
+		return null;
 	}
 
-	return null;
+	// Both parameters are list elements, so compare types now.
+	if ( firstList.name != secondList.name || firstList.getAttribute( 'class' ) !== secondList.getAttribute( 'class' ) ) {
+		return null;
+	}
+
+	return viewWriter.mergeContainers( viewWriter.createPositionAfter( firstList ) );
 }
 
 // Helper function that takes model list item element `modelItem`, corresponding view list item element `injectedItem`

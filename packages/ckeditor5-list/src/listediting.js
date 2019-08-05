@@ -26,7 +26,7 @@ import {
 	modelIndentPasteFixer,
 	viewModelConverter,
 	modelToViewPosition,
-	viewToModelPosition
+	viewToModelPosition,
 } from './converters';
 
 /**
@@ -56,7 +56,7 @@ export default class ListEditing extends Plugin {
 		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
 		editor.model.schema.register( 'listItem', {
 			inheritAllFrom: '$block',
-			allowAttributes: [ 'listType', 'listIndent' ]
+			allowAttributes: [ 'listType', 'listIndent', 'listChecked' ]
 		} );
 
 		// Converters.
@@ -77,8 +77,8 @@ export default class ListEditing extends Plugin {
 		data.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
 
-		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
-		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
+		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( editor.model ) );
+		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( editor.model ) );
 		editing.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
 		data.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
 
