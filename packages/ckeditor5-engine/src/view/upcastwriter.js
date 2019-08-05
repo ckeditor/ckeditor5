@@ -27,7 +27,7 @@ import Selection from './selection';
  * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  *
  * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
- * `UpcastWriter` can wherever you need it:
+ * `UpcastWriter` can be created wherever you need it:
  *
  *		const writer = new UpcastWriter();
  *		const text = writer.createText( 'foo!' );
@@ -170,6 +170,23 @@ export default class UpcastWriter {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Removes given element from view structure and places its children in its position.
+	 * It does nothing if element has no parent.
+	 *
+	 * @param {module:engine/view/element~Element} element Element to unwrap.
+	 */
+	unwrapElement( element ) {
+		const parent = element.parent;
+
+		if ( parent ) {
+			const index = parent.getChildIndex( element );
+
+			this.remove( element );
+			this.insertChild( index, element.getChildren(), parent );
+		}
 	}
 
 	/**
