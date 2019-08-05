@@ -94,45 +94,121 @@ describe.only( 'Image resizer', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
-		it( 'shrinks correctly with left-bottom handler', () => {
-			const expectedWidth = 80;
+		it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+			expectedWidth: 80,
+			pointerOffset: { x: 10, y: -10 },
+			resizerPosition: 'bottom-left'
+		} ) );
 
-			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-			const domBottomLeftResizer = domResizeWrapper.querySelector( '.ck-widget__resizer-bottom-left' );
-			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
-			const imageTopLeftPosition = getElementPosition( domImage );
+		it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
+			expectedWidth: 80,
+			pointerOffset: { x: -10, y: -10 },
+			resizerPosition: 'bottom-right'
+		} ) );
 
-			const initialPointerPosition = {
-				pageX: imageTopLeftPosition.x,
-				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT
+		it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+			expectedWidth: 110,
+			pointerOffset: { x: 10, y: 0 },
+			resizerPosition: 'bottom-right'
+		} ) );
+
+		it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+			expectedWidth: 120,
+			pointerOffset: { x: 0, y: 10 },
+			resizerPosition: 'bottom-right'
+		} ) );
+
+		it( 'enlarges correctly with left-bottom handler, x axis only', generateResizeTest( {
+			expectedWidth: 110,
+			pointerOffset: { x: -10, y: 0 },
+			resizerPosition: 'bottom-left'
+		} ) );
+
+		it( 'enlarges correctly with left-bottom handler, y axis only', generateResizeTest( {
+			expectedWidth: 120,
+			pointerOffset: { x: 0, y: 10 },
+			resizerPosition: 'bottom-left'
+		} ) );
+
+		// --- top handlers ---
+
+		it( 'enlarges correctly with left-top handler', generateResizeTest( {
+			expectedWidth: 120,
+			pointerOffset: { x: -10, y: -10 },
+			resizerPosition: 'top-left'
+		} ) );
+
+		it( 'enlarges correctly with left-top handler, y axis only', generateResizeTest( {
+			expectedWidth: 120,
+			pointerOffset: { x: 0, y: -10 },
+			resizerPosition: 'top-left'
+		} ) );
+
+		it( 'enlarges correctly with right-top handler', generateResizeTest( {
+			expectedWidth: 120,
+			pointerOffset: { x: 10, y: -10 },
+			resizerPosition: 'top-right'
+		} ) );
+
+		it( 'enlarges correctly with left-right handler, y axis only', generateResizeTest( {
+			expectedWidth: 120,
+			pointerOffset: { x: 0, y: -10 },
+			resizerPosition: 'top-right'
+		} ) );
+
+		function generateResizeTest( options ) {
+			// options.resizerPosition - top-left / top-right / bottom-right / bottom-left
+			// options.pointerOffset - object - pointer offset relative to the dragged corner. Negative values are perfectly fine.
+			// e.g. { x: 10, y: -5 }
+			// options.expectedWidth
+			// Returns a test case that puts
+			return () => {
+				const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+				const domBottomLeftResizer = domResizeWrapper.querySelector( `.ck-widget__resizer-${ options.resizerPosition }` );
+				const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
+				const imageTopLeftPosition = getElementPosition( domImage );
+				const resizerPositionParts = options.resizerPosition.split( '-' );
+
+				const initialPointerPosition = {
+					pageX: imageTopLeftPosition.x,
+					pageY: imageTopLeftPosition.y
+				};
+
+				if ( resizerPositionParts.includes( 'right' ) ) {
+					initialPointerPosition.pageX += FIXTURE_WIDTH;
+				}
+
+				if ( resizerPositionParts.includes( 'bottom' ) ) {
+					initialPointerPosition.pageY += FIXTURE_HEIGHT;
+				}
+
+				const finishPointerPosition = Object.assign( {}, initialPointerPosition );
+
+				finishPointerPosition.pageX += options.pointerOffset.x || 0;
+				finishPointerPosition.pageY += options.pointerOffset.y || 0;
+
+				fireMouseEvent( domBottomLeftResizer, 'mousedown', initialPointerPosition );
+				fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
+
+				// We need to wait as mousemove events are throttled.
+				return wait( 30 )
+					.then( () => {
+						fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
+
+						expect( domImage.width ).to.be.closeTo( options.expectedWidth, 1 );
+
+						fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
+
+						expect( getData( editor.model, {
+							withoutSelection: true
+						} ) ).to.match( /<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/ );
+
+						const modelItem = editor.model.document.getRoot().getChild( 1 );
+
+						expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( options.expectedWidth, 1, 'Model check' );
+					} );
 			};
-
-			const finishPointerPosition = {
-				pageX: imageTopLeftPosition.x + 10,
-				pageY: imageTopLeftPosition.y + FIXTURE_HEIGHT - 10
-			};
-
-			fireMouseEvent( domBottomLeftResizer, 'mousedown', initialPointerPosition );
-			fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
-
-			// We need to wait as mousemove events are throttled.
-			return wait( 30 )
-				.then( () => {
-					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
-
-					expect( domImage.width ).to.be.closeTo( expectedWidth, 1, 'View width check' );
-
-					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
-
-					expect( getData( editor.model, {
-						withoutSelection: true
-					} ) ).to.match( /<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/ );
-
-					const modelItem = editor.model.document.getRoot().getChild( 1 );
-
-					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( expectedWidth, 1, 'Model check' );
-				} );
-		} );
+		}
 	} );
 
 	describe( 'side image', () => {
