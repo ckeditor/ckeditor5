@@ -29,14 +29,24 @@ export default class ResizerCentral {
 	attach() {}
 
 	begin() {
+		this.redraw();
 		const resizeHost = this.context._getResizeHost();
 		this.closestReferencePoint = getAbsoluteBoundaryPoint( resizeHost, this.context.referenceHandlerPosition );
+	}
 
-		// Size of resize host before current resizing transaction.
-		this.initialSize = {
-			width: resizeHost.width,
-			height: resizeHost.height
-		};
+	redraw() {
+		if ( this.context.domResizeWrapper ) {
+			const clientRect = this.context._getResizeHost().getBoundingClientRect();
+
+			// Size of resize host before current resizing transaction.
+			this.initialSize = {
+				width: clientRect.width,
+				height: clientRect.height
+			};
+
+			this.context.domResizeWrapper.style.width = this.initialSize.width + 'px';
+			this.context.domResizeWrapper.style.height = this.initialSize.height + 'px';
+		}
 	}
 
 	commit() {}
@@ -56,15 +66,22 @@ export default class ResizerCentral {
 			y: ( currentCoordinates.y - this.initialSize.height ) - this.context.referenceCoordinates.y
 		};
 
-		if ( isCentered ) {
+		// temp workaround
+		if ( isCentered && this.context.referenceHandlerPosition.endsWith( '-right' ) ) {
+			enlargement.x = currentCoordinates.x - ( this.context.referenceCoordinates.x + this.initialSize.width );
+		}
+
+		// @todo: oddly enough, this condition **check** is not needed for tables.
+		if ( isCentered && enlargement.x < 0 ) {
 			enlargement.x *= 2;
 		}
 
 		const resizeHost = this.context._getResizeHost();
+		const clientRect = resizeHost.getBoundingClientRect();
 
 		const originalSize = {
-			x: resizeHost.width,
-			y: resizeHost.height
+			x: clientRect.width,
+			y: clientRect.height
 		};
 
 		const proposedSize = {
@@ -121,8 +138,6 @@ export default class ResizerCentral {
 
 		return drawnSize; // @todo decide what size should actually be returned.
 	}
-
-	redraw() {}
 }
 
 mix( ResizerCentral, ObservableMixin );
