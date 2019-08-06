@@ -1214,6 +1214,18 @@
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
 
+"@wiris/ckeditor5-mathml@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@wiris/ckeditor5-mathml/-/ckeditor5-mathml-1.1.0.tgz#ab88461f329ea467c0aa281a78dc8e0f3ddb5b1b"
+  integrity sha512-sX1OmxFLn6js/s3FVmO6+r83yaoJiwGt3SO3m0XSuZCuO8Kynj2IqZJSNBTjuLms4/mxqTupyZCFpjuyjM6XSg==
+
+"@wiris/mathtype-ckeditor5@^7.15.0":
+  version "7.16.0"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.16.0.tgz#93fb4ccf121d90445b176fdef73da90e3fb2055d"
+  integrity sha512-AB+wAJp13mQXRidHqs93YDHtYPgpwhJjkjMh6fTpnugEfsLnGLN0KmrFtagPXoVgQF7oA3NDhFAVo9Gs5NteLQ==
+  dependencies:
+    "@wiris/ckeditor5-mathml" "^1.0.0"
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"

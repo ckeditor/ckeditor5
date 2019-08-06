@@ -78,6 +78,7 @@
     "@ckeditor/ckeditor5-inspector": "^1.2.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "^12.3.0",
     "@ckeditor/ckeditor5-track-changes": "^1.0.0",
+    "@wiris/mathtype-ckeditor5": "^7.15.0",
     "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
