@@ -31,9 +31,7 @@ To adjust the position of the block toolbar button to match the styles of your w
 }
 ```
 
-If you plan to run the editor in a right–to–left (RTL) language, keep in mind the button
-will be attached to the **right** boundary of the editable area. In that case, make sure the
-CSS position adjustment works properly by adding the following styles:
+If you plan to run the editor in a right–to–left (RTL) language, keep in mind the button will be attached to the **right** boundary of the editable area. In that case, make sure the CSS position adjustment works properly by adding the following styles:
 
 ```css
 .ck[dir="rtl"] .ck-block-toolbar-button {
