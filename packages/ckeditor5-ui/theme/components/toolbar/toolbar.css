@@ -9,7 +9,7 @@
 	@mixin ck-unselectable;
 
 	display: flex;
-	flex-flow: row wrap;
+	flex-flow: row nowrap;
 	align-items: center;
 
 	&.ck-toolbar_vertical {
@@ -19,34 +19,33 @@
 	&.ck-toolbar_floating {
 		flex-wrap: nowrap;
 	}
-}
 
-.ck.ck-toolbar__separator {
-	display: inline-block;
-}
+	& > .ck-toolbar__items {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		flex-grow: 1;
 
-.ck.ck-toolbar__newline {
-	display: block;
-	width: 100%;
-}
-
-/* Pull the grouped items dropdown to the right */
-.ck.ck-toolbar__grouped-dropdown {
-	margin-left: auto;
-
-	/*
-	 * Dropdown button has asymmetric padding to fit the arrow.
-	 * This button has no arrow so let's revert that padding back to normal.
-	 */
-	& > .ck.ck-button.ck-dropdown__button {
-		padding-left: var(--ck-spacing-tiny);
+		& > .ck.ck-toolbar__separator {
+			display: inline-block;
+		}
 	}
 
-	& > .ck-dropdown__button .ck-dropdown__arrow {
-		display: none;
-	}
+	& > .ck.ck-toolbar__grouped-dropdown {
+		/*
+		* Dropdown button has asymmetric padding to fit the arrow.
+		* This button has no arrow so let's revert that padding back to normal.
+		*/
+		& > .ck.ck-button.ck-dropdown__button {
+			padding-left: var(--ck-spacing-tiny);
+		}
 
-	& > .ck.ck-dropdown__panel > .ck-toolbar {
-		flex-wrap: nowrap;
+		& > .ck-dropdown__button .ck-dropdown__arrow {
+			display: none;
+		}
+
+		& > .ck.ck-dropdown__panel > .ck-toolbar {
+			flex-wrap: nowrap;
+		}
 	}
 }

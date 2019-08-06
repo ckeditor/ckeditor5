@@ -10,6 +10,7 @@
 /* globals console */
 
 import View from '../view';
+import Template from '../template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -17,6 +18,7 @@ import ToolbarSeparatorView from './toolbarseparatorview';
 import RectObserver from '../rectobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
@@ -63,17 +65,17 @@ export default class ToolbarView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * The dropdown that aggregates items that wrap to the next line. It is displayed
+		 * The dropdown that aggregates items that overflow. It is displayed
 		 * at the end of the toolbar and offers a nested toolbar which displays items
-		 * that would normally be wrapped to the next line.
+		 * that would normally overflow.
 		 *
 		 * **Note:** It is created on demand when the space in the toolbar is scarce and only
-		 * if {@link #enableWrappedItemsGrouping} has been called for this dropdown.
+		 * if {@link #isGrouping} is `true`.
 		 *
 		 * @readonly
-		 * @member {module:ui/dropdown/dropdownview~DropdownView} #wrappedItemsDropdown
+		 * @member {module:ui/dropdown/dropdownview~DropdownView} #overflowedItemsDropdown
 		 */
-		this.wrappedItemsDropdown = null;
+		this.overflowedItemsDropdown = null;
 
 		/**
 		 * Controls the orientation of toolbar items.
@@ -99,6 +101,12 @@ export default class ToolbarView extends View {
 		 */
 		this.set( 'isGrouping', false );
 
+		this.on( 'change:isGrouping', ( evt, name, isGrouping ) => {
+			if ( isGrouping ) {
+				this._enableOverflowedItemsGroupingOnResize();
+			}
+		} );
+
 		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
@@ -119,7 +127,42 @@ export default class ToolbarView extends View {
 			}
 		} );
 
-		this._itemsWrappingLock = false;
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {}
+		 */
+		this._overflowingItemsActionLock = false;
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {}
+		 */
+		this._paddingRight = null;
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {}
+		 */
+		this._rectObserver = null;
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {}
+		 */
+		this._components = this.createCollection();
+		this._components.add( this._createItemsView() );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -132,7 +175,7 @@ export default class ToolbarView extends View {
 				]
 			},
 
-			children: this.items,
+			children: this._components,
 
 			on: {
 				// https://github.com/ckeditor/ckeditor5-ui/issues/206
@@ -152,34 +195,28 @@ export default class ToolbarView extends View {
 			this.focusTracker.add( item.element );
 		}
 
-		this.items.on( 'add', ( evt, item, index ) => {
+		this.items.on( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );
 
-			if ( item !== this.wrappedItemsDropdown ) {
-				const wrappedItemsDropdownIndex = this.items.getIndex( this.wrappedItemsDropdown );
-
-				// Post–fixing if a new item was added after the wrapped items dropdown (pushed into #items).
-				// The dropdown must always be the last one no matter what.
-				if ( wrappedItemsDropdownIndex > -1 && index > wrappedItemsDropdownIndex ) {
-					this.items.add( this.items.remove( this.wrappedItemsDropdown ) );
-				}
-
-				this._groupOrUngroupWrappingItems( true );
+			if ( this.isGrouping ) {
+				this._groupOrUngroupOverflowedItems();
 			}
 		} );
 
 		this.items.on( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element );
 
-			if ( item !== this.wrappedItemsDropdown ) {
-				this._groupOrUngroupWrappingItems();
+			if ( this.isGrouping ) {
+				this._groupOrUngroupOverflowedItems();
 			}
 		} );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		this._enableWrappedItemsGroupingOnResize();
+		if ( this.isGrouping ) {
+			this._enableOverflowedItemsGroupingOnResize();
+		}
 	}
 
 	/**
@@ -188,8 +225,8 @@ export default class ToolbarView extends View {
 	destroy() {
 		// The dropdown may not be in #items at the moment of toolbar destruction
 		// so let's make sure it's actually destroyed along with the toolbar.
-		if ( this.wrappedItemsDropdown ) {
-			this.wrappedItemsDropdown.destroy();
+		if ( this.overflowedItemsDropdown ) {
+			this.overflowedItemsDropdown.destroy();
 		}
 
 		return super.destroy();
@@ -218,7 +255,7 @@ export default class ToolbarView extends View {
 	 */
 	fillFromConfig( config, factory ) {
 		// The toolbar is filled in in the reverse order for the toolbar grouping to work properly.
-		// If we filled it in in the natural order, items that wrap to the next line would be grouped
+		// If we filled it in in the natural order, items that overflow would be grouped
 		// in a revere order.
 		config.reverse().map( name => {
 			if ( name == '|' ) {
@@ -250,9 +287,52 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * Enables the toolbar functionality that prevents its {@link #items} from wrapping to the next line
+	 * TODO
+	 */
+	_createItemsView() {
+		const toolbarItemsView = new View( this.locale );
+
+		toolbarItemsView.template = new Template( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-toolbar__items'
+				],
+			},
+			children: this.items
+		} );
+
+		return toolbarItemsView;
+	}
+
+	/**
+	 * Creates the {@link #overflowedItemsDropdown} on demand. Used when the space in the toolbar
+	 * is scarce and some items start overflow and need grouping.
+	 *
+	 * See {@link #isGrouping}.
+	 *
+	 * @protected
+	 */
+	_createOverflowedItemsDropdown() {
+		const t = this.t;
+		const locale = this.locale;
+
+		this.overflowedItemsDropdown = createDropdown( locale );
+		this.overflowedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
+		addToolbarToDropdown( this.overflowedItemsDropdown, [] );
+
+		this.overflowedItemsDropdown.buttonView.set( {
+			label: t( 'Show more items' ),
+			tooltip: true,
+			icon: verticalDotsIcon
+		} );
+	}
+
+	/**
+	 * Enables the toolbar functionality that prevents its {@link #items} from overflow
 	 * when the space becomes scarce. Instead, the toolbar items are grouped under the
-	 * {@link #wrappedItemsDropdown dropdown} displayed at the end of the space, which offers its own
+	 * {@link #overflowedItemsDropdown dropdown} displayed at the end of the space, which offers its own
 	 * nested toolbar.
 	 *
 	 * When called, the toolbar will automatically analyze the location of its children and "group"
@@ -264,55 +344,39 @@ export default class ToolbarView extends View {
 	 * not `display: none`) will cause lots of warnings in the console from the utilities analyzing
 	 * the geometry of the toolbar items — they depend on the toolbar to be visible in DOM.
 	 */
-	_enableWrappedItemsGroupingOnResize() {
+	_enableOverflowedItemsGroupingOnResize() {
+		if ( this._rectObserver ) {
+			return;
+		}
+
 		let oldRect;
 
-		this._groupOrUngroupWrappingItems();
+		this._groupOrUngroupOverflowedItems();
 
 		// TODO: stopObserving on destroy();
-		new RectObserver( this.element ).observe( newRect => {
+		this._rectObserver = new RectObserver( this.element ).observe( newRect => {
 			if ( oldRect && oldRect.width !== newRect.width ) {
-				this._groupOrUngroupWrappingItems();
+				this._groupOrUngroupOverflowedItems();
 			}
 
 			oldRect = newRect;
 		} );
 	}
 
-	get _groupedItems() {
-		return this.wrappedItemsDropdown.toolbarView.items;
-	}
-
 	/**
-	 * Creates the {@link #wrappedItemsDropdown} on demand. Used when the space in the toolbar
-	 * is scarce and some items start wrapping and need grouping.
-	 *
-	 * See {@link #_groupLastItem}.
-	 *
-	 * @protected
+	 * TODO
 	 */
-	_createWrappedItemsDropdown() {
-		const t = this.t;
-		const locale = this.locale;
-
-		this.wrappedItemsDropdown = createDropdown( locale );
-		this.wrappedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
-		addToolbarToDropdown( this.wrappedItemsDropdown, [] );
-
-		this.wrappedItemsDropdown.buttonView.set( {
-			label: t( 'Show more items' ),
-			tooltip: true,
-			icon: verticalDotsIcon
-		} );
+	get _groupedItems() {
+		return this.overflowedItemsDropdown.toolbarView.items;
 	}
 
-	get _hasWrappedItemsDropdown() {
-		return this.wrappedItemsDropdown && this.items.has( this.wrappedItemsDropdown );
+	get _hasOverflowedItemsDropdown() {
+		return this.overflowedItemsDropdown && this._components.has( this.overflowedItemsDropdown );
 	}
 
 	/**
 	 * When called it will remove the last {@link #_lastNonGroupedItem regular item} from {@link #items}
-	 * and move it to the {@link #wrappedItemsDropdown}.
+	 * and move it to the {@link #overflowedItemsDropdown}.
 	 *
 	 * If the dropdown does not exist or does not
 	 * belong to {@link #items} it is created and located at the end of the collection.
@@ -320,27 +384,19 @@ export default class ToolbarView extends View {
 	 * @protected
 	 */
 	_groupLastItem() {
-		if ( !this.wrappedItemsDropdown ) {
-			this._createWrappedItemsDropdown();
+		if ( !this.overflowedItemsDropdown ) {
+			this._createOverflowedItemsDropdown();
 		}
 
-		if ( !this._hasWrappedItemsDropdown ) {
-			this.items.add( this.wrappedItemsDropdown );
+		if ( !this._hasOverflowedItemsDropdown ) {
+			this._components.add( this.overflowedItemsDropdown );
 		}
 
-		let lastNonGroupedItem;
-
-		if ( this._hasWrappedItemsDropdown ) {
-			lastNonGroupedItem = this.items.length > 1 ? this.items.get( this.items.length - 2 ) : null;
-		} else {
-			lastNonGroupedItem = this.items.last;
-		}
-
-		this._groupedItems.add( this.items.remove( lastNonGroupedItem ), 0 );
+		this._groupedItems.add( this.items.remove( this.items.last ), 0 );
 	}
 
 	/**
-	 * Moves the very first item from the toolbar belonging to {@link #wrappedItemsDropdown} back
+	 * Moves the very first item from the toolbar belonging to {@link #overflowedItemsDropdown} back
 	 * to the {@link #items} collection.
 	 *
 	 * In some way, it's the opposite of {@link #_groupLastItem}.
@@ -348,20 +404,20 @@ export default class ToolbarView extends View {
 	 * @protected
 	 */
 	_ungroupFirstItem() {
-		this.items.add( this._groupedItems.remove( 0 ), this.items.length - 1 );
+		this.items.add( this._groupedItems.remove( this._groupedItems.first ) );
 
 		if ( !this._groupedItems.length ) {
-			this.items.remove( this.wrappedItemsDropdown );
+			this._components.remove( this.overflowedItemsDropdown );
 		}
 	}
 
 	/**
-	 * Returns `true` when any of toolbar {@link #items} wrapped visually to the next line.
+	 * Returns `true` when any of toolbar {@link #items} overflows visually.
 	 * `false` otherwise.
 	 *
 	 * @protected
 	 */
-	get _areItemsWrapping() {
+	get _areItemsOverflowing() {
 		if ( !this.items.length ) {
 			return false;
 		}
@@ -370,43 +426,44 @@ export default class ToolbarView extends View {
 			return false;
 		}
 
-		const firstItem = this.items.first;
-		const firstItemRect = new Rect( firstItem.element );
-		const lastItemRect = new Rect( this.items.last.element );
+		if ( !this._paddingRight ) {
+			this._paddingRight = Number.parseFloat(
+				global.window.getComputedStyle( this.element ).paddingRight );
+		}
 
-		return firstItemRect.bottom < lastItemRect.top;
+		return new Rect( this.element.lastChild ).right > new Rect( this.element ).right - this._paddingRight;
 	}
 
 	/**
-	 * When called it will check if any of the {@link #items} wraps to the next line and if so, it will
-	 * move it to the {@link #wrappedItemsDropdown}.
+	 * When called it will check if any of the {@link #items} overflow and if so, it will
+	 * move it to the {@link #overflowedItemsDropdown}.
 	 *
 	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
-	 * "grouped" items in the {@link #wrappedItemsDropdown} to be returned back.
+	 * "grouped" items in the {@link #overflowedItemsDropdown} to be returned back.
 	 *
 	 * @protected
 	 */
-	_groupOrUngroupWrappingItems() {
+	_groupOrUngroupOverflowedItems() {
 		// Do not check when another check is going to avoid infinite loops.
 		// This method is called upon adding and removing #items and it adds and removes
 		// #items itself, so that would be a disaster.
-		if ( this._itemsWrappingLock ) {
+		if ( this._overflowingItemsActionLock ) {
 			return;
 		}
 
-		// There's no way to check wrapping when there is no element (before #render()).
+		// There's no way to check overflow when there is no element (before #render()).
 		// Or when element has no parent because ClientRects won't work when #element not in DOM.
 		if ( !this.element || !this.element.parentNode ) {
 			return;
 		}
 
-		this._itemsWrappingLock = true;
+		this._overflowingItemsActionLock = true;
 
 		let wereItemsGrouped;
 
-		// Group #items as long as any wraps to the next line. This will happen, for instance,
+		// Group #items as long as any overflows. This will happen, for instance,
 		// when the toolbar is getting narrower and there's less and less space in it.
-		while ( this._areItemsWrapping ) {
+		while ( this._areItemsOverflowing ) {
 			this._groupLastItem();
 
 			wereItemsGrouped = true;
@@ -415,29 +472,22 @@ export default class ToolbarView extends View {
 		// If none were grouped now but there were some items already grouped before,
 		// then maybe let's see if some of them can be ungrouped. This happens when,
 		// for instance, the toolbar is stretching and there's more space in it than before.
-		if ( !wereItemsGrouped && this._hasWrappedItemsDropdown ) {
-			let areItemsWraping;
-
-			// Ungroup items as long as none are wrapping to the next line...
-			while ( !( areItemsWraping = this._areItemsWrapping ) ) {
+		if ( !wereItemsGrouped && this._hasOverflowedItemsDropdown ) {
+			// Ungroup items as long as none are overflowing or there are none to ungroup left.
+			while ( this._groupedItems.length && !this._areItemsOverflowing ) {
 				this._ungroupFirstItem();
-
-				// ...or there are none to ungroup left.
-				if ( !this._groupedItems.length ) {
-					break;
-				}
 			}
 
-			// If the ungrouping ended up with some item wrapping to the next line,
+			// If the ungrouping ended up with some item overflowing,
 			// put it back to the group toolbar (undo the last ungroup). We don't know whether
-			// an item will wrap or not until we ungroup it (that's a DOM/CSS thing) so this
+			// an item will overflow or not until we ungroup it (that's a DOM/CSS thing) so this
 			// clean–up is vital.
-			if ( areItemsWraping ) {
+			if ( this._areItemsOverflowing ) {
 				this._groupLastItem();
 			}
 		}
 
-		this._itemsWrappingLock = false;
+		this._overflowingItemsActionLock = false;
 	}
 }
 
