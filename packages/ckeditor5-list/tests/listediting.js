@@ -1302,6 +1302,17 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
+				test( 'fixing list - ul in ol',
+					'<ol>' +
+						'<ul>' +
+							'<li>1.1</li>' +
+						'</ul>' +
+					'</ol>',
+					'<ul>' +
+					'<li>1.1</li>' +
+					'</ul>'
+				);
+
 				test( 'fixing list - ul in ul (prev is li)',
 					'<ul>' +
 						'<li>1</li>' +
@@ -1333,6 +1344,21 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
+				test( 'fixing list - ul in deeply nested ul/ol',
+					'<ol>' +
+						'<ul>' +
+							'<ol>' +
+								'<ul>' +
+									'<li>2.1</li>' +
+								'</ul>' +
+							'</ol>' +
+						'</ul>' +
+					'</ol>',
+					'<ul>' +
+					'<li>2.1</li>' +
+					'</ul>'
+				);
+
 				test( 'fixing list - ul in deeply nested ul',
 					'<ul>' +
 						'<li>A' +
@@ -1355,6 +1381,31 @@ describe( 'ListEditing', () => {
 							'<li>C</li>' +
 						'</ul>' +
 					'</li>' +
+					'</ul>'
+				);
+
+				test( 'fixing list - ul in deeply nested ul/ol',
+					'<ul>' +
+						'<li>A' +
+							'<ol>' +
+								'<ul>' +
+									'<ol>' +
+										'<ul>' +
+											'<li>B</li>' +
+										'</ul>' +
+									'</ol>' +
+								'</ul>' +
+								'<li>C</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>',
+					'<ul>' +
+						'<li>A' +
+						'<ul>' +
+							'<li>B</li>' +
+							'<li>C</li>' +
+						'</ul>' +
+						'</li>' +
 					'</ul>'
 				);
 			} );

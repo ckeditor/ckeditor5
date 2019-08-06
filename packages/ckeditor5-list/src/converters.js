@@ -392,20 +392,16 @@ function getIndentModifier( listItem, conversionStore ) {
 	// Ensure proper conversion store value.
 	conversionStore.indentModifiers = conversionStore.indentModifiers || new WeakMap();
 
-	const viewItem = listItem.parent;
+	const list = listItem.parent;
 
-	// View
-	if ( !viewItem || !viewItem.parent ) {
+	if ( !list || !list.parent ) {
 		return 0;
 	}
 
-	const parent = viewItem.parent;
-	const parentName = parent && parent.name;
-
 	let modifier = 0;
 
-	if ( parentName == 'ul' ) {
-		const previousSibling = viewItem.previousSibling;
+	if ( list.parent.is( 'ol' ) || list.parent.is( 'ul' ) ) {
+		const previousSibling = list.previousSibling;
 
 		if ( previousSibling ) {
 			if ( previousSibling.is( 'li' ) ) {
@@ -417,7 +413,7 @@ function getIndentModifier( listItem, conversionStore ) {
 	}
 
 	// Update the stored modifiers info.
-	conversionStore.indentModifiers.set( viewItem, modifier );
+	conversionStore.indentModifiers.set( list, modifier );
 
 	return modifier;
 }
