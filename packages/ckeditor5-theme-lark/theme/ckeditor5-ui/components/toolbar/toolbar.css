@@ -12,15 +12,6 @@
 	padding: 0 var(--ck-spacing-small);
 	border: 1px solid var(--ck-color-toolbar-border);
 
-	& > * {
-		/* (#11) Separate toolbar items. */
-		margin-right: var(--ck-spacing-small);
-
-		/* Make sure items wrapped to the next line have v-spacing */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
-	}
-
 	&.ck-toolbar_vertical {
 		/* Items in a vertical toolbar span the entire width. */
 		padding: 0;
@@ -41,23 +32,39 @@
 		}
 	}
 
-	& > *:last-child {
-		margin-right: 0;
+	& > .ck-toolbar__items {
+		&:not(:only-child) {
+			margin-right: var(--ck-spacing-small);
+		}
+
+		& > * {
+			/* (#11) Separate toolbar items. */
+			margin-right: var(--ck-spacing-small);
+
+			/* Make sure items wrapped to the next line have v-spacing */
+			margin-top: var(--ck-spacing-small);
+			margin-bottom: var(--ck-spacing-small);
+		}
+
+		& > *:last-child {
+			margin-right: 0;
+		}
+
+		& > .ck.ck-toolbar__separator {
+			align-self: stretch;
+			width: 1px;
+			margin-top: 0;
+			margin-bottom: 0;
+			background: var(--ck-color-toolbar-border);
+		}
+	}
+
+	/* Pull the grouped items dropdown to the right */
+	& > .ck.ck-toolbar__grouped-dropdown {
+		margin-left: auto;
 	}
 
 	@nest .ck-toolbar-container & {
 		border: 0;
 	}
-}
-
-.ck.ck-toolbar__separator {
-	align-self: stretch;
-	width: 1px;
-	margin-top: 0;
-	margin-bottom: 0;
-	background: var(--ck-color-toolbar-border);
-}
-
-.ck.ck-toolbar__newline {
-	margin: 0;
 }
