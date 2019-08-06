@@ -98,6 +98,37 @@ export default class TodoListEditing extends Plugin {
 
 			return hasChanged;
 		} );
+
+		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
+		//
+		// <blockquote><p>Foo</p></blockquote>
+		// <ul><li><checkbox/>{}Bar</li></ul>
+		//
+		// press: `<-`
+		//
+		// <blockquote><p>Foo{}</p></blockquote>
+		// <ul><li><checkbox/>Bar</li></ul>
+		editor.keystrokes.set( 'arrowleft', ( evt, stop ) => {
+			const schema = editor.model.schema;
+			const selection = editor.model.document.selection;
+
+			if ( !selection.isCollapsed ) {
+				return;
+			}
+
+			const position = selection.getFirstPosition();
+			const parent = position.parent;
+
+			if ( parent.name === 'listItem' && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
+				stop();
+
+				const newRange = schema.getNearestSelectionRange( editor.model.createPositionBefore( parent ), 'backward' );
+
+				if ( newRange ) {
+					editor.model.change( writer => writer.setSelection( newRange ) );
+				}
+			}
+		} );
 	}
 
 	/**
