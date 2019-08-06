@@ -156,7 +156,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
 	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
 	 * If `String` is given, the model attribute value will be set to `true`.
-	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToAttribute( config ) {
@@ -422,7 +422,7 @@ function upcastElementToElement( config ) {
 // @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
 // the model attribute. `value` property may be set as a function that takes a view element and returns the value.
 // If `String` is given, the model attribute value will be set to `true`.
-// @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+// @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
 // @returns {Function} Conversion helper.
 function upcastElementToAttribute( config ) {
 	config = cloneDeep( config );
