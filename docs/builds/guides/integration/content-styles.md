@@ -13,15 +13,15 @@ Some of the {@link features/index core editor features} bring additional CSS to 
 
 {@img assets/img/builds-content-styles.png 823 Editor content styles.}
 
-Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor 5, they create a monolithic structure called an {@link builds/guides/overview#l#available-builds editor build}. By default, content styles are inseparable from the rest of the editor which means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get editor content styles, for instance, for the front–end of your application, you will have to take additional steps described in this guide.
+Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor 5, they create a monolithic structure called an {@link builds/guides/overview#available-builds editor build}. By default, content styles are inseparable from the rest of the editor which means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get editor content styles, for instance, for the front–end of your application, you will have to take additional steps described in this guide.
 
 ## Sharing content styles between front– and back–end
 
-By default, content styles are loaded by the editor JavaScript which makes them only present when users edit their content and this, in turn, usually takes place in the back–end of an application. You want to use exactly the same styles in the front–end, you may find yourself in a situation that requires you to load CKEditor just for that purpose, which is (performance–wise) not the best idea.
+By default, content styles are loaded by the editor JavaScript which makes them only present when users edit their content and this, in turn, usually takes place in the back–end of an application. You want to use the same styles in the front–end, you may find yourself in a situation that requires you to load CKEditor just for that purpose, which is (performance–wise) not the best idea.
 
 To avoid unnecessary dependencies in your front–end use a stylesheet with a complete list of CKEditor 5 content styles used by all editor features. There are two ways to obtain it:
 
-* By taking it directly from [this guide](#TODO) and saving it as a static resource in your application (e.g. `content-styles.css`) (**recommended**).
+* By taking it directly from [this guide](#the-full-list-of-content-styles) and saving it as a static resource in your application (e.g. `content-styles.css`) (**recommended**).
 * By generating it using the `yarn docs:content-styles` script in the [root package](https://github.com/ckeditor/ckeditor5) of the editor:
 	```shell
 	> git clone git@github.com:ckeditor/ckeditor5.git
@@ -47,12 +47,12 @@ Load the `content-styles.css` file in your application by adding the following c
 <link rel="stylesheet" href="path/to/assets/content-styles.css" type="text/css">
 ```
 
-The content in the front–end of your application should now look exactly the same as when edited by the users.
+The content in the front–end of your application should now look the same as when edited by the users.
 
 <info-box warning>
 	**Important!**
 
-	If you take a closer look at the content styles you may notice they all are prefixed by the `.ck-content` class selector. This narrows their scope when used in CKEditor so they do not affect the rest of the application. To use them in the front–end, **you will have to** add the `ck-content` CSS class to the container of your content, otherwise styles will not apply.
+	If you take a closer look at the content styles you may notice they all are prefixed by the `.ck-content` class selector. This narrows their scope when used in CKEditor so they do not affect the rest of the application. To use them in the front–end, **you will have to** add the `ck-content` CSS class to the container of your content. Otherwise styles will not apply.
 </info-box>
 
 <info-box>
