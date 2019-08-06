@@ -37,23 +37,12 @@ npm install --save @wiris/mathtype-ckeditor5
 
 Then add it to your plugin list and the toolbar configuration:
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import MathType from '@wiris/mathtype-ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#math-type-editor' ), {
-		plugins: [
-			Essentials,
-			Bold,
-			Italic,
-			Heading,
-			MathType
-		],
-		toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|' , 'MathType', 'ChemType' ]
+		plugins: [ MathType, ... ],
+		toolbar: [ 'MathType', 'ChemType', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
