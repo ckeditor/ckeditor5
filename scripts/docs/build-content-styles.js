@@ -12,7 +12,7 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { version } = require( '../../package.json' );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
-const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/index.html';
+const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html';
 const VARIABLE_DEFINITION_REGEXP = /(--[\w-]+):\s+(.*);/g;
 const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
 
