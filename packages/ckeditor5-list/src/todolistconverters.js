@@ -12,11 +12,6 @@
 import { generateLiInUl, injectViewList } from './utils';
 
 /**
- * A model-to-view converter for `listItem` model element insertion.
- *
- * It creates a `<ul><li></li><ul>` (or `<ol>`) view structure out of a `listItem` model element, inserts it at the correct
- * position, and merges the list with surrounding lists (if available).
- *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:engine/model/model~Model} model Model instance.
  * @returns {Function} Returns a conversion callback.
@@ -44,7 +39,7 @@ export function modelViewInsertion( model ) {
 		const modelItem = data.item;
 		const viewItem = generateLiInUl( modelItem, conversionApi );
 
-		addTodoElementsToListItem( viewWriter, viewItem, modelItem, model );
+		addTodoElementsToListItem( modelItem, viewItem, viewWriter, model );
 		injectViewList( modelItem, viewItem, conversionApi, model );
 	};
 }
@@ -157,9 +152,9 @@ export function modelViewChangeType( model ) {
 
 		// Add or remove checkbox for toto list.
 		if ( data.attributeNewValue == 'todo' ) {
-			addTodoElementsToListItem( viewWriter, viewItem, data.item, model );
+			addTodoElementsToListItem( data.item, viewItem, viewWriter, model );
 		} else if ( data.attributeOldValue == 'todo' ) {
-			removeTodoElementsFromListItem( viewWriter, viewItem, data.item, model );
+			removeTodoElementsFromListItem( data.item, viewItem, viewWriter, model );
 		}
 	};
 }
@@ -178,7 +173,7 @@ export function modelViewChangeChecked( model ) {
 		const { mapper, writer: viewWriter } = conversionApi;
 		const isChecked = !!data.item.getAttribute( 'listChecked' );
 		const viewItem = mapper.toViewElement( data.item );
-		const uiElement = findCheckmarkElement( viewWriter, viewItem );
+		const uiElement = findCheckmarkElement( viewItem, viewWriter );
 
 		viewWriter.insert(
 			viewWriter.createPositionAfter( uiElement ),
@@ -190,7 +185,7 @@ export function modelViewChangeChecked( model ) {
 	};
 }
 
-function addTodoElementsToListItem( viewWriter, viewItem, modelItem, model ) {
+function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
 	const isChecked = !!modelItem.getAttribute( 'listChecked' );
 
 	viewWriter.addClass( 'todo-list', viewItem.parent );
@@ -203,7 +198,7 @@ function addTodoElementsToListItem( viewWriter, viewItem, modelItem, model ) {
 	);
 }
 
-function removeTodoElementsFromListItem( viewWriter, viewItem, modelItem, model ) {
+function removeTodoElementsFromListItem( modelItem, viewItem, viewWriter, model ) {
 	viewWriter.removeClass( 'todo-list', viewItem.parent );
 	viewWriter.remove( viewItem.getChild( 0 ) );
 	model.change( writer => writer.removeAttribute( 'listChecked', modelItem ) );
@@ -236,8 +231,8 @@ function createCheckMarkElement( isChecked, viewWriter, onChange ) {
 	return uiElement;
 }
 
-function findCheckmarkElement( viewWriter, parent ) {
-	for ( const item of viewWriter.createRangeIn( parent ).getItems() ) {
+function findCheckmarkElement( element, viewWriter ) {
+	for ( const item of viewWriter.createRangeIn( element ).getItems() ) {
 		if ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) ) {
 			return item;
 		}
