@@ -5,10 +5,6 @@
 
 @import "../../mixins/_unselectable.css";
 
-:root {
-	--ck-toolbar-groupped-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
-}
-
 .ck.ck-toolbar {
 	@mixin ck-unselectable;
 
@@ -34,8 +30,8 @@
 	width: 100%;
 }
 
-/* Pull the groupped items dropdown to the right */
-.ck.ck-toolbar__groupped-dropdown {
+/* Pull the grouped items dropdown to the right */
+.ck.ck-toolbar__grouped-dropdown {
 	margin-left: auto;
 
 	/*
