@@ -288,8 +288,6 @@ export default class Watchdog {
 	_save() {
 		const version = this._editor.model.document.version;
 
-		console.log( 'saving' );
-
 		// Change may not produce an operation, so the document's version
 		// can be the same after that change.
 		if ( version === this._lastDocumentVersion ) {
