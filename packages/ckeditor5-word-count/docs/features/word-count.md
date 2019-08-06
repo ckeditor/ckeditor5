@@ -88,9 +88,9 @@ ClassicEditor
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 
-## The `onUpdate` option
+## The `onUpdate` configuration option
 
-The {@link module:word-count/wordcount~WordCount WordCount} plugin emits the {@link module:word-count/wordcount~WordCount#event:update `update` event}. It allows implementing customized behaviors that react to word and character count updates. The {@link module:word-count/wordcount~WordCountConfig#onUpdate} is a configuration option, which executes a defined function whenever the word count plugin updates its values.
+The {@link module:word-count/wordcount~WordCount WordCount} plugin exposes the {@link module:word-count/wordcount~WordCountConfig#onUpdate `onUpdate`} configuration options, which executes a defined function whenever the word count plugin updates its values. It allows implementing customized behaviors that react to word and character count updates. The plugin also emits {@link module:word-count/wordcount~WordCount#event:update `update` event} which might be used for more complex solutions.
 
 Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature it in action. See the code used to create the demo listed later in this section.
 
@@ -146,7 +146,6 @@ BalloonEditor
 				};
 			} )()
 		}
-		// Editor configuration...
 	} )
 	.catch( ... );
 ```
