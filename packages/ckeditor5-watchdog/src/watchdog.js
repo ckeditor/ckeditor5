@@ -95,7 +95,10 @@ export default class Watchdog {
 		 * @private
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), config.saveInterval || 5000 );
+		this._throttledSave = throttle(
+			this._save.bind( this ),
+			typeof config.saveInterval === 'number' ? config.saveInterval : 5000
+		);
 
 		/**
 		 * The current editor instance.
@@ -266,7 +269,7 @@ export default class Watchdog {
 		window.removeEventListener( 'error', this._boundErrorHandler );
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
-		// Save data if there are remaining changes.
+		// Save data if there is a remaining editor data change.
 		this._throttledSave.flush();
 
 		return Promise.resolve()
@@ -284,6 +287,8 @@ export default class Watchdog {
 	 */
 	_save() {
 		const version = this._editor.model.document.version;
+
+		console.log( 'saving' );
 
 		// Change may not produce an operation, so the document's version
 		// can be the same after that change.
