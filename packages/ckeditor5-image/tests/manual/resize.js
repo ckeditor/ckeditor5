@@ -15,14 +15,19 @@ import ImageToolbar from '../../src/imagetoolbar';
 import ImageCaption from '../../src/imagecaption';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
 import ResizerCentral from '@ckeditor/ckeditor5-widget/src/resizercentral';
 import ResizerSide from '@ckeditor/ckeditor5-widget/src/resizerside';
 
 const commonConfig = {
 	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, ImageStyle, ImageToolbar, ImageCaption,
-		UndoPlugin, ClipboardPlugin ],
-	toolbar: [ 'undo', 'redo' ],
+		UndoPlugin, ClipboardPlugin, List, BlockQuote, Table, Indent, IndentBlock ],
+	toolbar: [ 'undo', 'redo', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'indent' ],
 	image: {
 		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side' ],
 		styles: [
