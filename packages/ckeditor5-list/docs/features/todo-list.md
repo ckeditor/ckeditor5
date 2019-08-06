@@ -3,7 +3,7 @@ title: To-do list
 category: features
 ---
 
-The {@link module:list/todo-list~TodoList} feature let you create lists of interactive unordered lists of checkbooks with labels. They support all features of regular lists so you can nest to-do list together with bullet and numbered list.
+The to-do list feature let you create lists of interactive unordered checkbooks with labels. They support all features of regular lists so you can nest to-do list together with bullet and numbered list in any combination.
 
 ## Demo
 
@@ -11,12 +11,12 @@ The {@link module:list/todo-list~TodoList} feature let you create lists of inter
 
 ## Keyboard support
 
-You can check/uncheck item using `ctrl` + `space` shortcut whenever the selection is in that item,
+You can check/uncheck item using <kbd>Ctrl</kbd> + <kbd>Space</kbd> shortcut whenever the selection is in that item.
 
 ## Installation
 
 <info-box info>
-    The list package is installed as a dependency of all builds, so as long as you do not building your own, custom rich text editor, you do not need to install npm packages. However, to-do list feature is not included and you need to rebuild the editor with the custom configuration.
+    The list package is installed as a dependency of all builds, so as long as you do not build your own, custom rich text editor, you do not need to install npm packages. However, to-do list feature is not included and you need to rebuild the editor with the custom configuration.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -28,7 +28,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add `TodoList` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import TodoList from '@ckeditor/ckeditor5-list/src/todo-list';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
@@ -43,15 +43,15 @@ ClassicEditor
     Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-## Representation:
+## HTML structure
 
-### In data:
+When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`} to-do list will be represented as the following HTML:
 
 ```html
 <ul class="todo-list">
   <li>
      <label class="todo-list__label [todo-list__label_checked]">
-        <input class="todo-list__label__checkmark" type="checkbox" disabled checked />
+        <input class="todo-list__label__checkmark" type="checkbox" disabled [checked] />
         <span class="todo-list__label__description">Foo</span>  
      </label>
   </li>
@@ -64,13 +64,13 @@ For nested lists:
 <ul class="todo-list">
   <li>
      <label class="todo-list__label [todo-list__label_checked]">
-        <input class="todo-list__label__checkmark" type="checkbox" disabled checked />
+        <input class="todo-list__label__checkmark" type="checkbox" disabled [checked] />
         <span class="todo-list__label__description">Foo</span>  
      </label>
       <ul class="todo-list">
         <li>
            <label class="todo-list__label [todo-list__label_checked]">
-              <input class="todo-list__label__checkmark" type="checkbox" disabled checked />
+              <input class="todo-list__label__checkmark" type="checkbox" disabled [checked] />
               <span class="todo-list__label__description">Bar</span>  
            </label>
         </li>
@@ -78,16 +78,17 @@ For nested lists:
   </li>
 </ul>
 ```
-### In the model:
+### Model representation
 
-Todo lists will be define in model as a separate list type:
+From the technical point of view, to-do lists are built on top of the list feature. In the CKEditor 5 data model they are represented as a special `listType`, with optional `todoListChecked` attributes:
+
+```html
+<listItem listType="todo">bom</listItem>
+```
 
 ```html
 <listItem listType="todo" todoListChecked="true">foo</listItem>
-<listItem listType="todo">bar</listItem>
 ```
-
-Note that, it does not prevent us from implementing "orderedTodo" type in the future if we will implement such lists. We will be also able to provide any UI on top of it if needed.
 
 ## Contribute
 
