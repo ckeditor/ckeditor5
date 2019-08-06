@@ -347,7 +347,10 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		// 2. Handle `listItem` model element attributes.
 		conversionStore.indent = conversionStore.indent || 0;
-		writer.setAttribute( 'listIndent', conversionStore.indent, listItem );
+
+		const modifier = getIndentModifier( data.viewItem, conversionStore );
+
+		writer.setAttribute( 'listIndent', conversionStore.indent + modifier, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
@@ -385,6 +388,40 @@ export function viewModelConverter( evt, data, conversionApi ) {
 	}
 }
 
+function getIndentModifier( listItem, conversionStore ) {
+	// Ensure proper conversion store value.
+	conversionStore.indentModifiers = conversionStore.indentModifiers || new WeakMap();
+
+	const viewItem = listItem.parent;
+
+	// View
+	if ( !viewItem || !viewItem.parent ) {
+		return 0;
+	}
+
+	const parent = viewItem.parent;
+	const parentName = parent && parent.name;
+
+	let modifier = 0;
+
+	if ( parentName == 'ul' ) {
+		const previousSibling = viewItem.previousSibling;
+
+		if ( previousSibling ) {
+			if ( previousSibling.is( 'li' ) ) {
+				modifier = 1;
+			} else {
+				modifier = conversionStore.indentModifiers.get( previousSibling );
+			}
+		}
+	}
+
+	// Update the stored modifiers info.
+	conversionStore.indentModifiers.set( viewItem, modifier );
+
+	return modifier;
+}
+
 /**
  * A view-to-model converter for `<ul>` and `<ol>` view elements that cleans the input view of garbage.
  * This is mostly to clean whitespaces from between `<li>` view elements inside the view list element, however, also
@@ -401,7 +438,9 @@ export function cleanList( evt, data, conversionApi ) {
 		const children = Array.from( data.viewItem.getChildren() );
 
 		for ( const child of children ) {
-			if ( !child.is( 'li' ) ) {
+			const isWrongElement = !( child.is( 'li' ) || child.is( 'ul' ) || child.is( 'ol' ) );
+
+			if ( isWrongElement ) {
 				child._remove();
 			}
 		}

@@ -1290,6 +1290,86 @@ describe( 'ListEditing', () => {
 				} );
 			}
 
+			describe( 'fixing nested list in list', () => {
+				test( 'fixing list - ul in ul',
+					'<ul>' +
+						'<ul>' +
+							'<li>1.1</li>' +
+						'</ul>' +
+					'</ul>',
+					'<ul>' +
+						'<li>1.1</li>' +
+					'</ul>'
+				);
+
+				test( 'fixing list - ul in ul (prev is li)',
+					'<ul>' +
+						'<li>1</li>' +
+						'<ul>' +
+							'<li>2.1</li>' +
+						'</ul>' +
+					'</ul>',
+					'<ul>' +
+						'<li>1' +
+							'<ul>' +
+								'<li>2.1</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				test( 'fixing list - ul in deeply nested ul',
+					'<ul>' +
+						'<ul>' +
+							'<ul>' +
+								'<ul>' +
+									'<li>2.1</li>' +
+								'</ul>' +
+							'</ul>' +
+						'</ul>' +
+					'</ul>',
+					'<ul>' +
+					'<li>2.1</li>' +
+					'</ul>'
+				);
+
+				test( 'fixing list - ul in deeply nested ul',
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<ul>' +
+									'<ul>' +
+										'<ul>' +
+											'<li>B</li>' +
+										'</ul>' +
+									'</ul>' +
+								'</ul>' +
+								'<li>C</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>',
+					'<ul>' +
+					'<li>A' +
+						'<ul>' +
+							'<li>B</li>' +
+							'<li>C</li>' +
+						'</ul>' +
+					'</li>' +
+					'</ul>'
+				);
+			} );
+
+			test( 'fixing list - ul in ul',
+				'<ul>' +
+					'<ul>' +
+						'<li>1.1</li>' +
+					'</ul>' +
+				'</ul>',
+				'<ul>' +
+					'<li>1.1</li>' +
+				'</ul>'
+			);
+
 			test( 'bullet list simple structure',
 				'<p>foo</p>' +
 				'<ul>' +
