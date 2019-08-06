@@ -7,7 +7,7 @@ The {@link module:list/todo-list~TodoList} feature let you create lists of inter
 
 ## Demo
 
-snippet
+{@snippet features/todo-list}
 
 ## Keyboard support
 
