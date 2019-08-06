@@ -55,6 +55,27 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *			}
  *		} );
  *
+ *		// Convert <p>'s font-size style.
+ *		// Note: You should use a low-priority observer in order to ensure that
+ *		// it's executed after the element-to-element converter.
+ *		editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
+ *			const { consumable, schema, writer } = conversionApi;
+ *
+ *			if ( !consumable.consume( data.viewItem, { style: 'font-size' } ) ) {
+ *				return;
+ *			}
+ *
+ *			const fontSize = data.viewItem.getStyle( 'font-size' );
+ *
+ *			// Don't go for the model element after data.modelCursor because it might happen
+ *			// that a single view element was converted to multiple model elements. Get all of them.
+ *			for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+ *				if ( schema.checkAttribute( item, 'fontSize' ) ) {
+ *					writer.setAttribute( 'fontSize', fontSize, item );
+ *				}
+ *			}
+ *		}, { priority: 'low' } );
+ *
  *		// Convert all elements which have no custom converter into paragraph (autoparagraphing).
  *  	editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
  *  	 	// When element is already consumed by higher priority converters then do nothing.
