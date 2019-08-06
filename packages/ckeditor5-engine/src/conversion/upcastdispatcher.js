@@ -58,7 +58,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		// Convert <p>'s font-size style.
  *		// Note: You should use a low-priority observer in order to ensure that
  *		// it's executed after the element-to-element converter.
- *		editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
+ *		editor.data.upcastDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
  *			const { consumable, schema, writer } = conversionApi;
  *
  *			if ( !consumable.consume( data.viewItem, { style: 'font-size' } ) ) {
