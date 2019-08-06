@@ -132,7 +132,7 @@ runWebpack( webpackConfig )
 		return writeFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ), data );
 	} )
 	.then( () => {
-		console.log( `Content styles has saved under the path: ${ path.join( DESTINATION_DIRECTORY, 'content-styles.css' ) }` );
+		console.log( `Content styles have been extracted to ${ path.join( DESTINATION_DIRECTORY, 'content-styles.css' ) }` );
 	} )
 	.catch( err => {
 		console.log( err );

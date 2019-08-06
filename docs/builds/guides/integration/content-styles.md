@@ -36,10 +36,8 @@ To avoid unnecessary dependencies in your front–end use a stylesheet with a co
 	> yarn docs:content-styles
 	yarn run v1.16.0
 	$ node ./scripts/docs/build-content-styles.js
-	Content styles has saved under the path: /path/to/ckeditor5/build/content-styles/content-styles.css
+	Content styles have been extracted to /path/to/ckeditor5/build/content-styles/content-styles.css
 	```
-
-	The content styles are saved to the `ckeditor5/build/content-styles/content-styles.css` file ready to be used it in your project.
 
 Load the `content-styles.css` file in your application by adding the following code to the template:
 
