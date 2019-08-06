@@ -24,7 +24,7 @@ In your existing Angular project, install the [CKEditor 5 WYSIWYG editor compone
 npm install --save @ckeditor/ckeditor5-angular
 ```
 
-Install one of the {@link builds/guides/overview#available-builds official editor builds} or [create a custom one](#using-ckeditor-5-custom-builds).
+Install one of the {@link builds/guides/overview#available-builds official editor builds} or [create a custom one](#using-custom-ckeditor-5-builds).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -97,9 +97,9 @@ And then, in the template:
 
 ### Strict mode project tips
 
-If you have the strict mode set in your project, then you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
+If you have the strict mode set in your project, you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
 
-To fix that you need to create a TS declaration file and declare modules which miss their types:
+To fix that you need to create a TypeScript declaration file and declare modules that miss their types:
 
 ```ts
 // typings.d.ts
@@ -112,13 +112,13 @@ declare module '@ckeditor/ckeditor5-build-classic' {
 }
 ```
 
-Unfortunately, CKEditor 5 builds do not ship with corresponding TS typings yet. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
+Unfortunately, CKEditor 5 builds do not ship with corresponding TypeScript typings yet. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
 
-## Using CKEditor 5 custom builds
+## Using custom CKEditor 5 builds
 
-If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration}) you should create the custom build first, using the {@link builds/guides/development/custom-builds create a custom build guide} first.
+If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration} you should create a custom build first, using the {@link builds/guides/development/custom-builds create a custom build guide} first.
 
-You should finish the above tutorial having the `ckeditor.js` file (and corresponding translation files) generated. In the next step you should copy it to the `src` directory and import from the component file.
+You should finish the above tutorial with the generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import from the component file.
 
 ```ts
 import * as Editor from 'path/to/the/ckeditor';
@@ -131,7 +131,7 @@ export class MyComponent {
 }
 ```
 
-Note that to allow importing JS files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you targets the `ES6` or higher, otherwise you are likely to end up with [a weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
+Note that to allow importing JavaScript files without providing their corresponding types you need to set `allowJs` to `true` in the `tsconfig.json` file. Also, make sure that you target `ES6` or higher, otherwise you are likely to end up with [a weird transpilation error](https://github.com/ckeditor/ckeditor5-angular/issues/20) in the production build.
 
 ```json
 "compilerOptions": {
@@ -142,7 +142,7 @@ Note that to allow importing JS files without providing their corresponding type
 ```
 
 <info-box>
-	If you cannot set the target higher than the `es5`, then try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
+	If you cannot set the target higher than `es5`, try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
 </info-box>
 
 ## Integration with `ngModel`
