@@ -14,8 +14,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
 	modelViewInsertion,
-	dataModelViewInsertion,
 	modelViewTextInsertion,
+	dataModelViewInsertion,
 	dataModelViewTextInsertion,
 	modelViewChangeChecked,
 	modelViewChangeType
@@ -51,6 +51,7 @@ export default class TodoListEditing extends Plugin {
 		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( editor.model ) );
+
 		editing.downcastDispatcher.on( 'attribute:listChecked:listItem', modelViewChangeChecked( editor.model ) );
 
 		// Register command for todo list.
@@ -172,7 +173,7 @@ function moveSelectionAfterCheckmark( writer, selection ) {
 // @private
 // @param {module:engine/view/uielement~UIElement} element
 function getListItemAncestor( element ) {
-	for ( const parent of element.getAncestors() ) {
+	for ( const parent of element.getAncestors( { parentFirst: true } ) ) {
 		if ( parent.name == 'li' ) {
 			return parent;
 		}

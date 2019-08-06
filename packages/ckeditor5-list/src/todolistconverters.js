@@ -7,7 +7,8 @@
  * @module list/todolistconverters
  */
 
-import { addTodoElementsToListItem, createCheckMarkElement, removeTodoElementsFromListItem } from './todolistutils';
+/* global document */
+
 import { generateLiInUl, injectViewList } from './utils';
 
 /**
@@ -187,6 +188,52 @@ export function modelViewChangeChecked( model ) {
 		);
 		viewWriter.remove( uiElement );
 	};
+}
+
+function addTodoElementsToListItem( viewWriter, viewItem, modelItem, model ) {
+	const isChecked = !!modelItem.getAttribute( 'listChecked' );
+
+	viewWriter.addClass( 'todo-list', viewItem.parent );
+
+	viewWriter.insert(
+		viewWriter.createPositionAt( viewItem, 0 ),
+		createCheckMarkElement( isChecked, viewWriter, isChecked => {
+			model.change( writer => writer.setAttribute( 'listChecked', isChecked, modelItem ) );
+		} )
+	);
+}
+
+function removeTodoElementsFromListItem( viewWriter, viewItem, modelItem, model ) {
+	viewWriter.removeClass( 'todo-list', viewItem.parent );
+	viewWriter.remove( viewItem.getChild( 0 ) );
+	model.change( writer => writer.removeAttribute( 'listChecked', modelItem ) );
+}
+
+function createCheckMarkElement( isChecked, viewWriter, onChange ) {
+	const uiElement = viewWriter.createUIElement(
+		'label',
+		{
+			class: 'todo-list__checkmark',
+			contenteditable: false
+		},
+		function( domDocument ) {
+			const domElement = this.toDomElement( domDocument );
+			const checkbox = document.createElement( 'input' );
+
+			checkbox.type = 'checkbox';
+			checkbox.checked = isChecked;
+			checkbox.addEventListener( 'change', evt => onChange( evt.target.checked ) );
+			domElement.appendChild( checkbox );
+
+			return domElement;
+		}
+	);
+
+	if ( isChecked ) {
+		viewWriter.addClass( 'todo-list__checkmark_checked', uiElement );
+	}
+
+	return uiElement;
 }
 
 function findCheckmarkElement( viewWriter, parent ) {
