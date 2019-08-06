@@ -23,6 +23,15 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				.create( { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
+
+					editor.model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+					editor.conversion.attributeToElement( { model: 'bold', view: 'b' } );
+
+					editor.model.schema.register( 'blockQuote', {
+						allowWhere: '$block',
+						allowContentOf: '$root'
+					} );
+					editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 				} );
 		} );
 
@@ -48,14 +57,13 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
-		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
 		it( 'nbsp at the end of the content is not ignored', () => {
-			editor.setData( '<p>foo</p>' );
+			editor.setData( '<p>foo&nbsp;</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph>' );
+				.to.equal( '<paragraph>foo </paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo&nbsp;</p>' );
 		} );
 
 		it( 'new line at the beginning of the content is ignored', () => {
@@ -76,14 +84,13 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
-		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
 		it( 'nbsp at the beginning of the content is not ignored', () => {
-			editor.setData( '<p>foo</p>' );
+			editor.setData( '<p>&nbsp;foo</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph>' );
+				.to.equal( '<paragraph> foo</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).to.equal( '<p>&nbsp;foo</p>' );
 		} );
 
 		it( 'new line between blocks is ignored', () => {
@@ -104,14 +111,31 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
-		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
-		it( 'nbsp between blocks is not ignored', () => {
+		it( 'nbsp between blocks is ignored #1', () => {
 			editor.setData( '<p>foo</p>&nbsp;<p>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'nbsp between blocks is ignored #2', () => {
+			editor.setData( '<table>foo</table>&nbsp;<p>bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'nbsp between blocks is ignored #2', () => {
+			editor.setData( '<blockquote>foo</blockquote>&nbsp;<blockquote>bar</blockquote>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<blockQuote><paragraph>foo</paragraph></blockQuote><blockQuote><paragraph>bar</paragraph></blockQuote>' );
+
+			expect( editor.getData() ).to.equal( '<blockquote><p>foo</p></blockquote><blockquote><p>bar</p></blockquote>' );
 		} );
 
 		it( 'new lines inside blocks are ignored', () => {
@@ -141,6 +165,15 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;foo&nbsp;</p>' );
 		} );
 
+		it( 'single nbsp inside blocks are ignored', () => {
+			editor.setData( '<p>&nbsp;</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '' ); // trimmed
+		} );
+
 		it( 'all whitespaces together are ignored', () => {
 			editor.setData( '\n<p>foo\n\r\n \t</p>\n<p> bar</p>' );
 
@@ -148,6 +181,15 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'nbsp between inline elements inside blocks are not ignored', () => {
+			editor.setData( '<p><b>foo</b>&nbsp;<b>bar</b></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foo</$text>\u00A0<$text bold="true">bar</$text></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><b>foo</b>&nbsp;<b>bar</b></p>' );
 		} );
 	} );
 

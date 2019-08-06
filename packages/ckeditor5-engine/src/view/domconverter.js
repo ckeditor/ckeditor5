@@ -370,7 +370,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isBlockFiller( domNode, this.blockFiller ) ) {
+		if ( isBlockFiller( domNode, this.blockFiller ) && isFooBar( domNode, this.blockElements ) ) {
 			return null;
 		}
 
@@ -1195,4 +1195,8 @@ function forEachDomNodeAncestor( node, callback ) {
 		callback( node );
 		node = node.parentNode;
 	}
+}
+
+function isFooBar( domNode, blockElements ) {
+	return !_hasDomParentOfType( domNode, blockElements ) || ( !domNode.parentNode || domNode.parentNode.childNodes.length === 1 );
 }
