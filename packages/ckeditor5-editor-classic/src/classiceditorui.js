@@ -148,7 +148,7 @@ export default class ClassicEditorUI extends EditorUI {
 			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
-		view.toolbar.isGrouping = true;
+		view.toolbar.shouldGroupWhenFull = true;
 		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
