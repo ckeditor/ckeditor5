@@ -29,23 +29,26 @@ export default class ResizerCentral {
 	attach() {}
 
 	begin() {
-		this.redraw();
+		const clientRect = this.context._getResizeHost().getBoundingClientRect();
+
+		// Size of resize host before current resizing transaction.
+		this.initialSize = {
+			width: clientRect.width,
+			height: clientRect.height
+		};
+
+		this.redrawShadow();
+
 		const resizeHost = this.context._getResizeHost();
 		this.closestReferencePoint = getAbsoluteBoundaryPoint( resizeHost, this.context.referenceHandlerPosition );
 	}
 
-	redraw() {
+	redrawShadow() {
 		if ( this.context.domResizeWrapper ) {
 			const clientRect = this.context._getResizeHost().getBoundingClientRect();
 
-			// Size of resize host before current resizing transaction.
-			this.initialSize = {
-				width: clientRect.width,
-				height: clientRect.height
-			};
-
-			this.context.domResizeWrapper.style.width = this.initialSize.width + 'px';
-			this.context.domResizeWrapper.style.height = this.initialSize.height + 'px';
+			this.context.domResizeWrapper.style.width = clientRect.width + 'px';
+			this.context.domResizeWrapper.style.height = clientRect.height + 'px';
 		}
 	}
 
@@ -138,6 +141,8 @@ export default class ResizerCentral {
 
 		return drawnSize; // @todo decide what size should actually be returned.
 	}
+
+	redraw() {}
 }
 
 mix( ResizerCentral, ObservableMixin );

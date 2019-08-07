@@ -74,7 +74,7 @@ export default class WidgetResizer extends Plugin {
 			for ( const context of this.contexts ) {
 				// This check is needed, as there were cases when widget was not yet initialized but layoutChanged happened.
 				if ( context.domResizeWrapper && context.domResizeWrapper.parentElement ) {
-					context.resizeStrategy.redraw();
+					context.resizeStrategy.redrawShadow();
 				}
 			}
 		} );
