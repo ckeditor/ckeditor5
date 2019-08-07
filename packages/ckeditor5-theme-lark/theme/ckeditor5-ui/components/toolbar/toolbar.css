@@ -17,7 +17,7 @@
 		padding: 0;
 
 		/* Specificity matters here. See https://github.com/ckeditor/ckeditor5-theme-lark/issues/168. */
-		& > .ck {
+		& > .ck-toolbar__items > .ck {
 			/* Items in a vertical toolbar should span the horizontal space. */
 			width: 100%;
 
@@ -34,7 +34,7 @@
 
 	& > .ck-toolbar__items {
 		&:not(:only-child) {
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-spacing-large);
 		}
 
 		& > * {
