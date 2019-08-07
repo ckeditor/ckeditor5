@@ -18,7 +18,8 @@ import {
 	dataModelViewInsertion,
 	dataModelViewTextInsertion,
 	modelViewChangeChecked,
-	modelViewChangeType
+	modelViewChangeType,
+	dataViewModelCheckmarkInsertion
 } from './todolistconverters';
 
 /**
@@ -52,6 +53,8 @@ export default class TodoListEditing extends Plugin {
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( model ) );
 		editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', modelViewChangeChecked( model ) );
+
+		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
 		// Register command for todo list.
 		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );

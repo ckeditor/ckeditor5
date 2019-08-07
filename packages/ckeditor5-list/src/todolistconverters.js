@@ -185,6 +185,31 @@ export function modelViewChangeChecked( model ) {
 	};
 }
 
+/**
+ * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
+ * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+ * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
+ * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
+ */
+export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
+	if ( data.viewItem.getAttribute( 'type' ) != 'checkbox' || data.modelCursor.parent.name != 'listItem' ) {
+		return;
+	}
+
+	if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+		return;
+	}
+
+	const { writer } = conversionApi;
+	const modelItem = data.modelCursor.parent;
+
+	writer.setAttribute( 'listType', 'todo', modelItem );
+
+	if ( data.viewItem.getAttribute( 'checked' ) == 'checked' ) {
+		writer.setAttribute( 'todoListChecked', true, modelItem );
+	}
+}
+
 function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
 	const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
 
