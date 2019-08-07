@@ -16,6 +16,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		// Temporary fix for WProofreader dialog.
+		editor.ui.getEditableElement().editor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
