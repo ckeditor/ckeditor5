@@ -262,6 +262,9 @@ describe( 'Watchdog', () => {
 				setTimeout( () => {
 					throw new Error( 'foo' );
 				} );
+				setTimeout( () => {
+					throw 'bar';
+				} );
 
 				return new Promise( res => {
 					setTimeout( () => {
@@ -691,6 +694,63 @@ describe( 'Watchdog', () => {
 						watchdog.destroy().then( res );
 					} );
 				} );
+			} );
+		} );
+	} );
+
+	describe( 'async error handling', () => {
+		it( 'Watchdog should handle async CKEditorError errors', () => {
+			const watchdog = Watchdog.for( ClassicTestEditor );
+			const originalErrorHandler = window.onerror;
+
+			window.onerror = undefined;
+
+			return watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const oldEditor = watchdog.editor;
+
+				Promise.resolve().then( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.editor ).to.not.equal( oldEditor );
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not react to non-editor async errors', () => {
+			const watchdog = Watchdog.for( ClassicTestEditor );
+			const originalErrorHandler = window.onerror;
+			const editorErrorSpy = sinon.spy();
+
+			window.onerror = undefined;
+
+			return watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				watchdog.on( 'error', editorErrorSpy );
+
+				Promise.resolve().then( () => Promise.reject( 'foo' ) );
+				Promise.resolve().then( () => Promise.reject( new Error( 'bar' ) ) );
+
+				// Wait a cycle.
+				return new Promise( res => setTimeout( res ) );
+			} ).then( () => {
+				window.onerror = originalErrorHandler;
+
+				sinon.assert.notCalled( editorErrorSpy );
+				expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+				return watchdog.destroy();
 			} );
 		} );
 	} );

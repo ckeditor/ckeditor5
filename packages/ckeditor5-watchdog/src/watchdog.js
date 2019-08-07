@@ -30,10 +30,11 @@ export default class Watchdog {
 		 * An array of crashes saved as an object with the following properties:
 		 *
 		 * * `message`: `String`,
-		 * * `source`: `String`,
-		 * * `lineno`: `String`,
-		 * * `colno`: `String`,
+		 * * `stack`: `String`,
 		 * * `date`: `Number`,
+		 * * `source`: `String | undefined`,
+		 * * `lineno`: `String | undefined`,
+		 * * `colno`: `String` | undefined,
 		 *
 		 * @public
 		 * @readonly
@@ -78,7 +79,19 @@ export default class Watchdog {
 		 * @private
 		 * @type {Function}
 		 */
-		this._boundErrorHandler = this._handleGlobalErrorEvent.bind( this );
+		this._boundErrorHandler = evt => {
+			// `evt.error` is exposed by EventError while `evt.reason` is available in PromiseRejectionEvent.
+
+			if ( evt.reason ) {
+				// Note that evt.reason might be everything that is in the promise rejection.
+				if ( evt.reason instanceof Error ) {
+					this._handleError( evt.reason, evt );
+				}
+			} else {
+				// TODO: what throw 'foo' will do?
+				this._handleError( evt.error, evt );
+			}
+		};
 
 		/**
 		 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
@@ -229,6 +242,8 @@ export default class Watchdog {
 				this._editor = editor;
 
 				window.addEventListener( 'error', this._boundErrorHandler );
+				window.addEventListener( 'unhandledrejection', this._boundErrorHandler );
+
 				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
 
 				this._lastDocumentVersion = editor.model.document.version;
@@ -256,6 +271,8 @@ export default class Watchdog {
 	 */
 	_destroy() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
+		window.removeEventListener( 'unhandledrejection', this._boundErrorHandler );
+
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
 		return Promise.resolve()
@@ -293,28 +310,32 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context) and
-	 * restarts the editor. It handles {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
+	 * Checks if the error comes from the editor that is handled by the watchdog (by checking the error context) and
+	 * restarts the editor. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
 	 * @private
 	 * @fires error
-	 * @param {Event} evt Error event.
+	 * @param {Error} error Error.
+	 * @param {ErrorEvent} evt Error event.
 	 */
-	_handleGlobalErrorEvent( evt ) {
-		if ( evt.error.is && evt.error.is( 'CKEditorError' ) && evt.error.context === undefined ) {
+	_handleError( error, evt ) {
+		if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
 			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
 		}
 
-		if ( this._shouldReactToErrorEvent( evt ) ) {
+		if ( this._shouldReactToError( error ) ) {
 			this.crashes.push( {
-				message: evt.error.message,
+				message: error.message,
+				stack: error.stack,
+
+				// evt.source, evt.lineno and evt.colno are available only in ErrorEvent
 				source: evt.source,
 				lineno: evt.lineno,
 				colno: evt.colno,
 				date: Date.now()
 			} );
 
-			this.fire( 'error', { error: evt.error } );
+			this.fire( 'error', { error } );
 			this.state = 'crashed';
 
 			if ( this._shouldRestartEditor() ) {
@@ -326,25 +347,25 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks whether the error event should be handled.
+	 * Checks whether the error should be handled.
 	 *
 	 * @private
-	 * @param {Event} evt Error event.
+	 * @param {Error} error Error event.
 	 */
-	_shouldReactToErrorEvent( evt ) {
+	_shouldReactToError( error ) {
 		return (
-			evt.error.is &&
-			evt.error.is( 'CKEditorError' ) &&
-			evt.error.context !== undefined &&
+			error.is &&
+			error.is( 'CKEditorError' ) &&
+			error.context !== undefined &&
 
 			// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
 			// That's why the `null` was introduced as a correct error context which does cause restarting.
-			evt.error.context !== null &&
+			error.context !== null &&
 
 			// Do not react to errors if the watchdog is in states other than `ready`.
 			this.state === 'ready' &&
 
-			this._isErrorComingFromThisEditor( evt.error )
+			this._isErrorComingFromThisEditor( error )
 		);
 	}
 
