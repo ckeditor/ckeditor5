@@ -45,14 +45,6 @@
 		& > *:last-child {
 			margin-right: 0;
 		}
-
-		& > .ck.ck-toolbar__separator {
-			align-self: stretch;
-			width: 1px;
-			margin-top: 0;
-			margin-bottom: 0;
-			background: var(--ck-color-toolbar-border);
-		}
 	}
 
 	& > .ck-toolbar__items > *,
@@ -62,9 +54,17 @@
 		margin-bottom: var(--ck-spacing-small);
 	}
 
-	/* Pull the grouped items dropdown to the right */
 	& > .ck.ck-toolbar__grouped-dropdown {
-		margin-left: auto;
+		padding-left: var(--ck-spacing-small);
+	}
+
+	& .ck.ck-toolbar__separator {
+		align-self: stretch;
+		width: 1px;
+		min-width: 1px;
+		margin-top: 0;
+		margin-bottom: 0;
+		background: var(--ck-color-toolbar-border);
 	}
 
 	@nest .ck-toolbar-container & {
