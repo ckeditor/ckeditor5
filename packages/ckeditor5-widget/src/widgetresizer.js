@@ -70,7 +70,7 @@ export default class WidgetResizer extends Plugin {
 		};
 
 		this.editor.editing.view.document.on( 'layoutChanged', () => {
-			// This works around the issue witn undo.
+			// This works around the issue with undo.
 			for ( const context of this.contexts ) {
 				// This check is needed, as there were cases when widget was not yet initialized but layoutChanged happened.
 				if ( context.domResizeWrapper && context.domResizeWrapper.parentElement ) {

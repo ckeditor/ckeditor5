@@ -122,7 +122,14 @@ export default class ResizerCentral {
 
 		if ( resizeUsingImage ) {
 			resizeHost.style.width = `${ drawnSize.x }px`;
-			resizeHost.style.height = `${ drawnSize.y }px`;
+			// resizeHost.style.height = `${ drawnSize.y }px`;
+
+			const latestRect = resizeHost.getBoundingClientRect();
+
+			// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
+			// here will reflect this limitation on resizer shadow later on.
+			drawnSize.x = latestRect.width;
+			drawnSize.y = latestRect.height;
 		} else {
 			const invertedPosition = this.context._invertPosition( context.referenceHandlerPosition );
 
