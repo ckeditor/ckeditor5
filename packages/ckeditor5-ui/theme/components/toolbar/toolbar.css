@@ -12,23 +12,36 @@
 	flex-flow: row nowrap;
 	align-items: center;
 
-	&.ck-toolbar_vertical {
-		flex-direction: column;
-	}
-
-	&.ck-toolbar_floating {
-		flex-wrap: nowrap;
-	}
-
 	& > .ck-toolbar__items {
 		display: flex;
-		flex-flow: row nowrap;
+		flex-flow: row wrap;
 		align-items: center;
 		flex-grow: 1;
 
 		& > .ck.ck-toolbar__separator {
 			display: inline-block;
+
+			/*
+			 * A leading or trailing separator makes no sense (separates nothing from one side).
+			 * Better hide it for better look.
+			 */
+			&:first-child,
+			&:last-child {
+				display: none;
+			}
 		}
+	}
+
+	&.ck-toolbar_grouping > .ck-toolbar__items {
+		flex-wrap: nowrap;
+	}
+
+	&.ck-toolbar_vertical > .ck-toolbar__items {
+		flex-direction: column;
+	}
+
+	&.ck-toolbar_floating > .ck-toolbar__items {
+		flex-wrap: nowrap;
 	}
 
 	& > .ck.ck-toolbar__grouped-dropdown {
@@ -42,10 +55,6 @@
 
 		& > .ck-dropdown__button .ck-dropdown__arrow {
 			display: none;
-		}
-
-		& > .ck.ck-dropdown__panel > .ck-toolbar {
-			flex-wrap: nowrap;
 		}
 	}
 }

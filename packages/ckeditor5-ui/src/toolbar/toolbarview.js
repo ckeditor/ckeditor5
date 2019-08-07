@@ -15,7 +15,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
-import RectObserver from '../rectobserver';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -70,7 +70,7 @@ export default class ToolbarView extends View {
 		 * that would normally overflow.
 		 *
 		 * **Note:** It is created on demand when the space in the toolbar is scarce and only
-		 * if {@link #isGrouping} is `true`.
+		 * if {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
 		 * @member {module:ui/dropdown/dropdownview~DropdownView} #overflowedItemsDropdown
@@ -97,12 +97,13 @@ export default class ToolbarView extends View {
 		 * TODO
 		 *
 		 * @observable
-		 * @member {Boolean} #isGrouping
+		 * @member {Boolean} #shouldGroupWhenFull
 		 */
-		this.set( 'isGrouping', false );
+		this.set( 'shouldGroupWhenFull', false );
 
-		this.on( 'change:isGrouping', ( evt, name, isGrouping ) => {
-			if ( isGrouping ) {
+		// Grouping can be enabled before or after render.
+		this.on( 'change:shouldGroupWhenFull', () => {
+			if ( this.shouldGroupWhenFull ) {
 				this._enableOverflowedItemsGroupingOnResize();
 			}
 		} );
@@ -132,16 +133,16 @@ export default class ToolbarView extends View {
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {}
+		 * @member {Boolean}
 		 */
-		this._overflowingItemsActionLock = false;
+		this._updateLock = false;
 
 		/**
 		 * TODO
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {}
+		 * @member {Number}
 		 */
 		this._paddingRight = null;
 
@@ -152,14 +153,14 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {}
 		 */
-		this._rectObserver = null;
+		this._resizeObserver = null;
 
 		/**
 		 * TODO
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {}
+		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this._components = this.createCollection();
 		this._components.add( this._createItemsView() );
@@ -171,6 +172,7 @@ export default class ToolbarView extends View {
 					'ck',
 					'ck-toolbar',
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
+					bind.if( 'shouldGroupWhenFull', 'ck-toolbar_grouping' ),
 					bind.to( 'class' )
 				]
 			},
@@ -197,26 +199,16 @@ export default class ToolbarView extends View {
 
 		this.items.on( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );
-
-			if ( this.isGrouping ) {
-				this._groupOrUngroupOverflowedItems();
-			}
+			this.update();
 		} );
 
 		this.items.on( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element );
-
-			if ( this.isGrouping ) {
-				this._groupOrUngroupOverflowedItems();
-			}
+			this.update();
 		} );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-
-		if ( this.isGrouping ) {
-			this._enableOverflowedItemsGroupingOnResize();
-		}
 	}
 
 	/**
@@ -227,6 +219,10 @@ export default class ToolbarView extends View {
 		// so let's make sure it's actually destroyed along with the toolbar.
 		if ( this.overflowedItemsDropdown ) {
 			this.overflowedItemsDropdown.destroy();
+		}
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.disconnect();
 		}
 
 		return super.destroy();
@@ -287,7 +283,115 @@ export default class ToolbarView extends View {
 	}
 
 	/**
+	 * When called, if {@link #shouldGroupWhenFull} is `true`, it will check if any of the {@link #items} overflow
+	 * and if so, it will move it to the {@link #overflowedItemsDropdown}.
+	 *
+	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
+	 * "grouped" items in the {@link #overflowedItemsDropdown} to be returned back.
+	 */
+	update() {
+		if ( !this.shouldGroupWhenFull ) {
+			return;
+		}
+
+		// Do not check when another check is going to avoid infinite loops.
+		// This method is called upon adding and removing #items and it adds and removes
+		// #items itself, so that would be a disaster.
+		if ( this._updateLock ) {
+			return;
+		}
+
+		// There's no way to check overflow when there is no element (before #render()).
+		// Or when element has no parent because ClientRects won't work when #element not in DOM.
+		if ( !this.element || !this.element.parentNode ) {
+			return;
+		}
+
+		this._updateLock = true;
+
+		let wereItemsGrouped;
+
+		// Group #items as long as any overflows. This will happen, for instance,
+		// when the toolbar is getting narrower and there's less and less space in it.
+		while ( this._areItemsOverflowing ) {
+			this._groupLastItem();
+
+			wereItemsGrouped = true;
+		}
+
+		// If none were grouped now but there were some items already grouped before,
+		// then maybe let's see if some of them can be ungrouped. This happens when,
+		// for instance, the toolbar is stretching and there's more space in it than before.
+		if ( !wereItemsGrouped && this._hasOverflowedItemsDropdown ) {
+			// Ungroup items as long as none are overflowing or there are none to ungroup left.
+			while ( this._overflowedItems.length && !this._areItemsOverflowing ) {
+				this._ungroupFirstItem();
+			}
+
+			// If the ungrouping ended up with some item overflowing,
+			// put it back to the group toolbar (undo the last ungroup). We don't know whether
+			// an item will overflow or not until we ungroup it (that's a DOM/CSS thing) so this
+			// clean–up is vital.
+			if ( this._areItemsOverflowing ) {
+				this._groupLastItem();
+			}
+		}
+
+		this._updateLock = false;
+	}
+
+	/**
 	 * TODO
+	 *
+	 * @protected
+	 * @type {module:ui/viewcollection~ViewCollection}
+	 */
+	get _overflowedItems() {
+		return this.overflowedItemsDropdown.toolbarView.items;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _hasOverflowedItemsDropdown() {
+		return this.overflowedItemsDropdown && this._components.has( this.overflowedItemsDropdown );
+	}
+
+	/**
+	 * Returns `true` when any of toolbar {@link #items} overflows visually.
+	 * `false` otherwise.
+	 *
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _areItemsOverflowing() {
+		// An empty toolbar cannot overflow.
+		if ( !this.items.length ) {
+			return false;
+		}
+
+		if ( !this._paddingRight ) {
+			// parseInt() is essential because of quirky floating point numbers logic and DOM.
+			// If the padding turned out too big because of that, the groupped items dropdown would
+			// always look (from the Rect perspective) like it overflows (while it's not).
+			this._paddingRight = Number.parseInt(
+				global.window.getComputedStyle( this.element ).paddingRight );
+		}
+
+		const lastChildRect = new Rect( this.element.lastChild );
+		const toolbarRect = new Rect( this.element );
+
+		return lastChildRect.right > toolbarRect.right - this._paddingRight;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @protected
+	 * @returns {module:ui/view~View}
 	 */
 	_createItemsView() {
 		const toolbarItemsView = new View( this.locale );
@@ -310,23 +414,26 @@ export default class ToolbarView extends View {
 	 * Creates the {@link #overflowedItemsDropdown} on demand. Used when the space in the toolbar
 	 * is scarce and some items start overflow and need grouping.
 	 *
-	 * See {@link #isGrouping}.
+	 * See {@link #shouldGroupWhenFull}.
 	 *
 	 * @protected
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
 	_createOverflowedItemsDropdown() {
 		const t = this.t;
 		const locale = this.locale;
+		const overflowedItemsDropdown = createDropdown( locale );
 
-		this.overflowedItemsDropdown = createDropdown( locale );
-		this.overflowedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
-		addToolbarToDropdown( this.overflowedItemsDropdown, [] );
+		overflowedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
+		addToolbarToDropdown( overflowedItemsDropdown, [] );
 
-		this.overflowedItemsDropdown.buttonView.set( {
+		overflowedItemsDropdown.buttonView.set( {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			icon: verticalDotsIcon
 		} );
+
+		return overflowedItemsDropdown;
 	}
 
 	/**
@@ -345,54 +452,43 @@ export default class ToolbarView extends View {
 	 * the geometry of the toolbar items — they depend on the toolbar to be visible in DOM.
 	 */
 	_enableOverflowedItemsGroupingOnResize() {
-		if ( this._rectObserver ) {
+		if ( this._resizeObserver ) {
 			return;
 		}
 
 		let oldRect;
 
-		this._groupOrUngroupOverflowedItems();
-
 		// TODO: stopObserving on destroy();
-		this._rectObserver = new RectObserver( this.element ).observe( newRect => {
-			if ( oldRect && oldRect.width !== newRect.width ) {
-				this._groupOrUngroupOverflowedItems();
+		this._resizeObserver = new ResizeObserver( ( [ entry ] ) => {
+			if ( !oldRect || oldRect.width !== entry.contentRect.width ) {
+				this.update();
 			}
 
-			oldRect = newRect;
-		} );
-	}
+			oldRect = entry.contentRect.width;
+		} ).observe( this.element );
 
-	/**
-	 * TODO
-	 */
-	get _groupedItems() {
-		return this.overflowedItemsDropdown.toolbarView.items;
-	}
-
-	get _hasOverflowedItemsDropdown() {
-		return this.overflowedItemsDropdown && this._components.has( this.overflowedItemsDropdown );
+		this.update();
 	}
 
 	/**
 	 * When called it will remove the last {@link #_lastNonGroupedItem regular item} from {@link #items}
-	 * and move it to the {@link #overflowedItemsDropdown}.
+	 * and move it to the {@link #overflowedItemsDropdown}. The opposite of {@link _ungroupFirstItem}.
 	 *
-	 * If the dropdown does not exist or does not
-	 * belong to {@link #items} it is created and located at the end of the collection.
+	 * If the dropdown does not exist or does not belong to {@link #items} it is created and located at
+	 * the end of the collection.
 	 *
 	 * @protected
 	 */
 	_groupLastItem() {
 		if ( !this.overflowedItemsDropdown ) {
-			this._createOverflowedItemsDropdown();
+			this.overflowedItemsDropdown = this._createOverflowedItemsDropdown();
 		}
 
 		if ( !this._hasOverflowedItemsDropdown ) {
 			this._components.add( this.overflowedItemsDropdown );
 		}
 
-		this._groupedItems.add( this.items.remove( this.items.last ), 0 );
+		this._overflowedItems.add( this.items.remove( this.items.last ), 0 );
 	}
 
 	/**
@@ -404,90 +500,11 @@ export default class ToolbarView extends View {
 	 * @protected
 	 */
 	_ungroupFirstItem() {
-		this.items.add( this._groupedItems.remove( this._groupedItems.first ) );
+		this.items.add( this._overflowedItems.remove( this._overflowedItems.first ) );
 
-		if ( !this._groupedItems.length ) {
+		if ( !this._overflowedItems.length ) {
 			this._components.remove( this.overflowedItemsDropdown );
 		}
-	}
-
-	/**
-	 * Returns `true` when any of toolbar {@link #items} overflows visually.
-	 * `false` otherwise.
-	 *
-	 * @protected
-	 */
-	get _areItemsOverflowing() {
-		if ( !this.items.length ) {
-			return false;
-		}
-
-		if ( this.items.length === 1 ) {
-			return false;
-		}
-
-		if ( !this._paddingRight ) {
-			this._paddingRight = Number.parseFloat(
-				global.window.getComputedStyle( this.element ).paddingRight );
-		}
-
-		return new Rect( this.element.lastChild ).right > new Rect( this.element ).right - this._paddingRight;
-	}
-
-	/**
-	 * When called it will check if any of the {@link #items} overflow and if so, it will
-	 * move it to the {@link #overflowedItemsDropdown}.
-	 *
-	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
-	 * "grouped" items in the {@link #overflowedItemsDropdown} to be returned back.
-	 *
-	 * @protected
-	 */
-	_groupOrUngroupOverflowedItems() {
-		// Do not check when another check is going to avoid infinite loops.
-		// This method is called upon adding and removing #items and it adds and removes
-		// #items itself, so that would be a disaster.
-		if ( this._overflowingItemsActionLock ) {
-			return;
-		}
-
-		// There's no way to check overflow when there is no element (before #render()).
-		// Or when element has no parent because ClientRects won't work when #element not in DOM.
-		if ( !this.element || !this.element.parentNode ) {
-			return;
-		}
-
-		this._overflowingItemsActionLock = true;
-
-		let wereItemsGrouped;
-
-		// Group #items as long as any overflows. This will happen, for instance,
-		// when the toolbar is getting narrower and there's less and less space in it.
-		while ( this._areItemsOverflowing ) {
-			this._groupLastItem();
-
-			wereItemsGrouped = true;
-		}
-
-		// If none were grouped now but there were some items already grouped before,
-		// then maybe let's see if some of them can be ungrouped. This happens when,
-		// for instance, the toolbar is stretching and there's more space in it than before.
-		if ( !wereItemsGrouped && this._hasOverflowedItemsDropdown ) {
-			// Ungroup items as long as none are overflowing or there are none to ungroup left.
-			while ( this._groupedItems.length && !this._areItemsOverflowing ) {
-				this._ungroupFirstItem();
-			}
-
-			// If the ungrouping ended up with some item overflowing,
-			// put it back to the group toolbar (undo the last ungroup). We don't know whether
-			// an item will overflow or not until we ungroup it (that's a DOM/CSS thing) so this
-			// clean–up is vital.
-			if ( this._areItemsOverflowing ) {
-				this._groupLastItem();
-			}
-		}
-
-		this._overflowingItemsActionLock = false;
 	}
 }
 
