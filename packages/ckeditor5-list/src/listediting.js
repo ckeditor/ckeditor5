@@ -57,7 +57,7 @@ export default class ListEditing extends Plugin {
 		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
 		editor.model.schema.register( 'listItem', {
 			inheritAllFrom: '$block',
-			allowAttributes: [ 'listType', 'listIndent', 'listChecked' ]
+			allowAttributes: [ 'listType', 'listIndent' ]
 		} );
 
 		// Converters.
@@ -175,6 +175,9 @@ export default class ListEditing extends Plugin {
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		const commands = this.editor.commands;
 

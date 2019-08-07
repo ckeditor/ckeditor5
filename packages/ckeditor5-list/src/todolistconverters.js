@@ -103,7 +103,7 @@ export function dataModelViewInsertion( model ) {
 			class: 'todo-list__checkmark'
 		} );
 
-		if ( data.item.getAttribute( 'listChecked' ) ) {
+		if ( data.item.getAttribute( 'todoListChecked' ) ) {
 			viewWriter.setAttribute( 'checked', 'checked', checkbox );
 		}
 
@@ -166,19 +166,19 @@ export function modelViewChangeType( model ) {
  */
 export function modelViewChangeChecked( model ) {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.consume( data.item, 'attribute:listChecked' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, 'attribute:todoListChecked' ) ) {
 			return;
 		}
 
 		const { mapper, writer: viewWriter } = conversionApi;
-		const isChecked = !!data.item.getAttribute( 'listChecked' );
+		const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 		const viewItem = mapper.toViewElement( data.item );
 		const uiElement = findCheckmarkElement( viewItem, viewWriter );
 
 		viewWriter.insert(
 			viewWriter.createPositionAfter( uiElement ),
 			createCheckMarkElement( isChecked, viewWriter, isChecked => {
-				model.change( writer => writer.setAttribute( 'listChecked', isChecked, data.item ) );
+				model.change( writer => writer.setAttribute( 'todoListChecked', isChecked, data.item ) );
 			} )
 		);
 		viewWriter.remove( uiElement );
@@ -186,14 +186,14 @@ export function modelViewChangeChecked( model ) {
 }
 
 function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
-	const isChecked = !!modelItem.getAttribute( 'listChecked' );
+	const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
 
 	viewWriter.addClass( 'todo-list', viewItem.parent );
 
 	viewWriter.insert(
 		viewWriter.createPositionAt( viewItem, 0 ),
 		createCheckMarkElement( isChecked, viewWriter, isChecked => {
-			model.change( writer => writer.setAttribute( 'listChecked', isChecked, modelItem ) );
+			model.change( writer => writer.setAttribute( 'todoListChecked', isChecked, modelItem ) );
 		} )
 	);
 }
@@ -201,7 +201,7 @@ function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
 function removeTodoElementsFromListItem( modelItem, viewItem, viewWriter, model ) {
 	viewWriter.removeClass( 'todo-list', viewItem.parent );
 	viewWriter.remove( viewItem.getChild( 0 ) );
-	model.change( writer => writer.removeAttribute( 'listChecked', modelItem ) );
+	model.change( writer => writer.removeAttribute( 'todoListChecked', modelItem ) );
 }
 
 function createCheckMarkElement( isChecked, viewWriter, onChange ) {

@@ -41,7 +41,7 @@ export default class TodoListEditing extends Plugin {
 		const viewDocument = editing.view.document;
 
 		model.schema.extend( 'listItem', {
-			allowAttributes: [ 'listChecked' ]
+			allowAttributes: [ 'todoListChecked' ]
 		} );
 
 		// Converters.
@@ -51,7 +51,7 @@ export default class TodoListEditing extends Plugin {
 		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( model ) );
-		editing.downcastDispatcher.on( 'attribute:listChecked:listItem', modelViewChangeChecked( model ) );
+		editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', modelViewChangeChecked( model ) );
 
 		// Register command for todo list.
 		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
@@ -73,7 +73,7 @@ export default class TodoListEditing extends Plugin {
 		// <ul><li><checkbox/>Bar</li></ul>
 		editor.keystrokes.set( 'arrowleft', ( evt, stop ) => jumpOverCheckmarkOnLeftArrowKeyPress( stop, model ) );
 
-		// Remove `listChecked` attribute when a host element is no longer a todo list item.
+		// Remove `todoListChecked` attribute when a host element is no longer a todo list item.
 		const listItemsToFix = new Set();
 
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
@@ -81,7 +81,7 @@ export default class TodoListEditing extends Plugin {
 
 			if ( operation.type != 'changeAttribute' && operation.key != 'listType' && operation.oldValue == 'todoList' ) {
 				for ( const item of operation.range.getItems() ) {
-					if ( item.name == 'listItem' && item.hasAttribute( 'listChecked' ) ) {
+					if ( item.name == 'listItem' && item.hasAttribute( 'todoListChecked' ) ) {
 						listItemsToFix.add( item );
 					}
 				}
@@ -90,7 +90,7 @@ export default class TodoListEditing extends Plugin {
 			if ( operation.type == 'rename' && operation.oldName == 'listItem' ) {
 				const item = operation.position.nodeAfter;
 
-				if ( item.hasAttribute( 'listChecked' ) ) {
+				if ( item.hasAttribute( 'todoListChecked' ) ) {
 					listItemsToFix.add( item );
 				}
 			}
@@ -100,7 +100,7 @@ export default class TodoListEditing extends Plugin {
 			let hasChanged = false;
 
 			for ( const listItem of listItemsToFix ) {
-				writer.removeAttribute( 'listChecked', listItem );
+				writer.removeAttribute( 'todoListChecked', listItem );
 				hasChanged = true;
 			}
 
