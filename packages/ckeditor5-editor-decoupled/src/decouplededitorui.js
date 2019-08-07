@@ -115,12 +115,17 @@ export default class DecoupledEditorUI extends EditorUI {
 		const toolbar = view.toolbar;
 
 		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.shouldGroupWhenFull = true;
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar
+		} );
+
+		this.on( 'update', () => {
+			toolbar.update();
 		} );
 	}
 
