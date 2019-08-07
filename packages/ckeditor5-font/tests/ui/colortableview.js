@@ -445,17 +445,17 @@ describe( 'ColorTableView', () => {
 
 			dropdown.isOpen = true;
 
-			expect( staticColorsGrid.selectedColor ).to.be.null;
+			expect( staticColorsGrid.selectedColor ).to.equal( 'red' );
 			expect( documentColorsGrid.selectedColor ).to.equal( 'red' );
 
 			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === 'red' );
 			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
 
-			expect( redStaticColorTile.isOn ).to.be.false;
+			expect( redStaticColorTile.isOn ).to.be.true;
 			expect( redDocumentColorTile.isOn ).to.be.true;
 		} );
 
-		it( 'checkmark is present in static colors', () => {
+		it( 'checkmark is present in static colors when there is no space for document color', () => {
 			const command = editor.commands.get( 'testColorCommand' );
 
 			setModelData( model,
@@ -469,13 +469,12 @@ describe( 'ColorTableView', () => {
 			dropdown.isOpen = true;
 
 			expect( staticColorsGrid.selectedColor ).to.equal( '#00FF00' );
-			expect( documentColorsGrid.selectedColor ).to.be.null;
 
 			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === '#00FF00' );
-			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
+			const activeDocumentColorTile = documentColorsGrid.items.find( tile => tile.isOn );
 
 			expect( redStaticColorTile.isOn ).to.be.true;
-			expect( redDocumentColorTile.isOn ).to.be.false;
+			expect( activeDocumentColorTile ).to.be.undefined;
 		} );
 	} );
 
