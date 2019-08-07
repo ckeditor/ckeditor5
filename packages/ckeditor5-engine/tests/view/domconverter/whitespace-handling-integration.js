@@ -129,7 +129,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
-		it( 'nbsp between blocks is ignored #2', () => {
+		it( 'nbsp between blocks is ignored #3', () => {
 			editor.setData( '<blockquote>foo</blockquote>&nbsp;<blockquote>bar</blockquote>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
@@ -190,6 +190,15 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				.to.equal( '<paragraph><$text bold="true">foo</$text>\u00A0<$text bold="true">bar</$text></paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><b>foo</b>&nbsp;<b>bar</b></p>' );
+		} );
+
+		it( 'nbsp inside inline element is not ignored', () => {
+			editor.setData( '<p>Foo<b>&nbsp;</b></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo<$text bold="true"> </$text></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>Foo<b>&nbsp;</b></p>' );
 		} );
 	} );
 

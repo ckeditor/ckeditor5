@@ -16,7 +16,7 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
-import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
+import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -79,6 +79,14 @@ export default class DomConverter {
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
 		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+
+		/**
+		 * Tag names of DOM `Element`s which are considered inline elements.
+		 *
+		 * @readonly
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#inlineElements
+		 */
+		this.inlineElements = [ 'span', 'strong', 'i', 'b', 'a' ];
 
 		/**
 		 * DOM to View mapping.
@@ -370,7 +378,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isBlockFiller( domNode, this.blockFiller ) && isFooBar( domNode, this.blockElements ) ) {
+		if ( isNegligibleBlockFiller( domNode, this.blockFiller, this.inlineElements ) ) {
 			return null;
 		}
 
@@ -1197,6 +1205,32 @@ function forEachDomNodeAncestor( node, callback ) {
 	}
 }
 
-function isFooBar( domNode, blockElements ) {
-	return !_hasDomParentOfType( domNode, blockElements ) || ( !domNode.parentNode || domNode.parentNode.childNodes.length === 1 );
+// Checks if given node is negligible and should be removed.
+// The negligible block fillers are:
+// - &nbsp; between block nodes
+// - single &nbsp; in block (ie inside <p>);
+//
+// The relevant block fillers are:
+// - &nbsp; between inline elements
+// - &nbsp; inside inline elements
+function isNegligibleBlockFiller( domNode, blockFiller, inlineElements ) {
+	if ( !isBlockFiller( domNode, blockFiller ) ) {
+		return false;
+	}
+
+	const isSingleDomNode = !domNode.parentNode || domNode.parentNode.childNodes.length === 1;
+
+	if ( isSingleDomNode ) {
+		// Single DOM nodes are negligible - unless they are in inline element.
+		return !isInlineElement( domNode.parentNode, inlineElements );
+	}
+
+	const prevIsInline = isInlineElement( domNode.previousSibling, inlineElements );
+	const nextIsInline = isInlineElement( domNode.nextSibling, inlineElements );
+
+	return !( prevIsInline || nextIsInline );
+}
+
+function isInlineElement( domNode, types ) {
+	return domNode && types.includes( domNode.tagName.toLowerCase() );
 }
