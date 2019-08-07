@@ -10,7 +10,6 @@
 /* globals console */
 
 import View from '../view';
-import Template from '../template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -109,24 +108,12 @@ export default class ToolbarView extends View {
 		} );
 
 		/**
-		 * Helps cycling over focusable {@link #items} in the toolbar.
+		 * TODO
 		 *
 		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
+		 * @member {itemsView}
 		 */
-		this._focusCycler = new FocusCycler( {
-			focusables: this.items,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate toolbar items backwards using the arrow[left,up] keys.
-				focusPrevious: [ 'arrowleft', 'arrowup' ],
-
-				// Navigate toolbar items forwards using the arrow[right,down] keys.
-				focusNext: [ 'arrowright', 'arrowdown' ]
-			}
-		} );
+		this.itemsView = this._createItemsView();
 
 		/**
 		 * TODO
@@ -163,7 +150,64 @@ export default class ToolbarView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this._components = this.createCollection();
-		this._components.add( this._createItemsView() );
+		this._components.add( this.itemsView );
+
+		/**
+		 * Helps cycling over focusable {@link #items} in the toolbar.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._itemsFocusCycler = new FocusCycler( {
+			focusables: this.itemsView.items,
+			focusTracker: this.itemsView.focusTracker,
+		} );
+
+		this._componentsFocusCycler = new FocusCycler( {
+			focusables: this._components,
+			focusTracker: this.focusTracker,
+		} );
+
+		this.keystrokes.set( 'arrowright', ( keyEvtData, cancel ) => {
+			if ( this.itemsView.focusTracker.isFocused ) {
+				if ( this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
+					this._componentsFocusCycler.focusNext();
+				} else {
+					this._itemsFocusCycler.focusNext();
+				}
+
+				cancel();
+			} else {
+				this._componentsFocusCycler.focusNext();
+
+				cancel();
+			}
+		} );
+
+		this.keystrokes.set( 'arrowleft', ( keyEvtData, cancel ) => {
+			if ( this.itemsView.focusTracker.isFocused ) {
+				if ( this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
+					if ( this._hasOverflowedItemsDropdown ) {
+						this._componentsFocusCycler.focusLast();
+					} else {
+						this._itemsFocusCycler.focusPrevious();
+					}
+				} else {
+					this._itemsFocusCycler.focusPrevious();
+				}
+
+				cancel();
+			} else {
+				if ( this._componentsFocusCycler.previous === this.itemsView ) {
+					this._itemsFocusCycler.focusLast();
+				} else {
+					this._componentsFocusCycler.focusPrevious();
+				}
+
+				cancel();
+			}
+		} );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -192,18 +236,24 @@ export default class ToolbarView extends View {
 	render() {
 		super.render();
 
-		// Items added before rendering should be known to the #focusTracker.
-		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
+		// Components added before rendering should be known to the #focusTracker.
+		for ( const component of this._components ) {
+			this.focusTracker.add( component.element );
 		}
 
-		this.items.on( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element );
+		this._components.on( 'add', ( evt, component ) => {
+			this.focusTracker.add( component.element );
+		} );
+
+		this._components.on( 'remove', ( evt, component ) => {
+			this.focusTracker.remove( component.element );
+		} );
+
+		this.items.on( 'add', () => {
 			this.update();
 		} );
 
-		this.items.on( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element );
+		this.items.on( 'remove', () => {
 			this.update();
 		} );
 
@@ -232,14 +282,14 @@ export default class ToolbarView extends View {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	focus() {
-		this._focusCycler.focusFirst();
+		this._componentsFocusCycler.focusFirst();
 	}
 
 	/**
 	 * Focuses the last focusable in {@link #items}.
 	 */
 	focusLast() {
-		this._focusCycler.focusLast();
+		this._componentsFocusCycler.focusLast();
 	}
 
 	/**
@@ -394,20 +444,12 @@ export default class ToolbarView extends View {
 	 * @returns {module:ui/view~View}
 	 */
 	_createItemsView() {
-		const toolbarItemsView = new View( this.locale );
+		const itemsView = new ToolbarItemsView( this.locale );
 
-		toolbarItemsView.template = new Template( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-toolbar__items'
-				],
-			},
-			children: this.items
-		} );
+		// 1:1 pass–through binding.
+		itemsView.items.bindTo( this.items ).using( item => item );
 
-		return toolbarItemsView;
+		return itemsView;
 	}
 
 	/**
@@ -485,6 +527,7 @@ export default class ToolbarView extends View {
 		}
 
 		if ( !this._hasOverflowedItemsDropdown ) {
+			this._components.add( new ToolbarSeparatorView() );
 			this._components.add( this.overflowedItemsDropdown );
 		}
 
@@ -504,7 +547,70 @@ export default class ToolbarView extends View {
 
 		if ( !this._overflowedItems.length ) {
 			this._components.remove( this.overflowedItemsDropdown );
+			this._components.remove( this._components.last );
 		}
 	}
 }
 
+class ToolbarItemsView extends View {
+	constructor( locale ) {
+		super( locale );
+
+		this.items = this.createCollection();
+
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * Helps cycling over focusable {@link #items} in the toolbar.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._focusCycler = new FocusCycler( {
+			focusables: this.items,
+			focusTracker: this.focusTracker,
+		} );
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-toolbar__items'
+				],
+			},
+			children: this.items
+		} );
+	}
+
+	render() {
+		super.render();
+
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.items.on( 'add', ( evt, item ) => {
+			this.focusTracker.add( item.element );
+		} );
+
+		this.items.on( 'remove', ( evt, item ) => {
+			this.focusTracker.remove( item.element );
+		} );
+	}
+
+	/**
+	 * Focuses the first focusable in {@link #items}.
+	 */
+	focus() {
+		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Focuses the last focusable in {@link #items}.
+	 */
+	focusLast() {
+		this._focusCycler.focusLast();
+	}
+}

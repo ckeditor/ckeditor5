@@ -18,17 +18,18 @@
 		align-items: center;
 		flex-grow: 1;
 
-		& > .ck.ck-toolbar__separator {
-			display: inline-block;
+	}
 
-			/*
-			 * A leading or trailing separator makes no sense (separates nothing from one side).
-			 * Better hide it for better look.
-			 */
-			&:first-child,
-			&:last-child {
-				display: none;
-			}
+	& .ck.ck-toolbar__separator {
+		display: inline-block;
+
+		/*
+			* A leading or trailing separator makes no sense (separates nothing from one side).
+			* Better hide it for better look.
+			*/
+		&:first-child,
+		&:last-child {
+			display: none;
 		}
 	}
 
