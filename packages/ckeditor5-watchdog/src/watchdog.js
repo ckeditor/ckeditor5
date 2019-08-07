@@ -88,7 +88,6 @@ export default class Watchdog {
 					this._handleError( evt.reason, evt );
 				}
 			} else {
-				// TODO: what throw 'foo' will do?
 				this._handleError( evt.error, evt );
 			}
 		};
@@ -316,7 +315,7 @@ export default class Watchdog {
 	 * @private
 	 * @fires error
 	 * @param {Error} error Error.
-	 * @param {ErrorEvent} evt Error event.
+	 * @param {ErrorEvent|PromiseRejectionEvent} evt Error event.
 	 */
 	_handleError( error, evt ) {
 		if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
@@ -328,7 +327,7 @@ export default class Watchdog {
 				message: error.message,
 				stack: error.stack,
 
-				// evt.source, evt.lineno and evt.colno are available only in ErrorEvent
+				// `evt.source`, `evt.lineno` and `evt.colno` are available only in ErrorEvent events
 				source: evt.source,
 				lineno: evt.lineno,
 				colno: evt.colno,
