@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { generateLiInUl, injectViewList } from './utils';
+import { generateLiInUl, injectViewList, findInRange } from './utils';
 
 /**
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
@@ -34,6 +34,7 @@ export function modelViewInsertion( model ) {
 		consumable.consume( data.item, 'insert' );
 		consumable.consume( data.item, 'attribute:listType' );
 		consumable.consume( data.item, 'attribute:listIndent' );
+		consumable.consume( data.item, 'attribute:todoListChecked' );
 
 		const viewWriter = conversionApi.writer;
 		const modelItem = data.item;
@@ -57,7 +58,9 @@ export function modelViewTextInsertion( evt, data, conversionApi ) {
 		return;
 	}
 
-	conversionApi.consumable.consume( data.item, 'insert' );
+	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		return;
+	}
 
 	const viewWriter = conversionApi.writer;
 	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -127,7 +130,9 @@ export function dataModelViewTextInsertion( evt, data, conversionApi ) {
 		return;
 	}
 
-	conversionApi.consumable.consume( data.item, 'insert' );
+	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		return;
+	}
 
 	const viewWriter = conversionApi.writer;
 	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -173,7 +178,8 @@ export function modelViewChangeChecked( model ) {
 		const { mapper, writer: viewWriter } = conversionApi;
 		const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 		const viewItem = mapper.toViewElement( data.item );
-		const uiElement = findCheckmarkElement( viewItem, viewWriter );
+		const itemRange = viewWriter.createRangeIn( viewItem );
+		const uiElement = findInRange( itemRange, item => item.is( 'uiElement' ) ? item : false );
 
 		viewWriter.insert(
 			viewWriter.createPositionAfter( uiElement ),
@@ -183,31 +189,6 @@ export function modelViewChangeChecked( model ) {
 		);
 		viewWriter.remove( uiElement );
 	};
-}
-
-/**
- * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
- */
-export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
-	if ( data.viewItem.getAttribute( 'type' ) != 'checkbox' || data.modelCursor.parent.name != 'listItem' ) {
-		return;
-	}
-
-	if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
-		return;
-	}
-
-	const { writer } = conversionApi;
-	const modelItem = data.modelCursor.parent;
-
-	writer.setAttribute( 'listType', 'todo', modelItem );
-
-	if ( data.viewItem.getAttribute( 'checked' ) == 'checked' ) {
-		writer.setAttribute( 'todoListChecked', true, modelItem );
-	}
 }
 
 function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
@@ -254,12 +235,4 @@ function createCheckMarkElement( isChecked, viewWriter, onChange ) {
 	}
 
 	return uiElement;
-}
-
-function findCheckmarkElement( element, viewWriter ) {
-	for ( const item of viewWriter.createRangeIn( element ).getItems() ) {
-		if ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) ) {
-			return item;
-		}
-	}
 }

@@ -18,9 +18,10 @@ import {
 	dataModelViewInsertion,
 	dataModelViewTextInsertion,
 	modelViewChangeChecked,
-	modelViewChangeType,
-	dataViewModelCheckmarkInsertion
+	modelViewChangeType
 } from './todolistconverters';
+
+import { findInRange } from './utils';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -53,8 +54,6 @@ export default class TodoListEditing extends Plugin {
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( model ) );
 		editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', modelViewChangeChecked( model ) );
-
-		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
 		// Register command for todo list.
 		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
@@ -153,8 +152,21 @@ function moveSelectionAfterCheckmark( writer, selection ) {
 
 	const position = selection.getFirstPosition();
 
-	if ( position.parent.name === 'li' && position.offset == 0 && position.nodeAfter && position.nodeAfter.is( 'uiElement' ) ) {
-		writer.setSelection( position.parent, 1 );
+	if ( position.parent.name != 'li' || !position.parent.parent.hasClass( 'todo-list' ) ) {
+		return false;
+	}
+
+	const parentEndPosition = writer.createPositionAt( position.parent, 'end' );
+	const uiElement = findInRange( writer.createRange( position, parentEndPosition ), item => {
+		return ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) ) ? item : false;
+	} );
+
+	if ( uiElement && !position.isAfter( writer.createPositionBefore( uiElement ) ) ) {
+		const range = writer.createRange( writer.createPositionAfter( uiElement ), parentEndPosition );
+		const text = findInRange( range, item => item.is( 'textProxy' ) ? item.textNode : false );
+		const nextPosition = text ? writer.createPositionAt( text, 0 ) : parentEndPosition;
+
+		writer.setSelection( nextPosition );
 
 		return true;
 	}
