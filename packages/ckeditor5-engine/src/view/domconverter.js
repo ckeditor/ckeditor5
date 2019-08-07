@@ -378,7 +378,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isNegligibleBlockFiller( domNode, this.blockFiller, this.inlineElements ) ) {
+		if ( isNegligibleBlockFiller( domNode, this.blockFiller, this.inlineElements, this.blockElements ) ) {
 			return null;
 		}
 
@@ -1208,7 +1208,8 @@ function forEachDomNodeAncestor( node, callback ) {
 // Checks if given node is negligible and should be removed.
 // The negligible block fillers are:
 // - &nbsp; between block nodes
-// - single &nbsp; in block (ie inside <p>);
+// - single &nbsp; in blocks
+// - &nbsp; between blocks
 //
 // The relevant block fillers are:
 // - &nbsp; between inline elements
