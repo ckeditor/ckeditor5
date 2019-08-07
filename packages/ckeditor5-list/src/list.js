@@ -9,7 +9,6 @@
 
 import ListEditing from './listediting';
 import ListUI from './listui';
-import TodoList from './todolist';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -26,7 +25,7 @@ export default class List extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ListEditing, ListUI, TodoList ];
+		return [ ListEditing, ListUI ];
 	}
 
 	/**
