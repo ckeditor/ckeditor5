@@ -372,7 +372,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
-		' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', () => {
+			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -409,7 +409,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
-		' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', () => {
+			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', () => {
 			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -699,7 +699,20 @@ describe( 'Watchdog', () => {
 	} );
 
 	describe( 'async error handling', () => {
+		let unhandledRejectionEventSupported;
+
+		before( () => {
+			return doesEnvSupportUnhandledRejectionEvent()
+				.then( val => {
+					unhandledRejectionEventSupported = val;
+				} );
+		} );
+
 		it( 'Watchdog should handle async CKEditorError errors', () => {
+			if ( !unhandledRejectionEventSupported ) {
+				return;
+			}
+
 			const watchdog = Watchdog.for( ClassicTestEditor );
 			const originalErrorHandler = window.onerror;
 
@@ -727,6 +740,10 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should not react to non-editor async errors', () => {
+			if ( !unhandledRejectionEventSupported ) {
+				return;
+			}
+
 			const watchdog = Watchdog.for( ClassicTestEditor );
 			const originalErrorHandler = window.onerror;
 			const editorErrorSpy = sinon.spy();
@@ -899,4 +916,18 @@ describe( 'Watchdog', () => {
 
 function throwCKEditorError( name, context ) {
 	throw new CKEditorError( name, context );
+}
+
+function doesEnvSupportUnhandledRejectionEvent() {
+	return new Promise( res => {
+		window.addEventListener( 'unhandledrejection', function listener() {
+			res( true );
+
+			window.removeEventListener( 'unhandledrejection', listener );
+		} );
+
+		Promise.resolve().then( () => Promise.reject( new Error() ) );
+
+		setTimeout( () => res( false ) );
+	} );
 }
