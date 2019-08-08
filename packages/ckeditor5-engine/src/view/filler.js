@@ -140,7 +140,9 @@ export function isBlockFiller( domNode, blockFiller ) {
 		templateBlockFillers.set( blockFiller, templateBlockFiller );
 	}
 
-	return domNode.isEqualNode( templateBlockFiller );
+	const isFiller = domNode.isEqualNode( templateBlockFiller );
+
+	return isText( templateBlockFiller ) ? isFiller && !hasInlineSibling( domNode ) : isFiller;
 }
 
 /**
@@ -167,4 +169,81 @@ function jumpOverInlineFiller( evt, data ) {
 			}
 		}
 	}
+}
+
+// Checks if domNode has inline sibling.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function hasInlineSibling( domNode ) {
+	const hasParent = !!domNode.parentNode;
+
+	if ( !hasParent || domNode.parentNode.childNodes.length <= 1 ) {
+		return false;
+	}
+
+	const prevIsInline = isInlineElement( domNode.previousSibling );
+	const nextIsInline = isInlineElement( domNode.nextSibling );
+
+	return prevIsInline || nextIsInline;
+}
+
+// Tag names of DOM `Element`s which are considered block elements.
+// todo which other inline elements to include?
+// - abbr
+// - acronym
+// - audio (if it has visible controls)
+// - bdi
+// - bdo
+// - big
+// - br
+// - button
+// - canvas
+// - cite
+// - code
+// - data
+// - datalist
+// - del
+// - dfn
+// - em
+// - embed
+// - iframe
+// - img
+// - input
+// - ins
+// - kbd
+// - label
+// - map
+// - mark
+// - meter
+// - noscript
+// - object
+// - output
+// - picture
+// - progress
+// - q
+// - ruby
+// - s
+// - samp
+// - script
+// - select
+// - slot
+// - small
+// - strong
+// - sub
+// - sup
+// - svg
+// - template
+// - textarea
+// - time
+// - u
+// - tt
+// - var
+// - video
+// - wbr
+const inlineElements = [ 'a', 'b', 'span', 'i', 'span' ];
+
+// Checks if passed domNode is considered inline.
+function isInlineElement( domNode ) {
+	return domNode && inlineElements.includes( domNode.nodeName.toLowerCase() );
 }
