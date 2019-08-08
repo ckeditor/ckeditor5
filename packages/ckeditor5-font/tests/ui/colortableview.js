@@ -478,7 +478,7 @@ describe( 'ColorTableView', () => {
 			expect( activeDocumentColorTile ).to.be.undefined;
 		} );
 
-		it( 'should have no selection for color outside of definition', () => {
+		it( 'should not have selction for unknow colors exceeding document colors limit', () => {
 			const command = editor.commands.get( 'testColorCommand' );
 
 			setModelData( model,
@@ -502,7 +502,7 @@ describe( 'ColorTableView', () => {
 		} );
 	} );
 
-	describe( 'no document colors section', () => {
+	describe( 'disabled document colors section', () => {
 		let editor, element, dropdown, model;
 
 		beforeEach( () => {
