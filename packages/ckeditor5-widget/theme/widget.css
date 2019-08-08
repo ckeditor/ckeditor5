@@ -22,7 +22,7 @@
 	position: relative;
 }
 
-.ck .ck-widget_with-resizer.ck-widget_selected {
+.ck-focused .ck-widget_with-resizer.ck-widget_selected {
 	& .ck-widget__resizer-wrapper {
 		visibility: visible;
 	}
