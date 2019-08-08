@@ -73,7 +73,7 @@ export default class CKFinderCommand extends Command {
 		options.onInit = finder => {
 			// Call original options.onInit if it was defined by user.
 			if ( originalOnInit ) {
-				originalOnInit();
+				originalOnInit( finder );
 			}
 
 			finder.on( 'files:choose', evt => {

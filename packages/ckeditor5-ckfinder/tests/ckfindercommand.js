@@ -204,6 +204,16 @@ describe( 'CKFinderCommand', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should pass CKFinder instance to a user defined config.onInit() function', () => {
+			const spy = sinon.spy();
+
+			editor.config.set( 'ckfinder.options.onInit', spy );
+
+			command.execute();
+
+			sinon.assert.calledWithExactly( spy, finderMock );
+		} );
+
 		it( 'should pass editor default language to the CKFinder instance', () => {
 			const spy = sinon.spy( window.CKFinder, 'modal' );
 			command.execute();
