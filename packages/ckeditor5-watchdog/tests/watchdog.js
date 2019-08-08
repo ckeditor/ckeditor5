@@ -918,6 +918,8 @@ function throwCKEditorError( name, context ) {
 	throw new CKEditorError( name, context );
 }
 
+// Feature detection works as a race condition - if the `unhandledrejection` event
+// is supported then the listener should be called first. Otherwise the timeout will be reached.
 function doesEnvSupportUnhandledRejectionEvent() {
 	return new Promise( res => {
 		window.addEventListener( 'unhandledrejection', function listener() {
