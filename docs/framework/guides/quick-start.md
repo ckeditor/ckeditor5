@@ -26,9 +26,9 @@ First, install packages needed to build CKEditor 5:
 
 ```bash
 npm install --save \
-	postcss-loader \
-	raw-loader \
-	style-loader \
+	postcss-loader@3 \
+	raw-loader@1 \
+	style-loader@0.23.0 \
 	webpack@4 \
 	webpack-cli@3
 ```
