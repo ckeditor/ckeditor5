@@ -821,9 +821,48 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+						expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
+						expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
+						expect( watchdog.crashes[ 0 ].filename ).to.be.a( 'string' );
+						expect( watchdog.crashes[ 0 ].lineno ).to.be.a( 'number' );
+						expect( watchdog.crashes[ 0 ].colno ).to.be.a( 'number' );
+
 						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
 
 						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'should include async errors', () => {
+			return isUnhandledRejectionEventSupported().then( isSupported => {
+				if ( !isSupported ) {
+					return;
+				}
+
+				const watchdog = Watchdog.for( ClassicTestEditor );
+
+				// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+				const originalErrorHandler = window.onerror;
+				window.onerror = undefined;
+
+				return watchdog.create( element ).then( () => {
+					Promise.resolve().then( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+					return new Promise( res => {
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+							expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
+							expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
+							expect( watchdog.crashes[ 0 ].filename ).to.be.an( 'undefined' );
+							expect( watchdog.crashes[ 0 ].lineno ).to.be.an( 'undefined' );
+							expect( watchdog.crashes[ 0 ].colno ).to.be.an( 'undefined' );
+
+							watchdog.destroy().then( res );
+						} );
 					} );
 				} );
 			} );

@@ -32,9 +32,9 @@ export default class Watchdog {
 		 * * `message`: `String`,
 		 * * `stack`: `String`,
 		 * * `date`: `Number`,
-		 * * `source`: `String | undefined`,
-		 * * `lineno`: `String | undefined`,
-		 * * `colno`: `String` | undefined,
+		 * * `filename`: `String | undefined`,
+		 * * `lineno`: `Number | undefined`,
+		 * * `colno`: `Number` | undefined,
 		 *
 		 * @public
 		 * @readonly
@@ -327,8 +327,8 @@ export default class Watchdog {
 				message: error.message,
 				stack: error.stack,
 
-				// `evt.source`, `evt.lineno` and `evt.colno` are available only in ErrorEvent events
-				source: evt.source,
+				// `evt.filename`, `evt.lineno` and `evt.colno` are available only in ErrorEvent events
+				filename: evt.filename,
 				lineno: evt.lineno,
 				colno: evt.colno,
 				date: Date.now()
