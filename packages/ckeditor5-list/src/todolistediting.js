@@ -78,6 +78,9 @@ export default class TodoListEditing extends Plugin {
 		// <ul><li><checkbox/>Bar</li></ul>
 		editor.keystrokes.set( 'arrowleft', ( evt, stop ) => jumpOverCheckmarkOnLeftArrowKeyPress( stop, model ) );
 
+		// Toggle check state of selected todo list items on keystroke.
+		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
+
 		// Remove `todoListChecked` attribute when a host element is no longer a todo list item.
 		const listItemsToFix = new Set();
 
