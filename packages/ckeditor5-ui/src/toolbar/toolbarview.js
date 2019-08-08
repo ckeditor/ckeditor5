@@ -27,23 +27,25 @@ import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckedito
  */
 export default class ToolbarView extends View {
 	/**
-	 * Creates an instance of the {@link module:ui/view~View} class.
+	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~ToolbarView} class.
 	 *
 	 * Also see {@link #render}.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Object} [config]
-	 * @param {String} [config.ariaLabel] Custom label value for assistive technologies
 	 */
-	constructor( locale, { ariaLabel } = {} ) {
+	constructor( locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 		const t = this.t;
 
-		if ( ariaLabel === undefined ) {
-			ariaLabel = t( 'Editor\'s toolbar' );
-		}
+		/**
+		 * Label used by assistive technologies to describe this toolbar element.
+		 *
+		 * @default 'Editor toolbar'
+		 * @member {String} #ariaLabel
+		 */
+		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 
 		/**
 		 * Collection of the toolbar items (like buttons).
@@ -115,7 +117,7 @@ export default class ToolbarView extends View {
 					bind.to( 'class' )
 				],
 				role: 'toolbar',
-				'aria-label': ariaLabel
+				'aria-label': bind.to( 'ariaLabel' )
 			},
 
 			children: this.items,

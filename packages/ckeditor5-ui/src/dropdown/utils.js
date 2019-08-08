@@ -123,9 +123,6 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
- * **Please note:** {@link module:ui/toolbar/toolbarview~ToolbarView ToolbarView} instance created for this dropdown has an obligatory
- * {@link module:utils/locale~Locale} argument. This is why the passed dropdownView has to have defined the locale as well.
- *
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.

@@ -25,10 +25,10 @@ describe( 'ToolbarView', () => {
 
 	before( () => {
 		addTranslations( 'pl', {
-			'Editor\'s toolbar': 'Pasek narzędzi edytora'
+			'Editor toolbar': 'Pasek narzędzi edytora'
 		} );
 		addTranslations( 'en', {
-			'Editor\'s toolbar': 'Editor\'s toolbar'
+			'Editor toolbar': 'Editor toolbar'
 		} );
 	} );
 	after( () => {
@@ -339,11 +339,13 @@ describe( 'ToolbarView', () => {
 	describe( 'aria', () => {
 		it( 'should poses required attributes', () => {
 			expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
-			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor\'s toolbar' );
+			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor toolbar' );
 		} );
 
 		it( 'should apply custom aria label', () => {
-			const view = new ToolbarView( locale, { ariaLabel: 'Custom label' } );
+			const view = new ToolbarView( locale );
+
+			view.ariaLabel = 'Custom label';
 
 			view.render();
 
