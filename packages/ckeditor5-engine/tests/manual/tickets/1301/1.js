@@ -21,7 +21,13 @@ ClassicEditor
 	.then( editor => {
 		const bold = editor.plugins.get( Bold );
 
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'bold', 'ltr' );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: bold,
+			attribute: 'bold',
+			contentDirection: 'ltr'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

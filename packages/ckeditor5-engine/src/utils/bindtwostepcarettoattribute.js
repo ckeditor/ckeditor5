@@ -81,15 +81,16 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  *
  *   		<$text a="true">ba{}r</$text>b{}az
  *
- * @param {module:engine/view/view~View} view View controller instance.
- * @param {module:engine/model/model~Model} model Data model instance.
- * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added
+ * @param {Object} options Helper options.
+ * @param {module:engine/view/view~View} options.view View controller instance.
+ * @param {module:engine/model/model~Model} options.model Data model instance.
+ * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior should be added
  * (e.g. a plugin instance).
- * @param {String} attribute Attribute for which this behavior will be added.
- * @param {String} contentDirection Either "ltr" or "rtl" depending on the editor content direction.
+ * @param {String} options.attribute Attribute for which this behavior will be added.
+ * @param {String} options.contentDirection Either "ltr" or "rtl" depending on the editor content direction.
  * Please refer to the {@link module:utils/locale~Locale editor locale} class to learn more.
  */
-export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute, contentDirection ) {
+export default function bindTwoStepCaretToAttribute( { view, model, emitter, attribute, contentDirection } ) {
 	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 	const modelSelection = model.document.selection;
 
@@ -127,18 +128,10 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		const position = modelSelection.getFirstPosition();
 		let isMovementHandled;
 
-		if ( contentDirection === 'rtl' ) {
-			if ( arrowRightPressed ) {
-				isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
-			} else {
-				isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
-			}
+		if ( ( contentDirection === 'ltr' && arrowRightPressed ) || ( contentDirection === 'rtl' && arrowLeftPressed ) ) {
+			isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
 		} else {
-			if ( arrowRightPressed ) {
-				isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
-			} else {
-				isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
-			}
+			isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
 		}
 
 		// Stop the keydown event if the two-step caret movement handled it. Avoid collisions

@@ -23,8 +23,20 @@ ClassicEditor
 		const bold = editor.plugins.get( Italic );
 		const underline = editor.plugins.get( Underline );
 
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'italic', 'ltr' );
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, underline, 'underline', 'ltr' );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: bold,
+			attribute: 'italic',
+			contentDirection: 'ltr'
+		} );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: underline,
+			attribute: 'underline',
+			contentDirection: 'ltr'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -40,8 +52,20 @@ ClassicEditor
 		const bold = editor.plugins.get( Italic );
 		const underline = editor.plugins.get( Underline );
 
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'italic', 'rtl' );
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, underline, 'underline', 'rtl' );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: bold,
+			attribute: 'italic',
+			contentDirection: 'rtl'
+		} );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: underline,
+			attribute: 'underline',
+			contentDirection: 'rtl'
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

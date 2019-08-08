@@ -44,7 +44,13 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'a', 'ltr' );
+			bindTwoStepCaretToAttribute( {
+				view: editor.editing.view,
+				model: editor.model,
+				emitter,
+				attribute: 'a',
+				contentDirection: 'ltr'
+			} );
 		} );
 	} );
 
@@ -553,7 +559,13 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 	describe( 'multiple attributes', () => {
 		beforeEach( () => {
-			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'c', 'ltr' );
+			bindTwoStepCaretToAttribute( {
+				view: editor.editing.view,
+				model: editor.model,
+				emitter,
+				attribute: 'c',
+				contentDirection: 'ltr'
+			} );
 		} );
 
 		it( 'should work with the two-step caret movement (moving right)', () => {
@@ -794,7 +806,13 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 					newEditor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-					bindTwoStepCaretToAttribute( newEditor.editing.view, newEditor.model, emitter, 'a', 'rtl' );
+					bindTwoStepCaretToAttribute( {
+						view: newEditor.editing.view,
+						model: newEditor.model,
+						emitter,
+						attribute: 'a',
+						contentDirection: 'rtl'
+					} );
 
 					return newEditor;
 				} )
