@@ -10,6 +10,7 @@
 /* global document */
 
 import { generateLiInUl, injectViewList, findInRange } from './utils';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
@@ -179,29 +180,20 @@ export function modelViewChangeChecked( model ) {
 		const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 		const viewItem = mapper.toViewElement( data.item );
 		const itemRange = viewWriter.createRangeIn( viewItem );
-		const uiElement = findInRange( itemRange, item => item.is( 'uiElement' ) ? item : false );
+		const oldCheckmarkElement = findInRange( itemRange, item => item.is( 'uiElement' ) ? item : false );
+		const newCheckmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, model );
 
-		viewWriter.insert(
-			viewWriter.createPositionAfter( uiElement ),
-			createCheckMarkElement( isChecked, viewWriter, isChecked => {
-				model.change( writer => writer.setAttribute( 'todoListChecked', isChecked, data.item ) );
-			} )
-		);
-		viewWriter.remove( uiElement );
+		viewWriter.insert( viewWriter.createPositionAfter( oldCheckmarkElement ), newCheckmarkElement );
+		viewWriter.remove( oldCheckmarkElement );
 	};
 }
 
 function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
 	const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
+	const checkmarkElement = createCheckmarkElement( modelItem, viewWriter, isChecked, model );
 
 	viewWriter.addClass( 'todo-list', viewItem.parent );
-
-	viewWriter.insert(
-		viewWriter.createPositionAt( viewItem, 0 ),
-		createCheckMarkElement( isChecked, viewWriter, isChecked => {
-			model.change( writer => writer.setAttribute( 'todoListChecked', isChecked, modelItem ) );
-		} )
-	);
+	viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 }
 
 function removeTodoElementsFromListItem( modelItem, viewItem, viewWriter, model ) {
@@ -210,7 +202,7 @@ function removeTodoElementsFromListItem( modelItem, viewItem, viewWriter, model 
 	model.change( writer => writer.removeAttribute( 'todoListChecked', modelItem ) );
 }
 
-function createCheckMarkElement( isChecked, viewWriter, onChange ) {
+function createCheckmarkElement( modelItem, viewWriter, isChecked, model ) {
 	const uiElement = viewWriter.createUIElement(
 		'label',
 		{
@@ -218,12 +210,22 @@ function createCheckMarkElement( isChecked, viewWriter, onChange ) {
 			contenteditable: false
 		},
 		function( domDocument ) {
-			const domElement = this.toDomElement( domDocument );
-			const checkbox = document.createElement( 'input' );
+			const checkbox = createElement( document, 'input', { type: 'checkbox', } );
 
-			checkbox.type = 'checkbox';
 			checkbox.checked = isChecked;
-			checkbox.addEventListener( 'change', evt => onChange( evt.target.checked ) );
+
+			checkbox.addEventListener( 'change', evt => {
+				model.change( writer => {
+					if ( evt.target.checked ) {
+						writer.setAttribute( 'todoListChecked', true, modelItem );
+					} else {
+						writer.removeAttribute( 'todoListChecked', modelItem );
+					}
+				} );
+			} );
+
+			const domElement = this.toDomElement( domDocument );
+
 			domElement.appendChild( checkbox );
 
 			return domElement;
