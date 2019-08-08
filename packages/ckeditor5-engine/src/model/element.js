@@ -89,31 +89,24 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `model:` string,
-	 * for example `model:element`. Type is a string which usually equal to a name of the class written in camelCase convention.
-	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
-	 * for any type match for an entire child-parent chain.
+	 * Checks whether this object is of the given.
 	 *
-	 * There is also possibility to check element's {@link #name} rather than just type. Name might be provided as second attribute
-	 * or might replace the type.
+	 *		element.is( 'element' ); // -> true
+	 *		element.is( 'node' ); // -> true
+	 *		element.is( 'model:element' ); // -> true
+	 *		element.is( 'model:documentSelection' ); // -> true
 	 *
-	 *		obj.name; // 'listItem'
-	 *		obj instanceof Element; // true
+	 *		element.is( 'view:element' ); // -> false
+	 *		element.is( 'documentSelection' ); // -> false
 	 *
-	 *		obj.is( 'element' ); // true
-	 *		obj.is( 'model:element' ); // true
-	 *		obj.is( 'listItem' ); // true
-	 *		obj.is( 'model:listItem' ); // true
-	 *		obj.is( 'element', 'listItem' ); // true
-	 *		obj.is( 'model:element', 'listItem' ); // true
-	 *		obj.is( 'text' ); // false
-	 *		obj.is( 'model:text' ); // false
-	 *		obj.is( 'view:element' ); // false
-	 *		obj.is( 'element', 'image' ); // false
+	 * Assuming that the object being checked is an element, you can also check its
+	 * {@link module:engine/model/element~Element#name name}:
 	 *
-	 * Acceptable type for this class is `element` and its prefixed version, element's name or combination of both arguments.
+	 *		element.is( 'image' ); // -> true if this is an <image> element
+	 *		element.is( 'element', 'image' ); // -> same as above
+	 *		text.is( 'image' ); -> false
 	 *
-	 * See also: {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.
