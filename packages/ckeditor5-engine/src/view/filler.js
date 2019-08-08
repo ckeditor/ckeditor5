@@ -212,7 +212,6 @@ function hasInlineSiblingOrParent( domNode ) {
 // - datalist
 // - del
 // - dfn
-// - em
 // - embed
 // - iframe
 // - img
@@ -230,7 +229,6 @@ function hasInlineSiblingOrParent( domNode ) {
 // - progress
 // - q
 // - ruby
-// - s
 // - samp
 // - script
 // - select
@@ -243,12 +241,11 @@ function hasInlineSiblingOrParent( domNode ) {
 // - template
 // - textarea
 // - time
-// - u
 // - tt
 // - var
 // - video
 // - wbr
-const inlineElements = [ 'a', 'b', 'span', 'i', 'span' ];
+const inlineElements = [ 'a', 'b', 'em', 'i', 's', 'span', 'u' ];
 
 // Checks if passed domNode is considered inline.
 function isInlineElement( domNode ) {
