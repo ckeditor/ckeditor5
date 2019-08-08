@@ -84,7 +84,13 @@ export default class LinkEditing extends Plugin {
 		this._enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
 
 		// Enable two-step caret movement for `linkHref` attribute.
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref', locale.contentLanguageDirection );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: this,
+			attribute: 'linkHref',
+			contentDirection: locale.contentLanguageDirection
+		} );
 
 		// Setup highlight over selected link.
 		this._setupLinkHighlight();
