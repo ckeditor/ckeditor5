@@ -111,15 +111,17 @@ export default class WidgetToolbarRepository extends Plugin {
 	 *
 	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
+	 * @param {String} [options.ariaLabel] Label used by assistive technologies to describe this toolbar element.
 	 * @param {Array.<String>} options.items Array of toolbar items.
 	 * @param {Function} options.getRelatedElement Callback which returns an element the toolbar should be attached to.
 	 * @param {String} [options.balloonClassName='ck-toolbar-container'] CSS class for the widget balloon.
 	 */
-	register( toolbarId, { items, getRelatedElement, balloonClassName = 'ck-toolbar-container' } ) {
+	register( toolbarId, { ariaLabel, items, getRelatedElement, balloonClassName = 'ck-toolbar-container' } ) {
 		const editor = this.editor;
-		const locale = this.editor.locale;
-		const t = locale.t;
-		const toolbarView = new ToolbarView( locale, { ariaLabel: t( 'Widget\'s toolbar' ) } );
+		const t = editor.t;
+		const toolbarView = new ToolbarView( editor.locale );
+
+		toolbarView.ariaLabel = ariaLabel || t( 'Widget toolbar' );
 
 		if ( this._toolbarDefinitions.has( toolbarId ) ) {
 			/**
