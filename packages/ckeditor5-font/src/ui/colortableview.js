@@ -130,7 +130,7 @@ export default class ColorTableView extends View {
 		 * @readonly
 		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
 		 */
-		this.documentColorGrid;
+		this.documentColorsGrid;
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the list.
