@@ -542,7 +542,6 @@ export default class DowncastDispatcher {
 	 *
 	 * @event selection
 	 * @param {module:engine/model/selection~Selection} selection Selection that is converted.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
 	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
