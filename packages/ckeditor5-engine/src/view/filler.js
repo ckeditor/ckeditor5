@@ -142,7 +142,7 @@ export function isBlockFiller( domNode, blockFiller ) {
 
 	const isFiller = domNode.isEqualNode( templateBlockFiller );
 
-	return isText( templateBlockFiller ) ? isFiller && !hasInlineSibling( domNode ) : isFiller;
+	return isText( templateBlockFiller ) ? isFiller && !hasInlineSiblingOrParent( domNode ) : isFiller;
 }
 
 /**
@@ -175,11 +175,18 @@ function jumpOverInlineFiller( evt, data ) {
 //
 // @param {Node} domNode DOM node.
 // @returns {Boolean}
-function hasInlineSibling( domNode ) {
+function hasInlineSiblingOrParent( domNode ) {
 	const hasParent = !!domNode.parentNode;
 
-	if ( !hasParent || domNode.parentNode.childNodes.length <= 1 ) {
+
+	if ( !hasParent ) {
 		return false;
+	}
+
+	const isSingleNode = hasParent && domNode.parentNode.childNodes.length <= 1;
+
+	if ( isSingleNode ) {
+		return isInlineElement( domNode.parentNode );
 	}
 
 	const prevIsInline = isInlineElement( domNode.previousSibling );
