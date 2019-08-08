@@ -6,12 +6,14 @@
 import TodoListEditing from '../src/todolistediting';
 import ListEditing from '../src/listediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ListCommand from '../src/listcommand';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'TodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -19,7 +21,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TodoListEditing, Typing, BoldEditing ]
+				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -294,6 +296,14 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
+		it( 'should remove todoListChecked attribute when checked todoListItem is changed to regular list item', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0" todoListChecked="true">fo[]o</listItem>' );
+
+			editor.execute( 'bulletedList' );
+
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+		} );
+
 		it( 'should be overwritable', () => {
 			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, api ) => {
 				const { consumable, writer, mapper } = api;
@@ -527,49 +537,164 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 		} );
+
+		it( 'should move start of none-collapsed selection after checkmark element to the first text node', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0">[Foo]</listItem>' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{Foo}</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should move start of none-collapsed, backward selection after checkmark element to the first text node', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0">[Foo]</listItem>', { lastRangeBackward: true } );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+				'<li><label class="todo-list__checkmark" contenteditable="false"></label>{Foo}</li>' +
+				'</ul>'
+			);
+		} );
 	} );
 
 	describe( 'uiElements view post-fixer', () => {
 		it( 'should move all UIElements from before a checkmark after the checkmark element', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">foo</listItem>' );
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0">foo</listItem>' +
+				'<listItem listType="todo" listIndent="0">bar</listItem>'
+			);
 
 			editor.conversion.for( 'downcast' ).markerToElement( {
-				model: 'foo',
-				view: ( data, writer ) => writer.createUIElement( 'something' )
+				model: 'element1',
+				view: ( data, writer ) => writer.createUIElement( 'element1' )
+			} );
+
+			editor.conversion.for( 'downcast' ).markerToElement( {
+				model: 'element2',
+				view: ( data, writer ) => writer.createUIElement( 'element2' )
 			} );
 
 			editor.conversion.for( 'downcast' ).markerToHighlight( {
-				model: 'bar',
-				view: { classes: 'bar' }
+				model: 'highlight',
+				view: { classes: 'highlight' }
 			} );
 
 			model.change( writer => {
-				writer.addMarker( 'foo', {
+				writer.addMarker( 'element1', {
 					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
 					usingOperation: false
 				} );
 
-				writer.addMarker( 'bar', {
+				writer.addMarker( 'element2', {
+					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'highlight', {
 					range: writer.createRangeIn( modelRoot.getChild( 0 ) ),
 					usingOperation: false
 				} );
 
 				// VirtualTestEeditor does not render V to DOM, so we need to mock element market to be rendered
 				// because view post-fixer uses it.
-				view._renderer.markedChildren = new Set( [ viewRoot.getChild( 0 ).getChild( 0 ) ] );
+				view._renderer.markedChildren = new Set( [
+					viewRoot.getChild( 0 ).getChild( 0 ),
+					viewRoot.getChild( 0 ).getChild( 1 )
+				] );
 			} );
 
 			expect( getViewData( view ) ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<span class="bar">' +
+						'<span class="highlight">' +
 							'<label class="todo-list__checkmark" contenteditable="false"></label>' +
-							'<something></something>' +
+							'<element1></element1>' +
+							'<element2></element2>' +
 							'{}foo' +
 						'</span>' +
 					'</li>' +
+					'<li>' +
+						'<label class="todo-list__checkmark" contenteditable="false"></label>bar' +
+					'</li>' +
 				'</ul>'
 			);
+		} );
+	} );
+
+	describe( 'todoListChecked attribute model post-fixer', () => {
+		it( 'should remove todoListChecked attribute when checked todoListItem is renamed', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0" todoListChecked="true">fo[]o</listItem>' );
+
+			editor.execute( 'todoList' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+		} );
+	} );
+
+	describe( 'leftArrow key handling', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = {
+				keyCode: getCode( 'arrowLeft' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy(),
+				domTarget: {
+					ownerDocument: {
+						defaultView: {
+							getSelection: () => ( { rangeCount: 0 } )
+						}
+					}
+				}
+			};
+		} );
+
+		it( 'should jump at the end of the previous node when selection is after checkmark element', () => {
+			setModelData( model,
+				'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
+				'<listItem listIndent="0" listType="todo">[]bar</listItem>'
+			);
+
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			expect( getModelData( model ) ).to.equal(
+				'<blockQuote><paragraph>foo[]</paragraph></blockQuote>' +
+				'<listItem listIndent="0" listType="todo">bar</listItem>'
+			);
+
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should do nothing when list item is a first block element in the root', () => {
+			setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+		} );
+
+		it( 'should do nothing when selection is not collapsed', () => {
+			setModelData( model, '<listItem listIndent="0" listType="todo">[bar]</listItem>' );
+
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should do nothing when selection is not at the beginning list item', () => {
+			setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
 } );

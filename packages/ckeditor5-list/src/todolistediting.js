@@ -81,14 +81,6 @@ export default class TodoListEditing extends Plugin {
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
-			if ( operation.type != 'changeAttribute' && operation.key != 'listType' && operation.oldValue == 'todoList' ) {
-				for ( const item of operation.range.getItems() ) {
-					if ( item.name == 'listItem' && item.hasAttribute( 'todoListChecked' ) ) {
-						listItemsToFix.add( item );
-					}
-				}
-			}
-
 			if ( operation.type == 'rename' && operation.oldName == 'listItem' ) {
 				const item = operation.position.nodeAfter;
 
@@ -146,27 +138,31 @@ function moveUIElementsAfterCheckmark( writer, uiElements ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/documentselection~DocumentSelection} selection
 function moveSelectionAfterCheckmark( writer, selection ) {
-	if ( !selection.isCollapsed ) {
+	const positionToChange = selection.getFirstPosition();
+
+	if ( positionToChange.parent.name != 'li' || !positionToChange.parent.parent.hasClass( 'todo-list' ) ) {
 		return false;
 	}
 
-	const position = selection.getFirstPosition();
-
-	if ( position.parent.name != 'li' || !position.parent.parent.hasClass( 'todo-list' ) ) {
-		return false;
-	}
-
-	const parentEndPosition = writer.createPositionAt( position.parent, 'end' );
-	const uiElement = findInRange( writer.createRange( position, parentEndPosition ), item => {
+	const parentEndPosition = writer.createPositionAt( positionToChange.parent, 'end' );
+	const uiElement = findInRange( writer.createRange( positionToChange, parentEndPosition ), item => {
 		return ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) ) ? item : false;
 	} );
 
-	if ( uiElement && !position.isAfter( writer.createPositionBefore( uiElement ) ) ) {
-		const range = writer.createRange( writer.createPositionAfter( uiElement ), parentEndPosition );
-		const text = findInRange( range, item => item.is( 'textProxy' ) ? item.textNode : false );
+	if ( uiElement && !positionToChange.isAfter( writer.createPositionBefore( uiElement ) ) ) {
+		const boundaries = writer.createRange( writer.createPositionAfter( uiElement ), parentEndPosition );
+		const text = findInRange( boundaries, item => item.is( 'textProxy' ) ? item.textNode : false );
 		const nextPosition = text ? writer.createPositionAt( text, 0 ) : parentEndPosition;
 
-		writer.setSelection( nextPosition );
+		let range;
+
+		if ( selection.isCollapsed ) {
+			range = writer.createRange( nextPosition );
+		} else {
+			range = writer.createRange( nextPosition, selection.getLastPosition() );
+		}
+
+		writer.setSelection( range, { isBackward: selection.isBackward } );
 
 		return true;
 	}
@@ -189,11 +185,10 @@ function jumpOverCheckmarkOnLeftArrowKeyPress( stopKeyEvent, model ) {
 	const parent = position.parent;
 
 	if ( parent.name === 'listItem' && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
-		stopKeyEvent();
-
 		const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
 
 		if ( newRange ) {
+			stopKeyEvent();
 			model.change( writer => writer.setSelection( newRange ) );
 		}
 	}
