@@ -178,7 +178,6 @@ function jumpOverInlineFiller( evt, data ) {
 function hasInlineSiblingOrParent( domNode ) {
 	const hasParent = !!domNode.parentNode;
 
-
 	if ( !hasParent ) {
 		return false;
 	}
