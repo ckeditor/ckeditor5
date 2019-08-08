@@ -13,7 +13,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import MathType from '@wiris/mathtype-ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#math-type-editor' ), {
+	.create( document.querySelector( '#mathtype-editor' ), {
 		plugins: [
 			Essentials,
 			Bold,
