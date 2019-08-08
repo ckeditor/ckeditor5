@@ -70,7 +70,7 @@ export default class Watchdog {
 		 *
 		 * @protected
 		 */
-		this._now = () => Date.now();
+		this._now = Date.now;
 
 		/**
 		 * @private
