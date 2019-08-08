@@ -101,7 +101,7 @@ npm install --save \
 	@ckeditor/ckeditor5-dev-utils \
 	postcss-loader@3 \
 	raw-loader@1 \
-	style-loader@0.23.0 \
+	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3 \
 ```

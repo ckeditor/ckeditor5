@@ -31,7 +31,7 @@ First, install packages needed to build and set up a basic CKEditor 5 instance.
 npm install --save \
 	postcss-loader@3 \
 	raw-loader@1 \
-	style-loader@0.23.0 \
+	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3 \
 	@ckeditor/ckeditor5-dev-utils \
