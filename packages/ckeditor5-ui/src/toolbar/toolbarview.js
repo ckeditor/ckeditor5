@@ -143,7 +143,13 @@ export default class ToolbarView extends View {
 		this._resizeObserver = null;
 
 		/**
-		 * TODO
+		 *	┌────────────────────────────────── #_components ──────────────────────────────────────┐
+		 *	|                                                                                      |
+		 *	|    ┌──── #itemsView───────┐ ┌──────────────────────┐ ┌──────────────────────────┐    |
+		 *	|    |         ...          | | ToolbarSeparatorView | | #overflowedItemsDropdown |    |
+		 *	|    └─────────────────────-┘ └──────────────────────┘ └──────────────────────────┘    |
+		 *	|                             \---------- only when #shouldGroupWhenFull ---------/    |
+		 *	+──────────────────────────────────────────────────────────────────────────────────────┘
 		 *
 		 * @readonly
 		 * @protected
@@ -169,45 +175,10 @@ export default class ToolbarView extends View {
 			focusTracker: this.focusTracker,
 		} );
 
-		this.keystrokes.set( 'arrowright', ( keyEvtData, cancel ) => {
-			if ( this.itemsView.focusTracker.isFocused ) {
-				if ( this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
-					this._componentsFocusCycler.focusNext();
-				} else {
-					this._itemsFocusCycler.focusNext();
-				}
-
-				cancel();
-			} else {
-				this._componentsFocusCycler.focusNext();
-
-				cancel();
-			}
-		} );
-
-		this.keystrokes.set( 'arrowleft', ( keyEvtData, cancel ) => {
-			if ( this.itemsView.focusTracker.isFocused ) {
-				if ( this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
-					if ( this._hasOverflowedItemsDropdown ) {
-						this._componentsFocusCycler.focusLast();
-					} else {
-						this._itemsFocusCycler.focusPrevious();
-					}
-				} else {
-					this._itemsFocusCycler.focusPrevious();
-				}
-
-				cancel();
-			} else {
-				if ( this._componentsFocusCycler.previous === this.itemsView ) {
-					this._itemsFocusCycler.focusLast();
-				} else {
-					this._componentsFocusCycler.focusPrevious();
-				}
-
-				cancel();
-			}
-		} );
+		this.keystrokes.set( 'arrowleft', this._onKeyboardPrevious.bind( this ) );
+		this.keystrokes.set( 'arrowup', this._onKeyboardPrevious.bind( this ) );
+		this.keystrokes.set( 'arrowright', this._onKeyboardNext.bind( this ) );
+		this.keystrokes.set( 'arrowdown', this._onKeyboardNext.bind( this ) );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -476,6 +447,72 @@ export default class ToolbarView extends View {
 		} );
 
 		return overflowedItemsDropdown;
+	}
+
+	/**
+	 *	┌────────────────────────────── #_components ────────────────────────────────────────┐
+	 *	|                                                                                    |
+	 *	|    /────▶────\                  /───────▶───────▶───────\          /────▶─────\    |
+	 *	|    |         ▼                  ▲                       ▼          ▲          |    |
+	 *	|    |       ┌─|──── #items ──────|─┐             ┌───────|──────────|───────┐  |    |
+	 *	|    ▲       | \───▶──────────▶───/ |             | #overflowedItemsDropdown |  ▼    |
+	 *	|    |       └─────────────────────-┘             └──────────────────────────┘  |    |
+	 *	|    |                                                                          |    |
+	 *	|    └─────◀───────────◀────────────◀──────────────◀──────────────◀─────────────/    |
+	 *	|                                                                                    |
+	 *	+────────────────────────────────────────────────────────────────────────────────────┘
+	 */
+	_onKeyboardNext( keyEvtData, cancel ) {
+		if ( this.itemsView.focusTracker.isFocused ) {
+			if ( this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
+				this._componentsFocusCycler.focusNext();
+			} else {
+				this._itemsFocusCycler.focusNext();
+			}
+
+			cancel();
+		} else {
+			this._componentsFocusCycler.focusNext();
+
+			cancel();
+		}
+	}
+
+	/**
+	 *	┌────────────────────────────── #_components ────────────────────────────────────────┐
+	 *	|                                                                                    |
+	 *	|    /────◀────\                  /───────◀───────◀───────\          /────◀─────\    |
+	 *	|    |         ▲                  ▼                       ▲          ▼          |    |
+	 *	|    |       ┌─|──── #items ──────|─┐             ┌───────|──────────|───────┐  |    |
+	 *	|    ▼       | \───◀──────────◀───/ |             | #overflowedItemsDropdown |  ▲    |
+	 *	|    |       └─────────────────────-┘             └──────────────────────────┘  |    |
+	 *	|    |                                                                          |    |
+	 *	|    └─────▶───────────▶────────────▶──────────────▶──────────────▶─────────────/    |
+	 *	|                                                                                    |
+	 *	+────────────────────────────────────────────────────────────────────────────────────┘
+	 */
+	_onKeyboardPrevious( keyEvtData, cancel ) {
+		if ( this.itemsView.focusTracker.isFocused ) {
+			if ( this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
+				if ( this._hasOverflowedItemsDropdown ) {
+					this._componentsFocusCycler.focusLast();
+				} else {
+					this._itemsFocusCycler.focusPrevious();
+				}
+			} else {
+				this._itemsFocusCycler.focusPrevious();
+			}
+
+			cancel();
+		} else {
+			if ( this._componentsFocusCycler.previous === this.itemsView ) {
+				this._itemsFocusCycler.focusLast();
+			} else {
+				this._componentsFocusCycler.focusPrevious();
+			}
+
+			cancel();
+		}
 	}
 
 	/**
