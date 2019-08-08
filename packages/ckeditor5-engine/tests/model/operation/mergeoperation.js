@@ -139,6 +139,23 @@ describe( 'MergeOperation', () => {
 			expectToThrowCKEditorError( () => operation._validate(), /merge-operation-source-position-invalid/, model );
 		} );
 
+		it( 'should throw an error if target position is in root', () => {
+			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
+			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+
+			root._insertChild( 0, [ p1, p2 ] );
+
+			const operation = new MergeOperation(
+				new Position( root, [ 0, 3 ] ),
+				3,
+				new Position( root, [ 0 ] ),
+				gyPos,
+				doc.version
+			);
+
+			expectToThrowCKEditorError( () => operation._validate(), /merge-operation-target-position-invalid/, model );
+		} );
+
 		it( 'should throw an error if target position is invalid', () => {
 			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
 			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
