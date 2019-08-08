@@ -34,7 +34,7 @@ export default class Watchdog {
 		 * * `date`: `Number`,
 		 * * `filename`: `String | undefined`,
 		 * * `lineno`: `Number | undefined`,
-		 * * `colno`: `Number` | undefined,
+		 * * `colno`: `Number | undefined`,
 		 *
 		 * @public
 		 * @readonly
