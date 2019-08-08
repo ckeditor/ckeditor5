@@ -478,7 +478,7 @@ describe( 'ColorTableView', () => {
 			expect( activeDocumentColorTile ).to.be.undefined;
 		} );
 
-		it( 'should not have selction for unknow colors exceeding document colors limit', () => {
+		it( 'should not have a selection for unknown colors exceeding document colors limit', () => {
 			const command = editor.commands.get( 'testColorCommand' );
 
 			setModelData( model,
