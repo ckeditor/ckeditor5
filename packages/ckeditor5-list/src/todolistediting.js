@@ -9,6 +9,7 @@
 
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
+import TodoListCheckCommand from './todolistcheckcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -42,11 +43,16 @@ export default class TodoListEditing extends Plugin {
 		const { editing, data, model } = editor;
 		const viewDocument = editing.view.document;
 
+		// Extend schema.
 		model.schema.extend( 'listItem', {
 			allowAttributes: [ 'todoListChecked' ]
 		} );
 
-		// Converters.
+		// Register commands.
+		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
+		editor.commands.add( 'todoListCheck', new TodoListCheckCommand( editor ) );
+
+		// Define converters.
 		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( model ), { priority: 'high' } );
 		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion, { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
@@ -54,9 +60,6 @@ export default class TodoListEditing extends Plugin {
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( model ) );
 		editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', modelViewChangeChecked( model ) );
-
-		// Register command for todo list.
-		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
 
 		// Move selection after a checkbox element.
 		viewDocument.registerPostFixer( writer => moveUIElementsAfterCheckmark( writer, getChangedCheckmarkElements( editing.view ) ) );

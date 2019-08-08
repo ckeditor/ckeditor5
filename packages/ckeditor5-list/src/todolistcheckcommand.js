@@ -14,7 +14,7 @@ const attributeKey = 'todoListChecked';
 /**
  * @extends module:core/command~Command
  */
-export default class TodoListCheckedCommand extends Command {
+export default class TodoListCheckCommand extends Command {
 	/**
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
