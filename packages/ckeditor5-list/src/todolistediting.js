@@ -113,7 +113,7 @@ function moveUIElementsAfterCheckmark( writer, uiElements ) {
 	let hasChanged = false;
 
 	for ( const uiElement of uiElements ) {
-		const listItem = findListItemAncestor( uiElement );
+		const listItem = findViewListItemAncestor( uiElement );
 		const positionAtListItem = writer.createPositionAt( listItem, 0 );
 		const positionBeforeUiElement = writer.createPositionBefore( uiElement );
 
@@ -217,7 +217,7 @@ function getChangedCheckmarkElements( editingView ) {
 // @private
 // @param {module:engine/view/item~Item} item
 // @returns {module:engine/view/element~Element}
-function findListItemAncestor( item ) {
+function findViewListItemAncestor( item ) {
 	for ( const parent of item.getAncestors( { parentFirst: true } ) ) {
 		if ( parent.name == 'li' ) {
 			return parent;
