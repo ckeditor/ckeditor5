@@ -262,6 +262,9 @@ describe( 'Watchdog', () => {
 				setTimeout( () => {
 					throw new Error( 'foo' );
 				} );
+				setTimeout( () => {
+					throw 'bar';
+				} );
 
 				return new Promise( res => {
 					setTimeout( () => {
@@ -695,6 +698,80 @@ describe( 'Watchdog', () => {
 		} );
 	} );
 
+	describe( 'async error handling', () => {
+		let unhandledRejectionEventSupported;
+
+		before( () => {
+			return isUnhandledRejectionEventSupported()
+				.then( val => {
+					unhandledRejectionEventSupported = val;
+				} );
+		} );
+
+		it( 'Watchdog should handle async CKEditorError errors', () => {
+			if ( !unhandledRejectionEventSupported ) {
+				return;
+			}
+
+			const watchdog = Watchdog.for( ClassicTestEditor );
+			const originalErrorHandler = window.onerror;
+
+			window.onerror = undefined;
+
+			return watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const oldEditor = watchdog.editor;
+
+				Promise.resolve().then( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.editor ).to.not.equal( oldEditor );
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'Watchdog should not react to non-editor async errors', () => {
+			if ( !unhandledRejectionEventSupported ) {
+				return;
+			}
+
+			const watchdog = Watchdog.for( ClassicTestEditor );
+			const originalErrorHandler = window.onerror;
+			const editorErrorSpy = sinon.spy();
+
+			window.onerror = undefined;
+
+			return watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				watchdog.on( 'error', editorErrorSpy );
+
+				Promise.resolve().then( () => Promise.reject( 'foo' ) );
+				Promise.resolve().then( () => Promise.reject( new Error( 'bar' ) ) );
+
+				// Wait a cycle.
+				return new Promise( res => setTimeout( res ) );
+			} ).then( () => {
+				window.onerror = originalErrorHandler;
+
+				sinon.assert.notCalled( editorErrorSpy );
+				expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+				return watchdog.destroy();
+			} );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		// See #19.
 		it( 'should clean internal stuff', () => {
@@ -719,7 +796,7 @@ describe( 'Watchdog', () => {
 				watchdog.editor.model.change( writer => {
 					writer.insertText( 'foo', writer.createPositionAt( doc.getRoot(), 1 ) );
 				} );
-			} ).then( () => {
+
 				return watchdog.destroy();
 			} ).then( () => {
 				// Wait to ensure that the throttled save is cleared and won't be executed
@@ -782,9 +859,48 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+						expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
+						expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
+						expect( watchdog.crashes[ 0 ].filename ).to.be.a( 'string' );
+						expect( watchdog.crashes[ 0 ].lineno ).to.be.a( 'number' );
+						expect( watchdog.crashes[ 0 ].colno ).to.be.a( 'number' );
+
 						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
 
 						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'should include async errors', () => {
+			return isUnhandledRejectionEventSupported().then( isSupported => {
+				if ( !isSupported ) {
+					return;
+				}
+
+				const watchdog = Watchdog.for( ClassicTestEditor );
+
+				// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+				const originalErrorHandler = window.onerror;
+				window.onerror = undefined;
+
+				return watchdog.create( element ).then( () => {
+					Promise.resolve().then( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+					return new Promise( res => {
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+							expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
+							expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
+							expect( watchdog.crashes[ 0 ].filename ).to.be.an( 'undefined' );
+							expect( watchdog.crashes[ 0 ].lineno ).to.be.an( 'undefined' );
+							expect( watchdog.crashes[ 0 ].colno ).to.be.an( 'undefined' );
+
+							watchdog.destroy().then( res );
+						} );
 					} );
 				} );
 			} );
@@ -877,4 +993,20 @@ describe( 'Watchdog', () => {
 
 function throwCKEditorError( name, context ) {
 	throw new CKEditorError( name, context );
+}
+
+// Feature detection works as a race condition - if the `unhandledrejection` event
+// is supported then the listener should be called first. Otherwise the timeout will be reached.
+function isUnhandledRejectionEventSupported() {
+	return new Promise( res => {
+		window.addEventListener( 'unhandledrejection', function listener() {
+			res( true );
+
+			window.removeEventListener( 'unhandledrejection', listener );
+		} );
+
+		Promise.resolve().then( () => Promise.reject( new Error() ) );
+
+		setTimeout( () => res( false ) );
+	} );
 }
