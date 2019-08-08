@@ -772,6 +772,44 @@ describe( 'Watchdog', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		// See #19.
+		it( 'should clean internal stuff', () => {
+			// 30ms should be enough to make the two data changes split into two data save actions.
+			// This will ensure that the second data save action will be put off in time.
+			const SAVE_INTERVAL = 30;
+
+			const watchdog = Watchdog.for( ClassicTestEditor, {
+				saveInterval: SAVE_INTERVAL,
+			} );
+
+			return watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} ).then( () => {
+				const doc = watchdog.editor.model.document;
+
+				watchdog.editor.model.change( writer => {
+					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+				} );
+
+				watchdog.editor.model.change( writer => {
+					writer.insertText( 'foo', writer.createPositionAt( doc.getRoot(), 1 ) );
+				} );
+
+				return watchdog.destroy();
+			} ).then( () => {
+				// Wait to ensure that the throttled save is cleared and won't be executed
+				// on the non-existing editor.
+				return new Promise( res => setTimeout( res, SAVE_INTERVAL ) );
+			} ).then( () => {
+				expect( watchdog.editor ).to.equal( null );
+				expect( watchdog.state ).to.equal( 'destroyed' );
+				expect( watchdog.crashes ).to.deep.equal( [] );
+			} );
+		} );
+	} );
+
 	describe( 'static for()', () => {
 		it( 'should be a shortcut method for creating the watchdog', () => {
 			const watchdog = Watchdog.for( ClassicTestEditor );

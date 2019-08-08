@@ -66,6 +66,14 @@ export default class Watchdog {
 		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
 
 		/**
+		 * Returns the result of `Date.now()` call. It can be overridden in tests to mock time as the popular
+		 * approaches like `sinon.useFakeTimers()` does not work well with error handling.
+		 *
+		 * @protected
+		 */
+		this._now = Date.now;
+
+		/**
 		 * @private
 		 * @type {Number}
 		 * @see module:watchdog/watchdog~WatchdogConfig
@@ -99,7 +107,10 @@ export default class Watchdog {
 		 * @private
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), config.saveInterval || 5000 );
+		this._throttledSave = throttle(
+			this._save.bind( this ),
+			typeof config.saveInterval === 'number' ? config.saveInterval : 5000
+		);
 
 		/**
 		 * The current editor instance.
@@ -274,6 +285,9 @@ export default class Watchdog {
 
 		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
 
+		// Save data if there is a remaining editor data change.
+		this._throttledSave.flush();
+
 		return Promise.resolve()
 			.then( () => this._destructor( this._editor ) )
 			.then( () => {
@@ -331,7 +345,7 @@ export default class Watchdog {
 				filename: evt.filename,
 				lineno: evt.lineno,
 				colno: evt.colno,
-				date: Date.now()
+				date: this._now()
 			} );
 
 			this.fire( 'error', { error } );
@@ -394,7 +408,6 @@ export default class Watchdog {
 	 */
 	_restart() {
 		this.state = 'initializing';
-		this._throttledSave.flush();
 
 		return Promise.resolve()
 			.then( () => this._destroy() )
