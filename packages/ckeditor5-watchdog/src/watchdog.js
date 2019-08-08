@@ -363,7 +363,7 @@ export default class Watchdog {
 	 * Checks whether the error should be handled.
 	 *
 	 * @private
-	 * @param {Error} error Error event.
+	 * @param {Error} error Error
 	 */
 	_shouldReactToError( error ) {
 		return (
