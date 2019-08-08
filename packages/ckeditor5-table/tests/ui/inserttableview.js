@@ -39,7 +39,7 @@ describe( 'InsertTableView', () => {
 		} );
 
 		it( 'sets #label to default rows & columns', () => {
-			expect( view.label ).to.equal( '0x0' );
+			expect( view.label ).to.equal( '0 × 0' );
 		} );
 
 		it( 'creates #element from template', () => {
@@ -85,11 +85,11 @@ describe( 'InsertTableView', () => {
 			it( 'binds #label to rows & columns', () => {
 				view.rows = 3;
 
-				expect( view.label ).to.equal( '3x0' );
+				expect( view.label ).to.equal( '3 × 0' );
 
 				view.columns = 7;
 
-				expect( view.label ).to.equal( '3x7' );
+				expect( view.label ).to.equal( '3 × 7' );
 			} );
 
 			it( 'mousedown event should be prevented', () => {

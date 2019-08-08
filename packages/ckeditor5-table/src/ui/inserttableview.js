@@ -59,7 +59,7 @@ export default class InsertTableView extends View {
 		 * @member {String} #label
 		 */
 		this.bind( 'label' )
-			.to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows }x${ columns }` );
+			.to( this, 'columns', this, 'rows', ( columns, rows ) => `${ rows } × ${ columns }` );
 
 		this.setTemplate( {
 			tag: 'div',
