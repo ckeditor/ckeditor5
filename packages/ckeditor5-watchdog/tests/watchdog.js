@@ -702,7 +702,7 @@ describe( 'Watchdog', () => {
 		let unhandledRejectionEventSupported;
 
 		before( () => {
-			return doesEnvSupportUnhandledRejectionEvent()
+			return isUnhandledRejectionEventSupported()
 				.then( val => {
 					unhandledRejectionEventSupported = val;
 				} );
@@ -920,7 +920,7 @@ function throwCKEditorError( name, context ) {
 
 // Feature detection works as a race condition - if the `unhandledrejection` event
 // is supported then the listener should be called first. Otherwise the timeout will be reached.
-function doesEnvSupportUnhandledRejectionEvent() {
+function isUnhandledRejectionEventSupported() {
 	return new Promise( res => {
 		window.addEventListener( 'unhandledrejection', function listener() {
 			res( true );
