@@ -194,7 +194,7 @@ describe( 'CKFinderCommand', () => {
 			expect( openerMethodOptions ).to.have.property( 'connectorPath', connectorPath );
 		} );
 
-		it( 'should call user defined config.onInit() function', () => {
+		it( 'should call user-defined config.onInit() function', () => {
 			const spy = sinon.spy();
 
 			editor.config.set( 'ckfinder.options.onInit', spy );
@@ -204,7 +204,7 @@ describe( 'CKFinderCommand', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should pass CKFinder instance to a user defined config.onInit() function', () => {
+		it( 'should pass CKFinder instance to a user-defined config.onInit() function', () => {
 			const spy = sinon.spy();
 
 			editor.config.set( 'ckfinder.options.onInit', spy );
