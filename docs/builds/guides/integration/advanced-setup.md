@@ -99,9 +99,9 @@ The second step is to install dependencies needed to build the editor. The list 
 npm install --save \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
 	@ckeditor/ckeditor5-dev-utils \
-	postcss-loader \
-	raw-loader \
-	style-loader \
+	postcss-loader@3 \
+	raw-loader@1 \
+	style-loader@0.23.0 \
 	webpack@4 \
 	webpack-cli@3 \
 ```
