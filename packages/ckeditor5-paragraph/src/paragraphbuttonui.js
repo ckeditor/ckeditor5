@@ -40,6 +40,7 @@ export default class ParagraphButtonUI extends Plugin {
 			view.label = t( 'Paragraph' );
 			view.icon = icon;
 			view.tooltip = true;
+			view.isToggleable = true;
 			view.bind( 'isEnabled' ).to( command );
 			view.bind( 'isOn' ).to( command, 'value' );
 
