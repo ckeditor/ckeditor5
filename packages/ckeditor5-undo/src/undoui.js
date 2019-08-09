@@ -27,8 +27,8 @@ export default class UndoUI extends Plugin {
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedUndoIcon = locale.languageDirection == 'ltr' ? undoIcon : redoIcon;
-		const localizedRedoIcon = locale.languageDirection == 'ltr' ? redoIcon : undoIcon;
+		const localizedUndoIcon = locale.uiLanguageDirection == 'ltr' ? undoIcon : redoIcon;
+		const localizedRedoIcon = locale.uiLanguageDirection == 'ltr' ? redoIcon : undoIcon;
 
 		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
 		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );
