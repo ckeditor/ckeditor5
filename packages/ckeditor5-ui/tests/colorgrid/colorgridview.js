@@ -106,6 +106,23 @@ describe( 'ColorGridView', () => {
 			expect( view.items.get( 2 ).isOn ).to.be.false;
 		} );
 
+		it( 'should determine #isOn value when a ColorTileView is added', () => {
+			view.selectedColor = 'gold';
+
+			const tile = new ColorTileView();
+			tile.set( {
+				color: 'gold',
+				label: 'Gold',
+				options: {
+					hasBorder: false
+				}
+			} );
+
+			view.items.add( tile );
+
+			expect( view.items.get( 3 ).isOn ).to.be.true;
+		} );
+
 		describe( 'add colors from definition as child items', () => {
 			it( 'has proper number of elements', () => {
 				expect( view.items.length ).to.equal( 3 );
