@@ -15,7 +15,6 @@ import IndentBlock from '../../src/indentblock';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		language: 'ar',
-		contentLanguage: 'ar',
 		plugins: [ ArticlePluginSet, Indent, IndentBlock ],
 		toolbar: [
 			'heading',

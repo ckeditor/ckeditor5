@@ -162,7 +162,9 @@ describe( 'IndentBlock', () => {
 				beforeEach( () => {
 					return createTestEditor( {
 						indentBlock: { offset: 50, unit: 'px' },
-						contentLanguage: 'ar'
+						language: {
+							content: 'ar'
+						}
 					} ).then( newEditor => {
 						editor = newEditor;
 						model = editor.model;
