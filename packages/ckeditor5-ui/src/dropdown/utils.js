@@ -131,7 +131,9 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
 export function addToolbarToDropdown( dropdownView, buttons ) {
 	const locale = dropdownView.locale;
 	const t = locale.t;
-	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale, { ariaLabel: t( 'Dropdown\'s toolbar' ) } );
+	const toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
+
+	toolbarView.set( 'ariaLabel', t( 'Dropdown toolbar' ) );
 
 	dropdownView.extendTemplate( {
 		attributes: {

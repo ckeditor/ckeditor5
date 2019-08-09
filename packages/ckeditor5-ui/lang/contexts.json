@@ -6,5 +6,5 @@
 	"Previous": "Label for a button showing the previous thing (tab, page, etc.).",
 	"%0 of %1": "Label for a 'page X of Y' status of a typical next/previous page navigation.",
 	"Editor toolbar": "Label describing the main editor toolbar used by assistive technologies.",
-	"Dropdown's toolbar": "Label describing the toolbar under a dropdown button used by assistive technologies."
+	"Dropdown toolbar": "Label describing the toolbar under a dropdown button used by assistive technologies."
 }

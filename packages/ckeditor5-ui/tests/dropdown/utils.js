@@ -272,6 +272,10 @@ describe( 'utils', () => {
 			expect( dropdownView.element.classList.contains( 'ck-toolbar-dropdown' ) ).to.be.true;
 		} );
 
+		it( 'sets aria-label', () => {
+			expect( dropdownView.toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Dropdown toolbar' );
+		} );
+
 		describe( 'view#toolbarView', () => {
 			it( 'is created', () => {
 				const panelChildren = dropdownView.panelView.children;
