@@ -72,7 +72,9 @@ describe( 'LinkEditing', () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ Paragraph, LinkEditing, Enter ],
-					contentLanguage: 'ar'
+					language: {
+						content: 'ar'
+					}
 				} )
 				.then( editor => {
 					model = editor.model;
