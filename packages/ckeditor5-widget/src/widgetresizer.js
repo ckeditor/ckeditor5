@@ -31,7 +31,7 @@ const WIDTH_ATTRIBUTE_NAME = 'width';
 /**
  * Widget resize feature plugin.
  *
- * Use the {@link #apply} method to create resizer for a provided widget.
+ * Use the {@link module:widget/widgetresizer~WidgetResizer#apply} method to create resizer for a provided widget.
  */
 export default class WidgetResizer extends Plugin {
 	/**

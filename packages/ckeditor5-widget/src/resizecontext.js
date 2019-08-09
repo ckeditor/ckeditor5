@@ -146,16 +146,13 @@ export default class ResizeContext {
 
 		this._dismissShadow();
 
+		this.redraw();
+
+		this.resizeStrategy.commit( editor );
+
 		editor.model.change( writer => {
 			writer.setAttribute( WIDTH_ATTRIBUTE_NAME, newWidth, modelEntry );
 		} );
-
-		this.redraw();
-
-		// Again, render will most likely change image size, so resizers needs a redraw.
-		editor.editing.view.once( 'render', () => this.redraw() );
-
-		this.resizeStrategy.commit( editor );
 
 		this._cleanupContext();
 	}
