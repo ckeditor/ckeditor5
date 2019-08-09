@@ -170,16 +170,18 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 
 In CKEditor 5 you can separately configure the language of the UI and the language of the content. That means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (e.g. [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
 
-Configure {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`} to change the language of the content. In this example, the UI of the editor will be English but the content will be Arabic:
+Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} to change the language of the content. In this example, the UI of the editor will be English but the content will be Arabic:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// The UI will be English.
-		language: 'en',
+		language: {
+			// The UI will be English.
+			ui: 'en',
 
-		// But the content will be edited in Arabic.
-		contentLanguage: 'ar'
+			// But the content will be edited in Arabic.
+			content: 'ar'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -192,5 +194,5 @@ ClassicEditor
 {@snippet features/ui-language-content}
 
 <info-box>
-	If unsure what language the content will be typed in, do not set {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`}. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
+	If unsure what language the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
 </info-box>

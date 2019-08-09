@@ -9,8 +9,9 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ui-language-content' ), {
-		language: 'en',
-		contentLanguage: 'ar',
+		language: {
+			content: 'ar'
+		},
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
