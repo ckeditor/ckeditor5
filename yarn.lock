@@ -700,13 +700,13 @@
     date-fns "^1.29.0"
     lodash-es "^4.17.11"
 
-"@ckeditor/ckeditor5-dev-docs@^11.0.4":
-  version "11.0.4"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-11.0.4.tgz#9fcbb2295562b943e43e76505d04298155d8ac96"
-  integrity sha512-LBX4/5jPocBm/CnPSf3+0pbdIeCTb94uvpJXktY4GruXU2Sn9AMigykMMm/vq2NOARfKT1LZ2e7DlDlsmRSfkg==
+"@ckeditor/ckeditor5-dev-docs@^11.0.5":
+  version "11.0.5"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-11.0.5.tgz#d8d00b158211cc1b6f4d1d9a11c93a4477526b72"
+  integrity sha512-RfugTx/Z/y+JoBM60+b9wt4WrxtgjzFB0tqjK1Rr2GmyM3RnKjByi0WzAOwzpfnw3/bXcw7SIaQPKtf+sXjR7Q==
   dependencies:
     "@ckeditor/ckeditor5-dev-utils" "^12.0.3"
-    "@ckeditor/jsdoc-plugins" "^3.0.3"
+    "@ckeditor/jsdoc-plugins" "^3.0.4"
     jsdoc "3.4.3"
     map-stream "^0.0.7"
     tmp "^0.0.33"
@@ -736,10 +736,10 @@
     request "^2.83.0"
     semver "^6.2.0"
 
-"@ckeditor/ckeditor5-dev-tests@^16.4.2":
-  version "16.4.2"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.4.2.tgz#340ca174d0e707257f6d7aede3a6b00da7811268"
-  integrity sha512-w4+kGZ1LD9C665nJu0iDv6oiOP30hkEqPRQ1KzuTPyGhRbTmXXdXEdNr/WnyI0v1zB29h4F0cl0zQzSy1Db3sQ==
+"@ckeditor/ckeditor5-dev-tests@^16.5.0":
+  version "16.5.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.5.0.tgz#da4d786525dd387bd72d0202ea1f7d6150dbd0fa"
+  integrity sha512-YGeX2HxKx59eDm0Ik0V4GTtbdmaEvUr67j5pOeKM4KZtP7Bmh+Mv3V4kqh0bo93wz38J9eIg+DiHUUCbZID8Xw==
   dependencies:
     "@babel/core" "^7.0.0"
     "@ckeditor/ckeditor5-dev-utils" "^12.0.3"
@@ -813,7 +813,7 @@
     rimraf "^2.6.2"
     webpack-sources "^1.1.0"
 
-"@ckeditor/ckeditor5-inspector@^1.0.0", "@ckeditor/ckeditor5-inspector@^1.2.0":
+"@ckeditor/ckeditor5-inspector@^1.0.0", "@ckeditor/ckeditor5-inspector@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-inspector/-/ckeditor5-inspector-1.3.0.tgz#edd3162b8065d94a6683ce4b11b8bcff76e99177"
   integrity sha512-P5b3/Uy5QHL4awSfhaYBfwo//umGnk2q7KjC6vBGoYm07HDMULNgfzUIAYckvncACY16yXesnqV2TniC1IplYw==
@@ -875,10 +875,18 @@
     date-fns "^1.30.1"
     lodash-es "^4.17.11"
 
-"@ckeditor/jsdoc-plugins@^3.0.1", "@ckeditor/jsdoc-plugins@^3.0.3":
+"@ckeditor/jsdoc-plugins@^3.0.1":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@ckeditor/jsdoc-plugins/-/jsdoc-plugins-3.0.3.tgz#9fbb3c8b3ba6fb20d0f3a7833dd1dd4dd35ed182"
   integrity sha512-3NBTGesIeOLItwW4TWUqNH762hkeOHmM9ciFj2367e+6rtMg6taTLXctYxfAv4sfgL/tPIONw9rqOFnDMXyQKg==
+  dependencies:
+    fs-extra "^8.1.0"
+    lodash "^4.17.11"
+
+"@ckeditor/jsdoc-plugins@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@ckeditor/jsdoc-plugins/-/jsdoc-plugins-3.0.4.tgz#cca895153843b35497fda4d4527313f5f46329d1"
+  integrity sha512-r3C74/jPrkE9IbiMDWGdDJJ+mvjgXwFV9Iu1WS0KxuMonsTmVhRrgohDF6vAO5HpdbMeahXsLTzRgPKx4a7cwA==
   dependencies:
     fs-extra "^8.1.0"
     lodash "^4.17.11"
