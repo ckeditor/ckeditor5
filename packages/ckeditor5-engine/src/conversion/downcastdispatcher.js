@@ -532,7 +532,6 @@ export default class DowncastDispatcher {
 	 * @param {String} data.attributeKey Attribute key.
 	 * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
 	 * @param {*} data.attributeNewValue New attribute value.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
 	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
@@ -577,7 +576,6 @@ export default class DowncastDispatcher {
 	 * the marker range was not collapsed.
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
 	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
