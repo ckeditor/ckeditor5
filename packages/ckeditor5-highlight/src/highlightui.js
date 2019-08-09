@@ -120,6 +120,7 @@ export default class HighlightUI extends Plugin {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			button.bind( 'isOn' ).to( command, 'value', value => value === option.model );
 			button.iconView.fillColor = option.color;
+			button.isToggleable = true;
 		}
 	}
 
