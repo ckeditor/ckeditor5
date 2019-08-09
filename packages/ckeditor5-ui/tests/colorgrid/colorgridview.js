@@ -106,7 +106,7 @@ describe( 'ColorGridView', () => {
 			expect( view.items.get( 2 ).isOn ).to.be.false;
 		} );
 
-		it( 'should determins isOn value when colorTile is added', () => {
+		it( 'should determine #isOn value when a ColorTileView is added', () => {
 			view.selectedColor = 'gold';
 
 			const tile = new ColorTileView();
