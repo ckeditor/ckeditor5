@@ -104,6 +104,22 @@ describe( 'WidgetToolbarRepository', () => {
 
 			toolbarView.destroy();
 		} );
+
+		it( 'should create custom aria-label if is provided', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				ariaLabel: 'Custom label'
+			} );
+
+			const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			toolbarView.render();
+
+			expect( toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+
+			toolbarView.destroy();
+		} );
 	} );
 
 	describe( 'integration tests', () => {
