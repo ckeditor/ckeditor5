@@ -23,7 +23,7 @@
 }
 
 .ck-focused .ck-widget_with-resizer.ck-widget_selected {
-	& .ck-widget__resizer-wrapper {
+	& > .ck-widget__resizer-wrapper {
 		visibility: visible;
 	}
 
