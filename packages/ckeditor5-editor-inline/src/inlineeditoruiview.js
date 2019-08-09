@@ -189,7 +189,7 @@ export default class InlineEditorUIView extends EditorUIView {
 			}
 		];
 
-		if ( this.locale.languageDirection === 'ltr' ) {
+		if ( this.locale.uiLanguageDirection === 'ltr' ) {
 			return positions;
 		} else {
 			return positions.reverse();

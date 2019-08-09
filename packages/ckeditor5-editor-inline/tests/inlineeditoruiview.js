@@ -19,7 +19,7 @@ describe( 'InlineEditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editingView = new EditingView();
 		editingViewRoot = createRoot( editingView.document );
 		view = new InlineEditorUIView( locale, editingView );
@@ -115,7 +115,7 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'init()', () => {
 		it( 'appends #toolbar to panel#content', () => {
-			locale = new Locale( 'en' );
+			locale = new Locale();
 			const view = new InlineEditorUIView( locale, editingView );
 
 			view.editable.name = editingViewRoot.rootName;
@@ -130,8 +130,8 @@ describe( 'InlineEditorUIView', () => {
 	} );
 
 	describe( 'panelPositions', () => {
-		it( 'returns the positions in the right order (languageDirection="ltr")', () => {
-			locale.languageDirection = 'ltr';
+		it( 'returns the positions in the right order (uiLanguageDirection="ltr")', () => {
+			locale.uiLanguageDirection = 'ltr';
 
 			const uiView = new InlineEditorUIView( locale, editingView );
 			const positions = uiView.panelPositions;
@@ -153,8 +153,8 @@ describe( 'InlineEditorUIView', () => {
 			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
 		} );
 
-		it( 'returns the positions in the right order (languageDirection="rtl")', () => {
-			locale.languageDirection = 'rtl';
+		it( 'returns the positions in the right order (uiLanguageDirection="rtl")', () => {
+			locale.uiLanguageDirection = 'rtl';
 
 			const uiView = new InlineEditorUIView( locale, editingView );
 			const positions = uiView.panelPositions;
