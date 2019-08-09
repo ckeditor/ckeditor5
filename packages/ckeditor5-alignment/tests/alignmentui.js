@@ -295,7 +295,9 @@ describe( 'Alignment UI', () => {
 
 				return ClassicTestEditor
 					.create( element, {
-						contentLanguage: 'ar',
+						language: {
+							content: 'ar'
+						},
 						plugins: [ AlignmentEditing, AlignmentUI ],
 						alignment: { options: [ 'center', 'justify' ] }
 					} )

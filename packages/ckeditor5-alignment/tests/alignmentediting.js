@@ -98,7 +98,9 @@ describe( 'AlignmentEditing', () => {
 			it( 'adds converters to the data pipeline', () => {
 				return VirtualTestEditor
 					.create( {
-						contentLanguage: 'ar',
+						language: {
+							content: 'ar'
+						},
 						plugins: [ AlignmentEditing, Paragraph ]
 					} )
 					.then( newEditor => {
@@ -117,7 +119,9 @@ describe( 'AlignmentEditing', () => {
 			it( 'adds a converter to the view pipeline', () => {
 				return VirtualTestEditor
 					.create( {
-						contentLanguage: 'ar',
+						language: {
+							content: 'ar'
+						},
 						plugins: [ AlignmentEditing, Paragraph ]
 					} )
 					.then( newEditor => {
@@ -191,7 +195,9 @@ describe( 'AlignmentEditing', () => {
 			it( 'adds converters to the data pipeline', () => {
 				return VirtualTestEditor
 					.create( {
-						contentLanguage: 'ar',
+						language: {
+							content: 'ar'
+						},
 						plugins: [ AlignmentEditing, Paragraph ]
 					} )
 					.then( newEditor => {
@@ -210,7 +216,9 @@ describe( 'AlignmentEditing', () => {
 			it( 'adds a converter to the view pipeline', () => {
 				return VirtualTestEditor
 					.create( {
-						contentLanguage: 'ar',
+						language: {
+							content: 'ar'
+						},
 						plugins: [ AlignmentEditing, Paragraph ]
 					} )
 					.then( newEditor => {

@@ -12,7 +12,6 @@ import Alignment from '../../src/alignment';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		language: 'ar',
-		contentLanguage: 'ar',
 		plugins: [ ArticlePluginSet, Alignment ],
 		toolbar: [
 			'heading', '|', 'alignment', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

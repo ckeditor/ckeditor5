@@ -52,7 +52,9 @@ describe( 'AlignmentCommand', () => {
 
 		it( 'is set to default alignment when selection is in block with default alignment (RTL content)', () => {
 			return ModelTestEditor.create( {
-				contentLanguage: 'ar'
+				language: {
+					content: 'ar'
+				}
 			} ).then( newEditor => {
 				model = newEditor.model;
 				command = new AlignmentCommand( newEditor );
@@ -105,7 +107,9 @@ describe( 'AlignmentCommand', () => {
 
 			it( 'should remove alignment from single block element if already has one (RTL content)', () => {
 				return ModelTestEditor.create( {
-					contentLanguage: 'ar'
+					language: {
+						content: 'ar'
+					}
 				} ).then( newEditor => {
 					model = newEditor.model;
 					command = new AlignmentCommand( newEditor );
