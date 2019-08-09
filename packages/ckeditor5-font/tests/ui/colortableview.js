@@ -89,24 +89,24 @@ describe( 'ColorTableView', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
-		it( 'creates items collection', () => {
+		it( 'should create items collection', () => {
 			expect( colorTableView.items ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'store color definitions', () => {
+		it( 'should store colors\' definitions', () => {
 			expect( colorTableView.colorDefinitions ).to.be.instanceOf( Array );
 			expect( colorTableView.colorDefinitions ).to.deep.equal( colorDefinitions );
 		} );
 
-		it( 'creates focus tracker', () => {
+		it( 'should create focus tracker', () => {
 			expect( colorTableView.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
-		it( 'creates keystroke handler', () => {
+		it( 'should create keystroke handler', () => {
 			expect( colorTableView.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
-		it( 'creates observable for selected color', () => {
+		it( 'should create observable for selected color', () => {
 			expect( colorTableView.selectedColor ).to.be.undefined;
 
 			colorTableView.set( 'selectedColor', 'white' );
@@ -114,38 +114,38 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.selectedColor ).to.equal( 'white' );
 		} );
 
-		it( 'sets tooltip for the remove color button', () => {
+		it( 'should set tooltip for the remove color button', () => {
 			expect( colorTableView.removeButtonLabel ).to.equal( 'Remove color' );
 		} );
 
-		it( 'sets number of drawn columns', () => {
+		it( 'should set number of drawn columns', () => {
 			expect( colorTableView.columns ).to.equal( 5 );
 		} );
 
-		it( 'creates collection of document colors', () => {
+		it( 'should create collection of document colors', () => {
 			expect( colorTableView.documentColors ).to.be.instanceOf( Collection );
 		} );
 
-		it( 'sets maximum number of document colors', () => {
+		it( 'should set maximum number of document colors', () => {
 			expect( colorTableView.documentColorsCount ).to.equal( 4 );
 		} );
 
-		it( 'creates focus cycler', () => {
+		it( 'should create focus cycler', () => {
 			expect( colorTableView._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
-		it( 'has correct class', () => {
+		it( 'should apply correct classes', () => {
 			expect( colorTableView.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( colorTableView.element.classList.contains( 'ck-color-table' ) ).to.be.true;
 		} );
 
-		it( 'has correct amount of children', () => {
+		it( 'should have correct amount of children', () => {
 			expect( colorTableView.items.length ).to.equal( 4 );
 		} );
 	} );
 
-	describe( 'update elements in focus tracker', () => {
-		it( 'focuses the tile in DOM', () => {
+	describe( 'focus tracker', () => {
+		it( 'should focus first child of colorTableView in DOM', () => {
 			const spy = sinon.spy( colorTableView._focusCycler, 'focusFirst' );
 
 			colorTableView.focus();
@@ -153,7 +153,7 @@ describe( 'ColorTableView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'focuses last the tile in DOM', () => {
+		it( 'should focuses the last child of colorTableView in DOM', () => {
 			const spy = sinon.spy( colorTableView._focusCycler, 'focusLast' );
 
 			colorTableView.focusLast();
@@ -169,18 +169,18 @@ describe( 'ColorTableView', () => {
 			removeButton = colorTableView.items.first;
 		} );
 
-		it( 'has proper class', () => {
+		it( 'should have proper class', () => {
 			expect( removeButton.element.classList.contains( 'ck-color-table__remove-color' ) ).to.be.true;
 		} );
 
-		it( 'has proper setting', () => {
+		it( 'should have proper settings', () => {
 			expect( removeButton.withText ).to.be.true;
 			expect( removeButton.icon ).to.equal( removeButtonIcon );
 			expect( removeButton.tooltip ).to.be.true;
 			expect( removeButton.label ).to.equal( 'Remove color' );
 		} );
 
-		it( 'executes event with "null" value', () => {
+		it( 'should execute event with "null" value', () => {
 			const spy = sinon.spy();
 			colorTableView.on( 'execute', spy );
 
@@ -198,12 +198,12 @@ describe( 'ColorTableView', () => {
 			staticColorTable = colorTableView.items.get( 1 );
 		} );
 
-		it( 'has added 3 children from definition', () => {
+		it( 'should have added 3 children from definition', () => {
 			expect( staticColorTable.items.length ).to.equal( 3 );
 		} );
 
 		colorDefinitions.forEach( ( item, index ) => {
-			it( `dispatch event to parent element for color: ${ item.color }`, () => {
+			it( `should dispatch event to parent element for color: ${ item.color }`, () => {
 				const spy = sinon.spy();
 				colorTableView.on( 'execute', spy );
 
@@ -256,7 +256,7 @@ describe( 'ColorTableView', () => {
 			} );
 
 			describe( 'model manipulation', () => {
-				it( 'adding items works properly', () => {
+				it( 'should add item to document colors', () => {
 					expect( documentColors.length ).to.equal( 0 );
 
 					documentColors.add( Object.assign( {}, colorBlack ) );
@@ -267,7 +267,7 @@ describe( 'ColorTableView', () => {
 					expect( documentColors.first.options.hasBorder ).to.be.false;
 				} );
 
-				it( 'adding multiple times same color should not populate items collection', () => {
+				it( 'should not add same item twice one after another', () => {
 					expect( documentColors.length ).to.equal( 0 );
 
 					documentColors.add( Object.assign( {}, colorBlack ) );
@@ -281,7 +281,7 @@ describe( 'ColorTableView', () => {
 					expect( documentColors.length ).to.equal( 1 );
 				} );
 
-				it( 'adding duplicated colors don\'t add it to model', () => {
+				it( 'should not add item if it\'s present on the documentColor list', () => {
 					expect( documentColors.length ).to.equal( 0 );
 
 					documentColors.add( Object.assign( {}, colorBlack ) );
@@ -313,7 +313,7 @@ describe( 'ColorTableView', () => {
 			} );
 
 			describe( 'events', () => {
-				it( 'added colors delegates execute to parent', () => {
+				it( 'should delegate execute to parent', () => {
 					const spy = sinon.spy();
 					colorTableView.on( 'execute', spy );
 
@@ -328,8 +328,8 @@ describe( 'ColorTableView', () => {
 			} );
 
 			describe( 'binding', () => {
-				it( 'add tile item when document colors model is updated', () => {
-					let itm;
+				it( 'should add new colorTile item when document colors model is updated', () => {
+					let colorTile;
 
 					expect( documentColors.length ).to.equal( 0 );
 					expect( documentColorsGridView.items.length ).to.equal( 0 );
@@ -338,17 +338,17 @@ describe( 'ColorTableView', () => {
 					expect( documentColors.length ).to.equal( 1 );
 					expect( documentColorsGridView.items.length ).to.equal( 1 );
 
-					itm = documentColorsGridView.items.first;
-					expect( itm ).to.be.instanceOf( ColorTileView );
-					expect( itm.label ).to.equal( 'Black' );
-					expect( itm.color ).to.equal( '#000000' );
-					expect( itm.hasBorder ).to.be.false;
+					colorTile = documentColorsGridView.items.first;
+					expect( colorTile ).to.be.instanceOf( ColorTileView );
+					expect( colorTile.label ).to.equal( 'Black' );
+					expect( colorTile.color ).to.equal( '#000000' );
+					expect( colorTile.hasBorder ).to.be.false;
 
 					documentColors.add( Object.assign( {}, colorEmpty ) );
-					itm = documentColorsGridView.items.get( 1 );
-					expect( itm ).to.be.instanceOf( ColorTileView );
-					expect( itm.color ).to.equal( 'hsla(0,0%,0%,0)' );
-					expect( itm.hasBorder ).to.be.true;
+					colorTile = documentColorsGridView.items.get( 1 );
+					expect( colorTile ).to.be.instanceOf( ColorTileView );
+					expect( colorTile.color ).to.equal( 'hsla(0,0%,0%,0)' );
+					expect( colorTile.hasBorder ).to.be.true;
 				} );
 			} );
 		} );
@@ -379,7 +379,7 @@ describe( 'ColorTableView', () => {
 	} );
 
 	describe( '_addColorToDocumentColors', () => {
-		it( 'add custom color from not defined colors', () => {
+		it( 'should add custom color', () => {
 			colorTableView._addColorToDocumentColors( '#123456' );
 			expect( colorTableView.documentColors.get( 0 ) ).to.deep.include( {
 				color: '#123456',
@@ -390,7 +390,7 @@ describe( 'ColorTableView', () => {
 			} );
 		} );
 
-		it( 'add already define color based on color value', () => {
+		it( 'should detect already define color based on color value and use', () => {
 			colorTableView._addColorToDocumentColors( 'rgb(255,255,255)' );
 			// Color values are kept without spaces.
 			expect( colorTableView.documentColors.get( 0 ) ).to.deep.include( {
@@ -435,7 +435,7 @@ describe( 'ColorTableView', () => {
 			return editor.destroy();
 		} );
 
-		it( 'checkmark is present in document colors section', () => {
+		it( 'should have color tile turned on in document colors and static colors section', () => {
 			const command = editor.commands.get( 'testColorCommand' );
 
 			setModelData( model,
@@ -445,17 +445,17 @@ describe( 'ColorTableView', () => {
 
 			dropdown.isOpen = true;
 
-			expect( staticColorsGrid.selectedColor ).to.be.null;
+			expect( staticColorsGrid.selectedColor ).to.equal( 'red' );
 			expect( documentColorsGrid.selectedColor ).to.equal( 'red' );
 
 			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === 'red' );
 			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
 
-			expect( redStaticColorTile.isOn ).to.be.false;
+			expect( redStaticColorTile.isOn ).to.be.true;
 			expect( redDocumentColorTile.isOn ).to.be.true;
 		} );
 
-		it( 'checkmark is present in static colors', () => {
+		it( 'should have color tile turned on in static colors section when document colors are full', () => {
 			const command = editor.commands.get( 'testColorCommand' );
 
 			setModelData( model,
@@ -469,17 +469,40 @@ describe( 'ColorTableView', () => {
 			dropdown.isOpen = true;
 
 			expect( staticColorsGrid.selectedColor ).to.equal( '#00FF00' );
-			expect( documentColorsGrid.selectedColor ).to.be.null;
+			expect( documentColorsGrid.selectedColor ).to.equal( '#00FF00' );
 
 			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === '#00FF00' );
-			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
+			const activeDocumentColorTile = documentColorsGrid.items.find( tile => tile.isOn );
 
 			expect( redStaticColorTile.isOn ).to.be.true;
-			expect( redDocumentColorTile.isOn ).to.be.false;
+			expect( activeDocumentColorTile ).to.be.undefined;
+		} );
+
+		it( 'should not have a selection for unknown colors exceeding document colors limit', () => {
+			const command = editor.commands.get( 'testColorCommand' );
+
+			setModelData( model,
+				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>' +
+				'<paragraph><$text testColor="pink">Test</$text></paragraph>'
+			);
+			command.value = 'pink';
+
+			dropdown.isOpen = true;
+
+			expect( staticColorsGrid.selectedColor ).to.equal( 'pink' );
+			expect( documentColorsGrid.selectedColor ).to.equal( 'pink' );
+
+			const activeStaticDocumentTile = staticColorsGrid.items.find( tile => tile.isOn );
+			const activeDocumentColorTile = documentColorsGrid.items.find( tile => tile.isOn );
+
+			expect( activeStaticDocumentTile ).to.be.undefined;
+			expect( activeDocumentColorTile ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'empty document colors', () => {
+	describe( 'disabled document colors section', () => {
 		let editor, element, dropdown, model;
 
 		beforeEach( () => {
@@ -511,7 +534,7 @@ describe( 'ColorTableView', () => {
 			return editor.destroy();
 		} );
 
-		it( 'document colors are not created', () => {
+		it( 'should not create document colors section', () => {
 			const colorTableView = dropdown.colorTableView;
 
 			setModelData( model,

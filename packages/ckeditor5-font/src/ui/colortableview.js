@@ -130,7 +130,7 @@ export default class ColorTableView extends View {
 		 * @readonly
 		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
 		 */
-		this.documentColorGrid;
+		this.documentColorsGrid;
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the list.
@@ -222,23 +222,17 @@ export default class ColorTableView extends View {
 
 	/**
 	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgrid~ColorGridView}
-	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
+	 * available in {@link module:font/ui/colortableview~ColorTableView}.
 	 */
 	updateSelectedColors() {
 		const documentColorsGrid = this.documentColorsGrid;
 		const staticColorsGrid = this.staticColorsGrid;
 		const selectedColor = this.selectedColor;
 
-		if ( !this.documentColors.isEmpty ) {
-			if ( this.documentColors.hasColor( selectedColor ) ) {
-				staticColorsGrid.selectedColor = null;
-				documentColorsGrid.selectedColor = selectedColor;
-			} else {
-				staticColorsGrid.selectedColor = selectedColor;
-				documentColorsGrid.selectedColor = null;
-			}
-		} else {
-			staticColorsGrid.selectedColor = selectedColor;
+		staticColorsGrid.selectedColor = selectedColor;
+
+		if ( documentColorsGrid ) {
+			documentColorsGrid.selectedColor = selectedColor;
 		}
 	}
 
