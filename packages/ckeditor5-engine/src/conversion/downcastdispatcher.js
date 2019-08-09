@@ -556,17 +556,17 @@ export default class DowncastDispatcher {
 	 * If the marker range is not collapsed:
 	 *
 	 * * the event is fired for each item in the marker range one by one,
-	 * * consumables object includes each item of the marker range and the consumable value is same as event name.
+	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as event name.
 	 *
 	 * If the marker range is collapsed:
 	 *
 	 * * there is only one event,
-	 * * consumables object includes marker range with event name.
+	 * * `conversionApi.consumable` includes marker range with event name.
 	 *
 	 * If selection inside a marker is converted:
 	 *
 	 * * there is only one event,
-	 * * consumables object includes selection instance with event name.
+	 * * `conversionApi.consumable` includes selection instance with event name.
 	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
