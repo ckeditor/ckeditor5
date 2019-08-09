@@ -38,8 +38,8 @@ export default class IndentUI extends Plugin {
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedIndentIcon = locale.languageDirection == 'ltr' ? indentIcon : outdentIcon;
-		const localizedOutdentIcon = locale.languageDirection == 'ltr' ? outdentIcon : indentIcon;
+		const localizedIndentIcon = locale.uiLanguageDirection == 'ltr' ? indentIcon : outdentIcon;
+		const localizedOutdentIcon = locale.uiLanguageDirection == 'ltr' ? outdentIcon : indentIcon;
 
 		this._defineButton( 'indent', t( 'Increase indent' ), localizedIndentIcon );
 		this._defineButton( 'outdent', t( 'Decrease indent' ), localizedOutdentIcon );
