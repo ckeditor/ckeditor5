@@ -188,7 +188,8 @@ export default class HighlightUI extends Plugin {
 				// Holds last executed highlighter.
 				lastExecuted: startingHighlighter.model,
 				// Holds current highlighter to execute (might be different then last used).
-				commandValue: startingHighlighter.model
+				commandValue: startingHighlighter.model,
+				isToggleable: true
 			} );
 
 			// Dropdown button changes to selection (command.value):

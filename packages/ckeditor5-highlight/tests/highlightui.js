@@ -80,6 +80,7 @@ describe( 'HighlightUI', () => {
 
 			expect( button ).to.have.property( 'tooltip', 'Highlight' );
 			expect( button ).to.have.property( 'icon', markerIcon );
+			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
 		it( 'should have proper icons in dropdown', () => {
