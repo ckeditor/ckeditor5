@@ -5,12 +5,14 @@
 
 /* global document, window */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+// ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
 import ImageStyle from '../../src/imagestyle';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
+import TablePlugin from '@ckeditor/ckeditor5-table/src/table';
 
 import {
 	getData
@@ -31,9 +33,9 @@ describe.only( 'Image resizer', () => {
 
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor
+		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin, UndoPlugin ]
+				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin, UndoPlugin, TablePlugin ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -70,6 +72,8 @@ describe.only( 'Image resizer', () => {
 					target: widget,
 					preventDefault: sinon.spy()
 				};
+
+				focusEditor( editor );
 
 				viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -207,7 +211,7 @@ describe.only( 'Image resizer', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
-		it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+		it( 'shrinks correctly with left-bottom handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
@@ -217,7 +221,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-left'
 		} ) );
 
-		it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
+		it( 'shrinks correctly with right-bottom handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
@@ -227,7 +231,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-right'
 		} ) );
 
-		it( 'shrinks correctly with left-top handler', generateResizeTest( {
+		it( 'shrinks correctly with left-top handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
@@ -237,7 +241,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'top-left'
 		} ) );
 
-		it( 'shrinks correctly with right-top handler', generateResizeTest( {
+		it( 'shrinks correctly with right-top handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
@@ -247,7 +251,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'top-right'
 		} ) );
 
-		it( 'enlarges correctly with left-bottom handler', generateResizeTest( {
+		it( 'enlarges correctly with left-bottom handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
@@ -257,7 +261,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-left'
 		} ) );
 
-		it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
+		it( 'enlarges correctly with right-bottom handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
@@ -267,7 +271,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-right'
 		} ) );
 
-		it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+		it( 'enlarges correctly with right-bottom handler, y axis only', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 140,
 			pointerOffset: {
@@ -277,7 +281,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-right'
 		} ) );
 
-		it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+		it( 'enlarges correctly with right-bottom handler, x axis only', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 140,
 			pointerOffset: {
@@ -287,7 +291,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'bottom-right'
 		} ) );
 
-		it( 'enlarges correctly with left-top handler', generateResizeTest( {
+		it( 'enlarges correctly with left-top handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
@@ -297,7 +301,7 @@ describe.only( 'Image resizer', () => {
 			resizerPosition: 'top-left'
 		} ) );
 
-		it( 'enlarges correctly with right-top handler', generateResizeTest( {
+		it( 'enlarges correctly with right-top handler', generateSideResizeTest( {
 			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
@@ -306,6 +310,13 @@ describe.only( 'Image resizer', () => {
 			},
 			resizerPosition: 'top-right'
 		} ) );
+
+		function generateSideResizeTest( options ) {
+			return generateResizeTest( Object.assign( {
+				isSideImage: true,
+				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)"><\/image>/
+			}, options ) );
+		}
 	} );
 
 	describe( 'undo integration', function() {
@@ -341,6 +352,45 @@ describe.only( 'Image resizer', () => {
 
 				expect( shadowBoundingRect.width ).to.be.equal( 100 );
 				expect( shadowBoundingRect.height ).to.be.equal( 50 );
+			} );
+		} );
+	} );
+
+	describe( 'integration', function() {
+		beforeEach( async function() {
+			await editor.setData( `<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<figure class="image"><img src="${ imageFixture }" alt="Sample image">
+								</figure>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>` );
+
+			this.widget = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			const domEventDataMock = {
+				target: this.widget,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+		} );
+
+		it( 'works when resizing in a table', function() {
+			return generateResizeTest( {
+				getModel: () => editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ),
+				expectedWidth: 60,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: -40,
+					y: -20
+				},
+				resizerPosition: 'bottom-right'
 			} );
 		} );
 	} );
@@ -390,6 +440,11 @@ describe.only( 'Image resizer', () => {
 			const imageTopLeftPosition = getElementPosition( domImage );
 			const resizerPositionParts = options.resizerPosition.split( '-' );
 
+			const modelRegExp = options.modelRegExp ? options.modelRegExp :
+				/<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/;
+
+			focusEditor( editor );
+
 			const initialPointerPosition = {
 				pageX: imageTopLeftPosition.x,
 				pageY: imageTopLeftPosition.y
@@ -420,17 +475,19 @@ describe.only( 'Image resizer', () => {
 
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
-					const modelDataRegExp = !options.isSideImage ? /<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/ :
-						/<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)"><\/image>/;
-
 					expect( getData( editor.model, {
 						withoutSelection: true
-					} ) ).to.match( modelDataRegExp );
+					} ) ).to.match( modelRegExp );
 
-					const modelItem = editor.model.document.getRoot().getChild( 1 );
+					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
 
 					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( options.expectedWidth, 1, 'Model check' );
 				} );
 		};
+	}
+
+	function focusEditor( editor ) {
+		editor.editing.view.focus();
+		editor.ui.focusTracker.isFocused = true;
 	}
 } );
