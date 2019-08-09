@@ -44,7 +44,9 @@ ClassicEditor
 
 ClassicEditor
 	.create( document.querySelector( '#editor-rtl' ), {
-		contentLanguage: 'he',
+		language: {
+			content: 'he'
+		},
 		plugins: [ Essentials, Paragraph, Underline, Bold, Italic ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
 	} )
