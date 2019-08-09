@@ -16,42 +16,46 @@ const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
  */
 export default class Locale {
 	/**
-	 * Creates a new instance of the Locale class.
+	 * Creates a new instance of the Locale class. Learn more about
+	 * {@glink features/ui-language configuring language of the editor}.
 	 *
-	 * @param {String} [language='en'] The editor language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
-	 * @param {String} [contentLanguage] The editor content language code in the
-	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
+	 * @param {Object} [options] Locale configuration.
+	 * @param {String} [options.uiLanguage='en'] The editor UI language code in the
+	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. See {@link #uiLanguage}.
+	 * @param {String} [options.contentLanguage] The editor content language code in the
+	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
+	 * See {@link #contentLanguage}.
 	 */
-	constructor( language, contentLanguage ) {
+	constructor( options = {} ) {
 		/**
-		 * The editor language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
+		 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
-		 * It controls the language of the editor UI. If the {@link #contentLanguage content language}
-		 * was not specified in the `Locale` constructor, it also defines the language of the content.
+		 * If the {@link #contentLanguage content language} was not specified in the `Locale` constructor,
+		 * it also defines the language of the content.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.language = language || 'en';
+		this.uiLanguage = options.uiLanguage || 'en';
 
 		/**
 		 * The editor content language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
-		 * Usually the same as {@link #language editor language}, it can be customized by passing an optional
+		 * Usually the same as {@link #uiLanguage editor language}, it can be customized by passing an optional
 		 * argument to the `Locale` constructor.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.contentLanguage = contentLanguage || this.language;
+		this.contentLanguage = options.contentLanguage || this.uiLanguage;
 
 		/**
-		 * Text direction of the {@link #language editor UI language}. Either `'ltr'` or `'rtl'`.
+		 * Text direction of the {@link #uiLanguage editor UI language}. Either `'ltr'` or `'rtl'`.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.languageDirection = getLanguageDirection( this.language );
+		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 
 		/**
 		 * Text direction of the {@link #contentLanguage editor content language}.
@@ -59,8 +63,8 @@ export default class Locale {
 		 * If the content language was passed directly to the `Locale` constructor, this property represents the
 		 * direction of that language.
 		 *
-		 * If the {@link #contentLanguage editor content language} was derived from the {@link #language editor language},
-		 * the content language direction is the same as the {@link #languageDirection UI language direction}.
+		 * If the {@link #contentLanguage editor content language} was derived from the {@link #uiLanguage editor language},
+		 * the content language direction is the same as the {@link #uiLanguageDirection UI language direction}.
 		 *
 		 * The value is either `'ltr'` or `'rtl'`.
 		 *
@@ -70,8 +74,8 @@ export default class Locale {
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 
 		/**
-		 * Translates the given string to the {@link #language}. This method is also available in {@link module:core/editor/editor~Editor#t}
-		 * and {@link module:ui/view~View#t}.
+		 * Translates the given string to the {@link #uiLanguage}. This method is also available in
+		 * {@link module:core/editor/editor~Editor#t} and {@link module:ui/view~View#t}.
 		 *
 		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
@@ -97,7 +101,7 @@ export default class Locale {
 	 * @private
 	 */
 	_t( str, values ) {
-		let translatedString = translate( this.language, str );
+		let translatedString = translate( this.uiLanguage, str );
 
 		if ( values ) {
 			translatedString = translatedString.replace( /%(\d+)/g, ( match, index ) => {
