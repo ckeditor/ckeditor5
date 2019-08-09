@@ -29,7 +29,9 @@ const WIDTH_ATTRIBUTE_NAME = 'width';
  */
 
 /**
- * The base class for widget features. This type provides a common API for reusable features of widgets.
+ * Widget resize feature plugin.
+ *
+ * Use the {@link #apply} method to create resizer for a provided widget.
  */
 export default class WidgetResizer extends Plugin {
 	/**
@@ -120,10 +122,51 @@ export default class WidgetResizer extends Plugin {
 	}
 
 	/**
+	 * Method that applies a resizer to a given `widgetElement`.
+	 *
+	 * ```js
+	 * conversion.for( 'editingDowncast' ).elementToElement( {
+	 *		model: 'image',
+	 *		view: ( modelElement, viewWriter ) => {
+	 *			const widget = toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
+	 *
+	 *			editor.plugins.get( 'WidgetResizer' ).apply( widget, viewWriter );
+	 *
+	 *			return widget;
+	 *		}
+	 *	} );
+	 * ```
+	 *
+	 * You can use the `options` parameter to customize the behavior of the resizer:
+	 *
+	 * ```js
+	 * conversion.for( 'editingDowncast' ).elementToElement( {
+	 *			model: 'image',
+	 *			view: ( modelElement, viewWriter ) => {
+	 *				const widget = toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
+	 *
+	 *				editor.plugins.get( 'WidgetResizer' ).apply( widget, viewWriter, {
+	 *					getResizeHost( wrapper ) {
+	 *						return wrapper.querySelector( 'img' );
+	 *					},
+	 *					getAspectRatio( resizeHost ) {
+	 *						return resizeHost.naturalWidth / resizeHost.naturalHeight;
+	 *					},
+	 *					isCentered( context ) {
+	 *						const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
+	 *
+	 *						return !imageStyle || imageStyle == 'full';
+	 *					}
+	 *				} );
+	 *
+	 *				return widget;
+	 *			}
+	 *		} );
+	 * ```
+	 *
 	 * @param {module:engine/view/containerelement~ContainerElement} widgetElement
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
-	 * @memberof WidgetResizer
 	 */
 	apply( widgetElement, writer, options ) {
 		const context = new ResizeContext2( options );
@@ -154,7 +197,7 @@ export default class WidgetResizer extends Plugin {
 
 	_registerSchema() {
 		const editor = this.editor;
-		// Allow bold attribute on text nodes.
+
 		editor.model.schema.extend( 'image', {
 			allowAttributes: WIDTH_ATTRIBUTE_NAME
 		} );

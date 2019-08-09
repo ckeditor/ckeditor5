@@ -19,11 +19,18 @@ const WIDTH_ATTRIBUTE_NAME = 'width';
  */
 export default class ResizeContext {
 	constructor( options ) {
-		// HTMLElement??? - @todo seems to be not needed.
-		// this.resizeHost = null;
-		// view/UiElement
+		/**
+		 * View to a wrapper containing all the resizer-related views.
+		 *
+		 * @member {module:engine/view/uielement~UIElement}
+		 */
 		this.resizeWrapperElement = null;
-		// view/Element
+
+		/**
+		 * View of a widget associated with the resizer.
+		 *
+		 * @member {module:engine/view/element~Element}
+		 */
 		this.widgetWrapperElement = null;
 
 		this.resizeStrategy = new ResizerTopBound( this, options );
@@ -69,6 +76,7 @@ export default class ResizeContext {
 	}
 
 	/**
+	 * Method to be called to attach a resizer to a given widget element.
 	 *
 	 * @param {module:engine/view/element~Element} widgetElement Widget's wrapper.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -259,9 +267,10 @@ export default class ResizeContext {
 
 	/**
 	 *
-	 * @param {module:@ckeditor/ckeditor5-core/src/editor/editor~Editor} editor
-	 * @param {module:@ckeditor/ckeditor5-engine/src/view/element~Element} widgetWrapperElement
-	 * @returns {module:@ckeditor/ckeditor5-engine/src/model/element~Element|undefined}
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {module:engine/view/element~Element} widgetWrapperElement
+	 * @returns {module:engine/model/element~Element|undefined}
+	 * @protected
 	 */
 	_getModel( editor, widgetWrapperElement ) {
 		return editor.editing.mapper.toModelElement( widgetWrapperElement );
@@ -275,9 +284,9 @@ export default class ResizeContext {
 	}
 
 	/**
-	 * @private
 	 * @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
 	 * @returns {String} A prefixed HTML class name for the resizer element
+	 * @private
 	 */
 	_getResizerClass( resizerPosition ) {
 		return `ck-widget__resizer-${ resizerPosition }`;
@@ -303,6 +312,7 @@ export default class ResizeContext {
 	/**
 	 * @param {String} position Like `"top-left"`.
 	 * @returns {String} Inverted `position`.
+	 * @protected
 	 */
 	_invertPosition( position ) {
 		const parts = position.split( '-' );
