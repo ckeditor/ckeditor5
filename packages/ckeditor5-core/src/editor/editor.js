@@ -91,13 +91,15 @@ export default class Editor {
 		 */
 		this.commands = new CommandCollection();
 
+		const languageConfig = this.config.get( 'language' ) || {};
+
 		/**
 		 * @readonly
 		 * @member {module:utils/locale~Locale}
 		 */
 		this.locale = new Locale( {
-			uiLanguage: this.config.get( 'language' ),
-			contentLanguage: this.config.get( 'contentLanguage' )
+			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
+			contentLanguage: this.config.get( 'language.content' )
 		} );
 
 		/**

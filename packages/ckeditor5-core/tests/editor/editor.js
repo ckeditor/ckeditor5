@@ -193,17 +193,24 @@ describe( 'Editor', () => {
 			expect( editor.t ).to.equal( editor.locale.t );
 		} );
 
-		it( 'is configured with the config.language', () => {
+		it( 'is configured with the config.language (UI and the content)', () => {
 			const editor = new TestEditor( { language: 'pl' } );
 
 			expect( editor.locale.uiLanguage ).to.equal( 'pl' );
 			expect( editor.locale.contentLanguage ).to.equal( 'pl' );
 		} );
 
-		it( 'is configured with the config.contentLanguage', () => {
-			const editor = new TestEditor( { language: 'pl', contentLanguage: 'ar' } );
+		it( 'is configured with the config.language (different for UI and the content)', () => {
+			const editor = new TestEditor( { language: { ui: 'pl', content: 'ar' } } );
 
 			expect( editor.locale.uiLanguage ).to.equal( 'pl' );
+			expect( editor.locale.contentLanguage ).to.equal( 'ar' );
+		} );
+
+		it( 'is configured with the config.language (just the content)', () => {
+			const editor = new TestEditor( { language: { content: 'ar' } } );
+
+			expect( editor.locale.uiLanguage ).to.equal( 'en' );
 			expect( editor.locale.contentLanguage ).to.equal( 'ar' );
 		} );
 	} );

@@ -169,13 +169,11 @@
 /**
  * The language of the editor UI and its content.
  *
- * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
- * CKEditor 5 currently supports around 20 languages and the number is growing.
+ * Note: You do not have to specify this option if your build is optimized for one UI language or if it is
+ * the default language (English is the default language for CDN builds), unless you want to change
+ * the language of your content.
  *
- * Note: You do not have to specify this option if your build is optimized for one language or if it is the default language
- * (English is the default language for CDN builds).
- *
- * Simple usage:
+ * Simple usage (change the language of the UI and the content):
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -189,35 +187,17 @@
  *				console.error( error );
  *			} );
  *
- * After this step you need to attach the corresponding translation file. Translation files are available on CDN for predefined builds:
- *		`<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
- *
- * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
- *
- * By default, this configuration also affects the language of the edited content. If you want to control
- * the language of the content separately (e.g. different languages for the UI and the content), check out
- * {@link module:core/editor/editorconfig~EditorConfig#contentLanguage `config.contentLanguage`}.
- *
- * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
- *
- * @member {String} module:core/editor/editorconfig~EditorConfig#language
- */
-
-/**
- * The editor content language defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
- *
- * You can separately configure the language of the UI and the language of the content. The language of the
- * content has an impact on the editing experience, for instance it affects screen readers and spell
- * checkers. It is also particularly useful for typing in certain languages (e.g. right–to–left ones) because
- * it changes the default alignment of the text.
+ * Use different languages for the UI and the content using the object syntax:
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
- *				// The UI will be English.
- *				language: 'en',
+ *				language: {
+ *	 				// The UI will be English.
+ *					ui: 'en',
  *
- *				// But the content will be edited in Arabic.
- *				contentLanguage: 'ar'
+ *					// But the content will be edited in Arabic.
+ *					content: 'ar'
+ * 				}
  *			} )
  *			.then( editor => {
  *				console.log( editor );
@@ -226,15 +206,22 @@
  *				console.error( error );
  *			} );
  *
- * Leaving this configuration unset (default) will inherit the content language from
- * {@link module:core/editor/editorconfig~EditorConfig#language UI language}.
+ * The language of the content has an impact on the editing experience, for instance it affects screen readers
+ * and spell checkers. It is also particularly useful for typing in certain languages (e.g. right–to–left ones)
+ * because it changes the default alignment of the text.
  *
- * If you want to change the language of the entire editor's UI, check out
- * {@link module:core/editor/editorconfig~EditorConfig#language `config.language`}.
+ * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
  *
- * Check the {@glink features/ui-language UI language guide} for more information about the localization options.
+ * You need to add the corresponding translation file for the new UI language to work.
+ * Translation files are available on CDN for predefined builds:
  *
- * @member {String} module:core/editor/editorconfig~EditorConfig#contentLanguage
+ *		`<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
+ *
+ * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
+ *
+ * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#language
  */
 
 /**
