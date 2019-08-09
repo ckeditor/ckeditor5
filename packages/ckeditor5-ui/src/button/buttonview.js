@@ -37,13 +37,7 @@ import '../../theme/components/button/button.css';
  */
 export default class ButtonView extends View {
 	/**
-	 * Creates an instance of the {@link module:ui/view~View} class.
-	 *
-	 * Also see {@link #render}.
-	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} [config] additional configuration
-	 * @param {Boolean} [config.toggle=false] set button as a toggle
+	 * @inheritDoc
 	 */
 	constructor( locale ) {
 		super( locale );
