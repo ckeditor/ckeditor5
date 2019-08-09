@@ -16,7 +16,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '../../src/dev-utils/model';
 
 describe( 'bindTwoStepCaretToAttribute()', () => {
-	let editor, model, emitter, selection, view;
+	let editor, model, emitter, selection, view, locale;
 	let preventDefaultSpy, evtStopSpy;
 
 	testUtils.createSinonSandbox();
@@ -29,6 +29,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			model = editor.model;
 			selection = model.document.selection;
 			view = editor.editing.view;
+			locale = editor.locale;
 
 			preventDefaultSpy = sinon.spy();
 			evtStopSpy = sinon.spy();
@@ -49,7 +50,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				model: editor.model,
 				emitter,
 				attribute: 'a',
-				contentDirection: 'ltr'
+				locale
 			} );
 		} );
 	} );
@@ -564,7 +565,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				model: editor.model,
 				emitter,
 				attribute: 'c',
-				contentDirection: 'ltr'
+				locale
 			} );
 		} );
 
@@ -789,7 +790,12 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 			let model;
 
-			return VirtualTestEditor.create()
+			return VirtualTestEditor
+				.create( {
+					language: {
+						content: 'ar'
+					}
+				} )
 				.then( newEditor => {
 					model = newEditor.model;
 					selection = model.document.selection;
@@ -811,7 +817,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 						model: newEditor.model,
 						emitter,
 						attribute: 'a',
-						contentDirection: 'rtl'
+						locale: newEditor.locale
 					} );
 
 					return newEditor;

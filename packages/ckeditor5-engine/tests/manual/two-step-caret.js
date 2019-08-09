@@ -28,14 +28,14 @@ ClassicEditor
 			model: editor.model,
 			emitter: bold,
 			attribute: 'italic',
-			contentDirection: 'ltr'
+			locale: editor.locale
 		} );
 		bindTwoStepCaretToAttribute( {
 			view: editor.editing.view,
 			model: editor.model,
 			emitter: underline,
 			attribute: 'underline',
-			contentDirection: 'ltr'
+			locale: editor.locale
 		} );
 	} )
 	.catch( err => {
@@ -59,14 +59,14 @@ ClassicEditor
 			model: editor.model,
 			emitter: bold,
 			attribute: 'italic',
-			contentDirection: 'rtl'
+			locale: editor.locale
 		} );
 		bindTwoStepCaretToAttribute( {
 			view: editor.editing.view,
 			model: editor.model,
 			emitter: underline,
 			attribute: 'underline',
-			contentDirection: 'rtl'
+			locale: editor.locale
 		} );
 	} )
 	.catch( err => {

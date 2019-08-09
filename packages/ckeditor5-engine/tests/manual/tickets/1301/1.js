@@ -26,7 +26,7 @@ ClassicEditor
 			model: editor.model,
 			emitter: bold,
 			attribute: 'bold',
-			contentDirection: 'ltr'
+			locale: editor.locale
 		} );
 	} )
 	.catch( err => {
