@@ -42,6 +42,7 @@ describe( 'SuperscriptUI', () => {
 		expect( superView.isOn ).to.be.false;
 		expect( superView.label ).to.equal( 'Superscript' );
 		expect( superView.icon ).to.match( /<svg / );
+		expect( superView.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute superscript command on model execute event', () => {

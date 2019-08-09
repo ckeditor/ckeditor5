@@ -36,7 +36,8 @@ export default class UnderlineUI extends Plugin {
 				label: t( 'Underline' ),
 				icon: underlineIcon,
 				keystroke: 'CTRL+U',
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

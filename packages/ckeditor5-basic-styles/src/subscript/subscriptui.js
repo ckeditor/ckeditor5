@@ -35,7 +35,8 @@ export default class SubscriptUI extends Plugin {
 			view.set( {
 				label: t( 'Subscript' ),
 				icon: subscriptIcon,
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

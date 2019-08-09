@@ -42,6 +42,7 @@ describe( 'SubscriptUI', () => {
 		expect( subView.isOn ).to.be.false;
 		expect( subView.label ).to.equal( 'Subscript' );
 		expect( subView.icon ).to.match( /<svg / );
+		expect( subView.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute subscript command on model execute event', () => {

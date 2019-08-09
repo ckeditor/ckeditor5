@@ -42,6 +42,7 @@ describe( 'CodeUI', () => {
 		expect( codeView.isOn ).to.be.false;
 		expect( codeView.label ).to.equal( 'Code' );
 		expect( codeView.icon ).to.match( /<svg / );
+		expect( codeView.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute code command on model execute event', () => {

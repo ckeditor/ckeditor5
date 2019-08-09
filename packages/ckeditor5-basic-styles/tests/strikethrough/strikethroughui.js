@@ -44,6 +44,7 @@ describe( 'StrikethroughUI', () => {
 		expect( strikeView.label ).to.equal( 'Strikethrough' );
 		expect( strikeView.icon ).to.match( /<svg / );
 		expect( strikeView.keystroke ).to.equal( 'CTRL+SHIFT+X' );
+		expect( strikeView.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute strikethrough command on model execute event', () => {
