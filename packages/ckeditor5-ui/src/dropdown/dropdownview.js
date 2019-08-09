@@ -317,7 +317,7 @@ export default class DropdownView extends View {
 	get _panelPositions() {
 		const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
 
-		if ( this.locale.languageDirection === 'ltr' ) {
+		if ( this.locale.uiLanguageDirection === 'ltr' ) {
 			return [ southEast, southWest, northEast, northWest ];
 		} else {
 			return [ southWest, southEast, northWest, northEast ];

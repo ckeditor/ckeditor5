@@ -18,7 +18,7 @@ describe( 'EditableUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editableElement = document.createElement( 'div' );
 
 		editingView = new EditingView();
@@ -80,7 +80,7 @@ describe( 'EditableUIView', () => {
 		} );
 
 		it( 'sets proper lang and dir attributes (implicit content language)', () => {
-			const locale = new Locale( 'ar' );
+			const locale = new Locale( { uiLanguage: 'ar' } );
 			const view = new EditableUIView( locale, editingView );
 			view.name = editingViewRoot.rootName;
 
@@ -93,7 +93,10 @@ describe( 'EditableUIView', () => {
 		} );
 
 		it( 'sets proper lang and dir attributes (explicit content language)', () => {
-			const locale = new Locale( 'pl', 'ar' );
+			const locale = new Locale( {
+				uiLanguage: 'pl',
+				contentLanguage: 'ar'
+			} );
 			const view = new EditableUIView( locale, editingView );
 			view.name = editingViewRoot.rootName;
 

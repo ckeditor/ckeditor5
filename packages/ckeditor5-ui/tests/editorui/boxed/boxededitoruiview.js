@@ -11,7 +11,7 @@ describe( 'BoxedEditorUIView', () => {
 	let view, element;
 
 	beforeEach( () => {
-		view = new BoxedEditorUIView( new Locale( 'en' ) );
+		view = new BoxedEditorUIView( new Locale() );
 		view.render();
 		element = view.element;
 	} );
@@ -62,7 +62,7 @@ describe( 'BoxedEditorUIView', () => {
 		} );
 
 		it( 'sets the proper "dir" attribute value when using RTL language', () => {
-			const view = new BoxedEditorUIView( new Locale( 'ar' ) );
+			const view = new BoxedEditorUIView( new Locale( { uiLanguage: 'ar' } ) );
 
 			view.render();
 

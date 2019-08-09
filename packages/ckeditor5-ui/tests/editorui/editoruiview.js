@@ -16,7 +16,7 @@ describe( 'EditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		view = new EditorUIView( locale );
 
 		view.render();
@@ -54,7 +54,7 @@ describe( 'EditorUIView', () => {
 		} );
 
 		it( 'sets the right dir attribute to the body region (RTL)', () => {
-			const locale = new Locale( 'ar' );
+			const locale = new Locale( { uiLanguage: 'ar' } );
 			const view = new EditorUIView( locale );
 
 			view.render();

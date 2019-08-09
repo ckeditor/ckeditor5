@@ -346,7 +346,7 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should attach the left side of the button to the right side of the editable when language direction is RTL', () => {
-			editor.locale.languageDirection = 'rtl';
+			editor.locale.uiLanguageDirection = 'rtl';
 
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 

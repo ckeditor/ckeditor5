@@ -371,7 +371,7 @@ export default class BlockToolbar extends Plugin {
 				( contentRect, buttonRect ) => {
 					let left;
 
-					if ( this.editor.locale.languageDirection === 'ltr' ) {
+					if ( this.editor.locale.uiLanguageDirection === 'ltr' ) {
 						left = editableRect.left - buttonRect.width;
 					} else {
 						left = editableRect.right;

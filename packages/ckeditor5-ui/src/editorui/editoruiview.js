@@ -79,7 +79,7 @@ export default class EditorUIView extends View {
 					'ck-body',
 					'ck-rounded-corners'
 				],
-				dir: locale.languageDirection,
+				dir: locale.uiLanguageDirection,
 			},
 			children: this.body
 		} ).render();

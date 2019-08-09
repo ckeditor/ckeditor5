@@ -19,7 +19,7 @@ describe( 'DropdownView', () => {
 
 	beforeEach( () => {
 		locale = {
-			languageDirection: 'ltr',
+			uiLanguageDirection: 'ltr',
 			t() {}
 		};
 
@@ -150,7 +150,7 @@ describe( 'DropdownView', () => {
 						const spy = testUtils.sinon.spy( DropdownView, '_getOptimalPosition' );
 						const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
 
-						view.locale.languageDirection = 'rtl';
+						view.locale.uiLanguageDirection = 'rtl';
 						view.isOpen = true;
 
 						sinon.assert.calledWithExactly( spy, sinon.match( {
