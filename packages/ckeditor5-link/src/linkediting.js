@@ -89,7 +89,7 @@ export default class LinkEditing extends Plugin {
 			model: editor.model,
 			emitter: this,
 			attribute: 'linkHref',
-			contentDirection: locale.contentLanguageDirection
+			locale
 		} );
 
 		// Setup highlight over selected link.
