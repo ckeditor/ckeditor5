@@ -58,8 +58,9 @@ ClassicEditor
 
 ClassicEditor
 	.create( document.querySelector( '#editor-language-rtl-content' ), Object.assign( {}, config, {
-		language: 'en',
-		contentLanguage: 'ar'
+		language: {
+			content: 'ar'
+		}
 	} ) )
 	.then( newEditor => {
 		window.editorLanguageRTLContent = newEditor;
@@ -72,8 +73,10 @@ ClassicEditor
 
 ClassicEditor
 	.create( document.querySelector( '#editor-language-rtl-ui' ), Object.assign( {}, config, {
-		language: 'ar',
-		contentLanguage: 'en'
+		language: {
+			ui: 'ar',
+			content: 'en'
+		}
 	} ) )
 	.then( newEditor => {
 		window.editorLanguageRTLUI = newEditor;
