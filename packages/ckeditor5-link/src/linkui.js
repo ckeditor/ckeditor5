@@ -201,6 +201,7 @@ export default class LinkUI extends Plugin {
 			button.icon = linkIcon;
 			button.keystroke = linkKeystroke;
 			button.tooltip = true;
+			button.isToggleable = true;
 
 			// Bind button to the command.
 			button.bind( 'isOn', 'isEnabled' ).to( linkCommand, 'value', 'isEnabled' );

@@ -85,6 +85,10 @@ describe( 'LinkUI', () => {
 				expect( linkButton ).to.be.instanceOf( ButtonView );
 			} );
 
+			it( 'should be toggleable button', () => {
+				expect( linkButton.isToggleable ).to.be.true;
+			} );
+
 			it( 'should be bound to the link command', () => {
 				const command = editor.commands.get( 'link' );
 
