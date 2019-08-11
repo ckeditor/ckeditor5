@@ -27,7 +27,7 @@ import {
 	modelIndentPasteFixer,
 	viewModelConverter,
 	modelToViewPosition,
-	viewToModelPosition,
+	viewToModelPosition
 } from './converters';
 
 /**
