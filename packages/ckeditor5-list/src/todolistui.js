@@ -15,6 +15,9 @@ import '../theme/list.css';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
+ * The todo list UI feature. It introduces the `'todoList'` button that
+ * allow to convert elements to and from list items and indent or outdent them.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TodoListUI extends Plugin {

@@ -98,6 +98,9 @@ export function modelViewRemove( model ) {
  * by breaking view elements and changing their name. Next {@link module:list/converters~modelViewMergeAfterChangeType}
  * converter will try to merge split nodes.
  *
+ * Splitting this conversion into 2 steps makes it possible to add an additional conversion in the middle.
+ * Check {@link module:list/todolistconverters~modelViewChangeType} to see an example of it.
+ *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.

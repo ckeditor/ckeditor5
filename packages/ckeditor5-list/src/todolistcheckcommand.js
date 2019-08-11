@@ -16,25 +16,27 @@ const attributeKey = 'todoListChecked';
  */
 export default class TodoListCheckCommand extends Command {
 	/**
-	 * @param {module:core/editor/editor~Editor} editor
+	 * @inheritDoc
 	 */
 	constructor( editor ) {
 		super( editor );
 
-		this._selectedElements = [];
-
 		/**
-		 * Flag indicating whether the command is active. The command is active when the
-		 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:
-		 *
-		 * * If the selection is not empty &ndash; That the attribute is set on the first node in the selection that allows this attribute.
-		 * * If the selection is empty &ndash; That the selection has the attribute itself (which means that newly typed
-		 * text will have this attribute, too).
+		 * Flag indicating whether the command is active. The command is active when at least one of
+		 * {@link module:engine/model/selection~Selection selected} elements is a todo list item.
 		 *
 		 * @observable
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
+
+		/**
+		 * List of todo list items selected by the {@link module:engine/model/selection~Selection}.
+		 *
+		 * @type {Array.<module:engine/model/element~Element>}
+		 * @private
+		 */
+		this._selectedElements = [];
 	}
 
 	/**
@@ -46,6 +48,12 @@ export default class TodoListCheckCommand extends Command {
 		this.isEnabled = !!this._selectedElements.length;
 	}
 
+	/**
+	 * Gets all todo list items selected by the {@link module:engine/model/selection~Selection}.
+	 *
+	 * @private
+	 * @returns {Array.<module:engine/model/element~Element>}
+	 */
 	_getSelectedItems() {
 		const model = this.editor.model;
 		const schema = model.schema;
@@ -67,6 +75,9 @@ export default class TodoListCheckCommand extends Command {
 		return elements;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		this.editor.model.change( writer => {
 			for ( const element of this._selectedElements ) {

@@ -26,6 +26,11 @@ import {
 import { findInRange } from './utils';
 
 /**
+ * The engine of the todo list feature. It handles creating, editing and removing todo lists and its items.
+ *
+ * It registers all functionalities of {@link module:list/listediting~ListEditing list editing plugin} and extends
+ * it by `'todoList'` command.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TodoListEditing extends Plugin {
@@ -123,6 +128,8 @@ export default class TodoListEditing extends Plugin {
 	}
 }
 
+// Moves all uiElements in the todo list item after the checkmark element.
+//
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {Array.<module:engine/view/uielement~UIElement>} uiElements
@@ -152,6 +159,8 @@ function moveUIElementsAfterCheckmark( writer, uiElements ) {
 	return hasChanged;
 }
 
+// Moves selection in the todo list item after the checkmark element.
+//
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/documentselection~DocumentSelection} selection
@@ -188,6 +197,9 @@ function moveSelectionAfterCheckmark( writer, selection ) {
 	return false;
 }
 
+// Handles left arrow key and move selection at the end of the previous block element if the selection is just after
+// the checkmark element. In other words, it jumps over the checkmark element when moving the selection to the left.
+//
 // @private
 // @param {Function} stopKeyEvent
 // @param {module:engine/model/model~Model} model
