@@ -48,6 +48,15 @@ export default class TodoListEditing extends Plugin {
 			allowAttributes: [ 'todoListChecked' ]
 		} );
 
+		// Disallow todoListChecked attribute on other nodes than listItem with todo listType.
+		model.schema.addAttributeCheck( ( context, attributeName ) => {
+			const item = context.last;
+
+			if ( attributeName == 'todoListChecked' && item.name == 'listItem' && item.getAttribute( 'listType' ) != 'todo' ) {
+				return false;
+			}
+		} );
+
 		// Register commands.
 		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
 		editor.commands.add( 'todoListCheck', new TodoListCheckCommand( editor ) );

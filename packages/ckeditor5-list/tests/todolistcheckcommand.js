@@ -151,11 +151,11 @@ describe( 'TodoListCheckCommand', () => {
 			);
 		} );
 
-		it( 'should toggle state on multiple items mixed with non list item', () => {
+		it( 'should toggle state on multiple items mixed with none todo list items', () => {
 			setModelData( model,
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo">def</listItem>' +
-				'<paragraph>ghi</paragraph>' +
+				'<listItem listIndent="0" listType="numbered">ghi</listItem>' +
 				'<listItem listIndent="0" listType="todo">jkl</listItem>' +
 				'<paragraph>mn]o</paragraph>'
 			);
@@ -165,7 +165,7 @@ describe( 'TodoListCheckCommand', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">def</listItem>' +
-				'<paragraph>ghi</paragraph>' +
+				'<listItem listIndent="0" listType="numbered">ghi</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">jkl</listItem>' +
 				'<paragraph>mn]o</paragraph>'
 			);
@@ -175,7 +175,7 @@ describe( 'TodoListCheckCommand', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo">def</listItem>' +
-				'<paragraph>ghi</paragraph>' +
+				'<listItem listIndent="0" listType="numbered">ghi</listItem>' +
 				'<listItem listIndent="0" listType="todo">jkl</listItem>' +
 				'<paragraph>mn]o</paragraph>'
 			);

@@ -9,6 +9,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ListCommand from '../src/listcommand';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -48,7 +49,15 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'todoListChecked' ) ).to.be.true;
+		const todoListItem = new ModelElement( 'listItem', { listType: 'todo' } );
+		const bulletedListItem = new ModelElement( 'listItem', { listType: 'bulleted' } );
+		const numberedListItem = new ModelElement( 'listItem', { listType: 'numbered' } );
+		const paragraph = new ModelElement( 'paragraph' );
+
+		expect( model.schema.checkAttribute( [ '$root', todoListItem ], 'todoListChecked' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', bulletedListItem ], 'todoListChecked' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', numberedListItem ], 'todoListChecked' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).to.be.false;
 	} );
 
 	describe( 'command', () => {
