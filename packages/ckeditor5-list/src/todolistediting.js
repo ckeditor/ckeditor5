@@ -110,6 +110,12 @@ export default class TodoListEditing extends Plugin {
 				if ( item.hasAttribute( 'todoListChecked' ) ) {
 					listItemsToFix.add( item );
 				}
+			} else if ( operation.type == 'changeAttribute' && operation.key == 'listType' && operation.oldValue === 'todo' ) {
+				for ( const item of operation.range.getItems() ) {
+					if ( item.hasAttribute( 'todoListChecked' ) && item.getAttribute( 'listType' ) !== 'todo' ) {
+						listItemsToFix.add( item );
+					}
+				}
 			}
 		} );
 

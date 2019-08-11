@@ -39,16 +39,22 @@ export function modelViewInsertion( model ) {
 			return;
 		}
 
-		consumable.consume( data.item, 'insert' );
-		consumable.consume( data.item, 'attribute:listType' );
-		consumable.consume( data.item, 'attribute:listIndent' );
-		consumable.consume( data.item, 'attribute:todoListChecked' );
+		const modelItem = data.item;
+
+		consumable.consume( modelItem, 'insert' );
+		consumable.consume( modelItem, 'attribute:listType' );
+		consumable.consume( modelItem, 'attribute:listIndent' );
+		consumable.consume( modelItem, 'attribute:todoListChecked' );
 
 		const viewWriter = conversionApi.writer;
-		const modelItem = data.item;
 		const viewItem = generateLiInUl( modelItem, conversionApi );
 
-		addTodoElementsToListItem( modelItem, viewItem, viewWriter, model );
+		const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
+		const checkmarkElement = createCheckmarkElement( modelItem, viewWriter, isChecked, model );
+
+		viewWriter.addClass( 'todo-list', viewItem.parent );
+		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
+
 		injectViewList( modelItem, viewItem, conversionApi, model );
 	};
 }
@@ -213,7 +219,8 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * A model-to-view converter for `listType` attribute change on `listItem` model element.
  *
  * This change means that `<li>` elements parent changes to `<ul class="todo-list">` and
- * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning of the list item element.
+ * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning
+ * of the list item element (or vice versa).
  *
  * This converter is preceded by {@link module:list/converters~modelViewChangeType} and followed by
  * {@link module:list/converters~modelViewMergeAfterChangeType} to handle splitting and merging surrounding lists of the same type.
@@ -229,11 +236,15 @@ export function modelViewChangeType( model ) {
 		const viewItem = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
-		// Add or remove checkbox for toto list.
 		if ( data.attributeNewValue == 'todo' ) {
-			addTodoElementsToListItem( data.item, viewItem, viewWriter, model );
+			const isChecked = !!data.item.getAttribute( 'todoListChecked' );
+			const checkmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, model );
+
+			viewWriter.addClass( 'todo-list', viewItem.parent );
+			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 		} else if ( data.attributeOldValue == 'todo' ) {
-			removeTodoElementsFromListItem( data.item, viewItem, viewWriter, model );
+			viewWriter.removeClass( 'todo-list', viewItem.parent );
+			viewWriter.remove( viewItem.getChild( 0 ) );
 		}
 	};
 }
@@ -265,34 +276,6 @@ export function modelViewChangeChecked( model ) {
 		viewWriter.insert( viewWriter.createPositionAfter( oldCheckmarkElement ), newCheckmarkElement );
 		viewWriter.remove( oldCheckmarkElement );
 	};
-}
-
-// Injects checkbox element inside a view list item and adds `todo-list` class to the parent list element.
-//
-// @private
-// @param {module:engine/model/item~Item} modelItem
-// @param {module:engine/view/item~Item} ViewItem
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-// @param {module:engine/model/model~Model} model
-function addTodoElementsToListItem( modelItem, viewItem, viewWriter, model ) {
-	const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
-	const checkmarkElement = createCheckmarkElement( modelItem, viewWriter, isChecked, model );
-
-	viewWriter.addClass( 'todo-list', viewItem.parent );
-	viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
-}
-
-// Removes checkbox element from a view list item and removes `todo-list` class from the parent list element.
-//
-// @private
-// @param {module:engine/model/item~Item} modelItem
-// @param {module:engine/view/item~Item} ViewItem
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-// @param {module:engine/model/model~Model} model
-function removeTodoElementsFromListItem( modelItem, viewItem, viewWriter, model ) {
-	viewWriter.removeClass( 'todo-list', viewItem.parent );
-	viewWriter.remove( viewItem.getChild( 0 ) );
-	model.change( writer => writer.removeAttribute( 'todoListChecked', modelItem ) );
 }
 
 // Creates checkbox UI element.
