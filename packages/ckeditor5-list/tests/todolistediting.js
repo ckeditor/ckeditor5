@@ -836,4 +836,31 @@ describe( 'TodoListEditing', () => {
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
+
+	describe( 'Ctrl+space keystroke handling', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = {
+				keyCode: getCode( 'space' ),
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+		} );
+
+		it( 'should execute TodoListCheckCommand', () => {
+			const command = editor.commands.get( 'todoListCheck' );
+
+			sinon.spy( command, 'execute' );
+
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( command.execute );
+
+			viewDoc.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledTwice( command.execute );
+		} );
+	} );
 } );
