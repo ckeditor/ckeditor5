@@ -147,6 +147,36 @@ export function dataModelViewTextInsertion( evt, data, conversionApi ) {
 }
 
 /**
+ * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
+ * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+ * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
+ * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
+ */
+export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
+	const modelCursor = data.modelCursor;
+	const modelItem = modelCursor.parent;
+	const viewItem = data.viewItem;
+
+	if ( viewItem.getAttribute( 'type' ) != 'checkbox' || modelItem.name != 'listItem' || !modelCursor.isAtStart ) {
+		return;
+	}
+
+	if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
+		return;
+	}
+
+	const writer = conversionApi.writer;
+
+	writer.setAttribute( 'listType', 'todo', modelItem );
+
+	if ( data.viewItem.getAttribute( 'checked' ) == 'checked' ) {
+		writer.setAttribute( 'todoListChecked', true, modelItem );
+	}
+
+	data.modelRange = writer.createRange( modelCursor );
+}
+
+/**
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:engine/model/model~Model} model Model instance.
  * @returns {Function} Returns a conversion callback.

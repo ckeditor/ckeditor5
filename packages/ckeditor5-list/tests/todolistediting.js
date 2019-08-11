@@ -358,7 +358,7 @@ describe( 'TodoListEditing', () => {
 		} );
 	} );
 
-	describe( 'data pipeline', () => {
+	describe( 'data pipeline m -> v', () => {
 		it( 'should convert todo list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
@@ -523,6 +523,136 @@ describe( 'TodoListEditing', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
 
 			expect( editor.getData() ).to.equal( '<test>Foo</test>' );
+		} );
+	} );
+
+	describe( 'data pipeline v -> m', () => {
+		it( 'should convert li with checkbox inside before the first text node as todo list item', () => {
+			editor.setData( '<ul><li><span><input type="checkbox">Foo</span></li></ul>' );
+
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
+		} );
+
+		it( 'should convert li with checked checkbox inside as checked todo list item', () => {
+			editor.setData( '<ul><li><span><input type="checkbox" checked="checked">Foo</span></li></ul>' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]Foo</listItem>'
+			);
+		} );
+
+		it( 'should not convert li with checkbox in the middle of the text', () => {
+			editor.setData( '<ul><li>Foo<input type="checkbox">Bar</li></ul>' );
+
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
+		} );
+
+		it( 'should convert li with checkbox wrapped by inline elements when checkbox is before the first  text node', () => {
+			editor.setData( '<ul><li><label><input type="checkbox">Foo</label></li></ul>' );
+
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
+		} );
+
+		it( 'should split items with checkboxes - bulleted list', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>foo</li>' +
+					'<li><input type="checkbox">bar</li>' +
+					'<li>biz</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">[]foo</listItem>' +
+				'<listItem listIndent="0" listType="todo">bar</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">biz</listItem>'
+			);
+		} );
+
+		it( 'should split items with checkboxes - numbered list', () => {
+			editor.setData(
+				'<ol>' +
+					'<li>foo</li>' +
+					'<li><input type="checkbox">bar</li>' +
+					'<li>biz</li>' +
+				'</ol>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="numbered">[]foo</listItem>' +
+				'<listItem listIndent="0" listType="todo">bar</listItem>' +
+				'<listItem listIndent="0" listType="numbered">biz</listItem>'
+			);
+		} );
+
+		it( 'should convert checkbox in nested lists', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>1.1' +
+						'<ul>' +
+							'<li><input type="checkbox">2.2</li>' +
+							'<li>3.2</li>' +
+						'</ul>' +
+					'</li>' +
+					'<li>4.1' +
+						'<ol>' +
+							'<li>5.2</li>' +
+							'<li><input type="checkbox">6.2</li>' +
+						'</ol>' +
+					'</li>' +
+					'<li>7.1</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">[]1.1</listItem>' +
+				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
+				'<listItem listIndent="1" listType="todo">3.2</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">4.1</listItem>' +
+				'<listItem listIndent="1" listType="numbered">5.2</listItem>' +
+				'<listItem listIndent="1" listType="numbered">6.2</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">7.1</listItem>'
+			);
+		} );
+
+		it( 'should convert todo list returned by m -> v data pipeline conversion', () => {
+			editor.setData(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label>' +
+							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label">1.1</span>' +
+						'</label>' +
+						'<ul class="todo-list">' +
+							'<li>' +
+								'<label>' +
+									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label">2.2</span>' +
+								'</label>' +
+							'</li>' +
+							'<li>' +
+								'<label>' +
+									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+									'<span class="todo-list__label">3.2</span>' +
+								'</label>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+					'<li>' +
+						'<label>' +
+							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label">4.1</span>' +
+						'</label>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]1.1</listItem>' +
+				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
+				'<listItem listIndent="1" listType="todo" todoListChecked="true">3.2</listItem>' +
+				'<listItem listIndent="0" listType="todo">4.1</listItem>'
+			);
 		} );
 	} );
 

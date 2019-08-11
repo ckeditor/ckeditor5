@@ -18,6 +18,7 @@ import {
 	modelViewTextInsertion,
 	dataModelViewInsertion,
 	dataModelViewTextInsertion,
+	dataViewModelCheckmarkInsertion,
 	modelViewChangeChecked,
 	modelViewChangeType
 } from './todolistconverters';
@@ -69,6 +70,8 @@ export default class TodoListEditing extends Plugin {
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( model ) );
 		editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', modelViewChangeChecked( model ) );
+
+		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
 		// Move selection after a checkbox element.
 		viewDocument.registerPostFixer( writer => moveUIElementsAfterCheckmark( writer, getChangedCheckmarkElements( editing.view ) ) );
