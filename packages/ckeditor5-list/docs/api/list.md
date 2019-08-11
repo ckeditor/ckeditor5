@@ -6,11 +6,11 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-list.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)
 
-This package implements bulleted and numbered list feature for CKEditor 5.
+This package implements bulleted, numbered and to-do list feature for CKEditor 5.
 
 ## Documentation
 
-See the {@link module:list/list~List} plugin documentation.
+See the {@link module:list/list~List} plugin documentation and {@link features/todo-lists to-do list feature} guide.
 
 ## Installation
 
