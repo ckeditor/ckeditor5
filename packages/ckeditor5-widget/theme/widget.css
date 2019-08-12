@@ -36,7 +36,7 @@
 	visibility: hidden;
 	position: absolute;
 
-	/* The wrapper itself should not interfere with pointer device */
+	/* The wrapper itself should not interfere with pointer device, only the handlers. */
 	pointer-events: none;
 
 	left: 0;
@@ -53,21 +53,12 @@
 	bottom: 0;
 
 	outline: 1px solid var(--ck-color-resizer);
-
-	/* @todo: remove this dirty hack. It's purpose is that shadow element should not be
-	overlapped by elements that follow it in the DOM. */
-	z-index: var(--ck-z-default);
-
-	&.ck-widget__resizer-shadow-active {
-		display: block;
-		visibility: visible;
-	}
 }
 
 .ck .ck-widget__resizer {
 	position: absolute;
 
-	/* Resizers are the only UI elements that should interfere with pointer device */
+	/* Resizers are the only UI elements that should interfere with pointer device. */
 	pointer-events: all;
 
 	width: var(--ck-resizer-size);
@@ -123,10 +114,8 @@
 	}
 
 	/* Show the selection handler when the widget is selected. */
-	&.ck-widget_selected {
-		& .ck-widget__selection-handler {
-			visibility: visible;
-		}
+	&.ck-widget_selected .ck-widget__selection-handler {
+		visibility: visible;
 	}
 }
 
