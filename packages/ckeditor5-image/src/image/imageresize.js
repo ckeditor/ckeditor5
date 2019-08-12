@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResizer from '@ckeditor/ckeditor5-widget/src/widgetresizer';
 
+const WIDTH_ATTRIBUTE_NAME = 'width';
+
 /**
  *	Image resize plugin.
  *
@@ -55,5 +57,58 @@ export default class ImageResize extends Plugin {
 		}, {
 			priority: 'low'
 		} );
+
+		this._registerSchema();
+		this._registerConverters();
+	}
+
+	/**
+	 * @private
+	 */
+	_registerSchema() {
+		this.editor.model.schema.extend( 'image', {
+			allowAttributes: WIDTH_ATTRIBUTE_NAME
+		} );
+	}
+
+	/**
+	 * Registers image resize converters.
+	 *
+	 * @private
+	 */
+	_registerConverters() {
+		const editor = this.editor;
+
+		// Dedicated converter to propagate image's attribute to the img tag.
+		editor.conversion.for( 'downcast' ).add( dispatcher =>
+			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const img = conversionApi.mapper.toViewElement( data.item ).getChild( 0 );
+
+				if ( data.attributeNewValue !== null ) {
+					viewWriter.setStyle( WIDTH_ATTRIBUTE_NAME, data.attributeNewValue + 'px', img );
+				} else {
+					viewWriter.removeStyle( WIDTH_ATTRIBUTE_NAME, img );
+				}
+			} )
+		);
+
+		editor.conversion.for( 'upcast' )
+			.attributeToAttribute( {
+				view: {
+					name: 'img',
+					styles: {
+						'width': /[\d.]+(px)?/
+					}
+				},
+				model: {
+					key: WIDTH_ATTRIBUTE_NAME,
+					value: viewElement => viewElement.getStyle( 'width' ).replace( 'px', '' )
+				}
+			} );
 	}
 }
