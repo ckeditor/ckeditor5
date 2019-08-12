@@ -3,6 +3,7 @@ import {
 	getAbsoluteBoundaryPoint
 } from './utils';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -141,7 +142,7 @@ export default class ResizeContext {
 	 */
 	begin( domResizeHandler ) {
 		const resizeHost = this._getResizeHost();
-		const clientRect = resizeHost.getBoundingClientRect();
+		const clientRect = new Rect( resizeHost );
 
 		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
@@ -229,7 +230,7 @@ export default class ResizeContext {
 		if ( this.domResizeWrapper ) {
 			const widgetWrapper = this.domResizeWrapper.parentElement;
 			const resizingHost = this._getResizeHost();
-			const clientRect = resizingHost.getBoundingClientRect();
+			const clientRect = new Rect( resizingHost );
 
 			this.domResizeWrapper.style.width = clientRect.width + 'px';
 			this.domResizeWrapper.style.height = clientRect.height + 'px';
@@ -444,7 +445,7 @@ export default class ResizeContext {
 
 		// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
 		// here will reflect this limitation on resizer shadow later on.
-		const latestRect = resizeHost.getBoundingClientRect();
+		const latestRect = new Rect( resizeHost );
 
 		drawnSize.x = latestRect.width;
 		drawnSize.y = latestRect.height;

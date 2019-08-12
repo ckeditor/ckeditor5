@@ -9,6 +9,7 @@
 
 import HighlightStack from './highlightstack';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
@@ -358,11 +359,11 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
  * @returns {Number} return.y
  */
 export function getAbsoluteBoundaryPoint( element, resizerPosition ) {
-	const nativeRectangle = element.getBoundingClientRect();
+	const elementRect = new Rect( element );
 	const positionParts = resizerPosition.split( '-' );
 	const ret = {
-		x: positionParts[ 1 ] == 'right' ? nativeRectangle.right : nativeRectangle.left,
-		y: positionParts[ 0 ] == 'bottom' ? nativeRectangle.bottom : nativeRectangle.top
+		x: positionParts[ 1 ] == 'right' ? elementRect.right : elementRect.left,
+		y: positionParts[ 0 ] == 'bottom' ? elementRect.bottom : elementRect.top
 	};
 
 	ret.x += element.ownerDocument.defaultView.scrollX;
