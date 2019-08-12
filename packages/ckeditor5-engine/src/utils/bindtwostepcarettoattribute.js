@@ -87,7 +87,7 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior should be added
  * (e.g. a plugin instance).
  * @param {String} options.attribute Attribute for which this behavior will be added.
- * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+ * @param {module:utils/locale~Locale} options.locale The {@link module:core/editor/editor~Editor#locale} instance.
  */
 export default function bindTwoStepCaretToAttribute( { view, model, emitter, attribute, locale } ) {
 	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
