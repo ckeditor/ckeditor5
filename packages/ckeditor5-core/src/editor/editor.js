@@ -91,11 +91,16 @@ export default class Editor {
 		 */
 		this.commands = new CommandCollection();
 
+		const languageConfig = this.config.get( 'language' ) || {};
+
 		/**
 		 * @readonly
 		 * @member {module:utils/locale~Locale}
 		 */
-		this.locale = new Locale( this.config.get( 'language' ) );
+		this.locale = new Locale( {
+			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
+			contentLanguage: this.config.get( 'language.content' )
+		} );
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.
