@@ -88,6 +88,7 @@ export default class HeadingButtonsUI extends Plugin {
 			view.label = option.title;
 			view.icon = option.icon || defaultIcons[ option.model ];
 			view.tooltip = true;
+			view.isToggleable = true;
 			view.bind( 'isEnabled' ).to( command );
 			view.bind( 'isOn' ).to( command, 'value', value => value == option.model );
 

@@ -99,6 +99,17 @@ describe( 'HeadingButtonUI', () => {
 			sinon.assert.calledOnce( executeCommandSpy );
 			sinon.assert.calledWithExactly( executeCommandSpy, 'heading', { value: 'heading1' } );
 		} );
+
+		it( 'should be initialized as toggleable button', () => {
+			const factory = editor.ui.componentFactory;
+
+			expect( factory.create( 'heading1' ).isToggleable ).to.be.true;
+			expect( factory.create( 'heading2' ).isToggleable ).to.be.true;
+			expect( factory.create( 'heading3' ).isToggleable ).to.be.true;
+			expect( factory.create( 'heading4' ).isToggleable ).to.be.true;
+			expect( factory.create( 'heading5' ).isToggleable ).to.be.true;
+			expect( factory.create( 'heading6' ).isToggleable ).to.be.true;
+		} );
 	} );
 
 	describe( 'custom config', () => {
