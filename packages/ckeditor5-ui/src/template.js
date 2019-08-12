@@ -802,8 +802,8 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {HTMLElement|Text} node A node to be reverted.
-	 * @param {module:ui/template~RenderData#revertData} revertData Stores information about
-	 * what changes have been made by {@link #apply} to the node.
+	 * @param {Object} revertData An object that stores information about what changes have been made by
+	 * {@link #apply} to the node. See {@link module:ui/template~RenderData#revertData} for more information.
 	 */
 	_revertTemplateFromNode( node, revertData ) {
 		for ( const binding of revertData.bindings ) {
