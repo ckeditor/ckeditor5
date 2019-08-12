@@ -172,7 +172,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * @returns {module:utils/dom/position~Options#positions}
 	 */
 	_getPanelPositions() {
-		return [
+		const positions = [
 			( editableRect, panelRect ) => {
 				return {
 					top: this._getPanelPositionTop( editableRect, panelRect ),
@@ -188,5 +188,11 @@ export default class InlineEditorUIView extends EditorUIView {
 				};
 			}
 		];
+
+		if ( this.locale.uiLanguageDirection === 'ltr' ) {
+			return positions;
+		} else {
+			return positions.reverse();
+		}
 	}
 }

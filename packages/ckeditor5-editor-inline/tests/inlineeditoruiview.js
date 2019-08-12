@@ -19,7 +19,7 @@ describe( 'InlineEditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editingView = new EditingView();
 		editingViewRoot = createRoot( editingView.document );
 		view = new InlineEditorUIView( locale, editingView );
@@ -115,7 +115,7 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'init()', () => {
 		it( 'appends #toolbar to panel#content', () => {
-			locale = new Locale( 'en' );
+			locale = new Locale();
 			const view = new InlineEditorUIView( locale, editingView );
 
 			view.editable.name = editingViewRoot.rootName;
@@ -130,8 +130,11 @@ describe( 'InlineEditorUIView', () => {
 	} );
 
 	describe( 'panelPositions', () => {
-		it( 'returns the positions in the right order', () => {
-			const positions = view.panelPositions;
+		it( 'returns the positions in the right order (uiLanguageDirection="ltr")', () => {
+			locale.uiLanguageDirection = 'ltr';
+
+			const uiView = new InlineEditorUIView( locale, editingView );
+			const positions = uiView.panelPositions;
 			const editableRect = {
 				top: 100,
 				bottom: 200,
@@ -148,6 +151,29 @@ describe( 'InlineEditorUIView', () => {
 			expect( positions ).to.have.length( 2 );
 			expect( positions[ 0 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_west' );
 			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
+		} );
+
+		it( 'returns the positions in the right order (uiLanguageDirection="rtl")', () => {
+			locale.uiLanguageDirection = 'rtl';
+
+			const uiView = new InlineEditorUIView( locale, editingView );
+			const positions = uiView.panelPositions;
+			const editableRect = {
+				top: 100,
+				bottom: 200,
+				left: 100,
+				right: 100,
+				width: 100,
+				height: 100
+			};
+			const panelRect = {
+				width: 50,
+				height: 50
+			};
+
+			expect( positions ).to.have.length( 2 );
+			expect( positions[ 0 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
+			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_west' );
 		} );
 
 		describe( 'west', () => {
