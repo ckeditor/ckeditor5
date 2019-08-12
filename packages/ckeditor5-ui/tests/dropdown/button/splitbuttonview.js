@@ -70,6 +70,14 @@ describe( 'SplitButtonView', () => {
 			expect( view.element.classList.contains( 'ck-splitbutton_open' ) ).to.be.false;
 		} );
 
+		it( 'binds arrowView aria-expanded attribute to #isOn', () => {
+			view.arrowView.isOn = true;
+			expect( view.arrowView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'true' );
+
+			view.arrowView.isOn = false;
+			expect( view.arrowView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
+		} );
+
 		describe( 'activates keyboard navigation for the toolbar', () => {
 			it( 'so "arrowright" on view#arrowView does nothing', () => {
 				const keyEvtData = {

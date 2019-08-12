@@ -204,13 +204,15 @@ export default class SplitButtonView extends View {
 	 */
 	_createArrowView() {
 		const arrowView = new ButtonView();
+		const bind = arrowView.bindTemplate;
 
 		arrowView.icon = dropdownArrowIcon;
 
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-splitbutton__arrow',
-				'aria-haspopup': true
+				'aria-haspopup': true,
+				'aria-expanded': bind.to( 'isOn', value => String( value ) )
 			}
 		} );
 
