@@ -120,7 +120,7 @@ describe( 'Image resizer', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
-			expectedWidth: 110,
+			expectedWidth: 120,
 			pointerOffset: {
 				x: 10,
 				y: 0
@@ -138,7 +138,7 @@ describe( 'Image resizer', () => {
 		} ) );
 
 		it( 'enlarges correctly with left-bottom handler, x axis only', generateResizeTest( {
-			expectedWidth: 110,
+			expectedWidth: 120,
 			pointerOffset: {
 				x: -10,
 				y: 0
