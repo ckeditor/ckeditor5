@@ -47,6 +47,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const locale = editor.locale;
 
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
@@ -83,7 +84,13 @@ export default class LinkEditing extends Plugin {
 		this._enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
 
 		// Enable two-step caret movement for `linkHref` attribute.
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: this,
+			attribute: 'linkHref',
+			locale
+		} );
 
 		// Setup highlight over selected link.
 		this._setupLinkHighlight();
