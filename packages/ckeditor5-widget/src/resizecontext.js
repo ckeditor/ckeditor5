@@ -97,7 +97,7 @@ export default class ResizeContext {
 		 */
 
 		/**
-		 * Position of a handler that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
+		 * Direction towards which the widget is being resized, e.g. `"top-left"`, `"bottom-right"` etc or `null`
 		 * if not active.
 		 *
 		 * @readonly
