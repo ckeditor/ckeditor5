@@ -13,16 +13,98 @@ describe( 'Locale', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'sets the language', () => {
-			const locale = new Locale( 'pl' );
+		it( 'sets the #language', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl'
+			} );
 
-			expect( locale ).to.have.property( 'language', 'pl' );
+			expect( locale ).to.have.property( 'uiLanguage', 'pl' );
 		} );
 
-		it( 'defaults language to en', () => {
+		it( 'sets the #contentLanguage', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl',
+				contentLanguage: 'en'
+			} );
+
+			expect( locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( locale ).to.have.property( 'contentLanguage', 'en' );
+		} );
+
+		it( 'defaults #language to en', () => {
 			const locale = new Locale();
 
-			expect( locale ).to.have.property( 'language', 'en' );
+			expect( locale ).to.have.property( 'uiLanguage', 'en' );
+		} );
+
+		it( 'inherits the #contentLanguage from the #language (if not passed)', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl'
+			} );
+
+			expect( locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'determines the #uiLanguageDirection', () => {
+			expect( new Locale( {
+				uiLanguage: 'pl'
+			} ) ).to.have.property( 'uiLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'en'
+			} ) ).to.have.property( 'uiLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'ar'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'fa'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'he'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'ku'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'ug'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+		} );
+
+		it( 'determines the #contentLanguageDirection (not passed)', () => {
+			expect( new Locale( {
+				uiLanguage: 'pl'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'en'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'ar'
+			} ) ).to.have.property( 'contentLanguageDirection', 'rtl' );
+		} );
+
+		it( 'determines the #contentLanguageDirection (passed)', () => {
+			expect( new Locale( {
+				uiLanguage: 'pl',
+				contentLanguage: 'pl'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'en',
+				contentLanguage: 'ar'
+			} ) ).to.have.property( 'contentLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'ar',
+				contentLanguage: 'pl'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
 		} );
 	} );
 
