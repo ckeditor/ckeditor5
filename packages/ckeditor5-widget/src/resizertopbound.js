@@ -18,9 +18,9 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 /**
  * Implements a resizer that enlarges/shrinks in all directions.
  *
- * @class ResizerCentral
+ * @class ResizerTopBound
  */
-export default class ResizerCentral {
+export default class ResizerTopBound {
 	constructor( context, options ) {
 		this.context = context;
 		this.options = options || {};
@@ -152,4 +152,4 @@ export default class ResizerCentral {
 	redraw() {}
 }
 
-mix( ResizerCentral, ObservableMixin );
+mix( ResizerTopBound, ObservableMixin );

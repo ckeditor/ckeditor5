@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
-import ResizeContext2 from './resizecontext';
+import ResizeContext from './resizecontext';
 import ResizerTopBound from './resizertopbound';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -54,7 +54,6 @@ export default class WidgetResizer extends Plugin {
 		this.activeContext = null;
 
 		this._registerSchema();
-		this._registerConverters();
 
 		const mouseObserverHost = global.window.document;
 
@@ -169,7 +168,7 @@ export default class WidgetResizer extends Plugin {
 	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
 	 */
 	apply( widgetElement, writer, options ) {
-		const context = new ResizeContext2( options );
+		const context = new ResizeContext( options );
 		context.attach( widgetElement, writer );
 
 		this.editor.editing.view.once( 'render', () => context.redraw() );
@@ -196,50 +195,8 @@ export default class WidgetResizer extends Plugin {
 	}
 
 	_registerSchema() {
-		const editor = this.editor;
-
-		editor.model.schema.extend( 'image', {
-			allowAttributes: WIDTH_ATTRIBUTE_NAME
-		} );
-
-		editor.model.schema.setAttributeProperties( WIDTH_ATTRIBUTE_NAME, {
+		this.editor.model.schema.setAttributeProperties( WIDTH_ATTRIBUTE_NAME, {
 			isFormatting: true
 		} );
-	}
-
-	_registerConverters() {
-		const editor = this.editor;
-
-		// Dedicated converter to propagate image's attribute to the img tag.
-		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const img = conversionApi.mapper.toViewElement( data.item ).getChild( 0 );
-
-				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( WIDTH_ATTRIBUTE_NAME, data.attributeNewValue + 'px', img );
-				} else {
-					viewWriter.removeStyle( WIDTH_ATTRIBUTE_NAME, img );
-				}
-			} )
-		);
-
-		editor.conversion.for( 'upcast' )
-			.attributeToAttribute( {
-				view: {
-					name: 'img',
-					styles: {
-						'width': /[\d.]+(px)?/
-					}
-				},
-				model: {
-					key: WIDTH_ATTRIBUTE_NAME,
-					value: viewElement => viewElement.getStyle( 'width' ).replace( 'px', '' )
-				}
-			} );
 	}
 }
