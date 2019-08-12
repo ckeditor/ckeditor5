@@ -21,9 +21,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 
-import ResizerCentral from '@ckeditor/ckeditor5-widget/src/resizercentral';
-import ResizerSide from '@ckeditor/ckeditor5-widget/src/resizerside';
-
 const commonConfig = {
 	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, ImageStyle, ImageToolbar, ImageCaption,
 		UndoPlugin, ClipboardPlugin, List, BlockQuote, Table, Indent, IndentBlock ],
@@ -88,15 +85,5 @@ ClassicEditor
 	// Resize using image
 	document.getElementById( 'resize-image' ).addEventListener( 'change', function() {
 		window.pocResizeUsingImage = this.checked;
-	} );
-
-	// Resize strategy
-	document.getElementById( 'strategy' ).addEventListener( 'change', function() {
-		const strategies = {
-			'center': ResizerCentral,
-			'side': ResizerSide
-		};
-
-		window.editor.plugins.get( 'WidgetResizer' ).set( 'resizerStrategy', strategies[ this.value ] );
 	} );
 }() );
