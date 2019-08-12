@@ -22,16 +22,33 @@ describe( 'Image resizer', () => {
 	const FIXTURE_WIDTH = 100;
 	const FIXTURE_HEIGHT = 50;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
+	let absoluteContainer;
 	// 60x30 black png image
 	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 	let editor, view, viewDocument, editorElement;
 
+	before( () => {
+		// This container is required to position editor element in a reliable element.
+		// See fireMouseEvent method for more information regarding imprecise mouse position.
+		absoluteContainer = document.createElement( 'div' );
+		absoluteContainer.style.top = '50px';
+		absoluteContainer.style.left = '50px';
+		absoluteContainer.style.height = '1000px';
+		absoluteContainer.style.width = '500px';
+		absoluteContainer.style.position = 'absolute';
+		document.body.appendChild( absoluteContainer );
+	} );
+
+	after( () => {
+		absoluteContainer.remove();
+	} );
+
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		editorElement.innerHTML = `<p>foo</p><figure><img src="${ imageFixture }"></figure>`;
 
-		document.body.appendChild( editorElement );
+		absoluteContainer.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
@@ -416,8 +433,8 @@ describe( 'Image resizer', () => {
 		const viewportPosition = element.getBoundingClientRect();
 
 		return {
-			x: viewportPosition.left + window.scrollX,
-			y: viewportPosition.top + window.scrollY
+			x: viewportPosition.left,
+			y: viewportPosition.top
 		};
 	}
 
@@ -471,7 +488,7 @@ describe( 'Image resizer', () => {
 				.then( () => {
 					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
 
-					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 1 );
+					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 2 );
 
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
@@ -481,7 +498,7 @@ describe( 'Image resizer', () => {
 
 					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
 
-					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( options.expectedWidth, 1, 'Model check' );
+					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( options.expectedWidth, 2, 'Model check' );
 				} );
 		};
 	}
