@@ -1,5 +1,7 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import { getAbsoluteBoundaryPoint } from './utils';
+import {
+	getAbsoluteBoundaryPoint
+} from './utils';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -119,7 +121,7 @@ export default class ResizeContext {
 		}, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
-			that.domResizeShadow = that._appendShadowElement( domDocument, domElement );
+			that.domResizeShadow = that._appendShadowElement( domElement );
 			that._appendResizers( that.domResizeShadow );
 			that._appendSizeUi( that.domResizeShadow );
 
@@ -318,12 +320,16 @@ export default class ResizeContext {
 
 	/**
 	 * @private
-	 * @param {HTMLDocument} domDocument Document where the widget is used.
 	 * @param {HTMLElement} domElement The outer wrapper of resize UI within a given widget.
 	 */
-	_appendShadowElement( domDocument, domElement ) {
-		const shadowElement = domDocument.createElement( 'div' );
-		shadowElement.setAttribute( 'class', 'ck ck-widget__resizer-shadow' );
+	_appendShadowElement( domElement ) {
+		const shadowElement = new Template( {
+			tag: 'div',
+			attributes: {
+				class: 'ck ck-widget__resizer-shadow'
+			}
+		} ).render();
+
 		domElement.appendChild( shadowElement );
 
 		return shadowElement;
