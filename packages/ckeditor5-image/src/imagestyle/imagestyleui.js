@@ -85,7 +85,8 @@ export default class ImageStyleUI extends Plugin {
 			view.set( {
 				label: style.title,
 				icon: style.icon,
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
