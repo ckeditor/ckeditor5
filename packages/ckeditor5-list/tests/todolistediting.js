@@ -20,7 +20,7 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /* global Event, document */
 
 describe( 'TodoListEditing', () => {
-	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
+	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -36,7 +36,6 @@ describe( 'TodoListEditing', () => {
 
 				view = editor.editing.view;
 				viewDoc = view.document;
-				viewRoot = viewDoc.getRoot();
 
 				model.schema.register( 'foo', {
 					allowWhere: '$block',
@@ -758,13 +757,6 @@ describe( 'TodoListEditing', () => {
 					range: writer.createRangeIn( modelRoot.getChild( 0 ) ),
 					usingOperation: false
 				} );
-
-				// VirtualTestEeditor does not render V to DOM, so we need to mock element market to be rendered
-				// because view post-fixer uses it.
-				view._renderer.markedChildren = new Set( [
-					viewRoot.getChild( 0 ).getChild( 0 ),
-					viewRoot.getChild( 0 ).getChild( 1 )
-				] );
 			} );
 
 			expect( getViewData( view ) ).to.equal(

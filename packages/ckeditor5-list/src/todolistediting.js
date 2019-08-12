@@ -88,8 +88,22 @@ export default class TodoListEditing extends Plugin {
 
 		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
+		// Collect all view nodes that have changed and use it to check if checkmark UI element is going to
+		// be re-rendered. If yes than view post-fixer should verify view structure.
+		const changedViewNodes = new Set();
+
+		for ( const viewRoot of viewDocument.roots ) {
+			this.listenTo( viewRoot, 'change:children', ( evt, node ) => changedViewNodes.add( node ) );
+		}
+
 		// Move selection after a checkbox element.
-		viewDocument.registerPostFixer( writer => moveUIElementsAfterCheckmark( writer, getChangedCheckmarkElements( editing.view ) ) );
+		viewDocument.registerPostFixer( writer => {
+			const changedCheckmarkElements = getChangedCheckmarkElements( writer, changedViewNodes );
+
+			changedViewNodes.clear();
+
+			return moveUIElementsAfterCheckmark( writer, changedCheckmarkElements );
+		} );
 
 		// Move all uiElements after a checkbox element.
 		viewDocument.registerPostFixer( writer => moveSelectionAfterCheckmark( writer, viewDocument.selection ) );
@@ -266,11 +280,13 @@ function jumpOverCheckmarkOnLeftArrowKeyPress( stopKeyEvent, model ) {
 // Gets list of all checkmark elements that are going to be rendered.
 //
 // @private
+// @param {module:engine/view/view~View>} editingView
+// @param {Set.<module:engine/view/element~Element>} changedViewNodes
 // @returns {Array.<module:engine/view/uielement~UIElement>}
-function getChangedCheckmarkElements( editingView ) {
+function getChangedCheckmarkElements( editingView, changedViewNodes ) {
 	const elements = [];
 
-	for ( const element of Array.from( editingView._renderer.markedChildren ) ) {
+	for ( const element of changedViewNodes ) {
 		for ( const item of editingView.createRangeIn( element ).getItems() ) {
 			if ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) && !elements.includes( item ) ) {
 				elements.push( item );
