@@ -5,12 +5,12 @@ category: features
 
 The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow (or a paragraph mark &mdash; &#182;). It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
-The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link builds/guides/overview#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar.
+The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link builds/guides/overview#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link builds/guides/overview#balloon-block-editor balloon block editor overview}.
 
 ## Example
 
 <info-box hint>
-	Move the caret around the content with the balloon editor below to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, for example to create a header or insert an image.
+	Move the caret around the content with the balloon editor below to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, for example, to create a header or insert an image. See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
 </info-box>
 
 {@snippet features/blocktoolbar}
@@ -28,6 +28,14 @@ To adjust the position of the block toolbar button to match the styles of your w
 ```css
 .ck.ck-block-toolbar-button {
 	transform: translateX( -10px );
+}
+```
+
+If you plan to run the editor in a right–to–left (RTL) language, keep in mind the button will be attached to the **right** boundary of the editable area. In that case, make sure the CSS position adjustment works properly by adding the following styles:
+
+```css
+.ck[dir="rtl"] .ck-block-toolbar-button {
+	transform: translateX( 10px );
 }
 ```
 
