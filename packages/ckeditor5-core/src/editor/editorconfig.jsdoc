@@ -221,7 +221,7 @@
  *
  * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
- * @member {String} module:core/editor/editorconfig~EditorConfig#language
+ * @member {String|Object} module:core/editor/editorconfig~EditorConfig#language
  */
 
 /**
