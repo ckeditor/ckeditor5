@@ -120,7 +120,7 @@ export default class FileDialogButtonView extends View {
  * The hidden file input view class.
  *
  * @private
- * @extends {module:ui/view~View}
+ * @extends module:ui/view~View
  */
 class FileInputView extends View {
 	/**
