@@ -18,7 +18,7 @@ import {
 	getData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe.only( 'Image resizer', () => {
+describe( 'Image resizer', () => {
 	const FIXTURE_WIDTH = 100;
 	const FIXTURE_HEIGHT = 50;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
