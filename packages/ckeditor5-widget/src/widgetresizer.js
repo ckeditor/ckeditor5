@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import ResizeContext from './resizecontext';
-import ResizerTopBound from './resizertopbound';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -42,14 +41,6 @@ export default class WidgetResizer extends Plugin {
 	}
 
 	init() {
-		this.set( 'resizerStrategy', null );
-
-		this.on( 'change:resizerStrategy', ( event, name, value ) => {
-			for ( const context of this.contexts ) {
-				context.resizeStrategy = new ( value || ResizerTopBound )( context, context.options );
-			}
-		} );
-
 		this.contexts = [];
 		this.activeContext = null;
 

@@ -1,5 +1,4 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ResizerTopBound from './resizertopbound';
 import { getAbsoluteBoundaryPoint } from './utils';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
@@ -32,8 +31,6 @@ export default class ResizeContext {
 		 * @member {module:engine/view/element~Element}
 		 */
 		this.widgetWrapperElement = null;
-
-		this.resizeStrategy = new ResizerTopBound( this, options );
 
 		/**
 		 * Container of entire resize UI.
@@ -171,6 +168,11 @@ export default class ResizeContext {
 		this.redraw();
 	}
 
+	/**
+	 * Accepts currently proposed resize and applies it on the resize host.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
+	 */
 	commit( editor ) {
 		const modelEntry = this._getModel( editor, this.widgetWrapperElement );
 		const newWidth = this.domResizeShadow.clientWidth;
@@ -186,6 +188,9 @@ export default class ResizeContext {
 		this._cleanupContext();
 	}
 
+	/**
+	 * Cancels and rejects proposed resize dimensions hiding all the UI.
+	 */
 	cancel() {
 		this._dismissShadow();
 
@@ -207,7 +212,7 @@ export default class ResizeContext {
 	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
 	 */
 	updateSize( domEventData ) {
-		const proposedSize = this.resizeStrategy.updateSize( domEventData );
+		const proposedSize = this._updateImageSize( domEventData );
 
 		this.domResizeWrapper.style.width = proposedSize.x + 'px';
 		this.domResizeWrapper.style.height = proposedSize.y + 'px';
@@ -276,6 +281,42 @@ export default class ResizeContext {
 	}
 
 	/**
+	 * @protected
+	 */
+	_dismissShadow() {
+		this.domResizeShadow.classList.remove( 'ck-widget__resizer-shadow-active' );
+		this.domResizeShadow.removeAttribute( 'style' );
+	}
+
+	/**
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {module:engine/view/element~Element} widgetWrapperElement
+	 * @returns {module:engine/model/element~Element|undefined}
+	 * @protected
+	 */
+	_getModel( editor, widgetWrapperElement ) {
+		return editor.editing.mapper.toModelElement( widgetWrapperElement );
+	}
+
+	/**
+	 * @param {String} position Like `"top-left"`.
+	 * @returns {String} Inverted `position`.
+	 * @protected
+	 */
+	_invertPosition( position ) {
+		const parts = position.split( '-' );
+		const replacements = {
+			top: 'bottom',
+			bottom: 'top',
+			left: 'right',
+			right: 'left'
+		};
+
+		return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
+	}
+
+	/**
 	 * @private
 	 * @param {HTMLDocument} domDocument Document where the widget is used.
 	 * @param {HTMLElement} domElement The outer wrapper of resize UI within a given widget.
@@ -330,22 +371,84 @@ export default class ResizeContext {
 		domElement.appendChild( this.sizeElement );
 	}
 
-	_dismissShadow() {
-		this.domResizeShadow.classList.remove( 'ck-widget__resizer-shadow-active' );
-		this.domResizeShadow.removeAttribute( 'style' );
+	/**
+	 * Method used to calculate the proposed size as the resize handlers are dragged.
+	 *
+	 * @private
+	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
+	 * @returns {Object} return
+	 * @returns {Number} return.x Proposed width.
+	 * @returns {Number} return.y Proposed height.
+	 */
+	_updateImageSize( domEventData ) {
+		const currentCoordinates = this._extractCoordinates( domEventData );
+		const isCentered = this.options.isCentered ? this.options.isCentered( this ) : true;
+		const initialSize = this.originalSize;
+
+		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
+		// meaning that it has been shrunk.
+		//
+		// +----------------+--+
+		// |                |  |
+		// |       img      |  |
+		// |                |  |
+		// +----------------+  | ^
+		// |                   | | - enlarge y
+		// +-------------------+ v
+		// 					<-->
+		// 					 enlarge x
+		const enlargement = {
+			x: this.referenceCoordinates.x - ( currentCoordinates.x + initialSize.width ),
+			y: ( currentCoordinates.y - initialSize.height ) - this.referenceCoordinates.y
+		};
+
+		if ( isCentered && this.referenceHandlerPosition.endsWith( '-right' ) ) {
+			enlargement.x = currentCoordinates.x - ( this.referenceCoordinates.x + initialSize.width );
+		}
+
+		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
+		// one resized corner to your cursor. It needs to be duplicated to compensate for the other side too.
+		if ( isCentered ) {
+			enlargement.x *= 2;
+		}
+
+		const resizeHost = this._getResizeHost();
+
+		const proposedSize = {
+			x: Math.abs( initialSize.width + enlargement.x ),
+			y: Math.abs( initialSize.height + enlargement.y )
+		};
+
+		// Dominant determination must take the ratio into account.
+		proposedSize.dominant = proposedSize.x / this.aspectRatio > proposedSize.y ? 'x' : 'y';
+		proposedSize.max = proposedSize[ proposedSize.dominant ];
+
+		const drawnSize = {
+			x: proposedSize.x,
+			y: proposedSize.y
+		};
+
+		if ( proposedSize.dominant == 'x' ) {
+			drawnSize.y = drawnSize.x / this.aspectRatio;
+		} else {
+			drawnSize.x = drawnSize.y * this.aspectRatio;
+		}
+
+		resizeHost.style.width = `${ drawnSize.x }px`;
+
+		// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
+		// here will reflect this limitation on resizer shadow later on.
+		const latestRect = resizeHost.getBoundingClientRect();
+
+		drawnSize.x = latestRect.width;
+		drawnSize.y = latestRect.height;
+
+		return drawnSize;
 	}
 
 	/**
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {module:engine/view/element~Element} widgetWrapperElement
-	 * @returns {module:engine/model/element~Element|undefined}
-	 * @protected
+	 * @private
 	 */
-	_getModel( editor, widgetWrapperElement ) {
-		return editor.editing.mapper.toModelElement( widgetWrapperElement );
-	}
-
 	_extractCoordinates( event ) {
 		return {
 			x: event.pageX,
@@ -377,23 +480,6 @@ export default class ResizeContext {
 				return position;
 			}
 		}
-	}
-
-	/**
-	 * @param {String} position Like `"top-left"`.
-	 * @returns {String} Inverted `position`.
-	 * @protected
-	 */
-	_invertPosition( position ) {
-		const parts = position.split( '-' );
-		const replacements = {
-			top: 'bottom',
-			bottom: 'top',
-			left: 'right',
-			right: 'left'
-		};
-
-		return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
 	}
 }
 
