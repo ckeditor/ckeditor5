@@ -64,19 +64,30 @@ export default class ResizerTopBound {
 		const isCentered = this.options.isCentered ? this.options.isCentered( this.context ) : true;
 		const initialSize = this.context.originalSize;
 
+		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
+		// meaning that it has been shrunk.
+		//
+		// +----------------+--+
+		// |                |  |
+		// |       img      |  |
+		// |                |  |
+		// +----------------+  | ^
+		// |                   | | - enlarge y
+		// +-------------------+ v
+		// 					<-->
+		// 					 enlarge x
 		const enlargement = {
-			// @todo it could be simplified if context.referenceCoordinates was an inverted corner (at least for bottom-left).
 			x: this.context.referenceCoordinates.x - ( currentCoordinates.x + initialSize.width ),
 			y: ( currentCoordinates.y - initialSize.height ) - this.context.referenceCoordinates.y
 		};
 
-		// temp workaround
 		if ( isCentered && this.context.referenceHandlerPosition.endsWith( '-right' ) ) {
 			enlargement.x = currentCoordinates.x - ( this.context.referenceCoordinates.x + initialSize.width );
 		}
 
-		// @todo: oddly enough, this condition **check** is not needed for tables.
-		if ( isCentered && enlargement.x < 0 ) {
+		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from one resized
+		// corner to your cursor. It needs to be duplicated to compensate for the other side too.
+		if ( isCentered ) {
 			enlargement.x *= 2;
 		}
 

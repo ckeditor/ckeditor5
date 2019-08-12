@@ -62,15 +62,19 @@ export default class ResizeContext {
 			y: 0
 		};
 
-		// @todo: ---- options below seems like a little outside of a scope of a single context ----
-
-		// Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
-		// traveled, thus how much the image should be enlarged.
-		// This information is only known after DOM was rendered, so it will be updated later.
+		/**
+		 * Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
+		 * traveled, thus how much the image should be enlarged.
+		 * This information is only known after DOM was rendered, so it will be updated later.
+		 *
+		 * @protected
+		 */
 		this.referenceCoordinates = {
 			y: 0,
 			x: 0
 		};
+
+		// @todo: ---- options below seems like a little outside of a scope of a single context ----
 
 		this._cleanupContext();
 
