@@ -12,6 +12,7 @@ import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import ResizeContext from './resizecontext';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { throttle } from 'lodash-es';
 
 const WIDTH_ATTRIBUTE_NAME = 'width';
 
@@ -36,23 +37,19 @@ export default class WidgetResizer extends Plugin {
 
 		const mouseObserverHost = global.window.document;
 
+		const THROTTLE_THRESHOLD = 16; // 16ms = ~60fps
+
 		this._observers = {
 			mouseMove: Object.create( DomEmitterMixin ),
 			mouseDownUp: Object.create( DomEmitterMixin ),
+			windowResize: Object.create( DomEmitterMixin )
 		};
 
-		const mouseMoveListener = ( event, domEventData ) => {
+		const mouseMoveListener = throttle( ( event, domEventData ) => {
 			if ( this.activeContext ) {
 				this.activeContext.updateSize( domEventData );
 			}
-		};
-
-		this.editor.editing.view.document.on( 'layoutChanged', () => {
-			// Redrawing on layout change fixes issue with browser window resize or undo causing a mispositioned resizer.
-			for ( const context of this.contexts ) {
-				context.redraw();
-			}
-		} );
+		}, THROTTLE_THRESHOLD );
 
 		this._observers.mouseDownUp.listenTo( mouseObserverHost, 'mousedown', ( event, domEventData ) => {
 			const target = domEventData.target;
@@ -82,7 +79,19 @@ export default class WidgetResizer extends Plugin {
 			}
 		};
 
+		const resizeContexts = throttle( () => {
+			for ( const context of this.contexts ) {
+				context.redraw();
+			}
+		}, THROTTLE_THRESHOLD );
+
 		this._observers.mouseDownUp.listenTo( mouseObserverHost, 'mouseup', finishResizing );
+
+		// Redrawing on layout change fixes issue with browser window resize or undo causing a mispositioned resizer.
+		this.editor.editing.view.document.on( 'layoutChanged', resizeContexts );
+
+		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
+		this._observers.windowResize.listenTo( global.window, 'resize', resizeContexts );
 
 		function isResizeHandler( element ) {
 			return element.classList && element.classList.contains( 'ck-widget__resizer' );

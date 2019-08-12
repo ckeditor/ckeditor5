@@ -234,7 +234,7 @@ export default class ResizeContext {
 	redraw() {
 		const domWrapper = this.domResizeWrapper;
 
-		if ( domWrapper && domWrapper.parentElement ) {
+		if ( existsInDom( domWrapper ) ) {
 			// Refresh only if resizer exists in the DOM.
 			const widgetWrapper = domWrapper.parentElement;
 			const resizingHost = this._getResizeHost();
@@ -254,6 +254,10 @@ export default class ResizeContext {
 				domWrapper.style.height = resizingHost.offsetHeight + 'px';
 				domWrapper.style.width = resizingHost.offsetWidth + 'px';
 			}
+		}
+
+		function existsInDom( element ) {
+			return element && element.ownerDocument && element.ownerDocument.contains( element );
 		}
 	}
 

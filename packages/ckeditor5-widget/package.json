@@ -12,7 +12,8 @@
     "@ckeditor/ckeditor5-core": "^12.2.1",
     "@ckeditor/ckeditor5-engine": "^13.2.1",
     "@ckeditor/ckeditor5-ui": "^13.0.2",
-    "@ckeditor/ckeditor5-utils": "^13.0.1"
+    "@ckeditor/ckeditor5-utils": "^13.0.1",
+    "lodash-es": "^4.17.10"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^11.1.3",
