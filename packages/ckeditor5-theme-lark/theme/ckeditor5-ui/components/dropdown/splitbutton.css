@@ -12,16 +12,16 @@
 
 .ck.ck-splitbutton {
 	/*
-	 * Note: ck-rounder and ck-dir mixins don't go together (because they both use @nest).
+	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
 	 */
 	& > .ck-splitbutton__action {
-		@nest [dir="ltr"].ck-rounder-corners & {
+		@nest .ck-rounded-corners[dir="ltr"] & {
 			/* Don't round the action button on the right side */
 			border-top-right-radius: unset;
 			border-bottom-right-radius: unset;
 		}
 
-		@nest [dir="rtl"].ck-rounded-corners & {
+		@nest .ck-rounded-corners[dir="rtl"] & {
 			/* Don't round the action button on the left side */
 			border-top-left-radius: unset;
 			border-bottom-left-radius: unset;
@@ -33,7 +33,7 @@
 		it must get some arbitrary min-width. */
 		min-width: unset;
 
-		@nest [dir="ltr"].ck-rounder-corners & {
+		@nest .ck-rounded-corners[dir="ltr"] & {
 			/* Don't round the arrow button on the left side */
 			@mixin ck-rounded-corners {
 				border-top-left-radius: unset;
@@ -41,7 +41,7 @@
 			}
 		}
 
-		@nest [dir="rtl"].ck-rounded-corners & {
+		@nest .ck-rounded-corners[dir="rtl"] & {
 			/* Don't round the arrow button on the right side */
 			border-top-right-radius: unset;
 			border-bottom-right-radius: unset;
@@ -62,13 +62,13 @@
 			background: var(--ck-color-split-button-hover-background);
 		}
 
-		@nest [dir="ltr"].ck-rounder-corners & {
+		@nest .ck-rounded-corners[dir="ltr"] & {
 			& > .ck-splitbutton__arrow:not(.ck-disabled) {
 				border-left-color: var(--ck-color-split-button-hover-border);
 			}
 		}
 
-		@nest [dir="rtl"].ck-rounded-corners & {
+		@nest .ck-rounded-corners[dir="rtl"] & {
 			& > .ck-splitbutton__arrow:not(.ck-disabled) {
 				border-right-color: var(--ck-color-split-button-hover-border);
 			}
