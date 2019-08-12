@@ -73,6 +73,35 @@ export default class ResizeContext {
 		};
 
 		this._cleanupContext();
+
+		/**
+		 * Width proposed (but not yet accepted) using the widget resizer.
+		 *
+		 * It goes back to `null` once the resizer is dismissed or accepted.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Number|null} #proposedX
+		 */
+
+		/**
+		 * Height proposed (but not yet accepted) using the widget resizer.
+		 *
+		 * It goes back to `null` once the resizer is dismissed or accepted.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Number|null} #proposedY
+		 */
+
+		/**
+		 * Position of a handler that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
+		 * if not active.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {String|null} #orientation
+		 */
 	}
 
 	/**
@@ -165,16 +194,6 @@ export default class ResizeContext {
 		this._cleanupContext();
 	}
 
-	_cleanupContext() {
-		this.referenceHandlerPosition = null;
-
-		this.set( {
-			proposedX: null,
-			proposedY: null,
-			orientation: null
-		} );
-	}
-
 	destroy() {
 		this.cancel();
 
@@ -182,6 +201,13 @@ export default class ResizeContext {
 		this.wrapper = null;
 	}
 
+	/**
+	 * Method used to calculate the proposed size as the resize handlers are dragged.
+	 *
+	 * Proposed size can also be observed with {@link #proposedX} and {@link #proposedY} properties.
+	 *
+	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
+	 */
 	updateSize( domEventData ) {
 		const proposedSize = this.resizeStrategy.updateSize( domEventData );
 
@@ -210,6 +236,32 @@ export default class ResizeContext {
 		}
 	}
 
+	/**
+	 * Cleans up the context state.
+	 *
+	 * @protected
+	 */
+	_cleanupContext() {
+		this.referenceHandlerPosition = null;
+
+		this.set( {
+			proposedX: null,
+			proposedY: null,
+			orientation: null
+		} );
+	}
+
+	/**
+	 * Method used to obtain the resize host.
+	 *
+	 * Resize host is an object that is actually resized.
+	 *
+	 * Resize host will not always be an entire widget itself. Take an image as an example. Image widget
+	 * contains an image and caption. Only the image should be used to resize the widget, while the caption
+	 * will simply follow the image size.
+	 *
+	 * @protected
+	 */
 	_getResizeHost() {
 		const widgetWrapper = this.domResizeWrapper.parentElement;
 
@@ -217,6 +269,11 @@ export default class ResizeContext {
 			this.options.getResizeHost( widgetWrapper ) : widgetWrapper;
 	}
 
+	/**
+	 * @private
+	 * @param {HTMLDocument} domDocument Document where the widget is used.
+	 * @param {HTMLElement} domElement The outer wrapper of resize UI within a given widget.
+	 */
 	_appendShadowElement( domDocument, domElement ) {
 		const shadowElement = domDocument.createElement( 'div' );
 		shadowElement.setAttribute( 'class', 'ck ck-widget__resizer-shadow' );
@@ -225,6 +282,12 @@ export default class ResizeContext {
 		return shadowElement;
 	}
 
+	/**
+	 * Renders the resize handlers in DOM.
+	 *
+	 * @private
+	 * @param {HTMLElement} domElement Resize shadow where the resizers should be appended to.
+	 */
 	_appendResizers( domElement ) {
 		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
@@ -238,6 +301,10 @@ export default class ResizeContext {
 		}
 	}
 
+	/**
+	 * @private
+	 * @param {HTMLElement} domElement
+	 */
 	_appendSizeUi( domElement ) {
 		const sizeUi = new SizeView();
 

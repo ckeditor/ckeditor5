@@ -58,6 +58,14 @@ export default class ResizerTopBound {
 
 	destroy() {}
 
+	/**
+	 * Method used to calculate the proposed size as the resize handlers are dragged.
+	 *
+	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
+	 * @returns {Object} return
+	 * @returns {Number} return.x Proposed width.
+	 * @returns {Number} return.y Proposed height.
+	 */
 	updateSize( domEventData ) {
 		const context = this.context;
 		const currentCoordinates = context._extractCoordinates( domEventData );
@@ -146,7 +154,7 @@ export default class ResizerTopBound {
 			context.domResizeShadow.style.height = `${ drawnSize.y }px`;
 		}
 
-		return drawnSize; // @todo decide what size should actually be returned.
+		return drawnSize;
 	}
 
 	redraw() {}
