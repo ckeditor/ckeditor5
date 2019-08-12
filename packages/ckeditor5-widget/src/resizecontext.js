@@ -168,7 +168,7 @@ export default class ResizeContext {
 		this.aspectRatio = this.options.getAspectRatio ?
 			this.options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
 
-		this.resizeStrategy.begin( domResizeHandler );
+		this.redraw();
 	}
 
 	commit( editor ) {
@@ -179,8 +179,6 @@ export default class ResizeContext {
 
 		this.redraw();
 
-		this.resizeStrategy.commit( editor );
-
 		editor.model.change( writer => {
 			writer.setAttribute( WIDTH_ATTRIBUTE_NAME, newWidth, modelEntry );
 		} );
@@ -190,8 +188,6 @@ export default class ResizeContext {
 
 	cancel() {
 		this._dismissShadow();
-
-		this.resizeStrategy.cancel();
 
 		this._cleanupContext();
 	}
@@ -225,9 +221,16 @@ export default class ResizeContext {
 	redraw() {
 		if ( this.domResizeWrapper ) {
 			const widgetWrapper = this.domResizeWrapper.parentElement;
-
 			const resizingHost = this._getResizeHost();
+			const clientRect = resizingHost.getBoundingClientRect();
 
+			this.domResizeWrapper.style.width = clientRect.width + 'px';
+			this.domResizeWrapper.style.height = clientRect.height + 'px';
+
+			// In case a resizing host is not a widget wrapper, we need to compensate
+			// for any additional offsets the resize host might have. E.g. wrapper padding
+			// or simply another editable. By doing that the border and resizers are shown
+			// only around the resize host.
 			if ( !widgetWrapper.isSameNode( resizingHost ) ) {
 				this.domResizeWrapper.style.left = resizingHost.offsetLeft + 'px';
 				this.domResizeWrapper.style.top = resizingHost.offsetTop + 'px';
@@ -263,6 +266,7 @@ export default class ResizeContext {
 	 * will simply follow the image size.
 	 *
 	 * @protected
+	 * @returns {HTMLElement}
 	 */
 	_getResizeHost() {
 		const widgetWrapper = this.domResizeWrapper.parentElement;

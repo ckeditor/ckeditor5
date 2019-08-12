@@ -1,6 +1,3 @@
-import {
-	getAbsoluteBoundaryPoint
-} from './utils';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -24,30 +21,6 @@ export default class ResizerTopBound {
 		this.context = context;
 		this.options = options || {};
 	}
-
-	attach() {}
-
-	begin() {
-		this.redrawShadow();
-
-		const resizeHost = this.context._getResizeHost();
-		this.closestReferencePoint = getAbsoluteBoundaryPoint( resizeHost, this.context.referenceHandlerPosition );
-	}
-
-	redrawShadow() {
-		if ( this.context.domResizeWrapper ) {
-			const clientRect = this.context._getResizeHost().getBoundingClientRect();
-
-			this.context.domResizeWrapper.style.width = clientRect.width + 'px';
-			this.context.domResizeWrapper.style.height = clientRect.height + 'px';
-		}
-	}
-
-	commit() {}
-
-	cancel() {}
-
-	destroy() {}
 
 	/**
 	 * Method used to calculate the proposed size as the resize handlers are dragged.
@@ -84,8 +57,8 @@ export default class ResizerTopBound {
 			enlargement.x = currentCoordinates.x - ( this.context.referenceCoordinates.x + initialSize.width );
 		}
 
-		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from one resized
-		// corner to your cursor. It needs to be duplicated to compensate for the other side too.
+		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
+		// one resized corner to your cursor. It needs to be duplicated to compensate for the other side too.
 		if ( isCentered ) {
 			enlargement.x *= 2;
 		}
@@ -124,8 +97,6 @@ export default class ResizerTopBound {
 
 		return drawnSize;
 	}
-
-	redraw() {}
 }
 
 mix( ResizerTopBound, ObservableMixin );
