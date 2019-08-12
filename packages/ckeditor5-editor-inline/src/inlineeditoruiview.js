@@ -113,8 +113,10 @@ export default class InlineEditorUIView extends EditorUIView {
 		 *		+------------------+
 		 *		           [ Panel ]
 		 *
+		 * See: {@link module:utils/dom/position~Options#positions}.
+		 *
 		 * @readonly
-		 * @type {module:utils/dom/position~Options#positions}
+		 * @type {Array.<Function>}
 		 */
 		this.panelPositions = this._getPanelPositions();
 
@@ -168,8 +170,10 @@ export default class InlineEditorUIView extends EditorUIView {
 	/**
 	 * Returns the positions for {@link #panelPositions}.
 	 *
+	 * See: {@link module:utils/dom/position~Options#positions}.
+	 *
 	 * @private
-	 * @returns {module:utils/dom/position~Options#positions}
+	 * @returns {Array.<Function>}
 	 */
 	_getPanelPositions() {
 		const positions = [
