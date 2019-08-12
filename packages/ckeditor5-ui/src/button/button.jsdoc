@@ -96,7 +96,7 @@
  */
 
 /**
- * Controls whether the button view is recognized as toggle button for assistive technologies.
+ * Controls whether the button view is a toggle button (two–state) for assistive technologies.
  *
  * @observable
  * @default false

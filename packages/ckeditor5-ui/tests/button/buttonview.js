@@ -253,7 +253,7 @@ describe( 'ButtonView', () => {
 				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
 			} );
 
-			it( '-pressed is not present for not toggleable button', () => {
+			it( '-pressed is not present for non–toggleable button', () => {
 				view.isOn = true;
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
 
