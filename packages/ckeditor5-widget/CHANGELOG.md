@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.0.4](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.3...v11.0.4) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [11.0.3](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.2...v11.0.3) (2019-07-04)
+
+### Bug fixes
+
+* A proper `DomConverter` method should be used to map a view to DOM when getting balloon position data. Closes [#87](https://github.com/ckeditor/ckeditor5-widget/issues/87). ([160333a](https://github.com/ckeditor/ckeditor5-widget/commit/160333a))
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 Internal changes only (updated dependencies, documentation, etc.).
