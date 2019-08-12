@@ -30,6 +30,14 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView.element.classList.contains( 'ck-splitbutton__action' ) ).to.be.true;
 		} );
 
+		it( 'adds isToggleable to view#actionView', () => {
+			expect( view.actionView.isToggleable ).to.be.false;
+
+			view.isToggleable = true;
+
+			expect( view.actionView.isToggleable ).to.be.true;
+		} );
+
 		it( 'creates view#arrowView', () => {
 			expect( view.arrowView ).to.be.instanceOf( ButtonView );
 			expect( view.arrowView.element.classList.contains( 'ck-splitbutton__arrow' ) ).to.be.true;
