@@ -1,24 +1,3 @@
-<section id="resizer-options">
-	<h1>Options</h1>
-
-	<p>Use the options below to adjust resizer behavior.</p>
-
-	<h2>Visible resizers</h2>
-	<ol>
-		<li><input type="checkbox" name="handler[]" value="top-left" id="resizer-checkbox__top-left"> <label
-				for="resizer-checkbox__top-left">top-left</label></li>
-		<li><input type="checkbox" name="handler[]" value="top-right" id="resizer-checkbox__top-right"> <label
-				for="resizer-checkbox__top-right">top-right</label></li>
-		<li><input type="checkbox" name="handler[]" value="bottom-right" id="resizer-checkbox__bottom-right"> <label
-				for="resizer-checkbox__bottom-right">bottom-right</label></li>
-		<li><input type="checkbox" name="handler[]" value="bottom-left" id="resizer-checkbox__bottom-left"> <label
-				for="resizer-checkbox__bottom-left">bottom-left</label></li>
-	</ol>
-
-	<p><input type="checkbox" name="resize-image" value="true" id="resize-image" checked> <label
-			for="resize-image">Resize using image directly</label></p>
-</section>
-
 <style>
 	.ck-content .image-style-side,
 	.ck-content .image-style-align-left,
@@ -35,13 +14,12 @@
 </style>
 
 <div id="editor">
-
+	<figure class="image image-style-side">
+		<img src="sample.jpg" alt="" style="width: 240px" />
+	</figure>
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus
 		et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis
 		leo interdum. </p>
-	<figure class="image image-style-side">
-		<img src="sample.jpg" alt="" height="60" />
-	</figure>
 	<figure class="image">
 		<img src="sample.jpg" alt="" />
 	</figure>
@@ -57,15 +35,14 @@
 	<p>This is editor with fancier image styling. Images have some internal padding.</p>
 
 	<div id="fancyEditor">
-
+		<figure class="image image-style-side">
+			<img src="sample.jpg" alt="" style="width: 240px" />
+		</figure>
 		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id
 			tellus
 			et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non
 			lobortis
 			leo interdum. </p>
-		<figure class="image image-style-side">
-			<img src="sample.jpg" alt="" height="60" />
-		</figure>
 		<figure class="image">
 			<img src="sample.jpg" alt="" />
 		</figure>

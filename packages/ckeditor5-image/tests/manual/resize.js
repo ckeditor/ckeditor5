@@ -52,38 +52,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-( function() {
-	const optionsWrapper = document.getElementById( 'resizer-options' );
-	const defaultConfig = {
-		handler: [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ]
-	};
-	const dynamicStylesheet = document.createElement( 'style' );
-	const cssRules = {};
-
-	for ( const checkbox of optionsWrapper.querySelectorAll( 'input[name="handler[]"]' ) ) {
-		checkbox.addEventListener( 'change', function() {
-			const ruleValue = `.ck-widget__resizer.ck-widget__resizer-${ this.value } { display: none; }`;
-
-			if ( this.value in cssRules ) {
-				dynamicStylesheet.sheet.deleteRule( cssRules[ this.value ] );
-				delete cssRules[ this.value ];
-			}
-
-			if ( !this.checked ) {
-				cssRules[ this.value ] = dynamicStylesheet.sheet.insertRule( ruleValue );
-			}
-		} );
-
-		if ( defaultConfig.handler.includes( checkbox.value ) ) {
-			checkbox.checked = true;
-		}
-	}
-
-	document.head.appendChild( dynamicStylesheet );
-
-	// Resize using image
-	document.getElementById( 'resize-image' ).addEventListener( 'change', function() {
-		window.pocResizeUsingImage = this.checked;
-	} );
-}() );
