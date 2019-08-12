@@ -201,9 +201,11 @@ export default class LinkUI extends Plugin {
 			button.icon = linkIcon;
 			button.keystroke = linkKeystroke;
 			button.tooltip = true;
+			button.isToggleable = true;
 
 			// Bind button to the command.
-			button.bind( 'isOn', 'isEnabled' ).to( linkCommand, 'value', 'isEnabled' );
+			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
+			button.bind( 'isOn' ).to( linkCommand, 'value', value => !!value );
 
 			// Show the panel on button click.
 			this.listenTo( button, 'execute', () => this._showUI( true ) );
