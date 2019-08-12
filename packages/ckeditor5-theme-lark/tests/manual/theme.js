@@ -575,3 +575,14 @@ function input( {
 
 	return labeledInput;
 }
+
+function setManualTestDirection( direction ) {
+	document.querySelector( '.manual-test-container' ).classList.add( 'ck' );
+	document.querySelector( '.manual-test-container' ).setAttribute( 'dir', direction );
+}
+
+document.querySelector( '#direcion-selector' ).addEventListener( 'change', evt => {
+	setManualTestDirection( evt.target.value );
+} );
+
+setManualTestDirection( 'ltr' );

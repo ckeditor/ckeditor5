@@ -4,6 +4,7 @@
  */
 
 @import "../../../mixins/_rounded.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-toolbar {
 	@mixin ck-rounded-corners;
@@ -13,12 +14,22 @@
 	border: 1px solid var(--ck-color-toolbar-border);
 
 	& > * {
-		/* (#11) Separate toolbar items. */
-		margin-right: var(--ck-spacing-small);
-
 		/* Make sure items wrapped to the next line have v-spacing */
 		margin-top: var(--ck-spacing-small);
 		margin-bottom: var(--ck-spacing-small);
+	}
+
+	& > * {
+		/* (#11) Separate toolbar items. */
+		margin-right: var(--ck-spacing-small);
+	}
+
+	@mixin ck-dir rtl {
+		& > * {
+			/* (#11) Separate toolbar items. */
+			margin-left: var(--ck-spacing-small);
+			margin-right: 0;
+		}
 	}
 
 	&.ck-toolbar_vertical {
@@ -41,8 +52,16 @@
 		}
 	}
 
-	& > *:last-child {
-		margin-right: 0;
+	@mixin ck-dir ltr {
+		& > *:last-child {
+			margin-right: 0;
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& > *:last-child {
+			margin-left: 0;
+		}
 	}
 
 	@nest .ck-toolbar-container & {

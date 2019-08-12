@@ -8,6 +8,7 @@
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_rounded.css";
 @import "../../mixins/_button.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-button,
 a.ck.ck-button {
@@ -71,8 +72,15 @@ a.ck.ck-button {
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
 
 		& .ck-button__icon {
-			margin-left: calc(-1 * var(--ck-spacing-small));
-			margin-right: var(--ck-spacing-small);
+			@mixin ck-dir ltr {
+				margin-left: calc(-1 * var(--ck-spacing-small));
+				margin-right: var(--ck-spacing-small);
+			}
+
+			@mixin ck-dir rtl {
+				margin-right: calc(-1 * var(--ck-spacing-small));
+				margin-left: var(--ck-spacing-small);
+			}
 		}
 	}
 
@@ -107,6 +115,14 @@ a.ck.ck-button {
 		/* Must be consistent with .ck-icon's vertical align. Otherwise, buttons with and
 		without labels (but with icons) have different sizes in Chrome */
 		vertical-align: middle;
+
+		@mixin ck-dir ltr {
+			text-align: left;
+		}
+
+		@mixin ck-dir rtl {
+			text-align: right;
+		}
 	}
 }
 

@@ -6,6 +6,7 @@
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
@@ -16,11 +17,25 @@
 	font-size: inherit;
 
 	& .ck-dropdown__arrow {
-		right: var(--ck-spacing-standard);
 		width: var(--ck-dropdown-arrow-size);
+	}
 
-		/* A space to accommodate the triangle. */
-		margin-left: var(--ck-spacing-small);
+	@mixin ck-dir ltr {
+		& .ck-dropdown__arrow {
+			right: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-left: var(--ck-spacing-small);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& .ck-dropdown__arrow {
+			left: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-right: var(--ck-spacing-small);
+		}
 	}
 
 	&.ck-disabled .ck-dropdown__arrow {
@@ -28,9 +43,18 @@
 	}
 
 	& .ck-button.ck-dropdown__button {
-		&:not(.ck-button_with-text) {
-			/* Make sure dropdowns with just an icon have the right inner spacing */
-			padding-left: var(--ck-spacing-small);
+		@mixin ck-dir ltr {
+			&:not(.ck-button_with-text) {
+				/* Make sure dropdowns with just an icon have the right inner spacing */
+				padding-left: var(--ck-spacing-small);
+			}
+		}
+
+		@mixin ck-dir rtl {
+			&:not(.ck-button_with-text) {
+				/* Make sure dropdowns with just an icon have the right inner spacing */
+				padding-right: var(--ck-spacing-small);
+			}
 		}
 
 		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
