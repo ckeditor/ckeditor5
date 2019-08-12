@@ -74,8 +74,6 @@ export default class ResizeContext {
 			x: 0
 		};
 
-		// @todo: ---- options below seems like a little outside of a scope of a single context ----
-
 		this._cleanupContext();
 
 		/**
