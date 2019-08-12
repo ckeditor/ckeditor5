@@ -50,6 +50,7 @@ describe( 'HeadingButtonUI', () => {
 			expect( paragraphButton.label ).to.equal( 'Paragraph' );
 			expect( paragraphButton.icon ).to.equal( icon );
 			expect( paragraphButton.tooltip ).to.equal( true );
+			expect( paragraphButton.isToggleable ).to.equal( true );
 		} );
 
 		it( 'should bind button to command', () => {
