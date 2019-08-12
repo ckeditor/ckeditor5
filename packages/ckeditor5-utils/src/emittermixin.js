@@ -429,9 +429,9 @@ export default EmitterMixin;
  * If not, returns `null`.
  *
  * @protected
- * @param {module:utils/emittermixin~EmitterMixin} listeningEmitter Emitter that listens.
+ * @param {module:utils/emittermixin~Emitter} listeningEmitter An emitter that listens.
  * @param {String} listenedToEmitterId Unique emitter id of emitter listened to.
- * @returns {module:utils/emittermixin~EmitterMixin|null}
+ * @returns {module:utils/emittermixin~Emitter|null}
  */
 export function _getEmitterListenedTo( listeningEmitter, listenedToEmitterId ) {
 	if ( listeningEmitter[ _listeningTo ] && listeningEmitter[ _listeningTo ][ listenedToEmitterId ] ) {
@@ -447,7 +447,7 @@ export function _getEmitterListenedTo( listeningEmitter, listenedToEmitterId ) {
  * **Note:** `_emitterId` can be set only once.
  *
  * @protected
- * @param {module:utils/emittermixin~EmitterMixin} emitter Emitter for which id will be set.
+ * @param {module:utils/emittermixin~Emitter} emitter An emitter for which id will be set.
  * @param {String} [id] Unique id to set. If not passed, random unique id will be set.
  */
 export function _setEmitterId( emitter, id ) {
@@ -460,7 +460,7 @@ export function _setEmitterId( emitter, id ) {
  * Returns emitter's unique id.
  *
  * @protected
- * @param {module:utils/emittermixin~EmitterMixin} emitter Emitter which id will be returned.
+ * @param {module:utils/emittermixin~Emitter} emitter An emitter which id will be returned.
  */
 export function _getEmitterId( emitter ) {
 	return emitter[ _emitterId ];
