@@ -16,18 +16,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 const WIDTH_ATTRIBUTE_NAME = 'width';
 
 /**
- * Interface describing a resizer. It allows to define available resizer set, specify resizing host etc.
- *
- * @interface ResizerOptions
- */
-
-/**
- * List of available resizers like `"top-left"`, `"bottom-right"`, etc.
- *
- * @member {Array.<String>} module:widget/widgetresizer~ResizerOptions#resizers
- */
-
-/**
  * Widget resize feature plugin.
  *
  * Use the {@link module:widget/widgetresizer~WidgetResizer#apply} method to create resizer for a provided widget.
@@ -53,8 +41,6 @@ export default class WidgetResizer extends Plugin {
 			mouseDownUp: Object.create( DomEmitterMixin ),
 		};
 
-		let isActive = false;
-
 		const mouseMoveListener = ( event, domEventData ) => {
 			if ( this.activeContext ) {
 				this.activeContext.updateSize( domEventData );
@@ -62,7 +48,7 @@ export default class WidgetResizer extends Plugin {
 		};
 
 		this.editor.editing.view.document.on( 'layoutChanged', () => {
-			// This works around the issue with undo.
+			// Redrawing on layout change fixes issue with browser window resize or undo causing a mispositioned resizer.
 			for ( const context of this.contexts ) {
 				// This check is needed, as there were cases when widget was not yet initialized but layoutChanged happened.
 				if ( context.domResizeWrapper && context.domResizeWrapper.parentElement ) {
@@ -77,8 +63,6 @@ export default class WidgetResizer extends Plugin {
 			const resizeHandler = isResizeHandler( target ) ? target : getAncestors( target ).filter( isResizeHandler )[ 0 ];
 
 			if ( resizeHandler ) {
-				isActive = true;
-				// this._observers.mouseMove.enable();
 				this._observers.mouseMove.listenTo( mouseObserverHost, 'mousemove', mouseMoveListener );
 
 				this.activeContext = this._getContextByHandler( resizeHandler );
@@ -90,9 +74,7 @@ export default class WidgetResizer extends Plugin {
 		} );
 
 		const finishResizing = () => {
-			if ( isActive ) {
-				isActive = false;
-				// this._observers.mouseMove.disable();
+			if ( this.activeContext ) {
 				this._observers.mouseMove.stopListening( mouseObserverHost, 'mousemove', mouseMoveListener );
 
 				if ( this.activeContext ) {
@@ -103,7 +85,6 @@ export default class WidgetResizer extends Plugin {
 			}
 		};
 
-		// @todo: it should listen on the entire window, as it should also catch events outside of the editable.
 		this._observers.mouseDownUp.listenTo( mouseObserverHost, 'mouseup', finishResizing );
 
 		function isResizeHandler( element ) {
@@ -191,3 +172,42 @@ export default class WidgetResizer extends Plugin {
 		} );
 	}
 }
+
+/**
+ * Interface describing a resizer. It allows to specify resizing host, custom logic for calculating aspect ratio etc.
+ *
+ * @interface ResizerOptions
+ */
+
+/**
+ * Function to explicitly point the resizing host.
+ *
+ * By default resizer will use widget wrapper, but it's possible to point any child within widget wrapper.
+ *
+ * ```js
+ *	editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
+ *		getResizeHost( wrapper ) {
+ *			return wrapper.querySelector( 'img' );
+ *		}
+ *	} );
+ * ```
+ *
+ * @member {Function} module:widget/widgetresizer~ResizerOptions#getResizeHost
+ */
+
+/**
+ * @member {Function} module:widget/widgetresizer~ResizerOptions#getAspectRatio
+ */
+
+/**
+ * ```js
+ *	editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
+ *		isCentered( context ) {
+ *			const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
+ *
+ *			return !imageStyle || imageStyle == 'full';
+ *		}
+ *	} );
+ * ```
+ * @member {Function} module:widget/widgetresizer~ResizerOptions#isCentered
+ */
