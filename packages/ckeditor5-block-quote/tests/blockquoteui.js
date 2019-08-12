@@ -40,6 +40,7 @@ describe( 'BlockQuoteUI', () => {
 			expect( button ).to.have.property( 'label', 'Block quote' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
