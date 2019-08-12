@@ -22,13 +22,6 @@ const WIDTH_ATTRIBUTE_NAME = 'width';
 export default class ResizeContext {
 	constructor( options ) {
 		/**
-		 * View to a wrapper containing all the resizer-related views.
-		 *
-		 * @member {module:engine/view/uielement~UIElement}
-		 */
-		this.resizeWrapperElement = null;
-
-		/**
 		 * View of a widget associated with the resizer.
 		 *
 		 * @member {module:engine/view/element~Element}
@@ -46,13 +39,6 @@ export default class ResizeContext {
 		this.domResizeWrapper = null;
 
 		/**
-		 * @member {HTMLElement|null}
-		 */
-		this.domResizeShadow = null;
-
-		this.options = options || {};
-
-		/**
 		 * The size of resize host before current resize process.
 		 *
 		 * This information is only known after DOM was rendered, so it will be updated later.
@@ -63,16 +49,35 @@ export default class ResizeContext {
 		};
 
 		/**
+		 * @member {module:widget/widgetresizer~ResizerOptions}
+		 */
+		this._options = options || {};
+
+		/**
 		 * Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
 		 * traveled, thus how much the image should be enlarged.
 		 * This information is only known after DOM was rendered, so it will be updated later.
 		 *
 		 * @protected
 		 */
-		this.referenceCoordinates = {
+		this._referenceCoordinates = {
 			y: 0,
 			x: 0
 		};
+
+		/**
+		 * View to a wrapper containing all the resizer-related views.
+		 *
+		 * @private
+		 * @member {module:engine/view/uielement~UIElement}
+		 */
+		this._resizeWrapperElement = null;
+
+		/**
+		 * @private
+		 * @member {HTMLElement|null}
+		 */
+		this._domResizeShadow = null;
 
 		this._cleanupContext();
 
@@ -117,14 +122,14 @@ export default class ResizeContext {
 
 		this.widgetWrapperElement = widgetElement;
 
-		this.resizeWrapperElement = writer.createUIElement( 'div', {
+		this._resizeWrapperElement = writer.createUIElement( 'div', {
 			class: 'ck ck-widget__resizer-wrapper'
 		}, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
-			that.domResizeShadow = that._appendShadowElement( domElement );
-			that._appendResizers( that.domResizeShadow );
-			that._appendSizeUi( that.domResizeShadow );
+			that._domResizeShadow = that._appendShadowElement( domElement );
+			that._appendResizers( that._domResizeShadow );
+			that._appendSizeUi( that._domResizeShadow );
 
 			that.domResizeWrapper = domElement;
 
@@ -132,7 +137,7 @@ export default class ResizeContext {
 		} );
 
 		// Append resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( widgetElement, widgetElement.childCount ), this.resizeWrapperElement );
+		writer.insert( writer.createPositionAt( widgetElement, widgetElement.childCount ), this._resizeWrapperElement );
 		writer.addClass( [ 'ck-widget_with-resizer' ], widgetElement );
 	}
 
@@ -144,7 +149,7 @@ export default class ResizeContext {
 		const resizeHost = this._getResizeHost();
 		const clientRect = new Rect( resizeHost );
 
-		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
+		this._domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
 		/**
 		 * Position of the handler that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
@@ -158,15 +163,15 @@ export default class ResizeContext {
 
 		const reversedPosition = this._invertPosition( this.referenceHandlerPosition );
 
-		this.referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
+		this._referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
 
 		this.originalSize = {
 			width: clientRect.width,
 			height: clientRect.height
 		};
 
-		this.aspectRatio = this.options.getAspectRatio ?
-			this.options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
+		this.aspectRatio = this._options.getAspectRatio ?
+			this._options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
 
 		this.redraw();
 	}
@@ -178,7 +183,7 @@ export default class ResizeContext {
 	 */
 	commit( editor ) {
 		const modelEntry = this._getModel( editor, this.widgetWrapperElement );
-		const newWidth = this.domResizeShadow.clientWidth;
+		const newWidth = this._domResizeShadow.clientWidth;
 
 		this._dismissShadow();
 
@@ -203,7 +208,7 @@ export default class ResizeContext {
 	destroy() {
 		this.cancel();
 
-		this.domResizeShadow = null;
+		this._domResizeShadow = null;
 		this.wrapper = null;
 	}
 
@@ -227,24 +232,27 @@ export default class ResizeContext {
 	}
 
 	redraw() {
-		if ( this.domResizeWrapper ) {
-			const widgetWrapper = this.domResizeWrapper.parentElement;
+		const domWrapper = this.domResizeWrapper;
+
+		if ( domWrapper && domWrapper.parentElement ) {
+			// Refresh only if resizer exists in the DOM.
+			const widgetWrapper = domWrapper.parentElement;
 			const resizingHost = this._getResizeHost();
 			const clientRect = new Rect( resizingHost );
 
-			this.domResizeWrapper.style.width = clientRect.width + 'px';
-			this.domResizeWrapper.style.height = clientRect.height + 'px';
+			domWrapper.style.width = clientRect.width + 'px';
+			domWrapper.style.height = clientRect.height + 'px';
 
 			// In case a resizing host is not a widget wrapper, we need to compensate
 			// for any additional offsets the resize host might have. E.g. wrapper padding
 			// or simply another editable. By doing that the border and resizers are shown
 			// only around the resize host.
 			if ( !widgetWrapper.isSameNode( resizingHost ) ) {
-				this.domResizeWrapper.style.left = resizingHost.offsetLeft + 'px';
-				this.domResizeWrapper.style.top = resizingHost.offsetTop + 'px';
+				domWrapper.style.left = resizingHost.offsetLeft + 'px';
+				domWrapper.style.top = resizingHost.offsetTop + 'px';
 
-				this.domResizeWrapper.style.height = resizingHost.offsetHeight + 'px';
-				this.domResizeWrapper.style.width = resizingHost.offsetWidth + 'px';
+				domWrapper.style.height = resizingHost.offsetHeight + 'px';
+				domWrapper.style.width = resizingHost.offsetWidth + 'px';
 			}
 		}
 	}
@@ -279,16 +287,16 @@ export default class ResizeContext {
 	_getResizeHost() {
 		const widgetWrapper = this.domResizeWrapper.parentElement;
 
-		return this.options.getResizeHost ?
-			this.options.getResizeHost( widgetWrapper ) : widgetWrapper;
+		return this._options.getResizeHost ?
+			this._options.getResizeHost( widgetWrapper ) : widgetWrapper;
 	}
 
 	/**
 	 * @protected
 	 */
 	_dismissShadow() {
-		this.domResizeShadow.classList.remove( 'ck-widget__resizer-shadow-active' );
-		this.domResizeShadow.removeAttribute( 'style' );
+		this._domResizeShadow.classList.remove( 'ck-widget__resizer-shadow-active' );
+		this._domResizeShadow.removeAttribute( 'style' );
 	}
 
 	/**
@@ -304,7 +312,7 @@ export default class ResizeContext {
 
 	/**
 	 * @param {String} position Like `"top-left"`.
-	 * @returns {String} Inverted `position`.
+	 * @returns {String} Inverted `position`, e.g. returns `"bottom-right"` if `"top-left"` was given as `position`.
 	 * @protected
 	 */
 	_invertPosition( position ) {
@@ -389,7 +397,7 @@ export default class ResizeContext {
 	 */
 	_updateImageSize( domEventData ) {
 		const currentCoordinates = this._extractCoordinates( domEventData );
-		const isCentered = this.options.isCentered ? this.options.isCentered( this ) : true;
+		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
 		const initialSize = this.originalSize;
 
 		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
@@ -405,12 +413,12 @@ export default class ResizeContext {
 		// 					<-->
 		// 					 enlarge x
 		const enlargement = {
-			x: this.referenceCoordinates.x - ( currentCoordinates.x + initialSize.width ),
-			y: ( currentCoordinates.y - initialSize.height ) - this.referenceCoordinates.y
+			x: this._referenceCoordinates.x - ( currentCoordinates.x + initialSize.width ),
+			y: ( currentCoordinates.y - initialSize.height ) - this._referenceCoordinates.y
 		};
 
 		if ( isCentered && this.referenceHandlerPosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( this.referenceCoordinates.x + initialSize.width );
+			enlargement.x = currentCoordinates.x - ( this._referenceCoordinates.x + initialSize.width );
 		}
 
 		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from

@@ -50,10 +50,7 @@ export default class WidgetResizer extends Plugin {
 		this.editor.editing.view.document.on( 'layoutChanged', () => {
 			// Redrawing on layout change fixes issue with browser window resize or undo causing a mispositioned resizer.
 			for ( const context of this.contexts ) {
-				// This check is needed, as there were cases when widget was not yet initialized but layoutChanged happened.
-				if ( context.domResizeWrapper && context.domResizeWrapper.parentElement ) {
-					context.redraw();
-				}
+				context.redraw();
 			}
 		} );
 
