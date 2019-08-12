@@ -48,24 +48,56 @@ describe( 'LinkEditing', () => {
 		expect( model.schema.checkAttribute( [ '$block' ], 'linkHref' ) ).to.be.false;
 	} );
 
-	it( 'should bind two-step caret movement to `linkHref` attribute', () => {
-		// Let's check only the minimum to not duplicated `bindTwoStepCaretToAttribute()` tests.
-		// Testing minimum is better then testing using spies that might give false positive results.
+	// Let's check only the minimum to not duplicate `bindTwoStepCaretToAttribute()` tests.
+	// Testing minimum is better than testing using spies that might give false positive results.
+	describe( 'two-step caret movement', () => {
+		it( 'should be bound to th `linkHref` attribute (LTR)', () => {
+			// Put selection before the link element.
+			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
-		// Put selection before the link element.
-		setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
+			// The selection's gravity is not overridden because selection landed here not because of `keydown`.
+			expect( editor.model.document.selection.isGravityOverridden ).to.false;
 
-		// The selection's gravity is not overridden because selection land here not as a result of `keydown`.
-		expect( editor.model.document.selection.isGravityOverridden ).to.false;
+			// So let's simulate the `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowright,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
 
-		// So let's simulate `keydown` event.
-		editor.editing.view.document.fire( 'keydown', {
-			keyCode: keyCodes.arrowright,
-			preventDefault: () => {},
-			domTarget: document.body
+			expect( editor.model.document.selection.isGravityOverridden ).to.true;
 		} );
 
-		expect( editor.model.document.selection.isGravityOverridden ).to.true;
+		it( 'should be bound to th `linkHref` attribute (RTL)', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, LinkEditing, Enter ],
+					language: {
+						content: 'ar'
+					}
+				} )
+				.then( editor => {
+					model = editor.model;
+					view = editor.editing.view;
+
+					// Put selection before the link element.
+					setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
+
+					// The selection's gravity is not overridden because selection landed here not because of `keydown`.
+					expect( editor.model.document.selection.isGravityOverridden ).to.false;
+
+					// So let's simulate the `keydown` event.
+					editor.editing.view.document.fire( 'keydown', {
+						keyCode: keyCodes.arrowleft,
+						preventDefault: () => {},
+						domTarget: document.body
+					} );
+
+					expect( editor.model.document.selection.isGravityOverridden ).to.true;
+
+					return editor.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'command', () => {
