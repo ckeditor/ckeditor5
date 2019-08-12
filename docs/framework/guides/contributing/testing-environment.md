@@ -51,7 +51,10 @@ yarn run test -cw --files=basic-styles/bold*.js
 
 In order to start the manual tests server use the `yarn run manual` task.
 
-The task accepts the `--source-map` (alias `-s`) option.
+The task accepts the following options:
+
+* `--source-map` (alias `-s`) that generates useful source maps for the code.
+* `--additionalLanguages="ar,pl,..."` that passes extra languages to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
 
 It starts the server available at http://localhost:8125.
 

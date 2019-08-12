@@ -2,15 +2,31 @@
 category: features
 ---
 
+{@snippet features/build-ui-language-source}
+
 # Setting the UI language
 
 The UI of the editor can be localized. CKEditor 5 currently supports around 20 languages and the number is growing.
 
 If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
 
-See the demo of the editor in German:
+See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
+
+## Right–to–left (RTL) languages support
+
+CKEditor 5 supports right–to–left languages out–of–the–box. When one of <abbr title="right–to–left">RTL</abbr> languages is used, the editor adapts its UI for the best editing experience, for instance, mirroring various elements like toolbars, dropdowns, buttons, etc..
+
+See the demo of the editor in Arabic:
+
+{@snippet features/ui-language-rtl}
+
+<info-box>
+	If you want to change the language of the content only (different languages for the UI and the content), check out the ["Setting the language of the content"](#setting-the-language-of-the-content) section to learn more.
+</info-box>
+
+We are doing our best to deliver the best RTL support to our users and we constantly improve the editor. Check out the ["RTL support"](https://github.com/ckeditor/ckeditor5/issues/1151) issue on GitHub to learn more and stay up–to–date. Thank you for the feedback!
 
 ## Loading additional languages from CDN, npm and zip file
 
@@ -26,7 +42,7 @@ Next, you can configure the editor to use the chosen language:
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// The language code is defined in the https://en.wikipedia.org/wiki/ISO_639-1 standard.
-		language: 'de'
+		language: 'es'
 	} )
 	.then( editor => {
 		console.log( editor );
@@ -148,4 +164,35 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (e.g. Rollup or Browserify). We will be extending the localization possibilities in the future.
 
 	You can read more about the used techniques in the ["Implement translation services" issue](https://github.com/ckeditor/ckeditor5/issues/387) and ["Implement translation services v2" issue](https://github.com/ckeditor/ckeditor5/issues/624).
+</info-box>
+
+## Setting the language of the content
+
+In CKEditor 5 you can separately configure the language of the UI and the language of the content. That means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (e.g. [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
+
+Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} to change the language of the content. In this example, the UI of the editor will be English but the content will be Arabic:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		language: {
+			// The UI will be English.
+			ui: 'en',
+
+			// But the content will be edited in Arabic.
+			content: 'ar'
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+```
+
+{@snippet features/ui-language-content}
+
+<info-box>
+	If unsure what language the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
 </info-box>
