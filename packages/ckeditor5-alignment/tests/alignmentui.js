@@ -60,6 +60,7 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'label', 'Align left' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
+			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {

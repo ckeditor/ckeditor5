@@ -140,7 +140,8 @@ export default class AlignmentUI extends Plugin {
 			buttonView.set( {
 				label: this.localizedOptionTitles[ option ],
 				icon: icons.get( option ),
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			// Bind button model to command.
