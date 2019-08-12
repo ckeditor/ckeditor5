@@ -18,12 +18,12 @@ import {
 	getData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Image resizer', () => {
+describe.only( 'Image resizer', () => {
 	const FIXTURE_WIDTH = 100;
 	const FIXTURE_HEIGHT = 50;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
 	let absoluteContainer;
-	// 60x30 black png image
+	// 60x50 black png image
 	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 	let editor, view, viewDocument, editorElement;
@@ -364,11 +364,14 @@ describe( 'Image resizer', () => {
 			} ).call( this ).then( () => {
 				editor.commands.get( 'undo' ).execute();
 
-				const resizerShadow = document.querySelector( '.ck-widget__resizer-shadow' );
-				const shadowBoundingRect = resizerShadow.getBoundingClientRect();
+				return wait( 40 )
+					.then( () => {
+						const resizerShadow = document.querySelector( '.ck-widget__resizer-shadow' );
+						const shadowBoundingRect = resizerShadow.getBoundingClientRect();
 
-				expect( shadowBoundingRect.width ).to.be.equal( 100 );
-				expect( shadowBoundingRect.height ).to.be.equal( 50 );
+						expect( shadowBoundingRect.width ).to.be.equal( 100 );
+						expect( shadowBoundingRect.height ).to.be.equal( 50 );
+					} );
 			} );
 		} );
 	} );
@@ -484,7 +487,7 @@ describe( 'Image resizer', () => {
 			fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
 
 			// We need to wait as mousemove events are throttled.
-			return wait( 30 )
+			return wait( 40 )
 				.then( () => {
 					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
 
