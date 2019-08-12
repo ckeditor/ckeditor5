@@ -14,10 +14,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'TodoListUI', () => {
-	let editor, model, button;
+	let editorElement, editor, model, button;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, TodoListEditing, TodoListUI ] } )
@@ -30,6 +30,8 @@ describe( 'TodoListUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
