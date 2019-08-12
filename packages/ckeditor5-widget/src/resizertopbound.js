@@ -29,14 +29,6 @@ export default class ResizerTopBound {
 	attach() {}
 
 	begin() {
-		const clientRect = this.context._getResizeHost().getBoundingClientRect();
-
-		// Size of resize host before current resizing transaction.
-		this.initialSize = {
-			width: clientRect.width,
-			height: clientRect.height
-		};
-
 		this.redrawShadow();
 
 		const resizeHost = this.context._getResizeHost();
@@ -70,16 +62,17 @@ export default class ResizerTopBound {
 		const context = this.context;
 		const currentCoordinates = context._extractCoordinates( domEventData );
 		const isCentered = this.options.isCentered ? this.options.isCentered( this.context ) : true;
+		const initialSize = this.context.originalSize;
 
 		const enlargement = {
 			// @todo it could be simplified if context.referenceCoordinates was an inverted corner (at least for bottom-left).
-			x: this.context.referenceCoordinates.x - ( currentCoordinates.x + this.initialSize.width ),
-			y: ( currentCoordinates.y - this.initialSize.height ) - this.context.referenceCoordinates.y
+			x: this.context.referenceCoordinates.x - ( currentCoordinates.x + initialSize.width ),
+			y: ( currentCoordinates.y - initialSize.height ) - this.context.referenceCoordinates.y
 		};
 
 		// temp workaround
 		if ( isCentered && this.context.referenceHandlerPosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( this.context.referenceCoordinates.x + this.initialSize.width );
+			enlargement.x = currentCoordinates.x - ( this.context.referenceCoordinates.x + initialSize.width );
 		}
 
 		// @todo: oddly enough, this condition **check** is not needed for tables.
@@ -90,14 +83,15 @@ export default class ResizerTopBound {
 		const resizeHost = this.context._getResizeHost();
 		const clientRect = resizeHost.getBoundingClientRect();
 
-		const originalSize = {
+		// The size of currently visible resize host.
+		const currentSize = {
 			x: clientRect.width,
 			y: clientRect.height
 		};
 
 		const proposedSize = {
-			x: Math.abs( this.initialSize.width + enlargement.x ),
-			y: Math.abs( this.initialSize.height + enlargement.y )
+			x: Math.abs( initialSize.width + enlargement.x ),
+			y: Math.abs( initialSize.height + enlargement.y )
 		};
 
 		// Dominant determination must take the ratio into account.
@@ -142,8 +136,8 @@ export default class ResizerTopBound {
 			const invertedPosition = this.context._invertPosition( context.referenceHandlerPosition );
 
 			const diff2 = {
-				x: parseFloat( originalSize.x ) - drawnSize.x,
-				y: parseFloat( originalSize.y ) - drawnSize.y
+				x: parseFloat( currentSize.x ) - drawnSize.x,
+				y: parseFloat( currentSize.y ) - drawnSize.y
 			};
 
 			context.domResizeShadow.style[ invertedPosition.split( '-' )[ 0 ] ] = '0px';

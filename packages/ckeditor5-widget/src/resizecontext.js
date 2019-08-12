@@ -52,6 +52,16 @@ export default class ResizeContext {
 
 		this.options = options || {};
 
+		/**
+		 * The size of resize host before current resize process.
+		 *
+		 * This information is only known after DOM was rendered, so it will be updated later.
+		 */
+		this.originalSize = {
+			x: 0,
+			y: 0
+		};
+
 		// @todo: ---- options below seems like a little outside of a scope of a single context ----
 
 		// Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
@@ -60,16 +70,6 @@ export default class ResizeContext {
 		this.referenceCoordinates = {
 			y: 0,
 			x: 0
-		};
-
-		/**
-		 * Size of an image before resize.
-		 *
-		 * This information is only known after DOM was rendered, so it will be updated later.
-		 */
-		this.originalSize = {
-			x: 0,
-			y: 0
 		};
 
 		this._cleanupContext();
@@ -140,6 +140,7 @@ export default class ResizeContext {
 	 */
 	begin( domResizeHandler ) {
 		const resizeHost = this._getResizeHost();
+		const clientRect = resizeHost.getBoundingClientRect();
 
 		this.domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
 
@@ -157,14 +158,13 @@ export default class ResizeContext {
 
 		this.referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, reversedPosition );
 
-		// @todo: this part might be lazy used only in case if getAspectRatio is not given as it might force repaint.
 		this.originalSize = {
-			x: resizeHost.clientWidth,
-			y: resizeHost.clientHeight
+			width: clientRect.width,
+			height: clientRect.height
 		};
 
 		this.aspectRatio = this.options.getAspectRatio ?
-			this.options.getAspectRatio( resizeHost ) : this.originalSize.x / this.originalSize.y;
+			this.options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
 
 		this.resizeStrategy.begin( domResizeHandler );
 	}
