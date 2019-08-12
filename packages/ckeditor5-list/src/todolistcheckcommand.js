@@ -37,6 +37,12 @@ export default class TodoListCheckCommand extends Command {
 		 * @private
 		 */
 		this._selectedElements = [];
+
+		// Refresh command before executing to be sure all values are up to date.
+		// It is needed when selection has changed before command execution, in the same change block.
+		this.on( 'execute', () => {
+			this.refresh();
+		}, { priority: 'highest' } );
 	}
 
 	/**

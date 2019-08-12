@@ -68,13 +68,23 @@ export default class TodoListEditing extends Plugin {
 		editor.commands.add( 'todoListCheck', new TodoListCheckCommand( editor ) );
 
 		// Define converters.
-		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( model ), { priority: 'high' } );
+		editing.downcastDispatcher.on(
+			'insert:listItem',
+			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
+			{ priority: 'high' }
+		);
 		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion, { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 
-		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType( model ) );
-		editing.downcastDispatcher.on( 'attribute:todoListChecked:listItem', modelViewChangeChecked( model ) );
+		editing.downcastDispatcher.on(
+			'attribute:listType:listItem',
+			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ) )
+		);
+		editing.downcastDispatcher.on(
+			'attribute:todoListChecked:listItem',
+			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
+		);
 
 		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
@@ -130,6 +140,29 @@ export default class TodoListEditing extends Plugin {
 			listItemsToFix.clear();
 
 			return hasChanged;
+		} );
+	}
+
+	/**
+	 * Handles checkmar element change, moves selection to the corresponding model item to makes possible
+	 * to toggle `todoListChecked` attribute using command and restore the selection position.
+	 *
+	 * Some say it's a hack :) Moving selection only for executing the command on a certain node and restoring it after,
+	 * it's not a clear solution. We need to design an API for using commands beyond the selection range.
+	 * See https://github.com/ckeditor/ckeditor5/issues/1954.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} listItem
+	 */
+	_handleCheckmarkChange( listItem ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const previousSelectionRanges = Array.from( model.document.selection.getRanges() );
+
+		model.change( writer => {
+			writer.setSelection( listItem, 'end' );
+			editor.execute( 'todoListCheck' );
+			writer.setSelection( previousSelectionRanges );
 		} );
 	}
 }

@@ -24,7 +24,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  * @param {module:engine/model/model~Model} model Model instance.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelViewInsertion( model ) {
+export function modelViewInsertion( model, onCheckboxChecked ) {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -50,7 +50,7 @@ export function modelViewInsertion( model ) {
 		const viewItem = generateLiInUl( modelItem, conversionApi );
 
 		const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
-		const checkmarkElement = createCheckmarkElement( modelItem, viewWriter, isChecked, model );
+		const checkmarkElement = createCheckmarkElement( modelItem, viewWriter, isChecked, onCheckboxChecked );
 
 		viewWriter.addClass( 'todo-list', viewItem.parent );
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
@@ -228,17 +228,17 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:engine/model/model~Model} model Model instance.
+ * @param {Function} onCheckedChange Callback fired after clicking on checkmark element.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelViewChangeType( model ) {
+export function modelViewChangeType( onCheckedChange ) {
 	return ( evt, data, conversionApi ) => {
 		const viewItem = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
 		if ( data.attributeNewValue == 'todo' ) {
 			const isChecked = !!data.item.getAttribute( 'todoListChecked' );
-			const checkmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, model );
+			const checkmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
 
 			viewWriter.addClass( 'todo-list', viewItem.parent );
 			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
@@ -257,10 +257,10 @@ export function modelViewChangeType( model ) {
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:engine/model/model~Model} model Model instance.
+ * @param {Function} onCheckedChange Callback fired after clicking on checkmark element.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelViewChangeChecked( model ) {
+export function modelViewChangeChecked( onCheckedChange ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, 'attribute:todoListChecked' ) ) {
 			return;
@@ -271,7 +271,7 @@ export function modelViewChangeChecked( model ) {
 		const viewItem = mapper.toViewElement( data.item );
 		const itemRange = viewWriter.createRangeIn( viewItem );
 		const oldCheckmarkElement = findInRange( itemRange, item => item.is( 'uiElement' ) ? item : false );
-		const newCheckmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, model );
+		const newCheckmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
 
 		viewWriter.insert( viewWriter.createPositionAfter( oldCheckmarkElement ), newCheckmarkElement );
 		viewWriter.remove( oldCheckmarkElement );
@@ -284,9 +284,9 @@ export function modelViewChangeChecked( model ) {
 // @param {module:engine/model/item~Item} modelItem
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @param {Boolean} isChecked
-// @param {module:engine/model/model~Model} model
+// @param {Function} onChange
 // @returns {module:view/uielement~UIElement}
-function createCheckmarkElement( modelItem, viewWriter, isChecked, model ) {
+function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 	const uiElement = viewWriter.createUIElement(
 		'label',
 		{
@@ -298,14 +298,9 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, model ) {
 
 			checkbox.checked = isChecked;
 
-			checkbox.addEventListener( 'change', evt => {
-				model.change( writer => {
-					if ( evt.target.checked ) {
-						writer.setAttribute( 'todoListChecked', true, modelItem );
-					} else {
-						writer.removeAttribute( 'todoListChecked', modelItem );
-					}
-				} );
+			checkbox.addEventListener( 'mousedown', evt => {
+				evt.stopPropagation();
+				onChange( modelItem );
 			} );
 
 			const domElement = this.toDomElement( domDocument );

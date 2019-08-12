@@ -204,5 +204,17 @@ describe( 'TodoListCheckCommand', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>b[]ar</paragraph>' );
 		} );
+
+		it( 'should be up to date just before execution', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listType="0">f[]oo</listItem>' +
+				'<listItem listIndent="0" listType="0">bar</listItem>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 1 ), 'end' );
+				command.execute();
+			} );
+		} );
 	} );
 } );
