@@ -52,6 +52,7 @@ export default class ButtonView extends View {
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
 		this.set( 'isVisible', true );
+		this.set( 'isToggleable', false );
 		this.set( 'keystroke' );
 		this.set( 'label' );
 		this.set( 'tabindex', -1 );
@@ -132,7 +133,7 @@ export default class ButtonView extends View {
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
-				'aria-pressed': bind.if( 'isOn', true )
+				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( value ) : false )
 			},
 
 			children: this.children,

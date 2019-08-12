@@ -24,6 +24,10 @@ describe( 'SwitchButtonView', () => {
 		it( 'sets CSS class', () => {
 			expect( view.element.classList.contains( 'ck-switchbutton' ) ).to.be.true;
 		} );
+
+		it( 'sets isToggleable flag to true', () => {
+			expect( view.isToggleable ).to.be.true;
+		} );
 	} );
 
 	describe( 'render', () => {

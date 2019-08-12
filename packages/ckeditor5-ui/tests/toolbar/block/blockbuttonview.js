@@ -22,6 +22,10 @@ describe( 'BlockButtonView', () => {
 		expect( view.element.classList.contains( 'ck-block-toolbar-button' ) ).to.be.true;
 	} );
 
+	it( 'should be initialized as toggleable button', () => {
+		expect( view.isToggleable ).to.be.true;
+	} );
+
 	describe( 'DOM binding', () => {
 		it( 'should react on `view#top` change', () => {
 			view.top = 0;

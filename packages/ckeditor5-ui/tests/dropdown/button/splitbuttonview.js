@@ -30,6 +30,14 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView.element.classList.contains( 'ck-splitbutton__action' ) ).to.be.true;
 		} );
 
+		it( 'adds isToggleable to view#actionView', () => {
+			expect( view.actionView.isToggleable ).to.be.false;
+
+			view.isToggleable = true;
+
+			expect( view.actionView.isToggleable ).to.be.true;
+		} );
+
 		it( 'creates view#arrowView', () => {
 			expect( view.arrowView ).to.be.instanceOf( ButtonView );
 			expect( view.arrowView.element.classList.contains( 'ck-splitbutton__arrow' ) ).to.be.true;
@@ -60,6 +68,14 @@ describe( 'SplitButtonView', () => {
 
 			view.arrowView.isOn = false;
 			expect( view.element.classList.contains( 'ck-splitbutton_open' ) ).to.be.false;
+		} );
+
+		it( 'binds arrowView aria-expanded attribute to #isOn', () => {
+			view.arrowView.isOn = true;
+			expect( view.arrowView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'true' );
+
+			view.arrowView.isOn = false;
+			expect( view.arrowView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
