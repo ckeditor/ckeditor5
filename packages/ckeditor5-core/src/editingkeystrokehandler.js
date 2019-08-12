@@ -20,7 +20,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
  *		editor.keystrokes.set( 'Ctrl+Shift+Z', 'redo' );
  *		editor.keystrokes.set( 'Ctrl+Y', 'redo' );
  *
- * @extends utils/keystrokehandler~KeystrokeHandler
+ * @extends module:utils/keystrokehandler~KeystrokeHandler
  */
 export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	/**
