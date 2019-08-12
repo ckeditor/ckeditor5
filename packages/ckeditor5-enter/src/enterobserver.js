@@ -14,7 +14,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
  *
- * @extends module:engine/view/observer~Observer
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class EnterObserver extends Observer {
 	constructor( view ) {
