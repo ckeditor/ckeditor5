@@ -3,10 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import Locale from '../src/locale';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Locale', () => {
 	let locale;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -139,6 +144,19 @@ describe( 'Locale', () => {
 			const t = locale.t;
 
 			expect( t( '%1 - %0 - %2', [ 'a' ] ) ).to.equal( '%1 - a - %2' );
+		} );
+	} );
+
+	describe( 'language()', () => {
+		it( 'should return #uiLanguage', () => {
+			expect( locale.language ).to.equal( locale.uiLanguage );
+		} );
+
+		it( 'should warn about deprecation', () => {
+			const stub = testUtils.sinon.stub( console, 'warn' );
+
+			expect( locale.language ).to.equal( 'en' );
+			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
 		} );
 	} );
 } );

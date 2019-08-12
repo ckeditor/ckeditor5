@@ -7,6 +7,8 @@
  * @module utils/locale
  */
 
+/* globals console */
+
 import { translate } from './translation-service';
 
 const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
@@ -93,6 +95,30 @@ export default class Locale {
 		 * @param {String[]} [values] Values that should be used to interpolate the string.
 		 */
 		this.t = ( ...args ) => this._t( ...args );
+	}
+
+	/**
+	 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
+	 *
+	 * **Note**: This property has been deprecated. Please use {@link #uiLanguage} and {@link #contentLanguage}
+	 * properties instead.
+	 *
+	 * @deprecated
+	 * @member {String}
+	 */
+	get language() {
+		/**
+		 * The {@link module:utils/locale~Locale#language `Locale#language`} property has been deprecated and will
+		 * be removed in the near future. Please use {@link #uiLanguage} and {@link #contentLanguage} properties instead.
+		 *
+		 * @error locale-deprecated-language-property
+		 */
+		console.warn(
+			'locale-deprecated-language-property: ' +
+			'The Locale#language property has been deprecated and will be removed in the near future. ' +
+			'Please use #uiLanguage and #contentLanguage properties instead.' );
+
+		return this.uiLanguage;
 	}
 
 	/**
