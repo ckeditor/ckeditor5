@@ -80,6 +80,7 @@ describe( 'HighlightUI', () => {
 
 			expect( button ).to.have.property( 'tooltip', 'Highlight' );
 			expect( button ).to.have.property( 'icon', markerIcon );
+			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
 		it( 'should have proper icons in dropdown', () => {
@@ -122,6 +123,13 @@ describe( 'HighlightUI', () => {
 			// The second item is 'greenMarker' highlighter.
 			expect( toolbar.items.map( item => item.isOn ) )
 				.to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
+		} );
+
+		it( 'should mark as toggleable all markers and pens', () => {
+			const toolbar = dropdown.toolbarView;
+
+			expect( toolbar.items.map( item => item.isToggleable ) )
+				.to.deep.equal( [ true, true, true, true, true, true, undefined, false ] );
 		} );
 
 		describe( 'toolbar button behavior', () => {
