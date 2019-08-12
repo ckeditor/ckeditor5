@@ -345,6 +345,43 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
+		it( 'should attach the left side of the button to the right side of the editable when language direction is RTL', () => {
+			editor.locale.uiLanguageDirection = 'rtl';
+
+			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			const target = editor.ui.getEditableElement().querySelector( 'p' );
+			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
+
+			styleMock.withArgs( target ).returns( {
+				lineHeight: 'normal',
+				fontSize: '20px',
+				paddingTop: '10px'
+			} );
+
+			styleMock.callThrough();
+
+			testUtils.sinon.stub( editor.ui.getEditableElement(), 'getBoundingClientRect' ).returns( {
+				left: 200,
+				right: 600
+			} );
+
+			testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( {
+				top: 500,
+				left: 300
+			} );
+
+			testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+				width: 100,
+				height: 100
+			} );
+
+			editor.ui.fire( 'update' );
+
+			expect( blockToolbar.buttonView.top ).to.equal( 472 );
+			expect( blockToolbar.buttonView.left ).to.equal( 600 );
+		} );
+
 		it( 'should reposition the #panelView when open on ui#update', () => {
 			blockToolbar.panelView.isVisible = false;
 

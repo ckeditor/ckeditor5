@@ -69,6 +69,7 @@ export default class EditorUIView extends View {
 	 * @private
 	 */
 	_renderBodyCollection() {
+		const locale = this.locale;
 		const bodyElement = this._bodyCollectionContainer = new Template( {
 			tag: 'div',
 			attributes: {
@@ -77,7 +78,8 @@ export default class EditorUIView extends View {
 					'ck-reset_all',
 					'ck-body',
 					'ck-rounded-corners'
-				]
+				],
+				dir: locale.uiLanguageDirection,
 			},
 			children: this.body
 		} ).render();

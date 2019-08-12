@@ -18,7 +18,7 @@ describe( 'EditableUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editableElement = document.createElement( 'div' );
 
 		editingView = new EditingView();
@@ -31,14 +31,21 @@ describe( 'EditableUIView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		view.destroy();
+		editableElement.remove();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'sets initial values of attributes', () => {
-			view = new EditableUIView( locale, editingView );
+			const view = new EditableUIView( locale, editingView );
 
 			expect( view.isFocused ).to.be.false;
 			expect( view.name ).to.be.null;
 			expect( view._externalElement ).to.be.undefined;
 			expect( view._editingView ).to.equal( editingView );
+
+			view.destroy();
 		} );
 
 		it( 'renders element from template when no editableElement', () => {
@@ -47,22 +54,58 @@ describe( 'EditableUIView', () => {
 			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( view._externalElement ).to.be.undefined;
 			expect( view.isRendered ).to.be.true;
 		} );
 
 		it( 'accepts editableElement as an argument', () => {
-			view = new EditableUIView( locale, editingView, editableElement );
+			const view = new EditableUIView( locale, editingView, editableElement );
 			view.name = editingViewRoot.rootName;
 
 			view.render();
+
 			expect( view.element ).to.equal( editableElement );
 			expect( view.element ).to.equal( view._editableElement );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( view._hasExternalElement ).to.be.true;
 			expect( view.isRendered ).to.be.true;
+
+			view.destroy();
+		} );
+
+		it( 'sets proper lang and dir attributes (implicit content language)', () => {
+			const locale = new Locale( { uiLanguage: 'ar' } );
+			const view = new EditableUIView( locale, editingView );
+			view.name = editingViewRoot.rootName;
+
+			view.render();
+
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'ar' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+
+			view.destroy();
+		} );
+
+		it( 'sets proper lang and dir attributes (explicit content language)', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl',
+				contentLanguage: 'ar'
+			} );
+			const view = new EditableUIView( locale, editingView );
+			view.name = editingViewRoot.rootName;
+
+			view.render();
+
+			expect( view.element.getAttribute( 'lang' ) ).to.equal( 'ar' );
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+
+			view.destroy();
 		} );
 	} );
 
@@ -123,6 +166,7 @@ describe( 'EditableUIView', () => {
 				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 12 ).to.be.false;
 
 				secondEditableElement.remove();
+				secondView.destroy();
 			} );
 		} );
 	} );
@@ -130,12 +174,21 @@ describe( 'EditableUIView', () => {
 	describe( 'destroy()', () => {
 		it( 'calls super#destroy()', () => {
 			const spy = testUtils.sinon.spy( View.prototype, 'destroy' );
+			const view = new EditableUIView( locale, editingView );
+			view.name = editingViewRoot.rootName;
 
+			view.render();
 			view.destroy();
+
 			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'can be called multiple times', () => {
+			const view = new EditableUIView( locale, editingView );
+			view.name = editingViewRoot.rootName;
+
+			view.render();
+
 			expect( () => {
 				view.destroy();
 				view.destroy();
@@ -144,11 +197,11 @@ describe( 'EditableUIView', () => {
 
 		describe( 'when #editableElement as an argument', () => {
 			it( 'reverts the template of editableElement', () => {
-				editableElement = document.createElement( 'div' );
+				const editableElement = document.createElement( 'div' );
 				editableElement.classList.add( 'foo' );
 				editableElement.contentEditable = false;
 
-				view = new EditableUIView( locale, editingView, editableElement );
+				const view = new EditableUIView( locale, editingView, editableElement );
 				view.name = editingViewRoot.rootName;
 
 				view.render();

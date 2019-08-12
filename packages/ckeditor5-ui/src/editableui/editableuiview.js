@@ -34,7 +34,9 @@ export default class EditableUIView extends View {
 					'ck-content',
 					'ck-editor__editable',
 					'ck-rounded-corners'
-				]
+				],
+				lang: locale.contentLanguage,
+				dir: locale.contentLanguageDirection
 			}
 		} );
 

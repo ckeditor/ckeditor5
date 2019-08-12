@@ -16,7 +16,7 @@ describe( 'EditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		view = new EditorUIView( locale );
 
 		view.render();
@@ -45,6 +45,25 @@ describe( 'EditorUIView', () => {
 			expect( el.classList.contains( 'ck-body' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-reset_all' ) ).to.be.true;
+		} );
+
+		it( 'sets the right dir attribute to the body region (LTR)', () => {
+			const el = view._bodyCollectionContainer;
+
+			expect( el.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+		} );
+
+		it( 'sets the right dir attribute to the body region (RTL)', () => {
+			const locale = new Locale( { uiLanguage: 'ar' } );
+			const view = new EditorUIView( locale );
+
+			view.render();
+
+			const el = view._bodyCollectionContainer;
+
+			expect( el.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+
+			view.destroy();
 		} );
 	} );
 
