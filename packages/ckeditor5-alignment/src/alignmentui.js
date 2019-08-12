@@ -100,8 +100,8 @@ export default class AlignmentUI extends Plugin {
 				}
 			} );
 
-			// The default icon is align left as we do not support RTL yet (see #3).
-			const defaultIcon = alignLeftIcon;
+			// The default icon depends on the direction of the content.
+			const defaultIcon = locale.contentLanguageDirection === 'rtl' ? alignRightIcon : alignLeftIcon;
 
 			// Change icon to reflect current selection's alignment.
 			dropdownView.buttonView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {

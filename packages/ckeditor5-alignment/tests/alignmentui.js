@@ -9,6 +9,7 @@ import AlignmentEditing from '../src/alignmentediting';
 import AlignmentUI from '../src/alignmentui';
 
 import alignLeftIcon from '../theme/icons/align-left.svg';
+import alignRightIcon from '../theme/icons/align-right.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
@@ -284,8 +285,29 @@ describe( 'Alignment UI', () => {
 				expect( items.includes( 'Justify' ) ).to.be.true;
 			} );
 
-			it( 'should have default icon set', () => {
+			it( 'should have default icon set (LTR content)', () => {
 				expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
+			} );
+
+			it( 'should have default icon set (RTL content)', () => {
+				const element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				return ClassicTestEditor
+					.create( element, {
+						language: {
+							content: 'ar'
+						},
+						plugins: [ AlignmentEditing, AlignmentUI ],
+						alignment: { options: [ 'center', 'justify' ] }
+					} )
+					.then( newEditor => {
+						dropdown = newEditor.ui.componentFactory.create( 'alignment' );
+
+						expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
+
+						return newEditor.destroy();
+					} );
 			} );
 
 			it( 'should change icon to active alignment', () => {

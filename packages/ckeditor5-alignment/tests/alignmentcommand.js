@@ -44,10 +44,32 @@ describe( 'AlignmentCommand', () => {
 			expect( command ).to.have.property( 'value', 'center' );
 		} );
 
-		it( 'is set to default alignment when selection is in block with default alignment', () => {
+		it( 'is set to default alignment when selection is in block with default alignment (LTR content)', () => {
 			setModelData( model, '<paragraph>x[]x</paragraph>' );
 
 			expect( command ).to.have.property( 'value', 'left' );
+		} );
+
+		it( 'is set to default alignment when selection is in block with default alignment (RTL content)', () => {
+			return ModelTestEditor.create( {
+				language: {
+					content: 'ar'
+				}
+			} ).then( newEditor => {
+				model = newEditor.model;
+				command = new AlignmentCommand( newEditor );
+				newEditor.commands.add( 'alignment', command );
+
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'div', { inheritAllFrom: '$block' } );
+				model.schema.extend( 'paragraph', { allowAttributes: 'alignment' } );
+
+				setModelData( model, '<paragraph>x[]x</paragraph>' );
+
+				expect( command ).to.have.property( 'value', 'right' );
+
+				return newEditor.destroy();
+			} );
 		} );
 	} );
 
@@ -75,12 +97,36 @@ describe( 'AlignmentCommand', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph alignment="center">x[]x</paragraph>' );
 			} );
 
-			it( 'should remove alignment from single block element if already has one', () => {
+			it( 'should remove alignment from single block element if already has one (LTR content)', () => {
 				setModelData( model, '<paragraph alignment="center">x[]x</paragraph>' );
 
 				editor.execute( 'alignment', { value: 'left' } );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>x[]x</paragraph>' );
+			} );
+
+			it( 'should remove alignment from single block element if already has one (RTL content)', () => {
+				return ModelTestEditor.create( {
+					language: {
+						content: 'ar'
+					}
+				} ).then( newEditor => {
+					model = newEditor.model;
+					command = new AlignmentCommand( newEditor );
+					newEditor.commands.add( 'alignment', command );
+
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+					model.schema.register( 'div', { inheritAllFrom: '$block' } );
+					model.schema.extend( 'paragraph', { allowAttributes: 'alignment' } );
+
+					setModelData( model, '<paragraph alignment="center">x[]x</paragraph>' );
+
+					newEditor.execute( 'alignment', { value: 'right' } );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>x[]x</paragraph>' );
+
+					return newEditor.destroy();
+				} );
 			} );
 
 			it( 'adds alignment to all selected blocks', () => {

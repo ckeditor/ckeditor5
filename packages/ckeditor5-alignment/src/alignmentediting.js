@@ -34,6 +34,7 @@ export default class AlignmentEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const locale = editor.locale;
 		const schema = editor.model.schema;
 
 		// Filter out unsupported options.
@@ -43,7 +44,7 @@ export default class AlignmentEditing extends Plugin {
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
 		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
 
-		const definition = _buildDefinition( enabledOptions.filter( option => !isDefault( option ) ) );
+		const definition = _buildDefinition( enabledOptions.filter( option => !isDefault( option, locale ) ) );
 
 		editor.conversion.attributeToAttribute( definition );
 
