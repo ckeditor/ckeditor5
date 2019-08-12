@@ -41,7 +41,10 @@ describe( 'ListUI', () => {
 
 	it( 'should set up buttons for bulleted list and numbered list', () => {
 		expect( bulletedListButton ).to.be.instanceOf( ButtonView );
+		expect( bulletedListButton.isToggleable ).to.be.true;
+
 		expect( numberedListButton ).to.be.instanceOf( ButtonView );
+		expect( numberedListButton.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute proper commands when buttons are used', () => {

@@ -49,7 +49,8 @@ export default class ListUI extends Plugin {
 			buttonView.set( {
 				label,
 				icon,
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			// Bind button model to command.
