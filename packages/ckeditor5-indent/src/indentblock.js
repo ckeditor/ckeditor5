@@ -96,16 +96,18 @@ export default class IndentBlock extends Plugin {
 	 */
 	_setupConversionUsingOffset() {
 		const conversion = this.editor.conversion;
+		const locale = this.editor.locale;
+		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
 
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				styles: {
-					'margin-left': /[\s\S]+/
+					[ marginProperty ]: /[\s\S]+/
 				}
 			},
 			model: {
 				key: 'blockIndent',
-				value: viewElement => viewElement.getStyle( 'margin-left' )
+				value: viewElement => viewElement.getStyle( marginProperty )
 			}
 		} );
 
@@ -118,7 +120,7 @@ export default class IndentBlock extends Plugin {
 			},
 			model: {
 				key: 'blockIndent',
-				value: viewElement => normalizeToMarginLeftStyle( viewElement.getStyle( 'margin' ) )
+				value: viewElement => normalizeToMarginSideStyle( viewElement.getStyle( 'margin' ), marginProperty )
 			}
 		} );
 
@@ -128,7 +130,7 @@ export default class IndentBlock extends Plugin {
 				return {
 					key: 'style',
 					value: {
-						'margin-left': modelAttributeValue
+						[ marginProperty ]: modelAttributeValue
 					}
 				};
 			}
@@ -162,36 +164,44 @@ export default class IndentBlock extends Plugin {
 	}
 }
 
-// Normalizes the margin shorthand value to the value of `margin-left` CSS property.
+// Normalizes the margin shorthand value to the value of margin-left or margin-right CSS property.
 //
 // As such it will return:
-// - '1em' for '1em'
-// - '1em' for '2px 1em'
-// - '1em' for '2px 1em 3px'
-// - '1em' for '2px 10px 3px 1em'
 //
-// @param {String} Margin style value.
-// @returns {String} Extracted value of margin-left.
-function normalizeToMarginLeftStyle( marginStyleValue ) {
+// - '1em' -> '1em'
+// - '2px 1em' -> '1em'
+// - '2px 1em 3px' -> '1em'
+// - '2px 10px 3px 1em'
+//		-> '1em' (side "margin-left")
+//		-> '10px' (side "margin-right")
+//
+// @param {String} marginStyleValue Margin style value.
+// @param {String} side "margin-left" or "margin-right" depending on which margin should be returned.
+// @returns {String} Extracted value of margin-left or margin-right.
+function normalizeToMarginSideStyle( marginStyleValue, side ) {
 	// Splits the margin shorthand, ie margin: 2em 4em.
 	const marginEntries = marginStyleValue.split( ' ' );
 
-	let left;
+	let marginValue;
 
 	// If only one value defined, ie: `margin: 1px`.
-	left = marginEntries[ 0 ];
+	marginValue = marginEntries[ 0 ];
 
 	// If only two values defined, ie: `margin: 1px 2px`.
 	if ( marginEntries[ 1 ] ) {
-		left = marginEntries[ 1 ];
+		marginValue = marginEntries[ 1 ];
 	}
 
 	// If four values defined, ie: `margin: 1px 2px 3px 4px`.
 	if ( marginEntries[ 3 ] ) {
-		left = marginEntries[ 3 ];
+		if ( side === 'margin-left' ) {
+			marginValue = marginEntries[ 3 ];
+		} else {
+			marginValue = marginEntries[ 1 ];
+		}
 	}
 
-	return left;
+	return marginValue;
 }
 
 /**

@@ -35,10 +35,14 @@ export default class IndentUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const locale = editor.locale;
 		const t = editor.t;
 
-		this._defineButton( 'indent', t( 'Increase indent' ), indentIcon );
-		this._defineButton( 'outdent', t( 'Decrease indent' ), outdentIcon );
+		const localizedIndentIcon = locale.uiLanguageDirection == 'ltr' ? indentIcon : outdentIcon;
+		const localizedOutdentIcon = locale.uiLanguageDirection == 'ltr' ? outdentIcon : indentIcon;
+
+		this._defineButton( 'indent', t( 'Increase indent' ), localizedIndentIcon );
+		this._defineButton( 'outdent', t( 'Decrease indent' ), localizedOutdentIcon );
 	}
 
 	/**

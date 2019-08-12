@@ -93,6 +93,10 @@ In the demo below the CSS classes are defined as follows:
 }
 ```
 
+<info-box>
+	Note that for <abbr title="right-to-left">RTL</abbr> content, `'margin-right'` should be used instead. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
+</info-box>
+
 {@snippet features/custom-indent-block-classes}
 
 ## Indenting lists
