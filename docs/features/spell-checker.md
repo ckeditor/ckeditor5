@@ -10,15 +10,13 @@ category: features
 	The spell checker for CKEditor 5 is a commercial solution provided by our partner, [WebSpellChecker](https://webspellchecker.com/), and is in beta version. You can report any issues in its [GitHub repository](https://github.com/WebSpellChecker/wproofreader). The license can be purchased [here](https://ckeditor.com/contact/).
 </info-box>
 
-[WProofreader](https://webspellchecker.com/wsc-proofreader) is the ultimate proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern UI. Spelling and grammar suggestions are available on hover with no clicking needed.
-
-The distraction-free badge gives you access to proofreader suggestions and settings. If you want to see an overview of all spelling and grammar mistakes, click the "Proofread in dialog" button in the badge.
+[WProofreader](https://webspellchecker.com/wsc-proofreader) is an innovative proofreading tool that combines the functionality of "spell check as you type" and "spell check in a dialog" in a modern, distraction-free UI. Spelling and grammar suggestions are available on hover with no clicking needed.
 
 ## Demo
 
-Click in the editor below to enable the spelling and grammar checking. The proofreader badge in the botton right-hand corner shows you the number of mistakes detected. It also gives you access to proofreader settings and suggestions.
+Click in the editor below to enable the spelling and grammar checking. Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found.
 
-Hover an underlined word to display the proofreader suggestions for any of the spelling and grammar mistakes found.
+The proofreader badge in the bottom right-hand corner shows you the number of mistakes detected. It also gives you access to proofreader settings. If you want to see an overview of all spelling and grammar mistakes, click the "Proofread in dialog" button in the badge.
 
 {@snippet features/wproofreader}
 
