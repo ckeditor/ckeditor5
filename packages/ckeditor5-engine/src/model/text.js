@@ -63,7 +63,21 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		text.is( 'text' ); // -> true
+	 *		text.is( 'node' ); // -> true
+	 *		text.is( 'model:text' ); // -> true
+	 *
+	 *		text.is( 'view:text' ); // -> false
+	 *		text.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type ) {
 		return type == 'text' || type == 'model:text' || super.is( type );

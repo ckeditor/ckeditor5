@@ -503,15 +503,15 @@ export default class Position {
 	}
 
 	/**
-	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `model:` string,
-	 * for example `model:position`. Type is a string which usually equal to a name of the class written in camelCase convention.
-	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
-	 * for any type match for an entire child-parent chain.
+	 * Checks whether this object is of the given.
 	 *
-	 * Acceptable type for this class is `position` and its prefixed version.
-	 * For {@link module:engine/model/liveposition~LivePosition} class there also acceptable `livePosition` type and its prefixed version.
+	 *		position.is( 'position' ); // -> true
+	 *		position.is( 'model:position' ); // -> true
 	 *
-	 * See also: {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *		position.is( 'view:position' ); // -> false
+	 *		position.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
