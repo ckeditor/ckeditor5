@@ -177,7 +177,7 @@
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
- *				// The UI of the editor as well as its content will be German.
+ *				// The UI of the editor as well as its content will be in German.
  *				language: 'de'
  *			} )
  *			.then( editor => {
@@ -192,7 +192,7 @@
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
  *				language: {
- *	 				// The UI will be English.
+ *	 				// The UI will be in English.
  *					ui: 'en',
  *
  *					// But the content will be edited in Arabic.
