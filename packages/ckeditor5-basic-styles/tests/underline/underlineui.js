@@ -44,6 +44,7 @@ describe( 'Underline', () => {
 		expect( underlineView.label ).to.equal( 'Underline' );
 		expect( underlineView.icon ).to.match( /<svg / );
 		expect( underlineView.keystroke ).to.equal( 'CTRL+U' );
+		expect( underlineView.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute underline command on model execute event', () => {

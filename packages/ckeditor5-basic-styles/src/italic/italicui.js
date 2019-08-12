@@ -36,7 +36,8 @@ export default class ItalicUI extends Plugin {
 				label: t( 'Italic' ),
 				icon: italicIcon,
 				keystroke: 'CTRL+I',
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

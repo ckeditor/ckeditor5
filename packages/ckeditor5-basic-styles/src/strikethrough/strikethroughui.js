@@ -36,7 +36,8 @@ export default class StrikethroughUI extends Plugin {
 				label: t( 'Strikethrough' ),
 				icon: strikethroughIcon,
 				keystroke: 'CTRL+SHIFT+X',
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

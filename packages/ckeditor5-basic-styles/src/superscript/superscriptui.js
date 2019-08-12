@@ -35,7 +35,8 @@ export default class SuperscriptUI extends Plugin {
 			view.set( {
 				label: t( 'Superscript' ),
 				icon: superscriptIcon,
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

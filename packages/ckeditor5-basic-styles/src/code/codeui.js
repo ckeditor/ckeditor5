@@ -37,7 +37,8 @@ export default class CodeUI extends Plugin {
 			view.set( {
 				label: t( 'Code' ),
 				icon: codeIcon,
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

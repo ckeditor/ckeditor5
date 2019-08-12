@@ -44,6 +44,7 @@ describe( 'ItalicUI', () => {
 		expect( italicView.label ).to.equal( 'Italic' );
 		expect( italicView.icon ).to.match( /<svg / );
 		expect( italicView.keystroke ).to.equal( 'CTRL+I' );
+		expect( italicView.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute italic command on model execute event', () => {

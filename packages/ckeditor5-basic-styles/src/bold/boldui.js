@@ -36,7 +36,8 @@ export default class BoldUI extends Plugin {
 				label: t( 'Bold' ),
 				icon: boldIcon,
 				keystroke: 'CTRL+B',
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
