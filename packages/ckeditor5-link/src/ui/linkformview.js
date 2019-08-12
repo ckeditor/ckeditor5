@@ -257,7 +257,7 @@ export default class LinkFormView extends View {
 	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}
 	 *
 	 * @private
-	 * @param {module:link/linkcommand~LinkCommand#manualDecorators} manualDecorators reference to
+	 * @param {module:utils/collection~Collection} manualDecorators A reference to the
 	 * collection of manual decorators stored in link's command.
 	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
 	 */
@@ -293,7 +293,7 @@ export default class LinkFormView extends View {
 	 * to those decorators.
 	 *
 	 * @private
-	 * @param {module:link/linkcommand~LinkCommand#manualDecorators} manualDecorators reference to
+	 * @param {module:utils/collection~Collection} manualDecorators A reference to the
 	 * collection of manual decorators stored in link's command.
 	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
 	 */
