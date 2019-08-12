@@ -15,7 +15,7 @@ Some of the {@link features/index core editor features} bring additional CSS to 
 
 Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor 5, they create a monolithic structure called an {@link builds/guides/overview#available-builds editor build}. By default, content styles are inseparable from the rest of the editor which means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get editor content styles, for instance, for the front–end of your application, you will have to take additional steps described in this guide.
 
-## Sharing content styles between front– and back–end
+## Sharing content styles between front–end and back–end
 
 By default, content styles are loaded by the editor JavaScript which makes them only present when users edit their content and this, in turn, usually takes place in the back–end of an application. You want to use the same styles in the front–end, you may find yourself in a situation that requires you to load CKEditor just for that purpose, which is (performance–wise) not the best idea.
 
@@ -59,7 +59,7 @@ The content in the front–end of your application should now look the same as w
 
 ## The full list of content styles
 
-Below there is a full list of content styles used by editor features. You can copy it and use straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-front-and-backend)).
+Below there is a full list of content styles used by editor features. You can copy it and use straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-frontend-and-backend)).
 
 ```css
 /*
