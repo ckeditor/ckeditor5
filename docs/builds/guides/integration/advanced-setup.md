@@ -166,6 +166,43 @@ module.exports = {
 };
 ```
 
+#### Webpack Encore
+
+If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
+
+```js
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+Encore.
+    // ... your configuration ...
+	
+    .addPlugin(new CKEditorWebpackPlugin({
+	    // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
+        language: 'pl',
+    }))
+	
+	// Use raw-loader for CKEditor5 SVG files
+	.addRule({
+		test: /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/,
+    	loader: 'raw-loader'
+  	})
+  
+  	// Configure other image loaders to exclude CKEditor5 SVG files
+  	.configureLoaderRule('images', loader => {
+    	loader.exclude = /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/;
+  	})
+	
+	// Configure PostCSS loader
+	.enablePostCssLoader(options => {
+    	Object.assign(options, styles.getPostCssConfig({
+      		themeImporter: {
+        		themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
+      		},
+    	}));
+  	})
+```
+
 ### Running the editor – method 1
 
 You can now import all the needed plugins and the creator directly into your code and use it there. The easiest way to do so is to copy it from the `src/ckeditor.js` file available in every build repository.
