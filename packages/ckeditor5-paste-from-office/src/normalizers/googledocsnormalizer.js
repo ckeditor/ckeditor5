@@ -33,7 +33,6 @@ export default class GoogleDocsNormalizer {
 		const writer = new UpcastWriter();
 
 		removeBoldWrapper( data.content, writer );
-		fixListIndentation( data.content, writer );
 		unwrapParagraphInListItem( data.content, writer );
 	}
 }

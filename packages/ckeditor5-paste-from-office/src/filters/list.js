@@ -70,65 +70,6 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
 	}
 }
 
-/**
- * Fix structure of nested lists to follow HTML guidelines and normalize content in predictable way.
- *
- * 1. Move nested lists to have sure that list items are the only children of lists.
- *
- *		before:                           after:
- *		OL                                OL
- *		|-> LI                            |-> LI
- *		|-> OL                                |-> OL
- *		    |-> LI                                |-> LI
- *
- * 2. Remove additional indentation which cannot be recreated in HTML structure.
- *
- *		before:                           after:
- *		OL                                OL
- *		|-> LI                            |-> LI
- *		    |-> OL                            |-> OL
- *		        |-> OL                            |-> LI
- *		        |   |-> OL                        |-> LI
- *		        |       |-> OL
- *		        |           |-> LI
- *		        |-> LI
- *
- *		before:                           after:
- *		OL                                OL
- *		|-> OL                             |-> LI
- *		    |-> OL
- *		         |-> OL
- *		             |-> LI
- *
- * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
- * @param {module:engine/view/upcastwriter~UpcastWriter} writer
- */
-export function fixListIndentation( documentFragment, writer ) {
-	for ( const value of writer.createRangeIn( documentFragment ) ) {
-		const element = value.item;
-
-		// case 1: The previous sibling of a list is a list item.
-		if ( element.is( 'li' ) ) {
-			const next = element.nextSibling;
-
-			if ( next && isList( next ) ) {
-				writer.remove( next );
-				writer.insertChild( element.childCount, next, element );
-			}
-		}
-
-		// case 2: The list is the first child of another list.
-		if ( isList( element ) ) {
-			let firstChild = element.getChild( 0 );
-
-			while ( isList( firstChild ) ) {
-				writer.unwrapElement( firstChild );
-				firstChild = element.getChild( 0 );
-			}
-		}
-	}
-}
-
 // Finds all list-like elements in a given document fragment.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment
