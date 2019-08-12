@@ -12,6 +12,8 @@ import WidgetResizer from '@ckeditor/ckeditor5-widget/src/widgetresizer';
 
 const WIDTH_ATTRIBUTE_NAME = 'width';
 
+const WIDTH_STYLE_NAME = WIDTH_ATTRIBUTE_NAME;
+
 /**
  *	Image resize plugin.
  *
@@ -81,7 +83,7 @@ export default class ImageResize extends Plugin {
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:${ WIDTH_ATTRIBUTE_NAME }:image`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -102,12 +104,12 @@ export default class ImageResize extends Plugin {
 				view: {
 					name: 'img',
 					styles: {
-						'width': /[\d.]+(px)?/
+						[ WIDTH_STYLE_NAME ]: /[\d.]+(px)?/
 					}
 				},
 				model: {
 					key: WIDTH_ATTRIBUTE_NAME,
-					value: viewElement => viewElement.getStyle( 'width' ).replace( 'px', '' )
+					value: viewElement => viewElement.getStyle( WIDTH_STYLE_NAME ).replace( 'px', '' )
 				}
 			} );
 	}
