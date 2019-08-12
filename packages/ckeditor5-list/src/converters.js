@@ -348,8 +348,8 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// 2. Handle `listItem` model element attributes.
 		conversionStore.indent = conversionStore.indent || 0;
 
+		const text = data.viewItem.childCount && data.viewItem.getChild( 0 ).data;
 		const modifier = getIndentModifier( data.viewItem, conversionStore );
-
 		writer.setAttribute( 'listIndent', conversionStore.indent + modifier, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
@@ -388,6 +388,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 	}
 }
 
+// TODO: refactor this ugly piece of code...
 function getIndentModifier( listItem, conversionStore ) {
 	// Ensure proper conversion store value.
 	conversionStore.indentModifiers = conversionStore.indentModifiers || new WeakMap();
@@ -405,10 +406,19 @@ function getIndentModifier( listItem, conversionStore ) {
 
 		if ( previousSibling ) {
 			if ( previousSibling.is( 'li' ) ) {
-				modifier = 1;
+				modifier = ( conversionStore.indentModifiers.get( previousSibling.parent ) || 0 ) + 1;
 			} else {
-				modifier = conversionStore.indentModifiers.get( previousSibling );
+				modifier = conversionStore.indentModifiers.get( previousSibling.parent );
 			}
+		} else {
+			let par = list.parent;
+
+			while ( par.is( 'ol' ) || par.is( 'ul' ) && modifier === undefined ) {
+				modifier = conversionStore.indentModifiers.get( par );
+				par = par.parent;
+			}
+
+			modifier = modifier === undefined ? 0 : modifier + 1;
 		}
 	}
 

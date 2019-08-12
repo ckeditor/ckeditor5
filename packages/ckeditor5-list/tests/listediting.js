@@ -1290,8 +1290,8 @@ describe( 'ListEditing', () => {
 				} );
 			}
 
-			describe( 'fixing nested list in list', () => {
-				test( 'fixing list - ul in ul',
+			describe( 'non HTML compliant list fixing', () => {
+				test( 'ul in ul',
 					'<ul>' +
 						'<ul>' +
 							'<li>1.1</li>' +
@@ -1302,7 +1302,7 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				test( 'fixing list - ul in ol',
+				test( 'ul in ol',
 					'<ol>' +
 						'<ul>' +
 							'<li>1.1</li>' +
@@ -1313,7 +1313,7 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				test( 'fixing list - ul in ul (prev is li)',
+				test( 'ul in ul (previous sibling is li)',
 					'<ul>' +
 						'<li>1</li>' +
 						'<ul>' +
@@ -1329,7 +1329,7 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				test( 'fixing list - ul in deeply nested ul',
+				test( 'ul in deeply nested ul',
 					'<ul>' +
 						'<ul>' +
 							'<ul>' +
@@ -1344,7 +1344,7 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				test( 'fixing list - ul in deeply nested ul/ol',
+				test( 'ul in deeply nested ul/ol',
 					'<ol>' +
 						'<ul>' +
 							'<ol>' +
@@ -1359,7 +1359,7 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				test( 'fixing list - ul in deeply nested ul',
+				test( 'ul in deeply nested ul inside li',
 					'<ul>' +
 						'<li>A' +
 							'<ul>' +
@@ -1384,7 +1384,7 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				test( 'fixing list - ul in deeply nested ul/ol',
+				test( 'ul in deeply nested ul/ol',
 					'<ul>' +
 						'<li>A' +
 							'<ol>' +
@@ -1408,18 +1408,97 @@ describe( 'ListEditing', () => {
 						'</li>' +
 					'</ul>'
 				);
-			} );
 
-			test( 'fixing list - ul in ul',
-				'<ul>' +
+				test( 'ul in ul (complex case)',
+					'<ol>' +
+						'<li>1</li>' +
+						'<ul>' +
+							'<li>A</li>' +
+							'<ol>' +
+								'<li>1</li>' +
+							'</ol>' +
+						'</ul>' +
+						'<li>2</li>' +
+						'<li>3</li>' +
+						'<ul>' +
+							'<li>A</li>' +
+							'<li>B</li>' +
+						'</ul>' +
+					'</ol>' +
 					'<ul>' +
-						'<li>1.1</li>' +
-					'</ul>' +
-				'</ul>',
-				'<ul>' +
-					'<li>1.1</li>' +
-				'</ul>'
-			);
+						'<li>A</li>' +
+						'<ol>' +
+							'<li>1</li>' +
+							'<li>2</li>' +
+						'</ol>' +
+					'</ul>',
+					'<ol>' +
+						'<li>1' +
+							'<ul>' +
+								'<li>A' +
+									'<ol>' +
+										'<li>1</li>' +
+									'</ol>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>2</li>' +
+						'<li>3' +
+							'<ul>' +
+								'<li>A</li>' +
+								'<li>B</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ol>' +
+					'<ul>' +
+						'<li>A' +
+							'<ol>' +
+								'<li>1</li>' +
+								'<li>2</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				test( 'ol in ol (deep structure)',
+					'<ol>' +
+						'<li>A1</li>' +
+						'<ol>' +
+							'<ol>' +
+								'<ol>' +
+									'<ol>' +
+										'<ol>' +
+											'<ol>' +
+												'<ol>' +
+													'<li>B8</li>' +
+												'</ol>' +
+											'</ol>' +
+										'</ol>' +
+									'</ol>' +
+								'</ol>' +
+								'<li>C3</li>' +
+								'<ol>' +
+									'<li>D4</li>' +
+								'</ol>' +
+							'</ol>' +
+							'<li>E2</li>' +
+						'</ol>' +
+					'</ol>',
+					'<ol>' +
+						'<li>A1' +
+							'<ol>' +
+								'<li>B8</li>' +
+								'<li>C3' +
+									'<ol>' +
+										'<li>D4</li>' +
+									'</ol>' +
+								'</li>' +
+								'<li>E2</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+			} );
 
 			test( 'bullet list simple structure',
 				'<p>foo</p>' +
