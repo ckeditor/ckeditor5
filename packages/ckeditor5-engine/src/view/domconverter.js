@@ -371,7 +371,17 @@ export default class DomConverter {
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller ) ) {
-			return null;
+			const isSingle = domNode.parentNode && domNode.parentNode.childNodes.length <= 1;
+
+			if ( isSingle && _hasDomParentOfType( domNode, this.blockElements ) ) {
+				return null;
+			}
+
+			// if ( isText( domNode ) ) {
+			//
+			// } else {
+			// 	return null;
+			// }
 		}
 
 		// When node is inside UIElement return that UIElement as it's view representation.
