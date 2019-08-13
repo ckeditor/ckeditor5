@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imageresize
+ * @module image/imageresize
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -107,7 +107,7 @@ export default class ImageResize extends Plugin {
 				const img = figure.getChild( 0 );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'width', data.attributeNewValue + 'px', img );
+					viewWriter.setStyle( 'width', data.attributeNewValue, img );
 					viewWriter.addClass( 'ck_resized', figure );
 				} else {
 					viewWriter.removeStyle( 'width', img );
@@ -121,12 +121,12 @@ export default class ImageResize extends Plugin {
 				view: {
 					name: 'img',
 					styles: {
-						width: /[\d.]+(px)?/
+						width: /.+/
 					}
 				},
 				model: {
 					key: 'width',
-					value: viewElement => viewElement.getStyle( 'width' ).replace( 'px', '' )
+					value: viewElement => viewElement.getStyle( 'width' )
 				}
 			} );
 	}

@@ -8,26 +8,25 @@
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImagePlugin from '../../src/image';
-import ImageResizePlugin from '../../src/image/imageresize';
-import ImageStyle from '../../src/imagestyle';
-import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
-import TablePlugin from '@ckeditor/ckeditor5-table/src/table';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Image from '../src/image';
+import ImageResize from '../src/imageresize';
+import ImageStyle from '../src/imagestyle';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
-import {
-	getData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Image resizer', () => {
+describe( 'ImageResize', () => {
 	const FIXTURE_WIDTH = 100;
 	const FIXTURE_HEIGHT = 50;
-	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
-	let absoluteContainer;
+	// Id of the left mouse button.
+	const MOUSE_BUTTON_MAIN = 0;
 	// 60x50 black png image
-	const imageFixture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
+	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
-	let editor, view, viewDocument, editorElement;
+
+	let absoluteContainer, widget, editor, view, viewDocument, editorElement;
 
 	before( () => {
 		// This container is required to position editor element in a reliable element.
@@ -47,13 +46,13 @@ describe( 'Image resizer', () => {
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
-		editorElement.innerHTML = `<p>foo</p><figure><img src="${ imageFixture }"></figure>`;
+		editorElement.innerHTML = `<p>foo</p><figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>`;
 
 		absoluteContainer.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin, UndoPlugin, TablePlugin, ImageResizePlugin ]
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -64,7 +63,46 @@ describe( 'Image resizer', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+
 		return editor.destroy();
+	} );
+
+	describe( 'conversion', () => {
+		it( 'upcasts 100px width correctly', () => {
+			editor.setData( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;"></figure>` );
+
+			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '100px' );
+		} );
+
+		it( 'upcasts 50% width correctly', () => {
+			editor.setData( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }" style="width:50%;"></figure>` );
+
+			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '50%' );
+		} );
+
+		it( 'downcasts 100px width correctly', () => {
+			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="100px"></image>` );
+
+			expect( editor.getData() )
+				.to.equal( `<figure class="image ck_resized"><img style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		} );
+
+		it( 'downcasts 50% width correctly', () => {
+			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
+
+			expect( editor.getData() )
+				.to.equal( `<figure class="image ck_resized"><img style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		} );
+	} );
+
+	describe( 'schema', () => {
+		it( 'allows the width attribute', () => {
+			expect( editor.model.schema.checkAttribute( 'image', 'width' ) ).to.be.true;
+		} );
+
+		it( 'defines width as a formatting attribute', () => {
+			expect( editor.model.schema.getAttributeProperties( 'width' ) ).to.have.property( 'isFormatting', true );
+		} );
 	} );
 
 	describe( 'visual resizers', () => {
@@ -102,19 +140,16 @@ describe( 'Image resizer', () => {
 		} );
 	} );
 
-	describe( 'standard image', () => {
-		let widget;
-
-		beforeEach( async function() {
-			await editor.setData( `<p>foo</p><figure><img src="${ imageFixture }"></figure>` );
+	describe( 'standard image resizing', () => {
+		beforeEach( () => {
+			editor.setData( `<p>foo</p><figure><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
+
 			const domEventDataMock = {
 				target: widget,
 				preventDefault: sinon.spy()
 			};
-
-			this.widget = widget;
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
@@ -210,35 +245,17 @@ describe( 'Image resizer', () => {
 			},
 			resizerPosition: 'top-right'
 		} ) );
-
-		it( 'generates a proper output markup', async function() {
-			await generateResizeTest( {
-				expectedWidth: 120,
-				pointerOffset: {
-					x: 0,
-					y: -10
-				},
-				resizerPosition: 'top-right'
-			} ).call( this );
-
-			expect( editor.getData() ).to.be.equal(
-				`<p>foo</p><figure class="image ck_resized"><img style="width:120px;" src="${ imageFixture }"></figure>` );
-		} );
 	} );
 
-	describe( 'side image', () => {
-		let widget;
-
-		beforeEach( async function() {
-			await editor.setData( `<p>foo</p><figure class="image image-style-side"><img src="${ imageFixture }"></figure>` );
+	describe( 'side image resizing', () => {
+		beforeEach( () => {
+			editor.setData( `<p>foo</p><figure class="image image-style-side"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 			const domEventDataMock = {
 				target: widget,
 				preventDefault: sinon.spy()
 			};
-
-			this.widget = widget;
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
@@ -346,78 +363,75 @@ describe( 'Image resizer', () => {
 		function generateSideResizeTest( options ) {
 			return generateResizeTest( Object.assign( {
 				isSideImage: true,
-				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)"><\/image>/
+				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)px"><\/image>/
 			}, options ) );
 		}
 	} );
 
-	describe( 'undo integration', function() {
-		let widget;
-
-		beforeEach( async function() {
-			await editor.setData( `<p>foo</p><figure><img src="${ imageFixture }"></figure>` );
+	describe( 'undo integration', () => {
+		beforeEach( () => {
+			editor.setData( `<p>foo</p><figure><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
+
 			const domEventDataMock = {
 				target: widget,
 				preventDefault: sinon.spy()
 			};
 
-			this.widget = widget;
-
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
-		it( 'has correct border size after undo', function() {
-			return generateResizeTest( {
+		it( 'has correct border size after undo', async () => {
+			await generateResizeTest( {
 				expectedWidth: 120,
 				pointerOffset: {
 					x: 0,
 					y: 10
 				},
 				resizerPosition: 'bottom-left'
-			} ).call( this ).then( () => {
-				editor.commands.get( 'undo' ).execute();
-
-				return wait( 40 )
-					.then( () => {
-						const resizerShadow = document.querySelector( '.ck-widget__resizer-shadow' );
-						const shadowBoundingRect = resizerShadow.getBoundingClientRect();
-
-						expect( shadowBoundingRect.width ).to.be.equal( 100 );
-						expect( shadowBoundingRect.height ).to.be.equal( 50 );
-					} );
 			} );
+
+			editor.commands.get( 'undo' ).execute();
+
+			await wait( 40 );
+
+			const resizerShadow = document.querySelector( '.ck-widget__resizer-shadow' );
+			const shadowBoundingRect = resizerShadow.getBoundingClientRect();
+
+			expect( shadowBoundingRect.width ).to.be.equal( 100 );
+			expect( shadowBoundingRect.height ).to.be.equal( 50 );
 		} );
 	} );
 
-	describe( 'integration', function() {
-		beforeEach( async function() {
-			await editor.setData( `<figure class="table">
-				<table>
-					<tbody>
-						<tr>
-							<td>
-								<figure class="image"><img src="${ imageFixture }" alt="Sample image">
-								</figure>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</figure>` );
+	describe( 'table integration', () => {
+		beforeEach( () => {
+			editor.setData(
+				`<figure class="table">
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }" alt="Sample image"></figure>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>`
+			);
 
-			this.widget = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+			widget = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 			const domEventDataMock = {
-				target: this.widget,
+				target: widget,
 				preventDefault: sinon.spy()
 			};
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
-		it( 'works when resizing in a table', function() {
-			return generateResizeTest( {
+		it( 'works when resizing in a table', async () => {
+			await generateResizeTest( {
 				getModel: () => editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ),
 				expectedWidth: 60,
 				modelRegExp: /.+/,
@@ -468,7 +482,6 @@ describe( 'Image resizer', () => {
 		// [options.isSideImage=false]
 		// Returns a test case that puts
 		return function() {
-			const widget = this.widget;
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 			const domBottomLeftResizer = domResizeWrapper.querySelector( `.ck-widget__resizer-${ options.resizerPosition }` );
 			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
@@ -476,7 +489,7 @@ describe( 'Image resizer', () => {
 			const resizerPositionParts = options.resizerPosition.split( '-' );
 
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
-				/<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)"><\/image>/;
+				/<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)px"><\/image>/;
 
 			focusEditor( editor );
 
@@ -506,7 +519,7 @@ describe( 'Image resizer', () => {
 				.then( () => {
 					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
 
-					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 2 );
+					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
@@ -516,7 +529,9 @@ describe( 'Image resizer', () => {
 
 					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
 
-					expect( modelItem.getAttribute( 'width' ) ).to.be.closeTo( options.expectedWidth, 2, 'Model check' );
+					expect( modelItem.getAttribute( 'width' ) ).to.match( /^\d+px$/, 'Model width is properly formatted' );
+					expect( parseInt( modelItem.getAttribute( 'width' ), 0 ) )
+						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 				} );
 		};
 	}

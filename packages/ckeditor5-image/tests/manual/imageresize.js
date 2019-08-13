@@ -13,7 +13,7 @@ import ImagePlugin from '../../src/image';
 import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 import ImageCaption from '../../src/imagecaption';
-import ImageResize from '../../src/image/imageresize';
+import ImageResize from '../../src/imageresize';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import List from '@ckeditor/ckeditor5-list/src/list';
