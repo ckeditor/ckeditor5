@@ -14,8 +14,6 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { throttle } from 'lodash-es';
 
-const WIDTH_ATTRIBUTE_NAME = 'width';
-
 /**
  * Widget resize feature plugin.
  *
@@ -33,11 +31,12 @@ export default class WidgetResizer extends Plugin {
 		this.contexts = [];
 		this.activeContext = null;
 
-		this._registerSchema();
-
 		const mouseObserverHost = global.window.document;
-
 		const THROTTLE_THRESHOLD = 16; // 16ms = ~60fps
+
+		this.editor.model.schema.setAttributeProperties( 'width', {
+			isFormatting: true
+		} );
 
 		this._observers = {
 			mouseMove: Object.create( DomEmitterMixin ),
@@ -173,12 +172,6 @@ export default class WidgetResizer extends Plugin {
 	_getContextByHandler( domResizeHandler ) {
 		return this._getContextByWrapper( getAncestors( domResizeHandler )
 			.filter( element => element.classList.contains( 'ck-widget__resizer-wrapper' ) )[ 0 ] );
-	}
-
-	_registerSchema() {
-		this.editor.model.schema.setAttributeProperties( WIDTH_ATTRIBUTE_NAME, {
-			isFormatting: true
-		} );
 	}
 }
 

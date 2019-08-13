@@ -1,3 +1,12 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module widget/resizecontext
+ */
+
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import {
 	getAbsoluteBoundaryPoint
@@ -7,12 +16,6 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-
-/**
- * @module widget/resizecontext
- */
-
-const WIDTH_ATTRIBUTE_NAME = 'width';
 
 /**
  * Stores the internal state of a single resizable object.
@@ -195,7 +198,7 @@ export default class ResizeContext {
 		this.redraw();
 
 		editor.model.change( writer => {
-			writer.setAttribute( WIDTH_ATTRIBUTE_NAME, newWidth, modelEntry );
+			writer.setAttribute( 'width', newWidth + 'px', modelEntry );
 		} );
 
 		this._cleanupContext();
