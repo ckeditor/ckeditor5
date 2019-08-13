@@ -222,10 +222,12 @@ export default class Mapper {
 
 		const names = this._elementToMarkerNames.get( element );
 
-		names.delete( name );
+		if ( names ) {
+			names.delete( name );
 
-		if ( names.size == 0 ) {
-			this._elementToMarkerNames.delete( element );
+			if ( names.size == 0 ) {
+				this._elementToMarkerNames.delete( element );
+			}
 		}
 	}
 
