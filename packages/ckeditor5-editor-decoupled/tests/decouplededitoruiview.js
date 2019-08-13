@@ -20,7 +20,7 @@ describe( 'DecoupledEditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editingView = new EditingView();
 		editingViewRoot = createRoot( editingView.document );
 		view = new DecoupledEditorUIView( locale, editingView );
