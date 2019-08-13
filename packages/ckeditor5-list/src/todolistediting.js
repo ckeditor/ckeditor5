@@ -288,7 +288,7 @@ function getChangedCheckmarkElements( editingView, changedViewNodes ) {
 
 	for ( const element of changedViewNodes ) {
 		for ( const item of editingView.createRangeIn( element ).getItems() ) {
-			if ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) && !elements.includes( item ) ) {
+			if ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) && !elements.includes( item ) && element.document ) {
 				elements.push( item );
 			}
 		}

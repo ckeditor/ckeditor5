@@ -553,7 +553,7 @@ describe( 'TodoListEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
 		} );
 
-		it( 'should convert li with checkbox wrapped by inline elements when checkbox is before the first  text node', () => {
+		it( 'should convert li with checkbox wrapped by inline elements when checkbox is before the first text node', () => {
 			editor.setData( '<ul><li><label><input type="checkbox">Foo</label></li></ul>' );
 
 			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
@@ -723,7 +723,7 @@ describe( 'TodoListEditing', () => {
 	describe( 'uiElements view post-fixer', () => {
 		it( 'should move all UIElements from before a checkmark after the checkmark element', () => {
 			setModelData( model,
-				'<listItem listType="todo" listIndent="0">foo</listItem>' +
+				'<listItem listType="todo" listIndent="0">[]foo</listItem>' +
 				'<listItem listType="todo" listIndent="0">bar</listItem>'
 			);
 
@@ -774,6 +774,9 @@ describe( 'TodoListEditing', () => {
 					'</li>' +
 				'</ul>'
 			);
+
+			// CC.
+			editor.execute( 'todoListCheck' );
 		} );
 	} );
 
@@ -972,6 +975,33 @@ describe( 'TodoListEditing', () => {
 		expect( getModelData( model ) ).to.equal(
 			'<listItem listIndent="0" listType="todo">foo</listItem>' +
 			'<paragraph>b[a]r</paragraph>'
+		);
+	} );
+
+	it( 'should toggle `todoListChecked` state using command when checkmark was created as a result of changing list type', () => {
+		setModelData( model, '<listItem listIndent="0" listType="numbered">f[]oo</listItem>' );
+		editor.execute( 'todoList' );
+
+		const command = editor.commands.get( 'todoListCheck' );
+
+		sinon.spy( command, 'execute' );
+
+		let checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
+		let checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
+		let checkboxElement = checkmarkDomElement.children[ 0 ];
+
+		expect( checkboxElement.checked ).to.equal( false );
+
+		checkboxElement.dispatchEvent( new Event( 'mousedown' ) );
+
+		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
+		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
+		checkboxElement = checkmarkDomElement.children[ 0 ];
+
+		sinon.assert.calledOnce( command.execute );
+		expect( checkboxElement.checked ).to.equal( true );
+		expect( getModelData( model ) ).to.equal(
+			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
 		);
 	} );
 } );
