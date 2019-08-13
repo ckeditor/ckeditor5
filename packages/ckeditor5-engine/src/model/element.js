@@ -94,6 +94,7 @@ export default class Element extends Node {
 	 *		element.is( 'element' ); // -> true
 	 *		element.is( 'node' ); // -> true
 	 *		element.is( 'model:element' ); // -> true
+	 *		element.is( 'model:node' ); // -> true
 	 *
 	 *		element.is( 'view:element' ); // -> false
 	 *		element.is( 'documentSelection' ); // -> false

@@ -58,10 +58,11 @@ export default class RootElement extends Element {
 	 * Checks whether this object is of the given.
 	 *
 	 *		rootElement.is( 'rootElement' ); // -> true
-	 *		rootElement.is( 'model:rootElement' ); // -> true
 	 *		rootElement.is( 'element' ); // -> true
 	 *		rootElement.is( 'node' ); // -> true
+	 *		rootElement.is( 'model:rootElement' ); // -> true
 	 *		rootElement.is( 'model:element' ); // -> true
+	 *		rootElement.is( 'model:node' ); // -> true
 	 *
 	 *		rootElement.is( 'view:element' ); // -> false
 	 *		rootElement.is( 'documentFragment' ); // -> false
@@ -70,7 +71,7 @@ export default class RootElement extends Element {
 	 * {@link module:engine/model/element~Element#name name}:
 	 *
 	 *		rootElement.is( '$root' ); // -> true if this is a $root element
-	 *		rootElement.is( 'element', '$root' ); // -> same as above
+	 *		rootElement.is( 'rootElement', '$root' ); // -> same as above
 	 *		text.is( '$root' ); -> false
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.

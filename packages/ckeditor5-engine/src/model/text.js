@@ -68,6 +68,7 @@ export default class Text extends Node {
 	 *		text.is( 'text' ); // -> true
 	 *		text.is( 'node' ); // -> true
 	 *		text.is( 'model:text' ); // -> true
+	 *		text.is( 'model:node' ); // -> true
 	 *
 	 *		text.is( 'view:text' ); // -> false
 	 *		text.is( 'documentSelection' ); // -> false
@@ -76,7 +77,6 @@ export default class Text extends Node {
 	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.
-	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 	is( type ) {
