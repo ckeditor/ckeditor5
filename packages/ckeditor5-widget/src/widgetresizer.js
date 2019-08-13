@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import Resizer from './resizer';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -51,18 +50,18 @@ export default class WidgetResizer extends Plugin {
 		}, THROTTLE_THRESHOLD );
 
 		this._observers.mouseDownUp.listenTo( mouseObserverHost, 'mousedown', ( event, domEventData ) => {
-			const target = domEventData.target;
+			if ( !Resizer.isResizeHandle( domEventData.target ) ) {
+				return;
+			}
 
-			const resizeHandler = isResizeHandler( target ) ? target : getAncestors( target ).filter( isResizeHandler )[ 0 ];
+			const resizeHandle = domEventData.target;
 
-			if ( resizeHandler ) {
-				this._observers.mouseMove.listenTo( mouseObserverHost, 'mousemove', mouseMoveListener );
+			this._observers.mouseMove.listenTo( mouseObserverHost, 'mousemove', mouseMoveListener );
 
-				this.activeResizer = this._getContextByHandler( resizeHandler );
+			this.activeResizer = this._getResizerByHandle( resizeHandle );
 
-				if ( this.activeResizer ) {
-					this.activeResizer.begin( resizeHandler );
-				}
+			if ( this.activeResizer ) {
+				this.activeResizer.begin( resizeHandle );
 			}
 		} );
 
@@ -91,10 +90,6 @@ export default class WidgetResizer extends Plugin {
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
 		this._observers.windowResize.listenTo( global.window, 'resize', resizeContexts );
-
-		function isResizeHandler( element ) {
-			return element.classList && element.classList.contains( 'ck-widget__resizer' );
-		}
 	}
 
 	/**
@@ -113,22 +108,12 @@ export default class WidgetResizer extends Plugin {
 		return resizer;
 	}
 
-	/**
-	 * Returns a resize context associated with given `domResizeWrapper`.
-	 *
-	 * @param {HTMLElement} domResizeWrapper
-	 */
-	_getContextByWrapper( domResizeWrapper ) {
-		for ( const context of this.resizers ) {
-			if ( domResizeWrapper.isSameNode( context.domResizeWrapper ) ) {
-				return context;
+	_getResizerByHandle( domResizeHandle ) {
+		for ( const resizer of this.resizers ) {
+			if ( resizer.containsHandle( domResizeHandle ) ) {
+				return resizer;
 			}
 		}
-	}
-
-	_getContextByHandler( domResizeHandler ) {
-		return this._getContextByWrapper( getAncestors( domResizeHandler )
-			.filter( element => element.classList.contains( 'ck-widget__resizer-wrapper' ) )[ 0 ] );
 	}
 }
 

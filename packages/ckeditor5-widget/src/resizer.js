@@ -259,6 +259,14 @@ export default class Resizer {
 		}
 	}
 
+	containsHandle( domElement ) {
+		return this.domResizeWrapper.contains( domElement );
+	}
+
+	static isResizeHandle( domElement ) {
+		return domElement.classList.contains( 'ck-widget__resizer' );
+	}
+
 	/**
 	 * Cleans up the context state.
 	 *
