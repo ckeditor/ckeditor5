@@ -78,6 +78,31 @@ describe( 'ToolbarView', () => {
 			expect( view.element.classList.contains( 'ck-toolbar' ) ).to.true;
 		} );
 
+		describe( 'attributes', () => {
+			it( 'should be defined', () => {
+				expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor toolbar' );
+			} );
+
+			it( 'should allow a custom aria-label', () => {
+				const view = new ToolbarView( locale );
+
+				view.ariaLabel = 'Custom label';
+
+				view.render();
+
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+			} );
+
+			it( 'should allow the aria-label to be translated', () => {
+				const view = new ToolbarView( new Locale( 'pl' ) );
+
+				view.render();
+
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
+			} );
+		} );
+
 		describe( 'event listeners', () => {
 			it( 'prevent default on #mousedown', () => {
 				const evt = new Event( 'mousedown', { bubbles: true } );
@@ -333,33 +358,6 @@ describe( 'ToolbarView', () => {
 				sinon.match( /^toolbarview-item-unavailable/ ),
 				{ name: 'baz' }
 			);
-		} );
-	} );
-
-	describe( 'aria', () => {
-		it( 'should poses required attributes', () => {
-			expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
-			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor toolbar' );
-		} );
-
-		it( 'should apply custom aria label', () => {
-			const view = new ToolbarView( locale );
-
-			view.ariaLabel = 'Custom label';
-
-			view.render();
-
-			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
-		} );
-	} );
-
-	describe( 'localization', () => {
-		it( 'should have translated aria label', () => {
-			const view = new ToolbarView( new Locale( 'pl' ) );
-
-			view.render();
-
-			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
 		} );
 	} );
 } );
