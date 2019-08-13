@@ -31,6 +31,7 @@ describe( 'ToolbarView', () => {
 			'Editor toolbar': 'Editor toolbar'
 		} );
 	} );
+
 	after( () => {
 		clearTranslations();
 	} );
