@@ -8,6 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import { getData } from '../../../src/dev-utils/model';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 // NOTE:
 // dev utils' setData() loses white spaces so don't use it for tests here!!!
@@ -20,7 +21,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 	describe( 'normalizing whitespaces around block boundaries (#822)', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph ] } )
+				.create( { plugins: [ Paragraph, TableEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 
@@ -106,13 +107,31 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		} );
 
 		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
-		it( 'nbsp between blocks is not ignored', () => {
+		it( 'nbsp between blocks is not ignored (between paragraphs)', () => {
 			editor.setData( '<p>foo</p>&nbsp;<p>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+				.to.equal( '<paragraph>foo</paragraph><paragraph> </paragraph><paragraph>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+		} );
+
+		it( 'nbsp between blocks is not ignored (different blocks)', () => {
+			editor.setData( '<table><tr><td>foo</td></tr></table>&nbsp;<p>bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal(
+					'<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' +
+					'<paragraph> </paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+			expect( editor.getData() )
+				.to.equal(
+					'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>' +
+					'<p>&nbsp;</p>' +
+					'<p>bar</p>'
+				);
 		} );
 
 		it( 'new lines inside blocks are ignored', () => {
