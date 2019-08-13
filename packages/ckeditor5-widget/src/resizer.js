@@ -164,8 +164,6 @@ export default class Resizer {
 		this.aspectRatio = this._options.getAspectRatio ?
 			this._options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
 
-		this._domResizeShadow.classList.add( 'ck-widget__resizer-shadow-active' );
-
 		this.redraw();
 	}
 
@@ -295,7 +293,6 @@ export default class Resizer {
 	 * @protected
 	 */
 	_dismissShadow() {
-		this._domResizeShadow.classList.remove( 'ck-widget__resizer-shadow-active' );
 		this._domResizeShadow.removeAttribute( 'style' );
 	}
 
