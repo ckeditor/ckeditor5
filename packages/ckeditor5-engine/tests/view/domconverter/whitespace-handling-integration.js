@@ -13,7 +13,7 @@ import { getData } from '../../../src/dev-utils/model';
 // dev utils' setData() loses white spaces so don't use it for tests here!!!
 // https://github.com/ckeditor/ckeditor5-engine/issues/1428
 
-describe( 'DomConverter – whitespace handling – integration', () => {
+describe.only( 'DomConverter – whitespace handling – integration', () => {
 	let editor;
 
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/822.
@@ -26,12 +26,6 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 
 					editor.model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
 					editor.conversion.attributeToElement( { model: 'bold', view: 'b' } );
-
-					editor.model.schema.register( 'blockQuote', {
-						allowWhere: '$block',
-						allowContentOf: '$root'
-					} );
-					editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 				} );
 		} );
 
@@ -111,31 +105,14 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
-		it( 'nbsp between blocks is ignored #1', () => {
+		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
+		it( 'nbsp between blocks is not ignored', () => {
 			editor.setData( '<p>foo</p>&nbsp;<p>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
-		} );
-
-		it( 'nbsp between blocks is ignored #2', () => {
-			editor.setData( '<table>foo</table>&nbsp;<p>bar</p>' );
-
-			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
-
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
-		} );
-
-		it( 'nbsp between blocks is ignored #3', () => {
-			editor.setData( '<blockquote>foo</blockquote>&nbsp;<blockquote>bar</blockquote>' );
-
-			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<blockQuote><paragraph>foo</paragraph></blockQuote><blockQuote><paragraph>bar</paragraph></blockQuote>' );
-
-			expect( editor.getData() ).to.equal( '<blockquote><p>foo</p></blockquote><blockquote><p>bar</p></blockquote>' );
 		} );
 
 		it( 'new lines inside blocks are ignored', () => {
