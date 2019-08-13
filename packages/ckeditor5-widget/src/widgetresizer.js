@@ -30,33 +30,21 @@ export default class WidgetResizer extends Plugin {
 		this.resizers = [];
 		this.activeResizer = null;
 
-		const mouseObserverHost = global.window.document;
+		const domDocument = global.window.document;
 		const THROTTLE_THRESHOLD = 16; // 16ms = ~60fps
 
 		this.editor.model.schema.setAttributeProperties( 'width', {
 			isFormatting: true
 		} );
 
-		this._observers = {
-			mouseMove: Object.create( DomEmitterMixin ),
-			mouseDownUp: Object.create( DomEmitterMixin ),
-			windowResize: Object.create( DomEmitterMixin )
-		};
+		this._observer = Object.create( DomEmitterMixin );
 
-		const mouseMoveListener = throttle( ( event, domEventData ) => {
-			if ( this.activeResizer ) {
-				this.activeResizer.updateSize( domEventData );
-			}
-		}, THROTTLE_THRESHOLD );
-
-		this._observers.mouseDownUp.listenTo( mouseObserverHost, 'mousedown', ( event, domEventData ) => {
+		this._observer.listenTo( domDocument, 'mousedown', ( event, domEventData ) => {
 			if ( !Resizer.isResizeHandle( domEventData.target ) ) {
 				return;
 			}
 
 			const resizeHandle = domEventData.target;
-
-			this._observers.mouseMove.listenTo( mouseObserverHost, 'mousemove', mouseMoveListener );
 
 			this.activeResizer = this._getResizerByHandle( resizeHandle );
 
@@ -65,31 +53,35 @@ export default class WidgetResizer extends Plugin {
 			}
 		} );
 
-		const finishResizing = () => {
+		this._observer.listenTo( domDocument, 'mousemove', throttle( ( event, domEventData ) => {
 			if ( this.activeResizer ) {
-				this._observers.mouseMove.stopListening( mouseObserverHost, 'mousemove', mouseMoveListener );
+				this.activeResizer.updateSize( domEventData );
+			}
+		}, THROTTLE_THRESHOLD ) );
 
-				if ( this.activeResizer ) {
-					this.activeResizer.commit( this.editor );
-				}
+		this._observer.listenTo( domDocument, 'mouseup', () => {
+			if ( this.activeResizer ) {
+				this.activeResizer.commit( this.editor );
 
 				this.activeResizer = null;
 			}
-		};
+		} );
 
-		const resizeContexts = throttle( () => {
+		const redrawResizers = throttle( () => {
 			for ( const context of this.resizers ) {
 				context.redraw();
 			}
 		}, THROTTLE_THRESHOLD );
 
-		this._observers.mouseDownUp.listenTo( mouseObserverHost, 'mouseup', finishResizing );
-
-		// Redrawing on layout change fixes issue with browser window resize or undo causing a mispositioned resizer.
-		this.editor.editing.view.document.on( 'layoutChanged', resizeContexts );
+		// Redrawing on any change of the UI of the editor (including content changes).
+		this.editor.ui.on( 'update', redrawResizers );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
-		this._observers.windowResize.listenTo( global.window, 'resize', resizeContexts );
+		this._observer.listenTo( global.window, 'resize', redrawResizers );
+	}
+
+	destroy() {
+		this._observer.stopListening();
 	}
 
 	/**
