@@ -194,12 +194,14 @@ Encore.
   	})
 	
 	// Configure PostCSS loader
-	.enablePostCssLoader(options => {
-    	Object.assign(options, styles.getPostCssConfig({
+	.addLoader({
+    	test: /ckeditor5-[^/\\]+[/\\].+\.css$/,
+    	loader: 'postcss-loader',
+    	options: styles.getPostCssConfig({
       		themeImporter: {
         		themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
       		},
-    	}));
+    	}),
   	})
 ```
 
