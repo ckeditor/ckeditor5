@@ -96,7 +96,7 @@ export default class TodoListEditing extends Plugin {
 			this.listenTo( viewRoot, 'change:children', ( evt, node ) => changedViewNodes.add( node ) );
 		}
 
-		// Move selection after a checkbox element.
+		// Move all uiElements after a checkmark element.
 		viewDocument.registerPostFixer( writer => {
 			const changedCheckmarkElements = getChangedCheckmarkElements( writer, changedViewNodes );
 
@@ -105,7 +105,7 @@ export default class TodoListEditing extends Plugin {
 			return moveUIElementsAfterCheckmark( writer, changedCheckmarkElements );
 		} );
 
-		// Move all uiElements after a checkbox element.
+		// Move selection after a checkmark element.
 		viewDocument.registerPostFixer( writer => moveSelectionAfterCheckmark( writer, viewDocument.selection ) );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
@@ -158,7 +158,7 @@ export default class TodoListEditing extends Plugin {
 	}
 
 	/**
-	 * Handles checkmar element change, moves selection to the corresponding model item to makes possible
+	 * Handles checkmark element change, moves selection to the corresponding model item to makes it possible
 	 * to toggle `todoListChecked` attribute using command and restore the selection position.
 	 *
 	 * Some say it's a hack :) Moving selection only for executing the command on a certain node and restoring it after,

@@ -27,7 +27,15 @@ export default class TodoListCheckCommand extends Command {
 		 *
 		 * @observable
 		 * @readonly
-		 * @member {Boolean} #value
+		 * @member {Boolean} #isEnabled
+		 */
+
+		/**
+		 * A List of todo list item selected by the {@link module:engine/model/selection~Selection}.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Array.<module:engine/model/element~Element>} #value
 		 */
 
 		/**
