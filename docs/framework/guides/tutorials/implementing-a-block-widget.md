@@ -30,7 +30,7 @@ First, install packages needed to build and set up a basic CKEditor 5 instance.
 ```bash
 npm install --save \
 	postcss-loader@3 \
-	raw-loader@1 \
+	raw-loader@3 \
 	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3 \
