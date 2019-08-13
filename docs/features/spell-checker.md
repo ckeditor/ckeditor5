@@ -32,6 +32,16 @@ WProofreader is installed separately from CKEditor 5 and does not need to be com
 
 The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).
 
+"Proofread in dialog" feature requires access to the text editor instance to edit content. To grant access for WProofreader it is necessary to link the editor's instance with the editable element. You can add the following configuration to the editor to use "Proofread in dialog".
+
+```js
+    ClassicEditor.create(
+        document.querySelector( '#editor' )
+    ).then( ( editor ) => {
+        editor.ui.getEditableElement( 'main' ).editor = editor;
+    } );
+```
+
 ### WProofreader Cloud
 
 After signing up for a [trial](https://www.webspellchecker.net/signup/hosted-signup.html#webspellchecker-proofreader-trial) or [paid](https://www.webspellchecker.net/signup/hosted-signup.html#webspellchecker-proofreader-paid) version, you will receive your service ID which is used to activate the service.
