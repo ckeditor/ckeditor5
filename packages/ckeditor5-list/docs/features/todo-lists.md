@@ -4,7 +4,7 @@ category: features
 
 # To-do lists
 
-The to-do list feature lets you create lists of interactive checkboxes with labels. They support all features of regular lists so you can nest to-do list together with bulleted and numbered lists in any combination.
+The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with bulleted and numbered lists in any combination.
 
 ## Demo
 
@@ -12,7 +12,7 @@ The to-do list feature lets you create lists of interactive checkboxes with labe
 
 ## Keyboard support
 
-You can check/uncheck an item by using the <kbd>Ctrl</kbd> + <kbd>Space</kbd> (or <kbd>⌘</kbd> + <kbd>Space</kbd> if you are using macOS) shortcut when the selection is in that item.
+You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Space</kbd> (or <kbd>⌘</kbd> + <kbd>Space</kbd> if you are using macOS) shortcut when the selection is in that item.
 
 ## Installation
 
@@ -42,7 +42,7 @@ ClassicEditor
 
 ## HTML structure
 
-When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`} to-do list will be represented as the following HTML:
+When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`}, a to-do list will be represented as the following HTML:
 
 ```html
 <ul class="todo-list">
@@ -78,7 +78,7 @@ For nested lists:
 
 ### Model representation
 
-From the technical point of view, to-do lists are built on top of the list feature. In the CKEditor 5 data model they are represented as a special `listType`, with optional `todoListChecked` attribute:
+From the technical point of view, to-do lists are built on top of the list feature. In the CKEditor 5 data model they are represented as a special `listType`, with an optional `todoListChecked` attribute:
 
 ```html
 <listItem listType="todo">Foo</listItem>
