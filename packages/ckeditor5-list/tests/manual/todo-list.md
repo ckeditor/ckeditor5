@@ -2,12 +2,12 @@
 
 1. The data should be loaded with:
   * two paragraphs,
-  * todo list with eight items, where 2,4 and 7 are checked
+  * todo list with eight items, where 2,4 and 7 are checked,
   * two paragraphs,
   * numbered list with one item,
   * todo list with one unchecked item,
   * bullet list with one item.
-2. Toolbar should have two buttons: for bullet and for numbered list.
+2. Toolbar should have three buttons: for bullet, numbered and todo list.
 
 ## Testing
 
