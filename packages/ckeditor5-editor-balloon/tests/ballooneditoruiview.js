@@ -17,7 +17,7 @@ describe( 'BalloonEditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editingView = new EditingView();
 		editingViewRoot = createRoot( editingView.document );
 		view = new BalloonEditorUIView( locale, editingView );
