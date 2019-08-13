@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
-import ImageResize from './image/imageresize';
 
 import '../theme/image.css';
 
@@ -35,7 +34,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEditing, Widget, ImageTextAlternative, ImageResize ];
+		return [ ImageEditing, Widget, ImageTextAlternative ];
 	}
 
 	/**

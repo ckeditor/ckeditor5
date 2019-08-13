@@ -66,9 +66,8 @@ describe( 'Image', () => {
 			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected ck-widget_with-resizer image" contenteditable="false">' +
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-widget__resizer-wrapper"></div>' +
 				'</figure>]'
 			);
 
@@ -80,9 +79,8 @@ describe( 'Image', () => {
 			setModelData( model, '[<image src="/assets/sample.png" alt=""></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected ck-widget_with-resizer image" contenteditable="false">' +
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-widget__resizer-wrapper"></div>' +
 				'</figure>]'
 			);
 
@@ -97,13 +95,11 @@ describe( 'Image', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected ck-widget_with-resizer image" contenteditable="false">' +
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-widget__resizer-wrapper"></div>' +
 				'</figure>]' +
-				'<figure class="ck-widget ck-widget_with-resizer image" contenteditable="false">' +
+				'<figure class="ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-widget__resizer-wrapper"></div>' +
 				'</figure>'
 			);
 
@@ -113,13 +109,11 @@ describe( 'Image', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<figure class="ck-widget ck-widget_with-resizer image" contenteditable="false">' +
+				'<figure class="ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-widget__resizer-wrapper"></div>' +
 				'</figure>' +
-				'[<figure class="ck-widget ck-widget_selected ck-widget_with-resizer image" contenteditable="false">' +
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-widget__resizer-wrapper"></div>' +
 				'</figure>]'
 			);
 		} );

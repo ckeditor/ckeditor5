@@ -10,6 +10,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImagePlugin from '../../src/image';
+import ImageResizePlugin from '../../src/image/imageresize';
 import ImageStyle from '../../src/imagestyle';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import TablePlugin from '@ckeditor/ckeditor5-table/src/table';
@@ -18,7 +19,7 @@ import {
 	getData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe.only( 'Image resizer', () => {
+describe( 'Image resizer', () => {
 	const FIXTURE_WIDTH = 100;
 	const FIXTURE_HEIGHT = 50;
 	const MOUSE_BUTTON_MAIN = 0; // Id of left mouse button.
@@ -52,7 +53,7 @@ describe.only( 'Image resizer', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin, UndoPlugin, TablePlugin ]
+				plugins: [ ImagePlugin, ImageStyle, ParagraphPlugin, UndoPlugin, TablePlugin, ImageResizePlugin ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
