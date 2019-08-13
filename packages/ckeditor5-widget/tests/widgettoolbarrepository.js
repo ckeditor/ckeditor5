@@ -90,7 +90,7 @@ describe( 'WidgetToolbarRepository', () => {
 			}, /^widget-toolbar-duplicated/, editor );
 		} );
 
-		it( 'should create predefined aria-label for toolbar', () => {
+		it( 'should use a pre–defined aria-label for the toolbar', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
 				getRelatedElement: () => null
