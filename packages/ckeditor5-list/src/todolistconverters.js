@@ -262,6 +262,12 @@ export function modelViewChangeType( onCheckedChange ) {
  */
 export function modelViewChangeChecked( onCheckedChange ) {
 	return ( evt, data, conversionApi ) => {
+		// Do not convert `todoListChecked` attribute when todo list item has changed to other list item.
+		// This attribute will be removed by the model post fixer.
+		if ( data.item.getAttribute( 'listType' ) != 'todo' ) {
+			return;
+		}
+
 		if ( !conversionApi.consumable.consume( data.item, 'attribute:todoListChecked' ) ) {
 			return;
 		}

@@ -312,11 +312,17 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should remove todoListChecked attribute when checked todoListItem is changed to regular list item', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0" todoListChecked="true">fo[]o</listItem>' );
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0">f[oo</listItem>' +
+				'<listItem listType="todo" listIndent="0" todoListChecked="true">fo]o</listItem>'
+			);
 
 			editor.execute( 'bulletedList' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">f[oo</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">fo]o</listItem>'
+			);
 		} );
 
 		it( 'should be overwritable', () => {
