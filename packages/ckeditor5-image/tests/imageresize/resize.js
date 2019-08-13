@@ -210,6 +210,20 @@ describe( 'Image resizer', () => {
 			},
 			resizerPosition: 'top-right'
 		} ) );
+
+		it( 'generates a proper output markup', async function() {
+			await generateResizeTest( {
+				expectedWidth: 120,
+				pointerOffset: {
+					x: 0,
+					y: -10
+				},
+				resizerPosition: 'top-right'
+			} ).call( this );
+
+			expect( editor.getData() ).to.be.equal(
+				`<p>foo</p><figure class="image"><img style="width:120px;" src="${ imageFixture }"></figure>` );
+		} );
 	} );
 
 	describe( 'side image', () => {
