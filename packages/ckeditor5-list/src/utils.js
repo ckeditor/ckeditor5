@@ -11,7 +11,7 @@ import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerel
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
- * Creates list item {@link module:engine/view/containerelement~ContainerElement}.
+ * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer The writer instance.
  * @returns {module:engine/view/containerelement~ContainerElement}
@@ -243,7 +243,8 @@ export function createUIComponent( editor, commandName, label, icon ) {
 		buttonView.set( {
 			label,
 			icon,
-			tooltip: true
+			tooltip: true,
+			isToggleable: true
 		} );
 
 		// Bind button model to command.

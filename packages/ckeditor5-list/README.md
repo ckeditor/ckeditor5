@@ -9,7 +9,7 @@ CKEditor 5 list feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-list/status.svg)](https://david-dm.org/ckeditor/ckeditor5-list)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-list/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-list?type=dev)
 
-This package implements bulleted and numbered list feature for CKEditor 5.
+This package implements bulleted, numbered and to-do list feature for CKEditor 5.
 
 ## Documentation
 
