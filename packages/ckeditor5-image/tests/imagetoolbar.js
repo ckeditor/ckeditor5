@@ -89,6 +89,14 @@ describe( 'ImageToolbar', () => {
 				balloonClassName: 'ck-toolbar-container'
 			} );
 		} );
+
+		it( 'should set aria-label attribute', () => {
+			toolbar.render();
+
+			expect( toolbar.element.getAttribute( 'aria-label' ) ).to.equal( 'Image toolbar' );
+
+			toolbar.destroy();
+		} );
 	} );
 
 	describe( 'integration with the editor focus', () => {
