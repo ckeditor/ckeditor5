@@ -37,7 +37,7 @@ describe( 'ToolbarView', () => {
 	} );
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		view = new ToolbarView( locale );
 		view.render();
 	} );
@@ -96,7 +96,7 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'should allow the aria-label to be translated', () => {
-				const view = new ToolbarView( new Locale( 'pl' ) );
+				const view = new ToolbarView( new Locale( { uiLanguage: 'pl' } ) );
 
 				view.render();
 
@@ -159,7 +159,7 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new ToolbarView( new Locale( 'en' ) );
+			const view = new ToolbarView( new Locale() );
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
