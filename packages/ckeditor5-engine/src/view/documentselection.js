@@ -275,14 +275,18 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `view:` string,
-	 * for example `view:selection`. Type is a string which usually equal to a name of the class written in camelCase convention.
-	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
-	 * for any type match for an entire child-parent chain.
+	 * Checks whether this object is of the given type.
 	 *
-	 * Acceptable types for this class are `selection` and `documentSelection` and its prefixed version.
+	 *		docSelection.is( 'selection' ); // -> true
+	 *		docSelection.is( 'documentSelection' ); // -> true
+	 *		docSelection.is( 'view:selection' ); // -> true
+	 *		docSelection.is( 'view:documentSelection' ); // -> true
 	 *
-	 * See also: {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *		docSelection.is( 'model:documentSelection' ); // -> false
+	 *		docSelection.is( 'element' ); // -> false
+	 *		docSelection.is( 'node' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

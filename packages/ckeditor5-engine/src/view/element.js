@@ -147,27 +147,27 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Method verifies if the checked object belongs to a given a type. Type's name might be prefixed with a `view:` string,
-	 * for example `view:element`. Type is a string which usually equal to a name of the class written in camelCase convention.
-	 * If the object is a class instance, which has a parent class with `is()` method, then type verification returns `true`
-	 * for any type match for an entire child-parent chain.
+	 * Checks whether this object is of the given.
 	 *
-	 * There is also possibility to check element's {@link #name} rather than just type. Name might be provided as second attribute
-	 * or might replace the type.
+	 *		element.is( 'element' ); // -> true
+	 *		element.is( 'node' ); // -> true
+	 *		element.is( 'view:element' ); // -> true
+	 *		element.is( 'view:node' ); // -> true
 	 *
-	 *		// obj is a `li` element
-	 *		obj.is( 'element' ); // true
-	 *		obj.is( 'view:element' ); // true
-	 *		obj.is( 'li' ); // true
-	 *		obj.is( 'element', 'li' ); // true
-	 *		obj.is( 'text' ); // false
-	 *		obj.is( 'element', 'img' ); // false
+	 *		element.is( 'model:element' ); // -> false
+	 *		element.is( 'documentSelection' ); // -> false
 	 *
-	 * Acceptable type for this class is `element` and its prefixed version, element's name or combination of both arguments.
+	 * Assuming that the object being checked is an element, you can also check its
+	 * {@link module:engine/view/element~Element#name name}:
 	 *
-	 * See also: {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *		element.is( 'img' ); // -> true if this is an <img> element
+	 *		element.is( 'element', 'img' ); // -> same as above
+	 *		text.is( 'img' ); -> false
 	 *
-	 * @param {String} type
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */

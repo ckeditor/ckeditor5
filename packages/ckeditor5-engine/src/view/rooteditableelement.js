@@ -38,7 +38,33 @@ export default class RootEditableElement extends EditableElement {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		rootEditableElement.is( 'rootEditableElement' ); // -> true
+	 *		rootEditableElement.is( 'editableElement' ); // -> true
+	 *		rootEditableElement.is( 'element' ); // -> true
+	 *		rootEditableElement.is( 'node' ); // -> true
+	 *		rootEditableElement.is( 'view:rootEditableElement' ); // -> true
+	 *		rootEditableElement.is( 'view:editableElement' ); // -> true
+	 *		rootEditableElement.is( 'view:element' ); // -> true
+	 *		rootEditableElement.is( 'view:node' ); // -> true
+	 *
+	 *		rootEditableElement.is( 'model:element' ); // -> false
+	 *		rootEditableElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is a root editbale element, you can also check its
+	 * {@link module:engine/view/rooteditableelement~RootEditableElement#name name}:
+	 *
+	 *		rootEditableElement.is( 'div' ); // -> true if this is a div root editable element
+	 *		rootEditableElement.is( 'rootEditableElement', 'div' ); // -> same as above
+	 *		text.is( 'div' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
 		const cutType = type.replace( /^view:/, '' );

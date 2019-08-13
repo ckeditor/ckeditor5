@@ -57,7 +57,31 @@ export default class UIElement extends Element {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		uiElement.is( 'uiElement' ); // -> true
+	 *		uiElement.is( 'element' ); // -> true
+	 *		uiElement.is( 'node' ); // -> true
+	 *		uiElement.is( 'view:uiElement' ); // -> true
+	 *		uiElement.is( 'view:element' ); // -> true
+	 *		uiElement.is( 'view:node' ); // -> true
+	 *
+	 *		uiElement.is( 'model:element' ); // -> false
+	 *		uiElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is an ui element, you can also check its
+	 * {@link module:engine/view/uielement~UIElement#name name}:
+	 *
+	 *		uiElement.is( 'span' ); // -> true if this is a span ui element
+	 *		uiElement.is( 'uiElement', 'span' ); // -> same as above
+	 *		text.is( 'span' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
 		const cutType = type.replace( /^view:/, '' );
