@@ -15,10 +15,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ListUI', () => {
-	let editor, model, bulletedListButton, numberedListButton;
+	let editorElement, editor, model, bulletedListButton, numberedListButton;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListEditing, ListUI ] } )
@@ -32,6 +32,8 @@ describe( 'ListUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 

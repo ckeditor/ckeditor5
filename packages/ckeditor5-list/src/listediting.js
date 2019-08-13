@@ -18,6 +18,7 @@ import {
 	cleanListItem,
 	modelViewInsertion,
 	modelViewChangeType,
+	modelViewMergeAfterChangeType,
 	modelViewMergeAfter,
 	modelViewRemove,
 	modelViewSplitOnInsert,
@@ -77,15 +78,12 @@ export default class ListEditing extends Plugin {
 		data.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
 
-		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
-		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
+		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
+		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
 		editing.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
-		data.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
 
 		editing.downcastDispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
 		editing.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-		data.downcastDispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
-		data.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
 
 		data.upcastDispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
 		data.upcastDispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
@@ -103,7 +101,7 @@ export default class ListEditing extends Plugin {
 		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
 
-		const viewDocument = this.editor.editing.view.document;
+		const viewDocument = editing.view.document;
 
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
@@ -172,6 +170,9 @@ export default class ListEditing extends Plugin {
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		const commands = this.editor.commands;
 

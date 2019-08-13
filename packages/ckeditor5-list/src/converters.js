@@ -7,7 +7,13 @@
  * @module list/converters
  */
 
-import { createViewListItemElement } from './utils';
+import {
+	generateLiInUl,
+	injectViewList,
+	mergeViewLists,
+	getSiblingListItem,
+	positionAfterUiElements
+} from './utils';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
@@ -89,7 +95,11 @@ export function modelViewRemove( model ) {
  * A model-to-view converter for the `type` attribute change on the `listItem` model element.
  *
  * This change means that the `<li>` element parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished
- * by breaking view elements, changing their name and merging them.
+ * by breaking view elements and changing their name. Next {@link module:list/converters~modelViewMergeAfterChangeType}
+ * converter will try to merge split nodes.
+ *
+ * Splitting this conversion into 2 steps makes it possible to add an additional conversion in the middle.
+ * Check {@link module:list/todolistconverters~modelViewChangeType} to see an example of it.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
@@ -104,22 +114,37 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 	const viewItem = conversionApi.mapper.toViewElement( data.item );
 	const viewWriter = conversionApi.writer;
 
-	// 1. Break the container after and before the list item.
+	// Break the container after and before the list item.
 	// This will create a view list with one view list item -- the one that changed type.
 	viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
 	viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
 
-	// 2. Change name of the view list that holds the changed view item.
+	// Change name of the view list that holds the changed view item.
 	// We cannot just change name property, because that would not render properly.
-	let viewList = viewItem.parent;
+	const viewList = viewItem.parent;
 	const listName = data.attributeNewValue == 'numbered' ? 'ol' : 'ul';
-	viewList = viewWriter.rename( listName, viewList );
 
-	// 3. Merge the changed view list with other lists, if possible.
+	viewWriter.rename( listName, viewList );
+}
+
+/**
+ * A model-to-view converter that try to merge nodes split by {@link module:list/converters~modelViewChangeType}.
+ *
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
+ * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+ * @param {Object} data Additional information about the change.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
+ */
+export function modelViewMergeAfterChangeType( evt, data, conversionApi ) {
+	const viewItem = conversionApi.mapper.toViewElement( data.item );
+	const viewList = viewItem.parent;
+	const viewWriter = conversionApi.writer;
+
+	// Merge the changed view list with other lists, if possible.
 	mergeViewLists( viewWriter, viewList, viewList.nextSibling );
 	mergeViewLists( viewWriter, viewList.previousSibling, viewList );
 
-	// 4. Consumable insertion of children inside the item. They are already handled by re-building the item in view.
+	// Consumable insertion of children inside the item. They are already handled by re-building the item in view.
 	for ( const child of data.item.getChildren() ) {
 		conversionApi.consumable.consume( child, 'insert' );
 	}
@@ -784,23 +809,6 @@ export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 	}
 }
 
-// Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of given `modelItem` model `listItem` element.
-// Then, it binds created view list item (<li>) with model `listItem` element.
-// The function then returns created view list item (<li>).
-function generateLiInUl( modelItem, conversionApi ) {
-	const mapper = conversionApi.mapper;
-	const viewWriter = conversionApi.writer;
-	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-	const viewItem = createViewListItemElement( viewWriter );
-
-	const viewList = viewWriter.createContainerElement( listType, null );
-	viewWriter.insert( viewWriter.createPositionAt( viewList, 0 ), viewItem );
-
-	mapper.bindElements( modelItem, viewItem );
-
-	return viewItem;
-}
-
 // Helper function that converts children of a given `<li>` view element into corresponding model elements.
 // The function maintains proper order of elements if model `listItem` is split during the conversion
 // due to block children conversion.
@@ -886,134 +894,6 @@ function findNextListItem( startPosition ) {
 	} while ( !value.value.item.is( 'listItem' ) );
 
 	return value.value.item;
-}
-
-// Helper function that seeks for a previous list item sibling of given model item which meets given criteria.
-// `options` object may contain one or more of given values (by default they are `false`):
-// `options.sameIndent` - whether sought sibling should have same indent (default = no),
-// `options.smallerIndent` - whether sought sibling should have smaller indent (default = no).
-// `options.listIndent` - the reference indent.
-// Either `options.sameIndent` or `options.smallerIndent` should be set to `true`.
-function getSiblingListItem( modelItem, options ) {
-	const sameIndent = !!options.sameIndent;
-	const smallerIndent = !!options.smallerIndent;
-	const indent = options.listIndent;
-
-	let item = modelItem;
-
-	while ( item && item.name == 'listItem' ) {
-		const itemIndent = item.getAttribute( 'listIndent' );
-
-		if ( ( sameIndent && indent == itemIndent ) || ( smallerIndent && indent > itemIndent ) ) {
-			return item;
-		}
-
-		item = item.previousSibling;
-	}
-
-	return null;
-}
-
-// Helper function that takes two parameters, that are expected to be view list elements, and merges them.
-// The merge happen only if both parameters are UL or OL elements.
-function mergeViewLists( viewWriter, firstList, secondList ) {
-	if ( firstList && secondList && ( firstList.name == 'ul' || firstList.name == 'ol' ) && firstList.name == secondList.name ) {
-		return viewWriter.mergeContainers( viewWriter.createPositionAfter( firstList ) );
-	}
-
-	return null;
-}
-
-// Helper function that takes model list item element `modelItem`, corresponding view list item element `injectedItem`
-// that is not added to the view and is inside a view list element (`ul` or `ol`) and is that's list only child.
-// The list is inserted at correct position (element breaking may be needed) and then merged with it's siblings.
-// See comments below to better understand the algorithm.
-function injectViewList( modelItem, injectedItem, conversionApi, model ) {
-	const injectedList = injectedItem.parent;
-	const mapper = conversionApi.mapper;
-	const viewWriter = conversionApi.writer;
-
-	// Position where view list will be inserted.
-	let insertPosition = mapper.toViewPosition( model.createPositionBefore( modelItem ) );
-
-	// 1. Find previous list item that has same or smaller indent. Basically we are looking for a first model item
-	// that is "parent" or "sibling" of injected model item.
-	// If there is no such list item, it means that injected list item is the first item in "its list".
-	const refItem = getSiblingListItem( modelItem.previousSibling, {
-		sameIndent: true,
-		smallerIndent: true,
-		listIndent: modelItem.getAttribute( 'listIndent' )
-	} );
-	const prevItem = modelItem.previousSibling;
-
-	if ( refItem && refItem.getAttribute( 'listIndent' ) == modelItem.getAttribute( 'listIndent' ) ) {
-		// There is a list item with same indent - we found same-level sibling.
-		// Break the list after it. Inserted view item will be inserted in the broken space.
-		const viewItem = mapper.toViewElement( refItem );
-		insertPosition = viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
-	} else {
-		// There is no list item with same indent. Check previous model item.
-		if ( prevItem && prevItem.name == 'listItem' ) {
-			// If it is a list item, it has to have lower indent.
-			// It means that inserted item should be added to it as its nested item.
-			insertPosition = mapper.toViewPosition( model.createPositionAt( prevItem, 'end' ) );
-		} else {
-			// Previous item is not a list item (or does not exist at all).
-			// Just map the position and insert the view item at mapped position.
-			insertPosition = mapper.toViewPosition( model.createPositionBefore( modelItem ) );
-		}
-	}
-
-	insertPosition = positionAfterUiElements( insertPosition );
-
-	// Insert the view item.
-	viewWriter.insert( insertPosition, injectedList );
-
-	// 2. Handle possible children of injected model item.
-	if ( prevItem && prevItem.name == 'listItem' ) {
-		const prevView = mapper.toViewElement( prevItem );
-
-		const walkerBoundaries = viewWriter.createRange( viewWriter.createPositionAt( prevView, 0 ), insertPosition );
-		const walker = walkerBoundaries.getWalker( { ignoreElementEnd: true } );
-
-		for ( const value of walker ) {
-			if ( value.item.is( 'li' ) ) {
-				const breakPosition = viewWriter.breakContainer( viewWriter.createPositionBefore( value.item ) );
-				const viewList = value.item.parent;
-
-				const targetPosition = viewWriter.createPositionAt( injectedItem, 'end' );
-				mergeViewLists( viewWriter, targetPosition.nodeBefore, targetPosition.nodeAfter );
-				viewWriter.move( viewWriter.createRangeOn( viewList ), targetPosition );
-
-				walker.position = breakPosition;
-			}
-		}
-	} else {
-		const nextViewList = injectedList.nextSibling;
-
-		if ( nextViewList && ( nextViewList.is( 'ul' ) || nextViewList.is( 'ol' ) ) ) {
-			let lastSubChild = null;
-
-			for ( const child of nextViewList.getChildren() ) {
-				const modelChild = mapper.toModelElement( child );
-
-				if ( modelChild && modelChild.getAttribute( 'listIndent' ) > modelItem.getAttribute( 'listIndent' ) ) {
-					lastSubChild = child;
-				} else {
-					break;
-				}
-			}
-
-			if ( lastSubChild ) {
-				viewWriter.breakContainer( viewWriter.createPositionAfter( lastSubChild ) );
-				viewWriter.move( viewWriter.createRangeOn( lastSubChild.parent ), viewWriter.createPositionAt( injectedItem, 'end' ) );
-			}
-		}
-	}
-
-	// Merge inserted view list with its possible neighbour lists.
-	mergeViewLists( viewWriter, injectedList, injectedList.nextSibling );
-	mergeViewLists( viewWriter, injectedList.previousSibling, injectedList );
 }
 
 // Helper function that takes all children of given `viewRemovedItem` and moves them in a correct place, according
@@ -1111,13 +991,4 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 			mergeViewLists( viewWriter, child.previousSibling, child );
 		}
 	}
-}
-
-// Helper function that for given `view.Position`, returns a `view.Position` that is after all `view.UIElement`s that
-// are after given position.
-// For example:
-// <container:p>foo^<ui:span></ui:span><ui:span></ui:span>bar</contain:p>
-// For position ^, a position before "bar" will be returned.
-function positionAfterUiElements( viewPosition ) {
-	return viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
 }
