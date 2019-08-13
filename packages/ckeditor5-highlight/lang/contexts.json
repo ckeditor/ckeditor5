@@ -7,5 +7,5 @@
 	"Green pen": "Toolbar button tooltip for applying green pen (text color).",
 	"Remove highlight": "Toolbar button tooltip for removing text highlight.",
 	"Highlight": "Toolbar button tooltip for the text highlight feature.",
-	"Text highlight toolbar": "Label describing the highlight feature toolbar used by assistive technologies."
+	"Text highlight toolbar": "Label used by assistive technologies describing the highlight feature toolbar."
 }
