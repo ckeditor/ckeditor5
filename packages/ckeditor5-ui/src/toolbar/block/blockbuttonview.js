@@ -34,6 +34,8 @@ export default class BlockButtonView extends ButtonView {
 		// Hide button on init.
 		this.isVisible = false;
 
+		this.isToggleable = true;
+
 		/**
 		 * Top offset.
 		 *

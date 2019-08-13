@@ -245,11 +245,20 @@ describe( 'ButtonView', () => {
 			} );
 
 			it( '-pressed reacts to #isOn', () => {
+				view.isToggleable = true;
 				view.isOn = true;
 				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'true' );
 
 				view.isOn = false;
-				expect( view.element.attributes[ 'aria-pressed' ] ).to.be.undefined;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
+			} );
+
+			it( '-pressed is not present for non–toggleable button', () => {
+				view.isOn = true;
+				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+
+				view.isOn = false;
+				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
 			} );
 		} );
 

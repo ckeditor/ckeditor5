@@ -53,6 +53,14 @@ import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
  * 		      |  block of content that the button is
  * 		      |  attached to.
  *
+ * **Note**: If you plan to run the editor in a right–to–left (RTL) language, keep in mind the button
+ * will be attached to the **right** boundary of the editable area. In that case, make sure the
+ * CSS position adjustment works properly by adding the following styles:
+ *
+ * 		.ck[dir="rtl"] .ck-block-toolbar-button {
+ * 			transform: translateX( 10px );
+ * 		}
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class BlockToolbar extends Plugin {
@@ -361,9 +369,17 @@ export default class BlockToolbar extends Plugin {
 			target: targetElement,
 			positions: [
 				( contentRect, buttonRect ) => {
+					let left;
+
+					if ( this.editor.locale.uiLanguageDirection === 'ltr' ) {
+						left = editableRect.left - buttonRect.width;
+					} else {
+						left = editableRect.right;
+					}
+
 					return {
-						top: contentRect.top + contentPaddingTop + ( ( contentLineHeight - buttonRect.height ) / 2 ),
-						left: editableRect.left - buttonRect.width
+						top: contentRect.top + contentPaddingTop + ( contentLineHeight - buttonRect.height ) / 2,
+						left
 					};
 				}
 			]

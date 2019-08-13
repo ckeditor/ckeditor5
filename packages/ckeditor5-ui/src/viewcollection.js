@@ -139,13 +139,13 @@ export default class ViewCollection extends Collection {
 	 *
 	 *		viewA.fire( 'eventY', customData );
 	 *
-	 * See {@link module:utils/emittermixin~EmitterMixin#delegate}.
+	 * See {@link module:utils/emittermixin~Emitter#delegate}.
 	 *
 	 * @param {...String} events {@link module:ui/view~View} event names to be delegated to another
 	 * {@link module:utils/emittermixin~Emitter}.
 	 * @returns {Object}
 	 * @returns {Function} return.to A function which accepts the destination of
-	 * {@link module:utils/emittermixin~EmitterMixin#delegate delegated} events.
+	 * {@link module:utils/emittermixin~Emitter#delegate delegated} events.
 	 */
 	delegate( ...events ) {
 		if ( !events.length || !isStringArray( events ) ) {
@@ -162,11 +162,11 @@ export default class ViewCollection extends Collection {
 
 		return {
 			/**
-			 * Selects destination for {@link module:utils/emittermixin~EmitterMixin#delegate} events.
+			 * Selects destination for {@link module:utils/emittermixin~Emitter#delegate} events.
 			 *
 			 * @memberOf module:ui/viewcollection~ViewCollection#delegate
 			 * @function module:ui/viewcollection~ViewCollection#delegate.to
-			 * @param {module:utils/emittermixin~EmitterMixin} dest An `EmitterMixin` instance which is
+			 * @param {module:utils/emittermixin~Emitter} dest An `Emitter` instance which is
 			 * the destination for delegated events.
 			 */
 			to: dest => {

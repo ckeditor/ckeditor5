@@ -253,18 +253,11 @@ export default class DropdownView extends View {
 			// If "auto", find the best position of the panel to fit into the viewport.
 			// Otherwise, simply assign the static position.
 			if ( this.panelPosition === 'auto' ) {
-				const defaultPanelPositions = DropdownView.defaultPanelPositions;
-
-				this.panelView.position = getOptimalPosition( {
+				this.panelView.position = DropdownView._getOptimalPosition( {
 					element: this.panelView.element,
 					target: this.buttonView.element,
 					fitInViewport: true,
-					positions: [
-						defaultPanelPositions.southEast,
-						defaultPanelPositions.southWest,
-						defaultPanelPositions.northEast,
-						defaultPanelPositions.northWest
-					]
+					positions: this._panelPositions
 				} ).name;
 			} else {
 				this.panelView.position = this.panelPosition;
@@ -311,6 +304,24 @@ export default class DropdownView extends View {
 	 */
 	focus() {
 		this.buttonView.focus();
+	}
+
+	/**
+	 * Returns {@link #panelView panel} positions to be used by the
+	 * {@link module:utils/dom/position~getOptimalPosition `getOptimalPosition()`}
+	 * utility considering the direction of the language the UI of the editor is displayed in.
+	 *
+	 * @type {module:utils/dom/position~Options#positions}
+	 * @private
+	 */
+	get _panelPositions() {
+		const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
+
+		if ( this.locale.uiLanguageDirection === 'ltr' ) {
+			return [ southEast, southWest, northEast, northWest ];
+		} else {
+			return [ southWest, southEast, northWest, northEast ];
+		}
 	}
 }
 
@@ -392,3 +403,11 @@ DropdownView.defaultPanelPositions = {
 		};
 	}
 };
+
+/**
+ * A function used to calculate the optimal position for the dropdown panel.
+ *
+ * @protected
+ * @member {Function} module:ui/dropdown/dropdownview~DropdownView._getOptimalPosition
+ */
+DropdownView._getOptimalPosition = getOptimalPosition;

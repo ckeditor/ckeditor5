@@ -10,7 +10,6 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DropdownView', () => {
@@ -19,7 +18,10 @@ describe( 'DropdownView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = { t() {} };
+		locale = {
+			uiLanguageDirection: 'ltr',
+			t() {}
+		};
 
 		buttonView = new ButtonView( locale );
 		panelView = new DropdownPanelView( locale );
@@ -116,7 +118,7 @@ describe( 'DropdownView', () => {
 			} );
 
 			describe( 'view.panelView#position to view#panelPosition', () => {
-				it( 'does not update until the dropdown is opened', () => {
+				it( 'does not update until the dropdown is open', () => {
 					view.isOpen = false;
 					view.panelPosition = 'nw';
 
@@ -128,86 +130,37 @@ describe( 'DropdownView', () => {
 				} );
 
 				describe( 'in "auto" mode', () => {
-					beforeEach( () => {
-						// Bloat the panel a little to give the positioning algorithm something to
-						// work with. If the panel was empty, any smart positioning is pointless.
-						// Placing an empty element in the viewport isn't that hard, right?
-						panelView.element.style.width = '200px';
-						panelView.element.style.height = '200px';
-					} );
-
-					it( 'defaults to "south-east" when there is a plenty of space around', () => {
-						const windowRect = new Rect( global.window );
-
-						// "Put" the dropdown in the middle of the viewport.
-						stubElementClientRect( view.buttonView.element, {
-							top: windowRect.height / 2,
-							left: windowRect.width / 2,
-							width: 10,
-							height: 10
-						} );
+					it( 'uses _getOptimalPosition() and a dedicated set of positions (LTR)', () => {
+						const spy = testUtils.sinon.spy( DropdownView, '_getOptimalPosition' );
+						const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
 
 						view.isOpen = true;
 
-						expect( panelView.position ).to.equal( 'se' );
+						sinon.assert.calledWithExactly( spy, sinon.match( {
+							element: panelView.element,
+							target: buttonView.element,
+							positions: [
+								southEast, southWest, northEast, northWest
+							],
+							fitInViewport: true
+						} ) );
 					} );
 
-					it( 'when the dropdown in the north-west corner of the viewport', () => {
-						stubElementClientRect( view.buttonView.element, {
-							top: 0,
-							left: 0,
-							width: 100,
-							height: 10
-						} );
+					it( 'uses _getOptimalPosition() and a dedicated set of positions (RTL)', () => {
+						const spy = testUtils.sinon.spy( DropdownView, '_getOptimalPosition' );
+						const { southEast, southWest, northEast, northWest } = DropdownView.defaultPanelPositions;
 
+						view.locale.uiLanguageDirection = 'rtl';
 						view.isOpen = true;
 
-						expect( panelView.position ).to.equal( 'se' );
-					} );
-
-					it( 'when the dropdown in the north-east corner of the viewport', () => {
-						const windowRect = new Rect( global.window );
-
-						stubElementClientRect( view.buttonView.element, {
-							top: 0,
-							left: windowRect.right - 100,
-							width: 100,
-							height: 10
-						} );
-
-						view.isOpen = true;
-
-						expect( panelView.position ).to.equal( 'sw' );
-					} );
-
-					it( 'when the dropdown in the south-west corner of the viewport', () => {
-						const windowRect = new Rect( global.window );
-
-						stubElementClientRect( view.buttonView.element, {
-							top: windowRect.bottom - 10,
-							left: 0,
-							width: 100,
-							height: 10
-						} );
-
-						view.isOpen = true;
-
-						expect( panelView.position ).to.equal( 'ne' );
-					} );
-
-					it( 'when the dropdown in the south-east corner of the viewport', () => {
-						const windowRect = new Rect( global.window );
-
-						stubElementClientRect( view.buttonView.element, {
-							top: windowRect.bottom - 10,
-							left: windowRect.right - 100,
-							width: 100,
-							height: 10
-						} );
-
-						view.isOpen = true;
-
-						expect( panelView.position ).to.equal( 'nw' );
+						sinon.assert.calledWithExactly( spy, sinon.match( {
+							element: panelView.element,
+							target: buttonView.element,
+							positions: [
+								southWest, southEast, northWest, northEast
+							],
+							fitInViewport: true
+						} ) );
 					} );
 				} );
 			} );
@@ -372,13 +325,66 @@ describe( 'DropdownView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	describe( 'DropdownView.defaultPanelPositions', () => {
+		let positions, buttonRect, panelRect;
+
+		beforeEach( () => {
+			positions = DropdownView.defaultPanelPositions;
+
+			buttonRect = {
+				top: 100,
+				bottom: 200,
+				left: 100,
+				right: 200,
+				width: 100,
+				height: 100
+			};
+
+			panelRect = {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 50,
+				height: 50
+			};
+		} );
+
+		it( 'should have a proper length', () => {
+			expect( Object.keys( positions ) ).to.have.length( 4 );
+		} );
+
+		it( 'should define the "southEast" position', () => {
+			expect( positions.southEast( buttonRect, panelRect ) ).to.deep.equal( {
+				top: 200,
+				left: 100,
+				name: 'se'
+			} );
+		} );
+
+		it( 'should define the "southWest" position', () => {
+			expect( positions.southWest( buttonRect, panelRect ) ).to.deep.equal( {
+				top: 200,
+				left: 150,
+				name: 'sw'
+			} );
+		} );
+
+		it( 'should define the "northEast" position', () => {
+			expect( positions.northEast( buttonRect, panelRect ) ).to.deep.equal( {
+				top: 50,
+				left: 100,
+				name: 'ne'
+			} );
+		} );
+
+		it( 'should define the "northWest" position', () => {
+			expect( positions.northWest( buttonRect, panelRect ) ).to.deep.equal( {
+				top: 150,
+				left: 150,
+				name: 'nw'
+			} );
+		} );
+	} );
 } );
-
-function stubElementClientRect( element, data ) {
-	const clientRect = Object.assign( {}, data );
-
-	clientRect.right = clientRect.left + clientRect.width;
-	clientRect.bottom = clientRect.top + clientRect.height;
-
-	testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( clientRect );
-}

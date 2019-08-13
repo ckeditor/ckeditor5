@@ -11,7 +11,7 @@ describe( 'BoxedEditorUIView', () => {
 	let view, element;
 
 	beforeEach( () => {
-		view = new BoxedEditorUIView( new Locale( 'en' ) );
+		view = new BoxedEditorUIView( new Locale() );
 		view.render();
 		element = view.element;
 	} );
@@ -31,6 +31,7 @@ describe( 'BoxedEditorUIView', () => {
 			expect( view.element.classList.contains( 'ck-editor' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-reset' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( element.attributes[ 'aria-labelledby' ].value )
 				.to.equal( view.element.firstChild.id )
 				.to.match( /^ck-editor__aria-label_\w+$/ );
@@ -58,6 +59,16 @@ describe( 'BoxedEditorUIView', () => {
 		it( 'setups accessibility of the view region elements', () => {
 			expect( element.childNodes[ 1 ].attributes.getNamedItem( 'role' ).value ).to.equal( 'presentation' );
 			expect( element.childNodes[ 2 ].attributes.getNamedItem( 'role' ).value ).to.equal( 'presentation' );
+		} );
+
+		it( 'sets the proper "dir" attribute value when using RTL language', () => {
+			const view = new BoxedEditorUIView( new Locale( { uiLanguage: 'ar' } ) );
+
+			view.render();
+
+			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'rtl' );
+
+			view.destroy();
 		} );
 	} );
 } );
