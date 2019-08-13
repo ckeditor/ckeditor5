@@ -241,10 +241,11 @@ describe( 'Alignment UI', () => {
 			expect( dropdown.element.classList.contains( 'ck-alignment-dropdown' ) ).to.be.true;
 		} );
 
-		it( '#toolbarView has the base properties', () => {
+		it( '#toolbarView has the basic properties', () => {
 			const toolbarView = dropdown.toolbarView;
 
 			expect( toolbarView ).to.have.property( 'isVertical', true );
+			expect( toolbarView ).to.have.property( 'ariaLabel', 'Text alignment toolbar' );
 		} );
 
 		it( 'should hold defined buttons', () => {

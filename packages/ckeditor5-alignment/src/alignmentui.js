@@ -93,6 +93,7 @@ export default class AlignmentUI extends Plugin {
 			} );
 
 			dropdownView.toolbarView.isVertical = true;
+			dropdownView.toolbarView.ariaLabel = t( 'Text alignment toolbar' );
 
 			dropdownView.extendTemplate( {
 				attributes: {
