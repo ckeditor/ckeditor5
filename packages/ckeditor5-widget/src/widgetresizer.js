@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
-import ResizeContext from './resizecontext';
+import Resizer from './resizer';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { throttle } from 'lodash-es';
@@ -28,8 +28,8 @@ export default class WidgetResizer extends Plugin {
 	}
 
 	init() {
-		this.contexts = [];
-		this.activeContext = null;
+		this.resizers = [];
+		this.activeResizer = null;
 
 		const mouseObserverHost = global.window.document;
 		const THROTTLE_THRESHOLD = 16; // 16ms = ~60fps
@@ -45,8 +45,8 @@ export default class WidgetResizer extends Plugin {
 		};
 
 		const mouseMoveListener = throttle( ( event, domEventData ) => {
-			if ( this.activeContext ) {
-				this.activeContext.updateSize( domEventData );
+			if ( this.activeResizer ) {
+				this.activeResizer.updateSize( domEventData );
 			}
 		}, THROTTLE_THRESHOLD );
 
@@ -58,28 +58,28 @@ export default class WidgetResizer extends Plugin {
 			if ( resizeHandler ) {
 				this._observers.mouseMove.listenTo( mouseObserverHost, 'mousemove', mouseMoveListener );
 
-				this.activeContext = this._getContextByHandler( resizeHandler );
+				this.activeResizer = this._getContextByHandler( resizeHandler );
 
-				if ( this.activeContext ) {
-					this.activeContext.begin( resizeHandler );
+				if ( this.activeResizer ) {
+					this.activeResizer.begin( resizeHandler );
 				}
 			}
 		} );
 
 		const finishResizing = () => {
-			if ( this.activeContext ) {
+			if ( this.activeResizer ) {
 				this._observers.mouseMove.stopListening( mouseObserverHost, 'mousemove', mouseMoveListener );
 
-				if ( this.activeContext ) {
-					this.activeContext.commit( this.editor );
+				if ( this.activeResizer ) {
+					this.activeResizer.commit( this.editor );
 				}
 
-				this.activeContext = null;
+				this.activeResizer = null;
 			}
 		};
 
 		const resizeContexts = throttle( () => {
-			for ( const context of this.contexts ) {
+			for ( const context of this.resizers ) {
 				context.redraw();
 			}
 		}, THROTTLE_THRESHOLD );
@@ -98,62 +98,19 @@ export default class WidgetResizer extends Plugin {
 	}
 
 	/**
-	 * Method that applies a resizer to a given `widgetElement`.
-	 *
-	 * ```js
-	 * conversion.for( 'editingDowncast' ).elementToElement( {
-	 *		model: 'image',
-	 *		view: ( modelElement, viewWriter ) => {
-	 *			const widget = toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
-	 *
-	 *			editor.plugins.get( 'WidgetResizer' ).apply( widget, viewWriter );
-	 *
-	 *			return widget;
-	 *		}
-	 *	} );
-	 * ```
-	 *
-	 * You can use the `options` parameter to customize the behavior of the resizer:
-	 *
-	 * ```js
-	 * conversion.for( 'editingDowncast' ).elementToElement( {
-	 *			model: 'image',
-	 *			view: ( modelElement, viewWriter ) => {
-	 *				const widget = toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
-	 *
-	 *				editor.plugins.get( 'WidgetResizer' ).apply( widget, viewWriter, {
-	 *					getResizeHost( wrapper ) {
-	 *						return wrapper.querySelector( 'img' );
-	 *					},
-	 *					getAspectRatio( resizeHost ) {
-	 *						return resizeHost.naturalWidth / resizeHost.naturalHeight;
-	 *					},
-	 *					isCentered( context ) {
-	 *						const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
-	 *
-	 *						return !imageStyle || imageStyle == 'full';
-	 *					}
-	 *				} );
-	 *
-	 *				return widget;
-	 *			}
-	 *		} );
-	 * ```
-	 *
-	 * @param {module:engine/view/containerelement~ContainerElement} widgetElement
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
-	 * @returns {module:widget/resizecontext~ResizeContext}
+	 * @returns {module:widget/resizer~Resizer}
 	 */
-	apply( widgetElement, writer, options ) {
-		const context = new ResizeContext( options );
-		context.attach( widgetElement, writer );
+	attachTo( options ) {
+		const resizer = new Resizer( options );
 
-		this.editor.editing.view.once( 'render', () => context.redraw() );
+		resizer.attach();
 
-		this.contexts.push( context );
+		this.editor.editing.view.once( 'render', () => resizer.redraw() );
 
-		return context;
+		this.resizers.push( resizer );
+
+		return resizer;
 	}
 
 	/**
@@ -162,7 +119,7 @@ export default class WidgetResizer extends Plugin {
 	 * @param {HTMLElement} domResizeWrapper
 	 */
 	_getContextByWrapper( domResizeWrapper ) {
-		for ( const context of this.contexts ) {
+		for ( const context of this.resizers ) {
 			if ( domResizeWrapper.isSameNode( context.domResizeWrapper ) ) {
 				return context;
 			}
@@ -182,18 +139,18 @@ export default class WidgetResizer extends Plugin {
  */
 
 /**
- * Function to explicitly point the resizing host.
- *
- * By default resizer will use widget wrapper, but it's possible to point any child within widget wrapper.
- *
- * ```js
- *	editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
- *		getResizeHost( wrapper ) {
- *			return wrapper.querySelector( 'img' );
- *		}
- *	} );
- * ```
- *
+ * @member {module:engine/model/element~Element} module:widget/widgetresizer~ResizerOptions#modelElement
+ */
+
+/**
+ * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresizer~ResizerOptions#viewElement
+ */
+
+/**
+ * @member {module:engine/view/downcastwriter~DowncastWriter} module:widget/widgetresizer~ResizerOptions#downcastWriter
+ */
+
+/**
  * @member {Function} module:widget/widgetresizer~ResizerOptions#getResizeHost
  */
 
@@ -202,14 +159,5 @@ export default class WidgetResizer extends Plugin {
  */
 
 /**
- * ```js
- *	editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
- *		isCentered( context ) {
- *			const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
- *
- *			return !imageStyle || imageStyle == 'full';
- *		}
- *	} );
- * ```
  * @member {Function} module:widget/widgetresizer~ResizerOptions#isCentered
  */

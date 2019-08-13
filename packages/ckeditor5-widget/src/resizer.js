@@ -4,7 +4,7 @@
  */
 
 /**
- * @module widget/resizecontext
+ * @module widget/resizer
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -20,24 +20,20 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * Stores the internal state of a single resizable object.
  *
- * @class ResizeContext
+ * @class Resizer
  */
-export default class ResizeContext {
+export default class Resizer {
+	/**
+	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
+	 */
 	constructor( options ) {
-		/**
-		 * View of a widget associated with the resizer.
-		 *
-		 * @member {module:engine/view/element~Element}
-		 */
-		this.widgetWrapperElement = null;
-
 		/**
 		 * Container of entire resize UI.
 		 *
 		 * Note that this property is initialized only after the element bound with resizer is drawn
 		 * so it will be a `null` when uninitialized.
 		 *
-		 * @member {HTMLElement|null}
+		 * @type {HTMLElement|null} #domResizeWrapper
 		 */
 		this.domResizeWrapper = null;
 
@@ -52,7 +48,7 @@ export default class ResizeContext {
 		};
 
 		/**
-		 * @member {module:widget/widgetresizer~ResizerOptions}
+		 * @type {module:widget/widgetresizer~ResizerOptions}
 		 */
 		this._options = options || {};
 
@@ -72,13 +68,13 @@ export default class ResizeContext {
 		 * View to a wrapper containing all the resizer-related views.
 		 *
 		 * @private
-		 * @member {module:engine/view/uielement~UIElement}
+		 * @type {module:engine/view/uielement~UIElement}
 		 */
 		this._resizeWrapperElement = null;
 
 		/**
 		 * @private
-		 * @member {HTMLElement|null}
+		 * @type {HTMLElement|null}
 		 */
 		this._domResizeShadow = null;
 
@@ -120,15 +116,12 @@ export default class ResizeContext {
 	}
 
 	/**
-	 * Method to be called to attach a resizer to a given widget element.
 	 *
-	 * @param {module:engine/view/element~Element} widgetElement Widget's wrapper.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
-	attach( widgetElement, writer ) {
+	attach() {
 		const that = this;
-
-		this.widgetWrapperElement = widgetElement;
+		const viewElement = this._options.viewElement;
+		const writer = this._options.downcastWriter;
 
 		this._resizeWrapperElement = writer.createUIElement( 'div', {
 			class: 'ck ck-widget__resizer-wrapper'
@@ -145,8 +138,8 @@ export default class ResizeContext {
 		} );
 
 		// Append resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( widgetElement, widgetElement.childCount ), this._resizeWrapperElement );
-		writer.addClass( [ 'ck-widget_with-resizer' ], widgetElement );
+		writer.insert( writer.createPositionAt( viewElement, viewElement.childCount ), this._resizeWrapperElement );
+		writer.addClass( [ 'ck-widget_with-resizer' ], viewElement );
 	}
 
 	/**
@@ -190,7 +183,7 @@ export default class ResizeContext {
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	commit( editor ) {
-		const modelEntry = this._getModel( editor, this.widgetWrapperElement );
+		const modelElement = this._options.modelElement;
 		const newWidth = this._domResizeShadow.clientWidth;
 
 		this._dismissShadow();
@@ -198,7 +191,7 @@ export default class ResizeContext {
 		this.redraw();
 
 		editor.model.change( writer => {
-			writer.setAttribute( 'width', newWidth + 'px', modelEntry );
+			writer.setAttribute( 'width', newWidth + 'px', modelElement );
 		} );
 
 		this._cleanupContext();
@@ -215,9 +208,6 @@ export default class ResizeContext {
 
 	destroy() {
 		this.cancel();
-
-		this._domResizeShadow = null;
-		this.wrapper = null;
 	}
 
 	/**
@@ -312,20 +302,9 @@ export default class ResizeContext {
 	}
 
 	/**
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {module:engine/view/element~Element} widgetWrapperElement
-	 * @returns {module:engine/model/element~Element|undefined}
 	 * @protected
-	 */
-	_getModel( editor, widgetWrapperElement ) {
-		return editor.editing.mapper.toModelElement( widgetWrapperElement );
-	}
-
-	/**
 	 * @param {String} position Like `"top-left"`.
 	 * @returns {String} Inverted `position`, e.g. returns `"bottom-right"` if `"top-left"` was given as `position`.
-	 * @protected
 	 */
 	_invertPosition( position ) {
 		const parts = position.split( '-' );
@@ -510,7 +489,7 @@ export default class ResizeContext {
 	}
 }
 
-mix( ResizeContext, ObservableMixin );
+mix( Resizer, ObservableMixin );
 
 class SizeView extends View {
 	constructor() {
