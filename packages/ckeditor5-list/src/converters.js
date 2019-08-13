@@ -413,47 +413,6 @@ export function viewModelConverter( evt, data, conversionApi ) {
 	}
 }
 
-// TODO: refactor this ugly piece of code...
-function getIndentModifier( listItem, conversionStore ) {
-	// Ensure proper conversion store value.
-	conversionStore.indentModifiers = conversionStore.indentModifiers || new WeakMap();
-
-	const list = listItem.parent;
-
-	if ( !list || !list.parent ) {
-		return 0;
-	}
-
-	let modifier = 0;
-
-	if ( isList( list.parent ) ) {
-		const previousSibling = list.previousSibling;
-
-		if ( previousSibling && previousSibling.is( 'li' ) ) {
-			modifier = ( conversionStore.indentModifiers.get( previousSibling.parent ) || 0 ) + 1;
-		} else {
-			modifier = getNestedListModifier( list, conversionStore );
-		}
-	}
-
-	// Update the stored modifiers info.
-	conversionStore.indentModifiers.set( list, modifier );
-
-	return modifier;
-}
-
-function getNestedListModifier( list, conversionStore ) {
-	let listParent = list.parent;
-	let modifier;
-
-	while ( ( isList( listParent ) ) && modifier === undefined ) {
-		modifier = conversionStore.indentModifiers.get( listParent );
-		listParent = listParent.parent;
-	}
-
-	return modifier === undefined ? 0 : modifier + 1;
-}
-
 /**
  * A view-to-model converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
  * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element, however, also
@@ -610,7 +569,7 @@ export function viewToModelPosition( model ) {
 			let modelLength = 1; // Starts from 1 because the original <li> has to be counted in too.
 			let viewList = viewPos.nodeBefore;
 
-			while ( viewList && ( isList( viewList ) ) ) {
+			while ( viewList && isList( viewList ) ) {
 				modelLength += mapper.getModelLength( viewList );
 
 				viewList = viewList.previousSibling;
@@ -1042,4 +1001,50 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 // Checks if view element is a list type (ul or ol).
 function isList( viewElement ) {
 	return viewElement.is( 'ol' ) || viewElement.is( 'ul' );
+}
+
+// Return list item indent modifier - used to fix lists that are not properly nested according to HTML rules.
+function getIndentModifier( listItem, conversionStore ) {
+	// Ensure proper conversion store value.
+	// Indent modifiers stores already calculated indentation modifiers.
+	conversionStore.indentModifiers = conversionStore.indentModifiers || new WeakMap();
+
+	const list = listItem.parent;
+
+	// List item might be pasted without parent list or be directly in pasted content - no need to calculate or store anything.
+	if ( !list || !list.parent ) {
+		return 0;
+	}
+
+	let modifier = 0;
+
+	if ( isList( list.parent ) ) {
+		// Only consider list nested directly in other list so when not wrapped by LI element.
+		const previousSibling = list.previousSibling;
+
+		if ( previousSibling && previousSibling.is( 'li' ) ) {
+			// List is nested in other list but after other list item.
+			modifier = ( conversionStore.indentModifiers.get( previousSibling.parent ) || 0 ) + 1;
+		} else {
+			// List is nested directly in other list as a first item.
+			modifier = getNestedListModifier( list, conversionStore );
+		}
+	}
+
+	// Store the indent modifier of parent list.
+	conversionStore.indentModifiers.set( list, modifier );
+
+	return modifier;
+}
+
+function getNestedListModifier( list, conversionStore ) {
+	let listParent = list.parent;
+	let modifier;
+
+	while ( isList( listParent ) && modifier === undefined ) {
+		modifier = conversionStore.indentModifiers.get( listParent );
+		listParent = listParent.parent;
+	}
+
+	return modifier === undefined ? 0 : modifier + 1;
 }
