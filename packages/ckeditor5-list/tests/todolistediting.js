@@ -11,6 +11,7 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ListCommand from '../src/listcommand';
 import TodoListCheckCommand from '../src/todolistcheckcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -875,7 +876,7 @@ describe( 'TodoListEditing', () => {
 } );
 
 describe( 'TodoListEditing', () => {
-	let editorElement, editor, model, view, viewDoc, viewRoot;
+	let editorElement, editor, model, modelDoc, view, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -889,6 +890,7 @@ describe( 'TodoListEditing', () => {
 				editor = newEditor;
 
 				model = editor.model;
+				modelDoc = model.document;
 
 				view = editor.editing.view;
 				viewDoc = view.document;
@@ -993,6 +995,41 @@ describe( 'TodoListEditing', () => {
 		expect( checkboxElement.checked ).to.equal( true );
 		expect( getModelData( model ) ).to.equal(
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
+		);
+	} );
+
+	it( 'should toggle `todoListChecked` state using command in root created in a runtime', () => {
+		const dynamicRootElement = document.createElement( 'div' );
+		const dynamicRootEditable = new InlineEditableUIView( editor.locale, view, dynamicRootElement );
+
+		document.body.appendChild( dynamicRootElement );
+
+		modelDoc.createRoot( '$root', 'dynamicRoot' );
+		dynamicRootEditable.name = 'dynamicRoot';
+		view.attachDomRoot( dynamicRootElement, 'dynamicRoot' );
+
+		const command = editor.commands.get( 'todoListCheck' );
+
+		sinon.spy( command, 'execute' );
+
+		setModelData( model, '<listItem listIndent="0" listType="todo">f[]oo</listItem>', { rootName: 'dynamicRoot' } );
+
+		let checkmarkViewElement = viewDoc.getRoot( 'dynamicRoot' ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+		let checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
+		let checkboxElement = checkmarkDomElement.children[ 0 ];
+
+		expect( checkboxElement.checked ).to.equal( false );
+
+		checkboxElement.dispatchEvent( new Event( 'change' ) );
+
+		checkmarkViewElement = viewDoc.getRoot( 'dynamicRoot' ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
+		checkboxElement = checkmarkDomElement.children[ 0 ];
+
+		sinon.assert.calledOnce( command.execute );
+		expect( checkboxElement.checked ).to.equal( true );
+		expect( getModelData( model, { rootName: 'dynamicRoot' } ) ).to.equal(
+			'<listItem listIndent="0" listType="todo" todoListChecked="true">f{}oo</listItem>'
 		);
 	} );
 } );

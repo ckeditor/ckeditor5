@@ -92,8 +92,11 @@ export default class TodoListEditing extends Plugin {
 		// be re-rendered. If yes than view post-fixer should verify view structure.
 		const changedViewNodes = new Set();
 
-		for ( const viewRoot of viewDocument.roots ) {
-			this.listenTo( viewRoot, 'change:children', ( evt, node ) => changedViewNodes.add( node ) );
+		Array.from( viewDocument.roots ).forEach( watchRootForViewChildChanges );
+		this.listenTo( viewDocument.roots, 'add', ( evt, root ) => watchRootForViewChildChanges( root ) );
+
+		function watchRootForViewChildChanges( viewRoot ) {
+			viewRoot.on( 'change:children', ( evt, node ) => changedViewNodes.add( node ) );
 		}
 
 		// Move all uiElements after a checkmark element.
