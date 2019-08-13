@@ -19,7 +19,7 @@ import { debounce } from 'lodash-es';
  * Fires {@link module:engine/view/document~Document#event:selectionChange selectionChange event} simulating natural behaviour of
  * {@link module:engine/view/observer/selectionobserver~SelectionObserver SelectionObserver}.
  *
- * @extends module:engine/view/observer/observer~Observer.Observer
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class FakeSelectionObserver extends Observer {
 	/**
