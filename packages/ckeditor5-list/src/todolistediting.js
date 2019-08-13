@@ -218,6 +218,10 @@ function moveUIElementsAfterCheckmark( writer, uiElements ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/documentselection~DocumentSelection} selection
 function moveSelectionAfterCheckmark( writer, selection ) {
+	if ( !selection.isCollapsed ) {
+		return false;
+	}
+
 	const positionToChange = selection.getFirstPosition();
 
 	if ( positionToChange.parent.name != 'li' || !positionToChange.parent.parent.hasClass( 'todo-list' ) ) {
@@ -234,15 +238,7 @@ function moveSelectionAfterCheckmark( writer, selection ) {
 		const text = findInRange( boundaries, item => item.is( 'textProxy' ) ? item.textNode : false );
 		const nextPosition = text ? writer.createPositionAt( text, 0 ) : parentEndPosition;
 
-		let range;
-
-		if ( selection.isCollapsed ) {
-			range = writer.createRange( nextPosition );
-		} else {
-			range = writer.createRange( nextPosition, selection.getLastPosition() );
-		}
-
-		writer.setSelection( range, { isBackward: selection.isBackward } );
+		writer.setSelection( writer.createRange( nextPosition ), { isBackward: selection.isBackward } );
 
 		return true;
 	}

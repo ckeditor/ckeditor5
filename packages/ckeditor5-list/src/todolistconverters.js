@@ -297,11 +297,7 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 			const checkbox = createElement( document, 'input', { type: 'checkbox', } );
 
 			checkbox.checked = isChecked;
-
-			checkbox.addEventListener( 'mousedown', evt => {
-				evt.stopPropagation();
-				onChange( modelItem );
-			} );
+			checkbox.addEventListener( 'change', () => onChange( modelItem ) );
 
 			const domElement = this.toDomElement( domDocument );
 

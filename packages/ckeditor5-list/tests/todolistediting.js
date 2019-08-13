@@ -698,26 +698,6 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 		} );
-
-		it( 'should move start of none-collapsed selection after checkmark element to the first text node', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[Foo]</listItem>' );
-
-			expect( getViewData( view ) ).to.equal(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{Foo}</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should move start of none-collapsed, backward selection after checkmark element to the first text node', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[Foo]</listItem>', { lastRangeBackward: true } );
-
-			expect( getViewData( view ) ).to.equal(
-				'<ul class="todo-list">' +
-				'<li><label class="todo-list__checkmark" contenteditable="false"></label>{Foo}</li>' +
-				'</ul>'
-			);
-		} );
 	} );
 
 	describe( 'uiElements view post-fixer', () => {
@@ -951,7 +931,7 @@ describe( 'TodoListEditing', () => {
 
 		expect( checkboxElement.checked ).to.equal( false );
 
-		checkboxElement.dispatchEvent( new Event( 'mousedown' ) );
+		checkboxElement.dispatchEvent( new Event( 'change' ) );
 
 		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
 		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
@@ -964,7 +944,7 @@ describe( 'TodoListEditing', () => {
 			'<paragraph>b[a]r</paragraph>'
 		);
 
-		checkboxElement.dispatchEvent( new Event( 'mousedown' ) );
+		checkboxElement.dispatchEvent( new Event( 'change' ) );
 
 		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
 		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
@@ -992,7 +972,7 @@ describe( 'TodoListEditing', () => {
 
 		expect( checkboxElement.checked ).to.equal( false );
 
-		checkboxElement.dispatchEvent( new Event( 'mousedown' ) );
+		checkboxElement.dispatchEvent( new Event( 'change' ) );
 
 		checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
 		checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
