@@ -219,13 +219,16 @@ export default class TableUtils extends Plugin {
 
 			const tableWalker = new TableWalker( table, { column: insertAt, includeSpanned: true } );
 
-			for ( const { row, column, cell, colspan, rowspan, cellIndex } of tableWalker ) {
+			for ( const { row, cell, cellIndex } of tableWalker ) {
 				// When iterating over column the table walker outputs either:
 				// - cells at given column index (cell "e" from method docs),
 				// - spanned columns (spanned cell from row between cells "g" and "h" - spanned by "e", only if `includeSpanned: true`),
 				// - or a cell from the same row which spans over this column (cell "a").
 
-				if ( column !== insertAt ) {
+				const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
+				const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
+
+				if ( cell.index !== insertAt && colspan > 1 ) {
 					// If column is different than `insertAt`, it is a cell that spans over an inserted column (cell "a" & "i").
 					// For such cells expand them by a number of columns inserted.
 					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
