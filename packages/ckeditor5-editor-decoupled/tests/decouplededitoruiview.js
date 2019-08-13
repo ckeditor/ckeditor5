@@ -93,6 +93,10 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
 				expect( view.toolbar.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			} );
+
+			it( 'gets the "dir" attribute corresponding to Locale#uiLanguageDirection', () => {
+				expect( view.toolbar.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+			} );
 		} );
 
 		describe( '#editable', () => {
