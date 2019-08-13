@@ -10,6 +10,7 @@ import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -28,6 +29,8 @@ import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+
+const locale = new Locale();
 
 class TextView extends View {
 	constructor() {
@@ -499,7 +502,7 @@ function switchbutton( {
 }
 
 function toolbar( children = [] ) {
-	const toolbar = new ToolbarView();
+	const toolbar = new ToolbarView( locale );
 
 	children.forEach( c => toolbar.items.add( c ) );
 
@@ -513,7 +516,7 @@ function listDropdown( {
 	withText = true,
 	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
-	const dropdown = createDropdown( {} );
+	const dropdown = createDropdown( locale );
 	addListToDropdown( dropdown, items );
 
 	dropdown.buttonView.set( { label, isEnabled, isOn, withText } );
@@ -529,7 +532,7 @@ function toolbarDropdown( {
 	isVertical = true,
 	buttons = []
 } = {} ) {
-	const dropdown = createDropdown( {} );
+	const dropdown = createDropdown( locale );
 
 	addToolbarToDropdown( dropdown, buttons );
 
@@ -547,7 +550,7 @@ function splitButtonDropdown( {
 	isVertical = true,
 	buttons = []
 } = {} ) {
-	const dropdown = createDropdown( {}, SplitButtonView );
+	const dropdown = createDropdown( locale, SplitButtonView );
 
 	addToolbarToDropdown( dropdown, buttons );
 
