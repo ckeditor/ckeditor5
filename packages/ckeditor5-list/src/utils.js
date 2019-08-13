@@ -175,7 +175,7 @@ export function mergeViewLists( viewWriter, firstList, secondList ) {
  * are after given position.
  *
  * For example:
- * <container:p>foo^<ui:span></ui:span><ui:span></ui:span>bar</contain:p>
+ * `<container:p>foo^<ui:span></ui:span><ui:span></ui:span>bar</container:p>`
  * For position ^, a position before "bar" will be returned.
  *
  * @param {module:engine/view/position~Position} viewPosition
