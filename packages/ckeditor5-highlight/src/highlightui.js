@@ -223,6 +223,8 @@ export default class HighlightUI extends Plugin {
 			addToolbarToDropdown( dropdownView, buttons );
 			bindToolbarIconStyleToActiveColor( dropdownView );
 
+			dropdownView.toolbarView.ariaLabel = t( 'Text highlight toolbar' );
+
 			// Execute current action from dropdown's split button action button.
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'highlight', { value: splitButtonView.commandValue } );
