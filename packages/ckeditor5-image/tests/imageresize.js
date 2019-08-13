@@ -390,7 +390,7 @@ describe( 'ImageResize', () => {
 					y: 10
 				},
 				resizerPosition: 'bottom-left'
-			} );
+			} )();
 
 			editor.commands.get( 'undo' ).execute();
 
@@ -430,18 +430,16 @@ describe( 'ImageResize', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
-		it( 'works when resizing in a table', async () => {
-			await generateResizeTest( {
-				getModel: () => editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ),
-				expectedWidth: 60,
-				modelRegExp: /.+/,
-				pointerOffset: {
-					x: -40,
-					y: -20
-				},
-				resizerPosition: 'bottom-right'
-			} );
-		} );
+		it( 'works when resizing in a table', generateResizeTest( {
+			getModel: () => editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ),
+			expectedWidth: 60,
+			modelRegExp: /.+/,
+			pointerOffset: {
+				x: -40,
+				y: -20
+			},
+			resizerPosition: 'bottom-right'
+		} ) );
 	} );
 
 	function isVisible( element ) {
