@@ -90,6 +90,37 @@ describe( 'WidgetToolbarRepository', () => {
 				} );
 			}, /^widget-toolbar-duplicated/, editor );
 		} );
+
+		it( 'should use a pre–defined aria-label for the toolbar', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null
+			} );
+
+			const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			toolbarView.render();
+
+			expect( toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Widget toolbar' );
+
+			toolbarView.destroy();
+		} );
+
+		it( 'should use a custom aria-label when provided', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				ariaLabel: 'Custom label'
+			} );
+
+			const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			toolbarView.render();
+
+			expect( toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+
+			toolbarView.destroy();
+		} );
 	} );
 
 	describe( 'integration tests', () => {
