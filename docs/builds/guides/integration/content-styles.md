@@ -22,22 +22,7 @@ By default, content styles are loaded by the editor JavaScript which makes them 
 To avoid unnecessary dependencies in your front–end use a stylesheet with a complete list of CKEditor 5 content styles used by all editor features. There are two ways to obtain it:
 
 * By taking it directly from [this guide](#the-full-list-of-content-styles) and saving it as a static resource in your application (e.g. `content-styles.css`) (**recommended**).
-* By generating it using the `yarn docs:content-styles` script in the [root package](https://github.com/ckeditor/ckeditor5) of the editor:
-	```shell
-	> git clone git@github.com:ckeditor/ckeditor5.git
-	Cloning into 'ckeditor5'...
-	...
-	> yarn
-	yarn install v1.16.0
-	[1/5] 🔍  Validating package.json...
-	[2/5] 🔍  Resolving packages...
-	[3/5] 🚚  Fetching packages...
-	...
-	> yarn docs:content-styles
-	yarn run v1.16.0
-	$ node ./scripts/docs/build-content-styles.js
-	Content styles have been extracted to /path/to/ckeditor5/build/content-styles/content-styles.css
-	```
+* By generating it using a dedicated script. Learn more in the {@link framework/guides/contributing/development-environment#generating-content-styles "Development environment"} guide.
 
 Load the `content-styles.css` file in your application by adding the following code to the template:
 
