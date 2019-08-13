@@ -106,7 +106,7 @@ export default class DowncastDispatcher {
 	 * Creates a `DowncastDispatcher` instance.
 	 *
 	 * @see module:engine/conversion/downcastdispatcher~DowncastConversionApi
-	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
+	 * @param {Object} conversionApi Additional properties for interface that will be passed to events fired
 	 * by `DowncastDispatcher`.
 	 */
 	constructor( conversionApi ) {
