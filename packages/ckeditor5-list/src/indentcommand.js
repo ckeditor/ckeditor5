@@ -44,7 +44,7 @@ export default class IndentCommand extends Command {
 	}
 
 	/**
-	 * Indents or outdents (depends on the {@link #constructor}'s `indentDirection` parameter) selected list items.
+	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
 	 */

@@ -15,10 +15,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ListUI', () => {
-	let editor, model, bulletedListButton, numberedListButton;
+	let editorElement, editor, model, bulletedListButton, numberedListButton;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListEditing, ListUI ] } )
@@ -32,6 +32,8 @@ describe( 'ListUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
@@ -41,7 +43,10 @@ describe( 'ListUI', () => {
 
 	it( 'should set up buttons for bulleted list and numbered list', () => {
 		expect( bulletedListButton ).to.be.instanceOf( ButtonView );
+		expect( bulletedListButton.isToggleable ).to.be.true;
+
 		expect( numberedListButton ).to.be.instanceOf( ButtonView );
+		expect( numberedListButton.isToggleable ).to.be.true;
 	} );
 
 	it( 'should execute proper commands when buttons are used', () => {

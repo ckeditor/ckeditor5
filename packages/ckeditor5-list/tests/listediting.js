@@ -50,6 +50,10 @@ describe( 'ListEditing', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );
