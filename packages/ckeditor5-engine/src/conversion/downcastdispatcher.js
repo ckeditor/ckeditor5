@@ -109,7 +109,7 @@ export default class DowncastDispatcher {
 	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
 	 * by `DowncastDispatcher`.
 	 */
-	constructor( conversionApi = {} ) {
+	constructor( conversionApi ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
@@ -122,9 +122,10 @@ export default class DowncastDispatcher {
 	 * Takes {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
 	 *
 	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with converted model.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
-	convertChanges( differ, writer ) {
+	convertChanges( differ, markers, writer ) {
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
 			this.convertMarkerRemove( change.name, change.range, writer );
@@ -141,6 +142,15 @@ export default class DowncastDispatcher {
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			}
 		}
+
+		for ( const markerName of this.conversionApi.mapper._unboundMarkers ) {
+			const markerRange = markers.get( markerName ).getRange();
+
+			this.convertMarkerRemove( markerName, markerRange, writer );
+			this.convertMarkerAdd( markerName, markerRange, writer );
+		}
+
+		this.conversionApi.mapper._unboundMarkers.clear();
 
 		// After the view is updated, convert markers which have changed.
 		for ( const change of differ.getMarkersToAdd() ) {
@@ -252,7 +262,7 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
-	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Array of markers containing model markers.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with converted model.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertSelection( selection, markers, writer ) {
