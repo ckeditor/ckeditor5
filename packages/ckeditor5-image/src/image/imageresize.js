@@ -10,12 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResizer from '@ckeditor/ckeditor5-widget/src/widgetresizer';
 
-const WIDTH_ATTRIBUTE_NAME = 'width';
-
-const WIDTH_STYLE_NAME = WIDTH_ATTRIBUTE_NAME;
-
-const RESIZE_CLASS_NAME = 'ck_resized';
-
 /**
  *	Image resize plugin.
  *
@@ -45,37 +39,35 @@ export default class ImageResize extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
 
-			const context = editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
-				getResizeHost( wrapper ) {
-					return wrapper.querySelector( 'img' );
-				},
-				getAspectRatio( resizeHost ) {
-					return resizeHost.naturalWidth / resizeHost.naturalHeight;
-				},
-				isCentered( context ) {
-					const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
+			const context = editor.plugins
+				.get( WidgetResizer )
+				.apply( widget, conversionApi.writer, {
+					getResizeHost( wrapper ) {
+						return wrapper.querySelector( 'img' );
+					},
+					getAspectRatio( resizeHost ) {
+						return resizeHost.naturalWidth / resizeHost.naturalHeight;
+					},
+					isCentered( context ) {
+						const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
 
-					return !imageStyle || imageStyle == 'full';
-				}
-			} );
+						return !imageStyle || imageStyle == 'full';
+					}
+				} );
 
-			context.on( 'begin', function( evt ) {
-				evt.source._temporaryResizeClassAdded = !evt.source.domResizeWrapper.parentElement.classList.contains( RESIZE_CLASS_NAME );
+			context.on( 'begin', () => {
+				context._temporaryResizeClassAdded = !context.domResizeWrapper.parentElement.classList.contains( 'ck_resized' );
+			}, { priority: 'high' } );
 
-				this._temporaryResizeClassAdded = !this.domResizeWrapper.parentElement.classList.contains( RESIZE_CLASS_NAME );
-			}, {
-				priority: 'high'
-			} );
-
-			context.on( 'updateSize', function() {
-				if ( this._temporaryResizeClassAdded ) {
-					this.domResizeWrapper.parentElement.classList.add( RESIZE_CLASS_NAME );
+			context.on( 'updateSize', () => {
+				if ( context._temporaryResizeClassAdded ) {
+					context.domResizeWrapper.parentElement.classList.add( 'ck_resized' );
 				}
 			} );
 
 			context.on( 'cancel', () => {
-				if ( this._temporaryResizeClassAdded ) {
-					this.domResizeWrapper.parentElement.classList.remove( RESIZE_CLASS_NAME );
+				if ( context._temporaryResizeClassAdded ) {
+					context.domResizeWrapper.parentElement.classList.remove( 'ck_resized' );
 				}
 			} );
 		}, {
@@ -91,7 +83,7 @@ export default class ImageResize extends Plugin {
 	 */
 	_registerSchema() {
 		this.editor.model.schema.extend( 'image', {
-			allowAttributes: WIDTH_ATTRIBUTE_NAME
+			allowAttributes: 'width'
 		} );
 	}
 
@@ -105,7 +97,7 @@ export default class ImageResize extends Plugin {
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( `attribute:${ WIDTH_ATTRIBUTE_NAME }:image`, ( evt, data, conversionApi ) => {
+			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -115,11 +107,11 @@ export default class ImageResize extends Plugin {
 				const img = figure.getChild( 0 );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( WIDTH_ATTRIBUTE_NAME, data.attributeNewValue + 'px', img );
-					viewWriter.addClass( RESIZE_CLASS_NAME, figure );
+					viewWriter.setStyle( 'width', data.attributeNewValue + 'px', img );
+					viewWriter.addClass( 'ck_resized', figure );
 				} else {
-					viewWriter.removeStyle( WIDTH_ATTRIBUTE_NAME, img );
-					viewWriter.removeClass( RESIZE_CLASS_NAME, figure );
+					viewWriter.removeStyle( 'width', img );
+					viewWriter.removeClass( 'ck_resized', figure );
 				}
 			} )
 		);
@@ -129,12 +121,12 @@ export default class ImageResize extends Plugin {
 				view: {
 					name: 'img',
 					styles: {
-						[ WIDTH_STYLE_NAME ]: /[\d.]+(px)?/
+						width: /[\d.]+(px)?/
 					}
 				},
 				model: {
-					key: WIDTH_ATTRIBUTE_NAME,
-					value: viewElement => viewElement.getStyle( WIDTH_STYLE_NAME ).replace( 'px', '' )
+					key: 'width',
+					value: viewElement => viewElement.getStyle( 'width' ).replace( 'px', '' )
 				}
 			} );
 	}
