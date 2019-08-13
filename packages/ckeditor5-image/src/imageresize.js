@@ -51,6 +51,7 @@ export default class ImageResize extends Plugin {
 					getAspectRatio( domResizeHost ) {
 						return domResizeHost.naturalWidth / domResizeHost.naturalHeight;
 					},
+					// TODO consider other positions.
 					isCentered() {
 						const imageStyle = data.item.getAttribute( 'imageStyle' );
 
@@ -58,19 +59,20 @@ export default class ImageResize extends Plugin {
 					}
 				} );
 
+			// TODO think about this...
 			resizer.on( 'begin', () => {
-				resizer._temporaryResizeClassAdded = !resizer.domResizeWrapper.parentElement.classList.contains( 'ck_resized' );
+				resizer._temporaryResizeClassAdded = !resizer._domResizeWrapper.parentElement.classList.contains( 'ck_resized' );
 			}, { priority: 'high' } );
 
 			resizer.on( 'updateSize', () => {
 				if ( resizer._temporaryResizeClassAdded ) {
-					resizer.domResizeWrapper.parentElement.classList.add( 'ck_resized' );
+					resizer._domResizeWrapper.parentElement.classList.add( 'ck_resized' );
 				}
 			} );
 
 			resizer.on( 'cancel', () => {
 				if ( resizer._temporaryResizeClassAdded ) {
-					resizer.domResizeWrapper.parentElement.classList.remove( 'ck_resized' );
+					resizer._domResizeWrapper.parentElement.classList.remove( 'ck_resized' );
 				}
 			} );
 		}, {
