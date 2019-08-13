@@ -11,7 +11,7 @@ import { createViewListItemElement } from './utils';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
- * A model-to-view converter for `listItem` model element insertion.
+ * A model-to-view converter for the `listItem` model element insertion.
  *
  * It creates a `<ul><li></li><ul>` (or `<ol>`) view structure out of a `listItem` model element, inserts it at the correct
  * position, and merges the list with surrounding lists (if available).
@@ -43,7 +43,7 @@ export function modelViewInsertion( model ) {
 }
 
 /**
- * A model-to-view converter for `listItem` model element removal.
+ * A model-to-view converter for the `listItem` model element removal.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
  * @param {module:engine/model/model~Model} model Model instance.
@@ -86,9 +86,9 @@ export function modelViewRemove( model ) {
 }
 
 /**
- * A model-to-view converter for `type` attribute change on `listItem` model element.
+ * A model-to-view converter for the `type` attribute change on the `listItem` model element.
  *
- * This change means that `<li>` elements parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished
+ * This change means that the `<li>` element parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished
  * by breaking view elements, changing their name and merging them.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
@@ -126,7 +126,7 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 }
 
 /**
- * A model-to-view converter for `listIndent` attribute change on `listItem` model element.
+ * A model-to-view converter for the `listIndent` attribute change on the `listItem` model element.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:engine/model/model~Model} model Model instance.
@@ -326,7 +326,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
 }
 
 /**
- * A view-to-model converter that converts `<li>` view elements into `listItem` model elements.
+ * A view-to-model converter that converts the `<li>` view elements into the `listItem` model elements.
  *
  * To set correct values of the `listType` and `listIndent` attributes the converter:
  * * checks `<li>`'s parent,
@@ -386,8 +386,8 @@ export function viewModelConverter( evt, data, conversionApi ) {
 }
 
 /**
- * A view-to-model converter for `<ul>` and `<ol>` view elements that cleans the input view of garbage.
- * This is mostly to clean whitespaces from between `<li>` view elements inside the view list element, however, also
+ * A view-to-model converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
+ * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element, however, also
  * incorrect data can be cleared if the view was incorrect.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
@@ -409,7 +409,7 @@ export function cleanList( evt, data, conversionApi ) {
 }
 
 /**
- * A view-to-model converter for `<li>` elements that cleans whitespace formatting from the input view.
+ * A view-to-model converter for the `<li>` elements that cleans whitespace formatting from the input view.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
@@ -453,9 +453,9 @@ export function cleanListItem( evt, data, conversionApi ) {
 }
 
 /**
- * Returns callback for model position to view position mapping for {@link module:engine/conversion/mapper~Mapper}. The callback fixes
- * positions between `listItem` elements that would be incorrectly mapped because of how list items are represented in model
- * and view.
+ * Returns a callback for model position to view position mapping for {@link module:engine/conversion/mapper~Mapper}. The callback fixes
+ * positions between the `listItem` elements that would be incorrectly mapped because of how list items are represented in the model
+ * and in the view.
  *
  * @see module:engine/conversion/mapper~Mapper#event:modelToViewPosition
  * @param {module:engine/view/view~View} view A view instance.
@@ -491,8 +491,8 @@ export function modelToViewPosition( view ) {
 
 /**
  * The callback for view position to model position mapping for {@link module:engine/conversion/mapper~Mapper}. The callback fixes
- * positions between `<li>` elements that would be incorrectly mapped because of how list items are represented in model
- * and view.
+ * positions between the `<li>` elements that would be incorrectly mapped because of how list items are represented in the model
+ * and in the view.
  *
  * @see module:engine/conversion/mapper~Mapper#event:viewToModelPosition
  * @param {module:engine/model/model~Model} model Model instance.
@@ -555,14 +555,14 @@ export function viewToModelPosition( model ) {
 /**
  * Post-fixer that reacts to changes on document and fixes incorrect model states.
  *
- * In an example below, there is a correct list structure.
- * Then the middle element will be removed so the list structure will become incorrect:
+ * In the example below, there is a correct list structure.
+ * Then the middle element is removed so the list structure will become incorrect:
  *
  *		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
  *		<listItem listType="bulleted" listIndent=1>Item 2</listItem>   <--- this is removed.
  *		<listItem listType="bulleted" listIndent=2>Item 3</listItem>
  *
- * List structure after the middle element removed:
+ * The list structure after the middle element is removed:
  *
  * 		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
  *		<listItem listType="bulleted" listIndent=2>Item 3</listItem>

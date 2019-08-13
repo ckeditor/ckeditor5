@@ -10,7 +10,7 @@
 import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 
 /**
- * Creates list item {@link module:engine/view/containerelement~ContainerElement}.
+ * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer The writer instance.
  * @returns {module:engine/view/containerelement~ContainerElement}
