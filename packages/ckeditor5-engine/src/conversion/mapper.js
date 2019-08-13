@@ -77,6 +77,25 @@ export default class Mapper {
 		 */
 		this._markerNameToElements = new Map();
 
+		/**
+		 * View element to model marker names mapping.
+		 *
+		 * This is reverse to {@link ~Mapper#_markerNameToElements} map.
+		 *
+		 * @private
+		 * @member {Map}
+		 */
+		this._elementToMarkerNames = new Map();
+
+		/**
+		 * Stores markers which has changed due to unbinding a view element (so it is assumed that the view element has been removed,
+		 * moved or renamed). In some cases such markers need to be refreshed (re-rendered).
+		 *
+		 * @protected
+		 * @member {Set.<module:engine/model/markercollection~Marker>}
+		 */
+		this._unboundMarkers = new Set();
+
 		// Default mapper algorithm for mapping model position to view position.
 		this.on( 'modelToViewPosition', ( evt, data ) => {
 			if ( data.viewPosition ) {
@@ -132,6 +151,12 @@ export default class Mapper {
 
 		this._viewToModelMapping.delete( viewElement );
 
+		if ( this._elementToMarkerNames.has( viewElement ) ) {
+			for ( const markerName of this._elementToMarkerNames.get( viewElement ) ) {
+				this._unboundMarkers.add( markerName );
+			}
+		}
+
 		if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
 			this._modelToViewMapping.delete( modelElement );
 		}
@@ -167,10 +192,13 @@ export default class Mapper {
 	 */
 	bindElementToMarker( element, name ) {
 		const elements = this._markerNameToElements.get( name ) || new Set();
-
 		elements.add( element );
 
+		const names = this._elementToMarkerNames.get( element ) || new Set();
+		names.add( name );
+
 		this._markerNameToElements.set( name, elements );
+		this._elementToMarkerNames.set( element, names );
 	}
 
 	/**
@@ -182,12 +210,22 @@ export default class Mapper {
 	unbindElementFromMarkerName( element, name ) {
 		const elements = this._markerNameToElements.get( name );
 
-		if ( elements ) {
-			elements.delete( element );
+		if ( !elements ) {
+			return;
+		}
 
-			if ( elements.size == 0 ) {
-				this._markerNameToElements.delete( name );
-			}
+		elements.delete( element );
+
+		if ( elements.size == 0 ) {
+			this._markerNameToElements.delete( name );
+		}
+
+		const names = this._elementToMarkerNames.get( element );
+
+		names.delete( name );
+
+		if ( names.size == 0 ) {
+			this._elementToMarkerNames.delete( element );
 		}
 	}
 
@@ -198,6 +236,8 @@ export default class Mapper {
 		this._modelToViewMapping = new WeakMap();
 		this._viewToModelMapping = new WeakMap();
 		this._markerNameToElements = new Map();
+		this._elementToMarkerNames = new Map();
+		this._unboundMarkers = new Set();
 	}
 
 	/**
