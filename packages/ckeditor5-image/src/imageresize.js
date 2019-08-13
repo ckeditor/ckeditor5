@@ -39,35 +39,38 @@ export default class ImageResize extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
 
-			const context = editor.plugins
+			const resizer = editor.plugins
 				.get( WidgetResizer )
-				.apply( widget, conversionApi.writer, {
-					getResizeHost( wrapper ) {
-						return wrapper.querySelector( 'img' );
+				.attachTo( {
+					modelElement: data.item,
+					viewElement: widget,
+					downcastWriter: conversionApi.writer,
+					getResizeHost( domWidgetElement ) {
+						return domWidgetElement.querySelector( 'img' );
 					},
-					getAspectRatio( resizeHost ) {
-						return resizeHost.naturalWidth / resizeHost.naturalHeight;
+					getAspectRatio( domResizeHost ) {
+						return domResizeHost.naturalWidth / domResizeHost.naturalHeight;
 					},
-					isCentered( context ) {
-						const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
+					isCentered() {
+						const imageStyle = data.item.getAttribute( 'imageStyle' );
 
 						return !imageStyle || imageStyle == 'full';
 					}
 				} );
 
-			context.on( 'begin', () => {
-				context._temporaryResizeClassAdded = !context.domResizeWrapper.parentElement.classList.contains( 'ck_resized' );
+			resizer.on( 'begin', () => {
+				resizer._temporaryResizeClassAdded = !resizer.domResizeWrapper.parentElement.classList.contains( 'ck_resized' );
 			}, { priority: 'high' } );
 
-			context.on( 'updateSize', () => {
-				if ( context._temporaryResizeClassAdded ) {
-					context.domResizeWrapper.parentElement.classList.add( 'ck_resized' );
+			resizer.on( 'updateSize', () => {
+				if ( resizer._temporaryResizeClassAdded ) {
+					resizer.domResizeWrapper.parentElement.classList.add( 'ck_resized' );
 				}
 			} );
 
-			context.on( 'cancel', () => {
-				if ( context._temporaryResizeClassAdded ) {
-					context.domResizeWrapper.parentElement.classList.remove( 'ck_resized' );
+			resizer.on( 'cancel', () => {
+				if ( resizer._temporaryResizeClassAdded ) {
+					resizer.domResizeWrapper.parentElement.classList.remove( 'ck_resized' );
 				}
 			} );
 		}, {
