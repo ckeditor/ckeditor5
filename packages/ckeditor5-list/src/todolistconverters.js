@@ -208,7 +208,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
 
 	writer.setAttribute( 'listType', 'todo', modelItem );
 
-	if ( data.viewItem.getAttribute( 'checked' ) == 'checked' ) {
+	if ( data.viewItem.hasAttribute( 'checked' ) ) {
 		writer.setAttribute( 'todoListChecked', true, modelItem );
 	}
 

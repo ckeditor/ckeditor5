@@ -545,17 +545,25 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'data pipeline v -> m', () => {
-		it( 'should convert li with checkbox inside before the first text node as todo list item', () => {
-			editor.setData( '<ul><li><span><input type="checkbox">Foo</span></li></ul>' );
+		it( 'should convert li with checkbox before the first text node as todo list item', () => {
+			editor.setData( '<ul><li><input type="checkbox">foo</li></ul>' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
 		} );
 
-		it( 'should convert li with checked checkbox inside as checked todo list item', () => {
-			editor.setData( '<ul><li><span><input type="checkbox" checked="checked">Foo</span></li></ul>' );
+		it( 'should convert li with checked checkbox as checked todo list item', () => {
+			editor.setData(
+				'<ul>' +
+					'<li><input type="checkbox" checked="checked">a</li>' +
+					'<li><input type="checkbox" checked="anything">b</li>' +
+					'<li><input type="checkbox" checked>c</li>' +
+				'</ul>'
+			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]Foo</listItem>'
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]a</listItem>' +
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">b</listItem>' +
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">c</listItem>'
 			);
 		} );
 
