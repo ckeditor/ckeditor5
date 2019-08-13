@@ -426,24 +426,13 @@ function getIndentModifier( listItem, conversionStore ) {
 
 	let modifier = 0;
 
-	if ( list.parent.is( 'ol' ) || list.parent.is( 'ul' ) ) {
+	if ( isList( list.parent ) ) {
 		const previousSibling = list.previousSibling;
 
-		if ( previousSibling ) {
-			if ( previousSibling.is( 'li' ) ) {
-				modifier = ( conversionStore.indentModifiers.get( previousSibling.parent ) || 0 ) + 1;
-			} else {
-				modifier = conversionStore.indentModifiers.get( previousSibling.parent );
-			}
+		if ( previousSibling && previousSibling.is( 'li' ) ) {
+			modifier = ( conversionStore.indentModifiers.get( previousSibling.parent ) || 0 ) + 1;
 		} else {
-			let par = list.parent;
-
-			while ( par.is( 'ol' ) || par.is( 'ul' ) && modifier === undefined ) {
-				modifier = conversionStore.indentModifiers.get( par );
-				par = par.parent;
-			}
-
-			modifier = modifier === undefined ? 0 : modifier + 1;
+			modifier = getNestedListModifier( list, conversionStore );
 		}
 	}
 
@@ -451,6 +440,18 @@ function getIndentModifier( listItem, conversionStore ) {
 	conversionStore.indentModifiers.set( list, modifier );
 
 	return modifier;
+}
+
+function getNestedListModifier( list, conversionStore ) {
+	let listParent = list.parent;
+	let modifier;
+
+	while ( ( isList( listParent ) ) && modifier === undefined ) {
+		modifier = conversionStore.indentModifiers.get( listParent );
+		listParent = listParent.parent;
+	}
+
+	return modifier === undefined ? 0 : modifier + 1;
 }
 
 /**
@@ -469,7 +470,7 @@ export function cleanList( evt, data, conversionApi ) {
 		const children = Array.from( data.viewItem.getChildren() );
 
 		for ( const child of children ) {
-			const isWrongElement = !( child.is( 'li' ) || child.is( 'ul' ) || child.is( 'ol' ) );
+			const isWrongElement = !( child.is( 'li' ) || isList( child ) );
 
 			if ( isWrongElement ) {
 				child._remove();
@@ -498,7 +499,7 @@ export function cleanListItem( evt, data, conversionApi ) {
 		let firstNode = true;
 
 		for ( const child of children ) {
-			if ( foundList && !child.is( 'ul' ) && !child.is( 'ol' ) ) {
+			if ( foundList && !isList( child ) ) {
 				child._remove();
 			}
 
@@ -509,10 +510,10 @@ export function cleanListItem( evt, data, conversionApi ) {
 				}
 
 				// If this is the last text node before <ul> or <ol>, right-trim it.
-				if ( !child.nextSibling || ( child.nextSibling.is( 'ul' ) || child.nextSibling.is( 'ol' ) ) ) {
+				if ( !child.nextSibling || isList( child.nextSibling ) ) {
 					child._data = child.data.replace( /\s+$/, '' );
 				}
-			} else if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
+			} else if ( isList( child ) ) {
 				// If this is a <ul> or <ol>, do not process it, just mark that we already visited list element.
 				foundList = true;
 			}
@@ -541,7 +542,7 @@ export function modelToViewPosition( view ) {
 
 		if ( modelItem && modelItem.is( 'listItem' ) ) {
 			const viewItem = data.mapper.toViewElement( modelItem );
-			const topmostViewList = viewItem.getAncestors().find( element => element.is( 'ul' ) || element.is( 'ol' ) );
+			const topmostViewList = viewItem.getAncestors().find( isList );
 			const walker = view.createPositionAt( viewItem, 0 ).getWalker();
 
 			for ( const value of walker ) {
@@ -609,7 +610,7 @@ export function viewToModelPosition( model ) {
 			let modelLength = 1; // Starts from 1 because the original <li> has to be counted in too.
 			let viewList = viewPos.nodeBefore;
 
-			while ( viewList && ( viewList.is( 'ul' ) || viewList.is( 'ol' ) ) ) {
+			while ( viewList && ( isList( viewList ) ) ) {
 				modelLength += mapper.getModelLength( viewList );
 
 				viewList = viewList.previousSibling;
@@ -1029,11 +1030,16 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 	// Handle multiple lists. This happens if list item has nested numbered and bulleted lists. Following lists
 	// are inserted after the first list (no need to recalculate insertion position for them).
 	for ( const child of [ ...viewRemovedItem.getChildren() ] ) {
-		if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
+		if ( isList( child ) ) {
 			insertPosition = viewWriter.move( viewWriter.createRangeOn( child ), insertPosition ).end;
 
 			mergeViewLists( viewWriter, child, child.nextSibling );
 			mergeViewLists( viewWriter, child.previousSibling, child );
 		}
 	}
+}
+
+// Checks if view element is a list type (ul or ol).
+function isList( viewElement ) {
+	return viewElement.is( 'ol' ) || viewElement.is( 'ul' );
 }
