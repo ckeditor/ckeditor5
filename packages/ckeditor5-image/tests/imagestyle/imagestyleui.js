@@ -56,6 +56,7 @@ describe( 'ImageStyleUI', () => {
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.label ).to.equal( style.title );
 			expect( buttonView.icon ).to.equal( style.icon );
+			expect( buttonView.isToggleable ).to.be.true;
 
 			command.isEnabled = true;
 			expect( buttonView.isEnabled ).to.be.true;
