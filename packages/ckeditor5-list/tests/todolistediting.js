@@ -1029,7 +1029,7 @@ describe( 'TodoListEditing', () => {
 		sinon.assert.calledOnce( command.execute );
 		expect( checkboxElement.checked ).to.equal( true );
 		expect( getModelData( model, { rootName: 'dynamicRoot' } ) ).to.equal(
-			'<listItem listIndent="0" listType="todo" todoListChecked="true">f{}oo</listItem>'
+			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
 		);
 	} );
 } );
