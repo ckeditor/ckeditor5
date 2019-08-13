@@ -16,5 +16,6 @@
 	"Merge cell left": "Label for the merge table cell left button.",
 	"Split cell vertically": "Label for the split table cell vertically button.",
 	"Split cell horizontally": "Label for the split table cell horizontally button.",
-	"Merge cells": "Label for the merge table cells button."
+	"Merge cells": "Label for the merge table cells button.",
+	"Table toolbar": "The label used by assistive technologies describing a table toolbar attached to a table widget."
 }
