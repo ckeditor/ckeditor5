@@ -10,5 +10,5 @@
 	"Enter image caption": "Placeholder text for image caption displayed when caption is empty.",
 	"Insert image": "Label for the insert image toolbar button.",
 	"Upload failed": "Title of the notification displayed when upload fails.",
-	"Image toolbar": "The label describing an image toolbar attached to an image widget used by assistive technologies."
+	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget."
 }
