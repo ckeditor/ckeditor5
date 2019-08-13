@@ -105,7 +105,7 @@ describe( 'WidgetToolbarRepository', () => {
 			toolbarView.destroy();
 		} );
 
-		it( 'should create custom aria-label if is provided', () => {
+		it( 'should use a custom aria-label when provided', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
 				getRelatedElement: () => null,
