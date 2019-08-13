@@ -222,7 +222,7 @@ describe( 'Image resizer', () => {
 			} ).call( this );
 
 			expect( editor.getData() ).to.be.equal(
-				`<p>foo</p><figure class="image"><img style="width:120px;" src="${ imageFixture }"></figure>` );
+				`<p>foo</p><figure class="image ck_resized"><img style="width:120px;" src="${ imageFixture }"></figure>` );
 		} );
 	} );
 

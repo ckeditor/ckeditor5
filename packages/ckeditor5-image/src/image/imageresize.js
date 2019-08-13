@@ -14,6 +14,8 @@ const WIDTH_ATTRIBUTE_NAME = 'width';
 
 const WIDTH_STYLE_NAME = WIDTH_ATTRIBUTE_NAME;
 
+const RESIZE_CLASS_NAME = 'ck_resized';
+
 /**
  *	Image resize plugin.
  *
@@ -43,7 +45,7 @@ export default class ImageResize extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
 
-			editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
+			const context = editor.plugins.get( 'WidgetResizer' ).apply( widget, conversionApi.writer, {
 				getResizeHost( wrapper ) {
 					return wrapper.querySelector( 'img' );
 				},
@@ -54,6 +56,26 @@ export default class ImageResize extends Plugin {
 					const imageStyle = context._getModel( editor, context.widgetWrapperElement ).getAttribute( 'imageStyle' );
 
 					return !imageStyle || imageStyle == 'full';
+				}
+			} );
+
+			context.on( 'begin', function( evt ) {
+				evt.source._temporaryResizeClassAdded = !evt.source.domResizeWrapper.parentElement.classList.contains( RESIZE_CLASS_NAME );
+
+				this._temporaryResizeClassAdded = !this.domResizeWrapper.parentElement.classList.contains( RESIZE_CLASS_NAME );
+			}, {
+				priority: 'high'
+			} );
+
+			context.on( 'updateSize', function() {
+				if ( this._temporaryResizeClassAdded ) {
+					this.domResizeWrapper.parentElement.classList.add( RESIZE_CLASS_NAME );
+				}
+			} );
+
+			context.on( 'cancel', () => {
+				if ( this._temporaryResizeClassAdded ) {
+					this.domResizeWrapper.parentElement.classList.remove( RESIZE_CLASS_NAME );
 				}
 			} );
 		}, {
@@ -89,12 +111,15 @@ export default class ImageResize extends Plugin {
 				}
 
 				const viewWriter = conversionApi.writer;
-				const img = conversionApi.mapper.toViewElement( data.item ).getChild( 0 );
+				const figure = conversionApi.mapper.toViewElement( data.item );
+				const img = figure.getChild( 0 );
 
 				if ( data.attributeNewValue !== null ) {
 					viewWriter.setStyle( WIDTH_ATTRIBUTE_NAME, data.attributeNewValue + 'px', img );
+					viewWriter.addClass( RESIZE_CLASS_NAME, figure );
 				} else {
 					viewWriter.removeStyle( WIDTH_ATTRIBUTE_NAME, img );
+					viewWriter.removeClass( RESIZE_CLASS_NAME, figure );
 				}
 			} )
 		);
