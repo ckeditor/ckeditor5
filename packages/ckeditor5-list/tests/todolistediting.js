@@ -9,6 +9,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ListCommand from '../src/listcommand';
+import TodoListCheckCommand from '../src/todolistcheckcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -66,7 +67,7 @@ describe( 'TodoListEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).to.be.false;
 	} );
 
-	describe( 'command', () => {
+	describe( 'commands', () => {
 		it( 'should register todoList list command', () => {
 			const command = editor.commands.get( 'todoList' );
 
@@ -109,6 +110,10 @@ describe( 'TodoListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>ab{}</p>' );
+		} );
+
+		it( 'should register todoListCheck command', () => {
+			expect( editor.commands.get( 'todoListCheck' ) ).to.be.instanceOf( TodoListCheckCommand );
 		} );
 	} );
 
