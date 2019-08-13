@@ -114,7 +114,7 @@ export default class MergeCellCommand extends Command {
 	/**
 	 * Returns a cell that can be merged with the current cell depending on the command's direction.
 	 *
-	 * @returns {module:engine/model/element|undefined}
+	 * @returns {module:engine/model/element~Element|undefined}
 	 * @private
 	 */
 	_getMergeableCell() {
