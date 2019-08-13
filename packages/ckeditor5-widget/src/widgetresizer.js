@@ -144,6 +144,7 @@ export default class WidgetResizer extends Plugin {
 	 * @param {module:engine/view/containerelement~ContainerElement} widgetElement
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
+	 * @returns {module:widget/resizecontext~ResizeContext}
 	 */
 	apply( widgetElement, writer, options ) {
 		const context = new ResizeContext( options );
@@ -152,6 +153,8 @@ export default class WidgetResizer extends Plugin {
 		this.editor.editing.view.once( 'render', () => context.redraw() );
 
 		this.contexts.push( context );
+
+		return context;
 	}
 
 	/**

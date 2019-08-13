@@ -81,6 +81,11 @@ export default class ResizeContext {
 
 		this._cleanupContext();
 
+		this.decorate( 'begin' );
+		this.decorate( 'cancel' );
+		this.decorate( 'commit' );
+		this.decorate( 'updateSize' );
+
 		/**
 		 * Width proposed (but not yet accepted) using the widget resizer.
 		 *
