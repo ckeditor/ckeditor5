@@ -10,6 +10,7 @@ import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor'
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import { isWidget, toWidget } from '../src/utils';
@@ -31,7 +32,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget, FakeChildWidget ],
+				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget, FakeChildWidget, BlockQuote ],
 				fake: {
 					toolbar: [ 'fake_button' ]
 				}
@@ -361,6 +362,87 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( updatePositionSpy.firstCall.args[ 0 ].position.target ).to.equal(
 				view.domConverter.viewToDom( fakeChildViewElement ) );
+		} );
+
+		it( 'should not update balloon position when toolbar is in not visible stack', () => {
+			const customView = new View();
+
+			sinon.spy( balloon.view, 'pin' );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'[<fake-widget></fake-widget>]'
+			);
+
+			balloon.add( {
+				stackId: 'custom',
+				view: customView,
+				position: { target: {} }
+			} );
+
+			balloon.showStack( 'custom' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			expect( balloon.visibleView ).to.equal( customView );
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( true );
+
+			const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
+
+			editor.ui.fire( 'update' );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should update balloon position when stack with toolbar is switched in rotator to visible', () => {
+			const view = editor.editing.view;
+			const customView = new View();
+
+			sinon.spy( balloon.view, 'pin' );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'[<fake-widget></fake-widget>]'
+			);
+
+			const fakeViewElement = view.document.getRoot().getChild( 1 );
+			const fakeDomElement = editor.editing.view.domConverter.mapViewToDom( fakeViewElement );
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( fakeDomElement );
+
+			balloon.add( {
+				stackId: 'custom',
+				view: customView,
+				position: { target: {} }
+			} );
+
+			balloon.showStack( 'custom' );
+
+			expect( balloon.visibleView ).to.equal( customView );
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( true );
+
+			editor.execute( 'blockQuote' );
+			balloon.showStack( 'main' );
+
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+			expect( balloon.hasView( customView ) ).to.equal( true );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( fakeDomElement );
+
+			const newFakeViewElement = view.document.getRoot().getChild( 1 ).getChild( 0 );
+			const newFakeDomElement = editor.editing.view.domConverter.mapViewToDom( newFakeViewElement );
+
+			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newFakeDomElement );
 		} );
 	} );
 } );

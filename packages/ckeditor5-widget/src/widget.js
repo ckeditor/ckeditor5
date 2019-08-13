@@ -30,7 +30,7 @@ const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
  * is added to indicate that widget has been selected.
  * * The mouse and keyboard events handling on and around widget elements.
  *
- * @extends module:core/plugin~Plugin.
+ * @extends module:core/plugin~Plugin
  */
 export default class Widget extends Plugin {
 	/**

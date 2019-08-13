@@ -191,6 +191,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	_hideToolbar( toolbarDefinition ) {
 		this._balloon.remove( toolbarDefinition.view );
+		this.stopListening( this._balloon, 'change:visibleView' );
 	}
 
 	/**
@@ -212,6 +213,18 @@ export default class WidgetToolbarRepository extends Plugin {
 				view: toolbarDefinition.view,
 				position: getBalloonPositionData( this.editor, relatedElement ),
 				balloonClassName: toolbarDefinition.balloonClassName,
+			} );
+
+			// Update toolbar position each time stack with toolbar view is switched to visible.
+			// This is in a case target element has changed when toolbar was in invisible stack
+			// e.g. target image was wrapped by a block quote.
+			// See https://github.com/ckeditor/ckeditor5-widget/issues/92.
+			this.listenTo( this._balloon, 'change:visibleView', () => {
+				for ( const definition of this._toolbarDefinitions.values() ) {
+					if ( this._isToolbarVisible( definition ) ) {
+						this._updateToolbarsVisibility( definition );
+					}
+				}
 			} );
 		}
 	}

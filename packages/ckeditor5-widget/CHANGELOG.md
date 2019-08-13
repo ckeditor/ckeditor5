@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [11.0.4](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.3...v11.0.4) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [11.0.3](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.2...v11.0.3) (2019-07-04)
 
 ### Bug fixes
