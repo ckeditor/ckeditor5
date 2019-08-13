@@ -83,6 +83,12 @@ describe( 'HighlightUI', () => {
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
+		it( 'toolbar nas the basic properties', () => {
+			const toolbarView = dropdown.toolbarView;
+
+			expect( toolbarView ).to.have.property( 'ariaLabel', 'Text highlight toolbar' );
+		} );
+
 		it( 'should have proper icons in dropdown', () => {
 			const toolbar = dropdown.toolbarView;
 
