@@ -50,6 +50,20 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "range"', () => {
+			expect( range.is( 'range' ) ).to.be.true;
+			expect( range.is( 'model:range' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( range.is( 'model' ) ).to.be.false;
+			expect( range.is( 'model:node' ) ).to.be.false;
+			expect( range.is( 'text' ) ).to.be.false;
+			expect( range.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'root', () => {
 		it( 'should be equal to start position root', () => {
 			expect( range.root ).to.equal( start.root );

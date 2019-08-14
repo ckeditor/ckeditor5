@@ -89,18 +89,24 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks whether this model object is of the given type.
+	 * Checks whether this object is of the given.
 	 *
-	 *		obj.name; // 'listItem'
-	 *		obj instanceof Element; // true
+	 *		element.is( 'element' ); // -> true
+	 *		element.is( 'node' ); // -> true
+	 *		element.is( 'model:element' ); // -> true
+	 *		element.is( 'model:node' ); // -> true
 	 *
-	 *		obj.is( 'element' ); // true
-	 *		obj.is( 'listItem' ); // true
-	 *		obj.is( 'element', 'listItem' ); // true
-	 *		obj.is( 'text' ); // false
-	 *		obj.is( 'element', 'image' ); // false
+	 *		element.is( 'view:element' ); // -> false
+	 *		element.is( 'documentSelection' ); // -> false
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Assuming that the object being checked is an element, you can also check its
+	 * {@link module:engine/model/element~Element#name name}:
+	 *
+	 *		element.is( 'image' ); // -> true if this is an <image> element
+	 *		element.is( 'element', 'image' ); // -> same as above
+	 *		text.is( 'image' ); -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.
@@ -108,10 +114,12 @@ export default class Element extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type.replace( /^model:/, '' );
+
 		if ( !name ) {
-			return type == 'element' || type == this.name || super.is( type );
+			return cutType == 'element' || cutType == this.name || super.is( type );
 		} else {
-			return type == 'element' && name == this.name;
+			return cutType == 'element' && name == this.name;
 		}
 	}
 

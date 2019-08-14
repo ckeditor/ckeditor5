@@ -173,15 +173,21 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Checks whether given model tree object is of given type.
+	 * Checks whether this object is of the given.
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is}.
+	 *		textProxy.is( 'textProxy' ); // -> true
+	 *		textProxy.is( 'model:textProxy' ); // -> true
+	 *
+	 *		textProxy.is( 'view:textProxy' ); // -> false
+	 *		textProxy.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'textProxy';
+		return type == 'textProxy' || type == 'model:textProxy';
 	}
 
 	/**

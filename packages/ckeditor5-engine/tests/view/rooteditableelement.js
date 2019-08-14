@@ -38,7 +38,7 @@ describe( 'RootEditableElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {
@@ -47,27 +47,42 @@ describe( 'RootEditableElement', () => {
 
 		it( 'should return true for rootElement/containerElement/editable/element, also with correct name and element name', () => {
 			expect( el.is( 'rootElement' ) ).to.be.true;
+			expect( el.is( 'view:rootElement' ) ).to.be.true;
 			expect( el.is( 'rootElement', 'div' ) ).to.be.true;
+			expect( el.is( 'view:rootElement', 'div' ) ).to.be.true;
 			expect( el.is( 'containerElement' ) ).to.be.true;
+			expect( el.is( 'view:containerElement' ) ).to.be.true;
 			expect( el.is( 'containerElement', 'div' ) ).to.be.true;
+			expect( el.is( 'view:containerElement', 'div' ) ).to.be.true;
 			expect( el.is( 'editableElement' ) ).to.be.true;
+			expect( el.is( 'view:editableElement' ) ).to.be.true;
 			expect( el.is( 'editableElement', 'div' ) ).to.be.true;
+			expect( el.is( 'view:editableElement', 'div' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'div' ) ).to.be.true;
+			expect( el.is( 'view:element', 'div' ) ).to.be.true;
 			expect( el.is( 'div' ) ).to.be.true;
+			expect( el.is( 'view:div' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( el.is( 'rootElement', 'p' ) ).to.be.false;
+			expect( el.is( 'view:rootElement', 'p' ) ).to.be.false;
 			expect( el.is( 'containerElement', 'p' ) ).to.be.false;
+			expect( el.is( 'view:containerElement', 'p' ) ).to.be.false;
 			expect( el.is( 'element', 'p' ) ).to.be.false;
+			expect( el.is( 'view:element', 'p' ) ).to.be.false;
 			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'view:p' ) ).to.be.false;
 			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'view:text' ) ).to.be.false;
 			expect( el.is( 'textProxy' ) ).to.be.false;
 			expect( el.is( 'attributeElement' ) ).to.be.false;
 			expect( el.is( 'uiElement' ) ).to.be.false;
 			expect( el.is( 'emptyElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
+			expect( el.is( 'model:rootElement' ) ).to.be.false;
 		} );
 	} );
 

@@ -127,6 +127,26 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let selection;
+
+		beforeEach( () => {
+			selection = new Selection();
+		} );
+
+		it( 'should return true for "selection"', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+			expect( selection.is( 'model:selection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( selection.is( 'model' ) ).to.be.false;
+			expect( selection.is( 'model:node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'isCollapsed', () => {
 		it( 'should return false for empty selection', () => {
 			expect( selection.isCollapsed ).to.be.false;
@@ -806,7 +826,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for selection', () => {
 			expect( selection.is( 'selection' ) ).to.be.true;
 		} );

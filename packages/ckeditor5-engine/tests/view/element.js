@@ -82,7 +82,7 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {
@@ -91,21 +91,30 @@ describe( 'Element', () => {
 
 		it( 'should return true for node, element, element with correct name and element name', () => {
 			expect( el.is( 'node' ) ).to.be.true;
+			expect( el.is( 'view:node' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'p' ) ).to.be.true;
+			expect( el.is( 'view:element', 'p' ) ).to.be.true;
 			expect( el.is( 'p' ) ).to.be.true;
+			expect( el.is( 'view:p' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( el.is( 'element', 'span' ) ).to.be.false;
+			expect( el.is( 'view:element', 'span' ) ).to.be.false;
 			expect( el.is( 'span' ) ).to.be.false;
+			expect( el.is( 'view:span' ) ).to.be.false;
 			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'view:text' ) ).to.be.false;
 			expect( el.is( 'textProxy' ) ).to.be.false;
 			expect( el.is( 'containerElement' ) ).to.be.false;
 			expect( el.is( 'attributeElement' ) ).to.be.false;
 			expect( el.is( 'uiElement' ) ).to.be.false;
 			expect( el.is( 'emptyElement' ) ).to.be.false;
+			expect( el.is( 'view:emptyElement' ) ).to.be.false;
 			expect( el.is( 'rootElement' ) ).to.be.false;
+			expect( el.is( 'view:ootElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
 		} );
 	} );

@@ -397,6 +397,53 @@ export default class Node {
 	}
 
 	/**
+	 * Checks whether this object is of the given type.
+	 *
+	 * This method is useful when processing model objects that are of unknown type. For example, a function
+	 * may return a {@link module:engine/model/documentfragment~DocumentFragment} or a {@link module:engine/model/node~Node}
+	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
+	 *
+	 *		someObject.is( 'element' ); // -> true if this is an element
+	 *		someObject.is( 'node' ); // -> true if this is a node (a text node or an element)
+	 *		someObject.is( 'documentFragment' ); // -> true if this is a document fragment
+	 *
+	 * Since this method is also available on a range of view objects, you can prefix the type of the object with
+	 * `model:` or `view:` to check, for example, if this is the model's or view's element:
+	 *
+	 *		modelElement.is( 'model:element' ); // -> true
+	 *		modelElement.is( 'view:element' ); // -> false
+	 *
+	 * By using this method it is also possible to check a name of an element:
+	 *
+	 *		imageElement.is( 'image' ); // -> true
+	 *		imageElement.is( 'element', 'image' ); // -> same as above
+	 *		imageElement.is( 'model:element', 'image' ); // -> same as above, but more precise
+	 *
+	 * The list of model objects which implement the `is()` method:
+	 *
+	 * * {@link module:engine/model/node~Node#is `Node#is()`}
+	 * * {@link module:engine/model/text~Text#is `Text#is()`}
+	 * * {@link module:engine/model/element~Element#is `Element#is()`}
+	 * * {@link module:engine/model/rootelement~RootElement#is `RootElement#is()`}
+	 * * {@link module:engine/model/position~Position#is `Position#is()`}
+	 * * {@link module:engine/model/liveposition~LivePosition#is `LivePosition#is()`}
+	 * * {@link module:engine/model/range~Range#is `Range#is()`}
+	 * * {@link module:engine/model/liverange~LiveRange#is `LiveRange#is()`}
+	 * * {@link module:engine/model/documentfragment~DocumentFragment#is `DocumentFragment#is()`}
+	 * * {@link module:engine/model/selection~Selection#is `Selection#is()`}
+	 * * {@link module:engine/model/documentselection~DocumentSelection#is `DocumentSelection#is()`}
+	 * * {@link module:engine/model/markercollection~Marker#is `Marker#is()`}
+	 * * {@link module:engine/model/textproxy~TextProxy#is `TextProxy#is()`}
+	 *
+	 * @method #is
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'node' || type == 'model:node';
+	}
+
+	/**
 	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
 	 *
 	 * @protected
@@ -459,29 +506,6 @@ export default class Node {
 	 */
 	_clearAttributes() {
 		this._attrs.clear();
-	}
-
-	/**
-	 * Checks whether given model tree object is of given type.
-	 *
-	 * This method is useful when processing model tree objects that are of unknown type. For example, a function
-	 * may return {@link module:engine/model/documentfragment~DocumentFragment} or {@link module:engine/model/node~Node}
-	 * that can be either text node or element. This method can be used to check what kind of object is returned.
-	 *
-	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
-	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
-	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
-	 *		obj.is( 'element', 'paragraph' ); // true only for element which name is 'paragraph'
-	 *		obj.is( 'paragraph' ); // shortcut for obj.is( 'element', 'paragraph' )
-	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
-	 *		obj.is( 'textProxy' ); // true for text proxy object
-	 *
-	 * @method #is
-	 * @param {'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
-	 * @returns {Boolean}
-	 */
-	is( type ) {
-		return type == 'node';
 	}
 }
 

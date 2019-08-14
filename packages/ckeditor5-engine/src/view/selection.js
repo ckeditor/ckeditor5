@@ -598,20 +598,22 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 * Checks whether this object is of the given type.
 	 *
-	 *		const selection = new Selection( ... );
+	 *		selection.is( 'selection' ); // -> true
+	 *		selection.is( 'view:selection' ); // -> true
 	 *
-	 *		selection.is( 'selection' ); // true
-	 *		selection.is( 'node' ); // false
-	 *		selection.is( 'element' ); // false
+	 *		selection.is( 'model:selection' ); // -> false
+	 *		selection.is( 'element' ); // -> false
+	 *		selection.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection';
+		return type == 'selection' || type == 'view:selection';
 	}
 
 	/**

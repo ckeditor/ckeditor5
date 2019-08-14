@@ -207,6 +207,25 @@ export default class Position {
 	}
 
 	/**
+	 * Checks whether this object is of the given type.
+	 *
+	 *		position.is( 'position' ); // -> true
+	 *		position.is( 'view:position' ); // -> true
+	 *
+	 *		position.is( 'model:position' ); // -> false
+	 *		position.is( 'element' ); // -> false
+	 *		position.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'position' || type == 'view:position';
+	}
+
+	/**
 	 * Checks whether this position equals given position.
 	 *
 	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.

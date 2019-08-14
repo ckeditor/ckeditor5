@@ -449,6 +449,24 @@ class Marker {
 	}
 
 	/**
+	 * Checks whether this object is of the given.
+	 *
+	 *		marker.is( 'marker' ); // -> true
+	 *		marker.is( 'model:marker' ); // -> true
+	 *
+	 *		marker.is( 'view:element' ); // -> false
+	 *		marker.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'marker' || type == 'model:marker';
+	}
+
+	/**
 	 * Binds new live range to the marker and detach the old one if is attached.
 	 *
 	 * @protected

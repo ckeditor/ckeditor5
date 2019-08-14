@@ -275,21 +275,27 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 * Checks whether this object is of the given type.
 	 *
-	 *		const selection = new DocumentSelection( ... );
+	 *		docSelection.is( 'selection' ); // -> true
+	 *		docSelection.is( 'documentSelection' ); // -> true
+	 *		docSelection.is( 'view:selection' ); // -> true
+	 *		docSelection.is( 'view:documentSelection' ); // -> true
 	 *
-	 *		selection.is( 'selection' ); // true
-	 *		selection.is( 'documentSelection' ); // true
-	 *		selection.is( 'node' ); // false
-	 *		selection.is( 'element' ); // false
+	 *		docSelection.is( 'model:documentSelection' ); // -> false
+	 *		docSelection.is( 'element' ); // -> false
+	 *		docSelection.is( 'node' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection' || type == 'documentSelection';
+		return type == 'selection' ||
+			type == 'documentSelection' ||
+			type == 'view:selection' ||
+			type == 'view:documentSelection';
 	}
 
 	/**
