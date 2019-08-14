@@ -1215,14 +1215,14 @@
     "@xtuc/long" "4.2.2"
 
 "@wiris/ckeditor5-mathml@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@wiris/ckeditor5-mathml/-/ckeditor5-mathml-1.1.0.tgz#ab88461f329ea467c0aa281a78dc8e0f3ddb5b1b"
-  integrity sha512-sX1OmxFLn6js/s3FVmO6+r83yaoJiwGt3SO3m0XSuZCuO8Kynj2IqZJSNBTjuLms4/mxqTupyZCFpjuyjM6XSg==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@wiris/ckeditor5-mathml/-/ckeditor5-mathml-1.2.1.tgz#363ddb9d6b822a34304fe12b468e3bd9f195c636"
+  integrity sha512-5Z6M2C/9IzpvJQ/nZ6EN7SgK9EKogBmXLeC/9rkNQwjYofOEGImAX1nYfnSaoiwyCNIrNpQ6k8j8gv+0e1jRrg==
 
-"@wiris/mathtype-ckeditor5@^7.15.0":
-  version "7.16.0"
-  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.16.0.tgz#93fb4ccf121d90445b176fdef73da90e3fb2055d"
-  integrity sha512-AB+wAJp13mQXRidHqs93YDHtYPgpwhJjkjMh6fTpnugEfsLnGLN0KmrFtagPXoVgQF7oA3NDhFAVo9Gs5NteLQ==
+"@wiris/mathtype-ckeditor5@^7.16.1":
+  version "7.16.1"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.16.1.tgz#3601b4219497984c5b4ce3a42bd51e4a1355c985"
+  integrity sha512-51CRYa8yO5cHbFxU+mx2TzDN4+F1EYId6E2Ka0zuvRDYvQb5ZxnunItjWKuzv08VPaSBRBA14vPt6UgSrn4azA==
   dependencies:
     "@wiris/ckeditor5-mathml" "^1.0.0"
 
