@@ -167,6 +167,29 @@ describe( 'ImageResize', () => {
 		expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
 	} );
 
+	// TODO move to WidgetResize tests.
+	it( 'uses rounded (int) values', async () => {
+		setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+		widget = viewDocument.getRoot().getChild( 1 );
+
+		await generateResizeTest( {
+			expectedWidth: 97,
+			// Makes it resize the image to 97.2188px, unless there's a rounding.
+			pointerOffset: {
+				x: 7.3,
+				y: -1
+			},
+			resizerPosition: 'bottom-left',
+			checkBeforeMouseUp( domImage, domResizeWrapper ) {
+				expect( domImage.style.width ).to.match( /^\d\dpx$/ );
+				expect( domResizeWrapper.style.width ).to.match( /^\d\dpx$/ );
+			}
+		} )();
+
+		expect( editor.model.document.getRoot().getChild( 1 ).getAttribute( 'width' ) ).to.match( /^\d\dpx$/ );
+	} );
+
 	describe( 'standard image resizing', () => {
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
@@ -479,7 +502,7 @@ describe( 'ImageResize', () => {
 			const resizerPositionParts = options.resizerPosition.split( '-' );
 
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
-				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d.]+)px"><\/image>/;
+				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d]+)px"><\/image>/;
 
 			focusEditor( editor );
 
@@ -511,6 +534,10 @@ describe( 'ImageResize', () => {
 
 					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
+					if ( options.checkBeforeMouseUp ) {
+						options.checkBeforeMouseUp( domImage, domResizeWrapper );
+					}
+
 					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
 
 					expect( getData( editor.model, {
@@ -519,8 +546,8 @@ describe( 'ImageResize', () => {
 
 					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
 
-					expect( modelItem.getAttribute( 'width' ) ).to.match( /^([\d.]+)px$/, 'Model width is properly formatted' );
-					expect( parseInt( modelItem.getAttribute( 'width' ), 0 ) )
+					expect( modelItem.getAttribute( 'width' ) ).to.match( /^([\d]+)px$/, 'Model width is properly formatted' );
+					expect( parseFloat( modelItem.getAttribute( 'width' ), 0 ) )
 						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 				} );
 		};
