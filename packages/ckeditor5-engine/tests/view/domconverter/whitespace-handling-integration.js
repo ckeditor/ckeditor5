@@ -8,7 +8,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import { getData } from '../../../src/dev-utils/model';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 // NOTE:
 // dev utils' setData() loses white spaces so don't use it for tests here!!!
@@ -21,7 +20,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 	describe( 'normalizing whitespaces around block boundaries (#822)', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing ] } )
+				.create( { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
 
@@ -117,18 +116,20 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		} );
 
 		it( 'nbsp between blocks is not ignored (different blocks)', () => {
-			editor.setData( '<table><tr><td>foo</td></tr></table>&nbsp;<p>bar</p>' );
+			editor.model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+			editor.setData( '<block>foo</block>&nbsp;<p>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal(
-					'<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' +
+					'<block>foo</block>' +
 					'<paragraph> </paragraph>' +
 					'<paragraph>bar</paragraph>'
 				);
 
 			expect( editor.getData() )
 				.to.equal(
-					'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>' +
+					'<block>foo</block>' +
 					'<p>&nbsp;</p>' +
 					'<p>bar</p>'
 				);
