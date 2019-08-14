@@ -213,6 +213,20 @@ describe( 'WordCount', () => {
 				sinon.assert.calledTwice( fake );
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 2, characters: 12 } );
 			} );
+
+			it( 'should be fired after editor initialization', () => {
+				const fake = sinon.fake();
+
+				return VirtualTestEditor.create( {
+					plugins: [ WordCount, Paragraph, ShiftEnter, TableEditing ],
+					wordCount: {
+						onUpdate: fake
+					}
+				} )
+					.then( () => {
+						sinon.assert.calledOnce( fake );
+					} );
+			} );
 		} );
 	} );
 
