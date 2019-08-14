@@ -22,15 +22,9 @@ See the [relevant issue](https://github.com/ckeditor/ckeditor5/issues/592) on Gi
 
 ## What happened to the `contents.css` file? How do I style the content of the editor?
 
-There is no such thing as the `contents.css` file because in CKEditor 5 features bring their own content styles, which are by default included in the JavaScript build and {@link framework/guides/theme-customization#styles-processing-and-bundling loaded by the style–loader} (they can be {@link builds/guides/integration/advanced-setup#option-extracting-css extracted}, too). It optimizes the size of the builds as the styles of unused features are simply excluded.
+There is no such thing as the `contents.css` file because in CKEditor 5 features bring their own content styles, which are by default included in the JavaScript build and {@link framework/guides/theme-customization#styles-processing-and-bundling loaded by the style–loader}. It optimizes the size of the builds as the styles of unused features are simply excluded.
 
-Although some styles are provided by the features, it is up to the developers to make sure the content created by CKEditor 5 is properly styled, both in the front–end and in the back–end. To style the content in the editor (back–end), use the `.ck-content` CSS class:
-
-```css
-.ck-content a {
-	color: teal;
-}
-```
+You can get the full list of editor content styles in a {@link builds/guides/integration/content-styles dedicated guide}. You can also {@link builds/guides/integration/advanced-setup#option-extracting-css extract} all CSS brought by CKEditor 5 (content and UI) to a separate file when creating a custom editor build.
 
 ## The build I downloaded is missing some features. How do I add them?
 

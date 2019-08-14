@@ -223,6 +223,10 @@ Note: These arguments must be passed after additional `--`:
 yarn run docs --skip-api
 ```
 
+## Generating content styles
+
+It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. Execute `yarn docs:content-styles` and the stylesheet will be saved in the `build/content-styles` folder. To learn more, please refer to the {@link builds/guides/integration/content-styles "Content styles"} guide.
+
 ## Bisecting through a multi-repository
 
 CKEditor 5 is a multi-repository project. It means that [`git bisect`](https://git-scm.com/docs/git-bisect) (which is super handy when tracking which commit introduced a bug) will not work out of the box.

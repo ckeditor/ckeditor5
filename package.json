@@ -120,6 +120,7 @@
     "docs:api": "node ./scripts/docs/build-api-docs.js",
     "docs:build-and-publish": "node ./scripts/docs/build-and-publish.js",
     "docs:build-and-publish-nightly": "node ./scripts/docs/build-and-publish-nightly.js",
+    "docs:content-styles": "node ./scripts/docs/build-content-styles.js",
     "translations:collect": "ckeditor5-dev-env-translations collect",
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
