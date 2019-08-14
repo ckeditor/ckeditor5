@@ -4,11 +4,9 @@
  */
 
 /**
- * @module widget/resizer
+ * @module widget/widgetresizer/resizerstate
  */
-import {
-	getAbsoluteBoundaryPoint
-} from './utils';
+
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -109,7 +107,6 @@ export default class ResizeState {
 	/**
 	 * Method used to calculate the proposed size as the resize handles are dragged.
 	 *
-	 * @private
 	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
 	 * @returns {Object} return
 	 * @returns {Number} return.x Proposed width.
@@ -175,10 +172,36 @@ export default class ResizeState {
 	}
 }
 
+mix( ResizeState, ObservableMixin );
+
 /**
+ * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
+ *
+ * @private
+ * @param {HTMLElement} element
+ * @param {String} resizerPosition Position of the resize handler, e.g. `"top-left"`, `"bottom-right"`.
+ * @returns {Object} return
+ * @returns {Number} return.x
+ * @returns {Number} return.y
+ */
+function getAbsoluteBoundaryPoint( element, resizerPosition ) {
+	const elementRect = new Rect( element );
+	const positionParts = resizerPosition.split( '-' );
+	const ret = {
+		x: positionParts[ 1 ] == 'right' ? elementRect.right : elementRect.left,
+		y: positionParts[ 0 ] == 'bottom' ? elementRect.bottom : elementRect.top
+	};
+
+	ret.x += element.ownerDocument.defaultView.scrollX;
+	ret.y += element.ownerDocument.defaultView.scrollY;
+
+	return ret;
+}
+
+/**
+ * @private
  * @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
  * @returns {String} A prefixed HTML class name for the resizer element
- * @private
  */
 function getResizerClass( resizerPosition ) {
 	return `ck-widget__resizer-${ resizerPosition }`;
@@ -223,5 +246,3 @@ function extractCoordinates( event ) {
 		y: event.pageY
 	};
 }
-
-mix( ResizeState, ObservableMixin );

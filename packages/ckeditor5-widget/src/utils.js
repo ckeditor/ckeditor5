@@ -9,7 +9,6 @@
 
 import HighlightStack from './highlightstack';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
@@ -347,29 +346,6 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 
 		data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
 	};
-}
-
-/**
- * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
- *
- * @param {HTMLElement} element
- * @param {String} resizerPosition Position of the resize handler, e.g. `"top-left"`, `"bottom-right"`.
- * @returns {Object} return
- * @returns {Number} return.x
- * @returns {Number} return.y
- */
-export function getAbsoluteBoundaryPoint( element, resizerPosition ) {
-	const elementRect = new Rect( element );
-	const positionParts = resizerPosition.split( '-' );
-	const ret = {
-		x: positionParts[ 1 ] == 'right' ? elementRect.right : elementRect.left,
-		y: positionParts[ 0 ] == 'bottom' ? elementRect.bottom : elementRect.top
-	};
-
-	ret.x += element.ownerDocument.defaultView.scrollX;
-	ret.y += element.ownerDocument.defaultView.scrollY;
-
-	return ret;
 }
 
 // Default filler offset function applied to all widget elements.
