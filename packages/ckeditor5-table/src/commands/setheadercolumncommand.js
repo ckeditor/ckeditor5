@@ -75,14 +75,13 @@ export default class SetHeaderColumnCommand extends Command {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const currentHeadingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
 		const { column: selectionColumn } = tableUtils.getCellLocation( tableCell );
 
-		if ( forceValue && currentHeadingColumns > selectionColumn || forceValue === false && currentHeadingColumns <= selectionColumn ) {
+		if ( forceValue === this.value ) {
 			return;
 		}
 
-		const headingColumnsToSet = currentHeadingColumns > selectionColumn ? selectionColumn : selectionColumn + 1;
+		const headingColumnsToSet = this.value ? selectionColumn : selectionColumn + 1;
 
 		model.change( writer => {
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );

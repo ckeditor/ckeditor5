@@ -76,11 +76,11 @@ export default class SetHeaderRowCommand extends Command {
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 		const selectionRow = tableRow.index;
 
-		if ( forceValue && currentHeadingRows > selectionRow || forceValue === false && currentHeadingRows <= selectionRow ) {
+		if ( forceValue === this.value ) {
 			return;
 		}
 
-		const headingRowsToSet = currentHeadingRows > selectionRow ? selectionRow : selectionRow + 1;
+		const headingRowsToSet = this.value ? selectionRow : selectionRow + 1;
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
