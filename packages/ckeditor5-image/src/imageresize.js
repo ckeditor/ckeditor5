@@ -56,6 +56,11 @@ export default class ImageResize extends Plugin {
 						const imageStyle = data.item.getAttribute( 'imageStyle' );
 
 						return !imageStyle || imageStyle == 'full';
+					},
+					onCommit( resizerState ) {
+						editor.model.change( writer => {
+							writer.setAttribute( 'width', resizerState.proposedWidth + 'px', data.item );
+						} );
 					}
 				} );
 
