@@ -9,9 +9,9 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
-// import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 
-// ClassicEditor.builtinPlugins.push( TodoList );
+ClassicEditor.builtinPlugins.push( TodoList );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-todo-list' ), {
@@ -22,7 +22,7 @@ ClassicEditor
 				'|',
 				'bulletedList',
 				'numberedList',
-				// 'todoList',
+				'todoList',
 				'|',
 				'link',
 				'insertTable',
