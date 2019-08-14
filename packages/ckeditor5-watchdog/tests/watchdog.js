@@ -992,59 +992,61 @@ describe( 'Watchdog', () => {
 		} );
 	} );
 
-	it( 'should support multi-root editors', () => {
-		class MultiRootEditor extends Editor {
-			constructor( sourceElements, config ) {
-				super( config );
+	describe( 'multi-root editors', () => {
+		it( 'should support multi-root editors', () => {
+			class MultiRootEditor extends Editor {
+				constructor( sourceElements, config ) {
+					super( config );
 
-				this.data.processor = new HtmlDataProcessor();
+					this.data.processor = new HtmlDataProcessor();
 
-				// Create root and UIView element for each editable container.
-				for ( const rootName of Object.keys( sourceElements ) ) {
-					this.model.document.createRoot( '$root', rootName );
+					// Create root and UIView element for each editable container.
+					for ( const rootName of Object.keys( sourceElements ) ) {
+						this.model.document.createRoot( '$root', rootName );
+					}
+				}
+
+				static async create( sourceElements, config ) {
+					const editor = new this( sourceElements, config );
+
+					await editor.initPlugins();
+
+					await editor.data.init( config.initialData );
+
+					editor.fire( 'ready' );
+
+					return editor;
 				}
 			}
 
-			static async create( sourceElements, config ) {
-				const editor = new this( sourceElements, config );
+			const watchdog = Watchdog.for( MultiRootEditor );
 
-				await editor.initPlugins();
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
 
-				await editor.data.init( config.initialData );
-
-				editor.fire( 'ready' );
-
-				return editor;
-			}
-		}
-
-		const watchdog = Watchdog.for( MultiRootEditor );
-
-		// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
-		const originalErrorHandler = window.onerror;
-		window.onerror = undefined;
-
-		return watchdog
-			.create( {
-				header: element
-			}, {
-				initialData: {
-					header: '<p>Foo</p>'
-				},
-				plugins: [ Paragraph ]
-			} )
-			.then( () => {
-				expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
-
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
-
-				return new Promise( res => {
-					window.onerror = originalErrorHandler;
+			return watchdog
+				.create( {
+					header: element
+				}, {
+					initialData: {
+						header: '<p>Foo</p>'
+					},
+					plugins: [ Paragraph ]
+				} )
+				.then( () => {
 					expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
 
-					res();
+					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+					return new Promise( res => {
+						window.onerror = originalErrorHandler;
+						expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+
+						res();
+					} );
 				} );
-			} );
+		} );
 	} );
 } );
 
