@@ -58,7 +58,7 @@ The word count plugin renders its output as:
 </div>
 ```
 
-If you wish to render the statistics differently, see the [`update` event](#the-update-event).
+If you wish to render the statistics differently, see the [`update` event](#reacting-to-updates).
 
 ### Changing the output
 
@@ -67,7 +67,7 @@ There are two configuration options available that change the output of the word
 * If the {@link module:word-count/wordcount~WordCountConfig#displayWords `config.wordCount.displayWords`} option is set to `false`, the word counter will be hidden.
 * If the {@link module:word-count/wordcount~WordCountConfig#displayCharacters `config.wordCount.displayCharacters`} option is set to `false`, the character counter will be hidden.
 
-### Reacting to changes in statistics
+### Reacting to updates
 
 You can execute your custom callback every time content statistics change by defining {@link module:word-count/wordcount~WordCountConfig#onUpdate `config.wordCount.onUpdate`} in the editor configuration:
 
@@ -78,7 +78,7 @@ ClassicEditor
 		wordCount: {
 			onUpdate: stats => {
 				// Prints the current content statistics.
-				console.log( `Characters: ${ stats.characters }\nWords:      ${ stats.words }` );
+				console.log( `Characters: ${ stats.characters }\nWords: ${ stats.words }` );
 			}
 		}
 	} )
@@ -88,63 +88,51 @@ ClassicEditor
 
 **Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 
-## The `onUpdate` configuration option
-
-The {@link module:word-count/wordcount~WordCount WordCount} plugin exposes the {@link module:word-count/wordcount~WordCountConfig#onUpdate `onUpdate`} configuration options, which executes a defined function whenever the word count plugin updates its values. It allows implementing customized behaviors that react to word and character count updates. The plugin also emits {@link module:word-count/wordcount~WordCount#event:update `update` event} which might be used for more complex solutions.
-
 Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature it in action. See the code used to create the demo listed later in this section.
 
 {@snippet features/word-count-update}
 
 ```js
+const maxCharacters = 120;
+const container = document.querySelector( '.demo-update' );
+const progressCircle = document.querySelector( '.demo-update__chart__circle' );
+const charactersBox = document.querySelector( '.demo-update__chart__characters' );
+const wordsBox = document.querySelector( '.demo-update__words' );
+const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribute( 'r' ) );
+const sendButton = document.querySelector( '.demo-update__send' );
+
 BalloonEditor
 	.create( document.querySelector( '#demo-update__editor' ), {
 		// Editor configuration.
 		wordCount: {
-			onUpdate: ( () => {
-				const maxCharacters = 120;
-				const container = document.querySelector( '.demo-update' );
-				const progressCircle = document.querySelector( '.demo-update__chart__circle' );
-				const charactersBox = document.querySelector( '.demo-update__chart__characters' );
-				const wordsBox = document.querySelector( '.demo-update__words' );
-				const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribute( 'r' ) );
-				const sendButton = document.querySelector( '.demo-update__send' );
+			onUpdate: stats => {
+				const charactersProgress = stats.characters / maxCharacters * circleCircumference;
+				const isLimitExceeded = stats.characters > maxCharacters;
+				const isCloseToLimit = !isLimitExceeded && stats.characters > maxCharacters * .8;
+				const circleDashArray = Math.min( charactersProgress, circleCircumference );
 
-				sendButton.addEventListener( 'click', () => {
-					window.alert( 'Post sent!' ); // eslint-disable-line no-alert
-				} );
-				// Update the UI as the content of the editor changes.
-				return data => {
-					const currentCharacters = data.characters;
-					const currentWords = data.words;
-					const charactersProgress = currentCharacters / maxCharacters * circleCircumference;
-					const isLimitExceeded = currentCharacters > maxCharacters;
-					const isCloseToLimit = !isLimitExceeded && currentCharacters > maxCharacters * .8;
-					const circleDashArray = Math.min( charactersProgress, circleCircumference );
+				// Set the stroke of the circle to show the how many characters were typed.
+				progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
 
-					// Set the stroke of the circle to show the how many characters were typed.
-					progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
+				// Display the number of characters in the progress chart. When exceeded the limit,
+				// display how many characters should be removed.
+				if ( isLimitExceeded ) {
+					charactersBox.textContent = `-${ stats.characters - maxCharacters }`;
+				} else {
+					charactersBox.textContent = stats.characters;
+				}
 
-					// Display the number of characters in the progress chart. When exceeded the limit,
-					// display how many characters should be removed.
-					if ( isLimitExceeded ) {
-						charactersBox.textContent = `-${ currentCharacters - maxCharacters }`;
-					} else {
-						charactersBox.textContent = currentCharacters;
-					}
+				wordsBox.textContent = `Words in the post: ${ stats.words }`;
 
-					wordsBox.textContent = `Words in the post: ${ currentWords }`;
+				// If the content length is close to the characters limit, add a CSS class to warns the user.
+				container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
 
-					// If the content length is close to the characters limit, add a CSS class to warns the user.
-					container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
+				// If exceeded the characters limit, add a CSS class that makes the content's background red.
+				container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
 
-					// If exceeded the characters limit, add a CSS class that makes the content's background red.
-					container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
-
-					// If exceeded the characters limit, disable the send button.
-					sendButton.toggleAttribute( 'disabled', isLimitExceeded );
-				};
-			} )()
+				// If exceeded the characters limit, disable the send button.
+				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
+			}
 		}
 	} )
 	.catch( ... );
@@ -274,7 +262,7 @@ The {@link module:word-count/wordcount~WordCount} plugin provides:
 	} );
 	```
 
-	Alternatively, you can use [`editor.config.wordCount.onUpdate`](#reacting-to-changes-in-statistics) to register a similar callback in editor configuration.
+	Alternatively, you can use [`config.wordCount.onUpdate`](#reacting-to-updates) to register a similar callback via the editor configuration.
 
 	**Note**: For performance reasons, the `update` event is throttled so the statistics may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 * The {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} properties from which you can retrieve the stats at any moment.
