@@ -154,7 +154,7 @@ export default class Watchdog {
 		 * The editor source element or data.
 		 *
 		 * @private
-		 * @member {HTMLElement|String} #_elementOrData
+		 * @member {HTMLElement|String|Object.<String|String>} #_elementOrData
 		 */
 
 		/**
@@ -203,7 +203,7 @@ export default class Watchdog {
 	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
 	 * {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
 	 *
-	 * @param {HTMLElement|String} elementOrData
+	 * @param {HTMLElement|String|Object.<String|String>} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
 	 *
 	 * @returns {Promise}
