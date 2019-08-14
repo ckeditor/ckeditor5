@@ -67,15 +67,15 @@ export default class Resizer {
 	 */
 	attach() {
 		const that = this;
-		const viewElement = this._options.viewElement;
+		const widgetElement = this._options.viewElement;
 		const writer = this._options.downcastWriter;
 
 		this._viewResizerWrapper = writer.createUIElement( 'div', {
-			class: 'ck ck-widget__resizer-wrapper'
+			class: 'ck ck-reset_all ck-widget__resizer'
 		}, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
-			that._appendResizers( domElement );
+			that._appendHandles( domElement );
 			that._appendSizeUi( domElement );
 
 			that._domResizerWrapper = domElement;
@@ -84,8 +84,8 @@ export default class Resizer {
 		} );
 
 		// Append resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( viewElement, 'end' ), this._viewResizerWrapper );
-		writer.addClass( [ 'ck-widget_with-resizer' ], viewElement );
+		writer.insert( writer.createPositionAt( widgetElement, 'end' ), this._viewResizerWrapper );
+		writer.addClass( 'ck-widget_with-resizer', widgetElement );
 	}
 
 	begin( domResizeHandle ) {
@@ -171,7 +171,7 @@ export default class Resizer {
 	}
 
 	static isResizeHandle( domElement ) {
-		return domElement.classList.contains( 'ck-widget__resizer' );
+		return domElement.classList.contains( 'ck-widget__resizer__handle' );
 	}
 
 	/**
@@ -278,14 +278,14 @@ export default class Resizer {
 	 * @private
 	 * @param {HTMLElement} domElement The resizer wrapper.
 	 */
-	_appendResizers( domElement ) {
+	_appendHandles( domElement ) {
 		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
 		for ( const currentPosition of resizerPositions ) {
 			domElement.appendChild( ( new Template( {
 				tag: 'div',
 				attributes: {
-					class: `ck-widget__resizer ${ getResizerClass( currentPosition ) }`
+					class: `ck-widget__resizer__handle ${ getResizerClass( currentPosition ) }`
 				}
 			} ).render() ) );
 		}
@@ -369,7 +369,7 @@ class SizeView extends View {
 // @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
 // @returns {String} A prefixed HTML class name for the resizer element
 function getResizerClass( resizerPosition ) {
-	return `ck-widget__resizer-${ resizerPosition }`;
+	return `ck-widget__resizer__handle-${ resizerPosition }`;
 }
 
 function extractCoordinates( event ) {

@@ -153,8 +153,8 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
  * @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
  * @returns {String} A prefixed HTML class name for the resizer element
  */
-function getResizerClass( resizerPosition ) {
-	return `ck-widget__resizer-${ resizerPosition }`;
+function getResizerHandleClass( resizerPosition ) {
+	return `ck-widget__resizer__handle-${ resizerPosition }`;
 }
 
 /**
@@ -168,7 +168,7 @@ function getHandlePosition( domHandle ) {
 	const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
 	for ( const position of resizerPositions ) {
-		if ( domHandle.classList.contains( getResizerClass( position ) ) ) {
+		if ( domHandle.classList.contains( getResizerHandleClass( position ) ) ) {
 			return position;
 		}
 	}
