@@ -61,7 +61,7 @@ export default class WidgetResize extends Plugin {
 
 		this._observer.listenTo( domDocument, 'mouseup', () => {
 			if ( this.activeResizer ) {
-				this.activeResizer.commit( this.editor );
+				this.activeResizer.commit();
 
 				this.activeResizer = null;
 			}
@@ -125,6 +125,10 @@ export default class WidgetResize extends Plugin {
 
 /**
  * @member {module:engine/view/downcastwriter~DowncastWriter} module:widget/widgetresizer~ResizerOptions#downcastWriter
+ */
+
+/**
+ * @member {Function} module:widget/widgetresizer~ResizerOptions#onCommit
  */
 
 /**

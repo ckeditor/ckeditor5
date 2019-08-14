@@ -112,15 +112,8 @@ export default class Resizer {
 		this._domResizerWrapper.style.height = this.state.proposedHeight + 'px';
 	}
 
-	commit( editor ) {
-		const modelElement = this._options.modelElement;
-		const newWidth = this._domResizerWrapper.clientWidth;
-
-		this.redraw();
-
-		editor.model.change( writer => {
-			writer.setAttribute( 'width', newWidth + 'px', modelElement );
-		} );
+	commit() {
+		this._options.onCommit( this.state );
 
 		this._cleanup();
 	}
