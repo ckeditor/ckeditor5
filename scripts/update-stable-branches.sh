@@ -21,7 +21,7 @@ then
 
 	# Push the `#stable` branches.
 	git push origin stable master && \
-	mgit exec 'git push origin stable'
+	mrgit exec 'git push origin stable'
 
 	echo "Success! 🎂"
 fi
