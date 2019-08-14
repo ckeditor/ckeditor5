@@ -37,13 +37,20 @@ describe( 'TableWalker', () => {
 			result.push( tableInfo );
 		}
 
-		const formattedResult = result.map( ( { row, column, isSpanned, cell, cellIndex } ) => ( {
-			row,
-			column,
-			isSpanned,
-			data: cell && cell.getChild( 0 ).getChild( 0 ).data,
-			index: cellIndex
-		} ) );
+		const formattedResult = result.map( ( { row, column, isSpanned, cell, cellIndex } ) => {
+			const result = {
+				row,
+				column,
+				data: cell && cell.getChild( 0 ).getChild( 0 ).data,
+				index: cellIndex
+			};
+
+			if ( isSpanned ) {
+				result.isSpanned = true;
+			}
+
+			return result;
+		} );
 
 		expect( formattedResult ).to.deep.equal( expected );
 	}
@@ -53,10 +60,10 @@ describe( 'TableWalker', () => {
 			[ '00', '01' ],
 			[ '10', '11' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
-			{ row: 0, column: 1, index: 1, data: '01', isSpanned: false },
-			{ row: 1, column: 0, index: 0, data: '10', isSpanned: false },
-			{ row: 1, column: 1, index: 1, data: '11', isSpanned: false }
+			{ row: 0, column: 0, index: 0, data: '00' },
+			{ row: 0, column: 1, index: 1, data: '01' },
+			{ row: 1, column: 0, index: 0, data: '10' },
+			{ row: 1, column: 1, index: 1, data: '11' }
 		] );
 	} );
 
@@ -64,8 +71,8 @@ describe( 'TableWalker', () => {
 		testWalker( [
 			[ { colspan: 2, contents: '00' }, '13' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
-			{ row: 0, column: 2, index: 1, data: '13', isSpanned: false }
+			{ row: 0, column: 0, index: 0, data: '00' },
+			{ row: 0, column: 2, index: 1, data: '13' }
 		] );
 	} );
 
@@ -76,13 +83,13 @@ describe( 'TableWalker', () => {
 			[ '22' ],
 			[ '30', '31', '32' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
-			{ row: 0, column: 2, index: 1, data: '02', isSpanned: false },
-			{ row: 1, column: 2, index: 0, data: '12', isSpanned: false },
-			{ row: 2, column: 2, index: 0, data: '22', isSpanned: false },
-			{ row: 3, column: 0, index: 0, data: '30', isSpanned: false },
-			{ row: 3, column: 1, index: 1, data: '31', isSpanned: false },
-			{ row: 3, column: 2, index: 2, data: '32', isSpanned: false }
+			{ row: 0, column: 0, index: 0, data: '00' },
+			{ row: 0, column: 2, index: 1, data: '02' },
+			{ row: 1, column: 2, index: 0, data: '12' },
+			{ row: 2, column: 2, index: 0, data: '22' },
+			{ row: 3, column: 0, index: 0, data: '30' },
+			{ row: 3, column: 1, index: 1, data: '31' },
+			{ row: 3, column: 2, index: 2, data: '32' }
 		] );
 	} );
 
@@ -93,15 +100,15 @@ describe( 'TableWalker', () => {
 			[ '33' ],
 			[ '41', '42', '43' ]
 		], [
-			{ row: 0, column: 0, index: 0, data: '11', isSpanned: false },
-			{ row: 0, column: 1, index: 1, data: '12', isSpanned: false },
-			{ row: 0, column: 2, index: 2, data: '13', isSpanned: false },
-			{ row: 1, column: 1, index: 0, data: '22', isSpanned: false },
-			{ row: 1, column: 2, index: 1, data: '23', isSpanned: false },
-			{ row: 2, column: 2, index: 0, data: '33', isSpanned: false },
-			{ row: 3, column: 0, index: 0, data: '41', isSpanned: false },
-			{ row: 3, column: 1, index: 1, data: '42', isSpanned: false },
-			{ row: 3, column: 2, index: 2, data: '43', isSpanned: false }
+			{ row: 0, column: 0, index: 0, data: '11' },
+			{ row: 0, column: 1, index: 1, data: '12' },
+			{ row: 0, column: 2, index: 2, data: '13' },
+			{ row: 1, column: 1, index: 0, data: '22' },
+			{ row: 1, column: 2, index: 1, data: '23' },
+			{ row: 2, column: 2, index: 0, data: '33' },
+			{ row: 3, column: 0, index: 0, data: '41' },
+			{ row: 3, column: 1, index: 1, data: '42' },
+			{ row: 3, column: 2, index: 2, data: '43' }
 		] );
 	} );
 
@@ -113,10 +120,10 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 2, column: 2, index: 0, data: '33', isSpanned: false },
-				{ row: 3, column: 0, index: 0, data: '41', isSpanned: false },
-				{ row: 3, column: 1, index: 1, data: '42', isSpanned: false },
-				{ row: 3, column: 2, index: 2, data: '43', isSpanned: false }
+				{ row: 2, column: 2, index: 0, data: '33' },
+				{ row: 3, column: 0, index: 0, data: '41' },
+				{ row: 3, column: 1, index: 1, data: '42' },
+				{ row: 3, column: 2, index: 2, data: '43' }
 			], { startRow: 2 } );
 		} );
 	} );
@@ -129,10 +136,10 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '11', isSpanned: false },
-				{ row: 0, column: 2, index: 1, data: '13', isSpanned: false },
-				{ row: 1, column: 2, index: 0, data: '23', isSpanned: false },
-				{ row: 2, column: 2, index: 0, data: '33', isSpanned: false }
+				{ row: 0, column: 0, index: 0, data: '11' },
+				{ row: 0, column: 2, index: 1, data: '13' },
+				{ row: 1, column: 2, index: 0, data: '23' },
+				{ row: 2, column: 2, index: 0, data: '33' }
 			], { endRow: 2 } );
 		} );
 
@@ -143,8 +150,8 @@ describe( 'TableWalker', () => {
 				[ '33' ],
 				[ '41', '42', '43' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '11', isSpanned: false },
-				{ row: 0, column: 2, index: 1, data: '13', isSpanned: false }
+				{ row: 0, column: 0, index: 0, data: '11' },
+				{ row: 0, column: 2, index: 1, data: '13' }
 			], { endRow: 0 } );
 		} );
 	} );
@@ -155,9 +162,9 @@ describe( 'TableWalker', () => {
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '10' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
-				{ row: 0, column: 1, index: 1, data: '01', isSpanned: false },
-				{ row: 1, column: 0, index: 0, data: '10', isSpanned: false },
+				{ row: 0, column: 0, index: 0, data: '00' },
+				{ row: 0, column: 1, index: 1, data: '01' },
+				{ row: 1, column: 0, index: 0, data: '10' },
 				{ row: 1, column: 1, index: 1, data: '01', isSpanned: true }
 			], { includeSpanned: true } );
 		} );
@@ -169,17 +176,17 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', { colspan: 2, contents: '31' } ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
+				{ row: 0, column: 0, index: 0, data: '00' },
 				{ row: 0, column: 1, index: 0, data: '00', isSpanned: true },
-				{ row: 0, column: 2, index: 1, data: '02', isSpanned: false },
+				{ row: 0, column: 2, index: 1, data: '02' },
 				{ row: 1, column: 0, index: 0, data: '00', isSpanned: true },
 				{ row: 1, column: 1, index: 0, data: '00', isSpanned: true },
-				{ row: 1, column: 2, index: 0, data: '12', isSpanned: false },
+				{ row: 1, column: 2, index: 0, data: '12' },
 				{ row: 2, column: 0, index: 0, data: '00', isSpanned: true },
 				{ row: 2, column: 1, index: 0, data: '00', isSpanned: true },
-				{ row: 2, column: 2, index: 0, data: '22', isSpanned: false },
-				{ row: 3, column: 0, index: 0, data: '30', isSpanned: false },
-				{ row: 3, column: 1, index: 1, data: '31', isSpanned: false },
+				{ row: 2, column: 2, index: 0, data: '22' },
+				{ row: 3, column: 0, index: 0, data: '30' },
+				{ row: 3, column: 1, index: 1, data: '31' },
 				{ row: 3, column: 2, index: 1, data: '31', isSpanned: true }
 			], { includeSpanned: true } );
 		} );
@@ -189,9 +196,9 @@ describe( 'TableWalker', () => {
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '10' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
-				{ row: 0, column: 1, index: 1, data: '01', isSpanned: false },
-				{ row: 1, column: 0, index: 0, data: '10', isSpanned: false },
+				{ row: 0, column: 0, index: 0, data: '00' },
+				{ row: 0, column: 1, index: 1, data: '01' },
+				{ row: 1, column: 0, index: 0, data: '10' },
 				{ row: 1, column: 1, index: 1, data: '01', isSpanned: true }
 			], { includeSpanned: true } );
 		} );
@@ -205,10 +212,10 @@ describe( 'TableWalker', () => {
 			], [
 				{ row: 1, column: 0, index: 0, data: '00', isSpanned: true },
 				{ row: 1, column: 1, index: 0, data: '00', isSpanned: true },
-				{ row: 1, column: 2, index: 0, data: '12', isSpanned: false },
+				{ row: 1, column: 2, index: 0, data: '12' },
 				{ row: 2, column: 0, index: 0, data: '00', isSpanned: true },
 				{ row: 2, column: 1, index: 0, data: '00', isSpanned: true },
-				{ row: 2, column: 2, index: 0, data: '22', isSpanned: false }
+				{ row: 2, column: 2, index: 0, data: '22' }
 			], { includeSpanned: true, startRow: 1, endRow: 2 } );
 		} );
 
@@ -218,9 +225,9 @@ describe( 'TableWalker', () => {
 				[ '10' ],
 				[ '20', '21' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00', isSpanned: false },
-				{ row: 0, column: 1, index: 1, data: '01', isSpanned: false },
-				{ row: 1, column: 0, index: 0, data: '10', isSpanned: false },
+				{ row: 0, column: 0, index: 0, data: '00' },
+				{ row: 0, column: 1, index: 1, data: '01' },
+				{ row: 1, column: 0, index: 0, data: '10' },
 				{ row: 1, column: 1, index: 1, data: '01', isSpanned: true }
 			], { startRow: 0, endRow: 1, includeSpanned: true } );
 		} );
@@ -234,7 +241,7 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 3, column: 1, index: 1, data: '31', isSpanned: false }
+				{ row: 3, column: 1, index: 1, data: '31' }
 			], { column: 1 } );
 		} );
 
@@ -248,7 +255,7 @@ describe( 'TableWalker', () => {
 				{ row: 0, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 1, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 2, column: 1, index: 0, data: '00', isSpanned: true },
-				{ row: 3, column: 1, index: 1, data: '31', isSpanned: false }
+				{ row: 3, column: 1, index: 1, data: '31' }
 			], { column: 1, includeSpanned: true } );
 		} );
 	} );
