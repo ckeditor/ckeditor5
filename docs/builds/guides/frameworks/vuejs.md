@@ -192,7 +192,7 @@ npm install --save \
     @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
-    postcss-loader \
+    postcss-loader@3 \
     raw-loader@0.5.1
 ```
 

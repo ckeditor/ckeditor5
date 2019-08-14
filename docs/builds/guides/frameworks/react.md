@@ -70,7 +70,7 @@ The `<CKEditor>` component supports the following properties:
 * `onInit` &ndash; A function called when the editor was initialized. It receives the initialized {@link module:core/editor/editor~Editor `editor`} as a parameter.
 * `disabled` &ndash; A boolean. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 * `onChange` &ndash; A function called when the editor's data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
-* `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event. 
+* `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 
 The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two parameters:
@@ -175,7 +175,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 
 ```bash
 yarn add \
-	raw-loader \
+	raw-loader@3 \
 	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
@@ -208,7 +208,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 		{
 			loader: 'style-loader',
 			options: {
-				singleton: true
+				injectType: 'singletonStyleTag'
 			}
 		},
 		{
@@ -453,7 +453,7 @@ Then add two new elements to the exported object under the `module.rules` array 
 		{
 			loader: 'style-loader',
 			options: {
-				singleton: true
+				injectType: 'singletonStyleTag'
 			}
 		},
 		{
