@@ -1000,7 +1000,7 @@ describe( 'Watchdog', () => {
 
 					this.data.processor = new HtmlDataProcessor();
 
-					// Create root and UIView element for each editable container.
+					// Create a root for each source element.
 					for ( const rootName of Object.keys( sourceElements ) ) {
 						this.model.document.createRoot( '$root', rootName );
 					}
