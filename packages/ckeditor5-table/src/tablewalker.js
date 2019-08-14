@@ -15,13 +15,14 @@ export default class TableWalker {
 	/**
 	 * Creates an instance of the table walker.
 	 *
-	 *
 	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
 	 * It walks row by row and column by column in order to output values defined in the constructor.
 	 * By default it will output only those locations that are occupied by a cell. To include also spanned rows and columns,
 	 * pass the `includeSpanned` option to the constructor.
 	 *
 	 * The most important values of the iterator are column and row indexes of a cell.
+	 *
+	 * See {@link module:table/tablewalker~TableWalkerValue} what values are returned by the table walker.
 	 *
 	 * To iterate over a given row:
 	 *
@@ -54,8 +55,8 @@ export default class TableWalker {
 	 *
 	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1, includeSpanned: true } );
 	 *
-	 *		for ( const cellInfo of tableWalker ) {
-	 *			console.log( 'Cell at ' + cellInfo.row + ' x ' + cellInfo.column + ' : ' + ( cellInfo.cell ? 'has data' : 'is spanned' ) );
+	 *		for ( const value of tableWalker ) {
+	 *			console.log( 'Cell at ' + value.row + ' x ' + value.column + ' : ' + ( value.isSpanned ? 'has data' : 'is spanned' ) );
 	 *		}
 	 *
 	 * will log in the console for the table from previous example:
@@ -390,7 +391,9 @@ export default class TableWalker {
  * @property {Number} row The row index of a cell.
  * @property {Number} column The column index of a cell. Column index is adjusted to widths and heights of previous cells.
  * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or actual cell.
- * @property {Number} colspan The `colspan` attribute of a cell. It is always defined even if the model attribute is not present.
- * @property {Number} rowspan The `rowspan` attribute of a cell. It is always defined even if the model attribute is not present.
+ * @property {Number} colspan The `colspan` attribute of a cell. It the model attribute is not present, it is set to `1`. For spanned
+ * table locations, it is set to `1`.
+ * @property {Number} rowspan The `rowspan` attribute of a cell. It the model attribute is not present, it is set to `1`. For spanned
+ * table locations, it is set to `1`.
  * @property {Number} cellIndex The index of the current cell in a parent row.
  */
