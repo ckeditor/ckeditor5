@@ -7,7 +7,7 @@ menu-title: Math and chemical formulas
 
 <info-box>
 	This feature is provided as a commercial solution called MathType delivered by our partner, [Wiris](http://www.wiris.com).
-	The integration with MathType is in beta version and you can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues), marked with the [`package:mathtype`](https://github.com/ckeditor/ckeditor5/labels/package%3Amathtype) label. A license can be purchased [here](https://ckeditor.com/contact/).
+	You can report any issues in the official CKEditor 5 [GitHub repository](https://github.com/ckeditor/ckeditor5/issues). A license can be purchased [here](https://ckeditor.com/contact/).
 </info-box>
 
 [MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor 5 content.
@@ -18,11 +18,11 @@ Additionally, MathType offers a special tool designed to help you work with chem
 
 ## Demo
 
-In order to start creating math or chemical formulas in the WYSIWYG editor below, click the MathType or ChemType buttons in the toolbar. This will open the relevant dialog on the screen. 
+In order to start creating math or chemical formulas in the WYSIWYG editor below, click the MathType or ChemType buttons in the toolbar. This will open the relevant dialog on the screen.
 
 Use the toolbar to write your equation or formula. At any time you can also click the "Go to handwritten mode" button on the right side of the MathType editor to switch to handwriting.
 
-When you are done creating your scientific content, click the "OK" button to insert your formula into CKEditor 5. You can also edit any existing formulas by double-clicking them in your document. 
+When you are done creating your scientific content, click the "OK" button to insert your formula into CKEditor 5. You can also edit any existing formulas by double-clicking them in your document.
 
 {@snippet features/mathtype}
 
