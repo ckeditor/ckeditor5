@@ -328,7 +328,7 @@ export default class TableWalker {
 	}
 
 	/**
-	 * Returns the cell element that is spanned at `row` x `column` location.
+	 * Returns the cell element that is spanned over `row` x `column` location.
 	 *
 	 * @private
 	 * @param {Number} row Row index of the cell location.
