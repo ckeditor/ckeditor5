@@ -20,7 +20,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class List extends Plugin {
+export default class TodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
