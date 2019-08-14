@@ -29,9 +29,9 @@ export default class ResizeState {
 		 *
 		 * It contains an object with `width` and `height` properties.
 		 *
-		 * @type {Object}
+		 * @readonly
+		 * @member {Object} #originalSize
 		 */
-		this.originalSize = null;
 
 		/**
 		 * Position of the handle that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
@@ -66,10 +66,27 @@ export default class ResizeState {
 		this.set( 'proposedHeight', null );
 
 		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @member {Number} #aspectRatio
+		 */
+
+		/**
 		 * @private
 		 * @type {module:widget/widgetresizer~ResizerOptions}
 		 */
 		this._options = options;
+
+		/**
+		 * Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
+		 * traveled, thus how much the image should be enlarged.
+		 * This information is only known after DOM was rendered, so it will be updated later.
+		 *
+		 * @private
+		 * @type {Object}
+		 */
+		this._referenceCoordinates = null;
 	}
 
 	/**
@@ -102,73 +119,6 @@ export default class ResizeState {
 
 		this.proposedWidth = rect.width;
 		this.proposedHeight = rect.height;
-	}
-
-	/**
-	 * Method used to calculate the proposed size as the resize handles are dragged.
-	 *
-	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
-	 * @returns {Object} return
-	 * @returns {Number} return.x Proposed width.
-	 * @returns {Number} return.y Proposed height.
-	 */
-	proposeNewSize( domEventData ) {
-		const currentCoordinates = extractCoordinates( domEventData );
-		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
-		const originalSize = this.originalSize;
-
-		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
-		// meaning that it has been shrunk.
-		//
-		// +----------------+--+
-		// |                |  |
-		// |       img      |  |
-		// |                |  |
-		// +----------------+  | ^
-		// |                   | | - enlarge y
-		// +-------------------+ v
-		// 					<-->
-		// 					 enlarge x
-		const enlargement = {
-			x: this._referenceCoordinates.x - ( currentCoordinates.x + originalSize.width ),
-			y: ( currentCoordinates.y - originalSize.height ) - this._referenceCoordinates.y
-		};
-
-		if ( isCentered && this.activeHandlePosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( this._referenceCoordinates.x + originalSize.width );
-		}
-
-		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
-		// one resized corner to your cursor. It needs to be duplicated to compensate for the other side too.
-		if ( isCentered ) {
-			enlargement.x *= 2;
-		}
-
-		// const resizeHost = this._getResizeHost();
-
-		// The size proposed by the user. It does not consider the aspect ratio.
-		const proposedSize = {
-			width: Math.abs( originalSize.width + enlargement.x ),
-			height: Math.abs( originalSize.height + enlargement.y )
-		};
-
-		// Dominant determination must take the ratio into account.
-		proposedSize.dominant = proposedSize.width / this.aspectRatio > proposedSize.height ? 'width' : 'height';
-		proposedSize.max = proposedSize[ proposedSize.dominant ];
-
-		// Proposed size, respecting the aspect ratio.
-		const targetSize = {
-			width: proposedSize.width,
-			height: proposedSize.height
-		};
-
-		if ( proposedSize.dominant == 'width' ) {
-			targetSize.height = targetSize.width / this.aspectRatio;
-		} else {
-			targetSize.width = targetSize.height * this.aspectRatio;
-		}
-
-		return targetSize;
 	}
 }
 
@@ -238,11 +188,4 @@ function getOppositePosition( position ) {
 	};
 
 	return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
-}
-
-function extractCoordinates( event ) {
-	return {
-		x: event.pageX,
-		y: event.pageY
-	};
 }

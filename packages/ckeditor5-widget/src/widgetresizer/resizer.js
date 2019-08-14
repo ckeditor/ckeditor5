@@ -27,6 +27,11 @@ export default class Resizer {
 	 */
 	constructor( options ) {
 		/**
+		 * @readonly
+		 * @member {module:widget/widgetresizer/resizerstate~ResizerState} #state
+		 */
+
+		/**
 		 * @private
 		 * @type {module:widget/widgetresizer~ResizerOptions}
 		 */
@@ -42,16 +47,6 @@ export default class Resizer {
 		 * @type {HTMLElement|null}
 		 */
 		this._domResizeWrapper = null;
-
-		/**
-		 * Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
-		 * traveled, thus how much the image should be enlarged.
-		 * This information is only known after DOM was rendered, so it will be updated later.
-		 *
-		 * @private
-		 * @type {Object}
-		 */
-		this._referenceCoordinates = null;
 
 		/**
 		 * View to a wrapper containing all the resizer-related views.
@@ -102,7 +97,8 @@ export default class Resizer {
 
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
-		this.sizeUi.bindResizer( this.state );
+
+		this.sizeUi.bindToState( this.state );
 
 		this.state.begin( domResizeHandle, this._getResizeHost() );
 
@@ -111,11 +107,11 @@ export default class Resizer {
 
 	updateSize( domEventData ) {
 		const resizeHost = this._getResizeHost();
-		const newSize = this.state.proposeNewSize( domEventData );
+		const newSize = this._proposeNewSize( domEventData );
 
-		resizeHost.style.width = `${ newSize.width }px`;
+		resizeHost.style.width = newSize.width + 'px';
 
-		this.state.fetchSizeFromElement( this._getResizeHost() );
+		this.state.fetchSizeFromElement( resizeHost );
 
 		// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
 		// here will reflect this limitation on resizer shadow later on.
@@ -196,6 +192,75 @@ export default class Resizer {
 	_cleanup() {
 		this.sizeUi.dismiss();
 		this.sizeUi.isVisible = false;
+	}
+
+	/**
+	 * Method used to calculate the proposed size as the resize handles are dragged.
+	 *
+	 * @private
+	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
+	 * @returns {Object} return
+	 * @returns {Number} return.x Proposed width.
+	 * @returns {Number} return.y Proposed height.
+	 */
+	_proposeNewSize( domEventData ) {
+		const state = this.state;
+		const currentCoordinates = extractCoordinates( domEventData );
+		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
+		const originalSize = state.originalSize;
+
+		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
+		// meaning that it has been shrunk.
+		//
+		// +----------------+--+
+		// |                |  |
+		// |       img      |  |
+		// |                |  |
+		// +----------------+  | ^
+		// |                   | | - enlarge y
+		// +-------------------+ v
+		// 					<-->
+		// 					 enlarge x
+		const enlargement = {
+			x: state._referenceCoordinates.x - ( currentCoordinates.x + originalSize.width ),
+			y: ( currentCoordinates.y - originalSize.height ) - state._referenceCoordinates.y
+		};
+
+		if ( isCentered && state.activeHandlePosition.endsWith( '-right' ) ) {
+			enlargement.x = currentCoordinates.x - ( state._referenceCoordinates.x + originalSize.width );
+		}
+
+		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
+		// one resized corner to your cursor. It needs to be duplicated to compensate for the other side too.
+		if ( isCentered ) {
+			enlargement.x *= 2;
+		}
+
+		// const resizeHost = this._getResizeHost();
+
+		// The size proposed by the user. It does not consider the aspect ratio.
+		const proposedSize = {
+			width: Math.abs( originalSize.width + enlargement.x ),
+			height: Math.abs( originalSize.height + enlargement.y )
+		};
+
+		// Dominant determination must take the ratio into account.
+		proposedSize.dominant = proposedSize.width / state.aspectRatio > proposedSize.height ? 'width' : 'height';
+		proposedSize.max = proposedSize[ proposedSize.dominant ];
+
+		// Proposed size, respecting the aspect ratio.
+		const targetSize = {
+			width: proposedSize.width,
+			height: proposedSize.height
+		};
+
+		if ( proposedSize.dominant == 'width' ) {
+			targetSize.height = targetSize.width / state.aspectRatio;
+		} else {
+			targetSize.width = targetSize.height * state.aspectRatio;
+		}
+
+		return targetSize;
 	}
 
 	/**
@@ -319,14 +384,14 @@ class SizeView extends View {
 		} );
 	}
 
-	bindResizer( observable ) {
-		this.bind( 'isVisible' ).to( observable, 'proposedWidth', observable, 'proposedHeight', ( x, y ) =>
+	bindToState( resizerState ) {
+		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( x, y ) =>
 			x !== null && y !== null );
 
-		this.bind( 'label' ).to( observable, 'proposedWidth', observable, 'proposedHeight', ( x, y ) =>
+		this.bind( 'label' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( x, y ) =>
 			`${ Math.round( x ) }x${ Math.round( y ) }` );
 
-		this.bind( 'activeHandlePosition' ).to( observable );
+		this.bind( 'activeHandlePosition' ).to( resizerState );
 	}
 
 	dismiss() {
@@ -339,4 +404,11 @@ class SizeView extends View {
 // @returns {String} A prefixed HTML class name for the resizer element
 function getResizerClass( resizerPosition ) {
 	return `ck-widget__resizer-${ resizerPosition }`;
+}
+
+function extractCoordinates( event ) {
+	return {
+		x: event.pageX,
+		y: event.pageY
+	};
 }
