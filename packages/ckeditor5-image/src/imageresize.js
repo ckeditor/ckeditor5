@@ -61,18 +61,18 @@ export default class ImageResize extends Plugin {
 
 			// TODO think about this...
 			resizer.on( 'begin', () => {
-				resizer._temporaryResizeClassAdded = !resizer._domResizeWrapper.parentElement.classList.contains( 'ck_resized' );
+				resizer._temporaryResizeClassAdded = !resizer._domResizerWrapper.parentElement.classList.contains( 'ck_resized' );
 			}, { priority: 'high' } );
 
 			resizer.on( 'updateSize', () => {
 				if ( resizer._temporaryResizeClassAdded ) {
-					resizer._domResizeWrapper.parentElement.classList.add( 'ck_resized' );
+					resizer._domResizerWrapper.parentElement.classList.add( 'ck_resized' );
 				}
 			} );
 
 			resizer.on( 'cancel', () => {
 				if ( resizer._temporaryResizeClassAdded ) {
-					resizer._domResizeWrapper.parentElement.classList.remove( 'ck_resized' );
+					resizer._domResizerWrapper.parentElement.classList.remove( 'ck_resized' );
 				}
 			} );
 		}, {
