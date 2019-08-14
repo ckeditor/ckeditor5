@@ -22,18 +22,8 @@
 	position: relative;
 }
 
-.ck-focused .ck-widget_with-resizer.ck-widget_selected {
-	& > .ck-widget__resizer-wrapper {
-		visibility: visible;
-	}
-
-	& .ck-widget__resizer-shadow {
-		display: block;
-	}
-}
-
 .ck .ck-widget__resizer-wrapper {
-	visibility: hidden;
+	display: none;
 	position: absolute;
 
 	/* The wrapper itself should not interfere with pointer device, only the handlers. */
@@ -41,18 +31,14 @@
 
 	left: 0;
 	top: 0;
-}
-
-.ck .ck-widget__resizer-shadow {
-	display: none;
-	position: absolute;
-
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
 
 	outline: 1px solid var(--ck-color-resizer);
+}
+
+.ck-focused .ck-widget_with-resizer.ck-widget_selected {
+	& > .ck-widget__resizer-wrapper {
+		display: block;
+	}
 }
 
 .ck .ck-widget__resizer {

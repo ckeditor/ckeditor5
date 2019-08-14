@@ -46,7 +46,7 @@ export default class Resizer {
 		 * @private
 		 * @type {HTMLElement|null}
 		 */
-		this._domResizeWrapper = null;
+		this._domResizerWrapper = null;
 
 		/**
 		 * View to a wrapper containing all the resizer-related views.
@@ -54,13 +54,7 @@ export default class Resizer {
 		 * @private
 		 * @type {module:engine/view/uielement~UIElement}
 		 */
-		this._resizeWrapperElement = null;
-
-		/**
-		 * @private
-		 * @type {HTMLElement|null}
-		 */
-		this._domResizeShadow = null;
+		this._viewResizerWrapper = null;
 
 		this.decorate( 'begin' );
 		this.decorate( 'cancel' );
@@ -76,22 +70,21 @@ export default class Resizer {
 		const viewElement = this._options.viewElement;
 		const writer = this._options.downcastWriter;
 
-		this._resizeWrapperElement = writer.createUIElement( 'div', {
+		this._viewResizerWrapper = writer.createUIElement( 'div', {
 			class: 'ck ck-widget__resizer-wrapper'
 		}, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
-			that._domResizeShadow = that._appendShadowElement( domElement );
-			that._appendResizers( that._domResizeShadow );
-			that._appendSizeUi( that._domResizeShadow );
+			that._appendResizers( domElement );
+			that._appendSizeUi( domElement );
 
-			that._domResizeWrapper = domElement;
+			that._domResizerWrapper = domElement;
 
 			return domElement;
 		} );
 
 		// Append resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( viewElement, 'end' ), this._resizeWrapperElement );
+		writer.insert( writer.createPositionAt( viewElement, 'end' ), this._viewResizerWrapper );
 		writer.addClass( [ 'ck-widget_with-resizer' ], viewElement );
 	}
 
@@ -113,17 +106,15 @@ export default class Resizer {
 
 		this.state.fetchSizeFromElement( resizeHost );
 
-		// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
-		// here will reflect this limitation on resizer shadow later on.
-		this._domResizeWrapper.style.width = this.state.proposedWidth + 'px';
-		this._domResizeWrapper.style.height = this.state.proposedHeight + 'px';
+		// Refresh values based on the real image. Real image might be limited by max-width, and thus fetching it
+		// here will reflect this limitation.
+		this._domResizerWrapper.style.width = this.state.proposedWidth + 'px';
+		this._domResizerWrapper.style.height = this.state.proposedHeight + 'px';
 	}
 
 	commit( editor ) {
 		const modelElement = this._options.modelElement;
-		const newWidth = this._domResizeShadow.clientWidth;
-
-		this._dismissShadow();
+		const newWidth = this._domResizerWrapper.clientWidth;
 
 		this.redraw();
 
@@ -138,7 +129,6 @@ export default class Resizer {
 	 * Cancels and rejects proposed resize dimensions hiding all the UI.
 	 */
 	cancel() {
-		this._dismissShadow();
 		this._cleanup();
 	}
 
@@ -147,7 +137,7 @@ export default class Resizer {
 	}
 
 	redraw() {
-		const domWrapper = this._domResizeWrapper;
+		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
 			// Refresh only if resizer exists in the DOM.
@@ -177,7 +167,7 @@ export default class Resizer {
 	}
 
 	containsHandle( domElement ) {
-		return this._domResizeWrapper.contains( domElement );
+		return this._domResizerWrapper.contains( domElement );
 	}
 
 	static isResizeHandle( domElement ) {
@@ -276,41 +266,17 @@ export default class Resizer {
 	 * @returns {HTMLElement}
 	 */
 	_getResizeHost() {
-		const widgetWrapper = this._domResizeWrapper.parentElement;
+		const widgetWrapper = this._domResizerWrapper.parentElement;
 
 		return this._options.getResizeHost ?
 			this._options.getResizeHost( widgetWrapper ) : widgetWrapper;
 	}
 
 	/**
-	 * @protected
-	 */
-	_dismissShadow() {
-		this._domResizeShadow.removeAttribute( 'style' );
-	}
-
-	/**
-	 * @private
-	 * @param {HTMLElement} domElement The outer wrapper of resize UI within a given widget.
-	 */
-	_appendShadowElement( domElement ) {
-		const shadowElement = new Template( {
-			tag: 'div',
-			attributes: {
-				class: 'ck ck-widget__resizer-shadow'
-			}
-		} ).render();
-
-		domElement.appendChild( shadowElement );
-
-		return shadowElement;
-	}
-
-	/**
 	 * Renders the resize handles in DOM.
 	 *
 	 * @private
-	 * @param {HTMLElement} domElement Resize shadow where the resizers should be appended to.
+	 * @param {HTMLElement} domElement The resizer wrapper.
 	 */
 	_appendResizers( domElement ) {
 		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
