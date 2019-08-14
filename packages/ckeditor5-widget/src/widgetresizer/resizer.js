@@ -355,7 +355,7 @@ class SizeView extends View {
 			x !== null && y !== null );
 
 		this.bind( 'label' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( x, y ) =>
-			`${ Math.round( x ) }x${ Math.round( y ) }` );
+			`${ Math.round( x ) }×${ Math.round( y ) }` );
 
 		this.bind( 'activeHandlePosition' ).to( resizerState );
 	}
