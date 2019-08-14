@@ -4,7 +4,7 @@
  */
 
 /**
- * @module widget/widgetresizer/resizerstate
+ * @module widget/widgetresize/resizerstate
  */
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';

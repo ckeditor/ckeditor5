@@ -4,11 +4,11 @@
  */
 
 /**
- * @module widget/widgetresizer
+ * @module widget/widgetresize
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Resizer from './widgetresizer/resizer';
+import Resizer from './widgetresize/resizer';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { throttle } from 'lodash-es';
@@ -16,14 +16,14 @@ import { throttle } from 'lodash-es';
 /**
  * Widget resize feature plugin.
  *
- * Use the {@link module:widget/widgetresizer~WidgetResizer#apply} method to create resizer for a provided widget.
+ * Use the {@link module:widget/widgetresizer~WidgetResize#apply} method to create resizer for a provided widget.
  */
-export default class WidgetResizer extends Plugin {
+export default class WidgetResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'WidgetResizer';
+		return 'WidgetResize';
 	}
 
 	init() {

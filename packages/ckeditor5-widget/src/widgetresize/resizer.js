@@ -4,7 +4,7 @@
  */
 
 /**
- * @module widget/widgetresizer/resizer
+ * @module widget/widgetresize/resizer
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
