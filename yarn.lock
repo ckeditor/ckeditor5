@@ -1266,6 +1266,18 @@
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
 
+"@wiris/ckeditor5-mathml@^1.0.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@wiris/ckeditor5-mathml/-/ckeditor5-mathml-1.2.1.tgz#363ddb9d6b822a34304fe12b468e3bd9f195c636"
+  integrity sha512-5Z6M2C/9IzpvJQ/nZ6EN7SgK9EKogBmXLeC/9rkNQwjYofOEGImAX1nYfnSaoiwyCNIrNpQ6k8j8gv+0e1jRrg==
+
+"@wiris/mathtype-ckeditor5@^7.16.1":
+  version "7.16.1"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.16.1.tgz#3601b4219497984c5b4ce3a42bd51e4a1355c985"
+  integrity sha512-51CRYa8yO5cHbFxU+mx2TzDN4+F1EYId6E2Ka0zuvRDYvQb5ZxnunItjWKuzv08VPaSBRBA14vPt6UgSrn4azA==
+  dependencies:
+    "@wiris/ckeditor5-mathml" "^1.0.0"
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"
@@ -4376,6 +4388,14 @@ file-entry-cache@^5.0.1:
   integrity sha512-bCg29ictuBaKUwwArK4ouCaqDgLZcysCFLmM/Yn/FDoqndh/9vNuQfXRDvTuXKLxfD/JtZQGKFT8MGcJBK644g==
   dependencies:
     flat-cache "^2.0.1"
+
+file-loader@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-4.1.0.tgz#3a763391bc9502da7c59612fe348e38fc1980336"
+  integrity sha512-ajDk1nlByoalZAGR4b0H6oD+EGlWnyW1qbSxzaUc7RFiqmn+RbXQQRbTc72jsiUIlVusJ4Et58ltds8ZwTfnAw==
+  dependencies:
+    loader-utils "^1.2.3"
+    schema-utils "^2.0.0"
 
 filename-regex@^2.0.0:
   version "2.0.1"

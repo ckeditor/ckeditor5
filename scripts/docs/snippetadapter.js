@@ -365,6 +365,24 @@ function getWebpackConfig( snippets, config ) {
 							} )
 						}
 					]
+				},
+				// `file-loader` is used to handle assets introduced by 3rd party plugins.
+				// All guides in the documentation that could use images should be named as follow: `guide-type/guide-name`
+				//
+				// NOTE: You cannot use more than single slash `/` in the guide name.
+				// All images will be saved in the `snippets/` directory as `assets/images/[file]`.
+				// Unfortunately, compiled JS/CSS file that requires images will be looking for those assets in:
+				// `snippets/[guide-type/guide-name]/assets/images/` so we need to manually go up twice.
+				// ATM there is no easy way to find the number how many directories we need to go up so the assumption about names of
+				// the guides seems to be a safer solution.
+				{
+					test: /\.(png|jpe?g|gif)$/,
+					loader: 'file-loader',
+					options: {
+						name: config.production ? '[sha512:hash:base64:7].[ext]' : '[name].[ext]',
+						outputPath: path.join( 'assets', 'images' ),
+						publicPath: [ '..', '..', 'assets', 'images' ].join( '/' )
+					},
 				}
 			]
 		}
