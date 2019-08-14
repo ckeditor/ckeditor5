@@ -386,15 +386,15 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1</span>' +
 						'</label>' +
 					'</li>' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
-							'<span class="todo-list__label">2</span>' +
+						'<label class="todo-list__label todo-list__label_checked">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label__description">2</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>'
@@ -410,15 +410,15 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">2.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">2.1</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
@@ -439,9 +439,9 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>' +
@@ -449,18 +449,18 @@ describe( 'TodoListEditing', () => {
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">3.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">3.1</span>' +
 								'</label>' +
 								'<ul>' +
 									'<li>4.2</li>' +
 								'</ul>' +
 							'</li>' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">5.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">5.1</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
@@ -481,9 +481,9 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>' +
@@ -491,18 +491,18 @@ describe( 'TodoListEditing', () => {
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">3.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">3.1</span>' +
 								'</label>' +
 								'<ol>' +
 									'<li>4.2</li>' +
 								'</ol>' +
 							'</li>' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">5.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">5.1</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
@@ -645,29 +645,29 @@ describe( 'TodoListEditing', () => {
 			editor.setData(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
-							'<span class="todo-list__label">1.1</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label__description">1.1</span>' +
 						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">2.2</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">2.2</span>' +
 								'</label>' +
 							'</li>' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
-									'<span class="todo-list__label">3.2</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+									'<span class="todo-list__label__description">3.2</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">4.1</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">4.1</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>'

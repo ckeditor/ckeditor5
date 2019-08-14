@@ -128,15 +128,16 @@ export function dataModelViewInsertion( model ) {
 
 		viewWriter.addClass( 'todo-list', viewItem.parent );
 
-		const label = viewWriter.createAttributeElement( 'label' );
+		const label = viewWriter.createAttributeElement( 'label', { class: 'todo-list__label' } );
 		const checkbox = viewWriter.createEmptyElement( 'input', {
 			type: 'checkbox',
 			disabled: 'disabled',
-			class: 'todo-list__checkmark'
+			class: 'todo-list__label__checkmark'
 		} );
 
 		if ( data.item.getAttribute( 'todoListChecked' ) ) {
 			viewWriter.setAttribute( 'checked', 'checked', checkbox );
+			viewWriter.addClass( 'todo-list__label_checked', label );
 		}
 
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkbox );
@@ -170,8 +171,9 @@ export function dataModelViewTextInsertion( evt, data, conversionApi ) {
 	const viewWriter = conversionApi.writer;
 	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 	const viewText = viewWriter.createText( data.item.data );
-	const span = viewWriter.createAttributeElement( 'span', { class: 'todo-list__label' } );
-	const label = viewWriter.createAttributeElement( 'label' );
+
+	const span = viewWriter.createAttributeElement( 'span', { class: 'todo-list__label__description' } );
+	const label = viewPosition.parent.getChild( 0 );
 
 	viewWriter.insert( viewWriter.createPositionAt( viewPosition.parent, 'end' ), viewText );
 	viewWriter.wrap( viewWriter.createRangeOn( viewText ), span );
