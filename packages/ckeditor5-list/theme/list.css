@@ -55,6 +55,7 @@
 }
 
 .ck .todo-list__checkmark::after {
+	box-sizing: content-box;
 	pointer-events: none;
 	content: '';
 	position: absolute;
