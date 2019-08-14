@@ -9,14 +9,17 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import DomEventData from '../../src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
+import bindTwoStepCaretToAttribute, { TwoStepCaretHandler } from '../../src/utils/bindtwostepcarettoattribute';
 import Position from '../../src/model/position';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '../../src/dev-utils/model';
 
 describe( 'bindTwoStepCaretToAttribute()', () => {
-	let editor, model, emitter, selection, view;
+	let editor, model, emitter, selection, view, locale;
 	let preventDefaultSpy, evtStopSpy;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		emitter = Object.create( DomEmitterMixin );
@@ -26,6 +29,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			model = editor.model;
 			selection = model.document.selection;
 			view = editor.editing.view;
+			locale = editor.locale;
 
 			preventDefaultSpy = sinon.spy();
 			evtStopSpy = sinon.spy();
@@ -41,7 +45,13 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'a' );
+			bindTwoStepCaretToAttribute( {
+				view: editor.editing.view,
+				model: editor.model,
+				emitter,
+				attribute: 'a',
+				locale
+			} );
 		} );
 	} );
 
@@ -550,7 +560,13 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 	describe( 'multiple attributes', () => {
 		beforeEach( () => {
-			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'c' );
+			bindTwoStepCaretToAttribute( {
+				view: editor.editing.view,
+				model: editor.model,
+				emitter,
+				attribute: 'c',
+				locale
+			} );
 		} );
 
 		it( 'should work with the two-step caret movement (moving right)', () => {
@@ -741,6 +757,93 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 		expect( selection.isGravityOverridden ).to.be.true;
 		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
+	} );
+
+	describe( 'left–to–right and right–to–left content', () => {
+		it( 'should call methods associated with the keys (LTR content direction)', () => {
+			const forwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleForwardMovement' );
+			const backwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleBackwardMovement' );
+
+			setData( model, '<$text>foo[]</$text><$text a="true">bar</$text>' );
+
+			fireKeyDownEvent( {
+				keyCode: keyCodes.arrowright
+			} );
+
+			sinon.assert.calledOnce( forwardStub );
+			sinon.assert.notCalled( backwardStub );
+
+			setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
+
+			fireKeyDownEvent( {
+				keyCode: keyCodes.arrowleft
+			} );
+
+			sinon.assert.calledOnce( backwardStub );
+			sinon.assert.calledOnce( forwardStub );
+		} );
+
+		it( 'should use the opposite helper methods (RTL content direction)', () => {
+			const forwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleForwardMovement' );
+			const backwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleBackwardMovement' );
+			const emitter = Object.create( DomEmitterMixin );
+
+			let model;
+
+			return VirtualTestEditor
+				.create( {
+					language: {
+						content: 'ar'
+					}
+				} )
+				.then( newEditor => {
+					model = newEditor.model;
+					selection = model.document.selection;
+					view = newEditor.editing.view;
+
+					newEditor.model.schema.extend( '$text', {
+						allowAttributes: [ 'a', 'b', 'c' ],
+						allowIn: '$root'
+					} );
+
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
+					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
+					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
+					newEditor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+					bindTwoStepCaretToAttribute( {
+						view: newEditor.editing.view,
+						model: newEditor.model,
+						emitter,
+						attribute: 'a',
+						locale: newEditor.locale
+					} );
+
+					return newEditor;
+				} )
+				.then( newEditor => {
+					setData( model, '<$text>foo[]</$text><$text a="true">bar</$text>' );
+
+					fireKeyDownEvent( {
+						keyCode: keyCodes.arrowleft
+					} );
+
+					sinon.assert.calledOnce( forwardStub );
+					sinon.assert.notCalled( backwardStub );
+
+					setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
+
+					fireKeyDownEvent( {
+						keyCode: keyCodes.arrowright
+					} );
+
+					sinon.assert.calledOnce( backwardStub );
+					sinon.assert.calledOnce( forwardStub );
+
+					return newEditor.destroy();
+				} );
+		} );
 	} );
 
 	const keyMap = {

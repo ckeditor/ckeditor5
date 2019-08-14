@@ -123,16 +123,7 @@ export default class MoveOperation extends Operation {
 		// Validate whether move operation has correct parameters.
 		// Validation is pretty complex but move operation is one of the core ways to manipulate the document state.
 		// We expect that many errors might be connected with one of scenarios described below.
-		if ( !sourceElement || !targetElement ) {
-			/**
-			 * Source position or target position is invalid.
-			 *
-			 * @error move-operation-position-invalid
-			 */
-			throw new CKEditorError(
-				'move-operation-position-invalid: Source position or target position is invalid.', this
-			);
-		} else if ( sourceOffset + this.howMany > sourceElement.maxOffset ) {
+		if ( sourceOffset + this.howMany > sourceElement.maxOffset ) {
 			/**
 			 * The nodes which should be moved do not exist.
 			 *
