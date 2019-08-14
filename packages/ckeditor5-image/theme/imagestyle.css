@@ -12,7 +12,7 @@
 	& .image-style-align-left,
 	& .image-style-align-center,
 	& .image-style-align-right {
-		&:not(.ck_resized) {
+		&:not(.image_resized) {
 			max-width: 50%;
 		}
 	}

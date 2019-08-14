@@ -60,9 +60,9 @@ export default class ImageResize extends Plugin {
 				} );
 
 			resizer.on( 'updateSize', () => {
-				if ( !widget.hasClass( 'ck_resized' ) ) {
+				if ( !widget.hasClass( 'image_resized' ) ) {
 					editor.editing.view.change( writer => {
-						writer.addClass( 'ck_resized', widget );
+						writer.addClass( 'image_resized', widget );
 					} );
 				}
 			} );
@@ -104,10 +104,10 @@ export default class ImageResize extends Plugin {
 
 				if ( data.attributeNewValue !== null ) {
 					viewWriter.setStyle( 'width', data.attributeNewValue, img );
-					viewWriter.addClass( 'ck_resized', figure );
+					viewWriter.addClass( 'image_resized', figure );
 				} else {
 					viewWriter.removeStyle( 'width', img );
-					viewWriter.removeClass( 'ck_resized', figure );
+					viewWriter.removeClass( 'image_resized', figure );
 				}
 			} )
 		);
