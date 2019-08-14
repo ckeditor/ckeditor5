@@ -115,10 +115,14 @@ export default class ResizeState {
 	 * @param {HTMLElement} domElement
 	 */
 	fetchSizeFromElement( domElement ) {
+		// TODO the logic from this method should be moved to resizer.js.
+		// Search for other places where we do rounding – it's all in resizer.js.
+		// TODO this needs an automated test – currently it only affects the SizeView
+		// which we don't test.
 		const rect = new Rect( domElement );
 
-		this.proposedWidth = rect.width;
-		this.proposedHeight = rect.height;
+		this.proposedWidth = Math.round( rect.width );
+		this.proposedHeight = Math.round( rect.height );
 	}
 }
 

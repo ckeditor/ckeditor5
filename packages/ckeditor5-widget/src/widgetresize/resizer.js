@@ -243,7 +243,12 @@ export default class Resizer {
 			targetSize.width = targetSize.height * state.aspectRatio;
 		}
 
-		return targetSize;
+		return {
+			// TODO I couldn't find an automated TC for that, but rounding must be done here.
+			// Do not move it above.
+			width: Math.round( targetSize.width ),
+			height: Math.round( targetSize.height )
+		};
 	}
 
 	/**
@@ -344,11 +349,11 @@ class SizeView extends View {
 	}
 
 	bindToState( resizerState ) {
-		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( x, y ) =>
-			x !== null && y !== null );
+		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
+			width !== null && height !== null );
 
-		this.bind( 'label' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( x, y ) =>
-			`${ Math.round( x ) }×${ Math.round( y ) }` );
+		this.bind( 'label' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
+			`${ width }×${ height }` );
 
 		this.bind( 'activeHandlePosition' ).to( resizerState );
 	}
