@@ -69,11 +69,3 @@ ClassicEditor
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
-
-## Displaying on target page
-
-In order to display mathematical formulas on the target page, i.e. the page where the content produced by CKEditor 5 will be visible, the target page needs to [include the MathType script](https://docs.wiris.com/en/mathtype/mathtype_web/integrations/mathml-mode#add_a_script_to_head). For example for the default settings this would be:
-
-```html
-<script src="<path-to-your-ckeditor4>/plugins/ckeditor_wiris/integration/WIRISplugins.js?viewer=image"></script>
-```
