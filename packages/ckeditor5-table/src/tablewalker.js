@@ -193,7 +193,7 @@ export default class TableWalker {
 			cell = this._getSpanned( this._row, this._column );
 
 			skipCurrentValue = !this.includeSpanned || this._shouldSkipRow() || this._shouldSkipColumn();
-			outValue = this._formatOutValue( cell, this._column );
+			outValue = this._formatOutValue( cell, this._column, true );
 		} else {
 			cell = row.getChild( this._cellIndex );
 
@@ -218,7 +218,7 @@ export default class TableWalker {
 			this._nextCellAtColumn = this._column + colspan;
 
 			skipCurrentValue = this._shouldSkipRow() || this._shouldSkipColumn();
-			outValue = this._formatOutValue( cell, this._column, rowspan, colspan );
+			outValue = this._formatOutValue( cell, this._column, false, rowspan, colspan );
 		}
 
 		// Advance to the next column before returning value.
@@ -259,17 +259,19 @@ export default class TableWalker {
 	 * @private
 	 * @param {module:engine/model/element~Element} cell The table cell to output.
 	 * @param {Number} column Column index (use the cached value).
+	 * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or actual cell.
 	 * @param {Number} rowspan Rowspan of the current cell.
 	 * @param {Number} colspan Colspan of the current cell.
 	 * @returns {{done: boolean, value: {cell: *, row: Number, column: *, rowspan: *, colspan: *, cellIndex: Number}}}
 	 */
-	_formatOutValue( cell, column, rowspan = 1, colspan = 1 ) {
+	_formatOutValue( cell, column, isSpanned, rowspan = 1, colspan = 1 ) {
 		return {
 			done: false,
 			value: {
 				cell,
 				row: this._row,
 				column,
+				isSpanned,
 				rowspan,
 				colspan,
 				cellIndex: this._cellIndex
@@ -387,6 +389,7 @@ export default class TableWalker {
  * @property {module:engine/model/element~Element} cell The current table cell.
  * @property {Number} row The row index of a cell.
  * @property {Number} column The column index of a cell. Column index is adjusted to widths and heights of previous cells.
+ * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or actual cell.
  * @property {Number} colspan The `colspan` attribute of a cell. It is always defined even if the model attribute is not present.
  * @property {Number} rowspan The `rowspan` attribute of a cell. It is always defined even if the model attribute is not present.
  * @property {Number} cellIndex The index of the current cell in a parent row.
