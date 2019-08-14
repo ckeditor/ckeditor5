@@ -137,10 +137,10 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * The latest saved editor data.
+		 * The latest saved editor data represented as a root name -> root data object.
 		 *
 		 * @private
-		 * @member {String} #_data
+		 * @member {Object.<String,String>} #_data
 		 */
 
 		/**
@@ -257,7 +257,8 @@ export default class Watchdog {
 				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
 
 				this._lastDocumentVersion = editor.model.document.version;
-				this._data = editor.data.get();
+
+				this._data = this._getData();
 				this.state = 'ready';
 			} );
 	}
@@ -311,7 +312,7 @@ export default class Watchdog {
 		}
 
 		try {
-			this._data = this._editor.data.get();
+			this._data = this._getData();
 			this._lastDocumentVersion = version;
 		} catch ( err ) {
 			console.error(
@@ -320,6 +321,22 @@ export default class Watchdog {
 				'Editor will be restored from the previously saved data.'
 			);
 		}
+	}
+
+	/**
+	 * Returns the editor data.
+	 *
+	 * @private
+	 * @returns {Object<String,String>}
+	 */
+	_getData() {
+		const data = {};
+
+		for ( const rootName of this._editor.model.document.getRootNames() ) {
+			data[ rootName ] = this._editor.data.get( { rootName } );
+		}
+
+		return data;
 	}
 
 	/**
