@@ -1045,6 +1045,8 @@ describe( 'Watchdog', () => {
 
 						res();
 					} );
+				} ).then( () => {
+					return watchdog.destroy();
 				} );
 		} );
 	} );
