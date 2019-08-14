@@ -163,6 +163,42 @@ describe( 'SetHeaderRowCommand', () => {
 			] ) );
 		} );
 
+		it( 'should respect forceValue parameter #1', () => {
+			setData( model, modelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 3 } ) );
+
+			command.execute( true );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 3 } ) );
+		} );
+
+		it( 'should respect forceValue parameter #2', () => {
+			setData( model, modelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 1 } ) );
+
+			command.execute( false );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 1 } ) );
+		} );
+
 		it( 'should fix rowspaned cells on the edge of an table head section', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],

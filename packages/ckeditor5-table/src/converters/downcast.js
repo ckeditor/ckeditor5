@@ -345,6 +345,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 		renamedCell = viewWriter.rename( desiredCellElementName, viewCell );
 	}
 
+	conversionApi.mapper.unbindViewElement( viewCell );
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
 }
 

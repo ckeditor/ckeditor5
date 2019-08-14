@@ -60,8 +60,10 @@ export default class SetHeaderRowCommand extends Command {
 	 * When the selection is already in a header row, it will set `headingRows` so the heading section will end before that row.
 	 *
 	 * @fires execute
+	 * @params {Boolean} [forceValue] If set, the command will set (`true`) or unset (`false`) header rows according to `forceValue`
+	 * parameter instead of the current model state.
 	 */
-	execute() {
+	execute( forceValue = null ) {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
@@ -74,7 +76,11 @@ export default class SetHeaderRowCommand extends Command {
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 		const selectionRow = tableRow.index;
 
-		const headingRowsToSet = currentHeadingRows > selectionRow ? selectionRow : selectionRow + 1;
+		if ( forceValue === this.value ) {
+			return;
+		}
+
+		const headingRowsToSet = this.value ? selectionRow : selectionRow + 1;
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
@@ -151,19 +157,21 @@ function splitHorizontally( tableCell, headingRows, writer ) {
 		attributes.rowspan = spanToSet;
 	}
 
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+	if ( colspan > 1 ) {
+		attributes.colspan = colspan;
+	}
+
 	const startRow = table.getChildIndex( tableRow );
 	const endRow = startRow + newRowspan;
 	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeSpanned: true } ) ];
 
 	let columnIndex;
 
-	for ( const { row, column, cell, colspan, cellIndex } of tableMap ) {
-		if ( cell === tableCell ) {
+	for ( const { row, column, cell, cellIndex } of tableMap ) {
+		if ( cell === tableCell && columnIndex === undefined ) {
 			columnIndex = column;
-
-			if ( colspan > 1 ) {
-				attributes.colspan = colspan;
-			}
 		}
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
