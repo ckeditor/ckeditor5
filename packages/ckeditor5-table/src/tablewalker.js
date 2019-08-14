@@ -56,7 +56,7 @@ export default class TableWalker {
 	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1, includeSpanned: true } );
 	 *
 	 *		for ( const value of tableWalker ) {
-	 *			console.log( 'Cell at ' + value.row + ' x ' + value.column + ' : ' + ( value.isSpanned ? 'has data' : 'is spanned' ) );
+	 *			console.log( 'Cell at ' + value.row + ' x ' + value.column + ' : ' + ( value.isSpanned ? 'is spanned' : 'has data' ) );
 	 *		}
 	 *
 	 * will log in the console for the table from previous example:
