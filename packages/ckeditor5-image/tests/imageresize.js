@@ -11,6 +11,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Image from '../src/image';
 import ImageResize from '../src/imageresize';
+import ImageResizeCommand from '../src/imageresize/imageresizecommand';
 import ImageStyle from '../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -105,6 +106,12 @@ describe( 'ImageResize', () => {
 		} );
 	} );
 
+	describe( 'command', () => {
+		it( 'defines the imageResize command', () => {
+			expect( editor.commands.get( 'imageResize' ) ).to.be.instanceOf( ImageResizeCommand );
+		} );
+	} );
+
 	describe( 'visual resizers', () => {
 		it( 'correct amount is added by default', () => {
 			const resizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
@@ -140,18 +147,31 @@ describe( 'ImageResize', () => {
 		} );
 	} );
 
+	it( 'uses the command on commit', async () => {
+		setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+		widget = viewDocument.getRoot().getChild( 1 );
+
+		const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
+
+		await generateResizeTest( {
+			expectedWidth: 80,
+			pointerOffset: {
+				x: 10,
+				y: -10
+			},
+			resizerPosition: 'bottom-left'
+		} )();
+
+		expect( spy.calledOnce ).to.be.true;
+		expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+	} );
+
 	describe( 'standard image resizing', () => {
 		beforeEach( () => {
-			editor.setData( `<p>foo</p><figure><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
-
-			const domEventDataMock = {
-				target: widget,
-				preventDefault: sinon.spy()
-			};
-
-			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
 		it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
@@ -249,15 +269,9 @@ describe( 'ImageResize', () => {
 
 	describe( 'side image resizing', () => {
 		beforeEach( () => {
-			editor.setData( `<p>foo</p><figure class="image image-style-side"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
-			const domEventDataMock = {
-				target: widget,
-				preventDefault: sinon.spy()
-			};
-
-			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
 		it( 'shrinks correctly with left-bottom handler', generateSideResizeTest( {
@@ -370,16 +384,9 @@ describe( 'ImageResize', () => {
 
 	describe( 'undo integration', () => {
 		beforeEach( () => {
-			editor.setData( `<p>foo</p><figure><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
-
-			const domEventDataMock = {
-				target: widget,
-				preventDefault: sinon.spy()
-			};
-
-			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
 		it( 'has correct border size after undo', async () => {
@@ -406,28 +413,13 @@ describe( 'ImageResize', () => {
 
 	describe( 'table integration', () => {
 		beforeEach( () => {
-			editor.setData(
-				`<figure class="table">
-					<table>
-						<tbody>
-							<tr>
-								<td>
-									<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }" alt="Sample image"></figure>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</figure>`
+			setData( editor.model,
+				'<table>' +
+					`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
+				'</table>'
 			);
 
 			widget = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
-
-			const domEventDataMock = {
-				target: widget,
-				preventDefault: sinon.spy()
-			};
-
-			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 
 		it( 'works when resizing in a table', generateResizeTest( {

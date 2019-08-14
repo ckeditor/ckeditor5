@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import ImageResizeCommand from './imageresize/imageresizecommand';
 
 /**
  *	Image resize plugin.
@@ -36,6 +37,11 @@ export default class ImageResize extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		this._registerSchema();
+		this._registerConverters();
+
+		editor.commands.add( 'imageResize', new ImageResizeCommand( editor ) );
+
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
 
@@ -58,9 +64,7 @@ export default class ImageResize extends Plugin {
 						return !imageStyle || imageStyle == 'full';
 					},
 					onCommit( resizerState ) {
-						editor.model.change( writer => {
-							writer.setAttribute( 'width', resizerState.proposedWidth + 'px', data.item );
-						} );
+						editor.execute( 'imageResize', { width: resizerState.proposedWidth + 'px' } );
 					}
 				} );
 
@@ -71,12 +75,7 @@ export default class ImageResize extends Plugin {
 					} );
 				}
 			} );
-		}, {
-			priority: 'low'
-		} );
-
-		this._registerSchema();
-		this._registerConverters();
+		}, { priority: 'low' } );
 	}
 
 	/**
