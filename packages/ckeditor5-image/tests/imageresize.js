@@ -84,14 +84,14 @@ describe( 'ImageResize', () => {
 			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="100px"></image>` );
 
 			expect( editor.getData() )
-				.to.equal( `<figure class="image ck_resized"><img style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				.to.equal( `<figure class="image image_resized"><img style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 
 		it( 'downcasts 50% width correctly', () => {
 			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
 
 			expect( editor.getData() )
-				.to.equal( `<figure class="image ck_resized"><img style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				.to.equal( `<figure class="image image_resized"><img style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 	} );
 
@@ -107,14 +107,14 @@ describe( 'ImageResize', () => {
 
 	describe( 'visual resizers', () => {
 		it( 'correct amount is added by default', () => {
-			const resizers = document.querySelectorAll( '.ck-widget__resizer' );
+			const resizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
 
 			expect( resizers.length ).to.be.equal( 4 );
 		} );
 
 		describe( 'visibility', () => {
 			it( 'is hidden by default', () => {
-				const allResizers = document.querySelectorAll( '.ck-widget__resizer' );
+				const allResizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
 
 				for ( const resizer of allResizers ) {
 					expect( isVisible( resizer ) ).to.be.false;
@@ -123,7 +123,7 @@ describe( 'ImageResize', () => {
 
 			it( 'is shown when image is focused', () => {
 				const widget = viewDocument.getRoot().getChild( 1 );
-				const allResizers = document.querySelectorAll( '.ck-widget__resizer' );
+				const allResizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
 				const domEventDataMock = {
 					target: widget,
 					preventDefault: sinon.spy()
@@ -363,7 +363,7 @@ describe( 'ImageResize', () => {
 		function generateSideResizeTest( options ) {
 			return generateResizeTest( Object.assign( {
 				isSideImage: true,
-				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="(\d+)px"><\/image>/
+				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="([\d.]+)px"><\/image>/
 			}, options ) );
 		}
 	} );
@@ -396,8 +396,8 @@ describe( 'ImageResize', () => {
 
 			await wait( 40 );
 
-			const resizerShadow = document.querySelector( '.ck-widget__resizer-shadow' );
-			const shadowBoundingRect = resizerShadow.getBoundingClientRect();
+			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
+			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
 
 			expect( shadowBoundingRect.width ).to.be.equal( 100 );
 			expect( shadowBoundingRect.height ).to.be.equal( 50 );
@@ -481,13 +481,13 @@ describe( 'ImageResize', () => {
 		// Returns a test case that puts
 		return function() {
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-			const domBottomLeftResizer = domResizeWrapper.querySelector( `.ck-widget__resizer-${ options.resizerPosition }` );
+			const domBottomLeftResizer = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
 			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
 			const imageTopLeftPosition = getElementPosition( domImage );
 			const resizerPositionParts = options.resizerPosition.split( '-' );
 
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
-				/<paragraph>foo<\/paragraph><image src=".+?" width="(\d+)px"><\/image>/;
+				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d.]+)px"><\/image>/;
 
 			focusEditor( editor );
 
@@ -527,7 +527,7 @@ describe( 'ImageResize', () => {
 
 					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
 
-					expect( modelItem.getAttribute( 'width' ) ).to.match( /^\d+px$/, 'Model width is properly formatted' );
+					expect( modelItem.getAttribute( 'width' ) ).to.match( /^([\d.]+)px$/, 'Model width is properly formatted' );
 					expect( parseInt( modelItem.getAttribute( 'width' ), 0 ) )
 						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 				} );
