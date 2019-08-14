@@ -76,7 +76,7 @@ export default class Resizer {
 			const domElement = this.toDomElement( domDocument );
 
 			that._appendHandles( domElement );
-			that._appendSizeUi( domElement );
+			that._appendSizeUI( domElement );
 
 			that._domResizerWrapper = domElement;
 
@@ -91,7 +91,7 @@ export default class Resizer {
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
-		this.sizeUi.bindToState( this.state );
+		this.sizeUI.bindToState( this.state );
 
 		this.state.begin( domResizeHandle, this._getResizeHost() );
 
@@ -180,8 +180,8 @@ export default class Resizer {
 	 * @protected
 	 */
 	_cleanup() {
-		this.sizeUi.dismiss();
-		this.sizeUi.isVisible = false;
+		this.sizeUI.dismiss();
+		this.sizeUI.isVisible = false;
 	}
 
 	/**
@@ -295,15 +295,15 @@ export default class Resizer {
 	 * @private
 	 * @param {HTMLElement} domElement
 	 */
-	_appendSizeUi( domElement ) {
-		const sizeUi = new SizeView();
+	_appendSizeUI( domElement ) {
+		const sizeUI = new SizeView();
 
 		// Make sure icon#element is rendered before passing to appendChild().
-		sizeUi.render();
+		sizeUI.render();
 
-		this.sizeUi = sizeUi;
+		this.sizeUI = sizeUI;
 
-		domElement.appendChild( sizeUi.element );
+		domElement.appendChild( sizeUI.element );
 	}
 
 	/**
