@@ -26,17 +26,6 @@ export default class Resizer {
 	 */
 	constructor( options ) {
 		/**
-		 * The size of resize host before current resize process.
-		 *
-		 * This information is only known after DOM was rendered, so it will be updated later.
-		 *
-		 * It contains an object with `width` and `height` properties.
-		 *
-		 * @type {Object}
-		 */
-		this.originalSize = null;
-
-		/**
 		 * @private
 		 * @type {module:widget/widgetresizer~ResizerOptions}
 		 */
@@ -112,8 +101,8 @@ export default class Resizer {
 
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
-		// this._bindSizeUi( this.state );
 		this.sizeUi.bindResizer( this.state );
+
 		this.state.begin( domResizeHandle, this._getResizeHost() );
 
 		this.redraw();
@@ -145,7 +134,7 @@ export default class Resizer {
 			writer.setAttribute( 'width', newWidth + 'px', modelElement );
 		} );
 
-		this._cleanupContext();
+		this._cleanup();
 	}
 
 	/**
@@ -153,7 +142,7 @@ export default class Resizer {
 	 */
 	cancel() {
 		this._dismissShadow();
-		this._cleanupContext();
+		this._cleanup();
 	}
 
 	destroy() {
@@ -203,7 +192,7 @@ export default class Resizer {
 	 *
 	 * @protected
 	 */
-	_cleanupContext() {
+	_cleanup() {
 		this.sizeUi.dismiss();
 		this.sizeUi.isVisible = false;
 	}

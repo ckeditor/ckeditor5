@@ -171,8 +171,6 @@ export default class ResizeState {
 			targetSize.width = targetSize.height * this.aspectRatio;
 		}
 
-		// resizeHost.style.width = `${ targetSize.width }px`;
-
 		return targetSize;
 	}
 }
