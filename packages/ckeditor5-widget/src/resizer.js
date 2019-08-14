@@ -8,14 +8,12 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import {
-	getAbsoluteBoundaryPoint
-} from './utils';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ResizeState from './resizestate';
 
 /**
  * Stores the internal state of a single resizable object.
@@ -37,38 +35,6 @@ export default class Resizer {
 		 * @type {Object}
 		 */
 		this.originalSize = null;
-
-		/**
-		 * Position of the handle that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
-		 * if unknown.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {String|null} #activeHandlePosition
-		 */
-		this.set( 'activeHandlePosition', null );
-
-		/**
-		 * Width proposed (but not yet accepted) using the widget resizer.
-		 *
-		 * It goes back to `null` once the resizer is dismissed or accepted.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #proposedWidth
-		 */
-		this.set( 'proposedWidth', null );
-
-		/**
-		 * Height proposed (but not yet accepted) using the widget resizer.
-		 *
-		 * It goes back to `null` once the resizer is dismissed or accepted.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Number|null} #proposedHeight
-		 */
-		this.set( 'proposedHeight', null );
 
 		/**
 		 * @private
@@ -144,34 +110,29 @@ export default class Resizer {
 		writer.addClass( [ 'ck-widget_with-resizer' ], viewElement );
 	}
 
-	/**
-	 *
-	 * @param {HTMLElement} domResizeHandle The handle used to calculate the reference point.
-	 */
 	begin( domResizeHandle ) {
-		const resizeHost = this._getResizeHost();
-		const clientRect = new Rect( resizeHost );
-
-		this.activeHandlePosition = this._getHandlePosition( domResizeHandle );
-
-		this._referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, getOppositePosition( this.activeHandlePosition ) );
-
-		this.originalSize = {
-			width: clientRect.width,
-			height: clientRect.height
-		};
-
-		this.aspectRatio = this._options.getAspectRatio ?
-			this._options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
+		this.state = new ResizeState( this._options );
+		// this._bindSizeUi( this.state );
+		this.sizeUi.bindResizer( this.state );
+		this.state.begin( domResizeHandle, this._getResizeHost() );
 
 		this.redraw();
 	}
 
-	/**
-	 * Accepts currently proposed resize and applies it on the resize host.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 */
+	updateSize( domEventData ) {
+		const resizeHost = this._getResizeHost();
+		const newSize = this.state.proposeNewSize( domEventData );
+
+		resizeHost.style.width = `${ newSize.width }px`;
+
+		this.state.fetchSizeFromElement( this._getResizeHost() );
+
+		// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
+		// here will reflect this limitation on resizer shadow later on.
+		this._domResizeWrapper.style.width = this.state.proposedWidth + 'px';
+		this._domResizeWrapper.style.height = this.state.proposedHeight + 'px';
+	}
+
 	commit( editor ) {
 		const modelElement = this._options.modelElement;
 		const newWidth = this._domResizeShadow.clientWidth;
@@ -192,33 +153,11 @@ export default class Resizer {
 	 */
 	cancel() {
 		this._dismissShadow();
-
 		this._cleanupContext();
 	}
 
 	destroy() {
 		this.cancel();
-	}
-
-	/**
-	 * Method used to calculate the proposed size as the resize handles are dragged.
-	 *
-	 * Proposed size can also be observed with {@link #proposedWidth} and {@link #proposedHeight} properties.
-	 *
-	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
-	 */
-	updateSize( domEventData ) {
-		this._updateResizeHostSize( domEventData );
-
-		// Refresh values based on real image. Real image might be limited by max-width, and thus fetching it
-		// here will reflect this limitation on resizer shadow later on.
-		const realSize = this._getRealResizeHostSize();
-
-		this._domResizeWrapper.style.width = realSize.width + 'px';
-		this._domResizeWrapper.style.height = realSize.height + 'px';
-
-		this.proposedWidth = realSize.width;
-		this.proposedHeight = realSize.height;
 	}
 
 	redraw() {
@@ -265,9 +204,8 @@ export default class Resizer {
 	 * @protected
 	 */
 	_cleanupContext() {
-		this.activeHandlePosition = null;
-		this.proposedWidth = null;
-		this.proposedHeight = null;
+		this.sizeUi.dismiss();
+		this.sizeUi.isVisible = false;
 	}
 
 	/**
@@ -326,7 +264,7 @@ export default class Resizer {
 			domElement.appendChild( ( new Template( {
 				tag: 'div',
 				attributes: {
-					class: `ck-widget__resizer ${ this._getResizerClass( currentPosition ) }`
+					class: `ck-widget__resizer ${ getResizerClass( currentPosition ) }`
 				}
 			} ).render() ) );
 		}
@@ -339,111 +277,12 @@ export default class Resizer {
 	_appendSizeUi( domElement ) {
 		const sizeUi = new SizeView();
 
-		sizeUi.bind( 'isVisible' ).to( this, 'proposedWidth', this, 'proposedHeight', ( x, y ) =>
-			x !== null && y !== null );
-
-		sizeUi.bind( 'label' ).to( this, 'proposedWidth', this, 'proposedHeight', ( x, y ) =>
-			`${ Math.round( x ) }x${ Math.round( y ) }` );
-
-		sizeUi.bind( 'activeHandlePosition' ).to( this );
-
 		// Make sure icon#element is rendered before passing to appendChild().
 		sizeUi.render();
 
+		this.sizeUi = sizeUi;
+
 		domElement.appendChild( sizeUi.element );
-	}
-
-	/**
-	 * Method used to calculate the proposed size as the resize handles are dragged.
-	 *
-	 * @private
-	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
-	 * @returns {Object} return
-	 * @returns {Number} return.x Proposed width.
-	 * @returns {Number} return.y Proposed height.
-	 */
-	_updateResizeHostSize( domEventData ) {
-		const currentCoordinates = this._extractCoordinates( domEventData );
-		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
-		const initialSize = this.originalSize;
-
-		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
-		// meaning that it has been shrunk.
-		//
-		// +----------------+--+
-		// |                |  |
-		// |       img      |  |
-		// |                |  |
-		// +----------------+  | ^
-		// |                   | | - enlarge y
-		// +-------------------+ v
-		// 					<-->
-		// 					 enlarge x
-		const enlargement = {
-			x: this._referenceCoordinates.x - ( currentCoordinates.x + initialSize.width ),
-			y: ( currentCoordinates.y - initialSize.height ) - this._referenceCoordinates.y
-		};
-
-		if ( isCentered && this.activeHandlePosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( this._referenceCoordinates.x + initialSize.width );
-		}
-
-		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
-		// one resized corner to your cursor. It needs to be duplicated to compensate for the other side too.
-		if ( isCentered ) {
-			enlargement.x *= 2;
-		}
-
-		const resizeHost = this._getResizeHost();
-
-		// The size proposed by the user. It does not consider the aspect ratio.
-		const proposedSize = {
-			width: Math.abs( initialSize.width + enlargement.x ),
-			height: Math.abs( initialSize.height + enlargement.y )
-		};
-
-		// Dominant determination must take the ratio into account.
-		proposedSize.dominant = proposedSize.width / this.aspectRatio > proposedSize.height ? 'width' : 'height';
-		proposedSize.max = proposedSize[ proposedSize.dominant ];
-
-		// Proposed size, respecting the aspect ratio.
-		const targetSize = {
-			width: proposedSize.width,
-			height: proposedSize.height
-		};
-
-		if ( proposedSize.dominant == 'width' ) {
-			targetSize.height = targetSize.width / this.aspectRatio;
-		} else {
-			targetSize.width = targetSize.height * this.aspectRatio;
-		}
-
-		resizeHost.style.width = `${ targetSize.width }px`;
-	}
-
-	_getRealResizeHostSize() {
-		const rect = new Rect( this._getResizeHost() );
-
-		return { width: rect.width, height: rect.height };
-	}
-
-	/**
-	 * @private
-	 */
-	_extractCoordinates( event ) {
-		return {
-			x: event.pageX,
-			y: event.pageY
-		};
-	}
-
-	/**
-	 * @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
-	 * @returns {String} A prefixed HTML class name for the resizer element
-	 * @private
-	 */
-	_getResizerClass( resizerPosition ) {
-		return `ck-widget__resizer-${ resizerPosition }`;
 	}
 
 	/**
@@ -457,7 +296,7 @@ export default class Resizer {
 		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
 		for ( const position of resizerPositions ) {
-			if ( domHandle.classList.contains( this._getResizerClass( position ) ) ) {
+			if ( domHandle.classList.contains( getResizerClass( position ) ) ) {
 				return position;
 			}
 		}
@@ -489,20 +328,25 @@ class SizeView extends View {
 			} ]
 		} );
 	}
+
+	bindResizer( observable ) {
+		this.bind( 'isVisible' ).to( observable, 'proposedWidth', observable, 'proposedHeight', ( x, y ) =>
+			x !== null && y !== null );
+
+		this.bind( 'label' ).to( observable, 'proposedWidth', observable, 'proposedHeight', ( x, y ) =>
+			`${ Math.round( x ) }x${ Math.round( y ) }` );
+
+		this.bind( 'activeHandlePosition' ).to( observable );
+	}
+
+	dismiss() {
+		this.unbind();
+		this.isVisible = false;
+	}
 }
 
-/**
- * @param {String} position Like `"top-left"`.
- * @returns {String} Inverted `position`, e.g. returns `"bottom-right"` if `"top-left"` was given as `position`.
- */
-function getOppositePosition( position ) {
-	const parts = position.split( '-' );
-	const replacements = {
-		top: 'bottom',
-		bottom: 'top',
-		left: 'right',
-		right: 'left'
-	};
-
-	return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
+// @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
+// @returns {String} A prefixed HTML class name for the resizer element
+function getResizerClass( resizerPosition ) {
+	return `ck-widget__resizer-${ resizerPosition }`;
 }
