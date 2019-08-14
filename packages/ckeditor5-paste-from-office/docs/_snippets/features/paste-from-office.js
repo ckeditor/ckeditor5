@@ -9,6 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-paste-from-office' ), {
+		placeholder: 'Paste the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
