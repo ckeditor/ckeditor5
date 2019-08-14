@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetResizer from '@ckeditor/ckeditor5-widget/src/widgetresizer';
+import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 
 /**
  *	Image resize plugin.
@@ -20,7 +20,7 @@ export default class ImageResize extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetResizer ];
+		return [ WidgetResize ];
 	}
 
 	/**
@@ -40,7 +40,7 @@ export default class ImageResize extends Plugin {
 			const widget = conversionApi.mapper.toViewElement( data.item );
 
 			const resizer = editor.plugins
-				.get( WidgetResizer )
+				.get( WidgetResize )
 				.attachTo( {
 					modelElement: data.item,
 					viewElement: widget,
