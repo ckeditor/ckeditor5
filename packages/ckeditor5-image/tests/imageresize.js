@@ -606,9 +606,9 @@ describe( 'ImageResize', () => {
 					} ) ).to.match( modelRegExp );
 
 					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
+					const modelWidth = modelItem.getAttribute( 'width' );
 
-					expect( modelItem.getAttribute( 'width' ) ).to.match( /^([\d]+)px$/, 'Model width is properly formatted' );
-					expect( parseFloat( modelItem.getAttribute( 'width' ), 0 ) )
+					expect( parseFloat( modelWidth, 0 ) )
 						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 				} );
 		};
