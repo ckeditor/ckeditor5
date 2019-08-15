@@ -57,6 +57,7 @@ describe( 'ImageResize', () => {
 				editor = newEditor;
 				view = editor.editing.view;
 				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
 			} );
 	} );
 
@@ -590,7 +591,7 @@ describe( 'ImageResize', () => {
 
 	function isVisible( element ) {
 		// Checks if the DOM element is visible to the end user.
-		return element.offsetParent !== null;
+		return element.offsetParent !== null && !element.classList.contains( 'ck-hidden' );
 	}
 
 	function fireMouseEvent( target, eventType, eventData ) {
@@ -617,7 +618,7 @@ describe( 'ImageResize', () => {
 		// Returns a test case that puts
 		return function() {
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-			const domBottomLeftResizer = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
+			const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
 			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
 			const imageRect = new Rect( domImage );
 			const resizerPositionParts = options.resizerPosition.split( '-' );
@@ -645,13 +646,13 @@ describe( 'ImageResize', () => {
 			finishPointerPosition.pageX += options.pointerOffset.x || 0;
 			finishPointerPosition.pageY += options.pointerOffset.y || 0;
 
-			fireMouseEvent( domBottomLeftResizer, 'mousedown', initialPointerPosition );
-			fireMouseEvent( domBottomLeftResizer, 'mousemove', initialPointerPosition );
+			fireMouseEvent( domResizeHandle, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domResizeHandle, 'mousemove', initialPointerPosition );
 
 			// We need to wait as mousemove events are throttled.
 			return wait( 40 )
 				.then( () => {
-					fireMouseEvent( domBottomLeftResizer, 'mousemove', finishPointerPosition );
+					fireMouseEvent( domResizeHandle, 'mousemove', finishPointerPosition );
 
 					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
@@ -659,7 +660,7 @@ describe( 'ImageResize', () => {
 						options.checkBeforeMouseUp( domImage, domResizeWrapper );
 					}
 
-					fireMouseEvent( domBottomLeftResizer, 'mouseup', finishPointerPosition );
+					fireMouseEvent( domResizeHandle, 'mouseup', finishPointerPosition );
 
 					expect( getData( editor.model, {
 						withoutSelection: true
@@ -672,6 +673,51 @@ describe( 'ImageResize', () => {
 						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 				} );
 		};
+	}
+
+	async function clickHandle( resizerPosition ) {
+		const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+		const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
+		const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
+		const imageRect = new Rect( domImage );
+		const resizerPositionParts = resizerPosition.split( '-' );
+
+		const cursorPosition = {
+			pageX: imageRect.left,
+			pageY: imageRect.top
+		};
+
+		if ( resizerPositionParts.includes( 'right' ) ) {
+			cursorPosition.pageX = imageRect.right;
+		}
+
+		if ( resizerPositionParts.includes( 'bottom' ) ) {
+			cursorPosition.pageY = imageRect.bottom;
+		}
+
+		fireMouseEvent( domResizeHandle, 'mousedown', cursorPosition );
+
+		await wait( 40 );
+
+		return cursorPosition;
+	}
+
+	async function moveHandle( resizerPosition, pointerCoordinates ) {
+		const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+		const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
+
+		fireMouseEvent( domResizeHandle, 'mousemove', pointerCoordinates );
+
+		await wait( 40 );
+	}
+
+	async function releaseHandle( resizerPosition, pointerCoordinates ) {
+		const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+		const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
+
+		fireMouseEvent( domResizeHandle, 'mouseup', pointerCoordinates );
+
+		await wait( 40 );
 	}
 
 	function focusEditor( editor ) {
