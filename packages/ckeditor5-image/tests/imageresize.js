@@ -16,11 +16,10 @@ import ImageStyle from '../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageResize', () => {
-	const FIXTURE_WIDTH = 100;
-	const FIXTURE_HEIGHT = 50;
 	// Id of the left mouse button.
 	const MOUSE_BUTTON_MAIN = 0;
 	// 60x50 black png image
@@ -457,6 +456,78 @@ describe( 'ImageResize', () => {
 		} ) );
 	} );
 
+	describe( 'srcset integration', () => {
+		// The image is 96x96 pixels.
+		const imageBaseUrl = '/assets/sample.png';
+		const getModel = () => editor.model.document.getRoot().getChild( 0 );
+		let image;
+
+		before( async () => {
+			image = await preloadImage( imageBaseUrl );
+		} );
+
+		after( () => {
+			image.remove();
+		} );
+
+		beforeEach( () => {
+			editor.setData(
+				`<figure class="image">
+					<img src="${ imageBaseUrl }"
+						srcset="${ imageBaseUrl }?a 110w,
+							${ imageBaseUrl }?b 440w,
+							${ imageBaseUrl }?c 1025w"
+						sizes="100vw" width="96">
+				</figure>`
+			);
+
+			widget = viewDocument.getRoot().getChild( 0 );
+		} );
+
+		it( 'works with images containing srcset', generateResizeTest( {
+			getModel,
+			expectedWidth: 76,
+			modelRegExp: /.+/,
+			pointerOffset: {
+				x: -20,
+				y: -20
+			},
+			resizerPosition: 'bottom-right'
+		} ) );
+
+		it( 'retains width after removing srcset', async () => {
+			await generateResizeTest( {
+				getModel,
+				expectedWidth: 80,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: -16,
+					y: -16
+				},
+				resizerPosition: 'bottom-right'
+			} )();
+
+			editor.model.change( writer => {
+				writer.removeAttribute( 'srcset', getModel() );
+			} );
+
+			expect( editor.getData() )
+				.to.match( /<figure class="image image_resized"><img style="width:[\d.]{2,}px;" src="\/assets\/sample.png"><\/figure>/ );
+		} );
+
+		async function preloadImage( imageUrl ) {
+			const image = document.createElement( 'img' );
+
+			image.src = imageUrl;
+
+			return new Promise( ( resolve, reject ) => {
+				image.addEventListener( 'load', () => resolve( image ) );
+				image.addEventListener( 'error', () => reject( image ) );
+				document.body.appendChild( image );
+			} );
+		}
+	} );
+
 	function isVisible( element ) {
 		// Checks if the DOM element is visible to the end user.
 		return element.offsetParent !== null;
@@ -471,16 +542,6 @@ describe( 'ImageResize', () => {
 			MOUSE_BUTTON_MAIN, null );
 
 		target.dispatchEvent( event );
-	}
-
-	function getElementPosition( element ) {
-		// Returns top left corner point.
-		const viewportPosition = element.getBoundingClientRect();
-
-		return {
-			x: viewportPosition.left,
-			y: viewportPosition.top
-		};
 	}
 
 	function wait( delay ) {
@@ -498,7 +559,7 @@ describe( 'ImageResize', () => {
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 			const domBottomLeftResizer = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
 			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
-			const imageTopLeftPosition = getElementPosition( domImage );
+			const imageRect = new Rect( domImage );
 			const resizerPositionParts = options.resizerPosition.split( '-' );
 
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
@@ -507,16 +568,16 @@ describe( 'ImageResize', () => {
 			focusEditor( editor );
 
 			const initialPointerPosition = {
-				pageX: imageTopLeftPosition.x,
-				pageY: imageTopLeftPosition.y
+				pageX: imageRect.left,
+				pageY: imageRect.top
 			};
 
 			if ( resizerPositionParts.includes( 'right' ) ) {
-				initialPointerPosition.pageX += FIXTURE_WIDTH;
+				initialPointerPosition.pageX = imageRect.right;
 			}
 
 			if ( resizerPositionParts.includes( 'bottom' ) ) {
-				initialPointerPosition.pageY += FIXTURE_HEIGHT;
+				initialPointerPosition.pageY = imageRect.bottom;
 			}
 
 			const finishPointerPosition = Object.assign( {}, initialPointerPosition );
