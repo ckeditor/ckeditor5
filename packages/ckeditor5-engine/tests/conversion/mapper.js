@@ -52,8 +52,6 @@ describe( 'Mapper', () => {
 			expect( Array.from( mapper.markerNameToElements( 'foo' ) ) ).to.deep.equal( [ viewA, viewD ] );
 
 			mapper.unbindViewElement( viewD );
-			expect( Array.from( mapper._unboundMarkers ) ).to.deep.equal( [ 'foo', 'bar' ] );
-
 			mapper.clearBindings();
 
 			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
@@ -65,7 +63,7 @@ describe( 'Mapper', () => {
 			expect( mapper.toViewElement( modelC ) ).to.be.undefined;
 
 			expect( mapper.markerNameToElements( 'foo' ) ).to.be.null;
-			expect( Array.from( mapper._unboundMarkers ) ).to.deep.equal( [] );
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
 		} );
 	} );
 
@@ -138,21 +136,6 @@ describe( 'Mapper', () => {
 
 			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelA ) ).to.equal( viewB );
-		} );
-
-		it( 'should add marker names to _unboundMarkers set', () => {
-			const viewA = new ViewElement( 'a' );
-			const modelA = new ModelElement( 'a' );
-
-			const mapper = new Mapper();
-			mapper.bindElements( modelA, viewA );
-
-			mapper.bindElementToMarker( viewA, 'foo' );
-			mapper.bindElementToMarker( viewA, 'bar' );
-
-			mapper.unbindViewElement( viewA );
-
-			expect( Array.from( mapper._unboundMarkers ) ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
 	} );
 
@@ -782,6 +765,29 @@ describe( 'Mapper', () => {
 			const viewMappedAncestor = mapper.findMappedViewAncestor( viewPosition );
 
 			expect( viewMappedAncestor ).to.equal( viewP );
+		} );
+	} );
+
+	describe( 'flushUnboundMarkerNames()', () => {
+		it( 'should return marker names of markers which elements has been unbound and clear that list', () => {
+			const viewA = new ViewElement( 'a' );
+			const viewB = new ViewElement( 'b' );
+
+			const mapper = new Mapper();
+
+			mapper.bindElementToMarker( viewA, 'foo' );
+			mapper.bindElementToMarker( viewA, 'bar' );
+			mapper.bindElementToMarker( viewB, 'bar' );
+
+			mapper.unbindViewElement( viewA );
+
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
+
+			mapper.unbindViewElement( viewB );
+
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [ 'bar' ] );
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
 		} );
 	} );
 } );

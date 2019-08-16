@@ -143,14 +143,12 @@ export default class DowncastDispatcher {
 			}
 		}
 
-		for ( const markerName of this.conversionApi.mapper._unboundMarkers ) {
+		for ( const markerName of this.conversionApi.mapper.flushUnboundMarkerNames() ) {
 			const markerRange = markers.get( markerName ).getRange();
 
 			this.convertMarkerRemove( markerName, markerRange, writer );
 			this.convertMarkerAdd( markerName, markerRange, writer );
 		}
-
-		this.conversionApi.mapper._unboundMarkers.clear();
 
 		// After the view is updated, convert markers which have changed.
 		for ( const change of differ.getMarkersToAdd() ) {
