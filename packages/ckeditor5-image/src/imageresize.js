@@ -51,17 +51,17 @@ export default class ImageResize extends Plugin {
 			const resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
+					unit: editor.config.get( 'image.resizeUnit' ) || '%',
+
 					modelElement: data.item,
 					viewElement: widget,
 					downcastWriter: conversionApi.writer,
-					getResizeHost( domWidgetElement ) {
-						return domWidgetElement.querySelector( 'img' );
-					},
+
 					getHandleHost( domWidgetElement ) {
 						return domWidgetElement.querySelector( 'img' );
 					},
-					getAspectRatio( domResizeHost ) {
-						return domResizeHost.naturalWidth / domResizeHost.naturalHeight;
+					getResizeHost( domWidgetElement ) {
+						return domWidgetElement;
 					},
 					// TODO consider other positions.
 					isCentered() {
@@ -69,10 +69,9 @@ export default class ImageResize extends Plugin {
 
 						return !imageStyle || imageStyle == 'full';
 					},
-					onCommit( resizerState ) {
-						const value = resizerState.proposedWidthPercents ?
-							resizerState.proposedWidthPercents + '%' : resizerState.proposedWidth + 'px';
-						editor.execute( 'imageResize', { width: value } );
+
+					onCommit( newValue ) {
+						editor.execute( 'imageResize', { width: newValue } );
 					}
 				} );
 

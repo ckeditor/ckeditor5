@@ -51,7 +51,10 @@ describe( 'ImageResize', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
+				image: {
+					resizeUnit: 'px'
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
