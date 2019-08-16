@@ -27,7 +27,10 @@ function buildDocs() {
 	if ( skipApi ) {
 		promise = Promise.resolve();
 	} else {
-		promise = buildApiDocs();
+		promise = buildApiDocs()
+			.catch( () => {
+				process.exitCode = 1;
+			} );
 	}
 
 	promise
