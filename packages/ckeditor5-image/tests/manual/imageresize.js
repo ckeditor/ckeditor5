@@ -6,26 +6,24 @@
 /* global document, console, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter';
-import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImagePlugin from '../../src/image';
-import ImageStyle from '../../src/imagestyle';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageCaption from '../../src/imagecaption';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ImageResize from '../../src/imageresize';
-import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
-import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Table from '@ckeditor/ckeditor5-table/src/table';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 const commonConfig = {
-	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, ImagePlugin, ImageStyle, ImageToolbar, ImageCaption, ImageResize,
-		UndoPlugin, ClipboardPlugin, List, BlockQuote, Table, Indent, IndentBlock ],
-	toolbar: [ 'undo', 'redo', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'indent' ],
+	plugins: [
+		ArticlePluginSet,
+		ImageResize,
+		Indent,
+		IndentBlock,
+		EasyImage
+	],
+	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
+		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
 		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side' ],
 		styles: [
@@ -33,7 +31,8 @@ const commonConfig = {
 			'alignLeft',
 			'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
 		]
-	}
+	},
+	cloudServices: CS_CONFIG
 };
 
 ClassicEditor
