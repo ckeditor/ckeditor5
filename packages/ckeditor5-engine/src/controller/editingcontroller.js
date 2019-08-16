@@ -87,7 +87,7 @@ export default class EditingController {
 		// Also convert model selection.
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
-				this.downcastDispatcher.convertChanges( doc.differ, writer );
+				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
 			} );
 		}, { priority: 'low' } );

@@ -69,7 +69,7 @@ export default class DowncastWriter {
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to the other selection.
