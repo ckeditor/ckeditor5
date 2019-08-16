@@ -97,18 +97,24 @@ export default class Resizer {
 
 		this.sizeUI.bindToState( this.state );
 
-		this.state.begin( domResizeHandle, this._getResizeHost() );
+		this.state.begin( domResizeHandle, this._getHandleHost() );
 
 		this.redraw();
 	}
 
+	_newGetResizeHost() {
+		return this._getResizeHost().parentElement;
+	}
+
 	updateSize( domEventData ) {
 		const resizeHost = this._getResizeHost();
+		const newResizeHost = this._newGetResizeHost();
 		const newSize = this._proposeNewSize( domEventData );
 
-		resizeHost.style.width = newSize.width + 'px';
+		resizeHost.style.width = null;
+		newResizeHost.style.width = newSize.width + 'px';
 
-		this.state.fetchSizeFromElement( resizeHost );
+		this.state.fetchSizeFromElement( resizeHost, newResizeHost );
 
 		// Refresh values based on the real image. Real image might be limited by max-width, and thus fetching it
 		// here will reflect this limitation.
@@ -117,6 +123,8 @@ export default class Resizer {
 	}
 
 	commit() {
+		this.state.fetchSizeFromElement( this._getResizeHost(), this._newGetResizeHost() );
+
 		this._options.onCommit( this.state );
 
 		this._cleanup();
@@ -202,7 +210,7 @@ export default class Resizer {
 		// +----------------+--+
 		// |                |  |
 		// |       img      |  |
-		// |                |  |
+		// |  /handle host  |  |
 		// +----------------+  | ^
 		// |                   | | - enlarge y
 		// +-------------------+ v
@@ -258,11 +266,7 @@ export default class Resizer {
 	/**
 	 * Method used to obtain the resize host.
 	 *
-	 * Resize host is an object that is actually resized.
-	 *
-	 * Resize host will not always be an entire widget itself. Take an image as an example. Image widget
-	 * contains an image and caption. Only the image should be used to resize the widget, while the caption
-	 * will simply follow the image size.
+	 * Resize host is an object that receives dimensions that are result of resizing.
 	 *
 	 * @protected
 	 * @returns {HTMLElement}
@@ -272,6 +276,24 @@ export default class Resizer {
 
 		return this._options.getResizeHost ?
 			this._options.getResizeHost( widgetWrapper ) : widgetWrapper;
+	}
+
+	/**
+	 * Method used to obtain the resize host.
+	 *
+	 * Handle host is an object to which the handles are aligned to.
+	 *
+	 * Handle host will not always be an entire widget itself. Take an image as an example. Image widget
+	 * contains an image and a caption. Only image should be surrounded with handles.
+	 *
+	 * @protected
+	 * @returns {HTMLElement}
+	 */
+	_getHandleHost() {
+		const widgetWrapper = this._domResizerWrapper.parentElement;
+
+		return this._options.getHandleHost ?
+			this._options.getHandleHost( widgetWrapper ) : widgetWrapper;
 	}
 
 	/**
@@ -356,8 +378,18 @@ class SizeView extends View {
 		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
 			width !== null && height !== null );
 
-		this.bind( 'label' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
-			`${ width }×${ height }` );
+		this.bind( 'label' ).to(
+			resizerState, 'proposedWidth',
+			resizerState, 'proposedHeight',
+			resizerState, 'proposedWidthPercents',
+			( width, height, widthPercents ) => {
+				if ( widthPercents ) {
+					return `${ widthPercents }%`;
+				} else {
+					return `${ width }×${ height }`;
+				}
+			}
+		);
 
 		this.bind( 'activeHandlePosition' ).to( resizerState );
 	}

@@ -69,6 +69,15 @@ export default class ResizeState {
 		 * TODO
 		 *
 		 * @readonly
+		 * @observable
+		 * @member {Number|null} #proposedWidthPercents
+		 */
+		this.set( 'proposedWidthPercents', null );
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
 		 * @member {Number} #aspectRatio
 		 */
 
@@ -93,12 +102,12 @@ export default class ResizeState {
 	 *
 	 * @param {HTMLElement} domResizeHandle The handle used to calculate the reference point.
 	 */
-	begin( domResizeHandle, resizeHost ) {
-		const clientRect = new Rect( resizeHost );
+	begin( domResizeHandle, handleHost ) {
+		const clientRect = new Rect( handleHost );
 
 		this.activeHandlePosition = getHandlePosition( domResizeHandle );
 
-		this._referenceCoordinates = getAbsoluteBoundaryPoint( resizeHost, getOppositePosition( this.activeHandlePosition ) );
+		this._referenceCoordinates = getAbsoluteBoundaryPoint( handleHost, getOppositePosition( this.activeHandlePosition ) );
 
 		this.originalSize = {
 			width: clientRect.width,
@@ -106,23 +115,37 @@ export default class ResizeState {
 		};
 
 		this.aspectRatio = this._options.getAspectRatio ?
-			this._options.getAspectRatio( resizeHost ) : clientRect.width / clientRect.height;
+			this._options.getAspectRatio( handleHost ) : clientRect.width / clientRect.height;
 	}
 
 	/**
 	 * Sets `proposedWidth` / `proposedHeight` properties based on provided element.
 	 *
-	 * @param {HTMLElement} domElement
+	 * @param {HTMLElement} domHandleHost
+	 * @param {HTMLElement} domResizeHost
 	 */
-	fetchSizeFromElement( domElement ) {
+	fetchSizeFromElement( domHandleHost, domResizeHost ) {
 		// TODO the logic from this method should be moved to resizer.js.
 		// Search for other places where we do rounding – it's all in resizer.js.
 		// TODO this needs an automated test – currently it only affects the SizeView
 		// which we don't test.
-		const rect = new Rect( domElement );
+		const rect = new Rect( domHandleHost );
 
 		this.proposedWidth = Math.round( rect.width );
 		this.proposedHeight = Math.round( rect.height );
+
+		if ( [ 'percent', '%' ].includes( this._options.unit ) ) {
+			this._proposePercents( new Rect( domResizeHost ), domResizeHost );
+		}
+	}
+
+	_proposePercents( rect, domResizeHost ) {
+		const hostParentElement = domResizeHost.parentElement;
+		// We need to use getComputedStyle instead of bounding rect, as rect width also include parent's padding, that **can not**
+		// be occupied by the resized object. Computed width does not include it.
+		const hostParentInnerWith = parseFloat( hostParentElement.ownerDocument.defaultView.getComputedStyle( hostParentElement ).width );
+
+		this.proposedWidthPercents = Math.min( Math.round( rect.width / hostParentInnerWith * 100 ), 100 );
 	}
 }
 
