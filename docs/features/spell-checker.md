@@ -35,11 +35,13 @@ The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or
 The "Proofread in dialog" feature requires access to the editor instance to edit content. To grant access for WProofreader, it is necessary to link the editor's instance with the editable element. You can add the following configuration to the editor to use "Proofread in dialog":
 
 ```js
-    ClassicEditor.create(
-        document.querySelector( '#editor' )
-    ).then( ( editor ) => {
-        editor.ui.getEditableElement( 'main' ).editor = editor;
-    } );
+ClassicEditor
+	.create(
+		document.querySelector( '#editor' )
+	)
+	.then( ( editor ) => {
+		editor.ui.getEditableElement( 'main' ).editor = editor;
+	} );
 ```
 
 ### WProofreader Cloud
@@ -61,7 +63,7 @@ Add the following configuration to your page:
 And then load the proofreader script:
 
 ```html
-<script type="text/javascript" src="https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js"></script>
+<script src="https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js"></script>
 ```
 
 Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader#wproofreader-cloud) for more details about the cloud setup and available configuration options.
@@ -73,7 +75,7 @@ After signing up for a [30-day trial](https://webspellchecker.com/free-trial/) v
 You will need to specify the path to the service on your page:
 
 ```html
-<script type="text/javascript" src="http(s)://your_host_name/spellcheck/wscbundle/wscbundle.js"></script>
+<script src="http(s)://your_host_name/spellcheck/wscbundle/wscbundle.js"></script>
 ```
 
 Then add the following configuration to your page:
