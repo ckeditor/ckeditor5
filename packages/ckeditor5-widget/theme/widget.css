@@ -78,18 +78,18 @@
 	}
 }
 
-.ck .ck-widget.ck-widget_with-selection-handle {
-	/* Make the widget wrapper a relative positioning container for the drag handle. */
+.ck .ck-widget.ck-widget_with-selection-handler {
+	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
 
-	/* Show the selection handle on mouse hover over the widget. */
+	/* Show the selection handler on mouse hover over the widget. */
 	&:hover {
-		& .ck-widget__selection-handle {
+		& .ck-widget__selection-handler {
 			visibility: visible;
 		}
 	}
 
-	& .ck-widget__selection-handle {
+	& .ck-widget__selection-handler {
 		position: absolute;
 
 		& .ck-icon {
@@ -99,8 +99,8 @@
 		}
 	}
 
-	/* Show the selection handle when the widget is selected. */
-	&.ck-widget_selected .ck-widget__selection-handle {
+	/* Show the selection handler when the widget is selected. */
+	&.ck-widget_selected .ck-widget__selection-handler {
 		visibility: visible;
 	}
 }

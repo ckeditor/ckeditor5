@@ -20,6 +20,7 @@ import ResizeState from './resizerstate';
  * Stores the internal state of a single resizable object.
  *
  * @class Resizer
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Resizer {
 	/**
@@ -49,12 +50,9 @@ export default class Resizer {
 		this._domResizerWrapper = null;
 
 		/**
-		 * View to a wrapper containing all the resizer-related views.
-		 *
-		 * @private
-		 * @type {module:engine/view/uielement~UIElement}
+		 * @observable
 		 */
-		this._viewResizerWrapper = null;
+		this.set( 'isEnabled', true );
 
 		this.decorate( 'begin' );
 		this.decorate( 'cancel' );
@@ -70,7 +68,7 @@ export default class Resizer {
 		const widgetElement = this._options.viewElement;
 		const writer = this._options.downcastWriter;
 
-		this._viewResizerWrapper = writer.createUIElement( 'div', {
+		const viewResizerWrapper = writer.createUIElement( 'div', {
 			class: 'ck ck-reset_all ck-widget__resizer'
 		}, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
@@ -80,11 +78,17 @@ export default class Resizer {
 
 			that._domResizerWrapper = domElement;
 
+			that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
+				domElement.style.display = newValue ? '' : 'none';
+			} );
+
+			domElement.style.display = that.isEnabled ? '' : 'none';
+
 			return domElement;
 		} );
 
 		// Append resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( widgetElement, 'end' ), this._viewResizerWrapper );
+		writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
 		writer.addClass( 'ck-widget_with-resizer', widgetElement );
 	}
 
