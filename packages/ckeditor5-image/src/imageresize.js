@@ -36,11 +36,12 @@ export default class ImageResize extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const command = new ImageResizeCommand( editor );
 
 		this._registerSchema();
 		this._registerConverters();
 
-		editor.commands.add( 'imageResize', new ImageResizeCommand( editor ) );
+		editor.commands.add( 'imageResize', command );
 
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
@@ -75,6 +76,8 @@ export default class ImageResize extends Plugin {
 					} );
 				}
 			} );
+
+			resizer.bind( 'isEnabled' ).to( command );
 		}, { priority: 'low' } );
 	}
 

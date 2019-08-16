@@ -46,7 +46,6 @@ describe( 'ImageResize', () => {
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
-		editorElement.innerHTML = `<p>foo</p><figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>`;
 
 		absoluteContainer.appendChild( editorElement );
 
@@ -109,18 +108,84 @@ describe( 'ImageResize', () => {
 		it( 'defines the imageResize command', () => {
 			expect( editor.commands.get( 'imageResize' ) ).to.be.instanceOf( ImageResizeCommand );
 		} );
+
+		it( 'uses the command on commit', async () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+
+			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
+
+			await generateResizeTest( {
+				expectedWidth: 80,
+				pointerOffset: {
+					x: 10,
+					y: -10
+				},
+				resizerPosition: 'bottom-left'
+			} )();
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+		} );
+
+		it( 'disables the resizer if the command is disabled', () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+
+			let isEnabled = false;
+
+			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+				evt.return = isEnabled;
+				evt.stop();
+			}, { priority: 'highest' } );
+
+			editor.commands.get( 'imageResize' ).refresh();
+			expect( resizer.isEnabled ).to.be.false;
+
+			isEnabled = true;
+			editor.commands.get( 'imageResize' ).refresh();
+			expect( resizer.isEnabled ).to.be.true;
+		} );
+
+		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', () => {
+			setData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
+				evt.return = false;
+				evt.stop();
+			}, { priority: 'highest' } );
+			editor.commands.get( 'imageResize' ).refresh();
+
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
+			} );
+
+			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
+
+			expect( resizer.isEnabled ).to.be.false;
+			expect( resizerWrapper.style.display ).to.equal( 'none' );
+		} );
 	} );
 
 	describe( 'visual resizers', () => {
-		it( 'correct amount is added by default', () => {
-			const resizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
+		beforeEach( () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+		} );
+
+		it( 'correct number is added by default', () => {
+			const resizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 
 			expect( resizers.length ).to.be.equal( 4 );
 		} );
 
 		describe( 'visibility', () => {
 			it( 'is hidden by default', () => {
-				const allResizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
+				const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 
 				for ( const resizer of allResizers ) {
 					expect( isVisible( resizer ) ).to.be.false;
@@ -129,7 +194,7 @@ describe( 'ImageResize', () => {
 
 			it( 'is shown when image is focused', () => {
 				const widget = viewDocument.getRoot().getChild( 1 );
-				const allResizers = document.querySelectorAll( '.ck-widget__resizer__handle' );
+				const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 				const domEventDataMock = {
 					target: widget,
 					preventDefault: sinon.spy()
@@ -144,49 +209,6 @@ describe( 'ImageResize', () => {
 				}
 			} );
 		} );
-	} );
-
-	it( 'uses the command on commit', async () => {
-		setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-		widget = viewDocument.getRoot().getChild( 1 );
-
-		const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
-
-		await generateResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: 10,
-				y: -10
-			},
-			resizerPosition: 'bottom-left'
-		} )();
-
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
-	} );
-
-	// TODO move to WidgetResize tests.
-	it( 'uses rounded (int) values', async () => {
-		setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-		widget = viewDocument.getRoot().getChild( 1 );
-
-		await generateResizeTest( {
-			expectedWidth: 97,
-			// Makes it resize the image to 97.2188px, unless there's a rounding.
-			pointerOffset: {
-				x: 7.3,
-				y: -1
-			},
-			resizerPosition: 'bottom-left',
-			checkBeforeMouseUp( domImage, domResizeWrapper ) {
-				expect( domImage.style.width ).to.match( /^\d\dpx$/ );
-				expect( domResizeWrapper.style.width ).to.match( /^\d\dpx$/ );
-			}
-		} )();
-
-		expect( editor.model.document.getRoot().getChild( 1 ).getAttribute( 'width' ) ).to.match( /^\d\dpx$/ );
 	} );
 
 	describe( 'standard image resizing', () => {
@@ -526,6 +548,44 @@ describe( 'ImageResize', () => {
 				document.body.appendChild( image );
 			} );
 		}
+	} );
+
+	// TODO move to Resizer tests.
+	describe( 'Resizer', () => {
+		it( 'uses rounded (int) values', async () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+
+			await generateResizeTest( {
+				expectedWidth: 97,
+				// Makes it resize the image to 97.2188px, unless there's a rounding.
+				pointerOffset: {
+					x: 7.3,
+					y: -1
+				},
+				resizerPosition: 'bottom-left',
+				checkBeforeMouseUp( domImage, domResizeWrapper ) {
+					expect( domImage.style.width ).to.match( /^\d\dpx$/ );
+					expect( domResizeWrapper.style.width ).to.match( /^\d\dpx$/ );
+				}
+			} )();
+
+			expect( editor.model.document.getRoot().getChild( 1 ).getAttribute( 'width' ) ).to.match( /^\d\dpx$/ );
+		} );
+
+		it( 'hides the resize wrapper when its disabled', () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
+
+			expect( resizerWrapper.style.display ).to.equal( '' );
+
+			resizer.isEnabled = false;
+
+			expect( resizerWrapper.style.display ).to.equal( 'none' );
+		} );
 	} );
 
 	function isVisible( element ) {
