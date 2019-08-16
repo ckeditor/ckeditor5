@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import ImageResizeCommand from './imageresize/imageresizecommand';
 
+import '../theme/imageresize.css';
+
 /**
  *	Image resize plugin.
  *
