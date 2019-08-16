@@ -28,7 +28,9 @@ function buildDocs() {
 		promise = Promise.resolve();
 	} else {
 		promise = buildApiDocs()
-			.catch( () => {
+			.catch( err => {
+				console.error( err );
+
 				process.exitCode = 1;
 			} );
 	}
