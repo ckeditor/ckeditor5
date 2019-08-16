@@ -675,51 +675,6 @@ describe( 'ImageResize', () => {
 		};
 	}
 
-	async function clickHandle( resizerPosition ) {
-		const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-		const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
-		const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
-		const imageRect = new Rect( domImage );
-		const resizerPositionParts = resizerPosition.split( '-' );
-
-		const cursorPosition = {
-			pageX: imageRect.left,
-			pageY: imageRect.top
-		};
-
-		if ( resizerPositionParts.includes( 'right' ) ) {
-			cursorPosition.pageX = imageRect.right;
-		}
-
-		if ( resizerPositionParts.includes( 'bottom' ) ) {
-			cursorPosition.pageY = imageRect.bottom;
-		}
-
-		fireMouseEvent( domResizeHandle, 'mousedown', cursorPosition );
-
-		await wait( 40 );
-
-		return cursorPosition;
-	}
-
-	async function moveHandle( resizerPosition, pointerCoordinates ) {
-		const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-		const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
-
-		fireMouseEvent( domResizeHandle, 'mousemove', pointerCoordinates );
-
-		await wait( 40 );
-	}
-
-	async function releaseHandle( resizerPosition, pointerCoordinates ) {
-		const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-		const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
-
-		fireMouseEvent( domResizeHandle, 'mouseup', pointerCoordinates );
-
-		await wait( 40 );
-	}
-
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
