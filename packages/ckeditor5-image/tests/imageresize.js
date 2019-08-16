@@ -69,13 +69,13 @@ describe( 'ImageResize', () => {
 
 	describe( 'conversion', () => {
 		it( 'upcasts 100px width correctly', () => {
-			editor.setData( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;"></figure>` );
+			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }></figure>` );
 
 			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '100px' );
 		} );
 
 		it( 'upcasts 50% width correctly', () => {
-			editor.setData( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }" style="width:50%;"></figure>` );
+			editor.setData( `<figure class="image" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
 			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '50%' );
 		} );
@@ -84,14 +84,14 @@ describe( 'ImageResize', () => {
 			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="100px"></image>` );
 
 			expect( editor.getData() )
-				.to.equal( `<figure class="image image_resized"><img style="width:100px;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 
 		it( 'downcasts 50% width correctly', () => {
 			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
 
 			expect( editor.getData() )
-				.to.equal( `<figure class="image image_resized"><img style="width:50%;" src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 	} );
 
@@ -535,7 +535,7 @@ describe( 'ImageResize', () => {
 			} );
 
 			expect( editor.getData() )
-				.to.match( /<figure class="image image_resized"><img style="width:[\d.]{2,}px;" src="\/assets\/sample.png"><\/figure>/ );
+				.to.match( /<figure class="image image_resized" style="width:[\d.]{2,}px;"><img src="\/assets\/sample.png"><\/figure>/ );
 		} );
 
 		async function preloadImage( imageUrl ) {
@@ -566,8 +566,8 @@ describe( 'ImageResize', () => {
 					y: -1
 				},
 				resizerPosition: 'bottom-left',
-				checkBeforeMouseUp( domImage, domResizeWrapper ) {
-					expect( domImage.style.width ).to.match( /^\d\dpx$/ );
+				checkBeforeMouseUp( domFigure, domResizeWrapper ) {
+					expect( domFigure.style.width ).to.match( /^\d\dpx$/ );
 					expect( domResizeWrapper.style.width ).to.match( /^\d\dpx$/ );
 				}
 			} )();
@@ -619,7 +619,8 @@ describe( 'ImageResize', () => {
 		return function() {
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 			const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
-			const domImage = view.domConverter.mapViewToDom( widget ).querySelector( 'img' );
+			const domFigure = view.domConverter.mapViewToDom( widget );
+			const domImage = domFigure.querySelector( 'img' );
 			const imageRect = new Rect( domImage );
 			const resizerPositionParts = options.resizerPosition.split( '-' );
 
@@ -654,10 +655,10 @@ describe( 'ImageResize', () => {
 				.then( () => {
 					fireMouseEvent( domResizeHandle, 'mousemove', finishPointerPosition );
 
-					expect( domImage.width ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
+					expect( parseInt( domFigure.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
 					if ( options.checkBeforeMouseUp ) {
-						options.checkBeforeMouseUp( domImage, domResizeWrapper );
+						options.checkBeforeMouseUp( domFigure, domResizeWrapper );
 					}
 
 					fireMouseEvent( domResizeHandle, 'mouseup', finishPointerPosition );

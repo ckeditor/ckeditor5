@@ -52,7 +52,6 @@ export default class ImageResize extends Plugin {
 					modelElement: data.item,
 					viewElement: widget,
 					downcastWriter: conversionApi.writer,
-					unit: 'percent',
 					getResizeHost( domWidgetElement ) {
 						return domWidgetElement.querySelector( 'img' );
 					},
