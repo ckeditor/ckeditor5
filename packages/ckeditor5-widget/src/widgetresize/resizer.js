@@ -95,37 +95,44 @@ export default class Resizer {
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
-		this.sizeUI.bindToState( this.state );
+		this.sizeUI.bindToState( this._options, this.state );
 
-		this.state.begin( domResizeHandle, this._getHandleHost() );
+		this.state.begin( domResizeHandle, this._getHandleHost(), this._getResizeHost() );
 
 		this.redraw();
 	}
 
-	_newGetResizeHost() {
-		return this._getResizeHost().parentElement;
-	}
-
 	updateSize( domEventData ) {
-		const resizeHost = this._getResizeHost();
-		const newResizeHost = this._newGetResizeHost();
+		const domHandleHost = this._getHandleHost();
+		const domResizeHost = this._getResizeHost();
+		const unit = this._options.unit;
 		const newSize = this._proposeNewSize( domEventData );
 
-		resizeHost.style.width = null;
-		newResizeHost.style.width = newSize.width + 'px';
+		domResizeHost.style.width = ( unit === '%' ? newSize.widthPercents : newSize.width ) + this._options.unit;
 
-		this.state.fetchSizeFromElement( resizeHost, newResizeHost );
+		const domHandleHostRect = new Rect( domHandleHost );
+
+		newSize.handleHostWidth = Math.round( domHandleHostRect.width );
+		newSize.handleHostHeight = Math.round( domHandleHostRect.height );
+
+		const domResizeHostRect = new Rect( domHandleHost );
+
+		newSize.width = Math.round( domResizeHostRect.width );
+		newSize.height = Math.round( domResizeHostRect.height );
+
+		this.state.update( newSize );
 
 		// Refresh values based on the real image. Real image might be limited by max-width, and thus fetching it
 		// here will reflect this limitation.
-		this._domResizerWrapper.style.width = this.state.proposedWidth + 'px';
-		this._domResizerWrapper.style.height = this.state.proposedHeight + 'px';
+		this._domResizerWrapper.style.width = newSize.handleHostWidth + 'px';
+		this._domResizerWrapper.style.height = newSize.handleHostHeight + 'px';
 	}
 
 	commit() {
-		this.state.fetchSizeFromElement( this._getResizeHost(), this._newGetResizeHost() );
+		const unit = this._options.unit;
+		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
 
-		this._options.onCommit( this.state );
+		this._options.onCommit( newValue );
 
 		this._cleanup();
 	}
@@ -141,14 +148,15 @@ export default class Resizer {
 		this.cancel();
 	}
 
+	// TODO review this
 	redraw() {
 		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
 			// Refresh only if resizer exists in the DOM.
 			const widgetWrapper = domWrapper.parentElement;
-			const resizingHost = this._getResizeHost();
-			const clientRect = new Rect( resizingHost );
+			const handleHost = this._getHandleHost();
+			const clientRect = new Rect( handleHost );
 
 			domWrapper.style.width = clientRect.width + 'px';
 			domWrapper.style.height = clientRect.height + 'px';
@@ -157,12 +165,12 @@ export default class Resizer {
 			// for any additional offsets the resize host might have. E.g. wrapper padding
 			// or simply another editable. By doing that the border and resizers are shown
 			// only around the resize host.
-			if ( !widgetWrapper.isSameNode( resizingHost ) ) {
-				domWrapper.style.left = resizingHost.offsetLeft + 'px';
-				domWrapper.style.top = resizingHost.offsetTop + 'px';
+			if ( !widgetWrapper.isSameNode( handleHost ) ) {
+				domWrapper.style.left = handleHost.offsetLeft + 'px';
+				domWrapper.style.top = handleHost.offsetTop + 'px';
 
-				domWrapper.style.height = resizingHost.offsetHeight + 'px';
-				domWrapper.style.width = resizingHost.offsetWidth + 'px';
+				domWrapper.style.height = handleHost.offsetHeight + 'px';
+				domWrapper.style.width = handleHost.offsetWidth + 'px';
 			}
 		}
 
@@ -195,14 +203,13 @@ export default class Resizer {
 	 * @private
 	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
 	 * @returns {Object} return
-	 * @returns {Number} return.x Proposed width.
-	 * @returns {Number} return.y Proposed height.
+	 * @returns {Number} return.width Proposed width.
+	 * @returns {Number} return.height Proposed height.
 	 */
 	_proposeNewSize( domEventData ) {
 		const state = this.state;
 		const currentCoordinates = extractCoordinates( domEventData );
 		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
-		const originalSize = state.originalSize;
 
 		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
 		// meaning that it has been shrunk.
@@ -217,12 +224,12 @@ export default class Resizer {
 		// 					<-->
 		// 					 enlarge x
 		const enlargement = {
-			x: state._referenceCoordinates.x - ( currentCoordinates.x + originalSize.width ),
-			y: ( currentCoordinates.y - originalSize.height ) - state._referenceCoordinates.y
+			x: state._referenceCoordinates.x - ( currentCoordinates.x + state.originalWidth ),
+			y: ( currentCoordinates.y - state.originalHeight ) - state._referenceCoordinates.y
 		};
 
 		if ( isCentered && state.activeHandlePosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( state._referenceCoordinates.x + originalSize.width );
+			enlargement.x = currentCoordinates.x - ( state._referenceCoordinates.x + state.originalWidth );
 		}
 
 		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
@@ -235,8 +242,8 @@ export default class Resizer {
 
 		// The size proposed by the user. It does not consider the aspect ratio.
 		const proposedSize = {
-			width: Math.abs( originalSize.width + enlargement.x ),
-			height: Math.abs( originalSize.height + enlargement.y )
+			width: Math.abs( state.originalWidth + enlargement.x ),
+			height: Math.abs( state.originalHeight + enlargement.y )
 		};
 
 		// Dominant determination must take the ratio into account.
@@ -256,10 +263,9 @@ export default class Resizer {
 		}
 
 		return {
-			// TODO I couldn't find an automated TC for that, but rounding must be done here.
-			// Do not move it above.
 			width: Math.round( targetSize.width ),
-			height: Math.round( targetSize.height )
+			height: Math.round( targetSize.height ),
+			widthPercents: Math.min( Math.round( state.originalWidthPercents / state.originalWidth * targetSize.width * 100 ) / 100, 100 )
 		};
 	}
 
@@ -274,12 +280,11 @@ export default class Resizer {
 	_getResizeHost() {
 		const widgetWrapper = this._domResizerWrapper.parentElement;
 
-		return this._options.getResizeHost ?
-			this._options.getResizeHost( widgetWrapper ) : widgetWrapper;
+		return this._options.getResizeHost( widgetWrapper );
 	}
 
 	/**
-	 * Method used to obtain the resize host.
+	 * Method used to obtain the handle host.
 	 *
 	 * Handle host is an object to which the handles are aligned to.
 	 *
@@ -292,8 +297,7 @@ export default class Resizer {
 	_getHandleHost() {
 		const widgetWrapper = this._domResizerWrapper.parentElement;
 
-		return this._options.getHandleHost ?
-			this._options.getHandleHost( widgetWrapper ) : widgetWrapper;
+		return this._options.getHandleHost( widgetWrapper );
 	}
 
 	/**
@@ -374,19 +378,19 @@ class SizeView extends View {
 		} );
 	}
 
-	bindToState( resizerState ) {
+	bindToState( options, resizerState ) {
 		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
 			width !== null && height !== null );
 
 		this.bind( 'label' ).to(
-			resizerState, 'proposedWidth',
-			resizerState, 'proposedHeight',
+			resizerState, 'proposedHandleHostWidth',
+			resizerState, 'proposedHandleHostHeight',
 			resizerState, 'proposedWidthPercents',
 			( width, height, widthPercents ) => {
-				if ( widthPercents ) {
-					return `${ widthPercents }%`;
-				} else {
+				if ( options.unit === 'px' ) {
 					return `${ width }×${ height }`;
+				} else {
+					return `${ widthPercents }%`;
 				}
 			}
 		);
