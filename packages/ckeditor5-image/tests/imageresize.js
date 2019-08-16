@@ -69,7 +69,7 @@ describe( 'ImageResize', () => {
 
 	describe( 'conversion', () => {
 		it( 'upcasts 100px width correctly', () => {
-			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }></figure>` );
+			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
 			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.equal( '100px' );
 		} );
