@@ -161,8 +161,8 @@ describe( 'DowncastDispatcher', () => {
 			model.markers._set( 'foo', fooRange );
 			model.markers._set( 'bar', barRange );
 
-			// Stub `_unboundMarkers`.
-			dispatcher.conversionApi.mapper._unboundMarkers = new Set( [ 'foo', 'bar' ] );
+			// Stub `Mapper#flushUnboundMarkerNames`.
+			dispatcher.conversionApi.mapper.flushUnboundMarkerNames = () => [ 'foo', 'bar' ];
 
 			view.change( writer => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
