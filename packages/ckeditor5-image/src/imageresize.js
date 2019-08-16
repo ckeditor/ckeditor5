@@ -52,7 +52,11 @@ export default class ImageResize extends Plugin {
 					modelElement: data.item,
 					viewElement: widget,
 					downcastWriter: conversionApi.writer,
+					unit: 'percent',
 					getResizeHost( domWidgetElement ) {
+						return domWidgetElement.querySelector( 'img' );
+					},
+					getHandleHost( domWidgetElement ) {
 						return domWidgetElement.querySelector( 'img' );
 					},
 					getAspectRatio( domResizeHost ) {
@@ -65,7 +69,9 @@ export default class ImageResize extends Plugin {
 						return !imageStyle || imageStyle == 'full';
 					},
 					onCommit( resizerState ) {
-						editor.execute( 'imageResize', { width: resizerState.proposedWidth + 'px' } );
+						const value = resizerState.proposedWidthPercents ?
+							resizerState.proposedWidthPercents + '%' : resizerState.proposedWidth + 'px';
+						editor.execute( 'imageResize', { width: value } );
 					}
 				} );
 
@@ -107,13 +113,12 @@ export default class ImageResize extends Plugin {
 
 				const viewWriter = conversionApi.writer;
 				const figure = conversionApi.mapper.toViewElement( data.item );
-				const img = figure.getChild( 0 );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'width', data.attributeNewValue, img );
+					viewWriter.setStyle( 'width', data.attributeNewValue, figure );
 					viewWriter.addClass( 'image_resized', figure );
 				} else {
-					viewWriter.removeStyle( 'width', img );
+					viewWriter.removeStyle( 'width', figure );
 					viewWriter.removeClass( 'image_resized', figure );
 				}
 			} )
@@ -122,7 +127,7 @@ export default class ImageResize extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
-					name: 'img',
+					name: 'figure',
 					styles: {
 						width: /.+/
 					}
