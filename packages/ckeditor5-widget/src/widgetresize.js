@@ -158,9 +158,5 @@ export default class WidgetResize extends Plugin {
  */
 
 /**
- * @member {Function} module:widget/widgetresize~ResizerOptions#getAspectRatio
- */
-
-/**
  * @member {Function} module:widget/widgetresize~ResizerOptions#isCentered
  */
