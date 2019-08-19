@@ -435,6 +435,72 @@ describe( 'ImageResize', () => {
 		}
 	} );
 
+	describe( 'percent resizing', () => {
+		describe( 'standard image', () => {
+			beforeEach( async () => {
+				await editor.destroy();
+
+				editor = await ClassicEditor
+					.create( editorElement, {
+						plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+					} );
+
+				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+				view = editor.editing.view;
+				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
+			} );
+
+			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+				expectedWidth: 16,
+				modelRegExp: /<paragraph>foo<\/paragraph><image src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+				pointerOffset: {
+					x: 10,
+					y: -10
+				},
+				resizerPosition: 'bottom-left'
+			} ) );
+
+			it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
+				expectedWidth: 22,
+				modelRegExp: /<paragraph>foo<\/paragraph><image src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+				pointerOffset: {
+					x: 0,
+					y: 5
+				},
+				resizerPosition: 'bottom-right'
+			} ) );
+		} );
+
+		describe( 'side image', () => {
+			beforeEach( async () => {
+				await editor.destroy();
+
+				editor = await ClassicEditor
+					.create( editorElement, {
+						plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+					} );
+
+				setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+				view = editor.editing.view;
+				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
+			} );
+
+			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+				expectedWidth: 18,
+				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+				pointerOffset: {
+					x: 10,
+					y: -10
+				},
+				resizerPosition: 'bottom-left'
+			} ) );
+		} );
+	} );
+
 	describe( 'undo integration', () => {
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
