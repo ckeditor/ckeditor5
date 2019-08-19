@@ -90,12 +90,19 @@ export default class TodoListCheckCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply
+	 * the attribute, otherwise the command will remove the attribute. If not set, the command will look for its current
+	 * value to decide what it should do.
 	 */
-	execute() {
+	execute( options = {} ) {
 		this.editor.model.change( writer => {
 			for ( const element of this._selectedElements ) {
-				if ( !this.value ) {
+				const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
+
+				if ( value ) {
 					writer.setAttribute( attributeKey, true, element );
 				} else {
 					writer.removeAttribute( attributeKey, element );
