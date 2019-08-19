@@ -12,26 +12,26 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
-"Language: nl\n"
+"Language-Team: Danish (https://www.transifex.com/ckeditor/teams/11143/da/)\n"
+"Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
 msgid "Insert image or file"
-msgstr "Voeg afbeelding of bestand in"
+msgstr "Indsæt billede eller fil"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr "Het is niet gelukt de geschaalde afbeelding URL te verkrijgen."
+msgstr "Kunne ikke hente URL på ændret billede."
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr "De geschaalde afbeelding selecteren is niet gelukt"
+msgstr "Valg af ændret billede fejlede"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
-msgstr "Kan afbeelding niet op de huidige positie invoegen."
+msgstr "Kunne ikke indsætte billede på aktuel position."
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr "Afbeelding invoegen niet gelukt"
+msgstr "Indsætning af billede fejlede"
