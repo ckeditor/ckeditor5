@@ -12,13 +12,13 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Danish (https://www.transifex.com/ckeditor/teams/11143/da/)\n"
-"Language: da\n"
+"Language-Team: English (United Kingdom) (https://www.transifex.com/ckeditor/teams/11143/en_GB/)\n"
+"Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "Fjern link"
+msgstr "Unlink"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
@@ -30,20 +30,20 @@ msgstr "Link URL"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr "Redigér link"
+msgstr "Edit link"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr "Åben link i ny fane"
+msgstr "Open link in new tab"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr "Dette link har ingen URL"
+msgstr "This link has no URL"
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
-msgstr "Åben i ny fane"
+msgstr "Open in a new tab"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
-msgstr "Kan downloades"
+msgstr "Downloadable"
