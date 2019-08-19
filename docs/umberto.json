@@ -25,7 +25,8 @@
 		"features/ckfinder.html": "features/image-upload/ckfinder.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
 		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html",
-		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html"
+		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
+		"features/paste-from-word.html": "features/paste-from-office/paste-from-word.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -216,6 +217,11 @@
 					"name": "Image upload",
 					"id": "features-image-upload",
 					"slug": "image-upload"
+				},
+				{
+					"name": "Paste from office",
+					"id": "features-paste-from-office",
+					"slug": "paste-from-office"
 				}
 			]
 		},
