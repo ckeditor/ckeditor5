@@ -9,6 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
+		removePlugins: [ 'ImageResize' ],
 		image: {
 			styles: [
 				// This option is equal to a situation where no style is applied.
