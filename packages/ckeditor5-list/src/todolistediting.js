@@ -26,7 +26,7 @@ import {
 import { findInRange } from './utils';
 
 /**
- * The engine of the todo list feature. It handles creating, editing and removing todo lists and its items.
+ * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and its items.
  *
  * It registers all functionalities of {@link module:list/listediting~ListEditing list editing plugin} and extends
  * it by `'todoList'` command.
@@ -54,7 +54,7 @@ export default class TodoListEditing extends Plugin {
 			allowAttributes: [ 'todoListChecked' ]
 		} );
 
-		// Disallow todoListChecked attribute on other nodes than listItem with todo listType.
+		// Disallow todoListChecked attribute on other nodes than listItem with to-do listType.
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
 
@@ -122,10 +122,10 @@ export default class TodoListEditing extends Plugin {
 		// <ul><li><checkbox/>Bar</li></ul>
 		editor.keystrokes.set( 'arrowleft', ( evt, stop ) => jumpOverCheckmarkOnLeftArrowKeyPress( stop, model ) );
 
-		// Toggle check state of selected todo list items on keystroke.
+		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
 
-		// Remove `todoListChecked` attribute when a host element is no longer a todo list item.
+		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
 		const listItemsToFix = new Set();
 
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
@@ -184,7 +184,7 @@ export default class TodoListEditing extends Plugin {
 	}
 }
 
-// Moves all uiElements in the todo list item after the checkmark element.
+// Moves all uiElements in the to-do list item after the checkmark element.
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -215,7 +215,7 @@ function moveUIElementsAfterCheckmark( writer, uiElements ) {
 	return hasChanged;
 }
 
-// Moves selection in the todo list item after the checkmark element.
+// Moves selection in the to-do list item after the checkmark element.
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer

@@ -76,7 +76,7 @@ describe( 'TodoListEditing', () => {
 			expect( command ).to.have.property( 'type', 'todo' );
 		} );
 
-		it( 'should create todo list item and change to paragraph in normal usage flow', () => {
+		it( 'should create to-do list item and change to paragraph in normal usage flow', () => {
 			expect( getViewData( view ) ).to.equal( '<p>[]</p>' );
 			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
@@ -119,7 +119,7 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'editing pipeline', () => {
-		it( 'should convert todo list item', () => {
+		it( 'should convert to-do list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
@@ -133,7 +133,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert nested todo list items', () => {
+		it( 'should convert nested to-do list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">2.1</listItem>' +
@@ -163,7 +163,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list items mixed with bulleted list items', () => {
+		it( 'should convert to-do list items mixed with bulleted list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
@@ -192,7 +192,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list items mixed with numbered list items', () => {
+		it( 'should convert to-do list items mixed with numbered list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
@@ -377,7 +377,7 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'data pipeline m -> v', () => {
-		it( 'should convert todo list item', () => {
+		it( 'should convert to-do list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
@@ -401,7 +401,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert nested todo list item', () => {
+		it( 'should convert nested to-do list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">2.1</listItem>'
@@ -427,7 +427,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list item mixed with bulleted list items', () => {
+		it( 'should convert to-do list item mixed with bulleted list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
@@ -469,7 +469,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list item mixed with numbered list items', () => {
+		it( 'should convert to-do list item mixed with numbered list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
@@ -545,13 +545,13 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'data pipeline v -> m', () => {
-		it( 'should convert li with checkbox before the first text node as todo list item', () => {
+		it( 'should convert li with checkbox before the first text node as to-do list item', () => {
 			editor.setData( '<ul><li><input type="checkbox">foo</li></ul>' );
 
 			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
 		} );
 
-		it( 'should convert li with checked checkbox as checked todo list item', () => {
+		it( 'should convert li with checked checkbox as checked to-do list item', () => {
 			editor.setData(
 				'<ul>' +
 					'<li><input type="checkbox" checked="checked">a</li>' +
@@ -641,7 +641,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list returned by m -> v data pipeline conversion', () => {
+		it( 'should convert to-do list returned by m -> v data pipeline conversion', () => {
 			editor.setData(
 				'<ul class="todo-list">' +
 					'<li>' +

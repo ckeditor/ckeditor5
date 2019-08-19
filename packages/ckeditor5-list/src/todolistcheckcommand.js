@@ -23,7 +23,7 @@ export default class TodoListCheckCommand extends Command {
 
 		/**
 		 * Flag indicating whether the command is active. The command is active when at least one of
-		 * {@link module:engine/model/selection~Selection selected} elements is a todo list item.
+		 * {@link module:engine/model/selection~Selection selected} elements is a to-do list item.
 		 *
 		 * @observable
 		 * @readonly
@@ -31,7 +31,7 @@ export default class TodoListCheckCommand extends Command {
 		 */
 
 		/**
-		 * A List of todo list item selected by the {@link module:engine/model/selection~Selection}.
+		 * A List of to-do list item selected by the {@link module:engine/model/selection~Selection}.
 		 *
 		 * @observable
 		 * @readonly
@@ -39,7 +39,7 @@ export default class TodoListCheckCommand extends Command {
 		 */
 
 		/**
-		 * List of todo list items selected by the {@link module:engine/model/selection~Selection}.
+		 * List of to-do list items selected by the {@link module:engine/model/selection~Selection}.
 		 *
 		 * @protected
 		 * @type {Array.<module:engine/model/element~Element>}
@@ -63,7 +63,7 @@ export default class TodoListCheckCommand extends Command {
 	}
 
 	/**
-	 * Gets all todo list items selected by the {@link module:engine/model/selection~Selection}.
+	 * Gets all to-do list items selected by the {@link module:engine/model/selection~Selection}.
 	 *
 	 * @private
 	 * @returns {Array.<module:engine/model/element~Element>}

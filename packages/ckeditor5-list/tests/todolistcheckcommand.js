@@ -61,19 +61,19 @@ describe( 'TodoListCheckCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'should be enabled when selection is inside todo list item', () => {
+		it( 'should be enabled when selection is inside to-do list item', () => {
 			setModelData( model, '<listItem listIndent="0" listType="todo">a[b]c</listItem>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be disabled when selection is not inside todo list item', () => {
+		it( 'should be disabled when selection is not inside to-do list item', () => {
 			setModelData( model, '<paragraph>a[b]c</paragraph>' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should be enabled when at least one todo list item is selected', () => {
+		it( 'should be enabled when at least one to-do list item is selected', () => {
 			setModelData( model,
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo">abc</listItem>' +
@@ -83,7 +83,7 @@ describe( 'TodoListCheckCommand', () => {
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be enabled when none todo list item is selected', () => {
+		it( 'should be enabled when none to-do list item is selected', () => {
 			setModelData( model,
 				'<paragraph>a[bc</paragraph>' +
 				'<paragraph>abc</paragraph>' +
@@ -95,7 +95,7 @@ describe( 'TodoListCheckCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should toggle checked state on todo list item when collapsed selection is inside this item', () => {
+		it( 'should toggle checked state on to-do list item when collapsed selection is inside this item', () => {
 			setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
 
 			command.execute();
@@ -111,7 +111,7 @@ describe( 'TodoListCheckCommand', () => {
 			);
 		} );
 
-		it( 'should toggle checked state on todo list item when non-collapsed selection is inside this item', () => {
+		it( 'should toggle checked state on to-do list item when non-collapsed selection is inside this item', () => {
 			setModelData( model, '<listItem listIndent="0" listType="todo">b[a]r</listItem>' );
 
 			command.execute();
@@ -151,7 +151,7 @@ describe( 'TodoListCheckCommand', () => {
 			);
 		} );
 
-		it( 'should toggle state on multiple items mixed with none todo list items', () => {
+		it( 'should toggle state on multiple items mixed with none to-do list items', () => {
 			setModelData( model,
 				'<paragraph>a[bc</paragraph>' +
 				'<listItem listIndent="0" listType="todo">def</listItem>' +

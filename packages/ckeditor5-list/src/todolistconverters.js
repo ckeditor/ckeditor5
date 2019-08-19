@@ -60,7 +60,7 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
 }
 
 /**
- * A model-to-view converter for model `$text` element inside a todo list item.
+ * A model-to-view converter for model `$text` element inside a to-do list item.
  *
  * It takes care of creating text after the {@link module:engine/view/uielement~UIElement checkbox UI element}.
  *
@@ -148,7 +148,7 @@ export function dataModelViewInsertion( model ) {
 }
 
 /**
- * A model-to-view converter for model `$text` element inside a todo list item.
+ * A model-to-view converter for model `$text` element inside a to-do list item.
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
@@ -264,7 +264,7 @@ export function modelViewChangeType( onCheckedChange ) {
  */
 export function modelViewChangeChecked( onCheckedChange ) {
 	return ( evt, data, conversionApi ) => {
-		// Do not convert `todoListChecked` attribute when todo list item has changed to other list item.
+		// Do not convert `todoListChecked` attribute when to-do list item has changed to other list item.
 		// This attribute will be removed by the model post fixer.
 		if ( data.item.getAttribute( 'listType' ) != 'todo' ) {
 			return;
