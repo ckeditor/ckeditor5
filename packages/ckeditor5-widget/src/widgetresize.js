@@ -16,7 +16,9 @@ import { throttle } from 'lodash-es';
 /**
  * Widget resize feature plugin.
  *
- * Use the {@link module:widget/widgetresizer~WidgetResize#apply} method to create resizer for a provided widget.
+ * Use the {@link module:widget/widgetresize~WidgetResize#attachTo} method to create a resizer for the specified widget.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class WidgetResize extends Plugin {
 	/**
@@ -85,8 +87,8 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * @param {module:widget/widgetresizer~ResizerOptions} [options] Resizer options.
-	 * @returns {module:widget/resizer~Resizer}
+	 * @param {module:widget/widgetresize~ResizerOptions} [options] Resizer options.
+	 * @returns {module:widget/widgetresize/resizer~Resizer}
 	 */
 	attachTo( options ) {
 		const resizer = new Resizer( options );
@@ -116,29 +118,29 @@ export default class WidgetResize extends Plugin {
  */
 
 /**
- * @member {module:engine/model/element~Element} module:widget/widgetresizer~ResizerOptions#modelElement
+ * @member {module:engine/model/element~Element} module:widget/widgetresize~ResizerOptions#modelElement
  */
 
 /**
- * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresizer~ResizerOptions#viewElement
+ * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresize~ResizerOptions#viewElement
  */
 
 /**
- * @member {module:engine/view/downcastwriter~DowncastWriter} module:widget/widgetresizer~ResizerOptions#downcastWriter
+ * @member {module:engine/view/downcastwriter~DowncastWriter} module:widget/widgetresize~ResizerOptions#downcastWriter
  */
 
 /**
- * @member {Function} module:widget/widgetresizer~ResizerOptions#onCommit
+ * @member {Function} module:widget/widgetresize~ResizerOptions#onCommit
  */
 
 /**
- * @member {Function} module:widget/widgetresizer~ResizerOptions#getResizeHost
+ * @member {Function} module:widget/widgetresize~ResizerOptions#getResizeHost
  */
 
 /**
- * @member {Function} module:widget/widgetresizer~ResizerOptions#getAspectRatio
+ * @member {Function} module:widget/widgetresize~ResizerOptions#getAspectRatio
  */
 
 /**
- * @member {Function} module:widget/widgetresizer~ResizerOptions#isCentered
+ * @member {Function} module:widget/widgetresize~ResizerOptions#isCentered
  */

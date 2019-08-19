@@ -15,11 +15,10 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * Stores the internal state of a single resizable object.
  *
- * @class ResizeState
  */
 export default class ResizeState {
 	/**
-	 * @param {module:widget/widgetresizer~ResizerOptions} options Resizer options.
+	 * @param {module:widget/widgetresize~ResizerOptions} options Resizer options.
 	 */
 	constructor( options ) {
 		/**
@@ -92,7 +91,7 @@ export default class ResizeState {
 
 		/**
 		 * @private
-		 * @type {module:widget/widgetresizer~ResizerOptions}
+		 * @type {module:widget/widgetresize~ResizerOptions}
 		 */
 		this._options = options;
 

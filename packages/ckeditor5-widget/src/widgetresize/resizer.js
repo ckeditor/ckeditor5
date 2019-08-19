@@ -17,24 +17,29 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ResizeState from './resizerstate';
 
 /**
- * Stores the internal state of a single resizable object.
+ * Represents a resizer for a single resizable object.
  *
- * @class Resizer
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Resizer {
 	/**
-	 * @param {module:widget/widgetresizer~ResizerOptions} options Resizer options.
+	 * @param {module:widget/widgetresize~ResizerOptions} options Resizer options.
 	 */
 	constructor( options ) {
 		/**
+		 * Stores the state of resizable host geometry, such as original width, currently proposed height, etc.
+		 *
+		 * Note that a new state is created for each resize transaction.
+		 *
 		 * @readonly
-		 * @member {module:widget/widgetresizer/resizerstate~ResizerState} #state
+		 * @member {module:widget/widgetresize/resizerstate~ResizerState} #state
 		 */
 
 		/**
+		 * Options passed to the {@link #constructor}.
+		 *
 		 * @private
-		 * @type {module:widget/widgetresizer~ResizerOptions}
+		 * @type {module:widget/widgetresize~ResizerOptions}
 		 */
 		this._options = options;
 
@@ -50,6 +55,13 @@ export default class Resizer {
 		this._domResizerWrapper = null;
 
 		/**
+		 * A view displaying new proposed element's size during the resizing.
+		 *
+		 * @readonly
+		 * @member {module:widget/widgetresize/resizer~SizeView} #sizeUI
+		 */
+
+		/**
 		 * @observable
 		 */
 		this.set( 'isEnabled', true );
@@ -61,7 +73,7 @@ export default class Resizer {
 	}
 
 	/**
-	 *
+	 * Attaches the resizer to the DOM.
 	 */
 	attach() {
 		const that = this;
@@ -92,6 +104,14 @@ export default class Resizer {
 		writer.addClass( 'ck-widget_with-resizer', widgetElement );
 	}
 
+	/**
+	 * Starts the resizing process.
+	 *
+	 * Creates a new {@link #state} for current process.
+	 *
+	 * @fires begin
+	 * @param {HTMLElement} domResizeHandle Clicked handle.
+	 */
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
@@ -102,6 +122,12 @@ export default class Resizer {
 		this.redraw();
 	}
 
+	/**
+	 * Updates the proposed size based on `domEventData`.
+	 *
+	 * @fires updateSize
+	 * @param {Event} domEventData
+	 */
 	updateSize( domEventData ) {
 		const domHandleHost = this._getHandleHost();
 		const domResizeHost = this._getResizeHost();
@@ -128,6 +154,11 @@ export default class Resizer {
 		this._domResizerWrapper.style.height = newSize.handleHostHeight + 'px';
 	}
 
+	/**
+	 * Applies the geometry proposed with the resizer.
+	 *
+	 * @fires commit
+	 */
 	commit() {
 		const unit = this._options.unit;
 		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
@@ -139,17 +170,25 @@ export default class Resizer {
 
 	/**
 	 * Cancels and rejects proposed resize dimensions hiding all the UI.
+	 *
+	 * @fires cancel
 	 */
 	cancel() {
 		this._cleanup();
 	}
 
+	/**
+	 * Destroys the resizer.
+	 */
 	destroy() {
 		this.cancel();
 	}
 
-	// TODO review this
+	/**
+	 * Redraws the resizer.
+	 */
 	redraw() {
+		// TODO review this
 		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
@@ -320,6 +359,8 @@ export default class Resizer {
 	}
 
 	/**
+	 * Sets up the {@link #sizeUI} property and adds it to the passed `domElement`.
+	 *
 	 * @private
 	 * @param {HTMLElement} domElement
 	 */
@@ -350,10 +391,31 @@ export default class Resizer {
 			}
 		}
 	}
+
+	/**
+	 * @event begin
+	 */
+
+	/**
+	 * @event updateSize
+	 */
+
+	/**
+	 * @event commit
+	 */
+
+	/**
+	 * @event cancel
+	 */
 }
 
 mix( Resizer, ObservableMixin );
 
+/**
+ * A view displaying new proposed element's size during the resizing.
+ *
+ * @extends {module:ui/view~View}
+ */
 class SizeView extends View {
 	constructor() {
 		super();
