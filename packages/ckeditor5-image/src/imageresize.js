@@ -14,7 +14,7 @@ import ImageResizeCommand from './imageresize/imageresizecommand';
 import '../theme/imageresize.css';
 
 /**
- *	Image resize plugin.
+ * The image resize plugin.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -139,3 +139,25 @@ export default class ImageResize extends Plugin {
 			} );
 	}
 }
+
+/**
+ * The available options are `'px'` or `'%'`.
+ *
+ * Determines size unit applied to resized image.
+ *
+ * ```js
+ * ClassicEditor
+ * 	.create( editorElement, {
+ * 		 image: {
+ * 			 resizeUnit: 'px'
+ * 		 }
+ * 	 } )
+ * 	.then( ... )
+ * 	.catch( ... );
+ * ```
+ *
+ * This option is used by {@link }
+ *
+ * @default '%'
+ * @member {String} module:image/image~ImageConfig#resizeUnit
+ */

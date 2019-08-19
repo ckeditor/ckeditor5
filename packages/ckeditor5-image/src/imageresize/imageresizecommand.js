@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagestyle/imageresize
+ * @module image/imageresizecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -15,7 +15,7 @@ import { isImage } from '../image/utils';
  *
  * @extends module:core/command~Command
  */
-export default class ImageResize extends Command {
+export default class ImageResizeCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
