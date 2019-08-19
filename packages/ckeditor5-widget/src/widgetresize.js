@@ -130,6 +130,26 @@ export default class WidgetResize extends Plugin {
  */
 
 /**
+ * A callback to be executed once resizing process is done.
+ *
+ * It receives a `Number` (`newValue`) as a parameter.
+ *
+ * For example, {@link module:image/imageresize~ImageResize} uses it to execute image resize command,
+ * which puts new value into the model.
+ *
+ * ```js
+ * {
+ *	modelElement: data.item,
+ *	viewElement: widget,
+ *	downcastWriter: conversionApi.writer,
+ *
+ *	onCommit( newValue ) {
+ *		editor.execute( 'imageResize', { width: newValue } );
+ *	}
+ * };
+ * ```
+ *
+ *
  * @member {Function} module:widget/widgetresize~ResizerOptions#onCommit
  */
 
