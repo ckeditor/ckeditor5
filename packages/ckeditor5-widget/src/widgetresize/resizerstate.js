@@ -134,7 +134,7 @@ export default class ResizeState {
 				this.originalWidthPercents = 50;
 			}
 		} else {
-			this.originalWidthPercents = 100;
+			this.originalWidthPercents = this._getParentPercentage( domResizeHost );
 		}
 	}
 
@@ -145,6 +145,23 @@ export default class ResizeState {
 
 		this.proposedHandleHostWidth = newSize.handleHostWidth;
 		this.proposedHandleHostHeight = newSize.handleHostHeight;
+	}
+
+	/**
+	 * Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
+	 *
+	 * @protected
+	 * @param {HTMLElement} domResizeHost
+	 * @returns {Number}
+	 */
+	_getParentPercentage( domResizeHost ) {
+		const rect = new Rect( domResizeHost );
+		const domResizeHostParent = domResizeHost.parentElement;
+		// Need to use computed style as it properly excludes parent's paddings from the returned value.
+		const parentWidth = parseFloat( domResizeHostParent.ownerDocument.defaultView.getComputedStyle( domResizeHostParent ).width );
+
+		// Round to two digits in fraction.
+		return Math.round( rect.width / parentWidth * 10000 ) / 100;
 	}
 }
 
