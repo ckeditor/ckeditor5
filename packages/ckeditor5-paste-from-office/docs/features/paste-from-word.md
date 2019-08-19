@@ -23,7 +23,7 @@ When the plugin is enabled, it automatically detects Word content and transforms
 
 ## Demo
 
-To test how Paste from Office works, download the [sample Word document](../assets/CKEditor5.PFO.Sample.Recognition_of_Achievement.docx), open it in Microsoft Word, copy the content and paste it into CKEditor 5 below.
+To test how Paste from Office works, download the [sample Word document](../../assets/CKEditor5.PFO.Sample.Recognition_of_Achievement.docx), open it in Microsoft Word, copy the content and paste it into CKEditor 5 below.
 
 {@snippet features/paste-from-office}
 
