@@ -471,6 +471,24 @@ describe( 'ImageResize', () => {
 				},
 				resizerPosition: 'bottom-right'
 			} ) );
+
+			it( 'enlarges correctly an image with unsupported width unit', async () => {
+				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }" width="50pt"></image>]` );
+
+				view = editor.editing.view;
+				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
+
+				await generateResizeTest( {
+					expectedWidth: 15,
+					modelRegExp: /<paragraph>foo<\/paragraph><image src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+					pointerOffset: {
+						x: 0,
+						y: 5
+					},
+					resizerPosition: 'bottom-right'
+				} )();
+			} );
 		} );
 
 		describe( 'side image', () => {
