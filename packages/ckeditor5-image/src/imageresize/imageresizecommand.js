@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageresizecommand
+ * @module image/imageresize/imageresizecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
