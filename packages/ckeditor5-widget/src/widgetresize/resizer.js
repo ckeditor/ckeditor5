@@ -36,6 +36,14 @@ export default class Resizer {
 		 */
 
 		/**
+		 * A view displaying new proposed element's size during the resizing.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {module:widget/widgetresize/resizer~SizeView} #_sizeUI
+		 */
+
+		/**
 		 * Options passed to the {@link #constructor}.
 		 *
 		 * @private
@@ -53,13 +61,6 @@ export default class Resizer {
 		 * @type {HTMLElement|null}
 		 */
 		this._domResizerWrapper = null;
-
-		/**
-		 * A view displaying new proposed element's size during the resizing.
-		 *
-		 * @readonly
-		 * @member {module:widget/widgetresize/resizer~SizeView} #sizeUI
-		 */
 
 		/**
 		 * @observable
@@ -115,7 +116,7 @@ export default class Resizer {
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
-		this.sizeUI.bindToState( this._options, this.state );
+		this._sizeUI.bindToState( this._options, this.state );
 
 		this.state.begin( domResizeHandle, this._getHandleHost(), this._getResizeHost() );
 
@@ -232,8 +233,8 @@ export default class Resizer {
 	 * @protected
 	 */
 	_cleanup() {
-		this.sizeUI.dismiss();
-		this.sizeUI.isVisible = false;
+		this._sizeUI.dismiss();
+		this._sizeUI.isVisible = false;
 	}
 
 	/**
@@ -359,7 +360,7 @@ export default class Resizer {
 	}
 
 	/**
-	 * Sets up the {@link #sizeUI} property and adds it to the passed `domElement`.
+	 * Sets up the {@link #_sizeUI} property and adds it to the passed `domElement`.
 	 *
 	 * @private
 	 * @param {HTMLElement} domElement
@@ -370,7 +371,7 @@ export default class Resizer {
 		// Make sure icon#element is rendered before passing to appendChild().
 		sizeUI.render();
 
-		this.sizeUI = sizeUI;
+		this._sizeUI = sizeUI;
 
 		domElement.appendChild( sizeUI.element );
 	}
