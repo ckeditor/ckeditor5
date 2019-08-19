@@ -129,8 +129,13 @@ describe( 'ImageResize', () => {
 				resizerPosition: 'bottom-left'
 			} )();
 
+			// It's either 80px or 81px depending on the device, so we need to make the test a bit more loose.
+			const realWidth = editor.model.document.getRoot().getChild( 1 ).getAttribute( 'width' );
+
+			expect( realWidth ).to.match( /^\d\dpx$/ );
+
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
+			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: realWidth } );
 		} );
 
 		it( 'disables the resizer if the command is disabled', () => {
