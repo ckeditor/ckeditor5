@@ -12,110 +12,110 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr@latin/)\n"
-"Language: sr@latin\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language-Team: Danish (https://www.transifex.com/ckeditor/teams/11143/da/)\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Veličina fonta"
+msgstr "Skriftstørrelse"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr "Sitno"
+msgstr "Lillebitte"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr "Malo"
+msgstr "Lille"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr "Veliko"
+msgstr "Stor"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr "Ogromno"
+msgstr "Kæmpe"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr "Font"
+msgstr "Skriftfamilie"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
-msgstr "Оsnovni"
+msgstr "Standard"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr "Boja slova"
+msgstr "Skriftfarve"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr "Boja pozadine slova"
+msgstr "Skrift baggrundsfarve"
 
 msgctxt "Label or a button that removes the color from the text (font color and background)."
 msgid "Remove color"
-msgstr "Otkloni boju"
+msgstr "Fjern farve"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr "Boje dokumenta"
+msgstr "Dokumentfarve"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
-msgstr "Crna"
+msgstr "Sort"
 
 msgctxt "Label of a button that applies a dim grey text color (font color and background)"
 msgid "Dim grey"
-msgstr "Bledo siva"
+msgstr "Dunkel grå"
 
 msgctxt "Label of a button that applies a grey text color (font color and background)"
 msgid "Grey"
-msgstr "Siva"
+msgstr "Grå"
 
 msgctxt "Label of a button that applies a light grey text color (font color and background)"
 msgid "Light grey"
-msgstr "Svetlo siva"
+msgstr "Lys grå"
 
 msgctxt "Label of a button that applies a white text color (font color and background)"
 msgid "White"
-msgstr "Bela"
+msgstr "Hvid"
 
 msgctxt "Label of a button that applies a red text color (font color and background)"
 msgid "Red"
-msgstr "Crvena"
+msgstr "Rød"
 
 msgctxt "Label of a button that applies a orange text color (font color and background)"
 msgid "Orange"
-msgstr "Narandžasta"
+msgstr "Orange"
 
 msgctxt "Label of a button that applies a yellow text color (font color and background)"
 msgid "Yellow"
-msgstr "Žuta"
+msgstr "Gyl"
 
 msgctxt "Label of a button that applies a light green text color (font color and background)"
 msgid "Light green"
-msgstr "Svetlo zelena"
+msgstr "Lys grøn"
 
 msgctxt "Label of a button that applies a green text color (font color and background)"
 msgid "Green"
-msgstr "Zelena"
+msgstr "Grøn"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr "Zelenkastoplava"
+msgstr "Marineblå"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr "Tirkizna"
+msgstr "Turkis"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
-msgstr "Svetloplava"
+msgstr "Lys blå"
 
 msgctxt "Label of a button that applies a blue text color (font color and background)"
 msgid "Blue"
-msgstr "Plava"
+msgstr "Blå"
 
 msgctxt "Label of a button that applies a purple text color (font color and background)"
 msgid "Purple"
-msgstr "Ljubičasta"
+msgstr "Lilla"

@@ -58,7 +58,7 @@ msgstr "Verwijder kleur"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "Document kleur"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
@@ -102,11 +102,11 @@ msgstr "Groen"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr ""
+msgstr "Aquamarijn"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr ""
+msgstr "Turquoise"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
