@@ -16,6 +16,8 @@ import '../theme/imageresize.css';
 /**
  * The image resize plugin.
  *
+ * It adds a possibility to resize each image using handles.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageResize extends Plugin {
@@ -156,7 +158,7 @@ export default class ImageResize extends Plugin {
  * 	.catch( ... );
  * ```
  *
- * This option is used by {@link }
+ * This option is used by the {@link module:image/imageresize~ImageResize} feature.
  *
  * @default '%'
  * @member {String} module:image/image~ImageConfig#resizeUnit
