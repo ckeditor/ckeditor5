@@ -216,5 +216,25 @@ describe( 'TodoListCheckCommand', () => {
 				command.execute();
 			} );
 		} );
+
+		it( 'should set attribute if `forceValue` parameter is set to `true`', () => {
+			setModelData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">b[]ar</listItem>' );
+
+			command.execute( { forceValue: true } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">b[]ar</listItem>'
+			);
+		} );
+
+		it( 'should remove attribute if `forceValue` parameter is set to `false`', () => {
+			setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+
+			command.execute( { forceValue: false } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="todo">b[]ar</listItem>'
+			);
+		} );
 	} );
 } );
