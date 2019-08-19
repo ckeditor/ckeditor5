@@ -23,7 +23,7 @@ export function isLinkElement( node ) {
 }
 
 /**
- * Creates link {@link module:engine/view/attributeelement~AttributeElement} with provided `href` attribute.
+ * Creates link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
  *
  * @param {String} href
  * @returns {module:engine/view/attributeelement~AttributeElement}
@@ -39,9 +39,9 @@ export function createLinkElement( href, writer ) {
 /**
  * Returns a safe URL based on a given value.
  *
- * An URL is considered safe if it is safe for the user (does not contain any malicious code).
+ * A URL is considered safe if it is safe for the user (does not contain any malicious code).
  *
- * If URL is considered unsafe, a simple `"#"` is returned.
+ * If a URL is considered unsafe, a simple `"#"` is returned.
  *
  * @protected
  * @param {*} url
@@ -63,16 +63,16 @@ function isSafeUrl( url ) {
 }
 
 /**
- * Returns {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration processed
- * to respect the locale of the editor, i.e. to display {@link module:link/link~LinkDecoratorManualDefinition label}
+ * Returns the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration processed
+ * to respect the locale of the editor, i.e. to display the {@link module:link/link~LinkDecoratorManualDefinition label}
  * in the correct language.
  *
  * **Note**: Only the few most commonly used labels are translated automatically. Other labels should be manually
  * translated in the {@link module:link/link~LinkConfig#decorators `config.link.decorators`} configuration.
  *
  * @param {module:utils/locale~Locale#t} t shorthand for {@link module:utils/locale~Locale#t Locale#t}
- * @param {Array.<module:link/link~LinkDecoratorDefinition>} decorators reference
- * where labels' values should be localized.
+ * @param {Array.<module:link/link~LinkDecoratorDefinition>} The decorator reference
+ * where the label values should be localized.
  * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
  */
 export function getLocalizedDecorators( t, decorators ) {
@@ -92,8 +92,8 @@ export function getLocalizedDecorators( t, decorators ) {
 }
 
 /**
- * Converts an object with defined decorators to a normalized array of decorators. There is also added `id` key for each decorator,
- * which is used as attribute's name in the model.
+ * Converts an object with defined decorators to a normalized array of decorators. The `id` key is added for each decorator and
+ * is used as the attribute's name in the model.
  *
  * @param {Object.<String, module:link/link~LinkDecoratorDefinition>} decorators
  * @returns {Array.<module:link/link~LinkDecoratorDefinition>}

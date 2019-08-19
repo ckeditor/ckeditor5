@@ -14,7 +14,7 @@ import LinkUI from './linkui';
 /**
  * The link plugin.
  *
- * This is a "glue" plugin which loads the {@link module:link/linkediting~LinkEditing link editing feature}
+ * This is a "glue" plugin that loads the {@link module:link/linkediting~LinkEditing link editing feature}
  * and {@link module:link/linkui~LinkUI link UI feature}.
  *
  * @extends module:core/plugin~Plugin
@@ -58,8 +58,8 @@ export default class Link extends Plugin {
  */
 
 /**
- * When set `true`, the `target="_blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
- * in the editor. By external are meant all links in the editor content starting with `http`, `https`, or `//`.
+ * When set to `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
+ * in the editor. "External links" are all links in the editor content starting with `http`, `https`, or `//`.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -70,15 +70,15 @@ export default class Link extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * Internally, this option activates a predefined {@link module:link/link~LinkConfig#decorators automatic link decorator},
- * which extends all external links with the `target` and `rel` attributes without additional configuration.
+ * Internally, this option activates a predefined {@link module:link/link~LinkConfig#decorators automatic link decorator}
+ * that extends all external links with the `target` and `rel` attributes.
  *
  * **Note**: To control the `target` and `rel` attributes of specific links in the edited content, a dedicated
  * {@link module:link/link~LinkDecoratorManualDefinition manual} decorator must be defined in the
  * {@link module:link/link~LinkConfig#decorators `config.link.decorators`} array. In such scenario,
  * the `config.link.addTargetToExternalLinks` option should remain `undefined` or `false` to not interfere with the manual decorator.
  *
- * **Note**: It is possible to add other {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
+ * It is possible to add other {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
  * or {@link module:link/link~LinkDecoratorManualDefinition manual} link decorators when this option is active.
  *
  * More information about decorators can be found in the {@link module:link/link~LinkConfig#decorators decorators configuration}
@@ -92,12 +92,12 @@ export default class Link extends Plugin {
  * Decorators provide an easy way to configure and manage additional link attributes in the editor content. There are
  * two types of link decorators:
  *
- * * {@link module:link/link~LinkDecoratorAutomaticDefinition automatic} – they match links against pre–defined rules and
- * manage their attributes based on the results,
- * * {@link module:link/link~LinkDecoratorManualDefinition manual} – they allow users to control link attributes individually
+ * * {@link module:link/link~LinkDecoratorAutomaticDefinition Automatic} &ndash; They match links against pre–defined rules and
+ * manage their attributes based on the results.
+ * * {@link module:link/link~LinkDecoratorManualDefinition Manual} &ndash; They allow users to control link attributes individually,
  *  using the editor UI.
  *
- * Link decorators are defined as an object with key-value pairs, where the key is a name provided for a given decorator and the
+ * Link decorators are defined as objects with key-value pairs, where the key is the name provided for a given decorator and the
  * value is the decorator definition.
  *
  * The name of the decorator also corresponds to the {@glink framework/guides/architecture/editing-engine#text-attributes text attribute}
@@ -132,8 +132,8 @@ export default class Link extends Plugin {
  * To learn more about the configuration syntax, check out the {@link module:link/link~LinkDecoratorAutomaticDefinition automatic}
  * and {@link module:link/link~LinkDecoratorManualDefinition manual} decorator option reference.
  *
- * **Warning:** Currently, link decorators work independently and no conflict resolution mechanism exists.
- * For example, configuring the `target` attribute using both an automatic and a manual decorator at a time could end up with
+ * **Warning:** Currently, link decorators work independently of one another and no conflict resolution mechanism exists.
+ * For example, configuring the `target` attribute using both an automatic and a manual decorator at the same time could end up with
  * quirky results. The same applies if multiple manual or automatic decorators were defined for the same attribute.
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
@@ -141,7 +141,7 @@ export default class Link extends Plugin {
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
- * See also {@glink features/link#custom-link-attributes-decorators link's feature} guide for more information.
+ * See also the {@glink features/link#custom-link-attributes-decorators link feature guide} for more information.
  *
  * @member {Object.<String, module:link/link~LinkDecoratorDefinition>} module:link/link~LinkConfig#decorators
  */
@@ -154,23 +154,22 @@ export default class Link extends Plugin {
  */
 
 /**
- * The kind of the decorator.
+ * Link decorator type.
  *
- * Check out the {@glink features/link#custom-link-attributes-decorators link feature} guide for more information.
+ * Check out the {@glink features/link#custom-link-attributes-decorators link feature guide} for more information.
  *
  * @member {'manual'|'automatic'} module:link/link~LinkDecoratorDefinition#mode
  */
 
 /**
- * Describes an automatic link {@link module:link/link~LinkConfig#decorators decorator}. This kind of a decorator matches
- * all links in the editor content against a function which decides whether the link should gain a pre–defined set of attributes
- * or not.
+ * Describes an automatic {@link module:link/link~LinkConfig#decorators link decorator}. This decorator type matches
+ * all links in the editor content against a function that decides whether the link should receive a pre–defined set of attributes.
  *
- * It takes an object with key-value pairs of attributes and a callback function which must return a boolean based on link's
+ * It takes an object with key-value pairs of attributes and a callback function that must return a Boolean value based on the link's
  * `href` (URL). When the callback returns `true`, attributes are applied to the link.
  *
- * For example, to add the `target="_blank"` attribute to all links in the editor starting with the `http://`,
- * then configuration could look like this:
+ * For example, to add the `target="_blank"` attribute to all links in the editor starting with `http://`, the
+ * configuration could look like this:
  *
  *		{
  *			mode: 'automatic',
@@ -181,24 +180,24 @@ export default class Link extends Plugin {
  *		}
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
- * dedicated for that purpose which can be enabled by turning a single option on. Check out the
+ * dedicated for that purpose that can be enabled by turning a single option on. Check out the
  * {@link module:link/link~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
  * configuration description to learn more.
  *
  * @typedef {Object} module:link/link~LinkDecoratorAutomaticDefinition
- * @property {'automatic'} mode The kind of the decorator. `'automatic'` for all automatic decorators.
- * @property {Function} callback Takes an `url` as a parameter and returns `true` if the `attributes` should be applied to the link.
+ * @property {'automatic'} mode Link decorator type. It is `'automatic'` for all automatic decorators.
+ * @property {Function} callback Takes a `url` as a parameter and returns `true` if the `attributes` should be applied to the link.
  * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
  * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
  * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
  */
 
 /**
- * Describes a manual link {@link module:link/link~LinkConfig#decorators decorator}. This kind of a decorator is represented in
- * the link feature's {@link module:link/linkui user interface} as a switch the user can use to control the presence
- * of a pre–defined set of attributes.
+ * Describes a manual {@link module:link/link~LinkConfig#decorators link decorator}. This decorator type is represented in
+ * the link feature's {@link module:link/linkui user interface} as a switch that the user can use to control the presence
+ * of a predefined set of attributes.
  *
- * For instance, to allow users to manually control the presence of the `target="_blank"` and
+ * For instance, to allow the users to manually control the presence of the `target="_blank"` and
  * `rel="noopener noreferrer"` attributes on specific links, the decorator could look as follows:
  *
  *		{
@@ -211,8 +210,8 @@ export default class Link extends Plugin {
  *		}
  *
  * @typedef {Object} module:link/link~LinkDecoratorManualDefinition
- * @property {'manual'} mode The kind of the decorator. `'manual'` for all manual decorators.
- * @property {String} label The label of the UI button the user can use to control the presence of link attributes.
+ * @property {'manual'} mode Link decorator type. It is `'manual'` for all manual decorators.
+ * @property {String} label The label of the UI button that the user can use to control the presence of link attributes.
  * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
  * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
  * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.

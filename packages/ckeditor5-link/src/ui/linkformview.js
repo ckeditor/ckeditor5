@@ -96,7 +96,7 @@ export default class LinkFormView extends View {
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( manualDecorators );
 
 		/**
-		 * Collection of child views in the form.
+		 * A collection of child views in the form.
 		 *
 		 * @readonly
 		 * @type {module:ui/viewcollection~ViewCollection}
@@ -104,7 +104,7 @@ export default class LinkFormView extends View {
 		this.children = this._createFormChildren( manualDecorators );
 
 		/**
-		 * A collection of views which can be focused in the form.
+		 * A collection of views that can be focused in the form.
 		 *
 		 * @readonly
 		 * @protected
@@ -157,7 +157,7 @@ export default class LinkFormView extends View {
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators manual link decorators}
 	 * in the {@link module:link/ui/linkformview~LinkFormView}.
 	 *
-	 * @returns {Object.<String,Boolean>} key-value pairs, where the key is the name of the decorator and the value is
+	 * @returns {Object.<String,Boolean>} Key-value pairs, where the key is the name of the decorator and the value is
 	 * its state.
 	 */
 	getDecoratorSwitchesState() {
@@ -225,7 +225,7 @@ export default class LinkFormView extends View {
 	 *
 	 * @private
 	 * @param {String} label The button label.
-	 * @param {String} icon The button's icon.
+	 * @param {String} icon The button icon.
 	 * @param {String} className The additional button CSS class name.
 	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
@@ -254,12 +254,12 @@ export default class LinkFormView extends View {
 
 	/**
 	 * Populates {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
-	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}
+	 * made based on {@link module:link/linkcommand~LinkCommand#manualDecorators}.
 	 *
 	 * @private
 	 * @param {module:utils/collection~Collection} manualDecorators A reference to the
-	 * collection of manual decorators stored in link's command.
-	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
+	 * collection of manual decorators stored in the link command.
+	 * @returns {module:ui/viewcollection~ViewCollection} of switch buttons.
 	 */
 	_createManualDecoratorSwitches( manualDecorators ) {
 		const switches = this.createCollection();
@@ -288,14 +288,14 @@ export default class LinkFormView extends View {
 	/**
 	 * Populates the {@link #children} collection of the form.
 	 *
-	 * If {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators} are configured in the editor, creates an
+	 * If {@link module:link/linkcommand~LinkCommand#manualDecorators manual decorators} are configured in the editor, it creates an
 	 * additional `View` wrapping all {@link #_manualDecoratorSwitches} switch buttons corresponding
-	 * to those decorators.
+	 * to these decorators.
 	 *
 	 * @private
-	 * @param {module:utils/collection~Collection} manualDecorators A reference to the
-	 * collection of manual decorators stored in link's command.
-	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
+	 * @param {module:utils/collection~Collection} manualDecorators A reference to
+	 * the collection of manual decorators stored in the link command.
+	 * @returns {module:ui/viewcollection~ViewCollection} The children of link form view.
 	 */
 	_createFormChildren( manualDecorators ) {
 		const children = this.createCollection();
@@ -337,13 +337,13 @@ export default class LinkFormView extends View {
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. click on {@link #saveButtonView}.
+ * for example with a click on {@link #saveButtonView}.
  *
  * @event submit
  */
 
 /**
- * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
+ * Fired when the form view is canceled, for example with a click on {@link #cancelButtonView}.
  *
  * @event cancel
  */

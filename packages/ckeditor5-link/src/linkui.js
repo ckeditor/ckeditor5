@@ -138,7 +138,7 @@ export default class LinkUI extends Plugin {
 	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
 	 *
 	 * @private
-	 * @returns {module:link/ui/linkformview~LinkFormView} The link form instance.
+	 * @returns {module:link/ui/linkformview~LinkFormView} The link form view instance.
 	 */
 	_createFormView() {
 		const editor = this.editor;
@@ -313,19 +313,19 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Closes form view. Decides whether the balloon should be hidden completely or if action view should be shown. This is decided upon
-	 * link command value (which has value if the document selection is in link).
+	 * Closes the form view. Decides whether the balloon should be hidden completely or if the action view should be shown. This is
+	 * decided upon the link command value (which has a value if the document selection is in the link).
 	 *
-	 * If there are defined {@link module:link/link~LinkConfig#decorators} in editor's config, then there are additionally
-	 * rest switch buttons state responsible for manual decorators handling.
+	 * Additionally, if any {@link module:link/link~LinkConfig#decorators} are defined in the editor configuration, the state of
+	 * switch buttons responsible for manual decorator handling is restored.
 	 *
 	 * @private
 	 */
 	_closeFormView() {
 		const linkCommand = this.editor.commands.get( 'link' );
 
-		// Reset manual decorator states to represent current model state. This case is important to reset switch buttons,
-		// when user cancel editing form.
+		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
+		// when the user cancels the editing form.
 		linkCommand.restoreManualDecoratorStates();
 
 		if ( linkCommand.value !== undefined ) {
@@ -355,7 +355,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Shows the right kind of the UI for current state of the command. It's either
+	 * Shows the correct UI type for the current state of the command. It is either
 	 * {@link #formView} or {@link #actionsView}.
 	 *
 	 * @param {Boolean} forceVisible
@@ -431,7 +431,7 @@ export default class LinkUI extends Plugin {
 
 	/**
 	 * Makes the UI react to the {@link module:core/editor/editorui~EditorUI#event:update} event to
-	 * reposition itself when the editor ui should be refreshed.
+	 * reposition itself when the editor UI should be refreshed.
 	 *
 	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `update` event.
 	 *
@@ -488,7 +488,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns true when {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #formView} is in the {@link #_balloon}.
 	 *
 	 * @readonly
 	 * @protected
@@ -499,7 +499,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns true when {@link #actionsView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #actionsView} is in the {@link #_balloon}.
 	 *
 	 * @readonly
 	 * @protected
@@ -510,7 +510,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns true when {@link #actionsView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #actionsView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 *
 	 * @readonly
@@ -522,7 +522,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns true when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
+	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
 	 *
 	 * @readonly
 	 * @protected
@@ -533,7 +533,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Returns true when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
+	 * Returns `true` when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
 	 * currently visible.
 	 *
 	 * @readonly
@@ -575,7 +575,7 @@ export default class LinkUI extends Plugin {
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 *
-	 * **Note**: For a non–collapsed selection the link element is only returned when **fully**
+	 * **Note**: For a non–collapsed selection, the link element is only returned when **fully**
 	 * selected and the **only** element within the selection boundaries.
 	 *
 	 * @private
