@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-content .image {
+.ck.ck-editor__editable .image {
 	position: relative;
 }
 
 /* Upload progress bar. */
-.ck .ck-progress-bar {
+.ck.ck-editor__editable .image .ck-progress-bar {
 	position: absolute;
 	top: 0;
 	left: 0;
