@@ -41,8 +41,8 @@ export default class TodoListCheckCommand extends Command {
 		/**
 		 * List of todo list items selected by the {@link module:engine/model/selection~Selection}.
 		 *
+		 * @protected
 		 * @type {Array.<module:engine/model/element~Element>}
-		 * @private
 		 */
 		this._selectedElements = [];
 
