@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-font-source}
 
-The {@link module:font/font~Font} plugin enables the following features in the editor:
+The {@link module:font/font~Font} plugin enables the following features in the rich-text editor:
 * {@link module:font/fontfamily~FontFamily} &ndash; Allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
 * {@link module:font/fontsize~FontSize} &ndash; Allows to control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
 * {@link module:font/fontcolor~FontColor} &ndash; Allows to control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
@@ -17,7 +17,7 @@ The {@link module:font/font~Font} plugin enables the following features in the e
 
 ## Configuring the font family feature
 
-It is possible to configure which font family options are supported by the editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
+It is possible to configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
 
 Use the special `'default'` keyword to use the default font family defined in the web page styles. It removes any custom font family.
 
@@ -45,7 +45,7 @@ ClassicEditor
 
 ## Configuring the font size feature
 
-It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
+It is possible to configure which font size options are supported by the WYSIWYG editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
 
 Use the special `'default'` keyword to use the default font size defined in the web page styles. It removes any custom font size.
 
@@ -112,7 +112,7 @@ ClassicEditor
 
 ### Using numerical values
 
-The font feature also supports numerical values.
+The font size feature also supports numerical values.
 
 In this case, each size is represented in the view as a `<span>` element with the `font-size` style set in `px`. For example, `14` will be represented in the editor data as:
 
@@ -120,7 +120,7 @@ In this case, each size is represented in the view as a `<span>` element with th
 <span style="font-size: 14px">...</span>
 ```
 
-Here is an example of the editor that supports numerical font sizes. Note that `'default'` is controlled by the default styles of the web page:
+Here is an example of the WYSIWYG editor that supports numerical font sizes. Note that `'default'` is controlled by the default styles of the web page:
 
 ```js
 ClassicEditor
@@ -154,7 +154,7 @@ Both font color and font background color features are configurable and share th
 	Please note that {@link module:font/fontcolor~FontColor font color} and {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} are separate plugins. They must be enabled and configured individually.
 </info-box>
 
-Check out the editor below with both features customized using the editor configuration:
+Check out the WYSIWYG editor below with both features customized using the editor configuration:
 
 {@snippet features/custom-font-color-and-background-color-options}
 
@@ -228,7 +228,7 @@ ClassicEditor
 
 ### Changing the geometry of the color grid
 
-You can set the number of columns in the color picker by setting {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`}.
+You can configure the number of columns in the color dropdown by setting the {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} configuration options.
 
 Usually, you will want to use this option when changing the number of [available colors](#specifying-available-colors).
 
@@ -240,7 +240,7 @@ ClassicEditor
 				// 9 colors defined here...
 			]
 
-			columns: 3, // so, let's display them in 3 columns
+			columns: 3, // so, you can display them in 3 columns.
 
 			// ...
 		},
@@ -259,9 +259,9 @@ ClassicEditor
 
 ### Documents colors
 
-The font and font background color pickers contain the *Document colors* section. It lists the colors already used in the document for the users to be able to easily reuse them (for consistency purposes).
+The font and font background color dropdowns contain the "Document colors" section. It lists the colors already used in the document for the users to be able to easily reuse them (for consistency purposes).
 
-By default the number of displayed document colors is limited to one row, but you can adjust it (or remove the whole section) by using {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
+By default, the number of displayed document colors is limited to one row, but you can adjust it (or remove the whole section) by using the {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} options.
 
 ```js
 ClassicEditor
@@ -291,7 +291,7 @@ ClassicEditor
 
 ## Installation
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-font

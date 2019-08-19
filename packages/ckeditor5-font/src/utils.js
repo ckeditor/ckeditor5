@@ -25,7 +25,7 @@ export const FONT_FAMILY = 'fontFamily';
 export const FONT_COLOR = 'fontColor';
 
 /**
- * The name of the font font background color plugin.
+ * The name of the font background color plugin.
  */
 export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
@@ -63,7 +63,7 @@ export function buildDefinition( modelAttributeKey, options ) {
  * {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} helper
  * responsible for upcasting data to the model.
  *
- * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
+ * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
  *
  * @param {String} styleAttr
  * @return {String}
@@ -77,7 +77,7 @@ export function renderUpcastAttribute( styleAttr ) {
  * {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} helper
  * responsible for downcasting a color attribute to a `<span>` element.
  *
- * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
+ * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
  *
  * @param {String} styleAttr
  */
@@ -101,7 +101,7 @@ export function normalizeColorOptions( options ) {
 }
 
 /**
- * Helper that adds {@link module:font/ui/colortableview~ColorTableView} to a dropdown with proper initial values.
+ * A helper that adds {@link module:font/ui/colortableview~ColorTableView} to the color dropdown with proper initial values.
  *
  * @param {Object} config The configuration object.
  * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView The dropdown view to which
@@ -109,8 +109,8 @@ export function normalizeColorOptions( options ) {
  * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions
  * representing colors to be displayed in the color table.
  * @param {String} config.removeButtonLabel The label for the button responsible for removing the color.
- * @param {String} config.documentColorsLabel The label of a section with document colors.
- * @param {String} config.documentColorsCount The number of document colors inside dropdown.
+ * @param {String} config.documentColorsLabel The label for the section with document colors.
+ * @param {String} config.documentColorsCount The number of document colors inside the dropdown.
  * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
  */
 export function addColorTableToDropdown( { dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {

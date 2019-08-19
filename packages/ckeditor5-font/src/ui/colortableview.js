@@ -40,13 +40,13 @@ export default class ColorTableView extends View {
 	 * @param {Number} config.columns The number of columns in the color grid.
 	 * @param {String} config.removeButtonLabel The label of the button responsible for removing the color.
 	 * @param {String} config.documentColorsLabel The label for the section with the document colors.
-	 * @param {String} config.documentColorsCount The number of colors in document colors section inside dropdown.
+	 * @param {String} config.documentColorsCount The number of colors in the document colors section inside the color dropdown.
 	 */
 	constructor( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {
 		super( locale );
 
 		/**
-		 * Collection of the children of the table.
+		 * A collection of the children of the table.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -61,7 +61,7 @@ export default class ColorTableView extends View {
 		this.colorDefinitions = colors;
 
 		/**
-		 * Tracks information about DOM focus in the list.
+		 * Tracks information about the DOM focus in the list.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -77,7 +77,7 @@ export default class ColorTableView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Keeps value of the command associated with the table for the current selection.
+		 * Keeps the value of the command associated with the table for the current selection.
 		 *
 		 * @type {String}
 		 */
@@ -98,7 +98,7 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 
 		/**
-		 * A collection of definitions stores document colors.
+		 * A collection of definitions that store the document colors.
 		 *
 		 * @readonly
 		 * @member {module:font/documentcolorcollection~DocumentColorCollection}
@@ -106,8 +106,8 @@ export default class ColorTableView extends View {
 		this.documentColors = new DocumentColorCollection();
 
 		/**
-		 * Maximum number of colors in document colors section.
-		 * If equals 0, then document colors section is not added.
+		 * The maximum number of colors in the document colors section.
+		 * If it equals 0, the document colors section is not added.
 		 *
 		 * @readonly
 		 * @type {Number}
@@ -115,8 +115,8 @@ export default class ColorTableView extends View {
 		this.documentColorsCount = documentColorsCount;
 
 		/**
-		 * Preserves reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
-		 * default (static) colors set.
+		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+		 * the default (static) color set.
 		 *
 		 * @readonly
 		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
@@ -124,8 +124,8 @@ export default class ColorTableView extends View {
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		/**
-		 * Preserves reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
-		 * document colors. It remains undefined if document colors are disabled.
+		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
+		 * the document colors. It remains undefined if the document colors feature is disabled.
 		 *
 		 * @readonly
 		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
@@ -190,13 +190,13 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method scans through the editor's model and searches for text node attributes with attributeName.
+	 * Scans through the editor model and searches for text node attributes with the given attribute name.
 	 * Found entries are set as document colors.
 	 *
 	 * All the previously stored document colors will be lost in the process.
 	 *
-	 * @param {module:engine/model/model~Model} model Model used as a source to obtain document colors.
-	 * @param {String} attributeName Determines what is the name of a related model's attribute for given dropdown.
+	 * @param {module:engine/model/model~Model} model The model used as a source to obtain the document colors.
+	 * @param {String} attributeName Determines the name of the related model's attribute for a given dropdown.
 	 */
 	updateDocumentColors( model, attributeName ) {
 		const document = model.document;
@@ -221,8 +221,9 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgrid~ColorGridView}
-	 * available in {@link module:font/ui/colortableview~ColorTableView}.
+	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgrid~ColorGridView}s
+	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
+	 * of them.
 	 */
 	updateSelectedColors() {
 		const documentColorsGrid = this.documentColorsGrid;
@@ -307,7 +308,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Creates document colors section view and binds it to {@link #documentColors}.
+	 * Creates the document colors section view and binds it to {@link #documentColors}.
 	 *
 	 * @private
 	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
@@ -363,11 +364,11 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method adds a given `color` to the document colors list. If possible, method will attempt to use
+	 * Adds a given color to the document colors list. If possible, the method will attempt to use
 	 * data from the {@link #colorDefinitions} (label, color options).
 	 *
 	 * @private
-	 * @param {String} color String which stores value of recently applied color.
+	 * @param {String} color A string that stores the value of the recently applied color.
 	 */
 	_addColorToDocumentColors( color ) {
 		const predefinedColor = this.colorDefinitions

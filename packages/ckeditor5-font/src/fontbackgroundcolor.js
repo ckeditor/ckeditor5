@@ -141,7 +141,7 @@ export default class FontBackgroundColor extends Plugin {
  */
 
 /**
- * Represents the number of columns in the dropdown.
+ * Represents the number of columns in the font background color dropdown.
  *
  * The default value is:
  *
@@ -153,31 +153,31 @@ export default class FontBackgroundColor extends Plugin {
  */
 
 /**
- * Determines maximum number of available document colors.
- * Setting it to `0` will disable document colors feature.
+ * Determines the maximum number of available document colors.
+ * Setting it to `0` will disable the document colors feature.
  *
- * By default it equals to {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns} value.
+ * By default it equals to the {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns} value.
  *
  * Examples:
  *
- * 	// 1) Neither documentColors nor columns are defined in config.
- * 	// documentColors will equal 5,
- * 	// because value will be inherited from `columns`,
- * 	// which has predefined value 5.
+ * 	// 1) Neither document colors nor columns are defined in the configuration.
+ * 	// Document colors will equal 5,
+ * 	// because the value will be inherited from columns,
+ * 	// which has a predefined value of 5.
  * 	const fontBackgroundColorConfig = {}
  *
- * 	// 2) documentColors will equal 8, because value will be inherited from `columns`.
+ * 	// 2) Document colors will equal 8, because the value will be inherited from columns.
  * 	const fontBackgroundColorConfig = {
  * 		columns: 8
  * 	}
  *
- * 	// 3) documentColors will equal 24, because has defined own value.
+ * 	// 3) Document colors will equal 24, because it has its own value defined.
  * 	const fontBackgroundColorConfig = {
  * 		columns: 8,
  * 		documentColors: 24
  * 	}
  *
- * 	// 4) documentColors feature will be disabled.
+ * 	// 4) The document colors feature will be disabled.
  * 	const fontBackgroundColorConfig = {
  * 		columns: 8,
  * 		documentColors: 0
