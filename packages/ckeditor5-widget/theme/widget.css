@@ -3,20 +3,84 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+:root {
+	--ck-color-resizer: var(--ck-color-focus-border);
+	--ck-resizer-size: 10px;
+	--ck-resizer-border-width: 1px;
+	--ck-resizer-border-radius: 2px;
+
+	/* Set resizer with 50% offset. */
+	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
+
+	--ck-resizer-tooltip-offset: 10px;
+	--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);
+	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);
+}
+
+.ck .ck-widget_with-resizer {
+	/* Make the widget wrapper a relative positioning container for the drag handle. */
+	position: relative;
+}
+
+.ck .ck-widget__resizer {
+	display: none;
+	position: absolute;
+
+	/* The wrapper itself should not interfere with pointer device, only the handles. */
+	pointer-events: none;
+
+	left: 0;
+	top: 0;
+
+	outline: 1px solid var(--ck-color-resizer);
+}
+
+.ck-focused .ck-widget_with-resizer.ck-widget_selected {
+	& > .ck-widget__resizer {
+		display: block;
+	}
+}
+
+.ck .ck-widget__resizer__handle {
+	position: absolute;
+
+	/* Resizers are the only UI elements that should interfere with pointer device. */
+	pointer-events: all;
+
+	width: var(--ck-resizer-size);
+	height: var(--ck-resizer-size);
+	background: var(--ck-color-focus-border);
+	border: var(--ck-resizer-border-width) solid #fff;
+	border-radius: var(--ck-resizer-border-radius);
+
+	&.ck-widget__resizer__handle-top-left {
+		top: var( --ck-resizer-offset );
+		left: var( --ck-resizer-offset );
+		cursor: nwse-resize;
+	}
+
+	&.ck-widget__resizer__handle-top-right {
+		top: var( --ck-resizer-offset );
+		right: var( --ck-resizer-offset );
+		cursor: nesw-resize;
+	}
+
+	&.ck-widget__resizer__handle-bottom-right {
+		bottom: var( --ck-resizer-offset );
+		right: var( --ck-resizer-offset );
+		cursor: nwse-resize;
+	}
+
+	&.ck-widget__resizer__handle-bottom-left {
+		bottom: var( --ck-resizer-offset );
+		left: var( --ck-resizer-offset );
+		cursor: nesw-resize;
+	}
+}
+
 .ck .ck-widget.ck-widget_with-selection-handler {
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
-
-	& .ck-widget__selection-handler {
-		visibility: hidden;
-		position: absolute;
-
-		& .ck-icon {
-			/* Make sure the icon in not a subject to fon-size/line-height to avoid
-			unnecessary spacing around it. */
-			display: block;
-		}
-	}
 
 	/* Show the selection handler on mouse hover over the widget. */
 	&:hover {
@@ -25,10 +89,55 @@
 		}
 	}
 
-	/* Show the selection handler when the widget is selected. */
-	&.ck-widget_selected {
-		& .ck-widget__selection-handler {
-			visibility: visible;
+	& .ck-widget__selection-handler {
+		position: absolute;
+
+		& .ck-icon {
+			/* Make sure the icon in not a subject to font-size/line-height to avoid
+			unnecessary spacing around it. */
+			display: block;
 		}
+	}
+
+	/* Show the selection handler when the widget is selected. */
+	&.ck-widget_selected .ck-widget__selection-handler {
+		visibility: visible;
+	}
+}
+
+.ck .ck-size-view {
+	background: var(--ck-color-resizer-tooltip-background);
+	color: var(--ck-color-resizer-tooltip-text);
+	border: 1px solid var(--ck-color-resizer-tooltip-text);
+	border-radius: var(--ck-resizer-border-radius);
+	font-size: var(--ck-font-size-tiny);
+	display: block;
+	padding: var(--ck-spacing-small);
+
+	&.ck-orientation-top-left,
+	&.ck-orientation-top-right,
+	&.ck-orientation-bottom-right,
+	&.ck-orientation-bottom-left {
+		position: absolute;
+	}
+
+	&.ck-orientation-top-left {
+		top: var( --ck-resizer-tooltip-offset );
+		left: var( --ck-resizer-tooltip-offset );
+	}
+
+	&.ck-orientation-top-right {
+		top: var( --ck-resizer-tooltip-offset );
+		right: var( --ck-resizer-tooltip-offset );
+	}
+
+	&.ck-orientation-bottom-right {
+		bottom: var( --ck-resizer-tooltip-offset );
+		right: var( --ck-resizer-tooltip-offset );
+	}
+
+	&.ck-orientation-bottom-left {
+		bottom: var( --ck-resizer-tooltip-offset );
+		left: var( --ck-resizer-tooltip-offset );
 	}
 }
