@@ -171,7 +171,7 @@ describe( 'SetHeaderRowCommand', () => {
 				[ '30' ]
 			], { headingRows: 3 } ) );
 
-			command.execute( true );
+			command.execute( { forceValue: true } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00' ],
@@ -189,7 +189,7 @@ describe( 'SetHeaderRowCommand', () => {
 				[ '30' ]
 			], { headingRows: 1 } ) );
 
-			command.execute( false );
+			command.execute( { forceValue: false } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00' ],

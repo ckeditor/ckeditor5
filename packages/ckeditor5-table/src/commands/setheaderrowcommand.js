@@ -60,10 +60,11 @@ export default class SetHeaderRowCommand extends Command {
 	 * When the selection is already in a header row, it will set `headingRows` so the heading section will end before that row.
 	 *
 	 * @fires execute
-	 * @params {Boolean} [forceValue] If set, the command will set (`true`) or unset (`false`) header rows according to `forceValue`
+	 * @param {Object} options
+	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) header rows according to `forceValue`
 	 * parameter instead of the current model state.
 	 */
-	execute( forceValue = null ) {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
@@ -76,7 +77,7 @@ export default class SetHeaderRowCommand extends Command {
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 		const selectionRow = tableRow.index;
 
-		if ( forceValue === this.value ) {
+		if ( options.forceValue === this.value ) {
 			return;
 		}
 
