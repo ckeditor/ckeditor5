@@ -5,19 +5,21 @@ category: features
 
 {@snippet features/build-indent-source}
 
-## Demo
+The block indentation feature allows you to set indentation for text blocks such as paragraphs or headings and lists. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}.
 
-The indentation feature allows to set indentation of text blocks like paragraphs or headings and lists.
+## Demo
 
 {@snippet features/indent}
 
 ## Configuring the block indentation feature
 
+This feature offers a few configuration options that can be used to adjust the text block indentation behavior.
+
 ### Using offset and unit
 
 By default, the block indentation feature increases or decreases the current indentation by the given offset, using the given unit.
 
-The editor used in the {@link features/indent#demo demo} section above uses the default configuration, which defines a `40px` indentation step.
+The rich-text editor from the {@link features/indent#demo demo} section above uses the default configuration, which defines a `40px` indentation step.
 
 You can change that value to, for example, `1em`:
 
@@ -41,7 +43,9 @@ ClassicEditor
 
 ### Using CSS classes
 
-Alternatively, the block indentation feature can be configured to set indentation by applying one of defined CSS classes:
+If you want more semantics in your content, use CSS classes instead of fixed indentation units. You can then adjust the levels in the style sheets of your application whenever you want. 
+
+Here is how you can configure the block indentation feature to set indentation by applying one of the defined CSS classes:
 
 ```js
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -57,9 +61,7 @@ ClassicEditor
 			classes: [
 				'custom-block-indent-a', // First step - smallest indentation.
 				'custom-block-indent-b',
-				'custom-block-indent-c',
-				'custom-block-indent-d',
-				'custom-block-indent-e'  // Last step - biggest indentation.
+				'custom-block-indent-c'  // Last step - biggest indentation.
 			]
 		}
 	} )
@@ -67,7 +69,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-The editor will restrict indentation levels to a set of provided classes. The biggest indentation is the class that has last index in the array.
+Using classes instead of fixed units (`px` or `em`) has another advantage &mdash; you retain control over what indentation levels are used in the documents. For instance, you can limit indentation to 2 or 3 different levels and there is no way the users can go beyond that. In the example above, the `.custom-block-indent-c` class level is the maximum allowed indentation value. This should help keep your content clean and predictable.
+
+In this configuration the WYSIWYG editor will restrict indentation levels to the set of provided classes. The class with the last index in the array has the biggest indentation.
 
 In the demo below the CSS classes are defined as follows:
 
@@ -83,14 +87,6 @@ In the demo below the CSS classes are defined as follows:
 .custom-block-indent-c {
 	margin-left: 30%;
 }
-
-.custom-block-indent-d {
-	margin-left: 40%;
-}
-
-.custom-block-indent-e {
-	margin-left: 50%;
-}
 ```
 
 <info-box>
@@ -101,16 +97,16 @@ In the demo below the CSS classes are defined as follows:
 
 ## Indenting lists
 
-The same set of buttons (`outdent`, `indent`), besides controlling block indentation, allows indenting list items (nesting them). This is completely transparent to the user.
+Besides controlling text block indentation, the same set of buttons (`outdent`, `indent`) allows for indenting list items (nesting them).
 
-From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin, but neither those buttons nor respective commands implement any functionality by default.
+This mechanism is completely transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin, but neither these buttons nor the respective commands implement any functionality by default.
 
-The target behavior comes in two other plugins:
+The target behavior comes from two other plugins:
 
-* {@link module:indent/indentblock~IndentBlock} &mdash; The indent block feature controls the indentation of elements such as paragraphs and headings.
-* {@link module:list/list~List} &mdash; The list feature implements the indentation (nesting) of lists.
+* {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
+* {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means, that if you want to allow indenting lists only, you can do that by load only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins.
+This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock` and `List`).
 
 ## Installation
 
@@ -145,13 +141,13 @@ The {@link module:indent/indent~Indent} plugin registers the following component
 
 * The `'indent'` command.
 
-	Note, this command does not implement any behavior itself. It executes either `indentBlock` (described below) or `indentList`, depending on which of these commands is enabled.
+	This command does not implement any indentation behavior by itself. It executes either `indentBlock` (described below) or `indentList`, depending on which of these commands is enabled.
 
 	Read more in the [Indenting lists](#indenting-lists) section above.
 
 * The `'outdent'` command.
 
-	Note, this command does not implement any behavior itself. It executes either `outdentBlock` (described below) or `outdentList`, depending on which of these commands is enabled.
+	This command does not implement any indentation behavior by itself. It executes either `outdentBlock` (described below) or `outdentList`, depending on which of these commands is enabled.
 
 	Read more in the [Indenting lists](#indenting-lists) section above.
 
@@ -159,7 +155,7 @@ The {@link module:indent/indentblock~IndentBlock} plugin registers the following
 
 * The {@link module:indent/indentblockcommand~IndentBlockCommand `'indentBlock'`} command.
 
-	You can increase the indentation of the block in which the selection is set by:
+	You can increase the indentation of the text block that contains the selection by:
 
 	```js
 	editor.execute( 'indentBlock' );
@@ -167,7 +163,7 @@ The {@link module:indent/indentblock~IndentBlock} plugin registers the following
 
 * The {@link module:indent/indentblockcommand~IndentBlockCommand `'outdentBlock'`} command.
 
-	You can decrease the indentation of the block in which the selection is set by:
+	You can decrease the indentation of the text block that contains the selection by:
 
 	```js
 	editor.execute( 'outdentBlock' );

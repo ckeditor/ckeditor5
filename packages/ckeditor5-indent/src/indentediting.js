@@ -15,8 +15,8 @@ import MultiCommand from '@ckeditor/ckeditor5-core/src/multicommand';
  *
  * This plugin registers the `'indent'` and `'outdent'` commands.
  *
- * **Note**: In order for the commands to work, at least one of the compatible features is required. Read more in:
- * {@link module:indent/indent~Indent indent feature} API docs.
+ * **Note**: In order for the commands to work, at least one of the compatible features is required. Read more in the
+ * {@link module:indent/indent~Indent indent feature} API documentation.
  *
  * @extends module:core/plugin~Plugin
  */

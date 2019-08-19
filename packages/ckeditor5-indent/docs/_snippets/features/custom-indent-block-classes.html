@@ -10,30 +10,20 @@
 	.custom-block-indent-c {
 		margin-left: 30%;
 	}
-
-	.custom-block-indent-d {
-		margin-left: 40%;
-	}
-
-	.custom-block-indent-e {
-		margin-left: 50%;
-	}
 </style>
 
 <div id="snippet-indent-block-classes">
 	<h2>Block indentation using CSS classes</h2>
 
-	<p>If you want more semantics in your content, use CSS classes instead of fixed indentation units. You can then adjust
-		the levels in the styles sheets of your application whenever you want.&nbsp;</p>
+	<p>This is a normal paragraph with no indentation applied.</p>
 
 	<h3 class="custom-block-indent-a">This heading has the <code>.custom-block-indent-a</code> class</h3>
 
-	<p class="custom-block-indent-a">And this paragraph shares the same class, and that puts it at the same level.</p>
+	<p class="custom-block-indent-a">This paragraph shares the same class and that puts it at the same level.</p>
 
 	<h4 class="custom-block-indent-b">But this one has the <code>.custom-block-indent-b</code> class</h4>
 
-	<p class="custom-block-indent-b">Using classes instead of fixed units (<code>px</code> or <code>em</code>) has another
-		advantage. You retain control over what indentation levels are used in the documents. For instance, you can limit
-		indentation to 2 or 3 different levels and there is no way users can go beyond that (<code>.custom-block-indent-e</code> class level).
-		That should help you keep your content clean and predictable.</p>
+	<p class="custom-block-indent-b">This paragraph shares the same indentation class.</p>
+
+	<p class="custom-block-indent-c">This paragraph has the <code>.custom-block-indent-c</code> class. This is the maximum indentation level allowed in the configuration.</p>
 </div>

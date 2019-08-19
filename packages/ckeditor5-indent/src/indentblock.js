@@ -18,8 +18,8 @@ import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
  *
  * It registers the `'indentBlock'` and `'outdentBlock'` commands.
  *
- * If the plugin {@link module:indent/indent~Indent} is defined it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
- * `'indent'` and `'outdent'` commands.
+ * If the plugin {@link module:indent/indent~Indent} is defined, it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
+ * the `'indent'` and `'outdent'` commands.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -215,7 +215,7 @@ function normalizeToMarginSideStyle( marginStyleValue, side ) {
 /**
  * The configuration of the block indentation feature.
  *
- * If no {@link module:indent/indentblock~IndentBlockConfig#classes} are set the block indentation feature will use
+ * If no {@link module:indent/indentblock~IndentBlockConfig#classes} are set, the block indentation feature will use
  * {@link module:indent/indentblock~IndentBlockConfig#offset} and {@link module:indent/indentblock~IndentBlockConfig#unit} to
  * create indentation steps.
  *
@@ -229,25 +229,25 @@ function normalizeToMarginSideStyle( marginStyleValue, side ) {
  *			.then( ... )
  *			.catch( ... );
  *
- * Alternatively the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
+ * Alternatively, the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
  * indentation steps:
  *
  *		ClassicEditor
  *			.create( editorElement, {
  * 				indentBlock: {
  *					classes: [
- *						'indent-a', // First step - smallest indentation.
+ *						'indent-a', // The first step - smallest indentation.
  *						'indent-b',
  *						'indent-c',
  *						'indent-d',
- *						'indent-e' // Last step - biggest indentation.
+ *						'indent-e' // The last step - biggest indentation.
  *					]
  * 				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
  *
- * In the above example only 5 indentation steps will be available.
+ * In the example above only 5 indentation steps will be available.
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
@@ -255,7 +255,7 @@ function normalizeToMarginSideStyle( marginStyleValue, side ) {
  */
 
 /**
- * The size in indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} of each indentation step.
+ * The size of indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} for each indentation step.
  *
  * @default 40
  * @member {Number} module:indent/indentblock~IndentBlockConfig#offset
@@ -269,9 +269,9 @@ function normalizeToMarginSideStyle( marginStyleValue, side ) {
  */
 
 /**
- * An optional list of classes to use for indenting the contents. If not set or set to empty array, no classes will be used and instead
- * the {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
- * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used.
+ * An optional list of classes to use for indenting the editor content. If not set or set to an empty array, no classes will be used.
+ * The {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
+ * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used instead.
  *
  * @default undefined
  * @member {Array.<String>|undefined} module:indent/indentblock~IndentBlockConfig#classes

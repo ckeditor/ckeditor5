@@ -14,11 +14,11 @@
  */
 export default class IndentUsingOffset {
 	/**
-	 * Creates an instance of the behavior.
+	 * Creates an instance of the indentation behavior.
 	 *
 	 * @param {Object} config
 	 * @param {String} config.direction The direction of indentation.
-	 * @param {Number} config.offset Offset of next indentation step.
+	 * @param {Number} config.offset The offset of the next indentation step.
 	 * @param {String} config.unit Indentation unit.
 	 */
 	constructor( config ) {
@@ -30,7 +30,7 @@ export default class IndentUsingOffset {
 		this.isForward = config.direction === 'forward';
 
 		/**
-		 * Offset of next indentation step.
+		 * The offset of the next indentation step.
 		 *
 		 * @type {Number}
 		 */
