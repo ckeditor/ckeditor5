@@ -3,7 +3,7 @@ title: Images
 category: features
 ---
 
-{@snippet build-classic-source}
+{@snippet features/build-image-source}
 
 The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features:
 
@@ -13,9 +13,12 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagestyle~ImageStyle} adds support for image styles.
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (see: {@link features/image-upload Image upload}).
+* {@link module:image/imageresize~ImageResize} adds support for resizing images.
 
 <info-box info>
-	All features listed above are enabled by default in all builds.
+	All features listed above expect image resize are enabled by default in all builds.
+
+	Check the documentation of each sub-feature to learn more about it.
 </info-box>
 
 ## Base image support
@@ -174,6 +177,29 @@ See the {@link features/image-upload Image upload} guide.
 ## Responsive images
 
 Responsive images support in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images "Easy Image integration"} guide.
+
+## Resizing images
+
+TODO:
+
+* overview
+* markup
+* styling concerns
+* installation
+* note about it not being enabled by default
+* a note about followups? a dialog, a toggle predefined sizes (e.g. 40%, 50%, 75%, 100%)
+
+{@snippet features/image-resize}
+
+### Using pixels instead of percentage width
+
+TODO:
+
+* overview
+* downsides
+* configuration
+
+{@snippet features/image-resize-px}
 
 ## Installation
 

@@ -12,7 +12,9 @@
 	& .image-style-align-left,
 	& .image-style-align-center,
 	& .image-style-align-right {
-		max-width: 50%;
+		&:not(.image_resized) {
+			max-width: 50%;
+		}
 	}
 
 	& .image-style-side {
