@@ -18,7 +18,7 @@ import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconn
 /**
  * A watchdog for CKEditor 5 editors.
  *
- * See the {@glink features/watchdog Watchdog} feature guide to learn the rationale behind it and
+ * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
  */
 export default class Watchdog {
@@ -176,7 +176,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for editor creation.
+	 * Sets the function that is responsible for the editor creation.
 	 * It expects a function that should return a promise.
 	 *
 	 *		watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
@@ -188,7 +188,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for editor destruction.
+	 * Sets the function that is responsible for the editor destruction.
 	 * It expects a function that should return a promise or `undefined`.
 	 *
 	 *		watchdog.setDestructor( editor => editor.destroy() );
@@ -201,7 +201,7 @@ export default class Watchdog {
 
 	/**
 	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
-	 * {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
+	 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
 	 *
 	 * @param {HTMLElement|String|Object.<String|String>} elementOrData
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
@@ -239,8 +239,8 @@ export default class Watchdog {
 
 		this._elementOrData = elementOrData;
 
-		// Clone config because it might be shared within multiple watchdog instances. Otherwise
-		// when an error occurs in one of these editors the watchdog will restart all of them.
+		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
+		// when an error occurs in one of these editors, the watchdog will restart all of them.
 		this._config = cloneDeepWith( config, value => {
 			// Leave DOM references.
 			return isElement( value ) ? value : undefined;
@@ -298,7 +298,7 @@ export default class Watchdog {
 
 	/**
 	 * Saves the editor data, so it can be restored after the crash even if the data cannot be fetched at
-	 * the moment of a crash.
+	 * the moment of the crash.
 	 *
 	 * @private
 	 */
@@ -457,7 +457,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * A shorthand method for creating an instance of the watchdog. For the full usage see the
+	 * A shorthand method for creating an instance of the watchdog. For the full usage, see the
 	 * {@link ~Watchdog `Watchdog` class description}.
 	 *
 	 * Usage:
@@ -499,7 +499,8 @@ mix( Watchdog, ObservableMixin );
  *
  * @typedef {Object} WatchdogConfig
  *
- * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor errors (defaults to `3`).
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor crashes
+ * when the watchdog stops restarting the editor in case of errors.
  * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
  * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors

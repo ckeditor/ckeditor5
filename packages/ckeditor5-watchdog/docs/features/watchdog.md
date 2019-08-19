@@ -5,16 +5,16 @@ category: features
 
 # Watchdog
 
-Every non trivial piece of software has bugs. Despite our high quality standards like 100% code coverage, regression testing and manual tests before every release, CKEditor 5 is not free of bugs. Neither is the browser used by the user, your application in which CKEditor 5 is integrate, or any 3rd party addons that you used.
+Every non-trivial piece of software has bugs. Despite our high quality standards like 100% code coverage, regression testing and manual tests before every release, CKEditor 5 is not free of bugs. Neither is the browser used by the user, your application in which CKEditor 5 is integrated, or any third-party addons that you used.
 
-In order to limit the effect of an editor crash on the user experience, you can automatically restart the editor with the content saved just before the crash.
+In order to limit the effect of an editor crash on the user experience, you can automatically restart the WYSIWYG editor with the content saved just before the crash.
 
-The {@link module:watchdog/watchdog~Watchdog} util allows you to do that exactly. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it and automatically creating a new instance of that editor with the content of the previous editor.
+The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
 ## Usage
 
 <info-box>
-	Note: watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
+	Note: Watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
 </info-box>
 
 Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
@@ -44,20 +44,20 @@ watchdog.create( document.querySelector( '#editor' ), {
 } );
 ```
 
-In other words, your goal is to create a watchdog instance and make the watchdog create an instance of the editor you want to use. Watchdog will then create a new editor and if it ever crashes restart it by creating a new editor.
+In other words, your goal is to create a watchdog instance and make the watchdog create an instance of the editor you want to use. The watchdog will then create a new editor and if it ever crashes, restart it by creating a new editor.
 
 <info-box>
 	A new editor instance is created every time the watchdog detects a crash. Thus, the editor instance should not be kept in your application's state. Use the {@link module:watchdog/watchdog~Watchdog#editor `Watchdog#editor`} property instead.
 
-	It also means that any code that should be executed for any new editor instance should be either loaded as an editor plugin or executed in the callbacks defined by {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`}. Read more about controlling editor creation/destruction in the next section.
+	It also means that any code that should be executed for any new editor instance should be either loaded as an editor plugin or executed in the callbacks defined by {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`}. Read more about controlling the editor creation and destruction in the next section.
 </info-box>
 
-### Controlling editor creation/destruction
+### Controlling editor creation and destruction
 
 For more control over the creation and destruction of editor instances, you can use the {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`} methods:
 
 ```js
-// Instantiate the watchdog manually (don't use the for() helper).
+// Instantiate the watchdog manually (do not use the for() helper).
 const watchdog = new Watchdog();
 
 watchdog.setCreator( ( elementOrData, editorConfig ) => {
@@ -136,8 +136,10 @@ const watchdog = new Watchdog( {
 
 ## Limitations
 
-The CKEditor 5 watchdog listens to uncaught errors which can be associated with the editor instance created by that watchdog. Currently, these errors are {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} so ones explicitly thrown by the editor (by its internal checks). This means that not every runtime error which crashed the editor can be caught which, in turn, means that not every crash can be detected.
+The CKEditor 5 watchdog listens to uncaught errors which can be associated with the editor instance created by that watchdog. Currently, these errors are {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} so those explicitly thrown by the editor (by its internal checks). This means that not every runtime error that crashed the editor can be caught which, in turn, means that not every crash can be detected.
 
 However, with time, the most "dangerous" places in the API will be covered with checks and `try-catch` blocks (allowing detecting unknown errors).
 
-<info-box>The watchdog does not handle errors thrown during editor initialization (by `Editor.create()`) and editor destruction (`Editor#destroy()`). Errors thrown at these stages mean that there is a serious problem in the code integrating the editor with your application and such problem cannot be easily fixed by restarting the editor.</info-box>
+<info-box>
+	The watchdog does not handle errors thrown during the editor initialization (by `Editor.create()`) and editor destruction (`Editor#destroy()`). Errors thrown at these stages mean that there is a serious problem in the code integrating the editor with your application and such problem cannot be easily fixed by restarting the editor.
+</info-box>
