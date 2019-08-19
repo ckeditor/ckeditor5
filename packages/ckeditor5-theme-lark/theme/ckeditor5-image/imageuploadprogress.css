@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-content .image {
+.ck.ck-editor__editable .image {
 	/* Showing animation. */
 	&.ck-appear {
 		animation: fadeIn 700ms;
@@ -11,7 +11,7 @@
 }
 
 /* Upload progress bar. */
-.ck .ck-progress-bar {
+.ck.ck-editor__editable .image .ck-progress-bar {
 	height: 2px;
 	width: 0;
 	background: var(--ck-color-upload-bar-background);
