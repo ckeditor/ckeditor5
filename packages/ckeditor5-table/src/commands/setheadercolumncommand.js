@@ -61,10 +61,11 @@ export default class SetHeaderColumnCommand extends Command {
 	 * When the selection is already in a header column, it will set `headingColumns` so the heading section will end before that column.
 	 *
 	 * @fires execute
-	 * @params {Boolean} [forceValue] If set, the command will set (`true`) or unset (`false`) header columns according to `forceValue`
-	 * parameter instead of the current model state.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) header columns according to
+	 * `forceValue` parameter instead of the current model state.
 	 */
-	execute( forceValue = null ) {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
@@ -77,7 +78,7 @@ export default class SetHeaderColumnCommand extends Command {
 
 		const { column: selectionColumn } = tableUtils.getCellLocation( tableCell );
 
-		if ( forceValue === this.value ) {
+		if ( options.forceValue === this.value ) {
 			return;
 		}
 

@@ -121,7 +121,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 3 } ) );
 
-			command.execute( true );
+			command.execute( { forceValue: true } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01[]', '02', '03' ]
@@ -133,7 +133,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 
-			command.execute( false );
+			command.execute( { forceValue: false } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01[]', '02', '03' ]
