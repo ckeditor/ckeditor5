@@ -49,7 +49,7 @@ Below there is a full list of content styles used by editor features. You can co
 ```css
 /*
  * CKEditor 5 (v12.3.1) content styles.
- * Generated on Mon, 19 Aug 2019 11:29:42 GMT.
+ * Generated on Mon, 19 Aug 2019 12:01:17 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -71,11 +71,16 @@ Below there is a full list of content styles used by editor features. You can co
 	max-width: 100%;
 	min-width: 50px;
 }
-/* ckeditor5-basic-styles/theme/code.css */
-.ck-content code {
-	background-color: hsla(0, 0%, 78%, 0.3);
-	padding: .15em;
-	border-radius: 2px;
+/* ckeditor5-image/theme/imagecaption.css */
+.ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+	color: hsl(0, 0%, 20%);
+	background-color: hsl(0, 0%, 97%);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
 }
 /* ckeditor5-image/theme/imageresize.css */
 .ck-content .image.image_resized {
@@ -88,19 +93,15 @@ Below there is a full list of content styles used by editor features. You can co
 	width: 100%;
 }
 /* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized>figcaption {
+.ck-content .image.image_resized > figcaption {
 	display: block;
 }
-/* ckeditor5-image/theme/imagecaption.css */
-.ck-content .image > figcaption {
-	display: table-caption;
-	caption-side: bottom;
-	word-break: break-word;
-	color: hsl(0, 0%, 20%);
-	background-color: hsl(0, 0%, 97%);
-	padding: .6em;
-	font-size: .75em;
-	outline-offset: -1px;
+/* ckeditor5-media-embed/theme/mediaembed.css */
+.ck-content .media {
+	clear: both;
+	margin: 1em 0;
+	display: block;
+	min-width: 15em;
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {
@@ -131,6 +132,12 @@ Below there is a full list of content styles used by editor features. You can co
 .ck-content .table table th {
 	font-weight: bold;
 	background: hsl(0, 0%, 98%);
+}
+/* ckeditor5-basic-styles/theme/code.css */
+.ck-content code {
+	background-color: hsla(0, 0%, 78%, 0.3);
+	padding: .15em;
+	border-radius: 2px;
 }
 /* ckeditor5-image/theme/imagestyle.css */
 .ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
@@ -182,20 +189,5 @@ Below there is a full list of content styles used by editor features. You can co
 .ck-content[dir="rtl"] blockquote {
 	border-left: 0;
 	border-right: solid 5px hsl(0, 0%, 80%);
-}
-/* ckeditor5-image/theme/imageuploadprogress.css */
-.ck-content .image {
-	position: relative;
-}
-/* ckeditor5-image/theme/imageuploadprogress.css */
-.ck-content .image.ck-appear {
-	animation: fadeIn 700ms;
-}
-/* ckeditor5-media-embed/theme/mediaembed.css */
-.ck-content .media {
-	clear: both;
-	margin: 1em 0;
-	display: block;
-	min-width: 15em;
 }
 ```
