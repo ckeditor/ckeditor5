@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
-"Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Malay (https://www.transifex.com/ckeditor/teams/11143/ms/)\n"
+"Language: ms\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
-msgstr "Kan bestand niet uploaden:"
+msgstr "Gagal memuat naik fail"
