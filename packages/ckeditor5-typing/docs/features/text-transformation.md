@@ -1,18 +1,19 @@
 ---
 category: features
+menu-title: Automatic text transformation
 ---
 
-# Automatic text transformation
+# Automatic text transformation (autocorrect)
 
 {@snippet features/build-text-transformation-source}
 
-The {@link module:typing/texttransformation~TextTransformation} feature brings support for automatically turning predefined snippets into their improved forms. For instance:
+The {@link module:typing/texttransformation~TextTransformation} feature brings support for implementing autocorrection options, i.e. automatically turning predefined snippets into their improved forms. Here are some examples that will be transformed in your WYSIWYG editor:
 
 <table style="width: unset">
 	<thead>
 		<tr>
-		<th>from</th>
-		<th>to</th>
+		<th>From</th>
+		<th>To</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -39,13 +40,13 @@ The {@link module:typing/texttransformation~TextTransformation} feature brings s
 	</tbody>
 </table>
 
-This feature comes pre-configured with a set of the most popular transformations. You can, however, disable existing ones or add your own ones.
+This feature comes pre-configured with a set of the most popular transformations. You can, however, disable existing ones or add your own autocorrect entries.
 
-While, most often this feature is used to allow easily inserting characters which are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
+While most often this feature is used to easily insert special characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
 
 ## Demo
 
-Type snippets such as `(tm)`, `1/2`, `->`, `--`, `"foo"` and see how they get automatically transformed into their nicer typographically forms.
+Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
 
@@ -53,22 +54,22 @@ Type snippets such as `(tm)`, `1/2`, `->`, `--`, `"foo"` and see how they get au
 
 In addition to enabling automatic text transformations, you may want to check the following productivity features:
 
-* {@link features/autoformat Autoformatting} &mdash; allows quickly applying formatting to the content you are writing.
-* {@link features/mentions Mentions} &mdash; support for smart autocompletion.
+* {@link features/autoformat Autoformatting} &ndash; It allows to quickly apply formatting to the content you are writing.
+* {@link features/mentions Mentions} &ndash; It brings support for smart autocompletion.
 
 ## Configuring transformations
 
-This feature comes pre-configured with a set of transformations. You can find the list of them in {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+This feature comes pre-configured with a set of transformations. You can find the list of them in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
 
-By using the below defined options you can extend, limit or override this list:
+By using the options defined below you can extend, limit or override this list:
 
-* {@link module:typing/texttransformation~TextTransformationConfig#include `typing.transformations.include`} &mdash; allows overriding the default configuration. When overriding the default configuration you can reuse the predefined transformations (by using their names, which you can find in the {@link module:typing/texttransformation~TextTransformationConfig} documentation) and write your own transformations
-* {@link module:typing/texttransformation~TextTransformationConfig#remove `typing.transformations.remove`} &mdash; allows disabling predefined transformations.
-* {@link module:typing/texttransformation~TextTransformationConfig#extra `typing.transformations.extra`} &mdash; allows disabling predefined transformations. You can find the names of the predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.
+* {@link module:typing/texttransformation~TextTransformationConfig#include `typing.transformations.include`} &ndash; Overrides the default configuration. When overriding the default configuration you can reuse the predefined transformations (by using their names that can be found in the {@link module:typing/texttransformation~TextTransformationConfig} documentation) and write your own transformations.
+* {@link module:typing/texttransformation~TextTransformationConfig#remove `typing.transformations.remove`} &ndash; Removes predefined transformations.
+* {@link module:typing/texttransformation~TextTransformationConfig#extra `typing.transformations.extra`} &ndash; Adds your custom transformations to the predefined ones.
 
-### Example: using `transformations.include`
+### Example: Using `transformations.include`
 
-For instance, in order to use only the transformations from the "quotes" and "typography" groups and in order to turn `CKE` into `CKEditor`, you can use the `transformations.include` property like this:
+For instance, in order to use only the transformations from the "quotes" and "typography" groups and to turn `CKE` into `CKEditor`, you can use the `transformations.include` property like this:
 
 ```js
 ClassicEditor
@@ -80,7 +81,7 @@ ClassicEditor
 					'quotes',
 					'typography',
 
-					// Plus, some custom transformation.
+					// Plus some custom transformation.
 					{ from: 'CKE', to: 'CKEditor' }
 				],
 			}
@@ -90,9 +91,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-### Example: using `transformations.remove` and `extra`
+### Example: Using `transformations.remove` and `extra`
 
-Another example, removing a couple of transformations and adding a couple of extra ones:
+Another example, removing a few transformations and adding some extra ones:
 
 ```js
 ClassicEditor
@@ -100,7 +101,7 @@ ClassicEditor
 		typing: {
 			transformations: {
 				remove: [
-					// Don't use the transformations from the
+					// Do not use the transformations from the
 					// 'symbols' and 'quotes' groups.
 					'symbols',
 					'quotes',
@@ -116,8 +117,8 @@ ClassicEditor
 					{ from: ':+1:', to: '👍' },
 					{ from: ':tada:', to: '🎉' },
 
-					// You can also define patterns using regexp.
-					// Note: the pattern must end with `$` and all its fragments must be wrapped
+					// You can also define patterns using regular expressions.
+					// Note: The pattern must end with `$` and all its fragments must be wrapped
 					// with capturing groups.
 					// The following rule replaces ` "foo"` with ` «foo»`.
 					{
@@ -126,7 +127,7 @@ ClassicEditor
 					},
 
 					// Finally, you can define `to` as a callback.
-					// This (naive) rule will auto-capitalize first word after a period.
+					// This (naive) rule will auto-capitalize the first word after a period.
 					{
 						from: /(\. )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
@@ -141,7 +142,7 @@ ClassicEditor
 
 You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
 
-Test the rules defined above:
+You can test the custom rules defined above in the demo:
 
 {@snippet features/text-transformation-extended}
 

@@ -60,7 +60,7 @@ const TRANSFORMATION_GROUPS = {
 	quotes: [ 'quotesPrimary', 'quotesSecondary' ]
 };
 
-// Set of default transformations provided by the feature.
+// A set of default transformations provided by the feature.
 const DEFAULT_TRANSFORMATIONS = [
 	'symbols',
 	'mathematical',
@@ -148,8 +148,9 @@ export default class TextTransformation extends Plugin {
 	}
 }
 
-// Normalizes config `from` parameter value.
-// The normalized value for `from` parameter is a RegExp instance. If passed `from` is already a RegExp instance it is returned unchanged.
+// Normalizes the configuration `from` parameter value.
+// The normalized value for the `from` parameter is a RegExp instance. If the passed `from` is already a RegExp instance,
+// it is returned unchanged.
 //
 // @param {String|RegExp} from
 // @returns {RegExp}
@@ -162,9 +163,9 @@ function normalizeFrom( from ) {
 	return from;
 }
 
-// Normalizes config `to` parameter value.
-// The normalized value for `to` parameter is a function that takes an array and returns an array. See more in configuration description.
-// If passed `to` is already a function it is returned unchanged.
+// Normalizes the configuration `to` parameter value.
+// The normalized value for the `to` parameter is a function that takes an array and returns an array. See more in the
+// configuration description. If the passed `to` is already a function, it is returned unchanged.
 //
 // @param {String|Array.<null|String>|Function} to
 // @returns {Function}
@@ -237,31 +238,31 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 }
 
 /**
- * Text transformation definition object. Describes what should be replaced with what.
+ * The text transformation definition object. It describes what should be replaced with what.
  *
- * The input value (`from`) can be passed either as a string or a regexp.
+ * The input value (`from`) can be passed either as a string or as a regular expression.
  *
- * * If a string is passed it will be simply checked if the end of the input matches it.
- * * If a regexp is passed, its entire length must be covered with capturing groups (e.g. `/(foo)(bar)$/`).
+ * * If a string is passed, it will be simply checked if the end of the input matches it.
+ * * If a regular expression is passed, its entire length must be covered with capturing groups (e.g. `/(foo)(bar)$/`).
  * Also, since it is compared against the end of the input, it has to end with  `$` to be correctly matched.
  * See examples below.
  *
- * The output value (`to`) can be passed either as a string or an array or a function.
+ * The output value (`to`) can be passed as a string, as an array or as a function.
  *
- * * If a string is passed, it will be used as a replacement value as-is. Note, that a string output value can be used only if
- * the input value is a string too.
- * * If an array is passed it has to have the same number of elements as there are capturing groups in the input value regexp.
- * Each capture group will be replaced by a corresponding string from the passed array. If given capturing group should not be replaced,
+ * * If a string is passed, it will be used as a replacement value as-is. Note that a string output value can be used only if
+ * the input value is a string, too.
+ * * If an array is passed, it has to have the same number of elements as there are capturing groups in the input value regular expression.
+ * Each capture group will be replaced with a corresponding string from the passed array. If a given capturing group should not be replaced,
  * use `null` instead of passing a string.
  * * If a function is used, it should return an array as described above. The function is passed one parameter &mdash; an array with matches
- * by the regexp. See the examples below.
+ * by the regular expression. See the examples below.
  *
- * Simple string-to-string replacement:
+ * A simple string-to-string replacement:
  *
  *		{ from: '(c)', to: '©' }
  *
- * Change quotes styles using regular expression. Note how all the parts are in separate capturing groups and the space at the beginning and
- * the text inside quotes are not replaced (`null` passed as the first and the third value in `to` parameter):
+ * Change quote styles using a regular expression. Note how all the parts are in separate capturing groups and the space at the beginning
+ * and the text inside quotes are not replaced (`null` passed as the first and the third value in the `to` parameter):
  *
  *		{
  *			from: /(^|\s)(")([^"]*)(")$/,
@@ -276,8 +277,8 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *		}
  *
  * @typedef {Object} module:typing/texttransformation~TextTransformationDescription
- * @property {String|RegExp} from The string or RegExp to transform.
- * @property {String} to The text to transform compatible with `String.replace()`
+ * @property {String|RegExp} from The string or regular expression to transform.
+ * @property {String} to The text to transform compatible with `String.replace()`.
  */
 
 /**
@@ -316,16 +317,16 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  *   - `registeredTrademark`: transforms `(r)` to `®`
  *   - `copyright`: transforms `(c)` to `©`
  * * Mathematical (group name: `mathematical`)
- *   - `oneHalf`: transforms `1/2`, to: `½`
- *   - `oneThird`: transforms `1/3`, to: `⅓`
- *   - `twoThirds`: transforms `2/3`, to: `⅔`
- *   - `oneForth`: transforms `1/4`, to: `¼`
- *   - `threeQuarters`: transforms `3/4`, to: `¾`
- *   - `lessThanOrEqual`: transforms `<=`, to: `≤`
- *   - `greaterThanOrEqual`: transforms `>=`, to: `≥`
- *   - `notEqual`: transforms `!=`, to: `≠`
- *   - `arrowLeft`: transforms `<-`, to: `←`
- *   - `arrowRight`: transforms `->`, to: `→`
+ *   - `oneHalf`: transforms `1/2` to: `½`
+ *   - `oneThird`: transforms `1/3` to: `⅓`
+ *   - `twoThirds`: transforms `2/3` to: `⅔`
+ *   - `oneForth`: transforms `1/4` to: `¼`
+ *   - `threeQuarters`: transforms `3/4` to: `¾`
+ *   - `lessThanOrEqual`: transforms `<=` to: `≤`
+ *   - `greaterThanOrEqual`: transforms `>=` to: `≥`
+ *   - `notEqual`: transforms `!=` to: `≠`
+ *   - `arrowLeft`: transforms `<-` to: `←`
+ *   - `arrowRight`: transforms `->` to: `→`
  * * Misc:
  *   - `quotesPrimaryEnGb`: transforms `'Foo bar'` to `‘Foo bar’`
  *   - `quotesSecondaryEnGb`: transforms `"Foo bar"` to `“Foo bar”`
@@ -365,16 +366,16 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
 /* eslint-disable max-len */
 /**
  * The standard list of text transformations supported by the editor. By default it comes pre-configured with a couple dozen of them
- * (see {@link module:typing/texttransformation~TextTransformationConfig} for the full list of them). You can override this list completely
+ * (see {@link module:typing/texttransformation~TextTransformationConfig} for the full list). You can override this list completely
  * by setting this option or use the other two options
  * ({@link module:typing/texttransformation~TextTransformationConfig#extra `transformations.extra`},
- * {@link module:typing/texttransformation~TextTransformationConfig#remove `transformations.remove`}) to fine tune the default list.
+ * {@link module:typing/texttransformation~TextTransformationConfig#remove `transformations.remove`}) to fine-tune the default list.
  *
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#include
  */
 
 /**
- * The extra text transformations that are added to the transformations defined in
+ * Additional text transformations that are added to the transformations defined in
  * {@link module:typing/texttransformation~TextTransformationConfig#include `transformations.include`}.
  *
  *		const transformationsConfig = {
@@ -387,14 +388,14 @@ function expandGroupsAndRemoveDuplicates( definitions ) {
  */
 
 /**
- * The text transformations names that are removed from transformations defined in
+ * The text transformation names that are removed from transformations defined in
  * {@link module:typing/texttransformation~TextTransformationConfig#include `transformations.include`} or
  * {@link module:typing/texttransformation~TextTransformationConfig#extra `transformations.extra`}.
  *
  *		const transformationsConfig = {
  *			remove: [
- *				'ellipsis',    // Remove only 'ellipsis' from 'typography' group.
- *				'mathematical' // Remove all transformations from 'mathematical' group.
+ *				'ellipsis',    // Remove only 'ellipsis' from the 'typography' group.
+ *				'mathematical' // Remove all transformations from the 'mathematical' group.
  *			]
  *		}
  *

@@ -9,7 +9,7 @@ CKEditor 5 typing feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-typing/status.svg)](https://david-dm.org/ckeditor/ckeditor5-typing)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-typing/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-typing?type=dev)
 
-This package implements support for typing (inputting and deleting text) in CKEditor 5.
+This package implements support for typing (inputting and deleting text) in CKEditor 5. It also includes the automatic text transformations (autocorrect) feature that lets you automatically turn predefined snippets into their improved forms.
 
 ## Documentation
 
