@@ -67,7 +67,7 @@ export default class ImageResize extends Plugin {
 					isCentered() {
 						const imageStyle = data.item.getAttribute( 'imageStyle' );
 
-						return !imageStyle || imageStyle == 'full';
+						return !imageStyle || imageStyle == 'full' || imageStyle == 'alignCenter';
 					},
 
 					onCommit( newValue ) {
