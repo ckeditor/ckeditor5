@@ -23,8 +23,8 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 
 In addition to enabling mentions, you may want to check the following productivity features:
 
-* {@link features/text-transformation Automatic text transformation} &mdash; allows automatically turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
-* {@link features/autoformat Autoformatting} &mdash; allows quickly applying formatting to the content you are writing.
+* {@link features/text-transformation Automatic text transformation} &ndash; It allows to automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/autoformat Autoformatting} &ndash; It allows to quickly apply formatting to the content you are writing.
 
 ## Configuration
 
