@@ -126,13 +126,8 @@ export default class ResizeState {
 
 		const widthStyle = domResizeHost.style.width;
 
-		if ( widthStyle ) {
-			if ( widthStyle.match( /^\d+\.?\d*%$/ ) ) {
-				this.originalWidthPercents = parseFloat( widthStyle );
-			} else {
-				// TODO we need to check it via comparing to the parent's width.
-				this.originalWidthPercents = 50;
-			}
+		if ( widthStyle && widthStyle.match( /^\d+\.?\d*%$/ ) ) {
+			this.originalWidthPercents = parseFloat( widthStyle );
 		} else {
 			this.originalWidthPercents = this._getParentPercentage( domResizeHost );
 		}
