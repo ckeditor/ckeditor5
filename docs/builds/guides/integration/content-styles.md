@@ -49,7 +49,7 @@ Below there is a full list of content styles used by editor features. You can co
 ```css
 /*
  * CKEditor 5 (v12.3.1) content styles.
- * Generated on Tue, 06 Aug 2019 09:44:26 GMT.
+ * Generated on Mon, 19 Aug 2019 11:29:42 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -57,6 +57,40 @@ Below there is a full list of content styles used by editor features. You can co
 	--ck-image-style-spacing: 1.5em;
 }
 
+/* ckeditor5-image/theme/image.css */
+.ck-content .image {
+	display: table;
+	clear: both;
+	text-align: center;
+	margin: 1em auto
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image > img {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	min-width: 50px;
+}
+/* ckeditor5-basic-styles/theme/code.css */
+.ck-content code {
+	background-color: hsla(0, 0%, 78%, 0.3);
+	padding: .15em;
+	border-radius: 2px;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized>figcaption {
+	display: block;
+}
 /* ckeditor5-image/theme/imagecaption.css */
 .ck-content .image > figcaption {
 	display: table-caption;
@@ -67,12 +101,6 @@ Below there is a full list of content styles used by editor features. You can co
 	padding: .6em;
 	font-size: .75em;
 	outline-offset: -1px;
-}
-/* ckeditor5-basic-styles/theme/code.css */
-.ck-content code {
-	background-color: hsla(0, 0%, 78%, 0.3);
-	padding: .15em;
-	border-radius: 2px;
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {
@@ -104,55 +132,20 @@ Below there is a full list of content styles used by editor features. You can co
 	font-weight: bold;
 	background: hsl(0, 0%, 98%);
 }
-/* ckeditor5-image/theme/image.css */
-.ck-content .image {
-	display: table;
-	clear: both;
-	text-align: center;
-	margin: 1em auto
-}
-/* ckeditor5-image/theme/image.css */
-.ck-content .image > img {
-	display: block;
-	margin: 0 auto;
-	max-width: 100%;
-	min-width: 50px;
-}
-/* ckeditor5-image/theme/imageuploadprogress.css */
-.ck-content .image {
-	position: relative;
-	overflow: hidden;
-}
-/* ckeditor5-image/theme/imageuploadprogress.css */
-.ck-content .image.ck-appear {
-	animation: fadeIn 700ms;
-}
 /* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side,
-.ck-content .image-style-align-left,
-.ck-content .image-style-align-center,
-.ck-content .image-style-align-right {
+.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
 	max-width: 50%;
 }
 /* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side,
-.ck-content .image-style-align-left,
-.ck-content .image-style-align-center,
-.ck-content .image-style-align-right {
+.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
 	max-width: 50%;
 }
 /* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side,
-.ck-content .image-style-align-left,
-.ck-content .image-style-align-center,
-.ck-content .image-style-align-right {
+.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
 	max-width: 50%;
 }
 /* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side,
-.ck-content .image-style-align-left,
-.ck-content .image-style-align-center,
-.ck-content .image-style-align-right {
+.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
 	max-width: 50%;
 }
 /* ckeditor5-image/theme/imagestyle.css */
@@ -181,8 +174,22 @@ Below there is a full list of content styles used by editor features. You can co
 	padding-right: 1.5em;
 	padding-left: 1.5em;
 	margin-left: 0;
+	margin-right: 0;
 	font-style: italic;
 	border-left: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-block-quote/theme/blockquote.css */
+.ck-content[dir="rtl"] blockquote {
+	border-left: 0;
+	border-right: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-image/theme/imageuploadprogress.css */
+.ck-content .image {
+	position: relative;
+}
+/* ckeditor5-image/theme/imageuploadprogress.css */
+.ck-content .image.ck-appear {
+	animation: fadeIn 700ms;
 }
 /* ckeditor5-media-embed/theme/mediaembed.css */
 .ck-content .media {
