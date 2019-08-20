@@ -205,8 +205,6 @@ export default class ImageUploadEditing extends Plugin {
 						const offsetHeightBefore = domFigure.offsetHeight; // eslint-disable-line no-unused-vars
 
 						domFigure.style.display = originalDisplay;
-
-						const offsetHeightAfter = domFigure.offsetHeight; // eslint-disable-line no-unused-vars
 					} );
 				}
 
