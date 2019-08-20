@@ -69,8 +69,8 @@ export default class WordCount extends Plugin {
 		 */
 		this.set( 'words', 0 );
 
-		// Don't wait for #update event to set the value of the properties but obtain it right away.
-		// This way, accessing the properties directly returns precise numbers, e.g. for validation, etc..
+		// Don't wait for the #update event to set the value of the properties but obtain it right away.
+		// This way, accessing the properties directly returns precise numbers, e.g. for validation, etc.
 		// If not accessed directly, the properties will be refreshed upon #update anyway.
 		Object.defineProperties( this, {
 			characters: {

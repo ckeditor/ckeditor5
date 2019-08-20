@@ -47,7 +47,7 @@ The word count and character count feature is quite flexible and there are a few
 There are two ways how you can inject the word count statistics into your page:
 
 * By using the {@link module:word-count/wordcount~WordCount#wordCountContainer `WordCount#wordCountContainer`} property as shown in the example above.
-* Or, by specifying where the word count feature should insert its container which can be done by using {@link module:word-count/wordcount~WordCountConfig#container `config.wordCount.container`}.
+* By specifying where the word count feature should insert its container which can be done by using {@link module:word-count/wordcount~WordCountConfig#container `config.wordCount.container`}.
 
 The word count plugin renders its output as:
 
@@ -86,9 +86,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-**Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
+**Note**: For performance reasons, your callback will be throttled and may not be up–to–date. Use the {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 
-Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature it in action. See the code used to create the demo listed later in this section.
+Below you can play with a demo post editor with a soft 120 characters limit and a progress chart below indicating how many characters are in the content. The progress chart changes its color as the limit is near or exceeded. Type in the editor to see the feature in action. See the code used to create the demo listed below in this section.
 
 {@snippet features/word-count-update}
 
@@ -111,10 +111,10 @@ BalloonEditor
 				const isCloseToLimit = !isLimitExceeded && stats.characters > maxCharacters * .8;
 				const circleDashArray = Math.min( charactersProgress, circleCircumference );
 
-				// Set the stroke of the circle to show the how many characters were typed.
+				// Set the stroke of the circle to show how many characters were typed.
 				progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
 
-				// Display the number of characters in the progress chart. When exceeded the limit,
+				// Display the number of characters in the progress chart. When the limit is exceeded,
 				// display how many characters should be removed.
 				if ( isLimitExceeded ) {
 					charactersBox.textContent = `-${ stats.characters - maxCharacters }`;
@@ -124,13 +124,13 @@ BalloonEditor
 
 				wordsBox.textContent = `Words in the post: ${ stats.words }`;
 
-				// If the content length is close to the characters limit, add a CSS class to warns the user.
+				// If the content length is close to the character limit, add a CSS class to warn the user.
 				container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
 
-				// If exceeded the characters limit, add a CSS class that makes the content's background red.
+				// If the character limit is exceeded, add a CSS class that makes the content's background red.
 				container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
 
-				// If exceeded the characters limit, disable the send button.
+				// If the character limit is exceeded, disable the send button.
 				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 			}
 		}
@@ -138,7 +138,7 @@ BalloonEditor
 	.catch( ... );
 ```
 
-The HTML structure used to create the customized word and character count implementation above:
+Here is the HTML structure used to create the customized word and character count implementation above:
 
 ```html
 <style>
@@ -264,7 +264,7 @@ The {@link module:word-count/wordcount~WordCount} plugin provides:
 
 	Alternatively, you can use [`config.wordCount.onUpdate`](#reacting-to-updates) to register a similar callback via the editor configuration.
 
-	**Note**: For performance reasons, the `update` event is throttled so the statistics may not be up–to–date. Use {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
+	**Note**: For performance reasons, the `update` event is throttled so the statistics may not be up–to–date. Use the {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} plugin properties to retrieve the precise numbers on demand.
 * The {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} properties from which you can retrieve the stats at any moment.
 
 <info-box>

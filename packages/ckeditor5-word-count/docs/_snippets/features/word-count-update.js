@@ -49,10 +49,10 @@ BalloonEditor
 				const isCloseToLimit = !isLimitExceeded && stats.characters > maxCharacters * .8;
 				const circleDashArray = Math.min( charactersProgress, circleCircumference );
 
-				// Set the stroke of the circle to show the how many characters were typed.
+				// Set the stroke of the circle to show how many characters were typed.
 				progressCircle.setAttribute( 'stroke-dasharray', `${ circleDashArray },${ circleCircumference }` );
 
-				// Display the number of characters in the progress chart. When exceeded the limit,
+				// Display the number of characters in the progress chart. When the limit is exceeded,
 				// display how many characters should be removed.
 				if ( isLimitExceeded ) {
 					charactersBox.textContent = `-${ stats.characters - maxCharacters }`;
@@ -62,13 +62,13 @@ BalloonEditor
 
 				wordsBox.textContent = `Words in the post: ${ stats.words }`;
 
-				// If the content length is close to the characters limit, add a CSS class to warns the user.
+				// If the content length is close to the characters limit, add a CSS class to warn the user.
 				container.classList.toggle( 'demo-update__limit-close', isCloseToLimit );
 
-				// If exceeded the characters limit, add a CSS class that makes the content's background red.
+				// If the character limit is exceeded, add a CSS class that makes the content's background red.
 				container.classList.toggle( 'demo-update__limit-exceeded', isLimitExceeded );
 
-				// If exceeded the characters limit, disable the send button.
+				// If the character limit is exceeded, disable the send button.
 				sendButton.toggleAttribute( 'disabled', isLimitExceeded );
 			}
 		}
