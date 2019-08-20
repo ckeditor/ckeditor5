@@ -204,7 +204,7 @@ export default class ImageUploadEditing extends Plugin {
 							return;
 						}
 
-						const domFigure = editor.editing.view.domConverter.mapDomToView( viewImg.parent );
+						const domFigure = editor.editing.view.domConverter.mapViewToDom( viewImg.parent );
 
 						if ( !domFigure ) {
 							return;
@@ -214,7 +214,8 @@ export default class ImageUploadEditing extends Plugin {
 
 						domFigure.style.display = 'none';
 
-						const offsetHeightBefore = domFigure.offsetHeight; // eslint-disable-line no-unused-vars
+						// Make sure this line will never be removed during minification for having "no effect".
+						domFigure._ckHack = domFigure.offsetHeight;
 
 						domFigure.style.display = originalDisplay;
 					} );
