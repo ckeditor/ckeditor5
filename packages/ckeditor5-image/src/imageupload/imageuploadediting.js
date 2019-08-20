@@ -197,7 +197,18 @@ export default class ImageUploadEditing extends Plugin {
 				// https://github.com/ckeditor/ckeditor5/issues/1975
 				if ( env.isSafari ) {
 					editor.ui.once( 'update', () => {
+						// Early returns just to be safe. There might be some code ran
+						// in between the outer scope and this callback.
+						if ( !viewImg.parent ) {
+							return;
+						}
+
 						const domFigure = editor.editing.view.domConverter.viewToDom( viewImg.parent );
+
+						if ( !domFigure ) {
+							return;
+						}
+
 						const originalDisplay = domFigure.style.display;
 
 						domFigure.style.display = 'none';
