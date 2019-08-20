@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { isImageType, isLocalImage, fetchLocalImage } from '../../src/imageupload/utils';
@@ -191,6 +192,23 @@ export default class ImageUploadEditing extends Plugin {
 				const viewFigure = editor.editing.mapper.toViewElement( imageElement );
 				const viewImg = viewFigure.getChild( 0 );
 				const promise = loader.upload();
+
+				// Force re–paint in Safari. Without it, the image will display with a wrong size.
+				// https://github.com/ckeditor/ckeditor5/issues/1975
+				if ( env.isSafari ) {
+					editor.ui.once( 'update', () => {
+						const domFigure = editor.editing.view.domConverter.viewToDom( viewImg.parent );
+						const originalDisplay = domFigure.style.display;
+
+						domFigure.style.display = 'none';
+
+						const offsetHeightBefore = domFigure.offsetHeight; // eslint-disable-line no-unused-vars
+
+						domFigure.style.display = originalDisplay;
+
+						const offsetHeightAfter = domFigure.offsetHeight; // eslint-disable-line no-unused-vars
+					} );
+				}
 
 				editor.editing.view.change( writer => {
 					writer.setAttribute( 'src', data, viewImg );
