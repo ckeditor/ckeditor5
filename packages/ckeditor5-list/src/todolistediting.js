@@ -26,10 +26,10 @@ import {
 import { findInRange } from './utils';
 
 /**
- * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and its items.
+ * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
  *
- * It registers all functionalities of {@link module:list/listediting~ListEditing list editing plugin} and extends
- * it by `'todoList'` command.
+ * It registers the entire functionality of the {@link module:list/listediting~ListEditing list editing plugin} and extends
+ * it with the `'todoList'` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -88,7 +88,7 @@ export default class TodoListEditing extends Plugin {
 
 		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
-		// Collect all view nodes that have changed and use it to check if checkmark UI element is going to
+		// Collect all view nodes that have changed and use it to check if the checkbox UI element is going to
 		// be re-rendered. If yes than view post-fixer should verify view structure.
 		const changedViewNodes = new Set();
 
@@ -99,7 +99,7 @@ export default class TodoListEditing extends Plugin {
 			viewRoot.on( 'change:children', ( evt, node ) => changedViewNodes.add( node ) );
 		}
 
-		// Move all uiElements after a checkmark element.
+		// Move all uiElements after a checkbox element.
 		viewDocument.registerPostFixer( writer => {
 			const changedCheckmarkElements = getChangedCheckmarkElements( writer, changedViewNodes );
 
@@ -108,7 +108,7 @@ export default class TodoListEditing extends Plugin {
 			return moveUIElementsAfterCheckmark( writer, changedCheckmarkElements );
 		} );
 
-		// Move selection after a checkmark element.
+		// Move selection after a checkbox element.
 		viewDocument.registerPostFixer( writer => moveSelectionAfterCheckmark( writer, viewDocument.selection ) );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
@@ -161,11 +161,11 @@ export default class TodoListEditing extends Plugin {
 	}
 
 	/**
-	 * Handles checkmark element change, moves selection to the corresponding model item to makes it possible
-	 * to toggle `todoListChecked` attribute using command and restore the selection position.
+	 * Handles the checkbox element change, moves the selection to the corresponding model item to make it possible
+	 * to toggle the `todoListChecked` attribute using the command, and restores the selection position.
 	 *
-	 * Some say it's a hack :) Moving selection only for executing the command on a certain node and restoring it after,
-	 * it's not a clear solution. We need to design an API for using commands beyond the selection range.
+	 * Some say it's a hack :) Moving the selection only for executing the command on a certain node and restoring it after,
+	 * is not a clear solution. We need to design an API for using commands beyond the selection range.
 	 * See https://github.com/ckeditor/ckeditor5/issues/1954.
 	 *
 	 * @private
@@ -184,7 +184,7 @@ export default class TodoListEditing extends Plugin {
 	}
 }
 
-// Moves all uiElements in the to-do list item after the checkmark element.
+// Moves all UI elements in the to-do list item after the checkbox element.
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -215,7 +215,7 @@ function moveUIElementsAfterCheckmark( writer, uiElements ) {
 	return hasChanged;
 }
 
-// Moves selection in the to-do list item after the checkmark element.
+// Moves the selection in the to-do list item after the checkbox element.
 //
 // @private
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -249,8 +249,8 @@ function moveSelectionAfterCheckmark( writer, selection ) {
 	return false;
 }
 
-// Handles left arrow key and move selection at the end of the previous block element if the selection is just after
-// the checkmark element. In other words, it jumps over the checkmark element when moving the selection to the left.
+// Handles the left arrow key and moves the selection at the end of the previous block element if the selection is just after
+// the checkbox element. In other words, it jumps over the checkbox element when moving the selection to the left.
 //
 // @private
 // @param {Function} stopKeyEvent
@@ -276,7 +276,7 @@ function jumpOverCheckmarkOnLeftArrowKeyPress( stopKeyEvent, model ) {
 	}
 }
 
-// Gets list of all checkmark elements that are going to be rendered.
+// Gets the list of all checkbox elements that are going to be rendered.
 //
 // @private
 // @param {module:engine/view/view~View>} editingView
@@ -296,7 +296,7 @@ function getChangedCheckmarkElements( editingView, changedViewNodes ) {
 	return elements;
 }
 
-// Returns list item ancestor of given element.
+// Returns the list item ancestor of a given element.
 //
 // @private
 // @param {module:engine/view/item~Item} item

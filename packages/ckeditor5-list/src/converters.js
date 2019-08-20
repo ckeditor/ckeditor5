@@ -95,8 +95,8 @@ export function modelViewRemove( model ) {
  * A model-to-view converter for the `type` attribute change on the `listItem` model element.
  *
  * This change means that the `<li>` element parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished
- * by breaking view elements and changing their name. Next {@link module:list/converters~modelViewMergeAfterChangeType}
- * converter will try to merge split nodes.
+ * by breaking view elements and changing their name. The next {@link module:list/converters~modelViewMergeAfterChangeType}
+ * converter will attempt to merge split nodes.
  *
  * Splitting this conversion into 2 steps makes it possible to add an additional conversion in the middle.
  * Check {@link module:list/todolistconverters~modelViewChangeType} to see an example of it.
@@ -128,7 +128,7 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 }
 
 /**
- * A model-to-view converter that try to merge nodes split by {@link module:list/converters~modelViewChangeType}.
+ * A model-to-view converter that attempts to merge nodes split by {@link module:list/converters~modelViewChangeType}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
