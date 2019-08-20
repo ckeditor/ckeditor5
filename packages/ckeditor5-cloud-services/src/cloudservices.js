@@ -154,7 +154,7 @@ CloudServices.Token = Token;
  *
  * You can find more information about token endpoints in the
  * {@glink @cs guides/easy-image/quick-start#create-token-endpoint Cloud Services - Quick start}
- * and {@glink @cs guides/token-endpoints/tokenendpoint Cloud Services - Creating token endpoint} documentation.
+ * and {@glink @cs guides/security/token-endpoint Cloud Services - Creating token endpoint} documentation.
  *
  * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
  *
