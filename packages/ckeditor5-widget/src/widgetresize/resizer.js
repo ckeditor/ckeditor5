@@ -119,8 +119,6 @@ export default class Resizer {
 		this._sizeUI.bindToState( this._options, this.state );
 
 		this.state.begin( domResizeHandle, this._getHandleHost(), this._getResizeHost() );
-
-		this.redraw();
 	}
 
 	/**
@@ -142,17 +140,13 @@ export default class Resizer {
 		newSize.handleHostWidth = Math.round( domHandleHostRect.width );
 		newSize.handleHostHeight = Math.round( domHandleHostRect.height );
 
+		// Handle max-width limitation.
 		const domResizeHostRect = new Rect( domHandleHost );
 
 		newSize.width = Math.round( domResizeHostRect.width );
 		newSize.height = Math.round( domResizeHostRect.height );
 
 		this.state.update( newSize );
-
-		// Refresh values based on the real image. Real image might be limited by max-width, and thus fetching it
-		// here will reflect this limitation.
-		this._domResizerWrapper.style.width = newSize.handleHostWidth + 'px';
-		this._domResizerWrapper.style.height = newSize.handleHostHeight + 'px';
 	}
 
 	/**

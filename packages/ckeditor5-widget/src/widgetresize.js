@@ -70,8 +70,8 @@ export default class WidgetResize extends Plugin {
 		} );
 
 		const redrawResizers = throttle( () => {
-			for ( const context of this.resizers ) {
-				context.redraw();
+			if ( this.activeResizer ) {
+				this.activeResizer.redraw();
 			}
 		}, THROTTLE_THRESHOLD );
 
