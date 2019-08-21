@@ -8,6 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /* globals window, document */
 
@@ -146,7 +147,7 @@ describe( 'Delete feature - Android', () => {
 		env.isAndroid = oldEnvIsAndroid;
 	} );
 
-	it( 'should re-set selection on keyup event if it was changed after deletion but before the input was fired (Android)', () => {
+	it( 'should re-set selection on keyup event if it was changed after deletion but before the input was fired', () => {
 		// This test covers a quirk on Android. We will recreate what browser does in this scenario.
 		// The test is not perfect because there are difficulties converting model selection to DOM in unit tests.
 		const view = editor.editing.view;
@@ -191,5 +192,29 @@ describe( 'Delete feature - Android', () => {
 		expect( domSelection.anchorOffset ).to.equal( anchorOffsetBefore );
 		expect( domSelection.focusNode ).to.equal( focusNodeBefore );
 		expect( domSelection.focusOffset ).to.equal( focusOffsetBefore );
+	} );
+
+	it( 'should not crash on keyup event if it was not changed after typing', () => {
+		// This test covers a quirk on Android. We will recreate what browser does in this scenario.
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+
+		const domEvt = {
+			preventDefault: sinon.spy()
+		};
+
+		const domRoot = view.getDomRoot();
+		const domEvent = {
+			preventDefault: sinon.spy()
+		};
+
+		viewDocument.fire( 'input', domEvent );
+		viewDocument.fire( 'keydown', new DomEventData( viewDocument, domEvent, { keyCode: getCode( 'A' ) } ) );
+
+		expect( () => {
+			viewDocument.fire( 'keyup', new DomEventData( viewDocument, domEvt, {
+				domTarget: domRoot
+			} ) );
+		} ).not.to.throw();
 	} );
 } );

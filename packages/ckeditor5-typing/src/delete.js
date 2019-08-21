@@ -82,12 +82,14 @@ export default class Delete extends Plugin {
 			}, { priority: 'lowest' } );
 
 			this.listenTo( viewDocument, 'keyup', ( evt, data ) => {
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+				if ( domSelectionAfterDeletion ) {
+					const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 
-				domSelection.collapse( domSelectionAfterDeletion.anchorNode, domSelectionAfterDeletion.anchorOffset );
-				domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );
+					domSelection.collapse( domSelectionAfterDeletion.anchorNode, domSelectionAfterDeletion.anchorOffset );
+					domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );
 
-				domSelectionAfterDeletion = null;
+					domSelectionAfterDeletion = null;
+				}
 			} );
 		}
 	}
