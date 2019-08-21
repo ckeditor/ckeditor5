@@ -77,6 +77,7 @@ import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component( {
 	// ...
+} )
 export class MyComponent {
 	public Editor = DecoupledEditor;
 
@@ -95,26 +96,7 @@ And then, in the template:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
-### Strict mode project tips
-
-If you have the strict mode set in your project, you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
-
-To fix that you need to create a TypeScript declaration file and declare modules that miss their types:
-
-```ts
-// typings.d.ts
-
-// You should specify the CKEditor 5 build you use here:
-declare module '@ckeditor/ckeditor5-build-classic' {
-	const ClassicEditorBuild: any;
-
-	export = ClassicEditorBuild;
-}
-```
-
-Unfortunately, CKEditor 5 builds do not ship with corresponding TypeScript typings yet. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
-
-## Using custom CKEditor 5 build
+### Using custom CKEditor 5 build
 
 If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration} you should create a custom build first, using the {@link builds/guides/development/custom-builds create a custom build guide}.
 
@@ -125,6 +107,7 @@ import * as Editor from 'path/to/the/ckeditor';
 
 @Component( {
 	// ...
+} )
 export class MyComponent {
 	public Editor = Editor;
 	// ...
@@ -144,6 +127,25 @@ Note that to allow importing JavaScript files without providing their correspond
 <info-box>
 	If you cannot set the target higher than `es5`, try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
 </info-box>
+
+### Strict mode project tips
+
+If you have the strict mode set in your project, you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
+
+To fix that you need to create a TypeScript declaration file and declare modules that miss their types:
+
+```ts
+// typings.d.ts
+
+// You should specify the CKEditor 5 build you use here:
+declare module '@ckeditor/ckeditor5-build-classic' {
+	const ClassicEditorBuild: any;
+
+	export = ClassicEditorBuild;
+}
+```
+
+Unfortunately, CKEditor 5 builds do not ship with corresponding TypeScript typings yet. If you are interested in this topic you can add your vote or a comment [here](https://github.com/ckeditor/ckeditor5/issues/504).
 
 ## Integration with `ngModel`
 
