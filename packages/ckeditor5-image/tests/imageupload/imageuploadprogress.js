@@ -15,7 +15,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -96,6 +96,54 @@ describe( 'ImageUploadProgress', () => {
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar"></div>' +
 					'</figure>]<p>foo</p>'
+				);
+
+				done();
+			} catch ( err ) {
+				done( err );
+			}
+		}, { priority: 'lowest' } );
+
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+	} );
+
+	it( 'should work if image parent is refreshed by the differ', function( done ) {
+		model.schema.register( 'outerBlock', {
+			allowWhere: '$block',
+			isBlock: true
+		} );
+
+		model.schema.register( 'innerBlock', {
+			allowIn: 'outerBlock',
+			isLimit: true
+		} );
+
+		model.schema.extend( '$block', { allowIn: 'innerBlock' } );
+		editor.conversion.elementToElement( { model: 'outerBlock', view: 'outerBlock' } );
+		editor.conversion.elementToElement( { model: 'innerBlock', view: 'innerBlock' } );
+
+		model.document.registerPostFixer( () => {
+			for ( const change of doc.differ.getChanges() ) {
+				// The differ.refreshItem() simulates remove and insert of and image parent thus preventing image from proper work.
+				if ( change.type == 'insert' && change.name == 'image' ) {
+					doc.differ.refreshItem( change.position.parent );
+
+					return true;
+				}
+			}
+		} );
+
+		setModelData( model, '<outerBlock><innerBlock><paragraph>[]</paragraph></innerBlock></outerBlock>' );
+
+		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+
+		model.document.once( 'change', () => {
+			try {
+				expect( getViewData( view ) ).to.equal(
+					'<outerBlock><innerBlock>[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+					`<img src="${ base64Sample }"></img>` +
+					'<div class="ck-progress-bar"></div>' +
+					'</figure>]</innerBlock></outerBlock>'
 				);
 
 				done();
