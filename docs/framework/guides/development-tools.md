@@ -60,8 +60,8 @@ You can specify the name of the editor when attaching to make working with multi
 
 ```js
 // Inspecting two editor instances at the same time.
-CKEditorInspector.attach( 'header-editor' editor );
-CKEditorInspector.attach( 'body-editor' editor );
+CKEditorInspector.attach( 'header-editor', editor );
+CKEditorInspector.attach( 'body-editor', editor );
 ```
 
 The editor switcher is in the upper–right corner of the inspector panel.

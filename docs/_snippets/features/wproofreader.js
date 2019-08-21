@@ -8,8 +8,7 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-ui-language' ), {
-		language: 'es',
+	.create( document.querySelector( '#snippet-wproofreader' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
@@ -17,6 +16,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		// Temporary fix for WProofreader dialog (https://github.com/WebSpellChecker/wproofreader/issues/17).
+		editor.ui.getEditableElement().editor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
