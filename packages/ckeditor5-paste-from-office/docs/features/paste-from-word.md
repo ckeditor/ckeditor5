@@ -1,6 +1,6 @@
 ---
 menu-title: Paste from Word
-category: features-paste-from-office
+category: features-pasting
 ---
 
 {@snippet features/build-paste-from-office-source}
