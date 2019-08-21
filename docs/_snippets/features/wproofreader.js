@@ -16,8 +16,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		// Temporary fix for WProofreader dialog (https://github.com/WebSpellChecker/wproofreader/issues/17).
-		editor.ui.getEditableElement().editor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
