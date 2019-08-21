@@ -7,21 +7,23 @@ category: features-pasting
 
 # Pasting content from Google Docs
 
-Pasting content from Google Docs into CKEditor 5 is possible thanks to the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin.
+The Paste from Google Docs feature is provided through the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin.
 
-When enabled in the editor, any content pasted from Google Docs will maintain the original structure and formatting including basic text styling, heading levels, links, lists, tables, and images.
+This feature allows you to paste content from Google Docs and maintain the original structure and formatting. After creating a document in Google Docs you can simply copy it to CKEditor 5 and retain basic text styling, heading levels, links, lists, tables and images.
+
+When the plugin is enabled, it automatically detects Google Docs content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
 <info-box info>
 	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor 5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
 </info-box>
 
 <info-box info>
-	The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-word "Pasting content from Microsoft Word"} guide to learn more.
+	The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-word Pasting content from Microsoft Word} guide to learn more.
 </info-box>
 
 ## Demo
 
-To test how Paste from Office works, open the [sample Google Docs document](https://docs.google.com/document/d/1a9YzJidjxRPrxY9BL4ZReNFkPAgd_ItnZoFxcjSiJ4U/edit?usp=sharing), open it, copy the content and paste it into CKEditor 5 below.
+To test how Paste from Office works, open the [sample Google Docs document](https://docs.google.com/document/d/1a9YzJidjxRPrxY9BL4ZReNFkPAgd_ItnZoFxcjSiJ4U/edit?usp=sharing), open it, copy the content, and paste it into CKEditor 5 below.
 
 {@snippet features/paste-from-office}
 
@@ -56,18 +58,19 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Support for other office applications
+## Support for other applications
 
-At the current stage, the focus of the `@ckeditor/ckeditor5-paste-from-office` package is on supporting content that comes from {@link features/paste-from-word Microsoft Word} and Google Docs. However, it does not mean that pasting from other office applications (such as Microsoft Excel) is not supported.
+At the current stage, the focus of the `@ckeditor/ckeditor5-paste-from-office` package is on supporting content that comes from {@link features/paste-from-word Microsoft Word} and Google Docs. However, it does not mean that pasting from other similar applications (such as Microsoft Excel) is not supported.
 
 By default, CKEditor 5 will support pasting rich-text content from these applications, however, some styles and formatting may be lost, depending on the source application. Also, other minor bugs may appear.
 
 You can find more information regarding compatibility with other applications in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1184#issuecomment-409828069).
 
-If you think that support for any of the office applications needs improvements, please add 👍 and comments in the following issues:
+If you think that support for any of the applications needs improvements, please add 👍 and comments in the following issues:
 
 * [Support pasting from Excel](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/23).
 * [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/35).
 * [Support pasting from Pages](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/36).
 
-Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/new) for other office applications, too!
+Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/new) for other similar applications, too!
+
