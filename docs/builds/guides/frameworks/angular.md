@@ -24,7 +24,7 @@ In your existing Angular project, install the [CKEditor 5 WYSIWYG editor compone
 npm install --save @ckeditor/ckeditor5-angular
 ```
 
-Install one of the {@link builds/guides/overview#available-builds official editor builds} or [create a custom one](#using-custom-ckeditor-5-build).
+Install one of the {@link builds/guides/overview#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -96,7 +96,7 @@ And then, in the template:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
-### Using custom CKEditor 5 build
+### Using a custom CKEditor 5 build
 
 If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration} you should create a custom build first, using the {@link builds/guides/development/custom-builds create a custom build guide}.
 
