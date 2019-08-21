@@ -55,6 +55,11 @@ export default class FileReader {
 		return this._reader.error;
 	}
 
+	/**
+	 * Holds data of already loaded file. The file must be first loaded using {@link module:upload/filereader~FileReader#read}.
+	 *
+	 * @type {File|undefined}
+	 */
 	get data() {
 		return this._data;
 	}
