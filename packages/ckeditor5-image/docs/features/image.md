@@ -180,16 +180,60 @@ Responsive images support in CKEditor 5 is brought by the {@link features/easy-i
 
 ## Resizing images
 
-TODO:
+While the [image styles](#image-styles) feature is meant to give the user a choice between a set of styling options provided by the system (this is &mdash; by the developer/administrator who created it) there are also scenarios in which the user should be able to freely set the width of an image. And that is where the image resize feature come to play.
 
-* overview
-* markup
-* styling concerns
-* installation
-* note about it not being enabled by default
-* a note about followups? a dialog, a toggle predefined sizes (e.g. 40%, 50%, 75%, 100%)
+It is implemented by the {@link module:image/imageresize~ImageResize} plugin and enables 4 "resize handles" displayed over a selected image. The user can freely resize the image by dragging them. The feature can be configured to use either percentage (default) or pixel values.
 
 {@snippet features/image-resize}
+
+### Enabling image resizing
+
+The resize image is not enabled by default in any of the builds. In order to enable it you need to load the {@link module:image/imageresize~ImageResize} plugin. Read more in the [Installation](#installation) section.
+
+### Markup and styling
+
+When you resize an image the inline `width` style is used and the `<figure>` is assigned the `image_resized` class:
+
+```html
+<figure class="image image_resized" style="width: 75%;">
+	<img src="..." alt="...">
+</figure>
+```
+
+The `image_resized` class is used to disable `max-width` assigned by the [image styles](#image-styles) if one is applied to this image. For instance, the "side image" style is defined like this:
+
+```css
+.ck-content .image-style-side {
+	max-width: 50%;
+	float: right;
+	margin-left: var(--ck-image-style-spacing);
+}
+```
+
+And the `max-width` gets overridden by the following rule:
+
+```css
+.ck-content .image.image_resized {
+	max-width: 100%;
+}
+```
+
+The other concern when styling resized images is that by default CKEditor 5 use `display: table` on `<figure class="image">` to make it take the size of the `<img>` element inside it. Unfortunately, [browsers do not support yet using `max-width` and `width` on the same element if it is styled with `display: table`](https://stackoverflow.com/questions/4019604/chrome-safari-ignoring-max-width-in-table/14420691#14420691). Therefore, `display: block` needs to be used when the image is resized:
+
+```css
+.ck-content .image.image_resized {
+	display: block;
+	box-sizing: border-box;
+}
+
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
+```
 
 ### Using pixels instead of percentage width
 
@@ -200,6 +244,12 @@ TODO:
 * configuration
 
 {@snippet features/image-resize-px}
+
+<!--
+
+* a note about followups? a dialog, a toggle predefined sizes (e.g. 40%, 50%, 75%, 100%)
+
+-->
 
 ## Installation
 
@@ -216,10 +266,11 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle ],
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize ],
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ]
 		}
@@ -253,6 +304,10 @@ The {@link module:image/imageupload~ImageUpload} plugin registers:
 
 * The `'imageUpload'` button which opens the native file browser to let you upload a file directly from your disk.
 * The {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand `'imageUpload'` command} which accepts the file to upload.
+
+The {@link module:image/imageresize~ImageResize} plugin registers:
+
+* The {@link module:image/imageresize/imageresizecommand~ImageResizeCommand `'imageResize'` command} which accepts the target width.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
