@@ -14,7 +14,7 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { isImageType, isLocalImage, fetchLocalImage } from '../../src/imageupload/utils';
+import { fetchLocalImage, isImageType, isLocalImage } from '../../src/imageupload/utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'imageUpload'` command.
@@ -134,30 +134,32 @@ export default class ImageUploadEditing extends Plugin {
 			const changes = doc.differ.getChanges( { includeChangesInGraveyard: true } );
 
 			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name == 'image' ) {
+				if ( entry.type == 'insert' && entry.name != '$text' ) {
 					const item = entry.position.nodeAfter;
 					const isInGraveyard = entry.position.root.rootName == '$graveyard';
 
-					// Check if the image element still has upload id.
-					const uploadId = item.getAttribute( 'uploadId' );
+					for ( const image of getImagesFromChangeItem( editor, item ) ) {
+						// Check if the image element still has upload id.
+						const uploadId = image.getAttribute( 'uploadId' );
 
-					if ( !uploadId ) {
-						continue;
-					}
+						if ( !uploadId ) {
+							continue;
+						}
 
-					// Check if the image is loaded on this client.
-					const loader = fileRepository.loaders.get( uploadId );
+						// Check if the image is loaded on this client.
+						const loader = fileRepository.loaders.get( uploadId );
 
-					if ( !loader ) {
-						continue;
-					}
+						if ( !loader ) {
+							continue;
+						}
 
-					if ( isInGraveyard ) {
-						// If the image was inserted to the graveyard - abort the loading process.
-						loader.abort();
-					} else if ( loader.status == 'idle' ) {
-						// If the image was inserted into content and has not been loaded yet, start loading it.
-						this._readAndUpload( loader, item );
+						if ( isInGraveyard ) {
+							// If the image was inserted to the graveyard - abort the loading process.
+							loader.abort();
+						} else if ( loader.status == 'idle' ) {
+							// If the image was inserted into content and has not been loaded yet, start loading it.
+							this._readAndUpload( loader, image );
+						}
 					}
 				}
 			}
@@ -188,15 +190,16 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		return loader.read()
-			.then( data => {
-				const viewFigure = editor.editing.mapper.toViewElement( imageElement );
-				const viewImg = viewFigure.getChild( 0 );
+			.then( () => {
 				const promise = loader.upload();
 
 				// Force re–paint in Safari. Without it, the image will display with a wrong size.
 				// https://github.com/ckeditor/ckeditor5/issues/1975
 				/* istanbul ignore next */
 				if ( env.isSafari ) {
+					const viewFigure = editor.editing.mapper.toViewElement( imageElement );
+					const viewImg = viewFigure.getChild( 0 );
+
 					editor.editing.view.once( 'render', () => {
 						// Early returns just to be safe. There might be some code ran
 						// in between the outer scope and this callback.
@@ -220,10 +223,6 @@ export default class ImageUploadEditing extends Plugin {
 						domFigure.style.display = originalDisplay;
 					} );
 				}
-
-				editor.editing.view.change( writer => {
-					writer.setAttribute( 'src', data, viewImg );
-				} );
 
 				model.enqueueChange( 'transparent', writer => {
 					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
@@ -317,4 +316,10 @@ export default class ImageUploadEditing extends Plugin {
 // @returns {Boolean}
 export function isHtmlIncluded( dataTransfer ) {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
+}
+
+function getImagesFromChangeItem( editor, item ) {
+	return Array.from( editor.model.createRangeOn( item ) )
+		.filter( value => value.item.is( 'image' ) )
+		.map( value => value.item );
 }

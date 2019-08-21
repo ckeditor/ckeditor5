@@ -16,6 +16,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 import Image from '../../src/image';
@@ -28,9 +29,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
-			ImageCaption, ImageStyle, ImageUpload
+			ImageCaption, ImageStyle, ImageUpload, Table
 		],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'imageUpload' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertTable', '|', 'imageUpload' ],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
