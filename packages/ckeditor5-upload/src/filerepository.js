@@ -400,6 +400,10 @@ class FileLoader {
 		}
 	}
 
+	get data() {
+		return this._reader.data;
+	}
+
 	/**
 	 * Reads file using {@link module:upload/filereader~FileReader}.
 	 *
@@ -432,6 +436,8 @@ class FileLoader {
 			.then( file => this._reader.read( file ) )
 			.then( data => {
 				this.status = 'idle';
+
+				this._data = data;
 
 				return data;
 			} )
@@ -521,7 +527,7 @@ class FileLoader {
 		this._filePromiseWrapper = undefined;
 		this._reader = undefined;
 		this._adapter = undefined;
-		this.data = undefined;
+		this._data = undefined;
 		this.uploadResponse = undefined;
 	}
 
