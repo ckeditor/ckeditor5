@@ -452,6 +452,33 @@ describe( 'FileRepository', () => {
 			} );
 		} );
 
+		describe( 'data getter', () => {
+			it( 'should be undefined if no file loaded', () => {
+				expect( loader.data ).to.be.undefined;
+			} );
+
+			it( 'should return promise which resolves to a file', () => {
+				let resolveFile = null;
+
+				const filePromise = new Promise( resolve => {
+					resolveFile = resolve;
+				} );
+
+				const loader = fileRepository.createLoader( filePromise );
+
+				const promise = loader.read()
+					.then( () => {
+						expect( loader.data ).to.equal( 'result data' );
+					} );
+
+				resolveFile( createNativeFileMock() );
+
+				loader.file.then( () => nativeReaderMock.mockSuccess( 'result data' ) );
+
+				return promise;
+			} );
+		} );
+
 		describe( 'read()', () => {
 			it( 'should throw error when status is different than idle', () => {
 				loader.status = 'uploading';
