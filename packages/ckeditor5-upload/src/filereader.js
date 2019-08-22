@@ -56,7 +56,8 @@ export default class FileReader {
 	}
 
 	/**
-	 * Holds the data of an already loaded file. The file must be first loaded by using {@link module:upload/filereader~FileReader#read `read()`}.
+	 * Holds the data of an already loaded file. The file must be first loaded
+	 * by using {@link module:upload/filereader~FileReader#read `read()`}.
 	 *
 	 * @type {File|undefined}
 	 */
