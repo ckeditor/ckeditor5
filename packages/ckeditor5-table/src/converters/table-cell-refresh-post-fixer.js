@@ -52,7 +52,7 @@ function tableCellRefreshPostFixer( model ) {
 // @param {module:engine/model/element~Element} tableCell Table cell to check.
 // @param {String} type Type of change.
 function checkRefresh( tableCell, type ) {
-	// If children of a table cell were removed - refresh it.
+	// If all children of a table cell were removed - refresh it.
 	if ( !tableCell.childCount ) {
 		return true;
 	}
