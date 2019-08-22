@@ -257,7 +257,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 		sinon.assert.calledOnce( postFixerSpy );
 	} );
 
-	it( 'should be run on changing attribute of an paragraph in a table cell', () => {
+	it( 'should be run on changing attribute of a paragraph in a table cell', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
