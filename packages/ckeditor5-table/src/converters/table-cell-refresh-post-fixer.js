@@ -30,7 +30,7 @@ function tableCellRefreshPostFixer( model ) {
 	for ( const change of differ.getChanges() ) {
 		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
 
-		if ( parent.is( 'tableCell' ) ) {
+		if ( parent.is( 'tableCell' ) && checkRefresh( parent, change.type ) ) {
 			differ.refreshItem( parent );
 
 			fixed = true;
@@ -38,4 +38,47 @@ function tableCellRefreshPostFixer( model ) {
 	}
 
 	return fixed;
+}
+
+// Check if a table cell in the view requires refreshing.
+//
+// This methods detects changes that will require:
+// - <span> to <p> rename in the view,
+// - adding a missing <paragraph>,
+// - or wrapping a text node in <paragraph>
+//
+// thus requiring refreshing the table cell view.
+//
+// @param {module:engine/model/element~Element} tableCell Table cell to check.
+// @param {String} type Type of change.
+function checkRefresh( tableCell, type ) {
+	// If children of a table cell were removed - refresh it.
+	if ( !tableCell.childCount ) {
+		return true;
+	}
+
+	const children = Array.from( tableCell.getChildren() );
+	const hasInnerText = children.some( child => child.is( 'text' ) );
+
+	// If a bare text node (not wrapped in a paragraph) was added - refresh it.
+	if ( hasInnerText ) {
+		return true;
+	}
+
+	const hasInnerParagraph = children.some( child => child.is( 'paragraph' ) );
+
+	// If there is no paragraph in table cell then the view doesn't require refreshing.
+	if ( !hasInnerParagraph ) {
+		return false;
+	}
+
+	// For attribute change we only refresh single paragraphs as they might trigger <span> to <p> change in the view.
+	if ( type == 'attribute' ) {
+		return tableCell.childCount === 1;
+	}
+
+	// For other changes (insert/remove) the <span> to <p> change can occur when:
+	// - sibling is added to a single paragraph (childCount == 2)
+	// - sibling is removed and single paragraph is left (childCount == 1)
+	return tableCell.childCount < 3;
 }
