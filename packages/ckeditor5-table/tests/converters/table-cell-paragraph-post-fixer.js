@@ -12,12 +12,20 @@ import { formatTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'Table cell paragraph post-fixer', () => {
-	let editor, model, root;
+	let editor, model, root, postFixerSpy;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, UndoEditing ]
+				plugins: [ function( editor ) {
+					editor.model.schema.register( 'block', { inheritAllFrom: '$block' } );
+
+					// Add a post-fixer spy before any other plugin so it will be always run if other post-fixer returns true.
+					// Use spy.resetHistory() before checking a case when post fixer should be run.
+					// It should be called once if no other post-fixer fixed the model or more then one if another post-fixer changed model.
+					postFixerSpy = sinon.spy();
+					editor.model.document.registerPostFixer( postFixerSpy );
+				}, TableEditing, Paragraph, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -220,5 +228,59 @@ describe( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
+	} );
+
+	it( 'should not be run on changing attribute of other element in a table cell', () => {
+		setModelData( model,
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><block></block></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		postFixerSpy.resetHistory();
+
+		// Insert table row with one table cell
+		model.change( writer => {
+			writer.setAttribute( 'foo', 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><block foo="bar"></block></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		) );
+
+		sinon.assert.calledOnce( postFixerSpy );
+	} );
+
+	it( 'should be run on changing attribute of an paragraph in a table cell', () => {
+		setModelData( model,
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph></paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		postFixerSpy.resetHistory();
+
+		// Insert table row with one table cell
+		model.change( writer => {
+			writer.setAttribute( 'foo', 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph foo="bar"></paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		) );
+
+		sinon.assert.calledTwice( postFixerSpy );
 	} );
 } );

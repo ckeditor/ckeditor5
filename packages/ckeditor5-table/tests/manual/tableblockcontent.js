@@ -8,13 +8,16 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Alignment ],
+		cloudServices: CS_CONFIG,
+		plugins: [ ArticlePluginSet, Alignment, EasyImage ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote',
-			'alignment', '|', 'undo', 'redo'
+			'alignment', '|', 'imageUpload', 'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
