@@ -66,9 +66,7 @@ function checkRefresh( tableCell, type ) {
 		return true;
 	}
 
-	const children = Array.from( tableCell.getChildren() );
-
-	const hasInnerParagraph = children.some( child => child.is( 'paragraph' ) );
+	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'paragraph' ) );
 
 	// If there is no paragraph in table cell then the view doesn't require refreshing.
 	if ( !hasInnerParagraph ) {
