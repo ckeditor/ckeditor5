@@ -40,7 +40,7 @@ function tableCellRefreshPostFixer( model ) {
 	return fixed;
 }
 
-// Check if a table cell in the view requires refreshing.
+// Check if the model table cell requires refreshing to be re-rendered to a proper state in the view.
 //
 // This methods detects changes that will require:
 // - <span> to <p> rename in the view,
