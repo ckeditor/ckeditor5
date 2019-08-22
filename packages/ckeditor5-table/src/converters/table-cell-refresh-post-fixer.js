@@ -25,19 +25,26 @@ export default function injectTableCellRefreshPostFixer( model ) {
 function tableCellRefreshPostFixer( model ) {
 	const differ = model.document.differ;
 
-	let fixed = false;
+	// Stores cells to be refreshed so the table cell will be refreshed once for multiple changes.
+	const cellToRefresh = new Set();
 
 	for ( const change of differ.getChanges() ) {
 		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
 
 		if ( parent.is( 'tableCell' ) && checkRefresh( parent, change.type ) ) {
-			differ.refreshItem( parent );
-
-			fixed = true;
+			cellToRefresh.add( parent );
 		}
 	}
 
-	return fixed;
+	if ( cellToRefresh.size ) {
+		for ( const tableCell of cellToRefresh.values() ) {
+			differ.refreshItem( tableCell );
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 // Check if the model table cell requires refreshing to be re-rendered to a proper state in the view.
@@ -74,7 +81,7 @@ function checkRefresh( tableCell, type ) {
 
 	// For attribute change we only refresh single paragraphs as they might trigger <span> to <p> change in the view.
 	if ( type == 'attribute' ) {
-		return tableCell.childCount === 1;
+		return tableCell.childCount === 1 && Array.from( tableCell.getChild( 0 ).getAttributeKeys() ).length < 2;
 	}
 
 	// For other changes (insert/remove) the <span> to <p> change can occur when:
