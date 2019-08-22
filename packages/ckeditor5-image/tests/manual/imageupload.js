@@ -6,31 +6,31 @@
 /* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import ImageStyle from '../../src/imagestyle';
-import ImageToolbar from '../../src/imagetoolbar';
-import Image from '../../src/image';
-import ImageCaption from '../../src/imagecaption';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ImageUpload from '../../src/imageupload';
+
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
 const buttonContainer = document.getElementById( 'button-container' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
-			ImageCaption, ImageStyle, ImageUpload
+		plugins: [ ArticlePluginSet, ImageUpload ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'imageUpload',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
 		],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'imageUpload' ],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
