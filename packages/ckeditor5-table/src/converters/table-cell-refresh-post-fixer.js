@@ -26,18 +26,18 @@ function tableCellRefreshPostFixer( model ) {
 	const differ = model.document.differ;
 
 	// Stores cells to be refreshed so the table cell will be refreshed once for multiple changes.
-	const cellToRefresh = new Set();
+	const cellsToRefresh = new Set();
 
 	for ( const change of differ.getChanges() ) {
 		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
 
 		if ( parent.is( 'tableCell' ) && checkRefresh( parent, change.type ) ) {
-			cellToRefresh.add( parent );
+			cellsToRefresh.add( parent );
 		}
 	}
 
-	if ( cellToRefresh.size ) {
-		for ( const tableCell of cellToRefresh.values() ) {
+	if ( cellsToRefresh.size ) {
+		for ( const tableCell of cellsToRefresh.values() ) {
 			differ.refreshItem( tableCell );
 		}
 
@@ -47,16 +47,16 @@ function tableCellRefreshPostFixer( model ) {
 	return false;
 }
 
-// Check if the model table cell requires refreshing to be re-rendered to a proper state in the view.
+// Checks if the model table cell requires refreshing to be re-rendered to a proper state in the view.
 //
-// This methods detects changes that will require renaming <span> to <p> (or vice versa) in the view,
+// This methods detects changes that will require renaming <span> to <p> (or vice versa) in the view.
 //
-// This method is simple heuristic that check only single change and will give false positive result when many changes will result
-// in a state that does not require renaming in the view.
+// This method is a simple heuristic that checks only a single change and will sometimes give a false positive result when multiple changes
+// will result in a state that does not require renaming in the view (but will be seen as requiring a refresh).
 //
-// For instance: The <span> to <p> should be renamed when adding an attribute to a <paragraph>.
-// But adding one attribute and removing another will result in false positive: the check for added attribute will see one attribute
-// on a paragraph and will falsy qualify such change as adding attribute to a paragraph without any attribute.
+// For instance: a `<span>` should be renamed to `<p>` when adding an attribute to a `<paragraph>`.
+// But adding one attribute and removing another one will result in a false positive: the check for added attribute will see one attribute
+// on a paragraph and will falsy qualify such change as adding an attribute to a paragraph without any attribute.
 //
 // @param {module:engine/model/element~Element} tableCell Table cell to check.
 // @param {String} type Type of change.
@@ -64,17 +64,24 @@ function checkRefresh( tableCell, type ) {
 	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'paragraph' ) );
 
 	// If there is no paragraph in table cell then the view doesn't require refreshing.
+	//
+	// Why? What we really want to achieve is to make all the old paragraphs (which weren't added in this batch) to be
+	// converted once again, so that the paragraph-in-table-cell converter can correctly create a `<p>` or a `<span>` element.
+	// If there are no paragraphs in the table cell, we don't care.
 	if ( !hasInnerParagraph ) {
 		return false;
 	}
 
-	// For attribute change we only refresh single paragraphs as they might trigger <span> to <p> change in the view.
+	// For attribute change we only refresh if there is a single paragraph as in this case we may want to change existing `<span>` to `<p>`.
 	if ( type == 'attribute' ) {
-		return tableCell.childCount === 1 && Array.from( tableCell.getChild( 0 ).getAttributeKeys() ).length < 2;
+		const attributesCount = Array.from( tableCell.getChild( 0 ).getAttributeKeys() ).length;
+
+		return tableCell.childCount === 1 && attributesCount < 2;
 	}
 
-	// For other changes (insert/remove) the <span> to <p> change can occur when:
-	// - sibling is added to a single paragraph (childCount == 2)
-	// - sibling is removed and single paragraph is left (childCount == 1)
+	// For other changes (insert, remove) the `<span>` to `<p>` change is needed when:
+	//
+	// - another element is added to a single paragraph (childCount becomes >= 2)
+	// - another element is removed and a single paragraph is left (childCount == 1)
 	return tableCell.childCount <= ( type == 'insert' ? 2 : 1 );
 }
