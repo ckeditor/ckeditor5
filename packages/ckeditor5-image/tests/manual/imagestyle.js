@@ -13,7 +13,20 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet
 		],
-		toolbar: [ 'heading', '|', 'undo', 'redo' ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
 		}
@@ -30,7 +43,20 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet
 		],
-		toolbar: [ 'heading', '|', 'undo', 'redo' ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
 		image: {
 			styles: [ 'alignLeft', 'alignCenter', 'alignRight' ],
 			toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight' ]
