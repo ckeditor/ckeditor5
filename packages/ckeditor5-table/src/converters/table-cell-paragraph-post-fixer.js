@@ -55,6 +55,12 @@ function tableCellContentsPostFixer( writer, model ) {
 			if ( entry.name == 'tableCell' ) {
 				wasFixed = fixTableCellContent( entry.position.nodeAfter, writer ) || wasFixed;
 			}
+
+			// Check table cell children for directly placed text nodes.
+			// Temporary check. See https://github.com/ckeditor/ckeditor5/issues/1464.
+			if ( entry.name == '$text' && entry.position.parent.is( 'tableCell' ) ) {
+				wasFixed = fixTableCellContent( entry.position.parent, writer ) || wasFixed;
+			}
 		}
 	}
 

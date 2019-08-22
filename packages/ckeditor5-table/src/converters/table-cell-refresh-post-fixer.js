@@ -67,12 +67,6 @@ function checkRefresh( tableCell, type ) {
 	}
 
 	const children = Array.from( tableCell.getChildren() );
-	const hasInnerText = children.some( child => child.is( 'text' ) );
-
-	// If a bare text node (not wrapped in a paragraph) was added - refresh it.
-	if ( hasInnerText ) {
-		return true;
-	}
 
 	const hasInnerParagraph = children.some( child => child.is( 'paragraph' ) );
 
