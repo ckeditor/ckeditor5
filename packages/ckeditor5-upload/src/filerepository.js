@@ -401,7 +401,7 @@ class FileLoader {
 	}
 
 	/**
-	 * Returns file data of a file that was already read. To read the file use {@link module:upload/filerepository~FileLoader#read} method.
+	 * Returns the file data. To read its data, you need for first load the file by using the {@link module:upload/filerepository~FileLoader#read `read()`} method.
 	 *
 	 * @type {File|undefined}
 	 */
