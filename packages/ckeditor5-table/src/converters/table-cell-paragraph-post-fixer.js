@@ -42,25 +42,20 @@ function tableCellContentsPostFixer( writer, model ) {
 	let wasFixed = false;
 
 	for ( const entry of changes ) {
-		// Analyze table cells on insertion.
-		if ( entry.type == 'insert' ) {
-			if ( entry.name == 'table' ) {
-				wasFixed = fixTable( entry.position.nodeAfter, writer ) || wasFixed;
-			}
+		if ( entry.type == 'insert' && entry.name == 'table' ) {
+			wasFixed = fixTable( entry.position.nodeAfter, writer ) || wasFixed;
+		}
 
-			if ( entry.name == 'tableRow' ) {
-				wasFixed = fixTableRow( entry.position.nodeAfter, writer ) || wasFixed;
-			}
+		if ( entry.type == 'insert' && entry.name == 'tableRow' ) {
+			wasFixed = fixTableRow( entry.position.nodeAfter, writer ) || wasFixed;
+		}
 
-			if ( entry.name == 'tableCell' ) {
-				wasFixed = fixTableCellContent( entry.position.nodeAfter, writer ) || wasFixed;
-			}
+		if ( entry.type == 'insert' && entry.name == 'tableCell' ) {
+			wasFixed = fixTableCellContent( entry.position.nodeAfter, writer ) || wasFixed;
+		}
 
-			// Check table cell children for directly placed text nodes.
-			// Temporary check. See https://github.com/ckeditor/ckeditor5/issues/1464.
-			if ( entry.name == '$text' && entry.position.parent.is( 'tableCell' ) ) {
-				wasFixed = fixTableCellContent( entry.position.parent, writer ) || wasFixed;
-			}
+		if ( checkTableCellChange( entry ) ) {
+			wasFixed = fixTableCellContent( entry.position.parent, writer ) || wasFixed;
 		}
 	}
 
@@ -120,4 +115,18 @@ function fixTableCellContent( tableCell, writer ) {
 
 	// Return true when there were text nodes to fix.
 	return !!textNodes.length;
+}
+
+// Check if differ change should fix table cell. This happens on:
+// - removing content from table cell (ie tableCell can be left empty).
+// - adding text node directly into a table cell.
+//
+// @param {Object} differ change entry
+// @returns {Boolean}
+function checkTableCellChange( entry ) {
+	if ( !entry.position || !entry.position.parent.is( 'tableCell' ) ) {
+		return false;
+	}
+
+	return entry.type == 'insert' && entry.name == '$text' || entry.type == 'remove';
 }

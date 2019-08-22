@@ -61,11 +61,6 @@ function tableCellRefreshPostFixer( model ) {
 // @param {module:engine/model/element~Element} tableCell Table cell to check.
 // @param {String} type Type of change.
 function checkRefresh( tableCell, type ) {
-	// If all children of a table cell were removed - refresh it.
-	if ( !tableCell.childCount ) {
-		return true;
-	}
-
 	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'paragraph' ) );
 
 	// If there is no paragraph in table cell then the view doesn't require refreshing.
