@@ -11,8 +11,8 @@ import TableEditing from '../../src/tableediting';
 import { formatTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-describe.only( 'Table cell paragraph post-fixer', () => {
-	let editor, model, root, refreshItemSpy;
+describe( 'Table cell paragraph post-fixer', () => {
+	let editor, model, root;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -23,9 +23,6 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				editor = newEditor;
 				model = editor.model;
 				root = model.document.getRoot();
-
-				editor.model.schema.register( 'block', { inheritAllFrom: '$block' } );
-				refreshItemSpy = sinon.spy( model.document.differ, 'refreshItem' );
 			} );
 	} );
 
@@ -33,7 +30,7 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 		editor.destroy();
 	} );
 
-	it( 'should not be called on an empty table cell (on table insert)', () => {
+	it( 'should add a paragraph to an empty table cell (on table insert)', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -49,11 +46,9 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
-	it( 'should not be called on an empty table cell (on row insert)', () => {
+	it( 'should add a paragraph to an empty table cell (on row insert)', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -78,11 +73,9 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
-	it( 'should not be called on an empty table cell (on table cell insert)', () => {
+	it( 'should add a paragraph to an empty table cell (on table cell insert)', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -104,11 +97,9 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
-	it( 'should be called on inserting paragraph to an empty table cell (after remove)', () => {
+	it( 'should add a paragraph to an empty table cell (after remove)', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -129,12 +120,9 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		// TODO - it should not.
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
-	it( 'should be called on when wrapping in paragraph $text nodes placed directly in tableCell (on table cell modification) ', () => {
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell (on table cell modification) ', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -166,11 +154,9 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
-	it( 'should not be called on wrapping in paragraph $text nodes placed directly in tableCell (on inserting table cell)', () => {
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell (on inserting table cell)', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -199,11 +185,9 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
-	it( 'should not be called on wrapping in paragraph $text nodes placed directly in tableCell (on inserting table rows)', () => {
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell (on inserting table rows)', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -236,108 +220,5 @@ describe.only( 'Table cell paragraph post-fixer', () => {
 				'</tableRow>' +
 			'</table>'
 		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
-	} );
-
-	it( 'should not be called on changing attribute of other element in a table cell', () => {
-		setModelData( model,
-			'<table>' +
-				'<tableRow>' +
-					'<tableCell><block></block></tableCell>' +
-				'</tableRow>' +
-			'</table>'
-		);
-
-		// Insert table row with one table cell
-		model.change( writer => {
-			writer.setAttribute( 'foo', 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
-		} );
-
-		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
-			'<table>' +
-				'<tableRow>' +
-					'<tableCell><block foo="bar"></block></tableCell>' +
-				'</tableRow>' +
-			'</table>'
-		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
-	} );
-
-	it( 'should be called on changing attribute of a paragraph in a table cell', () => {
-		setModelData( model,
-			'<table>' +
-				'<tableRow>' +
-					'<tableCell><paragraph></paragraph></tableCell>' +
-				'</tableRow>' +
-			'</table>'
-		);
-
-		// Insert table row with one table cell
-		model.change( writer => {
-			writer.setAttribute( 'foo', 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
-		} );
-
-		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
-			'<table>' +
-				'<tableRow>' +
-					'<tableCell><paragraph foo="bar"></paragraph></tableCell>' +
-				'</tableRow>' +
-			'</table>'
-		) );
-
-		sinon.assert.calledOnce( refreshItemSpy );
-	} );
-
-	it( 'should not be called on adding attribute of a paragraph with other attribute set in a table cell', () => {
-		setModelData( model,
-			'<table>' +
-			'<tableRow>' +
-			'<tableCell><paragraph bar="baz"></paragraph></tableCell>' +
-			'</tableRow>' +
-			'</table>'
-		);
-
-		// Insert table row with one table cell
-		model.change( writer => {
-			writer.setAttribute( 'foo', 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
-		} );
-
-		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
-			'<table>' +
-			'<tableRow>' +
-			'<tableCell><paragraph bar="baz" foo="bar"></paragraph></tableCell>' +
-			'</tableRow>' +
-			'</table>'
-		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
-	} );
-
-	it( 'should not be called on adding attribute and removing attribute of a paragraph with other attribute set in a table cell', () => {
-		setModelData( model,
-			'<table>' +
-			'<tableRow>' +
-			'<tableCell><paragraph bar="baz"></paragraph></tableCell>' +
-			'</tableRow>' +
-			'</table>'
-		);
-
-		// Insert table row with one table cell
-		model.change( writer => {
-			writer.setAttribute( 'foo', 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
-			writer.removeAttribute( 'bar', root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
-		} );
-
-		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
-			'<table>' +
-			'<tableRow>' +
-			'<tableCell><paragraph bar="baz"></paragraph></tableCell>' +
-			'</tableRow>' +
-			'</table>'
-		) );
-
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 } );
