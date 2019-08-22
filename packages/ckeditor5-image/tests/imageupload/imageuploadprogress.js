@@ -107,6 +107,7 @@ describe( 'ImageUploadProgress', () => {
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/1985.
 	it( 'should work if image parent is refreshed by the differ', function( done ) {
 		model.schema.register( 'outerBlock', {
 			allowWhere: '$block',
