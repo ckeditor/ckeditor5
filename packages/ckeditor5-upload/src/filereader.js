@@ -30,6 +30,8 @@ export default class FileReader {
 		 */
 		this._reader = reader;
 
+		this._data = undefined;
+
 		/**
 		 * Number of bytes loaded.
 		 *
@@ -54,6 +56,16 @@ export default class FileReader {
 	}
 
 	/**
+	 * Holds the data of an already loaded file. The file must be first loaded
+	 * by using {@link module:upload/filereader~FileReader#read `read()`}.
+	 *
+	 * @type {File|undefined}
+	 */
+	get data() {
+		return this._data;
+	}
+
+	/**
 	 * Reads the provided file.
 	 *
 	 * @param {File} file Native File object.
@@ -66,7 +78,11 @@ export default class FileReader {
 
 		return new Promise( ( resolve, reject ) => {
 			reader.onload = () => {
-				resolve( reader.result );
+				const result = reader.result;
+
+				this._data = result;
+
+				resolve( result );
 			};
 
 			reader.onerror = () => {

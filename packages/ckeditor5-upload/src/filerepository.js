@@ -401,6 +401,16 @@ class FileLoader {
 	}
 
 	/**
+	 * Returns the file data. To read its data, you need for first load the file
+	 * by using the {@link module:upload/filerepository~FileLoader#read `read()`} method.
+	 *
+	 * @type {File|undefined}
+	 */
+	get data() {
+		return this._reader.data;
+	}
+
+	/**
 	 * Reads file using {@link module:upload/filereader~FileReader}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `filerepository-read-wrong-status` when status
@@ -521,7 +531,6 @@ class FileLoader {
 		this._filePromiseWrapper = undefined;
 		this._reader = undefined;
 		this._adapter = undefined;
-		this.data = undefined;
 		this.uploadResponse = undefined;
 	}
 

@@ -37,7 +37,24 @@ describe( 'FileReader', () => {
 		expect( reader.loaded ).to.equal( 55 );
 	} );
 
-	describe( 'read', () => {
+	describe( 'data', () => {
+		it( 'should be undefined if file was not loaded', () => {
+			expect( reader.data ).to.be.undefined;
+		} );
+
+		it( 'should equal to loaded file data', () => {
+			const promise = reader.read( fileMock )
+				.then( () => {
+					expect( reader.data ).to.equal( 'File contents.' );
+				} );
+
+			nativeReaderMock.mockSuccess( 'File contents.' );
+
+			return promise;
+		} );
+	} );
+
+	describe( 'read()', () => {
 		it( 'should return a promise', () => {
 			expect( reader.read( fileMock ) ).to.be.instanceOf( Promise );
 		} );
@@ -81,7 +98,7 @@ describe( 'FileReader', () => {
 		} );
 	} );
 
-	describe( 'abort', () => {
+	describe( 'abort()', () => {
 		it( 'should allow to abort reading', () => {
 			const promise = reader.read( fileMock )
 				.then( () => {
