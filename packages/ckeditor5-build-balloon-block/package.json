@@ -64,7 +64,7 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5-build-balloon-block/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-build-balloon-block.git"
