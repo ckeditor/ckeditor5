@@ -334,7 +334,7 @@ describe( 'ImageUploadEditing', () => {
 			'</figure>]' );
 	} );
 
-	it( 'should use read data once it is present', done => {
+	it( 'should not use read data once it is present', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
@@ -343,7 +343,8 @@ describe( 'ImageUploadEditing', () => {
 			tryExpect( done, () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
-						`<img src="${ base64Sample }"></img>` +
+						// Rendering the image data is left to a upload progress converter.
+						'<img></img>' +
 						'</figure>]' +
 					'<p>foo bar</p>'
 				);
