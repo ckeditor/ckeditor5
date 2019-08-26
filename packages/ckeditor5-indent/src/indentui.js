@@ -13,12 +13,12 @@ import indentIcon from '../theme/icons/indent.svg';
 import outdentIcon from '../theme/icons/outdent.svg';
 
 /**
- * The indent feature.
+ * The indent UI feature.
  *
  * This plugin registers the `'indent'` and `'outdent'` buttons.
  *
- * **Note**: In order the commands to work at least one of compatible features is required. Read more in
- * {@link module:indent/indent~Indent indent feature} api docs.
+ * **Note**: In order for the commands to work, at least one of the compatible features is required. Read more in
+ * the {@link module:indent/indent~Indent indent feature} API documentation.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -35,14 +35,18 @@ export default class IndentUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const locale = editor.locale;
 		const t = editor.t;
 
-		this._defineButton( 'indent', t( 'Increase indent' ), indentIcon );
-		this._defineButton( 'outdent', t( 'Decrease indent' ), outdentIcon );
+		const localizedIndentIcon = locale.uiLanguageDirection == 'ltr' ? indentIcon : outdentIcon;
+		const localizedOutdentIcon = locale.uiLanguageDirection == 'ltr' ? outdentIcon : indentIcon;
+
+		this._defineButton( 'indent', t( 'Increase indent' ), localizedIndentIcon );
+		this._defineButton( 'outdent', t( 'Decrease indent' ), localizedOutdentIcon );
 	}
 
 	/**
-	 * Defines an UI button.
+	 * Defines a UI button.
 	 *
 	 * @param {String} commandName
 	 * @param {String} label

@@ -31,9 +31,7 @@ ClassicEditor
 			classes: [
 				'custom-block-indent-a',
 				'custom-block-indent-b',
-				'custom-block-indent-c',
-				'custom-block-indent-d',
-				'custom-block-indent-e'
+				'custom-block-indent-c'
 			]
 		}
 	} )

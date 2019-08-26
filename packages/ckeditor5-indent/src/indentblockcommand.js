@@ -13,14 +13,14 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 /**
  * The indent block command.
  *
- * The command is registered by the {@link module:indent/indentblock~IndentBlock} as `'indentBlock'` - for indenting blocks and
- * `'outdentBlock'` - for outdenting blocks.
+ * The command is registered by the {@link module:indent/indentblock~IndentBlock} as `'indentBlock'` for indenting blocks and
+ * `'outdentBlock'` for outdenting blocks.
  *
- * To increase block indentation at current selection execute the command:
+ * To increase block indentation at the current selection, execute the command:
  *
  *		editor.execute( 'indentBlock' );
  *
- * To decrease block indentation at current selection execute the command:
+ * To decrease block indentation at the current selection, execute the command:
  *
  *		editor.execute( 'outdentBlock' );
  *
@@ -30,14 +30,14 @@ export default class IndentBlockCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {module:indent/indentblockcommand~IndentBehavior} indentBehavior
 	 */
 	constructor( editor, indentBehavior ) {
 		super( editor );
 
 		/**
-		 * Command's indentation behavior.
+		 * The command's indentation behavior.
 		 *
 		 * @type {module:indent/indentblockcommand~IndentBehavior}
 		 * @private
@@ -49,7 +49,7 @@ export default class IndentBlockCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		// Check whether any of position's ancestor is a list item.
+		// Check whether any of the position's ancestors is a list item.
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -106,10 +106,10 @@ function getBlocksToChange( model ) {
  */
 
 /**
- * Performs check if command should be enabled.
+ * Checks if the command should be enabled.
  *
  * @method #checkEnabled
- * @param {String} indentAttributeValue Current indent attribute value.
+ * @param {String} indentAttributeValue The current indent attribute value.
  * @returns {Boolean}
  */
 

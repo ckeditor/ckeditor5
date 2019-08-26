@@ -18,8 +18,8 @@ import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
  *
  * It registers the `'indentBlock'` and `'outdentBlock'` commands.
  *
- * If the plugin {@link module:indent/indent~Indent} is defined it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
- * `'indent'` and `'outdent'` commands.
+ * If the plugin {@link module:indent/indent~Indent} is defined, it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
+ * the `'indent'` and `'outdent'` commands.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -96,16 +96,18 @@ export default class IndentBlock extends Plugin {
 	 */
 	_setupConversionUsingOffset() {
 		const conversion = this.editor.conversion;
+		const locale = this.editor.locale;
+		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
 
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				styles: {
-					'margin-left': /[\s\S]+/
+					[ marginProperty ]: /[\s\S]+/
 				}
 			},
 			model: {
 				key: 'blockIndent',
-				value: viewElement => viewElement.getStyle( 'margin-left' )
+				value: viewElement => viewElement.getStyle( marginProperty )
 			}
 		} );
 
@@ -118,7 +120,7 @@ export default class IndentBlock extends Plugin {
 			},
 			model: {
 				key: 'blockIndent',
-				value: viewElement => normalizeToMarginLeftStyle( viewElement.getStyle( 'margin' ) )
+				value: viewElement => normalizeToMarginSideStyle( viewElement.getStyle( 'margin' ), marginProperty )
 			}
 		} );
 
@@ -128,7 +130,7 @@ export default class IndentBlock extends Plugin {
 				return {
 					key: 'style',
 					value: {
-						'margin-left': modelAttributeValue
+						[ marginProperty ]: modelAttributeValue
 					}
 				};
 			}
@@ -162,36 +164,44 @@ export default class IndentBlock extends Plugin {
 	}
 }
 
-// Normalizes the margin shorthand value to the value of `margin-left` CSS property.
+// Normalizes the margin shorthand value to the value of margin-left or margin-right CSS property.
 //
 // As such it will return:
-// - '1em' for '1em'
-// - '1em' for '2px 1em'
-// - '1em' for '2px 1em 3px'
-// - '1em' for '2px 10px 3px 1em'
 //
-// @param {String} Margin style value.
-// @returns {String} Extracted value of margin-left.
-function normalizeToMarginLeftStyle( marginStyleValue ) {
+// - '1em' -> '1em'
+// - '2px 1em' -> '1em'
+// - '2px 1em 3px' -> '1em'
+// - '2px 10px 3px 1em'
+//		-> '1em' (side "margin-left")
+//		-> '10px' (side "margin-right")
+//
+// @param {String} marginStyleValue Margin style value.
+// @param {String} side "margin-left" or "margin-right" depending on which margin should be returned.
+// @returns {String} Extracted value of margin-left or margin-right.
+function normalizeToMarginSideStyle( marginStyleValue, side ) {
 	// Splits the margin shorthand, ie margin: 2em 4em.
 	const marginEntries = marginStyleValue.split( ' ' );
 
-	let left;
+	let marginValue;
 
 	// If only one value defined, ie: `margin: 1px`.
-	left = marginEntries[ 0 ];
+	marginValue = marginEntries[ 0 ];
 
 	// If only two values defined, ie: `margin: 1px 2px`.
 	if ( marginEntries[ 1 ] ) {
-		left = marginEntries[ 1 ];
+		marginValue = marginEntries[ 1 ];
 	}
 
 	// If four values defined, ie: `margin: 1px 2px 3px 4px`.
 	if ( marginEntries[ 3 ] ) {
-		left = marginEntries[ 3 ];
+		if ( side === 'margin-left' ) {
+			marginValue = marginEntries[ 3 ];
+		} else {
+			marginValue = marginEntries[ 1 ];
+		}
 	}
 
-	return left;
+	return marginValue;
 }
 
 /**
@@ -205,7 +215,7 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
 /**
  * The configuration of the block indentation feature.
  *
- * If no {@link module:indent/indentblock~IndentBlockConfig#classes} are set the block indentation feature will use
+ * If no {@link module:indent/indentblock~IndentBlockConfig#classes} are set, the block indentation feature will use
  * {@link module:indent/indentblock~IndentBlockConfig#offset} and {@link module:indent/indentblock~IndentBlockConfig#unit} to
  * create indentation steps.
  *
@@ -219,25 +229,25 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
  *			.then( ... )
  *			.catch( ... );
  *
- * Alternatively the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
+ * Alternatively, the block indentation feature may set one of defined {@link module:indent/indentblock~IndentBlockConfig#classes} as
  * indentation steps:
  *
  *		ClassicEditor
  *			.create( editorElement, {
  * 				indentBlock: {
  *					classes: [
- *						'indent-a', // First step - smallest indentation.
+ *						'indent-a', // The first step - smallest indentation.
  *						'indent-b',
  *						'indent-c',
  *						'indent-d',
- *						'indent-e' // Last step - biggest indentation.
+ *						'indent-e' // The last step - biggest indentation.
  *					]
  * 				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
  *
- * In the above example only 5 indentation steps will be available.
+ * In the example above only 5 indentation steps will be available.
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
@@ -245,7 +255,7 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
  */
 
 /**
- * The size in indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} of each indentation step.
+ * The size of indentation {@link module:indent/indentblock~IndentBlockConfig#unit units} for each indentation step.
  *
  * @default 40
  * @member {Number} module:indent/indentblock~IndentBlockConfig#offset
@@ -259,9 +269,9 @@ function normalizeToMarginLeftStyle( marginStyleValue ) {
  */
 
 /**
- * An optional list of classes to use for indenting the contents. If not set or set to empty array, no classes will be used and instead
- * the {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
- * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used.
+ * An optional list of classes to use for indenting the editor content. If not set or set to an empty array, no classes will be used.
+ * The {@link module:indent/indentblock~IndentBlockConfig#unit `indentBlock.unit`} and
+ * {@link module:indent/indentblock~IndentBlockConfig#offset `indentBlock.offset`} properties will be used instead.
  *
  * @default undefined
  * @member {Array.<String>|undefined} module:indent/indentblock~IndentBlockConfig#classes
