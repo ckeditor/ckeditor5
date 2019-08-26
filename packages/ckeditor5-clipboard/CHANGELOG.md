@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [12.0.2](https://github.com/ckeditor/ckeditor5-clipboard/compare/v12.0.1...v12.0.2) (2019-08-26)
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([b1782bb](https://github.com/ckeditor/ckeditor5-clipboard/commit/b1782bb))
+
+
 ## [12.0.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v12.0.0...v12.0.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
