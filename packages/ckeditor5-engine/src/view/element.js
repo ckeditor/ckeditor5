@@ -147,25 +147,36 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks whether this view object is of the given type.
+	 * Checks whether this object is of the given.
 	 *
-	 *		obj.is( 'element' ); // true
-	 *		obj.is( 'li' ); // true
-	 *		obj.is( 'element', 'li' ); // true
-	 *		obj.is( 'text' ); // false
-	 *		obj.is( 'element', 'img' ); // false
+	 *		element.is( 'element' ); // -> true
+	 *		element.is( 'node' ); // -> true
+	 *		element.is( 'view:element' ); // -> true
+	 *		element.is( 'view:node' ); // -> true
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *		element.is( 'model:element' ); // -> false
+	 *		element.is( 'documentSelection' ); // -> false
 	 *
-	 * @param {String} type
+	 * Assuming that the object being checked is an element, you can also check its
+	 * {@link module:engine/view/element~Element#name name}:
+	 *
+	 *		element.is( 'img' ); // -> true if this is an <img> element
+	 *		element.is( 'element', 'img' ); // -> same as above
+	 *		text.is( 'img' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return type == 'element' || type == this.name || super.is( type );
+			return cutType == 'element' || cutType == this.name || super.is( type );
 		} else {
-			return type == 'element' && name == this.name;
+			return cutType == 'element' && name == this.name;
 		}
 	}
 

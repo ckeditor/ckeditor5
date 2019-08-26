@@ -71,7 +71,7 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let frag;
 
 		before( () => {
@@ -80,13 +80,16 @@ describe( 'DocumentFragment', () => {
 
 		it( 'should return true for documentFragment', () => {
 			expect( frag.is( 'documentFragment' ) ).to.be.true;
+			expect( frag.is( 'view:documentFragment' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( frag.is( 'node' ) ).to.be.false;
+			expect( frag.is( 'view:node' ) ).to.be.false;
 			expect( frag.is( 'text' ) ).to.be.false;
 			expect( frag.is( 'textProxy' ) ).to.be.false;
 			expect( frag.is( 'element' ) ).to.be.false;
+			expect( frag.is( 'view:element' ) ).to.be.false;
 			expect( frag.is( 'containerElement' ) ).to.be.false;
 			expect( frag.is( 'attributeElement' ) ).to.be.false;
 			expect( frag.is( 'uiElement' ) ).to.be.false;

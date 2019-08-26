@@ -47,3 +47,10 @@
 
 ### Not bounded attribute
 Just make sure that two-steps caret movement is disabled for bold text from the third paragraph.
+
+### Right–to–left content
+
+**Tip**: Change the system keyboard to Hebrew before testing.
+
+Two-steps caret movement should also work when the content is right–to–left. Repeat all previous steps keeping in mind that the flow of the text is "reversed".
+

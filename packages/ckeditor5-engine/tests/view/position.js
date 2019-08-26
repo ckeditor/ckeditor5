@@ -24,10 +24,37 @@ describe( 'Position', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
-			const elem = new Position( parentMock, 5 );
+			const position = new Position( parentMock, 5 );
 
-			expect( elem ).to.have.property( 'parent' ).that.equals( parentMock );
-			expect( elem ).to.have.property( 'offset' ).that.equals( 5 );
+			expect( position ).to.have.property( 'parent' ).that.equals( parentMock );
+			expect( position ).to.have.property( 'offset' ).that.equals( 5 );
+		} );
+	} );
+
+	describe( 'is()', () => {
+		let position;
+
+		beforeEach( () => {
+			position = new Position( parentMock, 5 );
+		} );
+
+		it( 'should return true for "position"', () => {
+			expect( position.is( 'position' ) ).to.be.true;
+			expect( position.is( 'view:position' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( position.is( 'rootElement' ) ).to.be.false;
+			expect( position.is( 'containerElement' ) ).to.be.false;
+			expect( position.is( 'element' ) ).to.be.false;
+			expect( position.is( 'p' ) ).to.be.false;
+			expect( position.is( 'text' ) ).to.be.false;
+			expect( position.is( 'textProxy' ) ).to.be.false;
+			expect( position.is( 'attributeElement' ) ).to.be.false;
+			expect( position.is( 'uiElement' ) ).to.be.false;
+			expect( position.is( 'emptyElement' ) ).to.be.false;
+			expect( position.is( 'documentFragment' ) ).to.be.false;
+			expect( position.is( 'model:position' ) ).to.be.false;
 		} );
 	} );
 

@@ -77,6 +77,25 @@ export default class Mapper {
 		 */
 		this._markerNameToElements = new Map();
 
+		/**
+		 * View element to model marker names mapping.
+		 *
+		 * This is reverse to {@link ~Mapper#_markerNameToElements} map.
+		 *
+		 * @private
+		 * @member {Map}
+		 */
+		this._elementToMarkerNames = new Map();
+
+		/**
+		 * Stores marker names of markers which has changed due to unbinding a view element (so it is assumed that the view element
+		 * has been removed, moved or renamed).
+		 *
+		 * @private
+		 * @member {Set.<module:engine/model/markercollection~Marker>}
+		 */
+		this._unboundMarkerNames = new Set();
+
 		// Default mapper algorithm for mapping model position to view position.
 		this.on( 'modelToViewPosition', ( evt, data ) => {
 			if ( data.viewPosition ) {
@@ -132,6 +151,12 @@ export default class Mapper {
 
 		this._viewToModelMapping.delete( viewElement );
 
+		if ( this._elementToMarkerNames.has( viewElement ) ) {
+			for ( const markerName of this._elementToMarkerNames.get( viewElement ) ) {
+				this._unboundMarkerNames.add( markerName );
+			}
+		}
+
 		if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
 			this._modelToViewMapping.delete( modelElement );
 		}
@@ -167,10 +192,13 @@ export default class Mapper {
 	 */
 	bindElementToMarker( element, name ) {
 		const elements = this._markerNameToElements.get( name ) || new Set();
-
 		elements.add( element );
 
+		const names = this._elementToMarkerNames.get( element ) || new Set();
+		names.add( name );
+
 		this._markerNameToElements.set( name, elements );
+		this._elementToMarkerNames.set( element, names );
 	}
 
 	/**
@@ -180,15 +208,39 @@ export default class Mapper {
 	 * @param {String} name Marker name.
 	 */
 	unbindElementFromMarkerName( element, name ) {
-		const elements = this._markerNameToElements.get( name );
+		const nameToElements = this._markerNameToElements.get( name );
 
-		if ( elements ) {
-			elements.delete( element );
+		if ( nameToElements ) {
+			nameToElements.delete( element );
 
-			if ( elements.size == 0 ) {
+			if ( nameToElements.size == 0 ) {
 				this._markerNameToElements.delete( name );
 			}
 		}
+
+		const elementToNames = this._elementToMarkerNames.get( element );
+
+		if ( elementToNames ) {
+			elementToNames.delete( name );
+
+			if ( elementToNames.size == 0 ) {
+				this._elementToMarkerNames.delete( element );
+			}
+		}
+	}
+
+	/**
+	 * Returns all marker names of markers which has changed due to unbinding a view element (so it is assumed that the view element
+	 * has been removed, moved or renamed) since the last flush. After returning, the marker names list is cleared.
+	 *
+	 * @returns {Array.<String>}
+	 */
+	flushUnboundMarkerNames() {
+		const markerNames = Array.from( this._unboundMarkerNames );
+
+		this._unboundMarkerNames.clear();
+
+		return markerNames;
 	}
 
 	/**
@@ -198,6 +250,8 @@ export default class Mapper {
 		this._modelToViewMapping = new WeakMap();
 		this._viewToModelMapping = new WeakMap();
 		this._markerNameToElements = new Map();
+		this._elementToMarkerNames = new Map();
+		this._unboundMarkerNames = new Set();
 	}
 
 	/**

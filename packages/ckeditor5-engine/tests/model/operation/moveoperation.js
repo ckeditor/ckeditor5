@@ -171,7 +171,7 @@ describe( 'MoveOperation', () => {
 
 			root._removeChildren( 1 );
 
-			expectToThrowCKEditorError( () => operation._validate(), /move-operation-position-invalid/, model );
+			expectToThrowCKEditorError( () => operation._validate(), /model-position-path-incorrect/, model );
 		} );
 
 		it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {

@@ -94,15 +94,22 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Checks whether given view tree object is of given type.
+	 * Checks whether this object is of the given type.
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *		docFrag.is( 'documentFragment' ); // -> true
+	 *		docFrag.is( 'view:documentFragment' ); // -> true
+	 *
+	 *		docFrag.is( 'model:documentFragment' ); // -> false
+	 *		docFrag.is( 'element' ); // -> false
+	 *		docFrag.is( 'node' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'documentFragment';
+		return type == 'documentFragment' || type == 'view:documentFragment';
 	}
 
 	/**
