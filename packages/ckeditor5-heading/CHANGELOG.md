@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.0.5](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.4...v11.0.5) (2019-08-26)
+
+### Bug fixes
+
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([5c41c1a](https://github.com/ckeditor/ckeditor5-heading/commit/5c41c1a))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([1a68915](https://github.com/ckeditor/ckeditor5-heading/commit/1a68915))
+* Updated translations. ([201cf3c](https://github.com/ckeditor/ckeditor5-heading/commit/201cf3c)) 
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
