@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([7bba679](https://github.com/ckeditor/ckeditor5-essentials/commit/7bba679))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([7bba679](https://github.com/ckeditor/ckeditor5-essentials/commit/7bba679))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-essentials/compare/v11.0.3...v11.0.4) (2019-07-10)
