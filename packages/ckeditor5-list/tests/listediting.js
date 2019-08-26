@@ -3884,7 +3884,7 @@ describe( 'ListEditing', () => {
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:splitBlock', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
 
-				// Use split to allowed parent logic to simulate the "improper" use modelCursor after split (set.
+				// Use split to allowed parent logic to simulate a non-standard use of `modelCursor` after split.
 				const splitBlock = conversionApi.writer.createElement( 'splitBlock' );
 				const splitResult = conversionApi.splitToAllowedParent( splitBlock, data.modelCursor );
 
