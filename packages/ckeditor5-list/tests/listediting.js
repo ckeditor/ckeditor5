@@ -3870,7 +3870,8 @@ describe( 'ListEditing', () => {
 			);
 		} );
 
-		it( 'should cover else branch', () => {
+		// https://github.com/ckeditor/ckeditor5-list/issues/126#issuecomment-518206743
+		it( 'should properly handle split of list items with non-standard converters', () => {
 			setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
