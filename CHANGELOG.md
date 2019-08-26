@@ -3,6 +3,10 @@ Changelog
 
 ## [12.4.0](https://github.com/ckeditor/ckeditor5/compare/v12.3.1...v12.4.0) (2019-08-26)
 
+This release brings a huge set of new features: [image resizing](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/image.html#resizing-images), [to-do lists](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/todo-lists.html), [support for RTL languages](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/ui-language.html), [simple upload adapter](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/image-upload/simple-upload-adapter.html), [support for pasting from Google Docs](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/paste-from-office/paste-from-google-docs.html), [mathematic formulas](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/mathtype.html), and [spelling and grammar checking](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/spell-checker.html). In addition to that, as always, it contains many improvements and bug fixes.
+
+Blog post comming soon...
+
 ### Dependencies
 
 Major releases (contain breaking changes):
@@ -60,26 +64,12 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v11.0.4 => [v11.0.5](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v11.0.5)
 * [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v10.0.1 => [v10.0.2](https://github.com/ckeditor/ckeditor5-word-count/releases/tag/v10.0.2)
 
-### Features
-
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Implemented the right–to–left (RTL) languages support for the UI and the content (see [#1151](https://github.com/ckeditor/ckeditor5/issues/1151)). ([4ff2d16](https://github.com/ckeditor/ckeditor5/commit/4ff2d16))
-
-### Other changes
-
-* Adjusted repository, documentation and scripts to changes done in mgit/mrgit. See: [cksource/mgit2#85](https://github.com/cksource/mgit2/issues/85). ([f19fb8d](https://github.com/ckeditor/ckeditor5/commit/f19fb8d))
-* Bumped style-loader to v1.0.0. Aligned configurations and documentation to the new loader API. Closes [#1945](https://github.com/ckeditor/ckeditor5/issues/1945). ([bef7fd0](https://github.com/ckeditor/ckeditor5/commit/bef7fd0))
-* Upgraded dependencies in yarn.lock. ([05df53e](https://github.com/ckeditor/ckeditor5/commit/05df53e))
-
-  > Other: Upgraded dependencies in `yarn.lock`.
-
 
 ## [12.3.1](https://github.com/ckeditor/ckeditor5/compare/v12.3.0...v12.3.1) (2019-07-10)
 
 We are happy to report the release of CKEditor 5 v12.3.0 (and v12.3.1 with a [small fix](https://github.com/ckeditor/ckeditor5-typing/pull/209)). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v12.3.0-with-word-count-autocorrect-link-attributes-and-new-upload-adapter-released/
 
 ### Dependencies
 
