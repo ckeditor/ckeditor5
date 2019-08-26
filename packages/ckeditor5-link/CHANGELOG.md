@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [11.1.2](https://github.com/ckeditor/ckeditor5-link/compare/v11.1.1...v11.1.2) (2019-08-26)
+
+### Bug fixes
+
+* Add missing return value for link post-fixer. Closes [#241](https://github.com/ckeditor/ckeditor5-link/issues/241). ([14e5803](https://github.com/ckeditor/ckeditor5-link/commit/14e5803))
+* Improved balloon positioning when there is more than one stack in the rotator. ([d6c45df](https://github.com/ckeditor/ckeditor5-link/commit/d6c45df))
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([b9e31a0](https://github.com/ckeditor/ckeditor5-link/commit/b9e31a0))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([cea8fa2](https://github.com/ckeditor/ckeditor5-link/commit/cea8fa2))
+* Passed editor content direction to the `bindTwoStepCaretToAttribute()` helper in the `LinkEditing` plugin. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([73bf132](https://github.com/ckeditor/ckeditor5-link/commit/73bf132))
+* Updated translations. ([4345546](https://github.com/ckeditor/ckeditor5-link/commit/4345546)) 
+
+
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-link/compare/v11.1.0...v11.1.1) (2019-07-10)
 
 ### Other changes
