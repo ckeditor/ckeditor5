@@ -712,10 +712,10 @@
     tmp "^0.0.33"
     vinyl-fs "^3.0.2"
 
-"@ckeditor/ckeditor5-dev-env@^15.0.3":
-  version "15.0.5"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-env/-/ckeditor5-dev-env-15.0.5.tgz#9ad3682fc1ce1df6c460ed0f8545d6f310d0ced3"
-  integrity sha512-rVB/jZVobLi1gUvP+VtlOcSACYU3vKjZTgY2REoSRtkcKnscjwGesnTWmRFZWm7pbw9PKpbZRk/TLMHZIpXkUQ==
+"@ckeditor/ckeditor5-dev-env@^16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-env/-/ckeditor5-dev-env-16.0.0.tgz#e842b19e8a3c8579351aba5599b9f3dedfed1774"
+  integrity sha512-mlf2Ab8Yp2mBEXiuSNsLoHozixrbi8i/3wwHwW5LttRLIzcaCIHOkK38L8l2EKf8LMUS4QEWDwRP/JIVErujAg==
   dependencies:
     "@ckeditor/ckeditor5-dev-utils" "^12.0.5"
     "@octokit/rest" "^16.28.2"
