@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.0.5](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.4...v11.0.5) (2019-08-26)
+
+### Bug fixes
+
+* Pass CKFinder instance to a user-defined onInit() function. Closes [#45](https://github.com/ckeditor/ckeditor5-ckfinder/issues/45). ([e53558c](https://github.com/ckeditor/ckeditor5-ckfinder/commit/e53558c))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([816fb02](https://github.com/ckeditor/ckeditor5-ckfinder/commit/816fb02))
+* Updated translations. ([3c3e350](https://github.com/ckeditor/ckeditor5-ckfinder/commit/3c3e350)) 
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
