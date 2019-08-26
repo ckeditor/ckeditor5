@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.5](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v11.0.4...v11.0.5) (2019-08-26)
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([566b650](https://github.com/ckeditor/ckeditor5-cloud-services/commit/566b650))
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
