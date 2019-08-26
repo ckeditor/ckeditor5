@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2a33675](https://github.com/ckeditor/ckeditor5-mention/commit/2a33675))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2a33675](https://github.com/ckeditor/ckeditor5-mention/commit/2a33675))
 * Use RegExp Unicode support feature detection form ckeditor5-utils. ([d47923e](https://github.com/ckeditor/ckeditor5-mention/commit/d47923e))
 
 ### BREAKING CHANGES
