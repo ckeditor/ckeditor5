@@ -290,25 +290,52 @@ export default class Node {
 	}
 
 	/**
-	 * Checks whether this view object is of the given type.
+	 * Checks whether this object is of the given type.
 	 *
-	 * This method is useful when processing view tree objects that are of unknown type. For example, a function
-	 * may return {@link module:engine/view/documentfragment~DocumentFragment} or {@link module:engine/view/node~Node}
-	 * that can be either text node or element. This method can be used to check what kind of object is returned.
+	 * This method is useful when processing view objects that are of unknown type. For example, a function
+	 * may return a {@link module:engine/view/documentfragment~DocumentFragment} or a {@link module:engine/view/node~Node}
+	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
 	 *
-	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
-	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
-	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
-	 *		obj.is( 'element', 'p' ); // true only for element which name is 'p'
-	 *		obj.is( 'p' ); // shortcut for obj.is( 'element', 'p' )
-	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
+	 *		someObject.is( 'element' ); // -> true if this is an element
+	 *		someObject.is( 'node' ); // -> true if this is a node (a text node or an element)
+	 *		someObject.is( 'documentFragment' ); // -> true if this is a document fragment
 	 *
-	 * @param {'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
-	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
+	 * Since this method is also available on a range of model objects, you can prefix the type of the object with
+	 * `model:` or `view:` to check, for example, if this is the model's or view's element:
+	 *
+	 *		viewElement.is( 'view:element' ); // -> true
+	 *		viewElement.is( 'model:element' ); // -> false
+	 *
+	 * By using this method it is also possible to check a name of an element:
+	 *
+	 *		imgElement.is( 'img' ); // -> true
+	 *		imgElement.is( 'element', 'img' ); // -> same as above
+	 *		imgElement.is( 'view:element', 'img' ); // -> same as above, but more precise
+	 *
+	 * The list of view objects which implement the `is()` method:
+	 *
+	 * * {@link module:engine/view/attributeelement~AttributeElement#is `AttributeElement#is()`}
+	 * * {@link module:engine/view/containerelement~ContainerElement#is `ContainerElement#is()`}
+	 * * {@link module:engine/view/documentfragment~DocumentFragment#is `DocumentFragment#is()`}
+	 * * {@link module:engine/view/documentselection~DocumentSelection#is `DocumentSelection#is()`}
+	 * * {@link module:engine/view/editableelement~EditableElement#is `EditableElement#is()`}
+	 * * {@link module:engine/view/element~Element#is `Element#is()`}
+	 * * {@link module:engine/view/emptyelement~EmptyElement#is `EmptyElement#is()`}
+	 * * {@link module:engine/view/node~Node#is `Node#is()`}
+	 * * {@link module:engine/view/position~Position#is `Position#is()`}
+	 * * {@link module:engine/view/range~Range#is `Range#is()`}
+	 * * {@link module:engine/view/rooteditableelement~RootEditableElement#is `RootEditableElement#is()`}
+	 * * {@link module:engine/view/selection~Selection#is `Selection#is()`}
+	 * * {@link module:engine/view/text~Text#is `Text#is()`}
+	 * * {@link module:engine/view/textproxy~TextProxy#is `TextProxy#is()`}
+	 * * {@link module:engine/view/uielement~UIElement#is `UIElement#is()`}
+	 *
+	 * @method #is
+	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'node';
+		return type == 'node' || type == 'view:node';
 	}
 
 	/**

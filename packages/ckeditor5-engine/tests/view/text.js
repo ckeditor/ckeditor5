@@ -17,7 +17,7 @@ describe( 'Text', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let text;
 
 		before( () => {
@@ -26,18 +26,24 @@ describe( 'Text', () => {
 
 		it( 'should return true for node, text', () => {
 			expect( text.is( 'node' ) ).to.be.true;
+			expect( text.is( 'view:node' ) ).to.be.true;
 			expect( text.is( 'text' ) ).to.be.true;
+			expect( text.is( 'view:text' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( text.is( 'textProxy' ) ).to.be.false;
+			expect( text.is( 'view:textProxy' ) ).to.be.false;
 			expect( text.is( 'element' ) ).to.be.false;
+			expect( text.is( 'view:element' ) ).to.be.false;
 			expect( text.is( 'containerElement' ) ).to.be.false;
 			expect( text.is( 'attributeElement' ) ).to.be.false;
 			expect( text.is( 'uiElement' ) ).to.be.false;
 			expect( text.is( 'emptyElement' ) ).to.be.false;
 			expect( text.is( 'rootElement' ) ).to.be.false;
 			expect( text.is( 'documentFragment' ) ).to.be.false;
+			expect( text.is( 'model:text' ) ).to.be.false;
+			expect( text.is( 'model:node' ) ).to.be.false;
 		} );
 	} );
 

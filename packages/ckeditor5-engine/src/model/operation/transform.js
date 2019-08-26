@@ -101,14 +101,14 @@ export function transform( a, b, context = {} ) {
 
 		return transformationFunction( a, b, context );
 	} catch ( e ) {
-		// @if CK_DEBUG // console.error( 'Error during operation transformation!', e.message );
-		// @if CK_DEBUG // console.error( 'Transformed operation', a );
-		// @if CK_DEBUG // console.error( 'Operation transformed by', b );
-		// @if CK_DEBUG // console.error( 'context.aIsStrong', context.aIsStrong );
-		// @if CK_DEBUG // console.error( 'context.aWasUndone', context.aWasUndone );
-		// @if CK_DEBUG // console.error( 'context.bWasUndone', context.bWasUndone );
-		// @if CK_DEBUG // console.error( 'context.abRelation', context.abRelation );
-		// @if CK_DEBUG // console.error( 'context.baRelation', context.baRelation );
+		// @if CK_DEBUG // console.warn( 'Error during operation transformation!', e.message );
+		// @if CK_DEBUG // console.warn( 'Transformed operation', a );
+		// @if CK_DEBUG // console.warn( 'Operation transformed by', b );
+		// @if CK_DEBUG // console.warn( 'context.aIsStrong', context.aIsStrong );
+		// @if CK_DEBUG // console.warn( 'context.aWasUndone', context.aWasUndone );
+		// @if CK_DEBUG // console.warn( 'context.bWasUndone', context.bWasUndone );
+		// @if CK_DEBUG // console.warn( 'context.abRelation', context.abRelation );
+		// @if CK_DEBUG // console.warn( 'context.baRelation', context.baRelation );
 
 		throw e;
 	}

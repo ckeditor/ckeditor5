@@ -51,13 +51,38 @@ export default class ContainerElement extends Element {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		containerElement.is( 'containerElement' ); // -> true
+	 *		containerElement.is( 'element' ); // -> true
+	 *		containerElement.is( 'node' ); // -> true
+	 *		containerElement.is( 'view:containerElement' ); // -> true
+	 *		containerElement.is( 'view:element' ); // -> true
+	 *		containerElement.is( 'view:node' ); // -> true
+	 *
+	 *		containerElement.is( 'model:element' ); // -> false
+	 *		containerElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is a container element, you can also check its
+	 * {@link module:engine/view/containerelement~ContainerElement#name name}:
+	 *
+	 *		containerElement.is( 'div' ); // -> true if this is a div container element
+	 *		containerElement.is( 'contaienrElement', 'div' ); // -> same as above
+	 *		text.is( 'div' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type && type.replace( /^view:/, '' );
 		if ( !name ) {
-			return type == 'containerElement' || super.is( type );
+			return cutType == 'containerElement' || super.is( type );
 		} else {
-			return ( type == 'containerElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'containerElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 }

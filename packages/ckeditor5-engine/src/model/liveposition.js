@@ -64,6 +64,26 @@ export default class LivePosition extends Position {
 	}
 
 	/**
+	 * Checks whether this object is of the given.
+	 *
+	 *		livePosition.is( 'position' ); // -> true
+	 *		livePosition.is( 'model:position' ); // -> true
+	 *		livePosition.is( 'liveposition' ); // -> true
+	 *		livePosition.is( 'model:livePosition' ); // -> true
+	 *
+	 *		livePosition.is( 'view:position' ); // -> false
+	 *		livePosition.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'livePosition' || type == 'model:livePosition' || super.is( type );
+	}
+
+	/**
 	 * Creates a {@link module:engine/model/position~Position position instance}, which is equal to this live position.
 	 *
 	 * @returns {module:engine/model/position~Position}

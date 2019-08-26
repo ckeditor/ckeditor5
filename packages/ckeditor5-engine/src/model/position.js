@@ -526,6 +526,24 @@ export default class Position {
 	}
 
 	/**
+	 * Checks whether this object is of the given.
+	 *
+	 *		position.is( 'position' ); // -> true
+	 *		position.is( 'model:position' ); // -> true
+	 *
+	 *		position.is( 'view:position' ); // -> false
+	 *		position.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'position' || type == 'model:position';
+	}
+
+	/**
 	 * Checks if two positions are in the same parent.
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).

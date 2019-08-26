@@ -128,6 +128,26 @@ describe( 'Position', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let position;
+
+		beforeEach( () => {
+			position = new Position( root, [ 0 ] );
+		} );
+
+		it( 'should return true for "position"', () => {
+			expect( position.is( 'position' ) ).to.be.true;
+			expect( position.is( 'model:position' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( position.is( 'model' ) ).to.be.false;
+			expect( position.is( 'model:node' ) ).to.be.false;
+			expect( position.is( 'text' ) ).to.be.false;
+			expect( position.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'static creators', () => {
 		describe( '_createAt()', () => {
 			it( 'should throw if no offset is passed', () => {

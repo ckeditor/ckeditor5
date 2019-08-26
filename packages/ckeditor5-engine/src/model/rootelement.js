@@ -55,13 +55,38 @@ export default class RootElement extends Element {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		rootElement.is( 'rootElement' ); // -> true
+	 *		rootElement.is( 'element' ); // -> true
+	 *		rootElement.is( 'node' ); // -> true
+	 *		rootElement.is( 'model:rootElement' ); // -> true
+	 *		rootElement.is( 'model:element' ); // -> true
+	 *		rootElement.is( 'model:node' ); // -> true
+	 *
+	 *		rootElement.is( 'view:element' ); // -> false
+	 *		rootElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is an element, you can also check its
+	 * {@link module:engine/model/element~Element#name name}:
+	 *
+	 *		rootElement.is( '$root' ); // -> true if this is a $root element
+	 *		rootElement.is( 'rootElement', '$root' ); // -> same as above
+	 *		text.is( '$root' ); -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name ) {
+		const cutType = type.replace( 'model:', '' );
 		if ( !name ) {
-			return type == 'rootElement' || super.is( type );
+			return cutType == 'rootElement' || super.is( type );
 		} else {
-			return ( type == 'rootElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'rootElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 
