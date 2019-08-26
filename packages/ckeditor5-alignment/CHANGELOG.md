@@ -13,9 +13,9 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([54f81b3](https://github.com/ckeditor/ckeditor5-alignment/commit/54f81b3))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([54f81b3](https://github.com/ckeditor/ckeditor5-alignment/commit/54f81b3))
 * The text alignment toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([3ed81de](https://github.com/ckeditor/ckeditor5-alignment/commit/3ed81de))
-* Updated translations. ([feb4ab3](https://github.com/ckeditor/ckeditor5-alignment/commit/feb4ab3)) 
+* Updated translations. ([feb4ab3](https://github.com/ckeditor/ckeditor5-alignment/commit/feb4ab3))
 
 
 ## [11.1.3](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.2...v11.1.3) (2019-07-10)
@@ -27,14 +27,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([bb7f494](https://github.com/ckeditor/ckeditor5-alignment/commit/bb7f494)) 
+* Updated translations. ([bb7f494](https://github.com/ckeditor/ckeditor5-alignment/commit/bb7f494))
 
 
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.0...v11.1.1) (2019-06-05)
 
 ### Other changes
 
-* Updated translations. ([32c32c1](https://github.com/ckeditor/ckeditor5-alignment/commit/32c32c1)) 
+* Updated translations. ([32c32c1](https://github.com/ckeditor/ckeditor5-alignment/commit/32c32c1))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.0.0...v11.1.0) (2019-04-10)
@@ -45,7 +45,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([78bfc40](https://github.com/ckeditor/ckeditor5-alignment/commit/78bfc40)) 
+* Updated translations. ([78bfc40](https://github.com/ckeditor/ckeditor5-alignment/commit/78bfc40))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.4...v11.0.0) (2019-02-28)
