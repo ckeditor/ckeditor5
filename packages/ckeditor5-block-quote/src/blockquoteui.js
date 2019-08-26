@@ -35,7 +35,8 @@ export default class BlockQuoteUI extends Plugin {
 			buttonView.set( {
 				label: t( 'Block quote' ),
 				icon: quoteIcon,
-				tooltip: true
+				tooltip: true,
+				isToggleable: true
 			} );
 
 			// Bind button model to command.

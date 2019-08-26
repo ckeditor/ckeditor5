@@ -333,7 +333,7 @@ describe( 'BlockQuote integration', () => {
 				.then( editor => {
 					setModelData( editor.model,
 						'<paragraph>fo[o</paragraph>' +
-						'<image src="foo.png"></image>' +
+						'<image src="/assets/sample.png"></image>' +
 						'<paragraph>b]ar</paragraph>'
 					);
 
@@ -342,7 +342,7 @@ describe( 'BlockQuote integration', () => {
 					expect( getModelData( editor.model ) ).to.equal(
 						'<blockQuote>' +
 							'<paragraph>fo[o</paragraph>' +
-							'<image src="foo.png"></image>' +
+							'<image src="/assets/sample.png"></image>' +
 							'<paragraph>b]ar</paragraph>' +
 						'</blockQuote>'
 					);
@@ -355,7 +355,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'quotes an image with caption', () => {
 			setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<image src="foo.png">' +
+				'<image src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
 				'</image>' +
 				'<paragraph>b]ar</paragraph>'
@@ -366,7 +366,7 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote>' +
 					'<paragraph>fo[o</paragraph>' +
-					'<image src="foo.png">' +
+					'<image src="/assets/sample.png">' +
 						'<caption>xxx</caption>' +
 					'</image>' +
 					'<paragraph>b]ar</paragraph>' +
@@ -377,7 +377,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'adds an image to an existing quote', () => {
 			setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<image src="foo.png">' +
+				'<image src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
 				'</image>' +
 				'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
@@ -389,7 +389,7 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote>' +
 					'<paragraph>foo</paragraph>' +
-					'<image src="foo.png">' +
+					'<image src="/assets/sample.png">' +
 						'<caption>xxx</caption>' +
 					'</image>' +
 					'<paragraph>[b]ar</paragraph>' +
