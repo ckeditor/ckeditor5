@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-word-count",
-  "version": "10.0.1",
+  "version": "10.0.2",
   "description": "Word count and character count features for CKEditor 5.",
   "keywords": [
     "ckeditor",
