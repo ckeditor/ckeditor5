@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [13.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.1...v13.0.0) (2019-08-26)
+
+### Other changes
+
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2a33675](https://github.com/ckeditor/ckeditor5-mention/commit/2a33675))
+* Use RegExp Unicode support feature detection form ckeditor5-utils. ([d47923e](https://github.com/ckeditor/ckeditor5-mention/commit/d47923e))
+
+### BREAKING CHANGES
+
+* The `mention/featuredetection` namespace is removed. Please use `env.features` from ckeditor5-utils instead.
+
+
 ## [12.0.1](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.0...v12.0.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
