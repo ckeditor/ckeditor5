@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [14.2.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.1...v14.2.0) (2019-08-26)
+
+### Features
+
+* Brought support for right–to–left (RTL) UI to various components' styles. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([70aa1a5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/70aa1a5))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([59e4777](https://github.com/ckeditor/ckeditor5-theme-lark/commit/59e4777))
+* The `.ck-progress-bar` styles should not be under with `.ck-content`. Additionaly removed two unused custom properties: `--ck-color-upload-infinite-background` and `--ck-image-upload-progress-line-width`. Closes https://github.com/ckeditor/ckeditor5-theme-lark/issues/239. Closes https://github.com/ckeditor/ckeditor5/issues/1915. ([cb92793](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cb92793))
+
+
 ## [14.1.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.0...v14.1.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
