@@ -218,7 +218,7 @@ And the `max-width` gets overridden by the following rule:
 }
 ```
 
-The other concern when styling resized images is that by default CKEditor 5 use `display: table` on `<figure class="image">` to make it take the size of the `<img>` element inside it. Unfortunately, [browsers do not support yet using `max-width` and `width` on the same element if it is styled with `display: table`](https://stackoverflow.com/questions/4019604/chrome-safari-ignoring-max-width-in-table/14420691#14420691). Therefore, `display: block` needs to be used when the image is resized:
+The other concern when styling resized images is that by default CKEditor 5 uses `display: table` on `<figure class="image">` to make it take the size of the `<img>` element inside it. Unfortunately, [browsers do not support yet using `max-width` and `width` on the same element if it is styled with `display: table`](https://stackoverflow.com/questions/4019604/chrome-safari-ignoring-max-width-in-table/14420691#14420691). Therefore, `display: block` needs to be used when the image is resized:
 
 ```css
 .ck-content .image.image_resized {
@@ -237,11 +237,22 @@ The other concern when styling resized images is that by default CKEditor 5 use 
 
 ### Using pixels instead of percentage width
 
-TODO:
+Using percentage widths ensures that content stays responsive when displayed in different places than in the editor. If the user made an image take 60% of the content's width in the editor, if you will ever change the width of the target page (where this content is displayed), the image will still take 60% of that space. The same is true if this page is responsive and adjusts to the viewport's width.
 
-* overview
-* downsides
-* configuration
+If you would configure the editor to use pixel values, the image could take, for example, too much space after you introduced a new layout for your website.
+
+However, there are cases where pixel values may be preferred. If so, you can configure the editor to use them by setting the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} option:
+
+```js
+ClassicEditor
+	.create( editorElement, {
+		image: {
+			resizeUnit: 'px'
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 {@snippet features/image-resize-px}
 
