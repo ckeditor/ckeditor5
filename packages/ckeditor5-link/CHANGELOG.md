@@ -11,16 +11,16 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([cea8fa2](https://github.com/ckeditor/ckeditor5-link/commit/cea8fa2))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([cea8fa2](https://github.com/ckeditor/ckeditor5-link/commit/cea8fa2))
 * Passed editor content direction to the `bindTwoStepCaretToAttribute()` helper in the `LinkEditing` plugin. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([73bf132](https://github.com/ckeditor/ckeditor5-link/commit/73bf132))
-* Updated translations. ([4345546](https://github.com/ckeditor/ckeditor5-link/commit/4345546)) 
+* Updated translations. ([4345546](https://github.com/ckeditor/ckeditor5-link/commit/4345546))
 
 
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-link/compare/v11.1.0...v11.1.1) (2019-07-10)
 
 ### Other changes
 
-* Updated translations. ([6b720be](https://github.com/ckeditor/ckeditor5-link/commit/6b720be)) 
+* Updated translations. ([6b720be](https://github.com/ckeditor/ckeditor5-link/commit/6b720be))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-link/compare/v11.0.2...v11.1.0) (2019-07-04)
