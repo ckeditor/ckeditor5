@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [12.2.2](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v12.2.1...v12.2.2) (2019-08-26)
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([36f5ae9](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/36f5ae9))
+* Introduced a check that prevents sharing source elements between editor instances. See [ckeditor/ckeditor5#746](https://github.com/ckeditor/ckeditor5/issues/746). ([5159981](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/5159981))
+
+
 ## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v12.2.0...v12.2.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
