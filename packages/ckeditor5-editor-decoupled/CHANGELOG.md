@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2e45069](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/2e45069))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2e45069](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/2e45069))
 * Introduced a check that prevents sharing source elements between editor instances. See [ckeditor/ckeditor5#746](https://github.com/ckeditor/ckeditor5/issues/746). ([c73b045](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/c73b045))
 
 
