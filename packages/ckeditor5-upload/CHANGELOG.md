@@ -1,6 +1,32 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.1...v12.0.0) (2019-08-26)
+
+### Features
+
+* Implemented the `SimpleUploadAdapter` plugin which enables file uploads in CKEditor 5 using configurable `XMLHttpRequests` to a server. Closes [ckeditor/ckeditor5#1791](https://github.com/ckeditor/ckeditor5/issues/1791). ([441c597](https://github.com/ckeditor/ckeditor5-upload/commit/441c597))
+
+  ```js
+  import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter'
+  ```
+* Implemented the responsive image support in the `SimpleUploadAdapter`. Closes [#97](https://github.com/ckeditor/ckeditor5-upload/issues/97). ([b5092a4](https://github.com/ckeditor/ckeditor5-upload/commit/b5092a4))
+
+### Other changes
+
+* Add `ImageLoader.data` property for already read file to allow synchronous access to file data. ([ec56ab8](https://github.com/ckeditor/ckeditor5-upload/commit/ec56ab8))
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([1893794](https://github.com/ckeditor/ckeditor5-upload/commit/1893794))
+* Updated translations. ([594b6c1](https://github.com/ckeditor/ckeditor5-upload/commit/594b6c1)) 
+
+### BREAKING CHANGES
+
+* Moved the `Base64UploadAdapter` plugin file to `ckeditor5-upload/src/adapters/base64uploadadapter.js`. Make sure import paths your project are up–to–date:
+
+```js
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter'
+```
+
+
 ## [11.1.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.0...v11.1.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
