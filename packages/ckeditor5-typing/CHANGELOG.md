@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [12.2.0](https://github.com/ckeditor/ckeditor5-typing/compare/v12.1.1...v12.2.0) (2019-08-26)
+
+### Features
+
+* Introduced `Input#isInput()`. Closes [#214](https://github.com/ckeditor/ckeditor5-typing/issues/214). Fixed the `TextTransformation` feature so it willl trigger only for typing changes. Closes [#208](https://github.com/ckeditor/ckeditor5-typing/issues/208). ([0e26850](https://github.com/ckeditor/ckeditor5-typing/commit/0e26850))
+
+### Bug fixes
+
+* Allow dashes on the begging of a line. Closes [#200](https://github.com/ckeditor/ckeditor5-typing/issues/200). ([6ef7d47](https://github.com/ckeditor/ckeditor5-typing/commit/6ef7d47))
+* Typing on mobile device will not throw after each typed character. ([056b036](https://github.com/ckeditor/ckeditor5-typing/commit/056b036))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([6491e8d](https://github.com/ckeditor/ckeditor5-typing/commit/6491e8d))
+
+
 ## [12.1.1](https://github.com/ckeditor/ckeditor5-typing/compare/v12.1.0...v12.1.1) (2019-07-10)
 
 ### Bug fixes
