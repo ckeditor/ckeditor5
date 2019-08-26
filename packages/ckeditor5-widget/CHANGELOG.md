@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.4...v11.1.0) (2019-08-26)
+
+### Features
+
+* Introduced image widget resizer. See [ckeditor/ckeditor5-image#241](https://github.com/ckeditor/ckeditor5-image/issues/241). ([c84cd73](https://github.com/ckeditor/ckeditor5-widget/commit/c84cd73))
+
+### Bug fixes
+
+* Improved balloon positioning when there is more than one stack in the rotator. ([763c9ba](https://github.com/ckeditor/ckeditor5-widget/commit/763c9ba))
+* Reposition visible toolbar when it is in a not visible stack of rotator. Closes [ckeditor/ckeditor5#1957](https://github.com/ckeditor/ckeditor5/issues/1957). ([a438c8b](https://github.com/ckeditor/ckeditor5-widget/commit/a438c8b))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([cfd41c1](https://github.com/ckeditor/ckeditor5-widget/commit/cfd41c1))
+* The widget toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([aec5888](https://github.com/ckeditor/ckeditor5-widget/commit/aec5888))
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
