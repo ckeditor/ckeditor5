@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## [14.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.2...v14.0.0) (2019-08-26)
+
+### Features
+
+* Brought support for right–to–left (RTL) languages to various UI components. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([d6c7f55](https://github.com/ckeditor/ckeditor5-ui/commit/d6c7f55))
+
+### Bug fixes
+
+* `ColorGrid` should set the `#isOn` property value of new `ColorTiles`. See [ckeditor/ckeditor5-font#51](https://github.com/ckeditor/ckeditor5-font/issues/51). ([e89ad60](https://github.com/ckeditor/ckeditor5-ui/commit/e89ad60))
+* All editor toolbars should come with the `role` and `aria-label` attributes. Closes [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404). ([bdede90](https://github.com/ckeditor/ckeditor5-ui/commit/bdede90))
+* Screen reader will now properly prompt errors for text inputs. Closes [ckeditor/ckeditor5#1406](https://github.com/ckeditor/ckeditor5/issues/1406). ([3a164b7](https://github.com/ckeditor/ckeditor5-ui/commit/3a164b7))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([451df7b](https://github.com/ckeditor/ckeditor5-ui/commit/451df7b))
+* Updated translations. ([eca9fe6](https://github.com/ckeditor/ckeditor5-ui/commit/eca9fe6)) 
+
+### BREAKING CHANGES
+
+* The `ToolbarView` class requires the [editor locale](https://ckeditor.com/docs/ckeditor5/latest/api/module_utils_locale-Locale.html) to be passed into the constructor.
+
+
 ## [13.0.2](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.1...v13.0.2) (2019-07-10)
 
 ### Other changes
