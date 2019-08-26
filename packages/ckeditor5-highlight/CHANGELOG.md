@@ -9,9 +9,9 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([ff24619](https://github.com/ckeditor/ckeditor5-highlight/commit/ff24619))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([ff24619](https://github.com/ckeditor/ckeditor5-highlight/commit/ff24619))
 * The text highlight toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([3ee2ea0](https://github.com/ckeditor/ckeditor5-highlight/commit/3ee2ea0))
-* Updated translations. ([e0138f6](https://github.com/ckeditor/ckeditor5-highlight/commit/e0138f6)) 
+* Updated translations. ([e0138f6](https://github.com/ckeditor/ckeditor5-highlight/commit/e0138f6))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.3...v11.0.4) (2019-07-10)
@@ -28,7 +28,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([6128b76](https://github.com/ckeditor/ckeditor5-highlight/commit/6128b76)) 
+* Updated translations. ([6128b76](https://github.com/ckeditor/ckeditor5-highlight/commit/6128b76))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.0...v11.0.1) (2019-04-10)
@@ -36,7 +36,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Optimized icons. ([63c9d45](https://github.com/ckeditor/ckeditor5-highlight/commit/63c9d45))
-* Updated translations. ([6695a99](https://github.com/ckeditor/ckeditor5-highlight/commit/6695a99)) 
+* Updated translations. ([6695a99](https://github.com/ckeditor/ckeditor5-highlight/commit/6695a99))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v10.0.4...v11.0.0) (2019-02-28)
