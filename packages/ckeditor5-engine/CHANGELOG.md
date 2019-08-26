@@ -1,6 +1,36 @@
 Changelog
 =========
 
+## [14.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.1...v14.0.0) (2019-08-26)
+
+### Features
+
+* `transformSets()` will now return a `Map` instance linking transformed operations to the original operations. ([61da3ec](https://github.com/ckeditor/ckeditor5-engine/commit/61da3ec))
+* Brought support for RTL content in the `bindTwoStepCaretToAttribute()` helper. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([d57ff5a](https://github.com/ckeditor/ckeditor5-engine/commit/d57ff5a))
+* Introduced `model.Differ#refreshItem()`. ([7dc8710](https://github.com/ckeditor/ckeditor5-engine/commit/7dc8710))
+* Introduced the `is()` method to additional objects from the model and view realms. Closes [#1667](https://github.com/ckeditor/ckeditor5-engine/issues/1667). ([89dbe43](https://github.com/ckeditor/ckeditor5-engine/commit/89dbe43))
+
+### Bug fixes
+
+* Fixed problem with handling very large text nodes. ([a7ae813](https://github.com/ckeditor/ckeditor5-engine/commit/a7ae813))
+* Prevented `Differ` crashing in some scenarios involving attribute changes on elements. Closes [#1764](https://github.com/ckeditor/ckeditor5-engine/issues/1764). ([482e55e](https://github.com/ckeditor/ckeditor5-engine/commit/482e55e))
+
+### Other changes
+
+* Add unwrapElement() method to UpcastWriter. ([9e97196](https://github.com/ckeditor/ckeditor5-engine/commit/9e97196))
+* Allowed for unbinding single elements from a marker name in `Mapper`. Closes [#1758](https://github.com/ckeditor/ckeditor5-engine/issues/1758). ([52e701d](https://github.com/ckeditor/ckeditor5-engine/commit/52e701d))
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([6ed94c6](https://github.com/ckeditor/ckeditor5-engine/commit/6ed94c6))
+* Introduced automatic marker re-rendering during conversion for markers which view element was unbound. Closes [#1780](https://github.com/ckeditor/ckeditor5-engine/issues/1780). ([5661fb6](https://github.com/ckeditor/ckeditor5-engine/commit/5661fb6))
+* Position getters (such as `#parent` or `#index`) will throw when position points at an incorrect place in its root. Closes [#1776](https://github.com/ckeditor/ckeditor5-engine/issues/1776). ([a359866](https://github.com/ckeditor/ckeditor5-engine/commit/a359866))
+
+### BREAKING CHANGES
+
+* New parameter introduced in `DowncastDispatcher#convertChanges()`. Now it is `convertChanges( differ, markers, writer )`.
+* Although it was rather impossible to use `DowncastDispatcher` without specifying any conversion API in the constructor, now it is a required parameter.
+* The `bindTwoStepCaretToAttribute()` helper arguments syntax has changed (replaced by an object). Please refer to the helper documentation to learn more.
+* `Mapper#unbindElementsFromMarkerName( markerName )` was replaced by `Mapper#unbindElementFromMarkerName( element, markerName )`.
+
+
 ## [13.2.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.0...v13.2.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
