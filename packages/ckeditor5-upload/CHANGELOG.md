@@ -15,8 +15,8 @@ Changelog
 ### Other changes
 
 * Add `ImageLoader.data` property for already read file to allow synchronous access to file data. ([ec56ab8](https://github.com/ckeditor/ckeditor5-upload/commit/ec56ab8))
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([1893794](https://github.com/ckeditor/ckeditor5-upload/commit/1893794))
-* Updated translations. ([594b6c1](https://github.com/ckeditor/ckeditor5-upload/commit/594b6c1)) 
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([1893794](https://github.com/ckeditor/ckeditor5-upload/commit/1893794))
+* Updated translations. ([594b6c1](https://github.com/ckeditor/ckeditor5-upload/commit/594b6c1))
 
 ### BREAKING CHANGES
 
@@ -43,14 +43,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([73c6761](https://github.com/ckeditor/ckeditor5-upload/commit/73c6761)) 
+* Updated translations. ([73c6761](https://github.com/ckeditor/ckeditor5-upload/commit/73c6761))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([eac33b1](https://github.com/ckeditor/ckeditor5-upload/commit/eac33b1)) 
+* Updated translations. ([eac33b1](https://github.com/ckeditor/ckeditor5-upload/commit/eac33b1))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.4...v11.0.0) (2019-02-28)
