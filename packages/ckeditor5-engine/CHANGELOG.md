@@ -17,9 +17,9 @@ Changelog
 
 ### Other changes
 
-* Add unwrapElement() method to UpcastWriter. ([9e97196](https://github.com/ckeditor/ckeditor5-engine/commit/9e97196))
+* Add `unwrapElement()` method to UpcastWriter. ([9e97196](https://github.com/ckeditor/ckeditor5-engine/commit/9e97196))
 * Allowed for unbinding single elements from a marker name in `Mapper`. Closes [#1758](https://github.com/ckeditor/ckeditor5-engine/issues/1758). ([52e701d](https://github.com/ckeditor/ckeditor5-engine/commit/52e701d))
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([6ed94c6](https://github.com/ckeditor/ckeditor5-engine/commit/6ed94c6))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([6ed94c6](https://github.com/ckeditor/ckeditor5-engine/commit/6ed94c6))
 * Introduced automatic marker re-rendering during conversion for markers which view element was unbound. Closes [#1780](https://github.com/ckeditor/ckeditor5-engine/issues/1780). ([5661fb6](https://github.com/ckeditor/ckeditor5-engine/commit/5661fb6))
 * Position getters (such as `#parent` or `#index`) will throw when position points at an incorrect place in its root. Closes [#1776](https://github.com/ckeditor/ckeditor5-engine/issues/1776). ([a359866](https://github.com/ckeditor/ckeditor5-engine/commit/a359866))
 
