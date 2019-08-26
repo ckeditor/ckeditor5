@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-indent",
-  "version": "10.0.1",
+  "version": "10.1.0",
   "description": "Block indentation feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
