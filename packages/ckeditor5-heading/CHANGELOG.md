@@ -9,8 +9,8 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([1a68915](https://github.com/ckeditor/ckeditor5-heading/commit/1a68915))
-* Updated translations. ([201cf3c](https://github.com/ckeditor/ckeditor5-heading/commit/201cf3c)) 
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([1a68915](https://github.com/ckeditor/ckeditor5-heading/commit/1a68915))
+* Updated translations. ([201cf3c](https://github.com/ckeditor/ckeditor5-heading/commit/201cf3c))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.3...v11.0.4) (2019-07-10)
@@ -29,14 +29,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([ab95f35](https://github.com/ckeditor/ckeditor5-heading/commit/ab95f35)) 
+* Updated translations. ([ab95f35](https://github.com/ckeditor/ckeditor5-heading/commit/ab95f35))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([e7273cc](https://github.com/ckeditor/ckeditor5-heading/commit/e7273cc)) 
+* Updated translations. ([e7273cc](https://github.com/ckeditor/ckeditor5-heading/commit/e7273cc))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.1...v11.0.0) (2019-02-28)
