@@ -9,7 +9,7 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([59e4777](https://github.com/ckeditor/ckeditor5-theme-lark/commit/59e4777))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([59e4777](https://github.com/ckeditor/ckeditor5-theme-lark/commit/59e4777))
 * The `.ck-progress-bar` styles should not be under with `.ck-content`. Additionaly removed two unused custom properties: `--ck-color-upload-infinite-background` and `--ck-image-upload-progress-line-width`. Closes https://github.com/ckeditor/ckeditor5-theme-lark/issues/239. Closes https://github.com/ckeditor/ckeditor5/issues/1915. ([cb92793](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cb92793))
 
 
