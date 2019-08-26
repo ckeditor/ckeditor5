@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [12.1.0](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.4...v12.1.0) (2019-08-26)
+
+### Features
+
+* Introduced to-do lists. Closes [ckeditor/ckeditor5#1434](https://github.com/ckeditor/ckeditor5/issues/1434). ([56a7a7a](https://github.com/ckeditor/ckeditor5-list/commit/56a7a7a))
+
+### Bug fixes
+
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([bb12325](https://github.com/ckeditor/ckeditor5-list/commit/bb12325))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([5507ac6](https://github.com/ckeditor/ckeditor5-list/commit/5507ac6))
+* Updated translations. ([10e296d](https://github.com/ckeditor/ckeditor5-list/commit/10e296d)) 
+
+
 ## [12.0.4](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.3...v12.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
