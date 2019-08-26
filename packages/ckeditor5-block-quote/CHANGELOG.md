@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [11.1.3](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.1.2...v11.1.3) (2019-08-26)
+
+### Bug fixes
+
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([aa24686](https://github.com/ckeditor/ckeditor5-block-quote/commit/aa24686))
+
+### Other changes
+
+* Adjusted blockquote content styles for better compatibility with RTL languages. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([c48b703](https://github.com/ckeditor/ckeditor5-block-quote/commit/c48b703))
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([ffcbcfc](https://github.com/ckeditor/ckeditor5-block-quote/commit/ffcbcfc))
+* Updated translations. ([537f761](https://github.com/ckeditor/ckeditor5-block-quote/commit/537f761)) 
+
+
 ## [11.1.2](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.1.1...v11.1.2) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
