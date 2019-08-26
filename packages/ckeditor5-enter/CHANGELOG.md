@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-enter/compare/v11.0.4...v11.1.0) (2019-08-26)
+
+### Features
+
+* Add support for `copyOnEnter` attribute's parameter. Closes [#40](https://github.com/ckeditor/ckeditor5-enter/issues/40). ([36bdcd8](https://github.com/ckeditor/ckeditor5-enter/commit/36bdcd8))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([036217a](https://github.com/ckeditor/ckeditor5-enter/commit/036217a))
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-enter/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
