@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## [11.2.2](https://github.com/ckeditor/ckeditor5-font/compare/v11.2.1...v11.2.2) (2019-08-26)
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([edf39d2](https://github.com/ckeditor/ckeditor5-font/commit/edf39d2))
+* Mark fonts' attributes with 'copyOnEnter' property. ([552f742](https://github.com/ckeditor/ckeditor5-font/commit/552f742))
+* The active color should be marked both in the document colors and all colors. Closes [#51](https://github.com/ckeditor/ckeditor5-font/issues/51). ([295f6d5](https://github.com/ckeditor/ckeditor5-font/commit/295f6d5))
+* Updated translations. ([1691b00](https://github.com/ckeditor/ckeditor5-font/commit/1691b00)) 
+
+
 ## [11.2.1](https://github.com/ckeditor/ckeditor5-font/compare/v11.2.0...v11.2.1) (2019-07-10)
 
 ### Other changes
