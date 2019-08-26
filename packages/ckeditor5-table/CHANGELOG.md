@@ -7,8 +7,6 @@ Changelog
 
 * `TableWalker` will now return `cell` value also for spanned cells when traversing a table with `includeSpanned` option set to `true`. Additionally, `isSpanned` property was introduced in returned values. ([07e8736](https://github.com/ckeditor/ckeditor5-table/commit/07e8736))
 
-  Internal: Improvements in table plugin allowing for integration with track changes.
-
 ### Bug fixes
 
 * Table cell post-fixer will refresh a cell only when it is needed. Closes [#209](https://github.com/ckeditor/ckeditor5-table/issues/209). ([b29a042](https://github.com/ckeditor/ckeditor5-table/commit/b29a042))
@@ -16,9 +14,9 @@ Changelog
 ### Other changes
 
 * Adjusted `InsertTableView` for better compatibility with right–to–left (RTL) languages. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([524586b](https://github.com/ckeditor/ckeditor5-table/commit/524586b))
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([3d35af2](https://github.com/ckeditor/ckeditor5-table/commit/3d35af2))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([3d35af2](https://github.com/ckeditor/ckeditor5-table/commit/3d35af2))
 * The table widget toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([b47a94f](https://github.com/ckeditor/ckeditor5-table/commit/b47a94f))
-* Updated translations. ([2ddc9f4](https://github.com/ckeditor/ckeditor5-table/commit/2ddc9f4)) 
+* Updated translations. ([2ddc9f4](https://github.com/ckeditor/ckeditor5-table/commit/2ddc9f4))
 
 ### BREAKING CHANGES
 
