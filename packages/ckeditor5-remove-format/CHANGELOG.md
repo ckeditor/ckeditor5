@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [10.0.4](https://github.com/ckeditor/ckeditor5-remove-format/compare/v10.0.3...v10.0.4) (2019-08-26)
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([8f2a033](https://github.com/ckeditor/ckeditor5-remove-format/commit/8f2a033))
+* Updated translations. ([9b2f170](https://github.com/ckeditor/ckeditor5-remove-format/commit/9b2f170)) 
+
+
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-remove-format/compare/v10.0.2...v10.0.3) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
