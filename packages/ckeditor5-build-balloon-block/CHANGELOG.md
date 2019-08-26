@@ -3,6 +3,8 @@ Changelog
 
 ## [12.4.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.1...v12.4.0) (2019-08-26)
 
+This release brings a huge set of new features: [image resizing](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/image.html#resizing-images), [to-do lists](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/todo-lists.html), [support for RTL languages](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/ui-language.html), [simple upload adapter](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/image-upload/simple-upload-adapter.html), [support for pasting from Google Docs](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/paste-from-office/paste-from-google-docs.html), [mathematic formulas](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/mathtype.html), and [spelling and grammar checking](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/spell-checker.html). In addition to that, as always, it contains many improvements and bug fixes.
+
 ### Dependencies
 
 Major releases (contain breaking changes):
@@ -45,7 +47,7 @@ Patch releases (bug fixes, internal changes):
 ### Other changes
 
 * Bumped style-loader to v1.0.0. Aligned the webpack config to the new loader API. See [ckeditor/ckeditor5#1945](https://github.com/ckeditor/ckeditor5/issues/1945). ([46c9514](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/46c9514))
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([7b8f1bc](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/7b8f1bc))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([7b8f1bc](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/7b8f1bc))
 
 
 ## [12.3.1](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.0...v12.3.1) (2019-07-10)
