@@ -10,9 +10,9 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([f8035d1](https://github.com/ckeditor/ckeditor5-word-count/commit/f8035d1))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([f8035d1](https://github.com/ckeditor/ckeditor5-word-count/commit/f8035d1))
 * Made `WordCount#characters` and `WordCount#words` getters synchronous to make it possible to retrieve precise content stats on demand. Closes [#6](https://github.com/ckeditor/ckeditor5-word-count/issues/6). ([780dfbf](https://github.com/ckeditor/ckeditor5-word-count/commit/780dfbf))
-* Updated translations. ([9aab7fb](https://github.com/ckeditor/ckeditor5-word-count/commit/9aab7fb)) 
+* Updated translations. ([9aab7fb](https://github.com/ckeditor/ckeditor5-word-count/commit/9aab7fb))
 
 
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-word-count/compare/v10.0.0...v10.0.1) (2019-07-10)
