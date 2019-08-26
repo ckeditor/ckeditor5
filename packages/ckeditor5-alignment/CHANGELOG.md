@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [11.2.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.3...v11.2.0) (2019-08-26)
+
+### Features
+
+* Integrated the text alignment feature with different editor content directions (LTR and RTL). See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([edc7d8b](https://github.com/ckeditor/ckeditor5-alignment/commit/edc7d8b))
+
+### Bug fixes
+
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([599ea01](https://github.com/ckeditor/ckeditor5-alignment/commit/599ea01))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([54f81b3](https://github.com/ckeditor/ckeditor5-alignment/commit/54f81b3))
+* The text alignment toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([3ed81de](https://github.com/ckeditor/ckeditor5-alignment/commit/3ed81de))
+* Updated translations. ([feb4ab3](https://github.com/ckeditor/ckeditor5-alignment/commit/feb4ab3)) 
+
+
 ## [11.1.3](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.2...v11.1.3) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
