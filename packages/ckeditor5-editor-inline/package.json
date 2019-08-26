@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-inline",
-  "version": "12.2.1",
+  "version": "12.3.0",
   "description": "Inline editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",
