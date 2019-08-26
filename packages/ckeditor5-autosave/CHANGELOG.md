@@ -5,8 +5,8 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([0072e70](https://github.com/ckeditor/ckeditor5-autosave/commit/0072e70))
-* Updated translations. ([2de7f77](https://github.com/ckeditor/ckeditor5-autosave/commit/2de7f77)) 
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([0072e70](https://github.com/ckeditor/ckeditor5-autosave/commit/0072e70))
+* Updated translations. ([2de7f77](https://github.com/ckeditor/ckeditor5-autosave/commit/2de7f77))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.3...v11.0.4) (2019-07-10)
@@ -25,14 +25,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([5541f00](https://github.com/ckeditor/ckeditor5-autosave/commit/5541f00)) 
+* Updated translations. ([5541f00](https://github.com/ckeditor/ckeditor5-autosave/commit/5541f00))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([e38aed3](https://github.com/ckeditor/ckeditor5-autosave/commit/e38aed3)) 
+* Updated translations. ([e38aed3](https://github.com/ckeditor/ckeditor5-autosave/commit/e38aed3))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.2...v11.0.0) (2019-02-28)
