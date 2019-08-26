@@ -27,8 +27,8 @@ First, install packages needed to build CKEditor 5:
 ```bash
 npm install --save \
 	postcss-loader@3 \
-	raw-loader@1 \
-	style-loader@0.23.0 \
+	raw-loader@3 \
+	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3
 ```
@@ -56,14 +56,14 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				// Or /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/ if you want to limit this loader
+				// Or /ckeditor5-[^/]+\/theme\/icons\/.+\.svg$/ if you want to limit this loader
 				// to CKEditor 5 icons only.
 				test: /\.svg$/,
 
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.css$/ if you want to limit this loader
+				// Or /ckeditor5-[^/]+\/theme\/.+\.css$/ if you want to limit this loader
 				// to CKEditor 5 theme only.
 				test: /\.css$/,
 
@@ -71,7 +71,7 @@ module.exports = {
 					{
 						loader: 'style-loader',
 						options: {
-							singleton: true
+							injectType: 'singletonStyleTag'
 						}
 					},
 					{
