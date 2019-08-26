@@ -13,8 +13,8 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([5507ac6](https://github.com/ckeditor/ckeditor5-list/commit/5507ac6))
-* Updated translations. ([10e296d](https://github.com/ckeditor/ckeditor5-list/commit/10e296d)) 
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([5507ac6](https://github.com/ckeditor/ckeditor5-list/commit/5507ac6))
+* Updated translations. ([10e296d](https://github.com/ckeditor/ckeditor5-list/commit/10e296d))
 
 
 ## [12.0.4](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.3...v12.0.4) (2019-07-10)
@@ -29,21 +29,21 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Attach `'indentList'` and `'outdentList'` commands to `'indent'` and `'outdent'` commands. ([3a67531](https://github.com/ckeditor/ckeditor5-list/commit/3a67531))
 
   The `@ckeditor/ckeditor5-indent` feature introduces the "indent" and "outdent" buttons which can be used to manipulate lists and other blocks.
-* Updated translations. ([6c4b520](https://github.com/ckeditor/ckeditor5-list/commit/6c4b520)) 
+* Updated translations. ([6c4b520](https://github.com/ckeditor/ckeditor5-list/commit/6c4b520))
 
 
 ## [12.0.2](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.1...v12.0.2) (2019-06-05)
 
 ### Other changes
 
-* Updated translations. ([b7f3abc](https://github.com/ckeditor/ckeditor5-list/commit/b7f3abc)) 
+* Updated translations. ([b7f3abc](https://github.com/ckeditor/ckeditor5-list/commit/b7f3abc))
 
 
 ## [12.0.1](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.0...v12.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([d595449](https://github.com/ckeditor/ckeditor5-list/commit/d595449)) 
+* Updated translations. ([d595449](https://github.com/ckeditor/ckeditor5-list/commit/d595449))
 
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v11.0.3...v12.0.0) (2019-02-28)
