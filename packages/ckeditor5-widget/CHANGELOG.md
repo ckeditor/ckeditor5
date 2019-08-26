@@ -14,7 +14,7 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([cfd41c1](https://github.com/ckeditor/ckeditor5-widget/commit/cfd41c1))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([cfd41c1](https://github.com/ckeditor/ckeditor5-widget/commit/cfd41c1))
 * The widget toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([aec5888](https://github.com/ckeditor/ckeditor5-widget/commit/aec5888))
 
 
