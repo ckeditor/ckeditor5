@@ -22,8 +22,8 @@ export default class TodoListCheckCommand extends Command {
 		super( editor );
 
 		/**
-		 * Flag indicating whether the command is active. The command is active when at least one of
-		 * {@link module:engine/model/selection~Selection selected} elements is a todo list item.
+		 * A flag indicating whether the command is active. The command is active when at least one of
+		 * {@link module:engine/model/selection~Selection selected} elements is a to-do list item.
 		 *
 		 * @observable
 		 * @readonly
@@ -31,7 +31,7 @@ export default class TodoListCheckCommand extends Command {
 		 */
 
 		/**
-		 * A List of todo list item selected by the {@link module:engine/model/selection~Selection}.
+		 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
 		 *
 		 * @observable
 		 * @readonly
@@ -39,10 +39,10 @@ export default class TodoListCheckCommand extends Command {
 		 */
 
 		/**
-		 * List of todo list items selected by the {@link module:engine/model/selection~Selection}.
+		 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
 		 *
+		 * @protected
 		 * @type {Array.<module:engine/model/element~Element>}
-		 * @private
 		 */
 		this._selectedElements = [];
 
@@ -54,7 +54,7 @@ export default class TodoListCheckCommand extends Command {
 	}
 
 	/**
-	 * Updates the command's {@link #value} and {@link #isEnabled} based on the current selection.
+	 * Updates the command's {@link #value} and {@link #isEnabled} properties based on the current selection.
 	 */
 	refresh() {
 		this._selectedElements = this._getSelectedItems();
@@ -63,7 +63,7 @@ export default class TodoListCheckCommand extends Command {
 	}
 
 	/**
-	 * Gets all todo list items selected by the {@link module:engine/model/selection~Selection}.
+	 * Gets all to-do list items selected by the {@link module:engine/model/selection~Selection}.
 	 *
 	 * @private
 	 * @returns {Array.<module:engine/model/element~Element>}
@@ -90,12 +90,19 @@ export default class TodoListCheckCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply
+	 * the attribute. Otherwise, the command will remove the attribute. If not set, the command will look for its current
+	 * value to decide what it should do.
 	 */
-	execute() {
+	execute( options = {} ) {
 		this.editor.model.change( writer => {
 			for ( const element of this._selectedElements ) {
-				if ( !this.value ) {
+				const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
+
+				if ( value ) {
 					writer.setAttribute( attributeKey, true, element );
 				} else {
 					writer.removeAttribute( attributeKey, element );

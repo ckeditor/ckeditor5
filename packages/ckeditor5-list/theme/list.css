@@ -6,7 +6,6 @@
 
 .ck .todo-list {
 	list-style: none;
-	position: relative;
 }
 
 .ck .todo-list > li {
@@ -55,6 +54,7 @@
 }
 
 .ck .todo-list__checkmark::after {
+	box-sizing: content-box;
 	pointer-events: none;
 	content: '';
 	position: absolute;

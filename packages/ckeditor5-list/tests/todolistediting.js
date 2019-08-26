@@ -76,7 +76,7 @@ describe( 'TodoListEditing', () => {
 			expect( command ).to.have.property( 'type', 'todo' );
 		} );
 
-		it( 'should create todo list item and change to paragraph in normal usage flow', () => {
+		it( 'should create to-do list item and change to paragraph in normal usage flow', () => {
 			expect( getViewData( view ) ).to.equal( '<p>[]</p>' );
 			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
@@ -119,7 +119,7 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'editing pipeline', () => {
-		it( 'should convert todo list item', () => {
+		it( 'should convert to-do list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
@@ -133,7 +133,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert nested todo list items', () => {
+		it( 'should convert nested to-do list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">2.1</listItem>' +
@@ -163,7 +163,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list items mixed with bulleted list items', () => {
+		it( 'should convert to-do list items mixed with bulleted list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
@@ -192,7 +192,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list items mixed with numbered list items', () => {
+		it( 'should convert to-do list items mixed with numbered list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
@@ -377,7 +377,7 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'data pipeline m -> v', () => {
-		it( 'should convert todo list item', () => {
+		it( 'should convert to-do list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
@@ -386,22 +386,22 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1</span>' +
 						'</label>' +
 					'</li>' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
-							'<span class="todo-list__label">2</span>' +
+						'<label class="todo-list__label todo-list__label_checked">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label__description">2</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>'
 			);
 		} );
 
-		it( 'should convert nested todo list item', () => {
+		it( 'should convert nested to-do list item', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">2.1</listItem>'
@@ -410,15 +410,15 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">2.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">2.1</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
@@ -427,7 +427,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list item mixed with bulleted list items', () => {
+		it( 'should convert to-do list item mixed with bulleted list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
@@ -439,9 +439,9 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>' +
@@ -449,18 +449,18 @@ describe( 'TodoListEditing', () => {
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">3.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">3.1</span>' +
 								'</label>' +
 								'<ul>' +
 									'<li>4.2</li>' +
 								'</ul>' +
 							'</li>' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">5.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">5.1</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
@@ -469,7 +469,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list item mixed with numbered list items', () => {
+		it( 'should convert to-do list item mixed with numbered list items', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
@@ -481,9 +481,9 @@ describe( 'TodoListEditing', () => {
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">1.0</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>' +
@@ -491,18 +491,18 @@ describe( 'TodoListEditing', () => {
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">3.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">3.1</span>' +
 								'</label>' +
 								'<ol>' +
 									'<li>4.2</li>' +
 								'</ol>' +
 							'</li>' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">5.1</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">5.1</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
@@ -545,17 +545,25 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	describe( 'data pipeline v -> m', () => {
-		it( 'should convert li with checkbox inside before the first text node as todo list item', () => {
-			editor.setData( '<ul><li><span><input type="checkbox">Foo</span></li></ul>' );
+		it( 'should convert li with checkbox before the first text node as to-do list item', () => {
+			editor.setData( '<ul><li><input type="checkbox">foo</li></ul>' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
+			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
 		} );
 
-		it( 'should convert li with checked checkbox inside as checked todo list item', () => {
-			editor.setData( '<ul><li><span><input type="checkbox" checked="checked">Foo</span></li></ul>' );
+		it( 'should convert li with checked checkbox as checked to-do list item', () => {
+			editor.setData(
+				'<ul>' +
+					'<li><input type="checkbox" checked="checked">a</li>' +
+					'<li><input type="checkbox" checked="anything">b</li>' +
+					'<li><input type="checkbox" checked>c</li>' +
+				'</ul>'
+			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]Foo</listItem>'
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]a</listItem>' +
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">b</listItem>' +
+				'<listItem listIndent="0" listType="todo" todoListChecked="true">c</listItem>'
 			);
 		} );
 
@@ -633,33 +641,33 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should convert todo list returned by m -> v data pipeline conversion', () => {
+		it( 'should convert to-do list returned by m -> v data pipeline conversion', () => {
 			editor.setData(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
-							'<span class="todo-list__label">1.1</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label__description">1.1</span>' +
 						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-									'<span class="todo-list__label">2.2</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<span class="todo-list__label__description">2.2</span>' +
 								'</label>' +
 							'</li>' +
 							'<li>' +
-								'<label>' +
-									'<input class="todo-list__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
-									'<span class="todo-list__label">3.2</span>' +
+								'<label class="todo-list__label">' +
+									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+									'<span class="todo-list__label__description">3.2</span>' +
 								'</label>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
 					'<li>' +
-						'<label>' +
-							'<input class="todo-list__checkmark" type="checkbox" disabled="disabled">' +
-							'<span class="todo-list__label">4.1</span>' +
+						'<label class="todo-list__label">' +
+							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description">4.1</span>' +
 						'</label>' +
 					'</li>' +
 				'</ul>'

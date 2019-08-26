@@ -13,9 +13,9 @@ import { generateLiInUl, injectViewList, findInRange } from './utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
- * A model-to-view converter for `listItem` model element insertion.
+ * A model-to-view converter for the `listItem` model element insertion.
  *
- * It converts `listItem` model element to an unordered list with {@link module:engine/view/uielement~UIElement checkbox element}
+ * It converts the `listItem` model element to an unordered list with a {@link module:engine/view/uielement~UIElement checkbox element}
  * at the beginning of each list item. It also merges the list with surrounding lists (if available).
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
@@ -60,7 +60,7 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
 }
 
 /**
- * A model-to-view converter for model `$text` element inside a todo list item.
+ * A model-to-view converter for the model `$text` element inside a to-do list item.
  *
  * It takes care of creating text after the {@link module:engine/view/uielement~UIElement checkbox UI element}.
  *
@@ -95,7 +95,7 @@ export function modelViewTextInsertion( evt, data, conversionApi ) {
 }
 
 /**
- * A model-to-view converter for `listItem` model element insertion.
+ * A model-to-view converter for the `listItem` model element insertion.
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
@@ -128,15 +128,16 @@ export function dataModelViewInsertion( model ) {
 
 		viewWriter.addClass( 'todo-list', viewItem.parent );
 
-		const label = viewWriter.createAttributeElement( 'label' );
+		const label = viewWriter.createAttributeElement( 'label', { class: 'todo-list__label' } );
 		const checkbox = viewWriter.createEmptyElement( 'input', {
 			type: 'checkbox',
 			disabled: 'disabled',
-			class: 'todo-list__checkmark'
+			class: 'todo-list__label__checkmark'
 		} );
 
 		if ( data.item.getAttribute( 'todoListChecked' ) ) {
 			viewWriter.setAttribute( 'checked', 'checked', checkbox );
+			viewWriter.addClass( 'todo-list__label_checked', label );
 		}
 
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkbox );
@@ -147,7 +148,7 @@ export function dataModelViewInsertion( model ) {
 }
 
 /**
- * A model-to-view converter for model `$text` element inside a todo list item.
+ * A model-to-view converter for the model `$text` element inside a to-do list item.
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
@@ -170,8 +171,9 @@ export function dataModelViewTextInsertion( evt, data, conversionApi ) {
 	const viewWriter = conversionApi.writer;
 	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 	const viewText = viewWriter.createText( data.item.data );
-	const span = viewWriter.createAttributeElement( 'span', { class: 'todo-list__label' } );
-	const label = viewWriter.createAttributeElement( 'label' );
+
+	const span = viewWriter.createAttributeElement( 'span', { class: 'todo-list__label__description' } );
+	const label = viewPosition.parent.getChild( 0 );
 
 	viewWriter.insert( viewWriter.createPositionAt( viewPosition.parent, 'end' ), viewText );
 	viewWriter.wrap( viewWriter.createRangeOn( viewText ), span );
@@ -179,16 +181,16 @@ export function dataModelViewTextInsertion( evt, data, conversionApi ) {
 }
 
 /**
- * A view-to-model converter for checkbox element inside a view list item.
+ * A view-to-model converter for the checkbox element inside a view list item.
  *
- * It changes `listType` of model `listItem` to a `todo` value.
- * When view checkbox is marked as checked the additional `todoListChecked="true"` attribute is added to model item.
+ * It changes the `listType` of the model `listItem` to a `todo` value.
+ * When a view checkbox element is marked as checked, an additional `todoListChecked="true"` attribute is added to the model item.
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
+ * @param {Object} data An object containing conversion input, a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
 export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
@@ -208,7 +210,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
 
 	writer.setAttribute( 'listType', 'todo', modelItem );
 
-	if ( data.viewItem.getAttribute( 'checked' ) == 'checked' ) {
+	if ( data.viewItem.hasAttribute( 'checked' ) ) {
 		writer.setAttribute( 'todoListChecked', true, modelItem );
 	}
 
@@ -216,9 +218,9 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
 }
 
 /**
- * A model-to-view converter for `listType` attribute change on `listItem` model element.
+ * A model-to-view converter for the `listType` attribute change on the `listItem` model element.
  *
- * This change means that `<li>` elements parent changes to `<ul class="todo-list">` and
+ * This change means that the `<li>` element parent changes to `<ul class="todo-list">` and a
  * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning
  * of the list item element (or vice versa).
  *
@@ -228,7 +230,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {Function} onCheckedChange Callback fired after clicking on checkmark element.
+ * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
  * @returns {Function} Returns a conversion callback.
  */
 export function modelViewChangeType( onCheckedChange ) {
@@ -250,19 +252,19 @@ export function modelViewChangeType( onCheckedChange ) {
 }
 
 /**
- * A model-to-view converter for `todoListChecked` attribute change on `listItem` model element.
+ * A model-to-view converter for the `todoListChecked` attribute change on the `listItem` model element.
  *
- * It marks {@link module:engine/view/uielement~UIElement checkbox UI element} as checked.
+ * It marks the {@link module:engine/view/uielement~UIElement checkbox UI element} as checked.
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {Function} onCheckedChange Callback fired after clicking on checkmark element.
+ * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
  * @returns {Function} Returns a conversion callback.
  */
 export function modelViewChangeChecked( onCheckedChange ) {
 	return ( evt, data, conversionApi ) => {
-		// Do not convert `todoListChecked` attribute when todo list item has changed to other list item.
+		// Do not convert `todoListChecked` attribute when to-do list item has changed to other list item.
 		// This attribute will be removed by the model post fixer.
 		if ( data.item.getAttribute( 'listType' ) != 'todo' ) {
 			return;
@@ -284,7 +286,7 @@ export function modelViewChangeChecked( onCheckedChange ) {
 	};
 }
 
-// Creates checkbox UI element.
+// Creates a checkbox UI element.
 //
 // @private
 // @param {module:engine/model/item~Item} modelItem
