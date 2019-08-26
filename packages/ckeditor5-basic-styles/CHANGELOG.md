@@ -9,9 +9,9 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([8293319](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8293319))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([8293319](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8293319))
 * Mark basic-styles attributes with 'copyOnEnter' property. ([0afbc20](https://github.com/ckeditor/ckeditor5-basic-styles/commit/0afbc20))
-* Updated translations. ([52de3fe](https://github.com/ckeditor/ckeditor5-basic-styles/commit/52de3fe)) 
+* Updated translations. ([52de3fe](https://github.com/ckeditor/ckeditor5-basic-styles/commit/52de3fe))
 
 
 ## [11.1.3](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.2...v11.1.3) (2019-07-10)
@@ -30,7 +30,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([c9cdc44](https://github.com/ckeditor/ckeditor5-basic-styles/commit/c9cdc44)) 
+* Updated translations. ([c9cdc44](https://github.com/ckeditor/ckeditor5-basic-styles/commit/c9cdc44))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.0.0...v11.1.0) (2019-04-10)
@@ -42,7 +42,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Optimized icons. ([018dda9](https://github.com/ckeditor/ckeditor5-basic-styles/commit/018dda9))
-* Updated translations. ([4365251](https://github.com/ckeditor/ckeditor5-basic-styles/commit/4365251)) 
+* Updated translations. ([4365251](https://github.com/ckeditor/ckeditor5-basic-styles/commit/4365251))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.1.0...v11.0.0) (2019-02-28)
