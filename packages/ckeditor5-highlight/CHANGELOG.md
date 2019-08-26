@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [11.0.5](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.4...v11.0.5) (2019-08-26)
+
+### Bug fixes
+
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([1645f26](https://github.com/ckeditor/ckeditor5-highlight/commit/1645f26))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([ff24619](https://github.com/ckeditor/ckeditor5-highlight/commit/ff24619))
+* The text highlight toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([3ee2ea0](https://github.com/ckeditor/ckeditor5-highlight/commit/3ee2ea0))
+* Updated translations. ([e0138f6](https://github.com/ckeditor/ckeditor5-highlight/commit/e0138f6)) 
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
