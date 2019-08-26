@@ -15,7 +15,7 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([741594a](https://github.com/ckeditor/ckeditor5-watchdog/commit/741594a))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([741594a](https://github.com/ckeditor/ckeditor5-watchdog/commit/741594a))
 * Made the `Watchdog#restart()` method private. Changed the signatures of `Watchdog#create()` and `Watchdog#destroy()`, so now these methods will return empty promises. Closes [#13](https://github.com/ckeditor/ckeditor5-watchdog/issues/13). ([69aef8b](https://github.com/ckeditor/ckeditor5-watchdog/commit/69aef8b))
 
 ### BREAKING CHANGES
