@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v11.0.4...v11.1.0) (2019-08-26)
+
+### Features
+
+* Prevent of bolding entire content pasted from Google Docs. Closes [#61](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/61). ([8102de3](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/8102de3))
+* Provide support for pasting lists from Google Docs. Closes [#69](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/69). ([6ad2a62](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/6ad2a62))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([22edb90](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/22edb90))
+
+
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v11.0.3...v11.0.4) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
