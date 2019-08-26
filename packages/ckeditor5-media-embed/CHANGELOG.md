@@ -5,9 +5,9 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([c139f62](https://github.com/ckeditor/ckeditor5-media-embed/commit/c139f62))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([c139f62](https://github.com/ckeditor/ckeditor5-media-embed/commit/c139f62))
 * The media widget toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([7a95064](https://github.com/ckeditor/ckeditor5-media-embed/commit/7a95064))
-* Updated translations. ([bc7f4eb](https://github.com/ckeditor/ckeditor5-media-embed/commit/bc7f4eb)) 
+* Updated translations. ([bc7f4eb](https://github.com/ckeditor/ckeditor5-media-embed/commit/bc7f4eb))
 
 
 ## [11.1.3](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.2...v11.1.3) (2019-07-10)
