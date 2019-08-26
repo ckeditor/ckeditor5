@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [11.1.4](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.3...v11.1.4) (2019-08-26)
+
+### Bug fixes
+
+* The UI buttons should be marked as toggleable for better assistive technologies support (see [ckeditor/ckeditor5#1403](https://github.com/ckeditor/ckeditor5/issues/1403)). ([b9f5867](https://github.com/ckeditor/ckeditor5-basic-styles/commit/b9f5867))
+
+### Other changes
+
+* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([8293319](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8293319))
+* Mark basic-styles attributes with 'copyOnEnter' property. ([0afbc20](https://github.com/ckeditor/ckeditor5-basic-styles/commit/0afbc20))
+* Updated translations. ([52de3fe](https://github.com/ckeditor/ckeditor5-basic-styles/commit/52de3fe)) 
+
+
 ## [11.1.3](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.2...v11.1.3) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
