@@ -15,7 +15,7 @@
     "lint": "eslint src tests"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^13.0.0"
+    "@ckeditor/ckeditor5-utils": "^14.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
