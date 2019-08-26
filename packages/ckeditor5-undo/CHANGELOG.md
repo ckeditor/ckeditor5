@@ -5,9 +5,9 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([da87bf9](https://github.com/ckeditor/ckeditor5-undo/commit/da87bf9))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([da87bf9](https://github.com/ckeditor/ckeditor5-undo/commit/da87bf9))
 * Made the undo and redo button icons match the editor UI language direction. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([e5df329](https://github.com/ckeditor/ckeditor5-undo/commit/e5df329))
-* Updated translations. ([6f5803f](https://github.com/ckeditor/ckeditor5-undo/commit/6f5803f)) 
+* Updated translations. ([6f5803f](https://github.com/ckeditor/ckeditor5-undo/commit/6f5803f))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-undo/compare/v11.0.3...v11.0.4) (2019-07-10)
@@ -26,14 +26,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([af36370](https://github.com/ckeditor/ckeditor5-undo/commit/af36370)) 
+* Updated translations. ([af36370](https://github.com/ckeditor/ckeditor5-undo/commit/af36370))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-undo/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([69faf7c](https://github.com/ckeditor/ckeditor5-undo/commit/69faf7c)) 
+* Updated translations. ([69faf7c](https://github.com/ckeditor/ckeditor5-undo/commit/69faf7c))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-undo/compare/v10.0.4...v11.0.0) (2019-02-28)
