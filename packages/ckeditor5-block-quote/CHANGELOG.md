@@ -10,8 +10,8 @@ Changelog
 ### Other changes
 
 * Adjusted blockquote content styles for better compatibility with RTL languages. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([c48b703](https://github.com/ckeditor/ckeditor5-block-quote/commit/c48b703))
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([ffcbcfc](https://github.com/ckeditor/ckeditor5-block-quote/commit/ffcbcfc))
-* Updated translations. ([537f761](https://github.com/ckeditor/ckeditor5-block-quote/commit/537f761)) 
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([ffcbcfc](https://github.com/ckeditor/ckeditor5-block-quote/commit/ffcbcfc))
+* Updated translations. ([537f761](https://github.com/ckeditor/ckeditor5-block-quote/commit/537f761))
 
 
 ## [11.1.2](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.1.1...v11.1.2) (2019-07-10)
@@ -23,7 +23,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([3ab78f2](https://github.com/ckeditor/ckeditor5-block-quote/commit/3ab78f2)) 
+* Updated translations. ([3ab78f2](https://github.com/ckeditor/ckeditor5-block-quote/commit/3ab78f2))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.0.1...v11.1.0) (2019-06-05)
