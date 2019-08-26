@@ -9,8 +9,8 @@ Changelog
 
 ### Other changes
 
-* Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([816fb02](https://github.com/ckeditor/ckeditor5-ckfinder/commit/816fb02))
-* Updated translations. ([3c3e350](https://github.com/ckeditor/ckeditor5-ckfinder/commit/3c3e350)) 
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([816fb02](https://github.com/ckeditor/ckeditor5-ckfinder/commit/816fb02))
+* Updated translations. ([3c3e350](https://github.com/ckeditor/ckeditor5-ckfinder/commit/3c3e350))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.3...v11.0.4) (2019-07-10)
@@ -22,14 +22,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([e681af2](https://github.com/ckeditor/ckeditor5-ckfinder/commit/e681af2)) 
+* Updated translations. ([e681af2](https://github.com/ckeditor/ckeditor5-ckfinder/commit/e681af2))
 
 
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.1...v11.0.2) (2019-06-05)
 
 ### Other changes
 
-* Updated translations. ([27f6f8b](https://github.com/ckeditor/ckeditor5-ckfinder/commit/27f6f8b)) 
+* Updated translations. ([27f6f8b](https://github.com/ckeditor/ckeditor5-ckfinder/commit/27f6f8b))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.0...v11.0.1) (2019-04-10)
@@ -37,7 +37,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Optimized icons. ([122d047](https://github.com/ckeditor/ckeditor5-ckfinder/commit/122d047))
-* Updated translations. ([5b26349](https://github.com/ckeditor/ckeditor5-ckfinder/commit/5b26349)) 
+* Updated translations. ([5b26349](https://github.com/ckeditor/ckeditor5-ckfinder/commit/5b26349))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v10.0.0...v11.0.0) (2019-02-28)
