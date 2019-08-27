@@ -47,7 +47,7 @@ export default class BoldEditing extends Plugin {
 					}
 
 					// Value of the `font-weight` attribute can be defined as a string or a number.
-					if ( fontWeight == 'bold' || /\d+/.test( fontWeight ) && Number( fontWeight ) >= 600 ) {
+					if ( fontWeight == 'bold' || Number( fontWeight ) >= 600 ) {
 						return {
 							name: true,
 							styles: [ 'font-weight' ]
