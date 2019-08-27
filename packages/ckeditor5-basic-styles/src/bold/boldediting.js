@@ -34,15 +34,24 @@ export default class BoldEditing extends Plugin {
 		} );
 
 		// Build converter from model to view for data and editing pipelines.
-
 		editor.conversion.attributeToElement( {
 			model: BOLD,
 			view: 'strong',
 			upcastAlso: [
 				'b',
-				{
-					styles: {
-						'font-weight': 'bold'
+				viewElement => {
+					const fontWeight = viewElement.getStyle( 'font-weight' );
+
+					if ( !fontWeight ) {
+						return null;
+					}
+
+					// Value of the `font-weight` attribute can be defined as a string or a number.
+					if ( fontWeight == 'bold' || /\d+/.test( fontWeight ) && Number( fontWeight ) >= 600 ) {
+						return {
+							name: true,
+							styles: [ 'font-weight' ]
+						};
 					}
 				}
 			]

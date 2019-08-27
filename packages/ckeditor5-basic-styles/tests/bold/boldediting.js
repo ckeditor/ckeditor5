@@ -105,6 +105,33 @@ describe( 'BoldEditing', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
 		} );
 
+		it( 'should convert font-weight defined as number to bold attribute (if the value is higher or equal to 600)', () => {
+			editor.setData( '<p><span style="font-weight: 600;">foo</span>bar</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
+		} );
+
+		it( 'should not convert font-weight defined as number to bold attribute (if the value is lower than 600)', () => {
+			editor.setData( '<p><span style="font-weight: 500;">foo</span>bar</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+		} );
+
+		it( 'should not convert font-weight if the value is invalid', () => {
+			editor.setData( '<p><span style="font-weight: foo;">foo</span>bar</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+		} );
+
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<strong>foo</strong>bar' );
 
