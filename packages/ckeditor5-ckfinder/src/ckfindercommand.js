@@ -42,7 +42,7 @@ export default class CKFinderCommand extends Command {
 		const linkCommand = this.editor.commands.get( 'link' );
 
 		// The CKFinder command is enabled when one of image or link command is enabled.
-		this.isEnabled = imageCommand && linkCommand && ( imageCommand.isEnabled || linkCommand.isEnabled );
+		this.isEnabled = imageCommand && imageCommand.isEnabled || linkCommand && linkCommand.isEnabled;
 	}
 
 	/**
