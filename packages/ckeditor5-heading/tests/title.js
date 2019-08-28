@@ -8,10 +8,10 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import Title from '../src/title';
+import Heading from '../src/heading';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
