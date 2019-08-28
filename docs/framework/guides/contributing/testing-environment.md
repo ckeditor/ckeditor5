@@ -19,13 +19,13 @@ In order to run the automated tests use the `yarn run test [<args>...]` command.
 
 It accepts the following arguments (must be passed after the `--` option):
 
-* `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
-* `--source-map` (alias `-s`) &ndash; Whether to generate the source maps.
-* `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
-* `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
-* `--files` &ndash; Specifies tests files to run. Accepts a package name or a glob. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
-* `--browsers` &ndash; Browsers which will be used to run the tests. Defaults to `Chrome`.
-* `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. The `--debug false` option turns the debugging mechanism off and leaves the lines starting with `// @if CK_DEBUG //` untouched.
+* `--watch` (alias `-w`) &mdash; Whether to watch the files and execute tests whenever any file changes.
+* `--source-map` (alias `-s`) &mdash; Whether to generate useful source maps for the code.
+* `--coverage` (alias `-c`) &mdash; Whether to generate code coverage.
+* `--verbose` (alias `-v`) &mdash; Allows switching on webpack logs.
+* `--files` &mdash; Specifies tests files to run. Accepts a package name or a glob. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
+* `--browsers` &mdash; Browsers which will be used to run the tests. Defaults to `Chrome`.
+* `--debug` (alias `-d`) &mdash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting `--debug false` option.
 
 ### Examples
 
@@ -53,8 +53,9 @@ In order to start the manual tests server use the `yarn run manual` task.
 
 The task accepts the following options:
 
-* `--source-map` (alias `-s`) that generates useful source maps for the code.
-* `--additionalLanguages="ar,pl,..."` that passes extra languages to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
+* `--source-map` (alias `-s`) &mdash; Whether to generate useful source maps for the code.
+* `--additionalLanguages="ar,pl,..."` &mdash; Specifies extra languages to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
+* `--debug` (alias `-d`) &mdash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting `--debug false` option.
 
 It starts the server available at http://localhost:8125.
 
