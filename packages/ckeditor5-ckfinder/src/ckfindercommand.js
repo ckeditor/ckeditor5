@@ -13,7 +13,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing ckfinder editng feature}
+ * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing ckfinder editing feature}
  * to open a CKFinder file browser to insert an image or a link to a file into content.
  *
  *		editor.execute( 'ckfinder' );
