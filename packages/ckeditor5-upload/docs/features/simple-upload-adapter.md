@@ -6,9 +6,9 @@ order: 50
 
 # Simple upload adapter
 
-The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter Simple upload adapter} allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
+The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration).
 
-See the ["Server–side configuration"](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
+See the [Server–side configuration](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
 
 <info-box>
 	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
@@ -18,7 +18,7 @@ See the ["Server–side configuration"](#server-side-configuration) section to l
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
- ```bash
+```bash
 npm install --save @ckeditor/ckeditor5-upload
 ```
 
@@ -26,9 +26,9 @@ npm install --save @ckeditor/ckeditor5-upload
 	The [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package is available by default in all {@link builds/guides/overview#available-builds official editor builds}. You do not have to install it, if you are {@link builds/guides/integration/advanced-setup#scenario-1-integrating-existing-builds extending one}.
 </info-box>
 
-Add the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter SimpleUploadAdapter} to your plugin list and [configure](#configuration) the feature. For instance:
+Add the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`} to your plugin list and [configure](#configuration) the feature. For instance:
 
- ```js
+```js
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
 ClassicEditor
@@ -49,9 +49,9 @@ ClassicEditor
 
 ## Configuration
 
-The client–side of this feature is configurable using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig `config.simpleUpload`} object.
+The client side of this feature is configurable using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig `config.simpleUpload`} object.
 
- ```js
+```js
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/simpleuploadadapter';
 
 ClassicEditor
@@ -59,7 +59,7 @@ ClassicEditor
 		plugins: [ SimpleUploadAdapter, ... ],
 		toolbar: [ ... ],
 		simpleUpload: {
-			// The URL the images are uploaded to.
+			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',
 
 			// Headers sent along with the XMLHttpRequest to the upload server.
@@ -81,15 +81,15 @@ To use this upload adapter, you must provide a server–side application that wi
 
 When the image upload process is initiated, the adapter sends a [`POST`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request under {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}.
 
-You can sent additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
+You can send additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
 
-The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType) of the request is always `json`. See the ["Successful upload"](#successful-upload) and ["Error handling"](#error-handling) sections to learn more.
+The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType) of the request is always `json`. See the [Successful upload](#successful-upload) and [Error handling](#error-handling) sections to learn more.
 
 ### Successful upload
 
-If the upload is successful, the server should either return:
+If the upload is successful, the server should return:
 
-* an object containing the `url` property which points out to the uploaded image on the server:
+* An object containing the `url` property which points to the uploaded image on the server:
 
 	```json
 	{
@@ -97,7 +97,7 @@ If the upload is successful, the server should either return:
 	}
 	```
 
-* an object with the `urls` property, if you want to use [responsive images](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images) and the server supports it:
+* Or an object with the `urls` property, if you want to use [responsive images](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images) and the server supports it:
 
 	```json
 	{
@@ -110,16 +110,16 @@ If the upload is successful, the server should either return:
 	}
 	```
 
-	The `"default"` URL will be used in the `src` attribute of the image in the editor content. Other URLs will be used in the `srcset` attribute allowing the web browser to select the best one for the geometry of the viewport.
+	The `"default"` URL will be used in the `src` attribute of the image in the rich-text editor content. Other URLs will be used in the `srcset` attribute, allowing the web browser to select the best one for the geometry of the viewport.
 
-URL(s) in the server response are used:
+The URL(s) in the server response are used:
 
-* to display the image during the editing (as seen by the user in the editor),
-* in the editor content {@link builds/guides/integration/saving-data saved to the databse}.
+* To display the image during the editing (as seen by the user in the editor).
+* In the editor content {@link builds/guides/integration/saving-data saved to the database}.
 
 ### Error handling
 
-If something went wrong, the server must return an object that containing the `error` property. This will terminate the upload in the editor, e.g. allowing the user to select another image if the previous one was too big or did not meet some other validation criteria.
+If something went wrong, the server must return an object that contains the `error` property. This will terminate the upload in the editor, e.g. allowing the user to select another image if the previous one was too big or did not meet some other validation criteria.
 
 If the `error` object contains a `message`, it will be passed to the {@link module:ui/notification/notification~Notification#showWarning editor notification system} and displayed to the user. For the convenience of the users, use clear and possibly specific error messages.
 
@@ -141,7 +141,7 @@ This upload adapter will notify users about the [file upload progress](https://d
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
-See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5 WYSIWYG editor.
 
 ## Contribute
 
