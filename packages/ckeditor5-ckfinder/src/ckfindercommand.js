@@ -38,7 +38,7 @@ export default class CKFinderCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const imageCommand = this.editor.commands.get( 'imageUpload' );
+		const imageCommand = this.editor.commands.get( 'imageInsert' );
 		const linkCommand = this.editor.commands.get( 'link' );
 
 		// The CKFinder command is enabled when one of image or link command is enabled.
@@ -124,7 +124,7 @@ export default class CKFinderCommand extends Command {
 }
 
 function insertImages( editor, urls ) {
-	const imageCommand = editor.commands.get( 'imageUpload' );
+	const imageCommand = editor.commands.get( 'imageInsert' );
 
 	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {

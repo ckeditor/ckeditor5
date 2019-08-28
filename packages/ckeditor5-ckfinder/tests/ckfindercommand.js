@@ -104,6 +104,24 @@ describe( 'CKFinderCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be true when imageInsert and link command are enabled', () => {
+			setModelData( model, '<paragraph>[]</paragraph>' );
+			const insertImage = editor.commands.get( 'imageInsert' );
+			const linkCommand = editor.commands.get( 'link' );
+
+			insertImage.isEnabled = false;
+			linkCommand.isEnabled = false;
+
+			command.refresh();
+			expect( command.isEnabled ).to.be.false;
+
+			linkCommand.isEnabled = true;
+			insertImage.isEnabled = true;
+
+			command.refresh();
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( 'execute()', () => {
