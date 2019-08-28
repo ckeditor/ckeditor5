@@ -64,10 +64,8 @@ export default class MergeCellCommand extends Command {
 	refresh() {
 		const cellToMerge = this._getMergeableCell();
 
-		this.isEnabled = !!cellToMerge;
-		// In order to check if currently selected cell can be merged with one defined by #direction some computation are done beforehand.
-		// As such we can cache it as a command's value.
 		this.value = cellToMerge;
+		this.isEnabled = !!cellToMerge;
 	}
 
 	/**
