@@ -150,7 +150,7 @@ export default class ImageResize extends Plugin {
  *		ClassicEditor
  *			.create( editorElement, {
  *				image: {
- *					 resizeUnit: 'px'
+ *					resizeUnit: 'px'
  *				}
  *			} )
  *			.then( ... )
