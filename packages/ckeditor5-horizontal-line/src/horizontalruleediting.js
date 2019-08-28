@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
+import '../theme/horizontalrule.css';
+
 /**
  * @extends module:core/plugin~Plugin
  */
@@ -40,11 +42,15 @@ export default class HorizontalRuleEditing extends Plugin {
 			model: 'horizontalRule',
 			view: ( modelElement, viewWriter ) => {
 				const label = t( 'Horizontal rule' );
-				const viewElement = viewWriter.createEmptyElement( 'hr' );
+				const viewElement = viewWriter.createContainerElement( 'div' );
 
+				viewWriter.addClass( 'ck-horizontal-rule', viewElement );
 				viewWriter.setCustomProperty( 'hr', true, viewElement );
 
-				return toWidget( viewElement, viewWriter, { label } );
+				return toWidget( viewElement, viewWriter, {
+					label,
+					hasSelectionHandler: true
+				} );
 			}
 		} );
 
