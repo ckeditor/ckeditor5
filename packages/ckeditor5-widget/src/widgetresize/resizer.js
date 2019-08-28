@@ -27,7 +27,7 @@ export default class Resizer {
 	 */
 	constructor( options ) {
 		/**
-		 * Stores the state of resizable host geometry, such as original width, currently proposed height, etc.
+		 * Stores the state of the resizable host geometry, such as the original width, the currently proposed height, etc.
 		 *
 		 * Note that a new state is created for each resize transaction.
 		 *
@@ -36,7 +36,7 @@ export default class Resizer {
 		 */
 
 		/**
-		 * A view displaying new proposed element's size during the resizing.
+		 * A view displaying the proposed new element size during the resizing.
 		 *
 		 * @protected
 		 * @readonly
@@ -100,7 +100,7 @@ export default class Resizer {
 			return domElement;
 		} );
 
-		// Append resizer wrapper to the widget's wrapper.
+		// Append the resizer wrapper to the widget's wrapper.
 		writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
 		writer.addClass( 'ck-widget_with-resizer', widgetElement );
 	}
@@ -108,7 +108,7 @@ export default class Resizer {
 	/**
 	 * Starts the resizing process.
 	 *
-	 * Creates a new {@link #state} for current process.
+	 * Creates a new {@link #state} for the current process.
 	 *
 	 * @fires begin
 	 * @param {HTMLElement} domResizeHandle Clicked handle.
@@ -170,7 +170,7 @@ export default class Resizer {
 	}
 
 	/**
-	 * Cancels and rejects proposed resize dimensions hiding all the UI.
+	 * Cancels and rejects the proposed resize dimensions, hiding the UI.
 	 *
 	 * @fires cancel
 	 */
@@ -238,7 +238,7 @@ export default class Resizer {
 	}
 
 	/**
-	 * Method used to calculate the proposed size as the resize handles are dragged.
+	 * Calculates the proposed size as the resize handles are dragged.
 	 *
 	 * @private
 	 * @param {Event} domEventData Event data that caused the size update request. It should be used to calculate the proposed size.
@@ -310,9 +310,9 @@ export default class Resizer {
 	}
 
 	/**
-	 * Method used to obtain the resize host.
+	 * Obtains the resize host.
 	 *
-	 * Resize host is an object that receives dimensions that are result of resizing.
+	 * Resize host is an object that receives dimensions which are the result of resizing.
 	 *
 	 * @protected
 	 * @returns {HTMLElement}
@@ -324,12 +324,12 @@ export default class Resizer {
 	}
 
 	/**
-	 * Method used to obtain the handle host.
+	 * Obtains the handle host.
 	 *
-	 * Handle host is an object to which the handles are aligned to.
+	 * Handle host is an object that the handles are aligned to.
 	 *
-	 * Handle host will not always be an entire widget itself. Take an image as an example. Image widget
-	 * contains an image and a caption. Only image should be surrounded with handles.
+	 * Handle host will not always be an entire widget itself. Take an image as an example. The image widget
+	 * contains an image and a caption. Only the image should be surrounded with handles.
 	 *
 	 * @protected
 	 * @returns {HTMLElement}
@@ -341,7 +341,7 @@ export default class Resizer {
 	}
 
 	/**
-	 * Renders the resize handles in DOM.
+	 * Renders the resize handles in the DOM.
 	 *
 	 * @private
 	 * @param {HTMLElement} domElement The resizer wrapper.
@@ -380,7 +380,7 @@ export default class Resizer {
 	 * Determines the position of a given resize handle.
 	 *
 	 * @private
-	 * @param {HTMLElement} domHandle Handler used to calculate reference point.
+	 * @param {HTMLElement} domHandle Handler used to calculate the reference point.
 	 * @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
 	 */
 	_getHandlePosition( domHandle ) {
@@ -413,7 +413,7 @@ export default class Resizer {
 mix( Resizer, ObservableMixin );
 
 /**
- * A view displaying new proposed element's size during the resizing.
+ * A view displaying the proposed new element size during the resizing.
  *
  * @extends {module:ui/view~View}
  */
