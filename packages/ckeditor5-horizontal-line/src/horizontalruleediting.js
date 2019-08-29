@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import HorizontalRuleCommand from './horizontalrulecommand';
 
 import '../theme/horizontalrule.css';
 
@@ -61,5 +62,7 @@ export default class HorizontalRuleEditing extends Plugin {
 					return modelWriter.createElement( 'horizontalRule' );
 				}
 			} );
+
+		editor.commands.add( 'horizontalRule', new HorizontalRuleCommand( editor ) );
 	}
 }
