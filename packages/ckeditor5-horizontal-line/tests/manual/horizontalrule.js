@@ -7,14 +7,47 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import HorizontalRule from '../../src/horizontalrule';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, HorizontalRule ],
+		cloudServices: CS_CONFIG,
+		plugins: [ ArticlePluginSet, ImageUpload, EasyImage, HorizontalRule ],
 		toolbar: [
-			'heading', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo', 'horizontalRule'
-		]
+			'heading',
+			'|',
+			'bold', 'italic', 'numberedList', 'bulletedList',
+			'|',
+			'link', 'blockquote', 'imageUpload', 'insertTable', 'mediaEmbed',
+			'|',
+			'undo', 'redo',
+			'|',
+			'horizontalRule'
+		],
+		image: {
+			styles: [
+				'full',
+				'alignLeft',
+				'alignRight'
+			],
+			toolbar: [
+				'imageStyle:alignLeft',
+				'imageStyle:full',
+				'imageStyle:alignRight',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
 	} )
 	.then( editor => {
 		window.editor = editor;
