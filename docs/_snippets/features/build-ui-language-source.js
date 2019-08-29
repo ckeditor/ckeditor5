@@ -9,8 +9,10 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor.builtinPlugins.push( TodoList );
+ClassicEditor.builtinPlugins.push( ImageResize );
 ClassicEditor.defaultConfig.toolbar.items.splice( 7, 0, 'todoList' );
 
 window.ClassicEditor = ClassicEditor;
