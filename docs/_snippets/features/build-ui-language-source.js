@@ -8,5 +8,9 @@
 /* config { "additionalLanguages": [ "ar", "es" ] } */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+
+ClassicEditor.builtinPlugins.push( TodoList );
+ClassicEditor.defaultConfig.toolbar.items.splice( 7, 0, 'todoList' );
 
 window.ClassicEditor = ClassicEditor;
