@@ -9,13 +9,14 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isHorizontalRuleAllowed } from './utils';
 
 export default class HorizontalRuleCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = true;
+		this.isEnabled = isHorizontalRuleAllowed( this.editor.model );
 	}
 
 	/**
