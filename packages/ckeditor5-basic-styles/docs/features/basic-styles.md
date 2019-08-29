@@ -33,7 +33,7 @@ By default, each feature can upcast more than one type of the content. Here's th
 
 | Style feature | Supported input elements |
 |-----|---|
-| {@link module:basic-styles/bold~Bold} | `<strong>`, `<b>`, `<* style="font-weight: bold">` |
+| {@link module:basic-styles/bold~Bold} | `<strong>`, `<b>`, `<* style="font-weight: bold">` (or numeric values that are greater or equal 600) |
 | {@link module:basic-styles/italic~Italic} | `<i>`, `<em>`, `<* style="font-style: italic">` |
 | {@link module:basic-styles/underline~Underline} | `<u>`, `<* style="text-decoration: underline">` |
 | {@link module:basic-styles/strikethrough~Strikethrough} | `<s>`, `<del>`, `<strike>`, `<* style="text-decoration: line-through">` |
