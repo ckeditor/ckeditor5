@@ -27,7 +27,6 @@ export default class HorizontalRuleEditing extends Plugin {
 		const conversion = editor.conversion;
 
 		schema.register( 'horizontalRule', {
-			isBlock: true,
 			isObject: true,
 			allowWhere: '$block'
 		} );
@@ -52,13 +51,7 @@ export default class HorizontalRuleEditing extends Plugin {
 			}
 		} );
 
-		conversion.for( 'upcast' )
-			.elementToElement( {
-				view: 'hr',
-				model: ( viewElement, modelWriter ) => {
-					return modelWriter.createElement( 'horizontalRule' );
-				}
-			} );
+		conversion.for( 'upcast' ).elementToElement( { view: 'hr', model: 'horizontalRule' } );
 
 		editor.commands.add( 'horizontalRule', new HorizontalRuleCommand( editor ) );
 	}
