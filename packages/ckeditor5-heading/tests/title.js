@@ -55,6 +55,8 @@ describe( 'Title', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'title' ) ).to.equal( true );
 		expect( model.schema.checkChild( [ '$root', 'blockQuote' ], 'title' ) ).to.equal( false );
 		expect( model.schema.checkChild( [ '$root', 'paragraph' ], 'title' ) ).to.equal( false );
+		expect( model.schema.checkAttribute( [ 'title', '$text' ], 'bold' ) ).to.equal( false );
+		expect( model.schema.checkAttribute( [ 'title', '$text' ], 'foo' ) ).to.equal( false );
 	} );
 
 	it( 'should convert title to h1', () => {
@@ -130,13 +132,8 @@ describe( 'Title', () => {
 			expect( getData( model ) ).to.equal( '<title>[]</title><blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 		} );
 
-		it( 'should clear element from disallowed attributes when changing to title element', () => {
+		it( 'should clear element from attributes when changing to title element', () => {
 			model.schema.extend( '$text', { allowAttributes: 'bold' } );
-			model.schema.addAttributeCheck( ( context, attributeName ) => {
-				if ( context.endsWith( 'title $text' ) && attributeName === 'bold' ) {
-					return false;
-				}
-			} );
 
 			setData( model,
 				'<paragraph>F<$text bold="true">o</$text>o</paragraph><paragraph>B<$text bold="true">a</$text>r</paragraph>'

@@ -65,6 +65,13 @@ export default class Title extends Plugin {
 			}
 		} );
 
+		// Disallow all attributes in title.
+		model.schema.addAttributeCheck( context => {
+			if ( context.endsWith( 'title $text' ) ) {
+				return false;
+			}
+		} );
+
 		editor.conversion.elementToElement( { model: 'title', view: 'h1' } );
 
 		// Create and take care about proper position of a title element.
