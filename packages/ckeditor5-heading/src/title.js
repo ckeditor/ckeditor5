@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module heading/title
+ */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -88,7 +92,7 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Sets the title of the document.
+	 * Sets the title of the document. This methods does not change any content outside the title element.
 	 *
 	 * @param {String} data Data to be set as a document title.
 	 */
@@ -100,7 +104,11 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Returns the title of the document.
+	 * Returns the title of the document. Note, that because this plugins does not allows any formatting inside
+	 * the title element, output of this method will be plain text, with no HTML tags. However, the title element
+	 * may contains some markers, like {@link features/comments#comments-markup comments} or
+	 * {@link features/track-changes#suggestions-markup suggestions} markers. In such case a special tag for the
+	 * marker will be included in the title text.
 	 *
 	 * @returns {String} Title of the document.
 	 */
