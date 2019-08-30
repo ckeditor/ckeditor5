@@ -104,9 +104,9 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Returns the title of the document. Note, that because this plugins does not allows any formatting inside
-	 * the title element, output of this method will be plain text, with no HTML tags. However, the title element
-	 * may contains some markers, like comments or suggestions markers. In such case a special tag for the
+	 * Returns the title of the document. Note, that because this plugin does not allow any formatting inside
+	 * the title element, the output of this method will be a plain text, with no HTML tags. However, it
+	 * may contain some markers, like comments or suggestions. In such case, a special tag for the
 	 * marker will be included in the title text.
 	 *
 	 * @returns {String} Title of the document.

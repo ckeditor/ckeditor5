@@ -4,7 +4,7 @@ category: features
 
 # Title
 
-The {@link module:heading/title~Title} feature add support for the title field to your document. It makes sure that there will be always a single title field at the beginning of your document.
+The {@link module:heading/title~Title title} feature adds support for the title field to your document. It makes sure that there will be always a single title field at the beginning of your document.
 
 ## Demo
 
@@ -12,11 +12,11 @@ The {@link module:heading/title~Title} feature add support for the title field t
 
 ## Keyboard navigation
 
-Title plugin let you navigate between title and body element using <kbd>Tab</kbd> and back, using <kbd>Shift</kbd> + <kbd>Tab</kbd>, providing form-line experience, as well as as use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move caret between title and body.
+Title plugin lets you navigate between title and body elements using <kbd>Tab</kbd> key and back, using <kbd>Shift</kbd> + <kbd>Tab</kbd>, providing form-like experience. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move caret between title and body.
 
-## Placehoder integration
+## Placeholder integration
 
-Title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, it will be users as the placeholder for the body element.
+Title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, it will be used as the placeholder for the body element.
 
 ## Installation
 
@@ -32,14 +32,14 @@ Then add the `Title` plugin to your plugin list:
 import Title from '@ckeditor/ckeditor5-heading/src/title';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Title, ... ]
-	} )
-	.then( ... )
-	.catch( ... );
+    .create( document.querySelector( '#editor' ), {
+        plugins: [ Title, ... ]
+    } )
+    .then( ... )
+    .catch( ... );
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+    Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
