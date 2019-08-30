@@ -68,7 +68,7 @@ describe( 'ImageEditing', () => {
 		const element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		ClassicTestEditor.create( element, {
+		return ClassicTestEditor.create( element, {
 			plugins: [ ImageEditing ]
 		} ).then( editor => {
 			editor.data.set( '<figure class="image"><img src="/assets/sample.png" alt="bar" /></figure>' );
@@ -76,8 +76,9 @@ describe( 'ImageEditing', () => {
 			const spy = sinon.spy();
 
 			editor.ui.on( 'update', spy );
+			const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
 
-			element.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
+			htmlImageElement.dispatchEvent( new Event( 'load' ) );
 
 			sinon.assert.calledOnce( spy );
 
