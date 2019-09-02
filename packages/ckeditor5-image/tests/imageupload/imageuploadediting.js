@@ -95,7 +95,7 @@ describe( 'ImageUploadEditing', () => {
 		expect( editor.commands.get( 'imageUpload' ) ).to.be.instanceOf( ImageUploadCommand );
 	} );
 
-	it( 'should not crash when Clipboard plugin is not available', () => {
+	it( 'should load Clipboard plugin', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
