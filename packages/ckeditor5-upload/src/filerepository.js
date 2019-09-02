@@ -188,14 +188,18 @@ export default class FileRepository extends Plugin {
 		if ( fileOrPromise instanceof Promise ) {
 			loader.file.then( file => {
 				this._loadersMap.set( file, loader );
+			} ).catch( () => {
+				// Catch the file promise rejection. If there are no `catch` clause, the browser
+				// will throw an error (see https://github.com/ckeditor/ckeditor5-upload/pull/90).
+				// The error will be handled by `FileLoader` so no action is required here.
+			} );
+		} else {
+			// Catch the file promise rejection. If there are no `catch` clause, the browser
+			// will throw an error (see https://github.com/ckeditor/ckeditor5-upload/pull/90).
+			loader.file.catch( () => {
+				// The error will be handled by `FileLoader` so no action is required here.
 			} );
 		}
-
-		// Catch the file promise rejection. If there are no `catch` clause, the browser
-		// will throw an error (see https://github.com/ckeditor/ckeditor5-upload/pull/90).
-		loader.file.catch( () => {
-			// The error will be handled by `FileLoader` so no action is required here.
-		} );
 
 		loader.on( 'change:uploaded', () => {
 			let aggregatedUploaded = 0;
@@ -441,6 +445,11 @@ class FileLoader {
 		return this._filePromiseWrapper.promise
 			.then( file => this._reader.read( file ) )
 			.then( data => {
+				// Edge case: reader was aborted after file was read - double check for proper status.
+				if ( this.status !== 'reading' ) {
+					throw this.status;
+				}
+
 				this.status = 'idle';
 
 				return data;
