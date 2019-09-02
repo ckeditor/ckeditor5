@@ -1,7 +1,7 @@
 ## Title feature
 
-- you should see `Title` and `Body` placeholders when there is no text in any of sections.
-- you should be able to put selection to both sections and jump between them using `Shift` and `Tab+Shift`.
+- you should see `Title` and `Body` placeholders when there is no text in any of the sections.
+- you should be able to put the selection to the both sections and jump between them using `Shift` and `Tab+Shift`.
 
 ### Prevent extra paragraphing (typing)
 
