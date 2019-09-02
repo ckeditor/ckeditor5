@@ -66,11 +66,11 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.svg$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
-				test: /\.css$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 				use: [
 					{
 						loader: 'style-loader',
