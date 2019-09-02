@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-horizontal-rule {
-	border: 1px solid var(--ck-color-toolbar-border);
-	border-radius: 50%;
-	width: 90%;
-	margin-left: auto;
-	margin-right: auto;
+.ck-content .ck-horizontal-rule {
+	padding: 5px;
+}
+
+.ck-content .ck-horizontal-rule hr {
+	border: 1px solid hsl(0, 0%, 77%);
+	margin: 0;
 }
