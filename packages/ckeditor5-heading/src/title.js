@@ -64,26 +64,9 @@ export default class Title extends Plugin {
 		// </title>
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/2005.
-		model.schema.register( 'title', { inheritAllFrom: '$block' } );
-		model.schema.register( 'title-content', {
-			inheritAllFrom: '$block',
-			allowIn: 'title'
-		} );
-
-		model.schema.addChildCheck( ( context, childDefinition ) => {
-			// Allow `title` element only directly inside a root.
-			if ( childDefinition.name === 'title' && !context.endsWith( '$root' ) ) {
-				return false;
-			}
-
-			// Allow only `title-content` inside `title`.
-			if (
-				context.endsWith( 'title' ) && childDefinition.name !== 'title-content' ||
-				childDefinition.name === 'title-content' && !context.endsWith( 'title' )
-			) {
-				return false;
-			}
-		} );
+		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
+		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title' } );
+		model.schema.extend( '$text', { allowIn: 'title-content' } );
 
 		// Disallow all attributes in `title-content`.
 		model.schema.addAttributeCheck( context => {

@@ -49,19 +49,18 @@ describe( 'Title', () => {
 
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.isRegistered( 'title' ) ).to.equal( true );
+		expect( model.schema.isBlock( 'title' ) ).to.equal( true );
 		expect( model.schema.isRegistered( 'title-content' ) ).to.equal( true );
+		expect( model.schema.isBlock( 'title-content' ) ).to.equal( true );
 
 		expect( model.schema.checkChild( 'title', '$text' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'title', 'paragraph' ) ).to.equal( false );
+		expect( model.schema.checkChild( 'title', '$block' ) ).to.equal( false );
 		expect( model.schema.checkChild( 'title', 'title-content' ) ).to.equal( true );
 		expect( model.schema.checkChild( '$root', 'title-content' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'blockQuote', 'title-content' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'title-content', '$text' ) ).to.equal( true );
-		expect( model.schema.checkChild( 'title-content', 'paragraph' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'title-content', 'blockQuote' ) ).to.equal( false );
 		expect( model.schema.checkChild( '$root', 'title' ) ).to.equal( true );
-		expect( model.schema.checkChild( 'blockQuote', 'title' ) ).to.equal( false );
-		expect( model.schema.checkChild( 'paragraph', 'title' ) ).to.equal( false );
+		expect( model.schema.checkChild( '$block', 'title-content' ) ).to.equal( false );
+		expect( model.schema.checkChild( 'title-content', '$text' ) ).to.equal( true );
+		expect( model.schema.checkChild( 'title-content', '$block' ) ).to.equal( false );
 
 		model.schema.extend( '$text', { allowAttributes: [ 'bold', 'foo' ] } );
 
