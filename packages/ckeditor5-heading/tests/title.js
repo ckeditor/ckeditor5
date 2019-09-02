@@ -56,8 +56,8 @@ describe( 'Title', () => {
 		expect( model.schema.checkChild( 'title', '$text' ) ).to.equal( false );
 		expect( model.schema.checkChild( 'title', '$block' ) ).to.equal( false );
 		expect( model.schema.checkChild( 'title', 'title-content' ) ).to.equal( true );
-		expect( model.schema.checkChild( '$root', 'title-content' ) ).to.equal( false );
 		expect( model.schema.checkChild( '$root', 'title' ) ).to.equal( true );
+		expect( model.schema.checkChild( '$root', 'title-content' ) ).to.equal( false );
 		expect( model.schema.checkChild( '$block', 'title-content' ) ).to.equal( false );
 		expect( model.schema.checkChild( 'title-content', '$text' ) ).to.equal( true );
 		expect( model.schema.checkChild( 'title-content', '$block' ) ).to.equal( false );
@@ -111,6 +111,12 @@ describe( 'Title', () => {
 			);
 		} );
 
+		it( 'should have a list of title-like elements', () => {
+			expect( Array.from( Title.titleLikeElements ) ).to.have.members( [
+				'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6'
+			] );
+		} );
+
 		it( 'should change heading1 element to title when is set as a first root child', () => {
 			setData( model,
 				'<heading1>Foo</heading1>' +
@@ -121,24 +127,6 @@ describe( 'Title', () => {
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<heading1>Bar</heading1>'
 			);
-		} );
-
-		it( 'should change paragraph element to title when is set as a first root child', () => {
-			setData( model,
-				'<paragraph>Foo</paragraph>' +
-				'<paragraph>Bar</paragraph>'
-			);
-
-			expect( getData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
-		} );
-
-		it( 'should have list of title-like elements', () => {
-			expect( Array.from( Title.titleLikeElements ) ).to.have.members( [
-				'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6'
-			] );
 		} );
 
 		it( 'should change paragraph element to title when is set as a first root child', () => {
