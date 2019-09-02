@@ -76,8 +76,8 @@ describe( 'ImageEditing', () => {
 			const spy = sinon.spy();
 
 			editor.ui.on( 'update', spy );
-			const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
 
+			const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
 			htmlImageElement.dispatchEvent( new Event( 'load' ) );
 
 			sinon.assert.calledOnce( spy );
