@@ -196,6 +196,7 @@ export default class Title extends Plugin {
 		const titleChildren = Array.from( title.getChildren() );
 		let hasChanged = false;
 
+		// Skip first child because it is an allowed element.
 		titleChildren.shift();
 
 		for ( const titleChild of titleChildren ) {
