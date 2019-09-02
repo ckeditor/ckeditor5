@@ -124,28 +124,22 @@ describe( 'Title', () => {
 			);
 		} );
 
-		it( 'should change heading2 element to title when is set as a first root child', () => {
+		it( 'should change paragraph element to title when is set as a first root child', () => {
 			setData( model,
-				'<heading2>Foo</heading2>' +
-				'<heading2>Bar</heading2>'
+				'<paragraph>Foo</paragraph>' +
+				'<paragraph>Bar</paragraph>'
 			);
 
 			expect( getData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
-				'<heading2>Bar</heading2>'
+				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
-		it( 'should change heading3 element to title when is set as a first root child', () => {
-			setData( model,
-				'<heading3>Foo</heading3>' +
-				'<heading3>Bar</heading3>'
-			);
-
-			expect( getData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<heading3>Bar</heading3>'
-			);
+		it( 'should have list of title-like elements', () => {
+			expect( Array.from( Title.titleLikeElements ) ).to.have.members( [
+				'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6'
+			] );
 		} );
 
 		it( 'should change paragraph element to title when is set as a first root child', () => {

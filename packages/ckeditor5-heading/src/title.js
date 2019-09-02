@@ -18,9 +18,6 @@ import {
 	enablePlaceholder
 } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
-// List of model elements that are allowed to be renamed to title element.
-const allowedToBeTitle = new Set( [ 'heading1', 'heading2', 'heading3', 'paragraph' ] );
-
 /**
  * The Title plugin.
  *
@@ -242,7 +239,7 @@ export default class Title extends Plugin {
 				const title = this._getTitleElement();
 
 				// Change first element to the title if it can be a title.
-				if ( allowedToBeTitle.has( rootChild.name ) ) {
+				if ( Title.titleLikeElements.has( rootChild.name ) ) {
 					const position = model.createPositionBefore( rootChild );
 					const title = writer.createElement( 'title' );
 
@@ -421,6 +418,15 @@ export default class Title extends Plugin {
 		} );
 	}
 }
+
+/**
+ * A list of element names which should be treated by the Title plugin as
+ * title-like. This means that element on the list will be changed to the title
+ * element when will be the first element in the root.
+ *
+ * @member {Set.<String>} module:heading/title~Title.titleLikeElements
+ */
+Title.titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ] );
 
 function mapModelPositionToView( editingView ) {
 	return ( evt, data ) => {
