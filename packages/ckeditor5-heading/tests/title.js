@@ -589,6 +589,28 @@ describe( 'Title', () => {
 			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Body' );
 			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.be.false;
 		} );
+
+		it( 'should use placeholder defined through EditorConfig as a Body placeholder', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor.create( element, {
+				plugins: [ Title ],
+				placeholder: 'Custom editor placeholder'
+			} ).then( editor => {
+				const viewRoot = editor.editing.view.document.getRoot();
+				const title = viewRoot.getChild( 0 );
+				const body = viewRoot.getChild( 1 );
+
+				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'Title' );
+				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
+
+				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'Custom editor placeholder' );
+				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
+
+				return editor.destroy().then( () => element.remove() );
+			} );
+		} );
 	} );
 
 	describe( 'Tab press handling', () => {

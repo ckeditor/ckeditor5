@@ -327,6 +327,8 @@ export default class Title extends Plugin {
 		const view = editor.editing.view;
 		const viewRoot = view.document.getRoot();
 
+		const bodyPlaceholder = editor.config.get( 'placeholder' ) || 'Body';
+
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt, data, conversionApi ) => {
 			enablePlaceholder( {
@@ -354,7 +356,7 @@ export default class Title extends Plugin {
 					writer.removeAttribute( 'data-placeholder', oldBody );
 				}
 
-				writer.setAttribute( 'data-placeholder', 'Body', body );
+				writer.setAttribute( 'data-placeholder', bodyPlaceholder, body );
 				oldBody = body;
 				hasChanged = true;
 			}
