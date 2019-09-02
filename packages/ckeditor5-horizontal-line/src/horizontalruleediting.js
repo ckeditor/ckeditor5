@@ -42,12 +42,15 @@ export default class HorizontalRuleEditing extends Plugin {
 			model: 'horizontalRule',
 			view: ( modelElement, viewWriter ) => {
 				const label = t( 'Horizontal rule' );
-				const viewElement = viewWriter.createContainerElement( 'div' );
+				const viewWrapper = viewWriter.createContainerElement( 'div' );
+				const viewHrElement = viewWriter.createEmptyElement( 'hr' );
 
-				viewWriter.addClass( 'ck-horizontal-rule', viewElement );
-				viewWriter.setCustomProperty( 'hr', true, viewElement );
+				viewWriter.addClass( 'ck-horizontal-rule', viewWrapper );
+				viewWriter.setCustomProperty( 'hr', true, viewWrapper );
 
-				return toHorizontalRuleWidget( viewElement, viewWriter, label );
+				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewHrElement );
+
+				return toHorizontalRuleWidget( viewWrapper, viewWriter, label );
 			}
 		} );
 
