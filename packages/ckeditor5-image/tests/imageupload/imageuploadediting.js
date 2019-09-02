@@ -226,6 +226,30 @@ describe( 'ImageUploadEditing', () => {
 		expect( eventInfo.stop.called ).to.be.undefined;
 	} );
 
+	it( 'should not insert image when file is not an configured image type', () => {
+		const viewDocument = editor.editing.view.document;
+		const fileMock = {
+			type: 'image/svg+xml',
+			size: 1024
+		};
+		const dataTransfer = new DataTransfer( {
+			files: [ fileMock ],
+			types: [ 'Files' ],
+			getData: () => ''
+		} );
+
+		setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+		const targetRange = doc.selection.getFirstRange();
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		expect( eventInfo.stop.called ).to.be.undefined;
+	} );
+
 	it( 'should not insert image when file is null', () => {
 		const viewDocument = editor.editing.view.document;
 		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => null } );

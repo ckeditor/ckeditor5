@@ -10,15 +10,20 @@
 /* global fetch, File */
 
 /**
- * Checks if a given file is an image.
+ * Creates a RegExp used to test for image files.
  *
- * @param {File} file
- * @returns {Boolean}
+ *		const imageType = createImageTypeRegExp( [ 'png', 'jpeg', 'svg+xml', 'vnd.microsoft.icon' ] );
+ *
+ *		console.log( 'is supported image', imageType.test( file.type ) );
+ *
+ * @param {Array.<String>} types
+ * @returns {RegExp}
  */
-export function isImageType( file ) {
-	const types = /^image\/(jpeg|png|gif|bmp)$/;
+export function createImageTypeRegExp( types ) {
+	// Sanitize mime-type name which may include: "+", "-" or ".".
+	const regExpSafeNames = types.map( type => type.replace( '+', '\\+' ) );
 
-	return types.test( file.type );
+	return new RegExp( `^image\\/(${ regExpSafeNames.join( '|' ) })$` );
 }
 
 /**
