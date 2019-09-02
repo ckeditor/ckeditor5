@@ -683,7 +683,7 @@ describe( 'ImageUploadEditing', () => {
 
 		// Stub `fetch` so it can be rejected.
 		sinon.stub( window, 'fetch' ).callsFake( () => {
-			return new Promise( ( res, rej ) => rej() );
+			return new Promise( ( res, rej ) => rej( 'could not fetch' ) );
 		} );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
