@@ -106,9 +106,10 @@ export default class Title extends Plugin {
 	 */
 	setTitle( data ) {
 		const editor = this.editor;
-		const titleContent = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
+		const titleElement = this._getTitleElement();
+		const titleContentElement = titleElement.getChild( 0 );
 
-		editor.model.insertContent( editor.data.parse( data, 'title-content' ), titleContent, 'in' );
+		editor.model.insertContent( editor.data.parse( data, 'title-content' ), titleContentElement, 'in' );
 	}
 
 	/**
@@ -120,9 +121,10 @@ export default class Title extends Plugin {
 	 * @returns {String} Title of the document.
 	 */
 	getTitle() {
-		const title = this.editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
+		const titleElement = this._getTitleElement();
+		const titleContentElement = titleElement.getChild( 0 );
 
-		return this.editor.data.stringify( title );
+		return this.editor.data.stringify( titleContentElement );
 	}
 
 	/**
@@ -169,7 +171,11 @@ export default class Title extends Plugin {
 	_getTitleElement() {
 		const root = this.editor.model.document.getRoot();
 
-		return Array.from( root.getChildren() ).find( element => element.is( 'title' ) );
+		for ( const child of root.getChildren() ) {
+			if ( child.is( 'title' ) ) {
+				return child;
+			}
+		}
 	}
 
 	/**
@@ -395,8 +401,11 @@ export default class Title extends Plugin {
 				const selectedElement = Array.from( selection.getSelectedBlocks() )[ 0 ];
 				const selectionPosition = selection.getFirstPosition();
 
-				if ( selectedElement === root.getChild( 1 ) && selectionPosition.isAtStart ) {
-					writer.setSelection( root.getChild( 0 ).getChild( 0 ), 0 );
+				const title = root.getChild( 0 );
+				const body = root.getChild( 1 );
+
+				if ( selectedElement === body && selectionPosition.isAtStart ) {
+					writer.setSelection( title.getChild( 0 ), 0 );
 					cancel();
 				}
 			} );
