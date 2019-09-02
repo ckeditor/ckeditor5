@@ -39,8 +39,8 @@ describe( 'Title', () => {
 		return editor.destroy().then( () => element.remove() );
 	} );
 
-	it( 'should requires certain plugins', () => {
-		expect( Title.requires ).to.have.members( [ Paragraph, Enter ] );
+	it( 'should requires Paragraph plugin', () => {
+		expect( Title.requires ).to.have.members( [ Paragraph ] );
 	} );
 
 	it( 'should have plugin name property', () => {

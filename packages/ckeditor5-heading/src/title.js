@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import {
@@ -41,7 +40,7 @@ export default class Title extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Paragraph, Enter ];
+		return [ Paragraph ];
 	}
 
 	/**
