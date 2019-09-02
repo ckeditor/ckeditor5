@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
+import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import {
 	needsPlaceholder,
 	showPlaceholder,
@@ -17,14 +18,13 @@ import {
 	enablePlaceholder
 } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
-import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-
+// List of model elements that are allowed to be renamed to title element.
 const allowedToBeTitle = new Set( [ 'heading1', 'heading2', 'heading3', 'paragraph' ] );
 
 /**
  * The Title plugin.
  *
- * It splits the document into `title` and `body` sections.
+ * It splits the document into `Title` and `Body` sections.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -51,7 +51,8 @@ export default class Title extends Plugin {
 		const model = editor.model;
 
 		/**
-		 * Reference to the empty paragraph in the body created when there's no element in the body.
+		 * Reference to the empty paragraph in the body
+		 * created when there's no element in the body for the placeholder purpose.
 		 *
 		 * @private
 		 * @type {null|module:engine/model/element~Element}
@@ -60,7 +61,11 @@ export default class Title extends Plugin {
 
 		// To use Schema for disabling some features when selection is inside the title element
 		// it's needed to create the following structure:
-		// <title><title-content>The title text</title-content></title>
+		//
+		// <title>
+		//     <title-content>The title text</title-content>
+		// </title>
+		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/2005.
 		model.schema.register( 'title', { inheritAllFrom: '$block' } );
 		model.schema.register( 'title-content', {
@@ -83,14 +88,14 @@ export default class Title extends Plugin {
 			}
 		} );
 
-		// Disallow all attributes in `title`.
+		// Disallow all attributes in `title-content`.
 		model.schema.addAttributeCheck( context => {
 			if ( context.endsWith( 'title-content $text' ) ) {
 				return false;
 			}
 		} );
 
-		// Because of title is represented by two elements in the model
+		// Because of `title` is represented by two elements in the model
 		// but only one in the view it's needed to adjust Mapper.
 		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
@@ -98,10 +103,10 @@ export default class Title extends Plugin {
 		// `title-content` <-> `h1` conversion.
 		editor.conversion.elementToElement( { model: 'title-content', view: 'h1' } );
 
-		// Take care about proper title element structure.
+		// Take care about proper `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
 
-		// Create and take care about proper position of a title element.
+		// Create and take care about proper position of a `title` element.
 		model.document.registerPostFixer( writer => this._fixTitleElement( writer ) );
 
 		// Prevent from adding extra paragraph after paste or enter.
