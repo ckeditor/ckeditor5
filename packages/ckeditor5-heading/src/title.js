@@ -308,17 +308,19 @@ export default class Title extends Plugin {
 	 */
 	_attachPlaceholders() {
 		const editor = this.editor;
+		const t = editor.t;
 		const view = editor.editing.view;
 		const viewRoot = view.document.getRoot();
 
-		const bodyPlaceholder = editor.config.get( 'placeholder' ) || 'Body';
+		const bodyPlaceholder = editor.config.get( 'placeholder' ) || t( 'Body' );
+		const titlePlaceholder = t( 'Title' );
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt, data, conversionApi ) => {
 			enablePlaceholder( {
 				view,
 				element: conversionApi.mapper.toViewElement( data.item ),
-				text: 'Title'
+				text: titlePlaceholder
 			} );
 		} );
 
