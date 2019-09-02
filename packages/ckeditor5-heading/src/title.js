@@ -161,10 +161,10 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Returns `title` element when is in the document. Returns `null` otherwise.
+	 * Returns `title` element when is in the document. Returns `undefined` otherwise.
 	 *
 	 * @private
-	 * @returns {module:engine/model/element~Element|null}
+	 * @returns {module:engine/model/element~Element|undefined}
 	 */
 	_getTitleElement() {
 		const root = this.editor.model.document.getRoot();
