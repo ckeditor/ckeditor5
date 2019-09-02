@@ -22,21 +22,21 @@ export default class ResizeState {
 	 */
 	constructor( options ) {
 		/**
-		 * TODO
+		 * The original width (pixels) of the resized object when the resize process was started.
 		 *
 		 * @readonly
 		 * @member {Number} #originalWidth
 		 */
 
 		/**
-		 * TODO
+		 * The original height (pixels) of the resized object when the resize process was started.
 		 *
 		 * @readonly
 		 * @member {Number} #originalHeight
 		 */
 
 		/**
-		 * TODO
+		 * The original width (percents) of the resized object when the resize process was started.
 		 *
 		 * @readonly
 		 * @member {Number} #originalWidthPercents
@@ -53,7 +53,7 @@ export default class ResizeState {
 		this.set( 'activeHandlePosition', null );
 
 		/**
-		 * TODO
+		 * The width (percents) proposed, but not committed yet, in the current resize process.
 		 *
 		 * @readonly
 		 * @observable
@@ -62,7 +62,7 @@ export default class ResizeState {
 		this.set( 'proposedWidthPercents', null );
 
 		/**
-		 * TODO
+		 * The width (pixels) proposed, but not committed yet, in the current resize process.
 		 *
 		 * @readonly
 		 * @observable
@@ -71,7 +71,7 @@ export default class ResizeState {
 		this.set( 'proposedWidth', null );
 
 		/**
-		 * TODO
+		 * The height (pixels) proposed, but not committed yet, in the current resize process.
 		 *
 		 * @readonly
 		 * @observable
@@ -83,7 +83,7 @@ export default class ResizeState {
 		this.set( 'proposedHandleHostHeight', null );
 
 		/**
-		 * TODO
+		 * A width to height ratio of the resized image.
 		 *
 		 * @readonly
 		 * @member {Number} #aspectRatio
