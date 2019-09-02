@@ -31,7 +31,7 @@ export default class HorizontalRuleUI extends Plugin {
 				isToggleable: true
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			// Execute command.
 			this.listenTo( view, 'execute', () => editor.execute( 'horizontalRule' ) );
