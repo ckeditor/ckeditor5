@@ -22,11 +22,13 @@ import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
@@ -56,11 +58,13 @@ ClassicEditor.builtinPlugins = [
 	Heading,
 	Image,
 	ImageCaption,
+	ImageResize,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
 	Link,
 	List,
+	TodoList,
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,

@@ -26,10 +26,10 @@ const packagesPath = path.join( process.cwd(), 'packages' );
 
 runWebpack( webpackConfig )
 	.then( () => {
-		// All variables are placed inside `:root` selector. Let's extract their names and values as a map.
+		// All variables are placed inside the `:root` selector. Let's extract their names and values as a map.
 		const cssVariables = new Map( contentRules.variables
 			.map( rule => {
-				// Let's extract all of them as an array of pairs: [ name, value ]
+				// Let's extract all of them as an array of pairs: [ name, value ].
 				const allRules = [];
 				let match;
 
@@ -73,13 +73,13 @@ runWebpack( webpackConfig )
 				return `/* ${ rule.file.replace( packagesPath + path.sep, '' ) } */\n${ css }`;
 			} )
 			.filter( rule => {
-				// 1st: path to the css file, 2nd: selector definition - start block, 3rd: end block
+				// 1st: path to the CSS file, 2nd: selector definition - start block, 3rd: end block
 				// If the rule contains only 3 lines, it means that it does not define any rules.
 				return rule.split( '\n' ).length > 3;
 			} )
 			.join( '\n' );
 
-		// Find all CSS variables inside `.ck-content` selector.
+		// Find all CSS variables inside the `.ck-content` selector.
 		let match;
 
 		while ( ( match = VARIABLE_USAGE_REGEXP.exec( selectorCss ) ) ) {
@@ -93,7 +93,7 @@ runWebpack( webpackConfig )
 		while ( !clearRun ) {
 			clearRun = true;
 
-			// For the every used variable...
+			// For every used variable...
 			for ( const variable of usedVariables ) {
 				const value = cssVariables.get( variable );
 
@@ -102,7 +102,7 @@ runWebpack( webpackConfig )
 				// ...find its value and check whether it requires another variable.
 				while ( ( match = VARIABLE_USAGE_REGEXP.exec( value ) ) ) {
 					// If so, mark the entire `while()` block as it should be checked once again.
-					// Also, add the new variable to used variables collection.
+					// Also, add the new variable to the used variables collection.
 					if ( !usedVariables.has( match[ 1 ] ) ) {
 						clearRun = false;
 						usedVariables.add( match[ 1 ] );
@@ -139,7 +139,7 @@ runWebpack( webpackConfig )
 	} );
 
 /**
- * Prepares configuration for Webpack.
+ * Prepares the configuration for webpack.
  *
  * @returns {Object}
  */
@@ -170,7 +170,7 @@ function getWebpackConfig() {
 		},
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
-		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
+		// is triggered from a directory outside `ckeditor5` (e.g. in a multi-project case).
 		resolve: {
 			modules: getModuleResolvePaths()
 		},

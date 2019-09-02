@@ -225,7 +225,14 @@ yarn run docs --skip-api
 
 ## Generating content styles
 
-It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. Execute `yarn docs:content-styles` and the stylesheet will be saved in the `build/content-styles` folder. To learn more, please refer to the {@link builds/guides/integration/content-styles "Content styles"} guide.
+It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:
+
+```bash
+yarn docs:content-styles
+```
+The stylesheet will be saved in the `build/content-styles` folder.
+
+To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
 
 ## Bisecting through a multi-repository
 
