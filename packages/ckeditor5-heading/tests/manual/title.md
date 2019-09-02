@@ -20,17 +20,9 @@ There should be no empty paragraph at the end of document, title should contains
 
 There should be no empty paragraph at the end of document, title should contains `Foo` body `Bar`.
 
-### Uploading image to the title
+### Changing title
 
 - type something in the title
 - put selection in the middle of the title
-- upload image using toolbar button
 
-Image should land after the title element and should not split the title.
-
-### Uploading image to the title (drag&drop)
-
-- type something in the title
-- try to drop image to the title or before the title
-
-Image should always land after the title element.
+Heading dropdown, upload and bold icons should be disabled as long as selection stay in the title element.

@@ -15,11 +15,12 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload ],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'imageUpload' ]
+		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
