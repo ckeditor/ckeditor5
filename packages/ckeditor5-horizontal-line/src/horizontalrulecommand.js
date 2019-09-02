@@ -26,13 +26,11 @@ export default class HorizontalRuleCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const selection = model.document.selection;
 
 		model.change( writer => {
 			const modelElement = writer.createElement( 'horizontalRule' );
-			const insertPosition = findOptimalInsertionPosition( selection, model );
 
-			model.insertContent( modelElement, insertPosition );
+			model.insertContent( modelElement );
 			writer.setSelection( modelElement, 'on' );
 		} );
 	}
