@@ -33,6 +33,7 @@ export default class HorizontalRuleCommand extends Command {
 			const insertPosition = findOptimalInsertionPosition( selection, model );
 
 			model.insertContent( modelElement, insertPosition );
+			writer.setSelection( modelElement, 'on' );
 		} );
 	}
 }
