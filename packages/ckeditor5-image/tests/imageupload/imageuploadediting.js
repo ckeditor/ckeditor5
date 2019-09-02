@@ -99,6 +99,9 @@ describe( 'ImageUploadEditing', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+			} )
+			.then( editor => {
+				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
 			} );
 	} );
 
