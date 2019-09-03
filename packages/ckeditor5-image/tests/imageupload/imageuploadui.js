@@ -62,6 +62,14 @@ describe( 'ImageUploadUI', () => {
 		expect( button ).to.be.instanceOf( FileDialogButtonView );
 	} );
 
+	it( 'should set proper accepted mime-types for imageUpload button as defined in configuration', () => {
+		editor.config.set( 'image.upload.types', [ 'svg+xml', 'jpeg', 'vnd.microsoft.icon', 'x-xbitmap' ] );
+
+		const button = editor.ui.componentFactory.create( 'imageUpload' );
+
+		expect( button.acceptedType ).to.equal( 'image/svg+xml,image/jpeg,image/vnd.microsoft.icon,image/x-xbitmap' );
+	} );
+
 	it( 'should be disabled while ImageUploadCommand is disabled', () => {
 		const button = editor.ui.componentFactory.create( 'imageUpload' );
 		const command = editor.commands.get( 'imageUpload' );

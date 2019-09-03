@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import { isImageType } from './utils';
+import { createImageTypeRegExp } from './utils';
 
 /**
  * The image upload button plugin.
@@ -33,9 +33,11 @@ export default class ImageUploadUI extends Plugin {
 		editor.ui.componentFactory.add( 'imageUpload', locale => {
 			const view = new FileDialogButtonView( locale );
 			const command = editor.commands.get( 'imageUpload' );
+			const imageTypes = editor.config.get( 'image.upload.types' );
+			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
 
 			view.set( {
-				acceptedType: 'image/*',
+				acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 				allowMultipleFiles: true
 			} );
 
@@ -48,7 +50,7 @@ export default class ImageUploadUI extends Plugin {
 			view.buttonView.bind( 'isEnabled' ).to( command );
 
 			view.on( 'done', ( evt, files ) => {
-				const imagesToUpload = Array.from( files ).filter( isImageType );
+				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
 
 				if ( imagesToUpload.length ) {
 					editor.execute( 'imageUpload', { file: imagesToUpload } );

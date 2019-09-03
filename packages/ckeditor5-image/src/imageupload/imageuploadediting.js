@@ -14,7 +14,8 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { fetchLocalImage, isImageType, isLocalImage } from '../../src/imageupload/utils';
+import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
+import { createImageTypeRegExp } from './utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'imageUpload'` command.
@@ -29,6 +30,23 @@ export default class ImageUploadEditing extends Plugin {
 		return [ FileRepository, Notification ];
 	}
 
+	static get pluginName() {
+		return 'ImageUploadEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'image', {
+			upload: {
+				types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
+			}
+		} );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -38,6 +56,8 @@ export default class ImageUploadEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
+
+		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' ) );
 
 		// Setup schema to allow uploadId and uploadStatus for images.
 		schema.extend( 'image', {
@@ -74,7 +94,7 @@ export default class ImageUploadEditing extends Plugin {
 					return false;
 				}
 
-				return isImageType( file );
+				return imageTypes.test( file.type );
 			} );
 
 			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );

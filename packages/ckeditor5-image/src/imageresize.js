@@ -145,12 +145,12 @@ export default class ImageResize extends Plugin {
 /**
  * The available options are `'px'` or `'%'`.
  *
- * Determines size unit applied to resized image.
+ * Determines the size unit applied to the resized image.
  *
  *		ClassicEditor
  *			.create( editorElement, {
  *				image: {
- *					 resizeUnit: 'px'
+ *					resizeUnit: 'px'
  *				}
  *			} )
  *			.then( ... )
