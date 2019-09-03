@@ -233,14 +233,14 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Gets elements of type "block" touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
 	 * **Note:** `getSelectedBlocks()` returns blocks that are nested in other non-block elements
 	 * but will not return blocks nested in other blocks.
 	 *
-	 * In this case the function will return exactly all 3 paragraphs:
+	 * In this case the function will return exactly all 3 paragraphs (note: `<blockQuote>` is not a block itself):
 	 *
 	 *		<paragraph>[a</paragraph>
 	 *		<blockQuote>
@@ -252,7 +252,7 @@ export default class DocumentSelection {
 	 *
 	 *		<paragraph>[]a</paragraph>
 	 *
-	 *	In such scenario however, only blocks A, B & E will be returned as blocks C & D are nested in block B:
+	 * In such a scenario, however, only blocks A, B & E will be returned as blocks C & D are nested in block B:
 	 *
 	 *		[<blockA></blockA>
 	 *		<blockB>
@@ -261,7 +261,7 @@ export default class DocumentSelection {
 	 *		</blockB>
 	 *		<blockE></blockE>]
 	 *
-	 *	If the selection is inside a block all the inner blocks (A & B) are returned:
+	 * If the selection is inside a block all the inner blocks (A & B) are returned:
 	 *
 	 * 		<block>
 	 *			<blockA>[a</blockA>
