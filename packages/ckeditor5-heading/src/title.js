@@ -238,7 +238,7 @@ export default class Title extends Plugin {
 					writer.rename( rootChild, 'title-content' );
 
 					// After changing element to the title it has to be filtered out from disallowed attributes.
-					model.schema.removeDisallowedAttributes( Array.from( rootChild.getChildren() ), writer );
+					model.schema.removeDisallowedAttributes( [ rootChild ], writer );
 
 				// If the first element cannot be a title but title is already in the root
 				// than move the first element after a title.

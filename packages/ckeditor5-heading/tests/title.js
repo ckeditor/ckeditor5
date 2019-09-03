@@ -186,16 +186,17 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should clear element from attributes when changing to title element', () => {
-			model.schema.extend( '$text', { allowAttributes: 'bold' } );
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+			model.schema.extend( 'paragraph', { allowAttributes: [ 'foo', 'alignment' ] } );
 
 			setData( model,
-				'<paragraph>F<$text bold="true">o</$text>o</paragraph>' +
-				'<paragraph>B<$text bold="true">a</$text>r</paragraph>'
+				'<paragraph alignment="justify" foo="true">F<$text foo="true">o</$text>o</paragraph>' +
+				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
 			);
 
 			expect( getData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>B<$text bold="true">a</$text>r</paragraph>'
+				'<title><title-content alignment="justify">[]Foo</title-content></title>' +
+				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
 			);
 		} );
 
