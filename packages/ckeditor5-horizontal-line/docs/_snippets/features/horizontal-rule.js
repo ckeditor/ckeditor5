@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import HorizontalRule from '@ckeditor/ckeditor5-horizontal-rule/src/horizontalrule';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor.builtinPlugins.push( HorizontalRule );
 
@@ -23,6 +24,7 @@ ClassicEditor
 				'blockQuote',
 				'link',
 				'|',
+				'imageUpload',
 				'mediaEmbed',
 				'insertTable',
 				'|',
@@ -33,9 +35,24 @@ ClassicEditor
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
+		image: {
+			styles: [
+				'full',
+				'alignLeft',
+				'alignRight'
+			],
+			toolbar: [
+				'imageStyle:alignLeft',
+				'imageStyle:full',
+				'imageStyle:alignRight',
+				'|',
+				'imageTextAlternative'
+			]
+		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-		}
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
