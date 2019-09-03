@@ -199,22 +199,22 @@ describe( 'FileRepository', () => {
 			expect( fileRepository.uploadedPercent ).to.equal( 20 );
 		} );
 
-		it( 'should catch if file promise rejected (file)', () => {
-			const catchSpy = sinon.spy( Promise.prototype, 'catch' );
+		// This is a test for a super edge case when a file promise was rejected,
+		// but no one called read() or upload() yet. In this case we want to be sure
+		// that we did not swallow this file promise rejection somewhere in createLoader().
+		it( 'does not swallow the file promise rejection', done => {
+			let fileRejecter;
+			const fileMock = createNativeFileMock();
+			const filePromise = new Promise( ( resolve, reject ) => {
+				fileRejecter = reject;
+			} );
 
-			fileRepository.createLoader( createNativeFileMock() );
+			const loader = fileRepository.createLoader( filePromise );
+			loader.file.catch( () => {
+				done();
+			} );
 
-			// One call originates from `loader._createFilePromiseWrapper()` and other from `fileRepository.createLoader()`.
-			expect( catchSpy.callCount ).to.equal( 2 );
-		} );
-
-		it( 'should catch if file promise rejected (promise)', () => {
-			const catchSpy = sinon.spy( Promise.prototype, 'catch' );
-
-			fileRepository.createLoader( new Promise( () => {} ) );
-
-			// One call originates from `loader._createFilePromiseWrapper()` and other from `fileRepository.createLoader()`.
-			expect( catchSpy.callCount ).to.equal( 2 );
+			fileRejecter( fileMock );
 		} );
 	} );
 
@@ -340,7 +340,6 @@ describe( 'FileRepository', () => {
 			it( 'should initialize filePromiseWrapper', () => {
 				expect( loader._filePromiseWrapper ).to.not.be.null;
 				expect( loader._filePromiseWrapper.promise ).to.be.instanceOf( Promise );
-				expect( loader._filePromiseWrapper.resolver ).to.be.instanceOf( Function );
 				expect( loader._filePromiseWrapper.rejecter ).to.be.instanceOf( Function );
 				expect( loader._filePromiseWrapper.isFulfilled ).to.be.false;
 			} );
