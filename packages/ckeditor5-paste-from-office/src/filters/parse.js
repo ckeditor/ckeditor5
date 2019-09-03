@@ -10,7 +10,6 @@
 /* globals DOMParser */
 
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
-import { NBSP_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 
@@ -61,7 +60,7 @@ export function parseHtml( htmlString ) {
 // @param {Document} htmlDocument Native `Document` object to be transformed.
 // @returns {module:engine/view/documentfragment~DocumentFragment}
 function documentToView( htmlDocument ) {
-	const domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
+	const domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 
