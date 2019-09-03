@@ -26,3 +26,4 @@ There should be no empty paragraph at the end of document, title should contains
 - put selection in the middle of the title
 
 Heading dropdown, upload and bold icons should be disabled as long as selection stay in the title element.
+Alignment feature should be enabled.

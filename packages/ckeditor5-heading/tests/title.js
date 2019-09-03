@@ -62,13 +62,10 @@ describe( 'Title', () => {
 		expect( model.schema.checkChild( 'title-content', '$text' ) ).to.equal( true );
 		expect( model.schema.checkChild( 'title-content', '$block' ) ).to.equal( false );
 
-		model.schema.extend( '$text', { allowAttributes: [ 'bold', 'foo' ] } );
+		expect( model.schema.checkAttribute( [ 'title-content' ], 'alignment' ) ).to.equal( true );
 
+		model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
 		expect( model.schema.checkAttribute( [ 'title-content', '$text' ], 'bold' ) ).to.equal( false );
-		expect( model.schema.checkAttribute( [ 'paragraph', '$text' ], 'bold' ) ).to.equal( true );
-
-		expect( model.schema.checkAttribute( [ 'title-content', '$text' ], 'foo' ) ).to.equal( false );
-		expect( model.schema.checkAttribute( [ 'paragraph', '$text' ], 'foo' ) ).to.equal( true );
 	} );
 
 	it( 'should convert title to h1', () => {

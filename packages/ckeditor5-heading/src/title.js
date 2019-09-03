@@ -65,7 +65,7 @@ export default class Title extends Plugin {
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/2005.
 		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
-		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title' } );
+		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
 		model.schema.extend( '$text', { allowIn: 'title-content' } );
 
 		// Disallow all attributes in `title-content`.

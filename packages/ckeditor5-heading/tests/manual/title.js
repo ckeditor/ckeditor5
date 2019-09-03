@@ -16,11 +16,12 @@ import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold ],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload' ]
+		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload', 'alignment' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
