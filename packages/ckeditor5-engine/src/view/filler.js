@@ -132,7 +132,9 @@ const templateBlockFillers = new WeakMap();
  * @param {Function} blockFiller Block filler creator.
  * @returns {Boolean} True if text node contains only {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
-export function isBlockFiller( domNode, blockFiller ) {
+export function isBlockFiller( domNode, blockFillerMode ) {
+	const blockFiller = blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
+
 	let templateBlockFiller = templateBlockFillers.get( blockFiller );
 
 	if ( !templateBlockFiller ) {

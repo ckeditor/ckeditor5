@@ -9,7 +9,7 @@ import ViewElement from '../../../src/view/element';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, BR_FILLER } from '../../../src/view/filler';
 
 import { parse, stringify } from '../../../src/dev-utils/view';
 
@@ -157,7 +157,8 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should return null for block filler', () => {
-			const domFiller = converter.blockFiller( document );
+			// eslint-disable-next-line new-cap
+			const domFiller = BR_FILLER( document );
 
 			expect( converter.domToView( domFiller ) ).to.be.null;
 		} );
@@ -682,7 +683,8 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should skip filler', () => {
-			const domFiller = converter.blockFiller( document );
+			// eslint-disable-next-line new-cap
+			const domFiller = BR_FILLER( document );
 			const domP = createElement( document, 'p', null, domFiller );
 
 			const viewChildren = Array.from( converter.domChildrenToView( domP ) );
@@ -761,7 +763,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should converter position inside block filler', () => {
-			const converter = new DomConverter( { blockFiller: NBSP_FILLER } );
+			const converter = new DomConverter( { blockFillerMode: 'nbsp' } );
 			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 

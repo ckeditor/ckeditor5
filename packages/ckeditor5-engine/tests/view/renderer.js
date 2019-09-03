@@ -804,7 +804,7 @@ describe( 'Renderer', () => {
 			// Step 3: Check whether in the first paragraph there's a <br> filler and that
 			// in the second one there are two <b> tags.
 			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domP.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+			expect( isBlockFiller( domP.childNodes[ 0 ], 'br' ) ).to.be.true;
 
 			expect( domP2.childNodes.length ).to.equal( 2 );
 			expect( domP2.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'b' );
@@ -886,7 +886,7 @@ describe( 'Renderer', () => {
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domP.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+			expect( isBlockFiller( domP.childNodes[ 0 ], 'br' ) ).to.be.true;
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
 			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP );
@@ -925,7 +925,7 @@ describe( 'Renderer', () => {
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domP.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+			expect( isBlockFiller( domP.childNodes[ 0 ], 'br' ) ).to.be.true;
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
 			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP );

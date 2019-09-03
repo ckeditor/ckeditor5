@@ -11,7 +11,6 @@
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
-import { NBSP_FILLER } from '../view/filler';
 
 /**
  * The HTML data processor class.
@@ -38,7 +37,7 @@ export default class HtmlDataProcessor {
 		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
+		this._domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an HTML string.

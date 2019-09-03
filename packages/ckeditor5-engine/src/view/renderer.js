@@ -583,7 +583,7 @@ export default class Renderer {
 	_diffNodeLists( actualDomChildren, expectedDomChildren ) {
 		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
 
-		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFiller ) );
+		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFillerMode ) );
 	}
 
 	/**
@@ -910,11 +910,11 @@ function areSimilar( node1, node2 ) {
 //		* Two block filler elements.
 //
 // @private
-// @param {Function} blockFiller Block filler creator function, see {@link module:engine/view/domconverter~DomConverter#blockFiller}.
+// @param {String} blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~DomConverter#blockFillerMode}.
 // @param {Node} node1
 // @param {Node} node2
 // @returns {Boolean}
-function sameNodes( blockFiller, actualDomChild, expectedDomChild ) {
+function sameNodes( blockFillerMode, actualDomChild, expectedDomChild ) {
 	// Elements.
 	if ( actualDomChild === expectedDomChild ) {
 		return true;
@@ -924,8 +924,8 @@ function sameNodes( blockFiller, actualDomChild, expectedDomChild ) {
 		return actualDomChild.data === expectedDomChild.data;
 	}
 	// Block fillers.
-	else if ( isBlockFiller( actualDomChild, blockFiller ) &&
-		isBlockFiller( expectedDomChild, blockFiller ) ) {
+	else if ( isBlockFiller( actualDomChild, blockFillerMode ) &&
+		isBlockFiller( expectedDomChild, blockFillerMode ) ) {
 		return true;
 	}
 

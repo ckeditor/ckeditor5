@@ -127,22 +127,22 @@ describe( 'filler', () => {
 		it( 'should return true if the node is an instance of the BR block filler', () => {
 			const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
 
-			expect( isBlockFiller( brFillerInstance, BR_FILLER ) ).to.be.true;
+			expect( isBlockFiller( brFillerInstance, 'br' ) ).to.be.true;
 			// Check it twice to ensure that caching breaks nothing.
-			expect( isBlockFiller( brFillerInstance, BR_FILLER ) ).to.be.true;
+			expect( isBlockFiller( brFillerInstance, 'br' ) ).to.be.true;
 		} );
 
 		it( 'should return true if the node is an instance of the NBSP block filler', () => {
 			const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 
-			expect( isBlockFiller( nbspFillerInstance, NBSP_FILLER ) ).to.be.true;
+			expect( isBlockFiller( nbspFillerInstance, 'nbsp' ) ).to.be.true;
 			// Check it twice to ensure that caching breaks nothing.
-			expect( isBlockFiller( nbspFillerInstance, NBSP_FILLER ) ).to.be.true;
+			expect( isBlockFiller( nbspFillerInstance, 'nbsp' ) ).to.be.true;
 		} );
 
 		it( 'should return false for inline filler', () => {
-			expect( isBlockFiller( document.createTextNode( INLINE_FILLER ), BR_FILLER ) ).to.be.false;
-			expect( isBlockFiller( document.createTextNode( INLINE_FILLER ), NBSP_FILLER ) ).to.be.false;
+			expect( isBlockFiller( document.createTextNode( INLINE_FILLER ), 'br' ) ).to.be.false;
+			expect( isBlockFiller( document.createTextNode( INLINE_FILLER ), 'nbsp' ) ).to.be.false;
 		} );
 	} );
 } );

@@ -18,7 +18,7 @@ import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
-import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
+import { isBlockFiller } from '../../../src/view/filler';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -565,7 +565,7 @@ describe( 'view', () => {
 			view.forceRender();
 
 			expect( domDiv.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domDiv.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+			expect( isBlockFiller( domDiv.childNodes[ 0 ], 'br' ) ).to.be.true;
 
 			view.destroy();
 			domDiv.remove();

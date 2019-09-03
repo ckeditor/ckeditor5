@@ -10,7 +10,7 @@ import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import ViewUIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
-import { BR_FILLER, NBSP_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -24,13 +24,13 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create converter with BR block filler by default', () => {
-			expect( converter.blockFiller ).to.equal( BR_FILLER );
+		it( 'should create converter with BR block filler mode by default', () => {
+			expect( converter.blockFillerMode ).to.equal( 'br' );
 		} );
 
-		it( 'should create converter with defined block filler', () => {
-			converter = new DomConverter( { blockFiller: NBSP_FILLER } );
-			expect( converter.blockFiller ).to.equal( NBSP_FILLER );
+		it( 'should create converter with defined block mode filler', () => {
+			converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
 	} );
 

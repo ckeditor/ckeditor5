@@ -634,7 +634,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
 
 			expect( domChildren.length ).to.equal( 1 );
-			expect( isBlockFiller( domChildren[ 0 ], converter.blockFiller ) ).to.be.true;
+			expect( isBlockFiller( domChildren[ 0 ], converter.blockFillerMode ) ).to.be.true;
 		} );
 
 		it( 'should add filler according to fillerPositionOffset', () => {
@@ -644,7 +644,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
 
 			expect( domChildren.length ).to.equal( 2 );
-			expect( isBlockFiller( domChildren[ 0 ], converter.blockFiller ) ).to.be.true;
+			expect( isBlockFiller( domChildren[ 0 ], converter.blockFillerMode ) ).to.be.true;
 			expect( domChildren[ 1 ].data ).to.equal( 'foo' );
 		} );
 

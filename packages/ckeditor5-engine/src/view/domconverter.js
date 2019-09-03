@@ -16,7 +16,15 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
-import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
+import {
+	BR_FILLER,
+	NBSP_FILLER,
+	INLINE_FILLER_LENGTH,
+	isBlockFiller,
+	isInlineFiller,
+	startsWithFiller,
+	getDataWithoutFiller
+} from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -42,7 +50,7 @@ export default class DomConverter {
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {Function} [options.blockFiller=module:engine/view/filler~BR_FILLER] Block filler creator.
+	 * @param {Function} [options.blockFillerMode='br'] Block filler mode - either 'br' or 'nbsp'.
 	 */
 	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
@@ -56,13 +64,21 @@ export default class DomConverter {
 		// I've been here. Seen stuff. Afraid of code now.
 
 		/**
+		 *
+		 * @readonly
+		 * @member {String} module:engine/view/domconverter~DomConverter#blockFillerMode
+		 */
+		this.blockFillerMode = options.blockFillerMode || 'br';
+
+		/**
 		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
 		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
 		 *
 		 * @readonly
+		 * @private
 		 * @member {Function} module:engine/view/domconverter~DomConverter#blockFiller
 		 */
-		this.blockFiller = options.blockFiller || BR_FILLER;
+		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
 		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
@@ -254,7 +270,7 @@ export default class DomConverter {
 
 		for ( const childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
-				yield this.blockFiller( domDocument );
+				yield this._blockFiller( domDocument );
 			}
 
 			yield this.viewToDom( childView, domDocument, options );
@@ -263,7 +279,7 @@ export default class DomConverter {
 		}
 
 		if ( fillerPositionOffset === offset ) {
-			yield this.blockFiller( domDocument );
+			yield this._blockFiller( domDocument );
 		}
 	}
 
@@ -370,7 +386,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isBlockFiller( domNode, this.blockFiller ) ) {
+		if ( isBlockFiller( domNode, this.blockFillerMode ) ) {
 			const isSingle = domNode.parentNode && domNode.parentNode.childNodes.length <= 1;
 
 			if ( isText( domNode ) ) {
@@ -536,7 +552,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/position~Position} viewPosition View position.
 	 */
 	domPositionToView( domParent, domOffset ) {
-		if ( isBlockFiller( domParent, this.blockFiller ) ) {
+		if ( isBlockFiller( domParent, this.blockFillerMode ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
