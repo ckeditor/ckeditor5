@@ -4,6 +4,9 @@
  */
 
 .ck-content .ck-horizontal-rule {
+	/* Handle proper `<hr>` display next to elements with `float` property, e.g. side image case. */
+	overflow: hidden;
+
 	padding: 5px;
 }
 
