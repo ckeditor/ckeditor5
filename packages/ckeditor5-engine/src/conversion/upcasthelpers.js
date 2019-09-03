@@ -405,7 +405,7 @@ function upcastElementToElement( config ) {
 
 	const converter = prepareToElementConverter( config );
 
-	const elementName = getViewElementNameFromConfig( config );
+	const elementName = getViewElementNameFromConfig( config.view );
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
@@ -431,7 +431,7 @@ function upcastElementToAttribute( config ) {
 
 	const converter = prepareToAttributeConverter( config, false );
 
-	const elementName = getViewElementNameFromConfig( config );
+	const elementName = getViewElementNameFromConfig( config.view );
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
@@ -493,15 +493,15 @@ function upcastElementToMarker( config ) {
 // Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
 // and if so, returns it.
 //
-// @param {Object} config Conversion config.
+// @param {Object} config Conversion view config.
 // @returns {String|null} View element name or `null` if name is not directly set.
-function getViewElementNameFromConfig( config ) {
-	if ( typeof config.view == 'string' ) {
-		return config.view;
+function getViewElementNameFromConfig( viewConfig ) {
+	if ( typeof viewConfig == 'string' ) {
+		return viewConfig;
 	}
 
-	if ( typeof config.view == 'object' && typeof config.view.name == 'string' ) {
-		return config.view.name;
+	if ( typeof viewConfig == 'object' && typeof viewConfig.name == 'string' ) {
+		return viewConfig.name;
 	}
 
 	return null;
@@ -684,7 +684,7 @@ function prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
-		if ( onlyViewNameIsDefined( config ) ) {
+		if ( onlyViewNameIsDefined( config.view, data.viewItem ) ) {
 			match.match.name = true;
 		} else {
 			// Do not test or consume `name` consumable.
@@ -714,14 +714,17 @@ function prepareToAttributeConverter( config, shallow ) {
 
 // Helper function that checks if element name should be consumed in attribute converters.
 //
-// @param {Object} config Conversion config.
+// @param {Object} config Conversion view config.
 // @returns {Boolean}
-function onlyViewNameIsDefined( config ) {
-	if ( typeof config.view == 'object' && !getViewElementNameFromConfig( config ) ) {
+function onlyViewNameIsDefined( viewConfig, viewItem ) {
+	// https://github.com/ckeditor/ckeditor5-engine/issues/1786
+	const configToTest = typeof viewConfig == 'function' ? viewConfig( viewItem ) : viewConfig;
+
+	if ( typeof configToTest == 'object' && !getViewElementNameFromConfig( configToTest ) ) {
 		return false;
 	}
 
-	return !config.view.classes && !config.view.attributes && !config.view.styles;
+	return !configToTest.classes && !configToTest.attributes && !configToTest.styles;
 }
 
 // Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
