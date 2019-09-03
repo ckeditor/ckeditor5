@@ -198,6 +198,33 @@ describe( 'Title', () => {
 				'<paragraph>B<$text bold="true">a</$text>r</paragraph>'
 			);
 		} );
+
+		it( 'should properly handle pasting multiple none title-like block elements before the title element', () => {
+			setData( model,
+				'<title><title-content>[]Title</title-content></title>'
+			);
+
+			const dataTransferMock = {
+				getData: type => {
+					if ( type === 'text/html' ) {
+						return '<blockQuote><p>Foo</p></blockQuote><blockQuote><p>Bar</p></blockQuote>';
+					}
+				},
+				types: [],
+				files: []
+			};
+
+			editor.editing.view.document.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<title><title-content>Title</title-content></title>' +
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+				'<blockQuote><paragraph>Bar[]</paragraph></blockQuote>'
+			);
+		} );
 	} );
 
 	describe( 'prevent extra paragraphing', () => {

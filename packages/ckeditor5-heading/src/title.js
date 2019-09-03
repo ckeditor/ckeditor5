@@ -219,13 +219,13 @@ export default class Title extends Plugin {
 		const model = this.editor.model;
 		const modelRoot = model.document.getRoot();
 		let hasChanged = false;
-		let index = 0;
+		let numberOfMovedElements = 0;
 
 		// Loop through root children and take care about a proper position of a title element.
 		// Title always has to be the first element in the root.
-		for ( const rootChild of modelRoot.getChildren() ) {
+		for ( const rootChild of Array.from( modelRoot.getChildren() ) ) {
 			// If the first element is not a title we need to fix it.
-			if ( index === 0 && !rootChild.is( 'title' ) ) {
+			if ( rootChild.index === 0 && !rootChild.is( 'title' ) ) {
 				const title = this._getTitleElement();
 
 				// Change first element to the title if it can be a title.
@@ -242,9 +242,14 @@ export default class Title extends Plugin {
 
 				// If the first element cannot be a title but title is already in the root
 				// than move the first element after a title.
-				// It may happen e.g. when an image has been dropped before the title element.
 				} else if ( title ) {
-					writer.move( writer.createRangeOn( rootChild ), title, 'after' );
+					const positionAfterTitle = writer.createPositionAt( title, 'after' );
+
+					// To preserve correct order when more than one element is moved in the one post-fixer call.
+					const targetPosition = positionAfterTitle.getShiftedBy( numberOfMovedElements );
+
+					writer.move( writer.createRangeOn( rootChild ), targetPosition );
+					numberOfMovedElements++;
 
 				// If there is no title or any element that could be a title then create an empty title.
 				} else {
@@ -255,7 +260,7 @@ export default class Title extends Plugin {
 				hasChanged = true;
 
 			// If there is a title somewhere in the content.
-			} else if ( index > 0 && rootChild.is( 'title' ) ) {
+			} else if ( rootChild.index > 0 && rootChild.is( 'title' ) ) {
 				// Rename it to a paragraph if it has a content.
 				if ( model.hasContent( rootChild ) ) {
 					writer.rename( rootChild, 'paragraph' );
@@ -267,8 +272,6 @@ export default class Title extends Plugin {
 
 				hasChanged = true;
 			}
-
-			index++;
 		}
 
 		// Attach `Body` placeholder when there is no element after a title.
