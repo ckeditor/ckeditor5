@@ -6,9 +6,9 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HorizontalRuleEditing from '../src/horizontalruleediting';
 import HorizontalRuleCommand from '../src/horizontalrulecommand';
-import { isHorizontalRuleWidget } from '../src/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -104,4 +104,8 @@ describe( 'HorizontalRuleEditing', () => {
 			} );
 		} );
 	} );
+
+	function isHorizontalRuleWidget( viewElement ) {
+		return !!viewElement.getCustomProperty( 'horizontalRule' ) && isWidget( viewElement );
+	}
 } );

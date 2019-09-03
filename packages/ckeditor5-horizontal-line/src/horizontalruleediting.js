@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import HorizontalRuleCommand from './horizontalrulecommand';
-import { toHorizontalRuleWidget } from './utils';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import '../theme/horizontalrule.css';
 
@@ -60,4 +60,19 @@ export default class HorizontalRuleEditing extends Plugin {
 
 		editor.commands.add( 'horizontalRule', new HorizontalRuleCommand( editor ) );
 	}
+}
+
+// Converts a given {@link module:engine/view/element~Element} to a horizontal rule widget:
+// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
+//   recognize the horizontal rule widget element.
+// * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+//
+//  @param {module:engine/view/element~Element} viewElement
+//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
+//  @param {String} label The element's label.
+//  @returns {module:engine/view/element~Element}
+function toHorizontalRuleWidget( viewElement, writer, label ) {
+	writer.setCustomProperty( 'horizontalRule', true, viewElement );
+
+	return toWidget( viewElement, writer, { label } );
 }
