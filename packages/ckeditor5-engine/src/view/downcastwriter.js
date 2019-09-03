@@ -788,26 +788,26 @@ export default class DowncastWriter {
 	}
 
 	/**
-     * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
-     * If a collapsed range is provided, it will be wrapped only if it is equal to view selection.
-     *
-     * If a collapsed range was passed and is same as selection, the selection
-     * will be moved to the inside of the wrapped attribute element.
-     *
-     * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
-     * when {@link module:engine/view/range~Range#start}
-     * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
-     *
-     * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-     * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
-     *
-     * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
-     * is collapsed and different than view selection.
-     *
-     * @param {module:engine/view/range~Range} range Range to wrap.
-     * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
-     * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
-    */
+	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * If a collapsed range is provided, it will be wrapped only if it is equal to view selection.
+	 *
+	 * If a collapsed range was passed and is same as selection, the selection
+	 * will be moved to the inside of the wrapped attribute element.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
+	 * when {@link module:engine/view/range~Range#start}
+	 * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
+	 * is collapsed and different than view selection.
+	 *
+	 * @param {module:engine/view/range~Range} range Range to wrap.
+	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
+	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
+	*/
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError( 'view-writer-wrap-invalid-attribute', this.document );
