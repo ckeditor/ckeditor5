@@ -4064,6 +4064,45 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-list/issues/126#issuecomment-518206743
+		it( 'should properly handle split of list items with non-standard converters', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			editor.model.schema.register( 'splitBlock', { inheritAllFrom: '$block' } );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'splitBlock', view: 'splitBlock' } );
+			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:splitBlock', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+
+				// Use split to allowed parent logic to simulate a non-standard use of `modelCursor` after split.
+				const splitBlock = conversionApi.writer.createElement( 'splitBlock' );
+				const splitResult = conversionApi.splitToAllowedParent( splitBlock, data.modelCursor );
+
+				conversionApi.writer.insert( splitBlock, splitResult.position );
+
+				data.modelRange = conversionApi.writer.createRangeOn( splitBlock );
+				data.modelCursor = conversionApi.writer.createPositionAfter( splitBlock );
+			} ) );
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">Aa</listItem>' +
+				'<splitBlock></splitBlock>' +
+				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+			);
+		} );
 	} );
 
 	describe( 'other', () => {
