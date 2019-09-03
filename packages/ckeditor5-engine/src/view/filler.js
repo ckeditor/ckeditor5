@@ -140,10 +140,8 @@ export function isBlockFiller( domNode, blockFillerMode ) {
 	}
 
 	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
-	const isInsideBlockNode = _hasDomParentOfType( domNode, [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ] );
-	const isSingle = !!domNode.parentNode && domNode.parentNode.childNodes.length === 1;
 
-	return isNBSP && isSingle && isInsideBlockNode;
+	return isNBSP && hasBlockParent( domNode ) && domNode.parentNode.childNodes.length === 1;
 }
 
 /**
@@ -172,12 +170,10 @@ function jumpOverInlineFiller( evt, data ) {
 	}
 }
 
-function _hasDomParentOfType( node, types, boundaryParent ) {
-	let parents = getAncestors( node );
+const blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
 
-	if ( boundaryParent ) {
-		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
-	}
+function hasBlockParent( node ) {
+	const parent = node.parentNode;
 
-	return parents.some( parent => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
+	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
 }
