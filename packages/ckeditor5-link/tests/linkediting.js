@@ -621,8 +621,8 @@ describe( 'LinkEditing', () => {
 		} );
 
 		describe( 'upcast converter', () => {
-			it( 'should upcast attributes from initial data', done => {
-				VirtualTestEditor
+			it( 'should upcast attributes from initial data', () => {
+				return VirtualTestEditor
 					.create( {
 						initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
 							'<a href="example.com" download="file">Bar</a></p>',
@@ -657,13 +657,11 @@ describe( 'LinkEditing', () => {
 								'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
 							'</paragraph>'
 						);
-					} )
-					.then( done )
-					.catch( done );
+					} );
 			} );
 
-			it( 'should not upcast partial and incorrect attributes', done => {
-				VirtualTestEditor
+			it( 'should not upcast partial and incorrect attributes', () => {
+				return VirtualTestEditor
 					.create( {
 						initialData: '<p><a href="url" target="_blank" download="something">Foo</a>' +
 							'<a href="example.com" download="test">Bar</a></p>',
@@ -698,9 +696,7 @@ describe( 'LinkEditing', () => {
 								'<$text linkHref="example.com">Bar</$text>' +
 							'</paragraph>'
 						);
-					} )
-					.then( done )
-					.catch( done );
+					} );
 			} );
 		} );
 	} );
