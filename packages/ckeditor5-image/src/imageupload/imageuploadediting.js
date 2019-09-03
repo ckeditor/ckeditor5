@@ -119,7 +119,7 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
 				.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
