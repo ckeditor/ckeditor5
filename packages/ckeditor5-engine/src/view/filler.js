@@ -6,6 +6,7 @@
 /* globals window */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
@@ -49,6 +50,9 @@ export const BR_FILLER = domDocument => {
 
 	return fillerBr;
 };
+
+// eslint-disable-next-line new-cap
+const BR_FILLER_REF = BR_FILLER( window.document );
 
 /**
  * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
@@ -119,30 +123,27 @@ export function getDataWithoutFiller( domText ) {
 	}
 }
 
-// Cache block fillers templates to improve performance.
-const templateBlockFillers = new WeakMap();
-
 /**
  * Checks if the node is an instance of the block filler of the given type.
  *
  *		const brFillerInstance = BR_FILLER( document );
- *		isBlockFiller( brFillerInstance, BR_FILLER ); // true
+ *		isBlockFiller( brFillerInstance, 'br' ); // true
+ *		isBlockFiller( brFillerInstance, 'nbsp' ); // false
  *
  * @param {Node} domNode DOM node to check.
- * @param {Function} blockFiller Block filler creator.
- * @returns {Boolean} True if text node contains only {@link module:engine/view/filler~INLINE_FILLER inline filler}.
+ * @param {String} blockFillerMode Block filler mode - either 'br' or 'nbsp'.
+ * @returns {Boolean} True if a node is considered a block filler for given mode.
  */
 export function isBlockFiller( domNode, blockFillerMode ) {
-	const blockFiller = blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
-
-	let templateBlockFiller = templateBlockFillers.get( blockFiller );
-
-	if ( !templateBlockFiller ) {
-		templateBlockFiller = blockFiller( window.document );
-		templateBlockFillers.set( blockFiller, templateBlockFiller );
+	if ( blockFillerMode == 'br' ) {
+		return domNode.isEqualNode( BR_FILLER_REF );
 	}
 
-	return domNode.isEqualNode( templateBlockFiller );
+	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
+	const isInsideBlockNode = _hasDomParentOfType( domNode, [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ] );
+	const isSingle = !!domNode.parentNode && domNode.parentNode.childNodes.length === 1;
+
+	return isNBSP && isSingle && isInsideBlockNode;
 }
 
 /**
@@ -169,4 +170,14 @@ function jumpOverInlineFiller( evt, data ) {
 			}
 		}
 	}
+}
+
+function _hasDomParentOfType( node, types, boundaryParent ) {
+	let parents = getAncestors( node );
+
+	if ( boundaryParent ) {
+		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
+	}
+
+	return parents.some( parent => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
 }

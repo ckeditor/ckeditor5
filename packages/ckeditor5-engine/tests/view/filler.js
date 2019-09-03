@@ -23,7 +23,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'startsWithFiller', () => {
+	describe( 'startsWithFiller()', () => {
 		it( 'should be true for node which contains only filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
@@ -67,7 +67,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'getDataWithoutFiller', () => {
+	describe( 'getDataWithoutFiller()', () => {
 		it( 'should return data without filler', () => {
 			const node = document.createTextNode( INLINE_FILLER + 'foo' );
 
@@ -87,7 +87,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'isInlineFiller', () => {
+	describe( 'isInlineFiller()', () => {
 		it( 'should be true for inline filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
@@ -123,7 +123,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'isBlockFiller', () => {
+	describe( 'isBlockFiller()', () => {
 		it( 'should return true if the node is an instance of the BR block filler', () => {
 			const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
 
@@ -134,10 +134,26 @@ describe( 'filler', () => {
 
 		it( 'should return true if the node is an instance of the NBSP block filler', () => {
 			const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+			// NBSP must be check inside a context.
+			const context = document.createElement( 'div' );
+			context.appendChild( nbspFillerInstance );
 
 			expect( isBlockFiller( nbspFillerInstance, 'nbsp' ) ).to.be.true;
 			// Check it twice to ensure that caching breaks nothing.
 			expect( isBlockFiller( nbspFillerInstance, 'nbsp' ) ).to.be.true;
+		} );
+
+		it( 'should return false if the nbsp filler is inside context', () => {
+			const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+			// NBSP must be check inside a context.
+			const context = document.createElement( 'div' );
+			context.appendChild( nbspFillerInstance );
+			// eslint-disable-next-line new-cap
+			context.appendChild( NBSP_FILLER( document ) );
+
+			expect( isBlockFiller( nbspFillerInstance, 'nbsp' ) ).to.be.false;
+			// Check it twice to ensure that caching breaks nothing.
+			expect( isBlockFiller( nbspFillerInstance, 'nbsp' ) ).to.be.false;
 		} );
 
 		it( 'should return false for inline filler', () => {
