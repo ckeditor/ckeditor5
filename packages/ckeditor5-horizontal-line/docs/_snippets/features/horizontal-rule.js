@@ -12,7 +12,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor.builtinPlugins.push( HorizontalRule );
 
 ClassicEditor
-	.create( document.querySelector( '#demo-editor' ), {
+	.create( document.querySelector( '#snippet-horizontal-rule' ), {
 		toolbar: {
 			items: [
 				'heading',
