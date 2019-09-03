@@ -182,18 +182,18 @@ Encore.
         language: 'pl',
     }))
 	
-	// Use raw-loader for CKEditor5 SVG files
+	// Use raw-loader for CKEditor 5 SVG files.
 	.addRule({
 		test: /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/,
     	loader: 'raw-loader'
   	})
   
-  	// Configure other image loaders to exclude CKEditor5 SVG files
+  	// Configure other image loaders to exclude CKEditor 5 SVG files.
   	.configureLoaderRule('images', loader => {
     	loader.exclude = /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/;
   	})
 	
-	// Configure PostCSS loader
+	// Configure PostCSS loader.
 	.addLoader({
     	test: /ckeditor5-[^/\\]+[/\\].+\.css$/,
     	loader: 'postcss-loader',
