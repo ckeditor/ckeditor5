@@ -12,6 +12,8 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import horizontalRuleIcon from '../theme/icons/horizontalrule.svg';
 
 /**
+ * The horizontal rule UI plugin.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class HorizontalRuleUI extends Plugin {

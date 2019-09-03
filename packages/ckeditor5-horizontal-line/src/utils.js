@@ -10,6 +10,11 @@
 import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
+ * Converts a given {@link module:engine/view/element~Element} to a horizontal rule widget:
+ * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
+ * recognize the horizontal rule widget element.
+ * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+ *
  * @param {module:engine/view/element~Element} viewElement
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
  * @param {String} label The element's label.

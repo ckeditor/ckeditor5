@@ -14,6 +14,8 @@ import { toHorizontalRuleWidget } from './utils';
 import '../theme/horizontalrule.css';
 
 /**
+ * The horizontal rule editing feature.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class HorizontalRuleEditing extends Plugin {

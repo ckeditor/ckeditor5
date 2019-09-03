@@ -8,9 +8,19 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 import { isHorizontalRuleAllowed } from './utils';
 
+/**
+ * The insert a horizontal rule command.
+ *
+ * The command is registered by the {@link module:horizontal-rule/horizontalruleediting~HorizontalRuleEditing} as `'horizontalRule'`.
+ *
+ * To insert the horizuntal rule at the current selection, execute the command:
+ *
+ *		editor.execute( 'horizontalRule' );
+ *
+ * @extends module:core/command~Command
+ */
 export default class HorizontalRuleCommand extends Command {
 	/**
 	 * @inheritDoc

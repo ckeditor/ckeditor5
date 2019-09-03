@@ -12,8 +12,7 @@ import HorizontalRuleEditing from './horizontalruleediting';
 import HorizontalRuleUI from './horizontalruleui';
 
 /**
- * The horizontal rule plugin.
- *
+ * The horizontal rule plugin provides a possibility to insert a horizontal rule in the rich-text editor.
  *
  * @extends module:core/plugin~Plugin
  */
