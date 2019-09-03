@@ -203,7 +203,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 	use: [ 'raw-loader' ]
 },
 {
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 	use: [
 		{
 			loader: 'style-loader',
@@ -233,7 +233,7 @@ First, find a loader that starts its definition with the following code: `test: 
 	test: cssRegex,
 	exclude: [
 		cssModuleRegex,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 	],
 	// (...)
 }
@@ -245,7 +245,7 @@ Below it, you will find another loader that handles CSS files. You need to disab
 {
 	test: cssModuleRegex,
 	exclude: [
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 	],
 	// (...)
 }
@@ -265,7 +265,7 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last
 		/\.html$/,
 		/\.json$/,
 		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
 	],
 	options: {
 		name: 'static/media/[name].[hash:8].[ext]',
@@ -448,7 +448,7 @@ Then add two new elements to the exported object under the `module.rules` array 
 	use: [ 'raw-loader' ]
 },
 {
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 	use: [
 		{
 			loader: 'style-loader',
@@ -474,7 +474,7 @@ Exclude CSS files used by CKEditor 5 from project's CSS loader:
 ```js
 {
 	test: /\.css$/,
-	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 	// (...)
 }
 ```
@@ -493,7 +493,7 @@ And exclude CKEditor 5 SVG and CSS files from `file-loader` because these files 
 		/\.html$/,
 		/\.json$/,
 		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
 	],
 	options: {
 		name: 'static/media/[name].[hash:8].[ext]'
