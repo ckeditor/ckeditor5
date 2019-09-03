@@ -186,16 +186,15 @@ export default class FileRepository extends Plugin {
 
 		// Store also file => loader mapping so loader can be retrieved by file instance returned upon Promise resolution.
 		if ( fileOrPromise instanceof Promise ) {
-			loader.file.then( file => {
-				this._loadersMap.set( file, loader );
-			} );
+			loader.file
+				.then( file => {
+					this._loadersMap.set( file, loader );
+				} )
+				// Every then() must have a catch().
+				// File loader state (and rejections) are handled in read() and upload().
+				// Also, see the "does not swallow the file promise rejection" test.
+				.catch( () => {} );
 		}
-
-		// Catch the file promise rejection. If there are no `catch` clause, the browser
-		// will throw an error (see https://github.com/ckeditor/ckeditor5-upload/pull/90).
-		loader.file.catch( () => {
-			// The error will be handled by `FileLoader` so no action is required here.
-		} );
 
 		loader.on( 'change:uploaded', () => {
 			let aggregatedUploaded = 0;
@@ -291,7 +290,7 @@ class FileLoader {
 		/**
 		 * Additional wrapper over the initial file promise passed to this loader.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:upload/filerepository~FilePromiseWrapper}
 		 */
 		this._filePromiseWrapper = this._createFilePromiseWrapper( filePromise );
@@ -438,9 +437,14 @@ class FileLoader {
 
 		this.status = 'reading';
 
-		return this._filePromiseWrapper.promise
+		return this.file
 			.then( file => this._reader.read( file ) )
 			.then( data => {
+				// Edge case: reader was aborted after file was read - double check for proper status.
+				if ( this.status !== 'reading' ) {
+					throw this.status;
+				}
+
 				this.status = 'idle';
 
 				return data;
@@ -486,7 +490,7 @@ class FileLoader {
 
 		this.status = 'uploading';
 
-		return this._filePromiseWrapper.promise
+		return this.file
 			.then( () => this._adapter.upload() )
 			.then( data => {
 				this.uploadResponse = data;
@@ -512,6 +516,11 @@ class FileLoader {
 		this.status = 'aborted';
 
 		if ( !this._filePromiseWrapper.isFulfilled ) {
+			// Edge case: file loader is aborted before read() is called
+			// so it might happen that no one handled the rejection of this promise.
+			// See https://github.com/ckeditor/ckeditor5-upload/pull/100
+			this._filePromiseWrapper.promise.catch( () => {} );
+
 			this._filePromiseWrapper.rejecter( 'aborted' );
 		} else if ( status == 'reading' ) {
 			this._reader.abort();
@@ -546,7 +555,6 @@ class FileLoader {
 		const wrapper = {};
 
 		wrapper.promise = new Promise( ( resolve, reject ) => {
-			wrapper.resolver = resolve;
 			wrapper.rejecter = reject;
 			wrapper.isFulfilled = false;
 
@@ -622,9 +630,9 @@ mix( FileLoader, ObservableMixin );
  * Object returned by {@link module:upload/filerepository~FileLoader#_createFilePromiseWrapper} method
  * to add more control over the initial file promise passed to {@link module:upload/filerepository~FileLoader}.
  *
+ * @protected
  * @typedef {Object} module:upload/filerepository~FilePromiseWrapper
  * @property {Promise.<File>} promise Wrapper promise which can be chained for further processing.
- * @property {Function} resolver Resolves the promise when called.
  * @property {Function} rejecter Rejects the promise when called.
  * @property {Boolean} isFulfilled Whether original promise is already fulfilled.
  */

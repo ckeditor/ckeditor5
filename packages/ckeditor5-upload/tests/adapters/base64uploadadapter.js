@@ -140,7 +140,8 @@ describe( 'Base64UploadAdapter', () => {
 				const adapter = fileRepository.createLoader( createNativeFileMock() );
 
 				expect( () => {
-					adapter.upload();
+					// Catch the upload error to prevent uncaught promise errors
+					adapter.upload().catch( () => {} );
 					adapter.abort();
 				} ).to.not.throw();
 
