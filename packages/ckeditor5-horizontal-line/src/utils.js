@@ -7,7 +7,7 @@
  * @module horizontal-rule/utils
  */
 
-import { findOptimalInsertionPosition, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * @param {module:engine/view/element~Element} viewElement
@@ -19,6 +19,16 @@ export function toHorizontalRuleWidget( viewElement, writer, label ) {
 	writer.setCustomProperty( 'horizontalRule', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
+}
+
+/**
+ * Checks if a given view element is a horizontal rule widget.
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+ */
+export function isHorizontalRuleWidget( viewElement ) {
+	return !!viewElement.getCustomProperty( 'horizontalRule' ) && isWidget( viewElement );
 }
 
 /**
