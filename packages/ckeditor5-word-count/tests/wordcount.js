@@ -369,8 +369,8 @@ describe( 'WordCount', () => {
 	} );
 
 	describe( 'custom config options', () => {
-		it( 'displayWords = false', done => {
-			VirtualTestEditor.create( {
+		it( 'displayWords = false', () => {
+			return VirtualTestEditor.create( {
 				plugins: [ WordCount, Paragraph ],
 				wordCount: {
 					displayWords: false
@@ -381,13 +381,11 @@ describe( 'WordCount', () => {
 					const container = wordCountPlugin.wordCountContainer;
 
 					expect( container.innerText ).to.equal( 'Characters: 0' );
-				} )
-				.then( done )
-				.catch( done );
+				} );
 		} );
 
-		it( 'displayCharacters = false', done => {
-			VirtualTestEditor.create( {
+		it( 'displayCharacters = false', () => {
+			return VirtualTestEditor.create( {
 				plugins: [ WordCount, Paragraph ],
 				wordCount: {
 					displayCharacters: false
@@ -398,9 +396,7 @@ describe( 'WordCount', () => {
 					const container = wordCountPlugin.wordCountContainer;
 
 					expect( container.innerText ).to.equal( 'Words: 0' );
-				} )
-				.then( done )
-				.catch( done );
+				} );
 		} );
 
 		it( 'should call function registered under config.wordCount.onUpdate', () => {
@@ -461,8 +457,8 @@ describe( 'WordCount', () => {
 			clearTranslations();
 		} );
 
-		it( 'applies proper language translations', done => {
-			VirtualTestEditor.create( {
+		it( 'applies proper language translations', () => {
+			return VirtualTestEditor.create( {
 				plugins: [ WordCount, Paragraph ],
 				language: 'pl'
 			} )
@@ -471,9 +467,7 @@ describe( 'WordCount', () => {
 					const container = wordCountPlugin.wordCountContainer;
 
 					expect( container.innerText ).to.equal( 'Słowa: 0Znaki: 0' );
-				} )
-				.then( done )
-				.catch( done );
+				} );
 		} );
 	} );
 } );
