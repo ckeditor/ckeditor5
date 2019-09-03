@@ -27,11 +27,10 @@ ClassicEditor
 				'imageUpload',
 				'mediaEmbed',
 				'insertTable',
+				'horizontalRule',
 				'|',
 				'undo',
 				'redo',
-				'|',
-				'horizontalRule'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
