@@ -176,6 +176,20 @@ describe( 'Title', () => {
 			);
 		} );
 
+		it( 'should move multiple elements after a title element when are not allowed to be a title', () => {
+			setData( model,
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+				'<blockQuote><paragraph>Bar</paragraph></blockQuote>' +
+				'<title><title-content>Biz</title-content></title>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<title><title-content>[]Biz</title-content></title>' +
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+				'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
+			);
+		} );
+
 		it( 'should create a missing title element before an element that cannot to be a title element', () => {
 			setData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
