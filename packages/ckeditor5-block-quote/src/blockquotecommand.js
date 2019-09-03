@@ -48,7 +48,7 @@ export default class BlockQuoteCommand extends Command {
 		const schema = model.schema;
 		const selection = model.document.selection;
 
-		const blocks = Array.from( selection.getTopMostBlocks() );
+		const blocks = Array.from( selection.getSelectedBlocks() );
 
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
@@ -76,7 +76,7 @@ export default class BlockQuoteCommand extends Command {
 	_getValue() {
 		const selection = this.editor.model.document.selection;
 
-		const firstBlock = first( selection.getTopMostBlocks() );
+		const firstBlock = first( selection.getSelectedBlocks() );
 
 		// In the current implementation, the block quote must be an immediate parent of a block element.
 		return !!( firstBlock && findQuote( firstBlock ) );
