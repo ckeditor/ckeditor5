@@ -17,6 +17,7 @@ import {
 	hidePlaceholder,
 	enablePlaceholder
 } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 // A list of element names which should be treated by the Title plugin as title-like.
 // This means that element of a type from this list will be changed to a title element
@@ -379,7 +380,7 @@ export default class Title extends Plugin {
 				const selection = model.document.selection;
 				const selectedElements = Array.from( selection.getSelectedBlocks() );
 
-				if ( selectedElements.length === 1 && selectedElements[ 0 ].name === 'title-content' ) {
+				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'title-content' ) ) {
 					const firstBodyElement = model.document.getRoot().getChild( 1 );
 					writer.setSelection( firstBodyElement, 0 );
 					cancel();
@@ -397,7 +398,7 @@ export default class Title extends Plugin {
 				}
 
 				const root = editor.model.document.getRoot();
-				const selectedElement = Array.from( selection.getSelectedBlocks() )[ 0 ];
+				const selectedElement = first( selection.getSelectedBlocks() );
 				const selectionPosition = selection.getFirstPosition();
 
 				const title = root.getChild( 0 );
