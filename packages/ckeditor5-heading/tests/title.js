@@ -108,13 +108,7 @@ describe( 'Title', () => {
 			);
 		} );
 
-		it( 'should have a list of title-like elements', () => {
-			expect( Array.from( Title.titleLikeElements ) ).to.have.members( [
-				'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6'
-			] );
-		} );
-
-		it( 'should change heading1 element to title when is set as a first root child', () => {
+		it( 'should change heading element to title when is set as a first root child', () => {
 			setData( model,
 				'<heading1>Foo</heading1>' +
 				'<heading1>Bar</heading1>'
@@ -130,6 +124,18 @@ describe( 'Title', () => {
 			setData( model,
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph>Bar</paragraph>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should change paragraph element to title and then change additional title elements to paragraphs', () => {
+			setData( model,
+				'<paragraph>Foo</paragraph>' +
+				'<title><title-content>Bar</title-content></title>'
 			);
 
 			expect( getData( model ) ).to.equal(
@@ -164,33 +170,7 @@ describe( 'Title', () => {
 			);
 		} );
 
-		it( 'should use the only title element as a title', () => {
-			setData( model,
-				'<heading1>Bar</heading1>' +
-				'<title><title-content>Foo</title-content></title>'
-			);
-
-			expect( getData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
-		} );
-
-		it( 'should use the first title element as a title', () => {
-			setData( model,
-				'<heading1>Bar</heading1>' +
-				'<title><title-content>Foo</title-content></title>' +
-				'<title><title-content>Baz</title-content></title>'
-			);
-
-			expect( getData( model ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>' +
-				'<paragraph>Baz</paragraph>'
-			);
-		} );
-
-		it( 'should move element after a title element when is not allowed to be a title', () => {
+		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #1', () => {
 			setData( model,
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<title><title-content>Bar</title-content></title>'
@@ -202,7 +182,7 @@ describe( 'Title', () => {
 			);
 		} );
 
-		it( 'should move multiple elements after a title element when are not allowed to be a title', () => {
+		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #2', () => {
 			setData( model,
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<blockQuote><paragraph>Bar</paragraph></blockQuote>' +
@@ -213,6 +193,20 @@ describe( 'Title', () => {
 				'<title><title-content>[]Biz</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
+			);
+		} );
+
+		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #3', () => {
+			setData( model,
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+				'<paragraph>Bar</paragraph>' +
+				'<title><title-content>Biz</title-content></title>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<title><title-content>[]Biz</title-content></title>' +
+				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
@@ -239,36 +233,9 @@ describe( 'Title', () => {
 				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
 			);
 		} );
-
-		it( 'should properly handle pasting multiple none title-like block elements before the title element', () => {
-			setData( model,
-				'<title><title-content>[]Title</title-content></title>'
-			);
-
-			const dataTransferMock = {
-				getData: type => {
-					if ( type === 'text/html' ) {
-						return '<blockQuote><p>Foo</p></blockQuote><blockQuote><p>Bar</p></blockQuote>';
-					}
-				},
-				types: [],
-				files: []
-			};
-
-			editor.editing.view.document.fire( 'paste', {
-				dataTransfer: dataTransferMock,
-				preventDefault() {}
-			} );
-
-			expect( getData( model ) ).to.equal(
-				'<title><title-content>Title</title-content></title>' +
-				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-				'<blockQuote><paragraph>Bar[]</paragraph></blockQuote>'
-			);
-		} );
 	} );
 
-	describe( 'prevent extra paragraphing', () => {
+	describe( 'removes extra paragraph', () => {
 		it( 'should remove the extra paragraph when pasting to the editor with body placeholder', () => {
 			setData( model, '<title><title-content>[]</title-content></title>' );
 
@@ -626,14 +593,14 @@ describe( 'Title', () => {
 			bodyDomElement = domConverter.mapViewToDom( viewRoot.getChild( 1 ) );
 
 			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Body' );
-			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.be.true;
+			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( true );
 
 			editor.execute( 'undo' );
 
 			bodyDomElement = domConverter.mapViewToDom( viewRoot.getChild( 1 ) );
 
 			expect( bodyDomElement.dataset.placeholder ).to.equal( 'Body' );
-			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.be.false;
+			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( false );
 		} );
 
 		it( 'should use placeholder defined through EditorConfig as a Body placeholder', () => {

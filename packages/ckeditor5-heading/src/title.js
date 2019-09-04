@@ -18,6 +18,11 @@ import {
 	enablePlaceholder
 } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
+// A list of element names which should be treated by the Title plugin as title-like.
+// This means that element of a type from this list will be changed to a title element
+// when it is the first element in the root.
+const titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ] );
+
 /**
  * The Title plugin.
  *
@@ -83,14 +88,17 @@ export default class Title extends Plugin {
 		// `title-content` <-> `h1` conversion.
 		editor.conversion.elementToElement( { model: 'title-content', view: 'h1' } );
 
-		// Take care about proper `title` element structure.
+		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
 
-		// Create and take care about proper position of a `title` element.
+		// Create and take care of correct position of a `title` element.
 		model.document.registerPostFixer( writer => this._fixTitleElement( writer ) );
 
-		// Prevent from adding extra paragraph after paste or enter.
-		model.document.registerPostFixer( writer => this._preventExtraParagraphing( writer ) );
+		// Create element for `Body` placeholder if it is missing.
+		model.document.registerPostFixer( writer => this._fixBodyElement( writer ) );
+
+		// Prevent from adding extra at the end of the document.
+		model.document.registerPostFixer( writer => this._removesExtraParagraph( writer ) );
 
 		// Attach `Title` and `Body` placeholders to the empty title and/or content.
 		this._attachPlaceholders();
@@ -172,7 +180,7 @@ export default class Title extends Plugin {
 		const root = this.editor.model.document.getRoot();
 
 		for ( const child of root.getChildren() ) {
-			if ( child.is( 'title' ) ) {
+			if ( isTitle( child ) ) {
 				return child;
 			}
 		}
@@ -190,12 +198,11 @@ export default class Title extends Plugin {
 		const title = this._getTitleElement();
 
 		// There's no title in the content - it will be created by _fixTitleElement post-fixer.
-		if ( !title ) {
+		if ( !title || title.maxOffset === 1 ) {
 			return false;
 		}
 
 		const titleChildren = Array.from( title.getChildren() );
-		let hasChanged = false;
 
 		// Skip first child because it is an allowed element.
 		titleChildren.shift();
@@ -203,14 +210,14 @@ export default class Title extends Plugin {
 		for ( const titleChild of titleChildren ) {
 			writer.move( writer.createRangeOn( titleChild ), title, 'after' );
 			writer.rename( titleChild, 'paragraph' );
-			hasChanged = true;
 		}
 
-		return hasChanged;
+		return true;
 	}
 
 	/**
-	 * Model post-fixer callback that takes care about creating and keeping `title` element as a first child in a root.
+	 * Model post-fixer callback that creates a title element when it is missing,
+	 * takes care of the correct position of it and removes additional title elements.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
@@ -219,90 +226,77 @@ export default class Title extends Plugin {
 	_fixTitleElement( writer ) {
 		const model = this.editor.model;
 		const modelRoot = model.document.getRoot();
-		let hasChanged = false;
-		let numberOfMovedElements = 0;
 
-		// Loop through root children and take care about a proper position of a title element.
-		// Title always has to be the first element in the root.
-		for ( const rootChild of Array.from( modelRoot.getChildren() ) ) {
-			// If the first element is not a title we need to fix it.
-			if ( rootChild.index === 0 && !rootChild.is( 'title' ) ) {
-				const title = this._getTitleElement();
+		const titleElements = Array.from( modelRoot.getChildren() ).filter( isTitle );
+		const firstTitleElement = titleElements[ 0 ];
+		const firstRootChild = modelRoot.getChild( 0 );
 
-				// Change first element to the title if it can be a title.
-				if ( Title.titleLikeElements.has( rootChild.name ) ) {
-					const position = model.createPositionBefore( rootChild );
-					const title = writer.createElement( 'title' );
-
-					writer.insert( title, position );
-					writer.append( rootChild, title );
-					writer.rename( rootChild, 'title-content' );
-
-					// After changing element to the title it has to be filtered out from disallowed attributes.
-					model.schema.removeDisallowedAttributes( [ rootChild ], writer );
-
-				// If the first element cannot be a title but title is already in the root
-				// than move the first element after a title.
-				} else if ( title ) {
-					const positionAfterTitle = writer.createPositionAt( title, 'after' );
-
-					// To preserve correct order when more than one element is moved in the one post-fixer call.
-					const targetPosition = positionAfterTitle.getShiftedBy( numberOfMovedElements );
-
-					writer.move( writer.createRangeOn( rootChild ), targetPosition );
-					numberOfMovedElements++;
-
-				// If there is no title or any element that could be a title then create an empty title.
-				} else {
-					writer.insertElement( 'title', modelRoot );
-					writer.insertElement( 'title-content', modelRoot.getChild( 0 ) );
-				}
-
-				hasChanged = true;
-
-			// If there is a title somewhere in the content.
-			} else if ( rootChild.index > 0 && rootChild.is( 'title' ) ) {
-				// Rename it to a paragraph if it has a content.
-				if ( model.hasContent( rootChild ) ) {
-					writer.rename( rootChild, 'paragraph' );
-					writer.unwrap( rootChild.getChild( 0 ) );
-				// Or remove if it's empty (it's created as a result of splitting parents by insertContent method).
-				} else {
-					writer.remove( rootChild );
-				}
-
-				hasChanged = true;
-			}
+		// When title element is at the beginning of the document then try to fix additional
+		// title elements (if there are any) and stop post-fixer as soon as possible.
+		if ( firstRootChild.is( 'title' ) ) {
+			return fixAdditionalTitleElements( titleElements, writer, model );
 		}
 
-		// Attach `Body` placeholder when there is no element after a title.
-		if ( modelRoot.childCount < 2 ) {
-			this._bodyPlaceholder = writer.createElement( 'paragraph' );
-			writer.insert( this._bodyPlaceholder, modelRoot, 1 );
-			hasChanged = true;
+		// When there is no title in the document and first element in the document cannot be changed
+		// to the title then create an empty title element at the beginning of the document.
+		if ( !firstTitleElement && !titleLikeElements.has( firstRootChild.name ) ) {
+			const title = writer.createElement( 'title' );
+
+			writer.insert( title, modelRoot );
+			writer.insertElement( 'title-content', title );
+
+			return true;
 		}
 
-		return hasChanged;
+		// At this stage, we are sure the title is somewhere in the content. It has to be fixed.
+
+		// Change the first element in the document to the title if it can be changed (is title-like).
+		if ( titleLikeElements.has( firstRootChild.name ) ) {
+			changeElementToTitle( firstRootChild, writer, model );
+		// Otherwise, move the first occurrence of the title element to the beginning of the document.
+		} else {
+			writer.move( writer.createRangeOn( firstTitleElement ), modelRoot, 0 );
+		}
+
+		fixAdditionalTitleElements( titleElements, writer, model );
+
+		return true;
 	}
 
 	/**
-	 * Prevents editor from adding extra paragraphs after pasting to the title element
-	 * or pressing an enter in the title element.
+	 * Model post-fixer callback that adds an empty paragraph at the end of the document
+	 * when it is needed for the placeholder purpose.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Boolean}
 	 */
-	_preventExtraParagraphing( writer ) {
+	_fixBodyElement( writer ) {
+		const modelRoot = this.editor.model.document.getRoot();
+
+		if ( modelRoot.childCount < 2 ) {
+			this._bodyPlaceholder = writer.createElement( 'paragraph' );
+			writer.insert( this._bodyPlaceholder, modelRoot, 1 );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Model post-fixer callback that removes paragraph from the end of the document
+	 * if was created for the placeholder purpose and it is not needed anymore.
+	 *
+	 * @private
+	 * @param {module:engine/model/writer~Writer} writer
+	 * @returns {Boolean}
+	 */
+	_removesExtraParagraph( writer ) {
 		const root = this.editor.model.document.getRoot();
 		const placeholder = this._bodyPlaceholder;
 
-		const shouldDeleteLastParagraph = (
-			placeholder && placeholder.is( 'paragraph' ) && placeholder.childCount === 0 &&
-			root.childCount > 2 && root.getChild( root.childCount - 1 ) === placeholder
-		);
-
-		if ( shouldDeleteLastParagraph ) {
+		if ( shouldRemoveLastParagraph( placeholder, root ) ) {
 			this._bodyPlaceholder = null;
 			writer.remove( placeholder );
 
@@ -418,25 +412,104 @@ export default class Title extends Plugin {
 	}
 }
 
-/**
- * A list of element names which should be treated by the Title plugin as title-like.
- * This means that element of a type from this list will be changed to a title element
- * when it is the first element in the root.
- *
- * @member {Set.<String>} module:heading/title~Title.titleLikeElements
- */
-Title.titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ] );
-
+// Maps position from the beginning of the model `title` element to the beginning of the view `h1` element.
+//
+// <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
+//
+// @param {module:editor/view/view~View} editingView
 function mapModelPositionToView( editingView ) {
 	return ( evt, data ) => {
-		if ( !data.modelPosition.parent.is( 'title' ) ) {
+		const positionParent = data.modelPosition.parent;
+
+		if ( !positionParent.is( 'title' ) ) {
 			return;
 		}
 
-		const modelParent = data.modelPosition.parent.parent;
-		const viewParent = data.mapper.toViewElement( modelParent );
+		const modelTitleElement = positionParent.parent;
+		const viewElement = data.mapper.toViewElement( modelTitleElement );
 
-		data.viewPosition = editingView.createPositionAt( viewParent, 0 );
+		data.viewPosition = editingView.createPositionAt( viewElement, 0 );
 		evt.stop();
 	};
+}
+
+// Returns true when given element is a title. Returns false otherwise.
+//
+// @param {module:engine/model/element~Element} element
+// @returns {Boolean}
+function isTitle( element ) {
+	return element.is( 'title' );
+}
+
+// Changes the given element to the title element.
+//
+// @param {module:engine/model/element~Element} element
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/model~Model} model
+function changeElementToTitle( element, writer, model ) {
+	const title = writer.createElement( 'title' );
+
+	writer.insert( title, element, 'before' );
+	writer.insert( element, title, 0 );
+	writer.rename( element, 'title-content' );
+	model.schema.removeDisallowedAttributes( [ element ], writer );
+}
+
+// Loops over the list of title elements and fixes additional ones.
+//
+// @param {Array.<module:engine/model/element~Element>} titleElements
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/model~Model} model
+// @returns {Boolean} Returns true when there was any change. Returns false otherwise.
+function fixAdditionalTitleElements( titleElements, writer, model ) {
+	let hasChanged = false;
+
+	for ( const title of titleElements ) {
+		if ( title.index !== 0 ) {
+			fixTitleElement( title, writer, model );
+			hasChanged = true;
+		}
+	}
+
+	return hasChanged;
+}
+
+// Changes given title element to a paragraph or removes it when it is empty.
+//
+// @param {module:engine/model/element~Element} title
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/model~Model} model
+function fixTitleElement( title, writer, model ) {
+	const child = title.getChild( 0 );
+
+	// Empty title should be removed.
+	// It is created as a result of pasting to the title element.
+	if ( child.isEmpty ) {
+		writer.remove( title );
+
+		return;
+	}
+
+	writer.move( writer.createRangeOn( child ), title, 'before' );
+	writer.rename( child, 'paragraph' );
+	writer.remove( title );
+	model.schema.removeDisallowedAttributes( [ child ], writer );
+}
+
+// Returns true when the last paragraph in the document was created only for the placeholder
+// purpose and it's not needed anymore. Returns false otherwise.
+//
+// @param {module:engine/model/rootelement~RootElement} root
+// @param {module:engine/model/element~Element} placeholder
+// @returns {Boolean}
+function shouldRemoveLastParagraph( placeholder, root ) {
+	if ( !placeholder || !placeholder.is( 'paragraph' ) || placeholder.childCount ) {
+		return false;
+	}
+
+	if ( root.childCount <= 2 || root.getChild( root.childCount - 1 ) !== placeholder ) {
+		return false;
+	}
+
+	return true;
 }
