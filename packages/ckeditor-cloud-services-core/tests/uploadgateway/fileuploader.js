@@ -7,6 +7,7 @@
 
 import FileUploader from '../../src/uploadgateway/fileuploader';
 import Token from '../../src/token/token';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const API_ADDRESS = 'https://example.dev';
 const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +
@@ -23,20 +24,20 @@ describe( 'FileUploader', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no fileOrData provided', () => {
-			expect( () => new FileUploader() ).to.throw( 'File must be provided' );
+			expect( () => new FileUploader() ).to.throw( CKEditorError, 'fileuploader-missing-file' );
 		} );
 
 		it( 'should throw error when no token provided', () => {
-			expect( () => new FileUploader( 'file' ) ).to.throw( 'Token must be provided' );
+			expect( () => new FileUploader( 'file' ) ).to.throw( CKEditorError, 'fileuploader-missing-token' );
 		} );
 
 		it( 'should throw error when no api address provided', () => {
-			expect( () => new FileUploader( 'file', token ) ).to.throw( 'Api address must be provided' );
+			expect( () => new FileUploader( 'file', token ) ).to.throw( CKEditorError, 'fileuploader-missing-api-address' );
 		} );
 
 		it( 'should throw error when wrong Base64 file is provided', () => {
 			expect( () => new FileUploader( 'data:image/gif;base64,R', token, API_ADDRESS ) )
-				.to.throw( 'Problem with decoding Base64 image data.' );
+				.to.throw( CKEditorError, 'fileuploader-decoding-image-data-error' );
 		} );
 
 		it( 'should convert base64 to file', done => {

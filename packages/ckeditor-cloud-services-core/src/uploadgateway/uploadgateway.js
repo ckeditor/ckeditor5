@@ -4,6 +4,7 @@
  */
 
 import FileUploader from './fileuploader';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * UploadGateway abstracts file uploads to CKEditor Cloud Services.
@@ -17,11 +18,21 @@ export default class UploadGateway {
 	 */
 	constructor( token, apiAddress ) {
 		if ( !token ) {
-			throw new Error( 'Token must be provided' );
+			/**
+			 * Token must be provided.
+			 *
+			 * @error uploadgateway-missing-token
+			 */
+			throw new CKEditorError( 'uploadgateway-missing-token: Token must be provided.', null );
 		}
 
 		if ( !apiAddress ) {
-			throw new Error( 'Api address must be provided' );
+			/**
+			 * Api address must be provided.
+			 *
+			 * @error uploadgateway-missing-api-address
+			 */
+			throw new CKEditorError( 'uploadgateway-missing-api-address: Api address must be provided.', null );
 		}
 
 		/**

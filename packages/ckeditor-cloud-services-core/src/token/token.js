@@ -7,6 +7,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const DEFAULT_OPTIONS = { refreshInterval: 3600000, autoRefresh: true };
 
@@ -30,7 +31,15 @@ class Token {
 	 */
 	constructor( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
 		if ( !tokenUrlOrRefreshToken ) {
-			throw new Error( 'A `tokenUrl` must be provided as the first constructor argument.' );
+			/**
+			 * A `tokenUrl` must be provided as the first constructor argument.
+			 *
+			 * @error token-missing-token-url
+			 */
+			throw new CKEditorError(
+				'token-missing-token-url: A `tokenUrl` must be provided as the first constructor argument.',
+				this
+			);
 		}
 
 		/**
@@ -167,7 +176,12 @@ function defaultRefreshToken( tokenUrl ) {
 			const xhrResponse = xhr.response;
 
 			if ( statusCode < 200 || statusCode > 299 ) {
-				return reject( new Error( 'Cannot download new token!' ) );
+				/**
+				 * Cannot download new token from the provided url.
+				 *
+				 * @error token-cannot-download-new-token
+				 */
+				return reject( new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.', null ) );
 			}
 
 			return resolve( xhrResponse );

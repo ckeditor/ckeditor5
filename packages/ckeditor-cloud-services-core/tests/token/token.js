@@ -6,6 +6,7 @@
 /* eslint-env commonjs, browser */
 
 import Token from '../../src/token/token';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Token', () => {
 	let requests;
@@ -25,7 +26,8 @@ describe( 'Token', () => {
 	describe( 'constructor()', () => {
 		it( 'should throw error when no tokenUrl provided', () => {
 			expect( () => new Token() ).to.throw(
-				'A `tokenUrl` must be provided as the first constructor argument.'
+				CKEditorError,
+				'token-missing-token-url'
 			);
 		} );
 
@@ -157,7 +159,8 @@ describe( 'Token', () => {
 			return promise.then( () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
-				expect( error ).to.match( /Cannot download new token!/ );
+				expect( error.constructor ).to.equal( CKEditorError );
+				expect( error ).to.match( /token-cannot-download-new-token/ );
 			} );
 		} );
 

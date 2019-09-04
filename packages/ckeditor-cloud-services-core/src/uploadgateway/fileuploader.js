@@ -7,13 +7,14 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 
 /**
  * FileUploader class used to upload single file.
  */
-class FileUploader {
+export default class FileUploader {
 	/**
 	 * Creates `FileUploader` instance.
 	 *
@@ -23,15 +24,30 @@ class FileUploader {
 	 */
 	constructor( fileOrData, token, apiAddress ) {
 		if ( !fileOrData ) {
-			throw new Error( 'File must be provided' );
+			/**
+			 * File must be provided as the first argument.
+			 *
+			 * @error fileuploader-missing-file
+			 */
+			throw new CKEditorError( 'fileuploader-missing-file: File must be provided as the first argument', null );
 		}
 
 		if ( !token ) {
-			throw new Error( 'Token must be provided' );
+			/**
+			 * Token must be provided as the second argument.
+			 *
+			 * @error fileuploader-missing-token
+			 */
+			throw new CKEditorError( 'fileuploader-missing-token: Token must be provided as the second argument.', null );
 		}
 
 		if ( !apiAddress ) {
-			throw new Error( 'Api address must be provided' );
+			/**
+			 * Api address must be provided as the third argument.
+			 *
+			 * @error fileuploader-missing-api-address
+			 */
+			throw new CKEditorError( 'fileuploader-missing-api-address: Api address must be provided as the third argument.', null );
 		}
 
 		/**
@@ -175,7 +191,16 @@ class FileUploader {
 
 				if ( statusCode < 200 || statusCode > 299 ) {
 					if ( xhrResponse.message ) {
-						return reject( new Error( xhrResponse.message ) );
+						/**
+						 * Uploading file failed.
+						 *
+						 * @error fileuploader-uploading-data-failed
+						 */
+						return reject( new CKEditorError(
+							'fileuploader-uploading-data-failed: Uploading file failed.',
+							this,
+							{ message: xhrResponse.message }
+						) );
 					}
 
 					return reject( xhrResponse.error );
@@ -236,7 +261,12 @@ function _base64ToBlob( base64, sliceSize = 512 ) {
 
 		return new Blob( byteArrays, { type: contentType } );
 	} catch ( error ) {
-		throw new Error( 'Problem with decoding Base64 image data.' );
+		/**
+		 * Problem with decoding Base64 image data.
+		 *
+		 * @error fileuploader-decoding-image-data-error
+		 */
+		throw new CKEditorError( 'fileuploader-decoding-image-data-error: Problem with decoding Base64 image data.', null );
 	}
 }
 
@@ -255,5 +285,3 @@ function _isBase64( string ) {
 	const match = string.match( BASE64_HEADER_REG_EXP );
 	return !!( match && match.length );
 }
-
-export default FileUploader;

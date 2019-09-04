@@ -6,17 +6,18 @@
 import FileUploader from '../../src/uploadgateway/fileuploader';
 import UploadGateway from '../../src/uploadgateway/uploadgateway';
 import Token from '../../src/token/token';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'UploadGateway', () => {
 	const token = new Token( 'url', { initValue: 'token', autoRefresh: false } );
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no token provided', () => {
-			expect( () => new UploadGateway( undefined, 'test' ) ).to.throw( 'Token must be provided' );
+			expectToThrowCKEditorError( () => new UploadGateway( undefined, 'test' ), 'uploadgateway-missing-token' );
 		} );
 
 		it( 'should throw error when no apiAddress provided', () => {
-			expect( () => new UploadGateway( token ) ).to.throw( 'Api address must be provided' );
+			expectToThrowCKEditorError( () => new UploadGateway( token ), 'uploadgateway-missing-api-address' );
 		} );
 	} );
 
