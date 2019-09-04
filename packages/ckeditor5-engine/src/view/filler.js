@@ -136,7 +136,7 @@ export function getDataWithoutFiller( domText ) {
  * @returns {Boolean} True if a node is considered a block filler for given mode.
  */
 export function isBlockFiller( domNode, mode ) {
-	return mode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspFillerFiller( domNode );
+	return mode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspBlockFiller( domNode );
 }
 
 /**
@@ -171,7 +171,7 @@ function jumpOverInlineFiller( evt, data ) {
 //
 // @param {Node} domNode DOM node.
 // @returns {Boolean}
-function isNbspFillerFiller( domNode ) {
+function isNbspBlockFiller( domNode ) {
 	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
 
 	return isNBSP && hasBlockParent( domNode ) && domNode.parentNode.childNodes.length === 1;
