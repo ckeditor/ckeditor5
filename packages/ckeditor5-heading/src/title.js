@@ -418,9 +418,9 @@ export default class Title extends Plugin {
 }
 
 /**
- * A list of element names which should be treated by the Title plugin as
- * title-like. This means that element on the list will be changed to the title
- * element when will be the first element in the root.
+ * A list of element names which should be treated by the Title plugin as title-like.
+ * This means that element of a type from this list will be changed to a title element
+ * when it is the first element in the root.
  *
  * @member {Set.<String>} module:heading/title~Title.titleLikeElements
  */
