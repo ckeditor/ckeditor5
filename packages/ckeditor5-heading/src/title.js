@@ -189,6 +189,7 @@ export default class Title extends Plugin {
 	_fixTitleContent( writer ) {
 		const title = this._getTitleElement();
 
+		// There's no title in the content - it will be created by _fixTitleElement post-fixer.
 		if ( !title ) {
 			return false;
 		}
