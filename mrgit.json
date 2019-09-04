@@ -1,9 +1,6 @@
 {
   "packages": "packages/",
-  "packagesPrefix": [
-    "@ckeditor/ckeditor-",
-    "@ckeditor/ckeditor5-"
-  ],
+  "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "ckeditor/ckeditor-cloud-services-core",
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
@@ -52,8 +49,5 @@
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget",
     "@ckeditor/ckeditor5-watchdog": "ckeditor/ckeditor5-watchdog",
     "@ckeditor/ckeditor5-word-count": "ckeditor/ckeditor5-word-count"
-  },
-  "overrideDirectoryNames": {
-    "@ckeditor/ckeditor-cloud-services-core": "ckeditor5-cloud-services-core"
   }
 }

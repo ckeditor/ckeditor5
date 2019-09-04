@@ -192,7 +192,7 @@ npm install --save \
     @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
-    postcss-loader \
+    postcss-loader@3 \
     raw-loader@0.5.1
 ```
 
@@ -387,6 +387,86 @@ Since accessing the editor toolbar is not possible until after the editor instan
 	}
 </script>
 ```
+
+## Localization
+
+CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so does the official Vue.js component. Follow the instructions below to translate CKEditor 5 in your Vue.js application.
+
+### Ready-to-use builds
+
+When using one of the {@link builds/guides/overview#available-builds official editor builds}, you need to import the translations first.
+
+* When using a [direct script include](#direct-script-include):
+	```html
+	<!-- Import translations for the German language. -->
+	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js"></script>
+	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+	<script src="../node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js"></script>
+	```
+* When using [ES6 modules](#using-es6-modules):
+	```js
+	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+	// Import translations for the German language.
+	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+	```
+
+Then, {@link builds/guides/integration/configuration configure} the language of the editor in the component:
+
+```html
+<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+```
+
+```js
+export default {
+	name: 'app',
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Content of the editor.</p>',
+			editorConfig: {
+				// Run the editor with the German UI.
+				language: 'de'
+			}
+		};
+	}
+}
+```
+
+For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
+
+### CKEditor 5 built from source
+
+Using the editor [built from source](#using-ckeditor-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorWebpackPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) to localize your editor:
+
+```js
+// vue.config.js
+// ...
+
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+
+// ...
+
+module.exports = {
+	// ...
+
+	configureWebpack: {
+		plugins: [
+			// CKEditor needs its own plugin to be built using webpack.
+			new CKEditorWebpackPlugin( {
+				// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+				language: 'de'
+			} )
+		]
+	},
+
+	// ...
+}
+```
+
+After building the application, CKEditor 5 will run with the UI translated to the specified language.
+
+For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
 
 ## Component directives
 

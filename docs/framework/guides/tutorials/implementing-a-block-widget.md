@@ -5,7 +5,7 @@ order: 10
 
 # Implementing a block widget
 
-In this tutorial, you will learn how to implement a more complex CKEditor 5 plugin. 
+In this tutorial, you will learn how to implement a more complex CKEditor 5 plugin.
 
 You will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. You will use the widget utilities and work with the model-view conversion in order to properly set up the behavior of this feature. Later on, you will create a UI which will allow for inserting new simple boxes into the document with the toolbar button.
 
@@ -29,9 +29,9 @@ First, install packages needed to build and set up a basic CKEditor 5 instance.
 
 ```bash
 npm install --save \
-	postcss-loader \
-	raw-loader \
-	style-loader \
+	postcss-loader@3 \
+	raw-loader@3 \
+	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3 \
 	@ckeditor/ckeditor5-dev-utils \
@@ -74,7 +74,7 @@ module.exports = {
 					{
 						loader: 'style-loader',
 						options: {
-							singleton: true
+							injectType: 'singletonStyleTag'
 						}
 					},
 					{

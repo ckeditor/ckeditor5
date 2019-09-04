@@ -25,9 +25,9 @@ First, install required dependencies:
 
 ```bash
 npm install --save \
-	postcss-loader \
-	raw-loader \
-	style-loader \
+	postcss-loader@3 \
+	raw-loader@3 \
+	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3 \
 	@ckeditor/ckeditor5-basic-styles \
@@ -75,7 +75,7 @@ module.exports = {
 					{
 						loader: 'style-loader',
 						options: {
-							singleton: true
+							injectType: 'singletonStyleTag'
 						}
 					},
 					{

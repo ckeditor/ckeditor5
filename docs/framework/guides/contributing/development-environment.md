@@ -8,7 +8,7 @@ order: 10
 The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages, each developed in a separate Git repository. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
 
 * the testing environment setup,
-* configuration for [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool) and [Yarn](https://yarnpkg.com/) (a dependency management tool),
+* configuration for [Mr. Git](https://www.npmjs.com/package/mrgit) (a multi-repo management tool) and [Yarn](https://yarnpkg.com/) (a dependency management tool),
 * translation management tools,
 * documentation generator,
 * and release tools.
@@ -26,13 +26,13 @@ In order to start developing CKEditor 5 you will require:
 
 First, you need to install a couple of tools which you will be using later:
 
-* [mgit2](https://www.npmjs.com/package/mgit2) &mdash; A multi-repo management tool,
+* [mrgit](https://www.npmjs.com/package/mrgit) &mdash; A multi-repo management tool,
 * [Yarn](https://yarnpkg.com/) &mdash; A dependency management tool.
 
 It is best to install them globally in your system for an easier use later on:
 
 ```bash
-npm install -g yarn mgit2
+npm install -g yarn mrgit
 ```
 
 **Note:** [Read how to avoid using `sudo` to install packages globally](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md) or use [nvm](https://github.com/creationix/nvm).
@@ -56,12 +56,12 @@ yarn install
 
 The steps above should install all the packages from npm, which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
 
-In order to work with development versions of all the official packages, it is recommended to use mgit. This tool will clone all package repositories to the `packages/` directory. Then, those packages need to be installed in a way understandable by Node.js-compliant tools (like webpack or Browserify). In order to achieve that we use Yarn's feature called [workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) which creates symlinks to these packages.
+In order to work with development versions of all the official packages, it is recommended to use `mrgit`. This tool will clone all package repositories to the `packages/` directory. Then, those packages need to be installed in a way understandable by Node.js-compliant tools (like webpack or Browserify). In order to achieve that we use Yarn's feature called [workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) which creates symlinks to these packages.
 
 First, clone all the repositories:
 
 ```bash
-mgit sync
+mrgit sync
 ```
 
 Expected result:
@@ -138,7 +138,7 @@ Whenever you want to update all packages to their latest versions call:
 git pull
 
 # To update pull changes to all the packages:
-mgit sync
+mrgit sync
 
 # To install missing dependencies:
 yarn install
@@ -151,23 +151,23 @@ git pull
 yarn run reinstall
 ```
 
-The `reinstall` script first calls `yarn run clean` to remove `node_modules/` directories from all packages (including `ckeditor5`) and then `yarn run bootstrap` which is a shorthand for `mgit sync && yarn install`.
+The `reinstall` script first calls `yarn run clean` to remove `node_modules/` directories from all packages (including `ckeditor5`) and then `yarn run bootstrap` which is a shorthand for `mrgit sync && yarn install`.
 
 ### Working with multiple repositories
 
-Mgit implements many useful commands, such as:
+Mr. Git implements many useful commands, such as:
 
-* `mgit exec 'command'` – executing a shell command in all repositories,
-* `mgit checkout <branch>` – checking all repositories to given branch (or hash),
-* `mgit status` – displaying information about all repositories.
+* `mrgit exec 'command'` – executing a shell command in all repositories,
+* `mrgit checkout <branch>` – checking all repositories to given branch (or hash),
+* `mrgit status` – displaying information about all repositories.
 
-Read more about those commands in [mgit's documentation](https://github.com/cksource/mgit2).
+Read more about those commands in [mrgit's documentation](https://github.com/cksource/mrgit).
 
-Mgit has been developed by the [CKSource team](https://cksource.com/) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repository project (though it best fits JavaScript projects).
+Mr. Git has been developed by the [CKSource team](https://cksource.com/) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repository project (though it best fits JavaScript projects).
 
-### Using mgit for custom packages
+### Using `mrgit` for custom packages
 
-If you are developing custom packages or forked any of the official packages and want mgit to work with it, change the dependencies configuration in [`mgit.json`](https://github.com/ckeditor/ckeditor5/blob/master/mgit.json). Note that mgit is able to clone the package from any Git URL. Refer to [its documentation](https://github.com/cksource/mgit2) for more details.
+If you are developing custom packages or forked any of the official packages and want `mrgit` to work with it, change the dependencies configuration in [`mrgit.json`](https://github.com/ckeditor/ckeditor5/blob/master/mrgit.json). Note that `mrgit` is able to clone the package from any Git URL. Refer to [its documentation](https://github.com/cksource/mrgit) for more details.
 
 ## Running tests
 
@@ -193,7 +193,7 @@ To create a server for manual tests use the `manual` task:
 yarn run manual
 ```
 
-It accepts the `--source-map` (`-s`) option. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
+It accepts the `--source-map` (`-s`) and `--additionalLanguages="ar,pl,..."` options. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
 
@@ -223,11 +223,22 @@ Note: These arguments must be passed after additional `--`:
 yarn run docs --skip-api
 ```
 
+## Generating content styles
+
+It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:
+
+```bash
+yarn docs:content-styles
+```
+The stylesheet will be saved in the `build/content-styles` folder.
+
+To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
+
 ## Bisecting through a multi-repository
 
 CKEditor 5 is a multi-repository project. It means that [`git bisect`](https://git-scm.com/docs/git-bisect) (which is super handy when tracking which commit introduced a bug) will not work out of the box.
 
-Fortunately, every commit made to any of the `master` branches of all CKEditor 5 subpackages will update this subpackage's hash in `mgit.json` in the [`master-revisions`](https://github.com/ckeditor/ckeditor5/commits/master-revisions) branch.
+Fortunately, every commit made to any of the `master` branches of all CKEditor 5 subpackages will update this subpackage's hash in `mrgit.json` in the [`master-revisions`](https://github.com/ckeditor/ckeditor5/commits/master-revisions) branch.
 
 Thanks to that, `master-revisions` contains an ordered history of all changes which makes it possible to go back to any point in history:
 
@@ -240,7 +251,7 @@ git pull
 git co master-revisions~30
 
 # Check out subpackages to correct hashes.
-mgit co
+mrgit co
 ```
 
 Once you found the point in history which interests you, you can go straight to a commit in a subpackage and PR. For example:
