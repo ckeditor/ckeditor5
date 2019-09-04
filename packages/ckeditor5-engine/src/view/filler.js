@@ -68,13 +68,17 @@ export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' )
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
- * Inline filler which is sequence of the zero width spaces.
+ * Inline filler which is a sequence of the zero width spaces.
  */
-export let INLINE_FILLER = '';
+export const INLINE_FILLER = ( () => {
+	let inlineFiller = '';
 
-for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
-	INLINE_FILLER += '\u200b';
-}
+	for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
+		inlineFiller += '\u200b';
+	}
+
+	return inlineFiller;
+} )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
@@ -129,10 +133,10 @@ export function getDataWithoutFiller( domText ) {
  *		isBlockFiller( brFillerInstance, 'br' ); // true
  *		isBlockFiller( brFillerInstance, 'nbsp' ); // false
  *
- * **Note:**: For 'nbsp' mode the method also checks context of a node so it cannot be a detached node.
+ * **Note:**: For the `'nbsp'` mode the method also checks context of a node so it cannot be a detached node.
  *
  * @param {Node} domNode DOM node to check.
- * @param {module:engine/view/filler~blockFillerMode} mode Mode of a block filler.
+ * @param {module:engine/view/filler~BlockFillerMode} mode Mode of a block filler.
  * @returns {Boolean} True if a node is considered a block filler for given mode.
  */
 export function isBlockFiller( domNode, mode ) {
@@ -198,5 +202,5 @@ function hasBlockParent( domNode ) {
  * * `br` - for `<br>` block filler used in editing view,
  * * `nbsp` - for `&nbsp;` block fillers used in the data.
  *
- * @typedef {String} module:engine/view/filler~blockFillerMode
+ * @typedef {String} module:engine/view/filler~BlockFillerMode
  */

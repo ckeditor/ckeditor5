@@ -50,7 +50,7 @@ export default class DomConverter {
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {module:engine/view/filler~blockFillerMode} [options.blockFillerMode='br'] Type of a block filler w
+	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] Type of a block filler w
 	 */
 	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
@@ -67,7 +67,7 @@ export default class DomConverter {
 		 * The mode of a block filler used by DOM converter.
 		 *
 		 * @readonly
-		 * @member {String} module:engine/view/domconverter~DomConverter#blockFillerMode
+		 * @member {String} module:engine/view/domconverter~DomConverter#BlockFillerMode
 		 */
 		this.blockFillerMode = options.blockFillerMode || 'br';
 
