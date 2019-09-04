@@ -1823,6 +1823,33 @@ describe( 'Schema', () => {
 					);
 			} );
 		} );
+
+		it( 'should filter out all attributes from descendants that are merged while clearing', () => {
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
+				// Disallow `a` in div>$text.
+				if ( ctx.endsWith( 'div $text' ) && attributeName == 'a' ) {
+					return false;
+				}
+			} );
+
+			const a = new Text( 'a', { a: 1 } );
+			const b = new Text( 'b', { a: 2 } );
+			const c = new Text( 'c', { a: 3 } );
+			const div = new Element( 'div', [], [ a, b, c ] );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ div ], writer );
+
+				expect( writer.batch.operations ).to.length( 3 );
+				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
+				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
+				expect( writer.batch.operations[ 2 ] ).to.instanceof( AttributeOperation );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<div>abc</div>' );
+			} );
+		} );
 	} );
 
 	describe( 'definitions compilation', () => {

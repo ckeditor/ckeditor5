@@ -732,7 +732,7 @@ export default class Schema {
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	removeDisallowedAttributes( nodes, writer ) {
-		for ( const node of nodes ) {
+		for ( const node of Array.from( nodes ) ) {
 			for ( const attribute of node.getAttributeKeys() ) {
 				if ( !this.checkAttribute( node, attribute ) ) {
 					writer.removeAttribute( attribute, node );
