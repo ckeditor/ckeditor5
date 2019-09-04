@@ -301,6 +301,14 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view is an object with upcastAlso defined', () => {
+				schema.extend( '$text', {
+					allowAttributes: [ 'bold', 'xBold' ]
+				} );
+				conversion.attributeToElement( {
+					model: 'xBold',
+					view: 'x-bold'
+				} );
+
 				conversion.attributeToElement( {
 					model: 'bold',
 					view: 'strong',
@@ -310,22 +318,18 @@ describe( 'Conversion', () => {
 							name: 'span',
 							classes: 'bold'
 						},
-						{
-							name: 'span',
-							styles: {
-								'font-weight': 'bold'
-							}
-						},
 						viewElement => {
 							const fontWeight = viewElement.getStyle( 'font-weight' );
 
-							if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test( fontWeight ) && Number( fontWeight ) > 500 ) {
+							if ( fontWeight == 'bold' || Number( fontWeight ) > 500 ) {
 								return {
-									name: true,
 									styles: [ 'font-weight' ]
 								};
 							}
-						}
+						},
+						// Duplicates the `x-bold` from above to test if only one attribute would be converted.
+						// It should not convert to both bold & x-bold.
+						viewElement => viewElement.is( 'x-bold' ) ? { name: 'x-bold' } : null
 					]
 				} );
 
@@ -362,6 +366,18 @@ describe( 'Conversion', () => {
 					'<p><span style="font-weight: 600;">Foo</span></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
+				);
+
+				test(
+					'<p style="font-weight: 600;">Foo</p>',
+					'<paragraph><$text bold="true">Foo</$text></paragraph>',
+					'<p><strong>Foo</strong></p>'
+				);
+
+				test(
+					'<p><x-bold style="font-wieght:bold">Foo</x-bold></p>',
+					'<paragraph><$text xBold="true">Foo</$text></paragraph>',
+					'<p><x-bold>Foo</x-bold></p>'
 				);
 			} );
 
