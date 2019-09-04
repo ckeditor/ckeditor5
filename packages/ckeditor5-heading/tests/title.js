@@ -164,6 +164,32 @@ describe( 'Title', () => {
 			);
 		} );
 
+		it( 'should use the only title element as a title', () => {
+			setData( model,
+				'<heading1>Bar</heading1>' +
+				'<title><title-content>Foo</title-content></title>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should use the first title element as a title', () => {
+			setData( model,
+				'<heading1>Bar</heading1>' +
+				'<title><title-content>Foo</title-content></title>' +
+				'<title><title-content>Baz</title-content></title>'
+			);
+
+			expect( getData( model ) ).to.equal(
+				'<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>' +
+				'<paragraph>Baz</paragraph>'
+			);
+		} );
+
 		it( 'should move element after a title element when is not allowed to be a title', () => {
 			setData( model,
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
