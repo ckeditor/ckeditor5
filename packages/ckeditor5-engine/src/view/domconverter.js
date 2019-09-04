@@ -50,7 +50,7 @@ export default class DomConverter {
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {Function} [options.blockFillerMode='br'] Block filler mode - either 'br' or 'nbsp'.
+	 * @param {module:engine/view/filler~blockFillerMode} [options.blockFillerMode='br'] Type of a block filler w
 	 */
 	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
@@ -64,21 +64,12 @@ export default class DomConverter {
 		// I've been here. Seen stuff. Afraid of code now.
 
 		/**
+		 * The mode of a block filler used by DOM converter.
 		 *
 		 * @readonly
 		 * @member {String} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
 		this.blockFillerMode = options.blockFillerMode || 'br';
-
-		/**
-		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
-		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {Function} module:engine/view/domconverter~DomConverter#blockFiller
-		 */
-		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
 		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
@@ -95,6 +86,16 @@ export default class DomConverter {
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
 		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+
+		/**
+		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
+		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Function} module:engine/view/domconverter~DomConverter#_blockFiller
+		 */
+		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
 		 * DOM to View mapping.

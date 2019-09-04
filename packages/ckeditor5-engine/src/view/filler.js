@@ -130,18 +130,14 @@ export function getDataWithoutFiller( domText ) {
  *		isBlockFiller( brFillerInstance, 'br' ); // true
  *		isBlockFiller( brFillerInstance, 'nbsp' ); // false
  *
+ * **Note:**: For 'nbsp' mode the method also checks context of a node so it cannot be a detached node.
+ *
  * @param {Node} domNode DOM node to check.
- * @param {String} blockFillerMode Block filler mode - either 'br' or 'nbsp'.
+ * @param {module:engine/view/filler~blockFillerMode} mode Mode of a block filler.
  * @returns {Boolean} True if a node is considered a block filler for given mode.
  */
-export function isBlockFiller( domNode, blockFillerMode ) {
-	if ( blockFillerMode == 'br' ) {
-		return domNode.isEqualNode( BR_FILLER_REF );
-	}
-
-	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
-
-	return isNBSP && hasBlockParent( domNode ) && domNode.parentNode.childNodes.length === 1;
+export function isBlockFiller( domNode, mode ) {
+	return mode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspFillerFiller( domNode );
 }
 
 /**
@@ -170,10 +166,38 @@ function jumpOverInlineFiller( evt, data ) {
 	}
 }
 
+// Checks if given node is a nbsp block filler.
+//
+// A &nbsp; is a block filler only if it is a single child of a block element.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function isNbspFillerFiller( domNode ) {
+	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
+
+	return isNBSP && hasBlockParent( domNode ) && domNode.parentNode.childNodes.length === 1;
+}
+
+// Name of DOM nodes that are considered a block.
 const blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
 
-function hasBlockParent( node ) {
-	const parent = node.parentNode;
+// Checks if domNode has block parent.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function hasBlockParent( domNode ) {
+	const parent = domNode.parentNode;
 
 	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
 }
+
+/**
+ * Enum representing type of the block filler.
+ *
+ * Possible values:
+ *
+ * * `br` - for `<br>` block filler used in editing view,
+ * * `nbsp` - for `&nbsp;` block fillers used in the data.
+ *
+ * @typedef {String} module:engine/view/filler~blockFillerMode
+ */
