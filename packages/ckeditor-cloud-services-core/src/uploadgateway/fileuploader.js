@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-env browser */
+/**
+ * @module ckeditor-cloud-services-core/fileuploader
+ */
+
+/* globals XMLHttpRequest, FormData, Blob, atob */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -19,7 +23,7 @@ export default class FileUploader {
 	 * Creates `FileUploader` instance.
 	 *
 	 * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
-	 * @param {Token} token Token used for authentication.
+	 * @param {module:ckeditor-cloud-services-core/token~Token} token Token used for authentication.
 	 * @param {String} apiAddress API address.
 	 */
 	constructor( fileOrData, token, apiAddress ) {
@@ -60,7 +64,7 @@ export default class FileUploader {
 		/**
 		 * CKEditor Cloud Services access token.
 		 *
-		 * @type {Token}
+		 * @type {module:ckeditor-cloud-services-core/token~Token}
 		 * @private
 		 */
 		this._token = token;
@@ -79,7 +83,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {FileUploader}
+	 * @returns {module:ckeditor-cloud-services-core/fileuploader~FileUploader}
 	 */
 	onProgress( callback ) {
 		this.on( 'progress', ( event, data ) => callback( data ) );
@@ -92,7 +96,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {FileUploader}
+	 * @returns {module:ckeditor-cloud-services-core/fileuploader~FileUploader}
 	 */
 	onError( callback ) {
 		this.once( 'error', ( event, data ) => callback( data ) );

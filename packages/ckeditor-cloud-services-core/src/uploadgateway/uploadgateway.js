@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module ckeditor-cloud-services-core/uploadgateway
+ */
+
 import FileUploader from './fileuploader';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -13,7 +17,7 @@ export default class UploadGateway {
 	/**
 	 * Creates `UploadGateway` instance.
 	 *
-	 * @param {Token} token Token used for authentication.
+	 * @param {module:ckeditor-cloud-services-core/token~Token} token Token used for authentication.
 	 * @param {String} apiAddress API address.
 	 */
 	constructor( token, apiAddress ) {
@@ -38,7 +42,7 @@ export default class UploadGateway {
 		/**
 		 * CKEditor Cloud Services access token.
 		 *
-		 * @type {Token}
+		 * @type {module:ckeditor-cloud-services-core/token~Token}
 		 * @private
 		 */
 		this._token = token;
@@ -53,9 +57,9 @@ export default class UploadGateway {
 	}
 
 	/**
-	 * Creates a {@link FileUploader} instance that wraps file upload process.
-	 * The file is being sent at a time when the method {@link FileUploader#then then} is called
-	 * or when {@link FileUploader#send send} method is called.
+	 * Creates a {@link module:ckeditor-cloud-services-core/fileuploader~FileUploader} instance that wraps
+	 * file upload process. The file is being sent at a time when the
+	 * {@link module:ckeditor-cloud-services-core/fileuploader~FileUploader#send} method is called.
 	 *
 	 *     const token = await Token.create( 'https://token-endpoint' );
 	 *     new UploadGateway( token, 'https://example.org' )
@@ -64,17 +68,8 @@ export default class UploadGateway {
 	 *        .send()
 	 *        .then( ( response ) => console.log( response ) );
 	 *
-	 *     // OR
-	 *
-	 *     const token = await Token.create( 'https://token-endpoint' );
-	 *     new UploadGateway( token, 'https://example.org' )
-	 *         .upload( 'FILE' )
-	 *         .onProgress( ( data ) => console.log( data ) )
-	 *         .send()
-	 *         .then( ( response ) => console.log( response ) );
-	 *
-	 * @param {Blob/String} fileOrData A blob object or a data string encoded with Base64.
-	 * @returns {FileUploader} Returns `FileUploader` instance.
+	 * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
+	 * @returns {module:ckeditor-cloud-services-core/fileuploader~FileUploader} Returns `FileUploader` instance.
 	 */
 	upload( fileOrData ) {
 		return new FileUploader( fileOrData, this._token, this._apiAddress );
