@@ -6,7 +6,6 @@
 /* globals window */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
