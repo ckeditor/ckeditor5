@@ -12,7 +12,7 @@ The {@link module:heading/title~Title title} feature adds support for the title 
 
 ## Keyboard navigation
 
-Title plugin lets you navigate between title and body elements using <kbd>Tab</kbd> key and back, using <kbd>Shift</kbd> + <kbd>Tab</kbd>, providing form-like experience. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move caret between title and body.
+Title plugin lets you navigate between title and body elements using <kbd>Tab</kbd> key and back, using <kbd>Shift</kbd> + <kbd>Tab</kbd> (when the selection is at the beginning of the first body element), providing form-like experience. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move caret between title and body.
 
 ## Placeholder integration
 
