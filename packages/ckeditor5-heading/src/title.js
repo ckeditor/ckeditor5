@@ -99,7 +99,7 @@ export default class Title extends Plugin {
 		model.document.registerPostFixer( writer => this._fixBodyElement( writer ) );
 
 		// Prevent from adding extra at the end of the document.
-		model.document.registerPostFixer( writer => this._removesExtraParagraph( writer ) );
+		model.document.registerPostFixer( writer => this._fixExtraParagraph( writer ) );
 
 		// Attach `Title` and `Body` placeholders to the empty title and/or content.
 		this._attachPlaceholders();
@@ -293,7 +293,7 @@ export default class Title extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @returns {Boolean}
 	 */
-	_removesExtraParagraph( writer ) {
+	_fixExtraParagraph( writer ) {
 		const root = this.editor.model.document.getRoot();
 		const placeholder = this._bodyPlaceholder;
 
