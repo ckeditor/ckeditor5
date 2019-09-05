@@ -195,16 +195,23 @@ export default class Resizer {
 			domWrapper.style.width = clientRect.width + 'px';
 			domWrapper.style.height = clientRect.height + 'px';
 
+			const offsets = {
+				left: handleHost.offsetLeft,
+				top: handleHost.offsetTop,
+				height: handleHost.offsetHeight,
+				width: handleHost.offsetWidth
+			};
+
 			// In case a resizing host is not a widget wrapper, we need to compensate
 			// for any additional offsets the resize host might have. E.g. wrapper padding
 			// or simply another editable. By doing that the border and resizers are shown
 			// only around the resize host.
 			if ( !widgetWrapper.isSameNode( handleHost ) ) {
-				domWrapper.style.left = handleHost.offsetLeft + 'px';
-				domWrapper.style.top = handleHost.offsetTop + 'px';
+				domWrapper.style.left = offsets.left + 'px';
+				domWrapper.style.top = offsets.top + 'px';
 
-				domWrapper.style.height = handleHost.offsetHeight + 'px';
-				domWrapper.style.width = handleHost.offsetWidth + 'px';
+				domWrapper.style.height = offsets.height + 'px';
+				domWrapper.style.width = offsets.width + 'px';
 			}
 		}
 
