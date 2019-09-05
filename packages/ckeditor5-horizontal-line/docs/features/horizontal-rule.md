@@ -29,6 +29,7 @@ import HorizontalRule from '@ckeditor/ckeditor5-horizontal-rule/src/horizontalru
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ HorizontalRule, ... ],
+		toolbar: [ 'horizontalRule', ... ],
 	} )
 	.then( ... )
 	.catch( ... );
@@ -37,6 +38,17 @@ ClassicEditor
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
+
+## Common API
+
+The {@link module:horizontal-rule/horizontalrule~HorizontalRule} plugin registers the UI button component (`'horizontalRule'`) and the `'horizontalRule'` command implemented by {@link module:horizontal-rule/horizontalrulecommand~HorizontalRuleCommand}. 
+
+The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+
+```js
+// Inserts the horizontal rule to the selected content.
+editor.execute( 'horizontalRule' );
+```
 
 ## Contribute
 
