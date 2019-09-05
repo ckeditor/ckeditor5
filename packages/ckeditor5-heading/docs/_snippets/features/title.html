@@ -1,0 +1,48 @@
+<div id="snippet-title">
+</div>
+
+<h3>Console</h3>
+
+<pre><code class="title-console title-console__title">''</code></pre>
+<pre><code class="title-console title-console__body">''</code></pre>
+<pre><code class="title-console title-console__data">''</code></pre>
+
+<style>
+	#title-console {
+		max-height: 300px;
+		overflow: auto;
+		white-space: normal;
+		background: #2b2c26;
+		margin-top: 20px;
+		transition: background-color 500ms;
+	}
+
+	#title-console.updated {
+		background: green;
+	}
+
+	.title-console__title,
+	.title-console__body {
+		margin-bottom: 10px;
+	}
+
+	.title-console__title::before,
+	.title-console__body::before,
+	.title-console__data::before {
+		display: inline-block;
+		margin-right: 5px;
+		opacity: 0.5;
+	}
+
+	.title-console__title::before {
+		content: 'Title:'
+	}
+
+	.title-console__body::before {
+		content: 'Body:'
+	}
+
+	.title-console__data::before {
+		content: 'Data:';
+	}
+</style>
