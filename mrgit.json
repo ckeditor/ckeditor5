@@ -1,6 +1,6 @@
 {
   "packages": "packages/",
-  "packagesPrefix": "@ckeditor/ckeditor5-",
+  "packagesPrefix": [ "@ckeditor/ckeditor5-", "@ckeditor/ckeditor-" ],
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "ckeditor/ckeditor-cloud-services-core",
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
