@@ -33,6 +33,7 @@ export default class WidgetResize extends Plugin {
 		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			let lastMarked = null;
+			let activeResizer = null;
 
 			for ( const range of viewWriter.document.selection.getRanges() ) {
 				for ( const value of range ) {
@@ -40,16 +41,18 @@ export default class WidgetResize extends Plugin {
 
 					// Do not mark nested widgets in selected one. See: ckeditor/ckeditor5-widget#57.
 					if ( isWidget( node ) && !isChild( node, lastMarked ) && node.hasClass( 'ck-widget_with-resizer' ) ) {
-						const resizer = this.resizersByWrapper.get( node );
-
-						if ( resizer ) {
-							resizer.redraw();
-						}
+						activeResizer = this.resizersByWrapper.get( node ) || activeResizer;
 
 						lastMarked = node;
 					}
 				}
 			}
+
+			if ( activeResizer ) {
+				activeResizer.redraw();
+			}
+
+			this.focusedResizer = activeResizer;
 		}, { priority: 'low' } );
 
 		// Checks whether the specified `element` is a child of the `parent` element.
@@ -67,12 +70,12 @@ export default class WidgetResize extends Plugin {
 	}
 
 	init() {
+		this.focusedResizer = null;
 		this.resizers = [];
 		this.resizersByWrapper = new Map();
 		this.activeResizer = null;
 
 		const domDocument = global.window.document;
-		const THROTTLE_THRESHOLD = 16; // 16ms = ~60fps
 
 		this.editor.model.schema.setAttributeProperties( 'width', {
 			isFormatting: true
@@ -100,7 +103,7 @@ export default class WidgetResize extends Plugin {
 			if ( this.activeResizer ) {
 				this.activeResizer.updateSize( domEventData );
 			}
-		}, THROTTLE_THRESHOLD ) );
+		}, 16 ) ); // 60 fps
 
 		this._observer.listenTo( domDocument, 'mouseup', () => {
 			if ( this.activeResizer ) {
@@ -110,17 +113,17 @@ export default class WidgetResize extends Plugin {
 			}
 		} );
 
-		const redrawResizers = throttle( () => {
-			if ( this.activeResizer ) {
-				this.activeResizer.redraw();
+		const redrawFocusedResizer = throttle( () => {
+			if ( this.focusedResizer ) {
+				this.focusedResizer.redraw();
 			}
-		}, 100 );
+		}, 200 ); // 5 fps
 
 		// Redrawing on any change of the UI of the editor (including content changes).
-		this.editor.ui.on( 'update', redrawResizers );
+		this.editor.ui.on( 'update', redrawFocusedResizer );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
-		this._observer.listenTo( global.window, 'resize', redrawResizers );
+		this._observer.listenTo( global.window, 'resize', redrawFocusedResizer );
 	}
 
 	destroy() {
