@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckeditor-cloud-services-core/fileuploader
+ * @module ckeditor-cloud-services-core/uploadgateway
  */
 
 /* globals XMLHttpRequest, FormData, Blob, atob */
@@ -83,7 +83,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {module:ckeditor-cloud-services-core/fileuploader~FileUploader}
+	 * @returns {module:ckeditor-cloud-services-core/uploadgateway~FileUploader}
 	 */
 	onProgress( callback ) {
 		this.on( 'progress', ( event, data ) => callback( data ) );
@@ -96,7 +96,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {module:ckeditor-cloud-services-core/fileuploader~FileUploader}
+	 * @returns {module:ckeditor-cloud-services-core/uploadgateway~FileUploader}
 	 */
 	onError( callback ) {
 		this.once( 'error', ( event, data ) => callback( data ) );
