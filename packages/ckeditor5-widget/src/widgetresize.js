@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Resizer from './widgetresize/resizer';
+import { isWidget } from './utils';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { throttle } from 'lodash-es';
@@ -28,8 +29,46 @@ export default class WidgetResize extends Plugin {
 		return 'WidgetResize';
 	}
 
+	_resizeWorkaround() {
+		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			let lastMarked = null;
+
+			for ( const range of viewWriter.document.selection.getRanges() ) {
+				for ( const value of range ) {
+					const node = value.item;
+
+					// Do not mark nested widgets in selected one. See: ckeditor/ckeditor5-widget#57.
+					if ( isWidget( node ) && !isChild( node, lastMarked ) && node.hasClass( 'ck-widget_with-resizer' ) ) {
+						const resizer = this.resizersByWrapper.get( node );
+
+						if ( resizer ) {
+							resizer.redraw();
+						}
+
+						lastMarked = node;
+					}
+				}
+			}
+		}, { priority: 'low' } );
+
+		// Checks whether the specified `element` is a child of the `parent` element.
+		//
+		// @param {module:engine/view/element~Element} element An element to check.
+		// @param {module:engine/view/element~Element|null} parent A parent for the element.
+		// @returns {Boolean}
+		function isChild( element, parent ) {
+			if ( !parent ) {
+				return false;
+			}
+
+			return Array.from( element.getAncestors() ).includes( parent );
+		}
+	}
+
 	init() {
 		this.resizers = [];
+		this.resizersByWrapper = new Map();
 		this.activeResizer = null;
 
 		const domDocument = global.window.document;
@@ -38,6 +77,8 @@ export default class WidgetResize extends Plugin {
 		this.editor.model.schema.setAttributeProperties( 'width', {
 			isFormatting: true
 		} );
+
+		this._resizeWorkaround();
 
 		this._observer = Object.create( DomEmitterMixin );
 
@@ -73,7 +114,7 @@ export default class WidgetResize extends Plugin {
 			if ( this.activeResizer ) {
 				this.activeResizer.redraw();
 			}
-		}, THROTTLE_THRESHOLD );
+		}, 100 );
 
 		// Redrawing on any change of the UI of the editor (including content changes).
 		this.editor.ui.on( 'update', redrawResizers );
@@ -95,9 +136,11 @@ export default class WidgetResize extends Plugin {
 
 		resizer.attach();
 
-		this.editor.editing.view.once( 'render', () => resizer.redraw() );
+		this.editor.editing.view.once( 'render', () => resizer.redraw() ); // no longer needed as we listen for widget selection change
 
 		this.resizers.push( resizer );
+
+		this.resizersByWrapper.set( options.viewElement, resizer );
 
 		return resizer;
 	}

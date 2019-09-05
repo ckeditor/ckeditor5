@@ -146,6 +146,8 @@ export default class Resizer {
 		newSize.width = Math.round( domResizeHostRect.width );
 		newSize.height = Math.round( domResizeHostRect.height );
 
+		this.redraw( domHandleHostRect );
+
 		this.state.update( newSize );
 	}
 
@@ -181,8 +183,10 @@ export default class Resizer {
 
 	/**
 	 * Redraws the resizer.
+	 *
+	 * @param {module:utils/dom/rect~Rect} handleHostRect
 	 */
-	redraw() {
+	redraw( handleHostRect ) {
 		// TODO review this
 		const domWrapper = this._domResizerWrapper;
 
@@ -190,7 +194,7 @@ export default class Resizer {
 			// Refresh only if resizer exists in the DOM.
 			const widgetWrapper = domWrapper.parentElement;
 			const handleHost = this._getHandleHost();
-			const clientRect = new Rect( handleHost );
+			const clientRect = handleHostRect || new Rect( handleHost );
 
 			domWrapper.style.width = clientRect.width + 'px';
 			domWrapper.style.height = clientRect.height + 'px';
