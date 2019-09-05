@@ -172,7 +172,7 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Returns `title` element when is in the document. Returns `undefined` otherwise.
+	 * Returns `title` element when it is in the document. Returns `undefined` otherwise.
 	 *
 	 * @private
 	 * @returns {module:engine/model/element~Element|undefined}
@@ -189,7 +189,7 @@ export default class Title extends Plugin {
 
 	/**
 	 * Model post-fixer callback that ensures `title` has only one `title-content` child.
-	 * All additional children should be moved after `title` element and renamed to a paragraph.
+	 * All additional children should be moved after the `title` element and renamed to a paragraph.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
@@ -286,8 +286,8 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Model post-fixer callback that removes paragraph from the end of the document
-	 * if was created for the placeholder purpose and it is not needed anymore.
+	 * Model post-fixer callback that removes a paragraph from the end of the document
+	 * if it was created for the placeholder purpose and it is not needed anymore.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
