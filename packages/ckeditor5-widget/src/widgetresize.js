@@ -71,7 +71,6 @@ export default class WidgetResize extends Plugin {
 
 	init() {
 		this.focusedResizer = null;
-		this.resizers = [];
 		this.resizersByWrapper = new Map();
 		this.activeResizer = null;
 
@@ -141,15 +140,13 @@ export default class WidgetResize extends Plugin {
 
 		this.editor.editing.view.once( 'render', () => resizer.redraw() ); // no longer needed as we listen for widget selection change
 
-		this.resizers.push( resizer );
-
 		this.resizersByWrapper.set( options.viewElement, resizer );
 
 		return resizer;
 	}
 
 	_getResizerByHandle( domResizeHandle ) {
-		for ( const resizer of this.resizers ) {
+		for ( const resizer of this.resizersByWrapper.values() ) {
 			if ( resizer.containsHandle( domResizeHandle ) ) {
 				return resizer;
 			}
