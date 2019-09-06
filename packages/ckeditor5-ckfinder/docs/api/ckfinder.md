@@ -32,5 +32,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-ckfinder` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)
 * [`ckeditor/ckeditor5-ckfinder` on GitHub](https://github.com/ckeditor/ckeditor5-ckfinder)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-ckfinder/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-ckfinder/blob/master/CHANGELOG.md)
