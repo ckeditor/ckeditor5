@@ -221,9 +221,10 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		after( () => {
-			editor.destroy();
-
-			element.remove();
+			return editor.destroy()
+				.then( () => {
+					element.remove();
+				} );
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
