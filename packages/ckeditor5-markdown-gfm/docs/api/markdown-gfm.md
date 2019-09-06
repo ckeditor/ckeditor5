@@ -30,5 +30,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-markdown-gfm` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)
 * [`ckeditor/ckeditor5-markdown-gfm` on GitHub](https://github.com/ckeditor/ckeditor5-markdown-gfm)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-markdown-gfm/blob/master/CHANGELOG.md)
