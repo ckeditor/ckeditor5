@@ -138,8 +138,6 @@ export default class WidgetResize extends Plugin {
 
 		resizer.attach();
 
-		this.editor.editing.view.once( 'render', () => resizer.redraw() ); // no longer needed as we listen for widget selection change
-
 		this.resizersByWrapper.set( options.viewElement, resizer );
 
 		return resizer;
