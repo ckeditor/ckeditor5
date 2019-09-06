@@ -1804,6 +1804,20 @@ describe( 'Renderer', () => {
 				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
 			} );
 
+			it( 'doesn\'t render the same selection multiple times', () => {
+				const createRangeSpy = sinon.spy( domRoot.ownerDocument, 'createRange' );
+
+				const label = 'subsequent fake selection calls';
+				selection._setTo( selection.getRanges(), { fake: true, label } );
+				renderer.render();
+				selection._setTo( selection.getRanges(), { fake: true, label } );
+				renderer.render();
+				selection._setTo( selection.getRanges(), { fake: true, label } );
+				renderer.render();
+
+				expect( createRangeSpy.callCount ).to.be.equal( 1 );
+			} );
+
 			it( 'should render &nbsp; if no selection label is provided', () => {
 				selection._setTo( selection.getRanges(), { fake: true } );
 				renderer.render();
