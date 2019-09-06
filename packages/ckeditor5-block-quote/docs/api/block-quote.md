@@ -26,5 +26,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-block-quote` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote)
 * [`ckeditor/ckeditor5-block-quote` on GitHub](https://github.com/ckeditor/ckeditor5-block-quote)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-block-quote/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-block-quote/blob/master/CHANGELOG.md)
