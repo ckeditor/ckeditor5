@@ -5,7 +5,7 @@
 
 /* global console:false */
 
-import { AssertionError } from 'chai';
+import AssertionError from 'assertion-error';
 // eslint-disable-next-line camelcase
 import { html_beautify } from 'js-beautify/js/lib/beautify-html';
 
@@ -160,9 +160,9 @@ export function assertCKEditorError( err, message, editorThatShouldBeFindableFro
  *
  * @param {String} actual An actual string.
  * @param {String} expected An expected string.
- * @param {message} [expected="Expected two markup strings to be equal"] Optional error message.
+ * @param {String} [message="Expected two markup strings to be equal"] Optional error message.
  */
-export function assertEqualMarkup( actual, expected, message = 'Expected two markup strings to be equal' ) {
+export function assertEqualMarkup( actual, expected, message = 'Expected markup strings to be equal' ) {
 	if ( actual != expected ) {
 		throw new AssertionError( message, {
 			actual: formatMarkup( actual ),
