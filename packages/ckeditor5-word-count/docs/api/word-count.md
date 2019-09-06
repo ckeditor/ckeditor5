@@ -30,5 +30,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-word-count` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count)
 * [`ckeditor/ckeditor5-word-count` on GitHub](https://github.com/ckeditor/ckeditor5-word-count)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-word-count/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-word-count/blob/master/CHANGELOG.md)
