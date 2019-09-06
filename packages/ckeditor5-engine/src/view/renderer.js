@@ -711,6 +711,8 @@ export default class Renderer {
 
 		if ( !container.parentElement || container.parentElement != domRoot ) {
 			domRoot.appendChild( container );
+		} else if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
+			return;
 		}
 
 		// Update contents.
@@ -790,6 +792,19 @@ export default class Renderer {
 
 		// Selections are not similar.
 		return true;
+	}
+
+	/**
+	 * Checks whether the fake selection needs to be updated.
+	 *
+	 * @private
+	 * @param {HTMLElement} domRoot A valid DOM root where a new fake selection container should be added.
+	 * @returns {Boolean}
+	 */
+	_fakeSelectionNeedsUpdate( domRoot ) {
+		const container = this._fakeSelectionContainer;
+
+		return !container || container.parentElement != domRoot || container.textContent !== this.selection.fakeSelectionLabel;
 	}
 
 	/**
