@@ -141,7 +141,7 @@ describe( 'ImageResize', () => {
 		it( 'disables the resizer if the command is disabled', () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
-			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizer = getFirstResizer( editor );
 
 			let isEnabled = false;
 
@@ -171,7 +171,7 @@ describe( 'ImageResize', () => {
 				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
 			} );
 
-			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizer = getFirstResizer( editor );
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
 			expect( resizer.isEnabled ).to.be.false;
@@ -586,7 +586,7 @@ describe( 'ImageResize', () => {
 		it( 'hides the resize wrapper when its disabled', () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
-			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizer = getFirstResizer( editor );
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
 			expect( resizerWrapper.style.display ).to.equal( '' );
@@ -687,5 +687,9 @@ describe( 'ImageResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function getFirstResizer( editor ) {
+		return Array.from( editor.plugins.get( 'WidgetResize' ).resizersByWrapper.values() )[ 0 ];
 	}
 } );
