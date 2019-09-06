@@ -152,7 +152,9 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+			const testRunner = skip.indexOf( name ) !== -1 ? it.skip : it;
+
+			testRunner( name, () => {
 				// Simulate data from Clipboard event
 				const clipboardPlugin = editor.plugins.get( 'Clipboard' );
 				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
@@ -228,7 +230,9 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+			const testRunner = skip.indexOf( name ) !== -1 ? it.skip : it;
+
+			testRunner( name, () => {
 				data.input = fixtures.input[ name ];
 				data.model = fixtures.model[ name ];
 				expectModel( data, editor, fixtures.inputRtf && fixtures.inputRtf[ name ] );
