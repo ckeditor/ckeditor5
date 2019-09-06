@@ -30,5 +30,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-media-embed` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)
 * [`ckeditor/ckeditor5-media-embed` on GitHub](https://github.com/ckeditor/ckeditor5-media-embed)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-media-embed/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-media-embed/blob/master/CHANGELOG.md)
