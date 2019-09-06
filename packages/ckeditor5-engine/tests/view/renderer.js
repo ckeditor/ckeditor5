@@ -1805,17 +1805,26 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'doesn\'t render the same selection multiple times', () => {
-				const createRangeSpy = sinon.spy( domRoot.ownerDocument, 'createRange' );
-
+				const createRangeSpy = sinon.spy( document, 'createRange' );
 				const label = 'subsequent fake selection calls';
-				selection._setTo( selection.getRanges(), { fake: true, label } );
-				renderer.render();
+
 				selection._setTo( selection.getRanges(), { fake: true, label } );
 				renderer.render();
 				selection._setTo( selection.getRanges(), { fake: true, label } );
 				renderer.render();
 
 				expect( createRangeSpy.callCount ).to.be.equal( 1 );
+			} );
+
+			it( 'different subsequent fake selections sets do change native selection', () => {
+				const createRangeSpy = sinon.spy( document, 'createRange' );
+
+				selection._setTo( selection.getRanges(), { fake: true, label: 'selection 1' } );
+				renderer.render();
+				selection._setTo( selection.getRanges(), { fake: true, label: 'selection 2' } );
+				renderer.render();
+
+				expect( createRangeSpy.callCount ).to.be.equal( 2 );
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
