@@ -803,8 +803,20 @@ export default class Renderer {
 	 */
 	_fakeSelectionNeedsUpdate( domRoot ) {
 		const container = this._fakeSelectionContainer;
+		const domSelection = domRoot.ownerDocument.getSelection();
 
-		return !container || container.parentElement != domRoot || container.textContent !== this.selection.fakeSelectionLabel;
+		// Selection fakeselection needs to be updated if there's no fake selection container, or container
+		// currently sits in different root.
+		if ( !container || container.parentElement != domRoot ) {
+			return false;
+		}
+
+		// Make sure that the selection actually is within the fake selection.
+		if ( !domSelection.anchorNode.isSameNode( container ) ) {
+			return true;
+		}
+
+		return container.textContent !== this.selection.fakeSelectionLabel;
 	}
 
 	/**
