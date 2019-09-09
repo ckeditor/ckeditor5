@@ -1,11 +1,9 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env commonjs, browser */
-
-'use strict';
 
 import Token from '../../src/token/token';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -16,14 +14,16 @@ describe( 'Token', () => {
 	beforeEach( () => {
 		requests = [];
 
-		global.xhr = sinon.useFakeXMLHttpRequest();
+		const xhr = sinon.useFakeXMLHttpRequest();
 
-		global.xhr.onCreate = xhr => {
-			requests.push( xhr );
+		xhr.onCreate = request => {
+			requests.push( request );
 		};
 	} );
 
-	afterEach( () => global.xhr.restore() );
+	afterEach( () => {
+		sinon.restore();
+	} );
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no tokenUrl provided', () => {

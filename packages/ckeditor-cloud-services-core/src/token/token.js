@@ -1,11 +1,13 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* eslint-env browser */
+/**
+ * @module cloud-services-core/token
+ */
 
-'use strict';
+/* globals XMLHttpRequest, setInterval, clearInterval */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -25,7 +27,7 @@ class Token {
 	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
 	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
-	 * value is a function it has to match the {@link ~refreshToken} interface.
+	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
@@ -78,7 +80,7 @@ class Token {
 	/**
 	 * Initializes the token.
 	 *
-	 * @returns {Promise.<Token>}
+	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
 	init() {
 		return new Promise( ( resolve, reject ) => {
@@ -135,15 +137,15 @@ class Token {
 	}
 
 	/**
-	 * Creates a initialized {@link Token} instance.
+	 * Creates a initialized {@link module:cloud-services-core/token~Token} instance.
 	 *
 	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
-	 * value is a function it has to match the {@link ~refreshToken} interface.
+	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
-	 * @returns {Promise.<Token>}
+	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
 	static create( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
 		const token = new Token( tokenUrlOrRefreshToken, options );
@@ -183,7 +185,9 @@ function defaultRefreshToken( tokenUrl ) {
 				 *
 				 * @error token-cannot-download-new-token
 				 */
-				return reject( new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.', null ) );
+				return reject(
+					new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.', null )
+				);
 			}
 
 			return resolve( xhrResponse );

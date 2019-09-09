@@ -1,11 +1,9 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env commonjs, browser */
-
-'use strict';
 
 import FileUploader from '../../src/uploadgateway/fileuploader';
 import Token from '../../src/token/token';
@@ -100,14 +98,16 @@ describe( 'FileUploader', () => {
 		let request;
 
 		beforeEach( () => {
-			global.xhr = sinon.useFakeXMLHttpRequest();
+			const xhr = sinon.useFakeXMLHttpRequest();
 
-			global.xhr.onCreate = xhr => {
-				request = xhr;
+			xhr.onCreate = r => {
+				request = r;
 			};
 		} );
 
-		afterEach( () => global.xhr.restore() );
+		afterEach( () => {
+			sinon.restore();
+		} );
 
 		it( 'should sent request with correct data (url, method, type, headers)', done => {
 			fileUploader
@@ -202,14 +202,16 @@ describe( 'FileUploader', () => {
 		let request;
 
 		beforeEach( () => {
-			global.xhr = sinon.useFakeXMLHttpRequest();
+			const xhr = sinon.useFakeXMLHttpRequest();
 
-			global.xhr.onCreate = xhr => {
-				request = xhr;
+			xhr.onCreate = r => {
+				request = r;
 			};
 		} );
 
-		afterEach( () => global.xhr.restore() );
+		afterEach( () => {
+			sinon.restore();
+		} );
 
 		it( 'should abort xhr request', () => {
 			fileUploader.send();
