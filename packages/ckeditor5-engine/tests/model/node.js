@@ -165,6 +165,14 @@ describe( 'Node', () => {
 	describe( 'is()', () => {
 		it( 'should return true for node', () => {
 			expect( node.is( 'node' ) ).to.be.true;
+			expect( node.is( 'model:node' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( node.is( 'model' ) ).to.be.false;
+			expect( node.is( 'model:text' ) ).to.be.false;
+			expect( node.is( 'text' ) ).to.be.false;
+			expect( node.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );
 

@@ -410,4 +410,25 @@ describe( 'Marker', () => {
 
 		expect( marker.affectsData ).to.be.false;
 	} );
+
+	describe( 'is()', () => {
+		let marker;
+
+		beforeEach( () => {
+			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+			marker = model.markers._set( 'name', range );
+		} );
+
+		it( 'should return true for "marker"', () => {
+			expect( marker.is( 'marker' ) ).to.be.true;
+			expect( marker.is( 'model:marker' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( marker.is( 'model' ) ).to.be.false;
+			expect( marker.is( 'model:node' ) ).to.be.false;
+			expect( marker.is( 'text' ) ).to.be.false;
+			expect( marker.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
 } );

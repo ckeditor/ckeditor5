@@ -11,11 +11,14 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
- * This helper enabled the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
+ * This helper enables the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
  * attribute on arrow right (<kbd>→</kbd>) and left (<kbd>←</kbd>) key press.
  *
  * Thanks to this (phantom) caret movement the user is able to type before/after as well as at the
  * beginning/end of an attribute.
+ *
+ * **Note:** This helper support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
+ * but for the sake of simplicity examples showcase only left–to–right use–cases.
  *
  * # Forward movement
  *
@@ -78,13 +81,15 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  *
  *   		<$text a="true">ba{}r</$text>b{}az
  *
- * @param {module:engine/view/view~View} view View controller instance.
- * @param {module:engine/model/model~Model} model Data model instance.
- * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added
+ * @param {Object} options Helper options.
+ * @param {module:engine/view/view~View} options.view View controller instance.
+ * @param {module:engine/model/model~Model} options.model Data model instance.
+ * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior should be added
  * (e.g. a plugin instance).
- * @param {String} attribute Attribute for which this behavior will be added.
+ * @param {String} options.attribute Attribute for which this behavior will be added.
+ * @param {module:utils/locale~Locale} options.locale The {@link module:core/editor/editor~Editor#locale} instance.
  */
-export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute ) {
+export default function bindTwoStepCaretToAttribute( { view, model, emitter, attribute, locale } ) {
 	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 	const modelSelection = model.document.selection;
 
@@ -120,15 +125,16 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		}
 
 		const position = modelSelection.getFirstPosition();
+		const contentDirection = locale.contentLanguageDirection;
 		let isMovementHandled;
 
-		if ( arrowRightPressed ) {
+		if ( ( contentDirection === 'ltr' && arrowRightPressed ) || ( contentDirection === 'rtl' && arrowLeftPressed ) ) {
 			isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
 		} else {
 			isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
 		}
 
-		// Stop the keydown event if the two-step arent movement handled it. Avoid collisions
+		// Stop the keydown event if the two-step caret movement handled it. Avoid collisions
 		// with other features which may also take over the caret movement (e.g. Widget).
 		if ( isMovementHandled ) {
 			evt.stop();
@@ -137,13 +143,13 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 }
 
 /**
- * This is a private helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
+ * This is a protected helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
  * It handles the state of the 2-step caret movement for a single {@link module:engine/model/model~Model}
  * attribute upon the `keypress` in the {@link module:engine/view/view~View}.
  *
- * @private
+ * @protected
  */
-class TwoStepCaretHandler {
+export class TwoStepCaretHandler {
 	/*
 	 * Creates two step handler instance.
 	 *

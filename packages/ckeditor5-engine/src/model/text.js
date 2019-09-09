@@ -20,7 +20,7 @@ import Node from './node';
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
  *
- * @extends {module:engine/model/node~Node}
+ * @extends module:engine/model/node~Node
  */
 export default class Text extends Node {
 	/**
@@ -63,10 +63,24 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		text.is( 'text' ); // -> true
+	 *		text.is( 'node' ); // -> true
+	 *		text.is( 'model:text' ); // -> true
+	 *		text.is( 'model:node' ); // -> true
+	 *
+	 *		text.is( 'view:text' ); // -> false
+	 *		text.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'text' || super.is( type );
+		return type == 'text' || type == 'model:text' || super.is( type );
 	}
 
 	/**

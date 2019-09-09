@@ -395,6 +395,25 @@ export default class Range {
 	}
 
 	/**
+	 * Checks whether this object is of the given type.
+	 *
+	 *		range.is( 'range' ); // -> true
+	 *		range.is( 'view:range' ); // -> true
+	 *
+	 *		range.is( 'model:range' ); // -> false
+	 *		range.is( 'element' ); // -> false
+	 *		range.is( 'selection' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'range' || type == 'view:range';
+	}
+
+	/**
 	 * Checks and returns whether this range intersects with the given range.
 	 *
 	 * @param {module:engine/view/range~Range} otherRange Range to compare with.

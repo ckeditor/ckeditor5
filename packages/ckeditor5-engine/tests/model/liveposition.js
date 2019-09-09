@@ -41,6 +41,29 @@ describe( 'LivePosition', () =>
 		expect( live ).to.be.instanceof( Position );
 	} );
 
+	describe( 'is()', () => {
+		let live;
+
+		beforeEach( () => {
+			live = new LivePosition( root, [ 0 ] );
+			live.detach();
+		} );
+
+		it( 'should return true for "livePosition" and "position"', () => {
+			expect( live.is( 'livePosition' ) ).to.be.true;
+			expect( live.is( 'model:livePosition' ) ).to.be.true;
+			expect( live.is( 'position' ) ).to.be.true;
+			expect( live.is( 'model:position' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( live.is( 'model' ) ).to.be.false;
+			expect( live.is( 'model:node' ) ).to.be.false;
+			expect( live.is( 'text' ) ).to.be.false;
+			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	it( 'should throw if given root is not a RootElement', () => {
 		const docFrag = new DocumentFragment();
 

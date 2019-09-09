@@ -23,15 +23,23 @@ describe( 'Mapper', () => {
 			const viewA = new ViewElement( 'a' );
 			const viewB = new ViewElement( 'b' );
 			const viewC = new ViewElement( 'c' );
+			const viewD = new ViewElement( 'd' );
 
 			const modelA = new ModelElement( 'a' );
 			const modelB = new ModelElement( 'b' );
 			const modelC = new ModelElement( 'c' );
+			const modelD = new ModelElement( 'd' );
 
 			const mapper = new Mapper();
+
 			mapper.bindElements( modelA, viewA );
 			mapper.bindElements( modelB, viewB );
 			mapper.bindElements( modelC, viewC );
+			mapper.bindElements( modelD, viewD );
+
+			mapper.bindElementToMarker( viewA, 'foo' );
+			mapper.bindElementToMarker( viewD, 'foo' );
+			mapper.bindElementToMarker( viewD, 'bar' );
 
 			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
 			expect( mapper.toModelElement( viewB ) ).to.equal( modelB );
@@ -41,6 +49,9 @@ describe( 'Mapper', () => {
 			expect( mapper.toViewElement( modelB ) ).to.equal( viewB );
 			expect( mapper.toViewElement( modelC ) ).to.equal( viewC );
 
+			expect( Array.from( mapper.markerNameToElements( 'foo' ) ) ).to.deep.equal( [ viewA, viewD ] );
+
+			mapper.unbindViewElement( viewD );
 			mapper.clearBindings();
 
 			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
@@ -50,6 +61,9 @@ describe( 'Mapper', () => {
 			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelB ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelC ) ).to.be.undefined;
+
+			expect( mapper.markerNameToElements( 'foo' ) ).to.be.null;
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
 		} );
 	} );
 
@@ -648,11 +662,13 @@ describe( 'Mapper', () => {
 			const viewB = new ViewElement( 'b' );
 
 			mapper.bindElementToMarker( viewA, 'marker' );
+			mapper.bindElementToMarker( viewA, 'markerB' );
 			mapper.bindElementToMarker( viewB, 'marker' );
 
 			mapper.unbindElementFromMarkerName( viewA, 'marker' );
 
 			expect( Array.from( mapper.markerNameToElements( 'marker' ) ) ).to.deep.equal( [ viewB ] );
+			expect( Array.from( mapper.markerNameToElements( 'markerB' ) ) ).to.deep.equal( [ viewA ] );
 
 			mapper.unbindElementFromMarkerName( viewB, 'marker' );
 
@@ -749,6 +765,29 @@ describe( 'Mapper', () => {
 			const viewMappedAncestor = mapper.findMappedViewAncestor( viewPosition );
 
 			expect( viewMappedAncestor ).to.equal( viewP );
+		} );
+	} );
+
+	describe( 'flushUnboundMarkerNames()', () => {
+		it( 'should return marker names of markers which elements has been unbound and clear that list', () => {
+			const viewA = new ViewElement( 'a' );
+			const viewB = new ViewElement( 'b' );
+
+			const mapper = new Mapper();
+
+			mapper.bindElementToMarker( viewA, 'foo' );
+			mapper.bindElementToMarker( viewA, 'bar' );
+			mapper.bindElementToMarker( viewB, 'bar' );
+
+			mapper.unbindViewElement( viewA );
+
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
+
+			mapper.unbindViewElement( viewB );
+
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [ 'bar' ] );
+			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
 		} );
 	} );
 } );

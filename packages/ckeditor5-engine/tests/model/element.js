@@ -38,7 +38,7 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let element;
 
 		before( () => {
@@ -47,18 +47,29 @@ describe( 'Element', () => {
 
 		it( 'should return true for node, element, element with same name and element name', () => {
 			expect( element.is( 'node' ) ).to.be.true;
+			expect( element.is( 'model:node' ) ).to.be.true;
 			expect( element.is( 'element' ) ).to.be.true;
+			expect( element.is( 'model:element' ) ).to.be.true;
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
+			expect( element.is( 'model:element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'paragraph' ) ).to.be.true;
+			expect( element.is( 'model:paragraph' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( element.is( 'element', 'image' ) ).to.be.false;
+			expect( element.is( 'model:element', 'image' ) ).to.be.false;
 			expect( element.is( 'image' ) ).to.be.false;
+			expect( element.is( 'model:image' ) ).to.be.false;
 			expect( element.is( 'text' ) ).to.be.false;
+			expect( element.is( 'model:text' ) ).to.be.false;
 			expect( element.is( 'textProxy' ) ).to.be.false;
 			expect( element.is( 'documentFragment' ) ).to.be.false;
 			expect( element.is( 'rootElement' ) ).to.be.false;
+			expect( element.is( 'model:rootElement' ) ).to.be.false;
+			expect( element.is( 'view:node' ) ).to.be.false;
+			expect( element.is( 'view:element' ) ).to.be.false;
+			expect( element.is( 'view:element' ) ).to.be.false;
 		} );
 	} );
 

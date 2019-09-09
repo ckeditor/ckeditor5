@@ -162,7 +162,7 @@ export default class Differ {
 			case 'addAttribute':
 			case 'removeAttribute':
 			case 'changeAttribute': {
-				for ( const item of operation.range.getItems() ) {
+				for ( const item of operation.range.getItems( { shallow: true } ) ) {
 					if ( this._isInInsertedElement( item.parent ) ) {
 						continue;
 					}

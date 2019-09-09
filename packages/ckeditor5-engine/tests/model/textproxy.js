@@ -102,15 +102,18 @@ describe( 'TextProxy', () => {
 		}, /model-textproxy-wrong-length/, model );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for textProxy', () => {
 			expect( textProxy.is( 'textProxy' ) ).to.be.true;
+			expect( textProxy.is( 'model:textProxy' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( textProxy.is( 'node' ) ).to.be.false;
+			expect( textProxy.is( 'model:node' ) ).to.be.false;
 			expect( textProxy.is( 'text' ) ).to.be.false;
 			expect( textProxy.is( 'element' ) ).to.be.false;
+			expect( textProxy.is( 'model:element', 'image' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
 			expect( textProxy.is( 'rootElement' ) ).to.be.false;
 		} );
