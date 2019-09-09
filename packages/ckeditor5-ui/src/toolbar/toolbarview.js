@@ -144,7 +144,7 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {Number}
 		 */
-		this._paddingRight = null;
+		this._horizontalPadding = null;
 
 		/**
 		 * TODO
@@ -409,18 +409,25 @@ export default class ToolbarView extends View {
 			return false;
 		}
 
-		if ( !this._paddingRight ) {
-			// parseInt() is essential because of quirky floating point numbers logic and DOM.
-			// If the padding turned out too big because of that, the groupped items dropdown would
-			// always look (from the Rect perspective) like it overflows (while it's not).
-			this._paddingRight = Number.parseInt(
-				global.window.getComputedStyle( this.element ).paddingRight );
-		}
-
+		const uiLanguageDirection = this.locale.uiLanguageDirection;
 		const lastChildRect = new Rect( this.element.lastChild );
 		const toolbarRect = new Rect( this.element );
 
-		return lastChildRect.right > toolbarRect.right - this._paddingRight;
+		if ( !this._horizontalPadding ) {
+			const computedStyle = global.window.getComputedStyle( this.element );
+			const paddingProperty = uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
+
+			// parseInt() is essential because of quirky floating point numbers logic and DOM.
+			// If the padding turned out too big because of that, the grouped items dropdown would
+			// always look (from the Rect perspective) like it overflows (while it's not).
+			this._horizontalPadding = Number.parseInt( computedStyle[ paddingProperty ] );
+		}
+
+		if ( uiLanguageDirection === 'ltr' ) {
+			return lastChildRect.right > toolbarRect.right - this._horizontalPadding;
+		} else {
+			return lastChildRect.left < toolbarRect.left + this._horizontalPadding;
+		}
 	}
 
 	/**
