@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [12.2.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.1...v12.2.2) (2019-08-26)
+
+### Other changes
+
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([2e45069](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/2e45069))
+* Introduced a check that prevents sharing source elements between editor instances. See [ckeditor/ckeditor5#746](https://github.com/ckeditor/ckeditor5/issues/746). ([c73b045](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/c73b045))
+
+
 ## [12.2.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.0...v12.2.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
