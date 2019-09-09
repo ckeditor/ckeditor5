@@ -14,7 +14,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -560,7 +560,7 @@ export default class ToolbarView extends View {
 		let oldRect;
 
 		// TODO: stopObserving on destroy();
-		this._resizeObserver = new ResizeObserver( ( [ entry ] ) => {
+		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
 			if ( !oldRect || oldRect.width !== entry.contentRect.width ) {
 				this.update();
 			}
