@@ -852,6 +852,37 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'callback function using data from editor', () => {
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '#',
+							feed() {
+								expect( this ).to.equal( editor );
+								return Promise.resolve( [ 'foo', 'bar' ] );
+							}
+						}
+					]
+				} );
+			} );
+
+			it( 'should bind the instance panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 2 );
+					} );
+			} );
+		} );
+
 		describe( 'asynchronous list with custom trigger', () => {
 			beforeEach( () => {
 				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
