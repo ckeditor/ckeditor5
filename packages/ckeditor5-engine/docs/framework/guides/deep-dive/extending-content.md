@@ -7,39 +7,52 @@ menu-title: Extending editor content
 
 # Extending editor content
 
-This article will help you learn how to quickly extend (customize) the content produced by the existing core rich text editor features, for instance, with how to add custom attributes and CSS classes to the editor output or how to load additional data into an editor.
+This article will help you learn how to quickly extend (customize) the content produced by the existing editor features. For instance, you will learn how to add custom attributes and CSS classes to the editor output or how to load into the editor pieces of data which are not officially supported.
 
-It requires some basic knowledge about the editor model and editing view layers you can find in the {@link framework/guides/architecture/editing-engine introduction to the editing engine architecture}.
+<info-box>
+	It is highly recommended to learn about the {@link framework/guides/architecture/editing-engine basics of CKEditor 5 editing engine architecture} before reading this guide.
+</info-box>
 
 ## Selected concepts of data conversion
 
-Before we go to the examples, let us take a look at some concepts that drive the structure of the content in the editor:
+Before we will move to examples, let us take a look at some concepts that drive the structure of the content in the editor:
 
-### Inline vs. block elements in the content
+### Inline and block content
 
-Generally speaking, there are two main {@link framework/guides/architecture/editing-engine#element-types-and-custom-data types of the content} in the editor {@link framework/guides/architecture/editing-engine#view view and data output}: inline and block.
+Generally speaking, there are two main types of the content in the editor view and data output: inline and block.
 
-The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, inline elements do not structure the data. Instead, they mark some text in a specific (visual and semantical) way. These elements are a characteristic of a text, for instance, we could say that some part of a text is bold, or a link, etc.. This concept has its reflection in the {@link framework/guides/architecture/editing-engine#model model} of the editor where `<a>` or `<strong>` are not represented as elements. Instead, they are attributes added to a text.
+The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, inline elements do not structure the data. Instead, they mark some text in a specific (visual and semantical) way. These elements are a characteristic of a text. For instance, we could say that some part of a text is bold, or a linked, etc.. This concept has its reflection in the model of the editor where `<a>` or `<strong>` are not represented as elements. Instead, they are attributes of the text.
 
-In the model, we might have a `<paragraph>` element with "Foo bar" text, where "bar" has the `bold` attribute set `true`. A pseudo–code of this model data structure could look as follows:
+For example &mdash; in the model, we might have a `<paragraph>` element with "Foo bar" text, where "bar" has the `bold` attribute set `true`. A pseudo–code of this *model* data structure could look as follows:
 
+```html
+<paragraph>
+	"Foo "			// no attributes
+	"bar"			// bold=true
+</paragraph>
 ```
-<paragraph>Foo <$text bold="true">bar</$text></paragraph>
-```
-
-Note that there is no `<strong>` or any other additional element there, it is just some text with an attribute. Later, in the process we call the {@link framework/guides/architecture/editing-engine#conversion conversion}, that bold attribute will be converted to the `<strong>` element.
 
 <info-box>
-	View elements created out of model attributes have their own {@link module:engine/view/attributeelement~AttributeElement `AttributeElement` class} and instead of inline elements they can be called attribute elements.
+	Throughout the rest of this guide we will use the following, shortert convention to represent model text attributes:
+
+	```html
+	<paragraph>Foo <$text bold="true">bar</$text></paragraph>
+	```
 </info-box>
+
+Note that there is no `<strong>` or any other additional element there, it is just some text with an attribute.
+
+So, when this text becomes wrapped with a `<strong>` element? This happens during conversion to the view. It is also important to know which type of a view element needs to be used. In case of elements which represent inline formatting, this should be a {@link module:engine/view/attributeelement~AttributeElement}.
 
 ### Conversion of multiple text attributes
 
-Text may have multiple {@link framework/guides/architecture/editing-engine#element-types-and-custom-data#text-attributes attributes} and all of them are converted to their respective view inline elements. Keep in mind that in the model, attributes do not have any specific order. This is contrary to the editor view or HTML output, where inline elements are nested one in another. The nesting happens during conversion from the model to the view. This makes working in the model simpler, as features do not need to take care of breaking or rearranging elements in the model.
+A model text node may have multiple attributes (e.g. be bolded and linked) and all of them are converted to their respective view elements by independent converters.
+
+Keep in mind that in the model, attributes do not have any specific order. This is contrary to the editor view or HTML output, where inline elements are nested one in another. Fortunately, the nesting happens automatically during conversion from the model to the view. This makes working in the model simpler, as features do not need to take care of breaking or rearranging elements in the model.
 
 For instance, consider the following model structure:
 
-```
+```html
 <paragraph>
 	<$text bold="true" linkHref="url">Foo </$text>
 	<$text linkHref="url">bar</$text>
@@ -47,7 +60,7 @@ For instance, consider the following model structure:
 </paragraph>
 ```
 
-During conversion, it will be converted to:
+During conversion, it will be converted to the following view structure:
 
 ```html
 <p>
@@ -55,7 +68,7 @@ During conversion, it will be converted to:
 </p>
 ```
 
-Note, that the `<a>` element is converted in such way it becomes the "topmost" element. This is intentional so that no element ever breaks a link, which would otherwise look as follows:
+Note, that the `<a>` element is converted in such way that it always becomes the "topmost" element. This is intentional so that no element ever breaks a link, which would otherwise look as follows:
 
 ```html
 <p>
@@ -63,15 +76,15 @@ Note, that the `<a>` element is converted in such way it becomes the "topmost" e
 </p>
 ```
 
-There are two links with the same `href` next to each other in the generated view (editor output), which is semantically wrong. To make sure it never happens, {@link module:engine/view/attributeelement~AttributeElement} has a priority which controls the nesting. Most elements, like for instance `<strong>` do not care about it and stick to the default priority. On the other hand, the `<a>` element uses the priority to make sure it never gets split by other elements.
+There are two links with the same `href` next to each other in the generated view (editor output), which is semantically wrong. To make sure that it never happens the view element which represents  a link must have a *priority* defined. Most elements, like for instance `<strong>` do not care about it and stick to the default priority (`10`). The {@link features/link link feature} ensures that all view `<a>` elements have priority set to `5` so they are kept outside other elements.
 
-### Merging text attributes during conversion
+### Merging attribute elements during conversion
 
-Most of the simple inline elements like `<strong>` or `<em>` do not have any attributes. Some of them have just one, for instance `<a>` has its `href`.
+Most of the simple view inline elements like `<strong>` or `<em>` do not have any attributes. Some of them have just one, for instance `<a>` has its `href`.
 
-But it is easy to come up with features that style a part of a text in a more complex way. An example would be a {@link features/font Font family} feature. When used, it adds the `fontFamily` attribute to a text in the model, which is later converted to a `<span>` element with a corresponding `style` attribute.
+But it is easy to come up with features that style a part of a text in a more complex way. An example would be a {@link features/font Font family feature}. When used, it adds the `fontFamily` attribute to a text in the model, which is later converted to a `<span>` element with a corresponding `style` attribute.
 
-So what would happen if several attributes are set on the same part of a text? Take this model example where `fontSize` is used next to the `fontFamily`:
+So what would happen if several attributes are set on the same part of a text? Take this model example where `fontSize` is used next to `fontFamily`:
 
 ```
 <paragraph>
@@ -79,7 +92,7 @@ So what would happen if several attributes are set on the same part of a text? T
 </paragraph>
 ```
 
-The above converts as follows:
+Editor features are implemented in a granular way, which means that e.g. the font size converter is completely independent from the font family converter. This means that the above converts as follows:
 
 * `fontFamily="value"` converts to `<span style="font-family: value;">`,
 * `fontSize="value"` converts to `<span class="text-value">`.
@@ -102,7 +115,7 @@ But this is not the most optimal output we can get from the editor. Why not have
 </p>
 ```
 
-Obviously a single `<span>` makes more sense. And thanks to the conversion merging mechanism in CKEditor 5, this would be the actual result of the conversion.
+Obviously a single `<span>` makes more sense. And thanks to the merging mechanism built in the conversion process, this would be the actual result of the conversion.
 
 Why is it so? In the above scenario, two attributes that convert to `<span>`. When the first attribute (say, `fontFamily`) is converted, there is no `<span>` in the view yet. So the first `<span>` is added with the `style` attribute. But then, when `fontSize` is converted, the `<span>` is already in the view. The {@link module:engine/view/downcastwriter~DowncastWriter writer} recognizes it and checks whether those elements can be merged, following these 3 rules:
 
@@ -151,7 +164,7 @@ In this example all links (`<a href="...">...</a>`) get the `.my-green-link` CSS
 
 <info-box>
 	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
-	
+
 	```js
 	ClassicEditor
 		.create( ..., {
@@ -170,11 +183,7 @@ In this example all links (`<a href="...">...</a>`) get the `.my-green-link` CSS
 	```
 </info-box>
 
-##### Demo
-
 {@snippet framework/extending-content-add-link-class}
-
-##### Code
 
 Adding a custom CSS class to all links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
@@ -240,7 +249,7 @@ In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.
 
 <info-box>
 	Note that similar behavior can be obtained with {@link module:link/link~LinkConfig#addTargetToExternalLinks link decorators}:
-	
+
 	```js
 	ClassicEditor
 		.create( ..., {
@@ -252,13 +261,9 @@ In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.
 	```
 </info-box>
 
-##### Demo
-
 {@snippet framework/extending-content-add-external-link-target}
 
 **Note:** Edit the URL of the links including "ckeditor.com" and other domains to see them marked as "internal" or "external".
-
-##### Code
 
 Adding the `target` attribute to all "external" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
@@ -324,7 +329,7 @@ In this example all links (`<a href="...">...</a>`) which do not have "https://"
 
 <info-box>
 	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
-	
+
 	```js
 	ClassicEditor
 		.create( ..., {
@@ -344,13 +349,9 @@ In this example all links (`<a href="...">...</a>`) which do not have "https://"
 	```
 </info-box>
 
-##### Demo
-
 {@snippet framework/extending-content-add-unsafe-link-class}
 
 **Note:** Edit the URL of the links using "http://" or "https://" to see them marked as "safe" or "unsafe".
-
-##### Code
 
 Adding the `.unsafe-link` CSS class to all "unsafe" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
@@ -416,11 +417,7 @@ Add some CSS styles for "unsafe" to make them visible:
 
 In this example all second–level headings (`<h2>...</h2>`) get the `.my-heading` CSS class. That includes all heading elements in the editor output (`editor.getData()`) and in the edited content (existing and future ones).
 
-##### Demo
-
 {@snippet framework/extending-content-add-heading-class}
-
-##### Code
 
 Adding a custom CSS class to all `<h2>...</h2>` elements is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/headings Headings} feature:
 
@@ -484,7 +481,7 @@ Unlike the [downcast–only solution](#adding-an-html-attribute-to-certain-inlin
 
 <info-box>
 	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
-	
+
 	```js
 	ClassicEditor
 		.create( ..., {
@@ -503,11 +500,7 @@ Unlike the [downcast–only solution](#adding-an-html-attribute-to-certain-inlin
 	```
 </info-box>
 
-##### Demo
-
 {@snippet framework/extending-content-allow-link-target}
-
-##### Code
 
 Allowing the `target` attribute in the editor is made by two custom converters plugged into the downcast and "upcast" pipelines, following the default converters brought by the {@link features/link Link} feature:
 
@@ -575,15 +568,11 @@ a[target]::after {
 
 In this example divs (`<div>...</div>`) loaded in editor content will preserve their attributes. All the DOM attributes will be stored in the editor model as corresponding attributes.
 
-##### Demo
-
 {@snippet framework/extending-content-allow-div-attributes}
-
-##### Code
 
 Allowing all attributes on `div` elements is achieved by custom "upcast" and "downcast" converters that copies each attribute one by one.
 
-Allowing every possible attribute on div in the model is done by adding a {@link module:engine/model/schema~Schema#addAttributeCheck addAttributeCheck()} callback. 
+Allowing every possible attribute on div in the model is done by adding a {@link module:engine/model/schema~Schema#addAttributeCheck addAttributeCheck()} callback.
 
 <info-box>
 	Allowing every attribute on `<div>` elements might introduce security issues - ise XSS attacks. The production code should use only application related attributes and/or properly encode data.
@@ -662,19 +651,15 @@ ClassicEditor
 	} );
 ```
 
-#### Parse attribute values  
+#### Parse attribute values
 
 Some features, like {@link features/font Font}, allows only specific values for inline attributes. In this example we'll add a converter that will parse any `font-size` value into one of defined values.
 
-##### Demo
-
 {@snippet framework/extending-content-arbitrary-attribute-values}
-
-##### Code
 
 Parsing any font value to model requires writing adding custom "upcast" converter that will override default converter from `FontSize`. Unlike the default one, this converter parses values set in CSS nad sets them into the model.
 
-As the default "downcast" converter only operates on pre-defined values we're also adding a model-to-view converter that simply outputs any model value to font-size using `px` units. 
+As the default "downcast" converter only operates on pre-defined values we're also adding a model-to-view converter that simply outputs any model value to font-size using `px` units.
 
 ```js
 function HandleFontSizeValue( editor ) {
@@ -703,7 +688,7 @@ function HandleFontSizeValue( editor ) {
 		converterPriority: 'high'
 	} );
 
-	// Add special converter for font-size feature to convert all (even not configured) 
+	// Add special converter for font-size feature to convert all (even not configured)
 	// model attribute values.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: {
@@ -740,13 +725,9 @@ ClassicEditor
 
 #### Adding extra attributes to elements contained in a figure
 
-The {@link features/image Image} and {@link features/table Table} features wraps view elements (`<img>` for Image nad `<table>` for Table) in `<figure>`. During the downcast conversion the model element is mapped to `<figure>` not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lost information on which element the attribute should be set. To overcome this limitation it is sufficient to write a custom converter that add custom attributes to elements already converted by base features. The key point is to add those converters with lower priority the base converters so they will be called after the base ones. 
-
-##### Demo
+The {@link features/image Image} and {@link features/table Table} features wraps view elements (`<img>` for Image nad `<table>` for Table) in `<figure>`. During the downcast conversion the model element is mapped to `<figure>` not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lost information on which element the attribute should be set. To overcome this limitation it is sufficient to write a custom converter that add custom attributes to elements already converted by base features. The key point is to add those converters with lower priority the base converters so they will be called after the base ones.
 
 {@snippet framework/extending-content-custom-figure-attributes}
-
-##### Code
 
 The sample below is extensible - to add own attributes to preserve just add another `setupCustomAttributeConversion()` call with desired names.
 
