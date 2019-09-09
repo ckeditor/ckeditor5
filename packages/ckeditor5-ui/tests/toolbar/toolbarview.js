@@ -14,12 +14,30 @@ import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ViewCollection from '../../src/viewcollection';
 import View from '../../src/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
 
+	testUtils.createSinonSandbox();
+
+	before( () => {
+		addTranslations( 'pl', {
+			'Editor toolbar': 'Pasek narzędzi edytora'
+		} );
+		addTranslations( 'en', {
+			'Editor toolbar': 'Editor toolbar'
+		} );
+	} );
+
+	after( () => {
+		clearTranslations();
+	} );
+
 	beforeEach( () => {
-		locale = {};
+		locale = new Locale();
 		view = new ToolbarView( locale );
 		view.render();
 	} );
@@ -59,6 +77,31 @@ describe( 'ToolbarView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-toolbar' ) ).to.true;
+		} );
+
+		describe( 'attributes', () => {
+			it( 'should be defined', () => {
+				expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Editor toolbar' );
+			} );
+
+			it( 'should allow a custom aria-label', () => {
+				const view = new ToolbarView( locale );
+
+				view.ariaLabel = 'Custom label';
+
+				view.render();
+
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+			} );
+
+			it( 'should allow the aria-label to be translated', () => {
+				const view = new ToolbarView( new Locale( { uiLanguage: 'pl' } ) );
+
+				view.render();
+
+				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
+			} );
 		} );
 
 		describe( 'event listeners', () => {
@@ -116,7 +159,7 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new ToolbarView();
+			const view = new ToolbarView( new Locale() );
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();

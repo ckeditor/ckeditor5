@@ -30,5 +30,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-ui` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)
 * [`ckeditor/ckeditor5-ui` on GitHub](https://github.com/ckeditor/ckeditor5-ui)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-ui/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-ui/blob/master/CHANGELOG.md)

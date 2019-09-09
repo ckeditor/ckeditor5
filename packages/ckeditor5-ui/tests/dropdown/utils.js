@@ -27,7 +27,7 @@ describe( 'utils', () => {
 	let locale, dropdownView;
 
 	beforeEach( () => {
-		locale = { t() {} };
+		locale = { t: langString => langString };
 	} );
 
 	describe( 'createDropdown()', () => {
@@ -270,6 +270,10 @@ describe( 'utils', () => {
 
 		it( 'sets view class', () => {
 			expect( dropdownView.element.classList.contains( 'ck-toolbar-dropdown' ) ).to.be.true;
+		} );
+
+		it( 'sets aria-label', () => {
+			expect( dropdownView.toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Dropdown toolbar' );
 		} );
 
 		describe( 'view#toolbarView', () => {

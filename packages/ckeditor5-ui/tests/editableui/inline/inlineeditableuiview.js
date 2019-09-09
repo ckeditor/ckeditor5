@@ -14,7 +14,7 @@ describe( 'InlineEditableUIView', () => {
 	let view, editableElement, editingView, editingViewRoot, locale;
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editableElement = document.createElement( 'div' );
 
 		editingView = new EditingView();

@@ -32,12 +32,25 @@ import '../../theme/components/toolbar/toolbar.css';
  */
 export default class ToolbarView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~ToolbarView} class.
+	 *
+	 * Also see {@link #render}.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 */
 	constructor( locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
+		const t = this.t;
+
+		/**
+		 * Label used by assistive technologies to describe this toolbar element.
+		 *
+		 * @default 'Editor toolbar'
+		 * @member {String} #ariaLabel
+		 */
+		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 
 		/**
 		 * Collection of the toolbar items (like buttons).
@@ -189,7 +202,9 @@ export default class ToolbarView extends View {
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
 					bind.if( 'shouldGroupWhenFull', 'ck-toolbar_grouping' ),
 					bind.to( 'class' )
-				]
+				],
+				role: 'toolbar',
+				'aria-label': bind.to( 'ariaLabel' )
 			},
 
 			children: this._components,

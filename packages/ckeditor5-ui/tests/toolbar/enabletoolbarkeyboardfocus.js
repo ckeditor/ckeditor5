@@ -19,7 +19,7 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 		origin = viewCreator();
 		originFocusTracker = new FocusTracker();
 		originKeystrokeHandler = new KeystrokeHandler();
-		toolbar = new ToolbarView();
+		toolbar = new ToolbarView( { t: langString => langString } );
 
 		toolbar.render();
 
@@ -93,7 +93,7 @@ describe( 'enableToolbarKeyboardFocus()', () => {
 		origin = viewCreator();
 		originFocusTracker = new FocusTracker();
 		originKeystrokeHandler = new KeystrokeHandler();
-		toolbar = new ToolbarView();
+		toolbar = new ToolbarView( { t: langString => langString } );
 
 		const toolbarFocusSpy = sinon.spy( toolbar, 'focus' );
 		const originFocusSpy = origin.focus = sinon.spy();

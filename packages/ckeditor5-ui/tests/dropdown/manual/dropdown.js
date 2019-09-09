@@ -93,7 +93,7 @@ function testLongLabel() {
 }
 
 function testToolbar() {
-	const locale = {};
+	const locale = { t: langString => langString };
 
 	const icons = { left: alignLeftIcon, right: alignRightIcon, center: alignCenterIcon };
 

@@ -90,6 +90,10 @@ export default class ColorGridView extends View {
 			}
 		} );
 
+		this.items.on( 'add', ( evt, colorTile ) => {
+			colorTile.isOn = colorTile.color === this.selectedColor;
+		} );
+
 		colorDefinitions.forEach( item => {
 			const colorTile = new ColorTileView();
 

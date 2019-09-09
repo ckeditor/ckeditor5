@@ -50,6 +50,7 @@ export default class SplitButtonView extends View {
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
+		this.set( 'isToggleable', false );
 		this.set( 'isVisible', true );
 		this.set( 'keystroke' );
 		this.set( 'label' );
@@ -173,6 +174,7 @@ export default class SplitButtonView extends View {
 			'icon',
 			'isEnabled',
 			'isOn',
+			'isToggleable',
 			'keystroke',
 			'label',
 			'tabindex',
@@ -202,13 +204,15 @@ export default class SplitButtonView extends View {
 	 */
 	_createArrowView() {
 		const arrowView = new ButtonView();
+		const bind = arrowView.bindTemplate;
 
 		arrowView.icon = dropdownArrowIcon;
 
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-splitbutton__arrow',
-				'aria-haspopup': true
+				'aria-haspopup': true,
+				'aria-expanded': bind.to( 'isOn', value => String( value ) )
 			}
 		} );
 

@@ -35,6 +35,8 @@ export default class SwitchButtonView extends ButtonView {
 	constructor( locale ) {
 		super( locale );
 
+		this.isToggleable = true;
+
 		/**
 		 * The toggle switch of the button.
 		 *
