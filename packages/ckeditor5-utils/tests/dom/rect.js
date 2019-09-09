@@ -792,18 +792,21 @@ describe( 'Rect', () => {
 	} );
 
 	describe( 'excludeScrollbarsAndBorders()', () => {
-		it( 'should exclude scrollbars and borders of a HTMLElement', () => {
+		it( 'should exclude scrollbars and borders of a HTMLElement (dir="ltr")', () => {
 			const element = document.createElement( 'div' );
 
 			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-			sinon.stub( window, 'getComputedStyle' ).returns( {
-				borderTopWidth: '5px',
-				borderRightWidth: '10px',
-				borderLeftWidth: '5px',
-				borderBottomWidth: '10px'
-			} );
+			sinon.stub( window, 'getComputedStyle' )
+				.withArgs( element )
+				.returns( {
+					borderTopWidth: '5px',
+					borderRightWidth: '10px',
+					borderLeftWidth: '5px',
+					borderBottomWidth: '10px',
+					direction: 'ltr'
+				} );
 
-			// Simulate 5px srollbars.
+			// Simulate 5px scrollbars.
 			Object.defineProperties( element, {
 				offsetWidth: {
 					value: 20
@@ -812,24 +815,65 @@ describe( 'Rect', () => {
 					value: 20
 				},
 				clientWidth: {
-					value: 10
+					value: 0
 				},
 				clientHeight: {
-					value: 10
+					value: 0
 				}
 			} );
 
 			assertRect( new Rect( element ).excludeScrollbarsAndBorders(), {
 				top: 15,
-				right: 35,
-				bottom: 25,
+				right: 25,
+				bottom: 15,
 				left: 25,
-				width: 10,
-				height: 10
+				width: 0,
+				height: 0
 			} );
 		} );
 
-		it( 'should exclude scrollbars from viewport\'s rect', () => {
+		it( 'should exclude scrollbars and borders of a HTMLElement (dir="rtl")', () => {
+			const element = document.createElement( 'div' );
+
+			element.setAttribute( 'dir', 'rtl' );
+			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			sinon.stub( window, 'getComputedStyle' )
+				.withArgs( element )
+				.returns( {
+					borderTopWidth: '5px',
+					borderRightWidth: '10px',
+					borderLeftWidth: '5px',
+					borderBottomWidth: '10px',
+					direction: 'rtl'
+				} );
+
+			// Simulate 5px scrollbars.
+			Object.defineProperties( element, {
+				offsetWidth: {
+					value: 20
+				},
+				offsetHeight: {
+					value: 20
+				},
+				clientWidth: {
+					value: 0
+				},
+				clientHeight: {
+					value: 0
+				}
+			} );
+
+			assertRect( new Rect( element ).excludeScrollbarsAndBorders(), {
+				top: 15,
+				right: 30,
+				bottom: 15,
+				left: 30,
+				width: 0,
+				height: 0
+			} );
+		} );
+
+		it( 'should exclude scrollbars from viewport\'s rect (dir="ltr")', () => {
 			sinon.stub( window, 'innerWidth' ).value( 1000 );
 			sinon.stub( window, 'innerHeight' ).value( 500 );
 			sinon.stub( window, 'scrollX' ).value( 100 );
@@ -840,11 +884,44 @@ describe( 'Rect', () => {
 				clientHeight: 490
 			} );
 
+			sinon.stub( window, 'getComputedStyle' )
+				.withArgs( document.documentElement )
+				.returns( {
+					direction: 'ltr'
+				} );
+
 			assertRect( new Rect( window ).excludeScrollbarsAndBorders(), {
 				top: 0,
 				right: 990,
 				bottom: 490,
 				left: 0,
+				width: 990,
+				height: 490
+			} );
+		} );
+
+		it( 'should exclude scrollbars from viewport\'s rect (dir="rtl")', () => {
+			sinon.stub( window, 'innerWidth' ).value( 1000 );
+			sinon.stub( window, 'innerHeight' ).value( 500 );
+			sinon.stub( window, 'scrollX' ).value( 100 );
+			sinon.stub( window, 'scrollY' ).value( 200 );
+
+			sinon.stub( document, 'documentElement' ).value( {
+				clientWidth: 990,
+				clientHeight: 490
+			} );
+
+			sinon.stub( window, 'getComputedStyle' )
+				.withArgs( document.documentElement )
+				.returns( {
+					direction: 'rtl'
+				} );
+
+			assertRect( new Rect( window ).excludeScrollbarsAndBorders(), {
+				top: 0,
+				right: 1000,
+				bottom: 490,
+				left: 10,
 				width: 990,
 				height: 490
 			} );
@@ -864,6 +941,12 @@ describe( 'Rect', () => {
 				clientHeight: 490
 			} );
 
+			sinon.stub( window, 'getComputedStyle' )
+				.withArgs( document.documentElement )
+				.returns( {
+					direction: 'ltr'
+				} );
+
 			iframe.addEventListener( 'load', () => {
 				const iframeWindow = iframe.contentWindow;
 
@@ -876,6 +959,12 @@ describe( 'Rect', () => {
 					clientWidth: 480,
 					clientHeight: 230
 				} );
+
+				sinon.stub( iframeWindow, 'getComputedStyle' )
+					.withArgs( iframeWindow.document.documentElement )
+					.returns( {
+						direction: 'ltr'
+					} );
 
 				assertRect( new Rect( iframeWindow ).excludeScrollbarsAndBorders(), {
 					top: 0,
