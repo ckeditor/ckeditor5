@@ -128,22 +128,6 @@ describe( 'CKFinderCommand', () => {
 			command.refresh();
 			expect( command.isEnabled ).to.be.true;
 		} );
-
-		it( 'should be true when imageInsert command is not available', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
-			const insertImage = editor.commands.get( 'imageInsert' );
-			editor.commands._commands.delete( 'link' );
-
-			insertImage.isEnabled = false;
-
-			command.refresh();
-			expect( command.isEnabled ).to.be.false;
-
-			insertImage.isEnabled = true;
-
-			command.refresh();
-			expect( command.isEnabled ).to.be.true;
-		} );
 	} );
 
 	describe( 'execute()', () => {
