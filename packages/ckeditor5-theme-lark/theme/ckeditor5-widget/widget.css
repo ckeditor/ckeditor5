@@ -125,6 +125,12 @@
 	}
 }
 
+/* In a RTL environment, align the selection handler to the right side of the widget */
+.ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handler .ck-widget__selection-handler {
+	left: auto;
+	right: calc(0px - var(--ck-widget-outline-thickness));
+}
+
 /* Style the widget when it's selected but the editable it belongs to lost focus. */
 .ck-editor__editable.ck-blurred .ck-widget {
 	&.ck-widget_selected,

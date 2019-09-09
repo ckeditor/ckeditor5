@@ -7,6 +7,7 @@
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 import alignLeft from '@ckeditor/ckeditor5-alignment/theme/icons/align-left.svg';
 import alignCenter from '@ckeditor/ckeditor5-alignment/theme/icons/align-center.svg';
@@ -118,7 +119,7 @@ const icons = {
 	undo, redo
 };
 
-const toolbar = new ToolbarView();
+const toolbar = new ToolbarView( new Locale() );
 
 for ( const i in icons ) {
 	const button = new ButtonView();

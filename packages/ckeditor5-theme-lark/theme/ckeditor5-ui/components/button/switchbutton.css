@@ -5,6 +5,7 @@
 
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_disabled.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 /* Note: To avoid rendering issues (aliasing) but to preserve the responsive nature
 of the component, floating–point numbers have been used which, for the default font size
@@ -15,12 +16,20 @@ of the component, floating–point numbers have been used which, for the default
 	/* 14px at 13px font-size */
 	--ck-switch-button-toggle-inner-size: 1.0769230769em;
 	--ck-switch-button-toggle-spacing: 1px;
+	--ck-switch-button-translation: 1.3846153847em;
 }
 
 .ck.ck-button.ck-switchbutton {
 	& .ck-button__label {
-		/* Separate the label from the switch */
-		margin-right: calc(2*var(--ck-spacing-large));
+		@mixin ck-dir ltr {
+			/* Separate the label from the switch */
+			margin-right: calc(2*var(--ck-spacing-large));
+		}
+
+		@mixin ck-dir rtl {
+			/* Separate the label from the switch */
+			margin-left: calc(2*var(--ck-spacing-large));
+		}
 	}
 
 	&.ck-disabled .ck-button__toggle {
@@ -30,8 +39,15 @@ of the component, floating–point numbers have been used which, for the default
 	& .ck-button__toggle {
 		@mixin ck-rounded-corners;
 
-		/* Make sure the toggle is always to the right as far as possible. */
-		margin-left: auto;
+		@mixin ck-dir ltr {
+			/* Make sure the toggle is always to the right as far as possible. */
+			margin-left: auto;
+		}
+
+		@mixin ck-dir rtl {
+			/* Make sure the toggle is always to the left as far as possible. */
+			margin-right: auto;
+		}
 
 		/* Gently animate the background color of the toggle switch */
 		transition: background 400ms ease;
@@ -83,7 +99,13 @@ of the component, floating–point numbers have been used which, for the default
 			 * 		2*var(--ck-switch-button-toggle-spacing) )
 			 * 	)
 			 */
-			transform: translateX( 1.3846153847em );
+			@mixin ck-dir ltr {
+				transform: translateX( var( --ck-switch-button-translation ) );
+			}
+
+			@mixin ck-dir rtl {
+				transform: translateX( calc( -1 * var( --ck-switch-button-translation ) ) );
+			}
 		}
 	}
 }
