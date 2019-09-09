@@ -805,10 +805,10 @@ export default class Renderer {
 		const container = this._fakeSelectionContainer;
 		const domSelection = domRoot.ownerDocument.getSelection();
 
-		// Selection fakeselection needs to be updated if there's no fake selection container, or container
-		// currently sits in different root.
+		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
+		// in a different root.
 		if ( !container || container.parentElement != domRoot ) {
-			return false;
+			return true;
 		}
 
 		// Make sure that the selection actually is within the fake selection.

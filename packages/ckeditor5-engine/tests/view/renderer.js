@@ -1804,27 +1804,55 @@ describe( 'Renderer', () => {
 				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
 			} );
 
-			it( 'doesn\'t render the same selection multiple times', () => {
-				const createRangeSpy = sinon.spy( document, 'createRange' );
-				const label = 'subsequent fake selection calls';
+			describe( 'subsequent call optimization', () => {
+				// https://github.com/ckeditor/ckeditor5-engine/issues/1791
+				it( 'doesn\'t render the same selection multiple times', () => {
+					const createRangeSpy = sinon.spy( document, 'createRange' );
+					const label = 'subsequent fake selection calls';
 
-				selection._setTo( selection.getRanges(), { fake: true, label } );
-				renderer.render();
-				selection._setTo( selection.getRanges(), { fake: true, label } );
-				renderer.render();
+					selection._setTo( selection.getRanges(), { fake: true, label } );
+					renderer.render();
+					selection._setTo( selection.getRanges(), { fake: true, label } );
+					renderer.render();
 
-				expect( createRangeSpy.callCount ).to.be.equal( 1 );
-			} );
+					expect( createRangeSpy.callCount ).to.be.equal( 1 );
+				} );
 
-			it( 'different subsequent fake selections sets do change native selection', () => {
-				const createRangeSpy = sinon.spy( document, 'createRange' );
+				it( 'different subsequent fake selections sets do change native selection', () => {
+					const createRangeSpy = sinon.spy( document, 'createRange' );
 
-				selection._setTo( selection.getRanges(), { fake: true, label: 'selection 1' } );
-				renderer.render();
-				selection._setTo( selection.getRanges(), { fake: true, label: 'selection 2' } );
-				renderer.render();
+					selection._setTo( selection.getRanges(), { fake: true, label: 'selection 1' } );
+					renderer.render();
+					selection._setTo( selection.getRanges(), { fake: true, label: 'selection 2' } );
+					renderer.render();
 
-				expect( createRangeSpy.callCount ).to.be.equal( 2 );
+					expect( createRangeSpy.callCount ).to.be.equal( 2 );
+				} );
+
+				it( 'rerenders selection if disturbed externally', () => {
+					const interruptingRange = document.createRange();
+					interruptingRange.setStartBefore( domRoot.children[ 0 ] );
+					interruptingRange.setEndAfter( domRoot.children[ 0 ] );
+
+					const createRangeSpy = sinon.spy( document, 'createRange' );
+					const label = 'selection 1';
+
+					selection._setTo( selection.getRanges(), { fake: true, label } );
+					renderer.render();
+
+					document.getSelection().removeAllRanges();
+					document.getSelection().addRange( interruptingRange );
+
+					selection._setTo( selection.getRanges(), { fake: true, label } );
+					renderer.render();
+
+					expect( createRangeSpy.callCount ).to.be.equal( 2 );
+				} );
+
+				it( '_fakeSelectionNeedsUpdate returns proper result when container is uninitialized', () => {
+					selection._setTo( selection.getRanges(), { fake: true, label: 'selection 1' } );
+					expect( renderer._fakeSelectionNeedsUpdate( domRoot ) ).to.be.true;
+				} );
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
