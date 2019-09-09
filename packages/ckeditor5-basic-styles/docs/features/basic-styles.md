@@ -7,6 +7,10 @@ category: features
 
 The {@link api/basic-styles basic styles} package provides text formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code.
 
+<info-box info>
+	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
+</info-box>
+
 ## Demo
 
 {@snippet features/basic-styles}
