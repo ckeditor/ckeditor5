@@ -98,14 +98,16 @@ describe( 'FileUploader', () => {
 		let request;
 
 		beforeEach( () => {
-			global.xhr = sinon.useFakeXMLHttpRequest();
+			const xhr = sinon.useFakeXMLHttpRequest();
 
-			global.xhr.onCreate = xhr => {
-				request = xhr;
+			xhr.onCreate = r => {
+				request = r;
 			};
 		} );
 
-		afterEach( () => global.xhr.restore() );
+		afterEach( () => {
+			sinon.restore();
+		} );
 
 		it( 'should sent request with correct data (url, method, type, headers)', done => {
 			fileUploader
@@ -200,14 +202,16 @@ describe( 'FileUploader', () => {
 		let request;
 
 		beforeEach( () => {
-			global.xhr = sinon.useFakeXMLHttpRequest();
+			const xhr = sinon.useFakeXMLHttpRequest();
 
-			global.xhr.onCreate = xhr => {
-				request = xhr;
+			xhr.onCreate = r => {
+				request = r;
 			};
 		} );
 
-		afterEach( () => global.xhr.restore() );
+		afterEach( () => {
+			sinon.restore();
+		} );
 
 		it( 'should abort xhr request', () => {
 			fileUploader.send();

@@ -14,14 +14,16 @@ describe( 'Token', () => {
 	beforeEach( () => {
 		requests = [];
 
-		global.xhr = sinon.useFakeXMLHttpRequest();
+		const xhr = sinon.useFakeXMLHttpRequest();
 
-		global.xhr.onCreate = xhr => {
-			requests.push( xhr );
+		xhr.onCreate = request => {
+			requests.push( request );
 		};
 	} );
 
-	afterEach( () => global.xhr.restore() );
+	afterEach( () => {
+		sinon.restore();
+	} );
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no tokenUrl provided', () => {
