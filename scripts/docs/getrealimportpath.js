@@ -5,9 +5,15 @@
 
 /* eslint-env node */
 
+const NON_CKEDITOR5_PACKAGES = {
+	'cloud-services-core': 'ckeditor-cloud-services-core'
+};
+
 module.exports = function getRealImportPath( modulePath ) {
-	if ( modulePath.includes( 'ckeditor-' ) ) {
-		return modulePath.replace( /^([^/]+)\//, '@ckeditor/$1/src/' );
+	for ( const shortPkgName of Object.keys( NON_CKEDITOR5_PACKAGES ) ) {
+		if ( modulePath.startsWith( shortPkgName ) ) {
+			return modulePath.replace( new RegExp( '^' + shortPkgName ), `@ckeditor/${ NON_CKEDITOR5_PACKAGES[ shortPkgName ] }/src` );
+		}
 	}
 
 	return modulePath.replace( /^([^/]+)\//, '@ckeditor/ckeditor5-$1/src/' );

@@ -3,7 +3,7 @@
   "packagesPrefix": [ "@ckeditor/ckeditor5-", "@ckeditor/ckeditor-" ],
   "baseBranches": [ "master", "stable" ],
   "dependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "ckeditor/ckeditor-cloud-services-core",
+    "@ckeditor/ckeditor-cloud-services-core": "ckeditor/ckeditor-cloud-services-core#t/ckeditor5/924",
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
