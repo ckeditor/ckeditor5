@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckeditor-cloud-services-core/token
+ * @module cloud-services-core/token
  */
 
 /* globals XMLHttpRequest, setInterval, clearInterval */
@@ -27,7 +27,7 @@ class Token {
 	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
 	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
-	 * value is a function it has to match the {@link module:ckeditor-cloud-services-core/token~refreshToken} interface.
+	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
@@ -80,7 +80,7 @@ class Token {
 	/**
 	 * Initializes the token.
 	 *
-	 * @returns {Promise.<module:ckeditor-cloud-services-core/token~Token>}
+	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
 	init() {
 		return new Promise( ( resolve, reject ) => {
@@ -137,15 +137,15 @@ class Token {
 	}
 
 	/**
-	 * Creates a initialized {@link module:ckeditor-cloud-services-core/token~Token} instance.
+	 * Creates a initialized {@link module:cloud-services-core/token~Token} instance.
 	 *
 	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
-	 * value is a function it has to match the {@link module:ckeditor-cloud-services-core/token~refreshToken} interface.
+	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
-	 * @returns {Promise.<module:ckeditor-cloud-services-core/token~Token>}
+	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
 	static create( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
 		const token = new Token( tokenUrlOrRefreshToken, options );

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckeditor-cloud-services-core/uploadgateway
+ * @module cloud-services-core/uploadgateway
  */
 
 import FileUploader from './fileuploader';
@@ -17,7 +17,7 @@ export default class UploadGateway {
 	/**
 	 * Creates `UploadGateway` instance.
 	 *
-	 * @param {module:ckeditor-cloud-services-core/token~Token} token Token used for authentication.
+	 * @param {module:cloud-services-core/token~Token} token Token used for authentication.
 	 * @param {String} apiAddress API address.
 	 */
 	constructor( token, apiAddress ) {
@@ -42,7 +42,7 @@ export default class UploadGateway {
 		/**
 		 * CKEditor Cloud Services access token.
 		 *
-		 * @type {module:ckeditor-cloud-services-core/token~Token}
+		 * @type {module:cloud-services-core/token~Token}
 		 * @private
 		 */
 		this._token = token;
@@ -57,9 +57,9 @@ export default class UploadGateway {
 	}
 
 	/**
-	 * Creates a {@link module:ckeditor-cloud-services-core/uploadgateway~FileUploader} instance that wraps
+	 * Creates a {@link module:cloud-services-core/uploadgateway~FileUploader} instance that wraps
 	 * file upload process. The file is being sent at a time when the
-	 * {@link module:ckeditor-cloud-services-core/uploadgateway~FileUploader#send} method is called.
+	 * {@link module:cloud-services-core/uploadgateway~FileUploader#send} method is called.
 	 *
 	 *     const token = await Token.create( 'https://token-endpoint' );
 	 *     new UploadGateway( token, 'https://example.org' )
@@ -69,7 +69,7 @@ export default class UploadGateway {
 	 *        .then( ( response ) => console.log( response ) );
 	 *
 	 * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
-	 * @returns {module:ckeditor-cloud-services-core/uploadgateway~FileUploader} Returns `FileUploader` instance.
+	 * @returns {module:cloud-services-core/uploadgateway~FileUploader} Returns `FileUploader` instance.
 	 */
 	upload( fileOrData ) {
 		return new FileUploader( fileOrData, this._token, this._apiAddress );

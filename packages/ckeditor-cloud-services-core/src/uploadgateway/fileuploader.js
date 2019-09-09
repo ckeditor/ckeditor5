@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckeditor-cloud-services-core/uploadgateway
+ * @module cloud-services-core/uploadgateway
  */
 
 /* globals XMLHttpRequest, FormData, Blob, atob */
@@ -23,7 +23,7 @@ export default class FileUploader {
 	 * Creates `FileUploader` instance.
 	 *
 	 * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
-	 * @param {module:ckeditor-cloud-services-core/token~Token} token Token used for authentication.
+	 * @param {module:cloud-services-core/token~Token} token Token used for authentication.
 	 * @param {String} apiAddress API address.
 	 */
 	constructor( fileOrData, token, apiAddress ) {
@@ -64,7 +64,7 @@ export default class FileUploader {
 		/**
 		 * CKEditor Cloud Services access token.
 		 *
-		 * @type {module:ckeditor-cloud-services-core/token~Token}
+		 * @type {module:cloud-services-core/token~Token}
 		 * @private
 		 */
 		this._token = token;
@@ -83,7 +83,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {module:ckeditor-cloud-services-core/uploadgateway~FileUploader}
+	 * @returns {module:cloud-services-core/uploadgateway~FileUploader}
 	 */
 	onProgress( callback ) {
 		this.on( 'progress', ( event, data ) => callback( data ) );
@@ -96,7 +96,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {module:ckeditor-cloud-services-core/uploadgateway~FileUploader}
+	 * @returns {module:cloud-services-core/uploadgateway~FileUploader}
 	 */
 	onError( callback ) {
 		this.once( 'error', ( event, data ) => callback( data ) );

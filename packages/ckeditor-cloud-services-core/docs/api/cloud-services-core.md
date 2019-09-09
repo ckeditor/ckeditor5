@@ -8,7 +8,7 @@ category: api-reference
 
 CKEditor Cloud Services Core API:
 
-* {@link module:ckeditor-cloud-services-core/uploadgateway~UploadGateway Upload Gateway} &mdash; API for file uploads to CKEditor Cloud Services.
+* {@link module:cloud-services-core/uploadgateway~UploadGateway Upload Gateway} &mdash; API for file uploads to CKEditor Cloud Services.
 
 ## Installation
 
