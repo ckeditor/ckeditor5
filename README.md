@@ -244,6 +244,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 </tr>
 
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor-cloud-services-core"><code>@ckeditor/ckeditor-cloud-services-core</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor-cloud-services-core.svg" alt="@ckeditor/ckeditor-cloud-services-core npm package badge"></a>
+	</td>
+	<td>
+		CKEditor Cloud Services integration utils.
+	</td>
+</tr>
+
 </tbody>
 </table>
 
