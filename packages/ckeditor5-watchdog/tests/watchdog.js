@@ -891,6 +891,8 @@ describe( 'Watchdog', () => {
 					Promise.resolve().then( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 					return new Promise( res => {
+						// This `setTimeout` needs to have a timer defined because Firefox calls the code in random order
+						// and causes the test failed.
 						setTimeout( () => {
 							window.onerror = originalErrorHandler;
 
@@ -902,7 +904,7 @@ describe( 'Watchdog', () => {
 							expect( watchdog.crashes[ 0 ].colno ).to.be.an( 'undefined' );
 
 							watchdog.destroy().then( res );
-						} );
+						}, 10 );
 					} );
 				} );
 			} );
