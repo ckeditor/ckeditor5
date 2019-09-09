@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
-# For licensing, see LICENSE.md.
+# For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 # Symlinks packages from https://github.com/ckeditor/ckeditor5-dev in ckeditor5's node_modules.
 # This allows easily switching to dev versions of ckeditor5-dev-* packages.

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals console, window, document */
@@ -31,7 +31,7 @@ class SimpleBoxUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// The "simpleBox" button must be registered among UI components of the editor
+		// The "simpleBox" button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'simpleBox', locale => {
 			// The state of the button will be bound to the widget command.
@@ -156,7 +156,7 @@ class SimpleBoxEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxTitle',
 			view: ( modelElement, viewWriter ) => {
-				// Note: we use a more specialized createEditableElement() method here.
+				// Note: You use a more specialized createEditableElement() method here.
 				const h1 = viewWriter.createEditableElement( 'h1', { class: 'simple-box-title' } );
 
 				return toWidgetEditable( h1, viewWriter );
@@ -181,7 +181,7 @@ class SimpleBoxEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxDescription',
 			view: ( modelElement, viewWriter ) => {
-				// Note: we use a more specialized createEditableElement() method here.
+				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement( 'div', { class: 'simple-box-description' } );
 
 				return toWidgetEditable( div, viewWriter );
@@ -194,7 +194,7 @@ class InsertSimpleBoxCommand extends Command {
 	execute() {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
-			// in a way which will result in creating a valid model structure.
+			// in a way that will result in creating a valid model structure.
 			this.editor.model.insertContent( createSimpleBox( writer ) );
 		} );
 	}

@@ -25,6 +25,7 @@ It accepts the following arguments (must be passed after the `--` option):
 * `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
 * `--files` &ndash; Specifies tests files to run. Accepts a package name or a glob. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
 * `--browsers` &ndash; Browsers which will be used to run the tests. Defaults to `Chrome`.
+* `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. The `--debug false` option turns the debugging mechanism off and leaves the lines starting with `// @if CK_DEBUG //` untouched.
 
 ### Examples
 
@@ -50,7 +51,10 @@ yarn run test -cw --files=basic-styles/bold*.js
 
 In order to start the manual tests server use the `yarn run manual` task.
 
-The task accepts the `--source-map` (alias `-s`) option.
+The task accepts the following options:
+
+* `--source-map` (alias `-s`) that generates useful source maps for the code.
+* `--additionalLanguages="ar,pl,..."` that passes extra languages to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
 
 It starts the server available at http://localhost:8125.
 
@@ -125,7 +129,7 @@ ClassicEditor
 
 To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of May 2018, this means over 8000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.
 
-Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform and [BrowserStack](https://www.browserstack.com/) to be able to run tests on all browsers. These services ensure seamless and fast developer experience and allow us to focus on the job.
+Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform. This service ensures seamless and fast developer experience and allow us to focus on the job.
 
 Besides automated tests, we also maintain a smaller set of manual tests. They help us verify whether something unexpected happens that might have been missed by the automated tests.
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
-# For licensing, see LICENSE.md.
+# For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 # Cleans up and optimizes SVG files using the SVGO utility.
 # The configuration file is located in svgo.config.json.

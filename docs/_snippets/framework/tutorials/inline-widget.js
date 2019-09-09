@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 /* globals console, window, document */
 
@@ -26,13 +26,13 @@ class PlaceholderCommand extends Command {
 		const editor = this.editor;
 
 		editor.model.change( writer => {
-			// Create <placeholder> elment with name attribute...
+			// Create a <placeholder> elment with the "name" attribute...
 			const placeholder = writer.createElement( 'placeholder', { name: value } );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
 
-			// Put the selection on inserted element.
+			// Put the selection on the inserted element.
 			writer.setSelection( placeholder, 'on' );
 		} );
 	}
@@ -59,7 +59,7 @@ class PlaceholderUI extends Plugin {
 		const t = editor.t;
 		const placeholderNames = editor.config.get( 'placeholderConfig.types' );
 
-		// The "placeholder" dropdown must be registered among UI components of the editor
+		// The "placeholder" dropdown must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'placeholder', locale => {
 			const dropdownView = createDropdown( locale );
@@ -75,7 +75,7 @@ class PlaceholderUI extends Plugin {
 				withText: true
 			} );
 
-			// Execute the command when the dropdown items is clicked (executed).
+			// Execute the command when the dropdown item is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
 				editor.editing.view.focus();
@@ -135,10 +135,10 @@ class PlaceholderEditing extends Plugin {
 			// Allow wherever text is allowed:
 			allowWhere: '$text',
 
-			// The placeholder will acts as an inline node:
+			// The placeholder will act as an inline node:
 			isInline: true,
 
-			// The inline-widget is self-contained so cannot be split by the caret and can be selected:
+			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
 			isObject: true,
 
 			// The placeholder can have many types, like date, name, surname, etc:
@@ -167,7 +167,7 @@ class PlaceholderEditing extends Plugin {
 			view: ( modelItem, viewWriter ) => {
 				const widgetElement = createPlaceholderView( modelItem, viewWriter );
 
-				// Enable widget handling on placeholder element inside editing view.
+				// Enable widget handling on a placeholder element inside the editing view.
 				return toWidget( widgetElement, viewWriter );
 			}
 		} );

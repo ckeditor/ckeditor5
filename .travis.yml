@@ -1,11 +1,7 @@
 sudo: required
 dist: trusty
 addons:
-  apt:
-    sources:
-    - google-chrome
-    packages:
-    - google-chrome-stable
+  chrome: stable
 language: node_js
 cache:
   yarn: true
@@ -19,8 +15,8 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
-- yarn add mgit2 --ignore-workspace-root-check
-- mgit sync --resolver-url-template="https://github.com/\${ path }.git"
+- yarn add mrgit --ignore-workspace-root-check
+- mrgit sync --resolver-url-template="https://github.com/\${ path }.git"
 - git checkout package.json yarn.lock
 - rm -rf node_modules
 - yarn install
@@ -32,8 +28,7 @@ script:
   fi'
 after_script:
 - export END_TIME=$( date +%s )
-- yarn add slack-notify --ignore-workspace-root-check
-- node ./scripts/notify-travis-status.js
+- ckeditor5-dev-tests-notify-travis-status
 env:
   global:
   - secure: RO140EQDHmEOPJPikk8eCY5IdHpnEKGm41p5U1ewAbeZv1DpCG+rSumR2JdYl75kFAaZvCSm1NuVMM+kmYd+/z+LQbKj7QH5G/UHNho3H89blIU6WlJhT0YR5vclm9rvnEvOtxnfODca1Qrw+CaCoJks2o4VYbJB7mOBVNsh7Bc=

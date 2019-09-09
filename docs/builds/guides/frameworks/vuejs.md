@@ -21,7 +21,7 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-so
 
 ## Quick start
 
-Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds build of your choice}.
+Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -192,13 +192,14 @@ npm install --save \
     @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
-    postcss-loader \
+    postcss-loader@3 \
     raw-loader@0.5.1
 ```
 
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
 
 ```js
+const path = require( 'path' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
@@ -220,24 +221,11 @@ module.exports = {
 		]
 	},
 
-	css: {
-		loaderOptions: {
-			// Various modules in the CKEditor source code import .css files.
-			// These files must be transpiled using PostCSS in order to load properly.
-			postcss: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
-		}
-	},
-
+	// Vue CLI would normally use its own loader to load .svg and .css files, however:
+	//	1. The icons used by CKEditor must be loaded using raw-loader,
+	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
 	chainWebpack: config => {
-		// Vue CLI would normally use its own loader to load .svg files. The icons used by
-		// CKEditor should be loaded using raw-loader instead.
-
-		// Get the default rule for *.svg files.
+		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule( 'svg' );
 
 		// Then you can either:
@@ -247,7 +235,7 @@ module.exports = {
 		//		svgRule.uses.clear();
 		//
 		// * or exclude ckeditor directory from node_modules:
-		svgRule.exclude.add( __dirname + '/node_modules/@ckeditor' );
+		svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
 
 		// Add an entry for *.svg files belonging to CKEditor. You can either:
 		//
@@ -261,9 +249,29 @@ module.exports = {
 			.test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
 			.use( 'raw-loader' )
 			.loader( 'raw-loader' );
+
+		// (2.) Transpile the .css files imported by the editor using PostCSS.
+		// Make sure only the CSS belonging to ckeditor5-* packages is processed this way.
+		config.module
+			.rule( 'cke-css' )
+			.test( /ckeditor5-[^/\\]+[/\\].+\.css$/ )
+			.use( 'postcss-loader' )
+			.loader( 'postcss-loader' )
+			.tap( () => {
+				return styles.getPostCssConfig( {
+					themeImporter: {
+						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+					},
+					minify: true
+				} );
+			} );
 	}
 };
 ```
+
+<info-box>
+    By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create different webpack loader rules for your project SVG files and CKEditor's ones.
+</info-box>
 
 ### Using the editor from source
 
@@ -274,9 +282,9 @@ npm install --save \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-basic-styles \
 	@ckeditor/ckeditor5-link \
-	@ckeditor/ckeditor5-paragraph
+	@ckeditor/ckeditor5-paragraph \
+	@ckeditor/ckeditor5-theme-lark
 ```
 
 You can use more packages, depending on which features are needed in your application.
@@ -379,6 +387,86 @@ Since accessing the editor toolbar is not possible until after the editor instan
 	}
 </script>
 ```
+
+## Localization
+
+CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so does the official Vue.js component. Follow the instructions below to translate CKEditor 5 in your Vue.js application.
+
+### Ready-to-use builds
+
+When using one of the {@link builds/guides/overview#available-builds official editor builds}, you need to import the translations first.
+
+* When using a [direct script include](#direct-script-include):
+	```html
+	<!-- Import translations for the German language. -->
+	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js"></script>
+	<script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+	<script src="../node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js"></script>
+	```
+* When using [ES6 modules](#using-es6-modules):
+	```js
+	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+	// Import translations for the German language.
+	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+	```
+
+Then, {@link builds/guides/integration/configuration configure} the language of the editor in the component:
+
+```html
+<ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+```
+
+```js
+export default {
+	name: 'app',
+	data() {
+		return {
+			editor: ClassicEditor,
+			editorData: '<p>Content of the editor.</p>',
+			editorConfig: {
+				// Run the editor with the German UI.
+				language: 'de'
+			}
+		};
+	}
+}
+```
+
+For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
+
+### CKEditor 5 built from source
+
+Using the editor [built from source](#using-ckeditor-from-source) requires you to modify the webpack configuration. Pass the `language` (also `additionalLanguages`) to the constructor of  [`CKEditorWebpackPlugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) to localize your editor:
+
+```js
+// vue.config.js
+// ...
+
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+
+// ...
+
+module.exports = {
+	// ...
+
+	configureWebpack: {
+		plugins: [
+			// CKEditor needs its own plugin to be built using webpack.
+			new CKEditorWebpackPlugin( {
+				// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+				language: 'de'
+			} )
+		]
+	},
+
+	// ...
+}
+```
+
+After building the application, CKEditor 5 will run with the UI translated to the specified language.
+
+For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
 
 ## Component directives
 
@@ -512,7 +600,7 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 			return {
 				editor: ClassicEditor,
 				editorConfig: {
-					toolbar: [ 'bold', 'italic', '|' 'link' ]
+					toolbar: [ 'bold', 'italic', '|', 'link' ]
 				}
 			};
 		}

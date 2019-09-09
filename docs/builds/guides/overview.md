@@ -20,6 +20,7 @@ The following CKEditor 5 Builds are currently available:
  * [Classic editor](#classic-editor)
  * [Inline editor](#inline-editor)
  * [Balloon editor](#balloon-editor)
+ * [Balloon block editor](#balloon-block-editor)
  * [Document editor](#document-editor)
 
 ### Classic editor

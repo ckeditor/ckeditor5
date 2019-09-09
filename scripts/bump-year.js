@@ -2,7 +2,7 @@
 
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env node */
@@ -10,14 +10,14 @@
 /*
 
 Usage:
-mgit exec 'node ../../scripts/bump-year.js'
+mrgit exec 'node ../../scripts/bump-year.js'
 node scripts/bump-year.js
 
 Full command to update the entire project:
-git pull && mgit sync && mgit exec 'node ../../scripts/bump-year.js' && node scripts/bump-year.js
+git pull && mrgit sync && mrgit exec 'node ../../scripts/bump-year.js' && node scripts/bump-year.js
 
 And after reviewing the changes:
-mgit commit -m "Internal: Bumped the year. [skip ci]" && mgit push git commit -am "Internal: Bumped the year." && git push
+mrgit commit -m "Internal: Bumped the year. [skip ci]" && mrgit push git commit -am "Internal: Bumped the year." && git push
 
 */
 
