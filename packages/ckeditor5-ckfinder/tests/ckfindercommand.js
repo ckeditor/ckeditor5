@@ -400,42 +400,6 @@ describe( 'CKFinderCommand', () => {
 				.to.equal( '<paragraph>f[o]o</paragraph>' );
 		} );
 
-		it( 'should show warning notification if link command is not available', done => {
-			// Remove link command.
-			editor.commands._commands.delete( 'link' );
-			const notification = editor.plugins.get( Notification );
-
-			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'The "link" command must be available to insert links.' );
-				expect( data.title ).to.equal( 'Inserting link failed' );
-				evt.stop();
-
-				done();
-			}, { priority: 'high' } );
-
-			command.execute();
-
-			mockFilesChooseEvent( [ mockFinderFile( 'foo/bar.pdf', false ) ] );
-		} );
-
-		it( 'should show warning notification if link command is not available', done => {
-			// Remove link command.
-			editor.commands._commands.delete( 'imageInsert' );
-			const notification = editor.plugins.get( Notification );
-
-			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'The "imageInsert" command must be available to insert images.' );
-				expect( data.title ).to.equal( 'Inserting image failed' );
-				evt.stop();
-
-				done();
-			}, { priority: 'high' } );
-
-			command.execute();
-
-			mockFilesChooseEvent( [ mockFinderFile( 'foo/bar.png', true ) ] );
-		} );
-
 		it( 'should not insert image nor crash when image could not be inserted', () => {
 			model.schema.register( 'other', {
 				allowIn: '$root',

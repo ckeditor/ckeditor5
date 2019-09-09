@@ -89,18 +89,8 @@ export default class CKFinderCommand extends Command {
 				const links = files.filter( file => !file.isImage() );
 				const images = files.filter( file => file.isImage() );
 
-				if ( !editor.commands.get( 'link' ) ) {
-					const notification = editor.plugins.get( 'Notification' );
-					const t = editor.locale.t;
-
-					notification.showWarning( t( 'The "link" command must be available to insert links.' ), {
-						title: t( 'Inserting link failed' ),
-						namespace: 'ckfinder'
-					} );
-				} else {
-					for ( const linkFile of links ) {
-						editor.execute( 'link', linkFile.getUrl() );
-					}
+				for ( const linkFile of links ) {
+					editor.execute( 'link', linkFile.getUrl() );
 				}
 
 				const imagesUrls = [];
@@ -141,18 +131,6 @@ export default class CKFinderCommand extends Command {
 
 function insertImages( editor, urls ) {
 	const imageCommand = editor.commands.get( 'imageInsert' );
-
-	if ( !imageCommand ) {
-		const notification = editor.plugins.get( 'Notification' );
-		const t = editor.locale.t;
-
-		notification.showWarning( t( 'The "imageInsert" command must be available to insert images.' ), {
-			title: t( 'Inserting image failed' ),
-			namespace: 'ckfinder'
-		} );
-
-		return;
-	}
 
 	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {
