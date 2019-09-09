@@ -14,108 +14,97 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
-const CHECK_TIMEOUT = 500;
-const NativeResizeObserver = global.window.ResizeObserver;
+let ExportedResizeObserver;
 
-export default class ResizeObserver {
-	constructor( callback ) {
-		this.callback = callback;
-		this.elements = new Set();
+// TODO: One day, the ResizeObserver API will be supported in all modern web browsers.
+// When it happens, this module will no longer make sense and should be removed and
+// the native implementation should be used across the project to save bytes.
+// Check out https://caniuse.com/#feat=resizeobserver.
+if ( typeof global.window.ResizeObserver === 'function' ) {
+	ExportedResizeObserver = global.window.ResizeObserver;
+} else {
+	const RESIZE_CHECK_INTERVAL = 500;
 
-		if ( typeof NativeResizeObserver === 'function' ) {
-			this._nativeObserver = new NativeResizeObserver( entries => {
-				callback( entries.map( entry => ( {
-					target: entry.target,
-					contentRect: new Rect( entry.contentRect )
-				} ) ) );
-			} );
-		} else {
+	ExportedResizeObserver = class {
+		constructor( callback ) {
+			this.callback = callback;
+			this.elements = new Set();
+
 			this._startPeriodicCheck();
 		}
-	}
 
-	observe( element ) {
-		this.elements.add( element );
-
-		if ( this._nativeObserver ) {
-			this._nativeObserver.observe( element );
+		observe( element ) {
+			this.elements.add( element );
 		}
-	}
 
-	unobserve( element ) {
-		this.elements.remove( element );
-
-		if ( this._nativeObserver ) {
-			this._nativeObserver.unobserve( element );
-		} else {
+		unobserve( element ) {
+			this.elements.remove( element );
 			this._previousRects.delete( element );
 
 			if ( !this.elements.size ) {
 				this._stopPeriodicCheck();
 			}
 		}
-	}
 
-	disconnect() {
-		this.elements.forEach( element => this.unobserve( element ) );
+		disconnect() {
+			this.elements.forEach( element => this.unobserve( element ) );
 
-		if ( this._nativeObserver ) {
-			this._nativeObserver.disconnect();
-		} else {
 			this._stopPeriodicCheck();
 		}
-	}
 
-	_startPeriodicCheck() {
-		this._previousRects = new Map();
+		_startPeriodicCheck() {
+			this._previousRects = new Map();
 
-		const periodicCheck = () => {
-			this._checkElementRectsAndExecuteCallbacks();
-			this._periodicCheckTimeout = setTimeout( periodicCheck, CHECK_TIMEOUT );
-		};
+			const periodicCheck = () => {
+				this._checkElementRectsAndExecuteCallbacks();
+				this._periodicCheckTimeout = setTimeout( periodicCheck, RESIZE_CHECK_INTERVAL );
+			};
 
-		this.listenTo( global.window, 'resize', () => {
-			this._checkElementRectsAndExecuteCallbacks();
-		} );
+			this.listenTo( global.window, 'resize', () => {
+				this._checkElementRectsAndExecuteCallbacks();
+			} );
 
-		periodicCheck();
-	}
+			periodicCheck();
+		}
 
-	_stopPeriodicCheck() {
-		clearTimeout( this._periodicCheckTimeout );
-		this.stopListening();
-		this._previousRects.clear();
-	}
+		_stopPeriodicCheck() {
+			clearTimeout( this._periodicCheckTimeout );
+			this.stopListening();
+			this._previousRects.clear();
+		}
 
-	_checkElementRectsAndExecuteCallbacks() {
-		const entries = [];
+		_checkElementRectsAndExecuteCallbacks() {
+			const entries = [];
 
-		for ( const element of this.elements ) {
-			if ( this._hasRectChanged( element ) ) {
-				entries.push( {
-					target: element,
-					contentRect: this._previousRects.get( element )
-				} );
+			for ( const element of this.elements ) {
+				if ( this._hasRectChanged( element ) ) {
+					entries.push( {
+						target: element,
+						contentRect: this._previousRects.get( element )
+					} );
+				}
+			}
+
+			if ( entries.length ) {
+				this.callback( entries );
 			}
 		}
 
-		if ( entries.length ) {
-			this.callback( entries );
+		_hasRectChanged( element ) {
+			const currentRect = new Rect( element );
+			const previousRect = this._previousRects.get( element );
+
+			// The first check should always yield true despite no Previous rect to compare to.
+			// The native ResizeObserver does that and... that makes sense. Sort of.
+			const hasChanged = !previousRect || !previousRect.isEqual( currentRect );
+
+			this._previousRects.set( element, currentRect );
+
+			return hasChanged;
 		}
-	}
+	};
 
-	_hasRectChanged( element ) {
-		const currentRect = new Rect( element );
-		const previousRect = this._previousRects.get( element );
-
-		// The first check should always be positive despite no Previous rect to compare to.
-		// The native ResizeObserver does that and... that makes sense.
-		const hasChanged = !previousRect || !previousRect.isEqual( currentRect );
-
-		this._previousRects.set( element, currentRect );
-
-		return hasChanged;
-	}
+	mix( ExportedResizeObserver, DomEmitterMixin );
 }
 
-mix( ResizeObserver, DomEmitterMixin );
+export default ExportedResizeObserver;
