@@ -3,26 +3,113 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import Locale from '../src/locale';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Locale', () => {
 	let locale;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale();
 	} );
 
 	describe( 'constructor', () => {
-		it( 'sets the language', () => {
-			const locale = new Locale( 'pl' );
+		it( 'sets the #language', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl'
+			} );
 
-			expect( locale ).to.have.property( 'language', 'pl' );
+			expect( locale ).to.have.property( 'uiLanguage', 'pl' );
 		} );
 
-		it( 'defaults language to en', () => {
+		it( 'sets the #contentLanguage', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl',
+				contentLanguage: 'en'
+			} );
+
+			expect( locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( locale ).to.have.property( 'contentLanguage', 'en' );
+		} );
+
+		it( 'defaults #language to en', () => {
 			const locale = new Locale();
 
-			expect( locale ).to.have.property( 'language', 'en' );
+			expect( locale ).to.have.property( 'uiLanguage', 'en' );
+		} );
+
+		it( 'inherits the #contentLanguage from the #language (if not passed)', () => {
+			const locale = new Locale( {
+				uiLanguage: 'pl'
+			} );
+
+			expect( locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'determines the #uiLanguageDirection', () => {
+			expect( new Locale( {
+				uiLanguage: 'pl'
+			} ) ).to.have.property( 'uiLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'en'
+			} ) ).to.have.property( 'uiLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'ar'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'fa'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'he'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'ku'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'ug'
+			} ) ).to.have.property( 'uiLanguageDirection', 'rtl' );
+		} );
+
+		it( 'determines the #contentLanguageDirection (not passed)', () => {
+			expect( new Locale( {
+				uiLanguage: 'pl'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'en'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'ar'
+			} ) ).to.have.property( 'contentLanguageDirection', 'rtl' );
+		} );
+
+		it( 'determines the #contentLanguageDirection (passed)', () => {
+			expect( new Locale( {
+				uiLanguage: 'pl',
+				contentLanguage: 'pl'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
+
+			expect( new Locale( {
+				uiLanguage: 'en',
+				contentLanguage: 'ar'
+			} ) ).to.have.property( 'contentLanguageDirection', 'rtl' );
+
+			expect( new Locale( {
+				uiLanguage: 'ar',
+				contentLanguage: 'pl'
+			} ) ).to.have.property( 'contentLanguageDirection', 'ltr' );
 		} );
 	} );
 
@@ -57,6 +144,19 @@ describe( 'Locale', () => {
 			const t = locale.t;
 
 			expect( t( '%1 - %0 - %2', [ 'a' ] ) ).to.equal( '%1 - a - %2' );
+		} );
+	} );
+
+	describe( 'language()', () => {
+		it( 'should return #uiLanguage', () => {
+			expect( locale.language ).to.equal( locale.uiLanguage );
+		} );
+
+		it( 'should warn about deprecation', () => {
+			const stub = testUtils.sinon.stub( console, 'warn' );
+
+			expect( locale.language ).to.equal( 'en' );
+			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
 		} );
 	} );
 } );

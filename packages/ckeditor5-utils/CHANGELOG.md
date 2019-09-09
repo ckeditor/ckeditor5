@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [14.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.1...v14.0.0) (2019-08-26)
+
+### Features
+
+* Add feature detection of Unicode properties entities' support. ([21c0f6b](https://github.com/ckeditor/ckeditor5-utils/commit/21c0f6b))
+* Allowed specifying editor content language in `Locale`. Implemented the (UI and content) language direction discovery in `Locale`. Implemented `Locale#uiLanguage`, `Locale#uiLanguageDirection`, `Locale#contentLanguage`, and `Locale#contentLanguageDirection` properties. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([91c95f3](https://github.com/ckeditor/ckeditor5-utils/commit/91c95f3))
+
+### Other changes
+
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([71469ac](https://github.com/ckeditor/ckeditor5-utils/commit/71469ac))
+* Removed the CKEditor 5 logger and its usage. Part of [ckeditor/ckeditor5#383](https://github.com/ckeditor/ckeditor5/issues/383). ([584ef1d](https://github.com/ckeditor/ckeditor5-utils/commit/584ef1d))
+
+### BREAKING CHANGES
+
+* The`Locale()` constructor arguments syntax has changed. Please refer to the API documentation to learn more.
+* The `Locale#language` property has been deprecated by `Locale#uiLanguage`. Please refer to the API documentation to learn more.
+* Removed the CKEditor 5 logger utility.
+
+
 ## [13.0.1](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.0...v13.0.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
