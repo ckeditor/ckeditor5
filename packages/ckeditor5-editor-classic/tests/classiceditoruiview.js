@@ -19,7 +19,7 @@ describe( 'ClassicEditorUIView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		locale = new Locale( 'en' );
+		locale = new Locale();
 		editingView = new EditingView();
 		editingViewRoot = createRoot( editingView.document );
 		view = new ClassicEditorUIView( locale, editingView );
