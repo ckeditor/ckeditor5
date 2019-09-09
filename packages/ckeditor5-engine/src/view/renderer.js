@@ -102,7 +102,7 @@ export default class Renderer {
 		this.isFocused = false;
 
 		/**
-		 * Indicates if the view document is composing.
+		 * Indicates if the composition is in progress inside the view document view.
 		 *
 		 * @member {Boolean}
 		 */
@@ -778,7 +778,7 @@ export default class Renderer {
 	 * @returns {Boolean}
 	 */
 	_domSelectionNeedsUpdate( domSelection ) {
-		// Remain DOM selection untouched while composing (#1782)
+		// Remain DOM selection untouched while composing. See #1782.
 		if ( this.isComposing ) {
 			return false;
 		}

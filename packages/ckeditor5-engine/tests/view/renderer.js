@@ -3652,7 +3652,7 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
-			// mock IME typing in Safari: <p>[c]</p>
+			// Mock IME typing in Safari: <p>[c]</p>.
 			renderer.isComposing = true;
 			const domText = document.createTextNode( 'c' );
 			domRoot.firstChild.appendChild( domText );
