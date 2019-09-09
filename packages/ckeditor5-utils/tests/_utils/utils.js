@@ -152,7 +152,7 @@ export function assertCKEditorError( err, message, editorThatShouldBeFindableFro
  *
  * This util can be used to test HTML strings and string containing serialized model.
  *
- *		// Will throw error for chaijs
+ *		// Will throw an error that is handled as assertion error by Chai.
  *		assertEqualMarkup(
  *			'<paragraph><$text foo="bar">baz</$text></paragraph>',
  *			'<paragraph><$text foo="bar">baaz</$text></paragraph>',
@@ -172,6 +172,7 @@ export function assertEqualMarkup( actual, expected, message = 'Expected markup 
 	}
 }
 
+// Renames the $text occurrences as it is not properly formatted by the beautifier - it is tread as a block.
 const TEXT_TAG_PLACEHOLDER = 'span data-cke="true"';
 const TEXT_TAG_PLACEHOLDER_REGEXP = new RegExp( TEXT_TAG_PLACEHOLDER, 'g' );
 
