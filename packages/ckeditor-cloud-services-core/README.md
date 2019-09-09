@@ -9,10 +9,9 @@ CKEditor Cloud Services Core
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor-cloud-services-core/status.svg)](https://david-dm.org/ckeditor/ckeditor-cloud-services-core)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor-cloud-services-core/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor-cloud-services-core?type=dev)
 
+## Documentation
 
-CKEditor Cloud Services Core API:
-
-* Upload Gateway - API for file uploads to CKEditor Cloud Services.
+See the [`@ckeditor/ckeditor-cloud-services-core` package](https://ckeditor.com/docs/ckeditor5/latest/api/alignment.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
