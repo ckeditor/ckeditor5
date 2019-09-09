@@ -56,16 +56,12 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				// Or /ckeditor5-[^/]+\/theme\/icons\/.+\.svg$/ if you want to limit this loader
-				// to CKEditor 5 icons only.
-				test: /\.svg$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/.+\.css$/ if you want to limit this loader
-				// to CKEditor 5 theme only.
-				test: /\.css$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 
 				use: [
 					{
