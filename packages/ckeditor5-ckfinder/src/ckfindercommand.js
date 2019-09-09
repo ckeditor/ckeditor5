@@ -18,7 +18,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *		editor.execute( 'ckfinder' );
  *
- * **Note:** At least one of the commands must be available to make this command work:
+ * **Note:** This command uses other features to perform tasks:
  * - To insert images the {@link module:image/image/imageinsertcommand~ImageInsertCommand 'imageInsert'} command
  * from the {@link module:image/image~Image Image feature}.
  * - To insert links to files the {@link module:link/linkcommand~LinkCommand 'link'} command
