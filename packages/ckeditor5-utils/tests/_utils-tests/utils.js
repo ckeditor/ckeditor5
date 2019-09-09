@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { AssertionError } from 'chai';
+import AssertionError from 'assertion-error';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ObservableMixin from '../../src/observablemixin';
 import EmitterMixin from '../../src/emittermixin';
