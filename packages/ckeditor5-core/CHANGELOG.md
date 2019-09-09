@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [12.3.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.1...v12.3.0) (2019-08-26)
+
+### Features
+
+* Allowed configuration of the editor content language via `conifg.language`. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([22079dd](https://github.com/ckeditor/ckeditor5-core/commit/22079dd))
+* Introduced a `secureSourceElement()` utility that prevents from initialising more than one editor on the same DOM element. See [ckeditor/ckeditor5#746](https://github.com/ckeditor/ckeditor5/issues/746). ([6a59058](https://github.com/ckeditor/ckeditor5-core/commit/6a59058))
+
+### Other changes
+
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([6d72325](https://github.com/ckeditor/ckeditor5-core/commit/6d72325))
+* Updated translations. ([e29d56e](https://github.com/ckeditor/ckeditor5-core/commit/e29d56e))
+
+
 ## [12.2.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.0...v12.2.1) (2019-07-10)
 
 Internal changes only (updated dependencies, documentation, etc.).

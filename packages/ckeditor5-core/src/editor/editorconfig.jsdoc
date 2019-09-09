@@ -167,18 +167,17 @@
  */
 
 /**
- * The editor UI's language.
+ * The language of the editor UI and its content.
  *
- * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
- * CKEditor 5 currently supports around 20 languages and the number is growing.
+ * Note: You do not have to specify this option if your build is optimized for one UI language or if it is
+ * the default language (English is the default language for CDN builds), unless you want to change
+ * the language of your content.
  *
- * Note: You do not have to specify this option if your build is optimized for one language or if it is the default language
- * (English is the default language for CDN builds).
- *
- * Simple usage:
+ * Simple usage (change the language of the UI and the content):
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
+ *				// The UI of the editor as well as its content will be in German.
  *				language: 'de'
  *			} )
  *			.then( editor => {
@@ -188,14 +187,41 @@
  *				console.error( error );
  *			} );
  *
- * After this step you need to attach the corresponding translation file. Translation files are available on CDN for predefined builds:
+ * Use different languages for the UI and the content using the object syntax:
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				language: {
+ *	 				// The UI will be in English.
+ *					ui: 'en',
+ *
+ *					// But the content will be edited in Arabic.
+ *					content: 'ar'
+ * 				}
+ *			} )
+ *			.then( editor => {
+ *				console.log( editor );
+ *			} )
+ *			.catch( error => {
+ *				console.error( error );
+ *			} );
+ *
+ * The language of the content has an impact on the editing experience, for instance it affects screen readers
+ * and spell checkers. It is also particularly useful for typing in certain languages (e.g. right–to–left ones)
+ * because it changes the default alignment of the text.
+ *
+ * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ *
+ * You need to add the corresponding translation file for the new UI language to work.
+ * Translation files are available on CDN for predefined builds:
+ *
  *		`<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
  *
  * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
  *
  * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
- * @member {String} module:core/editor/editorconfig~EditorConfig#language
+ * @member {String|Object} module:core/editor/editorconfig~EditorConfig#language
  */
 
 /**
