@@ -71,8 +71,16 @@
 		margin-bottom: var(--ck-spacing-small);
 	}
 
-	& > .ck.ck-toolbar__grouped-dropdown {
-		padding-left: var(--ck-spacing-small);
+	@mixin ck-dir ltr {
+		& > .ck.ck-toolbar__grouped-dropdown {
+			padding-left: var(--ck-spacing-small);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& > .ck.ck-toolbar__grouped-dropdown {
+			padding-right: var(--ck-spacing-small);
+		}
 	}
 
 	& .ck.ck-toolbar__separator {
