@@ -6,8 +6,7 @@
 /* global console:false */
 
 import AssertionError from 'assertion-error';
-// eslint-disable-next-line camelcase
-import { html_beautify } from 'js-beautify/js/lib/beautify-html';
+import { html_beautify as beautify } from 'js-beautify/js/lib/beautify-html';
 
 import EmitterMixin from '../../src/emittermixin';
 import CKEditorError from '../../src/ckeditorerror';
@@ -179,7 +178,7 @@ const TEXT_TAG_PLACEHOLDER_REGEXP = new RegExp( TEXT_TAG_PLACEHOLDER, 'g' );
 function formatMarkup( string ) {
 	const htmlSafeString = string.replace( /\$text/g, TEXT_TAG_PLACEHOLDER );
 
-	const beautifiedMarkup = html_beautify( htmlSafeString, {
+	const beautifiedMarkup = beautify( htmlSafeString, {
 		indent_size: 2,
 		space_in_empty_paren: true
 	} );
