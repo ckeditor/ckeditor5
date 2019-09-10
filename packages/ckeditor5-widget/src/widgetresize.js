@@ -29,50 +29,21 @@ export default class WidgetResize extends Plugin {
 		return 'WidgetResize';
 	}
 
-	_resizeWorkaround() {
-		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
-			const viewWriter = conversionApi.writer;
-			let lastMarked = null;
-			let activeResizer = null;
-
-			for ( const range of viewWriter.document.selection.getRanges() ) {
-				for ( const value of range ) {
-					const node = value.item;
-
-					// Do not mark nested widgets in selected one. See: ckeditor/ckeditor5-widget#57.
-					if ( isWidget( node ) && !isChild( node, lastMarked ) && node.hasClass( 'ck-widget_with-resizer' ) ) {
-						activeResizer = this.resizersByWrapper.get( node ) || activeResizer;
-
-						lastMarked = node;
-					}
-				}
-			}
-
-			if ( activeResizer ) {
-				activeResizer.redraw();
-			}
-
-			this.focusedResizer = activeResizer;
-		}, { priority: 'low' } );
-
-		// Checks whether the specified `element` is a child of the `parent` element.
-		//
-		// @param {module:engine/view/element~Element} element An element to check.
-		// @param {module:engine/view/element~Element|null} parent A parent for the element.
-		// @returns {Boolean}
-		function isChild( element, parent ) {
-			if ( !parent ) {
-				return false;
-			}
-
-			return Array.from( element.getAncestors() ).includes( parent );
-		}
-	}
-
 	init() {
-		this.focusedResizer = null;
-		this.resizersByWrapper = new Map();
-		this.activeResizer = null;
+		/**
+		 * A map of resizers created using this plugin instance.
+		 *
+		 * @type {Map.<module:engine/view/containerelement~ContainerElement, module:widget/widgetresize/resizer~Resizer>}
+		 */
+		this.resizers = new Map();
+
+		/**
+		 * Currently focused widget resizer instance.
+		 *
+		 * @protected
+		 * @type {module:widget/widgetresize/resizer~Resizer|null}
+		 */
+		this._focusedResizer = null;
 
 		const domDocument = global.window.document;
 
@@ -80,9 +51,10 @@ export default class WidgetResize extends Plugin {
 			isFormatting: true
 		} );
 
-		this._resizeWorkaround();
-
 		this._observer = Object.create( DomEmitterMixin );
+
+		// A resizer that is currently used.
+		let activeResizer;
 
 		this._observer.listenTo( domDocument, 'mousedown', ( event, domEventData ) => {
 			if ( !Resizer.isResizeHandle( domEventData.target ) ) {
@@ -91,30 +63,32 @@ export default class WidgetResize extends Plugin {
 
 			const resizeHandle = domEventData.target;
 
-			this.activeResizer = this._getResizerByHandle( resizeHandle );
+			activeResizer = this._getResizerByHandle( resizeHandle );
 
-			if ( this.activeResizer ) {
-				this.activeResizer.begin( resizeHandle );
+			if ( activeResizer ) {
+				activeResizer.begin( resizeHandle );
 			}
 		} );
 
 		this._observer.listenTo( domDocument, 'mousemove', throttle( ( event, domEventData ) => {
-			if ( this.activeResizer ) {
-				this.activeResizer.updateSize( domEventData );
+			if ( activeResizer ) {
+				activeResizer.updateSize( domEventData );
 			}
 		}, 16 ) ); // 60 fps
 
 		this._observer.listenTo( domDocument, 'mouseup', () => {
-			if ( this.activeResizer ) {
-				this.activeResizer.commit();
+			if ( activeResizer ) {
+				activeResizer.commit();
 
-				this.activeResizer = null;
+				activeResizer = null;
 			}
 		} );
 
+		this._attachFocusChangeListener();
+
 		const redrawFocusedResizer = throttle( () => {
-			if ( this.focusedResizer ) {
-				this.focusedResizer.redraw();
+			if ( this._focusedResizer ) {
+				this._focusedResizer.redraw();
 			}
 		}, 200 ); // 5 fps
 
@@ -138,13 +112,58 @@ export default class WidgetResize extends Plugin {
 
 		resizer.attach();
 
-		this.resizersByWrapper.set( options.viewElement, resizer );
+		this.resizers.set( options.viewElement, resizer );
 
 		return resizer;
 	}
 
+	/**
+	 * Adds a listener that keep the track of currently focused resizer.
+	 *
+	 * @private
+	 */
+	_attachFocusChangeListener() {
+		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			let lastMarked = null;
+			let focusedResizer = null;
+
+			for ( const range of viewWriter.document.selection.getRanges() ) {
+				for ( const value of range ) {
+					const node = value.item;
+
+					// Do not mark nested widgets in selected one. See: ckeditor/ckeditor5-widget#57.
+					if ( isWidget( node ) && !isChild( node, lastMarked ) && node.hasClass( 'ck-widget_with-resizer' ) ) {
+						focusedResizer = this.resizers.get( node ) || focusedResizer;
+
+						lastMarked = node;
+					}
+				}
+			}
+
+			if ( focusedResizer ) {
+				focusedResizer.redraw();
+			}
+
+			this._focusedResizer = focusedResizer;
+		}, { priority: 'low' } );
+
+		// Checks whether the specified `element` is a child of the `parent` element.
+		//
+		// @param {module:engine/view/element~Element} element An element to check.
+		// @param {module:engine/view/element~Element|null} parent A parent for the element.
+		// @returns {Boolean}
+		function isChild( element, parent ) {
+			if ( !parent ) {
+				return false;
+			}
+
+			return Array.from( element.getAncestors() ).includes( parent );
+		}
+	}
+
 	_getResizerByHandle( domResizeHandle ) {
-		for ( const resizer of this.resizersByWrapper.values() ) {
+		for ( const resizer of this.resizers.values() ) {
 			if ( resizer.containsHandle( domResizeHandle ) ) {
 				return resizer;
 			}
