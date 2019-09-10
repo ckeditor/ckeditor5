@@ -705,13 +705,13 @@
     date-fns "^1.29.0"
     lodash-es "^4.17.11"
 
-"@ckeditor/ckeditor5-dev-docs@^11.0.8":
-  version "11.0.8"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-11.0.8.tgz#1b47fdb05bbb11fa8a7de4161805cf6f42a76f40"
-  integrity sha512-EhdlljrTvUlxi+/JlCf5qwfXCW11CzypAdHgbyMXqTlYv9MyfD7xH5lMy8YG98VkJGtiGfJSFvP1I+644Fr88w==
+"@ckeditor/ckeditor5-dev-docs@^11.0.9":
+  version "11.0.9"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-11.0.9.tgz#31b051c9421998dc3e1801cedf57d7d526dbdf03"
+  integrity sha512-S5qxTIUjwz3ue5A7z0d9I8kOod1zPPWQuVUPg94OgT2RsY1Gmj7iuAZBDGaaoUAhMDIdkjnO1sHWHZLEA6YbwA==
   dependencies:
     "@ckeditor/ckeditor5-dev-utils" "^12.0.5"
-    "@ckeditor/jsdoc-plugins" "^3.0.6"
+    "@ckeditor/jsdoc-plugins" "^3.0.7"
     jsdoc "3.4.3"
     map-stream "^0.0.7"
     tmp "^0.0.33"
@@ -741,10 +741,10 @@
     request "^2.83.0"
     semver "^6.2.0"
 
-"@ckeditor/ckeditor5-dev-tests@^16.7.1":
-  version "16.7.1"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.7.1.tgz#2a58d030659017f13359cbd66a34e99573573f42"
-  integrity sha512-x0RTU9/q4ugBvork9iIpGEKnBTGXhx9hHyimsO2fBFZkvSIQqsMkVXCf9rdrzvb3VpfSc0OutZR6daPEqEKo6g==
+"@ckeditor/ckeditor5-dev-tests@^16.7.2":
+  version "16.7.2"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.7.2.tgz#470b97581cd636a1f559f1ced0a11a45b1d00c30"
+  integrity sha512-+NDCc7mc+NL4eim1zHETv9JEh+7gJEkvmRCyLft38MGaMGUUWFDTKIjFzVgV2lsnjxvqCLSx/PQ/NvB+HSWobQ==
   dependencies:
     "@babel/core" "^7.0.0"
     "@ckeditor/ckeditor5-dev-utils" "^12.0.5"
@@ -889,10 +889,18 @@
     date-fns "^1.30.1"
     lodash-es "^4.17.11"
 
-"@ckeditor/jsdoc-plugins@^3.0.1", "@ckeditor/jsdoc-plugins@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@ckeditor/jsdoc-plugins/-/jsdoc-plugins-3.0.6.tgz#f227ed5470cc9d7023a79870a4d34874dbd4c050"
-  integrity sha512-q+JgTMjr76griEd4lhsUkiYtMe4DQWrxhPXXhVYLLtD23Ah+3XPbXCqpaVQHI6brZp6fK31rAOE6cyfXiCI4rQ==
+"@ckeditor/ckeditor5-utils@^12.0.0":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-utils/-/ckeditor5-utils-12.1.1.tgz#886a8d8379573658a551520d62ada65ab29a4d67"
+  integrity sha512-69D+3Sx+QTBgKunFZdDp5jcEgo/v6kE+vOgnNtVXaEyjvAXJGppB++WPCYJw3POZxHqMy57PlpyqGG5zGyoYkg==
+  dependencies:
+    ckeditor5 "^12.2.0"
+    lodash-es "^4.17.10"
+
+"@ckeditor/jsdoc-plugins@^3.0.1", "@ckeditor/jsdoc-plugins@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@ckeditor/jsdoc-plugins/-/jsdoc-plugins-3.0.7.tgz#8352eafbe3ac257f1adb139745665024f8607963"
+  integrity sha512-81KTLSLD+kfAsI3aE5ngbip11AqB/++Mz2h3FX9AtHUNJAxWqwZaSxksW7UsggzUORFdaZYqp3ie8TNGaPX8hQ==
   dependencies:
     fs-extra "^8.1.0"
     lodash "^4.17.15"
@@ -2490,6 +2498,11 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
+ci-info@^1.5.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-1.6.0.tgz#2ca20dbb9ceb32d4524a683303313f0304b1e497"
+  integrity sha512-vsGdkwSCDpWmP80ncATX7iea5DWQemg1UgCW5J8tqjU3lYw4FBYuj89J0CTVomA7BEfvSZd84GmHko+MxFQU2A==
+
 ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
@@ -4032,6 +4045,13 @@ escodegen@^1.9.0:
   optionalDependencies:
     source-map "~0.6.1"
 
+eslint-config-ckeditor5@^1.0.9:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/eslint-config-ckeditor5/-/eslint-config-ckeditor5-1.0.14.tgz#fe486a85ea1e46546e34002c81f651ab48856365"
+  integrity sha512-0eo7n/og5+JlM5FqpuU5mwpSjaXZ+9DvcwZdk5Hnd9w5t97rSreg8kc/Uc6LiZQUYvb6TxCTMxOTr3eh95tgBg==
+  dependencies:
+    eslint-plugin-ckeditor5-rules "^0.0.3"
+
 eslint-config-ckeditor5@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/eslint-config-ckeditor5/-/eslint-config-ckeditor5-2.0.0.tgz#d02dc459996642cbf8ae0dd1bca0d8730fc3b6b8"
@@ -5437,6 +5457,15 @@ https-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
+husky@^0.14.3:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-0.14.3.tgz#c69ed74e2d2779769a17ba8399b54ce0b63c12c3"
+  integrity sha512-e21wivqHpstpoiWA/Yi8eFti8E+sQDSS53cpJsPptPs295QTOQR0ZwnHo2TXy1XOpZFD9rPOd3NpmqTK6uMLJA==
+  dependencies:
+    is-ci "^1.0.10"
+    normalize-path "^1.0.0"
+    strip-indent "^2.0.0"
+
 husky@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/husky/-/husky-1.3.1.tgz#26823e399300388ca2afff11cfa8a86b0033fae0"
@@ -5729,6 +5758,13 @@ is-callable@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/is-callable/-/is-callable-1.1.4.tgz#1e1adf219e1eeb684d691f9d6a05ff0d30a24d75"
   integrity sha512-r5p9sxJjYnArLjObpjA4xu5EKI3CuKHkJXMhT7kwbpUyIFD1n5PMAsoPvWnvtZiNz7LjkYDRZhd7FlI0eMijEA==
+
+is-ci@^1.0.10:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-1.2.1.tgz#e3779c8ee17fccf428488f6e281187f2e632841c"
+  integrity sha512-s6tfsaQaQi3JNciBH6shVqEDvhGut0SUXr31ag8Pd8BBbVVlcGfWhpPmEOoM6RJ5TFhbypvf5yyRw/VXW1IiWg==
+  dependencies:
+    ci-info "^1.5.0"
 
 is-ci@^2.0.0:
   version "2.0.0"
@@ -7775,6 +7811,11 @@ normalize-package-data@^2.3.0, normalize-package-data@^2.3.2, normalize-package-
     resolve "^1.10.0"
     semver "2 || 3 || 4 || 5"
     validate-npm-package-license "^3.0.1"
+
+normalize-path@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-1.0.0.tgz#32d0e472f91ff345701c15a8311018d3b0a90379"
+  integrity sha1-MtDkcvkf80VwHBWoMRAY07CpA3k=
 
 normalize-path@^2.0.0, normalize-path@^2.0.1, normalize-path@^2.1.1:
   version "2.1.1"
