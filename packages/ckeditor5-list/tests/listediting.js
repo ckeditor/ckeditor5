@@ -22,7 +22,7 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-describe.only( 'ListEditing', () => {
+describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
 	beforeEach( () => {
@@ -1285,7 +1285,7 @@ describe.only( 'ListEditing', () => {
 		} );
 	} );
 
-	describe.only( 'nested lists', () => {
+	describe( 'nested lists', () => {
 		describe( 'setting data', () => {
 			function test( testName, string, expectedString = null ) {
 				it( testName, () => {
@@ -3750,7 +3750,7 @@ describe.only( 'ListEditing', () => {
 		} );
 	} );
 
-	describe.only( 'paste and insertContent integration', () => {
+	describe( 'paste and insertContent integration', () => {
 		it( 'should be triggered on DataController#insertContent()', () => {
 			setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
