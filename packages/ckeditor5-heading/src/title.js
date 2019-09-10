@@ -10,14 +10,16 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 import {
 	needsPlaceholder,
 	showPlaceholder,
 	hidePlaceholder,
 	enablePlaceholder
 } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import first from '@ckeditor/ckeditor5-utils/src/first';
 
 // A list of element names which should be treated by the Title plugin as title-like.
 // This means that element of a type from this list will be changed to a title element
@@ -158,13 +160,34 @@ export default class Title extends Plugin {
 	 * @returns {String} Body of the document.
 	 */
 	getBody() {
+		const data = this.editor.data;
+		const model = this.editor.model;
 		const root = this.editor.model.document.getRoot();
-		const viewWriter = new ViewWriter();
+		const viewWriter = new ViewDowncastWriter( new ViewDocument() );
 
-		// model -> view
-		const viewDocumentFragment = this.editor.data.toView( root );
+		const rootRange = model.createRangeIn( root );
+		const viewDocumentFragment = new ViewDocumentFragment();
 
-		// Remove title.
+		// Convert the entire root to view.
+		data.mapper.clearBindings();
+		data.mapper.bindElements( root, viewDocumentFragment );
+		data.downcastDispatcher.convertInsert( rootRange, viewWriter );
+
+		// Convert all markers that intersects with body.
+		// Avoid markers that starts before body, move it to the first selection position.
+		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 ) );
+		const bodySelectionPosition = model.schema.getNearestSelectionRange( bodyStartPosition, 'forward' ).start;
+		const bodyRange = model.createRange( bodySelectionPosition, model.createPositionAt( root, 'end' ) );
+
+		for ( const marker of model.markers ) {
+			const intersection = bodyRange.getIntersection( marker.getRange() );
+
+			if ( intersection ) {
+				data.downcastDispatcher.convertMarkerAdd( marker.name, intersection, viewWriter );
+			}
+		}
+
+		// Remove title element from view.
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );
 
 		// view -> data
