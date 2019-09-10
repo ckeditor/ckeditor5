@@ -691,29 +691,14 @@ export default class Renderer {
 	 */
 	_updateFakeSelection( domRoot ) {
 		const domDocument = domRoot.ownerDocument;
-		let container = this._fakeSelectionContainer;
+		// Create fake selection container if one does not exist.
+		const container = this._fakeSelectionContainer = this._fakeSelectionContainer || createFakeSelectionContainer( domDocument );
+
+		// Bind fake selection container with current selection.
+		this.domConverter.bindFakeSelection( container, this.selection );
 
 		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
-			// Container did not change, but the selection might point a different element with same fake selection.
-			// See https://github.com/ckeditor/ckeditor5-engine/pull/1792#issuecomment-529814641.
-			this.domConverter.bindFakeSelection( container, this.selection );
 			return;
-		}
-
-		// Create fake selection container if one does not exist.
-		if ( !container ) {
-			this._fakeSelectionContainer = container = domDocument.createElement( 'div' );
-
-			Object.assign( container.style, {
-				position: 'fixed',
-				top: 0,
-				left: '-9999px',
-				// See https://github.com/ckeditor/ckeditor5/issues/752.
-				width: '42px'
-			} );
-
-			// Fill it with a text node so we can update it later.
-			container.textContent = '\u00A0';
 		}
 
 		if ( !container.parentElement || container.parentElement != domRoot ) {
@@ -730,9 +715,6 @@ export default class Renderer {
 		domSelection.removeAllRanges();
 		domRange.selectNodeContents( container );
 		domSelection.addRange( domRange );
-
-		// Bind fake selection container with current selection.
-		this.domConverter.bindFakeSelection( container, this.selection );
 	}
 
 	/**
@@ -1004,4 +986,26 @@ function filterOutFakeSelectionContainer( domChildList, fakeSelectionContainer )
 	}
 
 	return childList;
+}
+
+// Creates a fake selection container for a given document.
+//
+// @private
+// @param {Document} domDocument
+// @returns {HTMLElement}
+function createFakeSelectionContainer( domDocument ) {
+	const container = domDocument.createElement( 'div' );
+
+	Object.assign( container.style, {
+		position: 'fixed',
+		top: 0,
+		left: '-9999px',
+		// See https://github.com/ckeditor/ckeditor5/issues/752.
+		width: '42px'
+	} );
+
+	// Fill it with a text node so we can update it later.
+	container.textContent = '\u00A0';
+
+	return container;
 }
