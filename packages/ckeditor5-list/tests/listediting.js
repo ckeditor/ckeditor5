@@ -1333,20 +1333,62 @@ describe( 'ListEditing', () => {
 					'</ul>'
 				);
 
-				// test( 'ul in deeply nested ul/ol 2',
-				// 	'<ol>' +
-				// 		'<ul>' +
-				// 			'<ol>' +
-				// 				'<ul>' +
-				// 					'<li>2.1</li>' +
-				// 				'</ul>' +
-				// 			'</ol>' +
-				// 		'</ul>' +
-				// 	'</ol>',
-				// 	'<ul>' +
-				// 	'<li>2.1</li>' +
-				// 	'</ul>'
-				// );
+				test( 'ul in deeply nested ul - base index > 0 #1',
+					'<ul>' +
+						'<li>1.1</li>' +
+						'<li>1.2' +
+							'<ul>' +
+								'<ul>' +
+									'<ul>' +
+										'<ul>' +
+											'<li>2.1</li>' +
+										'</ul>' +
+									'</ul>' +
+								'</ul>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>',
+					'<ul>' +
+						'<li>1.1</li>' +
+						'<li>1.2' +
+							'<ul>' +
+								'<li>2.1</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				test( 'ul in deeply nested ul - base index > 0 #2',
+					'<ul>' +
+						'<li>1.1</li>' +
+						'<li>1.2' +
+							'<ul>' +
+								'<li>2.1</li>' +
+								'<ul>' +
+									'<ul>' +
+										'<ul>' +
+											'<li>3.1</li>' +
+										'</ul>' +
+									'</ul>' +
+								'</ul>' +
+								'<li>2.2</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>',
+					'<ul>' +
+						'<li>1.1</li>' +
+						'<li>1.2' +
+							'<ul>' +
+								'<li>2.1' +
+									'<ul>' +
+										'<li>3.1</li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>2.2</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
 
 				test( 'ul in deeply nested ul inside li',
 					'<ul>' +
