@@ -690,6 +690,6 @@ describe( 'ImageResize', () => {
 	}
 
 	function getFirstResizer( editor ) {
-		return Array.from( editor.plugins.get( 'WidgetResize' ).resizersByWrapper.values() )[ 0 ];
+		return Array.from( editor.plugins.get( 'WidgetResize' ).resizers.values() )[ 0 ];
 	}
 } );
