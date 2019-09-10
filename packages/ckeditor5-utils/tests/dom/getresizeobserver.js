@@ -11,7 +11,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
-describe.only( 'getResizeObserver()', () => {
+describe( 'getResizeObserver()', () => {
 	testUtils.createSinonSandbox();
 
 	it( 'returns the native implementation if available', () => {

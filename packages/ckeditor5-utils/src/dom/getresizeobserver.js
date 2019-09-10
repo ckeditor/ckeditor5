@@ -21,8 +21,7 @@ const RESIZE_CHECK_INTERVAL = 100;
  * In browsers that support the `ResizeObserver` API, the native observer instance is returned.
  * In other browsers, a polyfilled instance is returned instead with a compatible API.
  *
- * See https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver to learn more about the
- * API.
+ * [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) about the native API.
  *
  * @param {Function} callback A function called when any observed element was resized. Refer to the
  * native [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API to
@@ -62,7 +61,7 @@ class ResizeObserverPolyfill {
 	 */
 	constructor( callback ) {
 		/**
-		 * A function called when any observed element was resized.
+		 * A function called when any observed {@link #_elements element} was resized.
 		 *
 		 * @readonly
 		 * @protected
@@ -80,7 +79,7 @@ class ResizeObserverPolyfill {
 		this._elements = new Set();
 
 		/**
-		 * Cached DOM elements bounding rects to compare to upon the next check.
+		 * Cached DOM {@link #_elements elements} bounding rects to compare to upon the next check.
 		 *
 		 * @readonly
 		 * @protected
@@ -90,7 +89,7 @@ class ResizeObserverPolyfill {
 
 		/**
 		 * An UID of the current timeout upon which the observed elements rects
-		 * will be compared to the {@link #_previousRects past rects}.
+		 * will be compared to the {@link #_previousRects previous rects} from the past.
 		 *
 		 * @readonly
 		 * @protected
