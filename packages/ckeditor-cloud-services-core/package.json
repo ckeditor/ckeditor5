@@ -7,22 +7,22 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^12.0.0"
+    "@ckeditor/ckeditor5-utils": "^14.0.0"
   },
   "devDependencies": {
     "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.9",
-    "husky": "^0.14.3",
+    "eslint-config-ckeditor5": "^2.0.0",
+    "husky": "^1.3.1",
     "lint-staged": "^7.0.0"
   },
   "engines": {
-    "node": ">=6.9.0",
-    "npm": ">=3.0.0"
+    "node": ">=8.0.0",
+    "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com",
-  "bugs": "https://github.com/ckeditor/ckeditor-cloud-services-core/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor-cloud-services-core.git"
@@ -33,8 +33,7 @@
     "theme"
   ],
   "scripts": {
-    "lint": "eslint --quiet '**/*.js'",
-    "precommit": "lint-staged"
+    "lint": "eslint --quiet '**/*.js'"
   },
   "lint-staged": {
     "**/*.js": [
@@ -44,5 +43,10 @@
   "eslintIgnore": [
     "src/lib/**",
     "packages/**"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
 }
