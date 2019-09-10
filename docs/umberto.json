@@ -143,10 +143,16 @@
 							"order": 300,
 							"categories": [
 								{
+									"name": "Conversion",
+									"id": "framework-deep-dive-conversion",
+									"slug": "ui",
+									"order": 100
+								},
+								{
 									"name": "User interface",
 									"id": "framework-deep-dive-ui",
 									"slug": "ui",
-									"order": 100
+									"order": 110
 								}
 							]
 						},
