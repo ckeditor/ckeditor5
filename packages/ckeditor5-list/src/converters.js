@@ -1000,6 +1000,31 @@ function isList( viewElement ) {
 
 // Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
 //
+// Also, fixes non HTML compliant lists indents:
+//
+//		before:                                     fixed list:
+//		OL                                          OL
+//		|-> LI (parent LIs: 0)                      |-> LI     (indent: 0)
+//		    |-> OL                                  |-> OL
+//		        |-> OL                                  |
+//		        |   |-> OL                              |
+//		        |       |-> OL                          |
+//		        |           |-> LI (parent LIs: 1)      |-> LI (indent: 1)
+//		        |-> LI (parent LIs: 1)                  |-> LI (indent: 1)
+//
+//		before:                                     fixed list:
+//		OL                                          OL
+//		|-> OL                                      |
+//		    |-> OL                                  |
+//		         |-> OL                             |
+//		             |-> LI (parent LIs: 0)         |-> LI        (indent: 0)
+//
+//		before:                                     fixed list:
+//		OL                                          OL
+//		|-> LI (parent LIs: 0)                      |-> LI         (indent: 0)
+//		|-> OL                                          |-> OL
+//		    |-> LI (parent LIs: 0)                          |-> LI (indent: 1)
+//
 // @param {module:engine/view/element~Element} listItem
 // @param {Object} conversionStore
 // @returns {Number}
@@ -1016,7 +1041,12 @@ function getIndent( listItem ) {
 			// If however the list is nested in other list we should check previous sibling of any of the list elements...
 			const previousSibling = parent.previousSibling;
 
-			// ..,because the we might need increase its indent.
+			// ...because the we might need increase its indent:
+			//		before:                           fixed list:
+			//		OL                                OL
+			//		|-> LI (parent LIs: 0)            |-> LI         (indent: 0)
+			//		|-> OL                                |-> OL
+			//		    |-> LI (parent LIs: 0)                |-> LI (indent: 1)
 			if ( previousSibling && previousSibling.is( 'li' ) ) {
 				indent++;
 			}
