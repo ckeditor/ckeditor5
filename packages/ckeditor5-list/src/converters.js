@@ -996,64 +996,74 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 // @param {module:engine/view/element~Element} viewElement
 // @returns {Boolean}
 function isList( viewElement ) {
-	return viewElement && ( viewElement.is( 'ol' ) || viewElement.is( 'ul' ) );
+	return viewElement.is( 'ol' ) || viewElement.is( 'ul' );
 }
 
-// Calculates list item indent. Handles HTML compliant and non-compliant lists.
+// Returns the indent value for a list item. Handles HTML compliant and non-compliant lists.
 //
 // @param {module:engine/view/element~Element} listItem
 // @param {Object} conversionStore
 // @returns {Number}
 function getIndent( listItem, conversionStore ) {
+	// Indents map caches the indent for the same list (ul/ol).
 	const indentsMap = conversionStore.__indents = conversionStore.__indents || new WeakMap();
 
 	const parentList = listItem.parent;
 
-	let indent;
-
+	// The indent is always 0 for list items without a parent or placed direclty in root.
 	if ( !parentList || !isList( parentList ) ) {
-		indent = 0;
+		return 0;
 	}
 
-	if ( indent === undefined && indentsMap.has( parentList ) ) {
-		indent = indentsMap.get( parentList );
+	// List have been already processed - no need to calculate anything.
+	if ( indentsMap.has( parentList ) ) {
+		return indentsMap.get( parentList );
 	}
 
-	// Semantic list.
-	if ( indent === undefined && parentList.parent && parentList.parent.is( 'li' ) ) {
-		let prevIndent;
+	const indent = calculateIndent( parentList, indentsMap );
 
-		// In most cases this would be true as when li is nested in ul.
-		if ( indentsMap.has( parentList.parent.parent ) ) {
-			prevIndent = indentsMap.get( parentList.parent.parent );
+	indentsMap.set( parentList, indent );
+
+	return indent;
+}
+
+// Calculates indent for parent list.
+function calculateIndent( parentList, indentsMap ) {
+	const wrappingParent = parentList.parent;
+
+	if ( !wrappingParent ) {
+		return 0;
+	}
+
+	// HTML compliant list - ul/ol has li parent.
+	if ( wrappingParent.is( 'li' ) ) {
+		// Standard case: ul > li > ul > li - Get the wrapping li parent's (ul/ol) indent.
+		if ( indentsMap.has( wrappingParent.parent ) ) {
+			return indentsMap.get( wrappingParent.parent ) + 1;
 		}
-		// Edge case - when pasted li with ul inside. LI already checked above.
+		// Edge case: li > ul > li. List item placed directly in root has nested list.
 		else {
-			prevIndent = indentsMap.get( parentList.parent );
+			return 1;
 		}
-
-		indent = prevIndent + 1;
 	}
 
-	// Non semantic list.
-	if ( indent === undefined && isList( parentList.parent ) ) {
+	// Non HTML compliant list - ul/ol has ul/ol parent.
+	if ( isList( wrappingParent ) ) {
 		const previousSibling = parentList.previousSibling;
 
-		// Return list item indent offset - used to fix lists that are not properly nested according to HTML rules.
+		// Resulting offset depends of the nesting condition.
 		//
-		// Returning offset will change the indent from normal flow of a conversion process.
-		//
-		// 1. List item in a wrongly nested list (previous sibling is a list item)
+		// 1. Previous sibling is a list item.
 		//
 		//		before:                           fixed list:
 		//		OL                                OL
 		//		|-> LI                            |-> LI         (indent: 0)
 		//		|-> OL                                |-> OL
-		//		    |-> LI (offset: +1)                   |-> LI (indent: 1)
+		//		    |-> LI                                |-> LI (indent: 1)
 		//
 		// 2. List nested directly in other list as a first child.
 		//
-		//  The offset will be 0 if one of the ancestors is nested in li so the indent is already properly calculated.
+		//  a) The indent will not be offset if one of the ancestors is nested in li so the indent is already properly calculated.
 		//
 		//		before:                           fixed list:
 		//		OL                                OL
@@ -1062,56 +1072,45 @@ function getIndent( listItem, conversionStore ) {
 		//		        |-> OL                            |-> LI (indent: 1)
 		//		        |   |-> OL                        |-> LI (indent: 1)
 		//		        |       |-> OL
-		//		        |           |-> LI (offset: 0)
-		//		        |-> LI (offset: 0)
+		//		        |           |-> LI
+		//		        |-> LI
 		//
-		//  The offset will be 0 if list is not nested in any other list item:
+		//  b) The indent will not be offset if list is not nested in any other list item:
 		//
 		//		before:                           fixed list:
 		//		OL                                OL
 		//		|-> OL                             |-> LI        (indent: 0)
 		//		    |-> OL
 		//		         |-> OL
-		//		             |-> LI (offset: 0)
-		//
-		// @param {module:engine/view/element~Element} listItem
-		// @param {Object} conversionStore
-		// @returns {Number}
+		//		             |-> LI
 
+		// Case 1 - previous sibling is li so we nest this list inside.
 		if ( previousSibling && previousSibling.is( 'li' ) ) {
-			indent = indentsMap.get( previousSibling.parent ) + 1;
-		} else {
-			let parent = parentList.parent;
+			return indentsMap.get( previousSibling.parent ) + 1;
+		}
 
-			while ( isList( parent ) && !indentsMap.has( parent ) ) {
-				parent = parent.parent;
-			}
+		// Case 2: The list item is nested directly in other list - find the best indent for this scenario.
+		let parent = wrappingParent;
 
-			if ( indentsMap.has( parent ) ) {
-				indent = indentsMap.get( parent ) + 1;
-			} else {
-				if ( parent.is( 'li' ) && indentsMap.has( parent.parent ) ) {
-					indent = indentsMap.get( parent.parent ) + 1;
-				} else {
-					// Wrong if
-					indent = 0;
-				}
-			}
-			// List is nested directly in other list as a first item.
-			// offset = getNestedListOffset( list, conversionStore );
+		// Find first ul/ol parent that has mapped indent.
+		while ( isList( parent ) && !indentsMap.has( parent ) ) {
+			parent = parent.parent;
+		}
+
+		// We always nest one lever deeper than...
+		// ...already processed list - if found - or...
+		if ( indentsMap.has( parent ) ) {
+			return indentsMap.get( parent ) + 1;
+		}
+
+		// ...HTML compliant list (if present).
+		if ( parent.is( 'li' ) && indentsMap.has( parent.parent ) ) {
+			return indentsMap.get( parent.parent ) + 1;
 		}
 	}
 
-	if ( indent === undefined ) {
-		indent = 0;
-	}
-
-	if ( parentList ) {
-		indentsMap.set( parentList, indent );
-	} else {
-		// For edge cases.
-		indentsMap.set( listItem, indent );
-	}
-
-	return indent;
+	// Will fallback to base indent in other cases:
+	// - wrapping parent is neither list nor list item
+	// - the indent should be zero for non-compliant list if li is deeply nested in other lists (case 2b.)
+	return 0;
 }
