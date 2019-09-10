@@ -690,12 +690,15 @@ export default class Renderer {
 	 * @param {HTMLElement} domRoot A valid DOM root where the fake selection container should be added.
 	 */
 	_updateFakeSelection( domRoot ) {
-		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
-			return;
-		}
-
 		const domDocument = domRoot.ownerDocument;
 		let container = this._fakeSelectionContainer;
+
+		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
+			// Container did not change, but the selection might point a different element with same fake selection.
+			// See https://github.com/ckeditor/ckeditor5-engine/pull/1792#issuecomment-529814641.
+			this.domConverter.bindFakeSelection( container, this.selection );
+			return;
+		}
 
 		// Create fake selection container if one does not exist.
 		if ( !container ) {
