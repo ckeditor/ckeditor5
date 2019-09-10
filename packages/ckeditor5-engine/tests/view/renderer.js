@@ -1848,11 +1848,6 @@ describe( 'Renderer', () => {
 
 					expect( createRangeSpy.callCount ).to.be.equal( 2 );
 				} );
-
-				it( '_fakeSelectionNeedsUpdate returns proper result when container is uninitialized', () => {
-					selection._setTo( selection.getRanges(), { fake: true, label: 'selection 1' } );
-					expect( renderer._fakeSelectionNeedsUpdate( domRoot ) ).to.be.true;
-				} );
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
