@@ -174,10 +174,8 @@ export default class Title extends Plugin {
 		data.downcastDispatcher.convertInsert( rootRange, viewWriter );
 
 		// Convert all markers that intersects with body.
-		// Avoid markers that starts before body, move it to the first selection position.
 		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 ) );
-		const bodySelectionPosition = model.schema.getNearestSelectionRange( bodyStartPosition, 'forward' ).start;
-		const bodyRange = model.createRange( bodySelectionPosition, model.createPositionAt( root, 'end' ) );
+		const bodyRange = model.createRange( bodyStartPosition, model.createPositionAt( root, 'end' ) );
 
 		for ( const marker of model.markers ) {
 			const intersection = bodyRange.getIntersection( marker.getRange() );

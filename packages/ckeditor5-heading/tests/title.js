@@ -566,6 +566,28 @@ describe( 'Title', () => {
 			} );
 
 			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
+				'<comment></comment><p>Ba<comment></comment>r</p>'
+			);
+		} );
+
+		it( 'should return marker - starts at the beginning of the body ends inside the body', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const body = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( body, 0 ), model.createPositionAt( body, 2 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
 				'<p><comment></comment>Ba<comment></comment>r</p>'
 			);
 		} );
