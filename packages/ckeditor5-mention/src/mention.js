@@ -156,7 +156,7 @@ export default class Mention extends Plugin {
  * @property {String} [marker] The character which triggers autocompletion for mention. It must be a single character.
  * @property {Array.<module:mention/mention~MentionFeedItem>|Function} feed Autocomplete items. Provide an array for
  * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
- * matching items (directly, or via a promise).
+ * matching items (directly, or via a promise). If a function is passed, it is executed in the context of the editor instance.
  * @property {Number} [minimumCharacters=0] Specifies after how many characters the autocomplete panel should be shown.
  * @property {Function} [itemRenderer] A function that renders a {@link module:mention/mention~MentionFeedItem}
  * to the autocomplete panel.
