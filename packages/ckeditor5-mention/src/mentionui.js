@@ -135,7 +135,7 @@ export default class MentionUI extends Plugin {
 			}
 
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
-			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
+			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
 			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
 			const itemRenderer = mentionDescription.itemRenderer;
 
