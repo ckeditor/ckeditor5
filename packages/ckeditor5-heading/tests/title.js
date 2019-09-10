@@ -591,6 +591,26 @@ describe( 'Title', () => {
 				'<p><comment></comment>Ba<comment></comment>r</p>'
 			);
 		} );
+
+		it( 'should do nothing when marker is fully out of the body range', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( title, 1 ), model.createPositionAt( title, 2 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>Bar</p>' );
+		} );
 	} );
 
 	describe( 'placeholders', () => {
