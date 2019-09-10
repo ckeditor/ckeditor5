@@ -371,22 +371,13 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		const listItem = writer.createElement( 'listItem' );
 
 		// 2. Handle `listItem` model element attributes.
-		conversionStore.indent = conversionStore.indent || 0;
+		const indent = getIndent( data.viewItem, conversionStore );
 
-		// The offset is used if list is not nested according to rules from HTML specification, e.g. directly in other list.
-		// We calculate offset here as the indent increment is done when converting children of other list items
-		// and it might be set incorrectly.
-		const offset = getIncompatibleListOffset( data.viewItem, conversionStore );
-		const resultingIndent = conversionStore.indent + offset;
-
-		writer.setAttribute( 'listIndent', resultingIndent, listItem );
+		writer.setAttribute( 'listIndent', indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'listType', type, listItem );
-
-		// `listItem`s created recursively should have bigger indent.
-		conversionStore.indent++;
 
 		// Try to find allowed parent for list item.
 		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
@@ -400,8 +391,6 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		writer.insert( listItem, splitResult.position );
 
 		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi );
-
-		conversionStore.indent--;
 
 		// Result range starts before the first item and ends after the last.
 		data.modelRange = writer.createRange( data.modelCursor, nextPosition );
@@ -1007,96 +996,122 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 // @param {module:engine/view/element~Element} viewElement
 // @returns {Boolean}
 function isList( viewElement ) {
-	return viewElement.is( 'ol' ) || viewElement.is( 'ul' );
+	return viewElement && ( viewElement.is( 'ol' ) || viewElement.is( 'ul' ) );
 }
 
-// Return list item indent offset - used to fix lists that are not properly nested according to HTML rules.
-//
-// Returning offset will change the indent from normal flow of a conversion process.
-//
-// 1. List item in a wrongly nested list (previous sibling is a list item)
-//
-//		before:                           fixed list:
-//		OL                                OL
-//		|-> LI                            |-> LI         (indent: 0)
-//		|-> OL                                |-> OL
-//		    |-> LI (offset: +1)                   |-> LI (indent: 1)
-//
-// 2. List nested directly in other list as a first child.
-//
-//  The offset will be 0 if one of the ancestors is nested in li so the indent is already properly calculated.
-//
-//		before:                           fixed list:
-//		OL                                OL
-//		|-> LI                            |-> LI         (indent: 0)
-//		    |-> OL                            |-> OL
-//		        |-> OL                            |-> LI (indent: 1)
-//		        |   |-> OL                        |-> LI (indent: 1)
-//		        |       |-> OL
-//		        |           |-> LI (offset: 0)
-//		        |-> LI (offset: 0)
-//
-//  The offset will be 0 if list is not nested in any other list item:
-//
-//		before:                           fixed list:
-//		OL                                OL
-//		|-> OL                             |-> LI        (indent: 0)
-//		    |-> OL
-//		         |-> OL
-//		             |-> LI (offset: 0)
+// Calculates list item indent. Handles HTML compliant and non-compliant lists.
 //
 // @param {module:engine/view/element~Element} listItem
 // @param {Object} conversionStore
 // @returns {Number}
-function getIncompatibleListOffset( listItem, conversionStore ) {
-	// Ensure proper conversion store value.
-	// Indent modifiers stores already calculated indentation modifiers.
-	conversionStore.indentOffsets = conversionStore.indentOffsets || new WeakMap();
+function getIndent( listItem, conversionStore ) {
+	const indentsMap = conversionStore.__indents = conversionStore.__indents || new WeakMap();
 
-	const list = listItem.parent;
+	const parentList = listItem.parent;
 
-	// List item might be pasted without parent list or be directly in pasted content - no need to calculate or store anything.
-	if ( !list || !list.parent ) {
-		return 0;
+	let indent;
+
+	if ( !parentList || !isList( parentList ) ) {
+		indent = 0;
 	}
 
-	let offset = 0;
+	if ( indent === undefined && indentsMap.has( parentList ) ) {
+		indent = indentsMap.get( parentList );
+	}
 
-	if ( isList( list.parent ) ) {
-		// Only consider list nested directly in other list so when not wrapped by LI element.
-		const previousSibling = list.previousSibling;
+	// Semantic list.
+	if ( indent === undefined && parentList.parent && parentList.parent.is( 'li' ) ) {
+		let prevIndent;
+
+		// In most cases this would be true as when li is nested in ul.
+		if ( indentsMap.has( parentList.parent.parent ) ) {
+			prevIndent = indentsMap.get( parentList.parent.parent );
+		}
+		// Edge case - when pasted li with ul inside. LI already checked above.
+		else {
+			prevIndent = indentsMap.get( parentList.parent );
+		}
+
+		indent = prevIndent + 1;
+	}
+
+	// Non semantic list.
+	if ( indent === undefined && isList( parentList.parent ) ) {
+		const previousSibling = parentList.previousSibling;
+
+		// Return list item indent offset - used to fix lists that are not properly nested according to HTML rules.
+		//
+		// Returning offset will change the indent from normal flow of a conversion process.
+		//
+		// 1. List item in a wrongly nested list (previous sibling is a list item)
+		//
+		//		before:                           fixed list:
+		//		OL                                OL
+		//		|-> LI                            |-> LI         (indent: 0)
+		//		|-> OL                                |-> OL
+		//		    |-> LI (offset: +1)                   |-> LI (indent: 1)
+		//
+		// 2. List nested directly in other list as a first child.
+		//
+		//  The offset will be 0 if one of the ancestors is nested in li so the indent is already properly calculated.
+		//
+		//		before:                           fixed list:
+		//		OL                                OL
+		//		|-> LI                            |-> LI         (indent: 0)
+		//		    |-> OL                            |-> OL
+		//		        |-> OL                            |-> LI (indent: 1)
+		//		        |   |-> OL                        |-> LI (indent: 1)
+		//		        |       |-> OL
+		//		        |           |-> LI (offset: 0)
+		//		        |-> LI (offset: 0)
+		//
+		//  The offset will be 0 if list is not nested in any other list item:
+		//
+		//		before:                           fixed list:
+		//		OL                                OL
+		//		|-> OL                             |-> LI        (indent: 0)
+		//		    |-> OL
+		//		         |-> OL
+		//		             |-> LI (offset: 0)
+		//
+		// @param {module:engine/view/element~Element} listItem
+		// @param {Object} conversionStore
+		// @returns {Number}
 
 		if ( previousSibling && previousSibling.is( 'li' ) ) {
-			// List is nested in other list but after other list item.
-			offset = ( conversionStore.indentOffsets.get( previousSibling.parent ) || 0 ) + 1;
+			indent = indentsMap.get( previousSibling.parent ) + 1;
 		} else {
+			let parent = parentList.parent;
+
+			while ( isList( parent ) && !indentsMap.has( parent ) ) {
+				parent = parent.parent;
+			}
+
+			if ( indentsMap.has( parent ) ) {
+				indent = indentsMap.get( parent ) + 1;
+			} else {
+				if ( parent.is( 'li' ) && indentsMap.has( parent.parent ) ) {
+					indent = indentsMap.get( parent.parent ) + 1;
+				} else {
+					// Wrong if
+					indent = 0;
+				}
+			}
 			// List is nested directly in other list as a first item.
-			offset = getNestedListOffset( list, conversionStore );
+			// offset = getNestedListOffset( list, conversionStore );
 		}
 	}
 
-	// Store the indent modifier of parent list.
-	conversionStore.indentOffsets.set( list, offset );
-
-	return offset;
-}
-
-// Return list item indent offset - used to fix lists that are not properly nested according to HTML rules.
-//
-// @param {module:engine/view/element~Element} listItem
-// @param {Object} conversionStore
-// @returns {Number}
-function getNestedListOffset( list, conversionStore ) {
-	let listParent = list.parent;
-
-	while ( isList( listParent ) && !conversionStore.indentOffsets.has( listParent ) ) {
-		listParent = listParent.parent;
+	if ( indent === undefined ) {
+		indent = 0;
 	}
 
-	// If there was a list ancestor with offset we must return greater offset.
-	if ( conversionStore.indentOffsets.has( listParent ) ) {
-		return conversionStore.indentOffsets.get( listParent ) + 1;
+	if ( parentList ) {
+		indentsMap.set( parentList, indent );
+	} else {
+		// For edge cases.
+		indentsMap.set( listItem, indent );
 	}
 
-	return 0;
+	return indent;
 }
