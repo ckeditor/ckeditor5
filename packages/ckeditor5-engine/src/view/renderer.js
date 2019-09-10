@@ -690,6 +690,10 @@ export default class Renderer {
 	 * @param {HTMLElement} domRoot A valid DOM root where the fake selection container should be added.
 	 */
 	_updateFakeSelection( domRoot ) {
+		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
+			return;
+		}
+
 		const domDocument = domRoot.ownerDocument;
 		let container = this._fakeSelectionContainer;
 
@@ -711,8 +715,6 @@ export default class Renderer {
 
 		if ( !container.parentElement || container.parentElement != domRoot ) {
 			domRoot.appendChild( container );
-		} else if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
-			return;
 		}
 
 		// Update contents.
@@ -807,12 +809,12 @@ export default class Renderer {
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
-		if ( !container || container.parentElement != domRoot ) {
+		if ( !container || container.parentElement !== domRoot ) {
 			return true;
 		}
 
 		// Make sure that the selection actually is within the fake selection.
-		if ( !domSelection.anchorNode.isSameNode( container ) ) {
+		if ( domSelection.anchorNode !== container && !container.contains( domSelection.anchorNode ) ) {
 			return true;
 		}
 
