@@ -13,6 +13,7 @@ import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -38,7 +39,8 @@ describe( 'Autoformat', () => {
 					BoldEditing,
 					ItalicEditing,
 					CodeEditing,
-					BlockQuoteEditing
+					BlockQuoteEditing,
+					ShiftEnter
 				]
 			} )
 			.then( newEditor => {
@@ -310,6 +312,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+		} );
+
+		it( 'should work with <softBreak>s in paragraph', () => {
+			setData( model, '<paragraph>foo<softBreak></softBreak>**barbaz*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo<softBreak></softBreak><$text bold="true">barbaz</$text>[]</paragraph>' );
 		} );
 	} );
 

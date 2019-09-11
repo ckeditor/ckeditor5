@@ -10,7 +10,8 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^12.3.0"
+    "@ckeditor/ckeditor5-core": "^12.3.0",
+    "@ckeditor/ckeditor5-typing": "^12.2.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^11.1.4",
@@ -21,7 +22,6 @@
     "@ckeditor/ckeditor5-heading": "^11.0.5",
     "@ckeditor/ckeditor5-list": "^12.1.0",
     "@ckeditor/ckeditor5-paragraph": "^11.0.5",
-    "@ckeditor/ckeditor5-typing": "^12.2.0",
     "@ckeditor/ckeditor5-undo": "^11.0.5",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",

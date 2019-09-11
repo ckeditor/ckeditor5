@@ -7,6 +7,8 @@
  * @module autoformat/inlineautoformatediting
  */
 
+import getText from '@ckeditor/ckeditor5-typing/src/utils/gettext';
+
 /**
  * The inline autoformatting engine. It allows to format various inline patterns. For example,
  * it can be configured to make "foo" bold when typed `**foo**` (the `**` markers will be removed).
@@ -167,12 +169,14 @@ export default class InlineAutoformatEditing {
 			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
 				return;
 			}
+			const model = editor.model;
 
-			const block = selection.focus.parent;
-			const text = getText( block ).slice( 0, selection.focus.offset );
+			const focus = selection.focus;
+			const block = focus.parent;
+			const { text, range } = getText( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
 			const testOutput = testCallback( text );
-			const rangesToFormat = testOutputToRanges( block, testOutput.format, editor.model );
-			const rangesToRemove = testOutputToRanges( block, testOutput.remove, editor.model );
+			const rangesToFormat = testOutputToRanges( range.start, testOutput.format, editor.model );
+			const rangesToRemove = testOutputToRanges( range.start, testOutput.remove, editor.model );
 
 			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
 				return;
@@ -197,26 +201,17 @@ export default class InlineAutoformatEditing {
 	}
 }
 
-// Returns whole text from parent element by adding all data from text nodes together.
-//
-// @private
-// @param {module:engine/model/element~Element} element
-// @returns {String}
-function getText( element ) {
-	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
-}
-
 // Converts output of the test function provided to the InlineAutoformatEditing and converts it to the model ranges
 // inside provided block.
 //
 // @private
-// @param {module:engine/model/element~Element} block
+// @param {module:engine/model/position~Position} start
 // @param {Array.<Array>} arrays
 // @param {module:engine/model/model~Model} model
-function testOutputToRanges( block, arrays, model ) {
+function testOutputToRanges( start, arrays, model ) {
 	return arrays
 		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
 		.map( array => {
-			return model.createRange( model.createPositionAt( block, array[ 0 ] ), model.createPositionAt( block, array[ 1 ] ) );
+			return model.createRange( start.getShiftedBy( array[ 0 ] ), start.getShiftedBy( array[ 1 ] ) );
 		} );
 }
