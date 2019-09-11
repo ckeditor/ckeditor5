@@ -53,13 +53,13 @@ yarn add --dev \
 	@ckeditor/ckeditor5-widget \
 	babel-loader \
 	css-loader \
-	postcss-loader \
-	raw-loader \
+	postcss-loader@3 \
+	raw-loader@3 \
 	react \
 	react-dom \
-	style-loader \
-	webpack \
-	webpack-cli
+	style-loader@1 \
+	webpack@4 \
+	webpack-cli@3
 ```
 
 Create a minimal [webpack](https://webpack.js.org) configuration and save in as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor 5 and React, check out the {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source "Integrating CKEditor 5 built from source"} section of the CKEditor 5 React component guide.
@@ -99,7 +99,7 @@ module.exports = {
 					{
 						loader: 'style-loader',
 						options: {
-							singleton: true
+							injectType: 'singletonStyleTag'
 						}
 					},
 					{
@@ -182,7 +182,7 @@ Entrypoint main [big] = bundle.js bundle.js.map
 
 You should see a "Hello world" application in your web browser, which might not be much but it is a good start:
 
-{@img assets/img/TODO.png TODO}
+{@img assets/img/using-react-in-a-widget-1.png Screenshot of the "Hello world" application in web browser.}
 
 ## Application structure
 
@@ -1283,3 +1283,20 @@ export default class ProductPreview extends React.Component {
 	}
 }
 ````
+
+### `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Using React components in CKEditor 5 widgets</title>
+		<link rel="stylesheet" href="assets/styles.css">
+	</head>
+	<body>
+		<div class="app"></div>
+		<script src="dist/bundle.js"></script>
+	</body>
+</html>
+```
