@@ -165,8 +165,8 @@ export default class ToolbarView extends View {
 		} );
 
 		/**
-		 * A flag used by {@link #_updateGroupedItems} method to make sure no concurrent updates
-		 * are performed to the {@link #items} and {@link #groupedItems}. Because {@link #_updateGroupedItems}
+		 * A flag used by {@link #updateGroupedItems} method to make sure no concurrent updates
+		 * are performed to the {@link #items} and {@link #groupedItems}. Because {@link #updateGroupedItems}
 		 * manages those collections but also is executed upon changes in those collections, this flag
 		 * ensures no infinite loops occur.
 		 *
@@ -179,7 +179,7 @@ export default class ToolbarView extends View {
 		this._updateGroupedItemsLock = false;
 
 		/**
-		 * A cached value of the horizontal padding style used by {@link #_updateGroupedItems}
+		 * A cached value of the horizontal padding style used by {@link #updateGroupedItems}
 		 * to manage the {@link #items} that do not fit into a single toolbar line. This value
 		 * can be reused between updates because it is unlikely that the padding will change
 		 * and re–using `Window.getComputedStyle()` is expensive.
@@ -296,11 +296,11 @@ export default class ToolbarView extends View {
 		} );
 
 		this.items.on( 'add', () => {
-			this._updateGroupedItems();
+			this.updateGroupedItems();
 		} );
 
 		this.items.on( 'remove', () => {
-			this._updateGroupedItems();
+			this.updateGroupedItems();
 		} );
 
 		// Start listening for the keystrokes coming from #element.
@@ -387,7 +387,7 @@ export default class ToolbarView extends View {
 	 * {@link #groupedItems} to be returned back to {@link #items} and still fit into a single row
 	 * without the toolbar wrapping.
 	 */
-	_updateGroupedItems() {
+	updateGroupedItems() {
 		if ( !this.shouldGroupWhenFull ) {
 			return;
 		}
@@ -623,7 +623,7 @@ export default class ToolbarView extends View {
 
 		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
 			if ( !previousWidth || previousWidth.width !== entry.contentRect.width ) {
-				this._updateGroupedItems();
+				this.updateGroupedItems();
 			}
 
 			previousWidth = entry.contentRect.width;
@@ -631,7 +631,7 @@ export default class ToolbarView extends View {
 
 		this._resizeObserver.observe( this.element );
 
-		this._updateGroupedItems();
+		this.updateGroupedItems();
 	}
 
 	/**
