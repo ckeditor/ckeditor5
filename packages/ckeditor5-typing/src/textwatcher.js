@@ -82,7 +82,7 @@ export default class TextWatcher {
 	 * @param {Object} data Data object for event.
 	 */
 	_evaluateTextBeforeSelection( suffix, data = {} ) {
-		const text = this._getText();
+		const { text, range } = this._getText();
 
 		const textHasMatch = this.testCallback( text );
 
@@ -98,7 +98,7 @@ export default class TextWatcher {
 		this.hasMatch = textHasMatch;
 
 		if ( textHasMatch ) {
-			const eventData = Object.assign( data, { text } );
+			const eventData = Object.assign( data, { text, range } );
 
 			/**
 			 * Fired whenever the text watcher found a match for data changes.
@@ -122,7 +122,7 @@ export default class TextWatcher {
 	/**
 	 * Returns the text before the caret from the current selection block.
 	 *
-	 * @returns {String|undefined} The text from the block or undefined if the selection is not collapsed.
+	 * @returns {Object} The text from the block or undefined if the selection is not collapsed.
 	 * @private
 	 */
 	_getText() {
@@ -132,23 +132,29 @@ export default class TextWatcher {
 
 		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
 
-		return _getText( rangeBeforeSelection );
+		return _getText( rangeBeforeSelection, model );
 	}
 }
 
 // Returns the whole text from a given range by adding all data from the text nodes together.
 //
 // @param {module:engine/model/range~Range} range
-// @returns {String}
-function _getText( range ) {
-	return Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+// @returns {Object}
+function _getText( range, model ) {
+	let start = range.start;
+
+	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
 		if ( node.is( 'softBreak' ) ) {
-			// Trim text to a softBreak.
+			// Trim text to a <softBreak> and update range start.
+			start = model.createPositionAfter( node );
+
 			return '';
 		}
 
 		return rangeText + node.data;
 	}, '' );
+
+	return { text, range: model.createRange( start, range.end ) };
 }
 
 mix( TextWatcher, EmitterMixin );
