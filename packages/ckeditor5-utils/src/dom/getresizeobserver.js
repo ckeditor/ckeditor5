@@ -26,7 +26,7 @@ const RESIZE_CHECK_INTERVAL = 100;
  * @param {Function} callback A function called when any observed element was resized. Refer to the
  * native [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API to
  * learn more.
- * @returns {Function|module:utils/dom/getresizeobserver~ResizeObserverPolyfill} An observer instance.
+ * @returns {module:utils/dom/getresizeobserver~ResizeObserver} An observer instance.
  */
 export default function getResizeObserver( callback ) {
 	// TODO: One day, the `ResizeObserver` API will be supported in all modern web browsers.
@@ -220,3 +220,10 @@ class ResizeObserverPolyfill {
 }
 
 mix( ResizeObserverPolyfill, DomEmitterMixin );
+
+/**
+ * A resize observer object (either native or {@link module:utils/dom/getresizeobserver~getResizeObserver polyfilled})
+ * offering the [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API.
+ *
+ * @typedef {Function} module:utils/dom/getresizeobserver~ResizeObserver
+ */
