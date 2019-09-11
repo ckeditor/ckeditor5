@@ -14,7 +14,7 @@ Before you start, here are some things to keep in mind:
 * We expect contributions to follow the high-quality code standards that we follow, including [coding style](#code-style) and [tests](#tests). Lack of attention to this point may either make it slow to adopt a contribution or even force us to reject it altogether.
 * There is no guarantee that your contribution will be incorporated into the project code. Still, pull requests make it easy for you to keep them for your own use or for others who may be interested in them.
 * If you plan to start working on a bigger task, it might be worth asking the core team (beforehand) whether a specific feature or a solution to an issue will be accepted.
-* If you need any assistance when creating a patch or implementing a feature, ping us under the ticket or on [Gitter](https://gitter.im/ckeditor/ckeditor5).
+* If you need any assistance when creating a patch or implementing a feature, ping us under the ticket.
 * [Having a CLA](#contributor-license-agreement-cla) is essential to have your contributions accepted.
 
 ### Setting up the development environment
