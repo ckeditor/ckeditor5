@@ -9,6 +9,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import getText from './utils/gettext';
 
 /**
  * The text watcher feature.
@@ -132,29 +133,8 @@ export default class TextWatcher {
 
 		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
 
-		return _getText( rangeBeforeSelection, model );
+		return getText( rangeBeforeSelection, model );
 	}
-}
-
-// Returns the whole text from a given range by adding all data from the text nodes together.
-//
-// @param {module:engine/model/range~Range} range
-// @returns {Object}
-function _getText( range, model ) {
-	let start = range.start;
-
-	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
-		if ( node.is( 'softBreak' ) ) {
-			// Trim text to a <softBreak> and update range start.
-			start = model.createPositionAfter( node );
-
-			return '';
-		}
-
-		return rangeText + node.data;
-	}, '' );
-
-	return { text, range: model.createRange( start, range.end ) };
 }
 
 mix( TextWatcher, EmitterMixin );
