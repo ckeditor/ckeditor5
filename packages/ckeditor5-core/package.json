@@ -23,6 +23,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^14.0.0",
     "@ckeditor/ckeditor5-utils": "^14.0.0",
+    "@wiris/mathtype-ckeditor5": "^7.16.1",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
