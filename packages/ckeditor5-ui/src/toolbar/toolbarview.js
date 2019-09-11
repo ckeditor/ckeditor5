@@ -14,7 +14,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
-import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -53,7 +53,11 @@ export default class ToolbarView extends View {
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 
 		/**
-		 * Collection of the toolbar items (like buttons).
+		 * Collection of the toolbar items (buttons, drop–downs, etc.).
+		 *
+		 * **Note:** When {@link #shouldGroupWhenFull} is `true`, items that do not fit into a single
+		 * row of a toolbar will be moved to the {@link #groupedItems} collection. Check out
+		 * {@link #shouldGroupWhenFull} to learn more.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -61,7 +65,18 @@ export default class ToolbarView extends View {
 		this.items = this.createCollection();
 
 		/**
-		 * Tracks information about DOM focus in the list.
+		 * Collection of the toolbar items (buttons, drop–downs, etc.) that do not fit into a single
+		 * row of the toolbar, created on demand when {@link #shouldGroupWhenFull} is `true`. The
+		 * toolbar transfers its items between {@link #items} and this collection dynamically as
+		 * the geometry changes.
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this.groupedItems = null;
+
+		/**
+		 * Tracks information about DOM focus in the toolbar.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -69,7 +84,8 @@ export default class ToolbarView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}
+		 * to handle keyboard navigation in the toolbar.
 		 *
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
@@ -77,17 +93,30 @@ export default class ToolbarView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * The dropdown that aggregates items that overflow. It is displayed
-		 * at the end of the toolbar and offers a nested toolbar which displays items
-		 * that would normally overflow.
+		 * The dropdown that aggregates {@link #items} that do not fit into a single row of the toolbar.
+		 * It is displayed at the end of the toolbar and offers another (nested) toolbar which displays
+		 * items that would normally overflow. Its content corresponds to the {@link #groupedItems}
+		 * collection.
 		 *
-		 * **Note:** It is created on demand when the space in the toolbar is scarce and only
-		 * if {@link #shouldGroupWhenFull} is `true`.
+		 * **Note:** Created on demand when there is not enough space in the toolbar and only
+		 * if {@link #shouldGroupWhenFull} is `true`. If the geometry of the toolbar changes allowing
+		 * all items in a single row again, the dropdown will hide.
 		 *
 		 * @readonly
-		 * @member {module:ui/dropdown/dropdownview~DropdownView} #overflowedItemsDropdown
+		 * @member {module:ui/dropdown/dropdownview~DropdownView} #groupedItemsDropdown
 		 */
-		this.overflowedItemsDropdown = null;
+		this.groupedItemsDropdown = null;
+
+		/**
+		 * A view containing toolbar {@link #items}.
+		 *
+		 * **Note:** When {@link #shouldGroupWhenFull} is `true`, items that do not fit into a single
+		 * row of a toolbar will be moved to the {@link #groupedItemsDropdown}.
+		 *
+		 * @readonly
+		 * @member {module:ui/toolbar/toolbarview~ToolbarItemsView}
+		 */
+		this.itemsView = this._createItemsView();
 
 		/**
 		 * Controls the orientation of toolbar items.
@@ -106,7 +135,13 @@ export default class ToolbarView extends View {
 		this.set( 'class' );
 
 		/**
-		 * TODO
+		 * When set `true`, the toolbar will automatically group {@link #items} that would normally
+		 * wrap to the next line, when there is not enough space to display them in a single row,
+		 * for instance, if the parent container is narrow.
+		 *
+		 * Grouped items land in the {@link #groupedItemsDropdown drop–down} displayed on–demand
+		 * at the end of the toolbar. When the geometry of the toolbar allows all items to be displayed
+		 * in a single row again, they will be moved from the drop–down back to the main space.
 		 *
 		 * @observable
 		 * @member {Boolean} #shouldGroupWhenFull
@@ -121,24 +156,26 @@ export default class ToolbarView extends View {
 		} );
 
 		/**
-		 * TODO
+		 * A flag used by {@link #_updateGroupedItems} method to make sure no concurrent updates
+		 * are performed to the {@link #items} and {@link #groupedItems}. Because {@link #_updateGroupedItems}
+		 * manages those collections but also is executed upon changes in those collections, this flag
+		 * ensures no infinite loops occur.
 		 *
-		 * @readonly
-		 * @member {itemsView}
-		 */
-		this.itemsView = this._createItemsView();
-
-		/**
-		 * TODO
+		 * **Note:** Used only when {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
 		 * @protected
 		 * @member {Boolean}
 		 */
-		this._updateLock = false;
+		this._updateGroupedItemsLock = false;
 
 		/**
-		 * TODO
+		 * A cached value of the horizontal padding style used by {@link #_updateGroupedItems}
+		 * to manage the {@link #items} that do not fit into a single toolbar line. This value
+		 * can be reused between updates because it is unlikely that the padding will change
+		 * and re–using `Window.getComputedStyle()` is expensive.
+		 *
+		 * **Note:** Set only when {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
 		 * @protected
@@ -147,19 +184,26 @@ export default class ToolbarView extends View {
 		this._horizontalPadding = null;
 
 		/**
-		 * TODO
+		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
+		 * and manage items that do not fit into a single row.
+		 *
+		 * **Note:** Created dynamically only when {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {}
+		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
 		 */
 		this._resizeObserver = null;
 
 		/**
+		 * A top–level collection aggregating building blocks of the toolbar. It mainly exists to
+		 * make sure {@link #items} do not mix up with the {@link #groupedItemsDropdown}, which helps
+		 * a lot with the {@link #shouldGroupWhenFull} logic (no re–ordering issues, exclusions, etc.).
+		 *
 		 *	┌────────────────────────────────── #_components ──────────────────────────────────────┐
 		 *	|                                                                                      |
 		 *	|    ┌──── #itemsView───────┐ ┌──────────────────────┐ ┌──────────────────────────┐    |
-		 *	|    |         ...          | | ToolbarSeparatorView | | #overflowedItemsDropdown |    |
+		 *	|    |         ...          | | ToolbarSeparatorView | |  #groupedItemsDropdown   |    |
 		 *	|    └─────────────────────-┘ └──────────────────────┘ └──────────────────────────┘    |
 		 *	|                             \---------- only when #shouldGroupWhenFull ---------/    |
 		 *	+──────────────────────────────────────────────────────────────────────────────────────┘
@@ -172,7 +216,10 @@ export default class ToolbarView extends View {
 		this._components.add( this.itemsView );
 
 		/**
-		 * Helps cycling over focusable {@link #items} in the toolbar.
+		 * Helps cycling over focusable {@link #items} in the toolbar residing in the {@link #itemsView}.
+		 *
+		 * The top–level cycling (e.g. between the items and the {@link #groupedItemsDropdown}) is
+		 * handled by the {@link #_componentsFocusCycler}.
 		 *
 		 * @readonly
 		 * @protected
@@ -183,15 +230,25 @@ export default class ToolbarView extends View {
 			focusTracker: this.itemsView.focusTracker,
 		} );
 
+		/**
+		 * Helps cycling over building blocks ({@link #_components}) of the toolbar, mainly over
+		 * the {@link #itemsView} and the {@link #groupedItemsDropdown}.
+		 *
+		 * The {@link #items}–level cycling is handled by the {@link #_itemsFocusCycler}.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
 		this._componentsFocusCycler = new FocusCycler( {
 			focusables: this._components,
 			focusTracker: this.focusTracker,
 		} );
 
-		this.keystrokes.set( 'arrowleft', this._onKeyboardPrevious.bind( this ) );
-		this.keystrokes.set( 'arrowup', this._onKeyboardPrevious.bind( this ) );
-		this.keystrokes.set( 'arrowright', this._onKeyboardNext.bind( this ) );
-		this.keystrokes.set( 'arrowdown', this._onKeyboardNext.bind( this ) );
+		this.keystrokes.set( 'arrowleft', this._focusPrevious.bind( this ) );
+		this.keystrokes.set( 'arrowup', this._focusPrevious.bind( this ) );
+		this.keystrokes.set( 'arrowright', this._focusNext.bind( this ) );
+		this.keystrokes.set( 'arrowdown', this._focusNext.bind( this ) );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -236,11 +293,11 @@ export default class ToolbarView extends View {
 		} );
 
 		this.items.on( 'add', () => {
-			this.update();
+			this._updateGroupedItems();
 		} );
 
 		this.items.on( 'remove', () => {
-			this.update();
+			this._updateGroupedItems();
 		} );
 
 		// Start listening for the keystrokes coming from #element.
@@ -253,8 +310,8 @@ export default class ToolbarView extends View {
 	destroy() {
 		// The dropdown may not be in #items at the moment of toolbar destruction
 		// so let's make sure it's actually destroyed along with the toolbar.
-		if ( this.overflowedItemsDropdown ) {
-			this.overflowedItemsDropdown.destroy();
+		if ( this.groupedItemsDropdown ) {
+			this.groupedItemsDropdown.destroy();
 		}
 
 		if ( this._resizeObserver ) {
@@ -319,36 +376,40 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * When called, if {@link #shouldGroupWhenFull} is `true`, it will check if any of the {@link #items} overflow
-	 * and if so, it will move it to the {@link #overflowedItemsDropdown}.
+	 * When called, if {@link #shouldGroupWhenFull} is `true`, it will check if any of the {@link #items}
+	 * do not fit into a single row of the toolbar, and it will move them to the {@link #groupedItems}
+	 * when it happens.
 	 *
 	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
-	 * "grouped" items in the {@link #overflowedItemsDropdown} to be returned back.
+	 * {@link #groupedItems} to be returned back to {@link #items} and still fit into a single row
+	 * without the toolbar wrapping.
 	 */
-	update() {
+	_updateGroupedItems() {
 		if ( !this.shouldGroupWhenFull ) {
 			return;
 		}
 
-		// Do not check when another check is going to avoid infinite loops.
-		// This method is called upon adding and removing #items and it adds and removes
-		// #items itself, so that would be a disaster.
-		if ( this._updateLock ) {
+		// Do not check when another check is going on to avoid infinite loops.
+		// This method is called when adding and removing #items but at the same time it adds and removes
+		// #items itself.
+		if ( this._updateGroupedItemsLock ) {
 			return;
 		}
 
-		// There's no way to check overflow when there is no element (before #render()).
-		// Or when element has no parent because ClientRects won't work when #element not in DOM.
+		// There's no way to make any decisions concerning geometry when there is no element to work with
+		// (before #render()). Or when element has no parent because ClientRects won't work when
+		// #element is not in DOM.
 		if ( !this.element || !this.element.parentNode ) {
 			return;
 		}
 
-		this._updateLock = true;
+		this._updateGroupedItemsLock = true;
 
 		let wereItemsGrouped;
 
-		// Group #items as long as any overflows. This will happen, for instance,
-		// when the toolbar is getting narrower and there's less and less space in it.
+		// Group #items as long as some wrap to the next row. This will happen, for instance,
+		// when the toolbar is getting narrow and there is not enough space to display all items in
+		// a single row.
 		while ( this._areItemsOverflowing ) {
 			this._groupLastItem();
 
@@ -356,49 +417,33 @@ export default class ToolbarView extends View {
 		}
 
 		// If none were grouped now but there were some items already grouped before,
-		// then maybe let's see if some of them can be ungrouped. This happens when,
+		// then, what the hell, maybe let's see if some of them can be ungrouped. This happens when,
 		// for instance, the toolbar is stretching and there's more space in it than before.
-		if ( !wereItemsGrouped && this._hasOverflowedItemsDropdown ) {
+		if ( !wereItemsGrouped && this.groupedItems && this.groupedItems.length ) {
 			// Ungroup items as long as none are overflowing or there are none to ungroup left.
-			while ( this._overflowedItems.length && !this._areItemsOverflowing ) {
+			while ( this.groupedItems.length && !this._areItemsOverflowing ) {
 				this._ungroupFirstItem();
 			}
 
-			// If the ungrouping ended up with some item overflowing,
-			// put it back to the group toolbar (undo the last ungroup). We don't know whether
-			// an item will overflow or not until we ungroup it (that's a DOM/CSS thing) so this
-			// clean–up is vital.
+			// If the ungrouping ended up with some item wrapping to the next row,
+			// put it back to the group toolbar ("undo the last ungroup"). We don't know whether
+			// an item will wrap or not until we ungroup it (that's a DOM/CSS thing) so this
+			// clean–up is vital for the algorithm.
 			if ( this._areItemsOverflowing ) {
 				this._groupLastItem();
 			}
 		}
 
-		this._updateLock = false;
+		this._updateGroupedItemsLock = false;
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` when any of toolbar {@link #items} visually overflows, for instance if the
+	 * toolbar is narrower than its members. `false` otherwise.
 	 *
-	 * @protected
-	 * @type {module:ui/viewcollection~ViewCollection}
-	 */
-	get _overflowedItems() {
-		return this.overflowedItemsDropdown.toolbarView.items;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @protected
-	 * @type {Boolean}
-	 */
-	get _hasOverflowedItemsDropdown() {
-		return this.overflowedItemsDropdown && this._components.has( this.overflowedItemsDropdown );
-	}
-
-	/**
-	 * Returns `true` when any of toolbar {@link #items} overflows visually.
-	 * `false` otherwise.
+	 * **Note**: Technically speaking, if not for the {@link #shouldGroupWhenFull}, the items would
+	 * wrap and break the toolbar into multiple rows. Overflowing is only possible when
+	 *  {@link #shouldGroupWhenFull} is `true`.
 	 *
 	 * @protected
 	 * @type {Boolean}
@@ -431,7 +476,7 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates the {@link #itemsView} that hosts the members of the {@link #items} collection.
 	 *
 	 * @protected
 	 * @returns {module:ui/view~View}
@@ -446,10 +491,10 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * Creates the {@link #overflowedItemsDropdown} on demand. Used when the space in the toolbar
-	 * is scarce and some items start overflow and need grouping.
+	 * Creates the {@link #groupedItemsDropdown} that hosts the members of the {@link #groupedItems}
+	 * collection when there is not enough space in the toolbar to display all items in a single row.
 	 *
-	 * See {@link #shouldGroupWhenFull}.
+	 * **Note:** Invoked on demand. See {@link #shouldGroupWhenFull} to learn more.
 	 *
 	 * @protected
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
@@ -457,34 +502,41 @@ export default class ToolbarView extends View {
 	_createOverflowedItemsDropdown() {
 		const t = this.t;
 		const locale = this.locale;
-		const overflowedItemsDropdown = createDropdown( locale );
+		const groupedItemsDropdown = createDropdown( locale );
 
-		overflowedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
-		addToolbarToDropdown( overflowedItemsDropdown, [] );
+		groupedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
+		addToolbarToDropdown( groupedItemsDropdown, [] );
 
-		overflowedItemsDropdown.buttonView.set( {
+		groupedItemsDropdown.buttonView.set( {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			icon: verticalDotsIcon
 		} );
 
-		return overflowedItemsDropdown;
+		this.groupedItems = groupedItemsDropdown.toolbarView.items;
+
+		return groupedItemsDropdown;
 	}
 
 	/**
+	 * Handles forward keyboard navigation in the toolbar.
+	 *
+	 * Because the internal structure of the toolbar has 2 levels, this cannot be handled
+	 * by a simple {@link module:ui/focuscycler~FocusCycler} instance.
+	 *
 	 *	┌────────────────────────────── #_components ────────────────────────────────────────┐
 	 *	|                                                                                    |
 	 *	|    /────▶────\                  /───────▶───────▶───────\          /────▶─────\    |
 	 *	|    |         ▼                  ▲                       ▼          ▲          |    |
 	 *	|    |       ┌─|──── #items ──────|─┐             ┌───────|──────────|───────┐  |    |
-	 *	|    ▲       | \───▶──────────▶───/ |             | #overflowedItemsDropdown |  ▼    |
+	 *	|    ▲       | \───▶──────────▶───/ |             |   #groupedItemsDropdown  |  ▼    |
 	 *	|    |       └─────────────────────-┘             └──────────────────────────┘  |    |
 	 *	|    |                                                                          |    |
 	 *	|    └─────◀───────────◀────────────◀──────────────◀──────────────◀─────────────/    |
 	 *	|                                                                                    |
 	 *	+────────────────────────────────────────────────────────────────────────────────────┘
 	 */
-	_onKeyboardNext( keyEvtData, cancel ) {
+	_focusNext( keyEvtData, cancel ) {
 		if ( this.itemsView.focusTracker.isFocused ) {
 			if ( this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
 				this._componentsFocusCycler.focusNext();
@@ -501,22 +553,29 @@ export default class ToolbarView extends View {
 	}
 
 	/**
+	 * Handles backward keyboard navigation in the toolbar.
+	 *
+	 * Because the internal structure of the toolbar has 2 levels, this cannot be handled
+	 * by a simple {@link module:ui/focuscycler~FocusCycler} instance.
+	 *
 	 *	┌────────────────────────────── #_components ────────────────────────────────────────┐
 	 *	|                                                                                    |
 	 *	|    /────◀────\                  /───────◀───────◀───────\          /────◀─────\    |
 	 *	|    |         ▲                  ▼                       ▲          ▼          |    |
 	 *	|    |       ┌─|──── #items ──────|─┐             ┌───────|──────────|───────┐  |    |
-	 *	|    ▼       | \───◀──────────◀───/ |             | #overflowedItemsDropdown |  ▲    |
+	 *	|    ▼       | \───◀──────────◀───/ |             |   #groupedItemsDropdown  |  ▲    |
 	 *	|    |       └─────────────────────-┘             └──────────────────────────┘  |    |
 	 *	|    |                                                                          |    |
 	 *	|    └─────▶───────────▶────────────▶──────────────▶──────────────▶─────────────/    |
 	 *	|                                                                                    |
 	 *	+────────────────────────────────────────────────────────────────────────────────────┘
 	 */
-	_onKeyboardPrevious( keyEvtData, cancel ) {
+	_focusPrevious( keyEvtData, cancel ) {
 		if ( this.itemsView.focusTracker.isFocused ) {
 			if ( this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
-				if ( this._hasOverflowedItemsDropdown ) {
+				const hasGroupedItemsDropdown = this.groupedItemsDropdown && this._components.has( this.groupedItemsDropdown );
+
+				if ( hasGroupedItemsDropdown ) {
 					this._componentsFocusCycler.focusLast();
 				} else {
 					this._itemsFocusCycler.focusPrevious();
@@ -538,15 +597,15 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * Enables the toolbar functionality that prevents its {@link #items} from overflow
-	 * when the space becomes scarce. Instead, the toolbar items are grouped under the
-	 * {@link #overflowedItemsDropdown dropdown} displayed at the end of the space, which offers its own
-	 * nested toolbar.
+	 * Enables the toolbar functionality that prevents its {@link #items} from overflowing (wrapping
+	 * to the next row) when the space becomes scarce. Instead, the toolbar items are moved to the
+	 * {@link #groupedItems} collection and displayed in a {@link #groupedItemsDropdown} at the end of
+	 * the space, which has its own nested toolbar.
 	 *
-	 * When called, the toolbar will automatically analyze the location of its children and "group"
+	 * When called, the toolbar will automatically analyze the location of its {@link #items} and "group"
 	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
-	 * the future and respond to them by grouping more items or reverting already grouped back to the
-	 * main {@link #element}, depending on the visual space available.
+	 * the future and respond to them by grouping more items or reverting already grouped back, depending
+	 * on the visual space available.
 	 *
 	 * **Note:** Calling this method **before** the toolbar {@link #element} is in a DOM tree and visible (i.e.
 	 * not `display: none`) will cause lots of warnings in the console from the utilities analyzing
@@ -557,66 +616,90 @@ export default class ToolbarView extends View {
 			return;
 		}
 
-		let oldRect;
+		let previousWidth;
 
-		// TODO: stopObserving on destroy();
 		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
-			if ( !oldRect || oldRect.width !== entry.contentRect.width ) {
-				this.update();
+			if ( !previousWidth || previousWidth.width !== entry.contentRect.width ) {
+				this._updateGroupedItems();
 			}
 
-			oldRect = entry.contentRect.width;
-		} ).observe( this.element );
+			previousWidth = entry.contentRect.width;
+		} );
 
-		this.update();
+		this._resizeObserver.observe( this.element );
+
+		this._updateGroupedItems();
 	}
 
 	/**
-	 * When called it will remove the last {@link #_lastNonGroupedItem regular item} from {@link #items}
-	 * and move it to the {@link #overflowedItemsDropdown}. The opposite of {@link _ungroupFirstItem}.
+	 * The opposite of {@link #_ungroupFirstItem}.
 	 *
-	 * If the dropdown does not exist or does not belong to {@link #items} it is created and located at
-	 * the end of the collection.
+	 * When called it will remove the last item from {@link #items} and move it to the
+	 * {@link #groupedItems} collection (from {@link #itemsView} to {@link #groupedItemsDropdown}).
+	 *
+	 * If the {@link #groupedItemsDropdown} does not exist, it is created and added to {@link #_components}.
 	 *
 	 * @protected
 	 */
 	_groupLastItem() {
-		if ( !this.overflowedItemsDropdown ) {
-			this.overflowedItemsDropdown = this._createOverflowedItemsDropdown();
+		if ( !this.groupedItemsDropdown ) {
+			this.groupedItemsDropdown = this._createOverflowedItemsDropdown();
 		}
 
-		if ( !this._hasOverflowedItemsDropdown ) {
+		if ( !this._components.has( this.groupedItemsDropdown ) ) {
 			this._components.add( new ToolbarSeparatorView() );
-			this._components.add( this.overflowedItemsDropdown );
+			this._components.add( this.groupedItemsDropdown );
 		}
 
-		this._overflowedItems.add( this.items.remove( this.items.last ), 0 );
+		this.groupedItems.add( this.items.remove( this.items.last ), 0 );
 	}
 
 	/**
-	 * Moves the very first item from the toolbar belonging to {@link #overflowedItemsDropdown} back
-	 * to the {@link #items} collection.
+	 * The opposite of {@link #_groupLastItem}.
 	 *
-	 * In some way, it's the opposite of {@link #_groupLastItem}.
+	 * Moves the very first item from the toolbar belonging to {@link #groupedItems} back
+	 * to the {@link #items} collection (from {@link #groupedItemsDropdown} to {@link #itemsView}).
 	 *
 	 * @protected
 	 */
 	_ungroupFirstItem() {
-		this.items.add( this._overflowedItems.remove( this._overflowedItems.first ) );
+		this.items.add( this.groupedItems.remove( this.groupedItems.first ) );
 
-		if ( !this._overflowedItems.length ) {
-			this._components.remove( this.overflowedItemsDropdown );
+		if ( !this.groupedItems.length ) {
+			this._components.remove( this.groupedItemsDropdown );
 			this._components.remove( this._components.last );
 		}
 	}
 }
 
+/**
+ * An inner block of the {@link module:ui/toolbar/toolbarview~ToolbarView} hosting its
+ * {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
+ *
+ * @private
+ * @extends module:ui/view~View
+ */
 class ToolbarItemsView extends View {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale ) {
 		super( locale );
 
+		/**
+		 * Collection of the items (buttons, drop–downs, etc.).
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
 		this.items = this.createCollection();
 
+		/**
+		 * Tracks information about DOM focus in the items view.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
 		this.focusTracker = new FocusTracker();
 
 		/**
@@ -643,6 +726,9 @@ class ToolbarItemsView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		super.render();
 
