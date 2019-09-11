@@ -125,7 +125,7 @@ export default class DecoupledEditorUI extends EditorUI {
 		} );
 
 		this.on( 'update', () => {
-			toolbar.update();
+			toolbar.updateGroupedItems();
 		} );
 	}
 
