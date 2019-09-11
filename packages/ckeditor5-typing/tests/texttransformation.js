@@ -152,7 +152,7 @@ describe( 'Text transformation feature', () => {
 			simulateTyping( '"' );
 
 			expect( getData( model, { withoutSelection: true } ) )
-			.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
+				.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
