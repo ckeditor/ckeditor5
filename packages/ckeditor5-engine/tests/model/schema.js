@@ -1769,6 +1769,21 @@ describe( 'Schema', () => {
 			} );
 		} );
 
+		it( 'should filter out disallowed attributes from empty element', () => {
+			schema.extend( 'div', { allowAttributes: 'a' } );
+
+			const div = new Element( 'div', { a: 1, b: 1 } );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ div ], writer );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<div a="1"></div>' );
+			} );
+		} );
+
 		it( 'should filter out disallowed attributes from all descendants of given nodes', () => {
 			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'a' on div>$text.
@@ -1790,13 +1805,18 @@ describe( 'Schema', () => {
 				if ( ctx.endsWith( 'div paragraph image' ) && attributeName == 'b' ) {
 					return true;
 				}
+
+				// Allow 'a' on div>paragraph.
+				if ( ctx.endsWith( 'div paragraph' ) && attributeName == 'a' ) {
+					return true;
+				}
 			} );
 
 			const foo = new Text( 'foo', { a: 1, b: 1 } );
 			const bar = new Text( 'bar', { a: 1, b: 1 } );
 			const imageInDiv = new Element( 'image', { a: 1, b: 1 } );
 			const imageInParagraph = new Element( 'image', { a: 1, b: 1 } );
-			const paragraph = new Element( 'paragraph', [], [ foo, imageInParagraph ] );
+			const paragraph = new Element( 'paragraph', { a: 1, b: 1 }, [ foo, imageInParagraph ] );
 			const div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
 
 			root._appendChild( [ div ] );
@@ -1804,61 +1824,38 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
 
-				expect( writer.batch.operations ).to.length( 4 );
-				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 2 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 3 ] ).to.instanceof( AttributeOperation );
-
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<div>' +
-						'<paragraph>' +
-						'<$text b="1">foo</$text>' +
-						'<image b="1"></image>' +
-						'</paragraph>' +
-						'<$text a="1">bar</$text>' +
-						'<image a="1"></image>' +
+							'<paragraph a="1">' +
+								'<$text b="1">foo</$text>' +
+								'<image b="1"></image>' +
+							'</paragraph>' +
+							'<$text a="1">bar</$text>' +
+							'<image a="1"></image>' +
 						'</div>'
 					);
 			} );
 		} );
 
-		it( 'should filter out all attributes from descendants that are merged while clearing', () => {
-			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				// Disallow `a` in div>$text.
-				if ( ctx.endsWith( 'div $text' ) && attributeName == 'a' ) {
-					return false;
-				}
-			} );
+		it( 'should filter out disallowed attributes from parent node and all descendants nodes', () => {
+			schema.extend( 'div', { allowAttributes: 'a' } );
+			schema.extend( '$text', { allowAttributes: 'b' } );
 
-			const a = new Text( 'a', { a: 1 } );
-			const b = new Text( 'b', { a: 2 } );
-			const c = new Text( 'c', { a: 3 } );
-			const div = new Element( 'div', [], [ a, b, c ] );
+			const foo = new Text( 'foo', { a: 1, b: 1 } );
+			const div = new Element( 'div', { a: 1, b: 1 }, [ foo ] );
 
 			root._appendChild( [ div ] );
 
 			model.change( writer => {
-				schema.removeDisallowedAttributes( [ div ], writer );
+				schema.removeDisallowedAttributes( root.getChildren(), writer );
 
-				expect( writer.batch.operations ).to.length( 3 );
-				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 2 ] ).to.instanceof( AttributeOperation );
-
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<div>abc</div>' );
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<div a="1"><$text b="1">foo</$text></div>' );
 			} );
 		} );
 
-		it( 'should filter out all attributes from descendants that are merged while clearing', () => {
-			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				// Disallow `a` in div>$text.
-				if ( ctx.endsWith( 'div $text' ) && ( attributeName == 'a' || attributeName == 'b' ) ) {
-					return false;
-				}
-			} );
-
+		it( 'should filter out all attributes from nodes that are merged while clearing', () => {
 			const a = new Text( 'a', { a: 1, b: 1 } );
 			const b = new Text( 'b', { b: 1 } );
 			const c = new Text( 'c', { a: 1, b: 1 } );
@@ -1869,14 +1866,23 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( [ div ], writer );
 
-				expect( writer.batch.operations ).to.length( 5 );
-				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 2 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 3 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 4 ] ).to.instanceof( AttributeOperation );
-
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<div>abc</div>' );
+			} );
+		} );
+
+		it( 'should do not filter out sibling nodes', () => {
+			const foo = new Text( 'foo', { a: 1 } );
+			const bar = new Text( 'bar', { a: 1, b: 1 } );
+			const biz = new Text( 'biz', { a: 1 } );
+			const div = new Element( 'div', [], [ foo, bar, biz ] );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ bar ], writer );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
 		} );
 	} );

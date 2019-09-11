@@ -732,15 +732,34 @@ export default class Schema {
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	removeDisallowedAttributes( nodes, writer ) {
-		for ( const node of Array.from( nodes ) ) {
-			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !this.checkAttribute( node, attribute ) ) {
-					writer.removeAttribute( attribute, node );
-				}
+		for ( const node of nodes ) {
+			// When node is a `Text` it has no children, so just filter it out.
+			if ( node.is( 'text' ) ) {
+				removeDisallowedAttributeFromNode( this, node );
+
+				continue;
 			}
 
-			if ( node.is( 'element' ) ) {
-				this.removeDisallowedAttributes( node.getChildren(), writer );
+			// In a case of `Element` iterates through positions between nodes inside this element
+			// and filter out node before the current position, or position parent when position
+			// is at start of an element. Using positions prevent from omitting merged nodes
+			// see https://github.com/ckeditor/ckeditor5-engine/issues/1789.
+
+			const rangeInNode = Range._createIn( node );
+			const positionsInRange = rangeInNode.getPositions();
+
+			for ( const position of positionsInRange ) {
+				const item = position.nodeBefore || position.parent;
+
+				removeDisallowedAttributeFromNode( this, item );
+			}
+		}
+
+		function removeDisallowedAttributeFromNode( schema, node ) {
+			for ( const attribute of node.getAttributeKeys() ) {
+				if ( !schema.checkAttribute( node, attribute ) ) {
+					writer.removeAttribute( attribute, node );
+				}
 			}
 		}
 	}
