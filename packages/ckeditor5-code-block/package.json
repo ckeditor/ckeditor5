@@ -1,0 +1,57 @@
+{
+  "name": "@ckeditor/ckeditor5-code-block",
+  "version": "10.0.0",
+  "description": "Block Quote feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^12.3.0",
+    "@ckeditor/ckeditor5-utils": "^14.0.0",
+    "lodash-es": "^4.17.10"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-ckeditor5": "^2.0.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-code-block.git"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ],
+  "scripts": {
+    "lint": "eslint --quiet '**/*.js'"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --quiet"
+    ]
+  },
+  "eslintIgnore": [
+    "src/lib/**",
+    "packages/**"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
