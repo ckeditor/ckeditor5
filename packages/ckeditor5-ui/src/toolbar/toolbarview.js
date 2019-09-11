@@ -27,6 +27,15 @@ import '../../theme/components/toolbar/toolbar.css';
 /**
  * The toolbar view class.
  *
+ *	┌─────────────────────────────────── ToolbarView ────────────────────────────────────────┐
+ *	| ┌───────────────────────────────── #_components ─────────────────────────────────────┐ |
+ *	| |   ┌──── #itemsView───────┐ ┌──────────────────────┐ ┌──#groupedItemsDropdown───┐   | |
+ *	| |   |        #items        | | ToolbarSeparatorView | |      #groupedItems       |   | |
+ *	| |   └─────────────────────-┘ └──────────────────────┘ └──────────────────────────┘   | |
+ *	| |                            \----- only when #shouldGroupWhenFull = true -------/   | |
+ *	| └────────────────────────────────────────────────────────────────────────────────────┘ |
+ *	└────────────────────────────────────────────────────────────────────────────────────────┘
+ *
  * @extends module:ui/view~View
  * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
@@ -200,13 +209,7 @@ export default class ToolbarView extends View {
 		 * make sure {@link #items} do not mix up with the {@link #groupedItemsDropdown}, which helps
 		 * a lot with the {@link #shouldGroupWhenFull} logic (no re–ordering issues, exclusions, etc.).
 		 *
-		 *	┌────────────────────────────────── #_components ──────────────────────────────────────┐
-		 *	|                                                                                      |
-		 *	|    ┌──── #itemsView───────┐ ┌──────────────────────┐ ┌──────────────────────────┐    |
-		 *	|    |         ...          | | ToolbarSeparatorView | |  #groupedItemsDropdown   |    |
-		 *	|    └─────────────────────-┘ └──────────────────────┘ └──────────────────────────┘    |
-		 *	|                             \---------- only when #shouldGroupWhenFull ---------/    |
-		 *	+──────────────────────────────────────────────────────────────────────────────────────┘
+		 * Please refer to the diagram in the documentation of the class to learn more.
 		 *
 		 * @readonly
 		 * @protected
