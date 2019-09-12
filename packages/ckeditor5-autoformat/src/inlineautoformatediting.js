@@ -177,7 +177,7 @@ export default class InlineAutoformatEditing {
 			const { text, range } = getLastTextLine( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
 			const testOutput = testCallback( text );
 			const rangesToFormat = testOutputToRanges( range.start, testOutput.format, editor.model );
-			const rangesToRemove = testOutputToRanges( range.start, testOutput.remove, editor.model );
+			const rangesToRemove = testOutputToRanges( range.start, testOutput.remove, model );
 
 			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
 				return;
