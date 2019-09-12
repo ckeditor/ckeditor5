@@ -83,7 +83,13 @@ export default class TextWatcher {
 	 * @param {Object} data Data object for event.
 	 */
 	_evaluateTextBeforeSelection( suffix, data = {} ) {
-		const { text, range } = this._getText();
+		const model = this.model;
+		const document = model.document;
+		const selection = document.selection;
+
+		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
+
+		const { text, range } = getLastTextLine( rangeBeforeSelection, model );
 
 		const textHasMatch = this.testCallback( text );
 
@@ -118,22 +124,6 @@ export default class TextWatcher {
 			 */
 			this.fire( `matched:${ suffix }`, eventData );
 		}
-	}
-
-	/**
-	 * Returns the text before the caret from the current selection block.
-	 *
-	 * @returns {Object} The text from the block or undefined if the selection is not collapsed.
-	 * @private
-	 */
-	_getText() {
-		const model = this.model;
-		const document = model.document;
-		const selection = document.selection;
-
-		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
-
-		return getLastTextLine( rangeBeforeSelection, model );
 	}
 }
 
