@@ -169,6 +169,7 @@ export default class InlineAutoformatEditing {
 			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
 				return;
 			}
+
 			const model = editor.model;
 
 			const focus = selection.focus;
