@@ -13,27 +13,20 @@
  * "The last text line" is understood as text (from one or more text nodes) which is limited either by a parent block
  * or by inline elements (e.g. `<softBreak>`).
  *
- * This method can be used to evaluate text from a block in which user sets cursor:
- *
- *		const selection = model.document.selection;
- *
- *		// Evaluate text in from selection parent up to the cursor:
  *		const rangeToCheck = model.createRange(
  *			model.createPositionAt( paragraph, 0 ),
  *			model.createPositionAt( paragraph, 'end' )
  *		);
  *
- *		const { text, range } = getLastTextLine( range, model );
+ *		const { text, range } = getLastTextLine( rangeToCheck, model );
  *
- * The returned text will consist "Foo bar baz" for a model below:
+ * For model below, the returned `text` will be "Foo bar baz" and `range` will be set on whole `<paragraph>` content:
  *
  *		<paragraph>Foo bar baz<paragraph>
  *
- * However, it will return only "baz" if there's a `<softBreak>` before "baz" text node:
+ * However, in below case, `text` will be set to "baz" and `range` will be set only on "baz".
  *
- *		<paragraph>Foo<softBreak>bar<softBreak>baz<paragraph>
- *
- * In the above example `range` will be set only "baz".
+ *		<paragraph>Foo<softBreak></softBreak>bar<softBreak></softBreak>baz<paragraph>
  *
  * @protected
  * @param {module:engine/model/range~Range} range
