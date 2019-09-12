@@ -184,14 +184,18 @@ The HTML code of the application is listed below:
 JavaScript code required to run the editor:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 
 ClassicEditor
 	.create( document.querySelector( '.chat__editor' ), {
-		extraPlugins: [ Mention, MentionLinks, Underline, Strikethrough ],
+		extraPlugins: [ Essentials, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
 		toolbar: {
 			items: [
 				'bold', 'italic', 'underline', 'strikethrough', '|', 'link', '|', 'undo', 'redo'
