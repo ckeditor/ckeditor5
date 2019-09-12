@@ -419,6 +419,48 @@ describe( 'Title', () => {
 
 			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal( '' );
 		} );
+
+		it( 'should return marker - starts and ends inside a title', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model, '<title><title-content>Foo Bar</title-content></title>' );
+
+			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( title, 1 ), model.createPositionAt( title, 5 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal(
+				'F<comment></comment>oo B<comment></comment>ar'
+			);
+		} );
+
+		it( 'should return marker - starts inside a title ends inside a body', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content>Foo Bar</title-content></title>' +
+				'<paragraph>Biz</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			const body = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( title, 1 ), model.createPositionAt( body, 3 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getTitle() ).to.equal(
+				'F<comment></comment>oo Bar<comment></comment>'
+			);
+		} );
 	} );
 
 	describe( 'setBody()', () => {
@@ -481,6 +523,93 @@ describe( 'Title', () => {
 			setData( model, '<title><title-content>Foo</title-content></title>' );
 
 			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>&nbsp;</p>' );
+		} );
+
+		it( 'should return marker - starts and ends inside a body', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content></title-content></title>' +
+				'<paragraph>Foo Bar</paragraph>'
+			);
+
+			const body = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( body, 1 ), model.createPositionAt( body, 5 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
+				'<p>F<comment></comment>oo B<comment></comment>ar</p>'
+			);
+		} );
+
+		it( 'should return marker - starts inside a title ends inside a body', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
+			const body = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( title, 1 ), model.createPositionAt( body, 2 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
+				'<comment></comment><p>Ba<comment></comment>r</p>'
+			);
+		} );
+
+		it( 'should return marker - starts at the beginning of the body ends inside the body', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const body = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( body, 0 ), model.createPositionAt( body, 2 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal(
+				'<p><comment></comment>Ba<comment></comment>r</p>'
+			);
+		} );
+
+		it( 'should do nothing when marker is fully out of the body range', () => {
+			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
+
+			setData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'comment', {
+					range: model.createRange( model.createPositionAt( title, 1 ), model.createPositionAt( title, 2 ) ),
+					usingOperation: true
+				} );
+			} );
+
+			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>Bar</p>' );
 		} );
 	} );
 
