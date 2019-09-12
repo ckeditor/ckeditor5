@@ -17,10 +17,11 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code, Heading, List, Autoformat, BlockQuote ],
+		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code, Heading, List, Autoformat, BlockQuote, ShiftEnter ],
 		toolbar: [ 'heading', '|', 'numberedList', 'bulletedList', 'blockQuote', 'bold', 'italic', 'code', 'undo', 'redo' ]
 	} )
 	.then( editor => {
