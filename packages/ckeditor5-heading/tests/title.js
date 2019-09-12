@@ -17,7 +17,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, getData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'Title', () => {
@@ -75,6 +75,55 @@ describe( 'Title', () => {
 		);
 
 		expect( editor.getData() ).to.equal( '<h1>Foo</h1><p>Bar</p>' );
+	} );
+
+	it( 'should convert h1 to the title if it is the first root child', () => {
+		editor.setData( '<h1>Foo</h1><p>Bar</p>' );
+
+		expect( getData( model ) ).to.equal(
+			'<title><title-content>[]Foo</title-content></title>' +
+			'<paragraph>Bar</paragraph>'
+		);
+	} );
+
+	it( 'should avoid calling post-fixers to parse view to correct model (h1)', () => {
+		const modelFrag = editor.data.parse( '<h1>Foo</h1><p>Bar</p>' );
+
+		expect( stringify( modelFrag ) ).to.equal(
+			'<title><title-content>Foo</title-content></title>' +
+			'<paragraph>Bar</paragraph>'
+		);
+	} );
+
+	it( 'should avoid calling post-fixers to parse view to correct model (h2)', () => {
+		const modelFrag = editor.data.parse( '<h2>Foo</h2><p>Bar</p>' );
+
+		expect( stringify( modelFrag ) ).to.equal(
+			'<title><title-content>Foo</title-content></title>' +
+			'<paragraph>Bar</paragraph>'
+		);
+	} );
+
+	it( 'should avoid calling post-fixers to parse view to correct model (h3)', () => {
+		const modelFrag = editor.data.parse( '<h3>Foo</h3><p>Bar</p>' );
+
+		expect( stringify( modelFrag ) ).to.equal(
+			'<title><title-content>Foo</title-content></title>' +
+			'<paragraph>Bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow to override custom v->m title converter', () => {
+		const spy = sinon.spy();
+
+		editor.data.upcastDispatcher.on( 'element:h1', ( evt, data, api ) => {
+			api.consumable.consume( data.viewItem, { name: true } );
+			spy();
+		}, { priority: 'highest' } );
+
+		editor.setData( '<h1>Foo</h1><p>Bar</p>' );
+
+		sinon.assert.called( spy );
 	} );
 
 	describe( 'model post-fixing', () => {

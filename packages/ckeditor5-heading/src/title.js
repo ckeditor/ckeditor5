@@ -88,8 +88,13 @@ export default class Title extends Plugin {
 		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 
-		// `title-content` <-> `h1` conversion.
-		editor.conversion.elementToElement( { model: 'title-content', view: 'h1' } );
+		// Conversion.
+		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
+		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
+		// See https://github.com/ckeditor/ckeditor5/issues/2036.
+		editor.data.upcastDispatcher.on( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
 
 		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
@@ -432,6 +437,38 @@ export default class Title extends Plugin {
 			} );
 		} );
 	}
+}
+
+// A view-to-model converter for the h1 that appears at the beginning of the document (a title element).
+//
+// @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
+// @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
+// @param {Object} data An object containing conversion input, a placeholder for conversion output and possibly other values.
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
+function dataViewModelH1Insertion( evt, data, conversionApi ) {
+	const modelCursor = data.modelCursor;
+	const viewItem = data.viewItem;
+
+	if ( !modelCursor.isAtStart || !modelCursor.parent.is( '$root' ) ) {
+		return;
+	}
+
+	if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
+		return;
+	}
+
+	const modelWriter = conversionApi.writer;
+
+	const title = modelWriter.createElement( 'title' );
+	const titleContent = modelWriter.createElement( 'title-content' );
+
+	modelWriter.append( titleContent, title );
+	modelWriter.insert( title, modelCursor );
+
+	conversionApi.convertChildren( viewItem, modelWriter.createPositionAt( titleContent, 0 ) );
+
+	data.modelRange = modelWriter.createRangeOn( title );
+	data.modelCursor = modelWriter.createPositionAt( data.modelRange.end );
 }
 
 // Maps position from the beginning of the model `title` element to the beginning of the view `h1` element.
