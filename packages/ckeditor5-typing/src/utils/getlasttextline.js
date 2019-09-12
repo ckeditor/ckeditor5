@@ -8,7 +8,7 @@
  */
 
 /**
- * Returns a last text limited by a non-text node from a given range.
+ * Returns the last text line from the given range.
  *
  * A text "line" is understood to be a text limited either by a parent block or by inline elements (e.g. `<softBreak>`).
  *
