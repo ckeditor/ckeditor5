@@ -95,7 +95,6 @@ describe( 'Title', () => {
 		);
 	} );
 
-	// CC
 	it( 'should allow to override custom v->m title converter', () => {
 		const spy = sinon.spy();
 
