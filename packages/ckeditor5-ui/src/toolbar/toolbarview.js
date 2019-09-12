@@ -173,7 +173,7 @@ export default class ToolbarView extends View {
 		 * **Note:** Used only when {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
-		 * @protected
+		 * @private
 		 * @member {Boolean}
 		 */
 		this._updateGroupedItemsLock = false;
@@ -199,7 +199,7 @@ export default class ToolbarView extends View {
 		 * **Note:** Created dynamically only when {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
-		 * @protected
+		 * @private
 		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
 		 */
 		this._resizeObserver = null;
@@ -335,7 +335,13 @@ export default class ToolbarView extends View {
 	 * Focuses the last focusable in {@link #items}.
 	 */
 	focusLast() {
-		this._componentsFocusCycler.focusLast();
+		const last = this._componentsFocusCycler.last;
+
+		if ( last === this.itemsView ) {
+			this.itemsView._focusCycler.focusLast();
+		} else {
+			this._componentsFocusCycler.focusLast();
+		}
 	}
 
 	/**
@@ -541,7 +547,7 @@ export default class ToolbarView extends View {
 	 */
 	_focusNext( keyEvtData, cancel ) {
 		if ( this.itemsView.focusTracker.isFocused ) {
-			if ( this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
+			if ( !this._itemsFocusCycler.next || this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
 				this._componentsFocusCycler.focusNext();
 			} else {
 				this._itemsFocusCycler.focusNext();
@@ -575,7 +581,7 @@ export default class ToolbarView extends View {
 	 */
 	_focusPrevious( keyEvtData, cancel ) {
 		if ( this.itemsView.focusTracker.isFocused ) {
-			if ( this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
+			if ( !this._itemsFocusCycler.next || this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
 				const hasGroupedItemsDropdown = this.groupedItemsDropdown && this._components.has( this.groupedItemsDropdown );
 
 				if ( hasGroupedItemsDropdown ) {

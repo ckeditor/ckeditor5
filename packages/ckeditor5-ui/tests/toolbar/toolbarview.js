@@ -56,8 +56,12 @@ describe( 'ToolbarView', () => {
 			expect( view.isVertical ).to.be.false;
 		} );
 
-		it( 'should create view#children collection', () => {
+		it( 'should create view#items collection', () => {
 			expect( view.items ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'should not create view#groupedItems collection', () => {
+			expect( view.groupedItems ).to.be.null;
 		} );
 
 		it( 'creates #focusTracker instance', () => {
@@ -68,8 +72,28 @@ describe( 'ToolbarView', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
-		it( 'creates #_focusCycler instance', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+		it( 'should create view#itemsView', () => {
+			expect( view.itemsView ).to.be.instanceOf( View );
+		} );
+
+		it( 'should not create view#groupedItemsDropdown', () => {
+			expect( view.groupedItemsDropdown ).to.be.null;
+		} );
+
+		it( 'should set view#shouldGroupWhenFull', () => {
+			expect( view.shouldGroupWhenFull ).to.be.false;
+		} );
+
+		it( 'should create view#_components collection', () => {
+			expect( view._components ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'creates #_itemsFocusCycler instance', () => {
+			expect( view._itemsFocusCycler ).to.be.instanceOf( FocusCycler );
+		} );
+
+		it( 'creates #_componentsFocusCycler instance', () => {
+			expect( view._componentsFocusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 	} );
 
@@ -77,6 +101,12 @@ describe( 'ToolbarView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-toolbar' ) ).to.true;
+		} );
+
+		it( 'should create #itemsView from template', () => {
+			expect( view.element.firstChild ).to.equal( view.itemsView.element );
+			expect( view.itemsView.element.classList.contains( 'ck' ) ).to.true;
+			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
 		} );
 
 		describe( 'attributes', () => {
@@ -136,23 +166,33 @@ describe( 'ToolbarView', () => {
 				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
 				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
 			} );
+
+			it( 'reacts on view#shouldGroupWhenFull', () => {
+				view.shouldGroupWhenFull = false;
+				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).to.be.false;
+
+				view.shouldGroupWhenFull = true;
+				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).to.be.true;
+			} );
 		} );
 	} );
 
 	describe( 'render()', () => {
-		it( 'registers #items in #focusTracker', () => {
+		it( 'registers #_components in #focusTracker', () => {
 			const view = new ToolbarView( locale );
 			const spyAdd = sinon.spy( view.focusTracker, 'add' );
 			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
 
-			view.items.add( focusable() );
-			view.items.add( focusable() );
+			view._components.add( focusable() );
+			view._components.add( focusable() );
 			sinon.assert.notCalled( spyAdd );
 
 			view.render();
-			sinon.assert.calledTwice( spyAdd );
 
-			view.items.remove( 1 );
+			// First call is for the #itemsView.
+			sinon.assert.calledThrice( spyAdd );
+
+			view._components.remove( 1 );
 			sinon.assert.calledOnce( spyRemove );
 
 			view.destroy();
@@ -171,11 +211,7 @@ describe( 'ToolbarView', () => {
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
 			it( 'so "arrowup" focuses previous focusable item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowup,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+				const keyEvtData = getArrowKeyData( 'arrowup' );
 
 				// No children to focus.
 				view.keystrokes.press( keyEvtData );
@@ -195,44 +231,33 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.items.get( 4 ).element;
+				view.itemsView.focusTracker.isFocused = true;
+				view.itemsView.focusTracker.focusedElement = view.items.get( 4 ).element;
 
-				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
 				view.keystrokes.press( keyEvtData );
 
 				sinon.assert.calledThrice( keyEvtData.preventDefault );
 				sinon.assert.calledThrice( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( view.items.get( 2 ).focus );
 			} );
 
 			it( 'so "arrowleft" focuses previous focusable item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowleft,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+				const keyEvtData = getArrowKeyData( 'arrowleft' );
 
 				view.items.add( focusable() );
 				view.items.add( nonFocusable() );
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.items.get( 2 ).element;
-
-				const spy = sinon.spy( view.items.get( 0 ), 'focus' );
+				view.itemsView.focusTracker.isFocused = true;
+				view.itemsView.focusTracker.focusedElement = view.items.get( 2 ).element;
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( view.items.get( 0 ).focus );
 			} );
 
 			it( 'so "arrowdown" focuses next focusable item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowdown,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+				const keyEvtData = getArrowKeyData( 'arrowdown' );
 
 				// No children to focus.
 				view.keystrokes.press( keyEvtData );
@@ -252,42 +277,125 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.items.get( 4 ).element;
+				view.itemsView.focusTracker.isFocused = true;
+				view.itemsView.focusTracker.focusedElement = view.items.get( 4 ).element;
 
-				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
 				view.keystrokes.press( keyEvtData );
 
 				sinon.assert.calledThrice( keyEvtData.preventDefault );
 				sinon.assert.calledThrice( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( view.items.get( 2 ).focus );
 			} );
 
 			it( 'so "arrowright" focuses next focusable item', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+				const keyEvtData = getArrowKeyData( 'arrowright' );
 
 				view.items.add( focusable() );
 				view.items.add( nonFocusable() );
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.items.get( 0 ).element;
-
-				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
+				view.itemsView.focusTracker.isFocused = true;
+				view.itemsView.focusTracker.focusedElement = view.items.get( 0 ).element;
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+			} );
+
+			describe( 'when #shouldGroupWhenFull is true', () => {
+				beforeEach( () => {
+					document.body.appendChild( view.element );
+					view.element.style.width = '200px';
+					view.shouldGroupWhenFull = true;
+				} );
+
+				afterEach( () => {
+					view.element.remove();
+				} );
+
+				it( 'navigates from #items to the #groupedItemsDropdown (forwards)', () => {
+					const keyEvtData = getArrowKeyData( 'arrowright' );
+
+					view.items.add( focusable() );
+					view.items.add( nonFocusable() );
+					view.items.add( focusable() );
+
+					view.updateGroupedItems();
+					sinon.spy( view.groupedItemsDropdown, 'focus' );
+
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.itemsView.element;
+					view.itemsView.focusTracker.isFocused = true;
+					view.itemsView.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+					view.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
+				} );
+
+				it( 'navigates from the #groupedItemsDropdown to #items (forwards)', () => {
+					const keyEvtData = getArrowKeyData( 'arrowright' );
+
+					view.items.add( focusable() );
+					view.items.add( nonFocusable() );
+					view.items.add( focusable() );
+
+					view.updateGroupedItems();
+
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.groupedItemsDropdown.element;
+					view.itemsView.focusTracker.isFocused = false;
+					view.itemsView.focusTracker.focusedElement = null;
+
+					view.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( view.items.get( 0 ).focus );
+				} );
+
+				it( 'navigates from #items to the #groupedItemsDropdown (backwards)', () => {
+					const keyEvtData = getArrowKeyData( 'arrowleft' );
+
+					view.items.add( focusable() );
+					view.items.add( nonFocusable() );
+					view.items.add( focusable() );
+
+					view.updateGroupedItems();
+					sinon.spy( view.groupedItemsDropdown, 'focus' );
+
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.itemsView.element;
+					view.itemsView.focusTracker.isFocused = true;
+					view.itemsView.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+					view.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
+				} );
+
+				it( 'navigates from the #groupedItemsDropdown to #items (backwards)', () => {
+					const keyEvtData = getArrowKeyData( 'arrowleft' );
+
+					view.items.add( focusable() );
+					view.items.add( nonFocusable() );
+					view.items.add( focusable() );
+
+					view.updateGroupedItems();
+
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.groupedItemsDropdown.element;
+					view.itemsView.focusTracker.isFocused = false;
+					view.itemsView.focusTracker.focusedElement = null;
+
+					view.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( view.items.get( 0 ).focus );
+				} );
 			} );
 		} );
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the first focusable item in DOM', () => {
+		it( 'focuses the first focusable of #items in DOM', () => {
 			// No children to focus.
 			view.focus();
 
@@ -296,15 +404,14 @@ describe( 'ToolbarView', () => {
 			view.items.add( focusable() );
 			view.items.add( nonFocusable() );
 
-			const spy = sinon.spy( view.items.get( 1 ), 'focus' );
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( view.items.get( 1 ).focus );
 		} );
 	} );
 
 	describe( 'focusLast()', () => {
-		it( 'focuses the last focusable item in DOM', () => {
+		it( 'focuses the last focusable of #items in DOM', () => {
 			// No children to focus.
 			view.focusLast();
 
@@ -315,10 +422,29 @@ describe( 'ToolbarView', () => {
 			view.items.add( focusable() );
 			view.items.add( nonFocusable() );
 
-			const spy = sinon.spy( view.items.get( 3 ), 'focus' );
 			view.focusLast();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( view.items.get( 3 ).focus );
+		} );
+
+		it( 'focuses the #groupedItemsDropdown when view#shouldGroupWhenFull is true', () => {
+			document.body.appendChild( view.element );
+			view.element.style.width = '200px';
+			view.shouldGroupWhenFull = true;
+
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+
+			view.updateGroupedItems();
+
+			sinon.spy( view.groupedItemsDropdown, 'focus' );
+
+			view.focusLast();
+
+			sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
+
+			view.element.remove();
 		} );
 	} );
 
@@ -366,14 +492,44 @@ describe( 'ToolbarView', () => {
 function focusable() {
 	const view = nonFocusable();
 
-	view.focus = () => {};
+	view.label = 'focusable';
+	view.focus = sinon.stub().callsFake( () => {
+		view.element.focus();
+	} );
+
+	view.extendTemplate( {
+		attributes: {
+			tabindex: -1
+		}
+	} );
 
 	return view;
 }
 
 function nonFocusable() {
 	const view = new View();
-	view.element = document.createElement( 'li' );
+
+	view.set( 'label', 'non-focusable' );
+
+	const bind = view.bindTemplate;
+
+	view.setTemplate( {
+		tag: 'div',
+		attributes: {
+			style: {
+				padding: '0',
+				margin: '0',
+				width: '100px',
+				height: '100px',
+				outline: '1px solid green'
+			}
+		},
+		children: [
+			{
+				text: bind.to( 'label' )
+			}
+		]
+	} );
 
 	return view;
 }
@@ -386,5 +542,13 @@ function namedFactory( name ) {
 		view.element = document.createElement( 'a' );
 
 		return view;
+	};
+}
+
+function getArrowKeyData( arrow ) {
+	return {
+		keyCode: keyCodes[ arrow ],
+		preventDefault: sinon.spy(),
+		stopPropagation: sinon.spy()
 	};
 }
