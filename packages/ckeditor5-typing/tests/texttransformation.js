@@ -103,6 +103,7 @@ describe( 'Text transformation feature', () => {
 					testTransformation( '\' foo "bar"', '\' foo “bar”' );
 					testTransformation( 'Foo "Bar bar\'s it\'s a baz"', 'Foo “Bar bar\'s it\'s a baz”' );
 					testTransformation( ' ""', ' “”' );
+					testTransformation( ' "Bar baz"', ' “Bar baz”', '"A foo<softBreak></softBreak>' );
 				} );
 
 				describe( 'secondary', () => {
@@ -143,6 +144,15 @@ describe( 'Text transformation feature', () => {
 
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
+		} );
+
+		it( 'should work with soft breaks in parent', () => {
+			setData( model, '<paragraph>"Foo <softBreak></softBreak>"Bar[]</paragraph>' );
+
+			simulateTyping( '"' );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
@@ -352,6 +362,15 @@ describe( 'Text transformation feature', () => {
 
 				model = editor.model;
 				doc = model.document;
+
+				model.schema.register( 'softBreak', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+				editor.conversion.elementToElement( {
+					model: 'softBreak',
+					view: 'br'
+				} );
 			} );
 	}
 

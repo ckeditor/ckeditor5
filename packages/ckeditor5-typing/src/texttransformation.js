@@ -118,8 +118,7 @@ export default class TextTransformation extends Plugin {
 				const matches = from.exec( data.text );
 				const replaces = to( matches.slice( 1 ) );
 
-				// Used `focus` to be in line with `TextWatcher#_getText()`.
-				const selectionParent = editor.model.document.selection.focus.parent;
+				const matchedRange = data.range;
 
 				let changeIndex = matches.index;
 
@@ -134,7 +133,7 @@ export default class TextTransformation extends Plugin {
 							continue;
 						}
 
-						const replacePosition = model.createPositionAt( selectionParent, changeIndex );
+						const replacePosition = matchedRange.start.getShiftedBy( changeIndex );
 						const replaceRange = model.createRange( replacePosition, replacePosition.getShiftedBy( match.length ) );
 						const attributes = getTextAttributesAfterPosition( replacePosition );
 

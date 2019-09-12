@@ -9,6 +9,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import getLastTextLine from './utils/getlasttextline';
 
 /**
  * The text watcher feature.
@@ -82,7 +83,13 @@ export default class TextWatcher {
 	 * @param {Object} data Data object for event.
 	 */
 	_evaluateTextBeforeSelection( suffix, data = {} ) {
-		const text = this._getText();
+		const model = this.model;
+		const document = model.document;
+		const selection = document.selection;
+
+		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
+
+		const { text, range } = getLastTextLine( rangeBeforeSelection, model );
 
 		const textHasMatch = this.testCallback( text );
 
@@ -98,7 +105,7 @@ export default class TextWatcher {
 		this.hasMatch = textHasMatch;
 
 		if ( textHasMatch ) {
-			const eventData = Object.assign( data, { text } );
+			const eventData = Object.assign( data, { text, range } );
 
 			/**
 			 * Fired whenever the text watcher found a match for data changes.
@@ -118,37 +125,6 @@ export default class TextWatcher {
 			this.fire( `matched:${ suffix }`, eventData );
 		}
 	}
-
-	/**
-	 * Returns the text before the caret from the current selection block.
-	 *
-	 * @returns {String|undefined} The text from the block or undefined if the selection is not collapsed.
-	 * @private
-	 */
-	_getText() {
-		const model = this.model;
-		const document = model.document;
-		const selection = document.selection;
-
-		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
-
-		return _getText( rangeBeforeSelection );
-	}
-}
-
-// Returns the whole text from a given range by adding all data from the text nodes together.
-//
-// @param {module:engine/model/range~Range} range
-// @returns {String}
-function _getText( range ) {
-	return Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
-		if ( node.is( 'softBreak' ) ) {
-			// Trim text to a softBreak.
-			return '';
-		}
-
-		return rangeText + node.data;
-	}, '' );
 }
 
 mix( TextWatcher, EmitterMixin );
