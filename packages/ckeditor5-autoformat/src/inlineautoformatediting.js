@@ -155,22 +155,21 @@ export default class InlineAutoformatEditing {
 				return;
 			}
 
-			const selection = editor.model.document.selection;
+			const model = editor.model;
+			const selection = model.document.selection;
 
 			// Do nothing if selection is not collapsed.
 			if ( !selection.isCollapsed ) {
 				return;
 			}
 
-			const changes = Array.from( editor.model.document.differ.getChanges() );
+			const changes = Array.from( model.document.differ.getChanges() );
 			const entry = changes[ 0 ];
 
 			// Typing is represented by only a single change.
 			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
 				return;
 			}
-
-			const model = editor.model;
 
 			const focus = selection.focus;
 			const block = focus.parent;
@@ -184,7 +183,7 @@ export default class InlineAutoformatEditing {
 			}
 
 			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
-			editor.model.enqueueChange( writer => {
+			model.enqueueChange( writer => {
 				// Apply format.
 				const hasChanged = formatCallback( writer, rangesToFormat );
 
