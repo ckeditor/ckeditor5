@@ -192,10 +192,11 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '.chat__editor' ), {
-		extraPlugins: [ Essentials, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
+		extraPlugins: [ Essentials, Paragraph, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
 		toolbar: {
 			items: [
 				'bold', 'italic', 'underline', 'strikethrough', '|', 'link', '|', 'undo', 'redo'
