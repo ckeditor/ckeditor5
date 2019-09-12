@@ -9,7 +9,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import getText from './utils/gettext';
+import getLastTextLine from './utils/getlasttextline';
 
 /**
  * The text watcher feature.
@@ -133,7 +133,7 @@ export default class TextWatcher {
 
 		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
 
-		return getText( rangeBeforeSelection, model );
+		return getLastTextLine( rangeBeforeSelection, model );
 	}
 }
 

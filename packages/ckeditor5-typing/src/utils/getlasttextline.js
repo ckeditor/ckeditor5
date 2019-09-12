@@ -4,20 +4,20 @@
  */
 
 /**
- * @module typing/utils/gettext
+ * @module typing/utils/getlasttextline
  */
 
 /**
- * Returns the whole text from a given range by adding all data from the text nodes together.
+ * Returns a last text limited by a non-text node from a given range.
  *
- * **Note** The text is trimmed to the last occurrence of any inline element (e.g. `<softBreak>`).
+ * A text "line" is understood to be a text limited either by a parent block or by inline elements (e.g. `<softBreak>`).
  *
  * @protected
  * @param {module:engine/model/range~Range} range
  * @param {module:engine/model/model~Model} model
- * @returns {Object}
+ * @returns {module:typing/utils/getlasttextline~LastTextLineData}
  */
-export default function getText( range, model ) {
+export default function getLastTextLine( range, model ) {
 	let start = range.start;
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
@@ -34,3 +34,11 @@ export default function getText( range, model ) {
 	return { text, range: model.createRange( start, range.end ) };
 }
 
+/**
+ * A value returned from the {@link module:typing/utils/getttext~getLastTextLine}.
+ *
+ * @typedef {Object} module:typing/utils/getlasttextline~LastTextLineData
+ *
+ * @property {String} text The text from the text nodes.
+ * @property {module:engine/model/range~Range} The trimmed range of the text.
+ */

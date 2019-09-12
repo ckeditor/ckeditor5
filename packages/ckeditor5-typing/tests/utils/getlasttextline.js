@@ -5,7 +5,7 @@
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import getText from '../../src/utils/gettext';
+import getText from '../../src/utils/getlasttextline';
 
 describe( 'utils', () => {
 	let model, doc, root;
