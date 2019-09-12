@@ -10,7 +10,7 @@
 /**
  * Returns the last text line from the given range.
  *
- * A text "line" is understood to be a text limited either by a parent block or by inline elements (e.g. `<softBreak>`).
+ * "The last text line" is understood as text (from one or more text nodes) which is limited either by a parent block or by inline elements (e.g. `<softBreak>`).
  *
  * @protected
  * @param {module:engine/model/range~Range} range
