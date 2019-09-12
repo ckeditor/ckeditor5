@@ -25,7 +25,7 @@
  *
  *		const { text, range } = getLastTextLine( range, model );
  *
- *	The returned text will consist "Foo bar baz" for a model below:
+ * The returned text will consist "Foo bar baz" for a model below:
  *
  *		<paragraph>Foo bar baz<paragraph>
  *
@@ -63,5 +63,5 @@ export default function getLastTextLine( range, model ) {
  * @typedef {Object} module:typing/utils/getlasttextline~LastTextLineData
  *
  * @property {String} text The text from the text nodes in the last text line.
- * @property {module:engine/model/range~Range} The range set on the text nodes in the last text line.
+ * @property {module:engine/model/range~Range} range The range set on the text nodes in the last text line.
  */
