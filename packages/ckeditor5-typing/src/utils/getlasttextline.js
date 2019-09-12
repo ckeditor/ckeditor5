@@ -35,7 +35,7 @@ export default function getLastTextLine( range, model ) {
 }
 
 /**
- * A value returned from the {@link module:typing/utils/getlasttextline~getLastTextLine}.
+ * The value returned by {@link module:typing/utils/getlasttextline~getLastTextLine}.
  *
  * @typedef {Object} module:typing/utils/getlasttextline~LastTextLineData
  *
