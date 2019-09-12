@@ -40,5 +40,5 @@ export default function getLastTextLine( range, model ) {
  * @typedef {Object} module:typing/utils/getlasttextline~LastTextLineData
  *
  * @property {String} text The text from the text nodes.
- * @property {module:engine/model/range~Range} The trimmed range of the text.
+ * @property {module:engine/model/range~Range} The range set on the text nodes in the last text line.
  */
