@@ -7,7 +7,7 @@
  * @module autoformat/inlineautoformatediting
  */
 
-import getText from '@ckeditor/ckeditor5-typing/src/utils/gettext';
+import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
 
 /**
  * The inline autoformatting engine. It allows to format various inline patterns. For example,
@@ -173,7 +173,7 @@ export default class InlineAutoformatEditing {
 
 			const focus = selection.focus;
 			const block = focus.parent;
-			const { text, range } = getText( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
+			const { text, range } = getLastTextLine( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
 			const testOutput = testCallback( text );
 			const rangesToFormat = testOutputToRanges( range.start, testOutput.format, editor.model );
 			const rangesToRemove = testOutputToRanges( range.start, testOutput.remove, editor.model );
