@@ -91,6 +91,8 @@ export default class Title extends Plugin {
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
 		editor.data.upcastDispatcher.on( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
 
 		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );

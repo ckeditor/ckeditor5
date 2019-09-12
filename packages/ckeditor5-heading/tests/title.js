@@ -86,8 +86,26 @@ describe( 'Title', () => {
 		);
 	} );
 
-	it( 'should avoid calling post-fixers to parse view to correct model', () => {
+	it( 'should avoid calling post-fixers to parse view to correct model (h1)', () => {
 		const modelFrag = editor.data.parse( '<h1>Foo</h1><p>Bar</p>' );
+
+		expect( stringify( modelFrag ) ).to.equal(
+			'<title><title-content>Foo</title-content></title>' +
+			'<paragraph>Bar</paragraph>'
+		);
+	} );
+
+	it( 'should avoid calling post-fixers to parse view to correct model (h2)', () => {
+		const modelFrag = editor.data.parse( '<h2>Foo</h2><p>Bar</p>' );
+
+		expect( stringify( modelFrag ) ).to.equal(
+			'<title><title-content>Foo</title-content></title>' +
+			'<paragraph>Bar</paragraph>'
+		);
+	} );
+
+	it( 'should avoid calling post-fixers to parse view to correct model (h3)', () => {
+		const modelFrag = editor.data.parse( '<h3>Foo</h3><p>Bar</p>' );
 
 		expect( stringify( modelFrag ) ).to.equal(
 			'<title><title-content>Foo</title-content></title>' +
