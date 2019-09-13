@@ -9,7 +9,7 @@
 	--ck-resizer-border-width: 1px;
 	--ck-resizer-border-radius: 2px;
 
-	/* Set resizer with 50% offset. */
+	/* Set the resizer with a 50% offset. */
 	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
 
 	--ck-resizer-tooltip-offset: 10px;
@@ -26,7 +26,7 @@
 	display: none;
 	position: absolute;
 
-	/* The wrapper itself should not interfere with pointer device, only the handles. */
+	/* The wrapper itself should not interfere with the pointer device, only the handles should. */
 	pointer-events: none;
 
 	left: 0;
@@ -44,7 +44,7 @@
 .ck .ck-widget__resizer__handle {
 	position: absolute;
 
-	/* Resizers are the only UI elements that should interfere with pointer device. */
+	/* Resizers are the only UI elements that should interfere with a pointer device. */
 	pointer-events: all;
 
 	width: var(--ck-resizer-size);
@@ -79,7 +79,7 @@
 }
 
 .ck .ck-widget.ck-widget_with-selection-handler {
-	/* Make the widget wrapper a relative positioning container for the drag handler. */
+	/* Make the widget wrapper a relative positioning container for the drag handle. */
 	position: relative;
 
 	/* Show the selection handler on mouse hover over the widget. */
@@ -93,7 +93,7 @@
 		position: absolute;
 
 		& .ck-icon {
-			/* Make sure the icon in not a subject to font-size/line-height to avoid
+			/* Make sure the icon in not a subject to font-size or line-height to avoid
 			unnecessary spacing around it. */
 			display: block;
 		}

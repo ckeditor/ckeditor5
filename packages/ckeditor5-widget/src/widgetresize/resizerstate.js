@@ -22,28 +22,28 @@ export default class ResizeState {
 	 */
 	constructor( options ) {
 		/**
-		 * TODO
+		 * The original width (pixels) of the resized object when the resize process was started.
 		 *
 		 * @readonly
 		 * @member {Number} #originalWidth
 		 */
 
 		/**
-		 * TODO
+		 * The original height (pixels) of the resized object when the resize process was started.
 		 *
 		 * @readonly
 		 * @member {Number} #originalHeight
 		 */
 
 		/**
-		 * TODO
+		 * The original width (percents) of the resized object when the resize process was started.
 		 *
 		 * @readonly
 		 * @member {Number} #originalWidthPercents
 		 */
 
 		/**
-		 * Position of the handle that has initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc or `null`
+		 * The position of the handle that initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc. or `null`
 		 * if unknown.
 		 *
 		 * @readonly
@@ -53,7 +53,7 @@ export default class ResizeState {
 		this.set( 'activeHandlePosition', null );
 
 		/**
-		 * TODO
+		 * The width (percents) proposed, but not committed yet, in the current resize process.
 		 *
 		 * @readonly
 		 * @observable
@@ -62,7 +62,7 @@ export default class ResizeState {
 		this.set( 'proposedWidthPercents', null );
 
 		/**
-		 * TODO
+		 * The width (pixels) proposed, but not committed yet, in the current resize process.
 		 *
 		 * @readonly
 		 * @observable
@@ -71,7 +71,7 @@ export default class ResizeState {
 		this.set( 'proposedWidth', null );
 
 		/**
-		 * TODO
+		 * The height (pixels) proposed, but not committed yet, in the current resize process.
 		 *
 		 * @readonly
 		 * @observable
@@ -83,7 +83,7 @@ export default class ResizeState {
 		this.set( 'proposedHandleHostHeight', null );
 
 		/**
-		 * TODO
+		 * A width to height ratio of the resized image.
 		 *
 		 * @readonly
 		 * @member {Number} #aspectRatio
@@ -96,9 +96,9 @@ export default class ResizeState {
 		this._options = options;
 
 		/**
-		 * Reference point of resizer where the dragging started. It is used to measure the distance to user cursor
-		 * traveled, thus how much the image should be enlarged.
-		 * This information is only known after DOM was rendered, so it will be updated later.
+		 * The reference point of the resizer where the dragging started. It is used to measure the distance the user cursor
+		 * traveled, so how much the image should be enlarged.
+		 * This information is only known after the DOM was rendered, so it will be updated later.
 		 *
 		 * @private
 		 * @type {Object}
@@ -163,11 +163,11 @@ export default class ResizeState {
 mix( ResizeState, ObservableMixin );
 
 /**
- * Returns coordinates of top-left corner of a element, relative to the document's top-left corner.
+ * Returns coordinates of the top-left corner of an element, relative to the document's top-left corner.
  *
  * @private
  * @param {HTMLElement} element
- * @param {String} resizerPosition Position of the resize handler, e.g. `"top-left"`, `"bottom-right"`.
+ * @param {String} resizerPosition The position of the resize handle, e.g. `"top-left"`, `"bottom-right"`.
  * @returns {Object} return
  * @returns {Number} return.x
  * @returns {Number} return.y
@@ -188,8 +188,8 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 
 /**
  * @private
- * @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
- * @returns {String} A prefixed HTML class name for the resizer element
+ * @param {String} resizerPosition The expected resizer position, like `"top-left"`, `"bottom-right"`.
+ * @returns {String} A prefixed HTML class name for the resizer element.
  */
 function getResizerHandleClass( resizerPosition ) {
 	return `ck-widget__resizer__handle-${ resizerPosition }`;
@@ -199,7 +199,7 @@ function getResizerHandleClass( resizerPosition ) {
  * Determines the position of a given resize handle.
  *
  * @private
- * @param {HTMLElement} domHandle Handler used to calculate reference point.
+ * @param {HTMLElement} domHandle Handler used to calculate the reference point.
  * @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
  */
 function getHandlePosition( domHandle ) {
@@ -214,7 +214,7 @@ function getHandlePosition( domHandle ) {
 
 /**
  * @param {String} position Like `"top-left"`.
- * @returns {String} Inverted `position`, e.g. returns `"bottom-right"` if `"top-left"` was given as `position`.
+ * @returns {String} Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
  */
 function getOppositePosition( position ) {
 	const parts = position.split( '-' );
