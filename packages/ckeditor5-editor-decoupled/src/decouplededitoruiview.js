@@ -10,7 +10,6 @@
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
@@ -55,7 +54,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		// Because of the above, make sure the toolbar supports rounded corners.
 		// Also, make sure the toolbar has the proper dir attribute because its ancestor may not have one
 		// and some toolbar item styles depend on this attribute.
-		Template.extend( this.toolbar.template, {
+		this.toolbar.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-reset_all',
