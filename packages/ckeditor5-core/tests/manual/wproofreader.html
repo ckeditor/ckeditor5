@@ -3,17 +3,16 @@
 		Required to fetch runtime data from https://svc.webspellchecker.net.
 		Also both unsafe inline and eval are required for it to work (https://github.com/WebSpellChecker/wproofreader/issues/19).
 	-->
-	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cksource.com https://svc.webspellchecker.net;">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' https://cksource.com https://svc.webspellchecker.net;">
 </head>
 
-<script type="text/javascript" src="https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js"></script>
-<script>
-	window.WEBSPELLCHECKER_CONFIG = {
-		autoSearch: true,
-		enableGrammar: true,
-		serviceId: '1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd'
-	};
-</script>
+<script
+	type="text/javascript"
+	src="https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js"
+	data-wsc-serviceid="1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd"
+	data-wsc-autosearch="true"
+	data-wsc-enablegrammar="true"
+></script>
 
 <div id="editor">
 	<h2>Hello world witth an obvious typo</h2>
