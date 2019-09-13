@@ -698,10 +698,14 @@ export default class Renderer {
 	 */
 	_updateFakeSelection( domRoot ) {
 		const domDocument = domRoot.ownerDocument;
-		// Create fake selection container if one does not exist.
-		const container = this._fakeSelectionContainer = this._fakeSelectionContainer || createFakeSelectionContainer( domDocument );
 
-		// Bind fake selection container with current selection.
+		if ( !this._fakeSelectionContainer ) {
+			this._fakeSelectionContainer = createFakeSelectionContainer( domDocument );
+		}
+
+		const container = this._fakeSelectionContainer;
+
+		// Bind fake selection container with the current selection *position*.
 		this.domConverter.bindFakeSelection( container, this.selection );
 
 		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
@@ -712,10 +716,8 @@ export default class Renderer {
 			domRoot.appendChild( container );
 		}
 
-		// Update contents.
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
-		// Update selection.
 		const domSelection = domDocument.getSelection();
 		const domRange = domDocument.createRange();
 
