@@ -145,18 +145,17 @@ export default class ImageResize extends Plugin {
 /**
  * The available options are `'px'` or `'%'`.
  *
- * Determines size unit applied to resized image.
+ * Determines the size unit applied to the resized image.
  *
- * ```js
- * ClassicEditor
- * 	.create( editorElement, {
- * 		 image: {
- * 			 resizeUnit: 'px'
- * 		 }
- * 	 } )
- * 	.then( ... )
- * 	.catch( ... );
- * ```
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				image: {
+ *					resizeUnit: 'px'
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
  *
  * This option is used by the {@link module:image/imageresize~ImageResize} feature.
  *

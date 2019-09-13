@@ -10,10 +10,13 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { isImageType, isLocalImage, fetchLocalImage } from '../../src/imageupload/utils';
+import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
+import { createImageTypeRegExp } from './utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'imageUpload'` command.
@@ -25,7 +28,24 @@ export default class ImageUploadEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository, Notification ];
+		return [ FileRepository, Notification, Clipboard ];
+	}
+
+	static get pluginName() {
+		return 'ImageUploadEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'image', {
+			upload: {
+				types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
+			}
+		} );
 	}
 
 	/**
@@ -37,6 +57,8 @@ export default class ImageUploadEditing extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
+
+		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' ) );
 
 		// Setup schema to allow uploadId and uploadStatus for images.
 		schema.extend( 'image', {
@@ -73,7 +95,7 @@ export default class ImageUploadEditing extends Plugin {
 					return false;
 				}
 
-				return isImageType( file );
+				return imageTypes.test( file.type );
 			} );
 
 			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
@@ -97,31 +119,29 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		if ( editor.plugins.has( 'Clipboard' ) ) {
-			this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
-				const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
-					.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
-					.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
+			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
+				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
+				.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
 
-				if ( !fetchableImages.length ) {
-					return;
+			if ( !fetchableImages.length ) {
+				return;
+			}
+
+			const writer = new UpcastWriter();
+
+			for ( const fetchableImage of fetchableImages ) {
+				// Set attribute marking that the image was processed already.
+				writer.setAttribute( 'uploadProcessed', true, fetchableImage.imageElement );
+
+				const loader = fileRepository.createLoader( fetchableImage.promise );
+
+				if ( loader ) {
+					writer.setAttribute( 'src', '', fetchableImage.imageElement );
+					writer.setAttribute( 'uploadId', loader.id, fetchableImage.imageElement );
 				}
-
-				const writer = new UpcastWriter();
-
-				for ( const fetchableImage of fetchableImages ) {
-					// Set attribute marking that the image was processed already.
-					writer.setAttribute( 'uploadProcessed', true, fetchableImage.imageElement );
-
-					const loader = fileRepository.createLoader( fetchableImage.promise );
-
-					if ( loader ) {
-						writer.setAttribute( 'src', '', fetchableImage.imageElement );
-						writer.setAttribute( 'uploadId', loader.id, fetchableImage.imageElement );
-					}
-				}
-			} );
-		}
+			}
+		} );
 
 		// Prevents from the browser redirecting to the dropped image.
 		editor.editing.view.document.on( 'dragover', ( evt, data ) => {
@@ -133,30 +153,32 @@ export default class ImageUploadEditing extends Plugin {
 			const changes = doc.differ.getChanges( { includeChangesInGraveyard: true } );
 
 			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name == 'image' ) {
+				if ( entry.type == 'insert' && entry.name != '$text' ) {
 					const item = entry.position.nodeAfter;
 					const isInGraveyard = entry.position.root.rootName == '$graveyard';
 
-					// Check if the image element still has upload id.
-					const uploadId = item.getAttribute( 'uploadId' );
+					for ( const image of getImagesFromChangeItem( editor, item ) ) {
+						// Check if the image element still has upload id.
+						const uploadId = image.getAttribute( 'uploadId' );
 
-					if ( !uploadId ) {
-						continue;
-					}
+						if ( !uploadId ) {
+							continue;
+						}
 
-					// Check if the image is loaded on this client.
-					const loader = fileRepository.loaders.get( uploadId );
+						// Check if the image is loaded on this client.
+						const loader = fileRepository.loaders.get( uploadId );
 
-					if ( !loader ) {
-						continue;
-					}
+						if ( !loader ) {
+							continue;
+						}
 
-					if ( isInGraveyard ) {
-						// If the image was inserted to the graveyard - abort the loading process.
-						loader.abort();
-					} else if ( loader.status == 'idle' ) {
-						// If the image was inserted into content and has not been loaded yet, start loading it.
-						this._readAndUpload( loader, item );
+						if ( isInGraveyard ) {
+							// If the image was inserted to the graveyard - abort the loading process.
+							loader.abort();
+						} else if ( loader.status == 'idle' ) {
+							// If the image was inserted into content and has not been loaded yet, start loading it.
+							this._readAndUpload( loader, image );
+						}
 					}
 				}
 			}
@@ -187,14 +209,39 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		return loader.read()
-			.then( data => {
-				const viewFigure = editor.editing.mapper.toViewElement( imageElement );
-				const viewImg = viewFigure.getChild( 0 );
+			.then( () => {
 				const promise = loader.upload();
 
-				editor.editing.view.change( writer => {
-					writer.setAttribute( 'src', data, viewImg );
-				} );
+				// Force re–paint in Safari. Without it, the image will display with a wrong size.
+				// https://github.com/ckeditor/ckeditor5/issues/1975
+				/* istanbul ignore next */
+				if ( env.isSafari ) {
+					const viewFigure = editor.editing.mapper.toViewElement( imageElement );
+					const viewImg = viewFigure.getChild( 0 );
+
+					editor.editing.view.once( 'render', () => {
+						// Early returns just to be safe. There might be some code ran
+						// in between the outer scope and this callback.
+						if ( !viewImg.parent ) {
+							return;
+						}
+
+						const domFigure = editor.editing.view.domConverter.mapViewToDom( viewImg.parent );
+
+						if ( !domFigure ) {
+							return;
+						}
+
+						const originalDisplay = domFigure.style.display;
+
+						domFigure.style.display = 'none';
+
+						// Make sure this line will never be removed during minification for having "no effect".
+						domFigure._ckHack = domFigure.offsetHeight;
+
+						domFigure.style.display = originalDisplay;
+					} );
+				}
 
 				model.enqueueChange( 'transparent', writer => {
 					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
@@ -288,4 +335,10 @@ export default class ImageUploadEditing extends Plugin {
 // @returns {Boolean}
 export function isHtmlIncluded( dataTransfer ) {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
+}
+
+function getImagesFromChangeItem( editor, item ) {
+	return Array.from( editor.model.createRangeOn( item ) )
+		.filter( value => value.item.is( 'image' ) )
+		.map( value => value.item );
 }

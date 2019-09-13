@@ -95,10 +95,13 @@ describe( 'ImageUploadEditing', () => {
 		expect( editor.commands.get( 'imageUpload' ) ).to.be.instanceOf( ImageUploadCommand );
 	} );
 
-	it( 'should not crash when Clipboard plugin is not available', () => {
+	it( 'should load Clipboard plugin', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+			} )
+			.then( editor => {
+				expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
 			} );
 	} );
 
@@ -206,6 +209,30 @@ describe( 'ImageUploadEditing', () => {
 		const viewDocument = editor.editing.view.document;
 		const fileMock = {
 			type: 'media/mp3',
+			size: 1024
+		};
+		const dataTransfer = new DataTransfer( {
+			files: [ fileMock ],
+			types: [ 'Files' ],
+			getData: () => ''
+		} );
+
+		setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+		const targetRange = doc.selection.getFirstRange();
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		expect( eventInfo.stop.called ).to.be.undefined;
+	} );
+
+	it( 'should not insert image when file is not an configured image type', () => {
+		const viewDocument = editor.editing.view.document;
+		const fileMock = {
+			type: 'image/svg+xml',
 			size: 1024
 		};
 		const dataTransfer = new DataTransfer( {
@@ -334,7 +361,7 @@ describe( 'ImageUploadEditing', () => {
 			'</figure>]' );
 	} );
 
-	it( 'should use read data once it is present', done => {
+	it( 'should not use read data once it is present', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
@@ -343,7 +370,8 @@ describe( 'ImageUploadEditing', () => {
 			tryExpect( done, () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
-						`<img src="${ base64Sample }"></img>` +
+						// Rendering the image data is left to a upload progress converter.
+						'<img></img>' +
 						'</figure>]' +
 					'<p>foo bar</p>'
 				);
@@ -682,7 +710,7 @@ describe( 'ImageUploadEditing', () => {
 
 		// Stub `fetch` so it can be rejected.
 		sinon.stub( window, 'fetch' ).callsFake( () => {
-			return new Promise( ( res, rej ) => rej() );
+			return new Promise( ( res, rej ) => rej( 'could not fetch' ) );
 		} );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );

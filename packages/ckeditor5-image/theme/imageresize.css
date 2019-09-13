@@ -6,20 +6,20 @@
 .ck-content .image.image_resized {
 	max-width: 100%;
 	/*
-	The figure element for resized images must not use `display:table` as browsers doesn't support `max-width` for it well.
+	The `<figure>` element for resized images must not use `display:table` as browsers do not support `max-width` for it well.
 	See https://stackoverflow.com/questions/4019604/chrome-safari-ignoring-max-width-in-table/14420691#14420691 for more.
-	Fortunately, since we control width, there's no risk that the image will look bad.
+	Fortunately, since we control the width, there is no risk that the image will look bad.
 	*/
 	display: block;
 	box-sizing: border-box;
 
 	& img {
-		/* For resized images it's the figure that determines the image's width. */
+		/* For resized images it is the `<figure>` element that determines the image width. */
 		width: 100%;
 	}
 
-	&>figcaption {
-		/* Figure uses display block, so figcaption also has to. */
+	& > figcaption {
+		/* The `<figure>` element uses `display:block`, so `<figcaption>` also has to. */
 		display: block;
 	}
 }

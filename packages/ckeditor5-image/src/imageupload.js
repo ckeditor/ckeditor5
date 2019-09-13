@@ -40,3 +40,46 @@ export default class ImageUpload extends Plugin {
 		return [ ImageUploadEditing, ImageUploadUI, ImageUploadProgress ];
 	}
 }
+
+/**
+ * Image upload configuration.
+ *
+ * @member {module:image/imageupload~ImageUploadConfig} module:image/image~ImageConfig#upload
+ */
+
+/**
+ * The configuration of the image upload feature. Used by the image upload feature in the `@ckeditor/ckeditor5-image` package.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				image: {
+ * 					upload:  ... // Image upload feature options.
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface module:image/imageupload~ImageUploadConfig
+ */
+
+/**
+ * List of accepted image types.
+ *
+ * The accepted types of images can be customize to allow only certain types of images:
+ *
+ *		// Allow only JPEG and PNG images:
+ *		const imageUploadConfig = {
+ *			types: [ 'png', 'jpeg' ]
+ *		};
+ *
+ * The type string should match [one of the sub-types](https://www.iana.org/assignments/media-types/media-types.xhtml#image)
+ * of the image mime-type. E.g. for the `image/jpeg` mime-type add `'jpeg'`.
+ *
+ * **Note:** This setting only restricts some image types to be selected and uploaded through the CKEditor UI and commands. Image type
+ * recognition and filtering should be also implemented on the server which accepts image uploads
+ *
+ * @member {Array.<String>} module:image/imageupload~ImageUploadConfig#types
+ * @default [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
+ */

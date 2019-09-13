@@ -97,6 +97,7 @@ export default class ImageUploadProgress extends Plugin {
 				// Hide placeholder and initialize progress bar showing upload progress.
 				_hidePlaceholder( viewFigure, viewWriter );
 				_showProgressBar( viewFigure, viewWriter, loader, editor.editing.view );
+				_displayLocalImage( viewFigure, viewWriter, loader );
 			}
 
 			return;
@@ -259,5 +260,18 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 
 	if ( element ) {
 		writer.remove( writer.createRangeOn( element ) );
+	}
+}
+
+// Displays local data from file loader.
+//
+// @param {module:engine/view/element~Element} imageFigure
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {module:upload/filerepository~FileLoader} loader
+function _displayLocalImage( viewFigure, writer, loader ) {
+	if ( loader.data ) {
+		const viewImg = viewFigure.getChild( 0 );
+
+		writer.setAttribute( 'src', loader.data, viewImg );
 	}
 }
