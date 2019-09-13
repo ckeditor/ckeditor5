@@ -222,7 +222,8 @@ export default class WidgetToolbarRepository extends Plugin {
 			this.listenTo( this._balloon, 'change:visibleView', () => {
 				for ( const definition of this._toolbarDefinitions.values() ) {
 					if ( this._isToolbarVisible( definition ) ) {
-						this._updateToolbarsVisibility( definition );
+						const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
+						repositionContextualBalloon( this.editor, relatedElement );
 					}
 				}
 			} );

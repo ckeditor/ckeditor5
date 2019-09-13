@@ -15,7 +15,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { throttle } from 'lodash-es';
 
 /**
- * Widget resize feature plugin.
+ * The widget resize feature plugin.
  *
  * Use the {@link module:widget/widgetresize~WidgetResize#attachTo} method to create a resizer for the specified widget.
  *
@@ -172,7 +172,7 @@ export default class WidgetResize extends Plugin {
 }
 
 /**
- * Interface describing a resizer. It allows to specify resizing host, custom logic for calculating aspect ratio etc.
+ * Interface describing a resizer. It allows to specify the resizing host, custom logic for calculating aspect ratio, etc.
  *
  * @interface ResizerOptions
  */
@@ -190,12 +190,12 @@ export default class WidgetResize extends Plugin {
  */
 
 /**
- * A callback to be executed once resizing process is done.
+ * A callback to be executed once the resizing process is done.
  *
  * It receives a `Number` (`newValue`) as a parameter.
  *
- * For example, {@link module:image/imageresize~ImageResize} uses it to execute image resize command,
- * which puts new value into the model.
+ * For example, {@link module:image/imageresize~ImageResize} uses it to execute the image resize command
+ * which puts the new value into the model.
  *
  * ```js
  * {

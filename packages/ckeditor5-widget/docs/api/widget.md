@@ -42,5 +42,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-widget` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)
 * [`ckeditor/ckeditor5-widget` on GitHub](https://github.com/ckeditor/ckeditor5-widget)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-widget/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-widget/blob/master/CHANGELOG.md)
