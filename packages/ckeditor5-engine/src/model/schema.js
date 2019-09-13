@@ -733,14 +733,23 @@ export default class Schema {
 	 */
 	removeDisallowedAttributes( nodes, writer ) {
 		for ( const node of nodes ) {
-			for ( const attribute of node.getAttributeKeys() ) {
-				if ( !this.checkAttribute( node, attribute ) ) {
-					writer.removeAttribute( attribute, node );
-				}
+			// When node is a `Text` it has no children, so just filter it out.
+			if ( node.is( 'text' ) ) {
+				removeDisallowedAttributeFromNode( this, node, writer );
 			}
+			// In a case of `Element` iterates through positions between nodes inside this element
+			// and filter out node before the current position, or position parent when position
+			// is at start of an element. Using positions prevent from omitting merged nodes
+			// see https://github.com/ckeditor/ckeditor5-engine/issues/1789.
+			else {
+				const rangeInNode = Range._createIn( node );
+				const positionsInRange = rangeInNode.getPositions();
 
-			if ( node.is( 'element' ) ) {
-				this.removeDisallowedAttributes( node.getChildren(), writer );
+				for ( const position of positionsInRange ) {
+					const item = position.nodeBefore || position.parent;
+
+					removeDisallowedAttributeFromNode( this, item, writer );
+				}
 			}
 		}
 	}
@@ -1590,5 +1599,13 @@ function* combineWalkers( backward, forward ) {
 function* convertToMinimalFlatRanges( ranges ) {
 	for ( const range of ranges ) {
 		yield* range.getMinimalFlatRanges();
+	}
+}
+
+function removeDisallowedAttributeFromNode( schema, node, writer ) {
+	for ( const attribute of node.getAttributeKeys() ) {
+		if ( !schema.checkAttribute( node, attribute ) ) {
+			writer.removeAttribute( attribute, node );
+		}
 	}
 }
