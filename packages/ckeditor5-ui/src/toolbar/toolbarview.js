@@ -333,14 +333,18 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #items}.
+	 * Focuses the first focusable in element in the toolbar.
 	 */
 	focus() {
-		this._componentsFocusCycler.focusFirst();
+		if ( this._itemsFocusCycler.first ) {
+			this._itemsFocusCycler.focusFirst();
+		} else if ( this.groupedItems && this.groupedItems.length ) {
+			this.groupedItemsDropdown.focus();
+		}
 	}
 
 	/**
-	 * Focuses the last focusable in {@link #items}.
+	 * Focuses the last focusable element in the toolbar.
 	 */
 	focusLast() {
 		const last = this._componentsFocusCycler.last;
@@ -554,16 +558,19 @@ export default class ToolbarView extends View {
 	 *	+────────────────────────────────────────────────────────────────────────────────────┘
 	 */
 	_focusNext( keyEvtData, cancel ) {
+		const itemsFocusCycler = this._itemsFocusCycler;
+		const componentsFocusCycler = this._componentsFocusCycler;
+
 		if ( this.itemsView.focusTracker.isFocused ) {
-			if ( !this._itemsFocusCycler.next || this._itemsFocusCycler.next === this._itemsFocusCycler.first ) {
-				this._componentsFocusCycler.focusNext();
+			if ( !itemsFocusCycler.next || itemsFocusCycler.next === itemsFocusCycler.first ) {
+				componentsFocusCycler.focusNext();
 			} else {
-				this._itemsFocusCycler.focusNext();
+				itemsFocusCycler.focusNext();
 			}
 
 			cancel();
 		} else {
-			this._componentsFocusCycler.focusNext();
+			componentsFocusCycler.focusNext();
 
 			cancel();
 		}
@@ -588,24 +595,21 @@ export default class ToolbarView extends View {
 	 *	+────────────────────────────────────────────────────────────────────────────────────┘
 	 */
 	_focusPrevious( keyEvtData, cancel ) {
+		const itemsFocusCycler = this._itemsFocusCycler;
+		const componentsFocusCycler = this._componentsFocusCycler;
+
 		if ( this.itemsView.focusTracker.isFocused ) {
-			if ( !this._itemsFocusCycler.next || this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
-				if ( this.groupedItems && this.groupedItems.length ) {
-					this._componentsFocusCycler.focusLast();
-				} else {
-					this._itemsFocusCycler.focusPrevious();
-				}
+			const hasGroupedItems = this.groupedItems && this.groupedItems.length;
+
+			if ( hasGroupedItems && ( !itemsFocusCycler.previous || itemsFocusCycler.previous === itemsFocusCycler.last ) ) {
+				componentsFocusCycler.focusLast();
 			} else {
-				this._itemsFocusCycler.focusPrevious();
+				itemsFocusCycler.focusPrevious();
 			}
 
 			cancel();
 		} else {
-			if ( this._componentsFocusCycler.previous === this.itemsView ) {
-				this._itemsFocusCycler.focusLast();
-			} else {
-				this._componentsFocusCycler.focusPrevious();
-			}
+			itemsFocusCycler.focusLast();
 
 			cancel();
 		}
@@ -631,11 +635,11 @@ export default class ToolbarView extends View {
 
 		// TODO: Consider debounce.
 		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
-			if ( !previousWidth || previousWidth.width !== entry.contentRect.width ) {
+			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
 				this.updateGroupedItems();
-			}
 
-			previousWidth = entry.contentRect.width;
+				previousWidth = entry.contentRect.width;
+			}
 		} );
 
 		this._resizeObserver.observe( this.element );
@@ -758,12 +762,5 @@ class ToolbarItemsView extends View {
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Focuses the last focusable in {@link #items}.
-	 */
-	focusLast() {
-		this._focusCycler.focusLast();
 	}
 }

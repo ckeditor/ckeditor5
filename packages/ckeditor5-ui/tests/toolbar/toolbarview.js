@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, console */
+/* global document, Event, console, setTimeout */
 
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
@@ -470,10 +470,8 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemC );
 			view.items.add( itemD );
 
-			view.shouldGroupWhenFull = true;
-
 			// The dropdown shows up.
-			view.updateGroupedItems();
+			view.shouldGroupWhenFull = true;
 			sinon.spy( view.groupedItemsDropdown, 'destroy' );
 
 			view.element.style.width = '500px';
@@ -523,6 +521,20 @@ describe( 'ToolbarView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( view.items.get( 1 ).focus );
+		} );
+
+		it( 'if no items  the first focusable of #items in DOM', () => {
+			document.body.appendChild( view.element );
+			view.element.style.width = '10px';
+
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+
+			view.shouldGroupWhenFull = true;
+			sinon.spy( view.groupedItemsDropdown, 'focus' );
+
+			view.focus();
+			sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
 		} );
 	} );
 
@@ -790,6 +802,15 @@ describe( 'ToolbarView', () => {
 	} );
 
 	describe( 'automatic toolbar grouping (#shouldGroupWhenFull = true)', () => {
+		beforeEach( () => {
+			document.body.appendChild( view.element );
+			view.element.style.width = '200px';
+		} );
+
+		afterEach( () => {
+			view.element.remove();
+		} );
+
 		it( 'updates the UI as new #items are added', () => {
 			sinon.spy( view, 'updateGroupedItems' );
 			sinon.assert.notCalled( view.updateGroupedItems );
@@ -810,12 +831,76 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledTwice( view.updateGroupedItems );
 		} );
 
-		it( 'updates the UI when the toolbar is being resized (expanding)', () => {
-			// TODO
+		it( 'updates the UI when the toolbar is being resized (expanding)', done => {
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+
+			view.element.style.width = '200px';
+			view.shouldGroupWhenFull = true;
+
+			expect( view.items ).to.have.length( 1 );
+			expect( view.groupedItems ).to.have.length( 4 );
+
+			view.element.style.width = '500px';
+
+			setTimeout( () => {
+				expect( view.items ).to.have.length( 5 );
+				expect( view.groupedItems ).to.have.length( 0 );
+
+				done();
+			}, 100 );
 		} );
 
-		it( 'updates the UI when the toolbar is being resized (narrowing)', () => {
-			// TODO
+		it( 'updates the UI when the toolbar is being resized (narrowing)', done => {
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+
+			view.element.style.width = '500px';
+			view.shouldGroupWhenFull = true;
+
+			expect( view.items ).to.have.length( 5 );
+			expect( view.groupedItems ).to.be.null;
+
+			view.element.style.width = '200px';
+
+			setTimeout( () => {
+				expect( view.items ).to.have.length( 1 );
+				expect( view.groupedItems ).to.have.length( 4 );
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'does not react to changes in height', done => {
+			view.element.style.width = '500px';
+			view.element.style.height = '200px';
+
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+
+			view.shouldGroupWhenFull = true;
+			sinon.spy( view, 'updateGroupedItems' );
+
+			expect( view.items ).to.have.length( 5 );
+			expect( view.groupedItems ).to.be.null;
+
+			setTimeout( () => {
+				view.element.style.height = '500px';
+
+				setTimeout( () => {
+					sinon.assert.calledOnce( view.updateGroupedItems );
+					done();
+				}, 100 );
+			}, 100 );
 		} );
 	} );
 } );
