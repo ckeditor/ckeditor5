@@ -158,11 +158,19 @@ export default class ToolbarView extends View {
 		this.set( 'shouldGroupWhenFull', false );
 
 		// Grouping can be enabled before or after render.
+		//
+		// **Note**: Possibly in the future a possibility to turn the automatic grouping off could be
+		// required. As for now, there is no such need, so there is no such functionality.
+		//
+		// **Note**: Low priority ensures the grouping logic is executed AFTER the template reacts
+		// to this observable property. Otherwise, the view element will be missing a CSS class
+		// that prevents toolbar items from wrapping to the next line and the overflow detection
+		// logic will not be able to tell if items are overflowing or not.
 		this.on( 'change:shouldGroupWhenFull', () => {
 			if ( this.shouldGroupWhenFull ) {
 				this._enableOverflowedItemsGroupingOnResize();
 			}
-		} );
+		}, { priority: 'low' } );
 
 		/**
 		 * A flag used by {@link #updateGroupedItems} method to make sure no concurrent updates
@@ -311,7 +319,7 @@ export default class ToolbarView extends View {
 	 * @inheritDoc
 	 */
 	destroy() {
-		// The dropdown may not be in #items at the moment of toolbar destruction
+		// The dropdown may not be in #_components at the moment of toolbar destruction
 		// so let's make sure it's actually destroyed along with the toolbar.
 		if ( this.groupedItemsDropdown ) {
 			this.groupedItemsDropdown.destroy();
@@ -582,9 +590,7 @@ export default class ToolbarView extends View {
 	_focusPrevious( keyEvtData, cancel ) {
 		if ( this.itemsView.focusTracker.isFocused ) {
 			if ( !this._itemsFocusCycler.next || this._itemsFocusCycler.previous === this._itemsFocusCycler.last ) {
-				const hasGroupedItemsDropdown = this.groupedItemsDropdown && this._components.has( this.groupedItemsDropdown );
-
-				if ( hasGroupedItemsDropdown ) {
+				if ( this.groupedItems && this.groupedItems.length ) {
 					this._componentsFocusCycler.focusLast();
 				} else {
 					this._itemsFocusCycler.focusPrevious();
@@ -621,12 +627,9 @@ export default class ToolbarView extends View {
 	 * the geometry of the toolbar items — they depend on the toolbar to be visible in DOM.
 	 */
 	_enableOverflowedItemsGroupingOnResize() {
-		if ( this._resizeObserver ) {
-			return;
-		}
-
 		let previousWidth;
 
+		// TODO: Consider debounce.
 		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
 			if ( !previousWidth || previousWidth.width !== entry.contentRect.width ) {
 				this.updateGroupedItems();
@@ -740,10 +743,6 @@ class ToolbarItemsView extends View {
 	 */
 	render() {
 		super.render();
-
-		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
-		}
 
 		this.items.on( 'add', ( evt, item ) => {
 			this.focusTracker.add( item.element );

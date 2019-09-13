@@ -46,14 +46,6 @@
 	}
 
 	& > .ck.ck-toolbar__grouped-dropdown {
-		/*
-		* Dropdown button has asymmetric padding to fit the arrow.
-		* This button has no arrow so let's revert that padding back to normal.
-		*/
-		& > .ck.ck-button.ck-dropdown__button {
-			padding-left: var(--ck-spacing-tiny);
-		}
-
 		& > .ck-dropdown__button .ck-dropdown__arrow {
 			display: none;
 		}
