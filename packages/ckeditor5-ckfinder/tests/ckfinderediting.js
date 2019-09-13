@@ -6,6 +6,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -43,6 +45,14 @@ describe( 'CKFinderEditing', () => {
 
 	it( 'should load Notification plugin', () => {
 		expect( editor.plugins.get( Notification ) ).to.instanceOf( Notification );
+	} );
+
+	it( 'should load Image plugin', () => {
+		expect( editor.plugins.get( Image ) ).to.instanceOf( Image );
+	} );
+
+	it( 'should load Link plugin', () => {
+		expect( editor.plugins.get( Link ) ).to.instanceOf( Link );
 	} );
 
 	it( 'should register command', () => {

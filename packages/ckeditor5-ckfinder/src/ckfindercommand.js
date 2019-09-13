@@ -13,10 +13,16 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing ckfinder editng feature}
+ * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing ckfinder editing feature}
  * to open a CKFinder file browser to insert an image or a link to a file into content.
  *
  *		editor.execute( 'ckfinder' );
+ *
+ * **Note:** This command uses other features to perform tasks:
+ * - To insert images the {@link module:image/image/imageinsertcommand~ImageInsertCommand 'imageInsert'} command
+ * from the {@link module:image/image~Image Image feature}.
+ * - To insert links to files the {@link module:link/linkcommand~LinkCommand 'link'} command
+ * from the {@link module:link/link~Link Link feature}.
  *
  * @extends module:core/command~Command
  */
@@ -38,11 +44,11 @@ export default class CKFinderCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const imageCommand = this.editor.commands.get( 'imageUpload' );
+		const imageCommand = this.editor.commands.get( 'imageInsert' );
 		const linkCommand = this.editor.commands.get( 'link' );
 
 		// The CKFinder command is enabled when one of image or link command is enabled.
-		this.isEnabled = imageCommand && linkCommand && ( imageCommand.isEnabled || linkCommand.isEnabled );
+		this.isEnabled = imageCommand.isEnabled || linkCommand.isEnabled;
 	}
 
 	/**
@@ -124,7 +130,7 @@ export default class CKFinderCommand extends Command {
 }
 
 function insertImages( editor, urls ) {
-	const imageCommand = editor.commands.get( 'imageUpload' );
+	const imageCommand = editor.commands.get( 'imageInsert' );
 
 	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {
