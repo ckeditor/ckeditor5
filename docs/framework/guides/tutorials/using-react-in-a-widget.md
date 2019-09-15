@@ -94,7 +94,7 @@ module.exports = {
 				}
 			},
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 				use: [
 					{
 						loader: 'style-loader',
@@ -249,19 +249,23 @@ The differences in data representations of the product preview are summarized in
 	<tr>
 		<td>Model</td>
 		<td>
-			<pre><code>&lt;productPreview id=&quot;...&quot; /&gt;</code></pre>
+			<pre><code>&lt;productPreview id="..." /></code></pre>
 		</td>
 	</tr>
 	<tr>
 		<td>Editing view</td>
 		<td>
-			<pre><code>&lt;section class=&quot;product&quot; data-id=&quot;...&quot;&gt;&#10;&#9;&lt;div class=&quot;product__react-wrapper&quot;&gt;&#10;&#9;&#9;&lt;ProductPreview /&gt; // React component &#10;&#9;&lt;/div&gt;&#10;&lt;/section&gt;</code></pre>
+			<pre><code>&lt;section class="product" data-id="...">
+	&lt;div class="product__react-wrapper">
+		&lt;ProductPreview /> // React component
+	&lt;/div>
+&lt;/section></code></pre>
 		</td>
 	</tr>
 	<tr>
 		<td>Data view (editor output)</td>
 		<td>
-			<pre><code>&lt;section class=&quot;product&quot; data-id=&quot;...&quot; /&gt;&lt;/section&gt;</code></pre>
+			<pre><code>&lt;section class="product" data-id="...">&lt;/section></code></pre>
 		</td>
 	</tr>
 </table>
