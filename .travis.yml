@@ -1,8 +1,10 @@
 sudo: required
-dist: trusty
+dist: xenial
 addons:
   chrome: stable
 language: node_js
+services:
+- xvfb
 cache:
   yarn: true
 node_js:
@@ -11,8 +13,6 @@ cache:
 - node_modules
 before_install:
 - export START_TIME=$( date +%s )
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
 - yarn add mrgit --ignore-workspace-root-check
