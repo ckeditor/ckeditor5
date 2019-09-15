@@ -6,7 +6,7 @@ order: 10
 
 # Using React component in a block widget
 
-In this tutorial, you will learn how to implement an editor plugin that uses the power or [React](https://reactjs.org/) library inside the CKEditor 5 widget ecosystem. We will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
+In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://reactjs.org/) library inside the CKEditor 5 widget ecosystem. We will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
 
 Later on, we will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products, allowing the user to insert the product in the editor content by clicking it on the list.
 
@@ -18,7 +18,7 @@ Later on, we will use the "Product preview" feature to build a simple React appl
 
 ## Before you start
 
-There is a couple of thing you should know before we start:
+There are a couple of things you should know before we start:
 
 * Since you are here, we assume you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor 5 has an official {@link builds/guides/frameworks/react **Rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
 * In this tutorial, we are going to implement a block editor widget and that itself could give you an headache. We recommend you at least skim through the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API and possible use–cases.
@@ -62,7 +62,7 @@ yarn add --dev \
 	webpack-cli@3
 ```
 
-Create a minimal [webpack](https://webpack.js.org) configuration and save in as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor 5 and React, check out the {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source "Integrating CKEditor 5 built from source"} section of the CKEditor 5 React component guide.
+Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor 5 and React, check out the {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source "Integrating CKEditor 5 built from source"} section of the CKEditor 5 React component guide.
 
 ```js
 // webpack.config.js
@@ -163,7 +163,7 @@ And an `index.html` page next to the `app.js` file:
 </html>
 ```
 
-Finally, let us build your project and see if everything worked well by opening the index page in your browser:
+Finally, build your project and see if everything worked well by opening the index page in your browser:
 
 ```
 oleq@MBP15 ckeditor5-react-in-widgets> node_modules/.bin/webpack --mode development
