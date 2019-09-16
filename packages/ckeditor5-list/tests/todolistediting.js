@@ -411,6 +411,50 @@ describe( 'TodoListEditing', () => {
 			model.change( writer => writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) ) );
 			expect( getViewData( view ) ).to.equal( '<test class="checked">{}Foo</test>' );
 		} );
+
+		it( 'should properly handle typing inside text node with attribute', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0"><$text bold="true">[]foo</$text></listItem>' );
+
+			editor.execute( 'input', { text: 'b' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="todo"><$text bold="true">b[]foo</$text></listItem>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<strong>' +
+							'<label class="todo-list__checkmark" contenteditable="false"></label>b{}foo' +
+						'</strong>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should properly handle typing inside text node with many attributes', () => {
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">[]foo</$text></listItem>'
+			);
+
+			editor.execute( 'input', { text: 'b' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="todo"><$text bold="true" linkHref="foo">b[]foo</$text></listItem>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<a class="ck-link_selected" href="foo">' +
+							'<strong>' +
+								'<label class="todo-list__checkmark" contenteditable="false"></label>b{}foo' +
+							'</strong>' +
+						'</a>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline m -> v', () => {

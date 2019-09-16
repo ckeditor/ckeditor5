@@ -73,7 +73,7 @@ export default class TodoListEditing extends Plugin {
 			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
 			{ priority: 'high' }
 		);
-		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion, { priority: 'high' } );
+		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion( editing.view ), { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 

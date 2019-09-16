@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { generateLiInUl, injectViewList, findInRange } from './utils';
+import { findInRange, generateLiInUl, injectViewList } from './utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -71,27 +71,39 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
-export function modelViewTextInsertion( evt, data, conversionApi ) {
-	const parent = data.range.start.parent;
+export function modelViewTextInsertion( view ) {
+	return ( evt, data, conversionApi ) => {
+		const parent = data.range.start.parent;
 
-	if ( parent.name != 'listItem' || parent.getAttribute( 'listType' ) != 'todo' ) {
-		return;
-	}
+		if ( parent.name != 'listItem' || parent.getAttribute( 'listType' ) != 'todo' ) {
+			return;
+		}
 
-	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-		return;
-	}
+		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
 
-	const viewWriter = conversionApi.writer;
-	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-	const viewText = viewWriter.createText( data.item.data );
+		const viewWriter = conversionApi.writer;
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewText = viewWriter.createText( data.item.data );
 
-	// Be sure text is created after the UIElement, so if it is a first text node inside a `listItem` element
-	// it has to be moved after the first node in the view list item.
-	//
-	// model: <listItem listtype="todo">[foo]</listItem>
-	// view: <li>^<checkbox/></li> -> <li><checkbox/>foo</li>
-	viewWriter.insert( viewPosition.offset ? viewPosition : viewPosition.getShiftedBy( 1 ), viewText );
+		// Be sure text is created after the UIElement, so if it is a first text node inside a `listItem` element
+		// it has to be moved after the first node in the view list item.
+		//
+		// model: <listItem listtype="todo">[foo]</listItem>
+		// view: <li>^<checkbox/></li> -> <li><checkbox/>foo</li>
+		const textInsertionPosition = viewPosition.offset ? viewPosition : viewPosition.getShiftedBy( 1 );
+
+		const label = findLabel( viewPosition.parent, view );
+
+		if ( label && label.parent !== viewPosition.parent && viewPosition.offset === 0 ) {
+			viewWriter.insert( view.createPositionAfter( label ), viewText );
+
+			return;
+		}
+
+		viewWriter.insert( textInsertionPosition, viewText );
+	};
 }
 
 /**
@@ -246,12 +258,7 @@ export function modelViewChangeType( onCheckedChange, view ) {
 			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 		} else if ( data.attributeOldValue == 'todo' ) {
 			viewWriter.removeClass( 'todo-list', viewItem.parent );
-
-			const label = findLabel( viewItem, view );
-
-			if ( label ) {
-				viewWriter.remove( label );
-			}
+			viewWriter.remove( findLabel( viewItem, view ) );
 		}
 	};
 }
