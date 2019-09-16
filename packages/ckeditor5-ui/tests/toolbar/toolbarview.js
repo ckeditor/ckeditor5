@@ -126,12 +126,12 @@ describe( 'ToolbarView', () => {
 
 				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
 
-				expect( view._resizeObserver ).to.be.null;
+				expect( view._groupWhenFullResizeObserver ).to.be.null;
 
 				view.shouldGroupWhenFull = true;
 
-				sinon.assert.calledOnce( view._resizeObserver.observe );
-				sinon.assert.calledWithExactly( view._resizeObserver.observe, view.element );
+				sinon.assert.calledOnce( view._groupWhenFullResizeObserver.observe );
+				sinon.assert.calledWithExactly( view._groupWhenFullResizeObserver.observe, view.element );
 			} );
 
 			it( 'updates the state of grouped items upon resize', () => {
@@ -146,10 +146,10 @@ describe( 'ToolbarView', () => {
 
 				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
 
-				expect( view._resizeObserver ).to.be.null;
+				expect( view._groupWhenFullResizeObserver ).to.be.null;
 
 				view.shouldGroupWhenFull = true;
-				view._resizeObserver.callback( [
+				view._groupWhenFullResizeObserver.callback( [
 					{ contentRect: { width: 42 } }
 				] );
 
@@ -485,7 +485,7 @@ describe( 'ToolbarView', () => {
 			view.element.remove();
 		} );
 
-		it( 'disconnects the #_resizeObserver', () => {
+		it( 'disconnects the #_groupWhenFullResizeObserver', () => {
 			document.body.appendChild( view.element );
 			view.element.style.width = '200px';
 
@@ -500,10 +500,10 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemD );
 
 			view.shouldGroupWhenFull = true;
-			sinon.spy( view._resizeObserver, 'disconnect' );
+			sinon.spy( view._groupWhenFullResizeObserver, 'disconnect' );
 
 			view.destroy();
-			sinon.assert.calledOnce( view._resizeObserver.disconnect );
+			sinon.assert.calledOnce( view._groupWhenFullResizeObserver.disconnect );
 			view.element.remove();
 		} );
 	} );

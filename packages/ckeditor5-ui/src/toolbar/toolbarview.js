@@ -184,7 +184,7 @@ export default class ToolbarView extends View {
 		 * @private
 		 * @member {Boolean}
 		 */
-		this._updateGroupedItemsLock = false;
+		this._groupWhenFullLock = false;
 
 		/**
 		 * A cached value of the horizontal padding style used by {@link #updateGroupedItems}
@@ -198,7 +198,7 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {Number}
 		 */
-		this._horizontalPadding = null;
+		this._groupWhenFullCachedPadding = null;
 
 		/**
 		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
@@ -210,7 +210,7 @@ export default class ToolbarView extends View {
 		 * @private
 		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
 		 */
-		this._resizeObserver = null;
+		this._groupWhenFullResizeObserver = null;
 
 		/**
 		 * A top–level collection aggregating building blocks of the toolbar. It mainly exists to
@@ -325,8 +325,8 @@ export default class ToolbarView extends View {
 			this.groupedItemsDropdown.destroy();
 		}
 
-		if ( this._resizeObserver ) {
-			this._resizeObserver.disconnect();
+		if ( this._groupWhenFullResizeObserver ) {
+			this._groupWhenFullResizeObserver.disconnect();
 		}
 
 		return super.destroy();
@@ -413,7 +413,7 @@ export default class ToolbarView extends View {
 		// Do not check when another check is going on to avoid infinite loops.
 		// This method is called when adding and removing #items but at the same time it adds and removes
 		// #items itself.
-		if ( this._updateGroupedItemsLock ) {
+		if ( this._groupWhenFullLock ) {
 			return;
 		}
 
@@ -424,7 +424,7 @@ export default class ToolbarView extends View {
 			return;
 		}
 
-		this._updateGroupedItemsLock = true;
+		this._groupWhenFullLock = true;
 
 		let wereItemsGrouped;
 
@@ -455,7 +455,7 @@ export default class ToolbarView extends View {
 			}
 		}
 
-		this._updateGroupedItemsLock = false;
+		this._groupWhenFullLock = false;
 	}
 
 	/**
@@ -479,20 +479,20 @@ export default class ToolbarView extends View {
 		const lastChildRect = new Rect( this.element.lastChild );
 		const toolbarRect = new Rect( this.element );
 
-		if ( !this._horizontalPadding ) {
+		if ( !this._groupWhenFullCachedPadding ) {
 			const computedStyle = global.window.getComputedStyle( this.element );
 			const paddingProperty = uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
 
 			// parseInt() is essential because of quirky floating point numbers logic and DOM.
 			// If the padding turned out too big because of that, the grouped items dropdown would
 			// always look (from the Rect perspective) like it overflows (while it's not).
-			this._horizontalPadding = Number.parseInt( computedStyle[ paddingProperty ] );
+			this._groupWhenFullCachedPadding = Number.parseInt( computedStyle[ paddingProperty ] );
 		}
 
 		if ( uiLanguageDirection === 'ltr' ) {
-			return lastChildRect.right > toolbarRect.right - this._horizontalPadding;
+			return lastChildRect.right > toolbarRect.right - this._groupWhenFullCachedPadding;
 		} else {
-			return lastChildRect.left < toolbarRect.left + this._horizontalPadding;
+			return lastChildRect.left < toolbarRect.left + this._groupWhenFullCachedPadding;
 		}
 	}
 
@@ -634,7 +634,7 @@ export default class ToolbarView extends View {
 		let previousWidth;
 
 		// TODO: Consider debounce.
-		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
+		this._groupWhenFullResizeObserver = getResizeObserver( ( [ entry ] ) => {
 			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
 				this.updateGroupedItems();
 
@@ -642,7 +642,7 @@ export default class ToolbarView extends View {
 			}
 		} );
 
-		this._resizeObserver.observe( this.element );
+		this._groupWhenFullResizeObserver.observe( this.element );
 
 		this.updateGroupedItems();
 	}
