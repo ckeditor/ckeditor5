@@ -127,7 +127,7 @@ export default class ResizeState {
 		const widthStyle = domResizeHost.style.width;
 
 		this.originalWidthPercents = widthStyle && widthStyle.match( /^\d+\.?\d*%$/ ) ?
-			parseFloat( widthStyle ) : calculateHostPercentageWidth( domResizeHost );
+			parseFloat( widthStyle ) : calculateHostPercentageWidth( domResizeHost, clientRect );
 	}
 
 	update( newSize ) {
@@ -147,15 +147,15 @@ mix( ResizeState, ObservableMixin );
  *
  * @private
  * @param {HTMLElement} domResizeHost
+ * @param {module:utils/dom/rect~Rect} resizeHostRect
  * @returns {Number}
  */
-function calculateHostPercentageWidth( domResizeHost ) {
-	const rect = new Rect( domResizeHost );
+function calculateHostPercentageWidth( domResizeHost, resizeHostRect ) {
 	const domResizeHostParent = domResizeHost.parentElement;
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
 	const parentWidth = parseFloat( domResizeHostParent.ownerDocument.defaultView.getComputedStyle( domResizeHostParent ).width );
-	// Round to two digits in fraction.
-	return Math.round( rect.width / parentWidth * 10000 ) / 100;
+
+	return resizeHostRect.width / parentWidth * 100;
 }
 
 /**
