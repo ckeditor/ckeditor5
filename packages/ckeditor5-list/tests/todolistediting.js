@@ -412,6 +412,26 @@ describe( 'TodoListEditing', () => {
 			expect( getViewData( view ) ).to.equal( '<test class="checked">{}Foo</test>' );
 		} );
 
+		it( 'should move selection after checkmark element to the first text node', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}Foo</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should move selection after checkmark element when list item does not contain any text node', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
+				'</ul>'
+			);
+		} );
+
 		it( 'should properly handle typing inside text node with attribute', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0"><$text bold="true">[]foo</$text></listItem>' );
 
@@ -424,8 +444,8 @@ describe( 'TodoListEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-				'<label class="todo-list__checkmark" contenteditable="false"></label>' +
-				'<strong>b{}foo</strong>' +
+						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+						'<strong>b{}foo</strong>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -445,8 +465,8 @@ describe( 'TodoListEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-				'<label class="todo-list__checkmark" contenteditable="false"></label>' +
-				'<a href="foo"><strong>b{}foo</strong></a>' +
+						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+						'<a href="foo"><strong>b{}foo</strong></a>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -772,28 +792,6 @@ describe( 'TodoListEditing', () => {
 			);
 
 			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
-		} );
-	} );
-
-	describe( 'selection view post-fixer', () => {
-		it( 'should move selection after checkmark element to the first text node', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
-
-			expect( getViewData( view ) ).to.equal(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}Foo</li>' +
-				'</ul>'
-			);
-		} );
-
-		it( 'should move selection after checkmark element when list item does not contain any text node', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
-
-			expect( getViewData( view ) ).to.equal(
-				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
-				'</ul>'
-			);
 		} );
 	} );
 
