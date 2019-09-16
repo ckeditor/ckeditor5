@@ -12,6 +12,7 @@ import ListCommand from '../src/listcommand';
 import TodoListCheckCommand from '../src/todolistcheckcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -27,7 +28,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -283,6 +284,42 @@ describe( 'TodoListEditing', () => {
 				'</ul>' +
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>3.0</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should properly convert list type change - inner text with attribute', () => {
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
+				'<listItem listType="todo" listIndent="0"><$text bold="true">2.0</$text></listItem>' +
+				'<listItem listType="todo" listIndent="0">3.]0</listItem>'
+			);
+
+			editor.execute( 'bulletedList' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul>' +
+				'<li>1{.0</li>' +
+				'<li><strong>2.0</strong></li>' +
+				'<li>3.}0</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should properly convert list type change - inner text with many attributes', () => {
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
+				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">2.0</$text></listItem>' +
+				'<listItem listType="todo" listIndent="0">3.]0</listItem>'
+			);
+
+			editor.execute( 'bulletedList' );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul>' +
+				'<li>1{.0</li>' +
+				'<li><a href="foo"><strong>2.0</strong></a></li>' +
+				'<li>3.}0</li>' +
 				'</ul>'
 			);
 		} );

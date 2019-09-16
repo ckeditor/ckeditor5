@@ -79,7 +79,7 @@ export default class TodoListEditing extends Plugin {
 
 		editing.downcastDispatcher.on(
 			'attribute:listType:listItem',
-			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ) )
+			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ), editing.view )
 		);
 		editing.downcastDispatcher.on(
 			'attribute:todoListChecked:listItem',

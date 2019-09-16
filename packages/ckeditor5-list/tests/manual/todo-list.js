@@ -17,12 +17,13 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import List from '../../src/list';
 import TodoList from '../../src/todolist';
+import Link from '../../../ckeditor5-link/src/link';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, List, TodoList, Clipboard ],
+		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, List, TodoList, Clipboard, Link ],
 		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'bold', 'highlight', 'insertTable', '|', 'undo', 'redo'
+			'heading', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'bold', 'link', 'highlight', 'insertTable', '|', 'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [

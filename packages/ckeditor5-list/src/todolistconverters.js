@@ -233,7 +233,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelViewChangeType( onCheckedChange ) {
+export function modelViewChangeType( onCheckedChange, view ) {
 	return ( evt, data, conversionApi ) => {
 		const viewItem = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -246,7 +246,12 @@ export function modelViewChangeType( onCheckedChange ) {
 			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 		} else if ( data.attributeOldValue == 'todo' ) {
 			viewWriter.removeClass( 'todo-list', viewItem.parent );
-			viewWriter.remove( viewItem.getChild( 0 ) );
+
+			const label = findLabel( viewItem, view );
+
+			if ( label ) {
+				viewWriter.remove( label );
+			}
 		}
 	};
 }
@@ -320,4 +325,17 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 	}
 
 	return uiElement;
+}
+
+// Helper method to find label element inside li.
+function findLabel( viewItem, view ) {
+	const range = view.createRangeIn( viewItem );
+
+	let label;
+	for ( const value of range ) {
+		if ( value.item.is( 'uiElement', 'label' ) ) {
+			label = value.item;
+		}
+	}
+	return label;
 }
