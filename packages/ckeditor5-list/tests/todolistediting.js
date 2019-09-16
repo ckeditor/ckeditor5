@@ -412,7 +412,7 @@ describe( 'TodoListEditing', () => {
 			expect( getViewData( view ) ).to.equal( '<test class="checked">{}Foo</test>' );
 		} );
 
-		it( 'should move selection after checkmark element to the first text node', () => {
+		it( 'should render selection after checkmark element in the first text node', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
 
 			expect( getViewData( view ) ).to.equal(
@@ -422,7 +422,7 @@ describe( 'TodoListEditing', () => {
 			);
 		} );
 
-		it( 'should move selection after checkmark element when list item does not contain any text node', () => {
+		it( 'should render selection after checkmark element when list item does not contain any text nodes', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
 
 			expect( getViewData( view ) ).to.equal(
@@ -430,6 +430,63 @@ describe( 'TodoListEditing', () => {
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
 				'</ul>'
 			);
+		} );
+
+		it( 'should render marker UIElements after the checkmark element', () => {
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0">[]foo</listItem>' +
+				'<listItem listType="todo" listIndent="0">bar</listItem>'
+			);
+
+			editor.conversion.for( 'downcast' ).markerToElement( {
+				model: 'element1',
+				view: ( data, writer ) => writer.createUIElement( 'element1' )
+			} );
+
+			editor.conversion.for( 'downcast' ).markerToElement( {
+				model: 'element2',
+				view: ( data, writer ) => writer.createUIElement( 'element2' )
+			} );
+
+			editor.conversion.for( 'downcast' ).markerToHighlight( {
+				model: 'highlight',
+				view: { classes: 'highlight' }
+			} );
+			model.change( writer => {
+				writer.addMarker( 'element1', {
+					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'element2', {
+					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'highlight', {
+					range: writer.createRangeIn( modelRoot.getChild( 0 ) ),
+					usingOperation: false
+				} );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="highlight">' +
+							'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+							'<element1></element1>' +
+							'<element2></element2>' +
+							'{}foo' +
+						'</span>' +
+					'</li>' +
+					'<li>' +
+						'<label class="todo-list__checkmark" contenteditable="false"></label>bar' +
+					'</li>' +
+				'</ul>'
+			);
+
+			// CC.
+			editor.execute( 'todoListCheck' );
 		} );
 
 		it( 'should properly handle typing inside text node with attribute', () => {
@@ -792,65 +849,6 @@ describe( 'TodoListEditing', () => {
 			);
 
 			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
-		} );
-	} );
-
-	describe( 'uiElements view post-fixer', () => {
-		it( 'should move all UIElements from before a checkmark after the checkmark element', () => {
-			setModelData( model,
-				'<listItem listType="todo" listIndent="0">[]foo</listItem>' +
-				'<listItem listType="todo" listIndent="0">bar</listItem>'
-			);
-
-			editor.conversion.for( 'downcast' ).markerToElement( {
-				model: 'element1',
-				view: ( data, writer ) => writer.createUIElement( 'element1' )
-			} );
-
-			editor.conversion.for( 'downcast' ).markerToElement( {
-				model: 'element2',
-				view: ( data, writer ) => writer.createUIElement( 'element2' )
-			} );
-
-			editor.conversion.for( 'downcast' ).markerToHighlight( {
-				model: 'highlight',
-				view: { classes: 'highlight' }
-			} );
-			model.change( writer => {
-				writer.addMarker( 'element1', {
-					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
-					usingOperation: false
-				} );
-
-				writer.addMarker( 'element2', {
-					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
-					usingOperation: false
-				} );
-
-				writer.addMarker( 'highlight', {
-					range: writer.createRangeIn( modelRoot.getChild( 0 ) ),
-					usingOperation: false
-				} );
-			} );
-
-			expect( getViewData( view ) ).to.equal(
-				'<ul class="todo-list">' +
-					'<li>' +
-						'<span class="highlight">' +
-							'<label class="todo-list__checkmark" contenteditable="false"></label>' +
-							'<element1></element1>' +
-							'<element2></element2>' +
-							'{}foo' +
-						'</span>' +
-					'</li>' +
-					'<li>' +
-						'<label class="todo-list__checkmark" contenteditable="false"></label>bar' +
-					'</li>' +
-				'</ul>'
-			);
-
-			// CC.
-			editor.execute( 'todoListCheck' );
 		} );
 	} );
 
