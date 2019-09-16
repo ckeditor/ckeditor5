@@ -136,38 +136,44 @@ describe( 'DecoupledEditorUI', () => {
 			} );
 		} );
 
-		describe( 'view.toolbar#items', () => {
-			it( 'are filled with the config.toolbar (specified as an Array)', () => {
-				return VirtualDecoupledTestEditor
-					.create( '', {
-						toolbar: [ 'foo', 'bar' ]
-					} )
-					.then( editor => {
-						const items = editor.ui.view.toolbar.items;
-
-						expect( items.get( 0 ).name ).to.equal( 'foo' );
-						expect( items.get( 1 ).name ).to.equal( 'bar' );
-
-						return editor.destroy();
-					} );
+		describe( 'view.toolbar', () => {
+			it( 'has automatic items grouping enabled', () => {
+				expect( view.toolbar.shouldGroupWhenFull ).to.be.true;
 			} );
 
-			it( 'are filled with the config.toolbar (specified as an Object)', () => {
-				return VirtualDecoupledTestEditor
-					.create( '', {
-						toolbar: {
-							items: [ 'foo', 'bar' ],
-							viewportTopOffset: 100
-						}
-					} )
-					.then( editor => {
-						const items = editor.ui.view.toolbar.items;
+			describe( '#items', () => {
+				it( 'are filled with the config.toolbar (specified as an Array)', () => {
+					return VirtualDecoupledTestEditor
+						.create( '', {
+							toolbar: [ 'foo', 'bar' ]
+						} )
+						.then( editor => {
+							const items = editor.ui.view.toolbar.items;
 
-						expect( items.get( 0 ).name ).to.equal( 'foo' );
-						expect( items.get( 1 ).name ).to.equal( 'bar' );
+							expect( items.get( 0 ).name ).to.equal( 'foo' );
+							expect( items.get( 1 ).name ).to.equal( 'bar' );
 
-						return editor.destroy();
-					} );
+							return editor.destroy();
+						} );
+				} );
+
+				it( 'are filled with the config.toolbar (specified as an Object)', () => {
+					return VirtualDecoupledTestEditor
+						.create( '', {
+							toolbar: {
+								items: [ 'foo', 'bar' ],
+								viewportTopOffset: 100
+							}
+						} )
+						.then( editor => {
+							const items = editor.ui.view.toolbar.items;
+
+							expect( items.get( 0 ).name ).to.equal( 'foo' );
+							expect( items.get( 1 ).name ).to.equal( 'bar' );
+
+							return editor.destroy();
+						} );
+				} );
 			} );
 		} );
 
