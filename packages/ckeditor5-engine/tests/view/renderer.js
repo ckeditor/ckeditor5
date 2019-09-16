@@ -20,7 +20,7 @@ import Renderer from '../../src/view/renderer';
 import DocumentFragment from '../../src/view/documentfragment';
 import DowncastWriter from '../../src/view/downcastwriter';
 
-import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
+import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createViewRoot from './_utils/createroot';
@@ -1847,6 +1847,25 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( createRangeSpy.callCount ).to.be.equal( 2 );
+				} );
+
+				it( 'correctly maps fake selection ', () => {
+					// See https://github.com/ckeditor/ckeditor5-engine/pull/1792#issuecomment-529814641
+					const label = 'subsequent fake selection calls';
+					const { view: newParagraph, selection: newSelection } = parse( '<container:p>[baz]</container:p>' );
+
+					viewRoot._appendChild( newParagraph );
+
+					selection._setTo( selection.getRanges(), { fake: true, label } );
+					renderer.render();
+
+					selection._setTo( newSelection.getRanges(), { fake: true, label } );
+					renderer.render();
+
+					const fakeSelectionContainer = domRoot.childNodes[ 1 ];
+					const mappedSelection = renderer.domConverter.fakeSelectionToView( fakeSelectionContainer );
+
+					expect( stringify( viewRoot, mappedSelection ) ).to.be.equal( '<div><p>foo bar</p><p>[baz]</p></div>' );
 				} );
 			} );
 
