@@ -126,11 +126,8 @@ export default class ResizeState {
 
 		const widthStyle = domResizeHost.style.width;
 
-		if ( widthStyle && widthStyle.match( /^\d+\.?\d*%$/ ) ) {
-			this.originalWidthPercents = parseFloat( widthStyle );
-		} else {
-			this.originalWidthPercents = this._getParentPercentage( domResizeHost );
-		}
+		this.originalWidthPercents = widthStyle && widthStyle.match( /^\d+\.?\d*%$/ ) ?
+			parseFloat( widthStyle ) : calculateHostPercentageWidth( domResizeHost );
 	}
 
 	update( newSize ) {
@@ -141,26 +138,25 @@ export default class ResizeState {
 		this.proposedHandleHostWidth = newSize.handleHostWidth;
 		this.proposedHandleHostHeight = newSize.handleHostHeight;
 	}
-
-	/**
-	 * Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
-	 *
-	 * @protected
-	 * @param {HTMLElement} domResizeHost
-	 * @returns {Number}
-	 */
-	_getParentPercentage( domResizeHost ) {
-		const rect = new Rect( domResizeHost );
-		const domResizeHostParent = domResizeHost.parentElement;
-		// Need to use computed style as it properly excludes parent's paddings from the returned value.
-		const parentWidth = parseFloat( domResizeHostParent.ownerDocument.defaultView.getComputedStyle( domResizeHostParent ).width );
-
-		// Round to two digits in fraction.
-		return Math.round( rect.width / parentWidth * 10000 ) / 100;
-	}
 }
 
 mix( ResizeState, ObservableMixin );
+
+/**
+ * Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
+ *
+ * @private
+ * @param {HTMLElement} domResizeHost
+ * @returns {Number}
+ */
+function calculateHostPercentageWidth( domResizeHost ) {
+	const rect = new Rect( domResizeHost );
+	const domResizeHostParent = domResizeHost.parentElement;
+	// Need to use computed style as it properly excludes parent's paddings from the returned value.
+	const parentWidth = parseFloat( domResizeHostParent.ownerDocument.defaultView.getComputedStyle( domResizeHostParent ).width );
+	// Round to two digits in fraction.
+	return Math.round( rect.width / parentWidth * 10000 ) / 100;
+}
 
 /**
  * Returns coordinates of the top-left corner of an element, relative to the document's top-left corner.
