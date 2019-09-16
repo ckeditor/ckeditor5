@@ -106,6 +106,18 @@ describe( 'ToolbarView', () => {
 				sinon.assert.calledOnce( view.updateGroupedItems );
 			} );
 
+			it( 'updates the state of grouped items after the element is updated in DOM', () => {
+				let hasClassBeforeUpdate;
+
+				sinon.stub( view, 'updateGroupedItems' ).callsFake( () => {
+					hasClassBeforeUpdate = view.element.classList.contains( 'ck-toolbar_grouping' );
+				} );
+
+				view.shouldGroupWhenFull = true;
+
+				expect( hasClassBeforeUpdate ).to.be.true;
+			} );
+
 			// Possibly in the future a possibility to turn the automatic grouping off could be required.
 			// As for now, there is no such need, so there is no such functionality.
 			it( 'does nothing if toggled false', () => {
@@ -184,6 +196,8 @@ describe( 'ToolbarView', () => {
 				view.render();
 
 				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+
+				view.destroy();
 			} );
 
 			it( 'should allow the aria-label to be translated', () => {
@@ -192,6 +206,8 @@ describe( 'ToolbarView', () => {
 				view.render();
 
 				expect( view.element.getAttribute( 'aria-label' ) ).to.equal( 'Pasek narzędzi edytora' );
+
+				view.destroy();
 			} );
 		} );
 
