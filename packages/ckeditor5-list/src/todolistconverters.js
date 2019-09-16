@@ -60,53 +60,6 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
 }
 
 /**
- * A model-to-view converter for the model `$text` element inside a to-do list item.
- *
- * It takes care of creating text after the {@link module:engine/view/uielement~UIElement checkbox UI element}.
- *
- * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
- *
- * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
- */
-export function modelViewTextInsertion( view ) {
-	return ( evt, data, conversionApi ) => {
-		const parent = data.range.start.parent;
-
-		if ( parent.name != 'listItem' || parent.getAttribute( 'listType' ) != 'todo' ) {
-			return;
-		}
-
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-			return;
-		}
-
-		const viewWriter = conversionApi.writer;
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewText = viewWriter.createText( data.item.data );
-
-		// Be sure text is created after the UIElement, so if it is a first text node inside a `listItem` element
-		// it has to be moved after the first node in the view list item.
-		//
-		// model: <listItem listtype="todo">[foo]</listItem>
-		// view: <li>^<checkbox/></li> -> <li><checkbox/>foo</li>
-		const textInsertionPosition = viewPosition.offset ? viewPosition : viewPosition.getShiftedBy( 1 );
-
-		const label = findLabel( viewPosition.parent, view );
-
-		if ( label && label.parent !== viewPosition.parent && viewPosition.offset === 0 ) {
-			viewWriter.insert( view.createPositionAfter( label ), viewText );
-
-			return;
-		}
-
-		viewWriter.insert( textInsertionPosition, viewText );
-	};
-}
-
-/**
  * A model-to-view converter for the `listItem` model element insertion.
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
@@ -335,14 +288,12 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 }
 
 // Helper method to find label element inside li.
-function findLabel( viewItem, view ) {
+export function findLabel( viewItem, view ) {
 	const range = view.createRangeIn( viewItem );
 
-	let label;
 	for ( const value of range ) {
 		if ( value.item.is( 'uiElement', 'label' ) ) {
-			label = value.item;
+			return value.item;
 		}
 	}
-	return label;
 }

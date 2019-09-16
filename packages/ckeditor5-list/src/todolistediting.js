@@ -15,12 +15,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
 	modelViewInsertion,
-	modelViewTextInsertion,
 	dataModelViewInsertion,
 	dataModelViewTextInsertion,
 	dataViewModelCheckmarkInsertion,
 	modelViewChangeChecked,
-	modelViewChangeType
+	modelViewChangeType,
+	findLabel
 } from './todolistconverters';
 
 import { findInRange } from './utils';
@@ -73,7 +73,6 @@ export default class TodoListEditing extends Plugin {
 			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
 			{ priority: 'high' }
 		);
-		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion( editing.view ), { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 
@@ -85,6 +84,28 @@ export default class TodoListEditing extends Plugin {
 			'attribute:todoListChecked:listItem',
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
+
+		// Fix view position on 0 offset.
+		editing.mapper.on( 'modelToViewPosition', ( evt, data ) => {
+			const view = editing.view;
+			const modelPosition = data.modelPosition;
+
+			if ( modelPosition.parent.is( 'listItem' ) && modelPosition.parent.getAttribute( 'listType' ) == 'todo' ) {
+				const viewLi = editing.mapper.toViewElement( data.modelPosition.parent );
+
+				if ( modelPosition.offset === 0 ) {
+					const label = findLabel( viewLi, view );
+
+					if ( label ) {
+						if ( label.nextSibling ) {
+							data.viewPosition = view.createPositionAt( label.nextSibling, 0 );
+						} else {
+							data.viewPosition = view.createPositionAfter( label );
+						}
+					}
+				}
+			}
+		}, { priority: 'low' } );
 
 		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 

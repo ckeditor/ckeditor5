@@ -424,9 +424,8 @@ describe( 'TodoListEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<strong>' +
-							'<label class="todo-list__checkmark" contenteditable="false"></label>b{}foo' +
-						'</strong>' +
+				'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+				'<strong>b{}foo</strong>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -446,11 +445,8 @@ describe( 'TodoListEditing', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<a class="ck-link_selected" href="foo">' +
-							'<strong>' +
-								'<label class="todo-list__checkmark" contenteditable="false"></label>b{}foo' +
-							'</strong>' +
-						'</a>' +
+				'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+				'<a href="foo"><strong>b{}foo</strong></a>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -822,7 +818,6 @@ describe( 'TodoListEditing', () => {
 				model: 'highlight',
 				view: { classes: 'highlight' }
 			} );
-
 			model.change( writer => {
 				writer.addMarker( 'element1', {
 					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
