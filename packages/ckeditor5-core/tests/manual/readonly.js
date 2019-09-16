@@ -27,6 +27,8 @@ ClassicEditor
 		button.addEventListener( 'click', () => {
 			editor.isReadOnly = !editor.isReadOnly;
 			button.textContent = editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
+
+			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {
