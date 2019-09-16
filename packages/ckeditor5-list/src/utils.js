@@ -216,16 +216,6 @@ export function getSiblingListItem( modelItem, options ) {
 	return null;
 }
 
-export function findInRange( range, comparator ) {
-	for ( const item of range.getItems() ) {
-		const result = comparator( item );
-
-		if ( result ) {
-			return result;
-		}
-	}
-}
-
 /**
  * Helper method for creating a UI button and linking it with an appropriate command.
  *

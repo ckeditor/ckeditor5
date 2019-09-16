@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { findInRange, generateLiInUl, injectViewList } from './utils';
+import { generateLiInUl, injectViewList } from './utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -242,8 +242,8 @@ export function modelViewChangeChecked( onCheckedChange ) {
 		const { mapper, writer: viewWriter } = conversionApi;
 		const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 		const viewItem = mapper.toViewElement( data.item );
-		const itemRange = viewWriter.createRangeIn( viewItem );
-		const oldCheckmarkElement = findInRange( itemRange, item => item.is( 'uiElement' ) ? item : false );
+		// Because of m -> v position mapper we can be sure checkbox is always at the beginning.
+		const oldCheckmarkElement = viewItem.getChild( 0 );
 		const newCheckmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
 
 		viewWriter.insert( viewWriter.createPositionAfter( oldCheckmarkElement ), newCheckmarkElement );
