@@ -173,6 +173,18 @@ export default class ToolbarView extends View {
 		}, { priority: 'low' } );
 
 		/**
+		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
+		 * and manage items that do not fit into a single row.
+		 *
+		 * **Note:** Created dynamically only when {@link #shouldGroupWhenFull} is `true`.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
+		 */
+		this._groupWhenFullResizeObserver = null;
+
+		/**
 		 * A flag used by {@link #updateGroupedItems} method to make sure no concurrent updates
 		 * are performed to the {@link #items} and {@link #groupedItems}. Because {@link #updateGroupedItems}
 		 * manages those collections but also is executed upon changes in those collections, this flag
@@ -195,22 +207,10 @@ export default class ToolbarView extends View {
 		 * **Note:** Set only when {@link #shouldGroupWhenFull} is `true`.
 		 *
 		 * @readonly
-		 * @protected
+		 * @private
 		 * @member {Number}
 		 */
 		this._groupWhenFullCachedPadding = null;
-
-		/**
-		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
-		 * and manage items that do not fit into a single row.
-		 *
-		 * **Note:** Created dynamically only when {@link #shouldGroupWhenFull} is `true`.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
-		 */
-		this._groupWhenFullResizeObserver = null;
 
 		/**
 		 * A top–level collection aggregating building blocks of the toolbar. It mainly exists to
