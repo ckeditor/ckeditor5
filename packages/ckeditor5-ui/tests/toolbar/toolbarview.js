@@ -636,12 +636,18 @@ describe( 'ToolbarView', () => {
 			expect( view.groupedItems ).to.be.null;
 		} );
 
-		it( 'does not throw when the view element has no geometry', () => {
+		it( 'stays silent if the toolbar is detached from visible DOM', () => {
+			testUtils.sinon.spy( console, 'warn' );
 			view.element.remove();
 
-			expect( () => {
-				view.updateGroupedItems();
-			} ).to.not.throw();
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+
+			view.shouldGroupWhenFull = true;
+
+			sinon.assert.notCalled( console.warn );
 		} );
 
 		it( 'does not group when items fit', () => {

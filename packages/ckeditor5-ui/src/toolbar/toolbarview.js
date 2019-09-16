@@ -417,12 +417,17 @@ export default class ToolbarView extends View {
 			return;
 		}
 
+		// Do no grouping–related geometry analysis when the toolbar is detached from visible DOM,
+		// for instance before #render(), or after render but without a parent or a parent detached
+		// from DOM. DOMRects won't work anyway and there will be tons of warning in the console and
+		// nothing else.
+		if ( !this.element.ownerDocument.body.contains( this.element ) ) {
+			return;
+		}
+
 		// There's no way to make any decisions concerning geometry when there is no element to work with
 		// (before #render()). Or when element has no parent because ClientRects won't work when
 		// #element is not in DOM.
-		if ( !this.element || !this.element.parentNode ) {
-			return;
-		}
 
 		this._groupWhenFullLock = true;
 
