@@ -106,8 +106,9 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds given DOM element that represents fake selection to {@link module:engine/view/documentselection~DocumentSelection
-	 * document selection}. Document selection copy is stored and can be retrieved by
+	 * Binds given DOM element that represents fake selection to a **position** of a
+	 * {@link module:engine/view/documentselection~DocumentSelection document selection}.
+	 * Document selection copy is stored and can be retrieved by
 	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
