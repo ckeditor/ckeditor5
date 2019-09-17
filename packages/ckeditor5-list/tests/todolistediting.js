@@ -19,10 +19,11 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 /* global Event, document */
 
-describe( 'TodoListEditing', () => {
+describe.only( 'TodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
 	beforeEach( () => {
@@ -78,13 +79,13 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should create to-do list item and change to paragraph in normal usage flow', () => {
-			expect( getViewData( view ) ).to.equal( '<p>[]</p>' );
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			assertEqualMarkup( getViewData( view ), '<p>[]</p>' );
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]</paragraph>' );
 
 			editor.execute( 'todoList' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]</listItem>' );
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]</listItem>' );
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
 				'</ul>'
@@ -92,8 +93,8 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'input', { text: 'a' } );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">a[]</listItem>' );
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">a[]</listItem>' );
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>a{}</li>' +
 				'</ul>'
@@ -101,8 +102,8 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'input', { text: 'b' } );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>ab{}</li>' +
 				'</ul>'
@@ -110,8 +111,8 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'todoList' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p>ab{}</p>' );
+			assertEqualMarkup( getModelData( model ), '<paragraph>ab[]</paragraph>' );
+			assertEqualMarkup( getViewData( view ), '<p>ab{}</p>' );
 		} );
 
 		it( 'should register todoListCheck command', () => {
@@ -126,7 +127,7 @@ describe( 'TodoListEditing', () => {
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1</li>' +
 					'<li><label class="todo-list__checkmark todo-list__checkmark_checked" contenteditable="false"></label>2</li>' +
@@ -144,7 +145,7 @@ describe( 'TodoListEditing', () => {
 				'<listItem listType="todo" listIndent="1">6.1</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__checkmark" contenteditable="false"></label>{}1.0' +
@@ -173,7 +174,7 @@ describe( 'TodoListEditing', () => {
 				'<listItem listType="todo" listIndent="1">5.1</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>' +
@@ -202,7 +203,7 @@ describe( 'TodoListEditing', () => {
 				'<listItem listType="todo" listIndent="1">5.1</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>' +
@@ -231,7 +232,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'todoList' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ol>' +
 					'<li>1.0</li>' +
 				'</ol>' +
@@ -253,7 +254,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'numberedList' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>1.0</li>' +
 				'</ul>' +
@@ -275,7 +276,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>1.0</li>' +
 				'</ul>' +
@@ -297,7 +298,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul>' +
 				'<li>1{.0</li>' +
 				'<li><strong>2.0</strong></li>' +
@@ -315,7 +316,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul>' +
 				'<li>1{.0</li>' +
 				'<li><a href="foo"><strong>2.0</strong></a></li>' +
@@ -327,7 +328,7 @@ describe( 'TodoListEditing', () => {
 		it( 'should convert todoListChecked attribute change', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">1.0</listItem>' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>'
@@ -337,7 +338,7 @@ describe( 'TodoListEditing', () => {
 				writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark todo-list__checkmark_checked" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>'
@@ -347,7 +348,7 @@ describe( 'TodoListEditing', () => {
 				writer.setAttribute( 'todoListChecked', false, modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>'
@@ -362,7 +363,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="bulleted">f[oo</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">fo]o</listItem>'
 			);
@@ -406,16 +407,16 @@ describe( 'TodoListEditing', () => {
 			}, { priority: 'highest' } );
 
 			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
-			expect( getViewData( view ) ).to.equal( '<test>{}Foo</test>' );
+			assertEqualMarkup( getViewData( view ), '<test>{}Foo</test>' );
 
 			model.change( writer => writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) ) );
-			expect( getViewData( view ) ).to.equal( '<test class="checked">{}Foo</test>' );
+			assertEqualMarkup( getViewData( view ), '<test class="checked">{}Foo</test>' );
 		} );
 
 		it( 'should render selection after checkmark element in the first text node', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}Foo</li>' +
 				'</ul>'
@@ -425,7 +426,7 @@ describe( 'TodoListEditing', () => {
 		it( 'should render selection after checkmark element when list item does not contain any text nodes', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
 				'</ul>'
@@ -469,7 +470,7 @@ describe( 'TodoListEditing', () => {
 				} );
 			} );
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="highlight">' +
@@ -494,11 +495,11 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'input', { text: 'b' } );
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="todo"><$text bold="true">b[]foo</$text></listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
@@ -515,11 +516,11 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'input', { text: 'b' } );
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="todo"><$text bold="true" linkHref="foo">b[]foo</$text></listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
@@ -702,7 +703,7 @@ describe( 'TodoListEditing', () => {
 		it( 'should convert li with checkbox before the first text node as to-do list item', () => {
 			editor.setData( '<ul><li><input type="checkbox">foo</li></ul>' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
 		} );
 
 		it( 'should convert li with checked checkbox as checked to-do list item', () => {
@@ -714,7 +715,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]a</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">b</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">c</listItem>'
@@ -724,13 +725,13 @@ describe( 'TodoListEditing', () => {
 		it( 'should not convert li with checkbox in the middle of the text', () => {
 			editor.setData( '<ul><li>Foo<input type="checkbox">Bar</li></ul>' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
 		} );
 
 		it( 'should convert li with checkbox wrapped by inline elements when checkbox is before the first text node', () => {
 			editor.setData( '<ul><li><label><input type="checkbox">Foo</label></li></ul>' );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
 		} );
 
 		it( 'should split items with checkboxes - bulleted list', () => {
@@ -742,7 +743,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="bulleted">[]foo</listItem>' +
 				'<listItem listIndent="0" listType="todo">bar</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">biz</listItem>'
@@ -758,7 +759,7 @@ describe( 'TodoListEditing', () => {
 				'</ol>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="numbered">[]foo</listItem>' +
 				'<listItem listIndent="0" listType="todo">bar</listItem>' +
 				'<listItem listIndent="0" listType="numbered">biz</listItem>'
@@ -784,7 +785,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="bulleted">[]1.1</listItem>' +
 				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
 				'<listItem listIndent="1" listType="todo">3.2</listItem>' +
@@ -827,7 +828,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]1.1</listItem>' +
 				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
 				'<listItem listIndent="1" listType="todo" todoListChecked="true">3.2</listItem>' +
@@ -848,7 +849,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
 		} );
 	} );
 
@@ -858,7 +859,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'todoList' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+			assertEqualMarkup( getModelData( model ), '<paragraph>fo[]o</paragraph>' );
 		} );
 	} );
 
@@ -888,7 +889,7 @@ describe( 'TodoListEditing', () => {
 
 			viewDoc.fire( 'keydown', domEvtDataStub );
 
-			expect( getModelData( model ) ).to.equal(
+			assertEqualMarkup( getModelData( model ),
 				'<blockQuote><paragraph>foo[]</paragraph></blockQuote>' +
 				'<listItem listIndent="0" listType="todo">bar</listItem>'
 			);
@@ -905,7 +906,7 @@ describe( 'TodoListEditing', () => {
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 		} );
 
 		it( 'should do nothing when selection is not collapsed', () => {
@@ -1032,7 +1033,7 @@ describe( 'TodoListEditing', () => {
 
 		sinon.assert.calledOnce( command.execute );
 		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model ) ).to.equal(
+		assertEqualMarkup( getModelData( model ),
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">foo</listItem>' +
 			'<paragraph>b[a]r</paragraph>'
 		);
@@ -1045,7 +1046,7 @@ describe( 'TodoListEditing', () => {
 
 		sinon.assert.calledTwice( command.execute );
 		expect( checkboxElement.checked ).to.equal( false );
-		expect( getModelData( model ) ).to.equal(
+		assertEqualMarkup( getModelData( model ),
 			'<listItem listIndent="0" listType="todo">foo</listItem>' +
 			'<paragraph>b[a]r</paragraph>'
 		);
@@ -1073,7 +1074,7 @@ describe( 'TodoListEditing', () => {
 
 		sinon.assert.calledOnce( command.execute );
 		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model ) ).to.equal(
+		assertEqualMarkup( getModelData( model ),
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
 		);
 	} );
