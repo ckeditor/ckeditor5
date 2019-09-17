@@ -28,7 +28,8 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			borderTopWidth: '0px',
 			borderRightWidth: '0px',
 			borderBottomWidth: '0px',
-			borderLeftWidth: '0px'
+			borderLeftWidth: '0px',
+			direction: 'ltr'
 		} );
 
 		stubRect( firstAncestor, {
@@ -169,7 +170,8 @@ describe( 'scrollViewportToShowTarget()', () => {
 			borderTopWidth: '0px',
 			borderRightWidth: '0px',
 			borderBottomWidth: '0px',
-			borderLeftWidth: '0px'
+			borderLeftWidth: '0px',
+			direction: 'ltr'
 		} );
 
 		// Assuming 20px v- and h-scrollbars here.
@@ -228,7 +230,8 @@ describe( 'scrollViewportToShowTarget()', () => {
 					borderTopWidth: '0px',
 					borderRightWidth: '0px',
 					borderBottomWidth: '0px',
-					borderLeftWidth: '0px'
+					borderLeftWidth: '0px',
+					direction: 'ltr'
 				} );
 
 				// Assuming 20px v- and h-scrollbars here.
