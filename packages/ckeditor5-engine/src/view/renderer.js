@@ -11,7 +11,7 @@
 
 import ViewText from './text';
 import ViewPosition from './position';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -590,7 +590,7 @@ export default class Renderer {
 	_diffNodeLists( actualDomChildren, expectedDomChildren ) {
 		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
 
-		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFillerMode ) );
+		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter ) );
 	}
 
 	/**
@@ -926,7 +926,7 @@ function areSimilar( node1, node2 ) {
 // @param {Node} node1
 // @param {Node} node2
 // @returns {Boolean}
-function sameNodes( blockFillerMode, actualDomChild, expectedDomChild ) {
+function sameNodes( domConverter, actualDomChild, expectedDomChild ) {
 	// Elements.
 	if ( actualDomChild === expectedDomChild ) {
 		return true;
@@ -936,8 +936,8 @@ function sameNodes( blockFillerMode, actualDomChild, expectedDomChild ) {
 		return actualDomChild.data === expectedDomChild.data;
 	}
 	// Block fillers.
-	else if ( isBlockFiller( actualDomChild, blockFillerMode ) &&
-		isBlockFiller( expectedDomChild, blockFillerMode ) ) {
+	else if ( domConverter.isBlockFiller( actualDomChild ) &&
+		domConverter.isBlockFiller( expectedDomChild ) ) {
 		return true;
 	}
 

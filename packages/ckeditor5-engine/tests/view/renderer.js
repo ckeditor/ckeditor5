@@ -21,7 +21,7 @@ import DocumentFragment from '../../src/view/documentfragment';
 import DowncastWriter from '../../src/view/downcastwriter';
 
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
@@ -804,7 +804,7 @@ describe( 'Renderer', () => {
 			// Step 3: Check whether in the first paragraph there's a <br> filler and that
 			// in the second one there are two <b> tags.
 			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domP.childNodes[ 0 ], 'br' ) ).to.be.true;
+			expect( domConverter.isBlockFiller( domP.childNodes[ 0 ] ) ).to.be.true;
 
 			expect( domP2.childNodes.length ).to.equal( 2 );
 			expect( domP2.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'b' );
@@ -886,7 +886,7 @@ describe( 'Renderer', () => {
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domP.childNodes[ 0 ], 'br' ) ).to.be.true;
+			expect( domConverter.isBlockFiller( domP.childNodes[ 0 ] ) ).to.be.true;
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
 			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP );
@@ -925,7 +925,7 @@ describe( 'Renderer', () => {
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( isBlockFiller( domP.childNodes[ 0 ], 'br' ) ).to.be.true;
+			expect( domConverter.isBlockFiller( domP.childNodes[ 0 ] ) ).to.be.true;
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
 			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP );

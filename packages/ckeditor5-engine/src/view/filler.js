@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
@@ -37,6 +35,15 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
  */
 
 /**
+ * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
+ * It defines how the filler is created.
+ *
+ * @see module:engine/view/filler~BR_FILLER
+ * @function
+ */
+export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
+
+/**
  * `<br>` filler creator. This is a function which creates `<br data-cke-filler="true">` element.
  * It defines how the filler is created.
  *
@@ -49,18 +56,6 @@ export const BR_FILLER = domDocument => {
 
 	return fillerBr;
 };
-
-// eslint-disable-next-line new-cap
-const BR_FILLER_REF = BR_FILLER( window.document );
-
-/**
- * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
- * It defines how the filler is created.
- *
- * @see module:engine/view/filler~BR_FILLER
- * @function
- */
-export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
 
 /**
  * Length of the {@link module:engine/view/filler~INLINE_FILLER INLINE_FILLER}.
@@ -127,23 +122,6 @@ export function getDataWithoutFiller( domText ) {
 }
 
 /**
- * Checks if the node is an instance of the block filler of the given type.
- *
- *		const brFillerInstance = BR_FILLER( document );
- *		isBlockFiller( brFillerInstance, 'br' ); // true
- *		isBlockFiller( brFillerInstance, 'nbsp' ); // false
- *
- * **Note:**: For the `'nbsp'` mode the method also checks context of a node so it cannot be a detached node.
- *
- * @param {Node} domNode DOM node to check.
- * @param {module:engine/view/filler~BlockFillerMode} mode Mode of a block filler.
- * @returns {Boolean} True if a node is considered a block filler for given mode.
- */
-export function isBlockFiller( domNode, mode ) {
-	return mode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspBlockFiller( domNode );
-}
-
-/**
  * Assign key observer which move cursor from the end of the inline filler to the beginning of it when
  * the left arrow is pressed, so the filler does not break navigation.
  *
@@ -168,39 +146,3 @@ function jumpOverInlineFiller( evt, data ) {
 		}
 	}
 }
-
-// Checks if given node is a nbsp block filler.
-//
-// A &nbsp; is a block filler only if it is a single child of a block element.
-//
-// @param {Node} domNode DOM node.
-// @returns {Boolean}
-function isNbspBlockFiller( domNode ) {
-	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
-
-	return isNBSP && hasBlockParent( domNode ) && domNode.parentNode.childNodes.length === 1;
-}
-
-// Name of DOM nodes that are considered a block.
-const blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
-
-// Checks if domNode has block parent.
-//
-// @param {Node} domNode DOM node.
-// @returns {Boolean}
-function hasBlockParent( domNode ) {
-	const parent = domNode.parentNode;
-
-	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
-}
-
-/**
- * Enum representing type of the block filler.
- *
- * Possible values:
- *
- * * `br` - for `<br>` block filler used in editing view,
- * * `nbsp` - for `&nbsp;` block fillers used in the data.
- *
- * @typedef {String} module:engine/view/filler~BlockFillerMode
- */

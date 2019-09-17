@@ -9,7 +9,7 @@ import ViewElement from '../../../src/view/element';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, BR_FILLER } from '../../../src/view/filler';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
 
 import { parse, stringify } from '../../../src/dev-utils/view';
 
