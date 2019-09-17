@@ -142,14 +142,12 @@ export default class ResizeState {
 
 mix( ResizeState, ObservableMixin );
 
-/**
- * Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
- *
- * @private
- * @param {HTMLElement} domResizeHost
- * @param {module:utils/dom/rect~Rect} resizeHostRect
- * @returns {Number}
- */
+// Calculates a relative width of a `domResizeHost` compared to it's parent in percents.
+//
+// @private
+// @param {HTMLElement} domResizeHost
+// @param {module:utils/dom/rect~Rect} resizeHostRect
+// @returns {Number}
 function calculateHostPercentageWidth( domResizeHost, resizeHostRect ) {
 	const domResizeHostParent = domResizeHost.parentElement;
 	// Need to use computed style as it properly excludes parent's paddings from the returned value.
@@ -158,16 +156,14 @@ function calculateHostPercentageWidth( domResizeHost, resizeHostRect ) {
 	return resizeHostRect.width / parentWidth * 100;
 }
 
-/**
- * Returns coordinates of the top-left corner of an element, relative to the document's top-left corner.
- *
- * @private
- * @param {HTMLElement} element
- * @param {String} resizerPosition The position of the resize handle, e.g. `"top-left"`, `"bottom-right"`.
- * @returns {Object} return
- * @returns {Number} return.x
- * @returns {Number} return.y
- */
+// Returns coordinates of the top-left corner of an element, relative to the document's top-left corner.
+//
+// @private
+// @param {HTMLElement} element
+// @param {String} resizerPosition The position of the resize handle, e.g. `"top-left"`, `"bottom-right"`.
+// @returns {Object} return
+// @returns {Number} return.x
+// @returns {Number} return.y
 function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	const elementRect = new Rect( element );
 	const positionParts = resizerPosition.split( '-' );
@@ -182,22 +178,18 @@ function getAbsoluteBoundaryPoint( element, resizerPosition ) {
 	return ret;
 }
 
-/**
- * @private
- * @param {String} resizerPosition The expected resizer position, like `"top-left"`, `"bottom-right"`.
- * @returns {String} A prefixed HTML class name for the resizer element.
- */
+// @private
+// @param {String} resizerPosition The expected resizer position, like `"top-left"`, `"bottom-right"`.
+// @returns {String} A prefixed HTML class name for the resizer element.
 function getResizerHandleClass( resizerPosition ) {
 	return `ck-widget__resizer__handle-${ resizerPosition }`;
 }
 
-/**
- * Determines the position of a given resize handle.
- *
- * @private
- * @param {HTMLElement} domHandle Handler used to calculate the reference point.
- * @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
- */
+// Determines the position of a given resize handle.
+//
+// @private
+// @param {HTMLElement} domHandle Handler used to calculate the reference point.
+// @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
 function getHandlePosition( domHandle ) {
 	const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
@@ -208,10 +200,9 @@ function getHandlePosition( domHandle ) {
 	}
 }
 
-/**
- * @param {String} position Like `"top-left"`.
- * @returns {String} Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
- */
+// @private
+// @param {String} position Like `"top-left"`.
+// @returns {String} Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
 function getOppositePosition( position ) {
 	const parts = position.split( '-' );
 	const replacements = {

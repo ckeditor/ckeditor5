@@ -467,6 +467,7 @@ class SizeView extends View {
 	}
 }
 
+// @param
 // @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.
 // @returns {String} A prefixed HTML class name for the resizer element
 function getResizerClass( resizerPosition ) {
