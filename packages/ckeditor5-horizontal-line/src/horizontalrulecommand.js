@@ -38,9 +38,32 @@ export default class HorizontalRuleCommand extends Command {
 		const model = this.editor.model;
 
 		model.change( writer => {
-			const modelElement = writer.createElement( 'horizontalRule' );
+			const horizontalElement = writer.createElement( 'horizontalRule' );
 
-			model.insertContent( modelElement );
+			model.insertContent( horizontalElement );
+
+			let nextElement = horizontalElement.nextSibling;
+
+			// Check whether the element next to inserted horizontal rule can contain a text.
+			// If so, let's put a selection at the beginning of the element.
+			if ( nextElement && model.schema.checkChild( nextElement, '$text' ) ) {
+				writer.setSelection( nextElement, 0 );
+
+				return;
+			}
+
+			// If the element is missing or it's not a paragraph, but the paragraph could be inserted
+			// next to the horizontal rule, let's add it.
+			if ( !( nextElement && nextElement.is( 'paragraph' ) ) && model.schema.checkChild( horizontalElement.parent, 'paragraph' ) ) {
+				nextElement = writer.createElement( 'paragraph' );
+
+				writer.insert( nextElement, writer.createPositionAfter( horizontalElement ) );
+			}
+
+			// Put the selection at the beginning of the element.
+			if ( nextElement ) {
+				writer.setSelection( nextElement, 0 );
+			}
 		} );
 	}
 }
