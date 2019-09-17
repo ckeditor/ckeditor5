@@ -26,7 +26,11 @@ describe( 'ImageResize', () => {
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 
-	let absoluteContainer, widget, editor, view, viewDocument, editorElement;
+	const CONFIG_RESIZE_IN_PIXELS = {
+		plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+	};
+
+	let absoluteContainer, widget, editor, view, viewDocument, editorElement, customConfig;
 
 	before( () => {
 		// This container is required to position editor element in a reliable element.
@@ -50,7 +54,7 @@ describe( 'ImageResize', () => {
 		absoluteContainer.appendChild( editorElement );
 
 		return ClassicEditor
-			.create( editorElement, {
+			.create( editorElement, customConfig || {
 				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
 				image: {
 					resizeUnit: 'px'
@@ -437,14 +441,15 @@ describe( 'ImageResize', () => {
 
 	describe( 'percent resizing', () => {
 		describe( 'standard image', () => {
-			beforeEach( async () => {
-				await editor.destroy();
+			before( () => {
+				customConfig = CONFIG_RESIZE_IN_PIXELS;
+			} );
 
-				editor = await ClassicEditor
-					.create( editorElement, {
-						plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
-					} );
+			after( () => {
+				customConfig = null;
+			} );
 
+			beforeEach( () => {
 				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 				view = editor.editing.view;
@@ -492,14 +497,15 @@ describe( 'ImageResize', () => {
 		} );
 
 		describe( 'side image', () => {
-			beforeEach( async () => {
-				await editor.destroy();
+			before( () => {
+				customConfig = CONFIG_RESIZE_IN_PIXELS;
+			} );
 
-				editor = await ClassicEditor
-					.create( editorElement, {
-						plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
-					} );
+			after( () => {
+				customConfig = null;
+			} );
 
+			beforeEach( () => {
 				setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 				view = editor.editing.view;
