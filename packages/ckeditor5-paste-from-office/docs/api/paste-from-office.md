@@ -26,5 +26,5 @@ The source code of this package is available on GitHub in https://github.com/cke
 
 * [`@ckeditor/ckeditor5-paste-from-office` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)
 * [`ckeditor/ckeditor5-paste-from-office` on GitHub](https://github.com/ckeditor/ckeditor5-paste-from-office)
-* [Issue tracker](https://github.com/ckeditor/ckeditor5-paste-from-office/issues)
+* [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-paste-from-office/blob/master/CHANGELOG.md)
