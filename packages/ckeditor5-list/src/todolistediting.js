@@ -14,13 +14,13 @@ import TodoListCheckCommand from './todolistcheckcommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
-	modelViewInsertion,
 	dataModelViewInsertion,
 	dataModelViewTextInsertion,
 	dataViewModelCheckmarkInsertion,
+	mapModelToViewZeroOffsetPosition,
 	modelViewChangeChecked,
 	modelViewChangeType,
-	findLabel
+	modelViewInsertion
 } from './todolistconverters';
 
 /**
@@ -82,27 +82,7 @@ export default class TodoListEditing extends Plugin {
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
 
-		// Fix view position on 0 offset.
-		editing.mapper.on( 'modelToViewPosition', ( evt, data ) => {
-			const view = editing.view;
-			const modelPosition = data.modelPosition;
-
-			if ( modelPosition.parent.is( 'listItem' ) && modelPosition.parent.getAttribute( 'listType' ) == 'todo' ) {
-				const viewLi = editing.mapper.toViewElement( data.modelPosition.parent );
-
-				if ( modelPosition.offset === 0 ) {
-					const label = findLabel( viewLi, view );
-
-					if ( label ) {
-						if ( label.nextSibling ) {
-							data.viewPosition = view.createPositionAt( label.nextSibling, 0 );
-						} else {
-							data.viewPosition = view.createPositionAfter( label );
-						}
-					}
-				}
-			}
-		}, { priority: 'low' } );
+		editing.mapper.on( 'modelToViewPosition', mapModelToViewZeroOffsetPosition( editing.view, editing.mapper ) );
 
 		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 

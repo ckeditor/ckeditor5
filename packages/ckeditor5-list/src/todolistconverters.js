@@ -251,6 +251,46 @@ export function modelViewChangeChecked( onCheckedChange ) {
 	};
 }
 
+/**
+ * A model-to-view position at zero offset mapper.
+ *
+ * This helper ensures that position inside todo-list in the view is mapped after the checkbox.
+ *
+ * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
+ *
+ * @param {module:engine/view/view~View} view
+ * @param {module:engine/conversion/mapper~Mapper} mapper
+ * @return {Function}
+ */
+export function mapModelToViewZeroOffsetPosition( view, mapper ) {
+	return ( evt, data ) => {
+		const modelPosition = data.modelPosition;
+		const parent = modelPosition.parent;
+
+		// Handle only position at the beginning of a todo list item.
+		if ( !parent.is( 'listItem' ) || parent.getAttribute( 'listType' ) != 'todo' || modelPosition.offset !== 0 ) {
+			return;
+		}
+
+		const viewLi = mapper.toViewElement( parent );
+		const label = findLabel( viewLi, view );
+
+		// If there is no label then most probably the default converter was overridden.
+		if ( !label ) {
+			return;
+		}
+
+		// Map the position to the next sibling (if it is not a marker) - most likely it will be a text node...
+		if ( label.nextSibling && !label.nextSibling.is( 'uiElement' ) ) {
+			data.viewPosition = view.createPositionAt( label.nextSibling, 0 );
+		}
+		// ... otherwise return position after the label.
+		else {
+			data.viewPosition = view.createPositionAfter( label );
+		}
+	};
+}
+
 // Creates a checkbox UI element.
 //
 // @private
@@ -288,7 +328,7 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 }
 
 // Helper method to find label element inside li.
-export function findLabel( viewItem, view ) {
+function findLabel( viewItem, view ) {
 	const range = view.createRangeIn( viewItem );
 
 	for ( const value of range ) {

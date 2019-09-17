@@ -23,7 +23,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 /* global Event, document */
 
-describe.only( 'TodoListEditing', () => {
+describe( 'TodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
 	beforeEach( () => {
@@ -455,12 +455,12 @@ describe.only( 'TodoListEditing', () => {
 			} );
 			model.change( writer => {
 				writer.addMarker( 'element1', {
-					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
+					range: writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
 					usingOperation: false
 				} );
 
 				writer.addMarker( 'element2', {
-					range: writer.createRangeIn( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
+					range: writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 0 ) ),
 					usingOperation: false
 				} );
 
@@ -473,11 +473,11 @@ describe.only( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<span class="highlight">' +
-							'<label class="todo-list__checkmark" contenteditable="false"></label>' +
-							'<element1></element1>' +
+						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+						'[]<span class="highlight">' +
 							'<element2></element2>' +
-							'{}foo' +
+							'<element1></element1>' +
+							'foo' +
 						'</span>' +
 					'</li>' +
 					'<li>' +
