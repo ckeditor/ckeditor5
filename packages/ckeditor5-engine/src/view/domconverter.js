@@ -67,7 +67,7 @@ export default class DomConverter {
 		 * The mode of a block filler used by DOM converter.
 		 *
 		 * @readonly
-		 * @member {String} module:engine/view/domconverter~DomConverter#blockFillerMode
+		 * @member {'br'|'nbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
 		this.blockFillerMode = options.blockFillerMode || 'br';
 
