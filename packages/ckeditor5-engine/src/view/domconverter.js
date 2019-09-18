@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals window, document, Node, NodeFilter, Text */
+/* globals document, Node, NodeFilter, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -26,7 +26,7 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import { isElement } from 'lodash-es';
 
 // eslint-disable-next-line new-cap
-const BR_FILLER_REF = BR_FILLER( window.document );
+const BR_FILLER_REF = BR_FILLER( document );
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -48,16 +48,6 @@ export default class DomConverter {
 	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */
 	constructor( options = {} ) {
-		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
-		// will be removed. Also because it is a *Weak*Map when both view and DOM elements will be removed referenced
-		// will be also removed, isn't it brilliant?
-		//
-		// Yes, PJ. It is.
-		//
-		// You guys so smart.
-		//
-		// I've been here. Seen stuff. Afraid of code now.
-
 		/**
 		 * The mode of a block filler used by DOM converter.
 		 *
@@ -67,7 +57,7 @@ export default class DomConverter {
 		this.blockFillerMode = options.blockFillerMode || 'br';
 
 		/**
-		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
+		 * Elements which are considered pre-formatted elements.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
@@ -75,12 +65,17 @@ export default class DomConverter {
 		this.preElements = [ 'pre' ];
 
 		/**
-		 * Tag names of DOM `Element`s which are considered block elements.
+		 * Elements which are considered block elements (and hence should be filled with a
+		 * {@link ~isBlockFiller block filler}).
+		 *
+		 * Whether an element is considered a block element also affects handling of trailing whitespaces.
+		 *
+		 * You can extend this array if you introduce support for block elements which are not yet recognized here.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
-		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption' ];
 
 		/**
 		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
