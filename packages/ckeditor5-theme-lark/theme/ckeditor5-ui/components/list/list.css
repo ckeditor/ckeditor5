@@ -10,6 +10,7 @@
 :root {
 	--ck-todo-list-checkmark-size: 16px;
 	--ck-color-todo-list-checkmark-background: hsl(126, 64%, 41%);
+	--ck-color-todo-list-checkmark-shadow: hsla(0, 0%, 0%, 0.1);
 }
 
 .ck.ck-list {
@@ -87,78 +88,74 @@
 
 .ck .todo-list {
 	list-style: none;
-}
 
-.ck .todo-list > li {
-	margin-bottom: 5px;
-}
+	& li {
+		margin-bottom: 5px;
 
-.ck .todo-list > li > .todo-list {
-	margin-top: 5px;
+		& .todo-list {
+			margin-top: 5px;
+		}
+	}
 }
 
 /*
- * Let's hide native checkbox and make a fancy one.
+ * Let's hide the native checkbox and make a fancy one.
  *
  * Note: Checkbox element cannot be hidden using `display: none` or `visibility: hidden`.
  * It has to be clickable to not steal the focus after clicking on it.
  */
-.ck .todo-list__checkmark input[type='checkbox'] {
-	display: block;
-	width: 100%;
-	height: 100%;
-	opacity: 0;
-	margin: 0;
-}
-
 .ck .todo-list__checkmark {
 	cursor: pointer;
 	width: var(--ck-todo-list-checkmark-size);
 	height: var(--ck-todo-list-checkmark-size);
-	position: relative;
-	display: inline-block;
 	vertical-align: middle;
-	left: -23px;
-	margin-right: -15px;
+	left: calc( var(--ck-spacing-large) * -1.5 );
+	margin-right: calc( var(--ck-spacing-large) * -1 );
+
+	&::before {
+		content: '';
+		width: 100%;
+		height: 100%;
+		border: 1px solid var(--ck-color-base-text);
+		border-radius: var(--ck-border-radius);
+		transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
+	}
+
+	&::after {
+		content: '';
+
+		/* Calculate tick position, size and border-width proportional to the checkmark size. */
+		left: calc( var(--ck-todo-list-checkmark-size) / 3 );
+		top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+		width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+		height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
+		border-style: solid;
+		border-color: transparent;
+		border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
+		transform: rotate(45deg);
+	}
+
+	&:hover {
+		&::before {
+			box-shadow: 0 0 0 5px var(--ck-color-todo-list-checkmark-shadow);
+		}
+	}
+
+	& input[type='checkbox'] {
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		margin: 0;
+	}
 }
 
-.ck .todo-list__checkmark::before {
-	content: '';
-	position: absolute;
-	display: block;
-	width: 100%;
-	height: 100%;
-	border: 1px solid var(--ck-color-base-text);
-	border-radius: var(--ck-border-radius);
-	transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
-	box-sizing: border-box;
-}
+.ck .todo-list__checkmark_checked {
+	&::before {
+		background: var(--ck-color-todo-list-checkmark-background);
+		border-color: var(--ck-color-todo-list-checkmark-background);
+	}
 
-.ck .todo-list__checkmark::after {
-	box-sizing: content-box;
-	pointer-events: none;
-	content: '';
-	position: absolute;
-	left: 5px;
-	top: 3px;
-	display: block;
-	width: 3px;
-	height: 6px;
-	border-style: solid;
-	border-color: transparent;
-	border-width: 0 2px 2px 0;
-	transform: rotate(45deg);
-}
-
-.ck .todo-list__checkmark:hover::before {
-	box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1)
-}
-
-.ck .todo-list__checkmark_checked::after {
-	border-color: #fff;
-}
-
-.ck .todo-list__checkmark_checked::before {
-	background: var(--ck-color-todo-list-checkmark-background);
-	border-color: var(--ck-color-todo-list-checkmark-background);
+	&::after {
+		border-color: var(--ck-color-base-background);
+	}
 }
