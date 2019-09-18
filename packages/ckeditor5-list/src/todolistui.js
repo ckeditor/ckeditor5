@@ -10,6 +10,7 @@
 import { createUIComponent } from './utils';
 
 import todoListIcon from '../theme/icons/todolist.svg';
+import '../theme/list.css';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 

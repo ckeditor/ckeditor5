@@ -1,0 +1,21 @@
+.ck .todo-list__checkmark {
+	display: inline-block;
+	position: relative;
+
+	&::before {
+		display: block;
+		position: absolute;
+		box-sizing: border-box;
+	}
+
+	&::after {
+		display: block;
+		position: absolute;
+		box-sizing: content-box;
+		pointer-events: none;
+	}
+
+	& input[type='checkbox'] {
+		display: block;
+	}
+}
