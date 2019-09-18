@@ -66,7 +66,7 @@ export default class DomConverter {
 
 		/**
 		 * Elements which are considered block elements (and hence should be filled with a
-		 * {@link ~isBlockFiller block filler}).
+		 * {@link #isBlockFiller block filler}).
 		 *
 		 * Whether an element is considered a block element also affects handling of trailing whitespaces.
 		 *
