@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
@@ -37,6 +35,15 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
  */
 
 /**
+ * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
+ * It defines how the filler is created.
+ *
+ * @see module:engine/view/filler~BR_FILLER
+ * @function
+ */
+export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
+
+/**
  * `<br>` filler creator. This is a function which creates `<br data-cke-filler="true">` element.
  * It defines how the filler is created.
  *
@@ -51,27 +58,22 @@ export const BR_FILLER = domDocument => {
 };
 
 /**
- * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
- * It defines how the filler is created.
- *
- * @see module:engine/view/filler~BR_FILLER
- * @function
- */
-export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
-
-/**
  * Length of the {@link module:engine/view/filler~INLINE_FILLER INLINE_FILLER}.
  */
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
- * Inline filler which is sequence of the zero width spaces.
+ * Inline filler which is a sequence of the zero width spaces.
  */
-export let INLINE_FILLER = '';
+export const INLINE_FILLER = ( () => {
+	let inlineFiller = '';
 
-for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
-	INLINE_FILLER += '\u200b';
-}
+	for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
+		inlineFiller += '\u200b';
+	}
+
+	return inlineFiller;
+} )(); // Usu IIF so the INLINE_FILLER appears as a constant in the docs.
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
@@ -117,30 +119,6 @@ export function getDataWithoutFiller( domText ) {
 	} else {
 		return domText.data;
 	}
-}
-
-// Cache block fillers templates to improve performance.
-const templateBlockFillers = new WeakMap();
-
-/**
- * Checks if the node is an instance of the block filler of the given type.
- *
- *		const brFillerInstance = BR_FILLER( document );
- *		isBlockFiller( brFillerInstance, BR_FILLER ); // true
- *
- * @param {Node} domNode DOM node to check.
- * @param {Function} blockFiller Block filler creator.
- * @returns {Boolean} True if text node contains only {@link module:engine/view/filler~INLINE_FILLER inline filler}.
- */
-export function isBlockFiller( domNode, blockFiller ) {
-	let templateBlockFiller = templateBlockFillers.get( blockFiller );
-
-	if ( !templateBlockFiller ) {
-		templateBlockFiller = blockFiller( window.document );
-		templateBlockFillers.set( blockFiller, templateBlockFiller );
-	}
-
-	return domNode.isEqualNode( templateBlockFiller );
 }
 
 /**

@@ -13,7 +13,7 @@ import ViewAttributeElement from '../../../src/view/attributeelement';
 import ViewEmptyElement from '../../../src/view/emptyelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from '../../../src/view/filler';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
 
 import { parse } from '../../../src/dev-utils/view';
 
@@ -634,7 +634,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
 
 			expect( domChildren.length ).to.equal( 1 );
-			expect( isBlockFiller( domChildren[ 0 ], converter.blockFiller ) ).to.be.true;
+			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).to.be.true;
 		} );
 
 		it( 'should add filler according to fillerPositionOffset', () => {
@@ -644,7 +644,7 @@ describe( 'DomConverter', () => {
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
 
 			expect( domChildren.length ).to.equal( 2 );
-			expect( isBlockFiller( domChildren[ 0 ], converter.blockFiller ) ).to.be.true;
+			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).to.be.true;
 			expect( domChildren[ 1 ].data ).to.equal( 'foo' );
 		} );
 

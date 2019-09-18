@@ -23,6 +23,9 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				.create( { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
+
+					editor.model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+					editor.conversion.attributeToElement( { model: 'bold', view: 'b' } );
 				} );
 		} );
 
@@ -48,14 +51,13 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
-		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
 		it( 'nbsp at the end of the content is not ignored', () => {
-			editor.setData( '<p>foo</p>' );
+			editor.setData( '<p>foo&nbsp;</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph>' );
+				.to.equal( '<paragraph>foo </paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo&nbsp;</p>' );
 		} );
 
 		it( 'new line at the beginning of the content is ignored', () => {
@@ -76,14 +78,13 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
-		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
 		it( 'nbsp at the beginning of the content is not ignored', () => {
-			editor.setData( '<p>foo</p>' );
+			editor.setData( '<p>&nbsp;foo</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph>' );
+				.to.equal( '<paragraph> foo</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).to.equal( '<p>&nbsp;foo</p>' );
 		} );
 
 		it( 'new line between blocks is ignored', () => {
@@ -105,13 +106,33 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		} );
 
 		// Controversial result. See https://github.com/ckeditor/ckeditor5-engine/issues/987.
-		it( 'nbsp between blocks is not ignored', () => {
+		it( 'nbsp between blocks is not ignored (between paragraphs)', () => {
 			editor.setData( '<p>foo</p>&nbsp;<p>bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+				.to.equal( '<paragraph>foo</paragraph><paragraph> </paragraph><paragraph>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+		} );
+
+		it( 'nbsp between blocks is not ignored (different blocks)', () => {
+			editor.model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+			editor.setData( '<block>foo</block>&nbsp;<p>bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal(
+					'<block>foo</block>' +
+					'<paragraph> </paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+			expect( editor.getData() )
+				.to.equal(
+					'<block>foo</block>' +
+					'<p>&nbsp;</p>' +
+					'<p>bar</p>'
+				);
 		} );
 
 		it( 'new lines inside blocks are ignored', () => {
@@ -141,6 +162,15 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;foo&nbsp;</p>' );
 		} );
 
+		it( 'single nbsp inside blocks are ignored', () => {
+			editor.setData( '<p>&nbsp;</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '' ); // trimmed
+		} );
+
 		it( 'all whitespaces together are ignored', () => {
 			editor.setData( '\n<p>foo\n\r\n \t</p>\n<p> bar</p>' );
 
@@ -148,6 +178,33 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'nbsp between inline elements is not ignored', () => {
+			editor.setData( '<p><b>foo</b>&nbsp;<b>bar</b></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foo</$text>\u00A0<$text bold="true">bar</$text></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><b>foo</b>&nbsp;<b>bar</b></p>' );
+		} );
+
+		it( 'nbsp before inline element is not ignored', () => {
+			editor.setData( '<p>&nbsp;<b>bar</b></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph> <$text bold="true">bar</$text></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>&nbsp;<b>bar</b></p>' );
+		} );
+
+		it( 'nbsp after inline element is not ignored', () => {
+			editor.setData( '<p><b>bar</b>&nbsp;</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">bar</$text> </paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><b>bar</b>&nbsp;</p>' );
 		} );
 	} );
 

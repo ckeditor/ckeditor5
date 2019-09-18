@@ -10,7 +10,7 @@ import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import ViewUIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
-import { BR_FILLER, NBSP_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -24,13 +24,13 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create converter with BR block filler by default', () => {
-			expect( converter.blockFiller ).to.equal( BR_FILLER );
+		it( 'should create converter with BR block filler mode by default', () => {
+			expect( converter.blockFillerMode ).to.equal( 'br' );
 		} );
 
-		it( 'should create converter with defined block filler', () => {
-			converter = new DomConverter( { blockFiller: NBSP_FILLER } );
-			expect( converter.blockFiller ).to.equal( NBSP_FILLER );
+		it( 'should create converter with defined block mode filler', () => {
+			converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
 	} );
 
@@ -287,6 +287,74 @@ describe( 'DomConverter', () => {
 
 				const sel2 = domSelection( domUiDeepSpan, 1, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'isBlockFiller()', () => {
+		describe( 'mode "nbsp"', () => {
+			beforeEach( () => {
+				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			} );
+
+			it( 'should return true if the node is an instance of the NBSP block filler', () => {
+				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+				// NBSP must be check inside a context.
+				const context = document.createElement( 'div' );
+				context.appendChild( nbspFillerInstance );
+
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
+			} );
+
+			it( 'should return false if the node is an instance of the BR block filler', () => {
+				const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
+
+				expect( converter.isBlockFiller( brFillerInstance ) ).to.be.false;
+			} );
+
+			it( 'should return false if the nbsp filler is inside context', () => {
+				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+				// NBSP must be check inside a context.
+				const context = document.createElement( 'div' );
+				context.appendChild( nbspFillerInstance );
+				// eslint-disable-next-line new-cap
+				context.appendChild( NBSP_FILLER( document ) );
+
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+			} );
+
+			it( 'should return false for inline filler', () => {
+				expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'mode "br"', () => {
+			beforeEach( () => {
+				converter = new DomConverter( { blockFillerMode: 'br' } );
+			} );
+
+			it( 'should return true if the node is an instance of the BR block filler', () => {
+				const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
+
+				expect( converter.isBlockFiller( brFillerInstance ) ).to.be.true;
+				// Check it twice to ensure that caching breaks nothing.
+				expect( converter.isBlockFiller( brFillerInstance ) ).to.be.true;
+			} );
+
+			it( 'should return false if the node is an instance of the NBSP block filler', () => {
+				converter = new DomConverter( { blockFillerMode: 'br' } );
+				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+				// NBSP must be check inside a context.
+				const context = document.createElement( 'div' );
+				context.appendChild( nbspFillerInstance );
+
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+			} );
+
+			it( 'should return false for inline filler', () => {
+				expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
 			} );
 		} );
 	} );

@@ -16,7 +16,7 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
-import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
+import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -24,6 +24,9 @@ import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import { isElement } from 'lodash-es';
+
+// eslint-disable-next-line new-cap
+const BR_FILLER_REF = BR_FILLER( document );
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -42,30 +45,19 @@ export default class DomConverter {
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {Function} [options.blockFiller=module:engine/view/filler~BR_FILLER] Block filler creator.
+	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */
 	constructor( options = {} ) {
-		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
-		// will be removed. Also because it is a *Weak*Map when both view and DOM elements will be removed referenced
-		// will be also removed, isn't it brilliant?
-		//
-		// Yes, PJ. It is.
-		//
-		// You guys so smart.
-		//
-		// I've been here. Seen stuff. Afraid of code now.
-
 		/**
-		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
-		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 * The mode of a block filler used by DOM converter.
 		 *
 		 * @readonly
-		 * @member {Function} module:engine/view/domconverter~DomConverter#blockFiller
+		 * @member {'br'|'nbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
-		this.blockFiller = options.blockFiller || BR_FILLER;
+		this.blockFillerMode = options.blockFillerMode || 'br';
 
 		/**
-		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
+		 * Elements which are considered pre-formatted elements.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
@@ -73,12 +65,27 @@ export default class DomConverter {
 		this.preElements = [ 'pre' ];
 
 		/**
-		 * Tag names of DOM `Element`s which are considered block elements.
+		 * Elements which are considered block elements (and hence should be filled with a
+		 * {@link ~isBlockFiller block filler}).
+		 *
+		 * Whether an element is considered a block element also affects handling of trailing whitespaces.
+		 *
+		 * You can extend this array if you introduce support for block elements which are not yet recognized here.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
-		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption' ];
+
+		/**
+		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
+		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Function} module:engine/view/domconverter~DomConverter#_blockFiller
+		 */
+		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
 		 * DOM to View mapping.
@@ -255,7 +262,7 @@ export default class DomConverter {
 
 		for ( const childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
-				yield this.blockFiller( domDocument );
+				yield this._blockFiller( domDocument );
 			}
 
 			yield this.viewToDom( childView, domDocument, options );
@@ -264,7 +271,7 @@ export default class DomConverter {
 		}
 
 		if ( fillerPositionOffset === offset ) {
-			yield this.blockFiller( domDocument );
+			yield this._blockFiller( domDocument );
 		}
 	}
 
@@ -371,7 +378,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isBlockFiller( domNode, this.blockFiller ) ) {
+		if ( this.isBlockFiller( domNode, this.blockFillerMode ) ) {
 			return null;
 		}
 
@@ -529,7 +536,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/position~Position} viewPosition View position.
 	 */
 	domPositionToView( domParent, domOffset ) {
-		if ( isBlockFiller( domParent, this.blockFiller ) ) {
+		if ( this.isBlockFiller( domParent, this.blockFillerMode ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
@@ -784,6 +791,23 @@ export default class DomConverter {
 	 */
 	isComment( node ) {
 		return node && node.nodeType == Node.COMMENT_NODE;
+	}
+
+	/**
+	 * Checks if the node is an instance of the block filler for this DOM converter.
+	 *
+	 *		const converter = new DomConverter( { blockFillerMode: 'br' } );
+	 *
+	 *		converter.isBlockFiller( BR_FILLER( document ) ); // true
+	 *		converter.isBlockFiller( NBSP_FILLER( document ) ); // false
+	 *
+	 * **Note:**: For the `'nbsp'` mode the method also checks context of a node so it cannot be a detached node.
+	 *
+	 * @param {Node} domNode DOM node to check.
+	 * @returns {Boolean} True if a node is considered a block filler for given mode.
+	 */
+	isBlockFiller( domNode ) {
+		return this.blockFillerMode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspBlockFiller( domNode, this.blockElements );
 	}
 
 	/**
@@ -1197,3 +1221,36 @@ function forEachDomNodeAncestor( node, callback ) {
 		node = node.parentNode;
 	}
 }
+
+// Checks if given node is a nbsp block filler.
+//
+// A &nbsp; is a block filler only if it is a single child of a block element.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function isNbspBlockFiller( domNode, blockElements ) {
+	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
+
+	return isNBSP && hasBlockParent( domNode, blockElements ) && domNode.parentNode.childNodes.length === 1;
+}
+
+// Checks if domNode has block parent.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function hasBlockParent( domNode, blockElements ) {
+	const parent = domNode.parentNode;
+
+	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
+}
+
+/**
+ * Enum representing type of the block filler.
+ *
+ * Possible values:
+ *
+ * * `br` - for `<br>` block filler used in editing view,
+ * * `nbsp` - for `&nbsp;` block fillers used in the data.
+ *
+ * @typedef {String} module:engine/view/filler~BlockFillerMode
+ */
