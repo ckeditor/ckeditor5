@@ -9,6 +9,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { createDataTransfer } from './_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor();
@@ -18,7 +19,7 @@ describe( 'PasteFromOffice', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ PasteFromOffice ]
+			plugins: [ PasteFromOffice, Paragraph ]
 		} )
 			.then( _editor => {
 				editor = _editor;
@@ -28,7 +29,7 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( pasteFromOffice ).to.be.instanceOf( PasteFromOffice );
+		expect( pasteFromOffice ).to.be.instanceOf( PasteFromOffice, Paragraph );
 	} );
 
 	it( 'has proper name', () => {
