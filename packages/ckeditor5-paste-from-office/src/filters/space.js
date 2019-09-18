@@ -24,6 +24,8 @@ export function normalizeSpacing( htmlString ) {
 		.replace( /<span style=['"]mso-spacerun:yes['"]><\/span>/g, '' )
 		.replace( / <\//g, '\u00A0</' )
 		.replace( / <o:p><\/o:p>/g, '\u00A0<o:p></o:p>' )
+		// Remove <o:p> block filler from empty paragraph. Safari uses \u00A0 instead of &nbsp;.
+		.replace( /<o:p>(&nbsp;|\u00A0)<\/o:p>/g, '' )
 		// Remove all whitespaces when they contain any \r or \n.
 		.replace( />(\s*[\r\n]\s*)</g, '><' );
 }
@@ -59,4 +61,3 @@ function normalizeSafariSpaceSpans( htmlString ) {
 		return spaces.length === 1 ? ' ' : Array( spaces.length + 1 ).join( '\u00A0 ' ).substr( 0, spaces.length );
 	} );
 }
-
