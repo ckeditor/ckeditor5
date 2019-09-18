@@ -473,13 +473,16 @@ describe( 'view', () => {
 		} );
 
 		it( 'should not crash when there is no selection', () => {
-			expect( () => {
-				view.change( writer => {
-					writer.setSelection( null );
-				} );
+			const consoleWarnStub = sinon.stub( console, 'warn' );
 
-				view.focus();
-			} ).not.to.throw();
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
+
+			view.focus();
+
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWith( consoleWarnStub, 'There is no selection in any editable to focus.' );
 		} );
 	} );
 

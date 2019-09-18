@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import Model from '../../src/model/model';
 import Batch from '../../src/model/batch';
 import Element from '../../src/model/element';
@@ -597,13 +599,15 @@ describe( 'DocumentSelection', () => {
 			}, /model-selection-set-ranges-not-range/, model );
 		} );
 
-		it( 'should not do nothing when trying to set selection to the graveyard', () => {
-			expect( () => {
-				const range = new Range( new Position( model.document.graveyard, [ 0 ] ) );
-				selection._setTo( range );
-			} ).to.not.throw();
+		it( 'should do nothing when trying to set selection to the graveyard', () => {
+			const consoleWarnStub = sinon.stub( console, 'warn' );
+
+			const range = new Range( new Position( model.document.graveyard, [ 0 ] ) );
+			selection._setTo( range );
 
 			expect( selection._ranges ).to.deep.equal( [] );
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWith( consoleWarnStub, 'Trying to add a Range that is in the graveyard root. Range rejected.' );
 		} );
 
 		it( 'should detach removed ranges', () => {
