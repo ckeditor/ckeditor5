@@ -44,23 +44,17 @@ export default class HorizontalRuleCommand extends Command {
 
 			let nextElement = horizontalElement.nextSibling;
 
-			// Check whether the element next to inserted horizontal rule can contain a text.
-			// If so, let's put a selection at the beginning of the element.
-			if ( nextElement && model.schema.checkChild( nextElement, '$text' ) ) {
-				writer.setSelection( nextElement, 0 );
+			// Check whether an element next to the inserted horizontal rule is defined and can contain a text.
+			const canSetSelection = nextElement && model.schema.checkChild( nextElement, '$text' );
 
-				return;
-			}
-
-			// If the element is missing or it's not a paragraph, but the paragraph could be inserted
-			// next to the horizontal rule, let's add it.
-			if ( !( nextElement && nextElement.is( 'paragraph' ) ) && model.schema.checkChild( horizontalElement.parent, 'paragraph' ) ) {
+			// If the element is missing, but a paragraph could be inserted next to the horizontal rule, let's add it.
+			if ( !canSetSelection && model.schema.checkChild( horizontalElement.parent, 'paragraph' ) ) {
 				nextElement = writer.createElement( 'paragraph' );
 
 				writer.insert( nextElement, writer.createPositionAfter( horizontalElement ) );
 			}
 
-			// Put the selection at the beginning of the element.
+			// Put the selection inside the element, at the beginning.
 			if ( nextElement ) {
 				writer.setSelection( nextElement, 0 );
 			}
