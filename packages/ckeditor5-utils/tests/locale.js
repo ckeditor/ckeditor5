@@ -6,15 +6,16 @@
 /* globals console */
 
 import Locale from '../src/locale';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Locale', () => {
 	let locale;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		locale = new Locale();
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	describe( 'constructor', () => {
@@ -149,11 +150,13 @@ describe( 'Locale', () => {
 
 	describe( 'language()', () => {
 		it( 'should return #uiLanguage', () => {
+			sinon.stub( console, 'warn' );
+
 			expect( locale.language ).to.equal( locale.uiLanguage );
 		} );
 
 		it( 'should warn about deprecation', () => {
-			const stub = testUtils.sinon.stub( console, 'warn' );
+			const stub = sinon.stub( console, 'warn' );
 
 			expect( locale.language ).to.equal( 'en' );
 			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
