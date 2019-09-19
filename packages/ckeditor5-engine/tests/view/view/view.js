@@ -473,16 +473,14 @@ describe( 'view', () => {
 		} );
 
 		it( 'should not crash when there is no selection', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			// Catches the `There is no selection in any editable to focus.` warning in the CK_DEBUG mode.
+			sinon.stub( console, 'warn' );
 
 			view.change( writer => {
 				writer.setSelection( null );
 			} );
 
 			view.focus();
-
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWith( consoleWarnStub, 'There is no selection in any editable to focus.' );
 		} );
 	} );
 

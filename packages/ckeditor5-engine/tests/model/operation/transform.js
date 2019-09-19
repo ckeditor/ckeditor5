@@ -63,7 +63,8 @@ describe( 'transform', () => {
 	};
 
 	it( 'should throw an error when one of operations is invalid', () => {
-		const consoleWarnStub = sinon.stub( console, 'warn' );
+		// Catches the 'Error during operation transformation!' warning in the CK_DEBUG mode.
+		sinon.stub( console, 'warn' );
 
 		const nodeA = new Node();
 		const nodeB = new Node();
@@ -85,8 +86,6 @@ describe( 'transform', () => {
 				baRelation: null
 			} );
 		} ).to.throw( TypeError );
-
-		sinon.assert.calledWith( consoleWarnStub, 'Error during operation transformation!' );
 	} );
 
 	describe( 'InsertOperation', () => {

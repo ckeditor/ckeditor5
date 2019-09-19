@@ -600,14 +600,13 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should do nothing when trying to set selection to the graveyard', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			// Catches the 'Trying to add a Range that is in the graveyard root. Range rejected.' warning in the CK_DEBUG mode.
+			sinon.stub( console, 'warn' );
 
 			const range = new Range( new Position( model.document.graveyard, [ 0 ] ) );
 			selection._setTo( range );
 
 			expect( selection._ranges ).to.deep.equal( [] );
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWith( consoleWarnStub, 'Trying to add a Range that is in the graveyard root. Range rejected.' );
 		} );
 
 		it( 'should detach removed ranges', () => {
