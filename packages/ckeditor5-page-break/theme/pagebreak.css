@@ -4,10 +4,8 @@
  */
 
 .ck .ck-page-break {
-	width: calc( 100% - 1.2em );
-	padding: 6px 0;
-	margin-left: auto;
-	margin-right: auto;
+	clear: both;
+	padding: 5px;
 	border: 2px dashed var(--ck-color-toolbar-border);
 	border-left: 0;
 	border-right: 0;
