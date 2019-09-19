@@ -38,9 +38,26 @@ export default class PageBreakCommand extends Command {
 		const model = this.editor.model;
 
 		model.change( writer => {
-			const modelElement = writer.createElement( 'pageBreak' );
+			const pageBreakElement = writer.createElement( 'pageBreak' );
 
-			model.insertContent( modelElement );
+			model.insertContent( pageBreakElement );
+
+			let nextElement = pageBreakElement.nextSibling;
+
+			// Check whether an element next to the inserted page break is defined and can contain a text.
+			const canSetSelection = nextElement && model.schema.checkChild( nextElement, '$text' );
+
+			// If the element is missing, but a paragraph could be inserted next to the page break, let's add it.
+			if ( !canSetSelection && model.schema.checkChild( pageBreakElement.parent, 'paragraph' ) ) {
+				nextElement = writer.createElement( 'paragraph' );
+
+				writer.insert( nextElement, writer.createPositionAfter( pageBreakElement ) );
+			}
+
+			// Put the selection inside the element, at the beginning.
+			if ( nextElement ) {
+				writer.setSelection( nextElement, 0 );
+			}
 		} );
 	}
 }

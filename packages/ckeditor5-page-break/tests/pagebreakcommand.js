@@ -111,6 +111,14 @@ describe( 'PageBreakCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
+		beforeEach( () => {
+			model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'heading1', view: 'h1' } );
+
+			model.schema.register( 'media', { allowWhere: '$block' } );
+			editor.conversion.elementToElement( { model: 'media', view: 'div' } );
+		} );
+
 		it( 'should create a single batch', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -123,7 +131,14 @@ describe( 'PageBreakCommand', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should insert a page break in an empty root and select it', () => {
+		it( 'should insert a page break in an empty root and select it (a paragraph cannot be inserted)', () => {
+			// Block a paragraph in $root.
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( childDefinition.name === 'paragraph' && context.last.name === '$root' ) {
+					return false;
+				}
+			} );
+
 			setModelData( model, '[]' );
 
 			command.execute();
@@ -137,7 +152,7 @@ describe( 'PageBreakCommand', () => {
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>f</paragraph>[<pageBreak></pageBreak>]<paragraph>o</paragraph>'
+				'<paragraph>f</paragraph><pageBreak></pageBreak><paragraph>[]o</paragraph>'
 			);
 		} );
 
@@ -147,7 +162,117 @@ describe( 'PageBreakCommand', () => {
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>fo</paragraph>[<pageBreak></pageBreak>]<paragraph>o</paragraph>'
+				'<paragraph>fo</paragraph><pageBreak></pageBreak><paragraph>[]o</paragraph>'
+			);
+		} );
+
+		it( 'should create an empty paragraph after inserting a page break after a paragraph and place selection inside', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should create an empty paragraph after inserting a page break after a heading and place selection inside', () => {
+			setModelData( model, '<heading1>foo[]</heading1>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<heading1>foo</heading1><pageBreak></pageBreak><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should create an empty paragraph after inserting a page break and next element must not having text', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph><media></media>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]</paragraph><media></media>'
+			);
+		} );
+
+		it( 'should create an empty paragraph after inserting a page break in heading and next element must not having text', () => {
+			setModelData( model, '<heading1>foo[]</heading1><media></media>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<heading1>foo</heading1><pageBreak></pageBreak><paragraph>[]</paragraph><media></media>'
+			);
+		} );
+
+		it( 'should not create an empty paragraph if a page break split an element with text', () => {
+			setModelData( model, '<heading1>foo[]bar</heading1>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<heading1>foo</heading1><pageBreak></pageBreak><heading1>[]bar</heading1>'
+			);
+		} );
+
+		it( 'should replace an empty paragraph with a page break and insert another paragraph next to', () => {
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<pageBreak></pageBreak><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should replace an empty paragraph with a page break and move the selection to next paragraph', () => {
+			setModelData( model, '<paragraph>foo</paragraph><paragraph>[]</paragraph><paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an empty paragraph with a page break and move the selection to next element that has text', () => {
+			setModelData( model, '<paragraph>foo</paragraph><paragraph>[]</paragraph><heading1>bar</heading1>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><heading1>[]bar</heading1>'
+			);
+		} );
+
+		it( 'should replace an empty block element with a page break and insert a paragraph next to', () => {
+			setModelData( model, '<heading1>[]</heading1>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<pageBreak></pageBreak><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should move the selection to next element if it allows having text (paragraph + heading)', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph><heading1>bar</heading1>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><heading1>[]bar</heading1>'
+			);
+		} );
+
+		it( 'should move the selection to next element if it allows having text (heading + paragraph)', () => {
+			setModelData( model, '<heading1>foo[]</heading1><paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<heading1>foo</heading1><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
 			);
 		} );
 	} );
