@@ -9,7 +9,7 @@ The {@link module:page-break/pagebreak~PageBreak} plugin provides a possibility 
 
 ## Demo
 
-Use the editor below to see the {@link module:page-break/pagebreak~PageBreak} plugin in action. Open the web browser console and click the button below to see the page-break snippet code in the editor output data.
+Use the editor below to see the {@link module:page-break/pagebreak~PageBreak} plugin in action. Click the button below in order to open a print preview window.
 
 {@snippet features/page-break}
 

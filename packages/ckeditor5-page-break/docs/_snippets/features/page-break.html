@@ -5,4 +5,20 @@
 	<p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 
-<button type="button" id="log-data">Log editor data</button>
+<button type="button" id="print-data-action">Print editor data</button>
+<iframe class="visuallyhidden" id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
+
+<style>
+	.visuallyhidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		border: 0;
+		padding: 0;
+		white-space: nowrap;
+		clip-path: inset(100%);
+		clip: rect(0 0 0 0);
+		overflow: hidden;
+	}
+</style>

@@ -56,9 +56,25 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		// The "Log editor data" button logic.
-		document.querySelector( '#log-data' ).addEventListener( 'click', () => {
-			console.log( editor.getData() );
+		// The "Print editor data" button logic.
+		document.querySelector( '#print-data-action' ).addEventListener( 'click', () => {
+			const snippetCSSElement = [ ...document.querySelectorAll( 'link' ) ]
+				.find( linkElement => linkElement.href.endsWith( 'snippet.css' ) );
+
+			const iframeElement = document.querySelector( '#print-data-container' );
+
+			iframeElement.srcdoc = '<html>' +
+				'<head>' +
+					`<title>${ document.title }</title>` +
+					`<link rel="stylesheet" href="${ snippetCSSElement.href }" type="text/css">` +
+				'</head>' +
+				'<body class="ck-content">' +
+					editor.getData() +
+					'<script>' +
+						'window.addEventListener( \'DOMContentLoaded\', () => { window.print(); } );' +
+					'</script>' +
+				'</body>' +
+				'</html>';
 		} );
 	} )
 	.catch( err => {
