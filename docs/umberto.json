@@ -26,7 +26,9 @@
 		"features/easy-image.html": "features/image-upload/easy-image.html",
 		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html",
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
-		"features/paste-from-word.html": "features/pasting/paste-from-word.html"
+		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
+		"features/mathtype.html": "features/math-equations.html",
+		"features/spell-checker.html": "features/spelling-and-grammar-checking.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
