@@ -657,6 +657,44 @@ describe( 'Widget', () => {
 				'[<image></image>]' +
 				'<paragraph>foo</paragraph>'
 			);
+
+			describe( 'RTL (right-to-left) content', () => {
+				test(
+					'should move selection forward from selected object - left arrow',
+					'[<widget></widget>]<paragraph>foo</paragraph>',
+					keyCodes.arrowleft,
+					'<widget></widget><paragraph>[]foo</paragraph>',
+					null,
+					'rtl'
+				);
+
+				test(
+					'should move selection backward from selected object - right arrow',
+					'<paragraph>foo</paragraph>[<widget></widget>]',
+					keyCodes.arrowright,
+					'<paragraph>foo[]</paragraph><widget></widget>',
+					null,
+					'rtl'
+				);
+
+				test(
+					'should move selection to next widget - left arrow',
+					'[<widget></widget>]<widget></widget>',
+					keyCodes.arrowleft,
+					'<widget></widget>[<widget></widget>]',
+					null,
+					'rtl'
+				);
+
+				test(
+					'should move selection to previous widget - right arrow',
+					'<widget></widget>[<widget></widget>]',
+					keyCodes.arrowright,
+					'[<widget></widget>]<widget></widget>',
+					null,
+					'rtl'
+				);
+			} );
 		} );
 
 		describe( 'Ctrl+A', () => {
@@ -782,8 +820,10 @@ describe( 'Widget', () => {
 			);
 		} );
 
-		function test( name, data, keyCodeOrMock, expected, expectedView ) {
+		function test( name, data, keyCodeOrMock, expected, expectedView, contentLanguageDirection = 'ltr' ) {
 			it( name, () => {
+				testUtils.sinon.stub( editor.locale, 'contentLanguageDirection' ).value( contentLanguageDirection );
+
 				const domEventDataMock = ( typeof keyCodeOrMock == 'object' ) ? keyCodeOrMock : {
 					keyCode: keyCodeOrMock
 				};
