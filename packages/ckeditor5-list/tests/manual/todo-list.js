@@ -16,13 +16,20 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import List from '../../src/list';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import TodoList from '../../src/todolist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, List, TodoList, Clipboard ],
+		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, List, TodoList, Clipboard, FontSize ],
 		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'bold', 'highlight', 'insertTable', '|', 'undo', 'redo'
+			'heading',
+			'|',
+			'bulletedList', 'numberedList', 'todoList',
+			'|',
+			'bold', 'highlight', 'insertTable', 'fontSize',
+			'|',
+			'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [
