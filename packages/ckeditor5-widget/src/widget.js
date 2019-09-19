@@ -165,7 +165,6 @@ export default class Widget extends Plugin {
 	_onKeydown( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 		const isLtrContent = this.editor.locale.contentLanguageDirection === 'ltr';
-
 		const isForward = keyCode == keyCodes.arrowdown || keyCode == keyCodes[ isLtrContent ? 'arrowright' : 'arrowleft' ];
 		let wasHandled = false;
 
