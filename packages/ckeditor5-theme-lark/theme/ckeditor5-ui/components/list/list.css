@@ -6,6 +6,7 @@
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-todo-list-checkmark-size: 16px;
@@ -103,8 +104,16 @@
 	width: var(--ck-todo-list-checkmark-size);
 	height: var(--ck-todo-list-checkmark-size);
 	vertical-align: middle;
-	left: calc( var(--ck-spacing-large) * -1.5 );
-	margin-right: calc( var(--ck-spacing-large) * -1 );
+
+	@mixin ck-dir ltr {
+		left: calc( var(--ck-spacing-large) * -1.5 );
+		margin-right: calc( var(--ck-spacing-large) * -1 );
+	}
+
+	@mixin ck-dir rtl {
+		right: calc( var(--ck-spacing-large) * -1.5 );
+		margin-left: calc( var(--ck-spacing-large) * -1 );
+	}
 
 	&::before {
 		content: '';
