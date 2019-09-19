@@ -87,7 +87,7 @@
 	background: var(--ck-color-base-border);
 }
 
-.ck .todo-list {
+.ck.ck-editor__editable .todo-list {
 	list-style: none;
 
 	& li {
