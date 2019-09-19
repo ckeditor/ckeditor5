@@ -1,4 +1,4 @@
-.ck .todo-list__checkmark {
+.ck.ck-editor__editable .todo-list__checkmark {
 	display: inline-block;
 	position: relative;
 
