@@ -87,7 +87,7 @@
 	background: var(--ck-color-base-border);
 }
 
-.ck.ck-editor__editable .todo-list {
+.ck-editor__editable .todo-list {
 	list-style: none;
 
 	& li {
@@ -99,7 +99,7 @@
 	}
 }
 
-.ck.ck-editor__editable .todo-list__checkmark {
+.ck-editor__editable .todo-list__checkmark {
 	cursor: pointer;
 	width: var(--ck-todo-list-checkmark-size);
 	height: var(--ck-todo-list-checkmark-size);
@@ -160,7 +160,7 @@
 	}
 }
 
-.ck.ck-editor__editable[dir="ltr"] .todo-list__checkmark {
+.ck-editor__editable[dir="ltr"] .todo-list__checkmark {
 	left: -25px;
 	margin-right: -15px;
 
@@ -168,7 +168,7 @@
 	margin-left: 0;
 }
 
-.ck.ck-editor__editable[dir="rtl"] .todo-list__checkmark {
+.ck-editor__editable[dir="rtl"] .todo-list__checkmark {
 	left: 0;
 	margin-right: 0;
 
