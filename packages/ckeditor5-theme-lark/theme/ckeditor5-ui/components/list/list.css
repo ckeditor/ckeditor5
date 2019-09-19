@@ -106,13 +106,13 @@
 	vertical-align: middle;
 
 	@mixin ck-dir ltr {
-		left: calc( var(--ck-spacing-large) * -1.5 );
-		margin-right: calc( var(--ck-spacing-large) * -1 );
+		left: -25px;
+		margin-right: -15px;
 	}
 
 	@mixin ck-dir rtl {
-		right: calc( var(--ck-spacing-large) * -1.5 );
-		margin-left: calc( var(--ck-spacing-large) * -1 );
+		right: -25px;
+		margin-left: -15px;
 	}
 
 	&::before {
