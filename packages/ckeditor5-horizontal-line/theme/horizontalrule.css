@@ -6,11 +6,12 @@
 .ck .ck-horizontal-rule {
 	/* Handle proper `<hr>` display next to elements with `float` property, e.g. side image case. */
 	overflow: hidden;
-
-	padding: 5px;
+	padding: 5px 0;
 }
 
 .ck-content hr {
-	border: 1px solid hsl(0, 0%, 77%);
+	border-width: 1px 0 0;
+	border-style: solid;
+	border-color: hsl(0, 0%, 37%);
 	margin: 0;
 }
