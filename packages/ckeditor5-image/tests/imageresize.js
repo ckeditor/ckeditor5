@@ -26,11 +26,7 @@ describe( 'ImageResize', () => {
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 
-	const CONFIG_RESIZE_IN_PERCENTS = {
-		plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
-	};
-
-	let absoluteContainer, widget, editor, view, viewDocument, editorElement, customConfig;
+	let absoluteContainer, widget, editor, view, viewDocument, editorElement;
 
 	before( () => {
 		// This container is required to position editor element in a reliable element.
@@ -48,33 +44,19 @@ describe( 'ImageResize', () => {
 		absoluteContainer.remove();
 	} );
 
-	beforeEach( () => {
-		editorElement = document.createElement( 'div' );
-
-		absoluteContainer.appendChild( editorElement );
-
-		return ClassicEditor
-			.create( editorElement, customConfig || {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
-				image: {
-					resizeUnit: 'px'
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				view = editor.editing.view;
-				viewDocument = view.document;
-				widget = viewDocument.getRoot().getChild( 1 );
-			} );
-	} );
-
 	afterEach( () => {
-		editorElement.remove();
+		if ( editorElement ) {
+			editorElement.remove();
+		}
 
-		return editor.destroy();
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	describe( 'conversion', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'upcasts 100px width correctly', () => {
 			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
@@ -103,6 +85,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'schema', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'allows the width attribute', () => {
 			expect( editor.model.schema.checkAttribute( 'image', 'width' ) ).to.be.true;
 		} );
@@ -113,6 +97,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'command', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'defines the imageResize command', () => {
 			expect( editor.commands.get( 'imageResize' ) ).to.be.instanceOf( ImageResizeCommand );
 		} );
@@ -184,6 +170,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'visual resizers', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -224,6 +212,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'standard image resizing', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -324,6 +314,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'side image resizing', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -439,13 +431,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'percent resizing', () => {
-		before( () => {
-			customConfig = CONFIG_RESIZE_IN_PERCENTS;
-		} );
-
-		after( () => {
-			customConfig = null;
-		} );
+		beforeEach( () => createEditor( {
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+		} ) );
 
 		describe( 'standard image', () => {
 			beforeEach( () => {
@@ -513,6 +501,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'undo integration', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -542,6 +532,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'table integration', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model,
 				'<table>' +
@@ -565,6 +557,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'srcset integration', () => {
+		beforeEach( () => createEditor() );
+
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
 		const getModel = () => editor.model.document.getRoot().getChild( 0 );
@@ -638,6 +632,8 @@ describe( 'ImageResize', () => {
 
 	// TODO move to Resizer tests.
 	describe( 'Resizer', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'uses rounded (int) values', async () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -764,5 +760,25 @@ describe( 'ImageResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function createEditor( config ) {
+		editorElement = document.createElement( 'div' );
+
+		absoluteContainer.appendChild( editorElement );
+
+		return ClassicEditor
+			.create( editorElement, config || {
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
+				image: {
+					resizeUnit: 'px'
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				view = editor.editing.view;
+				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
+			} );
 	}
 } );
