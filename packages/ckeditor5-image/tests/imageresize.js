@@ -452,8 +452,6 @@ describe( 'ImageResize', () => {
 			beforeEach( () => {
 				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
-				view = editor.editing.view;
-				viewDocument = view.document;
 				widget = viewDocument.getRoot().getChild( 1 );
 			} );
 
@@ -480,8 +478,6 @@ describe( 'ImageResize', () => {
 			it( 'enlarges correctly an image with unsupported width unit', async () => {
 				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }" width="50pt"></image>]` );
 
-				view = editor.editing.view;
-				viewDocument = view.document;
 				widget = viewDocument.getRoot().getChild( 1 );
 
 				await generateResizeTest( {
