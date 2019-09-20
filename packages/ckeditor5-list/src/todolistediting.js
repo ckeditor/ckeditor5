@@ -120,7 +120,11 @@ export default class TodoListEditing extends Plugin {
 		//
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
-		editor.keystrokes.set( 'arrowleft', ( evt, stop ) => jumpOverCheckmarkOnLeftArrowKeyPress( stop, model ) );
+		//
+		// Note: When content language direction is RTL, the behaviour is mirrored.
+		const localizedJumpOverCheckmarkKey = editor.locale.contentLanguageDirection === 'ltr' ? 'arrowleft' : 'arrowright';
+
+		editor.keystrokes.set( localizedJumpOverCheckmarkKey, ( evt, stop ) => jumpOverCheckmarkOnSideArrowKeyPress( stop, model ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
@@ -249,13 +253,14 @@ function moveSelectionAfterCheckmark( writer, selection ) {
 	return false;
 }
 
-// Handles the left arrow key and moves the selection at the end of the previous block element if the selection is just after
-// the checkbox element. In other words, it jumps over the checkbox element when moving the selection to the left.
+// Handles the left/right (LTR/RTL content) arrow key and moves the selection at the end of the previous block element
+// if the selection is just after the checkbox element. In other words, it jumps over the checkbox element when
+// moving the selection to the left/right (LTR/RTL).
 //
 // @private
 // @param {Function} stopKeyEvent
 // @param {module:engine/model/model~Model} model
-function jumpOverCheckmarkOnLeftArrowKeyPress( stopKeyEvent, model ) {
+function jumpOverCheckmarkOnSideArrowKeyPress( stopKeyEvent, model ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 

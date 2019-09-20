@@ -790,69 +790,142 @@ describe( 'TodoListEditing', () => {
 		} );
 	} );
 
-	describe( 'leftArrow key handling', () => {
-		let domEvtDataStub;
+	describe( 'arrow key handling', () => {
+		let editor, model, view, viewDoc, domEvtDataStub;
 
-		beforeEach( () => {
-			domEvtDataStub = {
-				keyCode: getCode( 'arrowLeft' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy(),
-				domTarget: {
-					ownerDocument: {
-						defaultView: {
-							getSelection: () => ( { rangeCount: 0 } )
-						}
-					}
-				}
-			};
+		describe( 'left arrow in a LTR (left–to–right) content', () => {
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						language: 'en',
+						plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						model = editor.model;
+						view = editor.editing.view;
+						viewDoc = view.document;
+
+						model.schema.register( 'foo', {
+							allowWhere: '$block',
+							allowAttributes: [ 'listIndent', 'listType' ],
+							isBlock: true,
+							isObject: true
+						} );
+
+						domEvtDataStub = {
+							keyCode: getCode( 'arrowLeft' ),
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy(),
+							domTarget: {
+								ownerDocument: {
+									defaultView: {
+										getSelection: () => ( { rangeCount: 0 } )
+									}
+								}
+							}
+						};
+					} );
+			} );
+
+			afterEach( () => {
+				editor.destroy();
+			} );
+
+			testArrowKey();
 		} );
 
-		it( 'should jump at the end of the previous node when selection is after checkmark element', () => {
-			setModelData( model,
-				'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
-				'<listItem listIndent="0" listType="todo">[]bar</listItem>'
-			);
+		describe( 'right arrow in a RTL (left–to–right) content', () => {
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						language: 'ar',
+						plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
 
-			viewDoc.fire( 'keydown', domEvtDataStub );
+						model = editor.model;
+						view = editor.editing.view;
+						viewDoc = view.document;
 
-			expect( getModelData( model ) ).to.equal(
-				'<blockQuote><paragraph>foo[]</paragraph></blockQuote>' +
-				'<listItem listIndent="0" listType="todo">bar</listItem>'
-			);
+						model.schema.register( 'foo', {
+							allowWhere: '$block',
+							allowAttributes: [ 'listIndent', 'listType' ],
+							isBlock: true,
+							isObject: true
+						} );
 
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+						domEvtDataStub = {
+							keyCode: getCode( 'arrowRight' ),
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy(),
+							domTarget: {
+								ownerDocument: {
+									defaultView: {
+										getSelection: () => ( { rangeCount: 0 } )
+									}
+								}
+							}
+						};
+					} );
+			} );
+
+			afterEach( () => {
+				editor.destroy();
+			} );
+
+			testArrowKey();
 		} );
 
-		it( 'should do nothing when list item is a first block element in the root', () => {
-			setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+		function testArrowKey() {
+			it( 'should jump at the end of the previous node when selection is after checkmark element', () => {
+				setModelData( model,
+					'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
+					'<listItem listIndent="0" listType="todo">[]bar</listItem>'
+				);
 
-			viewDoc.fire( 'keydown', domEvtDataStub );
+				viewDoc.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+				expect( getModelData( model ) ).to.equal(
+					'<blockQuote><paragraph>foo[]</paragraph></blockQuote>' +
+					'<listItem listIndent="0" listType="todo">bar</listItem>'
+				);
 
-			expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
-		} );
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			} );
 
-		it( 'should do nothing when selection is not collapsed', () => {
-			setModelData( model, '<listItem listIndent="0" listType="todo">[bar]</listItem>' );
+			it( 'should do nothing when list item is a first block element in the root', () => {
+				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
-			viewDoc.fire( 'keydown', domEvtDataStub );
+				viewDoc.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-		} );
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 
-		it( 'should do nothing when selection is not at the beginning list item', () => {
-			setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+				expect( getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+			} );
 
-			viewDoc.fire( 'keydown', domEvtDataStub );
+			it( 'should do nothing when selection is not collapsed', () => {
+				setModelData( model, '<listItem listIndent="0" listType="todo">[bar]</listItem>' );
 
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-		} );
+				viewDoc.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			} );
+
+			it( 'should do nothing when selection is not at the beginning list item', () => {
+				setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+
+				viewDoc.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			} );
+		}
 	} );
 
 	describe( 'Ctrl+space keystroke handling', () => {
