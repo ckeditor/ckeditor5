@@ -206,7 +206,6 @@ describe( 'ImageResize', () => {
 			} );
 
 			it( 'is shown when image is focused', () => {
-				const widget = viewDocument.getRoot().getChild( 1 );
 				const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 				const domEventDataMock = {
 					target: widget,
