@@ -26,7 +26,7 @@ describe( 'ImageResize', () => {
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 
-	const CONFIG_RESIZE_IN_PIXELS = {
+	const CONFIG_RESIZE_IN_PERCENTS = {
 		plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
 	};
 
@@ -442,7 +442,7 @@ describe( 'ImageResize', () => {
 	describe( 'percent resizing', () => {
 		describe( 'standard image', () => {
 			before( () => {
-				customConfig = CONFIG_RESIZE_IN_PIXELS;
+				customConfig = CONFIG_RESIZE_IN_PERCENTS;
 			} );
 
 			after( () => {
@@ -498,7 +498,7 @@ describe( 'ImageResize', () => {
 
 		describe( 'side image', () => {
 			before( () => {
-				customConfig = CONFIG_RESIZE_IN_PIXELS;
+				customConfig = CONFIG_RESIZE_IN_PERCENTS;
 			} );
 
 			after( () => {
