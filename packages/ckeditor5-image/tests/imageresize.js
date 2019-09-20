@@ -440,15 +440,15 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'percent resizing', () => {
+		before( () => {
+			customConfig = CONFIG_RESIZE_IN_PERCENTS;
+		} );
+
+		after( () => {
+			customConfig = null;
+		} );
+
 		describe( 'standard image', () => {
-			before( () => {
-				customConfig = CONFIG_RESIZE_IN_PERCENTS;
-			} );
-
-			after( () => {
-				customConfig = null;
-			} );
-
 			beforeEach( () => {
 				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -493,14 +493,6 @@ describe( 'ImageResize', () => {
 		} );
 
 		describe( 'side image', () => {
-			before( () => {
-				customConfig = CONFIG_RESIZE_IN_PERCENTS;
-			} );
-
-			after( () => {
-				customConfig = null;
-			} );
-
 			beforeEach( () => {
 				setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
