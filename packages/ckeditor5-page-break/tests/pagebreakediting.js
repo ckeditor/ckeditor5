@@ -82,7 +82,7 @@ describe( 'PageBreakEditing', () => {
 				editor.setData( '<div><div style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div></div>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<div></div>' );
+					.to.equal( '<div> </div>' );
 			} );
 
 			it( 'should not convert if outer div has wrong styles', () => {
@@ -185,6 +185,20 @@ describe( 'PageBreakEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak><section><$text foo="true">Foo</$text></section>' );
+			} );
+
+			it( 'should not convert if inner span has no children', () => {
+				editor.setData( '<div style="page-break-after:always;"><span style="display:none;"></span></div>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '' );
+			} );
+
+			it( 'should not convert if inner span has other element as a child', () => {
+				editor.setData( '<div style="page-break-after:always;"><span style="display:none;"><span></span></span></div>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '' );
 			} );
 		} );
 	} );
