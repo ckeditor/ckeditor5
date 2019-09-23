@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import { transform, transformSets } from '../../../src/model/operation/transform';
 
 import Model from '../../../src/model/model';
@@ -61,6 +63,9 @@ describe( 'transform', () => {
 	};
 
 	it( 'should throw an error when one of operations is invalid', () => {
+		// Catches the 'Error during operation transformation!' warning in the CK_DEBUG mode.
+		sinon.stub( console, 'warn' );
+
 		const nodeA = new Node();
 		const nodeB = new Node();
 
@@ -80,7 +85,7 @@ describe( 'transform', () => {
 				abRelation: null,
 				baRelation: null
 			} );
-		} ).to.throw();
+		} ).to.throw( TypeError );
 	} );
 
 	describe( 'InsertOperation', () => {
