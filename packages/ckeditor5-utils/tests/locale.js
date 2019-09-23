@@ -150,9 +150,10 @@ describe( 'Locale', () => {
 
 	describe( 'language()', () => {
 		it( 'should return #uiLanguage', () => {
-			sinon.stub( console, 'warn' );
+			const stub = sinon.stub( console, 'warn' );
 
 			expect( locale.language ).to.equal( locale.uiLanguage );
+			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
 		} );
 
 		it( 'should warn about deprecation', () => {
