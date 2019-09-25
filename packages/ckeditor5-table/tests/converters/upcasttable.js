@@ -10,6 +10,7 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import { defaultConversion, defaultSchema, formatTable, modelTable } from '../_utils/utils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
@@ -551,13 +552,31 @@ describe( 'upcastTable()', () => {
 
 			expectModel(
 				'<table>' +
-					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
 				'</table>'
 			);
+		} );
+	} );
+
+	describe( 'styles', () => {
+		describe( 'table cell borders', () => {
+			it( 'should pass', () => {
+				editor.setData( '<table><tr><td style="border:1px solid blue">foo</td></tr></table>' );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell border="1px solid blue">' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 } );

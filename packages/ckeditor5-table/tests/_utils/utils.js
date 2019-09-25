@@ -190,6 +190,11 @@ export function defaultSchema( schema, registerParagraph = true ) {
 	if ( registerParagraph ) {
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 	}
+
+	// Styles
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'border' ]
+	} );
 }
 
 export function defaultConversion( conversion, asWidget = false ) {
@@ -215,6 +220,20 @@ export function defaultConversion( conversion, asWidget = false ) {
 
 	conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget } ) );
 	conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget } ) );
+
+	// Styles
+	conversion.for( 'upcast' ).attributeToAttribute( {
+		view: {
+			name: 'td',
+			styles: {
+				border: /[\s\S]+/
+			}
+		},
+		model: {
+			key: 'border',
+			value: viewElement => viewElement.getStyle( 'border' )
+		}
+	} );
 }
 
 // Formats table cell attributes
