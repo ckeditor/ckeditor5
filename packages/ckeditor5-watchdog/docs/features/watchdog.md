@@ -54,7 +54,7 @@ In other words, your goal is to create a watchdog instance and make the watchdog
 
 ### Controlling editor creation and destruction
 
-For more control over the creation and destruction of editor instances, you can use the {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`} methods:
+For more control over the creation and destruction of editor instances, you can use the mandatory {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and the optional {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`} methods:
 
 ```js
 // Instantiate the watchdog manually (do not use the for() helper).

@@ -135,6 +135,7 @@ export default class Watchdog {
 		 * @member {Function} #_destructor
 		 * @see #setDestructor
 		 */
+		this._destructor = editor => editor.destroy();
 
 		/**
 		 * The latest saved editor data represented as a root name -> root data object.
@@ -189,6 +190,7 @@ export default class Watchdog {
 
 	/**
 	 * Sets the function that is responsible for the editor destruction.
+	 * Overrides the default destruction function, which destroys only the editor instance.
 	 * It expects a function that should return a promise or `undefined`.
 	 *
 	 *		watchdog.setDestructor( editor => editor.destroy() );
@@ -219,20 +221,6 @@ export default class Watchdog {
 			 */
 			throw new CKEditorError(
 				'watchdog-creator-not-defined: The watchdog\'s editor creator is not defined.',
-				null
-			);
-		}
-
-		if ( !this._destructor ) {
-			/**
-			 * The watchdog's editor destructor is not defined. Define it by using
-			 * {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`} or
-			 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
-			 *
-			 * @error watchdog-destructor-not-defined
-			 */
-			throw new CKEditorError(
-				'watchdog-destructor-not-defined: The watchdog\'s editor destructor is not defined.',
 				null
 			);
 		}
@@ -473,7 +461,6 @@ export default class Watchdog {
 		const watchdog = new Watchdog( watchdogConfig );
 
 		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
-		watchdog.setDestructor( editor => editor.destroy() );
 
 		return watchdog;
 	}
