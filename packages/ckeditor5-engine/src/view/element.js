@@ -803,7 +803,7 @@ function parseAttributes( attrs ) {
 //
 // @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
 // @param {String} stylesString Styles to parse.
-function parseInlineStyles( stylesMap, stylesString ) {
+export function parseInlineStyles( stylesMap, stylesString ) {
 	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
 	let quoteType = null;
 	let propertyNameStart = 0;
