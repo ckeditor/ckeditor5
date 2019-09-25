@@ -81,6 +81,10 @@ watchdog.setDestructor( editor => {
 watchdog.create( elementOrData, editorConfig );
 ```
 
+<info-box>
+	The default (not overridden) editor destructor is the `editor => editor.destroy()` function.
+</info-box>
+
 ### API
 
 Other useful {@link module:watchdog/watchdog~Watchdog methods, properties and events}:
