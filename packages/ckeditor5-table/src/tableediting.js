@@ -111,6 +111,34 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
 
+		// Table styles:
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'border' ]
+		} );
+
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				name: 'td',
+				styles: {
+					border: /[\s\S]+/
+				}
+			},
+			model: {
+				key: 'border',
+				value: viewElement => viewElement.getStyle( 'border' )
+			}
+		} );
+
+		conversion.for( 'downcast' ).attributeToAttribute( {
+			model: 'border',
+			view: modelAttributeValue => ( {
+				key: 'style',
+				value: {
+					border: modelAttributeValue
+				}
+			} )
+		} );
+
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
