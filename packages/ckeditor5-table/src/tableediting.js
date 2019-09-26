@@ -125,18 +125,20 @@ export default class TableEditing extends Plugin {
 			},
 			model: {
 				key: 'border',
-				value: viewElement => viewElement.getStyle( 'border' )
+				value: viewElement => viewElement.getStyle( 'border', true )
 			}
 		} );
 
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: 'border',
-			view: modelAttributeValue => ( {
-				key: 'style',
-				value: {
-					border: modelAttributeValue
-				}
-			} )
+			view: modelAttributeValue => {
+				return ( {
+					key: 'style',
+					value: {
+						border: modelAttributeValue
+					}
+				} );
+			}
 		} );
 
 		// Define all the commands.
