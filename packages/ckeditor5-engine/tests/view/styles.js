@@ -284,6 +284,52 @@ describe( 'Styles', () => {
 			} );
 		} );
 
+		describe( 'padding', () => {
+			it( 'should set all paddings (1 value defined)', () => {
+				styleProxy.setStyle( 'padding:1px;' );
+
+				expect( styleProxy.getModel( 'padding' ) ).to.deep.equal( {
+					top: '1px',
+					right: '1px',
+					bottom: '1px',
+					left: '1px'
+				} );
+			} );
+
+			it( 'should set all paddings (2 values defined)', () => {
+				styleProxy.setStyle( 'padding:1px .34cm;' );
+
+				expect( styleProxy.getModel( 'padding' ) ).to.deep.equal( {
+					top: '1px',
+					right: '.34cm',
+					bottom: '1px',
+					left: '.34cm'
+				} );
+			} );
+
+			it( 'should set all paddings (3 values defined)', () => {
+				styleProxy.setStyle( 'padding:1px .34cm 90.1rem;' );
+
+				expect( styleProxy.getModel( 'padding' ) ).to.deep.equal( {
+					top: '1px',
+					right: '.34cm',
+					bottom: '90.1rem',
+					left: '.34cm'
+				} );
+			} );
+
+			it( 'should set all paddings (4 values defined)', () => {
+				styleProxy.setStyle( 'padding:1px .34cm 90.1rem thick;' );
+
+				expect( styleProxy.getModel( 'padding' ) ).to.deep.equal( {
+					top: '1px',
+					right: '.34cm',
+					bottom: '90.1rem',
+					left: 'thick'
+				} );
+			} );
+		} );
+
 		describe( 'unknown rules', () => {
 			it( 'should left rules untouched', () => {
 				styleProxy.setStyle( 'foo-bar:baz 1px abc;baz: 2px 3em;' );

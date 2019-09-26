@@ -179,8 +179,8 @@ function parseRule( key, value, styleObject ) {
 			bottom: { width: bottom },
 			left: { width: left }
 		} );
-	} else if ( key === 'margin' ) {
-		addStyle( styleObject, 'margin', getTopRightBottomLeftValues( value ) );
+	} else if ( key === 'margin' || key === 'padding' ) {
+		addStyle( styleObject, key, getTopRightBottomLeftValues( value ) );
 	} else {
 		addStyle( styleObject, key, value );
 	}
