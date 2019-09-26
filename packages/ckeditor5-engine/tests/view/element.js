@@ -68,17 +68,18 @@ describe( 'Element', () => {
 			expect( el._classes.has( 'three' ) ).to.be.true;
 		} );
 
-		it( 'should move style attribute to style map', () => {
+		it( 'should move style attribute to style proxy', () => {
 			const el = new Element( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
 
 			expect( el._attrs.has( 'style' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
-			expect( el._styles.has( 'one' ) ).to.be.true;
-			expect( el._styles.get( 'one' ) ).to.equal( 'style1' );
-			expect( el._styles.has( 'two' ) ).to.be.true;
-			expect( el._styles.get( 'two' ) ).to.equal( 'style2' );
-			expect( el._styles.has( 'three' ) ).to.be.true;
-			expect( el._styles.get( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+
+			expect( el._styles.hasRule( 'one' ) ).to.be.true;
+			expect( el._styles.getInlineRule( 'one' ) ).to.equal( 'style1' );
+			expect( el._styles.hasRule( 'two' ) ).to.be.true;
+			expect( el._styles.getInlineRule( 'two' ) ).to.equal( 'style2' );
+			expect( el._styles.hasRule( 'three' ) ).to.be.true;
+			expect( el._styles.getInlineRule( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
 		} );
 	} );
 
@@ -199,10 +200,10 @@ describe( 'Element', () => {
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
-			expect( clone._styles.has( 'color' ) ).to.be.true;
-			expect( clone._styles.get( 'color' ) ).to.equal( 'red' );
-			expect( clone._styles.has( 'font-size' ) ).to.be.true;
-			expect( clone._styles.get( 'font-size' ) ).to.equal( '12px' );
+			expect( clone._styles.hasRule( 'color' ) ).to.be.true;
+			expect( clone._styles.getInlineRule( 'color' ) ).to.equal( 'red' );
+			expect( clone._styles.hasRule( 'font-size' ) ).to.be.true;
+			expect( clone._styles.getInlineRule( 'font-size' ) ).to.equal( '12px' );
 		} );
 
 		it( 'should clone custom properties', () => {
@@ -515,7 +516,7 @@ describe( 'Element', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'top', '10px' );
 
-				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
+				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px' );
 			} );
 
 			it( 'should return undefined if no style attribute', () => {
@@ -538,7 +539,7 @@ describe( 'Element', () => {
 				el._setStyle( 'font-weight', 'bold' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
-					[ 'class', 'abc xyz' ], [ 'style', 'width:20px;font-weight:bold;' ]
+					[ 'class', 'abc xyz' ], [ 'style', 'font-weight:bold;width:20px' ]
 				] );
 			} );
 		} );
@@ -766,8 +767,7 @@ describe( 'Element', () => {
 			it( 'should set element style', () => {
 				el._setStyle( 'color', 'red' );
 
-				expect( el._styles.has( 'color' ) ).to.be.true;
-				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
+				expect( el._styles._styles.color ).to.equal( 'red' );
 			} );
 
 			it( 'should fire change event with attributes type', done => {
@@ -785,10 +785,8 @@ describe( 'Element', () => {
 					position: 'fixed'
 				} );
 
-				expect( el._styles.has( 'color' ) ).to.be.true;
-				expect( el._styles.has( 'position' ) ).to.be.true;
-				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
-				expect( el._styles.get( 'position' ) ).to.equal( 'fixed' );
+				expect( el._styles._styles.color ).to.equal( 'red' );
+				expect( el._styles._styles.position ).to.equal( 'fixed' );
 			} );
 		} );
 

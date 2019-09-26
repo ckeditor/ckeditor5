@@ -2,48 +2,52 @@
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-import { parseInlineStyles } from './element';
 
-import { get, has, isObject, unset } from 'lodash-es';
+/**
+ * @module engine/view/styles
+ */
 
-export function getStyleProxy( styleString ) {
-	return new StyleProxy( styleString );
-}
+import { get, has, isObject, isPlainObject, unset } from 'lodash-es';
 
-// <-- FROM VIEW/MODEL
-// proxy.setStyle( 'border: 1px solid blue;' )
-//
-// <-> MODIFY
-// proxy.insertRule( 'border-top', '1px solid blue' ); // obj?
-// proxy.removeRule( 'border-top' );
-// proxy.clear();
-//
-// --> TO MODEL
-// proxy.getModel(); // full
-// proxy.getModel( 'border' );
-// proxy.getModel( 'border-top' );
-//
-// --> TO VIEW
-// proxy.getInlineStyle();
-// proxy.getInlineRule( 'border' );
-// proxy.getInlineRule( 'border-top' );
-export class StyleProxy {
+/**
+ * Styles class.
+ *
+ * Handles styles normalization.
+ */
+export default class Styles {
 	constructor( styleString = '' ) {
 		this._styles = {};
 
 		this.setStyle( styleString );
 	}
 
+	get size() {
+		return Object.keys( this._styles ).length;
+	}
+
 	setStyle( styleString = '' ) {
 		this._styles = parseStyle( styleString );
 	}
 
+	hasRule( name ) {
+		const nameNorm = name.replace( '-', '.' );
+
+		return has( this._styles, nameNorm ) || !!this._styles[ name ];
+	}
+
 	insertRule( nameOrObject, value ) {
-		parseRule( nameOrObject, value, this._styles );
+		if ( isPlainObject( nameOrObject ) ) {
+			for ( const key of Object.keys( nameOrObject ) ) {
+				this.insertRule( key, nameOrObject[ key ] );
+			}
+		} else {
+			parseRule( nameOrObject, value, this._styles );
+		}
 	}
 
 	removeRule( name ) {
 		unset( this._styles, name.replace( '-', '.' ) );
+		delete this._styles[ name ];
 	}
 
 	getModel( name ) {
@@ -61,13 +65,19 @@ export class StyleProxy {
 	getInlineStyle() {
 		const parsed = [];
 
-		for ( const key of Object.keys( this._styles ) ) {
+		const keys = Object.keys( this._styles ).sort();
+
+		if ( !keys.length ) {
+			return;
+		}
+
+		for ( const key of keys ) {
 			const model = this.getModel( key );
 
 			parsed.push( toInlineStyle( key, model ) );
 		}
 
-		return parsed.join( ';' ) + ( parsed.length ? ';' : '' );
+		return parsed.join( ';' );
 	}
 
 	getInlineRule( name ) {
@@ -94,7 +104,7 @@ export class StyleProxy {
 
 const borderPositionRegExp = /border-(top|right|bottom|left)$/;
 
-export function parseStyle( string, styleObject = {} ) {
+function parseStyle( string, styleObject = {} ) {
 	const map = new Map();
 
 	parseInlineStyles( map, string );
@@ -230,4 +240,80 @@ function toInlineBorder( object = {} ) {
 	}
 
 	return style.join( ' ' );
+}
+
+// Parses inline styles and puts property - value pairs into styles map.
+// Styles map is cleared before insertion.
+//
+// @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
+// @param {String} stylesString Styles to parse.
+function parseInlineStyles( stylesMap, stylesString ) {
+	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
+	let quoteType = null;
+	let propertyNameStart = 0;
+	let propertyValueStart = 0;
+	let propertyName = null;
+
+	stylesMap.clear();
+
+	// Do not set anything if input string is empty.
+	if ( stylesString === '' ) {
+		return;
+	}
+
+	// Fix inline styles that do not end with `;` so they are compatible with algorithm below.
+	if ( stylesString.charAt( stylesString.length - 1 ) != ';' ) {
+		stylesString = stylesString + ';';
+	}
+
+	// Seek the whole string for "special characters".
+	for ( let i = 0; i < stylesString.length; i++ ) {
+		const char = stylesString.charAt( i );
+
+		if ( quoteType === null ) {
+			// No quote found yet or last found quote was a closing quote.
+			switch ( char ) {
+				case ':':
+					// Most of time colon means that property name just ended.
+					// Sometimes however `:` is found inside property value (for example in background image url).
+					if ( !propertyName ) {
+						// Treat this as end of property only if property name is not already saved.
+						// Save property name.
+						propertyName = stylesString.substr( propertyNameStart, i - propertyNameStart );
+						// Save this point as the start of property value.
+						propertyValueStart = i + 1;
+					}
+
+					break;
+
+				case '"':
+				case '\'':
+					// Opening quote found (this is an opening quote, because `quoteType` is `null`).
+					quoteType = char;
+
+					break;
+
+				case ';': {
+					// Property value just ended.
+					// Use previously stored property value start to obtain property value.
+					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
+
+					if ( propertyName ) {
+						// Save parsed part.
+						stylesMap.set( propertyName.trim(), propertyValue.trim() );
+					}
+
+					propertyName = null;
+
+					// Save this point as property name start. Property name starts immediately after previous property value ends.
+					propertyNameStart = i + 1;
+
+					break;
+				}
+			}
+		} else if ( char === quoteType ) {
+			// If a quote char is found and it is a closing quote, mark this fact by `null`-ing `quoteType`.
+			quoteType = null;
+		}
+	}
 }

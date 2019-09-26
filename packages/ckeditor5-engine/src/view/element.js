@@ -14,7 +14,7 @@ import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import { isPlainObject } from 'lodash-es';
-import { getStyleProxy } from './stylenormalizer';
+import Styles from './styles';
 
 /**
  * View element.
@@ -104,17 +104,16 @@ export default class Element extends Node {
 		}
 
 		/**
-		 * Map of styles.
+		 * Normalized styles.
 		 *
 		 * @protected
 		 * @member {Map} module:engine/view/element~Element#_styles
 		 */
-		this._styles = new Map();
+		this._styles = new Styles();
 
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.
-			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
-			this._stylesProxy = getStyleProxy( this._attrs.get( 'style' ) );
+			this._styles.setStyle( this._attrs.get( 'style' ) );
 
 			this._attrs.delete( 'style' );
 		}
@@ -265,17 +264,7 @@ export default class Element extends Node {
 		}
 
 		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
-				let styleString = '';
-
-				for ( const [ property, value ] of this._styles ) {
-					styleString += `${ property }:${ value };`;
-				}
-
-				return styleString;
-			}
-
-			return undefined;
+			return this._styles.getInlineStyle();
 		}
 
 		return this._attrs.get( key );
@@ -343,8 +332,11 @@ export default class Element extends Node {
 		}
 
 		// Check if styles are the same.
-		for ( const [ property, value ] of this._styles ) {
-			if ( !otherElement._styles.has( property ) || otherElement._styles.get( property ) !== value ) {
+		for ( const property of Object.keys( this._styles._styles ) ) {
+			if (
+				!otherElement._styles.hasRule( property ) ||
+				otherElement._styles.getInlineRule( property ) !== this._styles.getInlineRule( property )
+			) {
 				return false;
 			}
 		}
@@ -388,7 +380,7 @@ export default class Element extends Node {
 	 * @returns {String|undefined}
 	 */
 	getStyle( property ) {
-		return this._styles.get( property );
+		return this._styles.getInlineRule( property );
 	}
 
 	/**
@@ -397,7 +389,7 @@ export default class Element extends Node {
 	 * @returns {Iterable.<String>}
 	 */
 	getStyleNames() {
-		return this._styles.keys();
+		return Object.keys( this._styles._styles );
 	}
 
 	/**
@@ -411,7 +403,7 @@ export default class Element extends Node {
 	 */
 	hasStyle( ...property ) {
 		for ( const name of property ) {
-			if ( !this._styles.has( name ) ) {
+			if ( !this._styles.hasRule( name ) ) {
 				return false;
 			}
 		}
@@ -488,12 +480,12 @@ export default class Element extends Node {
 	 */
 	getIdentity() {
 		const classes = Array.from( this._classes ).sort().join( ',' );
-		const styles = Array.from( this._styles ).map( i => `${ i[ 0 ] }:${ i[ 1 ] }` ).sort().join( ';' );
+		const styles = this._styles.getInlineStyle();
 		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
 
 		return this.name +
 			( classes == '' ? '' : ` class="${ classes }"` ) +
-			( styles == '' ? '' : ` style="${ styles }"` ) +
+			( !styles ? '' : ` style="${ styles }"` ) +
 			( attributes == '' ? '' : ` ${ attributes }` );
 	}
 
@@ -520,7 +512,7 @@ export default class Element extends Node {
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
-		cloned._styles = new Map( this._styles );
+		cloned._styles.setStyle( this._styles.getInlineStyle() );
 
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
@@ -617,8 +609,8 @@ export default class Element extends Node {
 		if ( key == 'class' ) {
 			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
-			parseInlineStyles( this._styles, value );
-			this._stylesProxy = getStyleProxy( value );
+			// parseInlineStyles( this._styles, value );
+			this._styles.setStyle( value );
 		} else {
 			this._attrs.set( key, value );
 		}
@@ -649,7 +641,7 @@ export default class Element extends Node {
 
 		// Remove style attribute.
 		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
+			if ( this._styles.size ) {
 				this._styles.clear();
 
 				return true;
@@ -716,15 +708,7 @@ export default class Element extends Node {
 	_setStyle( property, value ) {
 		this._fireChange( 'attributes', this );
 
-		if ( isPlainObject( property ) ) {
-			const keys = Object.keys( property );
-
-			for ( const key of keys ) {
-				this._styles.set( key, property[ key ] );
-			}
-		} else {
-			this._styles.set( property, value );
-		}
+		this._styles.insertRule( property, value );
 	}
 
 	/**
@@ -742,7 +726,7 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		property = Array.isArray( property ) ? property : [ property ];
-		property.forEach( name => this._styles.delete( name ) );
+		property.forEach( name => this._styles.removeRule( name ) );
 	}
 
 	/**
@@ -800,82 +784,6 @@ function parseAttributes( attrs ) {
 	}
 
 	return attrs;
-}
-
-// Parses inline styles and puts property - value pairs into styles map.
-// Styles map is cleared before insertion.
-//
-// @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
-// @param {String} stylesString Styles to parse.
-export function parseInlineStyles( stylesMap, stylesString ) {
-	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
-	let quoteType = null;
-	let propertyNameStart = 0;
-	let propertyValueStart = 0;
-	let propertyName = null;
-
-	stylesMap.clear();
-
-	// Do not set anything if input string is empty.
-	if ( stylesString === '' ) {
-		return;
-	}
-
-	// Fix inline styles that do not end with `;` so they are compatible with algorithm below.
-	if ( stylesString.charAt( stylesString.length - 1 ) != ';' ) {
-		stylesString = stylesString + ';';
-	}
-
-	// Seek the whole string for "special characters".
-	for ( let i = 0; i < stylesString.length; i++ ) {
-		const char = stylesString.charAt( i );
-
-		if ( quoteType === null ) {
-			// No quote found yet or last found quote was a closing quote.
-			switch ( char ) {
-				case ':':
-					// Most of time colon means that property name just ended.
-					// Sometimes however `:` is found inside property value (for example in background image url).
-					if ( !propertyName ) {
-						// Treat this as end of property only if property name is not already saved.
-						// Save property name.
-						propertyName = stylesString.substr( propertyNameStart, i - propertyNameStart );
-						// Save this point as the start of property value.
-						propertyValueStart = i + 1;
-					}
-
-					break;
-
-				case '"':
-				case '\'':
-					// Opening quote found (this is an opening quote, because `quoteType` is `null`).
-					quoteType = char;
-
-					break;
-
-				case ';': {
-					// Property value just ended.
-					// Use previously stored property value start to obtain property value.
-					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
-
-					if ( propertyName ) {
-						// Save parsed part.
-						stylesMap.set( propertyName.trim(), propertyValue.trim() );
-					}
-
-					propertyName = null;
-
-					// Save this point as property name start. Property name starts immediately after previous property value ends.
-					propertyNameStart = i + 1;
-
-					break;
-				}
-			}
-		} else if ( char === quoteType ) {
-			// If a quote char is found and it is a closing quote, mark this fact by `null`-ing `quoteType`.
-			quoteType = null;
-		}
-	}
 }
 
 // Parses class attribute and puts all classes into classes set.
