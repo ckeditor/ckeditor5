@@ -164,6 +164,17 @@ describe( 'Styles', () => {
 						left: { color: 'beige' }
 					} );
 				} );
+
+				it( 'should merge with border shorthand', () => {
+					styleProxy.setStyle( 'border:1px solid blue;border-color:cyan black;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { color: 'cyan', style: 'solid', width: '1px' },
+						right: { color: 'black', style: 'solid', width: '1px' },
+						bottom: { color: 'cyan', style: 'solid', width: '1px' },
+						left: { color: 'black', style: 'solid', width: '1px' }
+					} );
+				} );
 			} );
 
 			describe( 'border-style', () => {

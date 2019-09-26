@@ -7,7 +7,7 @@
  * @module engine/view/styles
  */
 
-import { get, has, isObject, isPlainObject, unset } from 'lodash-es';
+import { get, has, isObject, isPlainObject, merge, unset } from 'lodash-es';
 
 /**
  * Styles class.
@@ -218,7 +218,7 @@ function isLength( string ) {
 
 function addStyle( styleObject, name, value ) {
 	if ( typeof value === 'object' ) {
-		styleObject[ name ] = Object.assign( {}, styleObject[ name ] || {}, value );
+		styleObject[ name ] = merge( {}, styleObject[ name ], value );
 	} else {
 		styleObject[ name ] = value;
 	}
