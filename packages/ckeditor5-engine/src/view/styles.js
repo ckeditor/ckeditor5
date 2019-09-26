@@ -118,6 +118,16 @@ function parseStyle( string, styleObject = {} ) {
 	return styleObject;
 }
 
+function getTopRightBottomLeftValues( value ) {
+	const values = value.split( ' ' );
+
+	const top = values[ 0 ];
+	const bottom = values[ 2 ] || top;
+	const right = values[ 1 ] || top;
+	const left = values[ 3 ] || right;
+	return { top, bottom, right, left };
+}
+
 function parseRule( key, value, styleObject ) {
 	if ( isPlainObject( value ) ) {
 		addStyle( styleObject, key, value );
@@ -142,6 +152,15 @@ function parseRule( key, value, styleObject ) {
 		border[ which ] = parseBorderAttribute( value );
 
 		addStyle( styleObject, 'border', border );
+	} else if ( key === 'border-color' ) {
+		const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
+
+		addStyle( styleObject, 'border', {
+			top: { color: top },
+			right: { color: right },
+			bottom: { color: bottom },
+			left: { color: left }
+		} );
 	} else {
 		addStyle( styleObject, key, value );
 	}

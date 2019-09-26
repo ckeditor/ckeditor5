@@ -119,6 +119,52 @@ describe( 'Styles', () => {
 				expect( styleProxy.getInlineRule( 'border-bottom' ) ).to.equal( '1px solid blue' );
 				expect( styleProxy.getInlineRule( 'border-left' ) ).to.equal( '1px solid blue' );
 			} );
+
+			describe( 'border-color', () => {
+				it( 'should set all border colors (1 value defined)', () => {
+					styleProxy.setStyle( 'border-color:cyan;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { color: 'cyan' },
+						left: { color: 'cyan' },
+						bottom: { color: 'cyan' },
+						right: { color: 'cyan' }
+					} );
+				} );
+
+				it( 'should set all border colors (2 values defined)', () => {
+					styleProxy.setStyle( 'border-color:cyan magenta;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { color: 'cyan' },
+						right: { color: 'magenta' },
+						bottom: { color: 'cyan' },
+						left: { color: 'magenta' }
+					} );
+				} );
+
+				it( 'should set all border colors (3 values defined)', () => {
+					styleProxy.setStyle( 'border-color:cyan magenta pink;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { color: 'cyan' },
+						right: { color: 'magenta' },
+						bottom: { color: 'pink' },
+						left: { color: 'magenta' }
+					} );
+				} );
+
+				it( 'should set all border colors (4 values defined)', () => {
+					styleProxy.setStyle( 'border-color:cyan magenta pink beige;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { color: 'cyan' },
+						right: { color: 'magenta' },
+						bottom: { color: 'pink' },
+						left: { color: 'beige' }
+					} );
+				} );
+			} );
 		} );
 
 		describe( 'unknown rules', () => {
