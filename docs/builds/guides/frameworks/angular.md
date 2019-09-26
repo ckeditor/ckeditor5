@@ -390,7 +390,9 @@ export class MyComponent {
 }
 ```
 
-If you want to make changes on just created editor then the better option would be getting instance of CKEditor 5 editor on the [`ready`](#ready) event.
+<info-box>
+	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes on just created editor then the better option would be getting instance of CKEditor 5 editor on the [`ready`](#ready) event.
+</info-box>
 
 ## Localization
 
