@@ -154,6 +154,20 @@ It also listens to the native [`window#beforeunload`](https://developer.mozilla.
 
 This automatically secures you from the user leaving the page before the content is saved or some ongoing actions like image upload did not finish.
 
+The minimum time period between two save actions can be configured using the {@link module:autosave/autosave~AutosaveConfig#waitingTime `config.waitingTime`} property to not overload the backend. 1 second is the default waiting time before the next save action if nothing has changed in the meantime after the editor data has changed.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		autosave: {
+			waitingTime: 5000, // in ms
+			save( editor ) {}
+		},
+
+		// ... other configuration options
+	} );
+```
+
 ### Demo
 
 This demo shows a simple integration of the editor with a fake HTTP server (which needs 1000ms to save the content).

@@ -1,8 +1,10 @@
 sudo: required
-dist: trusty
+dist: xenial
 addons:
   chrome: stable
 language: node_js
+services:
+- xvfb
 cache:
   yarn: true
 node_js:
@@ -11,12 +13,10 @@ cache:
 - node_modules
 before_install:
 - export START_TIME=$( date +%s )
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
-- yarn add mgit2 --ignore-workspace-root-check
-- mgit sync --resolver-url-template="https://github.com/\${ path }.git"
+- yarn add mrgit --ignore-workspace-root-check
+- mrgit sync --resolver-url-template="https://github.com/\${ path }.git"
 - git checkout package.json yarn.lock
 - rm -rf node_modules
 - yarn install

@@ -1,7 +1,9 @@
 {
   "packages": "packages/",
-  "packagesPrefix": "@ckeditor/ckeditor5-",
+  "packagesPrefix": [ "@ckeditor/ckeditor5-", "@ckeditor/ckeditor-" ],
+  "baseBranches": [ "master", "stable" ],
   "dependencies": {
+    "@ckeditor/ckeditor-cloud-services-core": "ckeditor/ckeditor-cloud-services-core",
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
@@ -27,8 +29,10 @@
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials",
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading",
-    "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
+	"@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
+	"@ckeditor/ckeditor5-horizontal-rule": "ckeditor/ckeditor5-horizontal-rule",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image",
+    "@ckeditor/ckeditor5-indent": "ckeditor/ckeditor5-indent",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
@@ -44,6 +48,8 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget",
+    "@ckeditor/ckeditor5-watchdog": "ckeditor/ckeditor5-watchdog",
+    "@ckeditor/ckeditor5-word-count": "ckeditor/ckeditor5-word-count"
   }
 }

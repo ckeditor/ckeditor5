@@ -30,31 +30,31 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class App extends Component {
-    render() {
-        return (
-            <div className="App">
-                <h2>Using CKEditor 5 build in React</h2>
-                <CKEditor
-                    editor={ ClassicEditor }
-                    data="<p>Hello from CKEditor 5!</p>"
-                    onInit={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                    } }
-                    onChange={ ( event, editor ) => {
-                        const data = editor.getData();
-                        console.log( { event, editor, data } );
-                    } }
-                    onBlur={ editor => {
-                        console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ editor => {
-                        console.log( 'Focus.', editor );
-                    } }
-                />
-            </div>
-        );
-    }
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor 5 build in React</h2>
+				<CKEditor
+					editor={ ClassicEditor }
+					data="<p>Hello from CKEditor 5!</p>"
+					onInit={ editor => {
+						// You can store the "editor" and use when it is needed.
+						console.log( 'Editor is ready to use!', editor );
+					} }
+					onChange={ ( event, editor ) => {
+						const data = editor.getData();
+						console.log( { event, editor, data } );
+					} }
+					onBlur={ ( event, editor ) => {
+						console.log( 'Blur.', editor );
+					} }
+					onFocus={ ( event, editor ) => {
+						console.log( 'Focus.', editor );
+					} }
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
@@ -67,16 +67,16 @@ The `<CKEditor>` component supports the following properties:
 * `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
 * `data` &ndash; The initial data for the created editor. See the {@link builds/guides/integration/basic-api#interacting-with-the-editor Basic API} guide.
 * `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide.
-* `onChange` &ndash; A function called when the editor's data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
-
-	The callback receives two parameters:
-
-	1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object,
-	2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 * `onInit` &ndash; A function called when the editor was initialized. It receives the initialized {@link module:core/editor/editor~Editor `editor`} as a parameter.
-* `onBlur` &ndash; A function called when the editor was blurred. It receives the blurred {@link module:core/editor/editor~Editor `editor`} as a parameter.
-* `onFocus` &ndash; A function called when the editor was focused. It receives the focused {@link module:core/editor/editor~Editor `editor`} as a parameter.
-* `disabled` &ndash; A boolean. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
+* `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
+* `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
+* `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
+* `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
+
+The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two parameters:
+
+1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
+2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 
 ### Customizing the builds
 
@@ -113,27 +113,27 @@ If you use the {@link framework/guides/document-editor Document editor}, you nee
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 class App extends Component {
-    render() {
-        return (
-            <div className="App">
-                <h2>CKEditor 5 using a custom build - DecoupledEditor</h2>
-                <CKEditor
-                    onInit={ editor => {
-                        console.log( 'Editor is ready to use!', editor );
+	render() {
+		return (
+			<div className="App">
+				<h2>CKEditor 5 using a custom build - DecoupledEditor</h2>
+				<CKEditor
+					onInit={ editor => {
+						console.log( 'Editor is ready to use!', editor );
 
-                        // Insert the toolbar before the editable area.
-                        editor.ui.getEditableElement().parentElement.insertBefore(
-                            editor.ui.view.toolbar.element,
-                            editor.ui.getEditableElement()
-                        );
-                    } }
-                    onChange={ ( event, editor ) => console.log( { event, editor } ) }
-                    editor={ DecoupledEditor }
-                    data="<p>Hello from CKEditor 5's DecoupledEditor!</p>"
-                    config={ /* the editor configuration */ }
-                />
-        );
-    }
+						// Insert the toolbar before the editable area.
+						editor.ui.getEditableElement().parentElement.insertBefore(
+							editor.ui.view.toolbar.element,
+							editor.ui.getEditableElement()
+						);
+					} }
+					onChange={ ( event, editor ) => console.log( { event, editor } ) }
+					editor={ DecoupledEditor }
+					data="<p>Hello from CKEditor 5's DecoupledEditor!</p>"
+					config={ /* the editor configuration */ }
+				/>
+		);
+	}
 }
 
 export default App;
@@ -175,14 +175,14 @@ Before you start modifying the webpack configuration, first install some CKEdito
 
 ```bash
 yarn add \
-  raw-loader \
-  @ckeditor/ckeditor5-dev-utils \
-  @ckeditor/ckeditor5-theme-lark \
-  @ckeditor/ckeditor5-react \
-  @ckeditor/ckeditor5-editor-classic \
-  @ckeditor/ckeditor5-essentials \
-  @ckeditor/ckeditor5-paragraph \
-  @ckeditor/ckeditor5-basic-styles
+	raw-loader@3 \
+	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-theme-lark \
+	@ckeditor/ckeditor5-react \
+	@ckeditor/ckeditor5-editor-classic \
+	@ckeditor/ckeditor5-essentials \
+	@ckeditor/ckeditor5-paragraph \
+	@ckeditor/ckeditor5-basic-styles
 ```
 
 #### Modifying webpack configuration
@@ -199,28 +199,28 @@ Then, add two new elements to the exported object under the `module.rules` array
 
 ```js
 {
-  test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-  use: [ 'raw-loader' ]
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	use: [ 'raw-loader' ]
 },
 {
-  test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
-  use: [
-    {
-      loader: 'style-loader',
-      options: {
-        singleton: true
-      }
-    },
-    {
-      loader: 'postcss-loader',
-      options: styles.getPostCssConfig( {
-        themeImporter: {
-          themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-        },
-        minify: true
-      } )
-    }
-  ]
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+	use: [
+		{
+			loader: 'style-loader',
+			options: {
+				injectType: 'singletonStyleTag'
+			}
+		},
+		{
+			loader: 'postcss-loader',
+			options: styles.getPostCssConfig( {
+				themeImporter: {
+					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+				},
+				minify: true
+			} )
+		}
+	]
 },
 ```
 
@@ -230,12 +230,12 @@ First, find a loader that starts its definition with the following code: `test: 
 
 ```js
 {
-  test: cssRegex,
-  exclude: [
-    cssModuleRegex,
-    /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
-  ],
-  // (...)
+	test: cssRegex,
+	exclude: [
+		cssModuleRegex,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+	],
+	// (...)
 }
 ```
 
@@ -243,11 +243,11 @@ Below it, you will find another loader that handles CSS files. You need to disab
 
 ```js
 {
-  test: cssModuleRegex,
-  exclude: [
-    /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
-  ],
-  // (...)
+	test: cssModuleRegex,
+	exclude: [
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+	],
+	// (...)
 }
 ```
 
@@ -255,21 +255,21 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last
 
 ```js
 {
-  loader: require.resolve('file-loader'),
-  // Exclude `js` files to keep the "css" loader working as it injects
-  // its runtime that would otherwise be processed through the "file" loader.
-  // Also exclude `html` and `json` extensions so they get processed
-  // by webpack's internal loaders.
-  exclude: [
-    /\.(js|mjs|jsx|ts|tsx)$/,
-    /\.html$/,
-    /\.json$/,
-    /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-    /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/
-  ],
-  options: {
-    name: 'static/media/[name].[hash:8].[ext]',
-  }
+	loader: require.resolve( 'file-loader' ),
+	// Exclude `js` files to keep the "css" loader working as it injects
+	// its runtime that would otherwise be processed through the "file" loader.
+	// Also exclude `html` and `json` extensions so they get processed
+	// by webpack's internal loaders.
+	exclude: [
+		/\.(js|mjs|jsx|ts|tsx)$/,
+		/\.html$/,
+		/\.json$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+	],
+	options: {
+		name: 'static/media/[name].[hash:8].[ext]',
+	}
 }
 ```
 
@@ -291,37 +291,37 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 const editorConfiguration = {
-  plugins: [ Essentials, Bold, Italic, Paragraph ],
-  toolbar: [ 'bold', 'italic' ]
+	plugins: [ Essentials, Bold, Italic, Paragraph ],
+	toolbar: [ 'bold', 'italic' ]
 };
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <h2>Using CKEditor 5 from source in React</h2>
-        <CKEditor
-          editor={ ClassicEditor }
-          config={ editorConfiguration }
-          data="<p>Hello from CKEditor 5!</p>"
-          onInit={ editor => {
-            // You can store the "editor" and use when it is needed.
-            console.log( 'Editor is ready to use!', editor );
-          } }
-          onChange={ ( event, editor ) => {
-            const data = editor.getData();
-            console.log( { event, editor, data } );
-          } }
-          onBlur={ editor => {
-            console.log( 'Blur.', editor );
-          } }
-          onFocus={ editor => {
-            console.log( 'Focus.', editor );
-          } }
-        />
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor 5 from source in React</h2>
+				<CKEditor
+					editor={ ClassicEditor }
+					config={ editorConfiguration }
+					data="<p>Hello from CKEditor 5!</p>"
+					onInit={ editor => {
+						// You can store the "editor" and use when it is needed.
+						console.log( 'Editor is ready to use!', editor );
+					} }
+					onChange={ ( event, editor ) => {
+						const data = editor.getData();
+						console.log( { event, editor, data } );
+					} }
+					onBlur={ ( event, editor ) => {
+						console.log( 'Blur.', editor );
+					} }
+					onFocus={ ( event, editor ) => {
+						console.log( 'Focus.', editor );
+					} }
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
@@ -400,26 +400,26 @@ In the end, the entire plugin definition should look as follows:
 ```js
 // Minify the code.
 new UglifyJsWebpackPlugin( {
-  uglifyOptions: {
-    compress: {
-      warnings: false,
-      // Disabled because of an issue with Uglify breaking seemingly valid code:
-      // https://github.com/facebookincubator/create-react-app/issues/2376
-      // Pending further investigation:
-      // https://github.com/mishoo/UglifyJS2/issues/2011
-      comparisons: false,
-    },
-    mangle: {
-        safari10: true,
-    },
-    output: {
-        comments: false,
-        // Turned on because emoji and regex is not minified properly using default
-        // https://github.com/facebookincubator/create-react-app/issues/2488
-        ascii_only: true,
-    },
-  },
-  sourceMap: shouldUseSourceMap,
+	uglifyOptions: {
+		compress: {
+			warnings: false,
+			// Disabled because of an issue with Uglify breaking seemingly valid code:
+			// https://github.com/facebookincubator/create-react-app/issues/2376
+			// Pending further investigation:
+			// https://github.com/mishoo/UglifyJS2/issues/2011
+			comparisons: false,
+		},
+		mangle: {
+			safari10: true,
+		},
+		output: {
+			comments: false,
+			// Turned on because emoji and regex is not minified properly using default
+			// https://github.com/facebookincubator/create-react-app/issues/2488
+			ascii_only: true,
+		},
+	},
+	sourceMap: shouldUseSourceMap,
 } )
 ```
 
@@ -444,28 +444,28 @@ Then add two new elements to the exported object under the `module.rules` array 
 
 ```js
 {
-  test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-  use: [ 'raw-loader' ]
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	use: [ 'raw-loader' ]
 },
 {
-  test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
-  use: [
-    {
-      loader: 'style-loader',
-      options: {
-        singleton: true
-      }
-    },
-    {
-      loader: 'postcss-loader',
-      options: styles.getPostCssConfig( {
-        themeImporter: {
-          themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-        },
-        minify: true
-      } )
-    }
-  ]
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+	use: [
+		{
+			loader: 'style-loader',
+			options: {
+				injectType: 'singletonStyleTag'
+			}
+		},
+		{
+			loader: 'postcss-loader',
+			options: styles.getPostCssConfig( {
+				themeImporter: {
+					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+				},
+				minify: true
+			} )
+		}
+	]
 },
 ```
 
@@ -473,9 +473,9 @@ Exclude CSS files used by CKEditor 5 from project's CSS loader:
 
 ```js
 {
-  test: /\.css$/,
-  exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
-  // (...)
+	test: /\.css$/,
+	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+	// (...)
 }
 ```
 
@@ -483,21 +483,21 @@ And exclude CKEditor 5 SVG and CSS files from `file-loader` because these files 
 
 ```js
 {
-  loader: require.resolve('file-loader'),
-  // Exclude `js` files to keep the "css" loader working as it injects
-  // its runtime that would otherwise be processed through the "file" loader.
-  // Also exclude `html` and `json` extensions so they get processed
-  // by webpack's internal loaders.
-  exclude: [
-    /\.(js|jsx|mjs)$/,
-    /\.html$/,
-    /\.json$/,
-    /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-    /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/
-  ],
-  options: {
-    name: 'static/media/[name].[hash:8].[ext]'
-  }
+	loader: require.resolve( 'file-loader' ),
+	// Exclude `js` files to keep the "css" loader working as it injects
+	// its runtime that would otherwise be processed through the "file" loader.
+	// Also exclude `html` and `json` extensions so they get processed
+	// by webpack's internal loaders.
+	exclude: [
+		/\.(js|jsx|mjs)$/,
+		/\.html$/,
+		/\.json$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+	],
+	options: {
+		name: 'static/media/[name].[hash:8].[ext]'
+	}
 }
 ```
 
@@ -537,27 +537,104 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 class App extends Component {
-    render() {
-        return (
-            <div className="App">
-                <h2>Using CKEditor 5 Framework in React</h2>
-                <CKEditor
-                    onInit={ editor => console.log( 'Editor is ready to use!', editor ) }
-                    onChange={ ( event, editor ) => console.log( { event, editor } ) }
-                    config={ {
-                        plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
-                        toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', ]
-                    } }
-                    editor={ ClassicEditor }
-                    data="<p>Hello from CKEditor 5!</p>"
-                />
-            </div>
-        );
-    }
+	render() {
+		return (
+			<div className="App">
+				<h2>Using CKEditor 5 Framework in React</h2>
+				<CKEditor
+					onInit={ editor => console.log( 'Editor is ready to use!', editor ) }
+					onChange={ ( event, editor ) => console.log( { event, editor } ) }
+					config={ {
+						plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
+						toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', ]
+					} }
+					editor={ ClassicEditor }
+					data="<p>Hello from CKEditor 5!</p>"
+				/>
+			</div>
+		);
+	}
 }
 
 export default App;
 ```
+
+## Localization
+
+CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so does the official React component. Follow the instructions below to translate CKEditor 5 in your React application.
+
+### Ready-to-use builds
+
+When using one of the {@link builds/guides/overview#available-builds official editor builds}, you need to import the translations first:
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+// Import translations for the German language.
+import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+
+// ...
+```
+
+Then, {@link builds/guides/integration/configuration configure} the language of the editor in the component:
+
+```jsx
+<CKEditor
+	config={ {
+		// Use the German language for this editor.
+		language: 'de',
+
+		// ...
+	} }
+	editor={ ClassicEditor }
+	data="<p>Hello from CKEditor 5!</p>"
+/>
+```
+
+For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
+
+### CKEditor 5 built from source
+
+Using the editor [built from source](#integrating-ckeditor-5-built-from-source) requires you to modify the webpack configuration. First, install the [official webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows localizing editor builds:
+
+```bash
+npm install @ckeditor/ckeditor5-dev-webpack-plugin --save-dev
+```
+
+Then, add the installed plugin to the webpack configuration:
+
+<info-box>
+	We assume that you use `create-react-app@2`. For earlier versions, make sure to modify [both webpack configuration files](#changes-required-in-webpacks-production-configuration).
+</info-box>
+
+```js
+// webpack.config.js
+'use strict';
+
+// ...
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+
+module.exports = {
+	// ...
+
+	plugins: [
+		// ....
+
+		new CKEditorWebpackPlugin( {
+			// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+			language: 'de'
+		} ),
+
+		// ....
+	],
+
+	// ...
+};
+```
+
+After building the application, CKEditor 5 will run with the UI translated to the specified language.
+
+For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
 
 ## Contributing and reporting issues
 

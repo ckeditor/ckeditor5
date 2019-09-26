@@ -4,11 +4,9 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 [![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
 
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5)
-[![BrowserStack Status](https://automate.browserstack.com/automate/badge.svg?badge_key=d3hvenZqQVZERFQ5d09FWXdyT0ozVXhLaVltRFRjTTUyZGpvQWNmWVhUUT0tLUZqNlJ1YWRUd0RvdEVOaEptM1B2Q0E9PQ==--c9d3dee40b9b4471ff3fb516d9ecf8d09292c7e0)](https://automate.browserstack.com/public-build/d3hvenZqQVZERFQ5d09FWXdyT0ozVXhLaVltRFRjTTUyZGpvQWNmWVhUUT0tLUZqNlJ1YWRUd0RvdEVOaEptM1B2Q0E9PQ==--c9d3dee40b9b4471ff3fb516d9ecf8d09292c7e0)
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
 [![devDependency Status](https://img.shields.io/david/dev/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
 
-[![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
 [![Follow twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
 
@@ -18,7 +16,7 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 
 ## ⚠ This package does not contain any source code
 
-CKEditor 5 is distributed as [four ready-to-use rich text editor builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm).
+CKEditor 5 is distributed as [several ready-to-use rich text editor builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm).
 
 You can also [customize the existing builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html).
 
@@ -223,6 +221,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-watchdog"><code>@ckeditor/ckeditor5-watchdog</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-watchdog.svg" alt="@ckeditor/ckeditor5-watchdog npm package badge"></a>
+	</td>
+	<td>
+		The watchdog feature, which keeps CKEditor 5 editors running.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-cloud-services"><code>@ckeditor/ckeditor5-cloud-services</code></a>
 	</td>
 	<td>
@@ -230,6 +240,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		CKEditor 5's Cloud Services integration layer.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor-cloud-services-core"><code>@ckeditor/ckeditor-cloud-services-core</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor-cloud-services-core.svg" alt="@ckeditor/ckeditor-cloud-services-core npm package badge"></a>
+	</td>
+	<td>
+		CKEditor Cloud Services integration utils.
 	</td>
 </tr>
 
@@ -481,13 +503,37 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-horizontal-rule"><code>@ckeditor/ckeditor5-horizontal-rule</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-rule"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-horizontal-rule.svg" alt="@ckeditor/ckeditor5-horizontal-rule npm package badge"></a>
+	</td>
+	<td>
+		The horizontal rule feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-image"><code>@ckeditor/ckeditor5-image</code></a>
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-image"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-image.svg" alt="@ckeditor/ckeditor5-image npm package badge"></a>
 	</td>
 	<td>
-		The image feature. Supports image styles and captioning.
+		The image feature. Supports image styles, captioning, upload, resizing, and more.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-indent"><code>@ckeditor/ckeditor5-indent</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-indent"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-indent.svg" alt="@ckeditor/ckeditor5-indent npm package badge"></a>
+	</td>
+	<td>
+		The indentation (of lists and blocks) feature.
 	</td>
 </tr>
 
@@ -623,6 +669,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 </tr>
 
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-word-count"><code>@ckeditor/ckeditor5-word-count</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-word-count.svg" alt="@ckeditor/ckeditor5-word-count npm package badge"></a>
+	</td>
+	<td>
+		The word count feature.
+	</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -718,4 +776,4 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 ## License
 
-Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the LICENSE.md file.
+Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).

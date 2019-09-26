@@ -15,14 +15,20 @@
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"features/collaboration/overview.html": "features/collaboration/real-time-collaboration/real-time-collaboration.html",
-		"features/collaboration/collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaborative-editing.html",
-		"features/collaboration/collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaborative-comments.html",
+		"features/collaboration/collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
+		"features/collaboration/collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/presence-list.html": "features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html",
 		"features/collaboration/comment-only-mode.html": "features/collaboration/comments/comment-only-mode.html",
+		"features/collaboration/real-time-collaboration/real-time-collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
+		"features/collaboration/real-time-collaboration/real-time-collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/image-upload.html": "features/image-upload/image-upload.html",
 		"features/ckfinder.html": "features/image-upload/ckfinder.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
-		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html"
+		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html",
+		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
+		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
+		"features/mathtype.html": "features/math-equations.html",
+		"features/spell-checker.html": "features/spelling-and-grammar-checking.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -139,10 +145,16 @@
 							"order": 300,
 							"categories": [
 								{
+									"name": "Conversion",
+									"id": "framework-deep-dive-conversion",
+									"slug": "ui",
+									"order": 100
+								},
+								{
 									"name": "User interface",
 									"id": "framework-deep-dive-ui",
 									"slug": "ui",
-									"order": 100
+									"order": 110
 								}
 							]
 						},
@@ -213,6 +225,11 @@
 					"name": "Image upload",
 					"id": "features-image-upload",
 					"slug": "image-upload"
+				},
+				{
+					"name": "Pasting",
+					"id": "features-pasting",
+					"slug": "pasting"
 				}
 			]
 		},

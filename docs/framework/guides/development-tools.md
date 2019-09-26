@@ -60,8 +60,8 @@ You can specify the name of the editor when attaching to make working with multi
 
 ```js
 // Inspecting two editor instances at the same time.
-CKEditorInspector.attach( 'header-editor' editor );
-CKEditorInspector.attach( 'body-editor' editor );
+CKEditorInspector.attach( 'header-editor', editor );
+CKEditorInspector.attach( 'body-editor', editor );
 ```
 
 The editor switcher is in the upper–right corner of the inspector panel.
@@ -71,6 +71,10 @@ The editor switcher is in the upper–right corner of the inspector panel.
 Click the <b>"Inspect editor"</b> button below to attach the inspector to the editor:
 
 {@snippet framework/development-tools/inspector}
+
+## Compatibility
+
+The inspector works with CKEditor 5 [v12.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v12.0.0)+.
 
 ### Contributing to the inspector
 

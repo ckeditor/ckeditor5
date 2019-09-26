@@ -14,7 +14,7 @@ Before you start, here are some things to keep in mind:
 * We expect contributions to follow the high-quality code standards that we follow, including [coding style](#code-style) and [tests](#tests). Lack of attention to this point may either make it slow to adopt a contribution or even force us to reject it altogether.
 * There is no guarantee that your contribution will be incorporated into the project code. Still, pull requests make it easy for you to keep them for your own use or for others who may be interested in them.
 * If you plan to start working on a bigger task, it might be worth asking the core team (beforehand) whether a specific feature or a solution to an issue will be accepted.
-* If you need any assistance when creating a patch or implementing a feature, ping us under the ticket or on [Gitter](https://gitter.im/ckeditor/ckeditor5).
+* If you need any assistance when creating a patch or implementing a feature, ping us under the ticket.
 * [Having a CLA](#contributor-license-agreement-cla) is essential to have your contributions accepted.
 
 ### Setting up the development environment
@@ -87,7 +87,7 @@ Some additional things you should keep in mind:
 * Make sure you signed the [Contributor License Agreement (CLA)](#contributor-license-agreement-cla) and that tests pass. Test your changes!
 
 <info-box>
-	If want your changes to be permanent in your development environment, make sure your `mgit.json` file {@link framework/guides/contributing/development-environment#using-mgit-for-custom-packages points to your forked version of the repository} so next time you execute `mgit sync` to refresh the project, the utility will use your fork.
+	If want your changes to be permanent in your development environment, make sure your `mrgit.json` file {@link framework/guides/contributing/development-environment#using-mrgit-for-custom-packages points to your forked version of the repository} so next time you execute `mrgit sync` to refresh the project, the utility will use your fork.
 </info-box>
 
 ## Translating

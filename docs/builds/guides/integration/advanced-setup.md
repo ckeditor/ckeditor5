@@ -99,9 +99,9 @@ The second step is to install dependencies needed to build the editor. The list 
 npm install --save \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
 	@ckeditor/ckeditor5-dev-utils \
-	postcss-loader \
-	raw-loader \
-	style-loader \
+	postcss-loader@3 \
+	raw-loader@3 \
+	style-loader@1 \
 	webpack@4 \
 	webpack-cli@3 \
 ```
@@ -133,21 +133,16 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				// Or /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/ if you want to limit this loader
-				// to CKEditor 5 icons only.
-				test: /\.svg$/,
-
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/[\w-/]+\.css$/ if you want to limit this loader
-				// to CKEditor 5 theme only.
-				test: /\.css$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 				use: [
 					{
 						loader: 'style-loader',
 						options: {
-							singleton: true
+							injectType: 'singletonStyleTag'
 						}
 					},
 					{
@@ -164,6 +159,45 @@ module.exports = {
 		]
 	}
 };
+```
+
+#### Webpack Encore
+
+If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
+
+```js
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+Encore.
+	// ... your configuration ...
+
+	.addPlugin( new CKEditorWebpackPlugin( {
+		// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
+		language: 'pl'
+	} ) )
+
+	// Use raw-loader for CKEditor 5 SVG files.
+	.addRule( {
+		test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		loader: 'raw-loader'
+	} )
+
+	// Configure other image loaders to exclude CKEditor 5 SVG files.
+	.configureLoaderRule( 'images', loader => {
+		loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/;
+	} )
+
+	// Configure PostCSS loader.
+	.addLoader({
+		test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+		loader: 'postcss-loader',
+		options: styles.getPostCssConfig( {
+			themeImporter: {
+				themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
+			}
+		} )
+	} )
 ```
 
 ### Running the editor – method 1
@@ -370,11 +404,11 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.svg$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
-				test: /\.css$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
@@ -420,7 +454,7 @@ Then, add this item to webpack [`module.rules`](https://webpack.js.org/configura
 module: {
 	rules: [
 		{
-			test: /ckeditor5-[^\/\\]+[\/\\].*\.js$/,
+			test: /ckeditor5-[^\/\\]+[\/\\].+\.js$/,
 			use: [
 				{
 					loader: 'babel-loader',
