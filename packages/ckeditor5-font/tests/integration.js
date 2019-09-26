@@ -47,7 +47,7 @@ describe( 'Integration test Font', () => {
 					'<p>' +
 						'<span ' +
 							'class="text-big" ' +
-							'style="font-family:Arial, Helvetica, sans-serif;background-color:rgb(10,20,30);color:#123456;"' +
+							'style="background-color:rgb(10,20,30);color:#123456;font-family:Arial, Helvetica, sans-serif;"' +
 						'>foo' +
 						'</span>' +
 					'</p>'
