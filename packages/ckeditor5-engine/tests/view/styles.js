@@ -282,6 +282,27 @@ describe( 'Styles', () => {
 					left: 'thick'
 				} );
 			} );
+
+			describe( 'margin-*', () => {
+				it( 'should set proper margin', () => {
+					styleProxy.setStyle( 'margin-top:1px;' );
+
+					expect( styleProxy.getModel( 'margin' ) ).to.deep.equal( {
+						top: '1px'
+					} );
+				} );
+
+				it( 'should set proper margin with margin shorthand', () => {
+					styleProxy.setStyle( 'margin: 2em;margin-top:1px;' );
+
+					expect( styleProxy.getModel( 'margin' ) ).to.deep.equal( {
+						top: '1px',
+						right: '2em',
+						bottom: '2em',
+						left: '2em'
+					} );
+				} );
+			} );
 		} );
 
 		describe( 'padding', () => {
@@ -326,6 +347,26 @@ describe( 'Styles', () => {
 					right: '.34cm',
 					bottom: '90.1rem',
 					left: 'thick'
+				} );
+			} );
+			describe( 'padding-*', () => {
+				it( 'should set proper padding', () => {
+					styleProxy.setStyle( 'padding-top:1px;' );
+
+					expect( styleProxy.getModel( 'padding' ) ).to.deep.equal( {
+						top: '1px'
+					} );
+				} );
+
+				it( 'should set proper padding with padding shorthand', () => {
+					styleProxy.setStyle( 'padding: 2em;padding-top:1px;' );
+
+					expect( styleProxy.getModel( 'padding' ) ).to.deep.equal( {
+						top: '1px',
+						right: '2em',
+						bottom: '2em',
+						left: '2em'
+					} );
 				} );
 			} );
 		} );

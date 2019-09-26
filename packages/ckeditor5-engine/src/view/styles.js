@@ -103,6 +103,7 @@ export default class Styles {
 }
 
 const borderPositionRegExp = /border-(top|right|bottom|left)$/;
+const marginOrPaddingPositionRegExp = /(margin|padding)-(top|right|bottom|left)$/;
 
 function parseStyle( string, styleObject = {} ) {
 	const map = new Map();
@@ -181,6 +182,15 @@ function parseRule( key, value, styleObject ) {
 		} );
 	} else if ( key === 'margin' || key === 'padding' ) {
 		addStyle( styleObject, key, getTopRightBottomLeftValues( value ) );
+	} else if ( marginOrPaddingPositionRegExp.test( key ) ) {
+		const margin = {};
+		const match = marginOrPaddingPositionRegExp.exec( key );
+		const rule = match[ 1 ];
+		const which = match[ 2 ];
+
+		margin[ which ] = value;
+
+		addStyle( styleObject, rule, margin );
 	} else {
 		addStyle( styleObject, key, value );
 	}
