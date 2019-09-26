@@ -77,7 +77,7 @@ export default class Styles {
 			parsed.push( toInlineStyle( key, model ) );
 		}
 
-		return parsed.join( ';' );
+		return parsed.join( ';' ) + ';';
 	}
 
 	getInlineRule( name ) {

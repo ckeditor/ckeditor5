@@ -516,7 +516,7 @@ describe( 'Element', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'top', '10px' );
 
-				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px' );
+				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
 			} );
 
 			it( 'should return undefined if no style attribute', () => {
@@ -539,7 +539,7 @@ describe( 'Element', () => {
 				el._setStyle( 'font-weight', 'bold' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
-					[ 'class', 'abc xyz' ], [ 'style', 'font-weight:bold;width:20px' ]
+					[ 'class', 'abc xyz' ], [ 'style', 'font-weight:bold;width:20px;' ]
 				] );
 			} );
 		} );
@@ -1037,7 +1037,7 @@ describe( 'Element', () => {
 				style: 'border: 1px solid red; background-color: red'
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;border:1px solid red"' );
+			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;border:1px solid red;"' );
 		} );
 
 		it( 'should return attributes in sorted order', () => {
@@ -1060,7 +1060,7 @@ describe( 'Element', () => {
 			el._addClass( [ 'three', 'two', 'one' ] );
 
 			expect( el.getIdentity() ).to.equal(
-				'baz class="one,three,two" style="border-radius:10px;text-align:center" bar="two" foo="one"'
+				'baz class="one,three,two" style="border-radius:10px;text-align:center;" bar="two" foo="one"'
 			);
 		} );
 	} );
