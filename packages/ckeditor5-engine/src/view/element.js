@@ -14,6 +14,7 @@ import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import { isPlainObject } from 'lodash-es';
+import { getStyleProxy } from './stylenormalizer';
 
 /**
  * View element.
@@ -113,6 +114,8 @@ export default class Element extends Node {
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.
 			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
+			this._stylesProxy = getStyleProxy( this._attrs.get( 'style' ) );
+
 			this._attrs.delete( 'style' );
 		}
 
@@ -615,6 +618,7 @@ export default class Element extends Node {
 			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
 			parseInlineStyles( this._styles, value );
+			this._stylesProxy = getStyleProxy( value );
 		} else {
 			this._attrs.set( key, value );
 		}
