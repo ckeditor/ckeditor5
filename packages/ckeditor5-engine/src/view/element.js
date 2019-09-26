@@ -379,8 +379,12 @@ export default class Element extends Node {
 	 * @param {String} property
 	 * @returns {String|undefined}
 	 */
-	getStyle( property ) {
-		return this._styles.getInlineRule( property );
+	getStyle( property, asModel = false ) {
+		if ( asModel ) {
+			return this._styles.getModel( property );
+		} else {
+			return this._styles.getInlineRule( property );
+		}
 	}
 
 	/**
