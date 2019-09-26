@@ -211,6 +211,52 @@ describe( 'Styles', () => {
 					} );
 				} );
 			} );
+
+			describe( 'border-width', () => {
+				it( 'should set all border widths (1 value defined)', () => {
+					styleProxy.setStyle( 'border-width:1px;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { width: '1px' },
+						left: { width: '1px' },
+						bottom: { width: '1px' },
+						right: { width: '1px' }
+					} );
+				} );
+
+				it( 'should set all border widths (2 values defined)', () => {
+					styleProxy.setStyle( 'border-width:1px .34cm;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { width: '1px' },
+						right: { width: '.34cm' },
+						bottom: { width: '1px' },
+						left: { width: '.34cm' }
+					} );
+				} );
+
+				it( 'should set all border widths (3 values defined)', () => {
+					styleProxy.setStyle( 'border-width:1px .34cm 90.1rem;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { width: '1px' },
+						right: { width: '.34cm' },
+						bottom: { width: '90.1rem' },
+						left: { width: '.34cm' }
+					} );
+				} );
+
+				it( 'should set all border widths (4 values defined)', () => {
+					styleProxy.setStyle( 'border-width:1px .34cm 90.1rem thick;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { width: '1px' },
+						right: { width: '.34cm' },
+						bottom: { width: '90.1rem' },
+						left: { width: 'thick' }
+					} );
+				} );
+			} );
 		} );
 
 		describe( 'unknown rules', () => {
