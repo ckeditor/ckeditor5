@@ -161,6 +161,15 @@ function parseRule( key, value, styleObject ) {
 			bottom: { color: bottom },
 			left: { color: left }
 		} );
+	} else if ( key === 'border-style' ) {
+		const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
+
+		addStyle( styleObject, 'border', {
+			top: { style: top },
+			right: { style: right },
+			bottom: { style: bottom },
+			left: { style: left }
+		} );
 	} else {
 		addStyle( styleObject, key, value );
 	}

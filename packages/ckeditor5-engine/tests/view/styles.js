@@ -165,6 +165,52 @@ describe( 'Styles', () => {
 					} );
 				} );
 			} );
+
+			describe( 'border-style', () => {
+				it( 'should set all border styles (1 value defined)', () => {
+					styleProxy.setStyle( 'border-style:solid;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { style: 'solid' },
+						left: { style: 'solid' },
+						bottom: { style: 'solid' },
+						right: { style: 'solid' }
+					} );
+				} );
+
+				it( 'should set all border styles (2 values defined)', () => {
+					styleProxy.setStyle( 'border-style:solid dotted;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { style: 'solid' },
+						right: { style: 'dotted' },
+						bottom: { style: 'solid' },
+						left: { style: 'dotted' }
+					} );
+				} );
+
+				it( 'should set all border styles (3 values defined)', () => {
+					styleProxy.setStyle( 'border-style:solid dotted dashed;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { style: 'solid' },
+						right: { style: 'dotted' },
+						bottom: { style: 'dashed' },
+						left: { style: 'dotted' }
+					} );
+				} );
+
+				it( 'should set all border styles (4 values defined)', () => {
+					styleProxy.setStyle( 'border-style:solid dotted dashed ridge;' );
+
+					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
+						top: { style: 'solid' },
+						right: { style: 'dotted' },
+						bottom: { style: 'dashed' },
+						left: { style: 'ridge' }
+					} );
+				} );
+			} );
 		} );
 
 		describe( 'unknown rules', () => {
