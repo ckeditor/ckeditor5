@@ -17,26 +17,10 @@ describe( 'Styles', () => {
 				styleProxy.setStyle( 'border:1px solid blue;' );
 
 				expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
-					bottom: {
-						color: 'blue',
-						style: 'solid',
-						width: '1px'
-					},
-					left: {
-						color: 'blue',
-						style: 'solid',
-						width: '1px'
-					},
-					right: {
-						color: 'blue',
-						style: 'solid',
-						width: '1px'
-					},
-					top: {
-						color: 'blue',
-						style: 'solid',
-						width: '1px'
-					}
+					top: { color: 'blue', style: 'solid', width: '1px' },
+					right: { color: 'blue', style: 'solid', width: '1px' },
+					bottom: { color: 'blue', style: 'solid', width: '1px' },
+					left: { color: 'blue', style: 'solid', width: '1px' }
 				} );
 			} );
 
@@ -44,26 +28,10 @@ describe( 'Styles', () => {
 				styleProxy.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 				expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
-					bottom: {
-						color: 'blue',
-						style: 'solid',
-						width: '1px'
-					},
-					left: {
-						color: '#665511',
-						style: 'dashed',
-						width: '2.7em'
-					},
-					right: {
-						color: 'blue',
-						style: 'solid',
-						width: '1px'
-					},
-					top: {
-						color: '#ccc',
-						style: 'dotted',
-						width: '7px'
-					}
+					top: { color: '#ccc', style: 'dotted', width: '7px' },
+					right: { color: 'blue', style: 'solid', width: '1px' },
+					bottom: { color: 'blue', style: 'solid', width: '1px' },
+					left: { color: '#665511', style: 'dashed', width: '2.7em' }
 				} );
 			} );
 
@@ -183,9 +151,9 @@ describe( 'Styles', () => {
 
 					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
 						top: { style: 'solid' },
-						left: { style: 'solid' },
+						right: { style: 'solid' },
 						bottom: { style: 'solid' },
-						right: { style: 'solid' }
+						left: { style: 'solid' }
 					} );
 				} );
 
@@ -229,9 +197,9 @@ describe( 'Styles', () => {
 
 					expect( styleProxy.getModel( 'border' ) ).to.deep.equal( {
 						top: { width: '1px' },
-						left: { width: '1px' },
+						right: { width: '1px' },
 						bottom: { width: '1px' },
-						right: { width: '1px' }
+						left: { width: '1px' }
 					} );
 				} );
 
