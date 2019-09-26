@@ -119,6 +119,11 @@ function parseStyle( string, styleObject = {} ) {
 }
 
 function parseRule( key, value, styleObject ) {
+	if ( isPlainObject( value ) ) {
+		addStyle( styleObject, key, value );
+		return;
+	}
+
 	if ( key === 'border' ) {
 		const parsedBorder = parseBorderAttribute( value );
 
