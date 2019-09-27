@@ -99,17 +99,18 @@ export default class IndentBlock extends Plugin {
 		const locale = this.editor.locale;
 		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
 
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				styles: {
-					[ marginProperty ]: /[\s\S]+/
-				}
-			},
-			model: {
-				key: 'blockIndent',
-				value: viewElement => viewElement.getStyle( marginProperty )
-			}
-		} );
+		// TODO: breaks something..
+		// conversion.for( 'upcast' ).attributeToAttribute( {
+		// 	view: {
+		// 		styles: {
+		// 			[ marginProperty ]: /[\s\S]+/
+		// 		}
+		// 	},
+		// 	model: {
+		// 		key: 'blockIndent',
+		// 		value: viewElement => viewElement.getStyle( marginProperty )
+		// 	}
+		// } );
 
 		// The margin shorthand should also work.
 		conversion.for( 'upcast' ).attributeToAttribute( {
@@ -120,7 +121,7 @@ export default class IndentBlock extends Plugin {
 			},
 			model: {
 				key: 'blockIndent',
-				value: viewElement => normalizeToMarginSideStyle( viewElement.getStyle( 'margin' ), marginProperty )
+				value: viewElement => viewElement.getStyle( marginProperty )
 			}
 		} );
 
@@ -162,46 +163,6 @@ export default class IndentBlock extends Plugin {
 
 		this.editor.conversion.attributeToAttribute( definition );
 	}
-}
-
-// Normalizes the margin shorthand value to the value of margin-left or margin-right CSS property.
-//
-// As such it will return:
-//
-// - '1em' -> '1em'
-// - '2px 1em' -> '1em'
-// - '2px 1em 3px' -> '1em'
-// - '2px 10px 3px 1em'
-//		-> '1em' (side "margin-left")
-//		-> '10px' (side "margin-right")
-//
-// @param {String} marginStyleValue Margin style value.
-// @param {String} side "margin-left" or "margin-right" depending on which margin should be returned.
-// @returns {String} Extracted value of margin-left or margin-right.
-function normalizeToMarginSideStyle( marginStyleValue, side ) {
-	// Splits the margin shorthand, ie margin: 2em 4em.
-	const marginEntries = marginStyleValue.split( ' ' );
-
-	let marginValue;
-
-	// If only one value defined, ie: `margin: 1px`.
-	marginValue = marginEntries[ 0 ];
-
-	// If only two values defined, ie: `margin: 1px 2px`.
-	if ( marginEntries[ 1 ] ) {
-		marginValue = marginEntries[ 1 ];
-	}
-
-	// If four values defined, ie: `margin: 1px 2px 3px 4px`.
-	if ( marginEntries[ 3 ] ) {
-		if ( side === 'margin-left' ) {
-			marginValue = marginEntries[ 3 ];
-		} else {
-			marginValue = marginEntries[ 1 ];
-		}
-	}
-
-	return marginValue;
 }
 
 /**
