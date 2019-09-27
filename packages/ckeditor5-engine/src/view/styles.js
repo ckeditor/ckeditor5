@@ -55,8 +55,10 @@ export default class Styles {
 			return this._styles;
 		} // TODO: clone
 
-		if ( has( this._styles, name.replace( '-', '.' ) ) ) {
-			return get( this._styles, name.replace( '-', '.' ) );
+		const path = name.replace( '-', '.' );
+
+		if ( has( this._styles, path ) ) {
+			return get( this._styles, path );
 		} else {
 			return this._styles[ name ];
 		}
@@ -236,6 +238,52 @@ function addStyle( styleObject, name, value ) {
 	}
 }
 
+function printSingleValues( { top, right, bottom, left }, prefix ) {
+	const ret = [];
+
+	if ( top ) {
+		ret.push( prefix + '-top:' + top );
+	}
+
+	if ( right ) {
+		ret.push( prefix + '-right:' + right );
+	}
+
+	if ( bottom ) {
+		ret.push( prefix + '-bottom:' + bottom );
+	}
+
+	if ( left ) {
+		ret.push( prefix + '-left:' + left );
+	}
+
+	return ret.join( ';' );
+}
+
+function outputShorthandableValue( styleObject, strict, styleShorthand ) {
+	const { top, right, bottom, left } = styleObject;
+
+	if ( top === left && left === bottom && bottom === right ) {
+		return ( strict ? '' : styleShorthand + ':' ) + top;
+	} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
+		return printSingleValues( { top, right, bottom, left }, 'margin' );
+	} else {
+		const out = [];
+
+		if ( left !== right ) {
+			out.push( top, right, bottom, left );
+		} else if ( bottom !== top ) {
+			out.push( top, right, bottom );
+		} else if ( right != top ) {
+			out.push( top, right );
+		} else {
+			out.push( top );
+		}
+
+		return `${ strict ? '' : styleShorthand + ':' }${ out.join( ' ' ) }`;
+	}
+}
+
 function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
 	if ( styleName === 'border' ) {
 		const top = toInlineBorder( styleObjectOrString.top );
@@ -246,26 +294,7 @@ function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
 		if ( top === right && right === bottom && bottom === left ) {
 			return ( strict ? '' : 'border:' ) + top;
 		} else if ( !strict ) {
-			const ret = [];
-
-			// TODO not so nice:
-			if ( top ) {
-				ret.push( 'border-top:' + top );
-			}
-
-			if ( right ) {
-				ret.push( 'border-right:' + right );
-			}
-
-			if ( bottom ) {
-				ret.push( 'border-bottom:' + bottom );
-			}
-
-			if ( left ) {
-				ret.push( 'border-left:' + left );
-			}
-
-			return ret.join( ';' );
+			return printSingleValues( { top, right, bottom, left }, 'border' );
 		}
 
 		return;
@@ -276,34 +305,7 @@ function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
 	}
 
 	if ( styleName === 'margin' ) {
-		const { top, right, bottom, left } = styleObjectOrString;
-
-		if ( top === left && left === bottom && bottom === right ) {
-			return ( strict ? 'margin' : '' ) + top;
-		} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
-			const ret = [];
-
-			// TODO not so nice:
-			if ( top ) {
-				ret.push( 'margin-top:' + top );
-			}
-
-			if ( right ) {
-				ret.push( 'margin-right:' + right );
-			}
-
-			if ( bottom ) {
-				ret.push( 'margin-bottom:' + bottom );
-			}
-
-			if ( left ) {
-				ret.push( 'margin-left:' + left );
-			}
-
-			return ret.join( ';' );
-		} else {
-			return 'margin...';
-		}
+		return outputShorthandableValue( styleObjectOrString, strict, 'margin' );
 	}
 
 	return ( strict ? '' : styleName + ':' ) + styleObjectOrString;

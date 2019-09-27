@@ -283,13 +283,78 @@ describe( 'Styles', () => {
 				} );
 			} );
 
+			it( 'should output inline style (1 value defined)', () => {
+				styleProxy.setStyle( 'margin:1px;' );
+
+				expect( styleProxy.getInlineStyle() ).to.equal( 'margin:1px;' );
+				expect( styleProxy.getInlineRule( 'margin' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-top' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-right' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-bottom' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-left' ) ).to.equal( '1px' );
+			} );
+
+			it( 'should output inline style (2 values defined)', () => {
+				styleProxy.setStyle( 'margin:1px .34cm;' );
+
+				expect( styleProxy.getInlineStyle() ).to.equal( 'margin:1px .34cm;' );
+				expect( styleProxy.getInlineRule( 'margin' ) ).to.equal( '1px .34cm' );
+				expect( styleProxy.getInlineRule( 'margin-top' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-right' ) ).to.equal( '.34cm' );
+				expect( styleProxy.getInlineRule( 'margin-bottom' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-left' ) ).to.equal( '.34cm' );
+			} );
+
+			it( 'should output inline style (3 values defined)', () => {
+				styleProxy.setStyle( 'margin:1px .34cm 90.1rem;' );
+
+				expect( styleProxy.getInlineStyle() ).to.equal( 'margin:1px .34cm 90.1rem;' );
+				expect( styleProxy.getInlineRule( 'margin' ) ).to.equal( '1px .34cm 90.1rem' );
+				expect( styleProxy.getInlineRule( 'margin-top' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-right' ) ).to.equal( '.34cm' );
+				expect( styleProxy.getInlineRule( 'margin-bottom' ) ).to.equal( '90.1rem' );
+				expect( styleProxy.getInlineRule( 'margin-left' ) ).to.equal( '.34cm' );
+			} );
+
+			it( 'should output inline style (3 values defined, only last different)', () => {
+				styleProxy.setStyle( 'margin:1px 1px 90.1rem;' );
+
+				expect( styleProxy.getInlineStyle() ).to.equal( 'margin:1px 1px 90.1rem;' );
+				expect( styleProxy.getInlineRule( 'margin' ) ).to.equal( '1px 1px 90.1rem' );
+				expect( styleProxy.getInlineRule( 'margin-top' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-right' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-bottom' ) ).to.equal( '90.1rem' );
+				expect( styleProxy.getInlineRule( 'margin-left' ) ).to.equal( '1px' );
+			} );
+
+			it( 'should output inline style (4 values defined)', () => {
+				styleProxy.setStyle( 'margin:1px .34cm 90.1rem thick;' );
+
+				expect( styleProxy.getInlineStyle() ).to.equal( 'margin:1px .34cm 90.1rem thick;' );
+				expect( styleProxy.getInlineRule( 'margin' ) ).to.equal( '1px .34cm 90.1rem thick' );
+				expect( styleProxy.getInlineRule( 'margin-top' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-right' ) ).to.equal( '.34cm' );
+				expect( styleProxy.getInlineRule( 'margin-bottom' ) ).to.equal( '90.1rem' );
+				expect( styleProxy.getInlineRule( 'margin-left' ) ).to.equal( 'thick' );
+			} );
+
+			it( 'should output inline style (4 values defined, only last different)', () => {
+				styleProxy.setStyle( 'margin:1px 1px 1px thick;' );
+
+				expect( styleProxy.getInlineStyle() ).to.equal( 'margin:1px 1px 1px thick;' );
+				expect( styleProxy.getInlineRule( 'margin' ) ).to.equal( '1px 1px 1px thick' );
+				expect( styleProxy.getInlineRule( 'margin-top' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-right' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-bottom' ) ).to.equal( '1px' );
+				expect( styleProxy.getInlineRule( 'margin-left' ) ).to.equal( 'thick' );
+			} );
+
 			describe( 'margin-*', () => {
 				it( 'should set proper margin', () => {
 					styleProxy.setStyle( 'margin-top:1px;' );
 
-					expect( styleProxy.getModel( 'margin' ) ).to.deep.equal( {
-						top: '1px'
-					} );
+					expect( styleProxy.getModel( 'margin' ) ).to.deep.equal( { top: '1px' } );
+					expect( styleProxy.getModel( 'margin-top' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should set proper margin with margin shorthand', () => {
@@ -301,6 +366,10 @@ describe( 'Styles', () => {
 						bottom: '2em',
 						left: '2em'
 					} );
+					expect( styleProxy.getModel( 'margin-top' ) ).to.equal( '1px' );
+					expect( styleProxy.getModel( 'margin-right' ) ).to.equal( '2em' );
+					expect( styleProxy.getModel( 'margin-bottom' ) ).to.equal( '2em' );
+					expect( styleProxy.getModel( 'margin-left' ) ).to.equal( '2em' );
 				} );
 			} );
 		} );
@@ -349,6 +418,7 @@ describe( 'Styles', () => {
 					left: 'thick'
 				} );
 			} );
+
 			describe( 'padding-*', () => {
 				it( 'should set proper padding', () => {
 					styleProxy.setStyle( 'padding-top:1px;' );
