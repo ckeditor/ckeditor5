@@ -11,6 +11,20 @@ describe( 'Styles', () => {
 		styleProxy = new StyleProxy();
 	} );
 
+	describe( 'getStyleNames()', () => {
+		it( 'should output custom style names', () => {
+			styleProxy.setStyle( 'foo: 2;bar: baz;foo-bar-baz:none;' );
+
+			expect( styleProxy.getStyleNames() ).to.deep.equal( [ 'bar', 'foo', 'foo-bar-baz' ] );
+		} );
+
+		it( 'should output full names for shorthand', () => {
+			styleProxy.setStyle( 'margin: 1px;margin-left: 2em;' );
+
+			expect( styleProxy.getStyleNames() ).to.deep.equal( [ 'margin' ] );
+		} );
+	} );
+
 	describe( 'styles rules', () => {
 		describe( 'border', () => {
 			it( 'should parse border shorthand', () => {

@@ -22,7 +22,7 @@ export default class Styles {
 	}
 
 	get size() {
-		return Object.keys( this._styles ).length;
+		return this.getStyleNames().length;
 	}
 
 	setStyle( styleString = '' ) {
@@ -99,6 +99,15 @@ export default class Styles {
 		}
 	}
 
+	// TODO: expandShortHands: true/false?
+	getStyleNames() {
+		const inlineStyle = this.getInlineStyle();
+
+		// TODO: probably not good enough.
+		// TODO: consumables must have different names or support shorthands.
+		return inlineStyle.split( ';' ).filter( f => f !== '' ).map( abc => abc.split( ':' )[ 0 ] ).sort();
+	}
+
 	clear() {
 		this._styles = {};
 	}
@@ -108,9 +117,7 @@ const borderPositionRegExp = /border-(top|right|bottom|left)$/;
 const marginOrPaddingPositionRegExp = /(margin|padding)-(top|right|bottom|left)$/;
 
 function parseStyle( string, styleObject = {} ) {
-	const map = new Map();
-
-	parseInlineStyles( map, string );
+	const map = parseInlineStyles( string );
 
 	for ( const key of map.keys() ) {
 		const value = map.get( key );
@@ -334,18 +341,18 @@ function toInlineBorder( object = {} ) {
 //
 // @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
 // @param {String} stylesString Styles to parse.
-function parseInlineStyles( stylesMap, stylesString ) {
+function parseInlineStyles( stylesString ) {
 	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
 	let quoteType = null;
 	let propertyNameStart = 0;
 	let propertyValueStart = 0;
 	let propertyName = null;
 
-	stylesMap.clear();
+	const stylesMap = new Map();
 
 	// Do not set anything if input string is empty.
 	if ( stylesString === '' ) {
-		return;
+		return stylesMap;
 	}
 
 	// Fix inline styles that do not end with `;` so they are compatible with algorithm below.
@@ -403,4 +410,6 @@ function parseInlineStyles( stylesMap, stylesString ) {
 			quoteType = null;
 		}
 	}
+
+	return stylesMap;
 }

@@ -393,7 +393,7 @@ export default class Element extends Node {
 	 * @returns {Iterable.<String>}
 	 */
 	getStyleNames() {
-		return Object.keys( this._styles._styles );
+		return this._styles.getStyleNames();
 	}
 
 	/**
