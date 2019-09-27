@@ -29,8 +29,7 @@ export default class PageBreakUI extends Plugin {
 			view.set( {
 				label: t( 'Page break' ),
 				icon: pageBreakIcon,
-				tooltip: true,
-				isToggleable: true
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
