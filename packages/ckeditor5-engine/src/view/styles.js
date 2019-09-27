@@ -275,6 +275,37 @@ function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
 		return toInlineBorder( styleObjectOrString );
 	}
 
+	if ( styleName === 'margin' ) {
+		const { top, right, bottom, left } = styleObjectOrString;
+
+		if ( top === left && left === bottom && bottom === right ) {
+			return ( strict ? 'margin' : '' ) + top;
+		} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
+			const ret = [];
+
+			// TODO not so nice:
+			if ( top ) {
+				ret.push( 'margin-top:' + top );
+			}
+
+			if ( right ) {
+				ret.push( 'margin-right:' + right );
+			}
+
+			if ( bottom ) {
+				ret.push( 'margin-bottom:' + bottom );
+			}
+
+			if ( left ) {
+				ret.push( 'margin-left:' + left );
+			}
+
+			return ret.join( ';' );
+		} else {
+			return 'margin...';
+		}
+	}
+
 	return ( strict ? '' : styleName + ':' ) + styleObjectOrString;
 }
 
