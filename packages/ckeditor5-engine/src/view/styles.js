@@ -9,53 +9,90 @@
 
 import { get, has, isObject, isPlainObject, merge, unset } from 'lodash-es';
 
+const borderPositionRegExp = /border-(top|right|bottom|left)$/;
+const marginOrPaddingPositionRegExp = /(margin|padding)-(top|right|bottom|left)$/;
+
 /**
  * Styles class.
  *
  * Handles styles normalization.
  */
 export default class Styles {
+	/**
+	 * Creates Styles instance.
+	 *
+	 * @param {String} styleString Initial styles value.
+	 */
 	constructor( styleString = '' ) {
 		this._styles = {};
 
 		this.setStyle( styleString );
 	}
 
+	/**
+	 * Number of styles defined.
+	 *
+	 * @type {Number}
+	 */
 	get size() {
 		return this.getStyleNames().length;
 	}
 
+	/**
+	 * Re-sets internal styles definition.
+	 *
+	 * @param styleString
+	 */
 	setStyle( styleString = '' ) {
-		this._styles = parseStyle( styleString );
+		this.clear();
+		this._parseStyle( styleString );
 	}
 
+	/**
+	 * Checks if single style rule is set.
+	 *
+	 * Supports shorthands.
+	 *
+	 * @param {String} name
+	 * @returns {Boolean}
+	 */
 	hasRule( name ) {
-		const nameNorm = name.replace( '-', '.' );
+		const nameNorm = this._getPath( name );
 
 		return has( this._styles, nameNorm ) || !!this._styles[ name ];
 	}
 
+	/**
+	 * Inserts single style rule.
+	 *
+	 * Supports shorthands.
+	 *
+	 * @param {String|Object} nameOrObject
+	 * @param {String|Object} value
+	 * @returns {Boolean}
+	 */
 	insertRule( nameOrObject, value ) {
 		if ( isPlainObject( nameOrObject ) ) {
 			for ( const key of Object.keys( nameOrObject ) ) {
 				this.insertRule( key, nameOrObject[ key ] );
 			}
 		} else {
-			parseRule( nameOrObject, value, this._styles );
+			this._parseRule( nameOrObject, value );
 		}
 	}
 
 	removeRule( name ) {
-		unset( this._styles, name.replace( '-', '.' ) );
+		unset( this._styles, this._getPath( name ) );
+
 		delete this._styles[ name ];
 	}
 
 	getModel( name ) {
 		if ( !name ) {
-			return this._styles;
-		} // TODO: clone
+			return merge( {}, this._styles );
+		}
 
-		const path = name.replace( '-', '.' );
+		const path = this._getPath( name );
 
 		if ( has( this._styles, path ) ) {
 			return get( this._styles, path );
@@ -111,21 +148,95 @@ export default class Styles {
 	clear() {
 		this._styles = {};
 	}
-}
 
-const borderPositionRegExp = /border-(top|right|bottom|left)$/;
-const marginOrPaddingPositionRegExp = /(margin|padding)-(top|right|bottom|left)$/;
-
-function parseStyle( string, styleObject = {} ) {
-	const map = parseInlineStyles( string );
-
-	for ( const key of map.keys() ) {
-		const value = map.get( key );
-
-		parseRule( key, value, styleObject );
+	_getPath( name ) {
+		return name.replace( '-', '.' );
 	}
 
-	return styleObject;
+	_parseStyle( string ) {
+		const map = parseInlineStyles( string );
+
+		for ( const key of map.keys() ) {
+			const value = map.get( key );
+
+			this._parseRule( key, value );
+		}
+	}
+
+	_appendStyleValue( name, valueOrObject ) {
+		if ( typeof valueOrObject === 'object' ) {
+			this._styles[ name ] = merge( {}, this._styles[ name ], valueOrObject );
+		} else {
+			this._styles[ name ] = valueOrObject;
+		}
+	}
+
+	_parseRule( key, value ) {
+		if ( isPlainObject( value ) ) {
+			this._appendStyleValue( key, value );
+			return;
+		}
+
+		if ( key === 'border' ) {
+			const parsedBorder = parseBorderAttribute( value );
+
+			const border = {
+				top: parsedBorder,
+				right: parsedBorder,
+				bottom: parsedBorder,
+				left: parsedBorder
+			};
+
+			this._appendStyleValue( 'border', border );
+		} else if ( borderPositionRegExp.test( key ) ) {
+			const border = {};
+			const which = borderPositionRegExp.exec( key )[ 1 ];
+
+			border[ which ] = parseBorderAttribute( value );
+
+			this._appendStyleValue( 'border', border );
+		} else if ( key === 'border-color' ) {
+			const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
+
+			this._appendStyleValue( 'border', {
+				top: { color: top },
+				right: { color: right },
+				bottom: { color: bottom },
+				left: { color: left }
+			} );
+		} else if ( key === 'border-style' ) {
+			const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
+
+			this._appendStyleValue( 'border', {
+				top: { style: top },
+				right: { style: right },
+				bottom: { style: bottom },
+				left: { style: left }
+			} );
+		} else if ( key === 'border-width' ) {
+			const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
+
+			this._appendStyleValue( 'border', {
+				top: { width: top },
+				right: { width: right },
+				bottom: { width: bottom },
+				left: { width: left }
+			} );
+		} else if ( key === 'margin' || key === 'padding' ) {
+			this._appendStyleValue( key, getTopRightBottomLeftValues( value ) );
+		} else if ( marginOrPaddingPositionRegExp.test( key ) ) {
+			const margin = {};
+			const match = marginOrPaddingPositionRegExp.exec( key );
+			const rule = match[ 1 ];
+			const which = match[ 2 ];
+
+			margin[ which ] = value;
+
+			this._appendStyleValue( rule, margin );
+		} else {
+			this._appendStyleValue( key, value );
+		}
+	}
 }
 
 function getTopRightBottomLeftValues( value ) {
@@ -136,73 +247,6 @@ function getTopRightBottomLeftValues( value ) {
 	const right = values[ 1 ] || top;
 	const left = values[ 3 ] || right;
 	return { top, bottom, right, left };
-}
-
-function parseRule( key, value, styleObject ) {
-	if ( isPlainObject( value ) ) {
-		addStyle( styleObject, key, value );
-		return;
-	}
-
-	if ( key === 'border' ) {
-		const parsedBorder = parseBorderAttribute( value );
-
-		const border = {
-			top: parsedBorder,
-			right: parsedBorder,
-			bottom: parsedBorder,
-			left: parsedBorder
-		};
-
-		addStyle( styleObject, 'border', border );
-	} else if ( borderPositionRegExp.test( key ) ) {
-		const border = {};
-		const which = borderPositionRegExp.exec( key )[ 1 ];
-
-		border[ which ] = parseBorderAttribute( value );
-
-		addStyle( styleObject, 'border', border );
-	} else if ( key === 'border-color' ) {
-		const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
-		addStyle( styleObject, 'border', {
-			top: { color: top },
-			right: { color: right },
-			bottom: { color: bottom },
-			left: { color: left }
-		} );
-	} else if ( key === 'border-style' ) {
-		const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
-		addStyle( styleObject, 'border', {
-			top: { style: top },
-			right: { style: right },
-			bottom: { style: bottom },
-			left: { style: left }
-		} );
-	} else if ( key === 'border-width' ) {
-		const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
-		addStyle( styleObject, 'border', {
-			top: { width: top },
-			right: { width: right },
-			bottom: { width: bottom },
-			left: { width: left }
-		} );
-	} else if ( key === 'margin' || key === 'padding' ) {
-		addStyle( styleObject, key, getTopRightBottomLeftValues( value ) );
-	} else if ( marginOrPaddingPositionRegExp.test( key ) ) {
-		const margin = {};
-		const match = marginOrPaddingPositionRegExp.exec( key );
-		const rule = match[ 1 ];
-		const which = match[ 2 ];
-
-		margin[ which ] = value;
-
-		addStyle( styleObject, rule, margin );
-	} else {
-		addStyle( styleObject, key, value );
-	}
 }
 
 function parseBorderAttribute( string ) {
@@ -235,14 +279,6 @@ function isLineStyle( string ) {
 
 function isLength( string ) {
 	return /^[+-]?[0-9]?[.]?[0-9]+([a-z]+|%)$/.test( string );
-}
-
-function addStyle( styleObject, name, value ) {
-	if ( typeof value === 'object' ) {
-		styleObject[ name ] = merge( {}, styleObject[ name ], value );
-	} else {
-		styleObject[ name ] = value;
-	}
 }
 
 function printSingleValues( { top, right, bottom, left }, prefix ) {
@@ -337,10 +373,9 @@ function toInlineBorder( object = {} ) {
 }
 
 // Parses inline styles and puts property - value pairs into styles map.
-// Styles map is cleared before insertion.
 //
-// @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
 // @param {String} stylesString Styles to parse.
+// @returns {Map.<String, String>} stylesMap Map of parsed properties and values.
 function parseInlineStyles( stylesString ) {
 	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
 	let quoteType = null;
