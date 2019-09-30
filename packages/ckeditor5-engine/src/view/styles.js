@@ -10,6 +10,7 @@
 import { get, has, isObject, isPlainObject, merge, set, unset } from 'lodash-es';
 
 const borderPositionRegExp = /border-(top|right|bottom|left)$/;
+const topRightBottomLeftPositionRegExp = /^(top|right|bottom|left)$/;
 
 const setOnPathStyles = [
 	'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
@@ -186,6 +187,7 @@ export default class Styles {
 	_parseRule( key, value ) {
 		if ( isPlainObject( value ) ) {
 			this._appendStyleValue( key, value );
+
 			return;
 		}
 
@@ -205,18 +207,14 @@ export default class Styles {
 		}
 
 		if ( key === 'margin' || key === 'padding' ) {
-			processed = { key, value: getTopRightBottomLeftValues( value ) };
+			processed = { [ key ]: getTopRightBottomLeftValues( value ) };
 		}
-
-		let processedKey = key;
-		let processedValue = value;
 
 		if ( processed ) {
-			processedKey = processed.key;
-			processedValue = processed.value;
+			this._styles = merge( {}, this._styles, processed );
+		} else {
+			this._appendStyleValue( key, value );
 		}
-
-		this._appendStyleValue( processedKey, processedValue );
 	}
 }
 
@@ -253,32 +251,20 @@ function processBorder( key, value ) {
 			left: parsedBorder
 		};
 
-		return { key: 'border', value: border };
+		return { border };
 	}
+	const parts = key.split( '-' );
 
-	if ( borderPositionRegExp.test( key ) ) {
-		return { key: key.replace( '-', '.' ), value: parseShorthandBorderAttribute( value ) };
-	}
-
-	if ( key === 'border-color' ) {
+	if ( topRightBottomLeftPositionRegExp.test( parts[ 1 ] ) ) {
 		return {
-			key: 'border',
-			value: toBorderPropertyShorthand( value, 'color' )
+			border: {
+				[ parts[ 1 ] ]: parseShorthandBorderAttribute( value )
+			}
 		};
 	}
 
-	if ( key === 'border-style' ) {
-		return {
-			key: 'border',
-			value: toBorderPropertyShorthand( value, 'style' )
-		};
-	}
-
-	if ( key === 'border-width' ) {
-		return {
-			key: 'border',
-			value: toBorderPropertyShorthand( value, 'width' )
-		};
+	if ( [ 'color', 'style', 'width' ].includes( parts[ 1 ] ) ) {
+		return { border: toBorderPropertyShorthand( value, parts[ 1 ] ) };
 	}
 }
 
