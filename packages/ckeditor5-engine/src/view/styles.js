@@ -150,7 +150,7 @@ export default class Styles {
 
 		// TODO: probably not good enough.
 		// TODO: consumables must have different names or support shorthands.
-		return inlineStyle.split( ';' ).filter( f => f !== '' ).map( abc => abc.split( ':' )[ 0 ] ).sort();
+		return ( inlineStyle || '' ).split( ';' ).filter( f => f !== '' ).map( abc => abc.split( ':' )[ 0 ] ).sort();
 	}
 
 	clear() {
