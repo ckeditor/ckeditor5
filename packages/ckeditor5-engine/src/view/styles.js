@@ -7,10 +7,17 @@
  * @module engine/view/styles
  */
 
-import { get, has, isObject, isPlainObject, merge, unset } from 'lodash-es';
+import { get, has, isObject, isPlainObject, merge, set, unset } from 'lodash-es';
 
 const borderPositionRegExp = /border-(top|right|bottom|left)$/;
-const marginOrPaddingPositionRegExp = /(margin|padding)-(top|right|bottom|left)$/;
+
+const setOnPathStyles = [
+	'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+	'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+	'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+	'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+	'margin-top', 'margin-right', 'margin-bottom', 'margin-left'
+];
 
 /**
  * Styles class.
@@ -163,11 +170,16 @@ export default class Styles {
 		}
 	}
 
-	_appendStyleValue( name, valueOrObject ) {
+	_appendStyleValue( nameOrPath, valueOrObject ) {
 		if ( typeof valueOrObject === 'object' ) {
-			this._styles[ name ] = merge( {}, this._styles[ name ], valueOrObject );
+			if ( nameOrPath.includes( '.' ) ) {
+				const got = get( this._styles, nameOrPath );
+				set( this._styles, nameOrPath, merge( {}, got, valueOrObject ) );
+			} else {
+				this._styles[ nameOrPath ] = merge( {}, this._styles[ nameOrPath ], valueOrObject );
+			}
 		} else {
-			this._styles[ name ] = valueOrObject;
+			set( this._styles, nameOrPath, valueOrObject );
 		}
 	}
 
@@ -177,65 +189,34 @@ export default class Styles {
 			return;
 		}
 
-		if ( key === 'border' ) {
-			const parsedBorder = parseBorderAttribute( value );
+		const baseKey = key.split( '-' )[ 0 ];
 
-			const border = {
-				top: parsedBorder,
-				right: parsedBorder,
-				bottom: parsedBorder,
-				left: parsedBorder
-			};
+		// Set directly to object.
+		if ( setOnPathStyles.includes( key ) ) {
+			this._appendStyleValue( this._getPath( key ), value );
 
-			this._appendStyleValue( 'border', border );
-		} else if ( borderPositionRegExp.test( key ) ) {
-			const border = {};
-			const which = borderPositionRegExp.exec( key )[ 1 ];
-
-			border[ which ] = parseBorderAttribute( value );
-
-			this._appendStyleValue( 'border', border );
-		} else if ( key === 'border-color' ) {
-			const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
-			this._appendStyleValue( 'border', {
-				top: { color: top },
-				right: { color: right },
-				bottom: { color: bottom },
-				left: { color: left }
-			} );
-		} else if ( key === 'border-style' ) {
-			const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
-			this._appendStyleValue( 'border', {
-				top: { style: top },
-				right: { style: right },
-				bottom: { style: bottom },
-				left: { style: left }
-			} );
-		} else if ( key === 'border-width' ) {
-			const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
-			this._appendStyleValue( 'border', {
-				top: { width: top },
-				right: { width: right },
-				bottom: { width: bottom },
-				left: { width: left }
-			} );
-		} else if ( key === 'margin' || key === 'padding' ) {
-			this._appendStyleValue( key, getTopRightBottomLeftValues( value ) );
-		} else if ( marginOrPaddingPositionRegExp.test( key ) ) {
-			const margin = {};
-			const match = marginOrPaddingPositionRegExp.exec( key );
-			const rule = match[ 1 ];
-			const which = match[ 2 ];
-
-			margin[ which ] = value;
-
-			this._appendStyleValue( rule, margin );
-		} else {
-			this._appendStyleValue( key, value );
+			return;
 		}
+
+		let processed;
+
+		if ( baseKey === 'border' ) {
+			processed = processBorder( key, value );
+		}
+
+		if ( key === 'margin' || key === 'padding' ) {
+			processed = { key, value: getTopRightBottomLeftValues( value ) };
+		}
+
+		let processedKey = key;
+		let processedValue = value;
+
+		if ( processed ) {
+			processedKey = processed.key;
+			processedValue = processed.value;
+		}
+
+		this._appendStyleValue( processedKey, processedValue );
 	}
 }
 
@@ -246,10 +227,62 @@ function getTopRightBottomLeftValues( value ) {
 	const bottom = values[ 2 ] || top;
 	const right = values[ 1 ] || top;
 	const left = values[ 3 ] || right;
+
 	return { top, bottom, right, left };
 }
 
-function parseBorderAttribute( string ) {
+function toBorderPropertyShorthand( value, property ) {
+	const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
+
+	return {
+		top: { [ property ]: top },
+		right: { [ property ]: right },
+		bottom: { [ property ]: bottom },
+		left: { [ property ]: left }
+	};
+}
+
+function processBorder( key, value ) {
+	if ( key === 'border' ) {
+		const parsedBorder = parseShorthandBorderAttribute( value );
+
+		const border = {
+			top: parsedBorder,
+			right: parsedBorder,
+			bottom: parsedBorder,
+			left: parsedBorder
+		};
+
+		return { key: 'border', value: border };
+	}
+
+	if ( borderPositionRegExp.test( key ) ) {
+		return { key: key.replace( '-', '.' ), value: parseShorthandBorderAttribute( value ) };
+	}
+
+	if ( key === 'border-color' ) {
+		return {
+			key: 'border',
+			value: toBorderPropertyShorthand( value, 'color' )
+		};
+	}
+
+	if ( key === 'border-style' ) {
+		return {
+			key: 'border',
+			value: toBorderPropertyShorthand( value, 'style' )
+		};
+	}
+
+	if ( key === 'border-width' ) {
+		return {
+			key: 'border',
+			value: toBorderPropertyShorthand( value, 'width' )
+		};
+	}
+}
+
+function parseShorthandBorderAttribute( string ) {
 	const result = {};
 
 	for ( const part of string.split( ' ' ) ) {
