@@ -41,6 +41,8 @@ export default class PageBreakEditing extends Plugin {
 					style: 'page-break-after: always'
 				} );
 
+				// For a rationale of using span inside a div see:
+				// https://github.com/ckeditor/ckeditor5-page-break/pull/1#discussion_r328934062.
 				const spanElement = viewWriter.createContainerElement( 'span', {
 					style: 'display: none'
 				} );
