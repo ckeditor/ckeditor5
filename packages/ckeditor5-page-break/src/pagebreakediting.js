@@ -58,9 +58,16 @@ export default class PageBreakEditing extends Plugin {
 			view: ( modelElement, viewWriter ) => {
 				const label = t( 'Page break' );
 				const viewWrapper = viewWriter.createContainerElement( 'div' );
+				const viewLabelElement = viewWriter.createContainerElement( 'span' );
+				const innerText = viewWriter.createText( t( 'Page break' ) );
 
 				viewWriter.addClass( 'ck-page-break', viewWrapper );
 				viewWriter.setCustomProperty( 'pageBreak', true, viewWrapper );
+
+				viewWriter.addClass( 'ck-page-break_label', viewLabelElement );
+
+				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewLabelElement );
+				viewWriter.insert( viewWriter.createPositionAt( viewLabelElement, 0 ), innerText );
 
 				return toPageBreakWidget( viewWrapper, viewWriter, label );
 			}
