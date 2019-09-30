@@ -44,7 +44,7 @@ describe( 'PageBreakUI', () => {
 		expect( pageBreakView ).to.be.instanceOf( ButtonView );
 		expect( pageBreakView.label ).to.equal( 'Page break' );
 		expect( pageBreakView.icon ).to.match( /<svg / );
-		expect( pageBreakView.isToggleable ).to.be.true;
+		expect( pageBreakView.isToggleable ).to.be.false;
 	} );
 
 	it( 'should execute pageBreak command on model execute event', () => {
