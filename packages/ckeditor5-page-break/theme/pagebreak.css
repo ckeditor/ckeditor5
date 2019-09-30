@@ -4,9 +4,32 @@
  */
 
 .ck .ck-page-break {
+	position: relative;
 	clear: both;
-	padding: 5px;
-	border: 2px dashed var(--ck-color-toolbar-border);
-	border-left: 0;
-	border-right: 0;
+	padding: 5px 0;
+	display: flex;
+	justify-content: center;
+}
+
+.ck .ck-page-break::after {
+	content: '';
+	position: absolute;
+	border-bottom: 2px dashed var(--ck-color-toolbar-border);
+	width: 100%;
+	top: 50%;
+	transform: translateY( -50% );
+}
+
+.ck .ck-page-break_label {
+	position: relative;
+	z-index: var(--ck-z-default);
+	padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
+	display: block;
+	text-transform: uppercase;
+	border: 1px solid var(--ck-color-toolbar-border);
+	border-radius: var(--ck-border-radius);
+	font-size: var(--ck-font-size-small);
+	font-weight: bold;
+	color: var(--ck-color-toolbar-border);
+	background: var(--ck-color-base-background);
 }
