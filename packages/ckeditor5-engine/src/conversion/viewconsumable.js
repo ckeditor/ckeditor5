@@ -10,6 +10,43 @@
 import { isArray } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+const styleConsumablesMap = new Map();
+
+addStyleConsumeAlso( 'margin', [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] );
+addStyleConsumeAlso( 'padding', [ 'padding-top', 'padding-right', 'padding-bottom', 'padding-left' ] );
+
+addStyleConsumeAlso( 'border', [ 'border-color', 'border-style', 'border-width' ] );
+addStyleConsumeAlso( 'border', [ 'border-top', 'border-right', 'border-bottom', 'border-left' ] );
+addStyleConsumeAlso( 'border', [
+	'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+	'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+	'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
+] );
+addStyleConsumeAlso( 'border-color', [ 'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color' ] );
+addStyleConsumeAlso( 'border-style', [ 'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style' ] );
+addStyleConsumeAlso( 'border-width', [ 'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' ] );
+
+addStyleConsumeAlso( 'border-top', [ 'border-top-color', 'border-top-style', 'border-top-width' ] );
+addStyleConsumeAlso( 'border-right', [ 'border-right-color', 'border-right-style', 'border-right-width' ] );
+addStyleConsumeAlso( 'border-bottom', [ 'border-bottom-color', 'border-bottom-style', 'border-bottom-width' ] );
+addStyleConsumeAlso( 'border-left', [ 'border-left-color', 'border-left-style', 'border-left-width' ] );
+
+function addStyleConsumeAlso( shorthandName, also ) {
+	addConsumable( shorthandName, also );
+
+	for ( const alsoName of also ) {
+		addConsumable( alsoName, [ shorthandName ] );
+	}
+
+	function addConsumable( name, values ) {
+		if ( !styleConsumablesMap.has( name ) ) {
+			styleConsumablesMap.set( name, [] );
+		}
+
+		styleConsumablesMap.get( name ).push( ...values );
+	}
+}
+
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
  * {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~DocumentFragment document fragments}.
@@ -507,6 +544,12 @@ class ViewElementConsumables {
 			}
 
 			consumables.set( name, true );
+
+			if ( type === 'styles' && styleConsumablesMap.has( name ) ) {
+				for ( const alsoName of styleConsumablesMap.get( name ) ) {
+					consumables.set( alsoName, true );
+				}
+			}
 		}
 	}
 
@@ -568,6 +611,12 @@ class ViewElementConsumables {
 				this._consume( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
 			} else {
 				consumables.set( name, false );
+
+				if ( styleConsumablesMap.has( name ) ) {
+					for ( const toConsume of styleConsumablesMap.get( name ) ) {
+						consumables.set( toConsume, false );
+					}
+				}
 			}
 		}
 	}
