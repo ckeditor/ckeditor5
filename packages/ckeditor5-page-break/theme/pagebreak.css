@@ -8,6 +8,7 @@
 	clear: both;
 	padding: 5px 0;
 	display: flex;
+	align-items: center;
 	justify-content: center;
 }
 
@@ -16,8 +17,6 @@
 	position: absolute;
 	border-bottom: 2px dashed var(--ck-color-toolbar-border);
 	width: 100%;
-	top: 50%;
-	transform: translateY( -50% );
 }
 
 .ck .ck-page-break_label {
