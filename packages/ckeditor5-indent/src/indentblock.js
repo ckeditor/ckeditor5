@@ -99,24 +99,10 @@ export default class IndentBlock extends Plugin {
 		const locale = this.editor.locale;
 		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
 
-		// TODO: breaks something..
-		// conversion.for( 'upcast' ).attributeToAttribute( {
-		// 	view: {
-		// 		styles: {
-		// 			[ marginProperty ]: /[\s\S]+/
-		// 		}
-		// 	},
-		// 	model: {
-		// 		key: 'blockIndent',
-		// 		value: viewElement => viewElement.getStyle( marginProperty )
-		// 	}
-		// } );
-
-		// The margin shorthand should also work.
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				styles: {
-					'margin': /[\s\S]+/
+					[ marginProperty ]: /[\s\S]+/
 				}
 			},
 			model: {
