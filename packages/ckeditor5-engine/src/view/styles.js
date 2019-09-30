@@ -326,6 +326,11 @@ function outputShorthandableValue( styleObject, strict, styleShorthand ) {
 	const { top, right, bottom, left } = styleObject;
 
 	if ( top === left && left === bottom && bottom === right ) {
+		// Might be not set.
+		if ( top === undefined ) {
+			return '';
+		}
+
 		return ( strict ? '' : styleShorthand + ':' ) + top;
 	} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
 		return printSingleValues( { top, right, bottom, left }, 'margin' );
