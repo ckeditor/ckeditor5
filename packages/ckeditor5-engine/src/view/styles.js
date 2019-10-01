@@ -13,11 +13,15 @@ const borderPositionRegExp = /border-(top|right|bottom|left)$/;
 const topRightBottomLeftPositionRegExp = /^(top|right|bottom|left)$/;
 
 const setOnPathStyles = [
+	// Borders.
 	'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
 	'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
 	'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+	// Margin & padding.
+	'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
 	'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-	'margin-top', 'margin-right', 'margin-bottom', 'margin-left'
+	// Background.
+	'background-color'
 ];
 
 /**
@@ -206,6 +210,21 @@ export default class Styles {
 			processed = processBorder( key, value );
 		}
 
+		if ( key === 'background' ) {
+			const layers = value.split( ',' );
+			const background = {};
+
+			const parts = layers[ 0 ].split( ' ' );
+
+			for ( const part of parts ) {
+				if ( isColor( part ) ) {
+					background.color = part;
+				}
+			}
+
+			processed = { background };
+		}
+
 		if ( key === 'margin' || key === 'padding' ) {
 			processed = { [ key ]: getTopRightBottomLeftValues( value ) };
 		}
@@ -373,6 +392,23 @@ function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
 
 	if ( styleName === 'margin' ) {
 		return outputShorthandableValue( styleObjectOrString, strict, 'margin' );
+	}
+
+	if ( styleName === 'padding' ) {
+		return outputShorthandableValue( styleObjectOrString, strict, 'padding' );
+	}
+
+	// Generic, one-level, object to style:
+	if ( isObject( styleObjectOrString ) ) {
+		if ( !strict ) {
+			const values = [];
+
+			for ( const key of Object.keys( styleObjectOrString ) ) {
+				values.push( styleName + '-' + key + ':' + styleObjectOrString[ key ] );
+			}
+
+			return values.join( ';' );
+		}
 	}
 
 	return ( strict ? '' : styleName + ':' ) + styleObjectOrString;
