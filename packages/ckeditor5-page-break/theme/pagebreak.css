@@ -32,4 +32,10 @@
 	color: var(--ck-color-base-text);
 	background: var(--ck-color-base-background);
 	box-shadow: 2px 2px 1px var(--ck-color-shadow-drop);
+
+	/* Disable posssibility to select label text by user. */
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
