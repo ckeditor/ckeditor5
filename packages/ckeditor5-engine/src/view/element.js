@@ -334,8 +334,8 @@ export default class Element extends Node {
 		// Check if styles are the same.
 		for ( const property of Object.keys( this._styles._styles ) ) {
 			if (
-				!otherElement._styles.hasRule( property ) ||
-				otherElement._styles.getInlineRule( property ) !== this._styles.getInlineRule( property )
+				!otherElement._styles.hasProperty( property ) ||
+				otherElement._styles.getInlineProperty( property ) !== this._styles.getInlineProperty( property )
 			) {
 				return false;
 			}
@@ -381,9 +381,9 @@ export default class Element extends Node {
 	 */
 	getStyle( property, asModel = false ) {
 		if ( asModel ) {
-			return this._styles.getModel( property );
+			return this._styles.getNormalized( property );
 		} else {
-			return this._styles.getInlineRule( property );
+			return this._styles.getInlineProperty( property );
 		}
 	}
 
@@ -407,7 +407,7 @@ export default class Element extends Node {
 	 */
 	hasStyle( ...property ) {
 		for ( const name of property ) {
-			if ( !this._styles.hasRule( name ) ) {
+			if ( !this._styles.hasProperty( name ) ) {
 				return false;
 			}
 		}
@@ -712,7 +712,7 @@ export default class Element extends Node {
 	_setStyle( property, value ) {
 		this._fireChange( 'attributes', this );
 
-		this._styles.insertRule( property, value );
+		this._styles.insertProperty( property, value );
 	}
 
 	/**
@@ -730,7 +730,7 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		property = Array.isArray( property ) ? property : [ property ];
-		property.forEach( name => this._styles.removeRule( name ) );
+		property.forEach( name => this._styles.removeProperty( name ) );
 	}
 
 	/**

@@ -68,8 +68,8 @@ export default class Styles {
 	 * @param {String} name
 	 * @returns {Boolean}
 	 */
-	hasRule( name ) {
-		const nameNorm = this._getPath( name );
+	hasProperty( name ) {
+		const nameNorm = toPath( name );
 
 		return has( this._styles, nameNorm ) || !!this._styles[ name ];
 	}
@@ -83,28 +83,28 @@ export default class Styles {
 	 * @param {String|Object} value
 	 * @returns {Boolean}
 	 */
-	insertRule( nameOrObject, value ) {
+	insertProperty( nameOrObject, value ) {
 		if ( isPlainObject( nameOrObject ) ) {
 			for ( const key of Object.keys( nameOrObject ) ) {
-				this.insertRule( key, nameOrObject[ key ] );
+				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			this._parseRule( nameOrObject, value );
+			this._parseProperty( nameOrObject, value );
 		}
 	}
 
-	removeRule( name ) {
-		unset( this._styles, this._getPath( name ) );
+	removeProperty( name ) {
+		unset( this._styles, toPath( name ) );
 
 		delete this._styles[ name ];
 	}
 
-	getModel( name ) {
+	getNormalized( name ) {
 		if ( !name ) {
 			return merge( {}, this._styles );
 		}
 
-		const path = this._getPath( name );
+		const path = toPath( name );
 
 		if ( has( this._styles, path ) ) {
 			return get( this._styles, path );
@@ -123,16 +123,16 @@ export default class Styles {
 		}
 
 		for ( const key of keys ) {
-			const model = this.getModel( key );
+			const normalized = this.getNormalized( key );
 
-			parsed.push( toInlineStyle( key, model ) );
+			parsed.push( toInlineStyle( key, normalized ) );
 		}
 
 		return parsed.join( ';' ) + ';';
 	}
 
-	getInlineRule( name ) {
-		const model = this.getModel( name );
+	getInlineProperty( name ) {
+		const model = this.getNormalized( name );
 
 		if ( !model ) {
 			// Try return directly
@@ -148,21 +148,14 @@ export default class Styles {
 		}
 	}
 
-	// TODO: expandShortHands: true/false?
 	getStyleNames() {
 		const inlineStyle = this.getInlineStyle();
 
-		// TODO: probably not good enough.
-		// TODO: consumables must have different names or support shorthands.
 		return ( inlineStyle || '' ).split( ';' ).filter( f => f !== '' ).map( abc => abc.split( ':' )[ 0 ] ).sort();
 	}
 
 	clear() {
 		this._styles = {};
-	}
-
-	_getPath( name ) {
-		return name.replace( '-', '.' );
 	}
 
 	_parseStyle( string ) {
@@ -171,7 +164,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			this._parseRule( key, value );
+			this._parseProperty( key, value );
 		}
 	}
 
@@ -188,7 +181,7 @@ export default class Styles {
 		}
 	}
 
-	_parseRule( key, value ) {
+	_parseProperty( key, value ) {
 		if ( isPlainObject( value ) ) {
 			this._appendStyleValue( key, value );
 
@@ -199,7 +192,7 @@ export default class Styles {
 
 		// Set directly to object.
 		if ( setOnPathStyles.includes( key ) ) {
-			this._appendStyleValue( this._getPath( key ), value );
+			this._appendStyleValue( toPath( key ), value );
 
 			return;
 		}
@@ -508,3 +501,14 @@ function parseInlineStyles( stylesString ) {
 
 	return stylesMap;
 }
+
+function toPath( name ) {
+	return name.replace( '-', '.' );
+}
+
+// 'border-style'	->	d{}
+// 'border-top'		->	d{}
+// 'border'			->	d{}
+
+// {}	-> style=""
+// {} 	-> border-top=""

@@ -74,12 +74,12 @@ describe( 'Element', () => {
 			expect( el._attrs.has( 'style' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
 
-			expect( el._styles.hasRule( 'one' ) ).to.be.true;
-			expect( el._styles.getInlineRule( 'one' ) ).to.equal( 'style1' );
-			expect( el._styles.hasRule( 'two' ) ).to.be.true;
-			expect( el._styles.getInlineRule( 'two' ) ).to.equal( 'style2' );
-			expect( el._styles.hasRule( 'three' ) ).to.be.true;
-			expect( el._styles.getInlineRule( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+			expect( el._styles.hasProperty( 'one' ) ).to.be.true;
+			expect( el._styles.getInlineProperty( 'one' ) ).to.equal( 'style1' );
+			expect( el._styles.hasProperty( 'two' ) ).to.be.true;
+			expect( el._styles.getInlineProperty( 'two' ) ).to.equal( 'style2' );
+			expect( el._styles.hasProperty( 'three' ) ).to.be.true;
+			expect( el._styles.getInlineProperty( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
 		} );
 	} );
 
@@ -200,10 +200,10 @@ describe( 'Element', () => {
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
-			expect( clone._styles.hasRule( 'color' ) ).to.be.true;
-			expect( clone._styles.getInlineRule( 'color' ) ).to.equal( 'red' );
-			expect( clone._styles.hasRule( 'font-size' ) ).to.be.true;
-			expect( clone._styles.getInlineRule( 'font-size' ) ).to.equal( '12px' );
+			expect( clone._styles.hasProperty( 'color' ) ).to.be.true;
+			expect( clone._styles.getInlineProperty( 'color' ) ).to.equal( 'red' );
+			expect( clone._styles.hasProperty( 'font-size' ) ).to.be.true;
+			expect( clone._styles.getInlineProperty( 'font-size' ) ).to.equal( '12px' );
 		} );
 
 		it( 'should clone custom properties', () => {
