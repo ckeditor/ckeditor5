@@ -113,10 +113,10 @@ export default class TableEditing extends Plugin {
 
 		// Table styles:
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border' ]
+			allowAttributes: [ 'border', 'background' ]
 		} );
 		schema.extend( 'table', {
-			allowAttributes: [ 'border' ]
+			allowAttributes: [ 'border', 'background' ]
 		} );
 
 		// General upcast 'border' attribute (requires model border attribute to be allowed).
@@ -138,14 +138,12 @@ export default class TableEditing extends Plugin {
 				name: 'tableCell',
 				key: 'border'
 			},
-			view: modelAttributeValue => {
-				return ( {
-					key: 'style',
-					value: {
-						'border': modelAttributeValue
-					}
-				} );
-			}
+			view: modelAttributeValue => ( {
+				key: 'style',
+				value: {
+					'border': modelAttributeValue
+				}
+			} )
 		} );
 
 		// Properly downcast table border attribute on <table> and not on <figure>.
@@ -156,6 +154,42 @@ export default class TableEditing extends Plugin {
 			const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
 			writer.setStyle( 'border', attributeNewValue, table );
+		} ) );
+
+		// Upcast background.
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				styles: {
+					'background-color': /[\s\S]+/
+				}
+			},
+			model: {
+				key: 'background',
+				value: viewElement => viewElement.getStyle( 'background-color' )
+			}
+		} );
+
+		// Downcast table cell only (table has own downcast converter).
+		conversion.for( 'downcast' ).attributeToAttribute( {
+			model: {
+				name: 'tableCell',
+				key: 'background'
+			},
+			view: modelAttributeValue => ( {
+				key: 'style',
+				value: {
+					'background-color': modelAttributeValue
+				}
+			} )
+		} );
+
+		conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:background:table', ( evt, data, conversionApi ) => {
+			const { item, attributeNewValue } = data;
+			const { mapper, writer } = conversionApi;
+
+			const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
+
+			writer.setStyle( 'background-color', attributeNewValue, table );
 		} ) );
 
 		// Define all the commands.
