@@ -115,12 +115,15 @@ export default class TableEditing extends Plugin {
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'border' ]
 		} );
+		schema.extend( 'table', {
+			allowAttributes: [ 'border' ]
+		} );
 
+		// General upcast 'border' attribute (requires model border attribute to be allowed).
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
-				name: 'td',
 				styles: {
-					border: /[\s\S]+/
+					'border': /[\s\S]+/
 				}
 			},
 			model: {
@@ -129,17 +132,31 @@ export default class TableEditing extends Plugin {
 			}
 		} );
 
+		// Downcast table cell only (table has own downcast converter).
 		conversion.for( 'downcast' ).attributeToAttribute( {
-			model: 'border',
+			model: {
+				name: 'tableCell',
+				key: 'border'
+			},
 			view: modelAttributeValue => {
 				return ( {
 					key: 'style',
 					value: {
-						border: modelAttributeValue
+						'border': modelAttributeValue
 					}
 				} );
 			}
 		} );
+
+		// Properly downcast table border attribute on <table> and not on <figure>.
+		conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:border:table', ( evt, data, conversionApi ) => {
+			const { item, attributeNewValue } = data;
+			const { mapper, writer } = conversionApi;
+
+			const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
+
+			writer.setStyle( 'border', attributeNewValue, table );
+		} ) );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
