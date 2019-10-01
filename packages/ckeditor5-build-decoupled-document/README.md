@@ -31,17 +31,18 @@ npm install --save @ckeditor/ckeditor5-build-decoupled-document
 And use it in your website:
 
 ```html
+<div id="toolbar-container"></div>
 <div id="editor">
 	<p>This is the editor content.</p>
 </div>
 <script src="./node_modules/@ckeditor/ckeditor5-build-decoupled-document/build/ckeditor.js"></script>
 <script>
 	DecoupledEditor
-		.create( '<h2>Hello world!</h2>', {
-			toolbarContainer: document.querySelector( '.toolbar-container' ),
-			editableContainer: document.querySelector( '.editable-container' )
-		} )
+		.create( document.querySelector( '#editor' ) )
 		.then( editor => {
+			// The toolbar needs to be explicitly appended.
+			document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+
 			window.editor = editor;
 		} )
 		.catch( err => {
@@ -59,13 +60,13 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 // const DecoupledEditor = require( '@ckeditor/ckeditor5-build-decoupled-document' );
 
 DecoupledEditor
-	.create( '<h2>Hello world!</h2>', {
-		toolbarContainer: document.querySelector( '.toolbar-container' ),
-		editableContainer: document.querySelector( '.editable-container' )
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
+	.create( document.querySelector( '#editor' ) )
+		.then( editor => {
+			// The toolbar needs to be explicitly appended.
+			document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+
+			window.editor = editor;
+		} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
