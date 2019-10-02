@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck .ck-widget.ck-horizontal-rule {
-	/* Handle proper `<hr>` display next to elements with `float` property, e.g. side image case. */
+/* This is a `.ck-widget` element, but we try to use 020 CSS specificity, that's why we omitted it in below CSS ruleset. */
+.ck .ck-horizontal-rule {
+	/* Adding hidden overflow to the `ck-widget` to properly display it next to the`float` property, e.g. side image case. */
 	overflow: hidden;
 }
 
