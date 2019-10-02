@@ -1,3 +1,12 @@
+<style>
+	/* Umberto stylesheet is centering `<img>` inside a `<p>`, let's overwrite it with higher CSS Specificity.
+	 * See: https://github.com/ckeditor/ckeditor5-core/issues/198.
+	 */
+	.live-snippet .ck-editor p img {
+		margin: 0;
+	}
+</style>
+
 <div id="mathtype-editor">
 	<p>In elementary algebra, the <strong>quadratic formula</strong> is the solution of the quadratic equation.</p>
 
