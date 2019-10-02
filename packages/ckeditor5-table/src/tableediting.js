@@ -128,7 +128,7 @@ export default class TableEditing extends Plugin {
 			},
 			model: {
 				key: 'border',
-				value: viewElement => viewElement.getStyle( 'border', true )
+				value: viewElement => viewElement.getNormalizedStyle( 'border' )
 			}
 		} );
 
