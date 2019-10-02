@@ -162,7 +162,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			return toInlineStyle( name, normalized, true );
+			return toInlineStyleProperty( name, normalized );
 		}
 		// String value
 		else {
@@ -369,20 +369,33 @@ function outputShorthandableValue( styleObject, strict, styleShorthand ) {
 	}
 }
 
-function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
+function stringifyBorderProperty( styleObjectOrString ) {
+	const top = toInlineBorder( styleObjectOrString.top );
+	const right = toInlineBorder( styleObjectOrString.right );
+	const bottom = toInlineBorder( styleObjectOrString.bottom );
+	const left = toInlineBorder( styleObjectOrString.left );
+
+	if ( top === right && right === bottom && bottom === left ) {
+		return top;
+	}
+}
+
+function getShortest( styleObjectOrString ) {
+	const top = toInlineBorder( styleObjectOrString.top );
+	const right = toInlineBorder( styleObjectOrString.right );
+	const bottom = toInlineBorder( styleObjectOrString.bottom );
+	const left = toInlineBorder( styleObjectOrString.left );
+
+	if ( top === right && right === bottom && bottom === left ) {
+		return 'border:' + top;
+	} else {
+		return printSingleValues( { top, right, bottom, left }, 'border' );
+	}
+}
+
+function toInlineStyleProperty( styleName, styleObjectOrString ) {
 	if ( styleName === 'border' ) {
-		const top = toInlineBorder( styleObjectOrString.top );
-		const right = toInlineBorder( styleObjectOrString.right );
-		const bottom = toInlineBorder( styleObjectOrString.bottom );
-		const left = toInlineBorder( styleObjectOrString.left );
-
-		if ( top === right && right === bottom && bottom === left ) {
-			return ( strict ? '' : 'border:' ) + top;
-		} else if ( !strict ) {
-			return printSingleValues( { top, right, bottom, left }, 'border' );
-		}
-
-		return;
+		return stringifyBorderProperty( styleObjectOrString );
 	}
 
 	if ( borderPositionRegExp.test( styleName ) ) {
@@ -390,27 +403,45 @@ function toInlineStyle( styleName, styleObjectOrString, strict = false ) {
 	}
 
 	if ( styleName === 'margin' ) {
-		return outputShorthandableValue( styleObjectOrString, strict, 'margin' );
+		return outputShorthandableValue( styleObjectOrString, true, 'margin' );
 	}
 
 	if ( styleName === 'padding' ) {
-		return outputShorthandableValue( styleObjectOrString, strict, 'padding' );
+		return outputShorthandableValue( styleObjectOrString, true, 'padding' );
+	}
+
+	return styleObjectOrString;
+}
+
+function toInlineStyle( styleName, styleObjectOrString ) {
+	if ( styleName === 'border' ) {
+		return getShortest( styleObjectOrString );
+	}
+
+	if ( borderPositionRegExp.test( styleName ) ) {
+		return toInlineBorder( styleObjectOrString );
+	}
+
+	if ( styleName === 'margin' ) {
+		return outputShorthandableValue( styleObjectOrString, false, 'margin' );
+	}
+
+	if ( styleName === 'padding' ) {
+		return outputShorthandableValue( styleObjectOrString, false, 'padding' );
 	}
 
 	// Generic, one-level, object to style:
 	if ( isObject( styleObjectOrString ) ) {
-		if ( !strict ) {
-			const values = [];
+		const values = [];
 
-			for ( const key of Object.keys( styleObjectOrString ) ) {
-				values.push( styleName + '-' + key + ':' + styleObjectOrString[ key ] );
-			}
-
-			return values.join( ';' );
+		for ( const key of Object.keys( styleObjectOrString ) ) {
+			values.push( `${ styleName }-${ key }:${ styleObjectOrString[ key ] }` );
 		}
+
+		return values.join( ';' );
 	}
 
-	return ( strict ? '' : styleName + ':' ) + styleObjectOrString;
+	return `${ styleName }:${ styleObjectOrString }`;
 }
 
 function toInlineBorder( object = {} ) {
