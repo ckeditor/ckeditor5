@@ -167,7 +167,11 @@ export default class Styles {
 	getStyleNames() {
 		const inlineStyle = this.getInlineStyle();
 
-		return ( inlineStyle || '' ).split( ';' ).filter( f => f !== '' ).map( abc => abc.split( ':' )[ 0 ] ).sort();
+		return ( inlineStyle || '' )
+			.split( ';' )
+			.filter( f => f !== '' )
+			.map( abc => abc.split( ':' )[ 0 ] )
+			.sort( sortTopRightBottomLeftProperties );
 	}
 
 	clear() {
@@ -421,10 +425,20 @@ function toInlineStyleProperty( styleName, styleObjectOrString ) {
 	return styleObjectOrString;
 }
 
+const topRightBottomLeftOrder = [ 'top', 'right', 'bottom', 'left' ];
+
+function sortTopRightBottomLeftProperties( a, b ) {
+	if ( topRightBottomLeftOrder.includes( a ) && topRightBottomLeftOrder.includes( b ) ) {
+		return topRightBottomLeftOrder.indexOf( a ) - topRightBottomLeftOrder.indexOf( b );
+	}
+
+	return 0;
+}
+
 function leWhat( styleObjectOrString, styleName ) {
 	const values = [];
 
-	for ( const key of Object.keys( styleObjectOrString ) ) {
+	for ( const key of Object.keys( styleObjectOrString ).sort( sortTopRightBottomLeftProperties ) ) {
 		let styleObjectOrStringElement;
 
 		if ( isObject( styleObjectOrString[ key ] ) ) {
@@ -445,8 +459,6 @@ function toInlineStyle( styleName, styleObjectOrString ) {
 	inliners.set( 'border-color', shBorder( 'color' ) );
 	inliners.set( 'border-style', shBorder( 'style' ) );
 	inliners.set( 'border-width', shBorder( 'width' ) );
-	inliners.set( 'margin', value => outputShorthandableValue( value, false, 'margin' ) );
-	inliners.set( 'padding', value => outputShorthandableValue( value, false, 'padding' ) );
 
 	if ( inliners.has( styleName ) ) {
 		const inliner = inliners.get( styleName );
