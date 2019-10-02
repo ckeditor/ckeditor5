@@ -377,14 +377,14 @@ export default class Element extends Node {
 	 * Undefined is returned if style does not exist.
 	 *
 	 * @param {String} property
-	 * @returns {String|undefined}
+	 * @returns {String|Object|undefined}
 	 */
-	getStyle( property, asModel = false ) {
-		if ( asModel ) {
-			return this._styles.getNormalized( property );
-		} else {
-			return this._styles.getInlineProperty( property );
-		}
+	getStyle( property ) {
+		return this._styles.getInlineProperty( property );
+	}
+
+	getNormalizedStyle( property ) {
+		return this._styles.getNormalized( property );
 	}
 
 	/**
