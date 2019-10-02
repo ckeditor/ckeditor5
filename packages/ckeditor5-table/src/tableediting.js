@@ -37,6 +37,47 @@ import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-pos
 
 import '../theme/tableediting.css';
 
+function setupConversion( conversion, styleName ) {
+	// General upcast 'border' attribute (requires model border attribute to be allowed).
+	conversion.for( 'upcast' ).attributeToAttribute( {
+		view: {
+			styles: {
+				[ styleName ]: /[\s\S]+/
+			}
+		},
+		model: {
+			key: styleName,
+			value: viewElement => viewElement.getNormalizedStyle( styleName )
+		}
+	} );
+
+	// Downcast table cell only (table has own downcast converter).
+	conversion.for( 'downcast' ).attributeToAttribute( {
+		model: {
+			name: 'tableCell',
+			key: styleName
+		},
+		view: modelAttributeValue => {
+			return ( {
+				key: 'style',
+				value: {
+					[ styleName ]: modelAttributeValue
+				}
+			} );
+		}
+	} );
+
+	// Properly downcast table border attribute on <table> and not on <figure>.
+	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:' + styleName + ':table', ( evt, data, conversionApi ) => {
+		const { item, attributeNewValue } = data;
+		const { mapper, writer } = conversionApi;
+
+		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
+
+		writer.setStyle( styleName, attributeNewValue, table );
+	} ) );
+}
+
 /**
  * The table editing feature.
  *
@@ -113,84 +154,16 @@ export default class TableEditing extends Plugin {
 
 		// Table styles:
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border', 'background' ]
+			allowAttributes: [ 'border-color', 'border-style', 'border-width', 'background-color' ]
 		} );
 		schema.extend( 'table', {
-			allowAttributes: [ 'border', 'background' ]
+			allowAttributes: [ 'border-color', 'border-style', 'border-width', 'background-color' ]
 		} );
 
-		// General upcast 'border' attribute (requires model border attribute to be allowed).
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				styles: {
-					'border': /[\s\S]+/
-				}
-			},
-			model: {
-				key: 'border',
-				value: viewElement => viewElement.getNormalizedStyle( 'border' )
-			}
-		} );
-
-		// Downcast table cell only (table has own downcast converter).
-		conversion.for( 'downcast' ).attributeToAttribute( {
-			model: {
-				name: 'tableCell',
-				key: 'border'
-			},
-			view: modelAttributeValue => ( {
-				key: 'style',
-				value: {
-					'border': modelAttributeValue
-				}
-			} )
-		} );
-
-		// Properly downcast table border attribute on <table> and not on <figure>.
-		conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:border:table', ( evt, data, conversionApi ) => {
-			const { item, attributeNewValue } = data;
-			const { mapper, writer } = conversionApi;
-
-			const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
-
-			writer.setStyle( 'border', attributeNewValue, table );
-		} ) );
-
-		// Upcast background.
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				styles: {
-					'background-color': /[\s\S]+/
-				}
-			},
-			model: {
-				key: 'background',
-				value: viewElement => viewElement.getStyle( 'background-color' )
-			}
-		} );
-
-		// Downcast table cell only (table has own downcast converter).
-		conversion.for( 'downcast' ).attributeToAttribute( {
-			model: {
-				name: 'tableCell',
-				key: 'background'
-			},
-			view: modelAttributeValue => ( {
-				key: 'style',
-				value: {
-					'background-color': modelAttributeValue
-				}
-			} )
-		} );
-
-		conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:background:table', ( evt, data, conversionApi ) => {
-			const { item, attributeNewValue } = data;
-			const { mapper, writer } = conversionApi;
-
-			const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
-
-			writer.setStyle( 'background-color', attributeNewValue, table );
-		} ) );
+		setupConversion( conversion, 'border-color' );
+		setupConversion( conversion, 'border-style' );
+		setupConversion( conversion, 'border-width' );
+		setupConversion( conversion, 'background-color' );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
