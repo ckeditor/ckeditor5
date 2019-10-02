@@ -72,7 +72,14 @@ export default class Styles {
 	 */
 	setStyle( styleString = '' ) {
 		this.clear();
-		this._parseStyle( styleString );
+
+		const map = parseInlineStyles( styleString );
+
+		for ( const key of map.keys() ) {
+			const value = map.get( key );
+
+			this._parseProperty( key, value );
+		}
 	}
 
 	/**
@@ -147,19 +154,19 @@ export default class Styles {
 	}
 
 	getInlineProperty( name ) {
-		const model = this.getNormalized( name );
+		const normalized = this.getNormalized( name );
 
-		if ( !model ) {
+		if ( !normalized ) {
 			// Try return directly
 			return this._styles[ name ];
 		}
 
-		if ( isObject( model ) ) {
-			return toInlineStyle( name, model, true );
+		if ( isObject( normalized ) ) {
+			return toInlineStyle( name, normalized, true );
 		}
 		// String value
 		else {
-			return model;
+			return normalized;
 		}
 	}
 
@@ -171,16 +178,6 @@ export default class Styles {
 
 	clear() {
 		this._styles = {};
-	}
-
-	_parseStyle( string ) {
-		const map = parseInlineStyles( string );
-
-		for ( const key of map.keys() ) {
-			const value = map.get( key );
-
-			this._parseProperty( key, value );
-		}
 	}
 
 	_appendStyleValue( nameOrPath, valueOrObject ) {
