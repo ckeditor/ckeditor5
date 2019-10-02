@@ -10,7 +10,6 @@
 import { get, has, isObject, isPlainObject, merge, set, unset } from 'lodash-es';
 
 const borderPositionRegExp = /border-(top|right|bottom|left)$/;
-const topRightBottomLeftPositionRegExp = /^(top|right|bottom|left)$/;
 
 const setOnPathStyles = [
 	// Borders.
@@ -37,6 +36,22 @@ export default class Styles {
 	 */
 	constructor( styleString = '' ) {
 		this._styles = {};
+
+		this.parsers = new Map();
+
+		this.parsers.set( 'border', parseBorder );
+		this.parsers.set( 'border-top', parseBorderSide( 'top' ) );
+		this.parsers.set( 'border-right', parseBorderSide( 'right' ) );
+		this.parsers.set( 'border-bottom', parseBorderSide( 'bottom' ) );
+		this.parsers.set( 'border-left', parseBorderSide( 'left' ) );
+		this.parsers.set( 'border-color', parseBorderProperty( 'color' ) );
+		this.parsers.set( 'border-width', parseBorderProperty( 'width' ) );
+		this.parsers.set( 'border-style', parseBorderProperty( 'style' ) );
+
+		this.parsers.set( 'background', parseBackground );
+
+		this.parsers.set( 'margin', parseShorthandSides( 'margin' ) );
+		this.parsers.set( 'padding', parseShorthandSides( 'padding' ) );
 
 		this.setStyle( styleString );
 	}
@@ -188,42 +203,17 @@ export default class Styles {
 			return;
 		}
 
-		const baseKey = key.split( '-' )[ 0 ];
-
-		// Set directly to object.
+		// Set directly to an object.
 		if ( setOnPathStyles.includes( key ) ) {
 			this._appendStyleValue( toPath( key ), value );
 
 			return;
 		}
 
-		let processed;
+		if ( this.parsers.has( key ) ) {
+			const parser = this.parsers.get( key );
 
-		if ( baseKey === 'border' ) {
-			processed = processBorder( key, value );
-		}
-
-		if ( key === 'background' ) {
-			const layers = value.split( ',' );
-			const background = {};
-
-			const parts = layers[ 0 ].split( ' ' );
-
-			for ( const part of parts ) {
-				if ( isColor( part ) ) {
-					background.color = part;
-				}
-			}
-
-			processed = { background };
-		}
-
-		if ( key === 'margin' || key === 'padding' ) {
-			processed = { [ key ]: getTopRightBottomLeftValues( value ) };
-		}
-
-		if ( processed ) {
-			this._styles = merge( {}, this._styles, processed );
+			this._styles = merge( {}, this._styles, parser( value ) );
 		} else {
 			this._appendStyleValue( key, value );
 		}
@@ -252,32 +242,37 @@ function toBorderPropertyShorthand( value, property ) {
 	};
 }
 
-function processBorder( key, value ) {
-	if ( key === 'border' ) {
-		const parsedBorder = parseShorthandBorderAttribute( value );
+function parseShorthandSides( longhand ) {
+	return value => {
+		return { [ longhand ]: getTopRightBottomLeftValues( value ) };
+	};
+}
 
-		const border = {
+function parseBorder( value ) {
+	const parsedBorder = parseShorthandBorderAttribute( value );
+
+	return {
+		border: {
 			top: parsedBorder,
 			right: parsedBorder,
 			bottom: parsedBorder,
 			left: parsedBorder
-		};
+		}
+	};
+}
 
-		return { border };
-	}
-	const parts = key.split( '-' );
+function parseBorderSide( foo ) {
+	return value => ( {
+		border: {
+			[ foo ]: parseShorthandBorderAttribute( value )
+		}
+	} );
+}
 
-	if ( topRightBottomLeftPositionRegExp.test( parts[ 1 ] ) ) {
-		return {
-			border: {
-				[ parts[ 1 ] ]: parseShorthandBorderAttribute( value )
-			}
-		};
-	}
-
-	if ( [ 'color', 'style', 'width' ].includes( parts[ 1 ] ) ) {
-		return { border: toBorderPropertyShorthand( value, parts[ 1 ] ) };
-	}
+function parseBorderProperty( foo ) {
+	return value => ( {
+		border: toBorderPropertyShorthand( value, foo )
+	} );
 }
 
 function parseShorthandBorderAttribute( string ) {
@@ -298,6 +293,20 @@ function parseShorthandBorderAttribute( string ) {
 	}
 
 	return result;
+}
+
+function parseBackground( value ) {
+	const background = {};
+
+	const parts = value.split( ' ' );
+
+	for ( const part of parts ) {
+		if ( isColor( part ) ) {
+			background.color = part;
+		}
+	}
+
+	return { background };
 }
 
 function isColor( string ) {
