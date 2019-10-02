@@ -9,13 +9,7 @@
 
 import { get, has, isObject, isPlainObject, merge, set, unset } from 'lodash-es';
 
-const borderPositionRegExp = /border-(top|right|bottom|left)$/;
-
 const setOnPathStyles = [
-	// Borders.
-	'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
-	'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
-	'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
 	// Margin & padding.
 	'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
 	'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
@@ -195,7 +189,7 @@ export default class Styles {
 
 	_parseProperty( key, value ) {
 		if ( isPlainObject( value ) ) {
-			this._appendStyleValue( key, value );
+			this._appendStyleValue( toPath( key ), value );
 
 			return;
 		}
@@ -217,7 +211,7 @@ export default class Styles {
 	}
 }
 
-function getTopRightBottomLeftValues( value ) {
+function getTopRightBottomLeftValues( value = '' ) {
 	const values = value.split( ' ' );
 
 	const top = values[ 0 ];
@@ -229,13 +223,8 @@ function getTopRightBottomLeftValues( value ) {
 }
 
 function toBorderPropertyShorthand( value, property ) {
-	const { top, bottom, right, left } = getTopRightBottomLeftValues( value );
-
 	return {
-		top: { [ property ]: top },
-		right: { [ property ]: right },
-		bottom: { [ property ]: bottom },
-		left: { [ property ]: left }
+		[ property ]: getTopRightBottomLeftValues( value )
 	};
 }
 
@@ -246,24 +235,37 @@ function parseShorthandSides( longhand ) {
 }
 
 function parseBorder( value ) {
-	const parsedBorder = parseShorthandBorderAttribute( value );
+	const { color, style, width } = parseShorthandBorderAttribute( value );
 
 	return {
 		border: {
-			top: parsedBorder,
-			right: parsedBorder,
-			bottom: parsedBorder,
-			left: parsedBorder
+			color: getTopRightBottomLeftValues( color ),
+			style: getTopRightBottomLeftValues( style ),
+			width: getTopRightBottomLeftValues( width )
 		}
 	};
 }
 
-function parseBorderSide( foo ) {
-	return value => ( {
-		border: {
-			[ foo ]: parseShorthandBorderAttribute( value )
+function parseBorderSide( side ) {
+	return value => {
+		const { color, style, width } = parseShorthandBorderAttribute( value );
+
+		const border = {};
+
+		if ( color !== undefined ) {
+			border.color = { [ side ]: color };
 		}
-	} );
+
+		if ( style !== undefined ) {
+			border.style = { [ side ]: style };
+		}
+
+		if ( width !== undefined ) {
+			border.width = { [ side ]: width };
+		}
+
+		return { border };
+	};
 }
 
 function parseBorderProperty( foo ) {
@@ -340,7 +342,28 @@ function printSingleValues( { top, right, bottom, left }, prefix ) {
 	return ret.join( ';' );
 }
 
-function outputShorthandableValue( styleObject, strict, styleShorthand ) {
+function shBorder( which ) {
+	return value => {
+		return outputShorthandableValue( value[ which ], false, `border-${ which }` );
+	};
+}
+
+function getABCDEDGHIJK( { left, right, top, bottom } ) {
+	const out = [];
+
+	if ( left !== right ) {
+		out.push( top, right, bottom, left );
+	} else if ( bottom !== top ) {
+		out.push( top, right, bottom );
+	} else if ( right != top ) {
+		out.push( top, right );
+	} else {
+		out.push( top );
+	}
+	return out;
+}
+
+function outputShorthandableValue( styleObject = {}, strict, styleShorthand ) {
 	const { top, right, bottom, left } = styleObject;
 
 	if ( top === left && left === bottom && bottom === right ) {
@@ -353,17 +376,7 @@ function outputShorthandableValue( styleObject, strict, styleShorthand ) {
 	} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
 		return printSingleValues( { top, right, bottom, left }, 'margin' );
 	} else {
-		const out = [];
-
-		if ( left !== right ) {
-			out.push( top, right, bottom, left );
-		} else if ( bottom !== top ) {
-			out.push( top, right, bottom );
-		} else if ( right != top ) {
-			out.push( top, right );
-		} else {
-			out.push( top );
-		}
+		const out = getABCDEDGHIJK( styleObject );
 
 		return `${ strict ? '' : styleShorthand + ':' }${ out.join( ' ' ) }`;
 	}
@@ -380,26 +393,21 @@ function stringifyBorderProperty( styleObjectOrString ) {
 	}
 }
 
-function getShortest( styleObjectOrString ) {
-	const top = toInlineBorder( styleObjectOrString.top );
-	const right = toInlineBorder( styleObjectOrString.right );
-	const bottom = toInlineBorder( styleObjectOrString.bottom );
-	const left = toInlineBorder( styleObjectOrString.left );
-
-	if ( top === right && right === bottom && bottom === left ) {
-		return 'border:' + top;
-	} else {
-		return printSingleValues( { top, right, bottom, left }, 'border' );
-	}
-}
-
 function toInlineStyleProperty( styleName, styleObjectOrString ) {
 	if ( styleName === 'border' ) {
 		return stringifyBorderProperty( styleObjectOrString );
 	}
 
-	if ( borderPositionRegExp.test( styleName ) ) {
-		return toInlineBorder( styleObjectOrString );
+	if ( styleName === 'border-color' ) {
+		return outputShorthandableValue( styleObjectOrString, true, 'border-color' );
+	}
+
+	if ( styleName === 'border-style' ) {
+		return outputShorthandableValue( styleObjectOrString, true, 'border-style' );
+	}
+
+	if ( styleName === 'border-width' ) {
+		return outputShorthandableValue( styleObjectOrString, true, 'border-width' );
 	}
 
 	if ( styleName === 'margin' ) {
@@ -413,32 +421,42 @@ function toInlineStyleProperty( styleName, styleObjectOrString ) {
 	return styleObjectOrString;
 }
 
+function leWhat( styleObjectOrString, styleName ) {
+	const values = [];
+
+	for ( const key of Object.keys( styleObjectOrString ) ) {
+		let styleObjectOrStringElement;
+
+		if ( isObject( styleObjectOrString[ key ] ) ) {
+			styleObjectOrStringElement = outputShorthandableValue( styleObjectOrString[ key ], true, styleName + 'key' );
+		} else {
+			styleObjectOrStringElement = styleObjectOrString[ key ];
+		}
+
+		values.push( `${ styleName }-${ key }:${ styleObjectOrStringElement }` );
+	}
+
+	return values.join( ';' );
+}
+
 function toInlineStyle( styleName, styleObjectOrString ) {
-	if ( styleName === 'border' ) {
-		return getShortest( styleObjectOrString );
-	}
+	const inliners = new Map();
 
-	if ( borderPositionRegExp.test( styleName ) ) {
-		return toInlineBorder( styleObjectOrString );
-	}
+	inliners.set( 'border-color', shBorder( 'color' ) );
+	inliners.set( 'border-style', shBorder( 'style' ) );
+	inliners.set( 'border-width', shBorder( 'width' ) );
+	inliners.set( 'margin', value => outputShorthandableValue( value, false, 'margin' ) );
+	inliners.set( 'padding', value => outputShorthandableValue( value, false, 'padding' ) );
 
-	if ( styleName === 'margin' ) {
-		return outputShorthandableValue( styleObjectOrString, false, 'margin' );
-	}
+	if ( inliners.has( styleName ) ) {
+		const inliner = inliners.get( styleName );
 
-	if ( styleName === 'padding' ) {
-		return outputShorthandableValue( styleObjectOrString, false, 'padding' );
+		return inliner( styleObjectOrString );
 	}
 
 	// Generic, one-level, object to style:
 	if ( isObject( styleObjectOrString ) ) {
-		const values = [];
-
-		for ( const key of Object.keys( styleObjectOrString ) ) {
-			values.push( `${ styleName }-${ key }:${ styleObjectOrString[ key ] }` );
-		}
-
-		return values.join( ';' );
+		return leWhat( styleObjectOrString, styleName );
 	}
 
 	return `${ styleName }:${ styleObjectOrString }`;

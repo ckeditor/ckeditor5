@@ -31,10 +31,9 @@ describe( 'Styles', () => {
 				styles.setStyle( 'border:1px solid blue;' );
 
 				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-					top: { color: 'blue', style: 'solid', width: '1px' },
-					right: { color: 'blue', style: 'solid', width: '1px' },
-					bottom: { color: 'blue', style: 'solid', width: '1px' },
-					left: { color: 'blue', style: 'solid', width: '1px' }
+					color: { top: 'blue', right: 'blue', bottom: 'blue', left: 'blue' },
+					style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'solid' },
+					width: { top: '1px', right: '1px', bottom: '1px', left: '1px' }
 				} );
 			} );
 
@@ -42,35 +41,31 @@ describe( 'Styles', () => {
 				styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-					top: { color: '#ccc', style: 'dotted', width: '7px' },
-					right: { color: 'blue', style: 'solid', width: '1px' },
-					bottom: { color: 'blue', style: 'solid', width: '1px' },
-					left: { color: '#665511', style: 'dashed', width: '2.7em' }
+					color: { top: '#ccc', right: 'blue', bottom: 'blue', left: '#665511' },
+					style: { top: 'dotted', right: 'solid', bottom: 'solid', left: 'dashed' },
+					width: { top: '7px', right: '1px', bottom: '1px', left: '2.7em' }
 				} );
 			} );
 
 			it( 'should output inline shorthand rules', () => {
 				styles.setStyle( 'border:1px solid blue;' );
 
-				expect( styles.getInlineStyle() ).to.equal( 'border:1px solid blue;' );
-				expect( styles.getInlineProperty( 'border' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-top' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '1px solid blue' );
+				expect( styles.getInlineStyle() ).to.equal( 'border-color:blue;border-style:solid;border-width:1px;' );
+				expect( styles.getInlineProperty( 'border-color' ) ).to.equal( 'blue' );
+				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'solid' );
+				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '1px' );
 			} );
 
 			it( 'should output inline shorthand rules', () => {
 				styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 				expect( styles.getInlineStyle() ).to.equal(
-					'border-top:7px dotted #ccc;border-right:1px solid blue;border-bottom:1px solid blue;border-left:2.7em dashed #665511;'
+					'border-color:#ccc blue blue #665511;border-style:dotted solid solid dashed;border-width:7px 1px 1px 2.7em;'
 				);
-				expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
-				expect( styles.getInlineProperty( 'border-top' ) ).to.equal( '7px dotted #ccc' );
-				expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '2.7em dashed #665511' );
+				// todo expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
+				expect( styles.getInlineProperty( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
+				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'dotted solid solid dashed' );
+				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
 			} );
 
 			it( 'should merge rules on insert other shorthand', () => {
@@ -79,27 +74,26 @@ describe( 'Styles', () => {
 				styles.insertProperty( 'border-top', '7px dotted #ccc' );
 
 				expect( styles.getInlineStyle() ).to.equal(
-					'border-top:7px dotted #ccc;border-right:1px solid blue;border-bottom:1px solid blue;border-left:2.7em dashed #665511;'
+					'border-color:#ccc blue blue #665511;border-style:dotted solid solid dashed;border-width:7px 1px 1px 2.7em;'
 				);
-				expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
-				expect( styles.getInlineProperty( 'border-top' ) ).to.equal( '7px dotted #ccc' );
-				expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '2.7em dashed #665511' );
+				// expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
+				expect( styles.getInlineProperty( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
+				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'dotted solid solid dashed' );
+				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
 			} );
 
 			it( 'should output', () => {
 				styles.setStyle( 'border:1px solid blue;' );
-				styles.removeProperty( 'border-top' );
+				styles.removeProperty( 'border-color' );
 
 				expect( styles.getInlineStyle() ).to.equal(
-					'border-right:1px solid blue;border-bottom:1px solid blue;border-left:1px solid blue;'
+					'border-style:solid;border-width:1px;'
 				);
-				expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
-				expect( styles.getInlineProperty( 'border-top' ) ).to.be.undefined;
-				expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '1px solid blue' );
-				expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '1px solid blue' );
+
+				// expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
+				expect( styles.getInlineProperty( 'border-color' ) ).to.be.undefined;
+				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'solid' );
+				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '1px' );
 			} );
 
 			describe( 'border-color', () => {
@@ -107,10 +101,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-color:cyan;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { color: 'cyan' },
-						left: { color: 'cyan' },
-						bottom: { color: 'cyan' },
-						right: { color: 'cyan' }
+						color: {
+							top: 'cyan',
+							right: 'cyan',
+							bottom: 'cyan',
+							left: 'cyan'
+						}
 					} );
 				} );
 
@@ -118,10 +114,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-color:cyan magenta;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { color: 'cyan' },
-						right: { color: 'magenta' },
-						bottom: { color: 'cyan' },
-						left: { color: 'magenta' }
+						color: {
+							top: 'cyan',
+							right: 'magenta',
+							bottom: 'cyan',
+							left: 'magenta'
+						}
 					} );
 				} );
 
@@ -129,10 +127,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-color:cyan magenta pink;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { color: 'cyan' },
-						right: { color: 'magenta' },
-						bottom: { color: 'pink' },
-						left: { color: 'magenta' }
+						color: {
+							top: 'cyan',
+							right: 'magenta',
+							bottom: 'pink',
+							left: 'magenta'
+						}
 					} );
 				} );
 
@@ -140,10 +140,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-color:cyan magenta pink beige;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { color: 'cyan' },
-						right: { color: 'magenta' },
-						bottom: { color: 'pink' },
-						left: { color: 'beige' }
+						color: {
+							top: 'cyan',
+							right: 'magenta',
+							bottom: 'pink',
+							left: 'beige'
+						}
 					} );
 				} );
 
@@ -151,10 +153,9 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border:1px solid blue;border-color:cyan black;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { color: 'cyan', style: 'solid', width: '1px' },
-						right: { color: 'black', style: 'solid', width: '1px' },
-						bottom: { color: 'cyan', style: 'solid', width: '1px' },
-						left: { color: 'black', style: 'solid', width: '1px' }
+						color: { top: 'cyan', right: 'black', bottom: 'cyan', left: 'black' },
+						style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'solid' },
+						width: { top: '1px', right: '1px', bottom: '1px', left: '1px' }
 					} );
 				} );
 			} );
@@ -164,10 +165,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-style:solid;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { style: 'solid' },
-						right: { style: 'solid' },
-						bottom: { style: 'solid' },
-						left: { style: 'solid' }
+						style: {
+							top: 'solid',
+							right: 'solid',
+							bottom: 'solid',
+							left: 'solid'
+						}
 					} );
 				} );
 
@@ -175,10 +178,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-style:solid dotted;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { style: 'solid' },
-						right: { style: 'dotted' },
-						bottom: { style: 'solid' },
-						left: { style: 'dotted' }
+						style: {
+							top: 'solid',
+							right: 'dotted',
+							bottom: 'solid',
+							left: 'dotted'
+						}
 					} );
 				} );
 
@@ -186,10 +191,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-style:solid dotted dashed;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { style: 'solid' },
-						right: { style: 'dotted' },
-						bottom: { style: 'dashed' },
-						left: { style: 'dotted' }
+						style: {
+							top: 'solid',
+							right: 'dotted',
+							bottom: 'dashed',
+							left: 'dotted'
+						}
 					} );
 				} );
 
@@ -197,10 +204,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-style:solid dotted dashed ridge;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { style: 'solid' },
-						right: { style: 'dotted' },
-						bottom: { style: 'dashed' },
-						left: { style: 'ridge' }
+						style: {
+							top: 'solid',
+							right: 'dotted',
+							bottom: 'dashed',
+							left: 'ridge'
+						}
 					} );
 				} );
 			} );
@@ -210,10 +219,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-width:1px;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { width: '1px' },
-						right: { width: '1px' },
-						bottom: { width: '1px' },
-						left: { width: '1px' }
+						width: {
+							top: '1px',
+							right: '1px',
+							bottom: '1px',
+							left: '1px'
+						}
 					} );
 				} );
 
@@ -221,10 +232,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-width:1px .34cm;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { width: '1px' },
-						right: { width: '.34cm' },
-						bottom: { width: '1px' },
-						left: { width: '.34cm' }
+						width: {
+							top: '1px',
+							right: '.34cm',
+							bottom: '1px',
+							left: '.34cm'
+						}
 					} );
 				} );
 
@@ -232,10 +245,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-width:1px .34cm 90.1rem;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { width: '1px' },
-						right: { width: '.34cm' },
-						bottom: { width: '90.1rem' },
-						left: { width: '.34cm' }
+						width: {
+							top: '1px',
+							right: '.34cm',
+							bottom: '90.1rem',
+							left: '.34cm'
+						}
 					} );
 				} );
 
@@ -243,10 +258,12 @@ describe( 'Styles', () => {
 					styles.setStyle( 'border-width:1px .34cm 90.1rem thick;' );
 
 					expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
-						top: { width: '1px' },
-						right: { width: '.34cm' },
-						bottom: { width: '90.1rem' },
-						left: { width: 'thick' }
+						width: {
+							top: '1px',
+							right: '.34cm',
+							bottom: '90.1rem',
+							left: 'thick'
+						}
 					} );
 				} );
 			} );
