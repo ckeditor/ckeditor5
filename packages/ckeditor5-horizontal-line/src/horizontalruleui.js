@@ -29,8 +29,7 @@ export default class HorizontalRuleUI extends Plugin {
 			view.set( {
 				label: t( 'Horizontal rule' ),
 				icon: horizontalRuleIcon,
-				tooltip: true,
-				isToggleable: true
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );

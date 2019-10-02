@@ -44,7 +44,7 @@ describe( 'HorizontalRuleUI', () => {
 		expect( horizontalRuleView ).to.be.instanceOf( ButtonView );
 		expect( horizontalRuleView.label ).to.equal( 'Horizontal rule' );
 		expect( horizontalRuleView.icon ).to.match( /<svg / );
-		expect( horizontalRuleView.isToggleable ).to.be.true;
+		expect( horizontalRuleView.isToggleable ).to.be.false;
 	} );
 
 	it( 'should execute horizontalRule command on model execute event', () => {
