@@ -485,12 +485,12 @@ describe( 'Element', () => {
 			it( 'should replace all styles', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'top', '10px' );
-				el._setAttribute( 'style', 'border:none' );
+				el._setAttribute( 'style', 'margin-top:2em;' );
 
 				expect( el.hasStyle( 'color' ) ).to.be.false;
 				expect( el.hasStyle( 'top' ) ).to.be.false;
-				expect( el.hasStyle( 'border' ) ).to.be.true;
-				expect( el.getStyle( 'border' ) ).to.equal( 'none' );
+				expect( el.hasStyle( 'margin-top' ) ).to.be.true;
+				expect( el.getStyle( 'margin-top' ) ).to.equal( '2em' );
 			} );
 		} );
 
@@ -794,11 +794,11 @@ describe( 'Element', () => {
 			it( 'should get style', () => {
 				el._setStyle( {
 					color: 'red',
-					border: '1px solid red'
+					'margin-top': '1px'
 				} );
 
 				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( el.getStyle( 'border' ) ).to.equal( '1px solid red' );
+				expect( el.getStyle( 'margin-top' ) ).to.equal( '1px' );
 			} );
 		} );
 
@@ -1034,10 +1034,10 @@ describe( 'Element', () => {
 
 		it( 'should return styles in sorted order', () => {
 			const el = new Element( 'foo', {
-				style: 'border: 1px solid red; background-color: red'
+				style: 'margin-top: 2em; background-color: red'
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;border:1px solid red;"' );
+			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;margin-top:2em;"' );
 		} );
 
 		it( 'should return attributes in sorted order', () => {

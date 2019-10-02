@@ -15,7 +15,7 @@ describe( 'EmptyElement', () => {
 		element = new Element( 'b' );
 		emptyElement = new EmptyElement( 'img', {
 			alt: 'alternative text',
-			style: 'border: 1px solid red;color: white;',
+			style: 'margin-top: 2em;color: white;',
 			class: 'image big'
 		} );
 	} );
@@ -88,7 +88,7 @@ describe( 'EmptyElement', () => {
 
 			expect( newEmptyElement.name ).to.equal( 'img' );
 			expect( newEmptyElement.getAttribute( 'alt' ) ).to.equal( 'alternative text' );
-			expect( newEmptyElement.getStyle( 'border' ) ).to.equal( '1px solid red' );
+			expect( newEmptyElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
 			expect( newEmptyElement.getStyle( 'color' ) ).to.equal( 'white' );
 			expect( newEmptyElement.hasClass( 'image' ) ).to.be.true;
 			expect( newEmptyElement.hasClass( 'big' ) ).to.be.true;

@@ -15,7 +15,7 @@ describe( 'UIElement', () => {
 	beforeEach( () => {
 		uiElement = new UIElement( 'span', {
 			foo: 'bar',
-			style: 'border: 1px solid red;color: white;',
+			style: 'margin-top: 2em;color: white;',
 			class: 'foo bar'
 		} );
 	} );
@@ -24,7 +24,7 @@ describe( 'UIElement', () => {
 		it( 'should create instance', () => {
 			expect( uiElement.name ).to.equal( 'span' );
 			expect( uiElement.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( uiElement.getStyle( 'border' ) ).to.equal( '1px solid red' );
+			expect( uiElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
 			expect( uiElement.getStyle( 'color' ) ).to.equal( 'white' );
 			expect( uiElement.hasClass( 'foo' ) ).to.true;
 			expect( uiElement.hasClass( 'bar' ) ).to.true;
@@ -101,7 +101,7 @@ describe( 'UIElement', () => {
 
 			expect( newUIElement.name ).to.equal( 'span' );
 			expect( newUIElement.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( newUIElement.getStyle( 'border' ) ).to.equal( '1px solid red' );
+			expect( newUIElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
 			expect( newUIElement.getStyle( 'color' ) ).to.equal( 'white' );
 			expect( newUIElement.hasClass( 'foo' ) ).to.true;
 			expect( newUIElement.hasClass( 'bar' ) ).to.true;
