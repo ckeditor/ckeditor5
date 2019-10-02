@@ -193,7 +193,15 @@ export default class Watchdog {
 	 * Overrides the default destruction function, which destroys only the editor instance.
 	 * It expects a function that should return a promise or `undefined`.
 	 *
-	 *		watchdog.setDestructor( editor => editor.destroy() );
+	 *		watchdog.setDestructor( editor => {
+	 *			// Do something before the editor is destroyed.
+	 *
+	 *			return editor
+	 *				.destroy()
+	 *				.then( () => {
+	 *					// Do something after the editor is destroyed.
+	 *				} );
+	 *		} );
 	 *
 	 * @param {Function} destructor
 	 */
