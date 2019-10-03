@@ -12,6 +12,8 @@ import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import Batch from '../../src/model/batch';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Model', () => {
 	let model, schema, changes;
@@ -320,6 +322,60 @@ describe( 'Model', () => {
 			model.enqueueChange( 'transparent', writer => {
 				expect( writer.batch.type ).to.equal( 'transparent' );
 			} );
+		} );
+
+		it( 'should catch a non-ckeditor error inside the `change()` block and throw the CKEditorError error outside of it', () => {
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			expectToThrowCKEditorError( () => {
+				model.change( () => {
+					throw error;
+				} );
+			}, /model-change-unexpected-error/, model, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'TypeError'
+				}
+			} );
+		} );
+
+		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
+			const err = new CKEditorError( 'foo', null, { foo: 1 } );
+
+			expectToThrowCKEditorError( () => {
+				model.change( () => {
+					throw err;
+				} );
+			}, /foo/, null, { foo: 1 } );
+		} );
+
+		it( 'should catch a non-ckeditor error inside the `enqueueChange()` block and throw the CKEditorError error outside of it', () => {
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			expectToThrowCKEditorError( () => {
+				model.enqueueChange( () => {
+					throw error;
+				} );
+			}, /model-enqueueChange-unexpected-error/, model, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'TypeError'
+				}
+			} );
+		} );
+
+		it( 'should throw the original CKEditorError error if it was thrown inside the `enqueueChange()` block', () => {
+			const err = new CKEditorError( 'foo', null, { foo: 1 } );
+
+			expectToThrowCKEditorError( () => {
+				model.enqueueChange( () => {
+					throw err;
+				} );
+			}, /foo/, null, { foo: 1 } );
 		} );
 	} );
 
