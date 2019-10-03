@@ -126,8 +126,11 @@ export default class ResizeState {
 
 		const widthStyle = domResizeHost.style.width;
 
-		this.originalWidthPercents = widthStyle && widthStyle.match( /^\d+\.?\d*%$/ ) ?
-			parseFloat( widthStyle ) : calculateHostPercentageWidth( domResizeHost, clientRect );
+		if ( widthStyle && widthStyle.match( /^\d+\.?\d*%$/ ) ) {
+			this.originalWidthPercents = parseFloat( widthStyle );
+		} else {
+			this.originalWidthPercents = calculateHostPercentageWidth( domResizeHost, clientRect );
+		}
 	}
 
 	update( newSize ) {
