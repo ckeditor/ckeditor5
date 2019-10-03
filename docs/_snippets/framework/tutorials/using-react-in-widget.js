@@ -54,7 +54,7 @@ class ProductPreviewEditing extends Plugin {
 			// Allow in places where other blocks are allowed (e.g. directly in the root).
 			allowWhere: '$block',
 
-			// Each product preview has an id. An unique id tells the application which
+			// Each product preview has an ID. A unique ID tells the application which
 			// product it represents and makes it possible to render it inside a widget.
 			allowAttributes: [ 'id' ]
 		} );
@@ -72,7 +72,7 @@ class ProductPreviewEditing extends Plugin {
 				classes: 'product'
 			},
 			model: ( viewElement, modelWriter ) => {
-				// Read the "data-id" attribute from the view and set it as "id" in the model.
+				// Read the "data-id" attribute from the view and set it as the "id" in the model.
 				return modelWriter.createElement( 'productPreview', {
 					id: parseInt( viewElement.getAttribute( 'data-id' ) )
 				} );
@@ -106,7 +106,7 @@ class ProductPreviewEditing extends Plugin {
 				// </section>
 				const id = modelElement.getAttribute( 'id' );
 
-				// The outer-most <section class="product" data-id="..."></section> element.
+				// The outermost <section class="product" data-id="..."></section> element.
 				const section = viewWriter.createContainerElement( 'section', {
 					class: 'product',
 					'data-id': id
@@ -120,7 +120,7 @@ class ProductPreviewEditing extends Plugin {
 					const domElement = this.toDomElement( domDocument );
 
 					// This the place where React renders the actual product preview hosted
-					// by a UIElement in the view. We're using a function (renderer) passed as
+					// by a UIElement in the view. you are using a function (renderer) passed as
 					// editor.config.products#productRenderer.
 					renderProduct( id, domElement );
 

@@ -216,23 +216,23 @@ class App extends React.Component {
 		super( props );
 
 		// A place to store the reference to the editor instance created by the <CKEditor> component.
-		// The editor instance is created asynchronously and only available when the editor is ready.
+		// The editor instance is created asynchronously and is only available when the editor is ready.
 		this.editor = null;
 
 		this.state = {
 			// The initial editor data. It is bound to the editor instance and will change as
 			// the user types and modifies the content of the editor.
-			editorData: '<h2>Check our last minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! Best time to visit the city is July and August, when it’s cool enough to not break a sweat and hot enough to enjoy summer. The city which has quite a combination of both old and modern textures is located by the river of Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
+			editorData: '<h2>Check our last minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! Best time to visit the city is July and August, when it’s cool enough to not break a sweat and hot enough to enjoy summer. The city which has quite a combination of both old and modern textures is located by the river Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
 		};
 
 		// The configuration of the <CKEditor> instance.
 		this.editorConfig = {
 			plugins: [
-				// A set of editor features to be enabled and available to the user.
+				// A set of editor features to be enabled and made available to the user.
 				Essentials, Heading, Bold, Italic, Underline,
 				Link, Paragraph, Table, TableToolbar,
 
-				// Our custom plugin implementing the widget is loaded here.
+				// Your custom plugin implementing the widget is loaded here.
 				ProductPreviewEditing
 			],
 			toolbar: {
@@ -293,8 +293,8 @@ class App extends React.Component {
 	render() {
 		return [
 			// The application renders two columns:
-			// * in the left one, the <CKEditor> is rendered and the textarea displaying
-			//   live editor data.
+			// * in the left one, the <CKEditor> and the textarea displaying live
+			//   editor data are rendered.
 			// * in the right column, a <ProductList> is rendered with available <ProductPreviews>
 			//   to choose from.
 			<div className="app__offer-editor" key="offer-editor">
@@ -322,13 +322,13 @@ class App extends React.Component {
 	}
 }
 
-// Render the <App> in the <div class="app"></div> element found in DOM.
+// Render the <App> in the <div class="app"></div> element found in the DOM.
 ReactDOM.render(
 	<App
-		// Feeding the application with pre–defined products.
+		// Feeding the application with predefined products.
 		// In a real-life application, this sort of data would be loaded
-		// from a database. To keep this tutorial simple, we're using
-		// a couple of hard–coded product definitions.
+		// from a database. To keep this tutorial simple, a few
+		//  hard–coded product definitions will be used.
 		products={[
 			{
 				id: 1,
@@ -338,7 +338,7 @@ ReactDOM.render(
 			},
 			{
 				id: 2,
-				name: 'Mediterranean Sun on Malta',
+				name: 'Mediterranean sun on Malta',
 				price: '$1899',
 				image: '../../../assets/img/malta.jpg'
 			},
@@ -350,7 +350,7 @@ ReactDOM.render(
 			},
 			{
 				id: 4,
-				name: 'Exotic india',
+				name: 'Exotic India',
 				price: '$2200',
 				image: '../../../assets/img/tajmahal.jpg'
 			}
