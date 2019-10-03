@@ -310,23 +310,34 @@ export default class Rect {
 	 */
 	excludeScrollbarsAndBorders() {
 		const source = this._source;
-		let scrollBarWidth, scrollBarHeight;
+		let scrollBarWidth, scrollBarHeight, direction;
 
 		if ( isWindow( source ) ) {
 			scrollBarWidth = source.innerWidth - source.document.documentElement.clientWidth;
 			scrollBarHeight = source.innerHeight - source.document.documentElement.clientHeight;
+			direction = source.getComputedStyle( source.document.documentElement ).direction;
 		} else {
 			const borderWidths = getBorderWidths( this._source );
 
-			scrollBarWidth = source.offsetWidth - source.clientWidth;
-			scrollBarHeight = source.offsetHeight - source.clientHeight;
+			scrollBarWidth = source.offsetWidth - source.clientWidth - borderWidths.left - borderWidths.right;
+			scrollBarHeight = source.offsetHeight - source.clientHeight - borderWidths.top - borderWidths.bottom;
+			direction = source.ownerDocument.defaultView.getComputedStyle( source ).direction;
 
-			this.moveBy( borderWidths.left, borderWidths.top );
+			this.left += borderWidths.left;
+			this.top += borderWidths.top;
+			this.right -= borderWidths.right;
+			this.bottom -= borderWidths.bottom;
+			this.width = this.right - this.left;
+			this.height = this.bottom - this.top;
 		}
 
-		// Assuming LTR scrollbars. TODO: RTL.
 		this.width -= scrollBarWidth;
-		this.right -= scrollBarWidth;
+
+		if ( direction === 'ltr' ) {
+			this.right -= scrollBarWidth;
+		} else {
+			this.left += scrollBarWidth;
+		}
 
 		this.height -= scrollBarHeight;
 		this.bottom -= scrollBarHeight;
