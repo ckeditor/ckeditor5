@@ -7,7 +7,7 @@
  * @module engine/view/styles
  */
 
-import { get, has, isObject, isPlainObject, merge, set, unset } from 'lodash-es';
+import { get, has, isObject, merge, set, unset } from 'lodash-es';
 
 const setOnPathStyles = [
 	// Margin & padding.
@@ -29,23 +29,113 @@ export default class Styles {
 	 * @param {String} styleString Initial styles value.
 	 */
 	constructor( styleString = '' ) {
+		/**
+		 * @type {{}}
+		 * @private
+		 */
 		this._styles = {};
 
-		this.parsers = new Map();
+		/**
+		 * Holds shorthand properties normalizers.
+		 *
+		 * Shorthand properties must be normalized as they can be written in various ways.
+		 * Normalizer must return object describing given shorthand.
+		 *
+		 * Example:
+		 * The `border-color` style is a shorthand property for `border-top-color`, `border-right-color`, `border-bottom-color`
+		 * and `border-left-color`. Similarly there are shorthand for border width (`border-width`) and style (`border-style`).
+		 *
+		 * For `border-color` the given shorthand:
+		 *
+		 *		border-color: #f00 #ba7;
+		 *
+		 * might be written as:
+		 *
+		 *		border-color-top: #f00;
+		 *		border-color-right: #ba7;
+		 *		border-color-bottom: #f00;
+		 *		border-color-left: #ba7;
+		 *
+		 * Normalizers produces coherent object representation for both shorthand and longhand forms:
+		 *
+		 *		const style = {
+		 *			border: {
+		 *				color: {
+		 *					top: '#f00',
+		 *					right: '#ba7',
+		 *					bottom: '#f00',
+		 *					left: '#ba7'
+		 *				}
+		 *			}
+		 *		}
+		 *
+		 * @type {Map<String, Function>}
+		 */
+		this.normalizers = new Map();
 
-		this.parsers.set( 'border', parseBorder );
-		this.parsers.set( 'border-top', parseBorderSide( 'top' ) );
-		this.parsers.set( 'border-right', parseBorderSide( 'right' ) );
-		this.parsers.set( 'border-bottom', parseBorderSide( 'bottom' ) );
-		this.parsers.set( 'border-left', parseBorderSide( 'left' ) );
-		this.parsers.set( 'border-color', parseBorderProperty( 'color' ) );
-		this.parsers.set( 'border-width', parseBorderProperty( 'width' ) );
-		this.parsers.set( 'border-style', parseBorderProperty( 'style' ) );
+		this.normalizers.set( 'border', normalizeBorder );
+		this.normalizers.set( 'border-top', getBorderPositionNormalizer( 'top' ) );
+		this.normalizers.set( 'border-right', getBorderPositionNormalizer( 'right' ) );
+		this.normalizers.set( 'border-bottom', getBorderPositionNormalizer( 'bottom' ) );
+		this.normalizers.set( 'border-left', getBorderPositionNormalizer( 'left' ) );
+		this.normalizers.set( 'border-color', getBorderPropertyNormalizer( 'color' ) );
+		this.normalizers.set( 'border-width', getBorderPropertyNormalizer( 'width' ) );
+		this.normalizers.set( 'border-style', getBorderPropertyNormalizer( 'style' ) );
 
-		this.parsers.set( 'background', parseBackground );
+		this.normalizers.set( 'background', normalizeBackground );
 
-		this.parsers.set( 'margin', parseShorthandSides( 'margin' ) );
-		this.parsers.set( 'padding', parseShorthandSides( 'padding' ) );
+		this.normalizers.set( 'margin', getPositionShorthandNormalizer( 'margin' ) );
+		this.normalizers.set( 'padding', getPositionShorthandNormalizer( 'padding' ) );
+
+		/**
+		 * Holds style normalize object reducrs.
+		 *
+		 * An style inliner takes normalized object of style property and outputs array of normalized property-value pairs that can
+		 * be later used to inline a style.
+		 *
+		 * Those work in opposite direction to {@link #normalizers} and always outputs style in the same way.
+		 *
+		 * If normalized style is represented as:
+		 *
+		 *		const style = {
+		 *			border: {
+		 *				color: {
+		 *					top: '#f00',
+		 *					right: '#ba7',
+		 *					bottom: '#f00',
+		 *					left: '#ba7'
+		 *				}
+		 *			}
+		 *		}
+		 *
+		 * The border reducer will output:
+		 *
+		 *		const reduced = [
+		 *			[ 'border-color', '#f00 #ba7' ]
+		 *		];
+		 *
+		 * which can be used to return the inline style string:
+		 *
+		 *		style="border-color:#f00 #ba7;"
+		 *
+		 * @type {Map<String, Function>}
+		 */
+		this.reducers = new Map();
+
+		this.reducers.set( 'border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
+		this.reducers.set( 'border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
+		this.reducers.set( 'border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
+		this.reducers.set( 'border', getBorderReducer );
+
+		this.reducers.set( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
+
+		this.reducers.set( 'background', value => {
+			const ret = [];
+
+			ret.push( [ 'background-color', value.color ] );
+
+			return ret;
+		} );
 
 		this.setStyle( styleString );
 	}
@@ -72,7 +162,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			this._parseProperty( key, value );
+			this._getNormalizedForm( key, value );
 		}
 	}
 
@@ -112,12 +202,12 @@ export default class Styles {
 	 * @returns {Boolean}
 	 */
 	insertProperty( nameOrObject, value ) {
-		if ( isPlainObject( nameOrObject ) ) {
+		if ( isObject( nameOrObject ) ) {
 			for ( const key of Object.keys( nameOrObject ) ) {
 				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			this._parseProperty( nameOrObject, value );
+			this._getNormalizedForm( nameOrObject, value );
 		}
 	}
 
@@ -194,7 +284,9 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const propertyDescriptor = toInlineStyleProperty( propertyName, normalized );
+			const styles = this._getReduceForm( propertyName, normalized );
+
+			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
 			// Only return a value if it is set;
 			if ( Array.isArray( propertyDescriptor ) ) {
@@ -237,7 +329,7 @@ export default class Styles {
 		for ( const key of keys ) {
 			const normalized = this.getNormalized( key );
 
-			parsed.push( ...newNewGetStyleFromNormalized( key, normalized ) );
+			parsed.push( ...this._getReduceForm( key, normalized ) );
 		}
 
 		return parsed;
@@ -265,33 +357,55 @@ export default class Styles {
 	}
 
 	/**
-	 * Parses single style property.
+	 * Parse style property value to a normalized form.
 	 *
-	 * @param {String} name Name of style property.
+	 * @param {String} propertyName Name of style property.
 	 * @param {String} value Value of style property.
 	 * @private
 	 */
-	_parseProperty( name, value ) {
-		if ( isPlainObject( value ) ) {
-			this._appendStyleValue( toPath( name ), value );
+	_getNormalizedForm( propertyName, value ) {
+		if ( isObject( value ) ) {
+			this._appendStyleValue( toPath( propertyName ), value );
 
 			return;
 		}
 
 		// Set directly to an object.
-		if ( setOnPathStyles.includes( name ) ) {
-			this._appendStyleValue( toPath( name ), value );
+		if ( setOnPathStyles.includes( propertyName ) ) {
+			this._appendStyleValue( toPath( propertyName ), value );
 
 			return;
 		}
 
-		if ( this.parsers.has( name ) ) {
-			const parser = this.parsers.get( name );
+		if ( this.normalizers.has( propertyName ) ) {
+			const parser = this.normalizers.get( propertyName );
 
 			this._styles = merge( {}, this._styles, parser( value ) );
 		} else {
-			this._appendStyleValue( name, value );
+			this._appendStyleValue( propertyName, value );
 		}
+	}
+
+	/**
+	 * Returns reduced form of style property form normalized object.
+	 *
+	 * @private
+	 * @param {String} styleName
+	 * @param {Object|String} normalizedValue
+	 * @returns {Array.<Array.<String, String>>}
+	 */
+	_getReduceForm( styleName, normalizedValue ) {
+		let stylesArray;
+
+		if ( this.reducers.has( styleName ) ) {
+			const styleGetter = this.reducers.get( styleName );
+
+			stylesArray = styleGetter( normalizedValue );
+		} else {
+			stylesArray = [ [ styleName, normalizedValue ] ];
+		}
+
+		return stylesArray || [];
 	}
 }
 
@@ -312,14 +426,14 @@ function toBorderPropertyShorthand( value, property ) {
 	};
 }
 
-function parseShorthandSides( longhand ) {
+function getPositionShorthandNormalizer( longhand ) {
 	return value => {
 		return { [ longhand ]: getTopRightBottomLeftValues( value ) };
 	};
 }
 
-function parseBorder( value ) {
-	const { color, style, width } = parseShorthandBorderAttribute( value );
+function normalizeBorder( value ) {
+	const { color, style, width } = normalizeBorderShorthand( value );
 
 	return {
 		border: {
@@ -330,9 +444,9 @@ function parseBorder( value ) {
 	};
 }
 
-function parseBorderSide( side ) {
+function getBorderPositionNormalizer( side ) {
 	return value => {
-		const { color, style, width } = parseShorthandBorderAttribute( value );
+		const { color, style, width } = normalizeBorderShorthand( value );
 
 		const border = {};
 
@@ -352,13 +466,11 @@ function parseBorderSide( side ) {
 	};
 }
 
-function parseBorderProperty( foo ) {
-	return value => ( {
-		border: toBorderPropertyShorthand( value, foo )
-	} );
+function getBorderPropertyNormalizer( propertyName ) {
+	return value => ( { border: toBorderPropertyShorthand( value, propertyName ) } );
 }
 
-function parseShorthandBorderAttribute( string ) {
+function normalizeBorderShorthand( string ) {
 	const result = {};
 
 	for ( const part of string.split( ' ' ) ) {
@@ -378,7 +490,7 @@ function parseShorthandBorderAttribute( string ) {
 	return result;
 }
 
-function parseBackground( value ) {
+function normalizeBackground( value ) {
 	const background = {};
 
 	const parts = value.split( ' ' );
@@ -404,35 +516,52 @@ function isLength( string ) {
 	return /^[+-]?[0-9]?[.]?[0-9]+([a-z]+|%)$/.test( string );
 }
 
-function printSingleValues( { top, right, bottom, left }, prefix ) {
+function getBorderReducer( value ) {
 	const ret = [];
 
-	if ( top ) {
-		ret.push( [ prefix + '-top', top ] );
-	}
-
-	if ( right ) {
-		ret.push( [ prefix + '-right', right ] );
-	}
-
-	if ( bottom ) {
-		ret.push( [ prefix + '-bottom', bottom ] );
-	}
-
-	if ( left ) {
-		ret.push( [ prefix + '-left', left ] );
-	}
+	ret.push( ...getTopRightBottomLeftValueReducer( 'border-color' )( value.color ) );
+	ret.push( ...getTopRightBottomLeftValueReducer( 'border-style' )( value.style ) );
+	ret.push( ...getTopRightBottomLeftValueReducer( 'border-width' )( value.width ) );
 
 	return ret;
 }
 
-function shBorderProperty( which ) {
+function getTopRightBottomLeftValueReducer( styleShorthand ) {
 	return value => {
-		return outputShorthandableValue( value, false, `border-${ which }` );
+		const { top, right, bottom, left } = ( value || {} );
+
+		const reduced = [];
+
+		if ( top === left && left === bottom && bottom === right ) {
+			// Might be not set.
+			if ( top !== undefined ) {
+				return [ [ styleShorthand, top ] ];
+			}
+		} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
+			if ( top ) {
+				reduced.push( [ styleShorthand + '-top', top ] );
+			}
+
+			if ( right ) {
+				reduced.push( [ styleShorthand + '-right', right ] );
+			}
+
+			if ( bottom ) {
+				reduced.push( [ styleShorthand + '-bottom', bottom ] );
+			}
+
+			if ( left ) {
+				reduced.push( [ styleShorthand + '-left', left ] );
+			}
+		} else {
+			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( value ) ] );
+		}
+
+		return reduced;
 	};
 }
 
-function getTopRightBottomLeftShorthand( { left, right, top, bottom } ) {
+function getTopRightBottomLeftShorthandValue( { left, right, top, bottom } ) {
 	const out = [];
 
 	if ( left !== right ) {
@@ -446,70 +575,6 @@ function getTopRightBottomLeftShorthand( { left, right, top, bottom } ) {
 	}
 
 	return out.join( ' ' );
-}
-
-function outputShorthandableValue( styleObject = {}, strict, styleShorthand ) {
-	const { top, right, bottom, left } = styleObject;
-
-	if ( top === left && left === bottom && bottom === right ) {
-		// Might be not set.
-		if ( top === undefined ) {
-			return [];
-		}
-
-		return [ [ styleShorthand, top ] ];
-	} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
-		return printSingleValues( { top, right, bottom, left }, styleShorthand );
-	} else {
-		return [ [ styleShorthand, getTopRightBottomLeftShorthand( styleObject ) ] ];
-	}
-}
-
-function newNewGetStyleFromNormalized( styleName, styleObjectOrString ) {
-	const styleGetters = new Map();
-
-	styleGetters.set( 'border-color', shBorderProperty( 'color' ) );
-	styleGetters.set( 'border-style', shBorderProperty( 'style' ) );
-	styleGetters.set( 'border-width', shBorderProperty( 'width' ) );
-	styleGetters.set( 'border', value => {
-		const ret = [];
-
-		ret.push( ...shBorderProperty( 'color' )( value.color ) );
-		ret.push( ...shBorderProperty( 'style' )( value.style ) );
-		ret.push( ...shBorderProperty( 'width' )( value.width ) );
-
-		return ret;
-	} );
-
-	styleGetters.set( 'margin', value => {
-		return outputShorthandableValue( value, false, 'margin' );
-	} );
-
-	styleGetters.set( 'background', value => {
-		const ret = [];
-
-		ret.push( [ 'background-color', value.color ] );
-
-		return ret;
-	} );
-
-	let stylesArray;
-
-	if ( styleGetters.has( styleName ) ) {
-		const styleGetter = styleGetters.get( styleName );
-
-		stylesArray = styleGetter( styleObjectOrString );
-	} else {
-		stylesArray = [ [ styleName, styleObjectOrString ] ];
-	}
-
-	return stylesArray || [];
-}
-
-function toInlineStyleProperty( styleName, styleObjectOrString ) {
-	const styles = newNewGetStyleFromNormalized( styleName, styleObjectOrString );
-
-	return styles.find( ( [ property ] ) => property === styleName );
 }
 
 // Parses inline styles and puts property - value pairs into styles map.
