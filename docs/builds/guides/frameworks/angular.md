@@ -365,6 +365,35 @@ export class MyComponent {
 }
 ```
 
+## Accessing the editor instance
+
+The `<ckeditor>` component provides all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to get the editor with an additional step.
+
+To do this create a template reference variable `#editor` pointing the `<ckeditor>` component:
+
+```html
+<ckeditor #editor [editor]="Editor" ...></ckeditor>
+```
+
+Then get the `<ckeditor>` component using a property decorated by `@ViewChild( 'editor' )` and access the editor instance when needed:
+
+```ts
+@Component()
+export class MyComponent {
+	@ViewChild( 'editor' ) editorComponent: CKEditorComponent;
+
+	public getEditor() {
+		// Warning: this may return undefined if the editor is hidden behind the `*ngIf` directive or
+		// if the editor is not fully initialised yet.
+		return this.editorComponent.editorInstance;
+	}
+}
+```
+
+<info-box>
+	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes on just created editor then the better option would be getting instance of CKEditor 5 editor on the [`ready`](#ready) event.
+</info-box>
+
 ## Localization
 
 The CKEditor 5 rich text editor component can be localized in two steps.
