@@ -130,18 +130,10 @@ export default class Styles {
 	}
 
 	getInlineStyle() {
-		const parsed = [];
+		const parsed = this._toFFFFFFFFFFStylesMap();
 
-		const keys = Object.keys( this._styles ).sort();
-
-		if ( !keys.length ) {
+		if ( !parsed.length ) {
 			return;
-		}
-
-		for ( const key of keys ) {
-			const normalized = this.getNormalized( key );
-
-			parsed.push( ...newNewGetStyleFromNormalized( key, normalized ) );
 		}
 
 		return parsed
@@ -159,12 +151,11 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const ret = toInlineStyleProperty( propertyName, normalized );
+			const propertyDescriptor = toInlineStyleProperty( propertyName, normalized );
 
-			if ( Array.isArray( ret ) ) {
-				return ret[ 1 ];
-			} else {
-				return '';
+			// Only return a value if it is set;
+			if ( Array.isArray( propertyDescriptor ) ) {
+				return propertyDescriptor[ 1 ];
 			}
 		}
 		// String value
@@ -174,17 +165,27 @@ export default class Styles {
 	}
 
 	getStyleNames() {
-		const inlineStyle = this.getInlineStyle();
+		const parsed = this._toFFFFFFFFFFStylesMap();
 
-		return ( inlineStyle || '' )
-			.split( ';' )
-			.filter( f => f !== '' )
-			.map( abc => abc.split( ':' )[ 0 ] )
-			.sort( sortTopRightBottomLeftProperties );
+		return parsed.map( ( [ key ] ) => key );
 	}
 
 	clear() {
 		this._styles = {};
+	}
+
+	_toFFFFFFFFFFStylesMap() {
+		const parsed = [];
+
+		const keys = Object.keys( this._styles ).sort();
+
+		for ( const key of keys ) {
+			const normalized = this.getNormalized( key );
+
+			parsed.push( ...newNewGetStyleFromNormalized( key, normalized ) );
+		}
+
+		return parsed;
 	}
 
 	_appendStyleValue( nameOrPath, valueOrObject ) {
@@ -439,16 +440,6 @@ function toInlineStyleProperty( styleName, styleObjectOrString ) {
 	const styles = newNewGetStyleFromNormalized( styleName, styleObjectOrString );
 
 	return styles.find( ( [ property ] ) => property === styleName );
-}
-
-const topRightBottomLeftOrder = [ 'top', 'right', 'bottom', 'left' ];
-
-function sortTopRightBottomLeftProperties( a, b ) {
-	if ( topRightBottomLeftOrder.includes( a ) && topRightBottomLeftOrder.includes( b ) ) {
-		return topRightBottomLeftOrder.indexOf( a ) - topRightBottomLeftOrder.indexOf( b );
-	}
-
-	return 0;
 }
 
 // Parses inline styles and puts property - value pairs into styles map.

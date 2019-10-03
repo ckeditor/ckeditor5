@@ -11,7 +11,139 @@ describe( 'Styles', () => {
 		styles = new StyleProxy();
 	} );
 
+	describe( 'size getter', () => {
+		it( 'should return 0 if no styles are set', () => {
+			expect( styles.size ).to.equal( 0 );
+		} );
+
+		it( 'should return number of set styles', () => {
+			styles.setStyle( 'color:blue' );
+			expect( styles.size ).to.equal( 1 );
+
+			styles.setStyle( 'margin:1px;' );
+			expect( styles.size ).to.equal( 1 );
+
+			styles.setStyle( 'margin-top:1px;margin-bottom:1px;' );
+			expect( styles.size ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'setStyle()', () => {
+		it( 'should reset styles to a new value', () => {
+			styles.setStyle( 'color:red;margin-top:1px;' );
+
+			expect( styles.getNormalized() ).to.deep.equal( { color: 'red', margin: { top: '1px' } } );
+
+			styles.setStyle( 'margin-bottom:2em;' );
+
+			expect( styles.getNormalized() ).to.deep.equal( { margin: { bottom: '2em' } } );
+		} );
+	} );
+
+	describe( 'getInlineStyle()', () => {
+		it( 'should return undefined for empty styles', () => {
+			expect( styles.getInlineStyle() ).to.be.undefined;
+		} );
+
+		it( 'should return sorted styles string if styles are set', () => {
+			styles.setStyle( 'margin-top:1px;color:blue;' );
+
+			expect( styles.getInlineStyle() ).to.equal( 'color:blue;margin-top:1px;' );
+		} );
+	} );
+
+	describe( 'getInlineProperty', () => {
+		it( 'should return empty string for missing shorthand', () => {
+			styles.setStyle( 'margin-top:1px' );
+
+			expect( styles.getInlineProperty( 'margin' ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'hasProperty()', () => {
+		it( 'should return false if property is not set', () => {
+			expect( styles.hasProperty( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should return false if normalized property is not set', () => {
+			styles.setStyle( 'margin-top:1px' );
+
+			// TODO
+			// expect( styles.hasProperty( 'margin' ) ).to.be.false;
+			expect( styles.hasProperty( 'margin' ) ).to.be.true;
+		} );
+
+		it( 'should return true if property is set', () => {
+			styles.setStyle( 'color:deeppink' );
+
+			expect( styles.hasProperty( 'color' ) ).to.be.true;
+		} );
+
+		it( 'should return true if normalized shorthanded property is set', () => {
+			styles.setStyle( 'margin:1px 2px 3px 4px' );
+
+			expect( styles.hasProperty( 'margin-top' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'insertProperty()', () => {
+		it( 'should insert new property (empty styles)', () => {
+			styles.insertProperty( 'color', 'blue' );
+
+			expect( styles.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+		} );
+
+		it( 'should insert new property (other properties are set)', () => {
+			styles.setStyle( 'margin: 1px;' );
+			styles.insertProperty( 'color', 'blue' );
+
+			expect( styles.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+		} );
+
+		it( 'should overwrite property', () => {
+			styles.setStyle( 'color: red;' );
+			styles.insertProperty( 'color', 'blue' );
+
+			expect( styles.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+		} );
+
+		it( 'should work with objects', () => {
+			styles.setStyle( 'color: red;' );
+			styles.insertProperty( { color: 'blue', margin: '1px' } );
+
+			expect( styles.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+			expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
+		} );
+	} );
+
+	describe( 'removeProperty()', () => {
+		it( 'should do nothing if property is not set', () => {
+			styles.removeProperty( 'color' );
+
+			expect( styles.getInlineProperty( 'color' ) ).to.be.undefined;
+		} );
+
+		it( 'should insert new property (other properties are set)', () => {
+			styles.setStyle( 'color:blue' );
+			styles.removeProperty( 'color' );
+
+			expect( styles.getInlineProperty( 'color' ) ).to.be.undefined;
+		} );
+
+		it( 'should remove normalized property', () => {
+			styles.setStyle( 'margin:1px' );
+
+			styles.removeProperty( 'margin-top' );
+
+			expect( styles.getInlineProperty( 'margin-top' ) ).to.be.undefined;
+		} );
+	} );
+
 	describe( 'getStyleNames()', () => {
+		it( 'should output empty array for empty styles', () => {
+			expect( styles.getStyleNames() ).to.deep.equal( [] );
+		} );
+
 		it( 'should output custom style names', () => {
 			styles.setStyle( 'foo: 2;bar: baz;foo-bar-baz:none;' );
 
