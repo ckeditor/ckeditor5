@@ -25,6 +25,7 @@ import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
@@ -801,6 +802,34 @@ describe( 'view', () => {
 			expect( result1 ).to.equal( 42 );
 			expect( result2 ).to.equal( true );
 			expect( result3 ).to.undefined;
+		} );
+
+		it( 'should catch native errors and wrap them into the CKEditorError errors', () => {
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			expectToThrowCKEditorError( () => {
+				view.change( () => {
+					throw error;
+				} );
+			}, /view-change-unexpected-error/, view, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'TypeError'
+				}
+			} );
+		} );
+
+		it( 'should re-throw custom CKEditorError errors', () => {
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			expectToThrowCKEditorError( () => {
+				view.change( () => {
+					throw new CKEditorError( 'foo', view );
+				} );
+			}, /foo/, view );
 		} );
 	} );
 

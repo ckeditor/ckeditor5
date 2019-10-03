@@ -457,29 +457,50 @@ export default class View {
 			);
 		}
 
-		// Recursive call to view.change() method - execute listener immediately.
-		if ( this._ongoingChange ) {
-			return callback( this._writer );
+		// Use try-catch to catch the
+		try {
+			// Recursive call to view.change() method - execute listener immediately.
+			if ( this._ongoingChange ) {
+				return callback( this._writer );
+			}
+
+			// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
+			// event for all nested calls.
+			this._ongoingChange = true;
+			const callbackResult = callback( this._writer );
+			this._ongoingChange = false;
+
+			// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
+			// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all
+			// changes. Also, we don't need to render anything if there're no changes since last rendering.
+			if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
+				this._postFixersInProgress = true;
+				this.document._callPostFixers( this._writer );
+				this._postFixersInProgress = false;
+
+				this.fire( 'render' );
+			}
+
+			return callbackResult;
+		} catch ( err ) {
+			if ( err.is && err.is( 'CKEditorError' ) ) {
+				throw err;
+			}
+
+			/**
+			 * An unexpected error occurred inside the `view.change()` block. The `error.data.originalError` property
+			 * shows the original error properties.
+			 *
+			 * @error view-change-unexpected-error
+			 */
+			throw new CKEditorError( 'view-change-unexpected-error', this, {
+				originalError: {
+					message: err.message,
+					stack: err.stack,
+					name: err.name
+				}
+			} );
 		}
-
-		// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
-		// event for all nested calls.
-		this._ongoingChange = true;
-		const callbackResult = callback( this._writer );
-		this._ongoingChange = false;
-
-		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
-		// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all changes.
-		// Also, we don't need to render anything if there're no changes since last rendering.
-		if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
-			this._postFixersInProgress = true;
-			this.document._callPostFixers( this._writer );
-			this._postFixersInProgress = false;
-
-			this.fire( 'render' );
-		}
-
-		return callbackResult;
 	}
 
 	/**
