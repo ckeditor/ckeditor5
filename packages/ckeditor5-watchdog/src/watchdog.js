@@ -345,9 +345,9 @@ export default class Watchdog {
 	 * @param {ErrorEvent|PromiseRejectionEvent} evt Error event.
 	 */
 	_handleError( error, evt ) {
-		if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
-			console.error( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
-		}
+		// @if CK_DEBUG // if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
+		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
+		// @if CK_DEBUG // }
 
 		if ( this._shouldReactToError( error ) ) {
 			this.crashes.push( {
