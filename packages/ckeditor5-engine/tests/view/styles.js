@@ -47,7 +47,7 @@ describe( 'Styles', () => {
 				} );
 			} );
 
-			it( 'should output inline shorthand rules', () => {
+			it( 'should output inline shorthand rules #1', () => {
 				styles.setStyle( 'border:1px solid blue;' );
 
 				expect( styles.getInlineStyle() ).to.equal( 'border-color:blue;border-style:solid;border-width:1px;' );
@@ -56,7 +56,7 @@ describe( 'Styles', () => {
 				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '1px' );
 			} );
 
-			it( 'should output inline shorthand rules', () => {
+			it.only( 'should output inline shorthand rules #2', () => {
 				styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 				expect( styles.getInlineStyle() ).to.equal(
