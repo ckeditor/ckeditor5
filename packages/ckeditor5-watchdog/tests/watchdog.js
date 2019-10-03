@@ -34,7 +34,6 @@ describe( 'Watchdog', () => {
 			const editorDestroySpy = sinon.spy( ClassicTestEditor.prototype, 'destroy' );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			return watchdog.create( element, {} )
 				.then( () => {
@@ -51,7 +50,6 @@ describe( 'Watchdog', () => {
 
 		it( 'should throw an error when the creator is not defined', () => {
 			const watchdog = new Watchdog();
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			expectToThrowCKEditorError(
 				() => watchdog.create(),
@@ -60,21 +58,16 @@ describe( 'Watchdog', () => {
 			);
 		} );
 
-		it( 'should throw an error when the destructor is not defined', () => {
+		it( 'should not throw an error when the destructor is not defined', () => {
 			const watchdog = new Watchdog();
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
-			expectToThrowCKEditorError(
-				() => watchdog.create(),
-				/^watchdog-destructor-not-defined/,
-				null
-			);
+			expect( () => watchdog.create() ).to.not.throw();
 		} );
 
 		it( 'should properly copy the config', () => {
 			const watchdog = new Watchdog();
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			const config = {
 				foo: [],
@@ -91,7 +84,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -166,7 +158,6 @@ describe( 'Watchdog', () => {
 				ClassicTestEditor.create( el )
 					.then( () => Promise.reject( new Error( 'foo' ) ) )
 			);
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			return watchdog.create( element ).then(
 				() => { throw new Error( '`watchdog.create()` should throw an error.' ); },
@@ -199,7 +190,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -228,7 +218,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -251,7 +240,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			const editorErrorSpy = sinon.spy();
 			watchdog.on( 'error', editorErrorSpy );
@@ -322,7 +310,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -345,7 +332,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -378,7 +364,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			const errorSpy = sinon.spy();
 			watchdog.on( 'error', errorSpy );
@@ -415,7 +400,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			const errorSpy = sinon.spy();
 			watchdog.on( 'error', errorSpy );
@@ -451,7 +435,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			const errorSpy = sinon.spy();
 			watchdog.on( 'error', errorSpy );
@@ -487,7 +470,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -512,7 +494,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -540,7 +521,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -574,7 +554,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -613,7 +592,6 @@ describe( 'Watchdog', () => {
 			const watchdog = new Watchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-			watchdog.setDestructor( editor => editor.destroy() );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -657,6 +635,35 @@ describe( 'Watchdog', () => {
 							console.error,
 							'An error happened during the editor destructing.'
 						);
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
+		it( 'should use the custom destructor if passed', () => {
+			const watchdog = new Watchdog();
+			const destructionSpy = sinon.spy();
+
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
+			watchdog.setDestructor( editor => {
+				destructionSpy();
+				return editor.destroy();
+			} );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			return watchdog.create( element ).then( () => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				return new Promise( res => {
+					watchdog.on( 'restart', () => {
+						window.onerror = originalErrorHandler;
+
+						sinon.assert.calledOnce( destructionSpy );
 
 						watchdog.destroy().then( res );
 					} );
