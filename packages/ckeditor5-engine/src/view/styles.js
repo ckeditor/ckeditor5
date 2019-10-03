@@ -91,9 +91,21 @@ export default class Styles {
 	}
 
 	/**
-	 * Inserts single style rule.
+	 * Inserts single style property.
 	 *
-	 * Supports shorthands.
+	 * Can insert one by one
+	 *
+	 *		styles.insertProperty( 'color', 'blue' );
+	 *		styles.insertProperty( 'margin-right', '1em' );
+	 *
+	 * or many styles at once:
+	 *
+	 *		styles.insertProperty( {
+	 *			color: 'blue',
+	 *			'margin-right': '1em'
+	 *		} );
+	 *
+	 * Supports shorthands.y
 	 *
 	 * @param {String|Object} nameOrObject
 	 * @param {String|Object} value
@@ -109,12 +121,34 @@ export default class Styles {
 		}
 	}
 
+	/**
+	 * Removes styles property.
+	 *
+	 * @param name
+	 */
 	removeProperty( name ) {
 		unset( this._styles, toPath( name ) );
-
 		delete this._styles[ name ];
 	}
 
+	/**
+	 * Return normalized style object;
+	 *
+	 *		const styles = new Styles();
+	 *		styles.setStyle( 'margin:1px 2px 3em;' );
+	 *
+	 *		console.log( styles.getNormalized( 'margin' ) );
+	 *		// will log:
+	 *		// {
+	 *		//     top: '1px',
+	 *		//     right: '2px',
+	 *		//     bottom: '3em',
+	 *		//     left: '2px'
+	 *		// }
+	 *
+	 * @param {String} name
+	 * @returns {Object|undefined}
+	 */
 	getNormalized( name ) {
 		if ( !name ) {
 			return merge( {}, this._styles );
@@ -129,24 +163,33 @@ export default class Styles {
 		}
 	}
 
+	/**
+	 * Returns a string containing normalized styles string or undefined if no style properties are set.
+	 *
+	 * @returns {String|undefined}
+	 */
 	getInlineStyle() {
-		const parsed = this._toFFFFFFFFFFStylesMap();
+		const entries = this._getStylesEntries();
 
-		if ( !parsed.length ) {
+		// Return undefined for empty styles map.
+		if ( !entries.length ) {
 			return;
 		}
 
-		return parsed
-			.filter( v => Array.isArray( v ) )// TODO: not needed?
-			.map( arr => arr.join( ':' ) )
-			.join( ';' ) + ';';
+		return entries.map( arr => arr.join( ':' ) ).join( ';' ) + ';';
 	}
 
+	/**
+	 * Returns property value string.
+	 *
+	 * @param {String} propertyName
+	 * @returns {String|undefined}
+	 */
 	getInlineProperty( propertyName ) {
 		const normalized = this.getNormalized( propertyName );
 
 		if ( !normalized ) {
-			// Try return directly
+			// Try return styles set directly - values that are not parsed.
 			return this._styles[ propertyName ];
 		}
 
@@ -157,24 +200,36 @@ export default class Styles {
 			if ( Array.isArray( propertyDescriptor ) ) {
 				return propertyDescriptor[ 1 ];
 			}
-		}
-		// String value
-		else {
+		} else {
 			return normalized;
 		}
 	}
 
+	/**
+	 * Returns style properties names as the would appear when using {@link #getInlineStyle()}
+	 *
+	 * @returns {Array.<String>}
+	 */
 	getStyleNames() {
-		const parsed = this._toFFFFFFFFFFStylesMap();
+		const entries = this._getStylesEntries();
 
-		return parsed.map( ( [ key ] ) => key );
+		return entries.map( ( [ key ] ) => key );
 	}
 
+	/**
+	 * Removes all styles.
+	 */
 	clear() {
 		this._styles = {};
 	}
 
-	_toFFFFFFFFFFStylesMap() {
+	/**
+	 * Returns normalized styles entries for further processing.
+	 *
+	 * @private
+	 * @returns {Array.<Array.<String, String>> ]}
+	 */
+	_getStylesEntries() {
 		const parsed = [];
 
 		const keys = Object.keys( this._styles ).sort();
@@ -188,10 +243,18 @@ export default class Styles {
 		return parsed;
 	}
 
+	/**
+	 * Appends style definition to the internal styles object.
+	 *
+	 * @param {String} nameOrPath
+	 * @param {String|Object} valueOrObject
+	 * @private
+	 */
 	_appendStyleValue( nameOrPath, valueOrObject ) {
-		if ( typeof valueOrObject === 'object' ) {
+		if ( isObject( valueOrObject ) ) {
 			if ( nameOrPath.includes( '.' ) ) {
 				const got = get( this._styles, nameOrPath );
+
 				set( this._styles, nameOrPath, merge( {}, got, valueOrObject ) );
 			} else {
 				this._styles[ nameOrPath ] = merge( {}, this._styles[ nameOrPath ], valueOrObject );
@@ -201,26 +264,33 @@ export default class Styles {
 		}
 	}
 
-	_parseProperty( key, value ) {
+	/**
+	 * Parses single style property.
+	 *
+	 * @param {String} name Name of style property.
+	 * @param {String} value Value of style property.
+	 * @private
+	 */
+	_parseProperty( name, value ) {
 		if ( isPlainObject( value ) ) {
-			this._appendStyleValue( toPath( key ), value );
+			this._appendStyleValue( toPath( name ), value );
 
 			return;
 		}
 
 		// Set directly to an object.
-		if ( setOnPathStyles.includes( key ) ) {
-			this._appendStyleValue( toPath( key ), value );
+		if ( setOnPathStyles.includes( name ) ) {
+			this._appendStyleValue( toPath( name ), value );
 
 			return;
 		}
 
-		if ( this.parsers.has( key ) ) {
-			const parser = this.parsers.get( key );
+		if ( this.parsers.has( name ) ) {
+			const parser = this.parsers.get( name );
 
 			this._styles = merge( {}, this._styles, parser( value ) );
 		} else {
-			this._appendStyleValue( key, value );
+			this._appendStyleValue( name, value );
 		}
 	}
 }

@@ -9,8 +9,6 @@ import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 
-import encodedImage from './_utils/encodedimage.txt';
-
 describe( 'Element', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
@@ -870,68 +868,6 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 				expect( el.hasStyle( 'margin-top' ) ).to.be.false;
 				expect( el.hasStyle( 'color' ) ).to.be.true;
-			} );
-		} );
-
-		describe( 'styles parsing edge cases and incorrect styles', () => {
-			it( 'should not crash and not add any styles if styles attribute was empty', () => {
-				const element = new Element( 'div', { style: '' } );
-				const styles = Array.from( element.getStyleNames() );
-
-				expect( styles ).to.deep.equal( [] );
-			} );
-
-			it( 'should be able to parse big styles definition', () => {
-				expect( () => {
-					// eslint-disable-next-line no-new
-					new Element( 'div', { style: `background-image:url('data:image/jpeg;base64,${ encodedImage }')` } );
-				} ).not.to.throw();
-			} );
-
-			it( 'should work with both types of quotes and ignore values inside quotes', () => {
-				let element;
-
-				element = new Element( 'div', { style: 'background-image:url("im;color:g.jpg")' } );
-				expect( element.getStyle( 'background-image' ) ).to.equal( 'url("im;color:g.jpg")' );
-
-				element = new Element( 'div', { style: 'background-image:url(\'im;color:g.jpg\')' } );
-				expect( element.getStyle( 'background-image' ) ).to.equal( 'url(\'im;color:g.jpg\')' );
-			} );
-
-			it( 'should not be confused by whitespaces', () => {
-				const element = new Element( 'div', { style: '\ncolor:\n red ' } );
-
-				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-			} );
-
-			it( 'should not be confused by duplicated semicolon', () => {
-				const element = new Element( 'div', { style: 'color: red;; display: inline' } );
-
-				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
-			} );
-
-			it( 'should not throw when value is missing', () => {
-				const element = new Element( 'div', { style: 'color:; display: inline' } );
-
-				expect( element.getStyle( 'color' ) ).to.equal( '' );
-				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
-			} );
-
-			it( 'should not throw when colon is duplicated', () => {
-				const element = new Element( 'div', { style: 'color:: red; display: inline' } );
-
-				// The result makes no sense, but here we just check that the algorithm doesn't crash.
-				expect( element.getStyle( 'color' ) ).to.equal( ': red' );
-				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
-			} );
-
-			it( 'should not throw when random stuff passed', () => {
-				const element = new Element( 'div', { style: 'color: red;:; ;;" ":  display: inline; \'aaa;:' } );
-
-				// The result makes no sense, but here we just check that the algorithm doesn't crash.
-				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( element.getStyle( 'display' ) ).to.be.undefined;
 			} );
 		} );
 	} );
