@@ -144,7 +144,10 @@ export default class Styles {
 			parsed.push( ...newNewGetStyleFromNormalized( key, normalized ) );
 		}
 
-		return parsed.map( arr => arr.join( ':' ) ).join( ';' ) + ';';
+		return parsed
+			.filter( v => Array.isArray( v ) )// TODO: not needed?
+			.map( arr => arr.join( ':' ) )
+			.join( ';' ) + ';';
 	}
 
 	getInlineProperty( propertyName ) {
@@ -358,19 +361,20 @@ function shBorderProperty( which ) {
 	};
 }
 
-function getABCDEDGHIJK( { left, right, top, bottom } ) {
+function getTopRightBottomLeftShorthand( { left, right, top, bottom } ) {
 	const out = [];
 
 	if ( left !== right ) {
 		out.push( top, right, bottom, left );
 	} else if ( bottom !== top ) {
 		out.push( top, right, bottom );
-	} else if ( right != top ) {
+	} else if ( right !== top ) {
 		out.push( top, right );
 	} else {
 		out.push( top );
 	}
-	return out;
+
+	return out.join( ' ' );
 }
 
 function outputShorthandableValue( styleObject = {}, strict, styleShorthand ) {
@@ -382,15 +386,11 @@ function outputShorthandableValue( styleObject = {}, strict, styleShorthand ) {
 			return [];
 		}
 
-		return [
-			[ styleShorthand, top ]
-		];
+		return [ [ styleShorthand, top ] ];
 	} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
-		return printSingleValues( { top, right, bottom, left }, 'margin' );
+		return printSingleValues( { top, right, bottom, left }, styleShorthand );
 	} else {
-		const out = getABCDEDGHIJK( styleObject );
-
-		return `${ strict ? '' : styleShorthand + ':' }${ out.join( ' ' ) }`;
+		return [ [ styleShorthand, getTopRightBottomLeftShorthand( styleObject ) ] ];
 	}
 }
 
@@ -410,6 +410,18 @@ function newNewGetStyleFromNormalized( styleName, styleObjectOrString ) {
 		return ret;
 	} );
 
+	styleGetters.set( 'margin', value => {
+		return outputShorthandableValue( value, false, 'margin' );
+	} );
+
+	styleGetters.set( 'background', value => {
+		const ret = [];
+
+		ret.push( [ 'background-color', value.color ] );
+
+		return ret;
+	} );
+
 	let stylesArray;
 
 	if ( styleGetters.has( styleName ) ) {
@@ -417,7 +429,7 @@ function newNewGetStyleFromNormalized( styleName, styleObjectOrString ) {
 
 		stylesArray = styleGetter( styleObjectOrString );
 	} else {
-		// console.warn( 'no default' );
+		stylesArray = [ [ styleName, styleObjectOrString ] ];
 	}
 
 	return stylesArray || [];
