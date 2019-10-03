@@ -365,7 +365,7 @@ export class MyComponent {
 }
 ```
 
-## Accessing the CKEditor 5 Editor
+## Accessing the editor instance
 
 The `<ckeditor>` component provides all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to get the editor with an additional step.
 
