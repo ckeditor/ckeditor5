@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { generateLiInUl, injectViewList, findInRange } from './utils';
+import { generateLiInUl, injectViewList } from './utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -57,41 +57,6 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
 
 		injectViewList( modelItem, viewItem, conversionApi, model );
 	};
-}
-
-/**
- * A model-to-view converter for the model `$text` element inside a to-do list item.
- *
- * It takes care of creating text after the {@link module:engine/view/uielement~UIElement checkbox UI element}.
- *
- * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
- *
- * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
- */
-export function modelViewTextInsertion( evt, data, conversionApi ) {
-	const parent = data.range.start.parent;
-
-	if ( parent.name != 'listItem' || parent.getAttribute( 'listType' ) != 'todo' ) {
-		return;
-	}
-
-	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-		return;
-	}
-
-	const viewWriter = conversionApi.writer;
-	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-	const viewText = viewWriter.createText( data.item.data );
-
-	// Be sure text is created after the UIElement, so if it is a first text node inside a `listItem` element
-	// it has to be moved after the first node in the view list item.
-	//
-	// model: <listItem listtype="todo">[foo]</listItem>
-	// view: <li>^<checkbox/></li> -> <li><checkbox/>foo</li>
-	viewWriter.insert( viewPosition.offset ? viewPosition : viewPosition.getShiftedBy( 1 ), viewText );
 }
 
 /**
@@ -233,7 +198,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelViewChangeType( onCheckedChange ) {
+export function modelViewChangeType( onCheckedChange, view ) {
 	return ( evt, data, conversionApi ) => {
 		const viewItem = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -246,7 +211,7 @@ export function modelViewChangeType( onCheckedChange ) {
 			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
 		} else if ( data.attributeOldValue == 'todo' ) {
 			viewWriter.removeClass( 'todo-list', viewItem.parent );
-			viewWriter.remove( viewItem.getChild( 0 ) );
+			viewWriter.remove( findLabel( viewItem, view ) );
 		}
 	};
 }
@@ -277,12 +242,52 @@ export function modelViewChangeChecked( onCheckedChange ) {
 		const { mapper, writer: viewWriter } = conversionApi;
 		const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 		const viewItem = mapper.toViewElement( data.item );
-		const itemRange = viewWriter.createRangeIn( viewItem );
-		const oldCheckmarkElement = findInRange( itemRange, item => item.is( 'uiElement' ) ? item : false );
+		// Because of m -> v position mapper we can be sure checkbox is always at the beginning.
+		const oldCheckmarkElement = viewItem.getChild( 0 );
 		const newCheckmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
 
 		viewWriter.insert( viewWriter.createPositionAfter( oldCheckmarkElement ), newCheckmarkElement );
 		viewWriter.remove( oldCheckmarkElement );
+	};
+}
+
+/**
+ * A model-to-view position at zero offset mapper.
+ *
+ * This helper ensures that position inside todo-list in the view is mapped after the checkbox.
+ *
+ * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
+ *
+ * @param {module:engine/view/view~View} view
+ * @param {module:engine/conversion/mapper~Mapper} mapper
+ * @return {Function}
+ */
+export function mapModelToViewZeroOffsetPosition( view, mapper ) {
+	return ( evt, data ) => {
+		const modelPosition = data.modelPosition;
+		const parent = modelPosition.parent;
+
+		// Handle only position at the beginning of a todo list item.
+		if ( !parent.is( 'listItem' ) || parent.getAttribute( 'listType' ) != 'todo' || modelPosition.offset !== 0 ) {
+			return;
+		}
+
+		const viewLi = mapper.toViewElement( parent );
+		const label = findLabel( viewLi, view );
+
+		// If there is no label then most probably the default converter was overridden.
+		if ( !label ) {
+			return;
+		}
+
+		// Map the position to the next sibling (if it is not a marker) - most likely it will be a text node...
+		if ( label.nextSibling && !label.nextSibling.is( 'uiElement' ) ) {
+			data.viewPosition = view.createPositionAt( label.nextSibling, 0 );
+		}
+		// ... otherwise return position after the label.
+		else {
+			data.viewPosition = view.createPositionAfter( label );
+		}
 	};
 }
 
@@ -320,4 +325,15 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 	}
 
 	return uiElement;
+}
+
+// Helper method to find label element inside li.
+function findLabel( viewItem, view ) {
+	const range = view.createRangeIn( viewItem );
+
+	for ( const value of range ) {
+		if ( value.item.is( 'uiElement', 'label' ) ) {
+			return value.item;
+		}
+	}
 }

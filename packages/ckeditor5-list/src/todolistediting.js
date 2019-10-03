@@ -14,16 +14,14 @@ import TodoListCheckCommand from './todolistcheckcommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
-	modelViewInsertion,
-	modelViewTextInsertion,
 	dataModelViewInsertion,
 	dataModelViewTextInsertion,
 	dataViewModelCheckmarkInsertion,
+	mapModelToViewZeroOffsetPosition,
 	modelViewChangeChecked,
-	modelViewChangeType
+	modelViewChangeType,
+	modelViewInsertion
 } from './todolistconverters';
-
-import { findInRange } from './utils';
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -47,7 +45,6 @@ export default class TodoListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const { editing, data, model } = editor;
-		const viewDocument = editing.view.document;
 
 		// Extend schema.
 		model.schema.extend( 'listItem', {
@@ -73,43 +70,21 @@ export default class TodoListEditing extends Plugin {
 			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
 			{ priority: 'high' }
 		);
-		editing.downcastDispatcher.on( 'insert:$text', modelViewTextInsertion, { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
 
 		editing.downcastDispatcher.on(
 			'attribute:listType:listItem',
-			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ) )
+			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ), editing.view )
 		);
 		editing.downcastDispatcher.on(
 			'attribute:todoListChecked:listItem',
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
 
+		editing.mapper.on( 'modelToViewPosition', mapModelToViewZeroOffsetPosition( editing.view, editing.mapper ) );
+
 		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
-
-		// Collect all view nodes that have changed and use it to check if the checkbox UI element is going to
-		// be re-rendered. If yes than view post-fixer should verify view structure.
-		const changedViewNodes = new Set();
-
-		Array.from( viewDocument.roots ).forEach( watchRootForViewChildChanges );
-		this.listenTo( viewDocument.roots, 'add', ( evt, root ) => watchRootForViewChildChanges( root ) );
-
-		function watchRootForViewChildChanges( viewRoot ) {
-			viewRoot.on( 'change:children', ( evt, node ) => changedViewNodes.add( node ) );
-		}
-
-		// Move all uiElements after a checkbox element.
-		viewDocument.registerPostFixer( writer => {
-			const changedCheckmarkElements = getChangedCheckmarkElements( writer, changedViewNodes );
-
-			changedViewNodes.clear();
-
-			return moveUIElementsAfterCheckmark( writer, changedCheckmarkElements );
-		} );
-
-		// Move selection after a checkbox element.
-		viewDocument.registerPostFixer( writer => moveSelectionAfterCheckmark( writer, viewDocument.selection ) );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
 		//
@@ -188,71 +163,6 @@ export default class TodoListEditing extends Plugin {
 	}
 }
 
-// Moves all UI elements in the to-do list item after the checkbox element.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {Array.<module:engine/view/uielement~UIElement>} uiElements
-// @returns {Boolean}
-function moveUIElementsAfterCheckmark( writer, uiElements ) {
-	let hasChanged = false;
-
-	for ( const uiElement of uiElements ) {
-		const listItem = findViewListItemAncestor( uiElement );
-		const positionAtListItem = writer.createPositionAt( listItem, 0 );
-		const positionBeforeUiElement = writer.createPositionBefore( uiElement );
-
-		if ( positionAtListItem.isEqual( positionBeforeUiElement ) ) {
-			continue;
-		}
-
-		const range = writer.createRange( positionAtListItem, positionBeforeUiElement );
-
-		for ( const item of Array.from( range.getItems() ) ) {
-			if ( item.is( 'uiElement' ) ) {
-				writer.move( writer.createRangeOn( item ), writer.createPositionAfter( uiElement ) );
-				hasChanged = true;
-			}
-		}
-	}
-
-	return hasChanged;
-}
-
-// Moves the selection in the to-do list item after the checkbox element.
-//
-// @private
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {module:engine/view/documentselection~DocumentSelection} selection
-function moveSelectionAfterCheckmark( writer, selection ) {
-	if ( !selection.isCollapsed ) {
-		return false;
-	}
-
-	const positionToChange = selection.getFirstPosition();
-
-	if ( positionToChange.parent.name != 'li' || !positionToChange.parent.parent.hasClass( 'todo-list' ) ) {
-		return false;
-	}
-
-	const parentEndPosition = writer.createPositionAt( positionToChange.parent, 'end' );
-	const uiElement = findInRange( writer.createRange( positionToChange, parentEndPosition ), item => {
-		return ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) ) ? item : false;
-	} );
-
-	if ( uiElement && !positionToChange.isAfter( writer.createPositionBefore( uiElement ) ) ) {
-		const boundaries = writer.createRange( writer.createPositionAfter( uiElement ), parentEndPosition );
-		const text = findInRange( boundaries, item => item.is( 'textProxy' ) ? item.textNode : false );
-		const nextPosition = text ? writer.createPositionAt( text, 0 ) : parentEndPosition;
-
-		writer.setSelection( writer.createRange( nextPosition ), { isBackward: selection.isBackward } );
-
-		return true;
-	}
-
-	return false;
-}
-
 // Handles the left/right (LTR/RTL content) arrow key and moves the selection at the end of the previous block element
 // if the selection is just after the checkbox element. In other words, it jumps over the checkbox element when
 // moving the selection to the left/right (LTR/RTL).
@@ -277,39 +187,6 @@ function jumpOverCheckmarkOnSideArrowKeyPress( stopKeyEvent, model ) {
 		if ( newRange ) {
 			stopKeyEvent();
 			model.change( writer => writer.setSelection( newRange ) );
-		}
-	}
-}
-
-// Gets the list of all checkbox elements that are going to be rendered.
-//
-// @private
-// @param {module:engine/view/view~View>} editingView
-// @param {Set.<module:engine/view/element~Element>} changedViewNodes
-// @returns {Array.<module:engine/view/uielement~UIElement>}
-function getChangedCheckmarkElements( editingView, changedViewNodes ) {
-	const elements = [];
-
-	for ( const element of changedViewNodes ) {
-		for ( const item of editingView.createRangeIn( element ).getItems() ) {
-			if ( item.is( 'uiElement' ) && item.hasClass( 'todo-list__checkmark' ) && !elements.includes( item ) && element.document ) {
-				elements.push( item );
-			}
-		}
-	}
-
-	return elements;
-}
-
-// Returns the list item ancestor of a given element.
-//
-// @private
-// @param {module:engine/view/item~Item} item
-// @returns {module:engine/view/element~Element}
-function findViewListItemAncestor( item ) {
-	for ( const parent of item.getAncestors( { parentFirst: true } ) ) {
-		if ( parent.name == 'li' ) {
-			return parent;
 		}
 	}
 }
