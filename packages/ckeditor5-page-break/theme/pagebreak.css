@@ -3,39 +3,48 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck .ck-page-break {
+.ck-content .page-break {
 	position: relative;
 	clear: both;
 	padding: 5px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+
+	&::after {
+		content: '';
+		position: absolute;
+		border-bottom: 2px dashed hsl(0, 0%, 77%);
+		width: 100%;
+	}
 }
 
-.ck .ck-page-break::after {
-	content: '';
-	position: absolute;
-	border-bottom: 2px dashed var(--ck-color-toolbar-border);
-	width: 100%;
-}
-
-.ck .ck-page-break_label {
+.ck-content .page-break__label {
 	position: relative;
-	z-index: var(--ck-z-default);
-	padding: var(--ck-spacing-small) var(--ck-spacing-standard);
+	z-index: 1;
+	padding: .3em .6em;
 	display: block;
 	text-transform: uppercase;
-	border: 1px solid var(--ck-color-toolbar-border);
-	border-radius: var(--ck-border-radius);
-	font-size: var(--ck-font-size-small);
+	border: 1px solid hsl(0, 0%, 77%);
+	border-radius: 2px;
+	font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+	font-size: 0.75em;
 	font-weight: bold;
-	color: var(--ck-color-base-text);
-	background: var(--ck-color-base-background);
-	box-shadow: 2px 2px 1px var(--ck-color-shadow-drop);
+	color: hsl(0, 0%, 20%);
+	background: #fff;;
+	box-shadow: 2px 2px 1px hsla(0, 0%, 0%, 0.15);
 
-	/* Disable posssibility to select label text by user. */
+	/* Disable possibility to select label text by user. */
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+/* Do not show page break element inside printing window view. */
+@media print {
+	.ck-content .page-break,
+	.ck-content .page-break__label {
+		display: none;
+	}
 }
