@@ -13,7 +13,7 @@ import IndentEditing from '../src/indentediting';
 import IndentBlock from '../src/indentblock';
 
 describe( 'IndentBlock - integration', () => {
-	let editor, model, doc;
+	let editor, doc;
 
 	testUtils.createSinonSandbox();
 
@@ -28,8 +28,7 @@ describe( 'IndentBlock - integration', () => {
 			return createTestEditor( { indentBlock: { offset: 50, unit: 'px' } } )
 				.then( newEditor => {
 					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
+					doc = editor.model.document;
 				} );
 		} );
 
@@ -54,8 +53,7 @@ describe( 'IndentBlock - integration', () => {
 				indentBlock: { offset: 50, unit: 'px' }
 			} ).then( newEditor => {
 				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
+				doc = editor.model.document;
 			} );
 		} );
 
@@ -70,6 +68,22 @@ describe( 'IndentBlock - integration', () => {
 			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p style="margin-left:50px">foo</p>' );
+		} );
+	} );
+
+	it( 'should work with paragraph regardless of plugin order', () => {
+		return createTestEditor( {
+			plugins: [ IndentEditing, IndentBlock, Paragraph, HeadingEditing ],
+			indentBlock: { offset: 50, unit: 'px' }
+		} ).then( newEditor => {
+			editor = newEditor;
+			doc = editor.model.document;
+
+			editor.setData( '<p style="margin-left:50px">foo</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
 		} );
 	} );
 

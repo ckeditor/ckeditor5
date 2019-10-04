@@ -46,10 +46,9 @@ export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	afterInit() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const conversion = editor.conversion;
 		const configuration = editor.config.get( 'indentBlock' );
 
 		// Enable block indentation by default in paragraph and default headings.
@@ -67,7 +66,7 @@ export default class IndentBlock extends Plugin {
 		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
 
 		if ( useOffsetConfig ) {
-			this._setupConversionUsingOffset( conversion );
+			this._setupConversionUsingOffset( editor.conversion );
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( outdentConfig ) ) );
 		} else {
@@ -75,13 +74,7 @@ export default class IndentBlock extends Plugin {
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
 		}
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
 		const indentCommand = editor.commands.get( 'indent' );
 		const outdentCommand = editor.commands.get( 'outdent' );
 
