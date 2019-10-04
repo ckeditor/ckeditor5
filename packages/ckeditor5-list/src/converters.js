@@ -623,6 +623,10 @@ export function modelChangePostFixer( model, writer ) {
 
 					applied = true;
 				}
+
+				for ( const innerItem of Array.from( model.createRangeIn( item ) ).filter( e => e.item.is( 'listItem' ) ) ) {
+					_addListToFix( innerItem.previousPosition );
+				}
 			}
 
 			const posAfter = entry.position.getShiftedBy( entry.length );

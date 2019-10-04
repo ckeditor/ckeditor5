@@ -1289,15 +1289,15 @@ describe( 'ListEditing', () => {
 
 	describe( 'nested lists', () => {
 		describe( 'setting data', () => {
-			function test( testName, string, expectedString = null ) {
-				it( testName, () => {
+			function test( string, expectedString = null ) {
+				return () => {
 					editor.setData( string );
 					assertEqualMarkup( editor.getData(), expectedString || string );
-				} );
+				};
 			}
 
 			describe( 'non HTML compliant list fixing', () => {
-				test( 'ul in ul',
+				it( 'ul in ul', test(
 					'<ul>' +
 						'<ul>' +
 							'<li>1.1</li>' +
@@ -1306,9 +1306,9 @@ describe( 'ListEditing', () => {
 					'<ul>' +
 						'<li>1.1</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in ol',
+				it( 'ul in ol', test(
 					'<ol>' +
 						'<ul>' +
 							'<li>1.1</li>' +
@@ -1317,9 +1317,9 @@ describe( 'ListEditing', () => {
 					'<ul>' +
 					'<li>1.1</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in ul (previous sibling is li)',
+				it( 'ul in ul (previous sibling is li)', test(
 					'<ul>' +
 						'<li>1</li>' +
 						'<ul>' +
@@ -1333,9 +1333,9 @@ describe( 'ListEditing', () => {
 							'</ul>' +
 						'</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in deeply nested ul - base index > 0 #1',
+				it( 'ul in deeply nested ul - base index > 0 #1', test(
 					'<ul>' +
 						'<li>1.1</li>' +
 						'<li>1.2' +
@@ -1358,9 +1358,9 @@ describe( 'ListEditing', () => {
 							'</ul>' +
 						'</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in deeply nested ul - base index > 0 #2',
+				it( 'ul in deeply nested ul - base index > 0 #2', test(
 					'<ul>' +
 						'<li>1.1</li>' +
 						'<li>1.2' +
@@ -1390,9 +1390,9 @@ describe( 'ListEditing', () => {
 							'</ul>' +
 						'</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in deeply nested ul inside li',
+				it( 'ul in deeply nested ul inside li', test(
 					'<ul>' +
 						'<li>A' +
 							'<ul>' +
@@ -1415,9 +1415,9 @@ describe( 'ListEditing', () => {
 						'</ul>' +
 					'</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in deeply nested ul/ol',
+				it( 'ul in deeply nested ul/ol', test(
 					'<ul>' +
 						'<li>A' +
 							'<ol>' +
@@ -1440,9 +1440,9 @@ describe( 'ListEditing', () => {
 						'</ul>' +
 						'</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ul in ul (complex case)',
+				it( 'ul in ul (complex case)', test(
 					'<ol>' +
 						'<li>1</li>' +
 						'<ul>' +
@@ -1491,9 +1491,9 @@ describe( 'ListEditing', () => {
 							'</ol>' +
 						'</li>' +
 					'</ul>'
-				);
+				) );
 
-				test( 'ol in ol (deep structure)',
+				it( 'ol in ol (deep structure)', test(
 					'<ol>' +
 						'<li>A1</li>' +
 						'<ol>' +
@@ -1530,9 +1530,9 @@ describe( 'ListEditing', () => {
 							'</ol>' +
 						'</li>' +
 					'</ol>'
-				);
+				) );
 
-				test( 'block elements wrapping nested ul',
+				it( 'block elements wrapping nested ul', test(
 					'text before' +
 					'<ul>' +
 						'<li>' +
@@ -1553,58 +1553,69 @@ describe( 'ListEditing', () => {
 							'</ul>' +
 						'</li>' +
 					'</ul>'
-				);
+				) );
 
-				// test( 'block elements wrapping nested ul - invalid blocks',
-				// 	'<ul>' +
-				// 		'<li>' +
-				// 			'a' +
-				// 			'<table>' +
-				// 				'<tr>' +
-				// 					'<td>' +
-				// 						'<div>' +
-				// 							'<ul>' +
-				// 								'<li>b</li>' +
-				// 								'<li>c' +
-				// 									'<ul>' +
-				// 										'<li>' +
-				// 											'd' +
-				// 											'<table>' +
-				// 												'<tr>' +
-				// 													'<td>' +
-				// 														'e' +
-				// 													'</td>' +
-				// 												'</tr>' +
-				// 											'</table>' +
-				// 										'</li>' +
-				// 									'</ul>' +
-				// 								'</li>' +
-				// 							'</ul>' +
-				// 						'</div>' +
-				// 					'</td>' +
-				// 				'</tr>' +
-				// 			'</table>' +
-				// 			'f' +
-				// 		'</li>' +
-				// 		'<li>g</li>' +
-				// 	'</ul>',
-				// 	'<ul>' +
-				// 		'<li>af</li>' +
-				// 			'<li>g' +
-				// 				'<ul>' +
-				// 					'<li>b</li>' +
-				// 					'<li>c' +
-				// 						'<ul>' +
-				// 							'<li>d</li>' +
-				// 						'</ul>' +
-				// 					'</li>' +
-				// 				'</ul>' +
-				// 			'</li>' +
-				// 	'</ul>' +
-				// 	'<p>e</p>'
-				// );
+				it( 'block elements wrapping nested ul - invalid blocks', test(
+					'<ul>' +
+						'<li>' +
+							'a' +
+							'<table>' +
+								'<tr>' +
+									'<td>' +
+										'<div>' +
+											'<ul>' +
+												'<li>b</li>' +
+												'<li>c' +
+													'<ul>' +
+														'<li>' +
+															'd' +
+															'<table>' +
+																'<tr>' +
+																	'<td>' +
+																		'e' +
+																	'</td>' +
+																'</tr>' +
+															'</table>' +
+														'</li>' +
+													'</ul>' +
+												'</li>' +
+											'</ul>' +
+										'</div>' +
+									'</td>' +
+								'</tr>' +
+							'</table>' +
+							'f' +
+						'</li>' +
+						'<li>g</li>' +
+					'</ul>',
+					'<ul>' +
+						'<li>a</li>' +
+					'</ul>' +
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>' +
+										'<ul>' +
+											'<li>b</li>' +
+											'<li>c<ul>' +
+											'<li>d</li>' +
+										'</ul>' +
+										'</li>' +
+										'</ul>' +
+										'<p>e</p>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>' +
+					'<ul>' +
+					'<li>f</li>' +
+					'<li>g</li>' +
+					'</ul>'
+				) );
 
-				test( 'deeply nested block elements wrapping nested ul',
+				it( 'deeply nested block elements wrapping nested ul', test(
 					'<ul>' +
 							'<li>' +
 								'a' +
@@ -1649,10 +1660,10 @@ describe( 'ListEditing', () => {
 						'<li>f</li>' +
 						'<li>g</li>' +
 					'</ul>'
-				);
+				) );
 			} );
 
-			test( 'bullet list simple structure',
+			it( 'bullet list simple structure', test(
 				'<p>foo</p>' +
 				'<ul>' +
 					'<li>' +
@@ -1663,9 +1674,9 @@ describe( 'ListEditing', () => {
 					'</li>' +
 				'</ul>' +
 				'<p>bar</p>'
-			);
+			) );
 
-			test( 'bullet list deep structure',
+			it( 'bullet list deep structure', test(
 				'<p>foo</p>' +
 				'<ul>' +
 					'<li>' +
@@ -1699,9 +1710,9 @@ describe( 'ListEditing', () => {
 					'</li>' +
 				'</ul>' +
 				'<p>bar</p>'
-			);
+			) );
 
-			test( 'mixed lists deep structure',
+			it( 'mixed lists deep structure', test(
 				'<p>foo</p>' +
 				'<ul>' +
 					'<li>' +
@@ -1777,9 +1788,9 @@ describe( 'ListEditing', () => {
 					'</li>' +
 				'</ul>' +
 				'<p>bar</p>'
-			);
+			) );
 
-			test( 'mixed lists deep structure, white spaces, incorrect content, empty items',
+			it( 'mixed lists deep structure, white spaces, incorrect content, empty items', test(
 				'<p>foo</p>' +
 				'<ul>' +
 				'	xxx' +
@@ -1866,7 +1877,7 @@ describe( 'ListEditing', () => {
 					'</li>' +
 				'</ul>' +
 				'<p>bar</p>'
-			);
+			) );
 
 			describe( 'model tests for nested lists', () => {
 				it( 'should properly set listIndent and listType', () => {
@@ -1908,7 +1919,6 @@ describe( 'ListEditing', () => {
 				} );
 
 				it( 'should properly listIndent when list nested in other block', () => {
-					// <ol> in the middle will be fixed by postfixer to bulleted list.
 					editor.setData(
 						'<ul>' +
 							'<li>' +
@@ -1948,7 +1958,7 @@ describe( 'ListEditing', () => {
 							'<tableRow>' +
 								'<tableCell>' +
 									'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-									'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+									'<listItem listIndent="0" listType="bulleted">c</listItem>' +
 									'<listItem listIndent="1" listType="bulleted">d</listItem>' +
 									'<paragraph>e</paragraph>' +
 								'</tableCell>' +
@@ -3528,8 +3538,8 @@ describe( 'ListEditing', () => {
 
 	describe( 'post fixer', () => {
 		describe( 'insert', () => {
-			function test( testName, input, inserted, output ) {
-				it( testName, () => {
+			function test( input, inserted, output ) {
+				return () => {
 					// Wrap all changes in one block to avoid post-fixing the selection
 					// (which may be incorret) in the meantime.
 					model.change( () => {
@@ -3541,12 +3551,10 @@ describe( 'ListEditing', () => {
 					} );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-				} );
+				};
 			}
 
-			test(
-				'element before nested list',
-
+			it( 'element before nested list', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
@@ -3562,11 +3570,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">e</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">f</listItem>'
-			);
+			) );
 
-			test(
-				'list item before nested list',
-
+			it( 'list item before nested list', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
@@ -3582,11 +3588,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">f</listItem>'
-			);
+			) );
 
-			test(
-				'multiple list items with too big indent',
-
+			it( 'multiple list items with too big indent', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
@@ -3602,11 +3606,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="3" listType="bulleted">x</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">x</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">c</listItem>'
-			);
+			) );
 
-			test(
-				'item with different type - top level list',
-
+			it( 'item with different type - top level list', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'[]' +
@@ -3618,11 +3620,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="0" listType="numbered">x</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">c</listItem>'
-			);
+			) );
 
-			test(
-				'multiple items with different type - nested list',
-
+			it( 'multiple items with different type - nested list', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
@@ -3636,11 +3636,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="1" listType="bulleted">x</listItem>' +
 				'<listItem listIndent="2" listType="numbered">x</listItem>' +
 				'<listItem listIndent="2" listType="numbered">c</listItem>'
-			);
+			) );
 
-			test(
-				'item with different type, in nested list, after nested list',
-
+			it( 'item with different type, in nested list, after nested list', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -3652,7 +3650,7 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">x</listItem>'
-			);
+			) );
 
 			it( 'two list items with mismatched types inserted in one batch', () => {
 				const input =
@@ -3680,8 +3678,8 @@ describe( 'ListEditing', () => {
 		} );
 
 		describe( 'remove', () => {
-			function test( testName, input, output ) {
-				it( testName, () => {
+			function test( input, output ) {
+				return () => {
 					model.change( writer => {
 						setModelData( model, input );
 
@@ -3689,23 +3687,19 @@ describe( 'ListEditing', () => {
 					} );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-				} );
+				};
 			}
 
-			test(
-				'first list item',
-
+			it( 'first list item', test(
 				'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">c</listItem>',
 
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">c</listItem>'
-			);
+			) );
 
-			test(
-				'first list item of nested list',
-
+			it( 'first list item of nested list', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
 				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -3718,11 +3712,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">f</listItem>'
-			);
+			) );
 
-			test(
-				'selection over two different nested lists of same indent',
-
+			it( 'selection over two different nested lists of same indent', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -3733,12 +3725,12 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">f</listItem>'
-			);
+			) );
 		} );
 
 		describe( 'move', () => {
-			function test( testName, input, offset, output ) {
-				it( testName, () => {
+			function test( input, offset, output ) {
+				return () => {
 					model.change( writer => {
 						setModelData( model, input );
 
@@ -3748,12 +3740,10 @@ describe( 'ListEditing', () => {
 					} );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-				} );
+				};
 			}
 
-			test(
-				'nested list item out of list structure',
-
+			it( 'nested list item out of list structure', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'[<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">c</listItem>]' +
@@ -3769,11 +3759,9 @@ describe( 'ListEditing', () => {
 				'<paragraph>x</paragraph>' +
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">c</listItem>'
-			);
+			) );
 
-			test(
-				'list items between lists',
-
+			it( 'list items between lists', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -3793,11 +3781,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">g</listItem>'
-			);
+			) );
 
-			test(
-				'element in between nested list items',
-
+			it( 'element in between nested list items', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -3811,11 +3797,9 @@ describe( 'ListEditing', () => {
 				'<paragraph>x</paragraph>' +
 				'<listItem listIndent="0" listType="bulleted">c</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">d</listItem>'
-			);
+			) );
 
-			test(
-				'multiple nested list items of different types #1 - fix at start',
-
+			it( 'multiple nested list items of different types #1 - fix at start', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -3837,11 +3821,9 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
 				'<listItem listIndent="1" listType="numbered">e</listItem>' +
 				'<listItem listIndent="1" listType="numbered">i</listItem>'
-			);
+			) );
 
-			test(
-				'multiple nested list items of different types #2 - fix at end',
-
+			it( 'multiple nested list items of different types #2 - fix at end', test(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -3863,12 +3845,10 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
 				'<listItem listIndent="1" listType="numbered">e</listItem>' +
 				'<listItem listIndent="1" listType="numbered">i</listItem>'
-			);
+			) );
 
 			// #78.
-			test(
-				'move out of container',
-
+			it( 'move out of container', test(
 				'<blockQuote>' +
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
@@ -3886,7 +3866,7 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
 				'</blockQuote>'
-			);
+			) );
 		} );
 
 		describe( 'rename', () => {
