@@ -21,8 +21,8 @@ import {
 	enablePlaceholder
 } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
-// A list of element names which should be treated by the Title plugin as title-like.
-// This means that element of a type from this list will be changed to a title element
+// A list of element names that should be treated by the Title plugin as title-like.
+// This means that an element of a type from this list will be changed to a title element
 // when it is the first element in the root.
 const titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ] );
 
@@ -56,16 +56,16 @@ export default class Title extends Plugin {
 		const model = editor.model;
 
 		/**
-		 * Reference to the empty paragraph in the body
-		 * created when there's no element in the body for the placeholder purpose.
+		 * A reference to an empty paragraph in the body
+		 * created when there is no element in the body for the placeholder purposes.
 		 *
 		 * @private
 		 * @type {null|module:engine/model/element~Element}
 		 */
 		this._bodyPlaceholder = null;
 
-		// To use Schema for disabling some features when selection is inside the title element
-		// it's needed to create the following structure:
+		// To use the schema for disabling some features when the selection is inside the title element
+		// it is needed to create the following structure:
 		//
 		// <title>
 		//     <title-content>The title text</title-content>
@@ -83,8 +83,8 @@ export default class Title extends Plugin {
 			}
 		} );
 
-		// Because of `title` is represented by two elements in the model
-		// but only one in the view it's needed to adjust Mapper.
+		// Because `title` is represented by two elements in the model
+		// but only one in the view, it is needed to adjust Mapper.
 		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 
@@ -116,9 +116,9 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Sets the title of the document. This methods does not change any content outside the title element.
+	 * Sets the title of the document. This method does not change any content outside the title element.
 	 *
-	 * @param {String} data Data to be set as a document title.
+	 * @param {String} data The data to be set as the document title.
 	 */
 	setTitle( data ) {
 		const editor = this.editor;
@@ -129,12 +129,12 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Returns the title of the document. Note, that because this plugin does not allow any formatting inside
+	 * Returns the title of the document. Note that because this plugin does not allow any formatting inside
 	 * the title element, the output of this method will be a plain text, with no HTML tags. However, it
 	 * may contain some markers, like comments or suggestions. In such case, a special tag for the
 	 * marker will be included in the title text.
 	 *
-	 * @returns {String} Title of the document.
+	 * @returns {String} The title of the document.
 	 */
 	getTitle() {
 		const titleElement = this._getTitleElement();
@@ -146,7 +146,7 @@ export default class Title extends Plugin {
 	/**
 	 * Sets the body of the document.
 	 *
-	 * @returns {String} data Data to be set as a body of the document.
+	 * @returns {String} data The data to be set as a body of the document.
 	 */
 	setBody( data ) {
 		const editor = this.editor;
@@ -162,7 +162,7 @@ export default class Title extends Plugin {
 	/**
 	 * Returns the body of the document.
 	 *
-	 * @returns {String} Body of the document.
+	 * @returns {String} The body of the document.
 	 */
 	getBody() {
 		const data = this.editor.data;
@@ -198,7 +198,7 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Returns `title` element when it is in the document. Returns `undefined` otherwise.
+	 * Returns the `title` element when it is in the document. Returns `undefined` otherwise.
 	 *
 	 * @private
 	 * @returns {module:engine/model/element~Element|undefined}
@@ -214,7 +214,7 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Model post-fixer callback that ensures `title` has only one `title-content` child.
+	 * Model post-fixer callback that ensures that `title` has only one `title-content` child.
 	 * All additional children should be moved after the `title` element and renamed to a paragraph.
 	 *
 	 * @private
@@ -313,7 +313,7 @@ export default class Title extends Plugin {
 
 	/**
 	 * Model post-fixer callback that removes a paragraph from the end of the document
-	 * if it was created for the placeholder purpose and it is not needed anymore.
+	 * if it was created for the placeholder purposes and is not needed anymore.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
@@ -334,7 +334,7 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Attaches `Title` and `Body` placeholders to the title and/or content.
+	 * Attaches the `Title` and `Body` placeholders to the title and/or content.
 	 *
 	 * @private
 	 */
@@ -392,7 +392,7 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Creates navigation between Title and Body sections using `Tab` and `Shift+Tab` keys.
+	 * Creates navigation between the title and body sections using <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keys.
 	 *
 	 * @private
 	 */
@@ -400,7 +400,7 @@ export default class Title extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		// Pressing `Tab` inside the title should move the caret to the body.
+		// Pressing <kbd>Tab</kbd> inside the title should move the caret to the body.
 		editor.keystrokes.set( 'TAB', ( data, cancel ) => {
 			model.change( writer => {
 				const selection = model.document.selection;
@@ -414,7 +414,7 @@ export default class Title extends Plugin {
 			} );
 		} );
 
-		// Pressing `Shift+Tab` at the beginning of the body should move the caret to the title.
+		// Pressing <kbd>Shift</kbd>+<kbd>Tab</kbd> at the beginning of the body should move the caret to the title.
 		editor.keystrokes.set( 'SHIFT + TAB', ( data, cancel ) => {
 			model.change( writer => {
 				const selection = model.document.selection;

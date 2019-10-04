@@ -4,7 +4,7 @@ category: features
 
 # Title
 
-The {@link module:heading/title~Title title} feature adds support for the title field to your document. It makes sure that there will be always a single title field at the beginning of your document.
+The {@link module:heading/title~Title} feature enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of your document.
 
 ## Demo
 
@@ -12,11 +12,13 @@ The {@link module:heading/title~Title title} feature adds support for the title 
 
 ## Keyboard navigation
 
-Title plugin lets you navigate between title and body elements using <kbd>Tab</kbd> key and back, using <kbd>Shift</kbd> + <kbd>Tab</kbd> (when the selection is at the beginning of the first body element), providing form-like experience. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move caret between title and body.
+The title plugin lets you move from the title to the body element using the <kbd>Tab</kbd> key, providing form-like experience. When the selection is at the beginning of the first body element, you can go back to the title element using <kbd>Shift</kbd>+<kbd>Tab</kbd>. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move the caret between the title and the body.
 
 ## Placeholder integration
 
-Title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, it will be used as the placeholder for the body element.
+The title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, the placeholder text will be used for the body element.
+
+At the moment the placeholder of the title section is hardcoded. If you would like it to be configurable, add 👍 to the [relevant issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/2020).
 
 ## Installation
 
@@ -38,6 +40,10 @@ ClassicEditor
     .then( ... )
     .catch( ... );
 ```
+
+## Contribute
+
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-heading.
 
 <info-box info>
     Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
