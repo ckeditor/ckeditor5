@@ -22,6 +22,7 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -29,7 +30,7 @@ describe( 'ListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing ]
+				plugins: [ Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1532,6 +1533,7 @@ describe( 'ListEditing', () => {
 				);
 
 				test( 'block elements wrapping nested ul',
+					'text before' +
 					'<ul>' +
 						'<li>' +
 							'text' +
@@ -1542,6 +1544,7 @@ describe( 'ListEditing', () => {
 							'</div>' +
 						'</li>' +
 					'</ul>',
+					'<p>text before</p>' +
 					'<ul>' +
 						'<li>' +
 							'text' +
@@ -1549,6 +1552,102 @@ describe( 'ListEditing', () => {
 								'<li>inner text</li>' +
 							'</ul>' +
 						'</li>' +
+					'</ul>'
+				);
+
+				// test( 'block elements wrapping nested ul - invalid blocks',
+				// 	'<ul>' +
+				// 		'<li>' +
+				// 			'a' +
+				// 			'<table>' +
+				// 				'<tr>' +
+				// 					'<td>' +
+				// 						'<div>' +
+				// 							'<ul>' +
+				// 								'<li>b</li>' +
+				// 								'<li>c' +
+				// 									'<ul>' +
+				// 										'<li>' +
+				// 											'd' +
+				// 											'<table>' +
+				// 												'<tr>' +
+				// 													'<td>' +
+				// 														'e' +
+				// 													'</td>' +
+				// 												'</tr>' +
+				// 											'</table>' +
+				// 										'</li>' +
+				// 									'</ul>' +
+				// 								'</li>' +
+				// 							'</ul>' +
+				// 						'</div>' +
+				// 					'</td>' +
+				// 				'</tr>' +
+				// 			'</table>' +
+				// 			'f' +
+				// 		'</li>' +
+				// 		'<li>g</li>' +
+				// 	'</ul>',
+				// 	'<ul>' +
+				// 		'<li>af</li>' +
+				// 			'<li>g' +
+				// 				'<ul>' +
+				// 					'<li>b</li>' +
+				// 					'<li>c' +
+				// 						'<ul>' +
+				// 							'<li>d</li>' +
+				// 						'</ul>' +
+				// 					'</li>' +
+				// 				'</ul>' +
+				// 			'</li>' +
+				// 	'</ul>' +
+				// 	'<p>e</p>'
+				// );
+
+				test( 'deeply nested block elements wrapping nested ul',
+					'<ul>' +
+							'<li>' +
+								'a' +
+								'<div>' +
+									'<div>' +
+										'<ul>' +
+											'<li>b</li>' +
+											'<li>c' +
+												'<ul>' +
+													'<li>d' +
+														'<div>' +
+															'<ul>' +
+																'<li>e</li>' +
+															'</ul>' +
+														'</div>' +
+													'</li>' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</div>' +
+								'</div>' +
+								'f' +
+							'</li>' +
+						'<li>g</li>' +
+						'</ul>' +
+					'</ul>',
+					'<ul>' +
+						'<li>a' +
+							'<ul>' +
+								'<li>b</li>' +
+								'<li>c' +
+									'<ul>' +
+										'<li>d' +
+											'<ul>' +
+												'<li>e</li>' +
+											'</ul>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>f</li>' +
+						'<li>g</li>' +
 					'</ul>'
 				);
 			} );
@@ -1769,42 +1868,97 @@ describe( 'ListEditing', () => {
 				'<p>bar</p>'
 			);
 
-			it( 'model test for nested lists', () => {
-				// <ol> in the middle will be fixed by postfixer to bulleted list.
-				editor.setData(
-					'<p>foo</p>' +
-					'<ul>' +
-						'<li>' +
-							'1' +
-							'<ul>' +
-								'<li>1.1</li>' +
-							'</ul>' +
-							'<ol>' +
-								'<li>' +
-									'1.2' +
-									'<ol>' +
-										'<li>1.2.1</li>' +
-									'</ol>' +
+			describe( 'model tests for nested lists', () => {
+				it( 'should properly set listIndent and listType', () => {
+					// <ol> in the middle will be fixed by postfixer to bulleted list.
+					editor.setData(
+						'<p>foo</p>' +
+						'<ul>' +
+							'<li>' +
+								'1' +
+								'<ul>' +
+									'<li>1.1</li>' +
+								'</ul>' +
+								'<ol>' +
+									'<li>' +
+										'1.2' +
+										'<ol>' +
+											'<li>1.2.1</li>' +
+										'</ol>' +
+									'</li>' +
+									'<li>1.3</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>2</li>' +
+						'</ul>' +
+						'<p>bar</p>'
+					);
+
+					const expectedModelData =
+						'<paragraph>foo</paragraph>' +
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.2</listItem>' +
+						'<listItem listIndent="2" listType="numbered">1.2.1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.3</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">2</listItem>' +
+						'<paragraph>bar</paragraph>';
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), expectedModelData );
+				} );
+
+				it( 'should properly listIndent when list nested in other block', () => {
+					// <ol> in the middle will be fixed by postfixer to bulleted list.
+					editor.setData(
+						'<ul>' +
+							'<li>' +
+								'a' +
+								'<table>' +
+									'<tr>' +
+									'<td>' +
+										'<div>' +
+											'<ul>' +
+											'<li>b</li>' +
+											'<li>c' +
+												'<ul>' +
+													'<li>' +
+														'd' +
+														'<table>' +
+															'<tr>' +
+																'<td>e</td>' +
+															'</tr>' +
+														'</table>' +
+													'</li>' +
+												'</ul>' +
+											'</li>' +
+											'</ul>' +
+										'</div>' +
+									'</td>' +
+									'</tr>' +
+								'</table>' +
+								'f' +
 								'</li>' +
-								'<li>1.3</li>' +
-							'</ol>' +
-						'</li>' +
-						'<li>2</li>' +
-					'</ul>' +
-					'<p>bar</p>'
-				);
+							'<li>g</li>' +
+						'</ul>',
+					);
 
-				const expectedModelData =
-					'<paragraph>foo</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">1.2</listItem>' +
-					'<listItem listIndent="2" listType="numbered">1.2.1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">1.3</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">2</listItem>' +
-					'<paragraph>bar</paragraph>';
+					const expectedModelData =
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+									'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+									'<listItem listIndent="1" listType="bulleted">d</listItem>' +
+									'<paragraph>e</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+						'<listItem listIndent="0" listType="bulleted">f</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">g</listItem>';
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), expectedModelData );
+				} );
 			} );
 		} );
 
