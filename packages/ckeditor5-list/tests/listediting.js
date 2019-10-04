@@ -21,6 +21,7 @@ import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -1290,7 +1291,7 @@ describe( 'ListEditing', () => {
 			function test( testName, string, expectedString = null ) {
 				it( testName, () => {
 					editor.setData( string );
-					expect( editor.getData() ).to.equal( expectedString || string );
+					assertEqualMarkup( editor.getData(), expectedString || string );
 				} );
 			}
 
