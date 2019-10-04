@@ -1033,7 +1033,7 @@ function getIndent( listItem ) {
 
 	let parent = listItem.parent;
 
-	while ( parent && ( parent.is( 'li' ) || isList( parent ) ) ) {
+	while ( parent ) {
 		// Each LI in the tree will result in an increased indent for HTML compliant lists.
 		if ( parent.is( 'li' ) ) {
 			indent++;

@@ -1532,16 +1532,23 @@ describe( 'ListEditing', () => {
 				);
 
 				test( 'block elements wrapping nested ul',
-					'<li>' +
-						'text' +
-						'<div>' +
-							'<ul>' +
-								'<li>1.1</li>' +
-							'</ul>' +
-						'</div>' +
-					'</li>',
 					'<ul>' +
-						'<li>1.1</li>' +
+						'<li>' +
+							'text' +
+							'<div>' +
+								'<ul>' +
+									'<li>inner text</li>' +
+								'</ul>' +
+							'</div>' +
+						'</li>' +
+					'</ul>',
+					'<ul>' +
+						'<li>' +
+							'text' +
+							'<ul>' +
+								'<li>inner text</li>' +
+							'</ul>' +
+						'</li>' +
 					'</ul>'
 				);
 			} );
