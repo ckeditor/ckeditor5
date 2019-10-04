@@ -1529,6 +1529,20 @@ describe( 'ListEditing', () => {
 						'</li>' +
 					'</ol>'
 				);
+
+				test( 'block elements wrapping nested ul',
+					'<li>' +
+						'text' +
+						'<div>' +
+							'<ul>' +
+								'<li>1.1</li>' +
+							'</ul>' +
+						'</div>' +
+					'</li>',
+					'<ul>' +
+						'<li>1.1</li>' +
+					'</ul>'
+				);
 			} );
 
 			test( 'bullet list simple structure',
