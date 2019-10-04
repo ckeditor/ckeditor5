@@ -38,6 +38,7 @@
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed",
     "@ckeditor/ckeditor5-mention": "ckeditor/ckeditor5-mention",
+    "@ckeditor/ckeditor5-page-break": "ckeditor/ckeditor5-page-break",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office",
     "@ckeditor/ckeditor5-remove-format": "ckeditor/ckeditor5-remove-format",

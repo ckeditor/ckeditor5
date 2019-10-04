@@ -599,6 +599,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-page-break"><code>@ckeditor/ckeditor5-page-break</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-page-break.svg" alt="@ckeditor/ckeditor5-page-break npm package badge"></a>
+	</td>
+	<td>
+		The page break feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-paragraph"><code>@ckeditor/ckeditor5-paragraph</code></a>
 	</td>
 	<td>
