@@ -62,7 +62,18 @@ describe( 'PageBreakEditing', () => {
 		} );
 
 		describe( 'view to model', () => {
-			it( 'should convert the page break code element', () => {
+			it( 'should convert the page break code element without `.page-break` class', () => {
+				editor.setData(
+					'<div style="page-break-after:always;">' +
+						'<span style="display:none;">&nbsp;</span>' +
+					'</div>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<pageBreak></pageBreak>' );
+			} );
+
+			it( 'should convert the page break code element with `.page-break` class', () => {
 				editor.setData(
 					'<div class="page-break" style="page-break-after:always;">' +
 						'<span style="display:none;">&nbsp;</span>' +
