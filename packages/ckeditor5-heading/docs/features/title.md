@@ -1,8 +1,9 @@
 ---
 category: features
+menu-title: Document title
 ---
 
-# Title
+# Document title
 
 The {@link module:heading/title~Title} feature enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of your document.
 
