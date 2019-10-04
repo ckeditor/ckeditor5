@@ -4,30 +4,30 @@
  */
 
 /**
- * @module horizontal-rule/horizontalrule
+ * @module horizontal-line/horizontalline
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HorizontalRuleEditing from './horizontalruleediting';
-import HorizontalRuleUI from './horizontalruleui';
+import HorizontalLineEditing from './horizontallineediting';
+import HorizontalLineUI from './horizontallineui';
 
 /**
- * The horizontal rule plugin provides a possibility to insert a horizontal rule in the rich-text editor.
+ * The horizontal line plugin provides a possibility to insert a horizontal line in the rich-text editor.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class HorizontalRule extends Plugin {
+export default class HorizontalLine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HorizontalRuleEditing, HorizontalRuleUI ];
+		return [ HorizontalLineEditing, HorizontalLineUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'HorizontalRule';
+		return 'HorizontalLine';
 	}
 }

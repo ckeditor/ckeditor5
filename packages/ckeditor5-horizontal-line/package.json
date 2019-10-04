@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-horizontal-rule",
+  "name": "@ckeditor/ckeditor5-horizontal-line",
   "version": "0.0.1",
-  "description": "Horizontal rule feature for CKEditor 5.",
+  "description": "Horizontal line feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -37,7 +37,7 @@
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-horizontal-rule.git"
+    "url": "https://github.com/ckeditor/ckeditor5-horizontal-line.git"
   },
   "files": [
     "lang",

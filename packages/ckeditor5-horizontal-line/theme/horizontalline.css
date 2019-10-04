@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck .ck-horizontal-rule {
+.ck .ck-horizontal-line {
 	/* Handle proper `<hr>` display next to elements with `float` property, e.g. side image case. */
 	overflow: hidden;
 	padding: 5px 0;

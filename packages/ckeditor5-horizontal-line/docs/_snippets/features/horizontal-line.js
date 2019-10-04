@@ -6,13 +6,13 @@
 /* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import HorizontalRule from '@ckeditor/ckeditor5-horizontal-rule/src/horizontalrule';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-ClassicEditor.builtinPlugins.push( HorizontalRule );
+ClassicEditor.builtinPlugins.push( HorizontalLine );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-horizontal-rule' ), {
+	.create( document.querySelector( '#snippet-horizontal-line' ), {
 		toolbar: {
 			items: [
 				'heading',
@@ -27,7 +27,7 @@ ClassicEditor
 				'imageUpload',
 				'mediaEmbed',
 				'insertTable',
-				'horizontalRule',
+				'horizontalLine',
 				'|',
 				'undo',
 				'redo',
