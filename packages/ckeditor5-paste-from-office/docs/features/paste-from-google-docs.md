@@ -1,6 +1,7 @@
 ---
 menu-title: Paste from Google Docs
 category: features-pasting
+order: 20
 ---
 
 {@snippet features/build-paste-from-office-source}

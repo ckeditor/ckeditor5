@@ -13,6 +13,7 @@ import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/norm
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import { fixtures, browserFixtures } from './fixtures';
 
@@ -152,7 +153,9 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+			const testRunner = skip.indexOf( name ) !== -1 ? it.skip : it;
+
+			testRunner( name, () => {
 				// Simulate data from Clipboard event
 				const clipboardPlugin = editor.plugins.get( 'Clipboard' );
 				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
@@ -221,13 +224,16 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		after( () => {
-			editor.destroy();
-
-			element.remove();
+			return editor.destroy()
+				.then( () => {
+					element.remove();
+				} );
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+			const testRunner = skip.indexOf( name ) !== -1 ? it.skip : it;
+
+			testRunner( name, () => {
 				data.input = fixtures.input[ name ];
 				data.model = fixtures.model[ name ];
 				expectModel( data, editor, fixtures.inputRtf && fixtures.inputRtf[ name ] );
@@ -304,7 +310,7 @@ function compareContentWithBase64Images( actual, expected ) {
 
 	// In some rare cases there might be `&nbsp;` in a model data
 	// (see https://github.com/ckeditor/ckeditor5-paste-from-office/issues/27).
-	expect( actualModel.replace( /\u00A0/g, ' ' ) ).to.equal( expectedModel );
+	assertEqualMarkup( actualModel.replace( /\u00A0/g, ' ' ), expectedModel );
 
 	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
 		expect( actualImages.length ).to.equal( expectedImages.length );
