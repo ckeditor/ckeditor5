@@ -31,6 +31,10 @@ describe( 'AlignmentEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( AlignmentEditing.pluginName ).to.equal( 'AlignmentEditing' );
+	} );
+
 	it( 'adds alignment command', () => {
 		expect( editor.commands.get( 'alignment' ) ).to.be.instanceOf( AlignmentCommand );
 	} );

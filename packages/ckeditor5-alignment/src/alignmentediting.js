@@ -21,6 +21,13 @@ export default class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'AlignmentEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
