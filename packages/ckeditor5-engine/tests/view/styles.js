@@ -174,6 +174,14 @@ describe( 'Styles', () => {
 			expect( styles.getInlineProperty( 'color' ) ).to.equal( 'blue' );
 			expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		} );
+
+		it( 'should set object property', () => {
+			styles.setStyle( 'margin:1px;' );
+			styles.insertProperty( 'margin', { right: '2px' } );
+
+			expect( styles.getInlineProperty( 'margin-left' ) ).to.equal( '1px' );
+			expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '2px' );
+		} );
 	} );
 
 	describe( 'removeProperty()', () => {

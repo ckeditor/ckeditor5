@@ -162,7 +162,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			this._getNormalizedForm( key, value );
+			this._toNormalizedForm( key, value );
 		}
 	}
 
@@ -207,7 +207,7 @@ export default class Styles {
 				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			this._getNormalizedForm( nameOrObject, value );
+			this._toNormalizedForm( nameOrObject, value );
 		}
 	}
 
@@ -336,43 +336,21 @@ export default class Styles {
 	}
 
 	/**
-	 * Appends style definition to the internal styles object.
-	 *
-	 * @param {String} nameOrPath
-	 * @param {String|Object} valueOrObject
-	 * @private
-	 */
-	_appendStyleValue( nameOrPath, valueOrObject ) {
-		if ( isObject( valueOrObject ) ) {
-			if ( nameOrPath.includes( '.' ) ) {
-				const got = get( this._styles, nameOrPath );
-
-				set( this._styles, nameOrPath, merge( {}, got, valueOrObject ) );
-			} else {
-				this._styles[ nameOrPath ] = merge( {}, this._styles[ nameOrPath ], valueOrObject );
-			}
-		} else {
-			set( this._styles, nameOrPath, valueOrObject );
-		}
-	}
-
-	/**
 	 * Parse style property value to a normalized form.
 	 *
 	 * @param {String} propertyName Name of style property.
 	 * @param {String} value Value of style property.
 	 * @private
 	 */
-	_getNormalizedForm( propertyName, value ) {
+	_toNormalizedForm( propertyName, value ) {
 		if ( isObject( value ) ) {
-			this._appendStyleValue( toPath( propertyName ), value );
-
+			appendStyleValue( this._styles, toPath( propertyName ), value );
 			return;
 		}
 
 		// Set directly to an object.
 		if ( setOnPathStyles.includes( propertyName ) ) {
-			this._appendStyleValue( toPath( propertyName ), value );
+			appendStyleValue( this._styles, toPath( propertyName ), value );
 
 			return;
 		}
@@ -380,9 +358,10 @@ export default class Styles {
 		if ( this.normalizers.has( propertyName ) ) {
 			const parser = this.normalizers.get( propertyName );
 
+			// TODO: merge with appendStyleValue?
 			this._styles = merge( {}, this._styles, parser( value ) );
 		} else {
-			this._appendStyleValue( propertyName, value );
+			appendStyleValue( this._styles, propertyName, value );
 		}
 	}
 
@@ -673,4 +652,19 @@ function parseInlineStyles( stylesString ) {
 
 function toPath( name ) {
 	return name.replace( '-', '.' );
+}
+
+// Appends style definition to the styles object.
+//
+// @param {String} nameOrPath
+// @param {String|Object} valueOrObject
+// @private
+function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
+	let valueToSet = valueOrObject;
+
+	if ( isObject( valueOrObject ) ) {
+		valueToSet = merge( {}, get( stylesObject, nameOrPath ), valueOrObject );
+	}
+
+	set( stylesObject, nameOrPath, valueToSet );
 }
