@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading",
 	"@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
-	"@ckeditor/ckeditor5-horizontal-rule": "ckeditor/ckeditor5-horizontal-rule",
+	"@ckeditor/ckeditor5-horizontal-line": "ckeditor/ckeditor5-horizontal-line",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image",
     "@ckeditor/ckeditor5-indent": "ckeditor/ckeditor5-indent",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link",

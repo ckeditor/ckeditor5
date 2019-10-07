@@ -503,10 +503,10 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-horizontal-rule"><code>@ckeditor/ckeditor5-horizontal-rule</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-horizontal-line"><code>@ckeditor/ckeditor5-horizontal-line</code></a>
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-rule"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-horizontal-rule.svg" alt="@ckeditor/ckeditor5-horizontal-rule npm package badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-horizontal-line.svg" alt="@ckeditor/ckeditor5-horizontal-line npm package badge"></a>
 	</td>
 	<td>
 		The horizontal rule feature.
