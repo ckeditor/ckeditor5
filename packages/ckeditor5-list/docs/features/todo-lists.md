@@ -47,8 +47,8 @@ When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getD
 ```html
 <ul class="todo-list">
 	<li>
-		<label class="todo-list__label [todo-list__label_checked]">
-			<input class="todo-list__label__checkmark" type="checkbox" disabled [checked] />
+		<label class="todo-list__label">
+			<input type="checkbox" disabled [checked] />
 			<span class="todo-list__label__description">Foo</span>
 		</label>
 	</li>
@@ -60,14 +60,14 @@ For nested lists:
 ```html
 <ul class="todo-list">
 	<li>
-		<label class="todo-list__label [todo-list__label_checked]">
-			<input class="todo-list__label__checkmark" type="checkbox" disabled [checked] />
+		<label class="todo-list__label">
+			<input type="checkbox" disabled [checked] />
 			<span class="todo-list__label__description">Foo</span>
 		</label>
 		<ul class="todo-list">
 			<li>
-				<label class="todo-list__label [todo-list__label_checked]">
-					<input class="todo-list__label__checkmark" type="checkbox" disabled [checked] />
+				<label class="todo-list__label">
+					<input type="checkbox" disabled [checked] />
 					<span class="todo-list__label__description">Bar</span>
 				</label>
 			</li>

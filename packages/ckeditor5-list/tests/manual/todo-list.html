@@ -1,3 +1,4 @@
+<h2>Editor</h2>
 <div id="editor">
 	<p>This is a test for list feature.</p>
 	<p>Some more text for testing.</p>
@@ -7,7 +8,17 @@
 		<li><input type="checkbox">To-do list item 3</li>
 		<li><input type="checkbox" checked="checked">To-do list item 4</li>
 		<li><input type="checkbox">To-do list item 5</li>
-		<li><input type="checkbox">To-do list item 6</li>
+		<li>
+			<input type="checkbox">To-do list item 6
+			<ul class="todo-list">
+					<li>
+						<label class="todo-list__label">
+							<input type="checkbox" disabled="disabled" checked="checked">
+							Nested item
+						</label>
+					</li>
+			</ul>
+		</li>
 		<li><input type="checkbox" checked="checked">To-do list item 7</li>
 		<li><input type="checkbox">To-do list item 8</li>
 	</ul>
@@ -23,3 +34,13 @@
 		<li>Bullet list</li>
 	</ul>
 </div>
+
+<h2>Editor content preview</h2>
+<div id="preview" class="ck-content"></div>
+
+<style>
+	#preview {
+		outline: 1px solid red;
+		padding: 10px;
+	}
+</style>

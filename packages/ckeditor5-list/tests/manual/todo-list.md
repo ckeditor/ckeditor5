@@ -84,3 +84,9 @@
 2. Highlight selected text
 3. Check or uncheck highlighted to-do list item
 4. Type inside highlighted to-do list item
+
+### Content styles
+
+1. Inspect list styles in the editor and in the content preview (below).
+2. There should be no major visual difference between them.
+3. Check marks in the content preview should be rich custom components (no native checkboxes).

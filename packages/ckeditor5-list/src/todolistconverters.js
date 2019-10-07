@@ -93,16 +93,18 @@ export function dataModelViewInsertion( model ) {
 
 		viewWriter.addClass( 'todo-list', viewItem.parent );
 
-		const label = viewWriter.createAttributeElement( 'label', { class: 'todo-list__label' } );
+		const label = viewWriter.createAttributeElement( 'label', {
+			class: 'todo-list__label'
+		} );
+
 		const checkbox = viewWriter.createEmptyElement( 'input', {
 			type: 'checkbox',
 			disabled: 'disabled',
-			class: 'todo-list__label__checkmark'
 		} );
 
 		if ( data.item.getAttribute( 'todoListChecked' ) ) {
 			viewWriter.setAttribute( 'checked', 'checked', checkbox );
-			viewWriter.addClass( 'todo-list__label_checked', label );
+			viewWriter.addClass( 'todo-list__label', label );
 		}
 
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkbox );
@@ -303,13 +305,16 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 	const uiElement = viewWriter.createUIElement(
 		'label',
 		{
-			class: 'todo-list__checkmark',
+			class: 'todo-list__label',
 			contenteditable: false
 		},
 		function( domDocument ) {
-			const checkbox = createElement( document, 'input', { type: 'checkbox', } );
+			const checkbox = createElement( document, 'input', { type: 'checkbox' } );
 
-			checkbox.checked = isChecked;
+			if ( isChecked ) {
+				checkbox.setAttribute( 'checked', 'checked' );
+			}
+
 			checkbox.addEventListener( 'change', () => onChange( modelItem ) );
 
 			const domElement = this.toDomElement( domDocument );
@@ -319,10 +324,6 @@ function createCheckmarkElement( modelItem, viewWriter, isChecked, onChange ) {
 			return domElement;
 		}
 	);
-
-	if ( isChecked ) {
-		viewWriter.addClass( 'todo-list__checkmark_checked', uiElement );
-	}
 
 	return uiElement;
 }

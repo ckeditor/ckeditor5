@@ -42,6 +42,14 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		const contentPreviewBox = document.getElementById( 'preview' );
+
+		contentPreviewBox.innerHTML = editor.getData();
+
+		editor.model.document.on( 'change:data', () => {
+			contentPreviewBox.innerHTML = editor.getData();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
