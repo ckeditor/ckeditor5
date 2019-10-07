@@ -8,7 +8,7 @@
  */
 
 import removeBoldWrapper from '../filters/removeboldwrapper';
-import { unwrapParagraphInListItem, fixListIndentation } from '../filters/list';
+import { unwrapParagraphInListItem } from '../filters/list';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
