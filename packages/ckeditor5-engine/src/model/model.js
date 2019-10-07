@@ -165,23 +165,7 @@ export default class Model {
 				return callback( this._currentWriter );
 			}
 		} catch ( err ) {
-			if ( err.is && err.is( 'CKEditorError' ) ) {
-				throw err;
-			}
-
-			/**
-			 * An unexpected error occurred inside the `model.change()` block. The `error.data.originalError` property
-			 * shows the original error properties.
-			 *
-			 * @error model-change-unexpected-error
-			 */
-			throw new CKEditorError( 'model-change-unexpected-error', this, {
-				originalError: {
-					message: err.message,
-					stack: err.stack,
-					name: err.name
-				}
-			} );
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
 
@@ -233,23 +217,7 @@ export default class Model {
 				this._runPendingChanges();
 			}
 		} catch ( err ) {
-			if ( err.is && err.is( 'CKEditorError' ) ) {
-				throw err;
-			}
-
-			/**
-			 * An unexpected error occurred inside the `model.enqueueChange()` block. The `error.data.originalError` property
-			 * shows the original error properties.
-			 *
-			 * @error model-enqueueChange-unexpected-error
-			 */
-			throw new CKEditorError( 'model-enqueueChange-unexpected-error', this, {
-				originalError: {
-					message: err.message,
-					stack: err.stack,
-					name: err.name
-				}
-			} );
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
 

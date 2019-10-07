@@ -812,7 +812,7 @@ describe( 'view', () => {
 				view.change( () => {
 					throw error;
 				} );
-			}, /view-change-unexpected-error/, view, {
+			}, /unexpected-error/, view, {
 				originalError: {
 					message: 'foo',
 					stack: 'bar',
@@ -821,10 +821,7 @@ describe( 'view', () => {
 			} );
 		} );
 
-		it( 'should re-throw custom CKEditorError errors', () => {
-			const error = new TypeError( 'foo' );
-			error.stack = 'bar';
-
+		it( 'should rethrow custom CKEditorError errors', () => {
 			expectToThrowCKEditorError( () => {
 				view.change( () => {
 					throw new CKEditorError( 'foo', view );

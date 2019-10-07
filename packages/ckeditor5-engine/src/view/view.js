@@ -457,7 +457,6 @@ export default class View {
 			);
 		}
 
-		// Use try-catch to catch the
 		try {
 			// Recursive call to view.change() method - execute listener immediately.
 			if ( this._ongoingChange ) {
@@ -483,23 +482,7 @@ export default class View {
 
 			return callbackResult;
 		} catch ( err ) {
-			if ( err.is && err.is( 'CKEditorError' ) ) {
-				throw err;
-			}
-
-			/**
-			 * An unexpected error occurred inside the `view.change()` block. The `error.data.originalError` property
-			 * shows the original error properties.
-			 *
-			 * @error view-change-unexpected-error
-			 */
-			throw new CKEditorError( 'view-change-unexpected-error', this, {
-				originalError: {
-					message: err.message,
-					stack: err.stack,
-					name: err.name
-				}
-			} );
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
 

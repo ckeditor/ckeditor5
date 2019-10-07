@@ -332,7 +332,7 @@ describe( 'Model', () => {
 				model.change( () => {
 					throw error;
 				} );
-			}, /model-change-unexpected-error/, model, {
+			}, /unexpected-error/, model, {
 				originalError: {
 					message: 'foo',
 					stack: 'bar',
@@ -342,11 +342,9 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
-			const err = new CKEditorError( 'foo', null, { foo: 1 } );
-
 			expectToThrowCKEditorError( () => {
 				model.change( () => {
-					throw err;
+					throw new CKEditorError( 'foo', null, { foo: 1 } );
 				} );
 			}, /foo/, null, { foo: 1 } );
 		} );
@@ -359,7 +357,7 @@ describe( 'Model', () => {
 				model.enqueueChange( () => {
 					throw error;
 				} );
-			}, /model-enqueueChange-unexpected-error/, model, {
+			}, /unexpected-error/, model, {
 				originalError: {
 					message: 'foo',
 					stack: 'bar',
