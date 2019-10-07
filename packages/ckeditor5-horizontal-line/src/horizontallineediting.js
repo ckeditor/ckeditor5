@@ -4,21 +4,21 @@
  */
 
 /**
- * @module horizontal-rule/horizontalruleediting
+ * @module horizontal-line/horizontallineediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HorizontalRuleCommand from './horizontalrulecommand';
+import HorizontalLineCommand from './horizontallinecommand';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-import '../theme/horizontalrule.css';
+import '../theme/horizontalline.css';
 
 /**
- * The horizontal rule editing feature.
+ * The horizontal line editing feature.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class HorizontalRuleEditing extends Plugin {
+export default class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -28,51 +28,51 @@ export default class HorizontalRuleEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 
-		schema.register( 'horizontalRule', {
+		schema.register( 'horizontalLine', {
 			isObject: true,
 			allowWhere: '$block'
 		} );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'horizontalRule',
+			model: 'horizontalLine',
 			view: ( modelElement, viewWriter ) => {
 				return viewWriter.createEmptyElement( 'hr' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'horizontalRule',
+			model: 'horizontalLine',
 			view: ( modelElement, viewWriter ) => {
-				const label = t( 'Horizontal rule' );
+				const label = t( 'Horizontal line' );
 				const viewWrapper = viewWriter.createContainerElement( 'div' );
 				const viewHrElement = viewWriter.createEmptyElement( 'hr' );
 
-				viewWriter.addClass( 'ck-horizontal-rule', viewWrapper );
+				viewWriter.addClass( 'ck-horizontal-line', viewWrapper );
 				viewWriter.setCustomProperty( 'hr', true, viewWrapper );
 
 				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewHrElement );
 
-				return toHorizontalRuleWidget( viewWrapper, viewWriter, label );
+				return toHorizontalLineWidget( viewWrapper, viewWriter, label );
 			}
 		} );
 
-		conversion.for( 'upcast' ).elementToElement( { view: 'hr', model: 'horizontalRule' } );
+		conversion.for( 'upcast' ).elementToElement( { view: 'hr', model: 'horizontalLine' } );
 
-		editor.commands.add( 'horizontalRule', new HorizontalRuleCommand( editor ) );
+		editor.commands.add( 'horizontalLine', new HorizontalLineCommand( editor ) );
 	}
 }
 
-// Converts a given {@link module:engine/view/element~Element} to a horizontal rule widget:
+// Converts a given {@link module:engine/view/element~Element} to a horizontal line widget:
 // * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
-//   recognize the horizontal rule widget element.
+//   recognize the horizontal line widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 //
 //  @param {module:engine/view/element~Element} viewElement
 //  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
 //  @param {String} label The element's label.
 //  @returns {module:engine/view/element~Element}
-function toHorizontalRuleWidget( viewElement, writer, label ) {
-	writer.setCustomProperty( 'horizontalRule', true, viewElement );
+function toHorizontalLineWidget( viewElement, writer, label ) {
+	writer.setCustomProperty( 'horizontalLine', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
 }

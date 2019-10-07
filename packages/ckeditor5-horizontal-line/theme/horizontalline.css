@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-editor__editable .ck-horizontal-rule {
+
+.ck-editor__editable .ck-horizontal-line {
 	/* Necessary to render properly next to floated objects, e.g. side image case. */
 	overflow: hidden;
 }

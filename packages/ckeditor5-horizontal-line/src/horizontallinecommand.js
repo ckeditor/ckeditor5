@@ -4,29 +4,29 @@
  */
 
 /**
- * @module horizontal-rule/horizontalrulecommand
+ * @module horizontal-line/horizontallinecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * The insert a horizontal rule command.
+ * The insert a horizontal line command.
  *
- * The command is registered by the {@link module:horizontal-rule/horizontalruleediting~HorizontalRuleEditing} as `'horizontalRule'`.
+ * The command is registered by the {@link module:horizontal-line/horizontallineediting~HorizontalLineEditing} as `'horizontalLine'`.
  *
- * To insert the horizontal rule at the current selection, execute the command:
+ * To insert the horizontal line at the current selection, execute the command:
  *
- *		editor.execute( 'horizontalRule' );
+ *		editor.execute( 'horizontalLine' );
  *
  * @extends module:core/command~Command
  */
-export default class HorizontalRuleCommand extends Command {
+export default class HorizontalLineCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isHorizontalRuleAllowed( this.editor.model );
+		this.isEnabled = isHorizontalLineAllowed( this.editor.model );
 	}
 
 	/**
@@ -38,16 +38,16 @@ export default class HorizontalRuleCommand extends Command {
 		const model = this.editor.model;
 
 		model.change( writer => {
-			const horizontalElement = writer.createElement( 'horizontalRule' );
+			const horizontalElement = writer.createElement( 'horizontalLine' );
 
 			model.insertContent( horizontalElement );
 
 			let nextElement = horizontalElement.nextSibling;
 
-			// Check whether an element next to the inserted horizontal rule is defined and can contain a text.
+			// Check whether an element next to the inserted horizontal line is defined and can contain a text.
 			const canSetSelection = nextElement && model.schema.checkChild( nextElement, '$text' );
 
-			// If the element is missing, but a paragraph could be inserted next to the horizontal rule, let's add it.
+			// If the element is missing, but a paragraph could be inserted next to the horizontal line, let's add it.
 			if ( !canSetSelection && model.schema.checkChild( horizontalElement.parent, 'paragraph' ) ) {
 				nextElement = writer.createElement( 'paragraph' );
 
@@ -62,28 +62,28 @@ export default class HorizontalRuleCommand extends Command {
 	}
 }
 
-// Checks if the `horizontalRule` element can be inserted at current model selection.
+// Checks if the `horizontalLine` element can be inserted at current model selection.
 //
 // @param {module:engine/model/model~Model} model
 // @returns {Boolean}
-function isHorizontalRuleAllowed( model ) {
+function isHorizontalLineAllowed( model ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isHorizontalRuleAllowedInParent( selection, schema, model ) &&
+	return isHorizontalLineAllowedInParent( selection, schema, model ) &&
 		!checkSelectionOnObject( selection, schema );
 }
 
-// Checks if horizontal rule is allowed by schema in optimal insertion parent.
+// Checks if horizontal line is allowed by schema in optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {Boolean}
-function isHorizontalRuleAllowedInParent( selection, schema, model ) {
-	const parent = getInsertHorizontalRuleParent( selection, model );
+function isHorizontalLineAllowedInParent( selection, schema, model ) {
+	const parent = getInsertHorizontalLineParent( selection, model );
 
-	return schema.checkChild( parent, 'horizontalRule' );
+	return schema.checkChild( parent, 'horizontalLine' );
 }
 
 // Check if selection is on object.
@@ -97,12 +97,12 @@ function checkSelectionOnObject( selection, schema ) {
 	return selectedElement && schema.isObject( selectedElement );
 }
 
-// Returns a node that will be used to insert horizontal rule with `model.insertContent` to check if horizontal rule can be placed there.
+// Returns a node that will be used to insert horizontal line with `model.insertContent` to check if horizontal line can be placed there.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {module:engine/model/element~Element}
-function getInsertHorizontalRuleParent( selection, model ) {
+function getInsertHorizontalLineParent( selection, model ) {
 	const insertAt = findOptimalInsertionPosition( selection, model );
 
 	const parent = insertAt.parent;

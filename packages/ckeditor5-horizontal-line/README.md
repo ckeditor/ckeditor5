@@ -1,22 +1,22 @@
-CKEditor 5 horizontal rule feature
+CKEditor 5 horizontal line feature
 ===========================
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-horizontal-rule.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-rule)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-horizontal-rule.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-horizontal-rule)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-horizontal-rule/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-horizontal-rule?branch=master)
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-horizontal-line.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line)
+[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-horizontal-line.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-horizontal-line)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-horizontal-line/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-horizontal-line?branch=master)
 <br>
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-horizontal-rule/status.svg)](https://david-dm.org/ckeditor/ckeditor5-horizontal-rule)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-horizontal-rule/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-horizontal-rule?type=dev)
+[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-horizontal-line/status.svg)](https://david-dm.org/ckeditor/ckeditor5-horizontal-line)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-horizontal-line/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-horizontal-line?type=dev)
 
-This package implements horizontal rule feature for CKEditor 5.
+This package implements horizontal line feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Horizontal Rule feature](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-rule.html) guide.
+Check out the demo in the [Horizontal Line feature](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) guide.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-horizontal-rule` package](https://ckeditor.com/docs/ckeditor5/latest/api/horizontal-rule.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-horizontal-line` package](https://ckeditor.com/docs/ckeditor5/latest/api/horizontal-line.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

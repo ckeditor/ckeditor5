@@ -4,15 +4,15 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import HorizontalRuleEditing from '../src/horizontalruleediting';
-import HorizontalRuleCommand from '../src/horizontalrulecommand';
+import HorizontalLineEditing from '../src/horizontallineediting';
+import HorizontalLineCommand from '../src/horizontallinecommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'HorizontalRuleEditing', () => {
+describe( 'HorizontalLineEditing', () => {
 	let editor, model, view, viewDocument;
 
 	testUtils.createSinonSandbox();
@@ -23,7 +23,7 @@ describe( 'HorizontalRuleEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ HorizontalRuleEditing ]
+				plugins: [ HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -34,26 +34,26 @@ describe( 'HorizontalRuleEditing', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HorizontalRuleEditing ) ).to.be.instanceOf( HorizontalRuleEditing );
+		expect( editor.plugins.get( HorizontalLineEditing ) ).to.be.instanceOf( HorizontalLineEditing );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkChild( [ '$root' ], 'horizontalRule' ) ).to.be.true;
+	it( 'should set proper schema lines', () => {
+		expect( model.schema.checkChild( [ '$root' ], 'horizontalLine' ) ).to.be.true;
 
-		expect( model.schema.isObject( 'horizontalRule' ) ).to.be.true;
+		expect( model.schema.isObject( 'horizontalLine' ) ).to.be.true;
 
-		expect( model.schema.checkChild( [ '$root', 'horizontalRule' ], '$text' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalRule' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'horizontalLine' ], '$text' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalLine' ) ).to.be.false;
 	} );
 
 	it( 'should register imageInsert command', () => {
-		expect( editor.commands.get( 'horizontalRule' ) ).to.be.instanceOf( HorizontalRuleCommand );
+		expect( editor.commands.get( 'horizontalLine' ) ).to.be.instanceOf( HorizontalLineCommand );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<horizontalRule></horizontalRule>' );
+				setModelData( model, '<horizontalLine></horizontalLine>' );
 
 				expect( editor.getData() ).to.equal( '<hr>' );
 			} );
@@ -64,13 +64,13 @@ describe( 'HorizontalRuleEditing', () => {
 				editor.setData( '<hr>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<horizontalRule></horizontalRule>' );
+					.to.equal( '<horizontalLine></horizontalLine>' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
 				model.schema.addChildCheck( ( ctx, childDef ) => {
-					if ( ctx.endsWith( '$root' ) && childDef.name == 'horizontalRule' ) {
+					if ( ctx.endsWith( '$root' ) && childDef.name == 'horizontalLine' ) {
 						return false;
 					}
 				} );
@@ -88,24 +88,24 @@ describe( 'HorizontalRuleEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<horizontalRule></horizontalRule>' );
+				setModelData( model, '<horizontalLine></horizontalLine>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<div class="ck-horizontal-rule ck-widget" contenteditable="false"><hr></hr></div>'
+					'<div class="ck-horizontal-line ck-widget" contenteditable="false"><hr></hr></div>'
 				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<horizontalRule></horizontalRule>' );
+				setModelData( model, '<horizontalLine></horizontalLine>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
 				expect( widget.name ).to.equal( 'div' );
-				expect( isHorizontalRuleWidget( widget ) ).to.be.true;
+				expect( isHorizontalLineWidget( widget ) ).to.be.true;
 			} );
 		} );
 	} );
 
-	function isHorizontalRuleWidget( viewElement ) {
-		return !!viewElement.getCustomProperty( 'horizontalRule' ) && isWidget( viewElement );
+	function isHorizontalLineWidget( viewElement ) {
+		return !!viewElement.getCustomProperty( 'horizontalLine' ) && isWidget( viewElement );
 	}
 } );
