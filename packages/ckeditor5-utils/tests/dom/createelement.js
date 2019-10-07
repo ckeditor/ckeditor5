@@ -29,7 +29,7 @@ describe( 'createElement', () => {
 
 		expect( svg.tagName.toLowerCase() ).to.equal( 'svg' );
 		expect( svg.getAttribute( 'xmlns' ) ).to.equal( namespace );
-		expect( svg.createSVGRect instanceof Function ).to.equal( true );
+		expect( svg.createSVGRect ).to.be.a( 'function' );
 	} );
 
 	it( 'should create element with child text node', () => {
