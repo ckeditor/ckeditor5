@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* This is a `.ck-widget` element, but we try to use 020 CSS specificity, that's why we omitted it in below CSS ruleset. */
-.ck .ck-horizontal-rule {
-	/* Add some "breath" to easier select horizontal rule widget. */
+.ck-editor__editable .ck-horizontal-rule {
+	/* Helps selecting the horizontal rule widget by giving it some space. */
 	padding: 5px 0;
 }
