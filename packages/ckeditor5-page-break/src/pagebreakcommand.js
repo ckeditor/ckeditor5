@@ -11,11 +11,11 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * The insert a page break command.
+ * The page break command.
  *
- * The command is registered by the {@link module:page-break/pagebreakediting~PageBreakEditing} as `'pageBreak'`.
+ * The command is registered by {@link module:page-break/pagebreakediting~PageBreakEditing} as `'pageBreak'`.
  *
- * To insert the page break at the current selection, execute the command:
+ * To insert a page break at the current selection, execute the command:
  *
  *		editor.execute( 'pageBreak' );
  *
@@ -62,7 +62,7 @@ export default class PageBreakCommand extends Command {
 	}
 }
 
-// Checks if the `pageBreak` element can be inserted at current model selection.
+// Checks if the `pageBreak` element can be inserted at the current model selection.
 //
 // @param {module:engine/model/model~Model} model
 // @returns {Boolean}
@@ -74,7 +74,7 @@ function isPageBreakAllowed( model ) {
 		!checkSelectionOnObject( selection, schema );
 }
 
-// Checks if page break is allowed by schema in optimal insertion parent.
+// Checks if a page break is allowed by the schema in the optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
@@ -86,7 +86,7 @@ function isPageBreakAllowedInParent( selection, schema, model ) {
 	return schema.checkChild( parent, 'pageBreak' );
 }
 
-// Check if selection is on object.
+// Checks if the selection is on object.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
@@ -97,7 +97,7 @@ function checkSelectionOnObject( selection, schema ) {
 	return selectedElement && schema.isObject( selectedElement );
 }
 
-// Returns a node that will be used to insert page break with `model.insertContent` to check if page break can be placed there.
+// Returns a node that will be used to insert a page break with `model.insertContent` to check if the page break can be placed there.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.

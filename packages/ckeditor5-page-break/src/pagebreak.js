@@ -12,7 +12,11 @@ import PageBreakEditing from './pagebreakediting';
 import PageBreakUI from './pagebreakui';
 
 /**
- * The page break plugin provides a possibility to insert a page break in the rich-text editor.
+ * The page break feature.
+ *
+ * It provides the possibility to insert a page break into the rich-text editor.
+ *
+ * For a detailed overview, check the {@glink features/page-break Page break feature} documentation.
  *
  * @extends module:core/plugin~Plugin
  */
