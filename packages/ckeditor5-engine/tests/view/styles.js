@@ -673,5 +673,26 @@ describe( 'Styles', () => {
 				expect( styles.getInlineProperty( 'baz' ) ).to.equal( '2px 3em' );
 			} );
 		} );
+
+		describe( 'background', () => {
+			it( 'should normalize background', () => {
+				styles.setStyle( 'background:#f00;' );
+
+				expect( styles.getNormalized( 'background' ) ).to.deep.equal( { color: '#f00' } );
+			} );
+
+			it( 'should normalize background-color', () => {
+				styles.setStyle( 'background-color:#f00;' );
+
+				expect( styles.getNormalized( 'background' ) ).to.deep.equal( { color: '#f00' } );
+			} );
+
+			it( 'should output inline background-color style', () => {
+				styles.setStyle( 'background:#f00;' );
+
+				expect( styles.getInlineStyle() ).to.equal( 'background-color:#f00;' );
+				expect( styles.getInlineProperty( 'background-color' ) ).to.equal( '#f00' );
+			} );
+		} );
 	} );
 } );
