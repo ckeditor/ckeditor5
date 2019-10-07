@@ -532,12 +532,7 @@ function getTopRightBottomLeftValueReducer( styleShorthand ) {
 
 		const reduced = [];
 
-		if ( top === left && left === bottom && bottom === right ) {
-			// Might be not set.
-			if ( top !== undefined ) {
-				return [ [ styleShorthand, top ] ];
-			}
-		} else if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
+		if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
 			if ( top ) {
 				reduced.push( [ styleShorthand + '-top', top ] );
 			}
