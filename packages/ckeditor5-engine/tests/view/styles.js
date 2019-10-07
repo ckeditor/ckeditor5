@@ -580,7 +580,7 @@ describe( 'Styles', () => {
 					expect( styles.getNormalized( 'margin-top' ) ).to.equal( '1px' );
 				} );
 
-				it( 'should set proper margin with margin shorthand', () => {
+				it( 'should merge margin with margin shorthand', () => {
 					styles.setStyle( 'margin: 2em;margin-top:1px;' );
 
 					expect( styles.getNormalized( 'margin' ) ).to.deep.equal( {
@@ -593,6 +593,34 @@ describe( 'Styles', () => {
 					expect( styles.getNormalized( 'margin-right' ) ).to.equal( '2em' );
 					expect( styles.getNormalized( 'margin-bottom' ) ).to.equal( '2em' );
 					expect( styles.getNormalized( 'margin-left' ) ).to.equal( '2em' );
+				} );
+
+				it( 'should output margin-top', () => {
+					styles.setStyle( 'margin-top:1px;' );
+
+					expect( styles.getInlineStyle() ).to.equal( 'margin-top:1px;' );
+					expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
+				} );
+
+				it( 'should output margin-right', () => {
+					styles.setStyle( 'margin-right:1px;' );
+
+					expect( styles.getInlineStyle() ).to.equal( 'margin-right:1px;' );
+					expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '1px' );
+				} );
+
+				it( 'should output margin-bottom', () => {
+					styles.setStyle( 'margin-bottom:1px;' );
+
+					expect( styles.getInlineStyle() ).to.equal( 'margin-bottom:1px;' );
+					expect( styles.getInlineProperty( 'margin-bottom' ) ).to.equal( '1px' );
+				} );
+
+				it( 'should output margin-left', () => {
+					styles.setStyle( 'margin-left:1px;' );
+
+					expect( styles.getInlineStyle() ).to.equal( 'margin-left:1px;' );
+					expect( styles.getInlineProperty( 'margin-left' ) ).to.equal( '1px' );
 				} );
 			} );
 		} );
