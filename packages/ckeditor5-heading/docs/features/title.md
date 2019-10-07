@@ -42,11 +42,30 @@ ClassicEditor
     .catch( ... );
 ```
 
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+## HTML structure
+
+When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`}, the document title will be represented as the following HTML:
+
+```html
+<h1>Feasibility Study</h1>
+```
+
+### Model representation
+
+In the CKEditor 5 data model the document title is represented as follows:
+
+```html
+<title>
+	<title-content>
+		Feasibility Study
+	</title-content>
+</title>
+```
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-heading.
-
-<info-box info>
-    Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
-</info-box>
-
