@@ -25,10 +25,8 @@ const setOnPathStyles = [
 export default class Styles {
 	/**
 	 * Creates Styles instance.
-	 *
-	 * @param {String} styleString Initial styles value.
 	 */
-	constructor( styleString = '' ) {
+	constructor() {
 		/**
 		 * @type {{}}
 		 * @private
@@ -136,8 +134,6 @@ export default class Styles {
 
 			return ret;
 		} );
-
-		this.setStyle( styleString );
 	}
 
 	/**
@@ -152,9 +148,9 @@ export default class Styles {
 	/**
 	 * Re-sets internal styles definition.
 	 *
-	 * @param styleString
+	 * @param {String} styleString
 	 */
-	setStyle( styleString = '' ) {
+	setStyle( styleString ) {
 		this.clear();
 
 		const map = parseInlineStyles( styleString );
@@ -384,7 +380,7 @@ export default class Styles {
 	}
 }
 
-function getTopRightBottomLeftValues( value = '' ) {
+function getTopRightBottomLeftValues( value ) {
 	const values = value.split( ' ' );
 
 	const top = values[ 0 ];

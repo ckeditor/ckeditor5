@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import StyleProxy from '../../src/view/styles';
+import Styles from '../../src/view/styles';
 import encodedImage from './_utils/encodedimage.txt';
 
 describe( 'Styles', () => {
 	let styles;
 
 	beforeEach( () => {
-		styles = new StyleProxy();
+		styles = new Styles();
 	} );
 
 	describe( 'size getter', () => {
@@ -262,10 +262,41 @@ describe( 'Styles', () => {
 				expect( styles.getInlineStyle() ).to.equal(
 					'border-color:#ccc blue blue #665511;border-style:dotted solid solid dashed;border-width:7px 1px 1px 2.7em;'
 				);
-				// todo expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
+
+				expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 				expect( styles.getInlineProperty( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
 				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'dotted solid solid dashed' );
 				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
+			} );
+
+			it( 'should parse border + border-position(only color defined)', () => {
+				styles.setStyle( 'border:1px solid blue;border-left:#665511;' );
+
+				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+					color: { top: 'blue', right: 'blue', bottom: 'blue', left: '#665511' },
+					style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'solid' },
+					width: { top: '1px', right: '1px', bottom: '1px', left: '1px' }
+				} );
+			} );
+
+			it( 'should parse border + border-position(only style defined)', () => {
+				styles.setStyle( 'border:1px solid blue;border-left:ridge;' );
+
+				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+					color: { top: 'blue', right: 'blue', bottom: 'blue', left: 'blue' },
+					style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'ridge' },
+					width: { top: '1px', right: '1px', bottom: '1px', left: '1px' }
+				} );
+			} );
+
+			it( 'should parse border + border-position(only width defined)', () => {
+				styles.setStyle( 'border:1px solid blue;border-left:1337px' );
+
+				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+					color: { top: 'blue', right: 'blue', bottom: 'blue', left: 'blue' },
+					style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'solid' },
+					width: { top: '1px', right: '1px', bottom: '1px', left: '1337px' }
+				} );
 			} );
 
 			it( 'should merge rules on insert other shorthand', () => {
@@ -276,7 +307,7 @@ describe( 'Styles', () => {
 				expect( styles.getInlineStyle() ).to.equal(
 					'border-color:#ccc blue blue #665511;border-style:dotted solid solid dashed;border-width:7px 1px 1px 2.7em;'
 				);
-				// expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
+				expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 				expect( styles.getInlineProperty( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
 				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'dotted solid solid dashed' );
 				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
@@ -290,7 +321,7 @@ describe( 'Styles', () => {
 					'border-style:solid;border-width:1px;'
 				);
 
-				// expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
+				expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 				expect( styles.getInlineProperty( 'border-color' ) ).to.be.undefined;
 				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'solid' );
 				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '1px' );
