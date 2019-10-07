@@ -365,21 +365,18 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
 export function viewModelConverter( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 		const writer = conversionApi.writer;
-		const conversionStore = this.conversionApi.store;
 
 		// 1. Create `listItem` model element.
 		const listItem = writer.createElement( 'listItem' );
 
 		// 2. Handle `listItem` model element attributes.
-		conversionStore.indent = conversionStore.indent || 0;
-		writer.setAttribute( 'listIndent', conversionStore.indent, listItem );
+		const indent = getIndent( data.viewItem );
+
+		writer.setAttribute( 'listIndent', indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'listType', type, listItem );
-
-		// `listItem`s created recursively should have bigger indent.
-		conversionStore.indent++;
 
 		// Try to find allowed parent for list item.
 		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
@@ -393,8 +390,6 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		writer.insert( listItem, splitResult.position );
 
 		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi );
-
-		conversionStore.indent--;
 
 		// Result range starts before the first item and ends after the last.
 		data.modelRange = writer.createRange( data.modelCursor, nextPosition );
@@ -426,7 +421,9 @@ export function cleanList( evt, data, conversionApi ) {
 		const children = Array.from( data.viewItem.getChildren() );
 
 		for ( const child of children ) {
-			if ( !child.is( 'li' ) ) {
+			const isWrongElement = !( child.is( 'li' ) || isList( child ) );
+
+			if ( isWrongElement ) {
 				child._remove();
 			}
 		}
@@ -453,7 +450,7 @@ export function cleanListItem( evt, data, conversionApi ) {
 		let firstNode = true;
 
 		for ( const child of children ) {
-			if ( foundList && !child.is( 'ul' ) && !child.is( 'ol' ) ) {
+			if ( foundList && !isList( child ) ) {
 				child._remove();
 			}
 
@@ -464,10 +461,10 @@ export function cleanListItem( evt, data, conversionApi ) {
 				}
 
 				// If this is the last text node before <ul> or <ol>, right-trim it.
-				if ( !child.nextSibling || ( child.nextSibling.is( 'ul' ) || child.nextSibling.is( 'ol' ) ) ) {
+				if ( !child.nextSibling || isList( child.nextSibling ) ) {
 					child._data = child.data.replace( /\s+$/, '' );
 				}
-			} else if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
+			} else if ( isList( child ) ) {
 				// If this is a <ul> or <ol>, do not process it, just mark that we already visited list element.
 				foundList = true;
 			}
@@ -496,7 +493,7 @@ export function modelToViewPosition( view ) {
 
 		if ( modelItem && modelItem.is( 'listItem' ) ) {
 			const viewItem = data.mapper.toViewElement( modelItem );
-			const topmostViewList = viewItem.getAncestors().find( element => element.is( 'ul' ) || element.is( 'ol' ) );
+			const topmostViewList = viewItem.getAncestors().find( isList );
 			const walker = view.createPositionAt( viewItem, 0 ).getWalker();
 
 			for ( const value of walker ) {
@@ -564,7 +561,7 @@ export function viewToModelPosition( model ) {
 			let modelLength = 1; // Starts from 1 because the original <li> has to be counted in too.
 			let viewList = viewPos.nodeBefore;
 
-			while ( viewList && ( viewList.is( 'ul' ) || viewList.is( 'ol' ) ) ) {
+			while ( viewList && isList( viewList ) ) {
 				modelLength += mapper.getModelLength( viewList );
 
 				viewList = viewList.previousSibling;
@@ -625,6 +622,10 @@ export function modelChangePostFixer( model, writer ) {
 					writer.removeAttribute( 'listType', item );
 
 					applied = true;
+				}
+
+				for ( const innerItem of Array.from( model.createRangeIn( item ) ).filter( e => e.item.is( 'listItem' ) ) ) {
+					_addListToFix( innerItem.previousPosition );
 				}
 			}
 
@@ -984,11 +985,79 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 	// Handle multiple lists. This happens if list item has nested numbered and bulleted lists. Following lists
 	// are inserted after the first list (no need to recalculate insertion position for them).
 	for ( const child of [ ...viewRemovedItem.getChildren() ] ) {
-		if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
+		if ( isList( child ) ) {
 			insertPosition = viewWriter.move( viewWriter.createRangeOn( child ), insertPosition ).end;
 
 			mergeViewLists( viewWriter, child, child.nextSibling );
 			mergeViewLists( viewWriter, child.previousSibling, child );
 		}
 	}
+}
+
+// Checks if view element is a list type (ul or ol).
+//
+// @param {module:engine/view/element~Element} viewElement
+// @returns {Boolean}
+function isList( viewElement ) {
+	return viewElement.is( 'ol' ) || viewElement.is( 'ul' );
+}
+
+// Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
+//
+// Also, fixes non HTML compliant lists indents:
+//
+//		before:                                     fixed list:
+//		OL                                          OL
+//		|-> LI (parent LIs: 0)                      |-> LI     (indent: 0)
+//		    |-> OL                                  |-> OL
+//		        |-> OL                                  |
+//		        |   |-> OL                              |
+//		        |       |-> OL                          |
+//		        |           |-> LI (parent LIs: 1)      |-> LI (indent: 1)
+//		        |-> LI (parent LIs: 1)                  |-> LI (indent: 1)
+//
+//		before:                                     fixed list:
+//		OL                                          OL
+//		|-> OL                                      |
+//		    |-> OL                                  |
+//		         |-> OL                             |
+//		             |-> LI (parent LIs: 0)         |-> LI        (indent: 0)
+//
+//		before:                                     fixed list:
+//		OL                                          OL
+//		|-> LI (parent LIs: 0)                      |-> LI         (indent: 0)
+//		|-> OL                                          |-> OL
+//		    |-> LI (parent LIs: 0)                          |-> LI (indent: 1)
+//
+// @param {module:engine/view/element~Element} listItem
+// @param {Object} conversionStore
+// @returns {Number}
+function getIndent( listItem ) {
+	let indent = 0;
+
+	let parent = listItem.parent;
+
+	while ( parent ) {
+		// Each LI in the tree will result in an increased indent for HTML compliant lists.
+		if ( parent.is( 'li' ) ) {
+			indent++;
+		} else {
+			// If however the list is nested in other list we should check previous sibling of any of the list elements...
+			const previousSibling = parent.previousSibling;
+
+			// ...because the we might need increase its indent:
+			//		before:                           fixed list:
+			//		OL                                OL
+			//		|-> LI (parent LIs: 0)            |-> LI         (indent: 0)
+			//		|-> OL                                |-> OL
+			//		    |-> LI (parent LIs: 0)                |-> LI (indent: 1)
+			if ( previousSibling && previousSibling.is( 'li' ) ) {
+				indent++;
+			}
+		}
+
+		parent = parent.parent;
+	}
+
+	return indent;
 }
