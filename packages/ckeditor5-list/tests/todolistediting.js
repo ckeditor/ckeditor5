@@ -87,7 +87,7 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]</listItem>' );
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>[]</li>' +
 				'</ul>'
 			);
 
@@ -96,7 +96,7 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">a[]</listItem>' );
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>a{}</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>a{}</li>' +
 				'</ul>'
 			);
 
@@ -105,7 +105,7 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>ab{}</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>ab{}</li>' +
 				'</ul>'
 			);
 
@@ -129,8 +129,8 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1</li>' +
-					'<li><label class="todo-list__checkmark todo-list__checkmark_checked" contenteditable="false"></label>2</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}1</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>2</li>' +
 				'</ul>'
 			);
 		} );
@@ -148,17 +148,17 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__checkmark" contenteditable="false"></label>{}1.0' +
+						'<label class="todo-list__label" contenteditable="false"></label>{}1.0' +
 						'<ul class="todo-list">' +
-							'<li><label class="todo-list__checkmark" contenteditable="false"></label>2.1</li>' +
+							'<li><label class="todo-list__label" contenteditable="false"></label>2.1</li>' +
 							'<li>' +
-								'<label class="todo-list__checkmark" contenteditable="false"></label>3.1' +
+								'<label class="todo-list__label" contenteditable="false"></label>3.1' +
 								'<ul class="todo-list">' +
-									'<li><label class="todo-list__checkmark" contenteditable="false"></label>4.2</li>' +
-									'<li><label class="todo-list__checkmark" contenteditable="false"></label>5.2</li>' +
+									'<li><label class="todo-list__label" contenteditable="false"></label>4.2</li>' +
+									'<li><label class="todo-list__label" contenteditable="false"></label>5.2</li>' +
 								'</ul>' +
 							'</li>' +
-							'<li><label class="todo-list__checkmark" contenteditable="false"></label>6.1</li>' +
+							'<li><label class="todo-list__label" contenteditable="false"></label>6.1</li>' +
 						'</ul>' +
 					'</li>' +
 				'</ul>'
@@ -176,18 +176,18 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>' +
 				'<ul>' +
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label class="todo-list__checkmark" contenteditable="false"></label>3.1' +
+								'<label class="todo-list__label" contenteditable="false"></label>3.1' +
 								'<ul>' +
 									'<li>4.2</li>' +
 								'</ul>' +
 							'</li>' +
-							'<li><label class="todo-list__checkmark" contenteditable="false"></label>5.1</li>' +
+							'<li><label class="todo-list__label" contenteditable="false"></label>5.1</li>' +
 						'</ul>' +
 					'</li>' +
 				'</ul>'
@@ -205,18 +205,18 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>' +
 				'<ol>' +
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label class="todo-list__checkmark" contenteditable="false"></label>3.1' +
+								'<label class="todo-list__label" contenteditable="false"></label>3.1' +
 								'<ol>' +
 									'<li>4.2</li>' +
 								'</ol>' +
 							'</li>' +
-							'<li><label class="todo-list__checkmark" contenteditable="false"></label>5.1</li>' +
+							'<li><label class="todo-list__label" contenteditable="false"></label>5.1</li>' +
 						'</ul>' +
 					'</li>' +
 				'</ol>'
@@ -237,7 +237,7 @@ describe( 'TodoListEditing', () => {
 					'<li>1.0</li>' +
 				'</ol>' +
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}2.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}2.0</li>' +
 				'</ul>' +
 				'<ol>' +
 					'<li>3.0</li>' +
@@ -256,13 +256,13 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>1.0</li>' +
 				'</ul>' +
 				'<ol>' +
 					'<li>{}2.0</li>' +
 				'</ol>' +
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>3.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>3.0</li>' +
 				'</ul>'
 			);
 		} );
@@ -278,13 +278,13 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>1.0</li>' +
 				'</ul>' +
 				'<ul>' +
 					'<li>{}2.0</li>' +
 				'</ul>' +
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>3.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>3.0</li>' +
 				'</ul>'
 			);
 		} );
@@ -330,7 +330,7 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>'
 			);
 
@@ -340,7 +340,7 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark todo-list__checkmark_checked" contenteditable="false"></label>{}1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>'
 			);
 
@@ -350,7 +350,7 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}1.0</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
 				'</ul>'
 			);
 		} );
@@ -418,7 +418,7 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>{}Foo</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>{}Foo</li>' +
 				'</ul>'
 			);
 		} );
@@ -428,7 +428,7 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__checkmark" contenteditable="false"></label>[]</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>[]</li>' +
 				'</ul>'
 			);
 		} );
@@ -473,7 +473,7 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
 						'[]<span class="highlight">' +
 							'<element2></element2>' +
 							'<element1></element1>' +
@@ -481,7 +481,7 @@ describe( 'TodoListEditing', () => {
 						'</span>' +
 					'</li>' +
 					'<li>' +
-						'<label class="todo-list__checkmark" contenteditable="false"></label>bar' +
+						'<label class="todo-list__label" contenteditable="false"></label>bar' +
 					'</li>' +
 				'</ul>'
 			);
@@ -502,7 +502,7 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
 						'<strong>b{}foo</strong>' +
 					'</li>' +
 				'</ul>'
@@ -523,7 +523,7 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__checkmark" contenteditable="false"></label>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
 						'<a href="foo"><strong>b{}foo</strong></a>' +
 					'</li>' +
 				'</ul>'
@@ -542,13 +542,13 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<input type="checkbox" disabled="disabled">' +
 							'<span class="todo-list__label__description">1</span>' +
 						'</label>' +
 					'</li>' +
 					'<li>' +
-						'<label class="todo-list__label todo-list__label_checked">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled" checked="checked">' +
 							'<span class="todo-list__label__description">2</span>' +
 						'</label>' +
 					'</li>' +
@@ -566,13 +566,13 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<input type="checkbox" disabled="disabled">' +
 							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<input type="checkbox" disabled="disabled">' +
 									'<span class="todo-list__label__description">2.1</span>' +
 								'</label>' +
 							'</li>' +
@@ -595,7 +595,7 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<input type="checkbox" disabled="disabled">' +
 							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 					'</li>' +
@@ -605,7 +605,7 @@ describe( 'TodoListEditing', () => {
 						'<ul class="todo-list">' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<input type="checkbox" disabled="disabled">' +
 									'<span class="todo-list__label__description">3.1</span>' +
 								'</label>' +
 								'<ul>' +
@@ -614,7 +614,7 @@ describe( 'TodoListEditing', () => {
 							'</li>' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<input type="checkbox" disabled="disabled">' +
 									'<span class="todo-list__label__description">5.1</span>' +
 								'</label>' +
 							'</li>' +
@@ -637,7 +637,7 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<input type="checkbox" disabled="disabled">' +
 							'<span class="todo-list__label__description">1.0</span>' +
 						'</label>' +
 					'</li>' +
@@ -647,7 +647,7 @@ describe( 'TodoListEditing', () => {
 						'<ul class="todo-list">' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<input type="checkbox" disabled="disabled">' +
 									'<span class="todo-list__label__description">3.1</span>' +
 								'</label>' +
 								'<ol>' +
@@ -656,7 +656,7 @@ describe( 'TodoListEditing', () => {
 							'</li>' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<input type="checkbox" disabled="disabled">' +
 									'<span class="todo-list__label__description">5.1</span>' +
 								'</label>' +
 							'</li>' +
@@ -801,19 +801,19 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+							'<input type="checkbox" disabled="disabled" checked="checked">' +
 							'<span class="todo-list__label__description">1.1</span>' +
 						'</label>' +
 						'<ul class="todo-list">' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+									'<input type="checkbox" disabled="disabled">' +
 									'<span class="todo-list__label__description">2.2</span>' +
 								'</label>' +
 							'</li>' +
 							'<li>' +
 								'<label class="todo-list__label">' +
-									'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled" checked="checked">' +
+									'<input type="checkbox" disabled="disabled" checked="checked">' +
 									'<span class="todo-list__label__description">3.2</span>' +
 								'</label>' +
 							'</li>' +
@@ -821,7 +821,7 @@ describe( 'TodoListEditing', () => {
 					'</li>' +
 					'<li>' +
 						'<label class="todo-list__label">' +
-							'<input class="todo-list__label__checkmark" type="checkbox" disabled="disabled">' +
+							'<input type="checkbox" disabled="disabled">' +
 							'<span class="todo-list__label__description">4.1</span>' +
 						'</label>' +
 					'</li>' +
