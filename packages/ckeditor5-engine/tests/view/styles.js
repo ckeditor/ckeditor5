@@ -237,6 +237,16 @@ describe( 'Styles', () => {
 				} );
 			} );
 
+			it( 'should parse border shorthand with only style', () => {
+				styles.setStyle( 'border:solid;' );
+
+				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+					color: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+					style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'solid' },
+					width: { top: undefined, right: undefined, bottom: undefined, left: undefined }
+				} );
+			} );
+
 			it( 'should parse border shorthand with other shorthands', () => {
 				styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
@@ -325,6 +335,12 @@ describe( 'Styles', () => {
 				expect( styles.getInlineProperty( 'border-color' ) ).to.be.undefined;
 				expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'solid' );
 				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '1px' );
+			} );
+
+			it( 'should output border with only style shorthand', () => {
+				styles.setStyle( 'border:solid;' );
+
+				expect( styles.getInlineStyle() ).to.equal( 'border-style:solid;' );
 			} );
 
 			describe( 'border-color', () => {

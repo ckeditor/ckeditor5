@@ -380,7 +380,11 @@ export default class Styles {
 	}
 }
 
-function getTopRightBottomLeftValues( value ) {
+function getTopRightBottomLeftValues( value = '' ) {
+	if ( value === '' ) {
+		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
+	}
+
 	const values = value.split( ' ' );
 
 	const top = values[ 0 ];

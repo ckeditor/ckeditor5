@@ -613,7 +613,6 @@ export default class Element extends Node {
 		if ( key == 'class' ) {
 			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
-			// parseInlineStyles( this._styles, value );
 			this._styles.setStyle( value );
 		} else {
 			this._attrs.set( key, value );
