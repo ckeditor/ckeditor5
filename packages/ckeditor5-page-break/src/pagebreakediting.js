@@ -38,6 +38,8 @@ export default class PageBreakEditing extends Plugin {
 			model: 'pageBreak',
 			view: ( modelElement, viewWriter ) => {
 				const divElement = viewWriter.createContainerElement( 'div', {
+					class: 'page-break',
+					// If user has no `.ck-content` styles, it should always break a page during print.
 					style: 'page-break-after: always'
 				} );
 
@@ -61,10 +63,10 @@ export default class PageBreakEditing extends Plugin {
 				const viewLabelElement = viewWriter.createContainerElement( 'span' );
 				const innerText = viewWriter.createText( t( 'Page break' ) );
 
-				viewWriter.addClass( 'ck-page-break', viewWrapper );
+				viewWriter.addClass( 'page-break', viewWrapper );
 				viewWriter.setCustomProperty( 'pageBreak', true, viewWrapper );
 
-				viewWriter.addClass( 'ck-page-break_label', viewLabelElement );
+				viewWriter.addClass( 'page-break__label', viewLabelElement );
 
 				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewLabelElement );
 				viewWriter.insert( viewWriter.createPositionAt( viewLabelElement, 0 ), innerText );
