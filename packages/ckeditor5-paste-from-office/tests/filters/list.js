@@ -10,8 +10,7 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 import {
 	transformListItemLikeElementsIntoLists,
-	unwrapParagraphInListItem,
-	fixListIndentation
+	unwrapParagraphInListItem
 } from '../../src/filters/list';
 
 describe( 'PasteFromOffice - filters', () => {
@@ -125,133 +124,6 @@ describe( 'PasteFromOffice - filters', () => {
 				unwrapParagraphInListItem( documentFragment, writer );
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li><li>bar<ul><li>baz</li></ul></li></ol>' );
-			} );
-		} );
-
-		describe( 'fixListIndentation', () => {
-			it( 'should move nested list to previous list item', () => {
-				const inputData = '<ul>' +
-						'<li>one</li>' +
-						'<ul>' +
-							'<li>two</li>' +
-							'<li>three</li>' +
-						'</ul>' +
-						'<li>four</li>' +
-					'</ul>';
-
-				const documentFragment = htmlDataProcessor.toView( inputData );
-
-				fixListIndentation( documentFragment, writer );
-
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
-					'<ul><li>one<ul><li>two</li><li>three</li></ul></li><li>four</li></ul>'
-				);
-			} );
-		} );
-
-		describe( 'repeatedly nested lists are normalized', () => {
-			it( 'should unwrap single nested list', () => {
-				const inputData = '<ul><li>foo</li><ul><ul><ul><ul><li>bar</li></ul></ul></ul></ul></ul>';
-				const documentFragment = htmlDataProcessor.toView( inputData );
-
-				fixListIndentation( documentFragment, writer );
-
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
-					'<ul><li>foo<ul><li>bar</li></ul></li></ul>'
-				);
-			} );
-
-			it( 'should preserve sibling elements in correct relation', () => {
-				const inputData = '<ol>' +
-						'<li>foo</li>' +
-						'<ol>' +
-							'<ol>' +
-								'<ol>' +
-									'<li>one</li>' +
-								'</ol>' +
-								'<li>two</li>' +
-							'</ol>' +
-							'<li>three</li>' +
-							'<ol>' +
-								'<ol>' +
-									'<ol>' +
-										'<li>four</li>' +
-									'</ol>' +
-								'</ol>' +
-							'</ol>' +
-						'</ol>' +
-						'<li>correct' +
-							'<ol>' +
-								'<li>AAA' +
-									'<ol>' +
-										'<li>BBB</li>' +
-										'<li>CCC</li>' +
-									'</ol>' +
-								'</li>' +
-							'</ol>' +
-						'</li>' +
-					'</ol>';
-
-				const documentFragment = htmlDataProcessor.toView( inputData );
-
-				fixListIndentation( documentFragment, writer );
-
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
-					'<ol>' +
-						'<li>foo' +
-							'<ol>' +
-								'<li>one</li>' +
-								'<li>two</li>' +
-								'<li>three' +
-										'<ol>' +
-											'<li>four</li>' +
-										'</ol>' +
-								'</li>' +
-							'</ol>' +
-						'</li>' +
-						'<li>correct' +
-							'<ol>' +
-								'<li>AAA' +
-									'<ol>' +
-										'<li>BBB</li>' +
-										'<li>CCC</li>' +
-									'</ol>' +
-								'</li>' +
-							'</ol>' +
-						'</li>' +
-					'</ol>'
-				);
-			} );
-
-			it( 'should normalize lists which are start from nested elements', () => {
-				const inputData = '<ol>' +
-						'<ol>' +
-							'<ol>' +
-								'<ol>' +
-									'<li>foo</li>' +
-								'</ol>' +
-							'</ol>' +
-						'</ol>' +
-					'</ol>';
-				const documentFragment = htmlDataProcessor.toView( inputData );
-
-				fixListIndentation( documentFragment, writer );
-
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol>' );
-			} );
-
-			it( 'should normalize 2 sibling list independently', () => {
-				const inputData = '<ol>' +
-						'<li>foo</li>' +
-					'</ol>' +
-					'<ul>' +
-						'<li>bar</li>' +
-					'</ul>';
-				const documentFragment = htmlDataProcessor.toView( inputData );
-
-				fixListIndentation( documentFragment, writer );
-
-				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<ol><li>foo</li></ol><ul><li>bar</li></ul>' );
 			} );
 		} );
 	} );
