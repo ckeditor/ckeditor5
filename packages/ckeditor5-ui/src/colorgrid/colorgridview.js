@@ -42,6 +42,7 @@ export default class ColorGridView extends View {
 		/**
 		 * The color of the currently selected color tile in {@link #items}.
 		 *
+		 * @observable
 		 * @type {String}
 		 */
 		this.set( 'selectedColor' );
