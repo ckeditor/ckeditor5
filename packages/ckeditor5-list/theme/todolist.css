@@ -57,7 +57,7 @@
 				content: '';
 
 				/* Calculate tick position, size and border-width proportional to the checkmark size. */
-				left: calc( var(--ck-todo-list-checkmark-size) / 2.9 );
+				left: calc( var(--ck-todo-list-checkmark-size) / 3 );
 				top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
 				width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
 				height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
