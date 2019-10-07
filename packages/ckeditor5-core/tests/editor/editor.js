@@ -15,6 +15,7 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import Command from '../../src/command';
 import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -114,6 +115,8 @@ describe( 'Editor', () => {
 	afterEach( () => {
 		delete TestEditor.builtinPlugins;
 		delete TestEditor.defaultConfig;
+
+		sinon.restore();
 	} );
 
 	it( 'imports the version helper', () => {
@@ -386,6 +389,54 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'command' );
 			}, /^commandcollection-command-not-found:/, editor );
+		} );
+
+		it( 'should catch native errors and wrap them into the CKEditorError errors', () => {
+			const editor = new TestEditor();
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			class SomeCommand extends Command {
+				constructor( editor ) {
+					super( editor );
+					this.isEnabled = true;
+				}
+				execute() {
+					throw error;
+				}
+			}
+
+			editor.commands.add( 'someCommand', new SomeCommand( editor ) );
+
+			expectToThrowCKEditorError( () => {
+				editor.execute( 'someCommand' );
+			}, /unexpected-error/, editor, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'TypeError'
+				}
+			} );
+		} );
+
+		it( 'should rethrow custom CKEditorError errors', () => {
+			const editor = new TestEditor();
+
+			class SomeCommand extends Command {
+				constructor( editor ) {
+					super( editor );
+					this.isEnabled = true;
+				}
+				execute() {
+					throw new CKEditorError( 'foo', editor );
+				}
+			}
+
+			editor.commands.add( 'someCommand', new SomeCommand( editor ) );
+
+			expectToThrowCKEditorError( () => {
+				editor.execute( 'someCommand' );
+			}, /foo/, editor );
 		} );
 	} );
 
