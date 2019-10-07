@@ -516,7 +516,7 @@ export default class Element extends Node {
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
-		cloned._styles.setStyle( this._styles.getInlineStyle() );
+		cloned._styles.insertProperty( this._styles.getNormalized() );
 
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );

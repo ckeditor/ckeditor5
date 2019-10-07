@@ -191,7 +191,7 @@ export default class Styles {
 	 *			'margin-right': '1em'
 	 *		} );
 	 *
-	 * Supports shorthands.y
+	 * Supports shorthands.
 	 *
 	 * @param {String|Object} nameOrObject
 	 * @param {String|Object} value
