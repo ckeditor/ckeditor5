@@ -5,14 +5,14 @@
 
 /* globals console, window, document, setTimeout */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
 import Title from '@ckeditor/ckeditor5-heading/src/title';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-ClassicEditor.builtinPlugins.push( Title );
+InlineEditor.builtinPlugins.push( Title );
 
-ClassicEditor
+InlineEditor
 	.create( document.querySelector( '#snippet-title' ), {
 		cloudServices: CS_CONFIG
 	} )
