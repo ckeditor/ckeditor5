@@ -67,6 +67,10 @@
 				transform: rotate(45deg);
 			}
 
+			&:hover::before {
+				box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
+			}
+
 			&[checked] {
 				&::before {
 					background: hsl(126, 64%, 41%);
@@ -76,10 +80,6 @@
 				&::after {
 					border-color: hsl(0, 0%, 100%);
 				}
-			}
-
-			&:hover::before {
-				box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
 			}
 		}
 
@@ -93,7 +93,6 @@
 [dir="rtl"] .todo-list .todo-list__label > input {
 	left: 0;
 	margin-right: 0;
-
 	right: -25px;
 	margin-left: -15px;
 }
