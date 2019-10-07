@@ -56,14 +56,29 @@ describe( 'PageBreakEditing', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
 				expect( editor.getData() ).to.equal(
-					'<div style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>'
+					'<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>'
 				);
 			} );
 		} );
 
 		describe( 'view to model', () => {
-			it( 'should convert the page break code element', () => {
-				editor.setData( '<div style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>' );
+			it( 'should convert the page break code element without `.page-break` class', () => {
+				editor.setData(
+					'<div style="page-break-after:always;">' +
+						'<span style="display:none;">&nbsp;</span>' +
+					'</div>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<pageBreak></pageBreak>' );
+			} );
+
+			it( 'should convert the page break code element with `.page-break` class', () => {
+				editor.setData(
+					'<div class="page-break" style="page-break-after:always;">' +
+						'<span style="display:none;">&nbsp;</span>' +
+					'</div>'
+				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
@@ -79,21 +94,27 @@ describe( 'PageBreakEditing', () => {
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
-				editor.setData( '<div><div style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div></div>' );
+				editor.setData(
+					'<div>' +
+						'<div class="page-break" style="page-break-after:always;">' +
+							'<span style="display:none;">&nbsp;</span>' +
+						'</div>' +
+					'</div>'
+				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div> </div>' );
 			} );
 
 			it( 'should not convert if outer div has wrong styles', () => {
-				editor.setData( '<div style="page-break-after:auto;"><span style="display:none;">&nbsp;</span></div>' );
+				editor.setData( '<div class="page-break" style="page-break-after:auto;"><span style="display:none;">&nbsp;</span></div>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should not convert if outer div has no children', () => {
-				editor.setData( '<div style="page-break-after:always;"></div>' );
+				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
@@ -101,7 +122,7 @@ describe( 'PageBreakEditing', () => {
 
 			it( 'should not convert if outer div has too many children', () => {
 				editor.setData(
-					'<div style="page-break-after:always;">' +
+					'<div class="page-break" style="page-break-after:always;">' +
 						'<span style="display:none;">&nbsp;</span>' +
 						'<span style="display:none;">&nbsp;</span>' +
 					'</div>'
@@ -113,8 +134,8 @@ describe( 'PageBreakEditing', () => {
 
 			it( 'should not convert if inner span has wrong styles', () => {
 				editor.setData(
-					'<div style="page-break-after:always;">' +
-					'<span style="display:inline-block;">&nbsp;</span>' +
+					'<div class="page-break" style="page-break-after:always;">' +
+						'<span style="display:inline-block;">&nbsp;</span>' +
 					'</div>'
 				);
 
@@ -124,7 +145,7 @@ describe( 'PageBreakEditing', () => {
 
 			it( 'should not convert if inner span has wrong styles', () => {
 				editor.setData(
-					'<div style="page-break-after:always;">' +
+					'<div class="page-break" style="page-break-after:always;">' +
 					'<span style="display:inline-block;">&nbsp;</span>' +
 					'</div>'
 				);
@@ -135,7 +156,7 @@ describe( 'PageBreakEditing', () => {
 
 			it( 'should not convert if inner span has any children', () => {
 				editor.setData(
-					'<div style="page-break-after:always;">' +
+					'<div class="page-break" style="page-break-after:always;">' +
 						'<span style="display:none;">' +
 							'<span>Foo</span>' +
 						'</span>' +
@@ -148,7 +169,7 @@ describe( 'PageBreakEditing', () => {
 
 			it( 'should not convert if inner span has text', () => {
 				editor.setData(
-					'<div style="page-break-after:always;">' +
+					'<div class="page-break" style="page-break-after:always;">' +
 						'<span style="display:none;">Foo</span>' +
 					'</div>'
 				);
@@ -176,7 +197,7 @@ describe( 'PageBreakEditing', () => {
 
 				editor.setData(
 					'<section>' +
-						'<div style="page-break-after:always;">' +
+						'<div class="page-break" style="page-break-after:always;">' +
 							'<span style="display:none;">&nbsp;</span>' +
 						'</div>' +
 						'<span style="display:none;">Foo</span>' +
@@ -188,14 +209,20 @@ describe( 'PageBreakEditing', () => {
 			} );
 
 			it( 'should not convert if inner span has no children', () => {
-				editor.setData( '<div style="page-break-after:always;"><span style="display:none;"></span></div>' );
+				editor.setData( '<div class="page-break" style="page-break-after:always;"><span style="display:none;"></span></div>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should not convert if inner span has other element as a child', () => {
-				editor.setData( '<div style="page-break-after:always;"><span style="display:none;"><span></span></span></div>' );
+				editor.setData(
+					'<div class="page-break" style="page-break-after:always;">' +
+						'<span style="display:none;">' +
+							'<span></span>' +
+						'</span>' +
+					'</div>'
+				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
@@ -209,7 +236,7 @@ describe( 'PageBreakEditing', () => {
 				setModelData( model, '<pageBreak></pageBreak>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<div class="ck-page-break ck-widget" contenteditable="false"><span class="ck-page-break_label">Page break</span></div>'
+					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
 				);
 			} );
 

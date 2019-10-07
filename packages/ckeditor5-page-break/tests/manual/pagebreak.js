@@ -52,11 +52,11 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const logDataButton = document.querySelector( '#log-data' );
-
-		logDataButton.disabled = false;
-		logDataButton.addEventListener( 'click', () => {
-			console.log( window.editor.getData() );
+		// Generate "Editor content preview".
+		const contentPreviewBox = document.getElementById( 'preview' );
+		contentPreviewBox.innerHTML = editor.getData();
+		editor.model.document.on( 'change:data', () => {
+			contentPreviewBox.innerHTML = editor.getData();
 		} );
 	} )
 	.catch( err => {
