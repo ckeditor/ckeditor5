@@ -676,7 +676,21 @@ describe( 'Styles', () => {
 
 		describe( 'background', () => {
 			it( 'should normalize background', () => {
-				styles.setStyle( 'background:#f00;' );
+				// TODO: border-box given only for coverage test.
+				styles.setStyle( 'background:url("example.jpg") center #f00 repeat-y fixed border-box;' );
+
+				expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+					attachment: 'fixed',
+					image: 'url("example.jpg")',
+					position: [ 'center' ],
+					repeat: [ 'repeat-y' ],
+					color: '#f00'
+				} );
+			} );
+
+			// TODO: define what should happen with layers
+			it.skip( 'should normalize background with layers', () => {
+				styles.setStyle( 'background:url("test.jpg") repeat-y,#f00;' );
 
 				expect( styles.getNormalized( 'background' ) ).to.deep.equal( { color: '#f00' } );
 			} );

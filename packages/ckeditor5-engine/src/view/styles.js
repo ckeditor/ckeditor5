@@ -395,17 +395,13 @@ export default class Styles {
 	 * @returns {Array.<Array.<String, String>>}
 	 */
 	_getReduceForm( styleName, normalizedValue ) {
-		let stylesArray;
-
 		if ( this.reducers.has( styleName ) ) {
 			const styleGetter = this.reducers.get( styleName );
 
-			stylesArray = styleGetter( normalizedValue );
-		} else {
-			stylesArray = [ [ styleName, normalizedValue ] ];
+			return styleGetter( normalizedValue );
 		}
 
-		return stylesArray || [];
+		return [ [ styleName, normalizedValue ] ];
 	}
 }
 
@@ -496,8 +492,18 @@ function normalizeBackground( value ) {
 	const parts = value.split( ' ' );
 
 	for ( const part of parts ) {
-		if ( isColor( part ) ) {
+		if ( isRepeat( part ) ) {
+			background.repeat = background.repeat || [];
+			background.repeat.push( part );
+		} else if ( isPosition( part ) ) {
+			background.position = background.position || [];
+			background.position.push( part );
+		} else if ( isAttachment( part ) ) {
+			background.attachment = part;
+		} else if ( isColor( part ) ) {
 			background.color = part;
+		} else if ( isURL( part ) ) {
+			background.image = part;
 		}
 	}
 
@@ -514,6 +520,22 @@ function isLineStyle( string ) {
 
 function isLength( string ) {
 	return /^[+-]?[0-9]?[.]?[0-9]+([a-z]+|%)$/.test( string );
+}
+
+function isRepeat( string ) {
+	return /^(repeat-x|repeat-y|repeat|space|round|no-repeat)$/.test( string );
+}
+
+function isPosition( string ) {
+	return /^(center|top|bottom|left|right)$/.test( string );
+}
+
+function isAttachment( string ) {
+	return /^(fixed|scroll|local)$/.test( string );
+}
+
+function isURL( string ) {
+	return /^url\(/.test( string );
 }
 
 function getBorderReducer( value ) {
