@@ -4,6 +4,7 @@
  */
 
 import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerror';
+import { expectToThrowCKEditorError } from './_utils/utils';
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
@@ -86,6 +87,32 @@ describe( 'CKEditorError', () => {
 
 			expect( ( !!ckeditorError.is && ckeditorError.is( 'CKEditorError' ) ) ).to.be.true;
 			expect( ( !!regularError.is && regularError.is( 'CKEditorError' ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'static rethrowUnexpectedError()', () => {
+		it( 'should rethrow the original CKEditorError as it is', () => {
+			const ckeditorError = new CKEditorError( 'foo', null );
+
+			expectToThrowCKEditorError( () => {
+				CKEditorError.rethrowUnexpectedError( ckeditorError, {} );
+			}, /foo/, null );
+		} );
+
+		it( 'should rethrow an unexpected error wrapped in CKEditorError', () => {
+			const error = new Error( 'foo' );
+			error.stack = 'bar';
+			const context = {};
+
+			expectToThrowCKEditorError( () => {
+				CKEditorError.rethrowUnexpectedError( error, context );
+			}, /unexpected-error/, context, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'Error'
+				}
+			} );
 		} );
 	} );
 } );
