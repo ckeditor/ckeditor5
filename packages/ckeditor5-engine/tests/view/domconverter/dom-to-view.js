@@ -175,15 +175,6 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( comment ) ).to.be.null;
 		} );
 
-		it( 'should create namespaced elements', () => {
-			const namespace = 'http://www.w3.org/2000/svg';
-			const svg = createElement( document, 'svg', { xmlns: namespace } );
-
-			const viewSvg = converter.domToView( svg );
-
-			expect( viewSvg.getAttribute( 'xmlns' ) ).to.equal( namespace );
-		} );
-
 		describe( 'it should clear whitespaces', () => {
 			it( 'at the beginning of block element', () => {
 				const domDiv = createElement( document, 'div', {}, [
