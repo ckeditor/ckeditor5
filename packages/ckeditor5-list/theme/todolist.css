@@ -7,6 +7,10 @@
 	--ck-todo-list-checkmark-size: 16px;
 }
 
+/*
+ * To-do list should be interactive only during the editing
+ * (https://github.com/ckeditor/ckeditor5/issues/2090).
+ */
 .ck-editor__editable .todo-list {
 	& .todo-list__label {
 		& > input {
