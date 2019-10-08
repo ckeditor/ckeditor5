@@ -37,47 +37,6 @@ import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-pos
 
 import '../theme/tableediting.css';
 
-function setupConversion( conversion, styleName ) {
-	// General upcast 'border' attribute (requires model border attribute to be allowed).
-	conversion.for( 'upcast' ).attributeToAttribute( {
-		view: {
-			styles: {
-				[ styleName ]: /[\s\S]+/
-			}
-		},
-		model: {
-			key: styleName,
-			value: viewElement => viewElement.getNormalizedStyle( styleName )
-		}
-	} );
-
-	// Downcast table cell only (table has own downcast converter).
-	conversion.for( 'downcast' ).attributeToAttribute( {
-		model: {
-			name: 'tableCell',
-			key: styleName
-		},
-		view: modelAttributeValue => {
-			return ( {
-				key: 'style',
-				value: {
-					[ styleName ]: modelAttributeValue
-				}
-			} );
-		}
-	} );
-
-	// Properly downcast table border attribute on <table> and not on <figure>.
-	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:' + styleName + ':table', ( evt, data, conversionApi ) => {
-		const { item, attributeNewValue } = data;
-		const { mapper, writer } = conversionApi;
-
-		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
-
-		writer.setStyle( styleName, attributeNewValue, table );
-	} ) );
-}
-
 /**
  * The table editing feature.
  *
@@ -154,15 +113,13 @@ export default class TableEditing extends Plugin {
 
 		// Table styles:
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border-color', 'border-style', 'border-width', 'background-color' ]
+			allowAttributes: [ 'border', 'border-top', 'border-right', 'border-bottom', 'border-left', 'background-color' ]
 		} );
 		schema.extend( 'table', {
-			allowAttributes: [ 'border-color', 'border-style', 'border-width', 'background-color' ]
+			allowAttributes: [ 'border', 'border-top', 'border-right', 'border-bottom', 'border-left', 'background-color' ]
 		} );
 
-		setupConversion( conversion, 'border-color' );
-		setupConversion( conversion, 'border-style' );
-		setupConversion( conversion, 'border-width' );
+		setupConversion( conversion, 'border' );
 		setupConversion( conversion, 'background-color' );
 
 		// Define all the commands.
@@ -303,4 +260,45 @@ export default class TableEditing extends Plugin {
 			} );
 		};
 	}
+}
+
+function setupConversion( conversion, styleName ) {
+	// General upcast 'border' attribute (requires model border attribute to be allowed).
+	conversion.for( 'upcast' ).attributeToAttribute( {
+		view: {
+			styles: {
+				[ styleName ]: /[\s\S]+/
+			}
+		},
+		model: {
+			key: styleName,
+			value: viewElement => viewElement.getNormalizedStyle( styleName )
+		}
+	} );
+
+	// Downcast table cell only (table has own downcast converter).
+	conversion.for( 'downcast' ).attributeToAttribute( {
+		model: {
+			name: 'tableCell',
+			key: styleName
+		},
+		view: modelAttributeValue => {
+			return ( {
+				key: 'style',
+				value: {
+					[ styleName ]: modelAttributeValue
+				}
+			} );
+		}
+	} );
+
+	// Properly downcast table border attribute on <table> and not on <figure>.
+	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:' + styleName + ':table', ( evt, data, conversionApi ) => {
+		const { item, attributeNewValue } = data;
+		const { mapper, writer } = conversionApi;
+
+		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
+
+		writer.setStyle( styleName, attributeNewValue, table );
+	} ) );
 }
