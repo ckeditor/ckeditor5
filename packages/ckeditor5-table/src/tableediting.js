@@ -112,17 +112,33 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
 
 		// Table styles:
-		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border', 'background-color', 'padding', 'vertical-align' ]
-		} );
 		schema.extend( 'table', {
-			allowAttributes: [ 'border', 'background-color', 'padding', 'vertical-align' ]
+			allowAttributes: [ 'border', 'background-color', 'width', 'height' ]
 		} );
 
-		setupConversion( conversion, 'border' );
-		setupConversion( conversion, 'background-color' );
-		setupConversion( conversion, 'padding' );
-		setupConversion( conversion, 'vertical-align' );
+		schema.extend( 'tableRow', {
+			allowAttributes: [ 'height' ]
+		} );
+
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'border', 'background-color', 'padding', 'vertical-align', 'width', 'height' ]
+		} );
+
+		// Table attributes.
+		setupTableConversion( conversion, 'border' );
+		setupTableConversion( conversion, 'background-color' );
+		setupTableConversion( conversion, 'width' );
+		setupTableConversion( conversion, 'height' );
+
+		// Table row attributes.
+		setupConversion( conversion, 'height', 'tableRow' );
+
+		// Table cell attributes.
+		setupConversion( conversion, 'border', 'tableCell' );
+		setupConversion( conversion, 'background-color', 'tableCell' );
+		setupConversion( conversion, 'padding', 'tableCell' );
+		setupConversion( conversion, 'vertical-align', 'tableCell' );
+		setupConversion( conversion, 'width', 'tableCell' );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -264,24 +280,14 @@ export default class TableEditing extends Plugin {
 	}
 }
 
-function setupConversion( conversion, styleName ) {
+function setupConversion( conversion, styleName, modelName ) {
 	// General upcast 'border' attribute (requires model border attribute to be allowed).
-	conversion.for( 'upcast' ).attributeToAttribute( {
-		view: {
-			styles: {
-				[ styleName ]: /[\s\S]+/
-			}
-		},
-		model: {
-			key: styleName,
-			value: viewElement => viewElement.getNormalizedStyle( styleName )
-		}
-	} );
+	upcastAttribute( conversion, styleName, modelName );
 
 	// Downcast table cell only (table has own downcast converter).
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
-			name: 'tableCell',
+			name: modelName,
 			key: styleName
 		},
 		view: modelAttributeValue => ( {
@@ -291,9 +297,28 @@ function setupConversion( conversion, styleName ) {
 			}
 		} )
 	} );
+}
+
+function upcastAttribute( conversion, styleName, modelName ) {
+	conversion.for( 'upcast' ).attributeToAttribute( {
+		view: {
+			styles: {
+				[ styleName ]: /[\s\S]+/
+			}
+		},
+		model: {
+			name: modelName,
+			key: styleName,
+			value: viewElement => viewElement.getNormalizedStyle( styleName )
+		}
+	} );
+}
+
+function setupTableConversion( conversion, styleName ) {
+	upcastAttribute( conversion, styleName, 'table' );
 
 	// Properly downcast table border attribute on <table> and not on <figure>.
-	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:' + styleName + ':table', ( evt, data, conversionApi ) => {
+	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ styleName }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
 
