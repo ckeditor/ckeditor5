@@ -18,7 +18,7 @@ See the {@link features/horizontal-line Horizontal line feature} guide and the {
 
 ## Installation
 
-```bash
+```plaintext
 npm install --save @ckeditor/ckeditor5-horizontal-line
 ```
 
