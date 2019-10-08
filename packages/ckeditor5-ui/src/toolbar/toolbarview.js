@@ -166,6 +166,11 @@ export default class ToolbarView extends View {
 		this._groupedItemsDropdown = this._createGrouppedItemsDropdown();
 
 		/**
+		 * TODO
+		 */
+		this._itemsGroupper = null;
+
+		/**
 		 * A top–level collection aggregating building blocks of the toolbar. It mainly exists to
 		 * make sure {@link #items} do not mix up with the {@link #groupedItemsDropdown}, which helps
 		 * a lot with the {@link #shouldGroupWhenFull} logic (no re–ordering issues, exclusions, etc.).
@@ -254,7 +259,7 @@ export default class ToolbarView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		this._itemsGroupper = new ToolbarItemsGroupper( {
+		this._itemsGroupper = new ToolbarItemsGrouper( {
 			shouldGroupWhenFull: this.options.shouldGroupWhenFull,
 			items: this.items,
 			ungroupedItems: this._ungroupedItems,
@@ -441,7 +446,7 @@ class UngrouppedItemsView extends View {
 	}
 }
 
-class ToolbarItemsGroupper {
+class ToolbarItemsGrouper {
 	constructor( options ) {
 		Object.assign( this, options );
 
@@ -554,7 +559,7 @@ class ToolbarItemsGroupper {
 		// Group #items as long as some wrap to the next row. This will happen, for instance,
 		// when the toolbar is getting narrow and there is not enough space to display all items in
 		// a single row.
-		while ( this.areToolbarItemsOverflowing ) {
+		while ( this.areItemsOverflowing ) {
 			this.groupLastItem();
 
 			wereItemsGrouped = true;
@@ -565,7 +570,7 @@ class ToolbarItemsGroupper {
 		// for instance, the toolbar is stretching and there's more space in it than before.
 		if ( !wereItemsGrouped && this.groupedItems && this.groupedItems.length ) {
 			// Ungroup items as long as none are overflowing or there are none to ungroup left.
-			while ( this.groupedItems.length && !this.areToolbarItemsOverflowing ) {
+			while ( this.groupedItems.length && !this.areItemsOverflowing ) {
 				this.ungroupFirstItem();
 			}
 
@@ -573,7 +578,7 @@ class ToolbarItemsGroupper {
 			// put it back to the group toolbar ("undo the last ungroup"). We don't know whether
 			// an item will wrap or not until we ungroup it (that's a DOM/CSS thing) so this
 			// clean–up is vital for the algorithm.
-			if ( this.areToolbarItemsOverflowing ) {
+			if ( this.areItemsOverflowing ) {
 				this.groupLastItem();
 			}
 		}
@@ -630,7 +635,7 @@ class ToolbarItemsGroupper {
 	 * @protected
 	 * @type {Boolean}
 	 */
-	get areToolbarItemsOverflowing() {
+	get areItemsOverflowing() {
 		// An empty toolbar cannot overflow.
 		if ( !this.ungroupedItems.length ) {
 			return false;
