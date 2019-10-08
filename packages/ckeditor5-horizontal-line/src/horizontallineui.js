@@ -21,7 +21,7 @@ export default class HorizontalLineUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Add horizontalLine button to feature components.
+		// Add the `horizontalLine` button to feature components.
 		editor.ui.componentFactory.add( 'horizontalLine', locale => {
 			const command = editor.commands.get( 'horizontalLine' );
 			const view = new ButtonView( locale );
@@ -34,7 +34,7 @@ export default class HorizontalLineUI extends Plugin {
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
-			// Execute command.
+			// Execute the command.
 			this.listenTo( view, 'execute', () => editor.execute( 'horizontalLine' ) );
 
 			return view;

@@ -8,15 +8,15 @@ CKEditor 5 horizontal line feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-horizontal-line/status.svg)](https://david-dm.org/ckeditor/ckeditor5-horizontal-line)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-horizontal-line/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-horizontal-line?type=dev)
 
-This package implements horizontal line feature for CKEditor 5.
+This package implements the horizontal line feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Horizontal Line feature](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) guide.
+Check out the demo in the [Horizontal line feature](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) guide.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-horizontal-line` package](https://ckeditor.com/docs/ckeditor5/latest/api/horizontal-line.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-horizontal-line` package](https://ckeditor.com/docs/ckeditor5/latest/api/horizontal-line.html) page as well as the [Horizontal line feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

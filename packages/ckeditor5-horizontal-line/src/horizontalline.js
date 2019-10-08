@@ -12,7 +12,11 @@ import HorizontalLineEditing from './horizontallineediting';
 import HorizontalLineUI from './horizontallineui';
 
 /**
- * The horizontal line plugin provides a possibility to insert a horizontal line in the rich-text editor.
+ * The horizontal line feature.
+ *
+ * It provides the possibility to insert a horizontal line into the rich-text editor.
+ *
+ * For a detailed overview, check the {@glink features/horizontal-line Horizontal line feature} documentation.
  *
  * @extends module:core/plugin~Plugin
  */

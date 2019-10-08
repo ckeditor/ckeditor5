@@ -11,11 +11,11 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * The insert a horizontal line command.
+ * The horizontal line command.
  *
- * The command is registered by the {@link module:horizontal-line/horizontallineediting~HorizontalLineEditing} as `'horizontalLine'`.
+ * The command is registered by {@link module:horizontal-line/horizontallineediting~HorizontalLineEditing} as `'horizontalLine'`.
  *
- * To insert the horizontal line at the current selection, execute the command:
+ * To insert a horizontal line at the current selection, execute the command:
  *
  *		editor.execute( 'horizontalLine' );
  *
@@ -62,7 +62,7 @@ export default class HorizontalLineCommand extends Command {
 	}
 }
 
-// Checks if the `horizontalLine` element can be inserted at current model selection.
+// Checks if the `horizontalLine` element can be inserted at the current model selection.
 //
 // @param {module:engine/model/model~Model} model
 // @returns {Boolean}
@@ -74,7 +74,7 @@ function isHorizontalLineAllowed( model ) {
 		!checkSelectionOnObject( selection, schema );
 }
 
-// Checks if horizontal line is allowed by schema in optimal insertion parent.
+// Checks if a horizontal line is allowed by the schema in the optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
@@ -86,7 +86,7 @@ function isHorizontalLineAllowedInParent( selection, schema, model ) {
 	return schema.checkChild( parent, 'horizontalLine' );
 }
 
-// Check if selection is on object.
+// Checks if the selection is on object.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
@@ -97,7 +97,8 @@ function checkSelectionOnObject( selection, schema ) {
 	return selectedElement && schema.isObject( selectedElement );
 }
 
-// Returns a node that will be used to insert horizontal line with `model.insertContent` to check if horizontal line can be placed there.
+// Returns a node that will be used to insert a horizontal line with `model.insertContent` to check if the horizontal line can be
+// placed there.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
