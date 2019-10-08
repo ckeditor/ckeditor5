@@ -7,6 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
 const sourceElement = document.querySelector( '#editor' );
 const clonedSource = sourceElement.cloneNode( true );
@@ -15,7 +18,7 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],

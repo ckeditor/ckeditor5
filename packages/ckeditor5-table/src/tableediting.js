@@ -113,15 +113,16 @@ export default class TableEditing extends Plugin {
 
 		// Table styles:
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border', 'background-color', 'padding' ]
+			allowAttributes: [ 'border', 'background-color', 'padding', 'vertical-align' ]
 		} );
 		schema.extend( 'table', {
-			allowAttributes: [ 'border', 'background-color', 'padding' ]
+			allowAttributes: [ 'border', 'background-color', 'padding', 'vertical-align' ]
 		} );
 
 		setupConversion( conversion, 'border' );
 		setupConversion( conversion, 'background-color' );
 		setupConversion( conversion, 'padding' );
+		setupConversion( conversion, 'vertical-align' );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
