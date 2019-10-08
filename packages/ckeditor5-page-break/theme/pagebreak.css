@@ -34,14 +34,14 @@
 	background: #fff;
 	box-shadow: 2px 2px 1px hsla(0, 0%, 0%, 0.15);
 
-	/* Disable possibility to select label text by user. */
+	/* Disable the possibility to select the label text by the user. */
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
 }
 
-/* Do not show page break element inside printing window view. */
+/* Do not show the page break element inside the print preview window. */
 @media print {
 	.ck-content .page-break {
 		padding: 0;
