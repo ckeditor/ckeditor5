@@ -44,33 +44,19 @@ describe( 'ImageResize', () => {
 		absoluteContainer.remove();
 	} );
 
-	beforeEach( () => {
-		editorElement = document.createElement( 'div' );
-
-		absoluteContainer.appendChild( editorElement );
-
-		return ClassicEditor
-			.create( editorElement, {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
-				image: {
-					resizeUnit: 'px'
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				view = editor.editing.view;
-				viewDocument = view.document;
-				widget = viewDocument.getRoot().getChild( 1 );
-			} );
-	} );
-
 	afterEach( () => {
-		editorElement.remove();
+		if ( editorElement ) {
+			editorElement.remove();
+		}
 
-		return editor.destroy();
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	describe( 'conversion', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'upcasts 100px width correctly', () => {
 			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
@@ -99,6 +85,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'schema', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'allows the width attribute', () => {
 			expect( editor.model.schema.checkAttribute( 'image', 'width' ) ).to.be.true;
 		} );
@@ -109,6 +97,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'command', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'defines the imageResize command', () => {
 			expect( editor.commands.get( 'imageResize' ) ).to.be.instanceOf( ImageResizeCommand );
 		} );
@@ -180,6 +170,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'visual resizers', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -202,7 +194,6 @@ describe( 'ImageResize', () => {
 			} );
 
 			it( 'is shown when image is focused', () => {
-				const widget = viewDocument.getRoot().getChild( 1 );
 				const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 				const domEventDataMock = {
 					target: widget,
@@ -221,6 +212,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'standard image resizing', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -321,6 +314,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'side image resizing', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -435,7 +430,79 @@ describe( 'ImageResize', () => {
 		}
 	} );
 
+	describe( 'percent resizing', () => {
+		beforeEach( () => createEditor( {
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+		} ) );
+
+		describe( 'standard image', () => {
+			beforeEach( () => {
+				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+				widget = viewDocument.getRoot().getChild( 1 );
+			} );
+
+			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+				expectedWidth: 16,
+				modelRegExp: /<paragraph>foo<\/paragraph><image src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+				pointerOffset: {
+					x: 10,
+					y: -10
+				},
+				resizerPosition: 'bottom-left'
+			} ) );
+
+			it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
+				expectedWidth: 22,
+				modelRegExp: /<paragraph>foo<\/paragraph><image src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+				pointerOffset: {
+					x: 0,
+					y: 5
+				},
+				resizerPosition: 'bottom-right'
+			} ) );
+
+			it( 'enlarges correctly an image with unsupported width unit', async () => {
+				setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }" width="50pt"></image>]` );
+
+				widget = viewDocument.getRoot().getChild( 1 );
+
+				await generateResizeTest( {
+					expectedWidth: 15,
+					modelRegExp: /<paragraph>foo<\/paragraph><image src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+					pointerOffset: {
+						x: 0,
+						y: 5
+					},
+					resizerPosition: 'bottom-right'
+				} )();
+			} );
+		} );
+
+		describe( 'side image', () => {
+			beforeEach( () => {
+				setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+				view = editor.editing.view;
+				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
+			} );
+
+			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+				expectedWidth: 18,
+				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="([\d]{2}(?:\.[\d]{1,2}))%"><\/image>/,
+				pointerOffset: {
+					x: 10,
+					y: -10
+				},
+				resizerPosition: 'bottom-left'
+			} ) );
+		} );
+	} );
+
 	describe( 'undo integration', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -465,6 +532,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'table integration', () => {
+		beforeEach( () => createEditor() );
+
 		beforeEach( () => {
 			setData( editor.model,
 				'<table>' +
@@ -488,6 +557,8 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'srcset integration', () => {
+		beforeEach( () => createEditor() );
+
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
 		const getModel = () => editor.model.document.getRoot().getChild( 0 );
@@ -561,6 +632,8 @@ describe( 'ImageResize', () => {
 
 	// TODO move to Resizer tests.
 	describe( 'Resizer', () => {
+		beforeEach( () => createEditor() );
+
 		it( 'uses rounded (int) values', async () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -687,5 +760,25 @@ describe( 'ImageResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function createEditor( config ) {
+		editorElement = document.createElement( 'div' );
+
+		absoluteContainer.appendChild( editorElement );
+
+		return ClassicEditor
+			.create( editorElement, config || {
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
+				image: {
+					resizeUnit: 'px'
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				view = editor.editing.view;
+				viewDocument = view.document;
+				widget = viewDocument.getRoot().getChild( 1 );
+			} );
 	}
 } );
