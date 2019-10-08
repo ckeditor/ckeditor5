@@ -117,9 +117,11 @@ export default class Title extends Plugin {
 
 	/**
 	 * Returns the title of the document. Note that because this plugin does not allow any formatting inside
-	 * the title element, the output of this method will be a plain text, with no HTML tags. However, it
-	 * may contain some markers, like comments or suggestions. In such case, a special tag for the
-	 * marker will be included in the title text.
+	 * the title element, the output of this method will be a plain text, with no HTML tags.
+	 *
+	 * Note that it is not recommended to use this method together with features which insert markers to the
+	 * data output, like comments or track changes features. If such markers start in the title and end in the
+	 * body the result of this method might be incorrect.
 	 *
 	 * @returns {String} The title of the document.
 	 */
@@ -132,6 +134,10 @@ export default class Title extends Plugin {
 
 	/**
 	 * Returns the body of the document.
+	 *
+	 * Note that it is not recommended to use this method together with feature which insert markers to the
+	 * data output, like comments or track changes features. If such markers start in the title and end in the
+	 * body the result of this method might be incorrect.
 	 *
 	 * @returns {String} The body of the document.
 	 */
