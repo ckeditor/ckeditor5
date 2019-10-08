@@ -206,6 +206,10 @@ class ResizeObserverPolyfill {
 	 * @returns {Boolean}
 	 */
 	_hasRectChanged( element ) {
+		if ( !element.ownerDocument.body.contains( element ) ) {
+			return false;
+		}
+
 		const currentRect = new Rect( element );
 		const previousRect = this._previousRects.get( element );
 

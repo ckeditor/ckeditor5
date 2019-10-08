@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout, Event */
+/* globals document, setTimeout, Event, console */
 
 import getResizeObserver from '../../src/dom/getresizeobserver';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
@@ -87,6 +87,16 @@ describe( 'getResizeObserver()', () => {
 				expect( target ).to.equal( elementA );
 				expect( contentRect ).to.be.instanceOf( Rect );
 				expect( contentRect ).to.deep.equal( elementRectA );
+			} );
+
+			it( 'does not execute the callback if element has no parent in DOM', () => {
+				const warnSpy = testUtils.sinon.spy( console, 'warn' );
+
+				elementA.remove();
+				observer.observe( elementA );
+
+				sinon.assert.notCalled( callback );
+				sinon.assert.notCalled( warnSpy );
 			} );
 
 			it( 'starts periodic check and asynchronously does not execute the callback if the element rect is the same', done => {
