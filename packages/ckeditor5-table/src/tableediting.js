@@ -113,14 +113,15 @@ export default class TableEditing extends Plugin {
 
 		// Table styles:
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border', 'border-top', 'border-right', 'border-bottom', 'border-left', 'background-color' ]
+			allowAttributes: [ 'border', 'background-color', 'padding' ]
 		} );
 		schema.extend( 'table', {
-			allowAttributes: [ 'border', 'border-top', 'border-right', 'border-bottom', 'border-left', 'background-color' ]
+			allowAttributes: [ 'border', 'background-color', 'padding' ]
 		} );
 
 		setupConversion( conversion, 'border' );
 		setupConversion( conversion, 'background-color' );
+		setupConversion( conversion, 'padding' );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -282,14 +283,12 @@ function setupConversion( conversion, styleName ) {
 			name: 'tableCell',
 			key: styleName
 		},
-		view: modelAttributeValue => {
-			return ( {
-				key: 'style',
-				value: {
-					[ styleName ]: modelAttributeValue
-				}
-			} );
-		}
+		view: modelAttributeValue => ( {
+			key: 'style',
+			value: {
+				[ styleName ]: modelAttributeValue
+			}
+		} )
 	} );
 
 	// Properly downcast table border attribute on <table> and not on <figure>.
