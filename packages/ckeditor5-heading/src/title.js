@@ -116,19 +116,6 @@ export default class Title extends Plugin {
 	}
 
 	/**
-	 * Sets the title of the document. This method does not change any content outside the title element.
-	 *
-	 * @param {String} data The data to be set as the document title.
-	 */
-	setTitle( data ) {
-		const editor = this.editor;
-		const titleElement = this._getTitleElement();
-		const titleContentElement = titleElement.getChild( 0 );
-
-		editor.model.insertContent( editor.data.parse( data, 'title-content' ), titleContentElement, 'in' );
-	}
-
-	/**
 	 * Returns the title of the document. Note that because this plugin does not allow any formatting inside
 	 * the title element, the output of this method will be a plain text, with no HTML tags. However, it
 	 * may contain some markers, like comments or suggestions. In such case, a special tag for the
@@ -141,22 +128,6 @@ export default class Title extends Plugin {
 		const titleContentElement = titleElement.getChild( 0 );
 
 		return this.editor.data.stringify( titleContentElement );
-	}
-
-	/**
-	 * Sets the body of the document.
-	 *
-	 * @returns {String} data The data to be set as a body of the document.
-	 */
-	setBody( data ) {
-		const editor = this.editor;
-		const root = editor.model.document.getRoot();
-		const range = editor.model.createRange(
-			editor.model.createPositionAt( root.getChild( 0 ), 'after' ),
-			editor.model.createPositionAt( root, 'end' )
-		);
-
-		editor.model.insertContent( editor.data.parse( data ), range );
 	}
 
 	/**
