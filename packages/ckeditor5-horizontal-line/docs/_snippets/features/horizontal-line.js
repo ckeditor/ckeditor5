@@ -7,8 +7,10 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
+ClassicEditor.builtinPlugins.push( Alignment );
 ClassicEditor.builtinPlugins.push( HorizontalLine );
 
 ClassicEditor
@@ -19,11 +21,14 @@ ClassicEditor
 				'|',
 				'bold',
 				'italic',
+				'|',
+				'alignment',
+				'|',
 				'bulletedList',
 				'numberedList',
+				'|',
 				'blockQuote',
 				'link',
-				'|',
 				'imageUpload',
 				'mediaEmbed',
 				'insertTable',
