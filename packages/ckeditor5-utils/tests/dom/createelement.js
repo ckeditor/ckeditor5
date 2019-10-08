@@ -23,6 +23,15 @@ describe( 'createElement', () => {
 		expect( p.getAttribute( 'class' ) ).to.equal( 'foo' );
 	} );
 
+	it( 'should create element with namespace', () => {
+		const namespace = 'http://www.w3.org/2000/svg';
+		const svg = createElement( document, 'svg', { xmlns: namespace } );
+
+		expect( svg.tagName.toLowerCase() ).to.equal( 'svg' );
+		expect( svg.getAttribute( 'xmlns' ) ).to.equal( namespace );
+		expect( svg.createSVGRect ).to.be.a( 'function' );
+	} );
+
 	it( 'should create element with child text node', () => {
 		const p = createElement( document, 'p', null, 'foo' );
 

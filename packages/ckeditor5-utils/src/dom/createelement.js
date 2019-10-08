@@ -26,7 +26,8 @@ import { isString } from 'lodash-es';
  * @returns {Element} Created element.
  */
 export default function createElement( doc, name, attributes = {}, children = [] ) {
-	const element = doc.createElement( name );
+	const namespace = attributes instanceof Object ? attributes.xmlns : null;
+	const element = namespace ? doc.createElementNS( namespace, name ) : doc.createElement( name );
 
 	for ( const key in attributes ) {
 		element.setAttribute( key, attributes[ key ] );
