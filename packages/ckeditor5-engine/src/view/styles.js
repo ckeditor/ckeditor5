@@ -136,6 +136,7 @@ export default class Styles {
 		this.reducers.set( 'border', getBorderReducer );
 
 		this.reducers.set( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
+		this.reducers.set( 'padding', getTopRightBottomLeftValueReducer( 'padding' ) );
 
 		this.reducers.set( 'background', value => {
 			const ret = [];
