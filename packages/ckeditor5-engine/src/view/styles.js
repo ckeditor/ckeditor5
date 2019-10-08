@@ -85,8 +85,14 @@ export default class Styles {
 		this.normalizers.set( 'margin', getPositionShorthandNormalizer( 'margin' ) );
 		this.normalizers.set( 'padding', getPositionShorthandNormalizer( 'padding' ) );
 
+		this.extractors = new Map();
+		this.extractors.set( 'border-top', borderPositionExtractor( 'top' ) );
+		this.extractors.set( 'border-right', borderPositionExtractor( 'right' ) );
+		this.extractors.set( 'border-bottom', borderPositionExtractor( 'bottom' ) );
+		this.extractors.set( 'border-left', borderPositionExtractor( 'left' ) );
+
 		/**
-		 * Holds style normalize object reducrs.
+		 * Holds style normalize object reducers.
 		 *
 		 * An style inliner takes normalized object of style property and outputs array of normalized property-value pairs that can
 		 * be later used to inline a style.
@@ -123,6 +129,10 @@ export default class Styles {
 		this.reducers.set( 'border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
 		this.reducers.set( 'border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
 		this.reducers.set( 'border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
+		this.reducers.set( 'border-top', getBorderPositionReducer( 'top' ) );
+		this.reducers.set( 'border-right', getBorderPositionReducer( 'right' ) );
+		this.reducers.set( 'border-bottom', getBorderPositionReducer( 'bottom' ) );
+		this.reducers.set( 'border-left', getBorderPositionReducer( 'left' ) );
 		this.reducers.set( 'border', getBorderReducer );
 
 		this.reducers.set( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
@@ -238,6 +248,10 @@ export default class Styles {
 	getNormalized( name ) {
 		if ( !name ) {
 			return merge( {}, this._styles );
+		}
+
+		if ( this.extractors.has( name ) ) {
+			return this.extractors.get( name )( this );
 		}
 
 		const path = toPath( name );
@@ -445,6 +459,28 @@ function getBorderPropertyNormalizer( propertyName ) {
 	return value => ( { border: toBorderPropertyShorthand( value, propertyName ) } );
 }
 
+function borderPositionExtractor( which ) {
+	return styles => {
+		const border = styles.getNormalized( 'border' );
+
+		const value = [];
+
+		if ( border.width && border.width[ which ] ) {
+			value.push( border.width[ which ] );
+		}
+
+		if ( border.style && border.style[ which ] ) {
+			value.push( border.style[ which ] );
+		}
+
+		if ( border.color && border.color[ which ] ) {
+			value.push( border.color[ which ] );
+		}
+
+		return value.join( ' ' );
+	};
+}
+
 function normalizeBorderShorthand( string ) {
 	const result = {};
 
@@ -520,9 +556,10 @@ function isURL( string ) {
 function getBorderReducer( value ) {
 	const ret = [];
 
-	ret.push( ...getTopRightBottomLeftValueReducer( 'border-color' )( value.color ) );
-	ret.push( ...getTopRightBottomLeftValueReducer( 'border-style' )( value.style ) );
-	ret.push( ...getTopRightBottomLeftValueReducer( 'border-width' )( value.width ) );
+	ret.push( ...getBorderPositionReducer( 'top' )( value ) );
+	ret.push( ...getBorderPositionReducer( 'right' )( value ) );
+	ret.push( ...getBorderPositionReducer( 'bottom' )( value ) );
+	ret.push( ...getBorderPositionReducer( 'left' )( value ) );
 
 	return ret;
 }
@@ -554,6 +591,26 @@ function getTopRightBottomLeftValueReducer( styleShorthand ) {
 		}
 
 		return reduced;
+	};
+}
+
+function getBorderPositionReducer( which ) {
+	return value => {
+		const reduced = [];
+
+		if ( value && value.width && value.width[ which ] !== undefined ) {
+			reduced.push( value.width[ which ] );
+		}
+
+		if ( value && value.style && value.style[ which ] !== undefined ) {
+			reduced.push( value.style[ which ] );
+		}
+
+		if ( value && value.color && value.color[ which ] !== undefined ) {
+			reduced.push( value.color[ which ] );
+		}
+
+		return [ [ 'border-' + which, reduced.join( ' ' ) ] ];
 	};
 }
 
