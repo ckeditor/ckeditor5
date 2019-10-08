@@ -135,7 +135,7 @@ export default class Title extends Plugin {
 	/**
 	 * Returns the body of the document.
 	 *
-	 * Note that it is not recommended to use this method together with feature which insert markers to the
+	 * Note that it is not recommended to use this method together with features which insert markers to the
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
 	 * body the result of this method might be incorrect.
 	 *
