@@ -107,20 +107,20 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'foo' ) ).to.be.false;
 		} );
 
-		it( 'should add element a selection handler to widget if hasSelectionHandler=true is passed', () => {
-			toWidget( element, writer, { hasSelectionHandler: true } );
+		it( 'should add element a selection handle to widget if hasSelectionHandle=true is passed', () => {
+			toWidget( element, writer, { hasSelectionHandle: true } );
 
-			expect( element.hasClass( 'ck-widget_with-selection-handler' ) ).to.be.true;
+			expect( element.hasClass( 'ck-widget_with-selection-handle' ) ).to.be.true;
 
-			const selectionHandler = element.getChild( 0 );
-			expect( selectionHandler ).to.be.instanceof( UIElement );
+			const selectionHandle = element.getChild( 0 );
+			expect( selectionHandle ).to.be.instanceof( UIElement );
 
-			const domSelectionHandler = selectionHandler.render( document );
+			const domSelectionHandle = selectionHandle.render( document );
 
-			expect( domSelectionHandler.classList.contains( 'ck' ) ).to.be.true;
-			expect( domSelectionHandler.classList.contains( 'ck-widget__selection-handler' ) ).to.be.true;
+			expect( domSelectionHandle.classList.contains( 'ck' ) ).to.be.true;
+			expect( domSelectionHandle.classList.contains( 'ck-widget__selection-handle' ) ).to.be.true;
 
-			const icon = domSelectionHandler.firstChild;
+			const icon = domSelectionHandle.firstChild;
 
 			expect( icon.nodeName ).to.equal( 'svg' );
 			expect( icon.classList.contains( 'ck' ) ).to.be.true;

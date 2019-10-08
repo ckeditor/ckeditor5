@@ -1257,7 +1257,7 @@ describe( 'Widget', () => {
 		} );
 	} );
 
-	describe( 'selection handler', () => {
+	describe( 'selection handle', () => {
 		beforeEach( () => {
 			return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
 				.then( newEditor => {
@@ -1289,7 +1289,7 @@ describe( 'Widget', () => {
 							view: ( modelItem, viewWriter ) => {
 								const widget = viewWriter.createContainerElement( 'div' );
 
-								return toWidget( widget, viewWriter, { hasSelectionHandler: true } );
+								return toWidget( widget, viewWriter, { hasSelectionHandle: true } );
 							}
 						} )
 						.elementToElement( {
@@ -1302,10 +1302,10 @@ describe( 'Widget', () => {
 		it( 'should select a widget on mouse click', () => {
 			setModelData( model, '<paragraph>bar</paragraph><widget></widget><paragraph>foo[]</paragraph>' );
 
-			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
 			const domEventDataMock = {
-				target: viewWidgetSelectionHandler,
+				target: viewWidgetSelectionHandle,
 				preventDefault: sinon.spy()
 			};
 
@@ -1318,24 +1318,24 @@ describe( 'Widget', () => {
 			setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
 
 			// The top-outer widget.
-			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 0 );
+			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
 			const domEventDataMock = {
-				target: viewWidgetSelectionHandler,
+				target: viewWidgetSelectionHandle,
 				preventDefault: sinon.spy()
 			};
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
-					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>]'
 			);
 		} );
@@ -1350,30 +1350,30 @@ describe( 'Widget', () => {
 				'<widget></widget>'
 			);
 
-			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 1 );
+			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 );
 
 			const domEventDataMock = {
-				target: viewWidgetSelectionHandler,
+				target: viewWidgetSelectionHandle,
 				preventDefault: sinon.spy()
 			};
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>' +
-				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
-					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>]' +
-				'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>'
 			);
 		} );
@@ -1386,22 +1386,22 @@ describe( 'Widget', () => {
 				'</widget>'
 			);
 
-			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 0 );
+			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
 			const domEventDataMock = {
-				target: viewWidgetSelectionHandler,
+				target: viewWidgetSelectionHandle,
 				preventDefault: sinon.spy()
 			};
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
+				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
 					'<figcaption contenteditable="true">foo bar</figcaption>' +
-					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>]'
 			);
 		} );
@@ -1416,27 +1416,27 @@ describe( 'Widget', () => {
 				'</widget>'
 			);
 
-			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
+			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
 
 			const domEventDataMock = {
-				target: viewWidgetSelectionHandler,
+				target: viewWidgetSelectionHandle,
 				preventDefault: sinon.spy()
 			};
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>' +
-					'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
-						'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
-							'<div class="ck ck-widget__selection-handler"></div>' +
+					'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
+						'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handle"></div>' +
 						'</div>' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 					'</div>]' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>'
 			);
 		} );
@@ -1456,13 +1456,13 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
+				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
 					'<figcaption contenteditable="true">' +
-						'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
-							'<div class="ck ck-widget__selection-handler"></div>' +
+						'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handle"></div>' +
 						'</div>]' +
 					'</figcaption>' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 				'</div>'
 			);
 		} );

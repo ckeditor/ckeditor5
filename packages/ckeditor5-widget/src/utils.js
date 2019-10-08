@@ -11,7 +11,7 @@ import HighlightStack from './highlightstack';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import dragHandlerIcon from '../theme/icons/drag-handler.svg';
+import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
 /**
  * CSS class added to each widget element.
@@ -85,7 +85,7 @@ export function isWidget( node ) {
  * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to the {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string. It represents the widget for assistive technologies (like screen readers).
- * @param {Boolean} [options.hasSelectionHandler=false] If `true`, the widget will have a selection handler added.
+ * @param {Boolean} [options.hasSelectionHandle=false] If `true`, the widget will have a selection handle added.
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
 /* eslint-enable max-len */
@@ -104,8 +104,8 @@ export function toWidget( element, writer, options = {} ) {
 		setLabel( element, options.label, writer );
 	}
 
-	if ( options.hasSelectionHandler ) {
-		addSelectionHandler( element, writer );
+	if ( options.hasSelectionHandle ) {
+		addSelectionHandle( element, writer );
 	}
 
 	setHighlightHandling(
@@ -355,19 +355,19 @@ function getFillerOffset() {
 	return null;
 }
 
-// Adds a drag handler to the widget.
+// Adds a drag handle to the widget.
 //
 // @param {module:engine/view/containerelement~ContainerElement}
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-function addSelectionHandler( widgetElement, writer ) {
-	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handler' }, function( domDocument ) {
+function addSelectionHandle( widgetElement, writer ) {
+	const selectionHandle = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handle' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 
 		// Use the IconView from the ui library.
 		const icon = new IconView();
-		icon.set( 'content', dragHandlerIcon );
+		icon.set( 'content', dragHandleIcon );
 
-		// Render the icon view right away to append its #element to the selectionHandler DOM element.
+		// Render the icon view right away to append its #element to the selectionHandle DOM element.
 		icon.render();
 
 		domElement.appendChild( icon.element );
@@ -375,7 +375,7 @@ function addSelectionHandler( widgetElement, writer ) {
 		return domElement;
 	} );
 
-	// Append the selection handler into the widget wrapper.
-	writer.insert( writer.createPositionAt( widgetElement, 0 ), selectionHandler );
-	writer.addClass( [ 'ck-widget_with-selection-handler' ], widgetElement );
+	// Append the selection handle into the widget wrapper.
+	writer.insert( writer.createPositionAt( widgetElement, 0 ), selectionHandle );
+	writer.addClass( [ 'ck-widget_with-selection-handle' ], widgetElement );
 }

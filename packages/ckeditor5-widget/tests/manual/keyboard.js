@@ -25,7 +25,7 @@ function BlockWidget( editor ) {
 					class: 'widget'
 				} ),
 				writer,
-				{ hasSelectionHandler: true }
+				{ hasSelectionHandle: true }
 			);
 		}
 	} );
