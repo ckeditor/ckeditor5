@@ -255,7 +255,7 @@ export default class ToolbarView extends View {
 				class: [
 					'ck',
 					'ck-toolbar',
-					options.shouldGroupWhenFull ? 'ck-toolbar_grouping' : '',
+					this.options.shouldGroupWhenFull ? 'ck-toolbar_grouping' : '',
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
 					bind.to( 'class' )
 				],
@@ -300,7 +300,7 @@ export default class ToolbarView extends View {
 			items: this.items,
 			ungroupedItems: this._ungroupedItems,
 			groupedItems: this._groupedItems,
-			toolbarElement: this.element,
+			element: this.element,
 			uiLanguageDirection: this.locale.uiLanguageDirection,
 
 			onGroupStart: () => {
@@ -490,59 +490,95 @@ class UngrouppedItemsView extends View {
 /**
  * A helper class that manages the presentation layer of the {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
+ * In a nutshell, it distributes the toolbar {@link module:ui/toolbar/toolbarview~ToolbarView#items}
+ * among its {@link module:ui/toolbar/toolbarview~ToolbarView#_groupedItems} and
+ * {@link module:ui/toolbar/toolbarview~ToolbarView#_ungroupedItems}
+ * depending on the configuration of the toolbar, the geometry and the number of items.
+ *
  * @private
  */
 class ToolbarItemsManager {
+	/**
+	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~ToolbarItemsManager} class.
+	 *
+	 * @param {Object} options The configuration of the helper.
+	 * @param {Boolean} options.shouldGroupWhenFull Corresponds to
+	 * {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}.
+	 * @param {module:ui/viewcollection~ViewCollection} options.items Corresponds to
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
+	 * @param {module:ui/viewcollection~ViewCollection} options.ungroupedItems Corresponds to
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#_ungroupedItems}.
+	 * @param {module:ui/viewcollection~ViewCollection} options.groupedItems Corresponds to
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#_groupedItems}/
+	 * @param {HTMLElement} options.element Corresponds to {@link module:ui/toolbar/toolbarview~ToolbarView#element}.
+	 * @param {String} options.uiLanguageDirection Corresponds to {@link module:utils/locale~Locale#uiLanguageDirection}.
+	 * @param {Function} options.onGroupStart Executed when the first ungrouped toolbar item gets grouped.
+	 * @param {Function} options.onGroupEnd Executed when the last of the grouped toolbar items just got ungrouped.
+	 */
 	constructor( options ) {
 		Object.assign( this, options );
 
-		this.items.on( 'add', ( evt, item, index ) => {
-			if ( index > this.ungroupedItems.length ) {
-				this.groupedItems.add( item, index - this.ungroupedItems.length );
-			} else {
-				this.ungroupedItems.add( item, index );
-			}
+		/**
+		 * @readonly
+		 * @member {Boolean} #shouldGroupWhenFull
+		 */
 
-			if ( options.shouldGroupWhenFull ) {
-				this.update();
-			}
-		} );
+		/**
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection} #items
+		 */
 
-		this.items.on( 'remove', ( evt, item ) => {
-			if ( this.groupedItems.has( item ) ) {
-				this.groupedItems.remove( item );
-			} else if ( this.ungroupedItems.has( item ) ) {
-				this.ungroupedItems.remove( item );
-			}
+		/**
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection} #ungroupedItems
+		 */
 
-			if ( options.shouldGroupWhenFull ) {
-				this.update();
-			}
-		} );
+		/**
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection} #groupedItems
+		 */
 
-		if ( options.shouldGroupWhenFull ) {
-			this.enableGroupingOnResize();
-		}
+		/**
+		 * @readonly
+		 * @member {HTMLElement} #element
+		 */
+
+		/**
+		 * @readonly
+		 * @member {String} #uiLanguageDirection
+		 */
+
+		/**
+		 * @readonly
+		 * @member {Function} #onGroupStart Executed when the first ungrouped toolbar item gets grouped.
+		 * Called by {@link #groupLastItem}.
+		 */
+
+		/**
+		 * @readonly
+		 * @member {Function} #onGroupEnd Executed when the last of the grouped toolbar items just
+		 * got ungrouped. Called by {@link #ungroupFirstItem}.
+		 */
 
 		/**
 		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
 		 * and manage items that do not fit into a single row.
 		 *
-		 * **Note:** Created dynamically only when {@link #shouldGroupWhenFull} is `true`.
+		 * **Note:** Created dynamically in {@link #enableGroupingOnResize}.
 		 *
 		 * @readonly
-		 * @protected
+		 * @private
 		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
 		 */
 		this._resizeObserver = null;
 
 		/**
-		 * A flag used by {@link #update} method to make sure no concurrent updates
-		 * are performed to the {@link #items} and {@link #groupedItems}. Because {@link #update}
+		 * A flag used by {@link #updateGrouping} method to make sure no concurrent updates
+		 * are performed to the {@link #ungroupedItems} and {@link #groupedItems}. Because {@link #updateGrouping}
 		 * manages those collections but also is executed upon changes in those collections, this flag
 		 * ensures no infinite loops occur.
 		 *
-		 * **Note:** Used only when {@link #shouldGroupWhenFull} is `true`.
+		 * **Note:** Used only if {@link #enableGroupingOnResize} was called.
 		 *
 		 * @readonly
 		 * @private
@@ -551,34 +587,65 @@ class ToolbarItemsManager {
 		this._updateLock = false;
 
 		/**
-		 * A cached value of the horizontal padding style used by {@link #update}
+		 * A cached value of the horizontal padding style used by {@link #updateGrouping}
 		 * to manage the {@link #items} that do not fit into a single toolbar line. This value
 		 * can be reused between updates because it is unlikely that the padding will change
 		 * and re–using `Window.getComputedStyle()` is expensive.
 		 *
-		 * **Note:** Set only when {@link #shouldGroupWhenFull} is `true`.
+		 * **Note:** In use only after {@link #enableGroupingOnResize} was called.
 		 *
 		 * @readonly
 		 * @private
 		 * @member {Number}
 		 */
 		this._cachedPadding = null;
+
+		// ToolbarView#items is dynamic. When an item is added, it should be automatically
+		// represented in either grouped or ungrouped items at the right index.
+		this.items.on( 'add', ( evt, item, index ) => {
+			if ( index > this.ungroupedItems.length ) {
+				this.groupedItems.add( item, index - this.ungroupedItems.length );
+			} else {
+				this.ungroupedItems.add( item, index );
+
+				// When a new ungrouped item joins in, there's a chance it causes the toolbar to overflow.
+				// Let's check this out and do the grouping if necessary.
+				if ( options.shouldGroupWhenFull ) {
+					this.updateGrouping();
+				}
+			}
+		} );
+
+		// When an item is removed from ToolbarView#items, it should be automatically
+		// removed from either grouped or ungrouped items.
+		this.items.on( 'remove', ( evt, item ) => {
+			if ( this.groupedItems.has( item ) ) {
+				this.groupedItems.remove( item );
+			} else if ( this.ungroupedItems.has( item ) ) {
+				this.ungroupedItems.remove( item );
+			}
+
+			// Whether removed from grouped or ungrouped items, there is a chance
+			// some new space is available and we could do some ungrouping.
+			if ( options.shouldGroupWhenFull ) {
+				this.updateGrouping();
+			}
+		} );
+
+		if ( options.shouldGroupWhenFull ) {
+			this.enableGroupingOnResize();
+		}
 	}
 
 	/**
-	 * When called, if {@link #shouldGroupWhenFull} is `true`, it will check if any of the {@link #items}
-	 * do not fit into a single row of the toolbar, and it will move them to the {@link #groupedItems}
-	 * when it happens.
+	 * When called, it will check if any of the {@link #ungroupedItems} do not fit into a single row of the toolbar,
+	 * and it will move them to the {@link #groupedItems} when it happens.
 	 *
 	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
-	 * {@link #groupedItems} to be returned back to {@link #items} and still fit into a single row
+	 * {@link #groupedItems} to be returned back to {@link #ungroupedItems} and still fit into a single row
 	 * without the toolbar wrapping.
 	 */
-	update() {
-		if ( !this.shouldGroupWhenFull ) {
-			return;
-		}
-
+	updateGrouping() {
 		// Do not check when another check is going on to avoid infinite loops.
 		// This method is called when adding and removing #items but at the same time it adds and removes
 		// #items itself.
@@ -590,13 +657,9 @@ class ToolbarItemsManager {
 		// for instance before #render(), or after render but without a parent or a parent detached
 		// from DOM. DOMRects won't work anyway and there will be tons of warning in the console and
 		// nothing else.
-		if ( !this.toolbarElement.ownerDocument.body.contains( this.toolbarElement ) ) {
+		if ( !this.element.ownerDocument.body.contains( this.element ) ) {
 			return;
 		}
-
-		// There's no way to make any decisions concerning geometry when there is no element to work with
-		// (before #render()). Or when element has no parent because ClientRects won't work when
-		// #element is not in DOM.
 
 		this._updateLock = true;
 
@@ -633,19 +696,14 @@ class ToolbarItemsManager {
 	}
 
 	/**
-	 * Enables the toolbar functionality that prevents its {@link #items} from overflowing (wrapping
-	 * to the next row) when the space becomes scarce. Instead, the toolbar items are moved to the
-	 * {@link #groupedItems} collection and displayed in a {@link #groupedItemsDropdown} at the end of
-	 * the space, which has its own nested toolbar.
+	 * Enables the functionality that prevents {@link #ungroupedItems} from overflowing
+	 * (wrapping to the next row) when there is little space available. Instead, the toolbar items are moved to the
+	 * {@link #groupedItems} collection and displayed in a dropdown at the end of the space, which has its own nested toolbar.
 	 *
-	 * When called, the toolbar will automatically analyze the location of its {@link #items} and "group"
+	 * When called, the toolbar will automatically analyze the location of its {@link #ungroupedItems} and "group"
 	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
 	 * the future and respond to them by grouping more items or reverting already grouped back, depending
 	 * on the visual space available.
-	 *
-	 * **Note:** Calling this method **before** the toolbar {@link #element} is in a DOM tree and visible (i.e.
-	 * not `display: none`) will cause lots of warnings in the console from the utilities analyzing
-	 * the geometry of the toolbar items — they depend on the toolbar to be visible in DOM.
 	 */
 	enableGroupingOnResize() {
 		let previousWidth;
@@ -653,17 +711,20 @@ class ToolbarItemsManager {
 		// TODO: Consider debounce.
 		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
 			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
-				this.update();
+				this.updateGrouping();
 
 				previousWidth = entry.contentRect.width;
 			}
 		} );
 
-		this._resizeObserver.observe( this.toolbarElement );
+		this._resizeObserver.observe( this.element );
 
-		this.update();
+		this.updateGrouping();
 	}
 
+	/**
+	 * Cleans up after the manager when its parent toolbar is destroyed.
+	 */
 	destroy() {
 		if ( this._resizeObserver ) {
 			this._resizeObserver.disconnect();
@@ -671,14 +732,9 @@ class ToolbarItemsManager {
 	}
 
 	/**
-	 * Returns `true` when any of toolbar {@link #items} visually overflows, for instance if the
+	 * Returns `true` when {@link #element} children visually overflow, for instance if the
 	 * toolbar is narrower than its members. `false` otherwise.
 	 *
-	 * **Note**: Technically speaking, if not for the {@link #shouldGroupWhenFull}, the items would
-	 * wrap and break the toolbar into multiple rows. Overflowing is only possible when
-	 *  {@link #shouldGroupWhenFull} is `true`.
-	 *
-	 * @protected
 	 * @type {Boolean}
 	 */
 	get areItemsOverflowing() {
@@ -688,11 +744,11 @@ class ToolbarItemsManager {
 		}
 
 		const uiLanguageDirection = this.uiLanguageDirection;
-		const lastChildRect = new Rect( this.toolbarElement.lastChild );
-		const toolbarRect = new Rect( this.toolbarElement );
+		const lastChildRect = new Rect( this.element.lastChild );
+		const toolbarRect = new Rect( this.element );
 
 		if ( !this._cachedPadding ) {
-			const computedStyle = global.window.getComputedStyle( this.toolbarElement );
+			const computedStyle = global.window.getComputedStyle( this.element );
 			const paddingProperty = uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
 
 			// parseInt() is essential because of quirky floating point numbers logic and DOM.
@@ -711,10 +767,8 @@ class ToolbarItemsManager {
 	/**
 	 * The opposite of {@link #ungroupFirstItem}.
 	 *
-	 * When called it will remove the last item from {@link #items} and move it to the
-	 * {@link #groupedItems} collection (from {@link #itemsView} to {@link #groupedItemsDropdown}).
-	 *
-	 * If the {@link #groupedItemsDropdown} does not exist, it is created and added to {@link #_components}.
+	 * When called it will remove the last item from {@link #ungroupedItems} and move it to the
+	 * {@link #groupedItems} collection.
 	 *
 	 * @protected
 	 */
@@ -730,7 +784,7 @@ class ToolbarItemsManager {
 	 * The opposite of {@link #groupLastItem}.
 	 *
 	 * Moves the very first item from the toolbar belonging to {@link #groupedItems} back
-	 * to the {@link #items} collection (from {@link #groupedItemsDropdown} to {@link #itemsView}).
+	 * to the {@link #ungroupedItems} collection.
 	 *
 	 * @protected
 	 */
