@@ -5,16 +5,17 @@
 
 /* globals console, window, document, setTimeout */
 
-import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
+import BaloonBlockEditor from '@ckeditor/ckeditor5-build-balloon-block/src/ckeditor';
 import Title from '@ckeditor/ckeditor5-heading/src/title';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-InlineEditor.builtinPlugins.push( Title );
+BaloonBlockEditor.builtinPlugins.push( Title );
 
-InlineEditor
+BaloonBlockEditor
 	.create( document.querySelector( '#snippet-title' ), {
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		blockToolbar: [ 'bulletedList', 'numberedList', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
