@@ -91,6 +91,38 @@ export default class CKEditorError extends Error {
 	is( type ) {
 		return type === 'CKEditorError';
 	}
+
+	/**
+	 * A utility that ensures the the thrown error is a {@link utils/ckeditorerror~CKEditorError} one.
+	 * It is uesful when combined with the {@link watchdog/watchdog~Watchdog} feature, which can restart the editor in case
+	 * of a {@link utils/ckeditorerror~CKEditorError} error.
+	 *
+	 * @param {Error} err An error.
+	 * @param {Object} context An object conected through properties with the editor instance. This context will be used
+	 * by the watchdog to verify which editor should be restarted.
+	 */
+	static rethrowUnexpectedError( err, context ) {
+		if ( err.is && err.is( 'CKEditorError' ) ) {
+			throw err;
+		}
+
+		/**
+		 * An unexpected error occurred inside the CKEditor 5 codebase. The `error.data.originalError` property
+		 * shows the original error properties.
+		 *
+		 * This error is only useful when the editor is initialized using the {@link watchdog/watchdog~Watchdog} feature.
+		 * In case of such error (or any {@link utils/ckeditorerror~CKEditorError} error) the wathcdog should restart the editor.
+		 *
+		 * @error unexpected-error
+		 */
+		throw new CKEditorError( 'unexpected-error', context, {
+			originalError: {
+				message: err.message,
+				stack: err.stack,
+				name: err.name
+			}
+		} );
+	}
 }
 
 /**
