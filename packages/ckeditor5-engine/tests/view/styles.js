@@ -268,6 +268,17 @@ describe( 'Styles', () => {
 				expect( styles.getInlineProperty( 'border-width' ) ).to.equal( '1px' );
 			} );
 
+			it( 'should output only defined inline styles', () => {
+				styles.insertProperty( 'border-color', { top: 'blue' } );
+				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+					color: { top: 'blue' }
+				} );
+
+				expect( styles.getInlineStyle( 'border' ) ).to.equal( 'border-top:blue;' );
+				// TODO: expect( styles.hasProperty( 'border-top-color' ) ).to.be.true;
+				expect( styles.getInlineProperty( 'border-top-color' ) ).to.equal( 'blue' );
+			} );
+
 			it( 'should output inline shorthand rules #2', () => {
 				styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 

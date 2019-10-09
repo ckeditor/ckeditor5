@@ -90,6 +90,19 @@ export default class Styles {
 		this.extractors.set( 'border-right', borderPositionExtractor( 'right' ) );
 		this.extractors.set( 'border-bottom', borderPositionExtractor( 'bottom' ) );
 		this.extractors.set( 'border-left', borderPositionExtractor( 'left' ) );
+		this.extractors.set( 'border-top-color', styles => styles.getNormalized( 'border.color.top' ) );
+		// TODO: tests/is needed?
+		this.extractors.set( 'border-bottom-color', styles => styles.getNormalized( 'border.color.bottom' ) );
+		this.extractors.set( 'border-right-color', styles => styles.getNormalized( 'border.color.right' ) );
+		this.extractors.set( 'border-left-color', styles => styles.getNormalized( 'border.color.left' ) );
+		this.extractors.set( 'border-top-width', styles => styles.getNormalized( 'border.width.top' ) );
+		this.extractors.set( 'border-bottom-width', styles => styles.getNormalized( 'border.width.bottom' ) );
+		this.extractors.set( 'border-right-width', styles => styles.getNormalized( 'border.width.right' ) );
+		this.extractors.set( 'border-left-width', styles => styles.getNormalized( 'border.width.left' ) );
+		this.extractors.set( 'border-top-style', styles => styles.getNormalized( 'border.style.top' ) );
+		this.extractors.set( 'border-bottom-style', styles => styles.getNormalized( 'border.style.bottom' ) );
+		this.extractors.set( 'border-right-style', styles => styles.getNormalized( 'border.style.right' ) );
+		this.extractors.set( 'border-left-style', styles => styles.getNormalized( 'border.style.left' ) );
 
 		/**
 		 * Holds style normalize object reducers.
@@ -611,7 +624,11 @@ function getBorderPositionReducer( which ) {
 			reduced.push( value.color[ which ] );
 		}
 
-		return [ [ 'border-' + which, reduced.join( ' ' ) ] ];
+		if ( reduced.length ) {
+			return [ [ 'border-' + which, reduced.join( ' ' ) ] ];
+		}
+
+		return [];
 	};
 }
 
