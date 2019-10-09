@@ -46,10 +46,36 @@ export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	init() {
+		const editor = this.editor;
+		const configuration = editor.config.get( 'indentBlock' );
+
+		const useOffsetConfig = !configuration.classes || !configuration.classes.length;
+
+		const indentConfig = Object.assign( { direction: 'forward' }, configuration );
+		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
+
+		if ( useOffsetConfig ) {
+			this._setupConversionUsingOffset( editor.conversion );
+
+			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( outdentConfig ) ) );
+		} else {
+			this._setupConversionUsingClasses( configuration.classes );
+			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
+			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const configuration = editor.config.get( 'indentBlock' );
+
+		const indentCommand = editor.commands.get( 'indent' );
+		const outdentCommand = editor.commands.get( 'outdent' );
 
 		// Enable block indentation by default in paragraph and default headings.
 		const knownElements = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
@@ -59,24 +85,6 @@ export default class IndentBlock extends Plugin {
 				schema.extend( elementName, { allowAttributes: 'blockIndent' } );
 			}
 		} );
-
-		const useOffsetConfig = !configuration.classes || !configuration.classes.length;
-
-		const indentConfig = Object.assign( { direction: 'forward' }, configuration );
-		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
-
-		if ( useOffsetConfig ) {
-			this._setupConversionUsingOffset( editor.conversion );
-			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
-			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( outdentConfig ) ) );
-		} else {
-			this._setupConversionUsingClasses( configuration.classes );
-			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
-			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
-		}
-
-		const indentCommand = editor.commands.get( 'indent' );
-		const outdentCommand = editor.commands.get( 'outdent' );
 
 		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' ) );
 		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' ) );
