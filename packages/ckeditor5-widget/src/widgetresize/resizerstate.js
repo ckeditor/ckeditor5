@@ -191,7 +191,7 @@ function getResizerHandleClass( resizerPosition ) {
 // Determines the position of a given resize handle.
 //
 // @private
-// @param {HTMLElement} domHandle Handler used to calculate the reference point.
+// @param {HTMLElement} domHandle Handle used to calculate the reference point.
 // @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
 function getHandlePosition( domHandle ) {
 	const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];

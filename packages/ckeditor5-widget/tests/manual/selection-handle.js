@@ -23,7 +23,7 @@ function MyPlugin( editor ) {
 				class: 'widget'
 			} ),
 			writer,
-			{ hasSelectionHandler: true } );
+			{ hasSelectionHandle: true } );
 		}
 	} );
 
