@@ -7,6 +7,22 @@
 	--ck-todo-list-checkmark-size: 16px;
 }
 
+/*
+ * To-do list should be interactive only during the editing
+ * (https://github.com/ckeditor/ckeditor5/issues/2090).
+ */
+.ck-editor__editable .todo-list {
+	& .todo-list__label {
+		& > input {
+			cursor: pointer;
+
+			&:hover::before {
+				box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
+			}
+		}
+	}
+}
+
 .ck-content .todo-list {
 	list-style: none;
 
@@ -23,7 +39,6 @@
 			-webkit-appearance: none;
 			display: inline-block;
 			position: relative;
-			cursor: pointer;
 			width: var(--ck-todo-list-checkmark-size);
 			height: var(--ck-todo-list-checkmark-size);
 			vertical-align: middle;
@@ -65,10 +80,6 @@
 				border-color: transparent;
 				border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
 				transform: rotate(45deg);
-			}
-
-			&:hover::before {
-				box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
 			}
 
 			&[checked] {
