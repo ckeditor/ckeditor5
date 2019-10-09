@@ -7,10 +7,6 @@ assignees: ''
 
 ---
 
-## Type of report
-
-Bug
-
 ## Provide detailed reproduction steps (if any)
 
 1. …

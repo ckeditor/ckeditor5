@@ -7,10 +7,6 @@ assignees: ''
 
 ---
 
-## Type of report
-
-Docs
-
 ## Provide a description of requested docs changes
 
 *What is the purpose and what should be changed?*

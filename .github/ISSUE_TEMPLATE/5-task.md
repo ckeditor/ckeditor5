@@ -7,10 +7,6 @@ assignees: ''
 
 ---
 
-## Type of report
-
-Task
-
 ## Provide description of the task
 
 *What steps should be taken to fulfil the task?*
