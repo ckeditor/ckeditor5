@@ -30,4 +30,4 @@ assignees: ''
 
 ---
 
-If you'd like to see this fixed sooner, add 👍 reaction to this post.
+If you'd like to see this fixed sooner, add a 👍 reaction to this post.

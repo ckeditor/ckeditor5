@@ -13,4 +13,4 @@ assignees: ''
 
 ---
 
-If you'd like to see this feature implemented, add 👍 reaction to this post.
+If you'd like to see this feature implemented, add a 👍 reaction to this post.
