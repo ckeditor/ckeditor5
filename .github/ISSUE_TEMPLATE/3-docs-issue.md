@@ -7,6 +7,6 @@ assignees: ''
 
 ---
 
-## 📃 Provide a description of requested docs changes
+## 📝 Provide a description of requested docs changes
 
 *What is the purpose and what should be changed?*
