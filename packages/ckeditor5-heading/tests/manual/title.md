@@ -1,6 +1,13 @@
+Note: use any editor if not specified.
+
+### Placeholder
+
+- make sure that the first editor has default placeholders: `Type your title` and `Type or paste your content here.`
+- make sure that the second editor has custom placeholders: `Custom title placeholder` and `Custom body placeholder`.
+
 ## Title feature
 
-- you should see `Title` and `Body` placeholders when there is no text in any of the sections.
+- you should see placeholders when there is no text in any of the sections.
 - you should be able to put the selection to the both sections and jump between them using `Shift` and `Tab+Shift`.
 
 ### Prevent extra paragraphing (typing)

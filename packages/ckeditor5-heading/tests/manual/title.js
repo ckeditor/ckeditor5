@@ -19,13 +19,29 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor1' ), {
 		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload', 'alignment' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
 
+		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => new UploadAdapterMock( loader );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor2' ), {
+		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload', 'alignment' ],
+		placeholder: 'Custom body placeholder',
+		title: {
+			placeholder: 'Custom title placeholder'
+		}
+	} )
+	.then( editor => {
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => new UploadAdapterMock( loader );
 	} )
 	.catch( err => {

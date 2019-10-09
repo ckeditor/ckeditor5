@@ -19,7 +19,20 @@ The title plugin lets you move from the title to the body element using the <kbd
 
 The title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, the placeholder text will be used for the body element.
 
-At the moment the placeholder of the title section is hardcoded. If you would like it to be configurable, add 👍 to the [relevant issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/2020).
+To change the title placeholder use: `title.placeholder` configuration option. For instance:
+
+```js
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        plugins: [ Title, ... ],
+        title: {
+            placeholder: 'My custom placeholder for the title'
+        },
+        placeholder: 'My custom placeholder for the body'
+    } )
+    .then( ... )
+    .catch( ... );
+```
 
 ## Installation
 

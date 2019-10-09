@@ -321,8 +321,8 @@ export default class Title extends Plugin {
 		const view = editor.editing.view;
 		const viewRoot = view.document.getRoot();
 
-		const bodyPlaceholder = editor.config.get( 'placeholder' ) || t( 'Body' );
-		const titlePlaceholder = t( 'Title' );
+		const titlePlaceholder = editor.config.get( 'title.placeholder' ) || t( 'Type your title' );
+		const bodyPlaceholder = editor.config.get( 'placeholder' ) || t( 'Type or paste your content here.' );
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt, data, conversionApi ) => {
@@ -549,3 +549,38 @@ function shouldRemoveLastParagraph( placeholder, root ) {
 
 	return true;
 }
+
+/**
+ * The configuration of the {@link module:heading/title~Title title feature}.
+ *
+ * Read more in {@link module:heading/title~TitleConfig}.
+ *
+ * @member {module:heading/title~TitleConfig} module:core/editor/editorconfig~EditorConfig#title
+ */
+
+/**
+ * The configuration of the {@link module:heading/title~Title title feature}.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				plugins: [ Title, ... ],
+ *				title: {
+ *					placeholder: 'My custom placeholder for the title'
+ *				},
+ *				placeholder: 'My custom placeholder for the body'
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
+ *
+ * @interface TitleConfig
+ */
+
+/**
+ * Use this option to define custom value of the placeholder of the title field.
+ *
+ * Read more in {@link module:heading/title~TitleConfig}.
+ *
+ * @member {String} module:heading/title~TitleConfig#placeholder
+ */
