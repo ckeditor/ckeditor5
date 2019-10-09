@@ -19,6 +19,7 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Class representing a basic, generic editor.
@@ -270,7 +271,11 @@ export default class Editor {
 	 * @param {*} [...commandParams] Command parameters.
 	 */
 	execute( ...args ) {
-		this.commands.execute( ...args );
+		try {
+			this.commands.execute( ...args );
+		} catch ( err ) {
+			CKEditorError.rethrowUnexpectedError( err, this );
+		}
 	}
 
 	/**
