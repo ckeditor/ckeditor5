@@ -11,7 +11,7 @@ assignees: ''
 
 *What steps should be taken to fulfil the task?*
 
-## Other details
+## 📃📃📃📃📃 Other details
 
 * Browser: …
 * OS: …

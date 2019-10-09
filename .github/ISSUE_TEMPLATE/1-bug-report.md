@@ -7,21 +7,21 @@ assignees: ''
 
 ---
 
-## Provide detailed reproduction steps (if any)
+## 📝 Provide detailed reproduction steps (if any)
 
 1. …
 2. …
 3. …
 
-### Expected result
+### ✅ Expected result
 
 *What is the expected result of the above steps?*
 
-### Actual result
+### ❎ Actual result
 
 *What is the actual result of the above steps?*
 
-## Other details
+## 📃 Other details📃
 
 * Browser: …
 * OS: …
