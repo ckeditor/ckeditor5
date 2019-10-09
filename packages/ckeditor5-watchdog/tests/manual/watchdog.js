@@ -7,7 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import Watchdog from '../../src/watchdog';
 
@@ -23,7 +22,8 @@ class TypingError {
 			const commandArgs = data[ 0 ];
 
 			if ( commandArgs.text === '1' ) {
-				throw new CKEditorError( 'Fake error - input command executed with value `1`', this );
+				// Simulate error.
+				this.editor.foo.bar = 'bom';
 			}
 		} );
 	}
