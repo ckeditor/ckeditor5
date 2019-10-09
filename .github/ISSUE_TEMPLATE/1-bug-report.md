@@ -27,3 +27,7 @@ assignees: ''
 * OS: …
 * CKEditor version: …
 * Installed CKEditor plugins: …
+
+---
+
+If you'd like to see this fixed sooner, add 👍 reaction to this post.
