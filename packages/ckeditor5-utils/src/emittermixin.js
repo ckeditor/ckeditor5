@@ -604,7 +604,8 @@ function getCallbacksForEvent( source, eventName ) {
 // Fires delegated events for given map of destinations.
 //
 // @private
-// * @param {Map.<utils.Emitter>} destinations A map containing `[ {@link utils.Emitter}, "event name" ]` pair destinations.
+// * @param {Map.<utils.Emitter>} destinations A map containing
+// `[ {@link module:utils/emittermixin~Emitter}, "event name" ]` pair destinations.
 // * @param {utils.EventInfo} eventInfo The original event info object.
 // * @param {Array.<*>} fireArgs Arguments the original event was fired with.
 function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {

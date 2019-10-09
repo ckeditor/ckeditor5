@@ -4,7 +4,7 @@
  */
 
 /**
- * A replacement for the {@link utils.Locale} class.
+ * A replacement for the {@link module:utils/locale~Locale} class.
  *
  * @memberOf tests.utils._utils
  */

@@ -13,8 +13,8 @@ import CKEditorError from '../../src/ckeditorerror';
 import areConnectedThroughProperties from '../../src/areconnectedthroughproperties';
 
 /**
- * Creates an instance inheriting from {@link utils.EmitterMixin} with one additional method `observe()`.
- * It allows observing changes to attributes in objects being {@link utils.Observable observable}.
+ * Creates an instance inheriting from {@link module:utils/emittermixin~EmitterMixin} with one additional method `observe()`.
+ * It allows observing changes to attributes in objects being {@link module:utils/observablemixin~Observable observable}.
  *
  * The `observe()` method accepts:
  *

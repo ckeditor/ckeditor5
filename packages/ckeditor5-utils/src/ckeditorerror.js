@@ -93,9 +93,9 @@ export default class CKEditorError extends Error {
 	}
 
 	/**
-	 * A utility that ensures the the thrown error is a {@link utils/ckeditorerror~CKEditorError} one.
-	 * It is uesful when combined with the {@link watchdog/watchdog~Watchdog} feature, which can restart the editor in case
-	 * of a {@link utils/ckeditorerror~CKEditorError} error.
+	 * A utility that ensures the the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
+	 * It is uesful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
+	 * of a {@link module:utils/ckeditorerror~CKEditorError} error.
 	 *
 	 * @param {Error} err An error.
 	 * @param {Object} context An object conected through properties with the editor instance. This context will be used
@@ -110,8 +110,8 @@ export default class CKEditorError extends Error {
 		 * An unexpected error occurred inside the CKEditor 5 codebase. The `error.data.originalError` property
 		 * shows the original error properties.
 		 *
-		 * This error is only useful when the editor is initialized using the {@link watchdog/watchdog~Watchdog} feature.
-		 * In case of such error (or any {@link utils/ckeditorerror~CKEditorError} error) the wathcdog should restart the editor.
+		 * This error is only useful when the editor is initialized using the {@link module:watchdog/watchdog~Watchdog} feature.
+		 * In case of such error (or any {@link module:utils/ckeditorerror~CKEditorError} error) the wathcdog should restart the editor.
 		 *
 		 * @error unexpected-error
 		 */
