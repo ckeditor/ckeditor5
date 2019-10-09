@@ -11,6 +11,8 @@ This feature can be used to implement an editor with a clear division of content
 
 ## Demo
 
+Use the editor below to create a document with clearly separated title and body sections.
+
 {@snippet features/title}
 
 ## Keyboard navigation
