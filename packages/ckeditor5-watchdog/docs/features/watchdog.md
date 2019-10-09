@@ -11,6 +11,8 @@ In order to limit the effect of an editor crash on the user experience, you can 
 
 The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
+It should be noticed that the most "dangerous" places in the API - like `editor.model.change()`, `editor.editing.view.change()`, emitters - are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart editor when they occur.
+
 ## Usage
 
 <info-box>
@@ -141,8 +143,6 @@ const watchdog = new Watchdog( {
 ## Limitations
 
 The CKEditor 5 watchdog listens to uncaught errors which can be associated with the editor instance created by that watchdog. Currently, these errors are {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} so those explicitly thrown by the editor (by its internal checks). This means that not every runtime error that crashed the editor can be caught which, in turn, means that not every crash can be detected.
-
-However, with time, the most "dangerous" places in the API will be covered with checks and `try-catch` blocks (allowing detecting unknown errors).
 
 <info-box>
 	The watchdog does not handle errors thrown during the editor initialization (by `Editor.create()`) and editor destruction (`Editor#destroy()`). Errors thrown at these stages mean that there is a serious problem in the code integrating the editor with your application and such problem cannot be easily fixed by restarting the editor.
