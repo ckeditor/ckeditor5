@@ -29,6 +29,10 @@ describe( 'FontSizeEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( FontSizeEditing.pluginName ).to.equal( 'FontSizeEditing' );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontSize' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontSize' ) ).to.be.true;

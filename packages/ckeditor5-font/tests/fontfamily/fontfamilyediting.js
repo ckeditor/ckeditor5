@@ -29,6 +29,10 @@ describe( 'FontFamilyEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( FontFamilyEditing.pluginName ).to.equal( 'FontFamilyEditing' );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontFamily' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontFamily' ) ).to.be.true;

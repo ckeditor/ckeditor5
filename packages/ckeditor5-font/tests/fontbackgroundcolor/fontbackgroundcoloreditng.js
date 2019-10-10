@@ -29,6 +29,10 @@ describe( 'FontBackgroundColorEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( FontBackgroundColorEditing.pluginName ).to.equal( 'FontBackgroundColorEditing' );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontBackgroundColor' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontBackgroundColor' ) ).to.be.true;
