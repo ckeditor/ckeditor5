@@ -192,6 +192,11 @@ export default class TableUI extends Plugin {
 						commandName: 'splitTableCellHorizontally',
 						label: t( 'Split cell horizontally' )
 					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'ui',
+					name: 'borderWidth'
 				}
 			];
 
@@ -222,7 +227,7 @@ export default class TableUI extends Plugin {
 			addListOption( option, editor, commands, itemDefinitions );
 		}
 
-		addListToDropdown( dropdownView, itemDefinitions );
+		addListToDropdown( dropdownView, itemDefinitions, editor.ui.componentFactory );
 
 		// Decorate dropdown's button.
 		dropdownView.buttonView.set( {
@@ -256,7 +261,7 @@ function addListOption( option, editor, commands, itemDefinitions ) {
 	const model = option.model = new Model( option.model );
 	const { commandName, bindIsOn } = option.model;
 
-	if ( option.type !== 'separator' ) {
+	if ( option.type === 'button' || option.type === 'switchbutton' ) {
 		const command = editor.commands.get( commandName );
 
 		commands.push( command );

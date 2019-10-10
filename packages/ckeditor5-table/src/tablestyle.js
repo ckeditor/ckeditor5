@@ -8,6 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { findAncestor } from './commands/utils';
 
 /**
  * The table editing feature.
@@ -51,6 +53,61 @@ export default class TableStyle extends Plugin {
 		setupConversion( conversion, 'padding', 'tableCell' );
 		setupConversion( conversion, 'vertical-align', 'tableCell' );
 		setupConversion( conversion, 'width', 'tableCell' );
+
+		// editor.ui.componentFactory.add( 'borderColor' );
+		// editor.ui.componentFactory.add( 'borderStyle' );
+		editor.ui.componentFactory.add( 'borderWidth', locale => {
+			const button = new ButtonView( locale );
+
+			button.set( {
+				label: 'borderWidth',
+				icon: false,
+				tooltip: true,
+				withText: true
+			} );
+
+			button.on( 'execute', () => {
+				const model = editor.model;
+				const document = model.document;
+				const selection = document.selection;
+				const firstPosition = selection.getFirstPosition();
+
+				const tableCell = findAncestor( 'tableCell', firstPosition );
+
+				const border = tableCell.getAttribute( 'border' );
+
+				let currentWidth;
+
+				if ( border ) {
+					const borderWidth = border && border.width;
+
+					// Unify width to one value. If different values are set default to top (or right, etc).
+					currentWidth = borderWidth.top || borderWidth.right || borderWidth.bottom || borderWidth.left;
+				}
+
+				// eslint-disable-next-line no-undef,no-alert
+				const newWidth = prompt( 'width', currentWidth || '' );
+
+				const parts = /^([0-9]*[.]?[0-9]*)([a-z]{2,4})?/.exec( newWidth );
+				const unit = parts[ 2 ];
+
+				const borderWidthToSet = parts[ 1 ] + ( unit || 'px' );
+
+				// TODO: Command, setting new value is dumb on `border` object.
+				editor.model.change( writer => {
+					writer.setAttribute( 'border', Object.assign( {}, border, {
+						width: {
+							top: borderWidthToSet,
+							right: borderWidthToSet,
+							bottom: borderWidthToSet,
+							left: borderWidthToSet
+						}
+					} ), tableCell );
+				} );
+			} );
+
+			return button;
+		} );
 	}
 }
 
