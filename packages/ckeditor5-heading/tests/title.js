@@ -650,7 +650,7 @@ describe( 'Title', () => {
 			expect( bodyDomElement.classList.contains( 'ck-placeholder' ) ).to.equal( false );
 		} );
 
-		describe( 'custom placeholder', () => {
+		describe( 'custom placeholder defined using configuration', () => {
 			let element, editor, model;
 
 			beforeEach( () => {
@@ -686,6 +686,48 @@ describe( 'Title', () => {
 
 				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'foo' );
 				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
+
+				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
+				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );
+			} );
+		} );
+
+		describe( 'custom placeholder defined using textarea attribte', () => {
+			let element, editor, model;
+
+			beforeEach( () => {
+				element = document.createElement( 'textarea' );
+				element.setAttribute( 'placeholder', 'bom' );
+				document.body.appendChild( element );
+
+				return ClassicTestEditor.create( element, {
+					plugins: [ Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+					title: {
+						placeholder: 'foo'
+					}
+				} ).then( _editor => {
+					editor = _editor;
+					model = editor.model;
+				} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy().then( () => element.remove() );
+			} );
+
+			it( 'should show custom placeholder in title and body', () => {
+				const viewRoot = editor.editing.view.document.getRoot();
+
+				setData( model,
+					'<title><title-content></title-content></title>' +
+					'<paragraph></paragraph>'
+				);
+
+				const title = viewRoot.getChild( 0 );
+				const body = viewRoot.getChild( 1 );
+
+				expect( title.getAttribute( 'data-placeholder' ) ).to.equal( 'foo' );
+				expect( body.getAttribute( 'data-placeholder' ) ).to.equal( 'bom' );
 
 				expect( title.hasClass( 'ck-placeholder' ) ).to.equal( true );
 				expect( body.hasClass( 'ck-placeholder' ) ).to.equal( true );

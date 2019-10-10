@@ -320,9 +320,12 @@ export default class Title extends Plugin {
 		const t = editor.t;
 		const view = editor.editing.view;
 		const viewRoot = view.document.getRoot();
+		const sourceElement = editor.sourceElement;
 
 		const titlePlaceholder = editor.config.get( 'title.placeholder' ) || t( 'Type your title' );
-		const bodyPlaceholder = editor.config.get( 'placeholder' ) || t( 'Type or paste your content here.' );
+		const bodyPlaceholder = editor.config.get( 'placeholder' ) ||
+			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' ) ||
+			t( 'Type or paste your content here.' );
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on( 'insert:title-content', ( evt, data, conversionApi ) => {
