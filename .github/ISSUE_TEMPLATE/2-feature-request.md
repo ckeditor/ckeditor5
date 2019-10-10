@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## 📝 Provide description of the new feature
+## 📝 Provide a description of the new feature
 
 *What is the expected behavior of the proposed feature?*
 
