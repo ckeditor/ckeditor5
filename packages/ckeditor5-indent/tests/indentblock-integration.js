@@ -71,7 +71,8 @@ describe( 'IndentBlock - integration', () => {
 		} );
 	} );
 
-	it( 'should work with paragraph regardless of plugin order', () => {
+	// https://github.com/ckeditor/ckeditor5/issues/2359
+	it( 'should work with paragraphs regardless of plugin order', () => {
 		return createTestEditor( {
 			plugins: [ IndentEditing, IndentBlock, Paragraph, HeadingEditing ],
 			indentBlock: { offset: 50, unit: 'px' }
