@@ -30,6 +30,10 @@ describe( 'SuperEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( SuperEditing.pluginName ).to.equal( 'SuperscriptEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( SuperEditing ) ).to.be.instanceOf( SuperEditing );
 	} );

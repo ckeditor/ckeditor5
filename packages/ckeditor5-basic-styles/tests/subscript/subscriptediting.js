@@ -30,6 +30,10 @@ describe( 'SubEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( SubEditing.pluginName ).to.equal( 'SubscriptEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( SubEditing ) ).to.be.instanceOf( SubEditing );
 	} );

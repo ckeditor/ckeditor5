@@ -24,6 +24,13 @@ export default class SuperscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'SuperscriptEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		// Allow super attribute on text nodes.

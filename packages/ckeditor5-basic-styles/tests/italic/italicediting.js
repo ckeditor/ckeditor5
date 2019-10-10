@@ -30,6 +30,10 @@ describe( 'ItalicEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( ItalicEditing.pluginName ).to.equal( 'ItalicEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ItalicEditing ) ).to.be.instanceOf( ItalicEditing );
 	} );

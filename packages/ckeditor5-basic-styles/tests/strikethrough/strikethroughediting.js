@@ -30,6 +30,10 @@ describe( 'StrikethroughEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( StrikethroughEditing.pluginName ).to.equal( 'StrikethroughEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( StrikethroughEditing ) ).to.be.instanceOf( StrikethroughEditing );
 	} );

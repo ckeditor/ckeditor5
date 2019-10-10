@@ -30,6 +30,10 @@ describe( 'UnderlineEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( UnderlineEditing.pluginName ).to.equal( 'UnderlineEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( UnderlineEditing ) ).to.be.instanceOf( UnderlineEditing );
 	} );

@@ -31,6 +31,10 @@ describe( 'BoldEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( BoldEditing.pluginName ).to.equal( 'BoldEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( BoldEditing ) ).to.be.instanceOf( BoldEditing );
 	} );

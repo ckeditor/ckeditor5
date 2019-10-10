@@ -30,6 +30,10 @@ describe( 'CodeEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( CodeEditing.pluginName ).to.equal( 'CodeEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CodeEditing ) ).to.be.instanceOf( CodeEditing );
 	} );

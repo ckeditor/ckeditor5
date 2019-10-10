@@ -24,6 +24,13 @@ export default class SubscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'SubscriptEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		// Allow sub attribute on text nodes.
