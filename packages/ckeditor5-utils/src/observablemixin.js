@@ -747,13 +747,13 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Binds {@link #set obvervable properties} to other objects implementing the
+ * Binds {@link #set observable properties} to other objects implementing the
  * {@link module:utils/observablemixin~Observable} interface.
  *
  * Read more in the {@glink framework/guides/deep-dive/observables#property-bindings dedicated guide}
  * covering the topic of property bindings with some additional examples.
  *
- * Let's consider two objects: a `button` and an associated `command` (both `Observable`).
+ * Consider two objects: a `button` and an associated `command` (both `Observable`).
  *
  * A simple property binding could be as follows:
  *
@@ -768,7 +768,7 @@ function attachBindToListeners( observable, toBindings ) {
  * * `button.isEnabled` **instantly equals** `command.isEnabled`,
  * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
  *
- * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
+ * **Note**: To release the binding, use {@link module:utils/observablemixin~Observable#unbind}.
  *
  * You can also "rename" the property in the binding by specifying the new name in the `to()` chain:
  *
@@ -796,7 +796,7 @@ function attachBindToListeners( observable, toBindings ) {
  *			( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
  *
  * @method #bind
- * @param {...String} bindProperties Observable properties that will be bound to another observable(s).
+ * @param {...String} bindProperties Observable properties that will be bound to other observable(s).
  * @returns {Object} The bind chain with the `to()` and `toMany()` methods.
  */
 
@@ -811,7 +811,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  * @method #unbind
  * @param {...String} [unbindProperties] Observable properties to be unbound. All the bindings will
- * be released if no properties provided.
+ * be released if no properties are provided.
  */
 
 /**
