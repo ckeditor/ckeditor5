@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Resizer from './widgetresize/resizer';
-import { isWidget } from './utils';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -34,13 +33,6 @@ export default class WidgetResize extends Plugin {
 
 	init() {
 		/**
-		 * A map of resizers created using this plugin instance.
-		 *
-		 * @type {Map.<module:engine/view/containerelement~ContainerElement, module:widget/widgetresize/resizer~Resizer>}
-		 */
-		this.resizers = new Map();
-
-		/**
 		 * @protected
 		 * @observable
 		 * @type {module:widget/widgetresize/resizer~Resizer|null} Currently visible resizer.
@@ -57,6 +49,14 @@ export default class WidgetResize extends Plugin {
 		 * @type {module:widget/widgetresize/resizer~Resizer|null}
 		 */
 		this.set( '_activeResizer', null );
+
+		/**
+		 * A map of resizers created using this plugin instance.
+		 *
+		 * @private
+		 * @type {Map.<module:engine/view/containerelement~ContainerElement, module:widget/widgetresize/resizer~Resizer>}
+		 */
+		this._resizers = new Map();
 
 		const domDocument = global.window.document;
 
@@ -94,8 +94,6 @@ export default class WidgetResize extends Plugin {
 			}
 		} );
 
-		this._attachFocusChangeListener();
-
 		const redrawFocusedResizer = throttle( () => {
 			if ( this._visibleResizer ) {
 				this._visibleResizer.redraw();
@@ -109,6 +107,14 @@ export default class WidgetResize extends Plugin {
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
 		this._observer.listenTo( global.window, 'resize', redrawFocusedResizer );
+
+		const viewSelection = this.editor.editing.view.document.selection;
+
+		viewSelection.on( 'change', () => {
+			const selectedElement = viewSelection.getSelectedElement();
+
+			this._visibleResizer = this._getResizerByViewElement( selectedElement ) || null;
+		} );
 	}
 
 	destroy() {
@@ -124,58 +130,35 @@ export default class WidgetResize extends Plugin {
 
 		resizer.attach();
 
-		this.resizers.set( options.viewElement, resizer );
+		this._resizers.set( options.viewElement, resizer );
 
 		return resizer;
 	}
 
 	/**
-	 * Listens for selection change and sets the visible resizer accordingly.
+	 * Returns a resizer that contains a given resize handle.
 	 *
-	 * @private
+	 * @protected
+	 * @param {HTMLElement} domResizeHandle
+	 * @returns {module:widget/widgetresize/resizer~Resizer}
 	 */
-	_attachFocusChangeListener() {
-		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
-			const viewWriter = conversionApi.writer;
-			let lastMarked = null;
-			let matchedResizer = null;
-
-			for ( const range of viewWriter.document.selection.getRanges() ) {
-				for ( const value of range ) {
-					const node = value.item;
-
-					// Do not mark nested widgets in selected one. See: ckeditor/ckeditor5-widget#57.
-					if ( isWidget( node ) && !isChild( node, lastMarked ) && node.hasClass( 'ck-widget_with-resizer' ) ) {
-						matchedResizer = this.resizers.get( node ) || matchedResizer;
-
-						lastMarked = node;
-					}
-				}
-			}
-
-			this._visibleResizer = matchedResizer;
-		}, { priority: 'low' } );
-
-		// Checks whether the specified `element` is a child of the `parent` element.
-		//
-		// @param {module:engine/view/element~Element} element An element to check.
-		// @param {module:engine/view/element~Element|null} parent A parent for the element.
-		// @returns {Boolean}
-		function isChild( element, parent ) {
-			if ( !parent ) {
-				return false;
-			}
-
-			return Array.from( element.getAncestors() ).includes( parent );
-		}
-	}
-
 	_getResizerByHandle( domResizeHandle ) {
-		for ( const resizer of this.resizers.values() ) {
+		for ( const resizer of this._resizers.values() ) {
 			if ( resizer.containsHandle( domResizeHandle ) ) {
 				return resizer;
 			}
 		}
+	}
+
+	/**
+	 * Returns a resizer created for a given view element (widget element).
+	 *
+	 * @protected
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement
+	 * @returns {module:widget/widgetresize/resizer~Resizer}
+	 */
+	_getResizerByViewElement( viewElement ) {
+		return this._resizers.get( viewElement );
 	}
 }
 
