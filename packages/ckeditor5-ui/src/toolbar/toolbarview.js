@@ -95,8 +95,8 @@ export default class ToolbarView extends View {
 		this.set( 'class' );
 
 		/**
-		 * A view containing {@link #ungroupedItems ungrouped toolbar items} (as opposed to the
-		 * {@link #groupedItemsDropdown} containing {@link #groupedItems grouped toolbar items}).
+		 * A view containing {@link #_ungroupedItems ungrouped toolbar items} (as opposed to the
+		 * {@link #_groupedItemsDropdown} containing {@link #_groupedItems grouped toolbar items}).
 		 *
 		 * See the {@link #_itemsManager} to learn more.
 		 *
@@ -108,15 +108,15 @@ export default class ToolbarView extends View {
 
 		/**
 		 * A top–level collection aggregating building blocks of the toolbar. It mainly exists to
-		 * make sure {@link #ungroupedItems} do not mix up with the {@link #groupedItemsDropdown}.
+		 * make sure {@link #_ungroupedItems} do not mix up with the {@link #_groupedItemsDropdown}.
 		 *
 		 * It helps a lot when the {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull grouping}
 		 * logic is on (no re–ordering issues, exclusions, etc.).
 		 *
 		 *	┌───────────────────────────────────────── ToolbarView ──────────────────────────────────────────┐
 		 *	| ┌─────────────────────────────────────── #_components ───────────────────────────────────────┐ |
-		 *	| |   ┌────── #_itemsView ────────┐ ┌──────────────────────┐ ┌── #groupedItemsDropdown ───┐   | |
-		 *	| |   |     #ungroupedItems      | | ToolbarSeparatorView | |        #groupedItems       |   | |
+		 *	| |   ┌────── #_itemsView ────────┐ ┌──────────────────────┐ ┌── #_groupedItemsDropdown ───┐   | |
+		 *	| |   |     #_ungroupedItems      | | ToolbarSeparatorView | |        #_groupedItems       |   | |
 		 *	| |   └──────────────────────────-┘ └──────────────────────┘ └─────────────────────────────┘   | |
 		 *	| |                                  \--------- only when toolbar items overflow ---------/    | |
 		 *	| └────────────────────────────────────────────────────────────────────────────────────────────┘ |
@@ -133,15 +133,15 @@ export default class ToolbarView extends View {
 		 * A helper collection that aggregates a subset of {@link #items} that is subject to the focus cycling
 		 * (e.g. navigation using the keyboard).
 		 *
-		 * It contains all the items from {@link #ungroupedItems} plus (optionally) the {@link #groupedItemsDropdown}
+		 * It contains all the items from {@link #_ungroupedItems} plus (optionally) the {@link #_groupedItemsDropdown}
 		 * at the end.
 		 *
-		 * This collection is dynamic and responds to the changes in {@link #ungroupedItems} and {@link #_components}
+		 * This collection is dynamic and responds to the changes in {@link #_ungroupedItems} and {@link #_components}
 		 * so the {@link #_focusCycler focus cycler} logic operates on the up–to–date collection of items that
 		 * are actually available for the user to focus and navigate at this particular moment.
 		 *
 		 * This collection is necessary because the {@link #_itemsManager} can dynamically change the content
-		 * of the {@link #ungroupedItems} and also spontaneously display the {@link #groupedItemsDropdown}
+		 * of the {@link #_ungroupedItems} and also spontaneously display the {@link #_groupedItemsDropdown}
 		 * (also focusable and "cycleable").
 		 *
 		 * @private
@@ -173,8 +173,8 @@ export default class ToolbarView extends View {
 		/**
 		 * An instance of the utility responsible for managing the toolbar {@link #items}.
 		 *
-		 * For instance, it controls which of the {@link #items} should be {@link #ungroupedItems ungrouped} or
-		 * {@link #groupedItems grouped} depending on the configuration of the toolbar and its geometry.
+		 * For instance, it controls which of the {@link #items} should be {@link #_ungroupedItems ungrouped} or
+		 * {@link #_groupedItems grouped} depending on the configuration of the toolbar and its geometry.
 		 *
 		 * **Note**: The instance is created upon {@link #render} when the {@link #element} of the toolbar
 		 * starts to exist.
@@ -297,7 +297,7 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * Creates the {@link #_itemsView} that hosts the members of the {@link #ungroupedItems} collection.
+	 * Creates the {@link #_itemsView} that hosts the members of the {@link #_ungroupedItems} collection.
 	 *
 	 * @private
 	 * @returns {module:ui/toolbar/toolbarview~ItemsView}
@@ -311,7 +311,7 @@ export default class ToolbarView extends View {
 
 /**
  * An inner block of the {@link module:ui/toolbar/toolbarview~ToolbarView} hosting its
- * {@link module:ui/toolbar/toolbarview~ToolbarView#ungroupedItems ungrouped items}.
+ * {@link module:ui/toolbar/toolbarview~ToolbarView#_ungroupedItems ungrouped items}.
  *
  * @private
  * @extends module:ui/view~View
@@ -377,14 +377,18 @@ class StaticToolbar {
 	render() {
 		// Nothing to do here?
 	}
+
+	destroy() {
+		// Nothing to do here?
+	}
 }
 
 /**
  * A helper class that manages the presentation layer of the {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * In a nutshell, it distributes the toolbar {@link module:ui/toolbar/toolbarview~ToolbarView#items}
- * among its {@link module:ui/toolbar/toolbarview~ToolbarView#groupedItems} and
- * {@link module:ui/toolbar/toolbarview~ToolbarView#ungroupedItems}
+ * among its {@link module:ui/toolbar/toolbarview~ToolbarView#_groupedItems} and
+ * {@link module:ui/toolbar/toolbarview~ToolbarView#_ungroupedItems}
  * depending on the configuration of the toolbar, the geometry and the number of items.
  *
  * @private
@@ -398,10 +402,10 @@ class DynamicGroupingToolbar {
 	 * {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}.
 	 * @param {module:ui/viewcollection~ViewCollection} options.items Corresponds to
 	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
-	 * @param {module:ui/viewcollection~ViewCollection} options.ungroupedItems Corresponds to
-	 * {@link module:ui/toolbar/toolbarview~ToolbarView#ungroupedItems}.
-	 * @param {module:ui/viewcollection~ViewCollection} options.groupedItems Corresponds to
-	 * {@link module:ui/toolbar/toolbarview~ToolbarView#groupedItems}/
+	 * @param {module:ui/viewcollection~ViewCollection} options._ungroupedItems Corresponds to
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#_ungroupedItems}.
+	 * @param {module:ui/viewcollection~ViewCollection} options._groupedItems Corresponds to
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#_groupedItems}/
 	 * @param {HTMLElement} options.element Corresponds to {@link module:ui/toolbar/toolbarview~ToolbarView#element}.
 	 * @param {String} options.uiLanguageDirection Corresponds to {@link module:utils/locale~Locale#uiLanguageDirection}.
 	 * @param {Function} options.onGroupStart Executed when the first ungrouped toolbar item gets grouped.
@@ -412,7 +416,7 @@ class DynamicGroupingToolbar {
 
 		/**
 		 * A subset of of toolbar {@link #items}. Aggregates items that fit into a single row of the toolbar
-		 * and were not {@link #groupedItems grouped} into a {@link #groupedItemsDropdown dropdown}.
+		 * and were not {@link #_groupedItems grouped} into a {@link #_groupedItemsDropdown dropdown}.
 		 * Items of this collection are displayed in a {@link #_itemsView dedicated view}.
 		 *
 		 * When none of the {@link #items} were grouped, it matches the {@link #items} collection in size and order.
@@ -426,11 +430,11 @@ class DynamicGroupingToolbar {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this.ungroupedItems = view.createCollection();
+		this._ungroupedItems = view.createCollection();
 
 		/**
 		 * A subset of of toolbar {@link #items}. A collection of the toolbar items that do not fit into a
-		 * single row of the toolbar. Grouped items are displayed in a dedicated {@link #groupedItemsDropdown dropdown}.
+		 * single row of the toolbar. Grouped items are displayed in a dedicated {@link #_groupedItemsDropdown dropdown}.
 		 *
 		 * When none of the {@link #items} were grouped, this collection is empty.
 		 *
@@ -443,10 +447,10 @@ class DynamicGroupingToolbar {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this.groupedItems = view.createCollection();
+		this._groupedItems = view.createCollection();
 
 		/**
-		 * The dropdown that aggregates {@link #groupedItems grouped items} that do not fit into a single
+		 * The dropdown that aggregates {@link #_groupedItems grouped items} that do not fit into a single
 		 * row of the toolbar. It is displayed on demand at the end of the toolbar and offers another
 		 * (nested) toolbar which displays items that would normally overflow.
 		 *
@@ -456,13 +460,13 @@ class DynamicGroupingToolbar {
 		 * @readonly
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
-		this.groupedItemsDropdown = this._createGrouppedItemsDropdown();
+		this._groupedItemsDropdown = this._createGrouppedItemsDropdown();
 
 		/**
 		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
 		 * and manage items that do not fit into a single row.
 		 *
-		 * **Note:** Created dynamically in {@link #enableGroupingOnResize}.
+		 * **Note:** Created dynamically in {@link #_enableGroupingOnResize}.
 		 *
 		 * @readonly
 		 * @private
@@ -471,12 +475,12 @@ class DynamicGroupingToolbar {
 		this._resizeObserver = null;
 
 		/**
-		 * A flag used by {@link #updateGrouping} method to make sure no concurrent updates
-		 * are performed to the {@link #ungroupedItems} and {@link #groupedItems}. Because {@link #updateGrouping}
+		 * A flag used by {@link #_updateGrouping} method to make sure no concurrent updates
+		 * are performed to the {@link #_ungroupedItems} and {@link #_groupedItems}. Because {@link #_updateGrouping}
 		 * manages those collections but also is executed upon changes in those collections, this flag
 		 * ensures no infinite loops occur.
 		 *
-		 * **Note:** Used only if {@link #enableGroupingOnResize} was called.
+		 * **Note:** Used only if {@link #_enableGroupingOnResize} was called.
 		 *
 		 * @readonly
 		 * @private
@@ -485,12 +489,12 @@ class DynamicGroupingToolbar {
 		this._updateLock = false;
 
 		/**
-		 * A cached value of the horizontal padding style used by {@link #updateGrouping}
+		 * A cached value of the horizontal padding style used by {@link #_updateGrouping}
 		 * to manage the {@link #items} that do not fit into a single toolbar line. This value
 		 * can be reused between updates because it is unlikely that the padding will change
 		 * and re–using `Window.getComputedStyle()` is expensive.
 		 *
-		 * **Note:** In use only after {@link #enableGroupingOnResize} was called.
+		 * **Note:** In use only after {@link #_enableGroupingOnResize} was called.
 		 *
 		 * @readonly
 		 * @private
@@ -499,47 +503,47 @@ class DynamicGroupingToolbar {
 		this._cachedPadding = null;
 
 		// 1:1 pass–through binding.
-		view._itemsView.items.bindTo( this.ungroupedItems ).using( item => item );
+		view._itemsView.items.bindTo( this._ungroupedItems ).using( item => item );
 
 		// Make sure all #items visible in the main space of the toolbar are cycleable.
-		this.ungroupedItems.on( 'add', this._updateFocusCycleableItems.bind( this ) );
-		this.ungroupedItems.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
+		this._ungroupedItems.on( 'add', this._updateFocusCycleableItems.bind( this ) );
+		this._ungroupedItems.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
-		// Make sure the #groupedItemsDropdown is also included in cycling when it appears.
+		// Make sure the #_groupedItemsDropdown is also included in cycling when it appears.
 		view._components.on( 'add', this._updateFocusCycleableItems.bind( this ) );
 		view._components.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
 		view.items.on( 'add', ( evt, item, index ) => {
-			if ( index > this.ungroupedItems.length ) {
-				this.groupedItems.add( item, index - this.ungroupedItems.length );
+			if ( index > this._ungroupedItems.length ) {
+				this._groupedItems.add( item, index - this._ungroupedItems.length );
 			} else {
-				this.ungroupedItems.add( item, index );
+				this._ungroupedItems.add( item, index );
 
 				// When a new ungrouped item joins in, there's a chance it causes the toolbar to overflow.
 				// Let's check this out and do the grouping if necessary.
-				this.updateGrouping();
+				this._updateGrouping();
 			}
 		} );
 
 		// When an item is removed from ToolbarView#items, it should be automatically
 		// removed from either grouped or ungrouped items.
 		view.items.on( 'remove', ( evt, item ) => {
-			if ( this.groupedItems.has( item ) ) {
-				this.groupedItems.remove( item );
-			} else if ( this.ungroupedItems.has( item ) ) {
-				this.ungroupedItems.remove( item );
+			if ( this._groupedItems.has( item ) ) {
+				this._groupedItems.remove( item );
+			} else if ( this._ungroupedItems.has( item ) ) {
+				this._ungroupedItems.remove( item );
 			}
 
 			// Whether removed from grouped or ungrouped items, there is a chance
 			// some new space is available and we could do some ungrouping.
-			this.updateGrouping();
+			this._updateGrouping();
 		} );
 	}
 
 	render() {
-		this.enableGroupingOnResize();
+		this._enableGroupingOnResize();
 	}
 
 	extendTemplate() {
@@ -558,20 +562,20 @@ class DynamicGroupingToolbar {
 	destroy() {
 		// The dropdown may not be in #_components at the moment of toolbar destruction
 		// so let's make sure it's actually destroyed along with the toolbar.
-		this.groupedItemsDropdown.destroy();
+		this._groupedItemsDropdown.destroy();
 
 		this._resizeObserver.disconnect();
 	}
 
 	/**
-	 * When called, it will check if any of the {@link #ungroupedItems} do not fit into a single row of the toolbar,
-	 * and it will move them to the {@link #groupedItems} when it happens.
+	 * When called, it will check if any of the {@link #_ungroupedItems} do not fit into a single row of the toolbar,
+	 * and it will move them to the {@link #_groupedItems} when it happens.
 	 *
 	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
-	 * {@link #groupedItems} to be returned back to {@link #ungroupedItems} and still fit into a single row
+	 * {@link #_groupedItems} to be returned back to {@link #_ungroupedItems} and still fit into a single row
 	 * without the toolbar wrapping.
 	 */
-	updateGrouping() {
+	_updateGrouping() {
 		// Do not check when another check is going on to avoid infinite loops.
 		// This method is called when adding and removing #items but at the same time it adds and removes
 		// #items itself.
@@ -596,8 +600,8 @@ class DynamicGroupingToolbar {
 		// Group #items as long as some wrap to the next row. This will happen, for instance,
 		// when the toolbar is getting narrow and there is not enough space to display all items in
 		// a single row.
-		while ( this.areItemsOverflowing ) {
-			this.groupLastItem();
+		while ( this._areItemsOverflowing ) {
+			this._groupLastItem();
 
 			wereItemsGrouped = true;
 		}
@@ -605,18 +609,18 @@ class DynamicGroupingToolbar {
 		// If none were grouped now but there were some items already grouped before,
 		// then, what the hell, maybe let's see if some of them can be ungrouped. This happens when,
 		// for instance, the toolbar is stretching and there's more space in it than before.
-		if ( !wereItemsGrouped && this.groupedItems && this.groupedItems.length ) {
+		if ( !wereItemsGrouped && this._groupedItems && this._groupedItems.length ) {
 			// Ungroup items as long as none are overflowing or there are none to ungroup left.
-			while ( this.groupedItems.length && !this.areItemsOverflowing ) {
-				this.ungroupFirstItem();
+			while ( this._groupedItems.length && !this._areItemsOverflowing ) {
+				this._ungroupFirstItem();
 			}
 
 			// If the ungrouping ended up with some item wrapping to the next row,
 			// put it back to the group toolbar ("undo the last ungroup"). We don't know whether
 			// an item will wrap or not until we ungroup it (that's a DOM/CSS thing) so this
 			// clean–up is vital for the algorithm.
-			if ( this.areItemsOverflowing ) {
-				this.groupLastItem();
+			if ( this._areItemsOverflowing ) {
+				this._groupLastItem();
 			}
 		}
 
@@ -624,16 +628,16 @@ class DynamicGroupingToolbar {
 	}
 
 	/**
-	 * Enables the functionality that prevents {@link #ungroupedItems} from overflowing
+	 * Enables the functionality that prevents {@link #_ungroupedItems} from overflowing
 	 * (wrapping to the next row) when there is little space available. Instead, the toolbar items are moved to the
-	 * {@link #groupedItems} collection and displayed in a dropdown at the end of the space, which has its own nested toolbar.
+	 * {@link #_groupedItems} collection and displayed in a dropdown at the end of the space, which has its own nested toolbar.
 	 *
-	 * When called, the toolbar will automatically analyze the location of its {@link #ungroupedItems} and "group"
+	 * When called, the toolbar will automatically analyze the location of its {@link #_ungroupedItems} and "group"
 	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
 	 * the future and respond to them by grouping more items or reverting already grouped back, depending
 	 * on the visual space available.
 	 */
-	enableGroupingOnResize() {
+	_enableGroupingOnResize() {
 		const view = this.view;
 
 		let previousWidth;
@@ -641,7 +645,7 @@ class DynamicGroupingToolbar {
 		// TODO: Consider debounce.
 		this._resizeObserver = getResizeObserver( ( [ entry ] ) => {
 			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
-				this.updateGrouping();
+				this._updateGrouping();
 
 				previousWidth = entry.contentRect.width;
 			}
@@ -649,7 +653,7 @@ class DynamicGroupingToolbar {
 
 		this._resizeObserver.observe( view.element );
 
-		this.updateGrouping();
+		this._updateGrouping();
 	}
 
 	/**
@@ -658,9 +662,9 @@ class DynamicGroupingToolbar {
 	 *
 	 * @type {Boolean}
 	 */
-	get areItemsOverflowing() {
+	get _areItemsOverflowing() {
 		// An empty toolbar cannot overflow.
-		if ( !this.ungroupedItems.length ) {
+		if ( !this._ungroupedItems.length ) {
 			return false;
 		}
 
@@ -688,47 +692,47 @@ class DynamicGroupingToolbar {
 	}
 
 	/**
-	 * The opposite of {@link #ungroupFirstItem}.
+	 * The opposite of {@link #_ungroupFirstItem}.
 	 *
-	 * When called it will remove the last item from {@link #ungroupedItems} and move it to the
-	 * {@link #groupedItems} collection.
+	 * When called it will remove the last item from {@link #_ungroupedItems} and move it to the
+	 * {@link #_groupedItems} collection.
 	 *
 	 * @protected
 	 */
-	groupLastItem() {
+	_groupLastItem() {
 		const view = this.view;
 
-		if ( !this.groupedItems.length ) {
+		if ( !this._groupedItems.length ) {
 			view._components.add( new ToolbarSeparatorView() );
-			view._components.add( this.groupedItemsDropdown );
-			view.focusTracker.add( this.groupedItemsDropdown.element );
+			view._components.add( this._groupedItemsDropdown );
+			view.focusTracker.add( this._groupedItemsDropdown.element );
 		}
 
-		this.groupedItems.add( this.ungroupedItems.remove( this.ungroupedItems.last ), 0 );
+		this._groupedItems.add( this._ungroupedItems.remove( this._ungroupedItems.last ), 0 );
 	}
 
 	/**
-	 * The opposite of {@link #groupLastItem}.
+	 * The opposite of {@link #_groupLastItem}.
 	 *
-	 * Moves the very first item from the toolbar belonging to {@link #groupedItems} back
-	 * to the {@link #ungroupedItems} collection.
+	 * Moves the very first item from the toolbar belonging to {@link #_groupedItems} back
+	 * to the {@link #_ungroupedItems} collection.
 	 *
 	 * @protected
 	 */
-	ungroupFirstItem() {
+	_ungroupFirstItem() {
 		const view = this.view;
 
-		this.ungroupedItems.add( this.groupedItems.remove( this.groupedItems.first ) );
+		this._ungroupedItems.add( this._groupedItems.remove( this._groupedItems.first ) );
 
-		if ( !this.groupedItems.length ) {
-			view._components.remove( this.groupedItemsDropdown );
+		if ( !this._groupedItems.length ) {
+			view._components.remove( this._groupedItemsDropdown );
 			view._components.remove( view._components.last );
-			view.focusTracker.remove( this.groupedItemsDropdown.element );
+			view.focusTracker.remove( this._groupedItemsDropdown.element );
 		}
 	}
 
 	/**
-	 * Creates the {@link #groupedItemsDropdown} that hosts the members of the {@link #groupedItems}
+	 * Creates the {@link #_groupedItemsDropdown} that hosts the members of the {@link #_groupedItems}
 	 * collection when there is not enough space in the toolbar to display all items in a single row.
 	 *
 	 * @private
@@ -738,21 +742,21 @@ class DynamicGroupingToolbar {
 		const view = this.view;
 		const t = view.t;
 		const locale = view.locale;
-		const groupedItemsDropdown = createDropdown( locale );
+		const _groupedItemsDropdown = createDropdown( locale );
 
-		groupedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
-		addToolbarToDropdown( groupedItemsDropdown, [] );
+		_groupedItemsDropdown.class = 'ck-toolbar__grouped-dropdown';
+		addToolbarToDropdown( _groupedItemsDropdown, [] );
 
-		groupedItemsDropdown.buttonView.set( {
+		_groupedItemsDropdown.buttonView.set( {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			icon: verticalDotsIcon
 		} );
 
 		// 1:1 pass–through binding.
-		groupedItemsDropdown.toolbarView.items.bindTo( this.groupedItems ).using( item => item );
+		_groupedItemsDropdown.toolbarView.items.bindTo( this._groupedItems ).using( item => item );
 
-		return groupedItemsDropdown;
+		return _groupedItemsDropdown;
 	}
 
 	/**
@@ -769,12 +773,12 @@ class DynamicGroupingToolbar {
 
 		view._focusCycleableItems.clear();
 
-		this.ungroupedItems.map( item => {
+		this._ungroupedItems.map( item => {
 			view._focusCycleableItems.add( item );
 		} );
 
-		if ( this.groupedItems.length ) {
-			view._focusCycleableItems.add( this.groupedItemsDropdown );
+		if ( this._groupedItems.length ) {
+			view._focusCycleableItems.add( this._groupedItemsDropdown );
 		}
 	}
 }
