@@ -48,8 +48,8 @@
 	}
 }
 
-.ck-editor__editable > .ck-widget.ck-widget_with-selection-handler:first-child,
-.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handler:first-child {
+.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
+.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
 	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
 	In fact, anything with overflow: hidden.
 	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
@@ -58,8 +58,8 @@
 	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
 }
 
-.ck .ck-widget.ck-widget_with-selection-handler {
-	& .ck-widget__selection-handler {
+.ck .ck-widget.ck-widget_with-selection-handle {
+	& .ck-widget__selection-handle {
 		padding: 4px;
 		box-sizing: border-box;
 
@@ -107,7 +107,7 @@
 	/* Show the selection handler when the widget is selected. */
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
-		& .ck-widget__selection-handler {
+		& .ck-widget__selection-handle {
 			opacity: 1;
 			background-color: var(--ck-color-focus-border);
 
@@ -119,14 +119,14 @@
 	}
 
 	/* Show the selection handler on mouse hover over the widget. */
-	&:hover .ck-widget__selection-handler {
+	&:hover .ck-widget__selection-handle {
 		opacity: 1;
 		background-color: var(--ck-color-widget-hover-border);
 	}
 }
 
 /* In a RTL environment, align the selection handler to the right side of the widget */
-.ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handler .ck-widget__selection-handler {
+.ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle {
 	left: auto;
 	right: calc(0px - var(--ck-widget-outline-thickness));
 }
@@ -137,8 +137,8 @@
 	&.ck-widget_selected:hover {
 		outline-color: var(--ck-color-widget-blurred-border);
 
-		& .ck-widget__selection-handler,
-		& .ck-widget__selection-handler:hover {
+		& .ck-widget__selection-handle,
+		& .ck-widget__selection-handle:hover {
 			background: var(--ck-color-widget-blurred-border);
 		}
 	}
