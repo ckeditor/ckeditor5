@@ -22,6 +22,13 @@ export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'BlockQuoteEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;

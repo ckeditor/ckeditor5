@@ -31,6 +31,10 @@ describe( 'BlockQuoteEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( BlockQuoteEditing.pluginName ).to.equal( 'BlockQuoteEditing' );
+	} );
+
 	it( 'adds a blockQuote command', () => {
 		expect( editor.commands.get( 'blockQuote' ) ).to.be.instanceOf( BlockQuoteCommand );
 	} );
