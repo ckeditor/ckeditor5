@@ -41,6 +41,13 @@ export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ListEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ Paragraph ];
 	}

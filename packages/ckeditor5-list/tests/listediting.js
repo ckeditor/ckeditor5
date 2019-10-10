@@ -56,6 +56,10 @@ describe( 'ListEditing', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );
