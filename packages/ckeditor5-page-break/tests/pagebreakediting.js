@@ -33,6 +33,10 @@ describe( 'PageBreakEditing', () => {
 			} );
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( PageBreakEditing.pluginName ).to.equal( 'PageBreakEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( PageBreakEditing ) ).to.be.instanceOf( PageBreakEditing );
 	} );
