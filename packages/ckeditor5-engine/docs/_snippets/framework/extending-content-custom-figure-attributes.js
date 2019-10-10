@@ -11,7 +11,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
 function CustomFigureAttributes( editor ) {
-	// Define on which elements the css classes should be preserved:
+	// Define on which elements the CSS classes should be preserved:
 	setupCustomClassConversion( 'img', 'image', editor );
 	setupCustomClassConversion( 'table', 'table', editor );
 
@@ -23,30 +23,29 @@ function CustomFigureAttributes( editor ) {
 }
 
 /**
- * Setups conversion that preservers classes on img/table elements
+ * Sets up a conversion that preservers classes on <img> and <table> elements.
  */
 function setupCustomClassConversion( viewElementName, modelElementName, editor ) {
-	// The 'customClass' attribute will store custom classes from data in the model so schema definitions to allow this attribute.
+	// The 'customClass' attribute will store custom classes from the data in the model so schema definitions allow this attribute.
 	editor.model.schema.extend( modelElementName, { allowAttributes: [ 'customClass' ] } );
 
-	// Define upcast converters for <img> and <table> elements with "low" priority so they are run after default converters.
+	// Define upcast converters for the <img> and <table> elements with a "low" priority so they are run after the default converters.
 	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( viewElementName ), { priority: 'low' } );
 
-	// Define downcast converters for model element with "low" priority so they are run after default converters.
+	// Define downcast converters for a model element with a "low" priority so they are run after the default converters.
 	editor.conversion.for( 'downcast' ).add( downcastCustomClasses( modelElementName ), { priority: 'low' } );
 }
 
 /**
- * Setups conversion for custom attribute on view elements contained inside figure.
+ * Sets up a conversion for a custom attribute on view elements contained inside a <figure>.
  *
  * This method:
- *
- * - adds proper schema rules
- * - adds an upcast converter
- * - adds a downcast converter
+ * - Adds proper schema rules.
+ * - Adds an upcast converter.
+ * - Adds a downcast converter.
  */
 function setupCustomAttributeConversion( viewElementName, modelElementName, viewAttribute, editor ) {
-	// Extend schema to store attribute in the model.
+	// Extend the schema to store an attribute in the model.
 	const modelAttribute = `custom${ viewAttribute }`;
 
 	editor.model.schema.extend( modelElementName, { allowAttributes: [ modelAttribute ] } );
@@ -56,7 +55,7 @@ function setupCustomAttributeConversion( viewElementName, modelElementName, view
 }
 
 /**
- * Creates upcast converter that will pass all classes from view element to model element.
+ * Creates an upcast converter that will pass all classes from the view element to the model element.
  */
 function upcastCustomClasses( elementName ) {
 	return dispatcher => dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
@@ -69,7 +68,7 @@ function upcastCustomClasses( elementName ) {
 			return;
 		}
 
-		// The upcast conversion pick up classes from base element and from figure element also so it should be extensible.
+		// The upcast conversion picks up classes from the base element and from the <figure> element so it should be extensible.
 		const currentAttributeValue = modelElement.getAttribute( 'customClass' ) || [];
 
 		currentAttributeValue.push( ...viewItem.getClassNames() );
@@ -79,9 +78,9 @@ function upcastCustomClasses( elementName ) {
 }
 
 /**
- * Creates downcast converter that add classes defined in `customClass` attribute to given view element.
+ * Creates a downcast converter that adds classes defined in the `customClass` attribute to a given view element.
  *
- * This converter expects that view element is nested in figure element.
+ * This converter expects that the view element is nested in a <figure> element.
  */
 function downcastCustomClasses( modelElementName ) {
 	return dispatcher => dispatcher.on( `insert:${ modelElementName }`, ( evt, data, conversionApi ) => {
@@ -93,10 +92,10 @@ function downcastCustomClasses( modelElementName ) {
 			return;
 		}
 
-		// The below code assumes that classes are set on <figure> element...
+		// The code below assumes that classes are set on the <figure> element...
 		conversionApi.writer.addClass( modelElement.getAttribute( 'customClass' ), viewFigure );
 
-		// ... but if you preferIf the classes should be passed to the <img> find the view element inside figure:
+		// ... but if you prefer the classes to be passed to the <img> element, find the view element inside the <figure>:
 		//
 		// const viewElement = findViewChild( viewFigure, viewElementName, conversionApi );
 		//
@@ -105,7 +104,7 @@ function downcastCustomClasses( modelElementName ) {
 }
 
 /**
- * Helper method that search for given view element in all children of model element.
+ * Helper method that searches for a given view element in all children of the model element.
  *
  * @param {module:engine/view/item~Item} viewElement
  * @param {String} viewElementName
@@ -119,7 +118,7 @@ function findViewChild( viewElement, viewElementName, conversionApi ) {
 }
 
 /**
- * Returns custom attribute upcast converter.
+ * Returns the custom attribute upcast converter.
  */
 function upcastAttribute( viewElementName, viewAttribute, modelAttribute ) {
 	return dispatcher => dispatcher.on( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
@@ -137,7 +136,7 @@ function upcastAttribute( viewElementName, viewAttribute, modelAttribute ) {
 }
 
 /**
- * Returns custom attribute downcast converter.
+ * Returns the custom attribute downcast converter.
  */
 function downcastAttribute( modelElementName, viewElementName, viewAttribute, modelAttribute ) {
 	return dispatcher => dispatcher.on( `insert:${ modelElementName }`, ( evt, data, conversionApi ) => {
