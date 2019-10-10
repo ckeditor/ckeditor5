@@ -581,7 +581,7 @@ function shouldRemoveLastParagraph( placeholder, root ) {
  */
 
 /**
- * Use this option to define custom value of the placeholder of the title field.
+ * Use this option to define a custom value of the placeholder for the title field.
  *
  * Read more in {@link module:heading/title~TitleConfig}.
  *

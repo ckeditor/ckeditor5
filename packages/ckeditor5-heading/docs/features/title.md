@@ -19,7 +19,7 @@ The title plugin lets you move from the title to the body element using the <kbd
 
 The title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, the placeholder text will be used for the body element.
 
-To change the title placeholder use: `title.placeholder` configuration option. For instance:
+To change the title placeholder, use the `title.placeholder` configuration option. For instance:
 
 ```js
 ClassicEditor
