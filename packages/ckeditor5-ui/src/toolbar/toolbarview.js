@@ -267,11 +267,11 @@ export default class ToolbarView extends View {
 		// The toolbar is filled in in the reverse order for the toolbar grouping to work properly.
 		// If we filled it in in the natural order, items that overflow would be grouped
 		// in a revere order.
-		config.reverse().map( name => {
+		config.map( name => {
 			if ( name == '|' ) {
-				this.items.add( new ToolbarSeparatorView(), 0 );
+				this.items.add( new ToolbarSeparatorView() );
 			} else if ( factory.has( name ) ) {
-				this.items.add( factory.create( name ), 0 );
+				this.items.add( factory.create( name ) );
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -515,6 +515,8 @@ class DynamicGroupingToolbar {
 
 		// ToolbarView#items is dynamic. When an item is added, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
+		// In other words #items == concat( #_ungroupedItems, #_groupedItems )
+		// (in length and order).
 		view.items.on( 'add', ( evt, item, index ) => {
 			if ( index > this._ungroupedItems.length ) {
 				this._groupedItems.add( item, index - this._ungroupedItems.length );
