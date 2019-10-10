@@ -37,6 +37,10 @@ describe( 'LinkEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( LinkEditing.pluginName ).to.equal( 'LinkEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( LinkEditing ) ).to.be.instanceOf( LinkEditing );
 	} );
