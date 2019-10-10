@@ -41,6 +41,10 @@ describe( 'TableEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( TableEditing.pluginName ).to.equal( 'TableEditing' );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		// Table:
 		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
