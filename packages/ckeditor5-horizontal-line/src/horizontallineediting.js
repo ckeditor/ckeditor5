@@ -22,6 +22,13 @@ export default class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'HorizontalLineEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;

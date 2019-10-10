@@ -33,6 +33,10 @@ describe( 'HorizontalLineEditing', () => {
 			} );
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( HorizontalLineEditing.pluginName ).to.equal( 'HorizontalLineEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( HorizontalLineEditing ) ).to.be.instanceOf( HorizontalLineEditing );
 	} );
