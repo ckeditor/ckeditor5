@@ -114,7 +114,7 @@ export default class ToolbarView extends View {
 		 * logic is on (no re–ordering issues, exclusions, etc.).
 		 *
 		 *	┌───────────────────────────────────────── ToolbarView ──────────────────────────────────────────┐
-		 *	| ┌─────────────────────────────────────── #_components ───────────────────────────────────────┐ |
+		 *	| ┌─────────────────────────────────────── #components ───────────────────────────────────────┐ |
 		 *	| |   ┌────── #_itemsView ────────┐ ┌──────────────────────┐ ┌── #_groupedItemsDropdown ───┐   | |
 		 *	| |   |     #_ungroupedItems      | | ToolbarSeparatorView | |        #_groupedItems       |   | |
 		 *	| |   └──────────────────────────-┘ └──────────────────────┘ └─────────────────────────────┘   | |
@@ -123,11 +123,10 @@ export default class ToolbarView extends View {
 		 *	└────────────────────────────────────────────────────────────────────────────────────────────────┘
 		 *
 		 * @readonly
-		 * @protected
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this._components = this.createCollection();
-		this._components.add( this._itemsView );
+		this.components = this.createCollection();
+		this.components.add( this._itemsView );
 
 		/**
 		 * A helper collection that aggregates a subset of {@link #items} that is subject to the focus cycling
@@ -136,7 +135,7 @@ export default class ToolbarView extends View {
 		 * It contains all the items from {@link #_ungroupedItems} plus (optionally) the {@link #_groupedItemsDropdown}
 		 * at the end.
 		 *
-		 * This collection is dynamic and responds to the changes in {@link #_ungroupedItems} and {@link #_components}
+		 * This collection is dynamic and responds to the changes in {@link #_ungroupedItems} and {@link #components}
 		 * so the {@link #_focusCycler focus cycler} logic operates on the up–to–date collection of items that
 		 * are actually available for the user to focus and navigate at this particular moment.
 		 *
@@ -148,7 +147,7 @@ export default class ToolbarView extends View {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this._focusCycleableItems = this.createCollection();
+		this.focusables = this.createCollection();
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
@@ -158,7 +157,7 @@ export default class ToolbarView extends View {
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
 		this._focusCycler = new FocusCycler( {
-			focusables: this._focusCycleableItems,
+			focusables: this.focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
@@ -167,6 +166,26 @@ export default class ToolbarView extends View {
 
 				// Navigate toolbar items forwards using the arrow[right,down] keys.
 				focusNext: [ 'arrowright', 'arrowdown' ]
+			}
+		} );
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-toolbar',
+					bind.to( 'class' )
+				],
+				role: 'toolbar',
+				'aria-label': bind.to( 'ariaLabel' )
+			},
+
+			children: this.components,
+
+			on: {
+				// https://github.com/ckeditor/ckeditor5-ui/issues/206
+				mousedown: preventDefault( this )
 			}
 		} );
 
@@ -181,31 +200,9 @@ export default class ToolbarView extends View {
 		 *
 		 * @private
 		 * @readonly
-		 * @member {module:ui/toolbar/toolbarview~DynamicGroupingToolbar}
+		 * @member {module:ui/toolbar/toolbarview~DynamicGrouping}
 		 */
-		this._kind = this.options.shouldGroupWhenFull ? new DynamicGroupingToolbar( this ) : new StaticToolbar( this );
-
-		this.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-toolbar',
-					bind.to( 'class' )
-				],
-				role: 'toolbar',
-				'aria-label': bind.to( 'ariaLabel' )
-			},
-
-			children: this._components,
-
-			on: {
-				// https://github.com/ckeditor/ckeditor5-ui/issues/206
-				mousedown: preventDefault( this )
-			}
-		} );
-
-		this._kind.extendTemplate();
+		this._extension = this.options.shouldGroupWhenFull ? new DynamicGrouping( this ) : new VerticalLayout( this );
 	}
 
 	/**
@@ -230,14 +227,14 @@ export default class ToolbarView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		this._kind.render();
+		this._extension.render();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._kind.destroy();
+		this._extension.destroy();
 
 		return super.destroy();
 	}
@@ -344,9 +341,11 @@ class ItemsView extends View {
 	}
 }
 
-class StaticToolbar {
+class VerticalLayout {
 	constructor( view ) {
 		this.view = view;
+
+		const bind = this.view.bindTemplate;
 
 		/**
 		 * Controls the orientation of toolbar items.
@@ -356,16 +355,13 @@ class StaticToolbar {
 		 */
 		view.set( 'isVertical', false );
 
-		view._focusCycleableItems.bindTo( view.items );
+		// 1:1 pass–through binding.
+		view.focusables.bindTo( view.items ).using( item => item );
 
 		// 1:1 pass–through binding.
 		view._itemsView.items.bindTo( view.items ).using( item => item );
-	}
 
-	extendTemplate() {
-		const bind = this.view.bindTemplate;
-
-		this.view.extendTemplate( {
+		view.extendTemplate( {
 			attributes: {
 				class: [
 					bind.if( 'isVertical', 'ck-toolbar_vertical' )
@@ -374,13 +370,9 @@ class StaticToolbar {
 		} );
 	}
 
-	render() {
-		// Nothing to do here?
-	}
+	render() {}
 
-	destroy() {
-		// Nothing to do here?
-	}
+	destroy() {}
 }
 
 /**
@@ -393,9 +385,9 @@ class StaticToolbar {
  *
  * @private
  */
-class DynamicGroupingToolbar {
+class DynamicGrouping {
 	/**
-	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~DynamicGroupingToolbar} class.
+	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~DynamicGrouping} class.
 	 *
 	 * @param {Object} options The configuration of the helper.
 	 * @param {Boolean} options.shouldGroupWhenFull Corresponds to
@@ -510,8 +502,8 @@ class DynamicGroupingToolbar {
 		this._ungroupedItems.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
 		// Make sure the #_groupedItemsDropdown is also included in cycling when it appears.
-		view._components.on( 'add', this._updateFocusCycleableItems.bind( this ) );
-		view._components.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
+		view.components.on( 'add', this._updateFocusCycleableItems.bind( this ) );
+		view.components.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
@@ -522,19 +514,19 @@ class DynamicGroupingToolbar {
 				this._groupedItems.add( item, index - this._ungroupedItems.length );
 			} else {
 				this._ungroupedItems.add( item, index );
-
-				// When a new ungrouped item joins in, there's a chance it causes the toolbar to overflow.
-				// Let's check this out and do the grouping if necessary.
-				this._updateGrouping();
 			}
+
+			// When a new ungrouped item joins in and lands in #_ungroupedItems, there's a chance it causes
+			// the toolbar to overflow.
+			this._updateGrouping();
 		} );
 
 		// When an item is removed from ToolbarView#items, it should be automatically
 		// removed from either grouped or ungrouped items.
-		view.items.on( 'remove', ( evt, item ) => {
-			if ( this._groupedItems.has( item ) ) {
+		view.items.on( 'remove', ( evt, item, index ) => {
+			if ( index > this._ungroupedItems.length ) {
 				this._groupedItems.remove( item );
-			} else if ( this._ungroupedItems.has( item ) ) {
+			} else {
 				this._ungroupedItems.remove( item );
 			}
 
@@ -542,14 +534,8 @@ class DynamicGroupingToolbar {
 			// some new space is available and we could do some ungrouping.
 			this._updateGrouping();
 		} );
-	}
 
-	render() {
-		this._enableGroupingOnResize();
-	}
-
-	extendTemplate() {
-		this.view.extendTemplate( {
+		view.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-toolbar_grouping'
@@ -558,11 +544,15 @@ class DynamicGroupingToolbar {
 		} );
 	}
 
+	render() {
+		this._enableGroupingOnResize();
+	}
+
 	/**
 	 * Cleans up after the manager when its parent toolbar is destroyed.
 	 */
 	destroy() {
-		// The dropdown may not be in #_components at the moment of toolbar destruction
+		// The dropdown may not be in #components at the moment of toolbar destruction
 		// so let's make sure it's actually destroyed along with the toolbar.
 		this._groupedItemsDropdown.destroy();
 
@@ -705,8 +695,8 @@ class DynamicGroupingToolbar {
 		const view = this.view;
 
 		if ( !this._groupedItems.length ) {
-			view._components.add( new ToolbarSeparatorView() );
-			view._components.add( this._groupedItemsDropdown );
+			view.components.add( new ToolbarSeparatorView() );
+			view.components.add( this._groupedItemsDropdown );
 			view.focusTracker.add( this._groupedItemsDropdown.element );
 		}
 
@@ -727,8 +717,8 @@ class DynamicGroupingToolbar {
 		this._ungroupedItems.add( this._groupedItems.remove( this._groupedItems.first ) );
 
 		if ( !this._groupedItems.length ) {
-			view._components.remove( this._groupedItemsDropdown );
-			view._components.remove( view._components.last );
+			view.components.remove( this._groupedItemsDropdown );
+			view.components.remove( view.components.last );
 			view.focusTracker.remove( this._groupedItemsDropdown.element );
 		}
 	}
@@ -762,10 +752,10 @@ class DynamicGroupingToolbar {
 	}
 
 	/**
-	 * A method that updates the {@link #_focusCycleableItems focus–cycleable items}
+	 * A method that updates the {@link #focusables focus–cycleable items}
 	 * collection so it represents the up–to–date state of the UI from the perspective of the user.
 	 *
-	 * See the {@link #_focusCycleableItems collection} documentation to learn more about the purpose
+	 * See the {@link #focusables collection} documentation to learn more about the purpose
 	 * of this method.
 	 *
 	 * @private
@@ -773,14 +763,14 @@ class DynamicGroupingToolbar {
 	_updateFocusCycleableItems() {
 		const view = this.view;
 
-		view._focusCycleableItems.clear();
+		view.focusables.clear();
 
 		this._ungroupedItems.map( item => {
-			view._focusCycleableItems.add( item );
+			view.focusables.add( item );
 		} );
 
 		if ( this._groupedItems.length ) {
-			view._focusCycleableItems.add( this._groupedItemsDropdown );
+			view.focusables.add( this._groupedItemsDropdown );
 		}
 	}
 }
