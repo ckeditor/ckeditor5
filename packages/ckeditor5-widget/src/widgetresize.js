@@ -12,6 +12,8 @@ import Resizer from './widgetresize/resizer';
 import { isWidget } from './utils';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { throttle } from 'lodash-es';
 
 /**
@@ -20,6 +22,7 @@ import { throttle } from 'lodash-es';
  * Use the {@link module:widget/widgetresize~WidgetResize#attachTo} method to create a resizer for the specified widget.
  *
  * @extends module:core/plugin~Plugin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class WidgetResize extends Plugin {
 	/**
@@ -38,12 +41,22 @@ export default class WidgetResize extends Plugin {
 		this.resizers = new Map();
 
 		/**
-		 * Currently focused widget resizer instance.
+		 * @protected
+		 * @observable
+		 * @type {module:widget/widgetresize/resizer~Resizer|null} Currently visible resizer.
+		 */
+		this.set( '_visibleResizer', null );
+
+		/**
+		 * References an active resizer.
+		 *
+		 * Active resizer means a resizer which handle is actively used by the end user.
 		 *
 		 * @protected
+		 * @observable
 		 * @type {module:widget/widgetresize/resizer~Resizer|null}
 		 */
-		this._focusedResizer = null;
+		this.set( '_activeResizer', null );
 
 		const domDocument = global.window.document;
 
@@ -53,9 +66,6 @@ export default class WidgetResize extends Plugin {
 
 		this._observer = Object.create( DomEmitterMixin );
 
-		// A resizer that is currently used.
-		let activeResizer;
-
 		this._observer.listenTo( domDocument, 'mousedown', ( event, domEventData ) => {
 			if ( !Resizer.isResizeHandle( domEventData.target ) ) {
 				return;
@@ -63,34 +73,36 @@ export default class WidgetResize extends Plugin {
 
 			const resizeHandle = domEventData.target;
 
-			activeResizer = this._getResizerByHandle( resizeHandle );
+			this._activeResizer = this._getResizerByHandle( resizeHandle );
 
-			if ( activeResizer ) {
-				activeResizer.begin( resizeHandle );
+			if ( this._activeResizer ) {
+				this._activeResizer.begin( resizeHandle );
 			}
 		} );
 
 		this._observer.listenTo( domDocument, 'mousemove', throttle( ( event, domEventData ) => {
-			if ( activeResizer ) {
-				activeResizer.updateSize( domEventData );
+			if ( this._activeResizer ) {
+				this._activeResizer.updateSize( domEventData );
 			}
 		}, 16 ) ); // 60 fps
 
 		this._observer.listenTo( domDocument, 'mouseup', () => {
-			if ( activeResizer ) {
-				activeResizer.commit();
+			if ( this._activeResizer ) {
+				this._activeResizer.commit();
 
-				activeResizer = null;
+				this._activeResizer = null;
 			}
 		} );
 
 		this._attachFocusChangeListener();
 
 		const redrawFocusedResizer = throttle( () => {
-			if ( this._focusedResizer ) {
-				this._focusedResizer.redraw();
+			if ( this._visibleResizer ) {
+				this._visibleResizer.redraw();
 			}
 		}, 200 ); // 5 fps
+
+		this.on( 'change:_visibleResizer', redrawFocusedResizer );
 
 		// Redrawing on any change of the UI of the editor (including content changes).
 		this.editor.ui.on( 'update', redrawFocusedResizer );
@@ -118,7 +130,7 @@ export default class WidgetResize extends Plugin {
 	}
 
 	/**
-	 * Adds a listener that keep the track of currently focused resizer.
+	 * Listens for selection change and sets the visible resizer accordingly.
 	 *
 	 * @private
 	 */
@@ -126,7 +138,7 @@ export default class WidgetResize extends Plugin {
 		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			let lastMarked = null;
-			let focusedResizer = null;
+			let matchedResizer = null;
 
 			for ( const range of viewWriter.document.selection.getRanges() ) {
 				for ( const value of range ) {
@@ -134,18 +146,14 @@ export default class WidgetResize extends Plugin {
 
 					// Do not mark nested widgets in selected one. See: ckeditor/ckeditor5-widget#57.
 					if ( isWidget( node ) && !isChild( node, lastMarked ) && node.hasClass( 'ck-widget_with-resizer' ) ) {
-						focusedResizer = this.resizers.get( node ) || focusedResizer;
+						matchedResizer = this.resizers.get( node ) || matchedResizer;
 
 						lastMarked = node;
 					}
 				}
 			}
 
-			if ( focusedResizer ) {
-				focusedResizer.redraw();
-			}
-
-			this._focusedResizer = focusedResizer;
+			this._visibleResizer = matchedResizer;
 		}, { priority: 'low' } );
 
 		// Checks whether the specified `element` is a child of the `parent` element.
@@ -170,6 +178,8 @@ export default class WidgetResize extends Plugin {
 		}
 	}
 }
+
+mix( WidgetResize, ObservableMixin );
 
 /**
  * Interface describing a resizer. It allows to specify the resizing host, custom logic for calculating aspect ratio, etc.

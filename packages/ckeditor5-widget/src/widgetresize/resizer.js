@@ -184,7 +184,7 @@ export default class Resizer {
 	/**
 	 * Redraws the resizer.
 	 *
-	 * @param {module:utils/dom/rect~Rect} handleHostRect
+	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
 	redraw( handleHostRect ) {
 		// TODO review this
