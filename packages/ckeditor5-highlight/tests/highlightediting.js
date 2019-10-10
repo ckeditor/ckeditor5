@@ -30,6 +30,10 @@ describe( 'HighlightEditing', () => {
 		editor.destroy();
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( HighlightEditing.pluginName ).to.equal( 'HighlightEditing' );
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'highlight' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'highlight' ) ).to.be.true;
