@@ -291,15 +291,18 @@ The sample below is extensible. To add your own attributes to preserve, just add
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
 function CustomFigureAttributes( editor ) {
-	// Define on which elements the CSS classes should be preserved:
-	setupCustomClassConversion( 'img', 'image', editor );
-	setupCustomClassConversion( 'table', 'table', editor );
+	// Schema extending must be done in the “afterInit()” call because plugins define their schema in “init()“.
+	this.afterInit = () => {
+		// Define on which elements the CSS classes should be preserved:
+		setupCustomClassConversion( 'img', 'image', editor );
+		setupCustomClassConversion( 'table', 'table', editor );
 
-	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
+		editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
 
-	// Define custom attributes that should be preserved.
-	setupCustomAttributeConversion( 'img', 'image', 'id', editor );
-	setupCustomAttributeConversion( 'table', 'table', 'id', editor );
+		// Define custom attributes that should be preserved.
+		setupCustomAttributeConversion( 'img', 'image', 'id', editor );
+		setupCustomAttributeConversion( 'table', 'table', 'id', editor );
+	};
 }
 
 /**
