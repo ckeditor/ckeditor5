@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
- .ck .ck-widget_with-resizer {
+.ck .ck-widget_with-resizer {
 	/* Make the widget wrapper a relative positioning container for the drag handle. */
 	position: relative;
 }
