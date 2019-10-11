@@ -625,7 +625,7 @@ describe( 'Autosave', () => {
 				} );
 		} );
 
-		it( 'should handle a situration when the save callback throw an error', () => {
+		it( 'should handle a situration when the save callback throws an error', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const successServerActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
