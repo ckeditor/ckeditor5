@@ -205,6 +205,15 @@ export default class TableUI extends Plugin {
 				{
 					type: 'ui',
 					name: 'borderStyle'
+				},
+				{ type: 'separator' },
+				{
+					type: 'ui',
+					name: 'backgroundColor'
+				},
+				{
+					type: 'ui',
+					name: 'padding'
 				}
 			];
 

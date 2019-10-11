@@ -202,6 +202,75 @@ export default class TableStyle extends Plugin {
 
 			return button;
 		} );
+
+		editor.ui.componentFactory.add( 'backgroundColor', locale => {
+			const button = new ButtonView( locale );
+
+			button.set( {
+				label: 'Background color',
+				icon: false,
+				tooltip: true,
+				withText: true
+			} );
+
+			button.on( 'execute', () => {
+				const model = editor.model;
+				const document = model.document;
+				const selection = document.selection;
+				const firstPosition = selection.getFirstPosition();
+
+				const tableCell = findAncestor( 'tableCell', firstPosition );
+
+				const backgroundColor = tableCell.getAttribute( 'background-color' );
+
+				// eslint-disable-next-line no-undef,no-alert
+				const newColor = prompt( 'Set new background color:', backgroundColor || '' );
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'background-color', newColor, tableCell );
+				} );
+			} );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'padding', locale => {
+			const button = new ButtonView( locale );
+
+			button.set( {
+				label: 'Cell padding',
+				icon: false,
+				tooltip: true,
+				withText: true
+			} );
+
+			button.on( 'execute', () => {
+				const model = editor.model;
+				const document = model.document;
+				const selection = document.selection;
+				const firstPosition = selection.getFirstPosition();
+
+				const tableCell = findAncestor( 'tableCell', firstPosition );
+
+				const padding = tableCell.getAttribute( 'padding' );
+
+				let currentPadding;
+
+				if ( padding ) {
+					// Unify width to one value. If different values are set default to top (or right, etc).
+					currentPadding = padding.top || padding.right || padding.bottom || padding.left;
+				}
+
+				// eslint-disable-next-line no-undef,no-alert
+				const newPadding = prompt( 'Set new padding:', currentPadding || '' );
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'padding', newPadding, tableCell );
+				} );
+			} );
+
+			return button;
+		} );
 	}
 }
 
