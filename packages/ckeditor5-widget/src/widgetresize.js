@@ -13,6 +13,8 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { throttle } from 'lodash-es';
 
+import '../theme/widgetresize.css';
+
 /**
  * The widget resize feature plugin.
  *
