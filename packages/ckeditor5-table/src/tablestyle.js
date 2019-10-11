@@ -54,13 +54,11 @@ export default class TableStyle extends Plugin {
 		setupConversion( conversion, 'vertical-align', 'tableCell' );
 		setupConversion( conversion, 'width', 'tableCell' );
 
-		// editor.ui.componentFactory.add( 'borderColor' );
-		// editor.ui.componentFactory.add( 'borderStyle' );
 		editor.ui.componentFactory.add( 'borderWidth', locale => {
 			const button = new ButtonView( locale );
 
 			button.set( {
-				label: 'borderWidth',
+				label: 'Border width',
 				icon: false,
 				tooltip: true,
 				withText: true
@@ -79,14 +77,14 @@ export default class TableStyle extends Plugin {
 				let currentWidth;
 
 				if ( border ) {
-					const borderWidth = border && border.width;
+					const borderWidth = ( border && border.width ) || {};
 
 					// Unify width to one value. If different values are set default to top (or right, etc).
 					currentWidth = borderWidth.top || borderWidth.right || borderWidth.bottom || borderWidth.left;
 				}
 
 				// eslint-disable-next-line no-undef,no-alert
-				const newWidth = prompt( 'width', currentWidth || '' );
+				const newWidth = prompt( 'Set border width:', currentWidth || '' );
 
 				const parts = /^([0-9]*[.]?[0-9]*)([a-z]{2,4})?/.exec( newWidth );
 				const unit = parts[ 2 ];
@@ -101,6 +99,102 @@ export default class TableStyle extends Plugin {
 							right: borderWidthToSet,
 							bottom: borderWidthToSet,
 							left: borderWidthToSet
+						}
+					} ), tableCell );
+				} );
+			} );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'borderColor', locale => {
+			const button = new ButtonView( locale );
+
+			button.set( {
+				label: 'Border color',
+				icon: false,
+				tooltip: true,
+				withText: true
+			} );
+
+			button.on( 'execute', () => {
+				const model = editor.model;
+				const document = model.document;
+				const selection = document.selection;
+				const firstPosition = selection.getFirstPosition();
+
+				const tableCell = findAncestor( 'tableCell', firstPosition );
+
+				const border = tableCell.getAttribute( 'border' );
+
+				let currentColor;
+
+				if ( border ) {
+					const borderColor = ( border && border.color ) || {};
+
+					// Unify width to one value. If different values are set default to top (or right, etc).
+					currentColor = borderColor.top || borderColor.right || borderColor.bottom || borderColor.left;
+				}
+
+				// eslint-disable-next-line no-undef,no-alert
+				const newColor = prompt( 'Set new border color:', currentColor || '' );
+
+				// TODO: Command, setting new value is dumb on `border` object.
+				editor.model.change( writer => {
+					writer.setAttribute( 'border', Object.assign( {}, border, {
+						color: {
+							top: newColor,
+							right: newColor,
+							bottom: newColor,
+							left: newColor
+						}
+					} ), tableCell );
+				} );
+			} );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'borderStyle', locale => {
+			const button = new ButtonView( locale );
+
+			button.set( {
+				label: 'Border style',
+				icon: false,
+				tooltip: true,
+				withText: true
+			} );
+
+			button.on( 'execute', () => {
+				const model = editor.model;
+				const document = model.document;
+				const selection = document.selection;
+				const firstPosition = selection.getFirstPosition();
+
+				const tableCell = findAncestor( 'tableCell', firstPosition );
+
+				const border = tableCell.getAttribute( 'border' );
+
+				let currentStyle;
+
+				if ( border ) {
+					const borderStyle = ( border && border.style ) || {};
+
+					// Unify width to one value. If different values are set default to top (or right, etc).
+					currentStyle = borderStyle.top || borderStyle.right || borderStyle.bottom || borderStyle.left;
+				}
+
+				// eslint-disable-next-line no-undef,no-alert
+				const newStyle = prompt( 'Set new border style:', currentStyle || '' );
+
+				// TODO: Command, setting new value is dumb on `border` object.
+				editor.model.change( writer => {
+					writer.setAttribute( 'border', Object.assign( {}, border, {
+						style: {
+							top: newStyle,
+							right: newStyle,
+							bottom: newStyle,
+							left: newStyle
 						}
 					} ), tableCell );
 				} );

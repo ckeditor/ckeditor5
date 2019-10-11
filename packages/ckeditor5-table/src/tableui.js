@@ -197,6 +197,14 @@ export default class TableUI extends Plugin {
 				{
 					type: 'ui',
 					name: 'borderWidth'
+				},
+				{
+					type: 'ui',
+					name: 'borderColor'
+				},
+				{
+					type: 'ui',
+					name: 'borderStyle'
 				}
 			];
 
