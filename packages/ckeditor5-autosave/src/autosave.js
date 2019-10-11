@@ -88,6 +88,8 @@ export default class Autosave extends Plugin {
 		 * * synchronized &ndash; When all changes are saved.
 		 * * waiting &ndash; When the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`.
 		 * * saving &ndash; When the provided save method is called and the plugin waits for the response.
+		 * * error &ndash When the provided save method will throw an error. This state immediately changes to the `saving` state and
+		 * the save method will be called again in the short period of time.
 		 *
 		 * @member {'synchronized'|'waiting'|'saving'} #state
 		 */
@@ -237,6 +239,18 @@ export default class Autosave extends Plugin {
 			.then( () => Promise.all(
 				this._saveCallbacks.map( cb => cb( this.editor ) )
 			) )
+			// In case of an error re-try the save later and throw the original error.
+			// Being in the `saving` state ensures that the debounced save action
+			// won't be delayed further by the `change:data` event listener.
+			.catch( err => {
+				this.state = 'error';
+				// Change immediately to the `saving` state so the `change:state` event will be fired.
+				this.state = 'saving';
+
+				this._debouncedSave();
+
+				throw err;
+			} )
 			.then( () => {
 				if ( this.editor.model.document.version > this._lastDocumentVersion ) {
 					this.state = 'waiting';
