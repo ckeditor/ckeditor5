@@ -26,6 +26,13 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'HeadingEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
