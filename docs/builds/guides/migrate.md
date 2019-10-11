@@ -111,6 +111,14 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>CKEditor 5 always updates the replaced element. This behavior cannot be disabled.</td>
 		</tr>
 		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autocomplete_commitKeystrokes">autocomplete_commitKeystrokes</a></td>
+			<td>TODO</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_commitKeystrokes">autolink_commitKeystrokes</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_emailRegex">autolink_emailRegex</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_urlRegex">autolink_urlRegex</a></td>
+			<td>TODO</td>
+		</tr>
+		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-baseFloatZIndex">baseFloatZIndex</a></td>
 			<td>N/A. There is a dedicated <a href="https://github.com/ckeditor/ckeditor5-ui/issues/218" target="_blank" rel="noopener">issue about z-index management</a> and making it more open for developers.</td>
 		</tr>
@@ -143,6 +151,14 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>N/A</td>
 		</tr>
 		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_tokenUrl">cloudServices_tokenUrl</a></td>
+			<td>TODO</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_uploadUrl">cloudServices_uploadUrl</a></td>
+			<td>TODO</td>
+		</tr>
+		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippetGeshi_url">codeSnippetGeshi_url</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_codeClass">codeSnippet_codeClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_languages">codeSnippet_languages</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_theme">codeSnippet_theme</a></td>
 			<td>
 				<p>Code blocks are not supported yet. A plugin adding support for the inline <code>&lt;code&gt;</code> element is already included in the {@link features/basic-styles Basic styles} package.</p>
@@ -167,6 +183,10 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contentsLanguage">contentsLanguage</a></td>
 			<td>In case of Inline or Balloon editor, just add the <code>lang</code> attribute to the edited element. In case of Classic editor, see <a href="https://github.com/ckeditor/ckeditor5/issues/670" target="_blank" rel="noopener">https://github.com/ckeditor/ckeditor5/issues/670</a>.</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contextmenu_contentsCss">contextmenu_contentsCss</a></td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_allowRules">copyFormatting_allowRules</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_allowedContexts">copyFormatting_allowedContexts</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_disallowRules">copyFormatting_disallowRules</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_keystrokeCopy">copyFormatting_keystrokeCopy</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_keystrokePaste">copyFormatting_keystrokePaste</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_outerCursor">copyFormatting_outerCursor</a></td>
@@ -254,12 +274,20 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>N/A. CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so the editor is using the same doctype as the page where it operates.</td>
 		</tr>
 		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_class">easyimage_class</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_defaultStyle">easyimage_defaultStyle</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_styles">easyimage_styles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_toolbar">easyimage_toolbar</a></td>
+			<td>TODO</td>
+		</tr>
+		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emailProtection">emailProtection</a></td>
 			<td>N/A</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-embed_provider">embed_provider</a></td>
 			<td>N/A</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_emojiListUrl">emoji_emojiListUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_minChars">emoji_minChars</a></td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableContextMenu">enableContextMenu</a></td>
@@ -286,11 +314,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>Enabling extra plugins is possible by creating a {@link builds/guides/development/custom-builds custom build}.</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName">fileTools_defaultFileName</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName">fileTools_defaultFileName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders">fileTools_requestHeaders</a></td>
 			<td>N/A</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserBrowseUrl">filebrowserBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashBrowseUrl">filebrowserFlashBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashUploadUrl">filebrowserFlashUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseLinkUrl">filebrowserImageBrowseLinkUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseUrl">filebrowserImageBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageUploadUrl">filebrowserImageUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadUrl">filebrowserUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowFeatures">filebrowserWindowFeatures</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowHeight">filebrowserWindowHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowWidth">filebrowserWindowWidth</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserBrowseUrl">filebrowserBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashBrowseUrl">filebrowserFlashBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashUploadUrl">filebrowserFlashUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseLinkUrl">filebrowserImageBrowseLinkUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseUrl">filebrowserImageBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageUploadUrl"> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadMethod">filebrowserUploadMethod</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadUrl">filebrowserUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowFeatures">filebrowserWindowFeatures</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowHeight">filebrowserWindowHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowWidth">filebrowserWindowWidth</a></td>
 			<td>There is no equivalent of the file browser plugin in CKEditor 5 yet. See also <a href="#uploadUrl"><code>config.uploadUrl</code></a>.</td>
 		</tr>
 		<tr>
@@ -365,7 +393,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_prefillDimensions">image2_prefillDimensions</a>.</td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_image2_maxSize">image2_maxSize</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_prefillDimensions">image2_prefillDimensions</a></td>
 			<td>N/A</td>
 		</tr>
 		<tr>
@@ -397,11 +425,19 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-language">language</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-language_list">language_list</a></td>
-			<td>See <a href="#defaultLanguage"><code>config.uploadUrl</code></a>.</td>
+			<td>TODO</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkDefaultProtocol">linkDefaultProtocol</a></td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkJavaScriptLinksAllowed">linkJavaScriptLinksAllowed</a></td>
 			<td>N/A</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkPhoneMsg">linkPhoneMsg</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkPhoneRegExp">linkPhoneRegExp</a></td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkShowAdvancedTab">linkShowAdvancedTab</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-linkShowTargetTab">linkShowTargetTab</a></td>
@@ -414,6 +450,10 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxClass">mathJaxClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxLib">mathJaxLib</a></td>
 			<td>N/A</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mentions">mentions</a></td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-menu_groups">menu_groups</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-menu_subMenuDelay">menu_subMenuDelay</a></td>
@@ -440,8 +480,12 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>N/A</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordCleanupFile">pasteFromWordCleanupFile</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordPromptCleanup">pasteFromWordPromptCleanup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_heuristicsEdgeList">pasteFromWord_heuristicsEdgeList</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordCleanupFile">pasteFromWordCleanupFile</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordNumberedHeadingToList">pasteFromWordNumberedHeadingToList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordPromptCleanup">pasteFromWordPromptCleanup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordRemoveStyles">pasteFromWordRemoveStyles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_heuristicsEdgeList">pasteFromWord_heuristicsEdgeList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_inlineImages">pasteFromWord_inlineImages</a></td>
 			<td>N/A. The Paste from Word feature itself is planned.</td>
+		</tr>
+		<tr>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteTools_keepZeroMargins">pasteTools_keepZeroMargins</a></td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>
@@ -476,7 +520,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>N/A</td>
 		</tr>
 		<tr>
-			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_autoStartup">scayt_autoStartup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_contextCommands">scayt_contextCommands</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_contextMenuItemsOrder">scayt_contextMenuItemsOrder</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customDictionaryIds">scayt_customDictionaryIds</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customPunctuation">scayt_customPunctuation</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customerId">scayt_customerId</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_disableOptionsStorage">scayt_disableOptionsStorage</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_elementsToIgnore">scayt_elementsToIgnore</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_handleCheckDirty">scayt_handleCheckDirty</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_handleUndoRedo">scayt_handleUndoRedo</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreAllCapsWords">scayt_ignoreAllCapsWords</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreDomainNames">scayt_ignoreDomainNames</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreWordsWithMixedCases">scayt_ignoreWordsWithMixedCases</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreWordsWithNumbers">scayt_ignoreWordsWithNumbers</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_inlineModeImmediateMarkup">scayt_inlineModeImmediateMarkup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_maxSuggestions">scayt_maxSuggestions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_minWordLength">scayt_minWordLength</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_moreSuggestions">scayt_moreSuggestions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_multiLanguageMode">scayt_multiLanguageMode</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_multiLanguageStyles">scayt_multiLanguageStyles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_sLang">scayt_sLang</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_serviceHost">scayt_serviceHost</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_servicePath">scayt_servicePath</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_servicePort">scayt_servicePort</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_serviceProtocol">scayt_serviceProtocol</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_srcUrl">scayt_srcUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_uiTabs">scayt_uiTabs</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_userDictionaryName">scayt_userDictionaryName</a></td>
+			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_autoStartup">scayt_autoStartup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_cacheSize">scayt_cacheSize</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_contextCommands">scayt_contextCommands</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_contextMenuItemsOrder">scayt_contextMenuItemsOrder</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customDictionaryIds">scayt_customDictionaryIds</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customPunctuation">scayt_customPunctuation</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customerId">scayt_customerId</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_disableCache">scayt_disableCache</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_disableOptionsStorage">scayt_disableOptionsStorage</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_elementsToIgnore">scayt_elementsToIgnore</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_handleCheckDirty">scayt_handleCheckDirty</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_handleUndoRedo">scayt_handleUndoRedo</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreAllCapsWords">scayt_ignoreAllCapsWords</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreDomainNames">scayt_ignoreDomainNames</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreWordsWithMixedCases">scayt_ignoreWordsWithMixedCases</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreWordsWithNumbers">scayt_ignoreWordsWithNumbers</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_inlineModeImmediateMarkup">scayt_inlineModeImmediateMarkup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_maxSuggestions">scayt_maxSuggestions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_minWordLength">scayt_minWordLength</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_moreSuggestions">scayt_moreSuggestions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_multiLanguageMode">scayt_multiLanguageMode</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_multiLanguageStyles">scayt_multiLanguageStyles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_sLang">scayt_sLang</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_serviceHost">scayt_serviceHost</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_servicePath">scayt_servicePath</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_servicePort">scayt_servicePort</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_serviceProtocol">scayt_serviceProtocol</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_srcUrl">scayt_srcUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_uiTabs">scayt_uiTabs</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_userDictionaryName">scayt_userDictionaryName</a></td>
 			<td>N/A. There is no spell checking plugin in CKEditor 5 at this moment. However, the native browser spell checker can be used in CKEditor 5.</td>
 		</tr>
 		<tr>
