@@ -257,6 +257,20 @@ describe( 'Styles', () => {
 				} );
 			} );
 
+			it( 'should parse border longhand', () => {
+				styles.setStyle( 'border-color: #f00 #ba2;' +
+					'border-style: solid;' +
+					'border-width: 1px;' +
+					'border-bottom-width: 2px;' +
+					'border-right-style: dotted;' );
+
+				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
+					color: { top: '#f00', right: '#ba2', bottom: '#f00', left: '#ba2' },
+					style: { top: 'solid', right: 'dotted', bottom: 'solid', left: 'solid' },
+					width: { top: '1px', right: '1px', bottom: '2px', left: '1px' }
+				} );
+			} );
+
 			it( 'should output inline shorthand rules #1', () => {
 				styles.setStyle( 'border:1px solid blue;' );
 
@@ -584,6 +598,23 @@ describe( 'Styles', () => {
 					expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '3.0pt dotted #FFC000' );
 					expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '3.0pt dotted #FFC000' );
 					expect( styles.getInlineProperty( 'border-left' ) ).to.equal( 'none' );
+				} );
+			} );
+
+			describe( 'getStyleNames() - border', () => {
+				it( 'should set all border colors (1 value defined)', () => {
+					styles.setStyle( '    border-color: deeppink deepskyblue;\n' +
+						'    border-style: solid;\n' +
+						'    border-width: 1px;\n' +
+						'    border-bottom-width: 2px;\n' +
+						'    border-right-style: dotted;' );
+
+					expect( styles.getStyleNames() ).to.deep.equal( [
+						'border-top',
+						'border-right',
+						'border-bottom',
+						'border-left'
+					] );
 				} );
 			} );
 		} );

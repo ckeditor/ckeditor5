@@ -593,7 +593,7 @@ describe( 'ViewConsumable', () => {
 			} );
 		} );
 
-		it( 'should return valse when testing style shorthand... 1', () => {
+		it( 'should return false when testing style shorthand for consumed longhand', () => {
 			viewConsumable.add( el, { styles: [ 'margin' ] } );
 
 			expect( viewConsumable.test( el, { styles: 'margin' } ) ).to.be.true;
@@ -604,7 +604,7 @@ describe( 'ViewConsumable', () => {
 			expect( viewConsumable.test( el, { styles: 'margin-left' } ) ).to.be.false;
 		} );
 
-		it( 'should return valse when testing style shorthand... 1', () => {
+		it( 'should return false when testing style shorthand for consumed shorthand', () => {
 			viewConsumable.add( el, { styles: [ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] } );
 
 			expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.true;

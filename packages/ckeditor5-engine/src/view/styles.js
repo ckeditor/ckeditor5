@@ -71,14 +71,36 @@ export default class Styles {
 		 */
 		this.normalizers = new Map();
 
+		// Border shorthand.
 		this.normalizers.set( 'border', normalizeBorder );
+
+		// Border-position shorthands.
 		this.normalizers.set( 'border-top', getBorderPositionNormalizer( 'top' ) );
 		this.normalizers.set( 'border-right', getBorderPositionNormalizer( 'right' ) );
 		this.normalizers.set( 'border-bottom', getBorderPositionNormalizer( 'bottom' ) );
 		this.normalizers.set( 'border-left', getBorderPositionNormalizer( 'left' ) );
+
+		// Border-property shorthands.
 		this.normalizers.set( 'border-color', getBorderPropertyNormalizer( 'color' ) );
 		this.normalizers.set( 'border-width', getBorderPropertyNormalizer( 'width' ) );
 		this.normalizers.set( 'border-style', getBorderPropertyNormalizer( 'style' ) );
+
+		// Border longhands.
+		this.normalizers.set( 'border-top-color', getBorderPropertyPositionNormalizer( 'color', 'top' ) );
+		this.normalizers.set( 'border-top-style', getBorderPropertyPositionNormalizer( 'style', 'top' ) );
+		this.normalizers.set( 'border-top-width', getBorderPropertyPositionNormalizer( 'width', 'top' ) );
+
+		this.normalizers.set( 'border-right-color', getBorderPropertyPositionNormalizer( 'color', 'right' ) );
+		this.normalizers.set( 'border-right-style', getBorderPropertyPositionNormalizer( 'style', 'right' ) );
+		this.normalizers.set( 'border-right-width', getBorderPropertyPositionNormalizer( 'width', 'right' ) );
+
+		this.normalizers.set( 'border-bottom-color', getBorderPropertyPositionNormalizer( 'color', 'bottom' ) );
+		this.normalizers.set( 'border-bottom-style', getBorderPropertyPositionNormalizer( 'style', 'bottom' ) );
+		this.normalizers.set( 'border-bottom-width', getBorderPropertyPositionNormalizer( 'width', 'bottom' ) );
+
+		this.normalizers.set( 'border-left-color', getBorderPropertyPositionNormalizer( 'color', 'left' ) );
+		this.normalizers.set( 'border-left-style', getBorderPropertyPositionNormalizer( 'style', 'left' ) );
+		this.normalizers.set( 'border-left-width', getBorderPropertyPositionNormalizer( 'width', 'left' ) );
 
 		this.normalizers.set( 'background', normalizeBackground );
 
@@ -471,6 +493,16 @@ function getBorderPositionNormalizer( side ) {
 
 function getBorderPropertyNormalizer( propertyName ) {
 	return value => ( { border: toBorderPropertyShorthand( value, propertyName ) } );
+}
+
+function getBorderPropertyPositionNormalizer( property, side ) {
+	return value => ( {
+		border: {
+			[ property ]: {
+				[ side ]: value
+			}
+		}
+	} );
 }
 
 function borderPositionExtractor( which ) {
