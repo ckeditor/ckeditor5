@@ -183,15 +183,15 @@ export default class ToolbarView extends View {
 		} );
 
 		/**
-		 * An instance of the active toolbar feature that shapes its look and behavior.
+		 * An instance of the active toolbar behavior that shapes its look and functionality.
 		 *
-		 * See {@link module:ui/toolbar/toolbarview~ToolbarFeature} to learn more.
+		 * See {@link module:ui/toolbar/toolbarview~ToolbarBehavior} to learn more.
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {module:ui/toolbar/toolbarview~ToolbarFeature}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarBehavior}
 		 */
-		this._feature = this.options.shouldGroupWhenFull ? new DynamicGrouping( this ) : new StaticLayout( this );
+		this._behavior = this.options.shouldGroupWhenFull ? new DynamicGrouping( this ) : new StaticLayout( this );
 	}
 
 	/**
@@ -216,14 +216,14 @@ export default class ToolbarView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 
-		this._feature.render( this );
+		this._behavior.render( this );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._feature.destroy();
+		this._behavior.destroy();
 
 		return super.destroy();
 	}
@@ -319,15 +319,19 @@ class ItemsView extends View {
 }
 
 /**
- * A toolbar feature that makes it static and unresponsive to the changes of the environment.
+ * A toolbar behavior that makes it static and unresponsive to the changes of the environment.
  * It also allows toolbar with the vertical layout.
  *
  * @private
- * @implements module:ui/toolbar/toolbarview~ToolbarFeature
+ * @implements module:ui/toolbar/toolbarview~ToolbarBehavior
  */
 class StaticLayout {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~StaticLayout} toolbar
+	 * behavior.
+	 *
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior
+	 * is added to.
 	 */
 	constructor( view ) {
 		const bind = view.bindTemplate;
@@ -363,7 +367,7 @@ class StaticLayout {
 }
 
 /**
- * A toolbar feature that makes its items respond to the changes in the geometry.
+ * A toolbar behavior that makes its items respond to the changes in the geometry.
  *
  * In a nutshell, it groups {@link module:ui/toolbar/toolbarview~ToolbarView#items}
  * that do not fit into visually into a single row of the toolbar (due to limited space).
@@ -379,11 +383,15 @@ class StaticLayout {
  *	└───────────────────────────────────────────────────────────────────────────────────────────────┘
  *
  * @private
- * @implements module:ui/toolbar/toolbarview~ToolbarFeature
+ * @implements module:ui/toolbar/toolbarview~ToolbarBehavior
  */
 class DynamicGrouping {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~DynamicGrouping} toolbar
+	 * behavior.
+	 *
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior
+	 * is added to.
 	 */
 	constructor( view ) {
 		/**
@@ -545,7 +553,10 @@ class DynamicGrouping {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Enables dynamic items grouping based on the dimensions of the toolbar.
+	 *
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior
+	 * is added to.
 	 */
 	render( view ) {
 		this.viewElement = view.element;
@@ -554,7 +565,7 @@ class DynamicGrouping {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Cleans up the internals used by this behavior.
 	 */
 	destroy() {
 		// The dropdown may not be in ToolbarView#children at the moment of toolbar destruction
@@ -780,27 +791,26 @@ class DynamicGrouping {
  */
 
 /**
- * A class interface defining a (sub–)feature of the {@link module:ui/toolbar/toolbarview~ToolbarView}.
+ * A class interface defining a behavior of the {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
- * Toolbar features extend its look and behavior and have an impact on the
+ * Toolbar behaviors extend its look and functionality and have an impact on the
  * {@link module:ui/toolbar/toolbarview~ToolbarView#element} template or
  * {@link module:ui/toolbar/toolbarview~ToolbarView#render rendering}. They can be enabled
  * conditionally, e.g. depending on the configuration of the toolbar.
  *
  * @private
- * @interface module:ui/toolbar/toolbarview~ToolbarFeature
+ * @interface module:ui/toolbar/toolbarview~ToolbarBehavior
  */
 
 /**
- * Creates a new toolbar feature instance.
+ * Creates a new toolbar behavior instance.
  *
  * The instance is created in the {@link module:ui/toolbar/toolbarview~ToolbarView#constructor} of the toolbar.
  * This is the right place to extend the {@link module:ui/toolbar/toolbarview~ToolbarView#template} of
  * the toolbar, define extra toolbar properties, etc..
  *
  * @method #constructor
- * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this feature.
- * is added to.
+ * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior is added to.
  */
 
 /**
@@ -815,7 +825,7 @@ class DynamicGrouping {
 
 /**
  * A method called after the toolbar has been {@link module:ui/toolbar/toolbarview~ToolbarView#destroy destroyed}.
- * It allows cleaning up after the toolbar feature, for instance, this is the right place to detach
+ * It allows cleaning up after the toolbar behavior, for instance, this is the right place to detach
  * event listeners, free up references, etc..
  *
  * @readonly

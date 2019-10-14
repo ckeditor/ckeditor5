@@ -95,8 +95,8 @@ describe( 'ToolbarView', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
-		it( 'creates #_feature', () => {
-			expect( view._feature ).to.be.an.instanceOf( Object );
+		it( 'creates #_behavior', () => {
+			expect( view._behavior ).to.be.an( 'object' );
 		} );
 	} );
 
@@ -293,13 +293,13 @@ describe( 'ToolbarView', () => {
 			} );
 		} );
 
-		it( 'calls _feature#render()', () => {
+		it( 'calls _behavior#render()', () => {
 			const view = new ToolbarView( locale );
-			sinon.spy( view._feature, 'render' );
+			sinon.spy( view._behavior, 'render' );
 
 			view.render();
-			sinon.assert.calledOnce( view._feature.render );
-			sinon.assert.calledWithExactly( view._feature.render, view );
+			sinon.assert.calledOnce( view._behavior.render );
+			sinon.assert.calledWithExactly( view._behavior.render, view );
 
 			view.destroy();
 		} );
@@ -307,18 +307,18 @@ describe( 'ToolbarView', () => {
 
 	describe( 'destroy()', () => {
 		it( 'destroys the feature', () => {
-			sinon.spy( view._feature, 'destroy' );
+			sinon.spy( view._behavior, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( view._feature.destroy );
+			sinon.assert.calledOnce( view._behavior.destroy );
 		} );
 
-		it( 'calls _feature#destroy()', () => {
-			sinon.spy( view._feature, 'destroy' );
+		it( 'calls _behavior#destroy()', () => {
+			sinon.spy( view._behavior, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( view._feature.destroy );
+			sinon.assert.calledOnce( view._behavior.destroy );
 		} );
 	} );
 
@@ -452,9 +452,9 @@ describe( 'ToolbarView', () => {
 			view.element.style.width = '200px';
 			document.body.appendChild( view.element );
 
-			groupedItems = view._feature.groupedItems;
-			ungroupedItems = view._feature.ungroupedItems;
-			groupedItemsDropdown = view._feature.groupedItemsDropdown;
+			groupedItems = view._behavior.groupedItems;
+			ungroupedItems = view._behavior.ungroupedItems;
+			groupedItemsDropdown = view._behavior.groupedItemsDropdown;
 		} );
 
 		afterEach( () => {
@@ -469,7 +469,7 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'updates the UI as new #items are added', () => {
-				sinon.spy( view._feature, '_updateGrouping' );
+				sinon.spy( view._behavior, '_updateGrouping' );
 
 				const itemA = focusable();
 				const itemB = focusable();
@@ -481,7 +481,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemA );
 				view.items.add( itemB );
 
-				sinon.assert.calledTwice( view._feature._updateGrouping );
+				sinon.assert.calledTwice( view._behavior._updateGrouping );
 
 				expect( ungroupedItems ).to.have.length( 2 );
 				expect( groupedItems ).to.have.length( 0 );
@@ -514,16 +514,16 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( view._feature, '_updateGrouping' );
+				sinon.spy( view._behavior, '_updateGrouping' );
 				view.items.remove( 2 );
 
 				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
 				expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
 
-				sinon.assert.calledOnce( view._feature._updateGrouping );
+				sinon.assert.calledOnce( view._behavior._updateGrouping );
 
 				view.items.remove( 0 );
-				sinon.assert.calledTwice( view._feature._updateGrouping );
+				sinon.assert.calledTwice( view._behavior._updateGrouping );
 
 				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
 			} );
@@ -565,8 +565,8 @@ describe( 'ToolbarView', () => {
 			view.element.style.width = '350px';
 
 			// Some grouped items cannot be ungrouped because there is not enough space and they will
-			// land back in #_feature.groupedItems after an attempt was made.
-			view._feature._updateGrouping();
+			// land back in #_behavior.groupedItems after an attempt was made.
+			view._behavior._updateGrouping();
 			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
 			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemD ] );
 		} );
@@ -586,7 +586,7 @@ describe( 'ToolbarView', () => {
 			view.element.style.width = '350px';
 
 			// All grouped items will be ungrouped because they fit just alright in the main space.
-			view._feature._updateGrouping();
+			view._behavior._updateGrouping();
 			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
 			expect( groupedItems ).to.have.length( 0 );
 			expect( view.children ).to.have.length( 1 );
@@ -610,8 +610,8 @@ describe( 'ToolbarView', () => {
 
 				view.render();
 
-				sinon.assert.calledOnce( view._feature.resizeObserver.observe );
-				sinon.assert.calledWithExactly( view._feature.resizeObserver.observe, view.element );
+				sinon.assert.calledOnce( view._behavior.resizeObserver.observe );
+				sinon.assert.calledWithExactly( view._behavior.resizeObserver.observe, view.element );
 
 				view.destroy();
 			} );
@@ -670,15 +670,15 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				sinon.spy( view._feature, '_updateGrouping' );
+				sinon.spy( view._behavior, '_updateGrouping' );
 				view.element.style.width = '500px';
 
 				setTimeout( () => {
-					sinon.assert.calledOnce( view._feature._updateGrouping );
+					sinon.assert.calledOnce( view._behavior._updateGrouping );
 					view.element.style.height = '500px';
 
 					setTimeout( () => {
-						sinon.assert.calledOnce( view._feature._updateGrouping );
+						sinon.assert.calledOnce( view._behavior._updateGrouping );
 						done();
 					}, 100 );
 				}, 100 );
@@ -698,15 +698,15 @@ describe( 'ToolbarView', () => {
 					shouldGroupWhenFull: true
 				} );
 
-				testUtils.sinon.spy( view._feature, '_updateGrouping' );
+				testUtils.sinon.spy( view._behavior, '_updateGrouping' );
 
 				view.render();
 
-				view._feature.resizeObserver.callback( [
+				view._behavior.resizeObserver.callback( [
 					{ contentRect: { width: 42 } }
 				] );
 
-				sinon.assert.calledTwice( view._feature._updateGrouping );
+				sinon.assert.calledTwice( view._behavior._updateGrouping );
 
 				view.destroy();
 			} );
@@ -731,7 +731,7 @@ describe( 'ToolbarView', () => {
 				view.element.style.width = '500px';
 
 				// The dropdown hides; it does not belong to any collection but it still exist.
-				view._feature._updateGrouping();
+				view._behavior._updateGrouping();
 
 				view.destroy();
 				sinon.assert.calledOnce( groupedItemsDropdown.destroy );
@@ -750,10 +750,10 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( view._feature.resizeObserver, 'disconnect' );
+				sinon.spy( view._behavior.resizeObserver, 'disconnect' );
 
 				view.destroy();
-				sinon.assert.calledOnce( view._feature.resizeObserver.disconnect );
+				sinon.assert.calledOnce( view._behavior.resizeObserver.disconnect );
 			} );
 		} );
 
@@ -790,7 +790,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view._feature.groupedItems ).to.have.length( 1 );
+				expect( view._behavior.groupedItems ).to.have.length( 1 );
 			} );
 
 			it( 'considers the left padding of the toolbar (RTL UI)', () => {
@@ -816,7 +816,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view._feature.groupedItems ).to.have.length( 1 );
+				expect( view._behavior.groupedItems ).to.have.length( 1 );
 
 				view.destroy();
 				view.element.remove();
