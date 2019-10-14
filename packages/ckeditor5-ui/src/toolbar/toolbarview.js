@@ -187,7 +187,7 @@ export default class ToolbarView extends View {
 		 *
 		 * See {@link module:ui/toolbar/toolbarview~ToolbarFeature} to learn more.
 		 *
-		 * @private
+		 * @protected
 		 * @readonly
 		 * @member {module:ui/toolbar/toolbarview~ToolbarFeature}
 		 */
@@ -399,7 +399,7 @@ class DynamicGrouping {
 		 * When none of the {@link module:ui/toolbar/toolbarview~ToolbarView#items} were grouped, it
 		 * matches the {@link module:ui/toolbar/toolbarview~ToolbarView#items} collection in size and order.
 		 *
-		 * @private
+		 * @protected
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
@@ -413,7 +413,7 @@ class DynamicGrouping {
 		 * When none of the {@link module:ui/toolbar/toolbarview~ToolbarView#items} were grouped,
 		 * this collection is empty.
 		 *
-		 * @private
+		 * @protected
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
@@ -425,7 +425,7 @@ class DynamicGrouping {
 		 * {@link module:ui/toolbar/toolbarview~ToolbarView#children toolbar children} and offers another
 		 * (nested) toolbar which displays items that would normally overflow.
 		 *
-		 * @private
+		 * @protected
 		 * @readonly
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
@@ -532,7 +532,7 @@ class DynamicGrouping {
 	 * {@link #_groupedItems} to be returned back to {@link #_ungroupedItems} and still fit into a single row
 	 * without the toolbar wrapping.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_updateGrouping() {
 		const view = this.view;
