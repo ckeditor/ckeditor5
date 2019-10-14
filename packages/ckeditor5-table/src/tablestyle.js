@@ -11,6 +11,18 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { findAncestor } from './commands/utils';
 
+function downcastToStyle( conversion, modelAttribute, viewStyleName ) {
+	conversion.for( 'downcast' ).attributeToAttribute( {
+		model: modelAttribute,
+		view: modelAttributeValue => ( {
+			key: 'style',
+			value: {
+				[ viewStyleName ]: modelAttributeValue
+			}
+		} )
+	} );
+}
+
 /**
  * The table editing feature.
  *
@@ -27,7 +39,7 @@ export default class TableStyle extends Plugin {
 		const conversion = editor.conversion;
 
 		schema.extend( 'table', {
-			allowAttributes: [ 'border', 'background-color', 'width', 'height' ]
+			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle', 'background-color', 'width', 'height' ]
 		} );
 
 		schema.extend( 'tableRow', {
@@ -35,11 +47,12 @@ export default class TableStyle extends Plugin {
 		} );
 
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'border', 'background-color', 'padding', 'vertical-align', 'width', 'height' ]
+			allowAttributes: [
+				'borderWidth', 'borderColor', 'borderStyle',
+				'background-color', 'padding', 'vertical-align', 'width', 'height' ]
 		} );
 
 		// Table attributes.
-		setupTableConversion( conversion, 'border' );
 		setupTableConversion( conversion, 'background-color' );
 		setupTableConversion( conversion, 'width' );
 		setupTableConversion( conversion, 'height' );
@@ -47,8 +60,14 @@ export default class TableStyle extends Plugin {
 		// Table row attributes.
 		setupConversion( conversion, 'height', 'tableRow' );
 
-		// Table cell attributes.
-		setupConversion( conversion, 'border', 'tableCell' );
+		upcastBorderStyles( conversion, 'td' );
+		upcastBorderStyles( conversion, 'th' );
+		upcastBorderStyles( conversion, 'table' );
+
+		downcastToStyle( conversion, 'borderStyle', 'border-style' );
+		downcastToStyle( conversion, 'borderColor', 'border-color' );
+		downcastToStyle( conversion, 'borderWidth', 'border-width' );
+
 		setupConversion( conversion, 'background-color', 'tableCell' );
 		setupConversion( conversion, 'padding', 'tableCell' );
 		setupConversion( conversion, 'vertical-align', 'tableCell' );
@@ -93,14 +112,12 @@ export default class TableStyle extends Plugin {
 
 				// TODO: Command, setting new value is dumb on `border` object.
 				editor.model.change( writer => {
-					writer.setAttribute( 'border', Object.assign( {}, border, {
-						width: {
-							top: borderWidthToSet,
-							right: borderWidthToSet,
-							bottom: borderWidthToSet,
-							left: borderWidthToSet
-						}
-					} ), tableCell );
+					writer.setAttribute( 'borderWidth', {
+						top: borderWidthToSet,
+						right: borderWidthToSet,
+						bottom: borderWidthToSet,
+						left: borderWidthToSet
+					}, tableCell );
 				} );
 			} );
 
@@ -141,14 +158,12 @@ export default class TableStyle extends Plugin {
 
 				// TODO: Command, setting new value is dumb on `border` object.
 				editor.model.change( writer => {
-					writer.setAttribute( 'border', Object.assign( {}, border, {
-						color: {
-							top: newColor,
-							right: newColor,
-							bottom: newColor,
-							left: newColor
-						}
-					} ), tableCell );
+					writer.setAttribute( 'borderColor', {
+						top: newColor,
+						right: newColor,
+						bottom: newColor,
+						left: newColor
+					}, tableCell );
 				} );
 			} );
 
@@ -189,14 +204,12 @@ export default class TableStyle extends Plugin {
 
 				// TODO: Command, setting new value is dumb on `border` object.
 				editor.model.change( writer => {
-					writer.setAttribute( 'border', Object.assign( {}, border, {
-						style: {
-							top: newStyle,
-							right: newStyle,
-							bottom: newStyle,
-							left: newStyle
-						}
-					} ), tableCell );
+					writer.setAttribute( 'borderStyle', {
+						top: newStyle,
+						right: newStyle,
+						bottom: newStyle,
+						left: newStyle
+					}, tableCell );
 				} );
 			} );
 
@@ -306,6 +319,56 @@ function upcastAttribute( conversion, styleName, modelName ) {
 			value: viewElement => viewElement.getNormalizedStyle( styleName )
 		}
 	} );
+}
+
+function upcastBorderStyles( conversion, viewElement ) {
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElement, ( evt, data, conversionApi ) => {
+		let matcherPattern;
+
+		if ( data.viewItem.hasStyle( 'border' ) ) {
+			matcherPattern = {
+				styles: [ 'border' ]
+			};
+		} else {
+			const stylesToConsume = [
+				'border-top',
+				'border-right',
+				'border-bottom',
+				'border-left'
+			].filter( styleName => data.viewItem.hasStyle( styleName ) );
+
+			if ( stylesToConsume.length ) {
+				matcherPattern = {
+					styles: stylesToConsume
+				};
+			} else {
+				return;
+			}
+		}
+
+		// Try to consume appropriate values from consumable values list.
+		const toMatch = matcherPattern;
+
+		if ( !conversionApi.consumable.test( data.viewItem, toMatch ) ) {
+			return;
+		}
+
+		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
+
+		conversionApi.consumable.consume( data.viewItem, toMatch );
+
+		if ( conversionApi.schema.checkAttribute( modelElement, 'borderStyle' ) ) {
+			conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
+		}
+
+		if ( conversionApi.schema.checkAttribute( modelElement, 'borderColor' ) ) {
+			conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
+		}
+
+		if ( conversionApi.schema.checkAttribute( modelElement, 'borderWidth' ) ) {
+			conversionApi.writer.setAttribute( 'borderWidth', data.viewItem.getNormalizedStyle( 'border-width' ), modelElement );
+		}
+	} ) );
 }
 
 function setupTableConversion( conversion, styleName ) {
