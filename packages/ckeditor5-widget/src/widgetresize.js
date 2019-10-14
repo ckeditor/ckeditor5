@@ -33,9 +33,11 @@ export default class WidgetResize extends Plugin {
 
 	init() {
 		/**
+		 * The currently visible resizer.
+		 *
 		 * @protected
 		 * @observable
-		 * @type {module:widget/widgetresize/resizer~Resizer|null} Currently visible resizer.
+		 * @member {module:widget/widgetresize/resizer~Resizer|null} #_visibleResizer
 		 */
 		this.set( '_visibleResizer', null );
 
@@ -46,7 +48,7 @@ export default class WidgetResize extends Plugin {
 		 *
 		 * @protected
 		 * @observable
-		 * @type {module:widget/widgetresize/resizer~Resizer|null}
+		 * @member {module:widget/widgetresize/resizer~Resizer|null} #_activeResizer
 		 */
 		this.set( '_activeResizer', null );
 
@@ -98,11 +100,11 @@ export default class WidgetResize extends Plugin {
 			if ( this._visibleResizer ) {
 				this._visibleResizer.redraw();
 			}
-		}; // 5 fps
+		};
 
-		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 16 ); // ~60fps
+		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 ); // 5fps
 
-		// Redraws occurring upon change of visible resizer must not be throttled, as it is crucial for the initial
+		// Redraws occurring upon a change of visible resizer must not be throttled, as it is crucial for the initial
 		// render. Without it the resizer frame would be misaligned with resizing host for a fraction of second.
 		this.on( 'change:_visibleResizer', redrawFocusedResizer );
 
