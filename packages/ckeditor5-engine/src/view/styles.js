@@ -8,6 +8,8 @@
  */
 
 import { get, has, isObject, merge, set, unset } from 'lodash-es';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 const setOnPathStyles = [
 	// Margin & padding.
@@ -17,22 +19,8 @@ const setOnPathStyles = [
 	'background-color'
 ];
 
-/**
- * Styles class.
- *
- * Handles styles normalization.
- */
-export default class Styles {
-	/**
-	 * Creates Styles instance.
-	 */
+class StylesConverter {
 	constructor() {
-		/**
-		 * @type {{}}
-		 * @private
-		 */
-		this._styles = {};
-
 		/**
 		 * Holds shorthand properties normalizers.
 		 *
@@ -112,19 +100,21 @@ export default class Styles {
 		this.extractors.set( 'border-right', borderPositionExtractor( 'right' ) );
 		this.extractors.set( 'border-bottom', borderPositionExtractor( 'bottom' ) );
 		this.extractors.set( 'border-left', borderPositionExtractor( 'left' ) );
-		this.extractors.set( 'border-top-color', styles => styles.getNormalized( 'border.color.top' ) );
-		// TODO: tests/is needed?
-		this.extractors.set( 'border-bottom-color', styles => styles.getNormalized( 'border.color.bottom' ) );
-		this.extractors.set( 'border-right-color', styles => styles.getNormalized( 'border.color.right' ) );
-		this.extractors.set( 'border-left-color', styles => styles.getNormalized( 'border.color.left' ) );
-		this.extractors.set( 'border-top-width', styles => styles.getNormalized( 'border.width.top' ) );
-		this.extractors.set( 'border-bottom-width', styles => styles.getNormalized( 'border.width.bottom' ) );
-		this.extractors.set( 'border-right-width', styles => styles.getNormalized( 'border.width.right' ) );
-		this.extractors.set( 'border-left-width', styles => styles.getNormalized( 'border.width.left' ) );
-		this.extractors.set( 'border-top-style', styles => styles.getNormalized( 'border.style.top' ) );
-		this.extractors.set( 'border-bottom-style', styles => styles.getNormalized( 'border.style.bottom' ) );
-		this.extractors.set( 'border-right-style', styles => styles.getNormalized( 'border.style.right' ) );
-		this.extractors.set( 'border-left-style', styles => styles.getNormalized( 'border.style.left' ) );
+
+		this.extractors.set( 'border-top-color', 'border.color.top' );
+		this.extractors.set( 'border-right-color', 'border.color.right' );
+		this.extractors.set( 'border-bottom-color', 'border.color.bottom' );
+		this.extractors.set( 'border-left-color', 'border.color.left' );
+
+		this.extractors.set( 'border-top-width', 'border.width.top' );
+		this.extractors.set( 'border-right-width', 'border.width.right' );
+		this.extractors.set( 'border-bottom-width', 'border.width.bottom' );
+		this.extractors.set( 'border-left-width', 'border.width.left' );
+
+		this.extractors.set( 'border-top-style', 'border.style.top' );
+		this.extractors.set( 'border-right-style', 'border.style.right' );
+		this.extractors.set( 'border-bottom-style', 'border.style.bottom' );
+		this.extractors.set( 'border-left-style', 'border.style.left' );
 
 		/**
 		 * Holds style normalize object reducers.
@@ -183,6 +173,101 @@ export default class Styles {
 	}
 
 	/**
+	 * Returns reduced form of style property form normalized object.
+	 *
+	 * @private
+	 * @param {String} styleName
+	 * @param {Object|String} normalizedValue
+	 * @returns {Array.<Array.<String, String>>}
+	 */
+	_getReduceForm( styleName, normalizedValue ) {
+		if ( this.reducers.has( styleName ) ) {
+			const styleGetter = this.reducers.get( styleName );
+
+			return styleGetter( normalizedValue );
+		}
+
+		return [ [ styleName, normalizedValue ] ];
+	}
+
+	getNormalized( name, styles ) {
+		if ( !name ) {
+			return merge( {}, styles );
+		}
+
+		if ( this.extractors.has( name ) ) {
+			const extractor = this.extractors.get( name );
+
+			if ( typeof extractor === 'string' ) {
+				return this.getNormalized( extractor, styles );
+			}
+
+			return extractor( styles, this );
+		}
+
+		const path = toPath( name );
+
+		if ( has( styles, path ) ) {
+			return get( styles, path );
+		} else {
+			return styles[ name ];
+		}
+	}
+
+	/**
+	 * Parse style property value to a normalized form.
+	 *
+	 * @param {String} propertyName Name of style property.
+	 * @param {String} value Value of style property.
+	 * @param {Object} styles
+	 * @private
+	 */
+	_toNormalizedForm( propertyName, value, styles ) {
+		if ( isObject( value ) ) {
+			appendStyleValue( styles, toPath( propertyName ), value );
+			return;
+		}
+
+		// Set directly to an object.
+		if ( setOnPathStyles.includes( propertyName ) ) {
+			appendStyleValue( styles, toPath( propertyName ), value );
+
+			return;
+		}
+
+		if ( this.normalizers.has( propertyName ) ) {
+			const parser = this.normalizers.get( propertyName );
+
+			// TODO: merge with appendStyleValue?
+			merge( styles, parser( value ) );
+		} else {
+			appendStyleValue( styles, propertyName, value );
+		}
+	}
+}
+
+const stylesConverter = new StylesConverter();
+
+mix( StylesConverter, EmitterMixin );
+
+/**
+ * Styles class.
+ *
+ * Handles styles normalization.
+ */
+export default class Styles {
+	/**
+	 * Creates Styles instance.
+	 */
+	constructor() {
+		/**
+		 * @type {{}}
+		 * @private
+		 */
+		this._styles = {};
+	}
+
+	/**
 	 * Number of styles defined.
 	 *
 	 * @type {Number}
@@ -204,7 +289,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			this._toNormalizedForm( key, value );
+			stylesConverter._toNormalizedForm( key, value, this._styles );
 		}
 	}
 
@@ -249,7 +334,7 @@ export default class Styles {
 				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			this._toNormalizedForm( nameOrObject, value );
+			stylesConverter._toNormalizedForm( nameOrObject, value, this._styles );
 		}
 	}
 
@@ -282,21 +367,7 @@ export default class Styles {
 	 * @returns {Object|undefined}
 	 */
 	getNormalized( name ) {
-		if ( !name ) {
-			return merge( {}, this._styles );
-		}
-
-		if ( this.extractors.has( name ) ) {
-			return this.extractors.get( name )( this );
-		}
-
-		const path = toPath( name );
-
-		if ( has( this._styles, path ) ) {
-			return get( this._styles, path );
-		} else {
-			return this._styles[ name ];
-		}
+		return stylesConverter.getNormalized( name, this._styles );
 	}
 
 	/**
@@ -322,7 +393,7 @@ export default class Styles {
 	 * @returns {String|undefined}
 	 */
 	getInlineProperty( propertyName ) {
-		const normalized = this.getNormalized( propertyName );
+		const normalized = stylesConverter.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
@@ -330,7 +401,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = this._getReduceForm( propertyName, normalized );
+			const styles = stylesConverter._getReduceForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -373,60 +444,12 @@ export default class Styles {
 		const keys = Object.keys( this._styles ).sort();
 
 		for ( const key of keys ) {
-			const normalized = this.getNormalized( key );
+			const normalized = stylesConverter.getNormalized( key, this._styles );
 
-			parsed.push( ...this._getReduceForm( key, normalized ) );
+			parsed.push( ...stylesConverter._getReduceForm( key, normalized ) );
 		}
 
 		return parsed;
-	}
-
-	/**
-	 * Parse style property value to a normalized form.
-	 *
-	 * @param {String} propertyName Name of style property.
-	 * @param {String} value Value of style property.
-	 * @private
-	 */
-	_toNormalizedForm( propertyName, value ) {
-		if ( isObject( value ) ) {
-			appendStyleValue( this._styles, toPath( propertyName ), value );
-			return;
-		}
-
-		// Set directly to an object.
-		if ( setOnPathStyles.includes( propertyName ) ) {
-			appendStyleValue( this._styles, toPath( propertyName ), value );
-
-			return;
-		}
-
-		if ( this.normalizers.has( propertyName ) ) {
-			const parser = this.normalizers.get( propertyName );
-
-			// TODO: merge with appendStyleValue?
-			this._styles = merge( {}, this._styles, parser( value ) );
-		} else {
-			appendStyleValue( this._styles, propertyName, value );
-		}
-	}
-
-	/**
-	 * Returns reduced form of style property form normalized object.
-	 *
-	 * @private
-	 * @param {String} styleName
-	 * @param {Object|String} normalizedValue
-	 * @returns {Array.<Array.<String, String>>}
-	 */
-	_getReduceForm( styleName, normalizedValue ) {
-		if ( this.reducers.has( styleName ) ) {
-			const styleGetter = this.reducers.get( styleName );
-
-			return styleGetter( normalizedValue );
-		}
-
-		return [ [ styleName, normalizedValue ] ];
 	}
 }
 
@@ -506,8 +529,8 @@ function getBorderPropertyPositionNormalizer( property, side ) {
 }
 
 function borderPositionExtractor( which ) {
-	return styles => {
-		const border = styles.getNormalized( 'border' );
+	return ( styles, converter ) => {
+		const border = converter.getNormalized( 'border', styles );
 
 		const value = [];
 
