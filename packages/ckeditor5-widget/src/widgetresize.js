@@ -80,11 +80,11 @@ export default class WidgetResize extends Plugin {
 			}
 		} );
 
-		this._observer.listenTo( domDocument, 'mousemove', throttle( ( event, domEventData ) => {
+		this._observer.listenTo( domDocument, 'mousemove', ( event, domEventData ) => {
 			if ( this._activeResizer ) {
 				this._activeResizer.updateSize( domEventData );
 			}
-		}, 16 ) ); // 60 fps
+		} );
 
 		this._observer.listenTo( domDocument, 'mouseup', () => {
 			if ( this._activeResizer ) {
