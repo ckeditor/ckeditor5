@@ -35,6 +35,13 @@ export default class TodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'TodoListEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ ListEditing ];
 	}
