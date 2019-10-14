@@ -45,6 +45,10 @@ describe( 'DecoupledEditorUIView', () => {
 			it( 'is not rendered', () => {
 				expect( view.toolbar.isRendered ).to.be.false;
 			} );
+
+			it( 'has automatic items grouping enabled', () => {
+				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+			} );
 		} );
 
 		describe( '#editable', () => {

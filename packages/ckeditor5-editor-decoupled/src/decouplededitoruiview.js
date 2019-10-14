@@ -40,7 +40,9 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbar = new ToolbarView( locale );
+		this.toolbar = new ToolbarView( locale, {
+			shouldGroupWhenFull: true
+		} );
 
 		/**
 		 * The editable of the decoupled editor UI.

@@ -137,10 +137,6 @@ describe( 'DecoupledEditorUI', () => {
 		} );
 
 		describe( 'view.toolbar', () => {
-			it( 'has automatic items grouping enabled', () => {
-				expect( view.toolbar.shouldGroupWhenFull ).to.be.true;
-			} );
-
 			describe( '#items', () => {
 				it( 'are filled with the config.toolbar (specified as an Array)', () => {
 					return VirtualDecoupledTestEditor
