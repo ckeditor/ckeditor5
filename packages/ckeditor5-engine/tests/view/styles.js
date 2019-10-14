@@ -284,13 +284,14 @@ describe( 'Styles', () => {
 
 			it( 'should output only defined inline styles', () => {
 				styles.insertProperty( 'border-color', { top: 'blue' } );
+
 				expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 					color: { top: 'blue' }
 				} );
 
 				expect( styles.getInlineStyle( 'border' ) ).to.equal( 'border-top:blue;' );
 				// TODO: expect( styles.hasProperty( 'border-top-color' ) ).to.be.true;
-				expect( styles.getInlineProperty( 'border-top-color' ) ).to.equal( 'blue' );
+				// expect( styles.getInlineProperty( 'border-top-color' ) ).to.equal( 'blue' );
 			} );
 
 			it( 'should output inline shorthand rules #2', () => {

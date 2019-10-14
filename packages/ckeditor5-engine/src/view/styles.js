@@ -11,14 +11,6 @@ import { get, has, isObject, merge, set, unset } from 'lodash-es';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-const setOnPathStyles = [
-	// Margin & padding.
-	'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
-	'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-	// Background.
-	'background-color'
-];
-
 class StylesConverter {
 	constructor() {
 		/**
@@ -44,56 +36,18 @@ class StylesConverter {
 		 *
 		 * Normalizers produces coherent object representation for both shorthand and longhand forms:
 		 *
-		 *		const style = {
-		 *			border: {
-		 *				color: {
-		 *					top: '#f00',
-		 *					right: '#ba7',
-		 *					bottom: '#f00',
-		 *					left: '#ba7'
-		 *				}
+		 *		stylesConverter.on( 'normalize:border-color', ( evt, data ) => {
+		 *			data.path = 'border.color';
+		 *			data.value = {
+		 *				top: '#f00',
+		 *				right: '#ba7',
+		 *				bottom: '#f00',
+		 *				left: '#ba7'
 		 *			}
-		 *		}
+		 *		} );
 		 *
-		 * @type {Map<String, Function>}
+		 * @event normalize
 		 */
-		this.normalizers = new Map();
-
-		// Border shorthand.
-		this.normalizers.set( 'border', normalizeBorder );
-
-		// Border-position shorthands.
-		this.normalizers.set( 'border-top', getBorderPositionNormalizer( 'top' ) );
-		this.normalizers.set( 'border-right', getBorderPositionNormalizer( 'right' ) );
-		this.normalizers.set( 'border-bottom', getBorderPositionNormalizer( 'bottom' ) );
-		this.normalizers.set( 'border-left', getBorderPositionNormalizer( 'left' ) );
-
-		// Border-property shorthands.
-		this.normalizers.set( 'border-color', getBorderPropertyNormalizer( 'color' ) );
-		this.normalizers.set( 'border-width', getBorderPropertyNormalizer( 'width' ) );
-		this.normalizers.set( 'border-style', getBorderPropertyNormalizer( 'style' ) );
-
-		// Border longhands.
-		this.normalizers.set( 'border-top-color', getBorderPropertyPositionNormalizer( 'color', 'top' ) );
-		this.normalizers.set( 'border-top-style', getBorderPropertyPositionNormalizer( 'style', 'top' ) );
-		this.normalizers.set( 'border-top-width', getBorderPropertyPositionNormalizer( 'width', 'top' ) );
-
-		this.normalizers.set( 'border-right-color', getBorderPropertyPositionNormalizer( 'color', 'right' ) );
-		this.normalizers.set( 'border-right-style', getBorderPropertyPositionNormalizer( 'style', 'right' ) );
-		this.normalizers.set( 'border-right-width', getBorderPropertyPositionNormalizer( 'width', 'right' ) );
-
-		this.normalizers.set( 'border-bottom-color', getBorderPropertyPositionNormalizer( 'color', 'bottom' ) );
-		this.normalizers.set( 'border-bottom-style', getBorderPropertyPositionNormalizer( 'style', 'bottom' ) );
-		this.normalizers.set( 'border-bottom-width', getBorderPropertyPositionNormalizer( 'width', 'bottom' ) );
-
-		this.normalizers.set( 'border-left-color', getBorderPropertyPositionNormalizer( 'color', 'left' ) );
-		this.normalizers.set( 'border-left-style', getBorderPropertyPositionNormalizer( 'style', 'left' ) );
-		this.normalizers.set( 'border-left-width', getBorderPropertyPositionNormalizer( 'width', 'left' ) );
-
-		this.normalizers.set( 'background', normalizeBackground );
-
-		this.normalizers.set( 'margin', getPositionShorthandNormalizer( 'margin' ) );
-		this.normalizers.set( 'padding', getPositionShorthandNormalizer( 'padding' ) );
 
 		this.extractors = new Map();
 		this.extractors.set( 'border-top', borderPositionExtractor( 'top' ) );
@@ -225,30 +179,70 @@ class StylesConverter {
 	_toNormalizedForm( propertyName, value, styles ) {
 		if ( isObject( value ) ) {
 			appendStyleValue( styles, toPath( propertyName ), value );
-			return;
-		}
-
-		// Set directly to an object.
-		if ( setOnPathStyles.includes( propertyName ) ) {
-			appendStyleValue( styles, toPath( propertyName ), value );
 
 			return;
 		}
 
-		if ( this.normalizers.has( propertyName ) ) {
-			const parser = this.normalizers.get( propertyName );
+		const data = {
+			path: propertyName,
+			value
+		};
 
-			// TODO: merge with appendStyleValue?
-			merge( styles, parser( value ) );
-		} else {
-			appendStyleValue( styles, propertyName, value );
-		}
+		this.fire( 'normalize:' + propertyName, data );
+
+		appendStyleValue( styles, data.path, data.value );
 	}
 }
 
+mix( StylesConverter, EmitterMixin );
+
 const stylesConverter = new StylesConverter();
 
-mix( StylesConverter, EmitterMixin );
+stylesConverter.on( 'normalize:border', normalizeBorder );
+
+// Border-position shorthands.
+stylesConverter.on( 'normalize:border-top', getBorderPositionNormalizer( 'top' ) );
+stylesConverter.on( 'normalize:border-right', getBorderPositionNormalizer( 'right' ) );
+stylesConverter.on( 'normalize:border-bottom', getBorderPositionNormalizer( 'bottom' ) );
+stylesConverter.on( 'normalize:border-left', getBorderPositionNormalizer( 'left' ) );
+
+// Border-property shorthands.
+stylesConverter.on( 'normalize:border-color', getBorderPropertyNormalizer( 'color' ) );
+stylesConverter.on( 'normalize:border-width', getBorderPropertyNormalizer( 'width' ) );
+stylesConverter.on( 'normalize:border-style', getBorderPropertyNormalizer( 'style' ) );
+
+// Border longhands.
+stylesConverter.on( 'normalize:border-top-color', getBorderPropertyPositionNormalizer( 'color', 'top' ) );
+stylesConverter.on( 'normalize:border-top-style', getBorderPropertyPositionNormalizer( 'style', 'top' ) );
+stylesConverter.on( 'normalize:border-top-width', getBorderPropertyPositionNormalizer( 'width', 'top' ) );
+
+stylesConverter.on( 'normalize:border-right-color', getBorderPropertyPositionNormalizer( 'color', 'right' ) );
+stylesConverter.on( 'normalize:border-right-style', getBorderPropertyPositionNormalizer( 'style', 'right' ) );
+stylesConverter.on( 'normalize:border-right-width', getBorderPropertyPositionNormalizer( 'width', 'right' ) );
+
+stylesConverter.on( 'normalize:border-bottom-color', getBorderPropertyPositionNormalizer( 'color', 'bottom' ) );
+stylesConverter.on( 'normalize:border-bottom-style', getBorderPropertyPositionNormalizer( 'style', 'bottom' ) );
+stylesConverter.on( 'normalize:border-bottom-width', getBorderPropertyPositionNormalizer( 'width', 'bottom' ) );
+
+stylesConverter.on( 'normalize:border-left-color', getBorderPropertyPositionNormalizer( 'color', 'left' ) );
+stylesConverter.on( 'normalize:border-left-style', getBorderPropertyPositionNormalizer( 'style', 'left' ) );
+stylesConverter.on( 'normalize:border-left-width', getBorderPropertyPositionNormalizer( 'width', 'left' ) );
+
+stylesConverter.on( 'normalize:margin', getPositionShorthandNormalizer( 'margin' ) );
+
+stylesConverter.on( 'normalize:margin-top', ( evt, data ) => ( data.path = 'margin.top' ) );
+stylesConverter.on( 'normalize:margin-right', ( evt, data ) => ( data.path = 'margin.right' ) );
+stylesConverter.on( 'normalize:margin-bottom', ( evt, data ) => ( data.path = 'margin.bottom' ) );
+stylesConverter.on( 'normalize:margin-left', ( evt, data ) => ( data.path = 'margin.left' ) );
+
+stylesConverter.on( 'normalize:padding', getPositionShorthandNormalizer( 'padding' ) );
+stylesConverter.on( 'normalize:padding-top', ( evt, data ) => ( data.path = 'padding.top' ) );
+stylesConverter.on( 'normalize:padding-right', ( evt, data ) => ( data.path = 'padding.right' ) );
+stylesConverter.on( 'normalize:padding-bottom', ( evt, data ) => ( data.path = 'padding.bottom' ) );
+stylesConverter.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'padding.left' ) );
+
+stylesConverter.on( 'normalize:background', normalizeBackground );
+stylesConverter.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
 
 /**
  * Styles class.
@@ -475,26 +469,26 @@ function toBorderPropertyShorthand( value, property ) {
 }
 
 function getPositionShorthandNormalizer( longhand ) {
-	return value => {
-		return { [ longhand ]: getTopRightBottomLeftValues( value ) };
+	return ( evt, data ) => {
+		data.path = longhand;
+		data.value = getTopRightBottomLeftValues( data.value );
 	};
 }
 
-function normalizeBorder( value ) {
-	const { color, style, width } = normalizeBorderShorthand( value );
+function normalizeBorder( evt, data ) {
+	const { color, style, width } = normalizeBorderShorthand( data.value );
 
-	return {
-		border: {
-			color: getTopRightBottomLeftValues( color ),
-			style: getTopRightBottomLeftValues( style ),
-			width: getTopRightBottomLeftValues( width )
-		}
+	data.path = 'border';
+	data.value = {
+		color: getTopRightBottomLeftValues( color ),
+		style: getTopRightBottomLeftValues( style ),
+		width: getTopRightBottomLeftValues( width )
 	};
 }
 
 function getBorderPositionNormalizer( side ) {
-	return value => {
-		const { color, style, width } = normalizeBorderShorthand( value );
+	return ( evt, data ) => {
+		const { color, style, width } = normalizeBorderShorthand( data.value );
 
 		const border = {};
 
@@ -510,22 +504,27 @@ function getBorderPositionNormalizer( side ) {
 			border.width = { [ side ]: width };
 		}
 
-		return { border };
+		data.path = 'border';
+		data.value = border;
 	};
 }
 
 function getBorderPropertyNormalizer( propertyName ) {
-	return value => ( { border: toBorderPropertyShorthand( value, propertyName ) } );
+	return ( evt, data ) => {
+		data.path = 'border';
+		data.value = toBorderPropertyShorthand( data.value, propertyName );
+	};
 }
 
 function getBorderPropertyPositionNormalizer( property, side ) {
-	return value => ( {
-		border: {
+	return ( evt, data ) => {
+		data.path = 'border';
+		data.value = {
 			[ property ]: {
-				[ side ]: value
+				[ side ]: data.value
 			}
-		}
-	} );
+		};
+	};
 }
 
 function borderPositionExtractor( which ) {
@@ -570,10 +569,10 @@ function normalizeBorderShorthand( string ) {
 	return result;
 }
 
-function normalizeBackground( value ) {
+function normalizeBackground( evt, data ) {
 	const background = {};
 
-	const parts = value.split( ' ' );
+	const parts = data.value.split( ' ' );
 
 	for ( const part of parts ) {
 		if ( isRepeat( part ) ) {
@@ -591,7 +590,8 @@ function normalizeBackground( value ) {
 		}
 	}
 
-	return { background };
+	data.path = 'background';
+	data.value = background;
 }
 
 function isColor( string ) {
