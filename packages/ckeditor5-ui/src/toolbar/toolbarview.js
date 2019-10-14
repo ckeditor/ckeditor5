@@ -444,18 +444,6 @@ class DynamicGrouping {
 		this._resizeObserver = null;
 
 		/**
-		 * A flag used by {@link #_updateGrouping} method to make sure no concurrent updates
-		 * are performed to the {@link #_ungroupedItems} and {@link #_groupedItems}. Because {@link #_updateGrouping}
-		 * manages those collections but also is executed upon changes in those collections, this flag
-		 * ensures no infinite loops occur.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {Boolean}
-		 */
-		this._updateLock = false;
-
-		/**
 		 * A cached value of the horizontal padding style used by {@link #_updateGrouping}
 		 * to manage the {@link module:ui/toolbar/toolbarview~ToolbarView#items} that do not fit into
 		 * a single toolbar line. This value can be reused between updates because it is unlikely that
@@ -545,13 +533,6 @@ class DynamicGrouping {
 	 * without the toolbar wrapping.
 	 */
 	_updateGrouping() {
-		// Do not check when another check is going on to avoid infinite loops.
-		// This method is called when adding and removing #items but at the same time it adds and removes
-		// #items itself.
-		if ( this._updateLock ) {
-			return;
-		}
-
 		const view = this.view;
 
 		// Do no grouping–related geometry analysis when the toolbar is detached from visible DOM,
@@ -561,8 +542,6 @@ class DynamicGrouping {
 		if ( !view.element.ownerDocument.body.contains( view.element ) ) {
 			return;
 		}
-
-		this._updateLock = true;
 
 		let wereItemsGrouped;
 
@@ -592,8 +571,6 @@ class DynamicGrouping {
 				this._groupLastItem();
 			}
 		}
-
-		this._updateLock = false;
 	}
 
 	/**
