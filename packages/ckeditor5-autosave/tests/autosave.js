@@ -617,11 +617,50 @@ describe( 'Autosave', () => {
 					expect( pendingActions.hasAny ).to.be.true;
 					sinon.clock.tick( 1000 );
 				} )
-				.then( () => Promise.resolve() )
+				.then( runPromiseCycles )
 				.then( () => {
 					expect( pendingActions.hasAny ).to.be.false;
 					sinon.assert.calledOnce( serverActionSpy );
 					sinon.assert.calledOnce( serverActionStub );
+				} );
+		} );
+
+		it( 'should handle a situration when the save callback throws an error', () => {
+			const pendingActions = editor.plugins.get( PendingActions );
+			const successServerActionSpy = sinon.spy();
+			const serverActionStub = sinon.stub();
+
+			serverActionStub.onFirstCall()
+				.rejects( new Error( 'foo' ) );
+
+			serverActionStub.onSecondCall()
+				.callsFake( successServerActionSpy );
+
+			autosave.adapter = {
+				save: serverActionStub
+			};
+
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			return editor.destroy()
+				.then( () => {
+					expect( pendingActions.hasAny ).to.be.true;
+				} )
+				.then( runPromiseCycles )
+				.then( () => {
+					expect( pendingActions.hasAny ).to.be.true;
+					sinon.assert.calledOnce( serverActionStub );
+					sinon.assert.notCalled( successServerActionSpy );
+				} )
+				.then( () => sinon.clock.tick( 1000 ) )
+				.then( runPromiseCycles )
+				.then( () => {
+					expect( pendingActions.hasAny ).to.be.false;
+					sinon.assert.calledTwice( serverActionStub );
+					sinon.assert.calledOnce( successServerActionSpy );
 				} );
 		} );
 	} );
