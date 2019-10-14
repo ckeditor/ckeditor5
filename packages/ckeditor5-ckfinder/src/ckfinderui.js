@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import browseFilesIcon from '../theme/icons/browse-files.svg';
 
 /**
- * The CKFinder UI plugin. It introduces he `'ckfinder'` toolbar button.
+ * The CKFinder UI plugin. It introduces the `'ckfinder'` toolbar button.
  *
  * @extends module:core/plugin~Plugin
  */

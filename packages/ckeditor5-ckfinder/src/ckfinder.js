@@ -89,8 +89,8 @@ export default class CKFinder extends Plugin {
  *
  * Supported types are:
  *
- * * `'modal'` - opens a CKFinder in a modal,
- * * `'popup'` - opens a CKFinder in a new "pop-up" window.
+ * * `'modal'` &ndash; Opens CKFinder in a modal,
+ * * `'popup'` &ndash; Opens CKFinder in a new "pop-up" window.
  *
  * Defaults to `'modal'`.
  *
@@ -98,10 +98,11 @@ export default class CKFinder extends Plugin {
  */
 
 /**
- * The path (URL) to the connector which handles the file upload in the CKFinder file manager.
- * When specified, enables the automatic upload of resources such as images inserted into the content.
+ * The path (URL) to the connector which handles the file upload in CKFinder file manager.
+ * When specified, it enables the automatic upload of resources such as images inserted into the content.
  *
- * For instance, to use CKFinder's {@glink @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload}
+ * For instance, to use CKFinder's
+ * [quick upload](https://ckeditor.com/docs/ckfinder/ckfinder3-php/commands.html#command_quick_upload)
  * command, your can use the following (or similar) path:
  *
  *		ClassicEditor
