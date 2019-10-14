@@ -50,25 +50,6 @@ class StylesConverter {
 		 */
 
 		this.extractors = new Map();
-		this.extractors.set( 'border-top', borderPositionExtractor( 'top' ) );
-		this.extractors.set( 'border-right', borderPositionExtractor( 'right' ) );
-		this.extractors.set( 'border-bottom', borderPositionExtractor( 'bottom' ) );
-		this.extractors.set( 'border-left', borderPositionExtractor( 'left' ) );
-
-		this.extractors.set( 'border-top-color', 'border.color.top' );
-		this.extractors.set( 'border-right-color', 'border.color.right' );
-		this.extractors.set( 'border-bottom-color', 'border.color.bottom' );
-		this.extractors.set( 'border-left-color', 'border.color.left' );
-
-		this.extractors.set( 'border-top-width', 'border.width.top' );
-		this.extractors.set( 'border-right-width', 'border.width.right' );
-		this.extractors.set( 'border-bottom-width', 'border.width.bottom' );
-		this.extractors.set( 'border-left-width', 'border.width.left' );
-
-		this.extractors.set( 'border-top-style', 'border.style.top' );
-		this.extractors.set( 'border-right-style', 'border.style.right' );
-		this.extractors.set( 'border-bottom-style', 'border.style.bottom' );
-		this.extractors.set( 'border-left-style', 'border.style.left' );
 
 		/**
 		 * Holds style normalize object reducers.
@@ -104,26 +85,6 @@ class StylesConverter {
 		 * @type {Map<String, Function>}
 		 */
 		this.reducers = new Map();
-
-		this.reducers.set( 'border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
-		this.reducers.set( 'border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
-		this.reducers.set( 'border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
-		this.reducers.set( 'border-top', getBorderPositionReducer( 'top' ) );
-		this.reducers.set( 'border-right', getBorderPositionReducer( 'right' ) );
-		this.reducers.set( 'border-bottom', getBorderPositionReducer( 'bottom' ) );
-		this.reducers.set( 'border-left', getBorderPositionReducer( 'left' ) );
-		this.reducers.set( 'border', getBorderReducer );
-
-		this.reducers.set( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
-		this.reducers.set( 'padding', getTopRightBottomLeftValueReducer( 'padding' ) );
-
-		this.reducers.set( 'background', value => {
-			const ret = [];
-
-			ret.push( [ 'background-color', value.color ] );
-
-			return ret;
-		} );
 	}
 
 	/**
@@ -135,13 +96,13 @@ class StylesConverter {
 	 * @returns {Array.<Array.<String, String>>}
 	 */
 	_getReduceForm( styleName, normalizedValue ) {
-		if ( this.reducers.has( styleName ) ) {
-			const styleGetter = this.reducers.get( styleName );
+		const data = {
+			value: normalizedValue
+		};
 
-			return styleGetter( normalizedValue );
-		}
+		this.fire( 'reduce:' + styleName, data );
 
-		return [ [ styleName, normalizedValue ] ];
+		return data.reduced || [ [ styleName, normalizedValue ] ];
 	}
 
 	getNormalized( name, styles ) {
@@ -243,6 +204,46 @@ stylesConverter.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'pa
 
 stylesConverter.on( 'normalize:background', normalizeBackground );
 stylesConverter.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
+
+stylesConverter.extractors.set( 'border-top', borderPositionExtractor( 'top' ) );
+stylesConverter.extractors.set( 'border-right', borderPositionExtractor( 'right' ) );
+stylesConverter.extractors.set( 'border-bottom', borderPositionExtractor( 'bottom' ) );
+stylesConverter.extractors.set( 'border-left', borderPositionExtractor( 'left' ) );
+
+stylesConverter.extractors.set( 'border-top-color', 'border.color.top' );
+stylesConverter.extractors.set( 'border-right-color', 'border.color.right' );
+stylesConverter.extractors.set( 'border-bottom-color', 'border.color.bottom' );
+stylesConverter.extractors.set( 'border-left-color', 'border.color.left' );
+
+stylesConverter.extractors.set( 'border-top-width', 'border.width.top' );
+stylesConverter.extractors.set( 'border-right-width', 'border.width.right' );
+stylesConverter.extractors.set( 'border-bottom-width', 'border.width.bottom' );
+stylesConverter.extractors.set( 'border-left-width', 'border.width.left' );
+
+stylesConverter.extractors.set( 'border-top-style', 'border.style.top' );
+stylesConverter.extractors.set( 'border-right-style', 'border.style.right' );
+stylesConverter.extractors.set( 'border-bottom-style', 'border.style.bottom' );
+stylesConverter.extractors.set( 'border-left-style', 'border.style.left' );
+
+stylesConverter.on( 'reduce:border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
+stylesConverter.on( 'reduce:border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
+stylesConverter.on( 'reduce:border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
+stylesConverter.on( 'reduce:border-top', ( evt, data ) => ( data.reduced = getBorderPositionReducer( 'top' )( data.value ) ) );
+stylesConverter.on( 'reduce:border-right', ( evt, data ) => ( data.reduced = getBorderPositionReducer( 'right' )( data.value ) ) );
+stylesConverter.on( 'reduce:border-bottom', ( evt, data ) => ( data.reduced = getBorderPositionReducer( 'bottom' )( data.value ) ) );
+stylesConverter.on( 'reduce:border-left', ( evt, data ) => ( data.reduced = getBorderPositionReducer( 'left' )( data.value ) ) );
+stylesConverter.on( 'reduce:border', getBorderReducer );
+
+stylesConverter.on( 'reduce:margin', getTopRightBottomLeftValueReducer( 'margin' ) );
+stylesConverter.on( 'reduce:padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+
+stylesConverter.on( 'reduce:background', ( evt, data ) => {
+	const ret = [];
+
+	ret.push( [ 'background-color', data.value.color ] );
+
+	data.reduced = ret;
+} );
 
 /**
  * Styles class.
@@ -622,20 +623,20 @@ function isURL( string ) {
 	return /^url\(/.test( string );
 }
 
-function getBorderReducer( value ) {
+function getBorderReducer( evt, data ) {
 	const ret = [];
 
-	ret.push( ...getBorderPositionReducer( 'top' )( value ) );
-	ret.push( ...getBorderPositionReducer( 'right' )( value ) );
-	ret.push( ...getBorderPositionReducer( 'bottom' )( value ) );
-	ret.push( ...getBorderPositionReducer( 'left' )( value ) );
+	ret.push( ...getBorderPositionReducer( 'top' )( data.value ) );
+	ret.push( ...getBorderPositionReducer( 'right' )( data.value ) );
+	ret.push( ...getBorderPositionReducer( 'bottom' )( data.value ) );
+	ret.push( ...getBorderPositionReducer( 'left' )( data.value ) );
 
-	return ret;
+	data.reduced = ret;
 }
 
 function getTopRightBottomLeftValueReducer( styleShorthand ) {
-	return value => {
-		const { top, right, bottom, left } = ( value || {} );
+	return ( evt, data ) => {
+		const { top, right, bottom, left } = ( data.value || {} );
 
 		const reduced = [];
 
@@ -656,10 +657,10 @@ function getTopRightBottomLeftValueReducer( styleShorthand ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( value ) ] );
+			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( data.value ) ] );
 		}
 
-		return reduced;
+		data.reduced = reduced;
 	};
 }
 
