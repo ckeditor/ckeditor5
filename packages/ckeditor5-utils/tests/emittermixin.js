@@ -5,6 +5,8 @@
 
 import { default as EmitterMixin, _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
 import EventInfo from '../src/eventinfo';
+import { expectToThrowCKEditorError } from './_utils/utils';
+import CKEditorError from '../src/ckeditorerror';
 
 describe( 'EmitterMixin', () => {
 	let emitter, listener;
@@ -152,6 +154,35 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spyBar );
 			sinon.assert.calledThrice( spyFoo );
 			sinon.assert.calledThrice( spyFoo2 );
+		} );
+
+		it( 'should rethrow the CKEditorError error', () => {
+			emitter.on( 'test', () => {
+				throw new CKEditorError( 'Foo', null );
+			} );
+
+			expectToThrowCKEditorError( () => {
+				emitter.fire( 'test' );
+			}, /Foo/, null );
+		} );
+
+		it( 'should wrap an error into the CKEditorError if a native error was thrown', () => {
+			const error = new Error( 'foo' );
+			error.stack = 'bar';
+
+			emitter.on( 'test', () => {
+				throw error;
+			} );
+
+			expectToThrowCKEditorError( () => {
+				emitter.fire( 'test' );
+			}, /unexpected-error/, emitter, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'Error'
+				}
+			} );
 		} );
 
 		describe( 'return value', () => {

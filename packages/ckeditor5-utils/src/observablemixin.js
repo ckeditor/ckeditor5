@@ -333,11 +333,12 @@ function initObservable( observable ) {
 	} );
 
 	// Object that stores which properties of this observable are bound and how. It shares
-	// the binding objects (`{ observable: A, property: 'a', to: ... }`) with {@link utils.ObservableMixin#_boundObservables}.
-	// This data structure is a reverse of {@link utils.ObservableMixin#_boundObservables} and it is helpful for
-	// {@link utils.ObservableMixin#unbind}.
+	// the binding objects (`{ observable: A, property: 'a', to: ... }`) with
+	// {@link module:utils/observablemixin~ObservableMixin#_boundObservables}. This data structure is
+	// a reverse of {@link module:utils/observablemixin~ObservableMixin#_boundObservables} and it is helpful for
+	// {@link module:utils/observablemixin~ObservableMixin#unbind}.
 	//
-	// See {@link utils.ObservableMixin#bind}.
+	// See {@link module:utils/observablemixin~ObservableMixin#bind}.
 	//
 	//		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
 	//		console.log( A._boundProperties );

@@ -13,6 +13,7 @@ import priorities from './priorities';
 
 // To check if component is loaded more than once.
 import './version';
+import CKEditorError from './ckeditorerror';
 
 const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
@@ -184,58 +185,62 @@ const EmitterMixin = {
 	 * @inheritDoc
 	 */
 	fire( eventOrInfo, ...args ) {
-		const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
-		const event = eventInfo.name;
-		let callbacks = getCallbacksForEvent( this, event );
+		try {
+			const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
+			const event = eventInfo.name;
+			let callbacks = getCallbacksForEvent( this, event );
 
-		// Record that the event passed this emitter on its path.
-		eventInfo.path.push( this );
+			// Record that the event passed this emitter on its path.
+			eventInfo.path.push( this );
 
-		// Handle event listener callbacks first.
-		if ( callbacks ) {
-			// Arguments passed to each callback.
-			const callbackArgs = [ eventInfo, ...args ];
+			// Handle event listener callbacks first.
+			if ( callbacks ) {
+				// Arguments passed to each callback.
+				const callbackArgs = [ eventInfo, ...args ];
 
-			// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
-			// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
-			// failed if callbacks were added to the queue before currently processed callback.
-			// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
-			// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
-			callbacks = Array.from( callbacks );
+				// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
+				// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
+				// failed if callbacks were added to the queue before currently processed callback.
+				// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
+				// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
+				callbacks = Array.from( callbacks );
 
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				callbacks[ i ].callback.apply( this, callbackArgs );
+				for ( let i = 0; i < callbacks.length; i++ ) {
+					callbacks[ i ].callback.apply( this, callbackArgs );
 
-				// Remove the callback from future requests if off() has been called.
-				if ( eventInfo.off.called ) {
-					// Remove the called mark for the next calls.
-					delete eventInfo.off.called;
+					// Remove the callback from future requests if off() has been called.
+					if ( eventInfo.off.called ) {
+						// Remove the called mark for the next calls.
+						delete eventInfo.off.called;
 
-					removeCallback( this, event, callbacks[ i ].callback );
+						removeCallback( this, event, callbacks[ i ].callback );
+					}
+
+					// Do not execute next callbacks if stop() was called.
+					if ( eventInfo.stop.called ) {
+						break;
+					}
+				}
+			}
+
+			// Delegate event to other emitters if needed.
+			if ( this._delegations ) {
+				const destinations = this._delegations.get( event );
+				const passAllDestinations = this._delegations.get( '*' );
+
+				if ( destinations ) {
+					fireDelegatedEvents( destinations, eventInfo, args );
 				}
 
-				// Do not execute next callbacks if stop() was called.
-				if ( eventInfo.stop.called ) {
-					break;
+				if ( passAllDestinations ) {
+					fireDelegatedEvents( passAllDestinations, eventInfo, args );
 				}
 			}
+
+			return eventInfo.return;
+		} catch ( err ) {
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
-
-		// Delegate event to other emitters if needed.
-		if ( this._delegations ) {
-			const destinations = this._delegations.get( event );
-			const passAllDestinations = this._delegations.get( '*' );
-
-			if ( destinations ) {
-				fireDelegatedEvents( destinations, eventInfo, args );
-			}
-
-			if ( passAllDestinations ) {
-				fireDelegatedEvents( passAllDestinations, eventInfo, args );
-			}
-		}
-
-		return eventInfo.return;
 	},
 
 	/**
@@ -599,7 +604,8 @@ function getCallbacksForEvent( source, eventName ) {
 // Fires delegated events for given map of destinations.
 //
 // @private
-// * @param {Map.<utils.Emitter>} destinations A map containing `[ {@link utils.Emitter}, "event name" ]` pair destinations.
+// * @param {Map.<utils.Emitter>} destinations A map containing
+// `[ {@link module:utils/emittermixin~Emitter}, "event name" ]` pair destinations.
 // * @param {utils.EventInfo} eventInfo The original event info object.
 // * @param {Array.<*>} fireArgs Arguments the original event was fired with.
 function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
