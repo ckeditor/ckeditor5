@@ -58,6 +58,10 @@ describe( 'ClassicEditorUIView', () => {
 			it( 'is put into the "stickyPanel.content" collection', () => {
 				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.toolbar );
 			} );
+
+			it( 'has automatic items grouping enabled', () => {
+				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+			} );
 		} );
 
 		describe( '#editable', () => {
