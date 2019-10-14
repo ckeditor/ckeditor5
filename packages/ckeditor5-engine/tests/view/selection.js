@@ -10,11 +10,12 @@ import Document from '../../src/view/document';
 import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import Position from '../../src/view/position';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createViewRoot from './_utils/createroot';
 import { parse } from '../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Selection', () => {
 	let selection, el, range1, range2, range3;
@@ -113,27 +114,27 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /view-selection-add-range-not-range/ );
+			}, /view-selection-add-range-not-range/ );
 		} );
 
 		it( 'should throw an error when ranges intersects', () => {
 			const text = el.getChild( 0 );
 			const range2 = Range._createFromParentsAndOffsets( text, 7, text, 15 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [ range1, range2 ] );
-			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+			}, 'view-selection-range-intersects' );
 		} );
 
 		it( 'should throw an error when trying to set to not selectable', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			} ).to.throw( /view-selection-setTo-not-selectable/ );
+			}, /view-selection-setTo-not-selectable/ );
 		} );
 	} );
 
@@ -203,9 +204,9 @@ describe( 'Selection', () => {
 		it( 'throws if there are no ranges in selection', () => {
 			const endPos = Position._createAt( el, 'end' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
-			} ).to.throw( CKEditorError, /view-selection-setFocus-no-ranges/ );
+			}, /view-selection-setFocus-no-ranges/ );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -599,18 +600,21 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for selection', () => {
 			expect( selection.is( 'selection' ) ).to.be.true;
+			expect( selection.is( 'view:selection' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other values', () => {
 			expect( selection.is( 'documentSelection' ) ).to.be.false;
+			expect( selection.is( 'view:documentSelection' ) ).to.be.false;
 			expect( selection.is( 'node' ) ).to.be.false;
 			expect( selection.is( 'text' ) ).to.be.false;
 			expect( selection.is( 'textProxy' ) ).to.be.false;
 			expect( selection.is( 'element' ) ).to.be.false;
 			expect( selection.is( 'rootElement' ) ).to.be.false;
+			expect( selection.is( 'model:selection' ) ).to.be.false;
 		} );
 	} );
 
@@ -679,17 +683,17 @@ describe( 'Selection', () => {
 			it( 'should throw an error when trying to set to not selectable', () => {
 				const otherSelection = new Selection();
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					otherSelection.setTo( {} );
-				} ).to.throw( /view-selection-setTo-not-selectable/ );
+				}, /view-selection-setTo-not-selectable/ );
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
 				const otherSelection = new Selection();
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					otherSelection.setTo();
-				} ).to.throw( /view-selection-setTo-not-selectable/ );
+				}, /view-selection-setTo-not-selectable/ );
 			} );
 		} );
 
@@ -731,9 +735,9 @@ describe( 'Selection', () => {
 			it( 'should throw an error when the second parameter is not passed and first is an item', () => {
 				const foo = new Text( 'foo' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					selection.setTo( foo );
-				} ).to.throw( CKEditorError, /view-selection-setTo-required-second-parameter/ );
+				}, /view-selection-setTo-required-second-parameter/ );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {
@@ -878,18 +882,18 @@ describe( 'Selection', () => {
 
 		describe( 'throwing errors', () => {
 			it( 'should throw an error when range is invalid', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					selection.setTo( [ { invalid: 'range' } ] );
-				} ).to.throw( CKEditorError, /view-selection-add-range-not-range/ );
+				}, /view-selection-add-range-not-range/ );
 			} );
 
 			it( 'should throw when range is intersecting with already added range', () => {
 				const text = el.getChild( 0 );
 				const range2 = Range._createFromParentsAndOffsets( text, 7, text, 15 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					selection.setTo( [ range1, range2 ] );
-				} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+				}, 'view-selection-range-intersects' );
 			} );
 		} );
 

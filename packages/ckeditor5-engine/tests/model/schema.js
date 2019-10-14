@@ -5,8 +5,6 @@
 
 import Schema, { SchemaContext } from '../../src/model/schema';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import Model from '../../src/model/model';
 
 import DocumentFragment from '../../src/model/documentfragment';
@@ -19,6 +17,7 @@ import Range from '../../src/model/range';
 import { getData, setData, stringify, parse } from '../../src/dev-utils/model';
 
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -61,9 +60,9 @@ describe( 'Schema', () => {
 		it( 'throws when trying to register for a single item twice', () => {
 			schema.register( 'foo' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				schema.register( 'foo' );
-			} ).to.throw( CKEditorError, /^schema-cannot-register-item-twice:/ );
+			}, /^schema-cannot-register-item-twice:/, schema );
 		} );
 	} );
 
@@ -90,9 +89,9 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'throws when trying to extend a not yet registered item', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				schema.extend( 'foo' );
-			} ).to.throw( CKEditorError, /^schema-cannot-extend-missing-item:/ );
+			}, /^schema-cannot-extend-missing-item:/, schema );
 		} );
 	} );
 
@@ -846,9 +845,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createBefore( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+			}, /^schema-check-merge-no-element-before:/, schema );
 		} );
 
 		it( 'throws an error if the node before the position is not the element', () => {
@@ -864,9 +863,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createBefore( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+			}, /^schema-check-merge-no-element-before:/, schema );
 		} );
 
 		it( 'throws an error if there is no element after the position', () => {
@@ -881,9 +880,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createAfter( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-after:/ );
+			}, /^schema-check-merge-no-element-after:/, schema );
 		} );
 
 		it( 'throws an error if the node after the position is not the element', () => {
@@ -899,9 +898,9 @@ describe( 'Schema', () => {
 
 			const position = Position._createBefore( listItem );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+			}, /^schema-check-merge-no-element-before:/, schema );
 		} );
 
 		// This is an invalid case by definition – the baseElement should not contain disallowed elements
@@ -1005,16 +1004,16 @@ describe( 'Schema', () => {
 			setData(
 				model,
 				'<div>' +
-					'<section>' +
-						'<article>' +
-							'<paragraph>[foo]</paragraph>' +
-						'</article>' +
-					'</section>' +
-					'<widget>' +
-						'<image>' +
-							'<caption>b[a]r</caption>' +
-						'</image>' +
-					'</widget>' +
+				'<section>' +
+				'<article>' +
+				'<paragraph>[foo]</paragraph>' +
+				'</article>' +
+				'</section>' +
+				'<widget>' +
+				'<image>' +
+				'<caption>b[a]r</caption>' +
+				'</image>' +
+				'</widget>' +
 				'</div>'
 			);
 
@@ -1026,11 +1025,11 @@ describe( 'Schema', () => {
 			setData(
 				model,
 				'<div>' +
-					'<section>' +
-						'<article>' +
-							'<paragraph>[foo]</paragraph>' +
-						'</article>' +
-					'</section>' +
+				'<section>' +
+				'<article>' +
+				'<paragraph>[foo]</paragraph>' +
+				'</article>' +
+				'</section>' +
 				'</div>' +
 				'<section>b[]ar</section>'
 			);
@@ -1042,10 +1041,10 @@ describe( 'Schema', () => {
 			setData(
 				model,
 				'<image>' +
-					'<caption>[Foo</caption>' +
+				'<caption>[Foo</caption>' +
 				'</image>' +
 				'<article>' +
-					'<paragraph>Paragraph in article]</paragraph>' +
+				'<paragraph>Paragraph in article]</paragraph>' +
 				'</article>' +
 				'<paragraph>Paragraph item 1</paragraph>' +
 				'<paragraph>Paragraph [item 2]</paragraph>'
@@ -1060,10 +1059,10 @@ describe( 'Schema', () => {
 				'<paragraph>Paragraph item 1</paragraph>' +
 				'<paragraph>Paragraph [item 2]</paragraph>' +
 				'<image>' +
-					'<caption>[Foo</caption>' +
+				'<caption>[Foo</caption>' +
 				'</image>' +
 				'<article>' +
-					'<paragraph>Paragraph in article]</paragraph>' +
+				'<paragraph>Paragraph in article]</paragraph>' +
 				'</article>'
 			);
 
@@ -1770,6 +1769,21 @@ describe( 'Schema', () => {
 			} );
 		} );
 
+		it( 'should filter out disallowed attributes from empty element', () => {
+			schema.extend( 'div', { allowAttributes: 'a' } );
+
+			const div = new Element( 'div', { a: 1, b: 1 } );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ div ], writer );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<div a="1"></div>' );
+			} );
+		} );
+
 		it( 'should filter out disallowed attributes from all descendants of given nodes', () => {
 			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'a' on div>$text.
@@ -1791,13 +1805,18 @@ describe( 'Schema', () => {
 				if ( ctx.endsWith( 'div paragraph image' ) && attributeName == 'b' ) {
 					return true;
 				}
+
+				// Allow 'a' on div>paragraph.
+				if ( ctx.endsWith( 'div paragraph' ) && attributeName == 'a' ) {
+					return true;
+				}
 			} );
 
 			const foo = new Text( 'foo', { a: 1, b: 1 } );
 			const bar = new Text( 'bar', { a: 1, b: 1 } );
 			const imageInDiv = new Element( 'image', { a: 1, b: 1 } );
 			const imageInParagraph = new Element( 'image', { a: 1, b: 1 } );
-			const paragraph = new Element( 'paragraph', [], [ foo, imageInParagraph ] );
+			const paragraph = new Element( 'paragraph', { a: 1, b: 1 }, [ foo, imageInParagraph ] );
 			const div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
 
 			root._appendChild( [ div ] );
@@ -1805,16 +1824,10 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
 
-				expect( writer.batch.operations ).to.length( 4 );
-				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 2 ] ).to.instanceof( AttributeOperation );
-				expect( writer.batch.operations[ 3 ] ).to.instanceof( AttributeOperation );
-
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<div>' +
-							'<paragraph>' +
+							'<paragraph a="1">' +
 								'<$text b="1">foo</$text>' +
 								'<image b="1"></image>' +
 							'</paragraph>' +
@@ -1822,6 +1835,54 @@ describe( 'Schema', () => {
 							'<image a="1"></image>' +
 						'</div>'
 					);
+			} );
+		} );
+
+		it( 'should filter out disallowed attributes from parent node and all descendants nodes', () => {
+			schema.extend( 'div', { allowAttributes: 'a' } );
+			schema.extend( '$text', { allowAttributes: 'b' } );
+
+			const foo = new Text( 'foo', { a: 1, b: 1 } );
+			const div = new Element( 'div', { a: 1, b: 1 }, [ foo ] );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( root.getChildren(), writer );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<div a="1"><$text b="1">foo</$text></div>' );
+			} );
+		} );
+
+		it( 'should filter out all attributes from nodes that are merged while clearing', () => {
+			const a = new Text( 'a', { a: 1, b: 1 } );
+			const b = new Text( 'b', { b: 1 } );
+			const c = new Text( 'c', { a: 1, b: 1 } );
+			const div = new Element( 'div', [], [ a, b, c ] );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ div ], writer );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<div>abc</div>' );
+			} );
+		} );
+
+		it( 'should do not filter out sibling nodes', () => {
+			const foo = new Text( 'foo', { a: 1 } );
+			const bar = new Text( 'bar', { a: 1, b: 1 } );
+			const biz = new Text( 'biz', { a: 1 } );
+			const div = new Element( 'div', [], [ foo, bar, biz ] );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				schema.removeDisallowedAttributes( [ bar ], writer );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
 		} );
 	} );
@@ -2139,7 +2200,7 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'passes $root>paragraph and $root2>paragraph – where $root2 inherits content of $root' +
-				'and paragraph inherits allowWhere from $block', () => {
+			'and paragraph inherits allowWhere from $block', () => {
 				schema.register( '$root' );
 				schema.register( '$root2', {
 					allowContentOf: '$root'

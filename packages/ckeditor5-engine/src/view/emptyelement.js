@@ -44,13 +44,38 @@ export default class EmptyElement extends Element {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		emptyElement.is( 'emptyElement' ); // -> true
+	 *		emptyElement.is( 'element' ); // -> true
+	 *		emptyElement.is( 'node' ); // -> true
+	 *		emptyElement.is( 'view:emptyElement' ); // -> true
+	 *		emptyElement.is( 'view:element' ); // -> true
+	 *		emptyElement.is( 'view:node' ); // -> true
+	 *
+	 *		emptyElement.is( 'model:element' ); // -> false
+	 *		emptyElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is an empty element, you can also check its
+	 * {@link module:engine/view/emptyelement~EmptyElement#name name}:
+	 *
+	 *		emptyElement.is( 'img' ); // -> true if this is a img element
+	 *		emptyElement.is( 'emptyElement', 'img' ); // -> same as above
+	 *		text.is( 'img' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return type == 'emptyElement' || super.is( type );
+			return cutType == 'emptyElement' || super.is( type );
 		} else {
-			return ( type == 'emptyElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'emptyElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 
@@ -68,7 +93,10 @@ export default class EmptyElement extends Element {
 			 *
 			 * @error view-emptyelement-cannot-add
 			 */
-			throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			throw new CKEditorError(
+				'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.',
+				[ this, nodes ]
+			);
 		}
 	}
 }

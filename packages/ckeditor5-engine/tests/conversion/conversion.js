@@ -4,7 +4,6 @@
  */
 
 import Conversion from '../../src/conversion/conversion';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
@@ -18,6 +17,7 @@ import Model from '../../src/model/model';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 import ConversionHelpers from '../../src/conversion/conversionhelpers';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Conversion', () => {
 	let conversion, downcastDispA, upcastDispaA, downcastDispB;
@@ -34,15 +34,15 @@ describe( 'Conversion', () => {
 
 	describe( 'addAlias()', () => {
 		it( 'should throw when trying to use same group name twice', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				conversion.addAlias( 'upcast', upcastDispaA );
-			} ).to.throw( CKEditorError, /conversion-group-exists/ );
+			}, /conversion-group-exists/ );
 		} );
 
 		it( 'should throw when trying to add not registered dispatcher', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				conversion.addAlias( 'foo', {} );
-			} ).to.throw( CKEditorError, /conversion-add-alias-dispatcher-not-registered/ );
+			}, /conversion-add-alias-dispatcher-not-registered/ );
 		} );
 	} );
 
@@ -53,9 +53,9 @@ describe( 'Conversion', () => {
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				conversion.for( 'foo' );
-			} ).to.throw( CKEditorError, /conversion-for-unknown-group/ );
+			}, /conversion-for-unknown-group/ );
 		} );
 
 		it( 'should return proper helpers for group', () => {
@@ -301,6 +301,14 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view is an object with upcastAlso defined', () => {
+				schema.extend( '$text', {
+					allowAttributes: [ 'bold', 'xBold' ]
+				} );
+				conversion.attributeToElement( {
+					model: 'xBold',
+					view: 'x-bold'
+				} );
+
 				conversion.attributeToElement( {
 					model: 'bold',
 					view: 'strong',
@@ -310,22 +318,18 @@ describe( 'Conversion', () => {
 							name: 'span',
 							classes: 'bold'
 						},
-						{
-							name: 'span',
-							styles: {
-								'font-weight': 'bold'
-							}
-						},
 						viewElement => {
 							const fontWeight = viewElement.getStyle( 'font-weight' );
 
-							if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test( fontWeight ) && Number( fontWeight ) > 500 ) {
+							if ( fontWeight == 'bold' || Number( fontWeight ) > 500 ) {
 								return {
-									name: true,
 									styles: [ 'font-weight' ]
 								};
 							}
-						}
+						},
+						// Duplicates the `x-bold` from above to test if only one attribute would be converted.
+						// It should not convert to both bold & x-bold.
+						viewElement => viewElement.is( 'x-bold' ) ? { name: 'x-bold' } : null
 					]
 				} );
 
@@ -362,6 +366,18 @@ describe( 'Conversion', () => {
 					'<p><span style="font-weight: 600;">Foo</span></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
+				);
+
+				test(
+					'<p style="font-weight: 600;">Foo</p>',
+					'<paragraph><$text bold="true">Foo</$text></paragraph>',
+					'<p><strong>Foo</strong></p>'
+				);
+
+				test(
+					'<p><x-bold style="font-wieght:bold">Foo</x-bold></p>',
+					'<paragraph><$text xBold="true">Foo</$text></paragraph>',
+					'<p><x-bold>Foo</x-bold></p>'
 				);
 			} );
 

@@ -7,7 +7,8 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import Model from '../../src/model/model';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TextProxy', () => {
 	let model, doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
@@ -82,34 +83,37 @@ describe( 'TextProxy', () => {
 	} );
 
 	it( 'should throw if wrong offsetInText is passed', () => {
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, /model-textproxy-wrong-offsetintext/ );
+		}, /model-textproxy-wrong-offsetintext/, model );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, /model-textproxy-wrong-offsetintext/ );
+		}, /model-textproxy-wrong-offsetintext/, model );
 	} );
 
 	it( 'should throw if wrong length is passed', () => {
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, /model-textproxy-wrong-length/ );
+		}, /model-textproxy-wrong-length/, model );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, /model-textproxy-wrong-length/ );
+		}, /model-textproxy-wrong-length/, model );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for textProxy', () => {
 			expect( textProxy.is( 'textProxy' ) ).to.be.true;
+			expect( textProxy.is( 'model:textProxy' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( textProxy.is( 'node' ) ).to.be.false;
+			expect( textProxy.is( 'model:node' ) ).to.be.false;
 			expect( textProxy.is( 'text' ) ).to.be.false;
 			expect( textProxy.is( 'element' ) ).to.be.false;
+			expect( textProxy.is( 'model:element', 'image' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
 			expect( textProxy.is( 'rootElement' ) ).to.be.false;
 		} );

@@ -524,7 +524,8 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'view-selection-setTo-required-second-parameter: ' +
-					'selection.setTo requires the second parameter when the first parameter is a node.'
+					'selection.setTo requires the second parameter when the first parameter is a node.',
+					this
 				);
 			} else if ( placeOrOffset == 'in' ) {
 				range = Range._createIn( selectable );
@@ -547,7 +548,7 @@ export default class Selection {
 			 *
 			 * @error view-selection-setTo-not-selectable
 			 */
-			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.' );
+			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.', this );
 		}
 
 		this.fire( 'change' );
@@ -572,7 +573,8 @@ export default class Selection {
 			 * @error view-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError(
-				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.',
+				this
 			);
 		}
 
@@ -596,20 +598,22 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 * Checks whether this object is of the given type.
 	 *
-	 *		const selection = new Selection( ... );
+	 *		selection.is( 'selection' ); // -> true
+	 *		selection.is( 'view:selection' ); // -> true
 	 *
-	 *		selection.is( 'selection' ); // true
-	 *		selection.is( 'node' ); // false
-	 *		selection.is( 'element' ); // false
+	 *		selection.is( 'model:selection' ); // -> false
+	 *		selection.is( 'element' ); // -> false
+	 *		selection.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection';
+		return type == 'selection' || type == 'view:selection';
 	}
 
 	/**
@@ -680,7 +684,8 @@ export default class Selection {
 			 */
 			throw new CKEditorError(
 				'view-selection-add-range-not-range: ' +
-				'Selection range set to an object that is not an instance of view.Range'
+				'Selection range set to an object that is not an instance of view.Range',
+				this
 			);
 		}
 
@@ -709,6 +714,7 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'view-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					this,
 					{ addedRange: range, intersectingRange: storedRange }
 				);
 			}

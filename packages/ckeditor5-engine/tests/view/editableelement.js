@@ -4,16 +4,59 @@
  */
 
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import RootEditableElement from '../../src/view/rooteditableelement';
+
+import EditableElement from '../../src/view/editableelement';
 import Range from '../../src/view/range';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EditableElement', () => {
+	describe( 'is', () => {
+		let el;
+
+		before( () => {
+			el = new EditableElement( 'div' );
+		} );
+
+		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {
+			expect( el.is( 'containerElement' ) ).to.be.true;
+			expect( el.is( 'view:containerElement' ) ).to.be.true;
+			expect( el.is( 'containerElement', 'div' ) ).to.be.true;
+			expect( el.is( 'view:containerElement', 'div' ) ).to.be.true;
+			expect( el.is( 'editableElement' ) ).to.be.true;
+			expect( el.is( 'view:editableElement' ) ).to.be.true;
+			expect( el.is( 'editableElement', 'div' ) ).to.be.true;
+			expect( el.is( 'view:editableElement', 'div' ) ).to.be.true;
+			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'view:element' ) ).to.be.true;
+			expect( el.is( 'element', 'div' ) ).to.be.true;
+			expect( el.is( 'view:element', 'div' ) ).to.be.true;
+			expect( el.is( 'div' ) ).to.be.true;
+			expect( el.is( 'view:div' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( el.is( 'rootElement', 'p' ) ).to.be.false;
+			expect( el.is( 'view:rootElement', 'p' ) ).to.be.false;
+			expect( el.is( 'containerElement', 'p' ) ).to.be.false;
+			expect( el.is( 'view:containerElement', 'p' ) ).to.be.false;
+			expect( el.is( 'element', 'p' ) ).to.be.false;
+			expect( el.is( 'view:element', 'p' ) ).to.be.false;
+			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'view:p' ) ).to.be.false;
+			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( 'attributeElement' ) ).to.be.false;
+			expect( el.is( 'uiElement' ) ).to.be.false;
+			expect( el.is( 'emptyElement' ) ).to.be.false;
+			expect( el.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'document', () => {
 		let element, docMock;
 
 		beforeEach( () => {
-			element = new RootEditableElement( 'div' );
+			element = new EditableElement( 'div' );
 			docMock = createDocumentMock();
 		} );
 
@@ -31,9 +74,9 @@ describe( 'EditableElement', () => {
 			element._document = docMock;
 			const newDoc = createDocumentMock();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				element._document = newDoc;
-			} ).to.throw( CKEditorError, 'view-editableelement-document-already-set: View document is already set.' );
+			}, 'view-editableelement-document-already-set: View document is already set.', docMock );
 		} );
 
 		it( 'should be cloned properly', () => {
@@ -50,16 +93,16 @@ describe( 'EditableElement', () => {
 		beforeEach( () => {
 			docMock = createDocumentMock();
 
-			viewMain = new RootEditableElement( 'div' );
+			viewMain = new EditableElement( 'div' );
 			viewMain._document = docMock;
 
-			viewHeader = new RootEditableElement( 'h1' );
+			viewHeader = new EditableElement( 'h1' );
 			viewHeader._document = docMock;
 			viewHeader.rootName = 'header';
 		} );
 
 		it( 'should be observable', () => {
-			const root = new RootEditableElement( 'div' );
+			const root = new EditableElement( 'div' );
 			root._document = createDocumentMock();
 
 			expect( root.isFocused ).to.be.false;
@@ -113,7 +156,7 @@ describe( 'EditableElement', () => {
 
 	describe( 'isReadOnly', () => {
 		it( 'should be observable', () => {
-			const root = new RootEditableElement( 'div' );
+			const root = new EditableElement( 'div' );
 			root._document = createDocumentMock();
 
 			expect( root.isReadOnly ).to.be.false;
@@ -130,7 +173,7 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should be bound to the document#isReadOnly', () => {
-			const root = new RootEditableElement( 'div' );
+			const root = new EditableElement( 'div' );
 			root._document = createDocumentMock();
 
 			root.document.isReadOnly = false;
@@ -146,7 +189,7 @@ describe( 'EditableElement', () => {
 	describe( 'getDocument', () => {
 		it( 'should return document', () => {
 			const docMock = createDocumentMock();
-			const root = new RootEditableElement( 'div' );
+			const root = new EditableElement( 'div' );
 			root._document = docMock;
 
 			expect( root.document ).to.equal( docMock );

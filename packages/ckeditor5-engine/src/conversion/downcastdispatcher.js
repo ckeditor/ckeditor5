@@ -106,10 +106,10 @@ export default class DowncastDispatcher {
 	 * Creates a `DowncastDispatcher` instance.
 	 *
 	 * @see module:engine/conversion/downcastdispatcher~DowncastConversionApi
-	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
+	 * @param {Object} conversionApi Additional properties for interface that will be passed to events fired
 	 * by `DowncastDispatcher`.
 	 */
-	constructor( conversionApi = {} ) {
+	constructor( conversionApi ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
@@ -122,9 +122,10 @@ export default class DowncastDispatcher {
 	 * Takes {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
 	 *
 	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with converted model.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
-	convertChanges( differ, writer ) {
+	convertChanges( differ, markers, writer ) {
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
 			this.convertMarkerRemove( change.name, change.range, writer );
@@ -140,6 +141,13 @@ export default class DowncastDispatcher {
 				// entry.type == 'attribute'.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			}
+		}
+
+		for ( const markerName of this.conversionApi.mapper.flushUnboundMarkerNames() ) {
+			const markerRange = markers.get( markerName ).getRange();
+
+			this.convertMarkerRemove( markerName, markerRange, writer );
+			this.convertMarkerAdd( markerName, markerRange, writer );
 		}
 
 		// After the view is updated, convert markers which have changed.
@@ -252,7 +260,7 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
-	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Array of markers containing model markers.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with converted model.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertSelection( selection, markers, writer ) {
@@ -532,7 +540,6 @@ export default class DowncastDispatcher {
 	 * @param {String} data.attributeKey Attribute key.
 	 * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
 	 * @param {*} data.attributeNewValue New attribute value.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
 	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
@@ -542,7 +549,6 @@ export default class DowncastDispatcher {
 	 *
 	 * @event selection
 	 * @param {module:engine/model/selection~Selection} selection Selection that is converted.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
 	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
@@ -558,17 +564,17 @@ export default class DowncastDispatcher {
 	 * If the marker range is not collapsed:
 	 *
 	 * * the event is fired for each item in the marker range one by one,
-	 * * consumables object includes each item of the marker range and the consumable value is same as event name.
+	 * * `conversionApi.consumable` includes each item of the marker range and the consumable value is same as event name.
 	 *
 	 * If the marker range is collapsed:
 	 *
 	 * * there is only one event,
-	 * * consumables object includes marker range with event name.
+	 * * `conversionApi.consumable` includes marker range with event name.
 	 *
 	 * If selection inside a marker is converted:
 	 *
 	 * * there is only one event,
-	 * * consumables object includes selection instance with event name.
+	 * * `conversionApi.consumable` includes selection instance with event name.
 	 *
 	 * @event addMarker
 	 * @param {Object} data Additional information about the change.
@@ -578,7 +584,6 @@ export default class DowncastDispatcher {
 	 * the marker range was not collapsed.
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
 	 * to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */

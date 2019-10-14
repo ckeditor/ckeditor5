@@ -1,0 +1,33 @@
+<style>
+	#snippet-link-target + .ck-editor .ck-content a[target]::after {
+		content: "target=\"" attr(target) "\"";
+		font-size: 0.6em;
+		position: relative;
+		left: 0em;
+		top: -1em;
+		background: #00ffa6;
+		color: #000;
+		padding: 1px 3px;
+		border-radius: 10px;
+	}
+
+	#snippet-link-target-content {
+		width: 100%;
+		height: 8em;
+		font-family: monospace;
+	}
+</style>
+
+<div id="snippet-link-target">
+	<p>This <a href="https://ckeditor.com" target="_blank">editor</a> allows <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a" target="_parent">links</a> with a <code>target</code> attribute to be loaded into the content.</p>
+</div>
+
+<p><b>Note</b>: You can play with the content to see that different link <code>target</code> values are also handled.</p>
+
+<textarea id="snippet-link-target-content">
+&lt;p&gt;A few links with different targets:&lt;/p&gt;&#10;&lt;ul&gt;&#10;&#9;&lt;li&gt;&lt;a href=&quot;https://ckeditor.com&quot; target=&quot;_blank&quot;&gt;CKEditor&lt;/a&gt;&lt;/li&gt;&#10;&#9;&lt;li&gt;&lt;a href=&quot;https://ckeditor.com/ckfinder/&quot;&gt;CKFinder&lt;/a&gt;&lt;/li&gt;&#10;&#9;&lt;li&gt;&lt;a href=&quot;https://cksource.com&quot; target=&quot;_parent&quot;&gt;CKSource&lt;/a&gt;&lt;/li&gt;&#10;&#9;&lt;li&gt;&lt;a href=&quot;https://cksource.com/team/&quot; target=&quot;_top&quot;&gt;Team&lt;/a&gt;&lt;/li&gt;&#10;&lt;/ul&gt;
+</textarea>
+
+<p>
+	<button type="button" id="snippet-link-target-content-update">Set editor data</button>
+</p>

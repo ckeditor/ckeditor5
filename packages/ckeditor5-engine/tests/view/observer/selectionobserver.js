@@ -3,23 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document */
+/* globals setTimeout, document, console */
 
 import ViewRange from '../../../src/view/range';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DocumentSelection from '../../../src/view/documentselection';
 import ViewSelection from '../../../src/view/selection';
 import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( done => {
 		domDocument = document;
@@ -56,6 +52,7 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	afterEach( () => {
+		sinon.restore();
 		domRoot.parentElement.removeChild( domRoot );
 
 		view.destroy();
@@ -162,7 +159,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should warn and not enter infinite loop', () => {
+	it( 'should not enter infinite loop', () => {
 		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
@@ -170,17 +167,18 @@ describe( 'SelectionObserver', () => {
 			writer.setSelection( viewFoo, 0 );
 		} );
 
-		return new Promise( ( resolve, reject ) => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( msg => {
-				expect( msg ).to.match( /^selectionchange-infinite-loop/ );
+		const selectionChangeSpy = sinon.spy();
+
+		// Catches the "Selection change observer detected an infinite rendering loop." warning in the CK_DEBUG mode.
+		sinon.stub( console, 'warn' );
+
+		viewDocument.on( 'selectionChange', selectionChangeSpy );
+
+		return new Promise( resolve => {
+			viewDocument.on( 'selectionChangeDone', () => {
+				expect( selectionChangeSpy.callCount ).to.equal( 60 );
 
 				resolve();
-			} );
-
-			viewDocument.on( 'selectionChangeDone', () => {
-				if ( !counter ) {
-					reject( new Error( 'Infinite loop warning was not logged.' ) );
-				}
 			} );
 
 			while ( counter > 0 ) {
@@ -193,10 +191,10 @@ describe( 'SelectionObserver', () => {
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection._setTo( ViewRange._createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
-		const spy = testUtils.sinon.spy( log, 'warn' );
+		const consoleWarnSpy = sinon.spy( console, 'warn' );
 
 		viewDocument.on( 'selectionChangeDone', () => {
-			expect( spy.called ).to.be.false;
+			expect( consoleWarnSpy.called ).to.be.false;
 			done();
 		} );
 
@@ -206,10 +204,10 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not be treated as an infinite loop if changes are not often', () => {
-		const clock = testUtils.sinon.useFakeTimers( {
+		const clock = sinon.useFakeTimers( {
 			toFake: [ 'setInterval', 'clearInterval' ]
 		} );
-		const stub = testUtils.sinon.stub( log, 'warn' );
+		const consoleWarnStub = sinon.stub( console, 'warn' );
 
 		// We need to recreate SelectionObserver, so it will use mocked setInterval.
 		selectionObserver.disable();
@@ -220,7 +218,7 @@ describe( 'SelectionObserver', () => {
 		return doChanges()
 			.then( doChanges )
 			.then( () => {
-				sinon.assert.notCalled( stub );
+				sinon.assert.notCalled( consoleWarnStub );
 				clock.restore();
 			} );
 

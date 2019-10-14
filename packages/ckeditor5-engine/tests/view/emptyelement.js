@@ -5,7 +5,8 @@
 
 import EmptyElement from '../../src/view/emptyelement';
 import Element from '../../src/view/element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EmptyElement', () => {
 	let element, emptyElement;
@@ -19,7 +20,7 @@ describe( 'EmptyElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {
@@ -28,17 +29,26 @@ describe( 'EmptyElement', () => {
 
 		it( 'should return true for emptyElement/element, also with correct name and element name', () => {
 			expect( el.is( 'emptyElement' ) ).to.be.true;
+			expect( el.is( 'view:emptyElement' ) ).to.be.true;
 			expect( el.is( 'emptyElement', 'p' ) ).to.be.true;
+			expect( el.is( 'view:emptyElement', 'p' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'p' ) ).to.be.true;
+			expect( el.is( 'view:element', 'p' ) ).to.be.true;
 			expect( el.is( 'p' ) ).to.be.true;
+			expect( el.is( 'view:p' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( el.is( 'emptyElement', 'span' ) ).to.be.false;
+			expect( el.is( 'view:emptyElement', 'span' ) ).to.be.false;
 			expect( el.is( 'element', 'span' ) ).to.be.false;
+			expect( el.is( 'view:element', 'span' ) ).to.be.false;
 			expect( el.is( 'span' ) ).to.be.false;
+			expect( el.is( 'view:span' ) ).to.be.false;
 			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'view:text' ) ).to.be.false;
 			expect( el.is( 'textProxy' ) ).to.be.false;
 			expect( el.is( 'containerElement' ) ).to.be.false;
 			expect( el.is( 'attributeElement' ) ).to.be.false;
@@ -49,24 +59,26 @@ describe( 'EmptyElement', () => {
 	} );
 
 	it( 'should throw if child elements are passed to constructor', () => {
-		expect( () => {
-			new EmptyElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+		const el = new Element( 'i' );
+
+		expectToThrowCKEditorError( () => {
+			new EmptyElement( 'img', null, [ el ] ); // eslint-disable-line no-new
+		}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', el );
 	} );
 
 	describe( '_appendChild', () => {
 		it( 'should throw when try to append new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				emptyElement._appendChild( element );
-			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', element );
 		} );
 	} );
 
 	describe( '_insertChild', () => {
 		it( 'should throw when try to insert new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				emptyElement._insertChild( 0, element );
-			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', element );
 		} );
 	} );
 

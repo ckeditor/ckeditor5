@@ -7,7 +7,7 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import DocumentFragment from '../../src/model/documentfragment';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {
@@ -61,7 +61,7 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let frag;
 
 		before( () => {
@@ -70,14 +70,16 @@ describe( 'DocumentFragment', () => {
 
 		it( 'should return true for documentFragment', () => {
 			expect( frag.is( 'documentFragment' ) ).to.be.true;
+			expect( frag.is( 'model:documentFragment' ) ).to.be.true;
 		} );
 
-		it( 'should return false for other accept values', () => {
+		it( 'should return false for other values', () => {
 			expect( frag.is( 'node' ) ).to.be.false;
 			expect( frag.is( 'text' ) ).to.be.false;
 			expect( frag.is( 'textProxy' ) ).to.be.false;
 			expect( frag.is( 'element' ) ).to.be.false;
 			expect( frag.is( 'rootElement' ) ).to.be.false;
+			expect( frag.is( 'view:documentFragment' ) ).to.be.false;
 		} );
 	} );
 
@@ -111,13 +113,13 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should throw if given offset is too high or too low', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				frag.offsetToIndex( -1 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, frag );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				frag.offsetToIndex( 55 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			}, /nodelist-offset-out-of-bounds/, frag );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

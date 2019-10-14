@@ -6,14 +6,11 @@
 /* globals document */
 
 import {
-	BR_FILLER,
-	NBSP_FILLER,
 	INLINE_FILLER_LENGTH,
 	INLINE_FILLER,
 	startsWithFiller,
 	isInlineFiller,
 	getDataWithoutFiller,
-	isBlockFiller
 } from '../../src/view/filler';
 
 describe( 'filler', () => {
@@ -23,7 +20,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'startsWithFiller', () => {
+	describe( 'startsWithFiller()', () => {
 		it( 'should be true for node which contains only filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
@@ -67,7 +64,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'getDataWithoutFiller', () => {
+	describe( 'getDataWithoutFiller()', () => {
 		it( 'should return data without filler', () => {
 			const node = document.createTextNode( INLINE_FILLER + 'foo' );
 
@@ -87,7 +84,7 @@ describe( 'filler', () => {
 		} );
 	} );
 
-	describe( 'isInlineFiller', () => {
+	describe( 'isInlineFiller()', () => {
 		it( 'should be true for inline filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
@@ -120,29 +117,6 @@ describe( 'filler', () => {
 			expect( isInlineFiller( node ) ).to.be.true;
 
 			document.body.removeChild( iframe );
-		} );
-	} );
-
-	describe( 'isBlockFiller', () => {
-		it( 'should return true if the node is an instance of the BR block filler', () => {
-			const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
-
-			expect( isBlockFiller( brFillerInstance, BR_FILLER ) ).to.be.true;
-			// Check it twice to ensure that caching breaks nothing.
-			expect( isBlockFiller( brFillerInstance, BR_FILLER ) ).to.be.true;
-		} );
-
-		it( 'should return true if the node is an instance of the NBSP block filler', () => {
-			const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-
-			expect( isBlockFiller( nbspFillerInstance, NBSP_FILLER ) ).to.be.true;
-			// Check it twice to ensure that caching breaks nothing.
-			expect( isBlockFiller( nbspFillerInstance, NBSP_FILLER ) ).to.be.true;
-		} );
-
-		it( 'should return false for inline filler', () => {
-			expect( isBlockFiller( document.createTextNode( INLINE_FILLER ), BR_FILLER ) ).to.be.false;
-			expect( isBlockFiller( document.createTextNode( INLINE_FILLER ), NBSP_FILLER ) ).to.be.false;
 		} );
 	} );
 } );

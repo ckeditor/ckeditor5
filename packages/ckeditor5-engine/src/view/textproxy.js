@@ -55,7 +55,7 @@ export default class TextProxy {
 			 *
 			 * @error view-textproxy-wrong-offsetintext
 			 */
-			throw new CKEditorError( 'view-textproxy-wrong-offsetintext: Given offsetInText value is incorrect.' );
+			throw new CKEditorError( 'view-textproxy-wrong-offsetintext: Given offsetInText value is incorrect.', this );
 		}
 
 		if ( length < 0 || offsetInText + length > textNode.data.length ) {
@@ -64,7 +64,7 @@ export default class TextProxy {
 			 *
 			 * @error view-textproxy-wrong-length
 			 */
-			throw new CKEditorError( 'view-textproxy-wrong-length: Given length value is incorrect.' );
+			throw new CKEditorError( 'view-textproxy-wrong-length: Given length value is incorrect.', this );
 		}
 
 		/**
@@ -141,15 +141,22 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Checks whether given view tree object is of given type.
+	 * Checks whether this object is of the given type.
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *		textProxy.is( 'textProxy' ); // -> true
+	 *		textProxy.is( 'view:textProxy' ); // -> true
+	 *
+	 *		textProxy.is( 'model:textProxy' ); // -> false
+	 *		textProxy.is( 'element' ); // -> false
+	 *		textProxy.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'textProxy';
+		return type == 'textProxy' || type == 'view:textProxy';
 	}
 
 	/**

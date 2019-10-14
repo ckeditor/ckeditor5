@@ -12,8 +12,7 @@ import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
 import * as utils from '../../../src/model/operation/utils';
 import { getData } from '../../../src/dev-utils/model';
-
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let model, doc, root;
 
@@ -81,9 +80,9 @@ describe( 'Operation utils', () => {
 		} );
 
 		it( 'should throw if given range is not flat', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				utils._remove( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ) );
-			} ).to.throw( CKEditorError, /operation-utils-remove-range-not-flat/ );
+			}, /operation-utils-remove-range-not-flat/ );
 		} );
 	} );
 
@@ -103,9 +102,9 @@ describe( 'Operation utils', () => {
 		} );
 
 		it( 'should throw if given range is not flat', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				utils._move( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ), null );
-			} ).to.throw( CKEditorError, /operation-utils-move-range-not-flat/ );
+			}, /operation-utils-move-range-not-flat/ );
 		} );
 	} );
 

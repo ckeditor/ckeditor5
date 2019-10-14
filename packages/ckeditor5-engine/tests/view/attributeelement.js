@@ -6,7 +6,8 @@
 import AttributeElement from '../../src/view/attributeelement';
 import Element from '../../src/view/element';
 import { parse } from '../../src/dev-utils/view';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'AttributeElement', () => {
 	describe( 'constructor()', () => {
@@ -20,7 +21,7 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		let el;
 
 		before( () => {
@@ -29,16 +30,24 @@ describe( 'AttributeElement', () => {
 
 		it( 'should return true for attributeElement/element, also with correct name and element name', () => {
 			expect( el.is( 'attributeElement' ) ).to.be.true;
+			expect( el.is( 'view:attributeElement' ) ).to.be.true;
 			expect( el.is( 'attributeElement', 'span' ) ).to.be.true;
+			expect( el.is( 'view:attributeElement', 'span' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'span' ) ).to.be.true;
+			expect( el.is( 'view:element', 'span' ) ).to.be.true;
 			expect( el.is( 'span' ) ).to.be.true;
+			expect( el.is( 'view:span' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( el.is( 'attributeElement', 'p' ) ).to.be.false;
+			expect( el.is( 'view:attributeElement', 'p' ) ).to.be.false;
 			expect( el.is( 'element', 'p' ) ).to.be.false;
+			expect( el.is( 'view:element', 'p' ) ).to.be.false;
 			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'view:p' ) ).to.be.false;
 			expect( el.is( 'text' ) ).to.be.false;
 			expect( el.is( 'textProxy' ) ).to.be.false;
 			expect( el.is( 'containerElement' ) ).to.be.false;
@@ -128,9 +137,9 @@ describe( 'AttributeElement', () => {
 		it( 'should throw if attribute element has no id', () => {
 			const attribute = new AttributeElement( 'b' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				attribute.getElementsWithSameId();
-			} ).to.throw( CKEditorError, /attribute-element-get-elements-with-same-id-no-id/ );
+			}, /attribute-element-get-elements-with-same-id-no-id/ );
 		} );
 	} );
 

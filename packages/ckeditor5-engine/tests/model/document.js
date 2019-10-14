@@ -9,8 +9,8 @@ import RootElement from '../../src/model/rootelement';
 import Text from '../../src/model/text';
 import Batch from '../../src/model/batch';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Document', () => {
 	let model, doc;
@@ -85,11 +85,9 @@ describe( 'Document', () => {
 				_execute: () => {}
 			};
 
-			expect(
-				() => {
-					model.applyOperation( operation );
-				}
-			).to.throw( CKEditorError, /^model-document-applyOperation-wrong-version/ );
+			expectToThrowCKEditorError( () => {
+				model.applyOperation( operation );
+			}, /^model-document-applyOperation-wrong-version/, model );
 		} );
 	} );
 
@@ -130,11 +128,9 @@ describe( 'Document', () => {
 		it( 'should throw an error when trying to create a second root with the same name', () => {
 			doc.createRoot( '$root', 'rootName' );
 
-			expect(
-				() => {
-					doc.createRoot( '$root', 'rootName' );
-				}
-			).to.throw( CKEditorError, /model-document-createRoot-name-exists/ );
+			expectToThrowCKEditorError( () => {
+				doc.createRoot( '$root', 'rootName' );
+			}, /model-document-createRoot-name-exists/, model );
 		} );
 	} );
 

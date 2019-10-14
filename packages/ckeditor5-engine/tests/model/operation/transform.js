@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { transform } from '../../../src/model/operation/transform';
+/* globals console */
+
+import { transform, transformSets } from '../../../src/model/operation/transform';
 
 import Model from '../../../src/model/model';
 import RootElement from '../../../src/model/rootelement';
@@ -19,8 +21,6 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
 describe( 'transform', () => {
 	let model, doc, root, op, nodeA, nodeB, expected;
 
@@ -31,6 +31,10 @@ describe( 'transform', () => {
 
 		nodeA = new Node();
 		nodeB = new Node();
+	} );
+
+	afterEach( () => {
+		sinon.restore();
 	} );
 
 	function expectOperation( op, params ) {
@@ -58,8 +62,9 @@ describe( 'transform', () => {
 		aIsStrong: true
 	};
 
-	it( 'error logging', () => {
-		const spy = sinon.stub( log, 'error' );
+	it( 'should throw an error when one of operations is invalid', () => {
+		// Catches the 'Error during operation transformation!' warning in the CK_DEBUG mode.
+		sinon.stub( console, 'warn' );
 
 		const nodeA = new Node();
 		const nodeB = new Node();
@@ -80,11 +85,7 @@ describe( 'transform', () => {
 				abRelation: null,
 				baRelation: null
 			} );
-		} ).to.throw();
-
-		sinon.assert.called( spy );
-
-		log.error.restore();
+		} ).to.throw( TypeError );
 	} );
 
 	describe( 'InsertOperation', () => {
@@ -2609,5 +2610,71 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
+	} );
+} );
+
+describe( 'transformSets', () => {
+	let model, doc, root, node;
+
+	beforeEach( () => {
+		model = new Model();
+		doc = model.document;
+		root = doc.createRoot();
+
+		node = new Node();
+	} );
+
+	it( 'originalOperations should correctly link transformed operations with original operations #1', () => {
+		const position = new Position( root, [ 0 ] );
+
+		const a = new InsertOperation( position, [ node ], 0 );
+
+		const { operationsA, originalOperations } = transformSets( [ a ], [], {
+			document: doc,
+			useRelations: false,
+			padWithNoOps: false
+		} );
+
+		expect( originalOperations.get( operationsA[ 0 ] ) ).to.equal( a );
+	} );
+
+	it( 'originalOperations should correctly link transformed operations with original operations #2', () => {
+		const position = new Position( root, [ 0 ] );
+
+		const b = new InsertOperation( position, [ node ], 0 );
+
+		const { operationsB, originalOperations } = transformSets( [], [ b ], {
+			document: doc,
+			useRelations: false,
+			padWithNoOps: false
+		} );
+
+		expect( originalOperations.get( operationsB[ 0 ] ) ).to.equal( b );
+	} );
+
+	it( 'originalOperations should correctly link transformed operations with original operations #3', () => {
+		const position = new Position( root, [ 4 ] );
+
+		const a = new InsertOperation( position, [ node ], 0 );
+		const b = new AttributeOperation(
+			new Range(
+				new Position( root, [ 2 ] ),
+				new Position( root, [ 11 ] )
+			),
+			'foo',
+			'bar',
+			'xyz',
+			0
+		);
+
+		const { operationsA, operationsB, originalOperations } = transformSets( [ a ], [ b ], {
+			document: doc,
+			useRelations: false,
+			padWithNoOps: false
+		} );
+
+		expect( originalOperations.get( operationsA[ 0 ] ) ).to.equal( a );
+		expect( originalOperations.get( operationsB[ 0 ] ) ).to.equal( b );
+		expect( originalOperations.get( operationsB[ 1 ] ) ).to.equal( b );
 	} );
 } );

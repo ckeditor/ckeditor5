@@ -14,17 +14,19 @@ import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
 import Range from '../../../src/view/range';
 import Text from '../../../src/view/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import { stringify, parse } from '../../../src/dev-utils/view';
 import createViewRoot from '../_utils/createroot';
 import Document from '../../../src/view/document';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastWriter', () => {
 	describe( 'wrap()', () => {
-		let writer;
+		let writer, document;
 
-		before( () => {
-			writer = new DowncastWriter( new Document() );
+		beforeEach( () => {
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		describe( 'non-collapsed range', () => {
@@ -67,9 +69,9 @@ describe( 'DowncastWriter', () => {
 				);
 				const b = new Element( 'b' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
-				} ).to.throw( CKEditorError, 'view-writer-wrap-invalid-attribute' );
+				}, 'view-writer-wrap-invalid-attribute', document );
 			} );
 
 			it( 'should throw error when range placed in two containers', () => {
@@ -81,18 +83,18 @@ describe( 'DowncastWriter', () => {
 				);
 				const b = new AttributeElement( 'b' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
-				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+				}, 'view-writer-invalid-range-container', document );
 			} );
 
 			it( 'should throw when range has no parent container', () => {
 				const el = new AttributeElement( 'b' );
 				const b = new AttributeElement( 'b' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.wrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
-				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+				}, 'view-writer-invalid-range-container', document );
 			} );
 
 			it( 'wraps part of a single text node #1', () => {
@@ -396,9 +398,9 @@ describe( 'DowncastWriter', () => {
 				const container = new ContainerElement( 'p', null, emptyElement );
 				const range = Range._createFromParentsAndOffsets( emptyElement, 0, container, 1 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new AttributeElement( 'b' ) );
-				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+				}, 'view-writer-cannot-break-empty-element', document );
 			} );
 
 			it( 'should wrap UIElement', () => {
@@ -414,9 +416,9 @@ describe( 'DowncastWriter', () => {
 				const container = new ContainerElement( 'p', null, uiElement );
 				const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 1 );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new AttributeElement( 'b' ) );
-				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+				}, 'view-writer-cannot-break-ui-element', document );
 			} );
 
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {
@@ -551,9 +553,9 @@ describe( 'DowncastWriter', () => {
 				const position = new Position( container, 0 );
 				const b = new Element( 'b' );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.wrap( new Range( position ), b );
-				} ).to.throw( CKEditorError, 'view-writer-wrap-invalid-attribute' );
+				}, 'view-writer-wrap-invalid-attribute', document );
 			} );
 
 			it( 'should wrap position at the beginning of text node', () => {

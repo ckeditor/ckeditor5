@@ -503,7 +503,7 @@ class ViewElementConsumables {
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */
-				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
+				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.', this );
 			}
 
 			consumables.set( name, true );

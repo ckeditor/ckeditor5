@@ -116,7 +116,8 @@ export default class AttributeElement extends Element {
 			 */
 			throw new CKEditorError(
 				'attribute-element-get-elements-with-same-id-no-id: ' +
-				'Cannot get elements with the same id for an attribute element without id.'
+				'Cannot get elements with the same id for an attribute element without id.',
+				this
 			);
 		}
 
@@ -124,13 +125,39 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		attributeElement.is( 'attributeElement' ); // -> true
+	 *		attributeElement.is( 'element' ); // -> true
+	 *		attributeElement.is( 'node' ); // -> true
+	 *		attributeElement.is( 'view:attributeElement' ); // -> true
+	 *		attributeElement.is( 'view:element' ); // -> true
+	 *		attributeElement.is( 'view:node' ); // -> true
+	 *
+	 *		attributeElement.is( 'model:element' ); // -> false
+	 *		attributeElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is an attribute element, you can also check its
+	 * {@link module:engine/view/attributeelement~AttributeElement#name name}:
+	 *
+	 *		attributeElement.is( 'b' ); // -> true if this is a bold element
+	 *		attributeElement.is( 'attributeElement', 'b' ); // -> same as above
+	 *		text.is( 'b' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type && type.replace( /^view:/, '' );
+
 		if ( !name ) {
-			return type == 'attributeElement' || super.is( type );
+			return cutType == 'attributeElement' || super.is( type );
 		} else {
-			return ( type == 'attributeElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'attributeElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 

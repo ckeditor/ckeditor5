@@ -9,7 +9,7 @@ import Range from '../../src/model/range';
 import LiveRange from '../../src/model/liverange';
 import Text from '../../src/model/text';
 import Model from '../../src/model/model';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MarkerCollection', () => {
 	let markers, range, range2, doc, root;
@@ -207,9 +207,9 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should throw if marker does not exist', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				markers._refresh( 'name' );
-			} ).to.throw( CKEditorError, 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
+			}, /^markercollection-refresh-marker-not-exists:/, markers );
 		} );
 	} );
 
@@ -292,25 +292,25 @@ describe( 'Marker', () => {
 
 		model.markers._remove( 'name' );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.getRange();
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/ );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.getStart();
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/ );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.getEnd();
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/ );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.managedUsingOperations;
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/ );
 
-		expect( () => {
+		expectToThrowCKEditorError( () => {
 			marker.affectsData;
-		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+		}, /^marker-destroyed/ );
 	} );
 
 	it( 'should attach live range to marker', () => {
@@ -409,5 +409,26 @@ describe( 'Marker', () => {
 		model.markers._set( 'name', range, false, false );
 
 		expect( marker.affectsData ).to.be.false;
+	} );
+
+	describe( 'is()', () => {
+		let marker;
+
+		beforeEach( () => {
+			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+			marker = model.markers._set( 'name', range );
+		} );
+
+		it( 'should return true for "marker"', () => {
+			expect( marker.is( 'marker' ) ).to.be.true;
+			expect( marker.is( 'model:marker' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( marker.is( 'model' ) ).to.be.false;
+			expect( marker.is( 'model:node' ) ).to.be.false;
+			expect( marker.is( 'text' ) ).to.be.false;
+			expect( marker.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
 	} );
 } );

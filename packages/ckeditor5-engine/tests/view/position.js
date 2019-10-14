@@ -12,23 +12,49 @@ import Document from '../../src/view/document';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import { parse, stringify } from '../../src/dev-utils/view';
 import TreeWalker from '../../src/view/treewalker';
 import createViewRoot from './_utils/createroot';
 import AttributeElement from '../../src/view/attributeelement';
 import ContainerElement from '../../src/view/containerelement';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Position', () => {
 	const parentMock = {};
 
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
-			const elem = new Position( parentMock, 5 );
+			const position = new Position( parentMock, 5 );
 
-			expect( elem ).to.have.property( 'parent' ).that.equals( parentMock );
-			expect( elem ).to.have.property( 'offset' ).that.equals( 5 );
+			expect( position ).to.have.property( 'parent' ).that.equals( parentMock );
+			expect( position ).to.have.property( 'offset' ).that.equals( 5 );
+		} );
+	} );
+
+	describe( 'is()', () => {
+		let position;
+
+		beforeEach( () => {
+			position = new Position( parentMock, 5 );
+		} );
+
+		it( 'should return true for "position"', () => {
+			expect( position.is( 'position' ) ).to.be.true;
+			expect( position.is( 'view:position' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( position.is( 'rootElement' ) ).to.be.false;
+			expect( position.is( 'containerElement' ) ).to.be.false;
+			expect( position.is( 'element' ) ).to.be.false;
+			expect( position.is( 'p' ) ).to.be.false;
+			expect( position.is( 'text' ) ).to.be.false;
+			expect( position.is( 'textProxy' ) ).to.be.false;
+			expect( position.is( 'attributeElement' ) ).to.be.false;
+			expect( position.is( 'uiElement' ) ).to.be.false;
+			expect( position.is( 'emptyElement' ) ).to.be.false;
+			expect( position.is( 'documentFragment' ) ).to.be.false;
+			expect( position.is( 'model:position' ) ).to.be.false;
 		} );
 	} );
 
@@ -383,7 +409,9 @@ describe( 'Position', () => {
 			it( 'should throw if no offset is passed', () => {
 				const element = new Element( 'p' );
 
-				expect( () => Position._createAt( element ) ).to.throw( CKEditorError, /view-createPositionAt-offset-required/ );
+				expectToThrowCKEditorError( () => {
+					Position._createAt( element );
+				}, /view-createPositionAt-offset-required/ );
 			} );
 
 			it( 'should create positions from positions', () => {
@@ -449,9 +477,11 @@ describe( 'Position', () => {
 
 		describe( '_createBefore()', () => {
 			it( 'should throw error if one try to create positions before root', () => {
-				expect( () => {
-					Position._createBefore( parse( '<p></p>' ) );
-				} ).to.throw( CKEditorError, /view-position-before-root/ );
+				const paragraph = parse( '<p></p>' );
+
+				expectToThrowCKEditorError( () => {
+					Position._createBefore( paragraph );
+				}, /view-position-before-root/, paragraph );
 			} );
 
 			it( 'should create positions before `Node`', () => {
@@ -474,9 +504,11 @@ describe( 'Position', () => {
 
 		describe( '_createAfter()', () => {
 			it( 'should throw error if one try to create positions after root', () => {
-				expect( () => {
-					Position._createAfter( parse( '<p></p>' ) );
-				} ).to.throw( CKEditorError, /view-position-after-root/ );
+				const paragraph = parse( '<p></p>' );
+
+				expectToThrowCKEditorError( () => {
+					Position._createAfter( paragraph );
+				}, /view-position-after-root/, paragraph );
 			} );
 
 			it( 'should create positions after `Node`', () => {

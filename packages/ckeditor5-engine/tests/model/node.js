@@ -8,8 +8,8 @@ import DocumentFragment from '../../src/model/documentfragment';
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Node', () => {
 	let doc, root, node,
@@ -128,11 +128,9 @@ describe( 'Node', () => {
 		it( 'should throw an error if parent does not contain element', () => {
 			node.parent = new Element( 'parent' );
 
-			expect(
-				() => {
-					node.index;
-				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				node.index;
+			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 
@@ -167,6 +165,14 @@ describe( 'Node', () => {
 	describe( 'is()', () => {
 		it( 'should return true for node', () => {
 			expect( node.is( 'node' ) ).to.be.true;
+			expect( node.is( 'model:node' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( node.is( 'model' ) ).to.be.false;
+			expect( node.is( 'model:text' ) ).to.be.false;
+			expect( node.is( 'text' ) ).to.be.false;
+			expect( node.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );
 
@@ -188,11 +194,9 @@ describe( 'Node', () => {
 		it( 'should throw an error if parent does not contain element', () => {
 			node.parent = new Element( 'parent' );
 
-			expect(
-				() => {
-					node.startOffset;
-				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				node.startOffset;
+			}, /model-node-not-found-in-parent/, node.parent );
 		} );
 	} );
 

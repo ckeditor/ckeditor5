@@ -17,9 +17,10 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import LivePosition from '../../src/model/liveposition';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Position', () => {
 	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
@@ -37,7 +38,7 @@ describe( 'Position', () => {
 	//        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
 	//        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 	//        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
-	before( () => {
+	beforeEach( () => {
 		model = new Model();
 
 		doc = model.document;
@@ -107,19 +108,19 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should throw error if given path is incorrect', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position( root, {} ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
+			}, /model-position-path-incorrect-format/, model );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position( root, [] ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
+			}, /model-position-path-incorrect-format/, model );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new Position( new Text( 'a' ) ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
+			}, /model-position-root-invalid/ );
 
 			expect( () => {
 				new Position(); // eslint-disable-line no-new
@@ -127,10 +128,32 @@ describe( 'Position', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let position;
+
+		beforeEach( () => {
+			position = new Position( root, [ 0 ] );
+		} );
+
+		it( 'should return true for "position"', () => {
+			expect( position.is( 'position' ) ).to.be.true;
+			expect( position.is( 'model:position' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( position.is( 'model' ) ).to.be.false;
+			expect( position.is( 'model:node' ) ).to.be.false;
+			expect( position.is( 'text' ) ).to.be.false;
+			expect( position.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'static creators', () => {
 		describe( '_createAt()', () => {
 			it( 'should throw if no offset is passed', () => {
-				expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-createPositionAt-offset-required/ );
+				expectToThrowCKEditorError( () => {
+					Position._createAt( ul );
+				}, /model-createPositionAt-offset-required/, model );
 			} );
 
 			it( 'should create positions from positions', () => {
@@ -187,9 +210,9 @@ describe( 'Position', () => {
 			} );
 
 			it( 'throws when parent is not an element', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Position._createAt( b, 0 );
-				} ).to.throw( CKEditorError, /^model-position-parent-incorrect/ );
+				}, /^model-position-parent-incorrect/, model );
 			} );
 
 			it( 'works with a doc frag', () => {
@@ -223,9 +246,9 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should throw error if one try to create positions before root', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Position._createBefore( root );
-				} ).to.throw( CKEditorError, /model-position-before-root/ );
+				}, /model-position-before-root/, model );
 			} );
 		} );
 
@@ -253,126 +276,213 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should throw error if one try to make positions after root', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					Position._createAfter( root );
-				} ).to.throw( CKEditorError, /model-position-after-root/ );
+				}, /model-position-after-root/, model );
 			} );
 		} );
 	} );
 
-	it( 'should have parent', () => {
-		expect( new Position( root, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( root );
-		expect( new Position( root, [ 1 ] ) ).to.have.property( 'parent' ).that.equals( root );
-		expect( new Position( root, [ 2 ] ) ).to.have.property( 'parent' ).that.equals( root );
+	describe( '#parent', () => {
+		it( 'should have parent', () => {
+			expect( new Position( root, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( root );
+			expect( new Position( root, [ 1 ] ) ).to.have.property( 'parent' ).that.equals( root );
+			expect( new Position( root, [ 2 ] ) ).to.have.property( 'parent' ).that.equals( root );
 
-		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( p );
+			expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( p );
 
-		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'parent' ).that.equals( ul );
-		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'parent' ).that.equals( ul );
-		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'parent' ).that.equals( ul );
+			expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'parent' ).that.equals( ul );
+			expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'parent' ).that.equals( ul );
+			expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'parent' ).that.equals( ul );
 
-		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
-		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
-		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
-		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+			expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+			expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+			expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+			expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+		} );
+
+		it( 'should work with positions rooted in document fragment', () => {
+			const docFrag = new DocumentFragment();
+
+			expect( new Position( docFrag, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( docFrag );
+		} );
+
+		it( 'should throw when path out of bounds', () => {
+			const position = new Position( root, [ 0, 0 ] );
+
+			expect( position ).to.have.property( 'parent' ).that.equals( p );
+
+			root._removeChildren( 0, 2 );
+
+			expectToThrowCKEditorError( () => {
+				position.parent;
+			}, /^model-position-path-incorrect:/, position, { position } );
+		} );
+
+		it( 'should throw when based on a path, the parent would be a text node', () => {
+			// 1,0,0 points at: <p></p><ul><li>^foz</li>...
+			const position = new Position( root, [ 1, 0, 0, 0 ] );
+
+			expectToThrowCKEditorError( () => {
+				position.parent;
+			}, /^model-position-path-incorrect:/, position, { position } );
+		} );
 	} );
 
-	it( 'should have offset', () => {
-		expect( new Position( root, [ 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
-		expect( new Position( root, [ 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
-		expect( new Position( root, [ 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
+	describe( '#offset', () => {
+		it( 'should have offset', () => {
+			expect( new Position( root, [ 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+			expect( new Position( root, [ 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
+			expect( new Position( root, [ 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
 
-		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+			expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
 
-		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
-		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
-		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
+			expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+			expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
+			expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
 
-		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
-		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
-		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
-		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'offset' ).that.equals( 3 );
+			expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+			expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
+			expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
+			expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'offset' ).that.equals( 3 );
+		} );
 	} );
 
-	it( 'should have index', () => {
-		expect( new Position( root, [ 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-		expect( new Position( root, [ 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
-		expect( new Position( root, [ 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+	describe( '#index', () => {
+		it( 'should have index', () => {
+			expect( new Position( root, [ 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new Position( root, [ 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+			expect( new Position( root, [ 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
 
-		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
 
-		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
-		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+			expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+			expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
 
-		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+			expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+		} );
+
+		it( 'should be able to set offset', () => {
+			const position = new Position( root, [ 1, 0, 2 ] );
+			position.offset = 4;
+
+			expect( position.offset ).to.equal( 4 );
+			expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
+		} );
+
+		it( 'should throw when path out of bounds', () => {
+			const position = new Position( root, [ 0, 0 ] );
+
+			expect( position ).to.have.property( 'index' ).that.equals( 0 );
+
+			root._removeChildren( 0, 2 );
+
+			expectToThrowCKEditorError( () => {
+				position.index;
+			}, /^model-position-path-incorrect:/, position, { position } );
+		} );
 	} );
 
-	it( 'should be able to set offset', () => {
-		const position = new Position( root, [ 1, 0, 2 ] );
-		position.offset = 4;
+	describe( '#nodeBefore', () => {
+		it( 'should have nodeBefore if it is not inside a text node', () => {
+			expect( new Position( root, [ 0 ] ).nodeBefore ).to.be.null;
+			expect( new Position( root, [ 1 ] ).nodeBefore ).to.equal( p );
+			expect( new Position( root, [ 2 ] ).nodeBefore ).to.equal( ul );
 
-		expect( position.offset ).to.equal( 4 );
-		expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
+			expect( new Position( root, [ 0, 0 ] ).nodeBefore ).to.null;
+
+			expect( new Position( root, [ 1, 0 ] ).nodeBefore ).to.be.null;
+			expect( new Position( root, [ 1, 1 ] ).nodeBefore ).to.equal( li1 );
+			expect( new Position( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
+
+			expect( new Position( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
+			expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore ).to.be.null;
+			expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore ).to.be.null;
+			expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.data ).to.equal( 'foz' );
+		} );
+
+		it( 'should throw when path out of bounds', () => {
+			const position = new Position( root, [ 1, 1 ] );
+
+			expect( position ).to.have.property( 'nodeBefore' ).that.equals( li1 );
+
+			root._removeChildren( 0, 2 );
+
+			expectToThrowCKEditorError( () => {
+				position.nodeBefore;
+			}, /^model-nodelist-offset-out-of-bounds:/, position );
+		} );
 	} );
 
-	it( 'should have nodeBefore if it is not inside a text node', () => {
-		expect( new Position( root, [ 0 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1 ] ).nodeBefore ).to.equal( p );
-		expect( new Position( root, [ 2 ] ).nodeBefore ).to.equal( ul );
+	describe( '#nodeAfter', () => {
+		it( 'should have nodeAfter if it is not inside a text node', () => {
+			expect( new Position( root, [ 0 ] ).nodeAfter ).to.equal( p );
+			expect( new Position( root, [ 1 ] ).nodeAfter ).to.equal( ul );
+			expect( new Position( root, [ 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 0, 0 ] ).nodeBefore ).to.null;
+			expect( new Position( root, [ 0, 0 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 1 ] ).nodeBefore ).to.equal( li1 );
-		expect( new Position( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
+			expect( new Position( root, [ 1, 0 ] ).nodeAfter ).to.equal( li1 );
+			expect( new Position( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
+			expect( new Position( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.data ).to.equal( 'foz' );
+			expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.data ).to.equal( 'foz' );
+			expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter ).to.be.null;
+			expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter ).to.be.null;
+			expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
+		} );
+
+		it( 'should throw when path out of bounds', () => {
+			const position = new Position( root, [ 1, 1 ] );
+
+			expect( position ).to.have.property( 'nodeAfter' ).that.equals( li2 );
+
+			root._removeChildren( 0, 2 );
+
+			expectToThrowCKEditorError( () => {
+				position.nodeAfter;
+			}, /^model-nodelist-offset-out-of-bounds:/, position );
+		} );
 	} );
 
-	it( 'should have nodeAfter if it is not inside a text node', () => {
-		expect( new Position( root, [ 0 ] ).nodeAfter ).to.equal( p );
-		expect( new Position( root, [ 1 ] ).nodeAfter ).to.equal( ul );
-		expect( new Position( root, [ 2 ] ).nodeAfter ).to.be.null;
+	describe( '#textNode', () => {
+		it( 'should have a text node property if it is in text node', () => {
+			expect( new Position( root, [ 0 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 1 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 2 ] ).textNode ).to.be.null;
 
-		expect( new Position( root, [ 0, 0 ] ).nodeAfter ).to.be.null;
+			expect( new Position( root, [ 0, 0 ] ).textNode ).to.be.null;
 
-		expect( new Position( root, [ 1, 0 ] ).nodeAfter ).to.equal( li1 );
-		expect( new Position( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
-		expect( new Position( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
+			expect( new Position( root, [ 1, 0 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 1, 1 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 1, 2 ] ).textNode ).to.be.null;
 
-		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.data ).to.equal( 'foz' );
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter ).to.be.null;
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter ).to.be.null;
-		expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
-	} );
+			expect( new Position( root, [ 1, 0, 0 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 1, 0, 1 ] ).textNode ).to.equal( foz );
+			expect( new Position( root, [ 1, 0, 2 ] ).textNode ).to.equal( foz );
+			expect( new Position( root, [ 1, 0, 3 ] ).textNode ).to.be.null;
 
-	it( 'should have a text node property if it is in text node', () => {
-		expect( new Position( root, [ 0 ] ).textNode ).to.be.null;
-		expect( new Position( root, [ 1 ] ).textNode ).to.be.null;
-		expect( new Position( root, [ 2 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 1, 1, 0 ] ).textNode ).to.be.null;
+			expect( new Position( root, [ 1, 1, 1 ] ).textNode ).to.equal( bar );
+			expect( new Position( root, [ 1, 1, 2 ] ).textNode ).to.equal( bar );
+			expect( new Position( root, [ 1, 1, 3 ] ).textNode ).to.be.null;
+		} );
 
-		expect( new Position( root, [ 0, 0 ] ).textNode ).to.be.null;
+		it( 'should throw when path out of bounds', () => {
+			const position = new Position( root, [ 1, 0, 1 ] );
 
-		expect( new Position( root, [ 1, 0 ] ).textNode ).to.be.null;
-		expect( new Position( root, [ 1, 1 ] ).textNode ).to.be.null;
-		expect( new Position( root, [ 1, 2 ] ).textNode ).to.be.null;
+			expect( position ).to.have.property( 'textNode' ).that.equals( foz );
 
-		expect( new Position( root, [ 1, 0, 0 ] ).textNode ).to.be.null;
-		expect( new Position( root, [ 1, 0, 1 ] ).textNode ).to.equal( foz );
-		expect( new Position( root, [ 1, 0, 2 ] ).textNode ).to.equal( foz );
-		expect( new Position( root, [ 1, 0, 3 ] ).textNode ).to.be.null;
+			root._removeChildren( 0, 2 );
 
-		expect( new Position( root, [ 1, 1, 0 ] ).textNode ).to.be.null;
-		expect( new Position( root, [ 1, 1, 1 ] ).textNode ).to.equal( bar );
-		expect( new Position( root, [ 1, 1, 2 ] ).textNode ).to.equal( bar );
-		expect( new Position( root, [ 1, 1, 3 ] ).textNode ).to.be.null;
+			expectToThrowCKEditorError( () => {
+				position.textNode;
+			}, /^model-nodelist-offset-out-of-bounds:/, position );
+		} );
 	} );
 
 	it( 'should have proper parent path', () => {
@@ -954,7 +1064,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and ' +
-			'offset is after next node on that path', () => {
+		'offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
@@ -1088,11 +1198,9 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should throw error when creating object in document that does not have provided root', () => {
-			expect(
-				() => {
-					Position.fromJSON( { root: 'noroot', path: [ 0 ] }, doc );
-				}
-			).to.throw( CKEditorError, /model-position-fromjson-no-root/ );
+			expectToThrowCKEditorError( () => {
+				Position.fromJSON( { root: 'noroot', path: [ 0 ] }, doc );
+			}, /model-position-fromjson-no-root/, model );
 		} );
 	} );
 

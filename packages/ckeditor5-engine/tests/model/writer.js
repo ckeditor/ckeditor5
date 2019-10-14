@@ -15,9 +15,10 @@ import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import { getNodesAndText } from '../../tests/model/_utils/utils';
 import DocumentSelection from '../../src/model/documentselection';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Writer', () => {
 	let model, doc, batch;
@@ -300,17 +301,17 @@ describe( 'Writer', () => {
 
 			insert( node, root );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				insert( node, docFrag );
-			} ).to.throw();
+			}, /^model-writer-insert-forbidden-move/, model );
 		} );
 
 		it( 'should transfer markers from given DocumentFragment', () => {
 			const root = doc.createRoot();
-
 			const docFrag = createDocumentFragment();
 
 			appendText( 'abcd', root );
+
 			appendElement( 'p', docFrag );
 			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
 
@@ -331,14 +332,47 @@ describe( 'Writer', () => {
 			expect( modelMarker.affectsData ).to.be.true;
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
+		it( 'should update a marker if DocumentFragment has a marker that is already in the model (markers have the same name)', () => {
+			const root = doc.createRoot();
+			const docFrag = createDocumentFragment();
+
+			// <root><p></p><p>[ab]cd</p></root>.
+			appendText( 'abcd', root );
+
+			// <docFrag><p>f[oo b]ar</p></docFrag>.
+			appendElement( 'p', docFrag );
+			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+
+			model.change( writer => {
+				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+
+				writer.addMarker( 'marker', { range, usingOperation: true } );
+			} );
+
+			docFrag.markers.set( 'marker', new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) ) );
+
+			insert( docFrag, new Position( root, [ 2 ] ) );
+
+			expect( Array.from( model.markers ).length ).to.equal( 1 );
+
+			const modelMarker = model.markers.get( 'marker' );
+			const range = modelMarker.getRange();
+			expect( range.root ).to.equal( root );
+			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
+			expect( modelMarker.managedUsingOperations ).to.be.true;
+			expect( modelMarker.affectsData ).to.be.true;
+		} );
+
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 			const root = doc.createRoot();
 			const node = createText( 'foo' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.insert( node, root );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -462,9 +496,9 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 			const parent = createDocumentFragment();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.insertText( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -584,9 +618,9 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 			const child = createElement( 'child' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.insertElement( 'foo', child, 'after' );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -714,9 +748,9 @@ describe( 'Writer', () => {
 
 			insert( node, root );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				append( node, docFrag );
-			} ).to.throw();
+			}, /^model-writer-insert-forbidden-move/, model );
 		} );
 	} );
 
@@ -770,9 +804,9 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 			const parent = createDocumentFragment();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.appendText( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -824,9 +858,9 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 			const parent = createDocumentFragment();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.appendElement( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -884,9 +918,9 @@ describe( 'Writer', () => {
 				it( 'should throw when trying to use detached writer', () => {
 					const writer = new Writer( model, batch );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, node );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 
@@ -911,9 +945,9 @@ describe( 'Writer', () => {
 				it( 'should throw when trying to use detached writer', () => {
 					const writer = new Writer( model, batch );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'b', node );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 		} );
@@ -1056,9 +1090,9 @@ describe( 'Writer', () => {
 				it( 'should throw when trying to use detached writer', () => {
 					const writer = new Writer( model, batch );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 
@@ -1132,9 +1166,9 @@ describe( 'Writer', () => {
 				it( 'should throw when trying to use detached writer', () => {
 					const writer = new Writer( model, batch );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'a', getRange( 3, 15 ) );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 		} );
@@ -1191,9 +1225,9 @@ describe( 'Writer', () => {
 				it( 'should throw when trying to use detached writer', () => {
 					const writer = new Writer( model, batch );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, p );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 
@@ -1214,9 +1248,9 @@ describe( 'Writer', () => {
 				it( 'should throw when trying to use detached writer', () => {
 					const writer = new Writer( model, batch );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'b', root );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 
@@ -1278,9 +1312,9 @@ describe( 'Writer', () => {
 					const writer = new Writer( model, batch );
 					const element = createElement( 'x' );
 
-					expect( () => {
+					expectToThrowCKEditorError( () => {
 						writer.clearAttributes( element );
-					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+					}, /^writer-incorrect-use/, model );
 				} );
 			} );
 		} );
@@ -1384,9 +1418,9 @@ describe( 'Writer', () => {
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -1492,23 +1526,23 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if there is no element after', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				merge( new Position( root, [ 2 ] ) );
-			} ).to.throw( CKEditorError, /^writer-merge-no-element-after/ );
+			}, /^writer-merge-no-element-after/, model );
 		} );
 
 		it( 'should throw if there is no element before', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				merge( new Position( root, [ 0, 2 ] ) );
-			} ).to.throw( CKEditorError, /^writer-merge-no-element-before/ );
+			}, /^writer-merge-no-element-before/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.merge( new Position( root, [ 1 ] ) );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -1582,33 +1616,33 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if object to move is not a range', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				move( root.getChild( 0 ), new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-move-invalid-range/ );
+			}, /^writer-move-invalid-range/, model );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
 			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				move( notFlatRange, new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-move-range-not-flat/ );
+			}, /^writer-move-range-not-flat/, model );
 		} );
 
 		it( 'should throw if range is going to be moved to the other document', () => {
 			const docFrag = createDocumentFragment();
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				move( range, docFrag, 0 );
-			} ).to.throw( CKEditorError, /^writer-move-different-document/ );
+			}, /^writer-move-different-document/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.move( range, new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -1727,9 +1761,9 @@ describe( 'Writer', () => {
 			it( 'should throw when trying to use detached writer', () => {
 				const writer = new Writer( model, batch );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.remove( range );
-				} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+				}, /^writer-incorrect-use/, model );
 			} );
 		} );
 
@@ -1784,9 +1818,9 @@ describe( 'Writer', () => {
 			it( 'should throw when trying to use detached writer', () => {
 				const writer = new Writer( model, batch );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					writer.remove( range );
-				} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+				}, /^writer-incorrect-use/, model );
 			} );
 		} );
 	} );
@@ -1817,18 +1851,18 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if not an Element instance is passed', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				rename( new Text( 'abc' ), 'h' );
-			} ).to.throw( CKEditorError, /^writer-rename-not-element-instance/ );
+			}, /^writer-rename-not-element-instance/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 			const p = new Element( 'p', null, new Text( 'abc' ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.rename( p, 'h' );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -1896,25 +1930,25 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if we try to split a root', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				split( new Position( root, [ 0 ] ) );
-			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
+			}, /^writer-split-element-no-parent/, model );
 		} );
 
 		it( 'should throw if we try to split an element with no parent', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const element = createElement( 'p' );
 
 				split( new Position( element, [ 0 ] ) );
-			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
+			}, /^writer-split-element-no-parent/, model );
 		} );
 
 		it( 'should throw if we try to split a document fragment', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const documentFragment = createDocumentFragment();
 
 				split( new Position( documentFragment, [ 0 ] ) );
-			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
+			}, /^writer-split-element-no-parent/, model );
 		} );
 
 		it( 'should split elements to limitElement', () => {
@@ -1948,17 +1982,17 @@ describe( 'Writer', () => {
 			root._insertChild( 0, div );
 			root._insertChild( 1, section );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				split( new Position( p, [ 3 ] ), section );
-			} ).to.throw( CKEditorError, /^writer-split-invalid-limit-element/ );
+			}, /^writer-split-invalid-limit-element/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.split( new Position( root, [ 0, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -2008,34 +2042,34 @@ describe( 'Writer', () => {
 			root._insertChild( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
 			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				wrap( notFlatRange, 'p' );
-			} ).to.throw( CKEditorError, /^writer-wrap-range-not-flat/ );
+			}, /^writer-wrap-range-not-flat/, model );
 		} );
 
 		it( 'should throw if element to wrap with has children #1', () => {
 			const p = new Element( 'p', [], new Text( 'a' ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				wrap( range, p );
-			} ).to.throw( CKEditorError, /^writer-wrap-element-not-empty/ );
+			}, /^writer-wrap-element-not-empty/, model );
 		} );
 
 		it( 'should throw if element to wrap with has children #2', () => {
 			const p = new Element( 'p' );
 			root._insertChild( 0, p );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				wrap( range, p );
-			} ).to.throw( CKEditorError, /^writer-wrap-element-attached/ );
+			}, /^writer-wrap-element-attached/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.wrap( range, 'p' );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -2068,17 +2102,17 @@ describe( 'Writer', () => {
 		it( 'should throw if element to unwrap has no parent', () => {
 			const element = new Element( 'p' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				unwrap( element );
-			} ).to.throw( CKEditorError, /^writer-unwrap-element-no-parent/ );
+			}, /^writer-unwrap-element-no-parent/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.unwrap( p );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -2092,15 +2126,15 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if options.usingOperation is not defined', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				addMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperation/ );
+			}, /^writer-addMarker-no-usingOperation/, model );
 		} );
 
 		it( 'should throw if name and range is defined but options.usingOperation is not defined', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { range } );
-			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperation/ );
+			}, /^writer-addMarker-no-usingOperation/, model );
 		} );
 
 		it( 'should add marker to the document marker collection', () => {
@@ -2150,9 +2184,9 @@ describe( 'Writer', () => {
 
 			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { range: range2, usingOperation: false } );
-			} ).to.throw( CKEditorError, /^writer-addMarker-marker-exists/ );
+			}, /^writer-addMarker-marker-exists/, model );
 		} );
 
 		it( 'should use operations when having set usingOperation to true', () => {
@@ -2170,24 +2204,24 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { usingOperation: true } );
-			} ).to.throw( CKEditorError, /^writer-addMarker-no-range/ );
+			}, /^writer-addMarker-no-range/, model );
 		} );
 
 		it( 'should throw if marker is set directly and range is not passed', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { usingOperation: false } );
-			} ).to.throw( CKEditorError, /^writer-addMarker-no-range/ );
+			}, /^writer-addMarker-no-range/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.addMarker( marker, null, { usingOperation: true } );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -2421,16 +2455,16 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when range and usingOperations were not provided', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { range, usingOperation: false } );
 				updateMarker( 'name', {} );
-			} ).to.throw( CKEditorError, /^writer-updateMarker-wrong-options/ );
+			}, /^writer-updateMarker-wrong-options/, model );
 		} );
 
 		it( 'should throw when marker provided by name does not exists', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				updateMarker( 'name', { usingOperation: false } );
-			} ).to.throw( CKEditorError, /^writer-updateMarker-marker-not-exists/ );
+			}, /^writer-updateMarker-marker-not-exists/, model );
 		} );
 
 		it( 'should only refresh the marker when there is no provided options to update', () => {
@@ -2452,9 +2486,9 @@ describe( 'Writer', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.updateMarker( marker, { usingOperation: true } );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 	} );
 
@@ -2475,17 +2509,17 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to remove non existing marker', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				removeMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-removeMarker-no-marker/ );
+			}, /^writer-removeMarker-no-marker/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.removeMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+			}, /^writer-incorrect-use/, model );
 		} );
 
 		it( 'should accept marker instance', () => {

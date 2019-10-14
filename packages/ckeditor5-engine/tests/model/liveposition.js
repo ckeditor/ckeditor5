@@ -10,7 +10,7 @@ import Text from '../../src/model/text';
 import Position from '../../src/model/position';
 import LivePosition from '../../src/model/liveposition';
 import Range from '../../src/model/range';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'LivePosition', () =>
 {
@@ -41,10 +41,35 @@ describe( 'LivePosition', () =>
 		expect( live ).to.be.instanceof( Position );
 	} );
 
+	describe( 'is()', () => {
+		let live;
+
+		beforeEach( () => {
+			live = new LivePosition( root, [ 0 ] );
+			live.detach();
+		} );
+
+		it( 'should return true for "livePosition" and "position"', () => {
+			expect( live.is( 'livePosition' ) ).to.be.true;
+			expect( live.is( 'model:livePosition' ) ).to.be.true;
+			expect( live.is( 'position' ) ).to.be.true;
+			expect( live.is( 'model:position' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( live.is( 'model' ) ).to.be.false;
+			expect( live.is( 'model:node' ) ).to.be.false;
+			expect( live.is( 'text' ) ).to.be.false;
+			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	it( 'should throw if given root is not a RootElement', () => {
-		expect( () => {
-			new LivePosition( new DocumentFragment(), [ 1 ] ); // eslint-disable-line no-new
-		} ).to.throw( CKEditorError, /model-liveposition-root-not-rootelement/ );
+		const docFrag = new DocumentFragment();
+
+		expectToThrowCKEditorError( () => {
+			new LivePosition( docFrag, [ 1 ] ); // eslint-disable-line no-new
+		}, /model-liveposition-root-not-rootelement/, docFrag );
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {

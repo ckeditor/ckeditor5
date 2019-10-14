@@ -12,9 +12,10 @@ import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import Document from '../../../src/view/document';
 import Mapper from '../../../src/conversion/mapper';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DowncastWriter', () => {
 	describe( 'move()', () => {
@@ -155,9 +156,9 @@ describe( 'DowncastWriter', () => {
 			new ContainerElement( 'p', null, dstEmpty ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstEmpty, 0 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
-			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+			}, 'view-writer-cannot-break-empty-element', writer );
 		} );
 
 		it( 'should move UIElement', () => {
@@ -178,9 +179,9 @@ describe( 'DowncastWriter', () => {
 			new ContainerElement( 'p', null, dstUI ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstUI, 0 );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
-			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+			}, 'view-writer-cannot-break-ui-element', writer );
 		} );
 
 		it( 'should not break marker mappings if marker element was split and the original element was removed', () => {

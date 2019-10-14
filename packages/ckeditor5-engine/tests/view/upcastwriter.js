@@ -328,6 +328,36 @@ describe( 'UpcastWriter', () => {
 		} );
 	} );
 
+	describe( 'unwrapElement', () => {
+		it( 'should unwrap simple element', () => {
+			const documentFragment = dataprocessor.toView( '<ul><li><p>foo</p></li></ul>' );
+			const paragraph = documentFragment.getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			writer.unwrapElement( paragraph );
+
+			expect( dataprocessor.toData( documentFragment ) ).to.equal( '<ul><li>foo</li></ul>' );
+		} );
+
+		it( 'should unwrap element with children', () => {
+			const documentFragment = dataprocessor.toView(
+				'<p><span style="color:red"><strong>foo</strong><a href="example.com">example</a>bar</span></p>' );
+			const span = documentFragment.getChild( 0 ).getChild( 0 );
+
+			writer.unwrapElement( span );
+
+			expect( dataprocessor.toData( documentFragment ) ).to.equal(
+				'<p><strong>foo</strong><a href="example.com">example</a>bar</p>' );
+		} );
+
+		it( 'should do nothing for elements without parent', () => {
+			const element = new Element( 'p', null, 'foo' );
+
+			writer.unwrapElement( element );
+
+			expect( dataprocessor.toData( element ) ).to.equal( '<p>foo</p>' );
+		} );
+	} );
+
 	describe( 'rename', () => {
 		it( 'should rename simple element', () => {
 			const el = view.getChild( 0 ).getChild( 1 );

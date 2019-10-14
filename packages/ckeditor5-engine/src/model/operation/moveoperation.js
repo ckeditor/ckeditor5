@@ -123,23 +123,14 @@ export default class MoveOperation extends Operation {
 		// Validate whether move operation has correct parameters.
 		// Validation is pretty complex but move operation is one of the core ways to manipulate the document state.
 		// We expect that many errors might be connected with one of scenarios described below.
-		if ( !sourceElement || !targetElement ) {
-			/**
-			 * Source position or target position is invalid.
-			 *
-			 * @error move-operation-position-invalid
-			 */
-			throw new CKEditorError(
-				'move-operation-position-invalid: Source position or target position is invalid.'
-			);
-		} else if ( sourceOffset + this.howMany > sourceElement.maxOffset ) {
+		if ( sourceOffset + this.howMany > sourceElement.maxOffset ) {
 			/**
 			 * The nodes which should be moved do not exist.
 			 *
 			 * @error move-operation-nodes-do-not-exist
 			 */
 			throw new CKEditorError(
-				'move-operation-nodes-do-not-exist: The nodes which should be moved do not exist.'
+				'move-operation-nodes-do-not-exist: The nodes which should be moved do not exist.', this
 			);
 		} else if ( sourceElement === targetElement && sourceOffset < targetOffset && targetOffset < sourceOffset + this.howMany ) {
 			/**
@@ -148,7 +139,7 @@ export default class MoveOperation extends Operation {
 			 * @error move-operation-range-into-itself
 			 */
 			throw new CKEditorError(
-				'move-operation-range-into-itself: Trying to move a range of nodes to the inside of that range.'
+				'move-operation-range-into-itself: Trying to move a range of nodes to the inside of that range.', this
 			);
 		} else if ( this.sourcePosition.root == this.targetPosition.root ) {
 			if ( compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'prefix' ) {
@@ -161,7 +152,7 @@ export default class MoveOperation extends Operation {
 					 * @error move-operation-node-into-itself
 					 */
 					throw new CKEditorError(
-						'move-operation-node-into-itself: Trying to move a range of nodes into one of nodes from that range.'
+						'move-operation-node-into-itself: Trying to move a range of nodes into one of nodes from that range.', this
 					);
 				}
 			}

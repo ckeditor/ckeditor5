@@ -105,8 +105,11 @@ export default class Conversion {
 			 *
 			 * @error conversion-add-alias-dispatcher-not-registered
 			 */
-			throw new CKEditorError( 'conversion-add-alias-dispatcher-not-registered: ' +
-				'Trying to register and alias for a dispatcher that nas not been registered.' );
+			throw new CKEditorError(
+				'conversion-add-alias-dispatcher-not-registered: ' +
+				'Trying to register and alias for a dispatcher that nas not been registered.',
+				this
+			);
 		}
 
 		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast } );
@@ -180,7 +183,7 @@ export default class Conversion {
 			 *
 			 * @error conversion-for-unknown-group
 			 */
-			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.', this );
 		}
 
 		return this._helpers.get( groupName );
@@ -585,7 +588,7 @@ export default class Conversion {
 			 *
 			 * @error conversion-group-exists
 			 */
-			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
+			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.', this );
 		}
 
 		const helpers = isDowncast ? new DowncastHelpers( dispatchers ) : new UpcastHelpers( dispatchers );

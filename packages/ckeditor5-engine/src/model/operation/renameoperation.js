@@ -94,7 +94,8 @@ export default class RenameOperation extends Operation {
 			 * @error rename-operation-wrong-position
 			 */
 			throw new CKEditorError(
-				'rename-operation-wrong-position: Given position is invalid or node after it is not an instance of Element.'
+				'rename-operation-wrong-position: Given position is invalid or node after it is not an instance of Element.',
+				this
 			);
 		} else if ( element.name !== this.oldName ) {
 			/**
@@ -103,7 +104,8 @@ export default class RenameOperation extends Operation {
 			 * @error rename-operation-wrong-name
 			 */
 			throw new CKEditorError(
-				'rename-operation-wrong-name: Element to change has different name than operation\'s old name.'
+				'rename-operation-wrong-name: Element to change has different name than operation\'s old name.',
+				this
 			);
 		}
 	}

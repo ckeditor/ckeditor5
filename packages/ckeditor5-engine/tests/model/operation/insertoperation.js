@@ -10,7 +10,7 @@ import InsertOperation from '../../../src/model/operation/insertoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;
@@ -225,7 +225,7 @@ describe( 'InsertOperation', () => {
 			const element = new Element( 'p' );
 			const op = new InsertOperation( new Position( root, [ 4 ] ), element, doc.version );
 
-			expect( () => op._validate() ).to.throw( CKEditorError, /insert-operation-position-invalid/ );
+			expectToThrowCKEditorError( () => op._validate(), /insert-operation-position-invalid/, model );
 		} );
 	} );
 

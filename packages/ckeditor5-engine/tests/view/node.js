@@ -8,9 +8,9 @@ import Text from '../../src/view/text';
 import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Node', () => {
 	let root,
@@ -31,10 +31,28 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'is()', () => {
-		it( 'should return true for node', () => {
-			const node = new Node();
+		let node;
 
+		beforeEach( () => {
+			node = new Node();
+		} );
+
+		it( 'should return true for node', () => {
 			expect( node.is( 'node' ) ).to.be.true;
+			expect( node.is( 'view:node' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( node.is( 'rootElement' ) ).to.be.false;
+			expect( node.is( 'containerElement' ) ).to.be.false;
+			expect( node.is( 'element' ) ).to.be.false;
+			expect( node.is( 'p' ) ).to.be.false;
+			expect( node.is( 'text' ) ).to.be.false;
+			expect( node.is( 'textProxy' ) ).to.be.false;
+			expect( node.is( 'attributeElement' ) ).to.be.false;
+			expect( node.is( 'uiElement' ) ).to.be.false;
+			expect( node.is( 'emptyElement' ) ).to.be.false;
+			expect( node.is( 'documentFragment' ) ).to.be.false;
 		} );
 	} );
 
@@ -215,11 +233,9 @@ describe( 'Node', () => {
 
 			f.parent = bar;
 
-			expect(
-				() => {
-					f.index;
-				}
-			).to.throw( CKEditorError, /view-node-not-found-in-parent/ );
+			expectToThrowCKEditorError( () => {
+				f.index;
+			}, /view-node-not-found-in-parent/, bar );
 		} );
 	} );
 

@@ -4,6 +4,8 @@
  */
 
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
+import Mapper from '../../src/conversion/mapper';
+
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
@@ -13,13 +15,14 @@ import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 
 describe( 'DowncastDispatcher', () => {
-	let dispatcher, doc, root, differStub, model, view;
+	let dispatcher, doc, root, differStub, model, view, mapper;
 
 	beforeEach( () => {
 		model = new Model();
 		view = new View();
 		doc = model.document;
-		dispatcher = new DowncastDispatcher();
+		mapper = new Mapper();
+		dispatcher = new DowncastDispatcher( { mapper } );
 		root = doc.createRoot();
 
 		differStub = {
@@ -48,7 +51,7 @@ describe( 'DowncastDispatcher', () => {
 			differStub.getChanges = () => [ { type: 'insert', position, length: 1 } ];
 
 			view.change( writer => {
-				dispatcher.convertChanges( differStub, writer );
+				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
 			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
@@ -63,7 +66,7 @@ describe( 'DowncastDispatcher', () => {
 			differStub.getChanges = () => [ { type: 'remove', position, length: 2, name: '$text' } ];
 
 			view.change( writer => {
-				dispatcher.convertChanges( differStub, writer );
+				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
 			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
@@ -80,7 +83,7 @@ describe( 'DowncastDispatcher', () => {
 			];
 
 			view.change( writer => {
-				dispatcher.convertChanges( differStub, writer );
+				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
 			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
@@ -102,7 +105,7 @@ describe( 'DowncastDispatcher', () => {
 			];
 
 			view.change( writer => {
-				dispatcher.convertChanges( differStub, writer );
+				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
 			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
@@ -122,7 +125,7 @@ describe( 'DowncastDispatcher', () => {
 			];
 
 			view.change( writer => {
-				dispatcher.convertChanges( differStub, writer );
+				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
 			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
@@ -141,11 +144,34 @@ describe( 'DowncastDispatcher', () => {
 			];
 
 			view.change( writer => {
-				dispatcher.convertChanges( differStub, writer );
+				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
 			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
+		} );
+
+		it( 'should re-render markers which view elements got unbound during conversion', () => {
+			sinon.stub( dispatcher, 'convertMarkerRemove' );
+			sinon.stub( dispatcher, 'convertMarkerAdd' );
+
+			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
+			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
+
+			model.markers._set( 'foo', fooRange );
+			model.markers._set( 'bar', barRange );
+
+			// Stub `Mapper#flushUnboundMarkerNames`.
+			dispatcher.conversionApi.mapper.flushUnboundMarkerNames = () => [ 'foo', 'bar' ];
+
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, model.markers, writer );
+			} );
+
+			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
+			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
+			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
 		} );
 	} );
 
@@ -392,8 +418,8 @@ describe( 'DowncastDispatcher', () => {
 			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
-			viewFigure._setCustomProperty( 'addHighlight', () => { } );
-			viewFigure._setCustomProperty( 'removeHighlight', () => { } );
+			viewFigure._setCustomProperty( 'addHighlight', () => {} );
+			viewFigure._setCustomProperty( 'removeHighlight', () => {} );
 
 			// Create mapper mock.
 			dispatcher.conversionApi.mapper = {

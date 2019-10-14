@@ -9,7 +9,7 @@ import ViewElement from '../../../src/view/element';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
 
 import { parse, stringify } from '../../../src/dev-utils/view';
 
@@ -157,7 +157,8 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should return null for block filler', () => {
-			const domFiller = converter.blockFiller( document );
+			// eslint-disable-next-line new-cap
+			const domFiller = BR_FILLER( document );
 
 			expect( converter.domToView( domFiller ) ).to.be.null;
 		} );
@@ -451,7 +452,7 @@ describe( 'DomConverter', () => {
 			// At the end.
 			test( 'x_', 'x ' );
 			test( 'x _', 'x  ' );
-			test( 'x_ _', 'x   ' );
+			test( 'x __', 'x   ' );
 			test( 'x _ _', 'x    ' );
 
 			// In the middle.
@@ -464,7 +465,7 @@ describe( 'DomConverter', () => {
 			test( '_x_', ' x ' );
 			test( '_ x _x _', '  x  x  ' );
 			test( '_ _x x _', '   x x  ' );
-			test( '_ _x x_ _', '   x x   ' );
+			test( '_ _x x __', '   x x   ' );
 			test( '_ _x _ _x_', '   x    x ' );
 			test( '_', ' ' );
 
@@ -477,10 +478,6 @@ describe( 'DomConverter', () => {
 			test( 'x_', 'x ' );
 			test( 'x__', 'x_ ' );
 			test( 'x___', 'x__ ' );
-			// This is an edge case, but it's impossible to write elegant and compact algorithm that is also
-			// 100% correct. We might assume that expected result is `x  _` but it will be converted to `x   `
-			// by the algorithm. This is acceptable, though.
-			test( 'x __', 'x   ' );
 
 			test( 'x_x', 'x_x' );
 			test( 'x___x', 'x___x' );
@@ -496,26 +493,25 @@ describe( 'DomConverter', () => {
 			test( [ 'x', 'y' ], 'xy' );
 			test( [ 'x ', 'y' ], 'x y' );
 			test( [ 'x _', 'y' ], 'x  y' );
-			test( [ 'x _ ', 'y' ], 'x   y' );
+			test( [ 'x __', 'y' ], 'x   y' );
 			test( [ 'x _  _', 'y' ], 'x    y' );
 
 			test( [ 'x', ' y' ], 'x y' );
-			test( [ 'x ', '_y' ], 'x  y' );
-			test( [ 'x_ ', '_y' ], 'x   y' );
-			test( [ 'x _ ', '_y' ], 'x    y' );
-			test( [ 'x_ _ ', '_y' ], 'x     y' );
+			test( [ 'x_', ' y' ], 'x  y' );
+			test( [ 'x _', ' y' ], 'x   y' );
+			test( [ 'x __', ' y' ], 'x    y' );
+			test( [ 'x _ _', ' y' ], 'x     y' );
 
 			test( [ 'x', ' _y' ], 'x  y' );
-			test( [ 'x ', '_ y' ], 'x   y' );
-			test( [ 'x_ ', '_ y' ], 'x    y' );
-			test( [ 'x _ ', '_ y' ], 'x     y' );
-			test( [ 'x_ _ ', '_ y' ], 'x      y' );
+			test( [ 'x_', ' _y' ], 'x   y' );
+			test( [ 'x _', ' _y' ], 'x    y' );
+			test( [ 'x __', ' _y' ], 'x     y' );
+			test( [ 'x _ _', ' _y' ], 'x      y' );
 
 			// Some tests with hard &nbsp;
 			test( [ 'x', '_y' ], 'x_y' );
 			test( [ 'x_', 'y' ], 'x_y' );
-			test( [ 'x_', ' y' ], 'x_ y' );
-			test( [ 'x__', ' y' ], 'x__ y' );
+			test( [ 'x__', ' y' ], 'x_  y' );
 			test( [ 'x_ _', ' y' ], 'x_   y' );
 
 			it( 'not in preformatted blocks', () => {
@@ -605,9 +601,9 @@ describe( 'DomConverter', () => {
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
 			} );
 
-			it( 'not before a <br> (nbsp+space)', () => {
+			it( 'not before a <br> (space+nbsp)', () => {
 				const domP = createElement( document, 'p', {}, [
-					document.createTextNode( 'foo\u00a0 ' ),
+					document.createTextNode( 'foo \u00a0' ),
 					createElement( document, 'br' )
 				] );
 
@@ -687,7 +683,8 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should skip filler', () => {
-			const domFiller = converter.blockFiller( document );
+			// eslint-disable-next-line new-cap
+			const domFiller = BR_FILLER( document );
 			const domP = createElement( document, 'p', null, domFiller );
 
 			const viewChildren = Array.from( converter.domChildrenToView( domP ) );
@@ -766,7 +763,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should converter position inside block filler', () => {
-			const converter = new DomConverter( { blockFiller: NBSP_FILLER } );
+			const converter = new DomConverter( { blockFillerMode: 'nbsp' } );
 			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 

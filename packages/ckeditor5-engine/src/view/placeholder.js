@@ -140,9 +140,7 @@ export function hidePlaceholder( writer, element ) {
  * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {module:engine/view/element~Element} element
- * @param {String} text
  * @returns {Boolean}
  */
 export function needsPlaceholder( element ) {
@@ -176,7 +174,7 @@ export function needsPlaceholder( element ) {
 // Updates all placeholders associated with a document in a post–fixer callback.
 //
 // @private
-// @param { module:engine/model/document~Document} doc
+// @param { module:engine/view/document~Document} doc
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @returns {Boolean} True if any changes were made to the view document.
 function updateDocumentPlaceholders( doc, writer ) {

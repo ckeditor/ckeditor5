@@ -395,7 +395,9 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'model-selection-setTo-required-second-parameter: ' +
-					'selection.setTo requires the second parameter when the first parameter is a node.' );
+					'selection.setTo requires the second parameter when the first parameter is a node.',
+					[ this, selectable ]
+				);
 			}
 
 			this._setRanges( [ range ], backward );
@@ -415,7 +417,10 @@ export default class Selection {
 			 *
 			 * @error model-selection-setTo-not-selectable
 			 */
-			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set the selection to the given place.' );
+			throw new CKEditorError(
+				'model-selection-setTo-not-selectable: Cannot set the selection to the given place.',
+				[ this, selectable ]
+			);
 		}
 	}
 
@@ -449,7 +454,8 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'model-selection-set-ranges-not-range: ' +
-					'Selection range set to an object that is not an instance of model.Range.'
+					'Selection range set to an object that is not an instance of model.Range.',
+					[ this, newRanges ]
 				);
 			}
 
@@ -493,7 +499,8 @@ export default class Selection {
 			 * @error model-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError(
-				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.',
+				[ this, itemOrPosition ]
 			);
 		}
 
@@ -616,40 +623,58 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Checks whether this object is of the given.
 	 *
-	 *		const selection = new Selection( ... );
+	 *		selection.is( 'selection' ); // -> true
+	 *		selection.is( 'model:selection' ); // -> true
 	 *
-	 *		selection.is( 'selection' ); // true
-	 *		selection.is( 'node' ); // false
-	 *		selection.is( 'element' ); // false
+	 *		selection.is( 'view:selection' ); // -> false
+	 *		selection.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection';
+		return type == 'selection' || type == 'model:selection';
 	}
 
 	/**
-	 * Gets elements of type "block" touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
-	 * **Note:** `getSelectedBlocks()` always returns the deepest block.
+	 * **Note:** `getSelectedBlocks()` returns blocks that are nested in other non-block elements
+	 * but will not return blocks nested in other blocks.
 	 *
-	 * In this case the function will return exactly all 3 paragraphs:
+	 * In this case the function will return exactly all 3 paragraphs (note: `<blockQuote>` is not a block itself):
 	 *
 	 *		<paragraph>[a</paragraph>
-	 *		<quote>
+	 *		<blockQuote>
 	 *			<paragraph>b</paragraph>
-	 *		</quote>
+	 *		</blockQuote>
 	 *		<paragraph>c]d</paragraph>
 	 *
 	 * In this case the paragraph will also be returned, despite the collapsed selection:
 	 *
 	 *		<paragraph>[]a</paragraph>
+	 *
+	 * In such a scenario, however, only blocks A, B & E will be returned as blocks C & D are nested in block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * If the selection is inside a block all the inner blocks (A & B) are returned:
+	 *
+	 * 		<block>
+	 *			<blockA>[a</blockA>
+	 * 			<blockB>b]</blockB>
+	 * 		</block>
 	 *
 	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
 	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
@@ -664,52 +689,26 @@ export default class Selection {
 		const visited = new WeakSet();
 
 		for ( const range of this.getRanges() ) {
+			// Get start block of range in case of a collapsed range.
 			const startBlock = getParentBlock( range.start, visited );
 
-			if ( startBlock ) {
+			if ( startBlock && isTopBlockInRange( startBlock, range ) ) {
 				yield startBlock;
 			}
 
 			for ( const value of range.getWalker() ) {
-				if ( value.type == 'elementEnd' && isUnvisitedBlockContainer( value.item, visited ) ) {
-					yield value.item;
+				const block = value.item;
+
+				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block, visited, range ) ) {
+					yield block;
 				}
 			}
 
 			const endBlock = getParentBlock( range.end, visited );
 
 			// #984. Don't return the end block if the range ends right at its beginning.
-			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
+			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) && isTopBlockInRange( endBlock, range ) ) {
 				yield endBlock;
-			}
-		}
-	}
-
-	/**
-	 * Returns blocks that aren't nested in other selected blocks.
-	 *
-	 * In this case the method will return blocks A, B and E because C & D are children of block B:
-	 *
-	 *		[<blockA></blockA>
-	 *		<blockB>
-	 *			<blockC></blockC>
-	 *			<blockD></blockD>
-	 *		</blockB>
-	 *		<blockE></blockE>]
-	 *
-	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
-	 *
-	 * @returns {Iterable.<module:engine/model/element~Element>}
-	 */
-	* getTopMostBlocks() {
-		const selected = Array.from( this.getSelectedBlocks() );
-
-		for ( const block of selected ) {
-			const parentBlock = findAncestorBlock( block );
-
-			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
-			if ( !parentBlock || !selected.includes( parentBlock ) ) {
-				yield block;
 			}
 		}
 	}
@@ -763,6 +762,7 @@ export default class Selection {
 				 */
 				throw new CKEditorError(
 					'model-selection-range-intersects: Trying to add a range that intersects with another range in the selection.',
+					[ this, range ],
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);
 			}
@@ -822,7 +822,7 @@ mix( Selection, EmitterMixin );
 
 // Checks whether the given element extends $block in the schema and has a parent (is not a root).
 // Marks it as already visited.
-function isUnvisitedBlockContainer( element, visited ) {
+function isUnvisitedBlock( element, visited ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -830,6 +830,11 @@ function isUnvisitedBlockContainer( element, visited ) {
 	visited.add( element );
 
 	return element.document.model.schema.isBlock( element ) && element.parent;
+}
+
+// Checks if the given element is a $block was not previously visited and is a top block in a range.
+function isUnvisitedTopBlock( element, visited, range ) {
+	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
 // Finds the lowest element in position's ancestors which is a block.
@@ -850,7 +855,7 @@ function getParentBlock( position, visited ) {
 
 		hasParentLimit = schema.isLimit( element );
 
-		return !hasParentLimit && isUnvisitedBlockContainer( element, visited );
+		return !hasParentLimit && isUnvisitedBlock( element, visited );
 	} );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
@@ -858,6 +863,23 @@ function getParentBlock( position, visited ) {
 	ancestors.forEach( element => visited.add( element ) );
 
 	return block;
+}
+
+// Checks if the blocks is not nested in other block inside a range.
+//
+// @param {module:engine/model/elmenent~Element} block Block to check.
+// @param {module:engine/model/range~Range} range Range to check.
+function isTopBlockInRange( block, range ) {
+	const parentBlock = findAncestorBlock( block );
+
+	if ( !parentBlock ) {
+		return true;
+	}
+
+	// Add loose flag to check as parentRange can be equal to range.
+	const isParentInRange = range.containsRange( Range._createOn( parentBlock ), true );
+
+	return !isParentInRange;
 }
 
 // Returns first ancestor block of a node.

@@ -7,7 +7,7 @@
 
 import UIElement from '../../src/view/uielement';
 import Element from '../../src/view/element';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'UIElement', () => {
 	let uiElement;
@@ -31,9 +31,9 @@ describe( 'UIElement', () => {
 		} );
 
 		it( 'should throw if child elements are passed to constructor', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				new UIElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
-			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 
@@ -46,16 +46,26 @@ describe( 'UIElement', () => {
 
 		it( 'should return true for uiElement/element, also with correct name and element name', () => {
 			expect( el.is( 'uiElement' ) ).to.be.true;
+			expect( el.is( 'view:uiElement' ) ).to.be.true;
 			expect( el.is( 'uiElement', 'span' ) ).to.be.true;
+			expect( el.is( 'view:uiElement', 'span' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'view:element' ) ).to.be.true;
+			expect( el.is( 'node' ) ).to.be.true;
+			expect( el.is( 'view:node' ) ).to.be.true;
 			expect( el.is( 'element', 'span' ) ).to.be.true;
+			expect( el.is( 'view:element', 'span' ) ).to.be.true;
 			expect( el.is( 'span' ) ).to.be.true;
+			expect( el.is( 'view:span' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( el.is( 'uiElement', 'p' ) ).to.be.false;
+			expect( el.is( 'view:uiElement', 'p' ) ).to.be.false;
 			expect( el.is( 'element', 'p' ) ).to.be.false;
+			expect( el.is( 'view:element', 'p' ) ).to.be.false;
 			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'view:p' ) ).to.be.false;
 			expect( el.is( 'text' ) ).to.be.false;
 			expect( el.is( 'textProxy' ) ).to.be.false;
 			expect( el.is( 'containerElement' ) ).to.be.false;
@@ -63,22 +73,25 @@ describe( 'UIElement', () => {
 			expect( el.is( 'emptyElement' ) ).to.be.false;
 			expect( el.is( 'rootElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
+			expect( el.is( 'model:element' ) ).to.be.false;
+			expect( el.is( 'model:span' ) ).to.be.false;
+			expect( el.is( 'model:node' ) ).to.be.false;
 		} );
 	} );
 
 	describe( '_appendChild()', () => {
 		it( 'should throw when try to append new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				uiElement._appendChild( new Element( 'i' ) );
-			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 
 	describe( '_insertChild()', () => {
 		it( 'should throw when try to insert new child element', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				uiElement._insertChild( 0, new Element( 'i' ) );
-			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 

@@ -19,7 +19,7 @@ import ModelRange from '../../src/model/range';
 import ModelWriter from '../../src/model/writer';
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'UpcastDispatcher', () => {
 	let model;
@@ -472,9 +472,9 @@ describe( 'UpcastDispatcher', () => {
 					conversionApi.convertItem( viewArray, data.modelCursor );
 				} );
 
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
-				} ).to.throw( CKEditorError, /^view-conversion-dispatcher-incorrect-result/ );
+				}, /^view-conversion-dispatcher-incorrect-result/, model );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyArray.calledOnce ).to.be.true;

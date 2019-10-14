@@ -116,6 +116,7 @@ export default class RootAttributeOperation extends Operation {
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-not-a-root: The element to change is not a root element.',
+				this,
 				{ root: this.root, key: this.key }
 			);
 		}
@@ -132,6 +133,7 @@ export default class RootAttributeOperation extends Operation {
 			throw new CKEditorError(
 				'rootattribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s ' +
 				'old attribute value.',
+				this,
 				{ root: this.root, key: this.key }
 			);
 		}
@@ -146,6 +148,7 @@ export default class RootAttributeOperation extends Operation {
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-attribute-exists: The attribute with given key already exists.',
+				this,
 				{ root: this.root, key: this.key }
 			);
 		}
@@ -197,6 +200,7 @@ export default class RootAttributeOperation extends Operation {
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-fromjson-no-root: Cannot create RootAttributeOperation. Root with specified name does not exist.',
+				this,
 				{ rootName: json.root }
 			);
 		}

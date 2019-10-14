@@ -144,6 +144,24 @@ export default class Range {
 	}
 
 	/**
+	 * Checks whether this object is of the given.
+	 *
+	 *		range.is( 'range' ); // -> true
+	 *		range.is( 'model:range' ); // -> true
+	 *
+	 *		range.is( 'view:range' ); // -> false
+	 *		range.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'range' || type == 'model:range';
+	}
+
+	/**
 	 * Two ranges are equal if their {@link #start} and {@link #end} positions are equal.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
@@ -877,7 +895,10 @@ export default class Range {
 			 *
 			 * @error range-create-from-ranges-empty-array
 			 */
-			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
+			throw new CKEditorError(
+				'range-create-from-ranges-empty-array: At least one range has to be passed.',
+				null
+			);
 		} else if ( ranges.length == 1 ) {
 			return ranges[ 0 ].clone();
 		}

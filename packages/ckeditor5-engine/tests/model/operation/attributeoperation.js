@@ -9,8 +9,9 @@ import Element from '../../../src/model/element';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
 import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import count from '@ckeditor/ckeditor5-utils/src/count';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'AttributeOperation', () => {
 	let model, doc, root;
@@ -202,7 +203,7 @@ describe( 'AttributeOperation', () => {
 		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
 			root._insertChild( 0, new Text( 'x' ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
 					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					'foo',
@@ -212,13 +213,13 @@ describe( 'AttributeOperation', () => {
 				);
 
 				operation._validate();
-			} ).to.throw( CKEditorError, /attribute-operation-wrong-old-value/ );
+			}, /attribute-operation-wrong-old-value/, model );
 		} );
 
 		it( 'should throw an error when one try to insert and the attribute already exists', () => {
 			root._insertChild( 0, new Text( 'x', { x: 1 } ) );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
 					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					'x',
@@ -228,7 +229,7 @@ describe( 'AttributeOperation', () => {
 				);
 
 				operation._validate();
-			} ).to.throw( CKEditorError, /attribute-operation-attribute-exists/ );
+			}, /attribute-operation-attribute-exists/, model );
 		} );
 
 		it( 'should not throw when attribute value is the same', () => {
@@ -253,7 +254,7 @@ describe( 'AttributeOperation', () => {
 				new Element( 'paragraph', null, new Text( 'Bar' ) )
 			] );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
 					new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 1, 1 ] ) ),
 					'x',
@@ -263,7 +264,7 @@ describe( 'AttributeOperation', () => {
 				);
 
 				operation._validate();
-			} ).to.throw( CKEditorError, /attribute-operation-range-not-flat/ );
+			}, /attribute-operation-range-not-flat/, model );
 		} );
 	} );
 

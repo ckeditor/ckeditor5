@@ -22,14 +22,15 @@ import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import SelectionRendererObserver from './observer/selectionrendererobserver';
+import InputObserver from './observer/inputobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -105,6 +106,7 @@ export default class View {
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
+		this._renderer.bind( 'isComposing' ).to( this.document );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -174,6 +176,10 @@ export default class View {
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
 		this.addObserver( SelectionRendererObserver );
+
+		if ( env.isAndroid ) {
+			this.addObserver( InputObserver );
+		}
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );
@@ -394,14 +400,11 @@ export default class View {
 				this.domConverter.focus( editable );
 				this.forceRender();
 			} else {
-				/**
-				 * Before focusing view document, selection should be placed inside one of the view's editables.
-				 * Normally its selection will be converted from model document (which have default selection), but
-				 * when using view document on its own, we need to manually place selection before focusing it.
-				 *
-				 * @error view-focus-no-selection
-				 */
-				log.warn( 'view-focus-no-selection: There is no selection in any editable to focus.' );
+				// Before focusing view document, selection should be placed inside one of the view's editables.
+				// Normally its selection will be converted from model document (which have default selection), but
+				// when using view document on its own, we need to manually place selection before focusing it.
+				//
+				// @if CK_DEBUG // console.warn( 'There is no selection in any editable to focus.' );
 			}
 		}
 	}
@@ -451,33 +454,38 @@ export default class View {
 			throw new CKEditorError(
 				'cannot-change-view-tree: ' +
 				'Attempting to make changes to the view when it is in an incorrect state: rendering or post-fixers are in progress. ' +
-				'This may cause some unexpected behavior and inconsistency between the DOM and the view.'
+				'This may cause some unexpected behavior and inconsistency between the DOM and the view.',
+				this
 			);
 		}
 
-		// Recursive call to view.change() method - execute listener immediately.
-		if ( this._ongoingChange ) {
-			return callback( this._writer );
+		try {
+			// Recursive call to view.change() method - execute listener immediately.
+			if ( this._ongoingChange ) {
+				return callback( this._writer );
+			}
+
+			// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
+			// event for all nested calls.
+			this._ongoingChange = true;
+			const callbackResult = callback( this._writer );
+			this._ongoingChange = false;
+
+			// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
+			// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all
+			// changes. Also, we don't need to render anything if there're no changes since last rendering.
+			if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
+				this._postFixersInProgress = true;
+				this.document._callPostFixers( this._writer );
+				this._postFixersInProgress = false;
+
+				this.fire( 'render' );
+			}
+
+			return callbackResult;
+		} catch ( err ) {
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
-
-		// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
-		// event for all nested calls.
-		this._ongoingChange = true;
-		const callbackResult = callback( this._writer );
-		this._ongoingChange = false;
-
-		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
-		// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all changes.
-		// Also, we don't need to render anything if there're no changes since last rendering.
-		if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
-			this._postFixersInProgress = true;
-			this.document._callPostFixers( this._writer );
-			this._postFixersInProgress = false;
-
-			this.fire( 'render' );
-		}
-
-		return callbackResult;
 	}
 
 	/**

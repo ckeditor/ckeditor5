@@ -1243,6 +1243,36 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'on an element that got some nodes inserted', () => {
+			const p = root.getChild( 0 );
+
+			model.change( () => {
+				insert( new Text( 'x' ), Position._createAt( p, 3 ) );
+				insert( new Text( 'x' ), Position._createAt( p, 4 ) );
+				insert( new Text( 'x' ), Position._createAt( p, 5 ) );
+
+				attribute( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ), 'a', null, true );
+
+				insert( new Text( 'y' ), Position._createAt( p, 6 ) );
+
+				expectChanges( [
+					{
+						type: 'attribute',
+						range: new Range( Position._createAt( root, 0 ), Position._createAt( p, 0 ) ),
+						attributeKey: 'a',
+						attributeOldValue: null,
+						attributeNewValue: true
+					},
+					{
+						type: 'insert',
+						position: Position._createAt( p, 3 ),
+						length: 4,
+						name: '$text'
+					}
+				] );
+			} );
+		} );
+
 		it( 'over all changed nodes and some not changed nodes', () => {
 			const p = root.getChild( 0 );
 
@@ -1756,6 +1786,76 @@ describe( 'Differ', () => {
 					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
+		} );
+	} );
+
+	describe( 'refreshItem()', () => {
+		it( 'should mark given element to be removed and added again', () => {
+			const p = root.getChild( 0 );
+
+			differ.refreshItem( p );
+
+			expectChanges( [
+				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
+				{ type: 'insert', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
+			], true );
+		} );
+
+		it( 'should mark given text proxy to be removed and added again', () => {
+			const p = root.getChild( 0 );
+			const range = model.createRangeIn( p );
+			const textProxy = [ ...range.getItems() ][ 0 ];
+
+			differ.refreshItem( textProxy );
+
+			expectChanges( [
+				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
+				{ type: 'insert', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) }
+			], true );
+		} );
+
+		it( 'inside a new element', () => {
+			// Since the refreshed element is inside a new element, it should not be listed on changes list.
+			model.change( () => {
+				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
+
+				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'markers refreshing', () => {
+			model.change( () => {
+				// Refreshed element contains marker.
+				model.markers._set( 'markerA', new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) );
+
+				// Marker contains refreshed element.
+				model.markers._set( 'markerB', new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ) );
+
+				// Intersecting.
+				model.markers._set( 'markerC', new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ) );
+
+				// Not intersecting.
+				model.markers._set( 'markerD', new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 1 ] ) ) );
+			} );
+
+			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
+
+			differ.refreshItem( root.getChild( 1 ) );
+
+			expectChanges( [
+				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
+				{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+			] );
+
+			const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
+			const markersToAdd = differ.getMarkersToAdd().map( entry => entry.name );
+
+			expect( markersToRefresh ).to.deep.equal( markersToRemove );
+			expect( markersToRefresh ).to.deep.equal( markersToAdd );
 		} );
 	} );
 

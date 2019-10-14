@@ -61,17 +61,24 @@ export default class Position {
 			 *
 			 * @error model-position-root-invalid
 			 */
-			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.' );
+			throw new CKEditorError(
+				'model-position-root-invalid: Position root invalid.',
+				root
+			);
 		}
 
 		if ( !( path instanceof Array ) || path.length === 0 ) {
 			/**
 			 * Position path must be an array with at least one item.
 			 *
-			 * @error model-position-path-incorrect
+			 * @error model-position-path-incorrect-format
 			 * @param path
 			 */
-			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an array with at least one item.', { path } );
+			throw new CKEditorError(
+				'model-position-path-incorrect-format: Position path must be an array with at least one item.',
+				root,
+				{ path }
+			);
 		}
 
 		// Normalize the root and path (if element was passed).
@@ -154,13 +161,36 @@ export default class Position {
 	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 *
 	 * @readonly
-	 * @type {module:engine/model/element~Element}
+	 * @type {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get parent() {
 		let parent = this.root;
 
 		for ( let i = 0; i < this.path.length - 1; i++ ) {
 			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
+
+			if ( !parent ) {
+				throw new CKEditorError( 'model-position-path-incorrect: The position\'s path is incorrect.', this, { position: this } );
+			}
+		}
+
+		if ( parent.is( 'text' ) ) {
+			/**
+			 * The position's path is incorrect. This means that a position does not point to
+			 * a correct place in the tree and hence, some of its methods and getters cannot work correctly.
+			 *
+			 * **Note**: Unlike DOM and view positions, in the model, the
+			 * {@link module:engine/model/position~Position#parent position's parent} is always an element or a document fragment.
+			 * The last offset in the {@link module:engine/model/position~Position#path position's path} is the point in this element where
+			 * this position points.
+			 *
+			 * Read more about model positions and offsets in
+			 * the {@glink framework/guides/architecture/editing-engine#indexes-and-offsets Editing engine architecture guide}.
+			 *
+			 * @error position-incorrect-path
+			 * @param {module:engine/model/position~Position} position The incorrect position.
+			 */
+			throw new CKEditorError( 'model-position-path-incorrect: The position\'s path is incorrect.', this, { position: this } );
 		}
 
 		return parent;
@@ -493,6 +523,24 @@ export default class Position {
 				right.path = right.path.slice( 0, -1 );
 			}
 		}
+	}
+
+	/**
+	 * Checks whether this object is of the given.
+	 *
+	 *		position.is( 'position' ); // -> true
+	 *		position.is( 'model:position' ); // -> true
+	 *
+	 *		position.is( 'view:position' ); // -> false
+	 *		position.is( 'documentSelection' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'position' || type == 'model:position';
 	}
 
 	/**
@@ -858,7 +906,9 @@ export default class Position {
 				 */
 				throw new CKEditorError(
 					'model-createPositionAt-offset-required: ' +
-					'Model#createPositionAt() requires the offset when the first parameter is a model item.' );
+					'Model#createPositionAt() requires the offset when the first parameter is a model item.',
+					[ this, itemOrPosition ]
+				);
 			}
 
 			if ( !node.is( 'element' ) && !node.is( 'documentFragment' ) ) {
@@ -867,7 +917,10 @@ export default class Position {
 				 *
 				 * @error model-position-parent-incorrect
 				 */
-				throw new CKEditorError( 'model-position-parent-incorrect: Position parent have to be a element or document fragment.' );
+				throw new CKEditorError(
+					'model-position-parent-incorrect: Position parent have to be a element or document fragment.',
+					[ this, itemOrPosition ]
+				);
 			}
 
 			const path = node.getPath();
@@ -894,7 +947,11 @@ export default class Position {
 			 * @error model-position-after-root
 			 * @param {module:engine/model/item~Item} root
 			 */
-			throw new CKEditorError( 'model-position-after-root: You cannot make a position after root.', { root: item } );
+			throw new CKEditorError(
+				'model-position-after-root: You cannot make a position after root.',
+				[ this, item ],
+				{ root: item }
+			);
 		}
 
 		return this._createAt( item.parent, item.endOffset, stickiness );
@@ -916,7 +973,11 @@ export default class Position {
 			 * @error model-position-before-root
 			 * @param {module:engine/model/item~Item} root
 			 */
-			throw new CKEditorError( 'model-position-before-root: You cannot make a position before root.', { root: item } );
+			throw new CKEditorError(
+				'model-position-before-root: You cannot make a position before root.',
+				item,
+				{ root: item }
+			);
 		}
 
 		return this._createAt( item.parent, item.startOffset, stickiness );
@@ -946,6 +1007,7 @@ export default class Position {
 			 */
 			throw new CKEditorError(
 				'model-position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
+				doc,
 				{ rootName: json.root }
 			);
 		}

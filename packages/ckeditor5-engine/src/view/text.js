@@ -42,10 +42,24 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given type.
+	 *
+	 *		text.is( 'text' ); // -> true
+	 *		text.is( 'node' ); // -> true
+	 *		text.is( 'view:text' ); // -> true
+	 *		text.is( 'view:node' ); // -> true
+	 *
+	 *		text.is( 'model:text' ); // -> false
+	 *		text.is( 'element' ); // -> false
+	 *		text.is( 'range' ); // -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'text' || super.is( type );
+		return type == 'text' || type == 'view:text' || super.is( type );
 	}
 
 	/**

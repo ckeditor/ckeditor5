@@ -17,7 +17,6 @@ import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 const storePrefix = 'selection:';
@@ -234,23 +233,40 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Gets elements of type "block" touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
-	 * **Note:** `getSelectedBlocks()` always returns the deepest block.
+	 * **Note:** `getSelectedBlocks()` returns blocks that are nested in other non-block elements
+	 * but will not return blocks nested in other blocks.
 	 *
-	 * In this case the function will return exactly all 3 paragraphs:
+	 * In this case the function will return exactly all 3 paragraphs (note: `<blockQuote>` is not a block itself):
 	 *
 	 *		<paragraph>[a</paragraph>
-	 *		<quote>
+	 *		<blockQuote>
 	 *			<paragraph>b</paragraph>
-	 *		</quote>
+	 *		</blockQuote>
 	 *		<paragraph>c]d</paragraph>
 	 *
 	 * In this case the paragraph will also be returned, despite the collapsed selection:
 	 *
 	 *		<paragraph>[]a</paragraph>
+	 *
+	 * In such a scenario, however, only blocks A, B & E will be returned as blocks C & D are nested in block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * If the selection is inside a block all the inner blocks (A & B) are returned:
+	 *
+	 * 		<block>
+	 *			<blockA>[a</blockA>
+	 * 			<blockB>b]</blockB>
+	 * 		</block>
 	 *
 	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
 	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
@@ -263,26 +279,6 @@ export default class DocumentSelection {
 	 */
 	getSelectedBlocks() {
 		return this._selection.getSelectedBlocks();
-	}
-
-	/**
-	 * Returns blocks that aren't nested in other selected blocks.
-	 *
-	 * In this case the method will return blocks A, B and E because C & D are children of block B:
-	 *
-	 *		[<blockA></blockA>
-	 *		<blockB>
-	 *			<blockC></blockC>
-	 *			<blockD></blockD>
-	 *		</blockB>
-	 *		<blockE></blockE>]
-	 *
-	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
-	 *
-	 * @returns {Iterable.<module:engine/model/element~Element>}
-	 */
-	getTopMostBlocks() {
-		return this._selection.getTopMostBlocks();
 	}
 
 	/**
@@ -368,21 +364,27 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Checks whether this object is of the given type.
 	 *
-	 *		const selection = new DocumentSelection( ... );
+	 *		selection.is( 'selection' ); // -> true
+	 *		selection.is( 'documentSelection' ); // -> true
+	 *		selection.is( 'model:selection' ); // -> true
+	 *		selection.is( 'model:documentSelection' ); // -> true
 	 *
-	 *		selection.is( 'selection' ); // true
-	 *		selection.is( 'documentSelection' ); // true
-	 *		selection.is( 'node' ); // false
-	 *		selection.is( 'element' ); // false
+	 *		selection.is( 'view:selection' ); // -> false
+	 *		selection.is( 'element' ); // -> false
+	 *		selection.is( 'node' ); // -> false
+	 *
+	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection' || type == 'documentSelection';
+		return type == 'selection' ||
+			type == 'model:selection' ||
+			type == 'documentSelection' ||
+			type == 'model:documentSelection';
 	}
 
 	/**
@@ -639,6 +641,7 @@ class LiveSelection extends Selection {
 					 */
 					throw new CKEditorError(
 						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						this,
 						{ range }
 					);
 				}
@@ -767,6 +770,7 @@ class LiveSelection extends Selection {
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
+				this,
 				{ uid }
 			);
 		}
@@ -802,12 +806,7 @@ class LiveSelection extends Selection {
 		this._checkRange( range );
 
 		if ( range.root == this._document.graveyard ) {
-			/**
-			 * Trying to add a Range that is in the graveyard root. Range rejected.
-			 *
-			 * @warning model-selection-range-in-graveyard
-			 */
-			log.warn( 'model-selection-range-in-graveyard: Trying to add a Range that is in the graveyard root. Range rejected.' );
+			// @if CK_DEBUG // console.warn( 'Trying to add a Range that is in the graveyard root. Range rejected.' );
 
 			return;
 		}

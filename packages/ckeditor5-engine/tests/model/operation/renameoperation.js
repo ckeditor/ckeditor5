@@ -7,7 +7,8 @@ import Model from '../../../src/model/model';
 import Element from '../../../src/model/element';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import Position from '../../../src/model/position';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RenameOperation', () => {
 	const oldName = 'oldName';
@@ -66,17 +67,17 @@ describe( 'RenameOperation', () => {
 		it( 'should throw an error if position is not before an element', () => {
 			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				op._validate();
-			} ).to.throw( CKEditorError, /rename-operation-wrong-position/ );
+			}, /rename-operation-wrong-position/, model );
 		} );
 
 		it( 'should throw an error if oldName is different than renamed element name', () => {
 			const op = new RenameOperation( position, 'foo', newName, doc.version );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				op._validate();
-			} ).to.throw( CKEditorError, /rename-operation-wrong-name/ );
+			}, /rename-operation-wrong-name/, model );
 		} );
 
 		it( 'should not throw when new name is the same as previous', () => {

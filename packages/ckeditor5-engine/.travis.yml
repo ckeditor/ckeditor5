@@ -1,9 +1,11 @@
 sudo: required
-dist: trusty
+dist: xenial
 addons:
   chrome: stable
   firefox: latest
 language: node_js
+services:
+- xvfb
 node_js:
 - '8'
 cache:
@@ -13,8 +15,6 @@ branches:
   - stable
 before_install:
 - export START_TIME=$( date +%s )
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
 - yarn add @ckeditor/ckeditor5-dev-tests
@@ -28,6 +28,4 @@ after_script:
 - ckeditor5-dev-tests-notify-travis-status
 env:
   global:
-  - secure: CSFKXnTb2oQW8YIjh+SWXYSYzx1jcIg1wGcl6jWrbaOU06JHEO77YLKlhMxLfRniFtilBEksK4ugIcn+lihykhHleMxI27+kifILdLLZKvwWlZiDrtpJSzLk08SpRNDwwthSlHVKrxbHVFE1K9SYpX4s3qTpxullDMPgc13OP4c=
-  - secure: WGdwDEavTOIE/yw8pdpWmx3Cehm2/GN8gZMimuot8sWPbOZRuPh+2lnVWpASLe25qJUKKeLWYLRHccpMLKbyweiordSEBwzNrOGOFyUuaDPITNZZrp5ekh2vHBp1+mwhRpRekdyWdzzVsm01RkFrnJqQlaXxX9i/r9Tu4EsK54M=
-  - secure: BKoFnOWcfKn8zaTvilMn9UORF+gR1zBqetqai5FKfSKraJXqiBrz1AI3ecytCjJOKS1g6HoRtZHwVS4a+uG3JjK3bRERQF2NyHiyjbrsL+2HaKaRnVmox8PC/59m1PJlcRKAV9RTYJqL/oqa7N8OBegt4LpIVnEcil8WCErCF6Q=
+  - secure: GMesvAe0tAa8QfdhGApzmzjhf9mpfjL6jMx8aFqpRli5tuyX9JsjNjFELnU/MMlNDyySPwXAuQVrvcWkCFy9a3n705tGt/VdmStCrTdwV2oRNmNKqGgFovmiK3an+RAIts2PX2iguDjwiogqkAW0FstWAMdG0Yk4AVUxKC1niIo=

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
-  "version": "13.1.1",
+  "version": "14.0.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -21,26 +21,26 @@
     "ckeditor 5"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^12.1.1",
+    "@ckeditor/ckeditor5-utils": "^14.0.0",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^11.1.1",
-    "@ckeditor/ckeditor5-block-quote": "^11.1.0",
-    "@ckeditor/ckeditor5-core": "^12.1.1",
-    "@ckeditor/ckeditor5-editor-classic": "^12.1.1",
-    "@ckeditor/ckeditor5-enter": "^11.0.2",
-    "@ckeditor/ckeditor5-essentials": "^11.0.2",
-    "@ckeditor/ckeditor5-heading": "^11.0.2",
-    "@ckeditor/ckeditor5-link": "^11.0.2",
-    "@ckeditor/ckeditor5-list": "^12.0.2",
-    "@ckeditor/ckeditor5-paragraph": "^11.0.2",
-    "@ckeditor/ckeditor5-theme-lark": "^14.0.0",
-    "@ckeditor/ckeditor5-typing": "^12.0.2",
-    "@ckeditor/ckeditor5-undo": "^11.0.2",
-    "@ckeditor/ckeditor5-widget": "^11.0.2",
+    "@ckeditor/ckeditor5-basic-styles": "^11.1.4",
+    "@ckeditor/ckeditor5-block-quote": "^11.1.3",
+    "@ckeditor/ckeditor5-core": "^12.3.0",
+    "@ckeditor/ckeditor5-editor-classic": "^12.1.4",
+    "@ckeditor/ckeditor5-enter": "^11.1.0",
+    "@ckeditor/ckeditor5-essentials": "^11.0.5",
+    "@ckeditor/ckeditor5-heading": "^11.0.5",
+    "@ckeditor/ckeditor5-link": "^11.1.2",
+    "@ckeditor/ckeditor5-list": "^12.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^11.0.5",
+    "@ckeditor/ckeditor5-theme-lark": "^14.2.0",
+    "@ckeditor/ckeditor5-typing": "^12.2.0",
+    "@ckeditor/ckeditor5-undo": "^11.0.5",
+    "@ckeditor/ckeditor5-widget": "^11.1.0",
     "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.11",
+    "eslint-config-ckeditor5": "^2.0.0",
     "husky": "^1.3.1",
     "lint-staged": "^7.0.0"
   },
@@ -51,7 +51,7 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5-engine/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5-engine.git"

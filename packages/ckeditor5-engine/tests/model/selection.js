@@ -10,11 +10,11 @@ import Range from '../../src/model/range';
 import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
 import Selection from '../../src/model/selection';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import { parse, setData } from '../../src/dev-utils/model';
 import Schema from '../../src/model/schema';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Selection', () => {
 	let model, doc, root, selection, liveRange, range, range1, range2, range3;
@@ -107,7 +107,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error if added ranges intersects', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [
 					liveRange,
@@ -116,14 +116,34 @@ describe( 'Selection', () => {
 						new Position( root, [ 1, 2 ] )
 					)
 				] );
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+			}, /model-selection-range-intersects/, model );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
+		} );
+	} );
+
+	describe( 'is()', () => {
+		let selection;
+
+		beforeEach( () => {
+			selection = new Selection();
+		} );
+
+		it( 'should return true for "selection"', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+			expect( selection.is( 'model:selection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( selection.is( 'model' ) ).to.be.false;
+			expect( selection.is( 'model:node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );
 
@@ -268,7 +288,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error if added ranges intersects', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setTo( [
 					liveRange,
 					new Range(
@@ -276,19 +296,19 @@ describe( 'Selection', () => {
 						new Position( root, [ 1, 2 ] )
 					)
 				] );
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+			}, /model-selection-range-intersects/, model );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setTo( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable #2', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setTo();
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
+			}, /model-selection-setTo-not-selectable/ );
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
@@ -352,9 +372,9 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw if second parameter is not passed', () => {
-				expect( () => {
+				expectToThrowCKEditorError( () => {
 					selection.setTo( root );
-				} ).to.throw( CKEditorError, /model-selection-setTo-required-second-parameter/ );
+				}, /model-selection-setTo-required-second-parameter/, model );
 			} );
 
 			it( 'should set selection at given offset in given parent', () => {
@@ -438,9 +458,9 @@ describe( 'Selection', () => {
 		it( 'throws if there are no ranges in selection', () => {
 			const endPos = Position._createAt( root, 'end' );
 
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
-			} ).to.throw( CKEditorError, /model-selection-setFocus-no-ranges/ );
+			}, /model-selection-setFocus-no-ranges/, model );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -617,9 +637,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
+			expectToThrowCKEditorError( () => {
 				selection._setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-set-ranges-not-range/ );
+			}, /model-selection-set-ranges-not-range/, model );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {
@@ -806,7 +826,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
+	describe( 'is()', () => {
 		it( 'should return true for selection', () => {
 			expect( selection.is( 'selection' ) ).to.be.true;
 		} );
@@ -950,6 +970,12 @@ describe( 'Selection', () => {
 			// Special block which can contain another blocks.
 			model.schema.register( 'nestedBlock', { inheritAllFrom: '$block' } );
 			model.schema.extend( 'nestedBlock', { allowIn: '$block' } );
+
+			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
+
+			model.schema.extend( 'p', { allowIn: 'tableCell' } );
 		} );
 
 		it( 'returns an iterator', () => {
@@ -961,7 +987,7 @@ describe( 'Selection', () => {
 		it( 'returns block for a collapsed selection', () => {
 			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b' ] );
 		} );
 
 		it( 'returns block for a collapsed selection (empty block)', () => {
@@ -976,86 +1002,102 @@ describe( 'Selection', () => {
 		it( 'returns block for a non collapsed selection', () => {
 			setData( model, '<p>a</p><p>[b]</p><p>c</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b' ] );
 		} );
 
 		it( 'returns two blocks for a non collapsed selection', () => {
 			setData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c' ] );
 		} );
 
 		it( 'returns two blocks for a non collapsed selection (starts at block end)', () => {
 			setData( model, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c' ] );
 		} );
 
 		it( 'returns proper block for a multi-range selection', () => {
 			setData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c', 'e' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c', 'p#e' ] );
 		} );
 
 		it( 'does not return a block twice if two ranges are anchored in it', () => {
 			setData( model, '<p>[a]b[c]</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'abc' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#abc' ] );
 		} );
 
 		it( 'returns only blocks', () => {
 			setData( model, '<p>[a</p><image>b</image><p>c]</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'c' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#c' ] );
 		} );
 
 		it( 'gets deeper into the tree', () => {
 			setData( model, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'p#a', 'p#b', 'p#c', 'p#d' ] );
 		} );
 
 		it( 'gets deeper into the tree (end deeper)', () => {
 			setData( model, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'p#a', 'p#b' ] );
 		} );
 
 		it( 'gets deeper into the tree (start deeper)', () => {
 			setData( model, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'c', 'd' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'p#c', 'p#d' ] );
 		} );
 
 		it( 'returns an empty array if none of the selected elements is a block', () => {
 			setData( model, '<p>a</p><image>[a</image><image>b]</image><p>b</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
 		it( 'returns an empty array if the selected element is not a block', () => {
 			setData( model, '<p>a</p><image>[]a</image><p>b</p>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
 		// Super edge case – should not happen (blocks should never be nested),
 		// but since the code handles it already it's worth testing.
-		it( 'returns only the lowest block if blocks are nested', () => {
+		it( 'returns only the lowest block if blocks are nested (case #1)', () => {
 			setData( model, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'nestedBlock#b' ] );
 		} );
 
-		// Like above but trickier.
-		it( 'returns only the lowest block if blocks are nested', () => {
+		// Like above but - with multiple ranges.
+		it( 'returns only the lowest block if blocks are nested (case #2)', () => {
 			setData(
 				model,
 				'<nestedBlock>a<nestedBlock>[b</nestedBlock></nestedBlock>' +
 				'<nestedBlock>c<nestedBlock>d]</nestedBlock></nestedBlock>'
 			);
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'd' ] );
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'nestedBlock#b', 'nestedBlock#d' ] );
+		} );
+
+		// Like above but - with multiple collapsed ranges.
+		it( 'returns only the lowest block if blocks are nested (case #3)', () => {
+			setData(
+				model,
+				'<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' +
+				'<nestedBlock>c<nestedBlock>d[]</nestedBlock></nestedBlock>'
+			);
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
+				.to.deep.equal( [ 'nestedBlock#b', 'nestedBlock#d' ] );
 		} );
 
 		it( 'returns nothing if directly in a root', () => {
@@ -1063,26 +1105,60 @@ describe( 'Selection', () => {
 
 			setData( model, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
 
-			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		it( 'does not go cross limit elements', () => {
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
+		} );
+
+		it( 'returns only top most blocks (multiple selected)', () => {
+			setData( model, '<p>[foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz]</p>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
+		} );
+
+		it( 'returns only top most block (one selected)', () => {
+			setData( model, '[<table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table>]' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'table' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks', () => {
+			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
 
 		describe( '#984', () => {
 			it( 'does not return the last block if none of its content is selected', () => {
 				setData( model, '<p>[a</p><p>b</p><p>]c</p>' );
 
-				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
 			} );
 
 			it( 'returns only the first block for a non collapsed selection if only end of selection is touching a block', () => {
 				setData( model, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
 
-				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b' ] );
 			} );
 
 			it( 'does not return the last block if none of its content is selected (nested case)', () => {
 				setData( model, '<p>[a</p><nestedBlock><nestedBlock>]b</nestedBlock></nestedBlock>' );
 
-				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
 			} );
 
 			// Like a super edge case, we can live with this behavior as I don't even know what we could expect here
@@ -1090,20 +1166,20 @@ describe( 'Selection', () => {
 			it( 'does not return the last block if none of its content is selected (nested case, wrapper with a content)', () => {
 				setData( model, '<p>[a</p><nestedBlock>b<nestedBlock>]c</nestedBlock></nestedBlock>' );
 
-				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
 			} );
 
 			it( 'returns the last block if at least one of its child nodes is selected', () => {
 				setData( model, '<p>[a</p><p>b</p><p><image></image>]c</p>' );
 
-				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
 			} );
 
 			// I needed these last 2 cases to justify the use of isTouching() instead of simple `offset == 0` check.
 			it( 'returns the last block if at least one of its child nodes is selected (end in an inline element)', () => {
 				setData( model, '<p>[a</p><p>b</p><p><image>x]</image>c</p>' );
 
-				expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
 			} );
 
 			it(
@@ -1112,94 +1188,9 @@ describe( 'Selection', () => {
 				() => {
 					setData( model, '<p>[a</p><p>b</p><p><image>]x</image>c</p>' );
 
-					expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+					expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
 				}
 			);
-		} );
-
-		it( 'does not go beyond limit elements', () => {
-			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
-			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
-			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
-
-			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
-
-			model.schema.extend( 'p', { allowIn: 'tableCell' } );
-
-			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
-		} );
-
-		// Map all elements to data of its first child text node.
-		function toText( elements ) {
-			return Array.from( elements ).map( el => {
-				return Array.from( el.getChildren() ).find( child => child.data ).data;
-			} );
-		}
-	} );
-
-	describe( 'getTopMostBlocks()', () => {
-		beforeEach( () => {
-			model.schema.register( 'p', { inheritAllFrom: '$block' } );
-			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
-			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
-			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
-
-			model.schema.extend( 'p', { allowIn: 'tableCell' } );
-		} );
-
-		it( 'returns an iterator', () => {
-			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
-
-			expect( doc.selection.getTopMostBlocks().next ).to.be.a( 'function' );
-		} );
-
-		it( 'returns block for a collapsed selection', () => {
-			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b' ] );
-		} );
-
-		it( 'returns block for a collapsed selection (empty block)', () => {
-			setData( model, '<p>a</p><p>[]</p><p>c</p>' );
-
-			const blocks = Array.from( doc.selection.getTopMostBlocks() );
-
-			expect( blocks ).to.have.length( 1 );
-			expect( blocks[ 0 ].childCount ).to.equal( 0 );
-		} );
-
-		it( 'returns block for a non collapsed selection', () => {
-			setData( model, '<p>a</p><p>[b]</p><p>c</p>' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b' ] );
-		} );
-
-		it( 'returns two blocks for a non collapsed selection', () => {
-			setData( model, '<p>a</p><p>[b</p><p>c]</p><p>d</p>' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
-		} );
-
-		it( 'returns only top most blocks', () => {
-			setData( model, '[<p>foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz</p>]' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
-		} );
-
-		it( 'returns only selected blocks even if nested in other blocks', () => {
-			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
-		} );
-
-		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
-			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
-
-			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
-
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
 	} );
 
@@ -1382,10 +1373,15 @@ describe( 'Selection', () => {
 		return Array.from( elements ).map( el => {
 			const name = el.name;
 
-			const firstChild = el.getChild( 0 );
-			const hasText = firstChild && firstChild.data;
+			let innerText = '';
 
-			return hasText ? `${ name }#${ firstChild.data }` : name;
+			for ( const child of el.getChildren() ) {
+				if ( child.is( 'text' ) ) {
+					innerText += child.data;
+				}
+			}
+
+			return innerText.length ? `${ name }#${ innerText }` : name;
 		} );
 	}
 } );

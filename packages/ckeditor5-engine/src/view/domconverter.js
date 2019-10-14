@@ -16,7 +16,7 @@ import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
-import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
+import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
@@ -24,6 +24,9 @@ import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import { isElement } from 'lodash-es';
+
+// eslint-disable-next-line new-cap
+const BR_FILLER_REF = BR_FILLER( document );
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -42,30 +45,19 @@ export default class DomConverter {
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {Function} [options.blockFiller=module:engine/view/filler~BR_FILLER] Block filler creator.
+	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */
 	constructor( options = {} ) {
-		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
-		// will be removed. Also because it is a *Weak*Map when both view and DOM elements will be removed referenced
-		// will be also removed, isn't it brilliant?
-		//
-		// Yes, PJ. It is.
-		//
-		// You guys so smart.
-		//
-		// I've been here. Seen stuff. Afraid of code now.
-
 		/**
-		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
-		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 * The mode of a block filler used by DOM converter.
 		 *
 		 * @readonly
-		 * @member {Function} module:engine/view/domconverter~DomConverter#blockFiller
+		 * @member {'br'|'nbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
-		this.blockFiller = options.blockFiller || BR_FILLER;
+		this.blockFillerMode = options.blockFillerMode || 'br';
 
 		/**
-		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
+		 * Elements which are considered pre-formatted elements.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
@@ -73,12 +65,27 @@ export default class DomConverter {
 		this.preElements = [ 'pre' ];
 
 		/**
-		 * Tag names of DOM `Element`s which are considered block elements.
+		 * Elements which are considered block elements (and hence should be filled with a
+		 * {@link #isBlockFiller block filler}).
+		 *
+		 * Whether an element is considered a block element also affects handling of trailing whitespaces.
+		 *
+		 * You can extend this array if you introduce support for block elements which are not yet recognized here.
 		 *
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
-		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption' ];
+
+		/**
+		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
+		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Function} module:engine/view/domconverter~DomConverter#_blockFiller
+		 */
+		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
 		 * DOM to View mapping.
@@ -106,8 +113,9 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds given DOM element that represents fake selection to {@link module:engine/view/documentselection~DocumentSelection
-	 * document selection}. Document selection copy is stored and can be retrieved by
+	 * Binds given DOM element that represents fake selection to a **position** of a
+	 * {@link module:engine/view/documentselection~DocumentSelection document selection}.
+	 * Document selection copy is stored and can be retrieved by
 	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
@@ -216,7 +224,11 @@ export default class DomConverter {
 				return domElement;
 			} else {
 				// Create DOM element.
-				domElement = domDocument.createElement( viewNode.name );
+				if ( viewNode.hasAttribute( 'xmlns' ) ) {
+					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
+				} else {
+					domElement = domDocument.createElement( viewNode.name );
+				}
 
 				if ( options.bind ) {
 					this.bindElements( domElement, viewNode );
@@ -254,7 +266,7 @@ export default class DomConverter {
 
 		for ( const childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
-				yield this.blockFiller( domDocument );
+				yield this._blockFiller( domDocument );
 			}
 
 			yield this.viewToDom( childView, domDocument, options );
@@ -263,7 +275,7 @@ export default class DomConverter {
 		}
 
 		if ( fillerPositionOffset === offset ) {
-			yield this.blockFiller( domDocument );
+			yield this._blockFiller( domDocument );
 		}
 	}
 
@@ -370,7 +382,7 @@ export default class DomConverter {
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isBlockFiller( domNode, this.blockFiller ) ) {
+		if ( this.isBlockFiller( domNode, this.blockFillerMode ) ) {
 			return null;
 		}
 
@@ -528,7 +540,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/position~Position} viewPosition View position.
 	 */
 	domPositionToView( domParent, domOffset ) {
-		if ( isBlockFiller( domParent, this.blockFiller ) ) {
+		if ( this.isBlockFiller( domParent, this.blockFillerMode ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
@@ -786,6 +798,23 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Checks if the node is an instance of the block filler for this DOM converter.
+	 *
+	 *		const converter = new DomConverter( { blockFillerMode: 'br' } );
+	 *
+	 *		converter.isBlockFiller( BR_FILLER( document ) ); // true
+	 *		converter.isBlockFiller( NBSP_FILLER( document ) ); // false
+	 *
+	 * **Note:**: For the `'nbsp'` mode the method also checks context of a node so it cannot be a detached node.
+	 *
+	 * @param {Node} domNode DOM node to check.
+	 * @returns {Boolean} True if a node is considered a block filler for given mode.
+	 */
+	isBlockFiller( domNode ) {
+		return this.blockFillerMode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspBlockFiller( domNode, this.blockElements );
+	}
+
+	/**
 	 * Returns `true` if given selection is a backward selection, that is, if it's `focus` is before `anchor`.
 	 *
 	 * @param {Selection} DOM Selection instance to check.
@@ -889,7 +918,8 @@ export default class DomConverter {
 	 *
 	 * * a space at the beginning is changed to `&nbsp;` if this is the first text node in its container
 	 * element or if a previous text node ends with a space character,
-	 * * space at the end of the text node is changed to `&nbsp;` if this is the last text node in its container,
+	 * * space at the end of the text node is changed to `&nbsp;` if there are two spaces at the end of a node or if next node
+	 * starts with a space or if it is the last text node in its container,
 	 * * remaining spaces are replaced to a chain of spaces and `&nbsp;` (e.g. `'x   x'` becomes `'x &nbsp; x'`).
 	 *
 	 * Content of {@link #preElements} is not processed.
@@ -918,15 +948,24 @@ export default class DomConverter {
 			}
 		}
 
-		// 2. Replace the last space with a nbsp if this is the last text node (container element boundary).
+		// 2. Replace the last space with nbsp if there are two spaces at the end or if the next node starts with space or there is no
+		// next node (container element boundary).
+		//
+		// Keep in mind that Firefox prefers $nbsp; before tag, not inside it:
+		//
+		// Foo <span>&nbsp;bar</span>  <-- bad.
+		// Foo&nbsp;<span> bar</span>  <-- good.
+		//
+		// More here: https://github.com/ckeditor/ckeditor5-engine/issues/1747.
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
 			const nextNode = this._getTouchingViewTextNode( node, true );
 
-			if ( !nextNode ) {
+			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextNode.data.charAt( 0 ) == ' ' ) {
 				data = data.substr( 0, data.length - 1 ) + '\u00A0';
 			}
 		}
 
+		// 3. Create space+nbsp pairs.
 		return data.replace( / {2}/g, ' \u00A0' );
 	}
 
@@ -955,7 +994,9 @@ export default class DomConverter {
 	 * * multiple whitespaces are replaced to a single space,
 	 * * space at the beginning of a text node is removed if it is the first text node in its container
 	 * element or if the previous text node ends with a space character,
-	 * * space at the end of the text node is removed, if it is the last text node in its container.
+	 * * space at the end of the text node is removed if there are two spaces at the end of a node or if next node
+	 * starts with a space or if it is the last text node in its container
+	 * * nbsps are converted to spaces.
 	 *
 	 * @param {Node} node DOM text node to process.
 	 * @returns {String} Processed data.
@@ -998,26 +1039,23 @@ export default class DomConverter {
 		data = getDataWithoutFiller( new Text( data ) );
 
 		// At this point we should have removed all whitespaces from DOM text data.
-
-		// Now we have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
-		// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view as
-		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them
-		// to `  ` which is what we expect to have in model/view.
+		//
+		// Now, We will reverse the process that happens in `_processDataFromViewText`.
+		//
+		// We have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
+		// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view to
+		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them back to `  `.
 		data = data.replace( / \u00A0/g, '  ' );
 
+		// Then, let's change the last nbsp to a space.
+		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || ( nextNode.data && nextNode.data.charAt( 0 ) == ' ' ) ) {
+			data = data.replace( /\u00A0$/, ' ' );
+		}
+
 		// Then, change &nbsp; character that is at the beginning of the text node to space character.
-		// As above, that &nbsp; was created for rendering reasons but it's real meaning is just a space character.
 		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
 		if ( shouldLeftTrim ) {
 			data = data.replace( /^\u00A0/, ' ' );
-		}
-
-		// Since input text data could be: `x_ _`, we would not replace the first &nbsp; after `x` character.
-		// We have to fix it. Since we already change all ` &nbsp;`, we will have something like this at the end of text data:
-		// `x_ _ _` -> `x_    `. Find &nbsp; at the end of string (can be followed only by spaces).
-		// We do that replacement only if this is the last node or the next node starts with &nbsp; or is a <br>.
-		if ( isText( nextNode ) ? nextNode.data.charAt( 0 ) == '\u00A0' : true ) {
-			data = data.replace( /\u00A0( *)$/, ' $1' );
 		}
 
 		// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
@@ -1048,7 +1086,7 @@ export default class DomConverter {
 	 * be trimmed from the right side.
 	 *
 	 * @param {Node} node
-	 * @param {Node} prevNode
+	 * @param {Node} nextNode
 	 */
 	_checkShouldRightTrimDomText( node, nextNode ) {
 		if ( nextNode ) {
@@ -1187,3 +1225,36 @@ function forEachDomNodeAncestor( node, callback ) {
 		node = node.parentNode;
 	}
 }
+
+// Checks if given node is a nbsp block filler.
+//
+// A &nbsp; is a block filler only if it is a single child of a block element.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function isNbspBlockFiller( domNode, blockElements ) {
+	const isNBSP = isText( domNode ) && domNode.data == '\u00A0';
+
+	return isNBSP && hasBlockParent( domNode, blockElements ) && domNode.parentNode.childNodes.length === 1;
+}
+
+// Checks if domNode has block parent.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function hasBlockParent( domNode, blockElements ) {
+	const parent = domNode.parentNode;
+
+	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
+}
+
+/**
+ * Enum representing type of the block filler.
+ *
+ * Possible values:
+ *
+ * * `br` - for `<br>` block filler used in editing view,
+ * * `nbsp` - for `&nbsp;` block fillers used in the data.
+ *
+ * @typedef {String} module:engine/view/filler~BlockFillerMode
+ */

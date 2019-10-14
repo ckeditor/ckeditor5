@@ -8,7 +8,8 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MoveOperation', () => {
 	let model, doc, root, gy;
@@ -153,7 +154,7 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /move-operation-nodes-do-not-exist/ );
+			expectToThrowCKEditorError( () => operation._validate(), /move-operation-nodes-do-not-exist/, model );
 		} );
 
 		it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
@@ -170,7 +171,7 @@ describe( 'MoveOperation', () => {
 
 			root._removeChildren( 1 );
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /move-operation-position-invalid/ );
+			expectToThrowCKEditorError( () => operation._validate(), /model-position-path-incorrect/, model );
 		} );
 
 		it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
@@ -183,7 +184,7 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /move-operation-range-into-itself/ );
+			expectToThrowCKEditorError( () => operation._validate(), /move-operation-range-into-itself/, model );
 		} );
 
 		it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
@@ -197,7 +198,7 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			expect( () => operation._validate() ).to.throw( CKEditorError, /move-operation-node-into-itself/ );
+			expectToThrowCKEditorError( () => operation._validate(), /move-operation-node-into-itself/, model );
 		} );
 
 		it( 'should not throw an error if operation move a range into a sibling', () => {

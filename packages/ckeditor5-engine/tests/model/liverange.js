@@ -183,6 +183,29 @@ describe( 'LiveRange', () => {
 		expect( spy.args[ 1 ][ 2 ].deletionPosition.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 	} );
 
+	describe( 'is()', () => {
+		let live;
+
+		beforeEach( () => {
+			live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			live.detach();
+		} );
+
+		it( 'should return true for "liveRange" and "range"', () => {
+			expect( live.is( 'liveRange' ) ).to.be.true;
+			expect( live.is( 'model:liveRange' ) ).to.be.true;
+			expect( live.is( 'range' ) ).to.be.true;
+			expect( live.is( 'model:range' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( live.is( 'model' ) ).to.be.false;
+			expect( live.is( 'model:node' ) ).to.be.false;
+			expect( live.is( 'text' ) ).to.be.false;
+			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'should get transformed and fire change:range if', () => {
 		let live, spy;
 

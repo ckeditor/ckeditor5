@@ -12,6 +12,8 @@ import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import Batch from '../../src/model/batch';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Model', () => {
 	let model, schema, changes;
@@ -320,6 +322,58 @@ describe( 'Model', () => {
 			model.enqueueChange( 'transparent', writer => {
 				expect( writer.batch.type ).to.equal( 'transparent' );
 			} );
+		} );
+
+		it( 'should catch a non-ckeditor error inside the `change()` block and throw the CKEditorError error outside of it', () => {
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			expectToThrowCKEditorError( () => {
+				model.change( () => {
+					throw error;
+				} );
+			}, /unexpected-error/, model, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'TypeError'
+				}
+			} );
+		} );
+
+		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
+			expectToThrowCKEditorError( () => {
+				model.change( () => {
+					throw new CKEditorError( 'foo', null, { foo: 1 } );
+				} );
+			}, /foo/, null, { foo: 1 } );
+		} );
+
+		it( 'should catch a non-ckeditor error inside the `enqueueChange()` block and throw the CKEditorError error outside of it', () => {
+			const error = new TypeError( 'foo' );
+			error.stack = 'bar';
+
+			expectToThrowCKEditorError( () => {
+				model.enqueueChange( () => {
+					throw error;
+				} );
+			}, /unexpected-error/, model, {
+				originalError: {
+					message: 'foo',
+					stack: 'bar',
+					name: 'TypeError'
+				}
+			} );
+		} );
+
+		it( 'should throw the original CKEditorError error if it was thrown inside the `enqueueChange()` block', () => {
+			const err = new CKEditorError( 'foo', null, { foo: 1 } );
+
+			expectToThrowCKEditorError( () => {
+				model.enqueueChange( () => {
+					throw err;
+				} );
+			}, /foo/, null, { foo: 1 } );
 		} );
 	} );
 
@@ -774,7 +828,15 @@ describe( 'Model', () => {
 
 	describe( 'createBatch()', () => {
 		it( 'should return instance of Batch', () => {
-			expect( model.createBatch() ).to.be.instanceof( Batch );
+			const batch = model.createBatch();
+			expect( batch ).to.be.instanceof( Batch );
+			expect( batch.type ).to.equal( 'default' );
+		} );
+
+		it( 'should allow to define type of Batch', () => {
+			const batch = model.createBatch( 'transparent' );
+			expect( batch ).to.be.instanceof( Batch );
+			expect( batch.type ).to.equal( 'transparent' );
 		} );
 	} );
 

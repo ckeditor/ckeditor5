@@ -11,9 +11,9 @@ import Position from '../position';
 import LivePosition from '../liveposition';
 import Element from '../element';
 import Range from '../range';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import DocumentSelection from '../documentselection';
 import Selection from '../selection';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -85,13 +85,8 @@ export default function insertContent( model, content, selectable, placeOrOffset
 		} else {
 			// We are not testing else because it's a safe check for unpredictable edge cases:
 			// an insertion without proper range to select.
-
-			/**
-			 * Cannot determine a proper selection range after insertion.
-			 *
-			 * @warning insertcontent-no-range
-			 */
-			log.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
+			//
+			// @if CK_DEBUG // console.warn( 'Cannot determine a proper selection range after insertion.' );
 		}
 
 		const affectedRange = insertion.getAffectedRange() || model.createRange( insertionPosition );
@@ -322,12 +317,19 @@ class Insertion {
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
-			log.error(
-				'insertcontent-wrong-position: The node cannot be inserted on the given position.',
+
+			/**
+			 * Given node cannot be inserted on the given position.
+			 *
+			 * @error insertcontent-wrong-position
+			 * @param {module:engine/model/node~Node} node Node to insert.
+			 * @param {module:engine/model/position~Position} position Position to insert the node at.
+			 */
+			throw new CKEditorError(
+				'insertcontent-wrong-position: Given node cannot be inserted on the given position.',
+				this,
 				{ node, position: this.position }
 			);
-
-			return;
 		}
 
 		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
@@ -442,7 +444,13 @@ class Insertion {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be after the node we'll merge. If it isn't,
 				// it should need to be secured as in the left merge case.
-				log.error( 'insertcontent-wrong-position-on-merge: The insertion position should equal the merge position' );
+				/**
+				 * An internal error occured during merging insertion content with siblings.
+				 * The insertion position should equal to the merge position.
+				 *
+				 * @error insertcontent-invalid-insertion-position
+				 */
+				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
 			}
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
@@ -561,8 +569,15 @@ class Insertion {
 				this.position = this.writer.createPositionBefore( parent );
 
 				// Special case – parent is empty (<p>^</p>).
+				//
+				// 1. parent.isEmpty
 				// We can remove the element after moving insertion position out of it.
-				if ( parent.isEmpty ) {
+				//
+				// 2. parent.parent === allowedIn
+				// However parent should remain in place when allowed element is above limit element in document tree.
+				// For example there shouldn't be allowed to remove empty paragraph from tableCell, when is pasted
+				// content allowed in $root.
+				if ( parent.isEmpty && parent.parent === allowedIn ) {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {

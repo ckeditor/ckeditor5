@@ -67,13 +67,38 @@ export default class EditableElement extends ContainerElement {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether this object is of the given.
+	 *
+	 *		editableElement.is( 'editableElement' ); // -> true
+	 *		editableElement.is( 'element' ); // -> true
+	 *		editableElement.is( 'node' ); // -> true
+	 *		editableElement.is( 'view:editableElement' ); // -> true
+	 *		editableElement.is( 'view:element' ); // -> true
+	 *		editableElement.is( 'view:node' ); // -> true
+	 *
+	 *		editableElement.is( 'model:element' ); // -> false
+	 *		editableElement.is( 'documentFragment' ); // -> false
+	 *
+	 * Assuming that the object being checked is an editbale element, you can also check its
+	 * {@link module:engine/view/editableelement~EditableElement#name name}:
+	 *
+	 *		editableElement.is( 'div' ); // -> true if this is a div element
+	 *		editableElement.is( 'editableElement', 'div' ); // -> same as above
+	 *		text.is( 'div' ); -> false
+	 *
+	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
+	 *
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type && type.replace( /^view:/, '' );
 		if ( !name ) {
-			return type == 'editableElement' || super.is( type );
+			return cutType == 'editableElement' || super.is( type );
 		} else {
-			return ( type == 'editableElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'editableElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 
@@ -104,7 +129,7 @@ export default class EditableElement extends ContainerElement {
 			 *
 			 * @error view-editableelement-document-already-set
 			 */
-			throw new CKEditorError( 'view-editableelement-document-already-set: View document is already set.' );
+			throw new CKEditorError( 'view-editableelement-document-already-set: View document is already set.', this );
 		}
 
 		this._setCustomProperty( documentSymbol, document );
