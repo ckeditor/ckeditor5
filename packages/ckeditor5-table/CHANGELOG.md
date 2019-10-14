@@ -1,6 +1,38 @@
 Changelog
 =========
 
+## [14.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.2...v14.0.0) (2019-08-26)
+
+### Features
+
+* `TableWalker` will now return `cell` value also for spanned cells when traversing a table with `includeSpanned` option set to `true`. Additionally, `isSpanned` property was introduced in returned values. ([07e8736](https://github.com/ckeditor/ckeditor5-table/commit/07e8736))
+
+### Bug fixes
+
+* Table cell post-fixer will refresh a cell only when it is needed. Closes [#209](https://github.com/ckeditor/ckeditor5-table/issues/209). ([b29a042](https://github.com/ckeditor/ckeditor5-table/commit/b29a042))
+
+### Other changes
+
+* Adjusted `InsertTableView` for better compatibility with right–to–left (RTL) languages. See [ckeditor/ckeditor5#1151](https://github.com/ckeditor/ckeditor5/issues/1151). ([524586b](https://github.com/ckeditor/ckeditor5-table/commit/524586b))
+* The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([3d35af2](https://github.com/ckeditor/ckeditor5-table/commit/3d35af2))
+* The table widget toolbar should have a proper `aria-label` attribute (see [ckeditor/ckeditor5#1404](https://github.com/ckeditor/ckeditor5/issues/1404)). ([b47a94f](https://github.com/ckeditor/ckeditor5-table/commit/b47a94f))
+* Updated translations. ([2ddc9f4](https://github.com/ckeditor/ckeditor5-table/commit/2ddc9f4))
+
+### BREAKING CHANGES
+
+* `TableWalker` will not return `undefined` as `cell` value for spanned cells anymore. Use `isSpanned` instead.
+
+
+## [13.0.2](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.1...v13.0.2) (2019-07-10)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
+## [13.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.0...v13.0.1) (2019-07-04)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [13.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.1...v13.0.0) (2019-06-05)
 
 ### Bug fixes

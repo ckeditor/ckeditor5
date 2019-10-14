@@ -23,7 +23,7 @@ import { findAncestor } from './commands/utils';
 export function toTableWidget( viewElement, writer ) {
 	writer.setCustomProperty( 'table', true, viewElement );
 
-	return toWidget( viewElement, writer, { hasSelectionHandler: true } );
+	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
 }
 
 /**

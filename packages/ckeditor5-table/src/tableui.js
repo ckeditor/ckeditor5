@@ -38,6 +38,8 @@ export default class TableUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = this.editor.t;
+		const contentLanguageDirection = editor.locale.contentLanguageDirection;
+		const isContentLtr = contentLanguageDirection === 'ltr';
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
 			const command = editor.commands.get( 'insertTable' );
@@ -86,14 +88,14 @@ export default class TableUI extends Plugin {
 				{
 					type: 'button',
 					model: {
-						commandName: 'insertTableColumnLeft',
+						commandName: isContentLtr ? 'insertTableColumnLeft' : 'insertTableColumnRight',
 						label: t( 'Insert column left' )
 					}
 				},
 				{
 					type: 'button',
 					model: {
-						commandName: 'insertTableColumnRight',
+						commandName: isContentLtr ? 'insertTableColumnRight' : 'insertTableColumnLeft',
 						label: t( 'Insert column right' )
 					}
 				},

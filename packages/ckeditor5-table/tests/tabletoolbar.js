@@ -94,6 +94,14 @@ describe( 'TableToolbar', () => {
 					balloonClassName: 'ck-toolbar-container'
 				} );
 			} );
+
+			it( 'should set aria-label attribute', () => {
+				toolbar.render();
+
+				expect( toolbar.element.getAttribute( 'aria-label' ) ).to.equal( 'Table toolbar' );
+
+				toolbar.destroy();
+			} );
 		} );
 
 		describe( 'integration with the editor focus', () => {

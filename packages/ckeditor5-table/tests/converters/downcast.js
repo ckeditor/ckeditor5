@@ -333,8 +333,8 @@ describe( 'downcast converters', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -566,8 +566,8 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable(
 					getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handler"></div>' +
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -712,8 +712,8 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -889,8 +889,8 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
@@ -1103,8 +1103,8 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handler"></div>' +
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +

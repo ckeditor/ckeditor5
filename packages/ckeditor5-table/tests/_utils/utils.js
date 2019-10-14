@@ -107,8 +107,8 @@ export function viewTable( tableData, attributes = {} ) {
 		} ) }</tbody>` : '';
 
 	const figureAttributes = asWidget ?
-		'class="ck-widget ck-widget_with-selection-handler table" contenteditable="false"' : 'class="table"';
-	const widgetHandler = '<div class="ck ck-widget__selection-handler"></div>';
+		'class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"' : 'class="table"';
+	const widgetHandler = '<div class="ck ck-widget__selection-handle"></div>';
 
 	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
 }

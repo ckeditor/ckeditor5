@@ -4,34 +4,31 @@
  */
 
 /**
- * @module table/converters/table-cell-content-post-fixer
+ * @module table/converters/table-cell-paragraph-post-fixer
  */
 
 /**
- * Injects a table cell post-fixer into the model.
+ * Injects a table cell post-fixer into the model which inserts `paragraph` element into empty table cells.
  *
- * The role of the table post-fixer is to ensure that the table cells have the correct content
- * after a {@link module:engine/model/model~Model#change `change()`} block was executed.
+ * A table cell must contain at least one block element as a child. An empty table cell will have empty `paragraph` as a child.
  *
- * A table cells must contains at least one block as a child. The empty table cell will have empty `<paragraph>` as a child.
- *
- *        <table>
- *            <tableRow>
- *                <tableCell></tableCell>
- *            </tableRow>
- *        </table>
+ *		<table>
+ *			<tableRow>
+ *				<tableCell></tableCell>
+ *			</tableRow>
+ *		</table>
  *
  * Will be fixed to:
  *
- *        <table>
- *            <tableRow>
- *                <tableCell><paragraph></paragraph></tableCell>
- *            </tableRow>
- *        </table>
+ *		<table>
+ *			<tableRow>
+ *				<tableCell><paragraph></paragraph></tableCell>
+ *			</tableRow>
+ *		</table>
  *
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTableCellContentPostFixer( model ) {
+export default function injectTableCellParagraphPostFixer( model ) {
 	model.document.registerPostFixer( writer => tableCellContentsPostFixer( writer, model ) );
 }
 
@@ -45,24 +42,20 @@ function tableCellContentsPostFixer( writer, model ) {
 	let wasFixed = false;
 
 	for ( const entry of changes ) {
-		// Enforce paragraph in tableCell even after other feature remove its contents.
-		if ( entry.type == 'remove' && entry.position.parent.is( 'tableCell' ) ) {
-			wasFixed = fixTableCellContent( entry.position.parent, writer ) || wasFixed;
+		if ( entry.type == 'insert' && entry.name == 'table' ) {
+			wasFixed = fixTable( entry.position.nodeAfter, writer ) || wasFixed;
 		}
 
-		// Analyze table cells on insertion.
-		if ( entry.type == 'insert' ) {
-			if ( entry.name == 'table' ) {
-				wasFixed = fixTable( entry.position.nodeAfter, writer ) || wasFixed;
-			}
+		if ( entry.type == 'insert' && entry.name == 'tableRow' ) {
+			wasFixed = fixTableRow( entry.position.nodeAfter, writer ) || wasFixed;
+		}
 
-			if ( entry.name == 'tableRow' ) {
-				wasFixed = fixTableRow( entry.position.nodeAfter, writer ) || wasFixed;
-			}
+		if ( entry.type == 'insert' && entry.name == 'tableCell' ) {
+			wasFixed = fixTableCellContent( entry.position.nodeAfter, writer ) || wasFixed;
+		}
 
-			if ( entry.name == 'tableCell' ) {
-				wasFixed = fixTableCellContent( entry.position.nodeAfter, writer ) || wasFixed;
-			}
+		if ( checkTableCellChange( entry ) ) {
+			wasFixed = fixTableCellContent( entry.position.parent, writer ) || wasFixed;
 		}
 	}
 
@@ -112,7 +105,7 @@ function fixTableCellContent( tableCell, writer ) {
 		return true;
 	}
 
-	// Check table cell children for directly placed $text nodes.
+	// Check table cell children for directly placed text nodes.
 	// Temporary solution. See https://github.com/ckeditor/ckeditor5/issues/1464.
 	const textNodes = Array.from( tableCell.getChildren() ).filter( child => child.is( 'text' ) );
 
@@ -122,4 +115,18 @@ function fixTableCellContent( tableCell, writer ) {
 
 	// Return true when there were text nodes to fix.
 	return !!textNodes.length;
+}
+
+// Check if differ change should fix table cell. This happens on:
+// - removing content from table cell (ie tableCell can be left empty).
+// - adding text node directly into a table cell.
+//
+// @param {Object} differ change entry
+// @returns {Boolean}
+function checkTableCellChange( entry ) {
+	if ( !entry.position || !entry.position.parent.is( 'tableCell' ) ) {
+		return false;
+	}
+
+	return entry.type == 'insert' && entry.name == '$text' || entry.type == 'remove';
 }

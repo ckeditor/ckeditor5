@@ -42,6 +42,7 @@ export default class TableToolbar extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
+		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
 		const tableContentToolbarItems = editor.config.get( 'table.contentToolbar' );
@@ -50,6 +51,7 @@ export default class TableToolbar extends Plugin {
 
 		if ( tableContentToolbarItems ) {
 			widgetToolbarRepository.register( 'tableContent', {
+				ariaLabel: t( 'Table toolbar' ),
 				items: tableContentToolbarItems,
 				getRelatedElement: getTableWidgetAncestor
 			} );
@@ -57,6 +59,7 @@ export default class TableToolbar extends Plugin {
 
 		if ( tableToolbarItems ) {
 			widgetToolbarRepository.register( 'table', {
+				ariaLabel: t( 'Table toolbar' ),
 				items: tableToolbarItems,
 				getRelatedElement: getSelectedTableWidget
 			} );

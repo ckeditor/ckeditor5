@@ -229,7 +229,7 @@ describe( 'TableUI', () => {
 			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column' ] );
 		} );
 
-		it( 'should bind items in panel to proper commands', () => {
+		it( 'should bind items in panel to proper commands (LTR content)', () => {
 			const items = dropdown.listView.items;
 
 			const setColumnHeaderCommand = editor.commands.get( 'setTableColumnHeader' );
@@ -264,6 +264,35 @@ describe( 'TableUI', () => {
 			removeColumnCommand.isEnabled = false;
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind items in panel to proper commands (RTL content)', () => {
+			const element = document.createElement( 'div' );
+
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					language: {
+						ui: 'en',
+						content: 'ar'
+					},
+					plugins: [ TableEditing, TableUI ]
+				} )
+				.then( editor => {
+					const dropdown = editor.ui.componentFactory.create( 'tableColumn' );
+					const items = dropdown.listView.items;
+
+					expect( items.get( 2 ).children.first.label ).to.equal( 'Insert column left' );
+					expect( items.get( 2 ).children.first.commandName ).to.equal( 'insertTableColumnRight' );
+
+					expect( items.get( 3 ).children.first.label ).to.equal( 'Insert column right' );
+					expect( items.get( 3 ).children.first.commandName ).to.equal( 'insertTableColumnLeft' );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
 		} );
 
 		it( 'should focus view after command execution', () => {
@@ -333,7 +362,7 @@ describe( 'TableUI', () => {
 			] );
 		} );
 
-		it( 'should bind items in panel to proper commands', () => {
+		it( 'should bind items in panel to proper commands (LTR content)', () => {
 			const items = dropdown.listView.items;
 
 			const mergeCellsCommand = editor.commands.get( 'mergeTableCells' );
@@ -361,6 +390,35 @@ describe( 'TableUI', () => {
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind items in panel to proper commands (RTL content)', () => {
+			const element = document.createElement( 'div' );
+
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					language: {
+						ui: 'en',
+						content: 'ar'
+					},
+					plugins: [ TableEditing, TableUI ]
+				} )
+				.then( editor => {
+					const dropdown = editor.ui.componentFactory.create( 'mergeTableCells' );
+					const items = dropdown.listView.items;
+
+					expect( items.get( 1 ).children.first.label ).to.equal( 'Merge cell right' );
+					expect( items.get( 1 ).children.first.commandName ).to.equal( 'mergeTableCellLeft' );
+
+					expect( items.get( 3 ).children.first.label ).to.equal( 'Merge cell left' );
+					expect( items.get( 3 ).children.first.commandName ).to.equal( 'mergeTableCellRight' );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
 		} );
 
 		it( 'should focus view after command execution', () => {

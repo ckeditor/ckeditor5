@@ -115,5 +115,29 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 		} );
+
+		it( 'should respect forceValue parameter #1', () => {
+			setData( model, modelTable( [
+				[ '00', '01[]', '02', '03' ]
+			], { headingColumns: 3 } ) );
+
+			command.execute( { forceValue: true } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01[]', '02', '03' ]
+			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should respect forceValue parameter #2', () => {
+			setData( model, modelTable( [
+				[ '00', '01[]', '02', '03' ]
+			], { headingColumns: 1 } ) );
+
+			command.execute( { forceValue: false } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01[]', '02', '03' ]
+			], { headingColumns: 1 } ) );
+		} );
 	} );
 } );

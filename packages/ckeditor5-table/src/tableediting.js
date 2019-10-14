@@ -32,8 +32,8 @@ import { findAncestor } from './commands/utils';
 import TableUtils from '../src/tableutils';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
-import injectTableCellContentsPostFixer from './converters/table-cell-content-post-fixer';
-import injectTableCellPostFixer from './converters/tablecell-post-fixer';
+import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
+import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-post-fixer';
 
 import '../theme/tableediting.css';
 import TableSelection from './tableselection';
@@ -44,6 +44,13 @@ import TableSelection from './tableselection';
  * @extends module:core/plugin~Plugin
  */
 export default class TableEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'TableEditing';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -112,8 +119,6 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
 
-		injectTableCellPostFixer( editor.model, editor.editing );
-
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
@@ -133,7 +138,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
 		injectTableLayoutPostFixer( model );
-		injectTableCellContentsPostFixer( model );
+		injectTableCellRefreshPostFixer( model );
+		injectTableCellParagraphPostFixer( model );
 
 		// Handle tab key navigation.
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );

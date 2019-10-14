@@ -37,12 +37,20 @@ describe( 'TableWalker', () => {
 			result.push( tableInfo );
 		}
 
-		const formattedResult = result.map( ( { row, column, cell, cellIndex } ) => ( {
-			row,
-			column,
-			data: cell && cell.getChild( 0 ).getChild( 0 ).data,
-			index: cellIndex
-		} ) );
+		const formattedResult = result.map( ( { row, column, isSpanned, cell, cellIndex } ) => {
+			const result = {
+				row,
+				column,
+				data: cell && cell.getChild( 0 ).getChild( 0 ).data,
+				index: cellIndex
+			};
+
+			if ( isSpanned ) {
+				result.isSpanned = true;
+			}
+
+			return result;
+		} );
 
 		expect( formattedResult ).to.deep.equal( expected );
 	}
@@ -135,7 +143,7 @@ describe( 'TableWalker', () => {
 			], { endRow: 2 } );
 		} );
 
-		it( 'should iterate over given row 0 only', () => {
+		it( 'should iterate over given row only', () => {
 			testWalker( [
 				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
 				[ '23' ],
@@ -157,11 +165,11 @@ describe( 'TableWalker', () => {
 				{ row: 0, column: 0, index: 0, data: '00' },
 				{ row: 0, column: 1, index: 1, data: '01' },
 				{ row: 1, column: 0, index: 0, data: '10' },
-				{ row: 1, column: 1, index: 1, data: undefined }
+				{ row: 1, column: 1, index: 1, data: '01', isSpanned: true }
 			], { includeSpanned: true } );
 		} );
 
-		it( 'should output spanned cells as empty cell', () => {
+		it( 'should output spanned cells', () => {
 			testWalker( [
 				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
 				[ '12' ],
@@ -169,17 +177,17 @@ describe( 'TableWalker', () => {
 				[ '30', { colspan: 2, contents: '31' } ]
 			], [
 				{ row: 0, column: 0, index: 0, data: '00' },
-				{ row: 0, column: 1, index: 1, data: undefined },
+				{ row: 0, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 0, column: 2, index: 1, data: '02' },
-				{ row: 1, column: 0, index: 0, data: undefined },
-				{ row: 1, column: 1, index: 0, data: undefined },
+				{ row: 1, column: 0, index: 0, data: '00', isSpanned: true },
+				{ row: 1, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 1, column: 2, index: 0, data: '12' },
-				{ row: 2, column: 0, index: 0, data: undefined },
-				{ row: 2, column: 1, index: 0, data: undefined },
+				{ row: 2, column: 0, index: 0, data: '00', isSpanned: true },
+				{ row: 2, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 2, column: 2, index: 0, data: '22' },
 				{ row: 3, column: 0, index: 0, data: '30' },
 				{ row: 3, column: 1, index: 1, data: '31' },
-				{ row: 3, column: 2, index: 2, data: undefined }
+				{ row: 3, column: 2, index: 1, data: '31', isSpanned: true }
 			], { includeSpanned: true } );
 		} );
 
@@ -191,7 +199,7 @@ describe( 'TableWalker', () => {
 				{ row: 0, column: 0, index: 0, data: '00' },
 				{ row: 0, column: 1, index: 1, data: '01' },
 				{ row: 1, column: 0, index: 0, data: '10' },
-				{ row: 1, column: 1, index: 1, data: undefined }
+				{ row: 1, column: 1, index: 1, data: '01', isSpanned: true }
 			], { includeSpanned: true } );
 		} );
 
@@ -202,16 +210,16 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 1, column: 0, index: 0, data: undefined },
-				{ row: 1, column: 1, index: 0, data: undefined },
+				{ row: 1, column: 0, index: 0, data: '00', isSpanned: true },
+				{ row: 1, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 1, column: 2, index: 0, data: '12' },
-				{ row: 2, column: 0, index: 0, data: undefined },
-				{ row: 2, column: 1, index: 0, data: undefined },
+				{ row: 2, column: 0, index: 0, data: '00', isSpanned: true },
+				{ row: 2, column: 1, index: 0, data: '00', isSpanned: true },
 				{ row: 2, column: 2, index: 0, data: '22' }
 			], { includeSpanned: true, startRow: 1, endRow: 2 } );
 		} );
 
-		it( 'should output rowspanned cells at the end of a table row', () => {
+		it( 'should output rowspanned cells at the end of a table row with startRow & endRow options', () => {
 			testWalker( [
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '10' ],
@@ -220,7 +228,7 @@ describe( 'TableWalker', () => {
 				{ row: 0, column: 0, index: 0, data: '00' },
 				{ row: 0, column: 1, index: 1, data: '01' },
 				{ row: 1, column: 0, index: 0, data: '10' },
-				{ row: 1, column: 1, index: 1, data: undefined }
+				{ row: 1, column: 1, index: 1, data: '01', isSpanned: true }
 			], { startRow: 0, endRow: 1, includeSpanned: true } );
 		} );
 	} );
@@ -233,9 +241,22 @@ describe( 'TableWalker', () => {
 				[ '22' ],
 				[ '30', '31', '32' ]
 			], [
-				{ row: 0, column: 0, index: 0, data: '00' },
 				{ row: 3, column: 1, index: 1, data: '31' }
 			], { column: 1 } );
+		} );
+
+		it( 'should output only cells on given column, includeSpanned = true', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
+			], [
+				{ row: 0, column: 1, index: 0, data: '00', isSpanned: true },
+				{ row: 1, column: 1, index: 0, data: '00', isSpanned: true },
+				{ row: 2, column: 1, index: 0, data: '00', isSpanned: true },
+				{ row: 3, column: 1, index: 1, data: '31' }
+			], { column: 1, includeSpanned: true } );
 		} );
 	} );
 } );

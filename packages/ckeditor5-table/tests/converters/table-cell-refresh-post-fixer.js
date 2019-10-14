@@ -8,7 +8,7 @@
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { defaultConversion, defaultSchema, formatTable, formattedViewTable, viewTable } from '../_utils/utils';
-import injectTableCellPostFixer from '../../src/converters/tablecell-post-fixer';
+import injectTableCellRefreshPostFixer from '../../src/converters/table-cell-refresh-post-fixer';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -16,8 +16,8 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 
-describe( 'TableCell post-fixer', () => {
-	let editor, model, doc, root, view;
+describe( 'Table cell refresh post-fixer', () => {
+	let editor, model, doc, root, view, refreshItemSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -44,10 +44,12 @@ describe( 'TableCell post-fixer', () => {
 				} );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				model.schema.extend( '$block', { allowAttributes: 'foo' } );
+				model.schema.extend( '$block', { allowAttributes: [ 'foo', 'bar' ] } );
 				editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+				editor.conversion.attributeToAttribute( { model: 'bar', view: 'bar' } );
 
-				injectTableCellPostFixer( model, editor.editing );
+				injectTableCellRefreshPostFixer( model );
+				refreshItemSpy = sinon.spy( model.document.differ, 'refreshItem' );
 			} );
 	} );
 
@@ -69,6 +71,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <span> to <p> on adding other block element to the same table cell', () => {
@@ -89,6 +92,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><div></div>' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should properly rename the same element on consecutive changes', () => {
@@ -107,6 +111,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 
 		model.change( writer => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -115,6 +120,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledTwice( refreshItemSpy );
 	} );
 
 	it( 'should rename <span> to <p> when setting attribute on <paragraph>', () => {
@@ -129,6 +135,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p foo="bar">00</p>' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
@@ -143,6 +150,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <p> to <span> when removing attribute from <paragraph>', () => {
@@ -157,6 +165,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<span>00</span>' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed', () => {
@@ -171,6 +180,42 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
+		// False positive: should not be called.
+		sinon.assert.calledOnce( refreshItemSpy );
+	} );
+
+	it( 'should keep <p> in the view when adding another attribute to a <paragraph> with other attributes', () => {
+		editor.setData( viewTable( [ [ '<p foo="bar">00</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'bar', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p bar="bar" foo="bar">00</p>' ]
+		], { asWidget: true } ) );
+
+		// False positive
+		sinon.assert.notCalled( refreshItemSpy );
+	} );
+
+	it( 'should keep <p> in the view when adding another attribute to a <paragraph> and removing attribute that is already set', () => {
+		editor.setData( viewTable( [ [ '<p foo="bar">00</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'bar', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
+			writer.removeAttribute( 'foo', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p bar="bar">00</p>' ]
+		], { asWidget: true } ) );
+		// False positive: should not be called.
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
@@ -185,6 +230,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p foo="baz">00</p><p>00</p>' ]
 		], { asWidget: true } ) );
+		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
 	it( 'should do nothing on rename <paragraph> to other block', () => {
@@ -199,6 +245,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<div>00</div>' ]
 		], { asWidget: true } ) );
+		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
 	it( 'should do nothing when setting attribute on block item other then <paragraph>', () => {
@@ -213,36 +260,10 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<div foo="bar">foo</div>' ]
 		], { asWidget: true } ) );
+		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
-	it( 'should not crash when view.change() block was called in model.change()', () => {
-		editor.setData( viewTable( [ [ '<p>foobar</p>' ] ] ) );
-
-		const table = root.getChild( 0 );
-
-		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) )
-			.to.equal( formattedViewTable( [ [ 'foobar' ] ], { asWidget: true } ) );
-
-		expect( () => {
-			model.change( writer => {
-				const tableCell = table.getNodeByPath( [ 0, 0 ] );
-
-				writer.insertElement( 'paragraph', null, writer.createPositionAt( tableCell, 'end' ) );
-				writer.setSelection( writer.createRangeIn( tableCell ) );
-
-				// Do some change in the view while inside model change.
-				editor.editing.view.change( writer => {
-					writer.addClass( 'foo', editor.editing.mapper.toViewElement( tableCell ) );
-				} );
-			} );
-		} ).to.not.throw();
-
-		expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
-			[ { class: 'foo', contents: '<p>{foobar</p><p>]</p>' } ]
-		], { asWidget: true } ) );
-	} );
-
-	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
+	it( 'should rename <p> in to <span> when removing <paragraph> (table cell with 2 paragraphs)', () => {
 		editor.setData( viewTable( [ [ '<p>00</p><p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -254,6 +275,7 @@ describe( 'TableCell post-fixer', () => {
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<span>00</span>' ]
 		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should update view selection after deleting content', () => {
