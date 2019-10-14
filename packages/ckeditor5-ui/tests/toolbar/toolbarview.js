@@ -53,16 +53,26 @@ describe( 'ToolbarView', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
-		it( 'should set view#isVertical', () => {
-			expect( view.isVertical ).to.be.false;
+		describe( '#options', () => {
+			it( 'should be an empty object if none were passed', () => {
+				expect( view.options ).to.deep.equal( {} );
+			} );
+
+			it( 'should be an empty object if none were passed', () => {
+				const options = {
+					foo: 'bar'
+				};
+
+				const toolbar = new ToolbarView( locale, options );
+
+				expect( toolbar.options ).to.equal( options );
+
+				toolbar.destroy();
+			} );
 		} );
 
 		it( 'should create view#items collection', () => {
 			expect( view.items ).to.be.instanceOf( ViewCollection );
-		} );
-
-		it( 'should not create view#groupedItems collection', () => {
-			expect( view.groupedItems ).to.be.null;
 		} );
 
 		it( 'creates #focusTracker instance', () => {
@@ -77,96 +87,16 @@ describe( 'ToolbarView', () => {
 			expect( view.itemsView ).to.be.instanceOf( View );
 		} );
 
-		it( 'should not create view#groupedItemsDropdown', () => {
-			expect( view.groupedItemsDropdown ).to.be.null;
+		it( 'should create view#children collection', () => {
+			expect( view.children ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should set view#shouldGroupWhenFull', () => {
-			expect( view.shouldGroupWhenFull ).to.be.false;
+		it( 'creates #_focusCycler instance', () => {
+			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
-		it( 'should create view#_components collection', () => {
-			expect( view._components ).to.be.instanceOf( ViewCollection );
-		} );
-
-		it( 'creates #_itemsFocusCycler instance', () => {
-			expect( view._itemsFocusCycler ).to.be.instanceOf( FocusCycler );
-		} );
-
-		it( 'creates #_componentsFocusCycler instance', () => {
-			expect( view._componentsFocusCycler ).to.be.instanceOf( FocusCycler );
-		} );
-
-		describe( '#shouldGroupWhenFull', () => {
-			it( 'updates the state of grouped items immediatelly when set true', () => {
-				sinon.spy( view, 'updateGroupedItems' );
-
-				view.shouldGroupWhenFull = true;
-
-				sinon.assert.calledOnce( view.updateGroupedItems );
-			} );
-
-			it( 'updates the state of grouped items after the element is updated in DOM', () => {
-				let hasClassBeforeUpdate;
-
-				sinon.stub( view, 'updateGroupedItems' ).callsFake( () => {
-					hasClassBeforeUpdate = view.element.classList.contains( 'ck-toolbar_grouping' );
-				} );
-
-				view.shouldGroupWhenFull = true;
-
-				expect( hasClassBeforeUpdate ).to.be.true;
-			} );
-
-			// Possibly in the future a possibility to turn the automatic grouping off could be required.
-			// As for now, there is no such need, so there is no such functionality.
-			it( 'does nothing if toggled false', () => {
-				view.shouldGroupWhenFull = true;
-
-				expect( () => {
-					view.shouldGroupWhenFull = false;
-				} ).to.not.throw();
-			} );
-
-			it( 'starts observing toolbar resize immediatelly when set true', () => {
-				function FakeResizeObserver( callback ) {
-					this.callback = callback;
-				}
-
-				FakeResizeObserver.prototype.observe = sinon.spy();
-				FakeResizeObserver.prototype.disconnect = sinon.spy();
-
-				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
-
-				expect( view._groupWhenFullResizeObserver ).to.be.null;
-
-				view.shouldGroupWhenFull = true;
-
-				sinon.assert.calledOnce( view._groupWhenFullResizeObserver.observe );
-				sinon.assert.calledWithExactly( view._groupWhenFullResizeObserver.observe, view.element );
-			} );
-
-			it( 'updates the state of grouped items upon resize', () => {
-				sinon.spy( view, 'updateGroupedItems' );
-
-				function FakeResizeObserver( callback ) {
-					this.callback = callback;
-				}
-
-				FakeResizeObserver.prototype.observe = sinon.spy();
-				FakeResizeObserver.prototype.disconnect = sinon.spy();
-
-				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
-
-				expect( view._groupWhenFullResizeObserver ).to.be.null;
-
-				view.shouldGroupWhenFull = true;
-				view._groupWhenFullResizeObserver.callback( [
-					{ contentRect: { width: 42 } }
-				] );
-
-				sinon.assert.calledTwice( view.updateGroupedItems );
-			} );
+		it( 'creates #_behavior', () => {
+			expect( view._behavior ).to.be.an( 'object' );
 		} );
 	} );
 
@@ -224,14 +154,6 @@ describe( 'ToolbarView', () => {
 
 	describe( 'element bindings', () => {
 		describe( 'class', () => {
-			it( 'reacts on view#isVertical', () => {
-				view.isVertical = false;
-				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.false;
-
-				view.isVertical = true;
-				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
-			} );
-
 			it( 'reacts on view#class', () => {
 				view.class = 'foo';
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
@@ -243,33 +165,24 @@ describe( 'ToolbarView', () => {
 				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
 				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
 			} );
-
-			it( 'reacts on view#shouldGroupWhenFull', () => {
-				view.shouldGroupWhenFull = false;
-				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).to.be.false;
-
-				view.shouldGroupWhenFull = true;
-				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).to.be.true;
-			} );
 		} );
 	} );
 
 	describe( 'render()', () => {
-		it( 'registers #_components in #focusTracker', () => {
+		it( 'registers #items in #focusTracker', () => {
 			const view = new ToolbarView( locale );
 			const spyAdd = sinon.spy( view.focusTracker, 'add' );
 			const spyRemove = sinon.spy( view.focusTracker, 'remove' );
 
-			view._components.add( focusable() );
-			view._components.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
 			sinon.assert.notCalled( spyAdd );
 
 			view.render();
 
-			// First call is for the #itemsView.
-			sinon.assert.calledThrice( spyAdd );
+			sinon.assert.calledTwice( spyAdd );
 
-			view._components.remove( 1 );
+			view.items.remove( 1 );
 			sinon.assert.calledOnce( spyRemove );
 
 			view.destroy();
@@ -308,8 +221,8 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.itemsView.focusTracker.isFocused = true;
-				view.itemsView.focusTracker.focusedElement = view.items.get( 4 ).element;
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 4 ).element;
 
 				view.keystrokes.press( keyEvtData );
 
@@ -326,8 +239,8 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.itemsView.focusTracker.isFocused = true;
-				view.itemsView.focusTracker.focusedElement = view.items.get( 2 ).element;
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 2 ).element;
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( view.items.get( 0 ).focus );
@@ -354,8 +267,8 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.itemsView.focusTracker.isFocused = true;
-				view.itemsView.focusTracker.focusedElement = view.items.get( 4 ).element;
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 4 ).element;
 
 				view.keystrokes.press( keyEvtData );
 
@@ -372,155 +285,40 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 
 				// Mock the last item is focused.
-				view.itemsView.focusTracker.isFocused = true;
-				view.itemsView.focusTracker.focusedElement = view.items.get( 0 ).element;
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( view.items.get( 2 ).focus );
 			} );
+		} );
 
-			describe( 'when #shouldGroupWhenFull is true', () => {
-				beforeEach( () => {
-					document.body.appendChild( view.element );
-					view.element.style.width = '200px';
-					view.shouldGroupWhenFull = true;
-				} );
+		it( 'calls _behavior#render()', () => {
+			const view = new ToolbarView( locale );
+			sinon.spy( view._behavior, 'render' );
 
-				afterEach( () => {
-					view.element.remove();
-				} );
+			view.render();
+			sinon.assert.calledOnce( view._behavior.render );
+			sinon.assert.calledWithExactly( view._behavior.render, view );
 
-				it( 'navigates from #items to the #groupedItemsDropdown (forwards)', () => {
-					const keyEvtData = getArrowKeyData( 'arrowright' );
-
-					view.items.add( focusable() );
-					view.items.add( nonFocusable() );
-					view.items.add( focusable() );
-
-					view.updateGroupedItems();
-					sinon.spy( view.groupedItemsDropdown, 'focus' );
-
-					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.itemsView.element;
-					view.itemsView.focusTracker.isFocused = true;
-					view.itemsView.focusTracker.focusedElement = view.items.get( 0 ).element;
-
-					view.keystrokes.press( keyEvtData );
-
-					sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
-				} );
-
-				it( 'navigates from the #groupedItemsDropdown to #items (forwards)', () => {
-					const keyEvtData = getArrowKeyData( 'arrowright' );
-
-					view.items.add( focusable() );
-					view.items.add( nonFocusable() );
-					view.items.add( focusable() );
-
-					view.updateGroupedItems();
-
-					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.groupedItemsDropdown.element;
-					view.itemsView.focusTracker.isFocused = false;
-					view.itemsView.focusTracker.focusedElement = null;
-
-					view.keystrokes.press( keyEvtData );
-
-					sinon.assert.calledOnce( view.items.get( 0 ).focus );
-				} );
-
-				it( 'navigates from #items to the #groupedItemsDropdown (backwards)', () => {
-					const keyEvtData = getArrowKeyData( 'arrowleft' );
-
-					view.items.add( focusable() );
-					view.items.add( nonFocusable() );
-					view.items.add( focusable() );
-
-					view.updateGroupedItems();
-					sinon.spy( view.groupedItemsDropdown, 'focus' );
-
-					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.itemsView.element;
-					view.itemsView.focusTracker.isFocused = true;
-					view.itemsView.focusTracker.focusedElement = view.items.get( 0 ).element;
-
-					view.keystrokes.press( keyEvtData );
-
-					sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
-				} );
-
-				it( 'navigates from the #groupedItemsDropdown to #items (backwards)', () => {
-					const keyEvtData = getArrowKeyData( 'arrowleft' );
-
-					view.items.add( focusable() );
-					view.items.add( nonFocusable() );
-					view.items.add( focusable() );
-
-					view.updateGroupedItems();
-
-					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.groupedItemsDropdown.element;
-					view.itemsView.focusTracker.isFocused = false;
-					view.itemsView.focusTracker.focusedElement = null;
-
-					view.keystrokes.press( keyEvtData );
-
-					sinon.assert.calledOnce( view.items.get( 0 ).focus );
-				} );
-			} );
+			view.destroy();
 		} );
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'destroys the #groupedItemsDropdown', () => {
-			document.body.appendChild( view.element );
-			view.element.style.width = '200px';
-
-			const itemA = focusable();
-			const itemB = focusable();
-			const itemC = focusable();
-			const itemD = focusable();
-
-			view.items.add( itemA );
-			view.items.add( itemB );
-			view.items.add( itemC );
-			view.items.add( itemD );
-
-			// The dropdown shows up.
-			view.shouldGroupWhenFull = true;
-			sinon.spy( view.groupedItemsDropdown, 'destroy' );
-
-			view.element.style.width = '500px';
-
-			// The dropdown hides; it does not belong to any collection but it still exist.
-			view.updateGroupedItems();
+		it( 'destroys the feature', () => {
+			sinon.spy( view._behavior, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( view.groupedItemsDropdown.destroy );
 
-			view.element.remove();
+			sinon.assert.calledOnce( view._behavior.destroy );
 		} );
 
-		it( 'disconnects the #_groupWhenFullResizeObserver', () => {
-			document.body.appendChild( view.element );
-			view.element.style.width = '200px';
-
-			const itemA = focusable();
-			const itemB = focusable();
-			const itemC = focusable();
-			const itemD = focusable();
-
-			view.items.add( itemA );
-			view.items.add( itemB );
-			view.items.add( itemC );
-			view.items.add( itemD );
-
-			view.shouldGroupWhenFull = true;
-			sinon.spy( view._groupWhenFullResizeObserver, 'disconnect' );
+		it( 'calls _behavior#destroy()', () => {
+			sinon.spy( view._behavior, 'destroy' );
 
 			view.destroy();
-			sinon.assert.calledOnce( view._groupWhenFullResizeObserver.disconnect );
-			view.element.remove();
+			sinon.assert.calledOnce( view._behavior.destroy );
 		} );
 	} );
 
@@ -537,20 +335,6 @@ describe( 'ToolbarView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( view.items.get( 1 ).focus );
-		} );
-
-		it( 'if no items  the first focusable of #items in DOM', () => {
-			document.body.appendChild( view.element );
-			view.element.style.width = '10px';
-
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-
-			view.shouldGroupWhenFull = true;
-			sinon.spy( view.groupedItemsDropdown, 'focus' );
-
-			view.focus();
-			sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
 		} );
 	} );
 
@@ -569,24 +353,6 @@ describe( 'ToolbarView', () => {
 			view.focusLast();
 
 			sinon.assert.calledOnce( view.items.get( 3 ).focus );
-		} );
-
-		it( 'focuses the #groupedItemsDropdown when view#shouldGroupWhenFull is true', () => {
-			document.body.appendChild( view.element );
-			view.element.style.width = '200px';
-			view.shouldGroupWhenFull = true;
-
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-
-			sinon.spy( view.groupedItemsDropdown, 'focus' );
-
-			view.focusLast();
-
-			sinon.assert.calledOnce( view.groupedItemsDropdown.focus );
-
-			view.element.remove();
 		} );
 	} );
 
@@ -630,56 +396,140 @@ describe( 'ToolbarView', () => {
 		} );
 	} );
 
-	describe( 'updateGroupedItems()', () => {
+	describe( 'toolbar with static items', () => {
+		describe( 'constructor()', () => {
+			it( 'should set view#isVertical', () => {
+				expect( view.isVertical ).to.be.false;
+			} );
+
+			it( 'binds itemsView#children to #items', () => {
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
+
+				expect( view.itemsView.children.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
+			} );
+
+			it( 'binds #focusables to #items', () => {
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
+
+				expect( view.focusables.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
+			} );
+		} );
+
+		describe( 'element bindings', () => {
+			describe( 'class', () => {
+				it( 'reacts on view#isVertical', () => {
+					view.isVertical = false;
+					expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.false;
+
+					view.isVertical = true;
+					expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'toolbar with a dynamic item grouping', () => {
+		let locale, view, groupedItems, ungroupedItems, groupedItemsDropdown;
+
 		beforeEach( () => {
-			document.body.appendChild( view.element );
+			locale = new Locale();
+			view = new ToolbarView( locale, {
+				shouldGroupWhenFull: true
+			} );
+			view.render();
 			view.element.style.width = '200px';
+			document.body.appendChild( view.element );
+
+			groupedItems = view._behavior.groupedItems;
+			ungroupedItems = view._behavior.ungroupedItems;
+			groupedItemsDropdown = view._behavior.groupedItemsDropdown;
 		} );
 
 		afterEach( () => {
+			sinon.restore();
 			view.element.remove();
+			view.destroy();
 		} );
 
-		it( 'only works when #shouldGroupWhenFull', () => {
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
+		describe( 'constructor()', () => {
+			it( 'extends the template with the CSS class', () => {
+				expect( view.element.classList.contains( 'ck-toolbar_grouping' ) ).to.be.true;
+			} );
 
-			view.updateGroupedItems();
+			it( 'updates the UI as new #items are added', () => {
+				sinon.spy( view._behavior, '_updateGrouping' );
 
-			expect( view.items ).to.have.length( 4 );
-			expect( view.groupedItems ).to.be.null;
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+				const itemD = focusable();
+
+				view.element.style.width = '200px';
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+
+				sinon.assert.calledTwice( view._behavior._updateGrouping );
+
+				expect( ungroupedItems ).to.have.length( 2 );
+				expect( groupedItems ).to.have.length( 0 );
+
+				view.items.add( itemC );
+
+				// The dropdown took some extra space.
+				expect( ungroupedItems ).to.have.length( 1 );
+				expect( groupedItems ).to.have.length( 2 );
+
+				view.items.add( itemD, 2 );
+
+				expect( ungroupedItems ).to.have.length( 1 );
+				expect( groupedItems ).to.have.length( 3 );
+
+				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
+				expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD, itemC ] );
+			} );
+
+			it( 'updates the UI as #items are removed', () => {
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+				const itemD = focusable();
+
+				view.element.style.width = '200px';
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
+				view.items.add( itemD );
+
+				sinon.spy( view._behavior, '_updateGrouping' );
+				view.items.remove( 2 );
+
+				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
+				expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
+
+				sinon.assert.calledOnce( view._behavior._updateGrouping );
+
+				view.items.remove( 0 );
+				sinon.assert.calledTwice( view._behavior._updateGrouping );
+
+				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
+			} );
 		} );
 
-		it( 'stays silent if the toolbar is detached from visible DOM', () => {
-			testUtils.sinon.spy( console, 'warn' );
-			view.element.remove();
-
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-
-			view.shouldGroupWhenFull = true;
-
-			sinon.assert.notCalled( console.warn );
-		} );
-
-		it( 'does not group when items fit', () => {
-			const itemA = focusable();
-			const itemB = focusable();
-
-			view.items.add( itemA );
-			view.items.add( itemB );
-
-			view.shouldGroupWhenFull = true;
-
-			expect( view.groupedItems ).to.be.null;
-			expect( view.groupedItemsDropdown ).to.be.null;
-		} );
-
-		it( 'groups items that overflow into #groupedItemsDropdown', () => {
+		it( 'groups items that overflow into the dropdown', () => {
 			const itemA = focusable();
 			const itemB = focusable();
 			const itemC = focusable();
@@ -690,17 +540,15 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemC );
 			view.items.add( itemD );
 
-			view.shouldGroupWhenFull = true;
-
-			expect( view.items.map( i => i ) ).to.have.members( [ itemA ] );
-			expect( view.groupedItems.map( i => i ) ).to.have.members( [ itemB, itemC, itemD ] );
-			expect( view._components ).to.have.length( 3 );
-			expect( view._components.get( 0 ) ).to.equal( view.itemsView );
-			expect( view._components.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( view._components.get( 2 ) ).to.equal( view.groupedItemsDropdown );
+			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC, itemD ] );
+			expect( view.children ).to.have.length( 3 );
+			expect( view.children.get( 0 ) ).to.equal( view.itemsView );
+			expect( view.children.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( view.children.get( 2 ) ).to.equal( groupedItemsDropdown );
 		} );
 
-		it( 'ungroups items from #groupedItemsDropdown if there is enough space to display them (all)', () => {
+		it( 'ungroups items if there is enough space to display them (all)', () => {
 			const itemA = focusable();
 			const itemB = focusable();
 			const itemC = focusable();
@@ -711,21 +559,19 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemC );
 			view.items.add( itemD );
 
-			view.shouldGroupWhenFull = true;
-
-			expect( view.items.map( i => i ) ).to.have.members( [ itemA ] );
-			expect( view.groupedItems.map( i => i ) ).to.have.members( [ itemB, itemC, itemD ] );
+			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC, itemD ] );
 
 			view.element.style.width = '350px';
 
 			// Some grouped items cannot be ungrouped because there is not enough space and they will
-			// land back in #groupedItems after an attempt was made.
-			view.updateGroupedItems();
-			expect( view.items.map( i => i ) ).to.have.members( [ itemA, itemB, itemC ] );
-			expect( view.groupedItems.map( i => i ) ).to.have.members( [ itemD ] );
+			// land back in #_behavior.groupedItems after an attempt was made.
+			view._behavior._updateGrouping();
+			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
+			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemD ] );
 		} );
 
-		it( 'ungroups items from #groupedItemsDropdown if there is enough space to display them (some)', () => {
+		it( 'ungroups items if there is enough space to display them (some)', () => {
 			const itemA = focusable();
 			const itemB = focusable();
 			const itemC = focusable();
@@ -734,50 +580,207 @@ describe( 'ToolbarView', () => {
 			view.items.add( itemB );
 			view.items.add( itemC );
 
-			view.shouldGroupWhenFull = true;
-
-			expect( view.items.map( i => i ) ).to.have.members( [ itemA ] );
-			expect( view.groupedItems.map( i => i ) ).to.have.members( [ itemB, itemC ] );
+			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC ] );
 
 			view.element.style.width = '350px';
 
 			// All grouped items will be ungrouped because they fit just alright in the main space.
-			view.updateGroupedItems();
-			expect( view.items.map( i => i ) ).to.have.members( [ itemA, itemB, itemC ] );
-			expect( view.groupedItems ).to.have.length( 0 );
-			expect( view._components ).to.have.length( 1 );
-			expect( view._components.get( 0 ) ).to.equal( view.itemsView );
+			view._behavior._updateGrouping();
+			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
+			expect( groupedItems ).to.have.length( 0 );
+			expect( view.children ).to.have.length( 1 );
+			expect( view.children.get( 0 ) ).to.equal( view.itemsView );
 		} );
 
-		describe( '#groupedItemsDropdown', () => {
+		describe( 'render()', () => {
+			it( 'starts observing toolbar resize immediatelly after render', () => {
+				function FakeResizeObserver( callback ) {
+					this.callback = callback;
+				}
+
+				FakeResizeObserver.prototype.observe = sinon.spy();
+				FakeResizeObserver.prototype.disconnect = sinon.spy();
+
+				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
+
+				const view = new ToolbarView( locale, {
+					shouldGroupWhenFull: true
+				} );
+
+				view.render();
+
+				sinon.assert.calledOnce( view._behavior.resizeObserver.observe );
+				sinon.assert.calledWithExactly( view._behavior.resizeObserver.observe, view.element );
+
+				view.destroy();
+			} );
+
+			it( 'updates the UI when the toolbar is being resized (expanding)', done => {
+				view.element.style.width = '200px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				expect( ungroupedItems ).to.have.length( 1 );
+				expect( groupedItems ).to.have.length( 4 );
+
+				view.element.style.width = '500px';
+
+				setTimeout( () => {
+					expect( ungroupedItems ).to.have.length( 5 );
+					expect( groupedItems ).to.have.length( 0 );
+
+					done();
+				}, 100 );
+			} );
+
+			it( 'updates the UI when the toolbar is being resized (narrowing)', done => {
+				view.element.style.width = '500px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				expect( ungroupedItems ).to.have.length( 5 );
+				expect( groupedItems ).to.have.length( 0 );
+
+				view.element.style.width = '200px';
+
+				setTimeout( () => {
+					expect( ungroupedItems ).to.have.length( 1 );
+					expect( groupedItems ).to.have.length( 4 );
+
+					done();
+				}, 100 );
+			} );
+
+			it( 'does not react to changes in height', done => {
+				view.element.style.width = '500px';
+				view.element.style.height = '200px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				sinon.spy( view._behavior, '_updateGrouping' );
+				view.element.style.width = '500px';
+
+				setTimeout( () => {
+					sinon.assert.calledOnce( view._behavior._updateGrouping );
+					view.element.style.height = '500px';
+
+					setTimeout( () => {
+						sinon.assert.calledOnce( view._behavior._updateGrouping );
+						done();
+					}, 100 );
+				}, 100 );
+			} );
+
+			it( 'updates the state of grouped items upon resize', () => {
+				function FakeResizeObserver( callback ) {
+					this.callback = callback;
+				}
+
+				FakeResizeObserver.prototype.observe = sinon.spy();
+				FakeResizeObserver.prototype.disconnect = sinon.spy();
+
+				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
+
+				const view = new ToolbarView( locale, {
+					shouldGroupWhenFull: true
+				} );
+
+				testUtils.sinon.spy( view._behavior, '_updateGrouping' );
+
+				view.render();
+
+				view._behavior.resizeObserver.callback( [
+					{ contentRect: { width: 42 } }
+				] );
+
+				sinon.assert.calledTwice( view._behavior._updateGrouping );
+
+				view.destroy();
+			} );
+		} );
+
+		describe( 'destroy()', () => {
+			it( 'destroys the #groupedItemsDropdown', () => {
+				view.element.style.width = '200px';
+
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+				const itemD = focusable();
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
+				view.items.add( itemD );
+
+				sinon.spy( groupedItemsDropdown, 'destroy' );
+
+				view.element.style.width = '500px';
+
+				// The dropdown hides; it does not belong to any collection but it still exist.
+				view._behavior._updateGrouping();
+
+				view.destroy();
+				sinon.assert.calledOnce( groupedItemsDropdown.destroy );
+			} );
+
+			it( 'disconnects the #resizeObserver', () => {
+				view.element.style.width = '200px';
+
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+				const itemD = focusable();
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
+				view.items.add( itemD );
+
+				sinon.spy( view._behavior.resizeObserver, 'disconnect' );
+
+				view.destroy();
+				sinon.assert.calledOnce( view._behavior.resizeObserver.disconnect );
+			} );
+		} );
+
+		describe( 'dropdown with grouped items', () => {
 			it( 'has proper DOM structure', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				view.shouldGroupWhenFull = true;
-
-				const dropdown = view.groupedItemsDropdown;
-
-				expect( view._components.has( view.groupedItemsDropdown ) ).to.be.true;
-				expect( dropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) );
-				expect( dropdown.buttonView.label ).to.equal( 'Show more items' );
+				expect( view.children.has( groupedItemsDropdown ) ).to.be.true;
+				expect( groupedItemsDropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) );
+				expect( groupedItemsDropdown.buttonView.label ).to.equal( 'Show more items' );
 			} );
 
-			it( 'shares its toolbarView#items with ToolbarView#groupedItems', () => {
+			it( 'shares its toolbarView#items with grouped items', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				view.shouldGroupWhenFull = true;
-
-				expect( view.groupedItemsDropdown.toolbarView.items ).to.equal( view.groupedItems );
+				expect( groupedItemsDropdown.toolbarView.items.map( i => i ) )
+					.to.have.ordered.members( groupedItems.map( i => i ) );
 			} );
 		} );
 
-		describe( '#items overflow checking logic', () => {
+		describe( 'item overflow checking logic', () => {
 			it( 'considers the right padding of the toolbar (LTR UI)', () => {
 				view.class = 'ck-reset_all';
 				view.element.style.width = '210px';
@@ -787,14 +790,14 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				view.shouldGroupWhenFull = true;
-
-				expect( view.groupedItems ).to.have.length( 1 );
+				expect( view._behavior.groupedItems ).to.have.length( 1 );
 			} );
 
 			it( 'considers the left padding of the toolbar (RTL UI)', () => {
 				const locale = new Locale( { uiLanguage: 'ar' } );
-				const view = new ToolbarView( locale );
+				const view = new ToolbarView( locale, {
+					shouldGroupWhenFull: true
+				} );
 
 				view.extendTemplate( {
 					attributes: {
@@ -813,116 +816,50 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				view.shouldGroupWhenFull = true;
-
-				expect( view.groupedItems ).to.have.length( 1 );
+				expect( view._behavior.groupedItems ).to.have.length( 1 );
 
 				view.destroy();
 				view.element.remove();
 			} );
 		} );
-	} );
 
-	describe( 'automatic toolbar grouping (#shouldGroupWhenFull = true)', () => {
-		beforeEach( () => {
-			document.body.appendChild( view.element );
-			view.element.style.width = '200px';
-		} );
+		describe( 'focus management', () => {
+			it( '#focus() focuses the dropdown when it is the only focusable', () => {
+				sinon.spy( groupedItemsDropdown, 'focus' );
+				view.element.style.width = '10px';
 
-		afterEach( () => {
-			view.element.remove();
-		} );
+				const itemA = focusable();
+				const itemB = focusable();
 
-		it( 'updates the UI as new #items are added', () => {
-			sinon.spy( view, 'updateGroupedItems' );
-			sinon.assert.notCalled( view.updateGroupedItems );
+				view.items.add( itemA );
+				view.items.add( itemB );
 
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			sinon.assert.calledTwice( view.updateGroupedItems );
-		} );
+				expect( view.focusables.map( i => i ) ).to.have.ordered.members( [ groupedItemsDropdown ] );
 
-		it( 'updates the UI as #items are removed', () => {
-			sinon.spy( view, 'updateGroupedItems' );
-			sinon.assert.notCalled( view.updateGroupedItems );
+				view.focus();
+				sinon.assert.calledOnce( groupedItemsDropdown.focus );
+			} );
 
-			view.items.add( focusable() );
-			sinon.assert.calledOnce( view.updateGroupedItems );
+			it( '#focusLast() focuses the dropdown when present', () => {
+				sinon.spy( groupedItemsDropdown, 'focus' );
+				view.element.style.width = '200px';
 
-			view.items.remove( 0 );
-			sinon.assert.calledTwice( view.updateGroupedItems );
-		} );
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
 
-		it( 'updates the UI when the toolbar is being resized (expanding)', done => {
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
 
-			view.element.style.width = '200px';
-			view.shouldGroupWhenFull = true;
+				expect( view.focusables.map( i => i ) ).to.have.ordered.members( [ itemA, groupedItemsDropdown ] );
 
-			expect( view.items ).to.have.length( 1 );
-			expect( view.groupedItems ).to.have.length( 4 );
+				view.focusLast();
 
-			view.element.style.width = '500px';
+				sinon.assert.calledOnce( groupedItemsDropdown.focus );
 
-			setTimeout( () => {
-				expect( view.items ).to.have.length( 5 );
-				expect( view.groupedItems ).to.have.length( 0 );
-
-				done();
-			}, 100 );
-		} );
-
-		it( 'updates the UI when the toolbar is being resized (narrowing)', done => {
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-
-			view.element.style.width = '500px';
-			view.shouldGroupWhenFull = true;
-
-			expect( view.items ).to.have.length( 5 );
-			expect( view.groupedItems ).to.be.null;
-
-			view.element.style.width = '200px';
-
-			setTimeout( () => {
-				expect( view.items ).to.have.length( 1 );
-				expect( view.groupedItems ).to.have.length( 4 );
-
-				done();
-			}, 100 );
-		} );
-
-		it( 'does not react to changes in height', done => {
-			view.element.style.width = '500px';
-			view.element.style.height = '200px';
-
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-			view.items.add( focusable() );
-
-			view.shouldGroupWhenFull = true;
-			sinon.spy( view, 'updateGroupedItems' );
-
-			expect( view.items ).to.have.length( 5 );
-			expect( view.groupedItems ).to.be.null;
-
-			setTimeout( () => {
-				view.element.style.height = '500px';
-
-				setTimeout( () => {
-					sinon.assert.calledOnce( view.updateGroupedItems );
-					done();
-				}, 100 );
-			}, 100 );
+				view.element.remove();
+			} );
 		} );
 	} );
 } );
