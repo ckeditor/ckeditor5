@@ -20,6 +20,10 @@ describe( 'ImageTextAlternativeEditing', () => {
 			} );
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( ImageTextAlternativeEditing.pluginName ).to.equal( 'ImageTextAlternativeEditing' );
+	} );
+
 	it( 'should register ImageAlternativeTextCommand', () => {
 		expect( editor.commands.get( 'imageTextAlternative' ) ).to.be.instanceOf( ImageTextAlternativeCommand );
 	} );

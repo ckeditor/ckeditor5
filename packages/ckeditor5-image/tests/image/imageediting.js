@@ -39,6 +39,10 @@ describe( 'ImageEditing', () => {
 			} );
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( ImageEditing.pluginName ).to.equal( 'ImageEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ImageEditing ) ).to.be.instanceOf( ImageEditing );
 	} );

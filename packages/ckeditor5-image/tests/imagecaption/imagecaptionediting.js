@@ -46,6 +46,10 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( ImageCaptionEditing.pluginName ).to.equal( 'ImageCaptionEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ImageCaptionEditing ) ).to.be.instanceOf( ImageCaptionEditing );
 	} );

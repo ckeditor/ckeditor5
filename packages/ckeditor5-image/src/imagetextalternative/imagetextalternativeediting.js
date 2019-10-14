@@ -21,6 +21,13 @@ export default class ImageTextAlternativeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ImageTextAlternativeEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this.editor.commands.add( 'imageTextAlternative', new ImageTextAlternativeCommand( this.editor ) );
 	}
