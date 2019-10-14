@@ -531,6 +531,8 @@ class DynamicGrouping {
 	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
 	 * {@link #_groupedItems} to be returned back to {@link #_ungroupedItems} and still fit into a single row
 	 * without the toolbar wrapping.
+	 *
+	 * @private
 	 */
 	_updateGrouping() {
 		const view = this.view;
@@ -582,6 +584,8 @@ class DynamicGrouping {
 	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
 	 * the future and respond to them by grouping more items or reverting already grouped back, depending
 	 * on the visual space available.
+	 *
+	 * @private
 	 */
 	_enableGroupingOnResize() {
 		const view = this.view;
@@ -764,7 +768,7 @@ class DynamicGrouping {
  *
  * The instance is created in the {@link module:ui/toolbar/toolbarview~ToolbarView#constructor} of the toolbar.
  * This is the right place to extend the {@link module:ui/toolbar/toolbarview~ToolbarView#template} of
- * the toolbar, defined extra toolbar properties, etc..
+ * the toolbar, define extra toolbar properties, etc..
  *
  * @method #constructor
  * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this feature
