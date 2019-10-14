@@ -15,6 +15,8 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { throttle } from 'lodash-es';
 
+import '../theme/widgetresize.css';
+
 /**
  * The widget resize feature plugin.
  *
