@@ -299,6 +299,7 @@ describe( 'ToolbarView', () => {
 
 			view.render();
 			sinon.assert.calledOnce( view._feature.render );
+			sinon.assert.calledWithExactly( view._feature.render, view );
 
 			view.destroy();
 		} );
@@ -451,9 +452,9 @@ describe( 'ToolbarView', () => {
 			view.element.style.width = '200px';
 			document.body.appendChild( view.element );
 
-			groupedItems = view._feature._groupedItems;
-			ungroupedItems = view._feature._ungroupedItems;
-			groupedItemsDropdown = view._feature._groupedItemsDropdown;
+			groupedItems = view._feature.groupedItems;
+			ungroupedItems = view._feature.ungroupedItems;
+			groupedItemsDropdown = view._feature.groupedItemsDropdown;
 		} );
 
 		afterEach( () => {
@@ -564,7 +565,7 @@ describe( 'ToolbarView', () => {
 			view.element.style.width = '350px';
 
 			// Some grouped items cannot be ungrouped because there is not enough space and they will
-			// land back in #_feature._groupedItems after an attempt was made.
+			// land back in #_feature.groupedItems after an attempt was made.
 			view._feature._updateGrouping();
 			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA, itemB, itemC ] );
 			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemD ] );
@@ -609,8 +610,8 @@ describe( 'ToolbarView', () => {
 
 				view.render();
 
-				sinon.assert.calledOnce( view._feature._resizeObserver.observe );
-				sinon.assert.calledWithExactly( view._feature._resizeObserver.observe, view.element );
+				sinon.assert.calledOnce( view._feature.resizeObserver.observe );
+				sinon.assert.calledWithExactly( view._feature.resizeObserver.observe, view.element );
 
 				view.destroy();
 			} );
@@ -701,7 +702,7 @@ describe( 'ToolbarView', () => {
 
 				view.render();
 
-				view._feature._resizeObserver.callback( [
+				view._feature.resizeObserver.callback( [
 					{ contentRect: { width: 42 } }
 				] );
 
@@ -736,7 +737,7 @@ describe( 'ToolbarView', () => {
 				sinon.assert.calledOnce( groupedItemsDropdown.destroy );
 			} );
 
-			it( 'disconnects the #_resizeObserver', () => {
+			it( 'disconnects the #resizeObserver', () => {
 				view.element.style.width = '200px';
 
 				const itemA = focusable();
@@ -749,10 +750,10 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( view._feature._resizeObserver, 'disconnect' );
+				sinon.spy( view._feature.resizeObserver, 'disconnect' );
 
 				view.destroy();
-				sinon.assert.calledOnce( view._feature._resizeObserver.disconnect );
+				sinon.assert.calledOnce( view._feature.resizeObserver.disconnect );
 			} );
 		} );
 
@@ -789,7 +790,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view._feature._groupedItems ).to.have.length( 1 );
+				expect( view._feature.groupedItems ).to.have.length( 1 );
 			} );
 
 			it( 'considers the left padding of the toolbar (RTL UI)', () => {
@@ -815,7 +816,7 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				expect( view._feature._groupedItems ).to.have.length( 1 );
+				expect( view._feature.groupedItems ).to.have.length( 1 );
 
 				view.destroy();
 				view.element.remove();
