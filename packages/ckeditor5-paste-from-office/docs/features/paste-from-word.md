@@ -68,8 +68,8 @@ You can find more information regarding compatibility with other applications in
 
 If you think that support for any of the applications needs improvements, please add 👍 and comments in the following issues:
 
-* [Support pasting from Excel](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/23).
-* [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/35).
-* [Support pasting from Pages](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/36).
+* [Support pasting from Excel](https://github.com/ckeditor/ckeditor5/issues/2513).
+* [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5/issues/2520).
+* [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
 
-Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/new) for other similar applications, too!
+Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
