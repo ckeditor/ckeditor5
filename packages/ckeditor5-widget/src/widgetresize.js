@@ -94,19 +94,23 @@ export default class WidgetResize extends Plugin {
 			}
 		} );
 
-		const redrawFocusedResizer = throttle( () => {
+		const redrawFocusedResizer = () => {
 			if ( this._visibleResizer ) {
 				this._visibleResizer.redraw();
 			}
-		}, 200 ); // 5 fps
+		}; // 5 fps
 
+		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 16 ); // ~60fps
+
+		// Redraws occurring upon change of visible resizer must not be throttled, as it is crucial for the initial
+		// render. Without it the resizer frame would be misaligned with resizing host for a fraction of second.
 		this.on( 'change:_visibleResizer', redrawFocusedResizer );
 
 		// Redrawing on any change of the UI of the editor (including content changes).
-		this.editor.ui.on( 'update', redrawFocusedResizer );
+		this.editor.ui.on( 'update', redrawFocusedResizerThrottled );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
-		this._observer.listenTo( global.window, 'resize', redrawFocusedResizer );
+		this._observer.listenTo( global.window, 'resize', redrawFocusedResizerThrottled );
 
 		const viewSelection = this.editor.editing.view.document.selection;
 
