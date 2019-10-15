@@ -8,6 +8,6 @@
 	"Heading 4": "Dropdown option label for the heading level 4 format.",
 	"Heading 5": "Dropdown option label for the heading level 5 format.",
 	"Heading 6": "Dropdown option label for the heading level 6 format.",
-	"Type your title": "Default title field placeholder for the editor with title and body",
-	"Type or paste your content here.": "Default body field placeholder for the editor with title and body"
+	"Type your title": "A default value of the placeholder for the content title.",
+	"Type or paste your content here.": "A default value of the placeholder for the content body."
 }
