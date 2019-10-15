@@ -4,7 +4,7 @@
  */
 
 .ck.ck-toolbar-dropdown {
-	& .ck-toolbar {
+	& .ck.ck-toolbar .ck.ck-toolbar__items {
 		flex-wrap: nowrap;
 	}
 

@@ -9,23 +9,46 @@
 	@mixin ck-unselectable;
 
 	display: flex;
-	flex-flow: row wrap;
+	flex-flow: row nowrap;
 	align-items: center;
 
-	&.ck-toolbar_vertical {
+	& > .ck-toolbar__items {
+		display: flex;
+		flex-flow: row wrap;
+		align-items: center;
+		flex-grow: 1;
+
+	}
+
+	& .ck.ck-toolbar__separator {
+		display: inline-block;
+
+		/*
+		 * A leading or trailing separator makes no sense (separates from nothing on one side).
+		 * For instance, it can happen when toolbar items (also separators) are getting grouped and one by and
+		 * moved to another toolbar in the drop–down.
+		 */
+		&:first-child,
+		&:last-child {
+			display: none;
+		}
+	}
+
+	&.ck-toolbar_grouping > .ck-toolbar__items {
+		flex-wrap: nowrap;
+	}
+
+	&.ck-toolbar_vertical > .ck-toolbar__items {
 		flex-direction: column;
 	}
 
-	&.ck-toolbar_floating {
+	&.ck-toolbar_floating > .ck-toolbar__items {
 		flex-wrap: nowrap;
 	}
-}
 
-.ck.ck-toolbar__separator {
-	display: inline-block;
-}
-
-.ck.ck-toolbar__newline {
-	display: block;
-	width: 100%;
+	& > .ck.ck-toolbar__grouped-dropdown {
+		& > .ck-dropdown__button .ck-dropdown__arrow {
+			display: none;
+		}
+	}
 }
