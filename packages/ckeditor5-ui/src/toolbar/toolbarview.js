@@ -250,9 +250,6 @@ export default class ToolbarView extends View {
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
-		// The toolbar is filled in in the reverse order for the toolbar grouping to work properly.
-		// If we filled it in in the natural order, items that overflow would be grouped
-		// in a revere order.
 		config.map( name => {
 			if ( name == '|' ) {
 				this.items.add( new ToolbarSeparatorView() );
