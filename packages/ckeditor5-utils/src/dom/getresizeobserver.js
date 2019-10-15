@@ -9,10 +9,10 @@
 
 /* globals setTimeout, clearTimeout */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import mix from '../mix';
+import global from './global';
+import Rect from './rect';
+import DomEmitterMixin from './emittermixin';
 
 const RESIZE_CHECK_INTERVAL = 100;
 

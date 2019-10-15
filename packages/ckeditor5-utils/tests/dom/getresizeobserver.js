@@ -5,11 +5,13 @@
 
 /* globals document, setTimeout, Event, console */
 
-import getResizeObserver from '../../src/dom/getresizeobserver';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+
+import Rect from '../../src/dom/rect';
+import global from '../../src/dom/global';
+import DomEmitterMixin from '../../src/dom/emittermixin';
+
+import getResizeObserver from '../../src/dom/getresizeobserver';
 
 describe( 'getResizeObserver()', () => {
 	testUtils.createSinonSandbox();
