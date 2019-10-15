@@ -200,7 +200,7 @@ export default class ToolbarView extends View {
 	render() {
 		super.render();
 
-		// children added before rendering should be known to the #focusTracker.
+		// Children added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
 			this.focusTracker.add( item.element );
 		}
