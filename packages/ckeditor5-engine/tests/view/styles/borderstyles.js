@@ -199,6 +199,58 @@ describe( 'Border styles normalization', () => {
 		expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '1px' );
 	} );
 
+	describe( 'normalized values getters', () => {
+		it( 'should output border-*-color', () => {
+			styles.setStyle( 'border:1px solid #f00;' );
+
+			[ 'top', 'right', 'bottom', 'left' ].forEach( position => {
+				expect( styles.getNormalized( `border-${ position }-color` ) ).to.equal( '#f00' );
+			} );
+		} );
+
+		it( 'should output border-*-width', () => {
+			styles.setStyle( 'border:1px solid #f00;' );
+
+			[ 'top', 'right', 'bottom', 'left' ].forEach( position => {
+				expect( styles.getNormalized( `border-${ position }-width` ) ).to.equal( '1px' );
+			} );
+		} );
+
+		it( 'should output border-*-style', () => {
+			styles.setStyle( 'border:1px solid #f00;' );
+
+			[ 'top', 'right', 'bottom', 'left' ].forEach( position => {
+				expect( styles.getNormalized( `border-${ position }-style` ) ).to.equal( 'solid' );
+			} );
+		} );
+	} );
+
+	describe( 'border reducers', () => {
+		it( 'should output border-top', () => {
+			styles.setStyle( 'border:1px solid #f00' );
+
+			expect( styles.getInlineProperty( 'border-top' ) ).to.equal( '1px solid #f00' );
+		} );
+
+		it( 'should output border-right', () => {
+			styles.setStyle( 'border:1px solid #f00' );
+
+			expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '1px solid #f00' );
+		} );
+
+		it( 'should output border-bottom', () => {
+			styles.setStyle( 'border:1px solid #f00' );
+
+			expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '1px solid #f00' );
+		} );
+
+		it( 'should output border-left', () => {
+			styles.setStyle( 'border:1px solid #f00' );
+
+			expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '1px solid #f00' );
+		} );
+	} );
+
 	describe( 'border-color', () => {
 		it( 'should set all border colors (1 value defined)', () => {
 			styles.setStyle( 'border-color:cyan;' );
@@ -261,6 +313,50 @@ describe( 'Border styles normalization', () => {
 				width: { top: '1px', right: '1px', bottom: '1px', left: '1px' }
 			} );
 		} );
+
+		it( 'should parse #RGB color value', () => {
+			styles.setStyle( 'border:#f00;' );
+
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: '#f00',
+				right: '#f00',
+				bottom: '#f00',
+				left: '#f00'
+			} );
+		} );
+
+		it( 'should parse #RGBA color value', () => {
+			styles.setStyle( 'border:#f00A;' );
+
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: '#f00A',
+				right: '#f00A',
+				bottom: '#f00A',
+				left: '#f00A'
+			} );
+		} );
+
+		it( 'should parse rgb() color value', () => {
+			styles.setStyle( 'border:rgb(0, 30%,35);' );
+
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: 'rgb(0, 30%, 35)',
+				right: 'rgb(0, 30%, 35)',
+				bottom: 'rgb(0, 30%, 35)',
+				left: 'rgb(0, 30%, 35)'
+			} );
+		} );
+
+		it( 'should parse hsl() color value', () => {
+			styles.setStyle( 'border:hsl(0, 100%, 50%);' );
+
+			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
+				top: 'hsl(0, 100%, 50%)',
+				right: 'hsl(0, 100%, 50%)',
+				bottom: 'hsl(0, 100%, 50%)',
+				left: 'hsl(0, 100%, 50%)'
+			} );
+		} );
 	} );
 
 	describe( 'border-style', () => {
@@ -313,6 +409,39 @@ describe( 'Border styles normalization', () => {
 					bottom: 'dashed',
 					left: 'ridge'
 				}
+			} );
+		} );
+
+		it( 'should parse none value', () => {
+			styles.setStyle( 'border:none;' );
+
+			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
+				top: 'none',
+				right: 'none',
+				bottom: 'none',
+				left: 'none'
+			} );
+		} );
+
+		it( 'should parse line-style value', () => {
+			styles.setStyle( 'border:solid;' );
+
+			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
+				top: 'solid',
+				right: 'solid',
+				bottom: 'solid',
+				left: 'solid'
+			} );
+		} );
+
+		it( 'should not parse non line-style value', () => {
+			styles.setStyle( 'border:blue' );
+
+			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
+				top: undefined,
+				right: undefined,
+				bottom: undefined,
+				left: undefined
 			} );
 		} );
 	} );
@@ -369,6 +498,61 @@ describe( 'Border styles normalization', () => {
 				}
 			} );
 		} );
+
+		it( 'should parse px value', () => {
+			styles.setStyle( 'border:1px;' );
+
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: '1px',
+				right: '1px',
+				bottom: '1px',
+				left: '1px'
+			} );
+		} );
+
+		it( 'should parse em value', () => {
+			styles.setStyle( 'border:1em;' );
+
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: '1em',
+				right: '1em',
+				bottom: '1em',
+				left: '1em'
+			} );
+		} );
+
+		it( 'should parse thin value', () => {
+			styles.setStyle( 'border:thin' );
+
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: 'thin',
+				right: 'thin',
+				bottom: 'thin',
+				left: 'thin'
+			} );
+		} );
+
+		it( 'should parse medium value', () => {
+			styles.setStyle( 'border:medium' );
+
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: 'medium',
+				right: 'medium',
+				bottom: 'medium',
+				left: 'medium'
+			} );
+		} );
+
+		it( 'should parse thick value', () => {
+			styles.setStyle( 'border:thick' );
+
+			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
+				top: 'thick',
+				right: 'thick',
+				bottom: 'thick',
+				left: 'thick'
+			} );
+		} );
 	} );
 
 	describe( 'border-* position', () => {
@@ -392,11 +576,11 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'getStyleNames() - border', () => {
 		it( 'should set all border colors (1 value defined)', () => {
-			styles.setStyle( '    border-color: deeppink deepskyblue;\n' +
-				'    border-style: solid;\n' +
-				'    border-width: 1px;\n' +
-				'    border-bottom-width: 2px;\n' +
-				'    border-right-style: dotted;' );
+			styles.setStyle( 'border-color: deeppink deepskyblue;' +
+				'border-style: solid;' +
+				'border-width: 1px;' +
+				'border-bottom-width: 2px;' +
+				'border-right-style: dotted;' );
 
 			expect( styles.getStyleNames() ).to.deep.equal( [
 				'border-top',

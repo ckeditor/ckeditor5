@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getTopRightBottomLeftValues, getTopRightBottomLeftValueReducer, isColor, isLength, isLineStyle } from './utils';
+import { getParts, getTopRightBottomLeftValueReducer, getTopRightBottomLeftValues, isLength, isLineStyle } from './utils';
 
 /**
  * @module engine/view/styles
  */
 export default class BorderStyles {
 	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:border', normalizeBorder );
+		stylesConverter.on( 'normalize:border', borderNormalizer );
 
 		// Border-position shorthands.
 		stylesConverter.on( 'normalize:border-top', getBorderPositionNormalizer( 'top' ) );
@@ -40,10 +40,10 @@ export default class BorderStyles {
 		stylesConverter.on( 'normalize:border-left-style', getBorderPropertyPositionNormalizer( 'style', 'left' ) );
 		stylesConverter.on( 'normalize:border-left-width', getBorderPropertyPositionNormalizer( 'width', 'left' ) );
 
-		stylesConverter.on( 'extract:border-top', borderPositionExtractor( 'top' ) );
-		stylesConverter.on( 'extract:border-right', borderPositionExtractor( 'right' ) );
-		stylesConverter.on( 'extract:border-bottom', borderPositionExtractor( 'bottom' ) );
-		stylesConverter.on( 'extract:border-left', borderPositionExtractor( 'left' ) );
+		stylesConverter.on( 'extract:border-top', getBorderPositionExtractor( 'top' ) );
+		stylesConverter.on( 'extract:border-right', getBorderPositionExtractor( 'right' ) );
+		stylesConverter.on( 'extract:border-bottom', getBorderPositionExtractor( 'bottom' ) );
+		stylesConverter.on( 'extract:border-left', getBorderPositionExtractor( 'left' ) );
 
 		stylesConverter.on( 'extract:border-top-color', ( evt, data ) => ( data.path = 'border.color.top' ) );
 		stylesConverter.on( 'extract:border-right-color', ( evt, data ) => ( data.path = 'border.color.right' ) );
@@ -63,25 +63,15 @@ export default class BorderStyles {
 		stylesConverter.on( 'reduce:border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
 		stylesConverter.on( 'reduce:border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
 		stylesConverter.on( 'reduce:border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
-		stylesConverter.on( 'reduce:border-top',
-			( evt, data ) => ( data.reduced = getBorderPositionReducer( 'top' )( data.value ) ) );
-		stylesConverter.on( 'reduce:border-right',
-			( evt, data ) => ( data.reduced = getBorderPositionReducer( 'right' )( data.value ) ) );
-		stylesConverter.on( 'reduce:border-bottom',
-			( evt, data ) => ( data.reduced = getBorderPositionReducer( 'bottom' )( data.value ) ) );
-		stylesConverter.on( 'reduce:border-left',
-			( evt, data ) => ( data.reduced = getBorderPositionReducer( 'left' )( data.value ) ) );
-		stylesConverter.on( 'reduce:border', getBorderReducer );
+		stylesConverter.on( 'reduce:border-top', getBorderPositionReducer( 'top' ) );
+		stylesConverter.on( 'reduce:border-right', getBorderPositionReducer( 'right' ) );
+		stylesConverter.on( 'reduce:border-bottom', getBorderPositionReducer( 'bottom' ) );
+		stylesConverter.on( 'reduce:border-left', getBorderPositionReducer( 'left' ) );
+		stylesConverter.on( 'reduce:border', borderReducer );
 	}
 }
 
-function toBorderPropertyShorthand( value, property ) {
-	return {
-		[ property ]: getTopRightBottomLeftValues( value )
-	};
-}
-
-function normalizeBorder( evt, data ) {
+function borderNormalizer( evt, data ) {
 	const { color, style, width } = normalizeBorderShorthand( data.value );
 
 	data.path = 'border';
@@ -122,6 +112,12 @@ function getBorderPropertyNormalizer( propertyName ) {
 	};
 }
 
+function toBorderPropertyShorthand( value, property ) {
+	return {
+		[ property ]: getTopRightBottomLeftValues( value )
+	};
+}
+
 function getBorderPropertyPositionNormalizer( property, side ) {
 	return ( evt, data ) => {
 		data.path = 'border';
@@ -133,41 +129,41 @@ function getBorderPropertyPositionNormalizer( property, side ) {
 	};
 }
 
-function borderPositionExtractor( which ) {
+function getBorderPositionExtractor( which ) {
 	return ( evt, data ) => {
-		const border = data.styles.border;
-
-		const value = [];
-
-		if ( border.width && border.width[ which ] ) {
-			value.push( border.width[ which ] );
-		}
-
-		if ( border.style && border.style[ which ] ) {
-			value.push( border.style[ which ] );
-		}
-
-		if ( border.color && border.color[ which ] ) {
-			value.push( border.color[ which ] );
-		}
-
-		data.value = value.join( ' ' );
+		data.value = extractBorderPosition( data.styles.border, which, data );
 	};
+}
+
+function extractBorderPosition( border, which ) {
+	const value = {};
+
+	if ( border.width && border.width[ which ] ) {
+		value.width = border.width[ which ];
+	}
+
+	if ( border.style && border.style[ which ] ) {
+		value.style = border.style[ which ];
+	}
+
+	if ( border.color && border.color[ which ] ) {
+		value.color = border.color[ which ];
+	}
+
+	return value;
 }
 
 function normalizeBorderShorthand( string ) {
 	const result = {};
 
-	for ( const part of string.split( ' ' ) ) {
-		if ( isLength( part ) ) {
+	const parts = getParts( string );
+
+	for ( const part of parts ) {
+		if ( isLength( part ) || /thin|medium|thick/.test( part ) ) {
 			result.width = part;
-		}
-
-		if ( isLineStyle( part ) ) {
+		} else if ( isLineStyle( part ) ) {
 			result.style = part;
-		}
-
-		if ( isColor( part ) ) {
+		} else {
 			result.color = part;
 		}
 	}
@@ -175,37 +171,39 @@ function normalizeBorderShorthand( string ) {
 	return result;
 }
 
-function getBorderReducer( evt, data ) {
+function borderReducer( evt, data ) {
 	const ret = [];
 
-	ret.push( ...getBorderPositionReducer( 'top' )( data.value ) );
-	ret.push( ...getBorderPositionReducer( 'right' )( data.value ) );
-	ret.push( ...getBorderPositionReducer( 'bottom' )( data.value ) );
-	ret.push( ...getBorderPositionReducer( 'left' )( data.value ) );
+	ret.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'top' ), 'top' ) );
+	ret.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'right' ), 'right' ) );
+	ret.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'bottom' ), 'bottom' ) );
+	ret.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'left' ), 'left' ) );
 
 	data.reduced = ret;
 }
 
 function getBorderPositionReducer( which ) {
-	return value => {
-		const reduced = [];
+	return ( evt, data ) => ( data.reduced = reduceBorderPosition( data.value, which ) );
+}
 
-		if ( value && value.width && value.width[ which ] !== undefined ) {
-			reduced.push( value.width[ which ] );
-		}
+function reduceBorderPosition( value, which ) {
+	const reduced = [];
 
-		if ( value && value.style && value.style[ which ] !== undefined ) {
-			reduced.push( value.style[ which ] );
-		}
+	if ( value && value.width !== undefined ) {
+		reduced.push( value.width );
+	}
 
-		if ( value && value.color && value.color[ which ] !== undefined ) {
-			reduced.push( value.color[ which ] );
-		}
+	if ( value && value.style !== undefined ) {
+		reduced.push( value.style );
+	}
 
-		if ( reduced.length ) {
-			return [ [ 'border-' + which, reduced.join( ' ' ) ] ];
-		}
+	if ( value && value.color !== undefined ) {
+		reduced.push( value.color );
+	}
 
-		return [];
-	};
+	if ( reduced.length ) {
+		return [ [ `border-${ which }`, reduced.join( ' ' ) ] ];
+	}
+
+	return [];
 }

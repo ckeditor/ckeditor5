@@ -7,23 +7,8 @@
  * @module engine/view/styles/utils
  */
 
-export function getTopRightBottomLeftValues( value = '' ) {
-	if ( value === '' ) {
-		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
-	}
-
-	const values = value.split( ' ' );
-
-	const top = values[ 0 ];
-	const bottom = values[ 2 ] || top;
-	const right = values[ 1 ] || top;
-	const left = values[ 3 ] || right;
-
-	return { top, bottom, right, left };
-}
-
 export function isColor( string ) {
-	return /^([#0-9A-Fa-f]{3,8}|[a-zA-Z]+)$/.test( string ) && !isLineStyle( string );
+	return /(^[#0-9A-Fa-f]{3,9}$|rgba?\(|hsla?\(|^currentColor$)/.test( string );
 }
 
 export function isLineStyle( string ) {
@@ -32,6 +17,37 @@ export function isLineStyle( string ) {
 
 export function isLength( string ) {
 	return /^[+-]?[0-9]?[.]?[0-9]+([a-z]+|%)$/.test( string );
+}
+
+export function isRepeat( string ) {
+	return /^(repeat-x|repeat-y|repeat|space|round|no-repeat)$/.test( string );
+}
+
+export function isPosition( string ) {
+	return /^(center|top|bottom|left|right)$/.test( string );
+}
+
+export function isAttachment( string ) {
+	return /^(fixed|scroll|local)$/.test( string );
+}
+
+export function isURL( string ) {
+	return /^url\(/.test( string );
+}
+
+export function getTopRightBottomLeftValues( value = '' ) {
+	if ( value === '' ) {
+		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
+	}
+
+	const values = getParts( value );
+
+	const top = values[ 0 ];
+	const bottom = values[ 2 ] || top;
+	const right = values[ 1 ] || top;
+	const left = values[ 3 ] || right;
+
+	return { top, bottom, right, left };
 }
 
 export function getTopRightBottomLeftValueReducer( styleShorthand ) {
@@ -87,19 +103,6 @@ export function getPositionShorthandNormalizer( longhand ) {
 	};
 }
 
-export function isRepeat( string ) {
-	return /^(repeat-x|repeat-y|repeat|space|round|no-repeat)$/.test( string );
+export function getParts( string ) {
+	return string.replace( /, /g, ',' ).split( ' ' ).map( string => string.replace( /,/g, ', ' ) );
 }
-
-export function isPosition( string ) {
-	return /^(center|top|bottom|left|right)$/.test( string );
-}
-
-export function isAttachment( string ) {
-	return /^(fixed|scroll|local)$/.test( string );
-}
-
-export function isURL( string ) {
-	return /^url\(/.test( string );
-}
-

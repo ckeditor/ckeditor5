@@ -93,7 +93,7 @@ export class StylesConverter {
 	 * @param {Object|String} normalizedValue
 	 * @returns {Array.<Array.<String, String>>}
 	 */
-	getReduceForm( styleName, normalizedValue ) {
+	getReducedForm( styleName, normalizedValue ) {
 		const data = {
 			value: normalizedValue
 		};
@@ -321,7 +321,7 @@ export default class Styles {
 	 * @returns {String|undefined}
 	 */
 	getInlineProperty( propertyName ) {
-		const normalized = stylesConverter.getNormalized( propertyName, this._styles );
+		const normalized = this.converter.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
@@ -329,7 +329,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = stylesConverter.getReduceForm( propertyName, normalized );
+			const styles = this.converter.getReducedForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -374,7 +374,7 @@ export default class Styles {
 		for ( const key of keys ) {
 			const normalized = this.converter.getNormalized( key, this._styles );
 
-			parsed.push( ...this.converter.getReduceForm( key, normalized ) );
+			parsed.push( ...this.converter.getReducedForm( key, normalized ) );
 		}
 
 		return parsed;
