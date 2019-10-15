@@ -317,7 +317,8 @@ class ItemsView extends View {
 
 /**
  * A toolbar behavior that makes it static and unresponsive to the changes of the environment.
- * It also allows toolbar with the vertical layout.
+ * At the same time, it also makes it possible to display a toolbar with a vertical layout
+ * using the {@link module:ui/toolbar/toolbarview~ToolbarView#isVertical} property.
  *
  * @private
  * @implements module:ui/toolbar/toolbarview~ToolbarBehavior
