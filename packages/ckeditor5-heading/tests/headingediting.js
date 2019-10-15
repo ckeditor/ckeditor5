@@ -25,6 +25,10 @@ describe( 'HeadingEditing', () => {
 			} );
 	} );
 
+	it( 'should have pluginName', () => {
+		expect( HeadingEditing.pluginName ).to.equal( 'HeadingEditing' );
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( HeadingEditing ) ).to.be.instanceOf( HeadingEditing );
 	} );

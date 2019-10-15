@@ -1,20 +1,38 @@
 <div id="snippet-title">
-	<h1>Feasibility Study</h1>
-	<h2>Introduction</h2>
-	<p>
-		The Business Development team conducted the study as part of the evaluation process for expanding the Company's product portfolio for the mid-market sector. Using project costs and revenue forecasts as inputs, the team calculated key performance indicators that will enable the Company to make smart business decisions about the direction of current projects.
-	</p>
+	<h1></h1>
+	<p></p>
 </div>
 
 <h3>Console</h3>
 
 <p>You can check the content of the title and body elements below.</p>
 
-<pre><code class="title-console title-console__title">'Feasibility Study'</code></pre>
-<pre><code class="title-console title-console__body">'&lt;h2>Introduction&lt;/h2>&lt;p>The Business Development team conducted the study as part of the evaluation process for expanding the Company's product portfolio for the mid-market sector. Using project costs and revenue forecasts as inputs, the team calculated key performance indicators that will enable the Company to make smart business decisions about the direction of current projects.&lt;/p>'</code></pre>
-<pre><code class="title-console title-console__data">'&lt;h1>Feasibility Study&lt;/h1>&lt;h2>Introduction&lt;/h2>&lt;p>The Business Development team conducted the study as part of the evaluation process for expanding the Company's product portfolio for the mid-market sector. Using project costs and revenue forecasts as inputs, the team calculated key performance indicators that will enable the Company to make smart business decisions about the direction of current projects.&lt;/p>'</code></pre>
+<pre><code class="title-console title-console__title">''</code></pre>
+<pre><code class="title-console title-console__body">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
+<pre><code class="title-console title-console__data">''</code></pre>
 
 <style>
+	.ck.ck-editor__editable_inline {
+		border-color: hsl(0, 0%, 77%);
+	}
+
+	/* Let's move pilcrow icon inside the editor space. */
+	.ck.ck-block-toolbar-button {
+		transform: translateX( 40px );
+	}
+
+	#snippet-title {
+		min-height: 300px;
+		max-width: 450px;
+		padding: 50px;
+		margin: 50px auto 0;
+		box-shadow: 5px 5px 1px 0px hsla( 0, 0%, 0%, 0.1);
+	}
+
+	#snippet-title h1 {
+		padding-top: 0;
+	}
+
 	#title-console {
 		max-height: 300px;
 		overflow: auto;
