@@ -606,7 +606,7 @@ class DynamicGrouping {
 		// If none were grouped now but there were some items already grouped before,
 		// then, what the hell, maybe let's see if some of them can be ungrouped. This happens when,
 		// for instance, the toolbar is stretching and there's more space in it than before.
-		if ( !wereItemsGrouped && this.groupedItems && this.groupedItems.length ) {
+		if ( !wereItemsGrouped && this.groupedItems.length ) {
 			// Ungroup items as long as none are overflowing or there are none to ungroup left.
 			while ( this.groupedItems.length && !this._areItemsOverflowing ) {
 				this._ungroupFirstItem();
@@ -620,35 +620,6 @@ class DynamicGrouping {
 				this._groupLastItem();
 			}
 		}
-	}
-
-	/**
-	 * Enables the functionality that prevents {@link #ungroupedItems} from overflowing
-	 * (wrapping to the next row) when there is little space available. Instead, the toolbar items are moved to the
-	 * {@link #groupedItems} collection and displayed in a dropdown at the end of the space, which has its own nested toolbar.
-	 *
-	 * When called, the toolbar will automatically analyze the location of its {@link #ungroupedItems} and "group"
-	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
-	 * the future and respond to them by grouping more items or reverting already grouped back, depending
-	 * on the visual space available.
-	 *
-	 * @private
-	 */
-	_enableGroupingOnResize() {
-		let previousWidth;
-
-		// TODO: Consider debounce.
-		this.resizeObserver = getResizeObserver( ( [ entry ] ) => {
-			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
-				this._updateGrouping();
-
-				previousWidth = entry.contentRect.width;
-			}
-		} );
-
-		this.resizeObserver.observe( this.viewElement );
-
-		this._updateGrouping();
 	}
 
 	/**
@@ -687,10 +658,39 @@ class DynamicGrouping {
 	}
 
 	/**
-	 * The opposite of {@link #_ungroupFirstItem}.
+	 * Enables the functionality that prevents {@link #ungroupedItems} from overflowing (wrapping to the next row)
+	 * upon resize when there is little space available. Instead, the toolbar items are moved to the
+	 * {@link #groupedItems} collection and displayed in a dropdown at the end of the row (which has its own nested toolbar).
 	 *
-	 * When called it will remove the last item from {@link #ungroupedItems} and move it to the
-	 * {@link #groupedItems} collection.
+	 * When called, the toolbar will automatically analyze the location of its {@link #ungroupedItems} and "group"
+	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
+	 * the future and respond to them by grouping more items or reverting already grouped back, depending
+	 * on the visual space available.
+	 *
+	 * @private
+	 */
+	_enableGroupingOnResize() {
+		let previousWidth;
+
+		// TODO: Consider debounce.
+		this.resizeObserver = getResizeObserver( ( [ entry ] ) => {
+			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
+				this._updateGrouping();
+
+				previousWidth = entry.contentRect.width;
+			}
+		} );
+
+		this.resizeObserver.observe( this.viewElement );
+
+		this._updateGrouping();
+	}
+
+	/**
+	 * When called, it will remove the last item from {@link #ungroupedItems} and move it back
+	 * to the {@link #groupedItems} collection.
+	 *
+	 * The opposite of {@link #_ungroupFirstItem}.
 	 *
 	 * @private
 	 */
@@ -705,10 +705,10 @@ class DynamicGrouping {
 	}
 
 	/**
-	 * The opposite of {@link #_groupLastItem}.
-	 *
-	 * Moves the very first item from the toolbar belonging to {@link #groupedItems} back
+	 * Moves the very first item belonging to {@link #groupedItems} back
 	 * to the {@link #ungroupedItems} collection.
+	 *
+	 * The opposite of {@link #_groupLastItem}.
 	 *
 	 * @private
 	 */

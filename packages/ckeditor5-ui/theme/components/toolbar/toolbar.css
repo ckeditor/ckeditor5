@@ -24,9 +24,10 @@
 		display: inline-block;
 
 		/*
-			* A leading or trailing separator makes no sense (separates nothing from one side).
-			* Better hide it for better look.
-			*/
+		 * A leading or trailing separator makes no sense (separates from nothing on one side).
+		 * For instance, it can happen when toolbar items (also separators) are getting grouped and one by and
+		 * moved to another toolbar in the drop–down.
+		 */
 		&:first-child,
 		&:last-child {
 			display: none;
