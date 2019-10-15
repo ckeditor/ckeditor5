@@ -11,7 +11,8 @@ import { get, has, isObject, merge, set, unset } from 'lodash-es';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import BorderStyles from './styles/borderstyles';
-import { getTopRightBottomLeftValueReducer } from './styles/utils';
+import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } from './styles/utils';
+import MarginStyles from './styles/marginstyles';
 
 class StylesConverter {
 	/**
@@ -166,19 +167,6 @@ class StylesConverter {
 mix( StylesConverter, EmitterMixin );
 
 export const stylesConverter = new StylesConverter();
-
-class MarginStyles {
-	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:margin', getPositionShorthandNormalizer( 'margin' ) );
-
-		stylesConverter.on( 'normalize:margin-top', ( evt, data ) => ( data.path = 'margin.top' ) );
-		stylesConverter.on( 'normalize:margin-right', ( evt, data ) => ( data.path = 'margin.right' ) );
-		stylesConverter.on( 'normalize:margin-bottom', ( evt, data ) => ( data.path = 'margin.bottom' ) );
-		stylesConverter.on( 'normalize:margin-left', ( evt, data ) => ( data.path = 'margin.left' ) );
-
-		stylesConverter.on( 'reduce:margin', getTopRightBottomLeftValueReducer( 'margin' ) );
-	}
-}
 
 class PaddingStyles {
 	static attach( stylesConverter ) {
@@ -412,28 +400,6 @@ export default class Styles {
 
 		return parsed;
 	}
-}
-
-function getTopRightBottomLeftValues( value = '' ) {
-	if ( value === '' ) {
-		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
-	}
-
-	const values = value.split( ' ' );
-
-	const top = values[ 0 ];
-	const bottom = values[ 2 ] || top;
-	const right = values[ 1 ] || top;
-	const left = values[ 3 ] || right;
-
-	return { top, bottom, right, left };
-}
-
-function getPositionShorthandNormalizer( longhand ) {
-	return ( evt, data ) => {
-		data.path = longhand;
-		data.value = getTopRightBottomLeftValues( data.value );
-	};
 }
 
 function normalizeBackground( evt, data ) {
