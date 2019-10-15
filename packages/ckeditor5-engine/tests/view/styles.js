@@ -3,14 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles from '../../src/view/styles';
+import Styles, { StylesConverter } from '../../src/view/styles';
 import encodedImage from './_utils/encodedimage.txt';
+import PaddingStyles from '../../src/view/styles/paddingstyles';
 
 describe( 'Styles', () => {
-	let styles;
+	let styles, converter;
 
 	beforeEach( () => {
-		styles = new Styles();
+		converter = new StylesConverter();
+
+		// Define simple "foo" shorthand normalizers, similar to the "margin" shorthand normalizers, for testing purposes.
+		converter.on( 'normalize:foo', ( evt, data ) => {
+			data.path = 'foo';
+			data.value = { top: data.value, right: data.value, bottom: data.value, left: data.value };
+		} );
+		converter.on( 'normalize:foo-top', ( evt, data ) => {
+			data.path = 'foo';
+			data.value = { top: data.value };
+		} );
+
+		PaddingStyles.attach( converter );
+		styles = new Styles( converter );
 	} );
 
 	describe( 'size getter', () => {
@@ -32,13 +46,13 @@ describe( 'Styles', () => {
 
 	describe( 'setStyle()', () => {
 		it( 'should reset styles to a new value', () => {
-			styles.setStyle( 'color:red;margin-top:1px;' );
+			styles.setStyle( 'color:red;margin:1px;' );
 
-			expect( styles.getNormalized() ).to.deep.equal( { color: 'red', margin: { top: '1px' } } );
+			expect( styles.getNormalized() ).to.deep.equal( { color: 'red', margin: '1px' } );
 
-			styles.setStyle( 'margin-bottom:2em;' );
+			styles.setStyle( 'overflow:hidden;' );
 
-			expect( styles.getNormalized() ).to.deep.equal( { margin: { bottom: '2em' } } );
+			expect( styles.getNormalized() ).to.deep.equal( { overflow: 'hidden' } );
 		} );
 
 		describe( 'styles parsing edge cases and incorrect styles', () => {
@@ -126,11 +140,9 @@ describe( 'Styles', () => {
 		} );
 
 		it( 'should return false if normalized property is not set', () => {
-			styles.setStyle( 'margin-top:1px' );
+			styles.setStyle( 'foo-top:1px' );
 
-			// TODO
-			// expect( styles.hasProperty( 'margin' ) ).to.be.false;
-			expect( styles.hasProperty( 'margin' ) ).to.be.true;
+			expect( styles.hasProperty( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'should return true if property is set', () => {
@@ -140,9 +152,10 @@ describe( 'Styles', () => {
 		} );
 
 		it( 'should return true if normalized shorthanded property is set', () => {
-			styles.setStyle( 'margin:1px 2px 3px 4px' );
+			styles.setStyle( 'foo:1px' );
 
-			expect( styles.hasProperty( 'margin-top' ) ).to.be.true;
+			expect( styles.hasProperty( 'foo' ) ).to.be.true;
+			expect( styles.hasProperty( 'foo-top' ) ).to.be.true;
 		} );
 	} );
 
@@ -169,18 +182,18 @@ describe( 'Styles', () => {
 
 		it( 'should set multiple styles by providing an object', () => {
 			styles.setStyle( 'color: red;' );
-			styles.insertProperty( { color: 'blue', margin: '1px' } );
+			styles.insertProperty( { color: 'blue', foo: '1px' } );
 
 			expect( styles.getInlineProperty( 'color' ) ).to.equal( 'blue' );
-			expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
+			expect( styles.getInlineProperty( 'foo-top' ) ).to.equal( '1px' );
 		} );
 
 		it( 'should set object property', () => {
-			styles.setStyle( 'margin:1px;' );
-			styles.insertProperty( 'margin', { right: '2px' } );
+			styles.setStyle( 'foo:1px;' );
+			styles.insertProperty( 'foo', { right: '2px' } );
 
-			expect( styles.getInlineProperty( 'margin-left' ) ).to.equal( '1px' );
-			expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '2px' );
+			expect( styles.getInlineProperty( 'foo-left' ) ).to.equal( '1px' );
+			expect( styles.getInlineProperty( 'foo-right' ) ).to.equal( '2px' );
 		} );
 	} );
 
@@ -219,9 +232,9 @@ describe( 'Styles', () => {
 		} );
 
 		it( 'should output full names for known style names', () => {
-			styles.setStyle( 'margin: 1px;margin-left: 2em;' );
+			styles.setStyle( 'foo: 1px;foo-top: 2em;' );
 
-			expect( styles.getStyleNames() ).to.deep.equal( [ 'margin' ] );
+			expect( styles.getStyleNames() ).to.deep.equal( [ 'foo' ] );
 		} );
 	} );
 } );
