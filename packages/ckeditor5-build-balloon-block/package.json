@@ -38,6 +38,7 @@
     "@ckeditor/ckeditor5-essentials": "^11.0.5",
     "@ckeditor/ckeditor5-heading": "^11.0.5",
     "@ckeditor/ckeditor5-image": "^14.0.0",
+    "@ckeditor/ckeditor5-indent": "^10.1.0",
     "@ckeditor/ckeditor5-link": "^11.1.2",
     "@ckeditor/ckeditor5-list": "^12.1.0",
     "@ckeditor/ckeditor5-media-embed": "^11.1.4",
