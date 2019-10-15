@@ -3,7 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { isColor, isLineStyle } from '../../../src/view/styles/utils';
+import {
+	getShorthandValues,
+	getTopRightBottomLeftShorthandValue,
+	getTopRightBottomLeftValues,
+	isColor,
+	isLength,
+	isLineStyle
+} from '../../../src/view/styles/utils';
 
 describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {
@@ -54,17 +61,100 @@ describe( 'Styles utils', () => {
 	} );
 
 	describe( 'isLength()', () => {
-		it( 'returns true for named widths', () => {
+		it( 'returns true for various units', () => {
 			testValues(
-				[ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
-				isLineStyle
+				[ '1px', '2rem', '34.5px', '.2em', '0', '1346vmax' ],
+				isLength
 			);
 		} );
 	} );
 
-	describe( 'isRepeat()', () => {} );
+	describe( 'getTopRightBottomLeftShorthandValue()', () => {
+		it( 'should output one value for same values', () => {
+			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
+		} );
 
-	describe( 'isPosition()', () => {} );
+		it( 'should output two value for top == bottom and right == left', () => {
+			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
+		} );
+
+		it( 'should output three values if bottom is different then top', () => {
+			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
+				.to.equal( 'foo foo bar' );
+		} );
+
+		it( 'should output four values if left is different then right', () => {
+			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
+				.to.equal( 'foo foo foo bar' );
+		} );
+	} );
+
+	describe( 'getTopRightBottomLeftValues()', () => {
+		it( 'should parse empty string', () => {
+			expect( getTopRightBottomLeftValues( '' ) ).to.deep.equal( {
+				top: undefined,
+				right: undefined,
+				bottom: undefined,
+				left: undefined
+			} );
+		} );
+
+		it( 'should parse one value', () => {
+			expect( getTopRightBottomLeftValues( 'foo' ) ).to.deep.equal( {
+				top: 'foo',
+				right: 'foo',
+				bottom: 'foo',
+				left: 'foo'
+			} );
+		} );
+
+		it( 'should parse one value', () => {
+			expect( getTopRightBottomLeftValues( 'foo' ) ).to.deep.equal( {
+				top: 'foo',
+				right: 'foo',
+				bottom: 'foo',
+				left: 'foo'
+			} );
+		} );
+
+		it( 'should parse two value', () => {
+			expect( getTopRightBottomLeftValues( 'foo bar' ) ).to.deep.equal( {
+				top: 'foo',
+				right: 'bar',
+				bottom: 'foo',
+				left: 'bar'
+			} );
+		} );
+
+		it( 'should parse three values', () => {
+			expect( getTopRightBottomLeftValues( 'foo foo bar' ) ).to.deep.equal( {
+				top: 'foo',
+				right: 'foo',
+				bottom: 'bar',
+				left: 'foo'
+			} );
+		} );
+
+		it( 'should output four values if left is different then right', () => {
+			expect( getTopRightBottomLeftValues( 'foo foo foo bar' ) ).to.deep.equal( {
+				top: 'foo',
+				right: 'foo',
+				bottom: 'foo',
+				left: 'bar'
+			} );
+		} );
+	} );
+
+	describe( 'getParts()', () => {
+		it( 'should split string to separate values', () => {
+			expect( getShorthandValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
+		} );
+
+		it( 'should split string to separate values when value contain grouping parens', () => {
+			expect( getShorthandValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
+				.to.deep.equal( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );
+		} );
+	} );
 
 	function testValues( values, callback ) {
 		values.map( string => expect( callback( string ), string ).to.be.true );

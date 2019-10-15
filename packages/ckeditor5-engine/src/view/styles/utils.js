@@ -16,7 +16,7 @@ export function isLineStyle( string ) {
 }
 
 export function isLength( string ) {
-	return /^[+-]?[0-9]?[.]?[0-9]+([a-z]+|%)$/.test( string );
+	return /(^[+-]?[0-9]*[.]?[0-9]+([a-z]+|%)$|0)/.test( string );
 }
 
 export function isRepeat( string ) {
@@ -40,7 +40,7 @@ export function getTopRightBottomLeftValues( value = '' ) {
 		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
 	}
 
-	const values = getParts( value );
+	const values = getShorthandValues( value );
 
 	const top = values[ 0 ];
 	const bottom = values[ 2 ] || top;
@@ -103,6 +103,6 @@ export function getPositionShorthandNormalizer( longhand ) {
 	};
 }
 
-export function getParts( string ) {
+export function getShorthandValues( string ) {
 	return string.replace( /, /g, ',' ).split( ' ' ).map( string => string.replace( /,/g, ', ' ) );
 }

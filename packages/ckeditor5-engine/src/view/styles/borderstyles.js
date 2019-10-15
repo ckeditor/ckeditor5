@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getParts, getTopRightBottomLeftValueReducer, getTopRightBottomLeftValues, isLength, isLineStyle } from './utils';
+import { getShorthandValues, getTopRightBottomLeftValueReducer, getTopRightBottomLeftValues, isLength, isLineStyle } from './utils';
 
 /**
  * @module engine/view/styles
@@ -156,7 +156,7 @@ function extractBorderPosition( border, which ) {
 function normalizeBorderShorthand( string ) {
 	const result = {};
 
-	const parts = getParts( string );
+	const parts = getShorthandValues( string );
 
 	for ( const part of parts ) {
 		if ( isLength( part ) || /thin|medium|thick/.test( part ) ) {
