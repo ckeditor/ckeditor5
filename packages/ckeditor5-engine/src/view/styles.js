@@ -10,9 +10,10 @@
 import { get, has, isObject, merge, set, unset } from 'lodash-es';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+
 import BorderStyles from './styles/borderstyles';
-import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } from './styles/utils';
 import MarginStyles from './styles/marginstyles';
+import PaddingStyles from './styles/paddingstyles';
 
 class StylesConverter {
 	/**
@@ -167,18 +168,6 @@ class StylesConverter {
 mix( StylesConverter, EmitterMixin );
 
 export const stylesConverter = new StylesConverter();
-
-class PaddingStyles {
-	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:padding', getPositionShorthandNormalizer( 'padding' ) );
-		stylesConverter.on( 'normalize:padding-top', ( evt, data ) => ( data.path = 'padding.top' ) );
-		stylesConverter.on( 'normalize:padding-right', ( evt, data ) => ( data.path = 'padding.right' ) );
-		stylesConverter.on( 'normalize:padding-bottom', ( evt, data ) => ( data.path = 'padding.bottom' ) );
-		stylesConverter.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'padding.left' ) );
-
-		stylesConverter.on( 'reduce:padding', getTopRightBottomLeftValueReducer( 'padding' ) );
-	}
-}
 
 class BackgroundStyles {
 	static attach( stylesConverter ) {
