@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles from '../../../src/view/styles';
+import Styles, { StylesConverter } from '../../../src/view/styles';
+import MarginStyles from '../../../src/view/styles/marginstyles';
 
 describe( 'Margin styles normalizer', () => {
 	let styles;
 
 	beforeEach( () => {
-		styles = new Styles();
+		const converter = new StylesConverter();
+		MarginStyles.attach( converter );
+		styles = new Styles( converter );
 	} );
 
 	it( 'should set all margins (1 value defined)', () => {

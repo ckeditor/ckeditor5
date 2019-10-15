@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles from '../../../src/view/styles';
+import Styles, { StylesConverter } from '../../../src/view/styles';
+import BackgroundStyles from '../../../src/view/styles/backgroundstyles';
 
 describe( 'Background styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
-		styles = new Styles();
+		const converter = new StylesConverter();
+		BackgroundStyles.attach( converter );
+		styles = new Styles( converter );
 	} );
 
 	it( 'should normalize background', () => {

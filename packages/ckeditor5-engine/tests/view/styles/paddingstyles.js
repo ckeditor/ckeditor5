@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles from '../../../src/view/styles';
+import Styles, { StylesConverter } from '../../../src/view/styles';
+import PaddingStyles from '../../../src/view/styles/paddingstyles';
 
 describe( 'Padding styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
-		styles = new Styles();
+		const converter = new StylesConverter();
+		PaddingStyles.attach( converter );
+		styles = new Styles( converter );
 	} );
 
 	it( 'should set all paddings (1 value defined)', () => {

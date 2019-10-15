@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles from '../../../src/view/styles';
+import Styles, { StylesConverter } from '../../../src/view/styles';
+import BorderStyles from '../../../src/view/styles/borderstyles';
 
 describe( 'Border styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
-		styles = new Styles();
+		const converter = new StylesConverter();
+		BorderStyles.attach( converter );
+		styles = new Styles( converter );
 	} );
 
 	it( 'should parse border shorthand', () => {

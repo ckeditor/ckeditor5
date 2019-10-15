@@ -93,7 +93,7 @@ export class StylesConverter {
 	 * @param {Object|String} normalizedValue
 	 * @returns {Array.<Array.<String, String>>}
 	 */
-	_getReduceForm( styleName, normalizedValue ) {
+	getReduceForm( styleName, normalizedValue ) {
 		const data = {
 			value: normalizedValue
 		};
@@ -148,7 +148,7 @@ export class StylesConverter {
 	 * @param {Object} styles
 	 * @private
 	 */
-	_toNormalizedForm( propertyName, value, styles ) {
+	toNormalizedForm( propertyName, value, styles ) {
 		if ( isObject( value ) ) {
 			appendStyleValue( styles, toPath( propertyName ), value );
 
@@ -185,12 +185,14 @@ export default class Styles {
 	/**
 	 * Creates Styles instance.
 	 */
-	constructor() {
+	constructor( converter = stylesConverter ) {
 		/**
 		 * @type {{}}
 		 * @private
 		 */
 		this._styles = {};
+
+		this.converter = converter;
 	}
 
 	/**
@@ -215,7 +217,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			stylesConverter._toNormalizedForm( key, value, this._styles );
+			this.converter.toNormalizedForm( key, value, this._styles );
 		}
 	}
 
@@ -260,7 +262,7 @@ export default class Styles {
 				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			stylesConverter._toNormalizedForm( nameOrObject, value, this._styles );
+			this.converter.toNormalizedForm( nameOrObject, value, this._styles );
 		}
 	}
 
@@ -293,7 +295,7 @@ export default class Styles {
 	 * @returns {Object|undefined}
 	 */
 	getNormalized( name ) {
-		return stylesConverter.getNormalized( name, this._styles );
+		return this.converter.getNormalized( name, this._styles );
 	}
 
 	/**
@@ -327,7 +329,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = stylesConverter._getReduceForm( propertyName, normalized );
+			const styles = stylesConverter.getReduceForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -370,9 +372,9 @@ export default class Styles {
 		const keys = Object.keys( this._styles ).sort();
 
 		for ( const key of keys ) {
-			const normalized = stylesConverter.getNormalized( key, this._styles );
+			const normalized = this.converter.getNormalized( key, this._styles );
 
-			parsed.push( ...stylesConverter._getReduceForm( key, normalized ) );
+			parsed.push( ...this.converter.getReduceForm( key, normalized ) );
 		}
 
 		return parsed;
