@@ -12,80 +12,73 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 class StylesConverter {
-	constructor() {
-		/**
-		 * Holds shorthand properties normalizers.
-		 *
-		 * Shorthand properties must be normalized as they can be written in various ways.
-		 * Normalizer must return object describing given shorthand.
-		 *
-		 * Example:
-		 * The `border-color` style is a shorthand property for `border-top-color`, `border-right-color`, `border-bottom-color`
-		 * and `border-left-color`. Similarly there are shorthand for border width (`border-width`) and style (`border-style`).
-		 *
-		 * For `border-color` the given shorthand:
-		 *
-		 *		border-color: #f00 #ba7;
-		 *
-		 * might be written as:
-		 *
-		 *		border-color-top: #f00;
-		 *		border-color-right: #ba7;
-		 *		border-color-bottom: #f00;
-		 *		border-color-left: #ba7;
-		 *
-		 * Normalizers produces coherent object representation for both shorthand and longhand forms:
-		 *
-		 *		stylesConverter.on( 'normalize:border-color', ( evt, data ) => {
-		 *			data.path = 'border.color';
-		 *			data.value = {
-		 *				top: '#f00',
-		 *				right: '#ba7',
-		 *				bottom: '#f00',
-		 *				left: '#ba7'
-		 *			}
-		 *		} );
-		 *
-		 * @event normalize
-		 */
+	/**
+	 * Holds shorthand properties normalizers.
+	 *
+	 * Shorthand properties must be normalized as they can be written in various ways.
+	 * Normalizer must return object describing given shorthand.
+	 *
+	 * Example:
+	 * The `border-color` style is a shorthand property for `border-top-color`, `border-right-color`, `border-bottom-color`
+	 * and `border-left-color`. Similarly there are shorthand for border width (`border-width`) and style (`border-style`).
+	 *
+	 * For `border-color` the given shorthand:
+	 *
+	 *		border-color: #f00 #ba7;
+	 *
+	 * might be written as:
+	 *
+	 *		border-color-top: #f00;
+	 *		border-color-right: #ba7;
+	 *		border-color-bottom: #f00;
+	 *		border-color-left: #ba7;
+	 *
+	 * Normalizers produces coherent object representation for both shorthand and longhand forms:
+	 *
+	 *		stylesConverter.on( 'normalize:border-color', ( evt, data ) => {
+	 *			data.path = 'border.color';
+	 *			data.value = {
+	 *				top: '#f00',
+	 *				right: '#ba7',
+	 *				bottom: '#f00',
+	 *				left: '#ba7'
+	 *			}
+	 *		} );
+	 *
+	 * @event normalize
+	 */
 
-		this.extractors = new Map();
-
-		/**
-		 * Holds style normalize object reducers.
-		 *
-		 * An style inliner takes normalized object of style property and outputs array of normalized property-value pairs that can
-		 * be later used to inline a style.
-		 *
-		 * Those work in opposite direction to {@link #normalizers} and always outputs style in the same way.
-		 *
-		 * If normalized style is represented as:
-		 *
-		 *		const style = {
-		 *			border: {
-		 *				color: {
-		 *					top: '#f00',
-		 *					right: '#ba7',
-		 *					bottom: '#f00',
-		 *					left: '#ba7'
-		 *				}
-		 *			}
-		 *		}
-		 *
-		 * The border reducer will output:
-		 *
-		 *		const reduced = [
-		 *			[ 'border-color', '#f00 #ba7' ]
-		 *		];
-		 *
-		 * which can be used to return the inline style string:
-		 *
-		 *		style="border-color:#f00 #ba7;"
-		 *
-		 * @type {Map<String, Function>}
-		 */
-		this.reducers = new Map();
-	}
+	/**
+	 * An style reducer takes normalized object of style property and outputs array of normalized property-value pairs that can
+	 * be later used to inline a style.
+	 *
+	 * Those work in opposite direction to {@link #normalizers} and always outputs style in the same way.
+	 *
+	 * If normalized style is represented as:
+	 *
+	 *		const style = {
+	 *			border: {
+	 *				color: {
+	 *					top: '#f00',
+	 *					right: '#ba7',
+	 *					bottom: '#f00',
+	 *					left: '#ba7'
+	 *				}
+	 *			}
+	 *		}
+	 *
+	 * The border reducer will output:
+	 *
+	 *		const reduced = [
+	 *			[ 'border-color', '#f00 #ba7' ]
+	 *		];
+	 *
+	 * which can be used to return the inline style string:
+	 *
+	 *		style="border-color:#f00 #ba7;"
+	 *
+	 * @event reduce
+	 */
 
 	/**
 	 * Returns reduced form of style property form normalized object.
@@ -110,23 +103,36 @@ class StylesConverter {
 			return merge( {}, styles );
 		}
 
-		if ( this.extractors.has( name ) ) {
-			const extractor = this.extractors.get( name );
-
-			if ( typeof extractor === 'string' ) {
-				return this.getNormalized( extractor, styles );
-			}
-
-			return extractor( styles, this );
-		}
-
-		const path = toPath( name );
-
-		if ( has( styles, path ) ) {
-			return get( styles, path );
-		} else {
+		if ( styles[ name ] ) {
 			return styles[ name ];
 		}
+
+		const data = {
+			name,
+			styles
+		};
+
+		this.fire( 'extract:' + name, data );
+
+		if ( data.path ) {
+			return get( styles, data.path );
+		}
+
+		if ( data.value ) {
+			return data.value;
+		}
+
+		// if ( this.extractors.has( name ) ) {
+		// 	const extractor = this.extractors.get( name );
+		//
+		// 	if ( typeof extractor === 'string' ) {
+		// 		return this.getNormalized( extractor, styles );
+		// 	}
+		//
+		// 	return extractor( styles, this );
+		// }
+
+		return get( styles, toPath( name ) );
 	}
 
 	/**
@@ -205,25 +211,25 @@ stylesConverter.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'pa
 stylesConverter.on( 'normalize:background', normalizeBackground );
 stylesConverter.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
 
-stylesConverter.extractors.set( 'border-top', borderPositionExtractor( 'top' ) );
-stylesConverter.extractors.set( 'border-right', borderPositionExtractor( 'right' ) );
-stylesConverter.extractors.set( 'border-bottom', borderPositionExtractor( 'bottom' ) );
-stylesConverter.extractors.set( 'border-left', borderPositionExtractor( 'left' ) );
+stylesConverter.on( 'extract:border-top', borderPositionExtractor( 'top' ) );
+stylesConverter.on( 'extract:border-right', borderPositionExtractor( 'right' ) );
+stylesConverter.on( 'extract:border-bottom', borderPositionExtractor( 'bottom' ) );
+stylesConverter.on( 'extract:border-left', borderPositionExtractor( 'left' ) );
 
-stylesConverter.extractors.set( 'border-top-color', 'border.color.top' );
-stylesConverter.extractors.set( 'border-right-color', 'border.color.right' );
-stylesConverter.extractors.set( 'border-bottom-color', 'border.color.bottom' );
-stylesConverter.extractors.set( 'border-left-color', 'border.color.left' );
+stylesConverter.on( 'extract:border-top-color', ( evt, data ) => ( data.path = 'border.color.top' ) );
+stylesConverter.on( 'extract:border-right-color', ( evt, data ) => ( data.path = 'border.color.right' ) );
+stylesConverter.on( 'extract:border-bottom-color', ( evt, data ) => ( data.path = 'border.color.bottom' ) );
+stylesConverter.on( 'extract:border-left-color', ( evt, data ) => ( data.path = 'border.color.left' ) );
 
-stylesConverter.extractors.set( 'border-top-width', 'border.width.top' );
-stylesConverter.extractors.set( 'border-right-width', 'border.width.right' );
-stylesConverter.extractors.set( 'border-bottom-width', 'border.width.bottom' );
-stylesConverter.extractors.set( 'border-left-width', 'border.width.left' );
+stylesConverter.on( 'extract:border-top-width', ( evt, data ) => ( data.path = 'border.width.top' ) );
+stylesConverter.on( 'extract:border-right-width', ( evt, data ) => ( data.path = 'border.width.right' ) );
+stylesConverter.on( 'extract:border-bottom-width', ( evt, data ) => ( data.path = 'border.width.bottom' ) );
+stylesConverter.on( 'extract:border-left-width', ( evt, data ) => ( data.path = 'border.width.left' ) );
 
-stylesConverter.extractors.set( 'border-top-style', 'border.style.top' );
-stylesConverter.extractors.set( 'border-right-style', 'border.style.right' );
-stylesConverter.extractors.set( 'border-bottom-style', 'border.style.bottom' );
-stylesConverter.extractors.set( 'border-left-style', 'border.style.left' );
+stylesConverter.on( 'extract:border-top-style', ( evt, data ) => ( data.path = 'border.style.top' ) );
+stylesConverter.on( 'extract:border-right-style', ( evt, data ) => ( data.path = 'border.style.right' ) );
+stylesConverter.on( 'extract:border-bottom-style', ( evt, data ) => ( data.path = 'border.style.bottom' ) );
+stylesConverter.on( 'extract:border-left-style', ( evt, data ) => ( data.path = 'border.style.left' ) );
 
 stylesConverter.on( 'reduce:border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
 stylesConverter.on( 'reduce:border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
@@ -529,8 +535,8 @@ function getBorderPropertyPositionNormalizer( property, side ) {
 }
 
 function borderPositionExtractor( which ) {
-	return ( styles, converter ) => {
-		const border = converter.getNormalized( 'border', styles );
+	return ( evt, data ) => {
+		const border = data.styles.border;
 
 		const value = [];
 
@@ -546,7 +552,7 @@ function borderPositionExtractor( which ) {
 			value.push( border.color[ which ] );
 		}
 
-		return value.join( ' ' );
+		data.value = value.join( ' ' );
 	};
 }
 
