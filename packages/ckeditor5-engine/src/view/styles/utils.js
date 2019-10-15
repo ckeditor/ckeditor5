@@ -86,3 +86,20 @@ export function getPositionShorthandNormalizer( longhand ) {
 		data.value = getTopRightBottomLeftValues( data.value );
 	};
 }
+
+export function isRepeat( string ) {
+	return /^(repeat-x|repeat-y|repeat|space|round|no-repeat)$/.test( string );
+}
+
+export function isPosition( string ) {
+	return /^(center|top|bottom|left|right)$/.test( string );
+}
+
+export function isAttachment( string ) {
+	return /^(fixed|scroll|local)$/.test( string );
+}
+
+export function isURL( string ) {
+	return /^url\(/.test( string );
+}
+

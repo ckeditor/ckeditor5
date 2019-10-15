@@ -14,8 +14,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import BorderStyles from './styles/borderstyles';
 import MarginStyles from './styles/marginstyles';
 import PaddingStyles from './styles/paddingstyles';
+import BackgroundStyles from './styles/backgroundstyles';
 
-class StylesConverter {
+export class StylesConverter {
 	/**
 	 * Holds shorthand properties normalizers.
 	 *
@@ -167,21 +168,8 @@ class StylesConverter {
 
 mix( StylesConverter, EmitterMixin );
 
+// TODO: It's a singleton because it needs to be the same object for all view/Elements instances.
 export const stylesConverter = new StylesConverter();
-
-class BackgroundStyles {
-	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:background', normalizeBackground );
-		stylesConverter.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
-		stylesConverter.on( 'reduce:background', ( evt, data ) => {
-			const ret = [];
-
-			ret.push( [ 'background-color', data.value.color ] );
-
-			data.reduced = ret;
-		} );
-	}
-}
 
 BorderStyles.attach( stylesConverter );
 MarginStyles.attach( stylesConverter );
@@ -389,55 +377,6 @@ export default class Styles {
 
 		return parsed;
 	}
-}
-
-function normalizeBackground( evt, data ) {
-	const background = {};
-
-	const parts = data.value.split( ' ' );
-
-	for ( const part of parts ) {
-		if ( isRepeat( part ) ) {
-			background.repeat = background.repeat || [];
-			background.repeat.push( part );
-		} else if ( isPosition( part ) ) {
-			background.position = background.position || [];
-			background.position.push( part );
-		} else if ( isAttachment( part ) ) {
-			background.attachment = part;
-		} else if ( isColor( part ) ) {
-			background.color = part;
-		} else if ( isURL( part ) ) {
-			background.image = part;
-		}
-	}
-
-	data.path = 'background';
-	data.value = background;
-}
-
-function isColor( string ) {
-	return /^([#0-9A-Fa-f]{3,8}|[a-zA-Z]+)$/.test( string ) && !isLineStyle( string );
-}
-
-function isLineStyle( string ) {
-	return /^(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/.test( string );
-}
-
-function isRepeat( string ) {
-	return /^(repeat-x|repeat-y|repeat|space|round|no-repeat)$/.test( string );
-}
-
-function isPosition( string ) {
-	return /^(center|top|bottom|left|right)$/.test( string );
-}
-
-function isAttachment( string ) {
-	return /^(fixed|scroll|local)$/.test( string );
-}
-
-function isURL( string ) {
-	return /^url\(/.test( string );
 }
 
 // Parses inline styles and puts property - value pairs into styles map.
