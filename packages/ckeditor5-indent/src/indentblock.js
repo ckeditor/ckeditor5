@@ -48,18 +48,7 @@ export default class IndentBlock extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const schema = editor.model.schema;
-		const conversion = editor.conversion;
 		const configuration = editor.config.get( 'indentBlock' );
-
-		// Enable block indentation by default in paragraph and default headings.
-		const knownElements = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
-
-		knownElements.forEach( elementName => {
-			if ( schema.isRegistered( elementName ) ) {
-				schema.extend( elementName, { allowAttributes: 'blockIndent' } );
-			}
-		} );
 
 		const useOffsetConfig = !configuration.classes || !configuration.classes.length;
 
@@ -67,7 +56,8 @@ export default class IndentBlock extends Plugin {
 		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
 
 		if ( useOffsetConfig ) {
-			this._setupConversionUsingOffset( conversion );
+			this._setupConversionUsingOffset( editor.conversion );
+
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( outdentConfig ) ) );
 		} else {
@@ -82,8 +72,19 @@ export default class IndentBlock extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
+		const schema = editor.model.schema;
+
 		const indentCommand = editor.commands.get( 'indent' );
 		const outdentCommand = editor.commands.get( 'outdent' );
+
+		// Enable block indentation by default in paragraph and default headings.
+		const knownElements = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
+
+		knownElements.forEach( elementName => {
+			if ( schema.isRegistered( elementName ) ) {
+				schema.extend( elementName, { allowAttributes: 'blockIndent' } );
+			}
+		} );
 
 		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' ) );
 		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' ) );
