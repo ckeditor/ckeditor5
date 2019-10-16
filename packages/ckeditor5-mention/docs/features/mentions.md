@@ -406,7 +406,7 @@ function customItemRenderer( item ) {
 
 #### Using CSS variables
 
-The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [Lark theme stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mentionediting.css). Thanks to that, mention styles can be {@link framework/guides/theme-customization easily customized}:
+The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [Lark theme stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mention.css). Thanks to that, mention styles can be {@link framework/guides/theme-customization easily customized}:
 
 ```css
 :root {
