@@ -20,7 +20,22 @@ function Markdown( editor ) {
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [ ArticlePluginSet, EasyImage, Markdown ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'blockQuote',
+			'undo',
+			'redo'
+		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
