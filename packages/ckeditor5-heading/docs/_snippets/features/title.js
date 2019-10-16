@@ -15,7 +15,18 @@ BaloonBlockEditor.builtinPlugins.push( Title );
 BaloonBlockEditor
 	.create( document.querySelector( '#snippet-title' ), {
 		cloudServices: CS_CONFIG,
-		blockToolbar: [ 'bulletedList', 'numberedList', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed' ]
+		blockToolbar: [
+			'bulletedList',
+			'numberedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'imageUpload',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
