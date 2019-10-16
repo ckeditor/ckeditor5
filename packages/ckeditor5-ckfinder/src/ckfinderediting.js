@@ -15,7 +15,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import CKFinderCommand from './ckfindercommand';
 
 /**
- * The CKFinder editing feature. It introduces the {@link module:ckfinder/ckfindercommand~CKFinderCommand ckfinder command}.
+ * The CKFinder editing feature. It introduces the {@link module:ckfinder/ckfindercommand~CKFinderCommand CKFinder command}.
  *
  * @extends module:core/plugin~Plugin
  */
