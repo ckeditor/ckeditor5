@@ -11,9 +11,6 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-media-embed' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
-			items: [
-				'mediaEmbed', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
-			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
