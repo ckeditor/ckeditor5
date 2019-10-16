@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { findAncestor } from './commands/utils';
+import TableUI from './tableui';
+import tableMergeCellIcon from '../theme/icons/table-merge-cell.svg';
 
 /**
  * The table style UI feature.
@@ -21,7 +23,43 @@ export default class TableStyleUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
 		this._setupUI();
+
+		editor.ui.componentFactory.add( 'tableCellStyle', locale => {
+			const t = this.editor.t;
+
+			const options = [
+				{
+					type: 'ui',
+					name: 'borderWidth'
+				},
+				{
+					type: 'ui',
+					name: 'borderColor'
+				},
+				{
+					type: 'ui',
+					name: 'borderStyle'
+				},
+				{ type: 'separator' },
+				{
+					type: 'ui',
+					name: 'backgroundColor'
+				},
+				{
+					type: 'ui',
+					name: 'padding'
+				}
+			];
+
+			const dropdownView = editor.plugins.get( TableUI )._prepareDropdown( t( 'Merge cells' ), tableMergeCellIcon, options, locale );
+
+			dropdownView.isEnabled = true;
+
+			return dropdownView;
+		} );
 	}
 
 	_setupUI() {

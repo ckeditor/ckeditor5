@@ -20,7 +20,7 @@ export default class TableStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static requires() {
+	static get requires() {
 		return [ TableStyleEditing, TableStyleUI ];
 	}
 }

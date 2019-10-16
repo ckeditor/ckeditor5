@@ -192,28 +192,6 @@ export default class TableUI extends Plugin {
 						commandName: 'splitTableCellHorizontally',
 						label: t( 'Split cell horizontally' )
 					}
-				},
-				{ type: 'separator' },
-				{
-					type: 'ui',
-					name: 'borderWidth'
-				},
-				{
-					type: 'ui',
-					name: 'borderColor'
-				},
-				{
-					type: 'ui',
-					name: 'borderStyle'
-				},
-				{ type: 'separator' },
-				{
-					type: 'ui',
-					name: 'backgroundColor'
-				},
-				{
-					type: 'ui',
-					name: 'padding'
 				}
 			];
 
