@@ -26,11 +26,11 @@ msgstr "Kolona zaglavlja"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Umetni stupac lijevo"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Umetni stupac desno"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
@@ -87,3 +87,7 @@ msgstr "Razdvoji ćeliju vodoravno"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Spoji ćelije"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Traka za tablice"

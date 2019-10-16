@@ -87,3 +87,7 @@ msgstr "Xanaları üfüqi böl"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Xanaları birləşdir"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Cədvəl paneli"
