@@ -43,3 +43,7 @@ msgstr "A URL desta mídia não é suportada."
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
 msgstr "Inserir mídia"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Media toolbar"
+msgstr "Ferramentas de Mídia"

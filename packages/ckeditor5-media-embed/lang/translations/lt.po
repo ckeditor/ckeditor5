@@ -43,3 +43,7 @@ msgstr "Šis media URL yra nepalaikomas."
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
 msgstr "Įterpkite media"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Media toolbar"
+msgstr ""

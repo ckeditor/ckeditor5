@@ -43,3 +43,7 @@ msgstr "Desteklenmeyen Medya URL'si."
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
 msgstr "Medya Ekle"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Media toolbar"
+msgstr "Medya araç çubuğu"

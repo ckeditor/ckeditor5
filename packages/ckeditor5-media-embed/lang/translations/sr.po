@@ -43,3 +43,7 @@ msgstr "Овај медиа УРЛ тип није подржан."
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
 msgstr "Додај медиа"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Media toolbar"
+msgstr "Медији трака са алаткама"
