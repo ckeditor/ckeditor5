@@ -9,8 +9,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import { defaultConversion, defaultSchema, formatTable, modelTable } from '../_utils/utils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { formatTable, modelTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
@@ -18,15 +18,11 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, Widget ]
+				plugins: [ TableEditing, Paragraph, ImageEditing, Widget ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-
-				defaultSchema( model.schema, false );
-
-				defaultConversion( editor.conversion, true );
 
 				// Since this part of test tests only view->model conversion editing pipeline is not necessary
 				// so defining model->view converters won't be necessary.
@@ -559,24 +555,6 @@ describe( 'upcastTable()', () => {
 				'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
 				'</table>'
 			);
-		} );
-	} );
-
-	describe( 'styles', () => {
-		describe( 'table cell borders', () => {
-			it( 'should pass', () => {
-				editor.setData( '<table><tr><td style="border:1px solid blue">foo</td></tr></table>' );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell border="1px solid blue">' +
-								'<paragraph>foo</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-			} );
 		} );
 	} );
 } );
