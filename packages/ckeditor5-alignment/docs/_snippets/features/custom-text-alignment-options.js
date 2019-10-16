@@ -11,7 +11,17 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-custom-text-alignment-options' ), {
 		toolbar: {
 			items: [
-				'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
+				'heading',
+				'|',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'alignment',
+				'undo',
+				'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
