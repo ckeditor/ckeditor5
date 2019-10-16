@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import Link from '@ckeditor/ckeditor5-link/src/link';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 import CKFinderCommand from './ckfindercommand';
@@ -31,7 +31,7 @@ export default class CKFinderEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Notification, Image, Link ];
+		return [ Notification, ImageEditing, LinkEditing ];
 	}
 
 	/**
