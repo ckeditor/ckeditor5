@@ -42,8 +42,8 @@ msgstr "Tento odkaz nemá nastavenú URL adresu"
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
-msgstr ""
+msgstr "Otvoriť v novej záložke"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
-msgstr ""
+msgstr "Na stiahnutie"
