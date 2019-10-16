@@ -22,6 +22,10 @@ ClassicEditor
 				'link',
 				'bulletedList',
 				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
 				'blockQuote',
 				'undo',
 				'redo'
