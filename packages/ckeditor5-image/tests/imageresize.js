@@ -562,14 +562,23 @@ describe( 'ImageResize', () => {
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
 		const getModel = () => editor.model.document.getRoot().getChild( 0 );
-		let image;
+		let images = [];
 
-		before( async () => {
-			image = await preloadImage( imageBaseUrl );
+		before( () => {
+			return Promise.all( [
+				preloadImage( imageBaseUrl ),
+				preloadImage( imageBaseUrl + '?a' ),
+				preloadImage( imageBaseUrl + '?b' ),
+				preloadImage( imageBaseUrl + '?c' )
+			] ).then( loadedImages => {
+				images = loadedImages;
+			} );
 		} );
 
 		after( () => {
-			image.remove();
+			for ( const image of images ) {
+				image.remove();
+			}
 		} );
 
 		beforeEach( () => {
