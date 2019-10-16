@@ -9,7 +9,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import TableEditing from '../../src/tableediting';
 import TableStyleEditing from '../../src/tablestyleediting';
 
-describe( 'Table styles conversion', () => {
+describe.only( 'Table styles conversion', () => {
 	let editor, model;
 
 	beforeEach( () => {
@@ -29,13 +29,37 @@ describe( 'Table styles conversion', () => {
 
 	describe( 'upcast', () => {
 		describe( 'table cell', () => {
-			it( 'should parser border shorthand', () => {
-				editor.setData( '<table><tr><td style="border:1px solid blue">foo</td></tr></table>' );
+			it( 'should upcast border shorthand', () => {
+				editor.setData( '<table><tr><td style="border:1px solid #f00">foo</td></tr></table>' );
 
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-				assertTRBLAttribute( tableCell, 'borderColor', 'blue' );
+				assertTRBLAttribute( tableCell, 'borderColor', '#f00' );
 				assertTRBLAttribute( tableCell, 'borderStyle', 'solid' );
+				assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
+			} );
+
+			it( 'should upcast border-color shorthand', () => {
+				editor.setData( '<table><tr><td style="border-color:#f00">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', '#f00' );
+			} );
+
+			it( 'should upcast border-style shorthand', () => {
+				editor.setData( '<table><tr><td style="border-style:ridge">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderStyle', 'ridge' );
+			} );
+
+			it( 'should upcast border-width shorthand', () => {
+				editor.setData( '<table><tr><td style="border-width:1px">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
 				assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
 			} );
 		} );
