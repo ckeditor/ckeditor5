@@ -102,6 +102,56 @@ describe.only( 'Table styles conversion', () => {
 				assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
 				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
 			} );
+
+			it( 'should upcast border-top-* styles', () => {
+				editor.setData(
+					'<table><tr><td style="border-top-width:1px;border-top-style:solid;border-top-color:#f00">foo</td></tr></table>'
+				);
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, null, null );
+				assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, null, null );
+				assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, null, null );
+			} );
+
+			it( 'should upcast border-right-* styles', () => {
+				editor.setData(
+					'<table><tr><td style="border-right-width:1px;border-right-style:solid;border-right-color:#f00">foo</td></tr></table>'
+				);
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', null, '#f00', null, null );
+				assertTRBLAttribute( tableCell, 'borderStyle', null, 'solid', null, null );
+				assertTRBLAttribute( tableCell, 'borderWidth', null, '1px', null, null );
+			} );
+
+			it( 'should upcast border-bottom-* styles', () => {
+				editor.setData(
+					'<table><tr>' +
+					'<td style="border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#f00">foo</td>' +
+					'</tr></table>'
+				);
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', null, null, '#f00', null );
+				assertTRBLAttribute( tableCell, 'borderStyle', null, null, 'solid', null );
+				assertTRBLAttribute( tableCell, 'borderWidth', null, null, '1px', null );
+			} );
+
+			it( 'should upcast border-left-* styles', () => {
+				editor.setData(
+					'<table><tr><td style="border-left-width:1px;border-left-style:solid;border-left-color:#f00">foo</td></tr></table>'
+				);
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
+				assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
+				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+			} );
 		} );
 	} );
 
