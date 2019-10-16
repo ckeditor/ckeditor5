@@ -12,26 +12,26 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Persian (https://www.transifex.com/ckeditor/teams/11143/fa/)\n"
-"Language: fa\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
 msgid "Insert image or file"
-msgstr "وارد کردن تصویر یا فایل"
+msgstr "Inserează imagine sau fișier"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr "نمیتوان آدرس اینترنتی تصویر تغییر اندازه یافته را بدست آورد"
+msgstr "Nu se poate obtine URL-ul imaginii redimensionate."
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr "انتخاب تصویر تغییر اندازه یافته انجام نشد"
+msgstr "Selecția imaginii redimensionate eșuată"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
-msgstr "نمیتوان تصویر را در موقعیت فعلی وارد کرد"
+msgstr "Nu se poate insera imaginea la poziția curentă."
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr "وارد کردن تصویر انجام نشد"
+msgstr "Inserție imagine eșuată"
