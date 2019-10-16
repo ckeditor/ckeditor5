@@ -8,7 +8,7 @@
  */
 
 export function isColor( string ) {
-	return /(^[#0-9A-Fa-f]{3,9}$|rgba?\(|hsla?\(|^currentColor$)/.test( string );
+	return /^([#0-9A-Fa-f]{3,9}$|rgba?\(|hsla?\(|^currentColor|0)$/.test( string );
 }
 
 export function isLineStyle( string ) {
@@ -16,7 +16,7 @@ export function isLineStyle( string ) {
 }
 
 export function isLength( string ) {
-	return /(^[+-]?[0-9]*[.]?[0-9]+([a-z]+|%)$|0)/.test( string );
+	return /^([+-]?[0-9]*[.]?[0-9]+([a-z]+|%)|0)$/.test( string );
 }
 
 export function isRepeat( string ) {
