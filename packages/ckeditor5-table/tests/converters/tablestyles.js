@@ -62,6 +62,46 @@ describe.only( 'Table styles conversion', () => {
 
 				assertTRBLAttribute( tableCell, 'borderWidth', '1px' );
 			} );
+
+			it( 'should upcast border-top shorthand', () => {
+				editor.setData( '<table><tr><td style="border-top:1px solid #f00">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, null, null );
+				assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, null, null );
+				assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, null, null );
+			} );
+
+			it( 'should upcast border-right shorthand', () => {
+				editor.setData( '<table><tr><td style="border-right:1px solid #f00">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', null, '#f00', null, null );
+				assertTRBLAttribute( tableCell, 'borderStyle', null, 'solid', null, null );
+				assertTRBLAttribute( tableCell, 'borderWidth', null, '1px', null, null );
+			} );
+
+			it( 'should upcast border-bottom shorthand', () => {
+				editor.setData( '<table><tr><td style="border-bottom:1px solid #f00">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', null, null, '#f00', null );
+				assertTRBLAttribute( tableCell, 'borderStyle', null, null, 'solid', null );
+				assertTRBLAttribute( tableCell, 'borderWidth', null, null, '1px', null );
+			} );
+
+			it( 'should upcast border-left shorthand', () => {
+				editor.setData( '<table><tr><td style="border-left:1px solid #f00">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
+				assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
+				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+			} );
 		} );
 	} );
 
@@ -70,12 +110,33 @@ describe.only( 'Table styles conversion', () => {
 	 *
 	 * @param {module:engine/model/node~Node} tableCell
 	 * @param {String} key Attribute key
-	 * @param {String} top Top value
+	 * @param {String} top Top value. Pass null to omit value in attributes object.
 	 * @param {String} [right=top] Right value - defaults to top if not provided.
+	 * Pass null to omit value in attributes object.
 	 * @param {String} [bottom=top] Bottom value - defaults to top (right value must be defined).
+	 * Pass null to omit value in attributes object.
 	 * @param {String} [left=right] Left value - defaults to right (bottom and right values must be defined).
+	 * Pass null to omit value in attributes object.
 	 */
 	function assertTRBLAttribute( tableCell, key, top, right = top, bottom = top, left = right ) {
-		expect( tableCell.getAttribute( key ) ).to.deep.equal( { top, right, bottom, left } );
+		const styleObject = {};
+
+		if ( top ) {
+			styleObject.top = top;
+		}
+
+		if ( right ) {
+			styleObject.right = right;
+		}
+
+		if ( bottom ) {
+			styleObject.bottom = bottom;
+		}
+
+		if ( left ) {
+			styleObject.left = left;
+		}
+
+		expect( tableCell.getAttribute( key ) ).to.deep.equal( styleObject );
 	}
 } );
