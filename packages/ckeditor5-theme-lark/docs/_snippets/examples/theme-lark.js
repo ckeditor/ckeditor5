@@ -15,7 +15,22 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
 		plugins: [ ArticlePluginSet, EasyImage ],
 		toolbar: {
-			items: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'blockQuote',
+				'undo',
+				'redo'
+			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
