@@ -8,20 +8,20 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 function ConvertDivAttributes( editor ) {
-	// Allow divs in the model.
+	// Allow <div> elements in the model.
 	editor.model.schema.register( 'div', {
 		allowWhere: '$block',
 		allowContentOf: '$root'
 	} );
 
-	// Allow divs in the model to have all attributes.
+	// Allow <div> elements in the model to have all attributes.
 	editor.model.schema.addAttributeCheck( context => {
 		if ( context.endsWith( 'div' ) ) {
 			return true;
 		}
 	} );
 
-	// View-to-model converter converting a view div with all its attributes to the model.
+	// View-to-model converter converting a view <div> with all its attributes to the model.
 	editor.conversion.for( 'upcast' ).elementToElement( {
 		view: 'div',
 		model: ( viewElement, modelWriter ) => {
@@ -29,17 +29,17 @@ function ConvertDivAttributes( editor ) {
 		}
 	} );
 
-	// Model-to-view convert for the div element (attrbiutes are converted separately).
+	// Model-to-view converter for the <div> element (attrbiutes are converted separately).
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'div',
 		view: 'div'
 	} );
 
-	// Model-to-view converter for div attributes.
-	// Note that we use a lower-level, event-based API here.
+	// Model-to-view converter for <div> attributes.
+	// Note that a lower-level, event-based API is used here.
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
 		dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
-			// Convert div attributes only.
+			// Convert <div> attributes only.
 			if ( data.item.name != 'div' ) {
 				return;
 			}

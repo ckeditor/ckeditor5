@@ -224,7 +224,11 @@ export default class DomConverter {
 				return domElement;
 			} else {
 				// Create DOM element.
-				domElement = domDocument.createElement( viewNode.name );
+				if ( viewNode.hasAttribute( 'xmlns' ) ) {
+					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
+				} else {
+					domElement = domDocument.createElement( viewNode.name );
+				}
 
 				if ( options.bind ) {
 					this.bindElements( domElement, viewNode );

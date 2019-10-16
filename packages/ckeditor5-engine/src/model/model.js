@@ -24,6 +24,7 @@ import deleteContent from './utils/deletecontent';
 import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Editor's data model. Read about the model in the
@@ -153,14 +154,18 @@ export default class Model {
 	 * @returns {*} Value returned by the callback.
 	 */
 	change( callback ) {
-		if ( this._pendingChanges.length === 0 ) {
-			// If this is the outermost block, create a new batch and start `_runPendingChanges` execution flow.
-			this._pendingChanges.push( { batch: new Batch(), callback } );
+		try {
+			if ( this._pendingChanges.length === 0 ) {
+				// If this is the outermost block, create a new batch and start `_runPendingChanges` execution flow.
+				this._pendingChanges.push( { batch: new Batch(), callback } );
 
-			return this._runPendingChanges()[ 0 ];
-		} else {
-			// If this is not the outermost block, just execute the callback.
-			return callback( this._currentWriter );
+				return this._runPendingChanges()[ 0 ];
+			} else {
+				// If this is not the outermost block, just execute the callback.
+				return callback( this._currentWriter );
+			}
+		} catch ( err ) {
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
 
@@ -198,17 +203,21 @@ export default class Model {
 	 * @param {Function} callback Callback function which may modify the model.
 	 */
 	enqueueChange( batchOrType, callback ) {
-		if ( typeof batchOrType === 'string' ) {
-			batchOrType = new Batch( batchOrType );
-		} else if ( typeof batchOrType == 'function' ) {
-			callback = batchOrType;
-			batchOrType = new Batch();
-		}
+		try {
+			if ( typeof batchOrType === 'string' ) {
+				batchOrType = new Batch( batchOrType );
+			} else if ( typeof batchOrType == 'function' ) {
+				callback = batchOrType;
+				batchOrType = new Batch();
+			}
 
-		this._pendingChanges.push( { batch: batchOrType, callback } );
+			this._pendingChanges.push( { batch: batchOrType, callback } );
 
-		if ( this._pendingChanges.length == 1 ) {
-			this._runPendingChanges();
+			if ( this._pendingChanges.length == 1 ) {
+				this._runPendingChanges();
+			}
+		} catch ( err ) {
+			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
 

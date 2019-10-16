@@ -174,6 +174,15 @@ describe( 'DomConverter', () => {
 			expect( domTextNode.data ).to.equal( 'foo' );
 		} );
 
+		it( 'should create namespaced elements', () => {
+			const namespace = 'http://www.w3.org/2000/svg';
+			const viewSvg = new ViewElement( 'svg', { xmlns: namespace } );
+
+			const domSvg = converter.viewToDom( viewSvg, document );
+
+			expect( domSvg.createSVGRect ).to.be.a( 'function' );
+		} );
+
 		describe( 'it should convert spaces to &nbsp;', () => {
 			it( 'at the beginning of each container element', () => {
 				const viewDiv = new ViewContainerElement( 'div', null, [
