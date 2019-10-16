@@ -23,6 +23,8 @@ BalloonEditor
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
+			'outdent', 'indent',
+			'|',
 			'blockQuote', 'imageUpload'
 		],
 		cloudServices: CS_CONFIG
