@@ -22,32 +22,32 @@ msgstr "Paragraf"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Titlu rubrică"
+msgstr "Titlu"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Alege titlu rubrică"
+msgstr "Alege titlu"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "Titlu rubrică 1"
+msgstr "Titlu 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "Titlu rubrică 2"
+msgstr "Titlu 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "Titlu rubrică 3"
+msgstr "Titlu 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr ""
+msgstr "Titlu 4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr ""
+msgstr "Titlu 5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr ""
+msgstr "Titlu 6"

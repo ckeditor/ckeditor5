@@ -42,12 +42,12 @@ msgstr "Nadpis 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr ""
+msgstr "Nadpis 4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr ""
+msgstr "Nadpis 5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr ""
+msgstr "Nadpis 6"
