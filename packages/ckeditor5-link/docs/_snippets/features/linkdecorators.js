@@ -9,18 +9,6 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-link-decorators' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
-			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'blockQuote',
-				'undo',
-				'redo'
-			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		link: {
