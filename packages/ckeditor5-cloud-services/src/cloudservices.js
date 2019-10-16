@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
 
 /**
- * Plugin introducing CKEditor 5's Cloud Services integration.
+ * Plugin introducing integration between CKEditor 5 and CKEditor Cloud Services .
  *
  * It initializes the token provider based on
  * the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}.
@@ -105,9 +105,10 @@ CloudServices.Token = Token;
 /**
  * A token URL or a token request function.
  *
- * As a string it should be a URL to the security token endpoint in your application. The role of this endpoint is to securely authorize the
- * end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services), only
- * if they should have access e.g. to upload files with Easy Image or to access the Collaboraation service.
+ * As a string, it should be a URL to the security token endpoint in your application. The role of this endpoint is to securely authorize
+ * the end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) only
+ * if they should have access e.g. to upload files with {@glink @cs guides/easy-image/quick-start Easy Image} or to use the
+ * {@glink @cs guides/collaboration/quick-start Collaboration} service.
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -119,8 +120,8 @@ CloudServices.Token = Token;
  *			.then( ... )
  *			.catch( ... );
  *
- * As a function it should provide a promise to the token value, so you can highly customize the token and provide your token URL endpoint.
- * By using that approach you can set your own headers to the request.
+ * As a function, it should provide a promise to the token value, so you can highly customize the token and provide your token URL endpoint.
+ * By using this approach you can set your own headers for the request.
  *
  * 		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -154,7 +155,7 @@ CloudServices.Token = Token;
  *
  * You can find more information about token endpoints in the
  * {@glink @cs guides/easy-image/quick-start#create-token-endpoint Cloud Services - Quick start}
- * and {@glink @cs guides/security/token-endpoint Cloud Services - Creating token endpoint} documentation.
+ * and {@glink @cs guides/security/token-endpoint Cloud Services - Token endpoint} documentation.
  *
  * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
  *
@@ -165,9 +166,9 @@ CloudServices.Token = Token;
  * The endpoint URL for [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) uploads.
  * This option must be set for Easy Image to work correctly.
  *
- * The upload URL is unique for each customer and can be found in the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com)
- * after subscribing to Easy Image service.
- * To learn how to start using Easy Image check {@glink @cs guides/easy-image/quick-start Easy Image - Quick start} documentation.
+ * The upload URL is unique for each customer and can be found in the
+ * [CKEditor Ecosystem customer dashboard](https://dashboard.ckeditor.com) after subscribing to the Easy Image service.
+ * To learn how to start using Easy Image, check the {@glink @cs guides/easy-image/quick-start Easy Image - Quick start} documentation.
  *
  * Note: Make sure to also set the {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
  *
@@ -175,22 +176,22 @@ CloudServices.Token = Token;
  */
 
 /**
- * The URL for web socket communication, used by `RealTimeCollaborativeEditing` plugin. Every customer (organization in the CKEditor
- * Ecosystem dashboard) has its own, unique URLs to communicate with CKEditor Cloud Services. The URL can be found in the
- * CKEditor Ecosystem dashboard.
+ * The URL for web socket communication, used by the `RealTimeCollaborativeEditing` plugin. Every customer (organization in the CKEditor
+ * Ecosystem dashboard) has their own, unique URLs to communicate with CKEditor Cloud Services. The URL can be found in the
+ * CKEditor Ecosystem customer dashboard.
  *
- * Note: unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
+ * Note: Unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and needs to be installed manually.
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#webSocketUrl
  */
 
 /**
- * Document ID, used by `RealTimeCollaborativeEditing` plugin. All editor instances created with the same document ID will collaborate.
+ * Document ID, used by the `RealTimeCollaborativeEditing` plugin. All editor instances created with the same document ID will collaborate.
  * It means that each document needs a different document ID if you do not want to start collaboration between these documents.
  * The ID is usually a primary key of the document in the database, but you are free to provide whatever identifier fits your scenario.
  *
- * Note: unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
+ * Note: Unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and needs to be installed manually.
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#documentId
