@@ -4,7 +4,7 @@
  */
 
 /**
- * @module cloud-services-core/uploadgateway
+ * @module cloud-services-core/uploadgateway/fileuploader
  */
 
 /* globals XMLHttpRequest, FormData, Blob, atob */
@@ -83,7 +83,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {module:cloud-services-core/uploadgateway~FileUploader}
+	 * @returns {module:cloud-services-core/uploadgateway/fileuploader~FileUploader}
 	 */
 	onProgress( callback ) {
 		this.on( 'progress', ( event, data ) => callback( data ) );
@@ -96,7 +96,7 @@ export default class FileUploader {
 	 *
 	 * @chainable
 	 * @param {Function} callback
-	 * @returns {module:cloud-services-core/uploadgateway~FileUploader}
+	 * @returns {module:cloud-services-core/uploadgateway/fileuploader~FileUploader}
 	 */
 	onError( callback ) {
 		this.once( 'error', ( event, data ) => callback( data ) );
