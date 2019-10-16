@@ -12,8 +12,17 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'heading', '|', 'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
-				'highlight:greenPen', 'highlight:redPen', 'removeHighlight', '|', 'undo', 'redo'
+				'heading',
+				'|',
+				'highlight:yellowMarker',
+				'highlight:greenMarker',
+				'highlight:pinkMarker',
+				'highlight:greenPen',
+				'highlight:redPen',
+				'removeHighlight',
+				'|',
+				'undo',
+				'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
