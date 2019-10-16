@@ -119,8 +119,6 @@ export default class Resizer {
 		this._sizeUI.bindToState( this._options, this.state );
 
 		this.state.begin( domResizeHandle, this._getHandleHost(), this._getResizeHost() );
-
-		this.redraw();
 	}
 
 	/**
@@ -142,17 +140,15 @@ export default class Resizer {
 		newSize.handleHostWidth = Math.round( domHandleHostRect.width );
 		newSize.handleHostHeight = Math.round( domHandleHostRect.height );
 
+		// Handle max-width limitation.
 		const domResizeHostRect = new Rect( domHandleHost );
 
 		newSize.width = Math.round( domResizeHostRect.width );
 		newSize.height = Math.round( domResizeHostRect.height );
 
-		this.state.update( newSize );
+		this.redraw( domHandleHostRect );
 
-		// Refresh values based on the real image. Real image might be limited by max-width, and thus fetching it
-		// here will reflect this limitation.
-		this._domResizerWrapper.style.width = newSize.handleHostWidth + 'px';
-		this._domResizerWrapper.style.height = newSize.handleHostHeight + 'px';
+		this.state.update( newSize );
 	}
 
 	/**
@@ -187,8 +183,10 @@ export default class Resizer {
 
 	/**
 	 * Redraws the resizer.
+	 *
+	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
-	redraw() {
+	redraw( handleHostRect ) {
 		// TODO review this
 		const domWrapper = this._domResizerWrapper;
 
@@ -196,21 +194,28 @@ export default class Resizer {
 			// Refresh only if resizer exists in the DOM.
 			const widgetWrapper = domWrapper.parentElement;
 			const handleHost = this._getHandleHost();
-			const clientRect = new Rect( handleHost );
+			const clientRect = handleHostRect || new Rect( handleHost );
 
 			domWrapper.style.width = clientRect.width + 'px';
 			domWrapper.style.height = clientRect.height + 'px';
+
+			const offsets = {
+				left: handleHost.offsetLeft,
+				top: handleHost.offsetTop,
+				height: handleHost.offsetHeight,
+				width: handleHost.offsetWidth
+			};
 
 			// In case a resizing host is not a widget wrapper, we need to compensate
 			// for any additional offsets the resize host might have. E.g. wrapper padding
 			// or simply another editable. By doing that the border and resizers are shown
 			// only around the resize host.
 			if ( !widgetWrapper.isSameNode( handleHost ) ) {
-				domWrapper.style.left = handleHost.offsetLeft + 'px';
-				domWrapper.style.top = handleHost.offsetTop + 'px';
+				domWrapper.style.left = offsets.left + 'px';
+				domWrapper.style.top = offsets.top + 'px';
 
-				domWrapper.style.height = handleHost.offsetHeight + 'px';
-				domWrapper.style.width = handleHost.offsetWidth + 'px';
+				domWrapper.style.height = offsets.height + 'px';
+				domWrapper.style.width = offsets.width + 'px';
 			}
 		}
 
