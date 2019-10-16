@@ -131,7 +131,7 @@ describe( 'ImageResize', () => {
 		it( 'disables the resizer if the command is disabled', () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
-			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizer = getSelectedImageResizer( editor );
 
 			let isEnabled = false;
 
@@ -161,7 +161,7 @@ describe( 'ImageResize', () => {
 				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
 			} );
 
-			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizer = getSelectedImageResizer( editor );
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
 			expect( resizer.isEnabled ).to.be.false;
@@ -521,7 +521,7 @@ describe( 'ImageResize', () => {
 
 			editor.commands.get( 'undo' ).execute();
 
-			await wait( 40 );
+			await wait( 160 ); // ui#update event is throttled.
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
@@ -668,7 +668,7 @@ describe( 'ImageResize', () => {
 		it( 'hides the resize wrapper when its disabled', () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
-			const resizer = editor.plugins.get( 'WidgetResize' ).resizers[ 0 ];
+			const resizer = getSelectedImageResizer( editor );
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
 			expect( resizerWrapper.style.display ).to.equal( '' );
@@ -769,6 +769,12 @@ describe( 'ImageResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function getSelectedImageResizer( editor ) {
+		return editor.plugins.get( 'WidgetResize' )._getResizerByViewElement(
+			editor.editing.view.document.selection.getSelectedElement()
+		);
 	}
 
 	function createEditor( config ) {
