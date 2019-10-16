@@ -73,6 +73,11 @@ export default class TableStyle extends Plugin {
 		setupConversion( conversion, 'vertical-align', 'tableCell' );
 		setupConversion( conversion, 'width', 'tableCell' );
 
+		this._setupUI( editor );
+	}
+
+	// TODO: remove me
+	_setupUI( editor ) {
 		editor.ui.componentFactory.add( 'borderWidth', locale => {
 			const button = new ButtonView( locale );
 
