@@ -9,7 +9,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import TableEditing from '../../src/tableediting';
 import TableStyleEditing from '../../src/tablestyleediting';
 
-describe.only( 'Table styles conversion', () => {
+describe( 'Table styles conversion', () => {
 	let editor, model;
 
 	beforeEach( () => {
