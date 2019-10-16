@@ -30,7 +30,7 @@ msgstr "Imagine mărime completă"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr "Imagine aliniată stângă"
+msgstr "Imagine aliniată la stânga"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
@@ -38,7 +38,7 @@ msgstr "Imagine aliniată pe centru"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr "Imagine aliniată dreapta"
+msgstr "Imagine aliniată la dreapta"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
@@ -59,3 +59,7 @@ msgstr "Inserează imagine"
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "Încărcare eșuată"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "Bară imagine"

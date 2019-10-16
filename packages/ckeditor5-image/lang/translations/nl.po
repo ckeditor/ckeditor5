@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Afbeeldingswidget"
+msgstr "afbeeldingswidget"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
@@ -59,3 +59,7 @@ msgstr "Afbeelding toevoegen"
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "Uploaden afbeelding mislukt"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "Afbeeldingswerkbalk"

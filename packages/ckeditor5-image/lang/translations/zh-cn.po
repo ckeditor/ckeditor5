@@ -59,3 +59,7 @@ msgstr "插入图像"
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "上传失败"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "图片工具栏"
