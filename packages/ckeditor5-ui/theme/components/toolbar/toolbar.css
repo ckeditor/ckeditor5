@@ -25,8 +25,8 @@
 
 		/*
 		 * A leading or trailing separator makes no sense (separates from nothing on one side).
-		 * For instance, it can happen when toolbar items (also separators) are getting grouped and one by and
-		 * moved to another toolbar in the drop–down.
+		 * For instance, it can happen when toolbar items (also separators) are getting grouped one by one and
+		 * moved to another toolbar in the dropdown.
 		 */
 		&:first-child,
 		&:last-child {

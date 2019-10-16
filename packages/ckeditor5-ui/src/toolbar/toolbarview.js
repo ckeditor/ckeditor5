@@ -62,7 +62,7 @@ export default class ToolbarView extends View {
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 
 		/**
-		 * Collection of the toolbar items (buttons, drop–downs, etc.).
+		 * A collection of toolbar items (buttons, dropdowns, etc.).
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -70,7 +70,7 @@ export default class ToolbarView extends View {
 		this.items = this.createCollection();
 
 		/**
-		 * Tracks information about DOM focus in the toolbar.
+		 * Tracks information about the DOM focus in the toolbar.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -78,7 +78,7 @@ export default class ToolbarView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}
 		 * to handle keyboard navigation in the toolbar.
 		 *
 		 * @readonly
@@ -243,10 +243,10 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * A utility which expands a plain toolbar configuration into
+	 * A utility that expands the plain toolbar configuration into
 	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
 	 *
-	 * @param {Array.<String>} config The toolbar items config.
+	 * @param {Array.<String>} config The toolbar items configuration.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
@@ -295,7 +295,7 @@ class ItemsView extends View {
 		super( locale );
 
 		/**
-		 * Collection of the items (buttons, drop–downs, etc.).
+		 * A collection of items (buttons, dropdowns, etc.).
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -328,7 +328,7 @@ class StaticLayout {
 	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~StaticLayout} toolbar
 	 * behavior.
 	 *
-	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar that this behavior
 	 * is added to.
 	 */
 	constructor( view ) {
@@ -365,10 +365,10 @@ class StaticLayout {
 }
 
 /**
- * A toolbar behavior that makes its items respond to the changes in the geometry.
+ * A toolbar behavior that makes the items respond to changes in the geometry.
  *
  * In a nutshell, it groups {@link module:ui/toolbar/toolbarview~ToolbarView#items}
- * that do not fit into visually into a single row of the toolbar (due to limited space).
+ * that do not fit visually into a single row of the toolbar (due to limited space).
  * Items that do not fit are aggregated in a dropdown displayed at the end of the toolbar.
  *
  *	┌──────────────────────────────────────── ToolbarView ──────────────────────────────────────────┐
@@ -388,12 +388,12 @@ class DynamicGrouping {
 	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~DynamicGrouping} toolbar
 	 * behavior.
 	 *
-	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar that this behavior
 	 * is added to.
 	 */
 	constructor( view ) {
 		/**
-		 * Collection of toolbar children.
+		 * A collection of toolbar children.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -401,7 +401,7 @@ class DynamicGrouping {
 		this.viewChildren = view.children;
 
 		/**
-		 * Collection of toolbar focusable elements.
+		 * A collection of focusable toolbar elements.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -409,7 +409,7 @@ class DynamicGrouping {
 		this.viewFocusables = view.focusables;
 
 		/**
-		 * Collection of toolbar focusable elements.
+		 * A view containing toolbar items.
 		 *
 		 * @readonly
 		 * @member {module:ui/toolbar/toolbarview~ItemsView}
@@ -417,7 +417,7 @@ class DynamicGrouping {
 		this.viewItemsView = view.itemsView;
 
 		/**
-		 * Focus tracker of the toolbar.
+		 * Toolbar focus tracker.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -425,7 +425,7 @@ class DynamicGrouping {
 		this.viewFocusTracker = view.focusTracker;
 
 		/**
-		 * Locale of the toolbar.
+		 * Toolbar locale.
 		 *
 		 * @readonly
 		 * @member {module:utils/locale~Locale}
@@ -433,14 +433,14 @@ class DynamicGrouping {
 		this.viewLocale = view.locale;
 
 		/**
-		 * Element of the toolbar.
+		 * Toolbar element.
 		 *
 		 * @readonly
 		 * @member {HTMLElement} #viewElement
 		 */
 
 		/**
-		 * A subset of of toolbar {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
+		 * A subset of toolbar {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
 		 * Aggregates items that fit into a single row of the toolbar and were not {@link #groupedItems grouped}
 		 * into a {@link #groupedItemsDropdown dropdown}. Items of this collection are displayed in the
 		 * {@link module:ui/toolbar/toolbarview~ToolbarView#itemsView}.
@@ -454,7 +454,7 @@ class DynamicGrouping {
 		this.ungroupedItems = view.createCollection();
 
 		/**
-		 * A subset of of toolbar {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
+		 * A subset of toolbar {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
 		 * A collection of the toolbar items that do not fit into a single row of the toolbar.
 		 * Grouped items are displayed in a dedicated {@link #groupedItemsDropdown dropdown}.
 		 *
@@ -553,7 +553,7 @@ class DynamicGrouping {
 	/**
 	 * Enables dynamic items grouping based on the dimensions of the toolbar.
 	 *
-	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar that this behavior
 	 * is added to.
 	 */
 	render( view ) {
@@ -624,7 +624,7 @@ class DynamicGrouping {
 
 	/**
 	 * Returns `true` when {@link module:ui/toolbar/toolbarview~ToolbarView#element} children visually overflow,
-	 * for instance if the toolbar is narrower than its members. `false` otherwise.
+	 * for instance if the toolbar is narrower than its members. Returns `false` otherwise.
 	 *
 	 * @private
 	 * @type {Boolean}
@@ -750,7 +750,7 @@ class DynamicGrouping {
 	}
 
 	/**
-	 * A method that updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cycleable items}
+	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cycleable items}
 	 * collection so it represents the up–to–date state of the UI from the perspective of the user.
 	 *
 	 * For instance, the {@link #groupedItemsDropdown} can show up and hide but when it is visible,
@@ -781,7 +781,7 @@ class DynamicGrouping {
  */
 
 /**
- * When set `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
+ * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
  * instance, if the parent container of the toolbar is narrow.
  *
@@ -789,7 +789,7 @@ class DynamicGrouping {
  */
 
 /**
- * A class interface defining a behavior of the {@link module:ui/toolbar/toolbarview~ToolbarView}.
+ * A class interface defining the behavior of the {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * Toolbar behaviors extend its look and functionality and have an impact on the
  * {@link module:ui/toolbar/toolbarview~ToolbarView#element} template or
@@ -805,15 +805,15 @@ class DynamicGrouping {
  *
  * The instance is created in the {@link module:ui/toolbar/toolbarview~ToolbarView#constructor} of the toolbar.
  * This is the right place to extend the {@link module:ui/toolbar/toolbarview~ToolbarView#template} of
- * the toolbar, define extra toolbar properties, etc..
+ * the toolbar, define extra toolbar properties, etc.
  *
  * @method #constructor
- * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar this behavior is added to.
+ * @param {module:ui/toolbar/toolbarview~ToolbarView} view An instance of the toolbar that this behavior is added to.
  */
 
 /**
  * A method called after the toolbar has been {@link module:ui/toolbar/toolbarview~ToolbarView#render rendered}.
- * E.g. it can be used to customize the behavior of the toolbar when its {@link module:ui/toolbar/toolbarview~ToolbarView#element}
+ * It can be used to, for example, customize the behavior of the toolbar when its {@link module:ui/toolbar/toolbarview~ToolbarView#element}
  * is available.
  *
  * @readonly
@@ -824,7 +824,7 @@ class DynamicGrouping {
 /**
  * A method called after the toolbar has been {@link module:ui/toolbar/toolbarview~ToolbarView#destroy destroyed}.
  * It allows cleaning up after the toolbar behavior, for instance, this is the right place to detach
- * event listeners, free up references, etc..
+ * event listeners, free up references, etc.
  *
  * @readonly
  * @member {Function} #destroy
