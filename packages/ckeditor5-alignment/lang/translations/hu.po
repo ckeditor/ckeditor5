@@ -35,3 +35,7 @@ msgstr "Sorkizárt"
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
 msgstr "Szöveg igazítása"
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr "Szöveg igazítás eszköztár"

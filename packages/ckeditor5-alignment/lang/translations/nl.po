@@ -35,3 +35,7 @@ msgstr "Volledig uitlijnen"
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
 msgstr "Tekst uitlijning"
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr "Tekst uitlijning werkbalk"

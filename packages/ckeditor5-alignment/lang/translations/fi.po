@@ -35,3 +35,7 @@ msgstr "Tasaa molemmat reunat"
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
 msgstr "Tekstin tasaus"
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr ""

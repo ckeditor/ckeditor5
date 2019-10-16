@@ -35,3 +35,7 @@ msgstr "两端对齐"
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
 msgstr "对齐"
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr "对齐工具栏"

@@ -30,8 +30,12 @@ msgstr "Выравнивание по центру"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "Выровнять"
+msgstr "Выравнивание по ширине"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
 msgstr "Выравнивание текста"
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr "Выравнивание"

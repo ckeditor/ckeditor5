@@ -26,7 +26,7 @@ msgstr "Aligner à droite"
 
 msgctxt "Toolbar button tooltip for aligning the text to center."
 msgid "Align center"
-msgstr "Aligner au centre"
+msgstr "Centrer"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
@@ -35,3 +35,7 @@ msgstr "Justifier"
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
 msgstr "Alignement du texte"
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr "Barre d'outils d'alignement du texte"
