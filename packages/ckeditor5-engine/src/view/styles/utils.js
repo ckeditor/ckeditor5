@@ -7,32 +7,46 @@
  * @module engine/view/styles/utils
  */
 
+const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|rgba?\(|hsla?\(|^currentColor|0)$/;
+
 export function isColor( string ) {
-	return /^([#0-9A-Fa-f]{3,9}$|rgba?\(|hsla?\(|^currentColor|0)$/.test( string );
+	return colorRegExp.test( string );
 }
+
+const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ];
 
 export function isLineStyle( string ) {
-	return /^(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/.test( string );
+	return lineStyleValues.includes( string );
 }
+
+const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+([a-z]+|%)|0)$/;
 
 export function isLength( string ) {
-	return /^([+-]?[0-9]*[.]?[0-9]+([a-z]+|%)|0)$/.test( string );
+	return lengthRegExp.test( string );
 }
+
+const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-repeat' ];
 
 export function isRepeat( string ) {
-	return /^(repeat-x|repeat-y|repeat|space|round|no-repeat)$/.test( string );
+	return repeatValues.includes( string );
 }
+
+const positionValues = [ 'center', 'top', 'bottom', 'left', 'right' ];
 
 export function isPosition( string ) {
-	return /^(center|top|bottom|left|right)$/.test( string );
+	return positionValues.includes( string );
 }
+
+const attachmentValues = [ 'fixed', 'scroll', 'local' ];
 
 export function isAttachment( string ) {
-	return /^(fixed|scroll|local)$/.test( string );
+	return attachmentValues.includes( string );
 }
 
+const urlRegExp = /^url\(/;
+
 export function isURL( string ) {
-	return /^url\(/.test( string );
+	return urlRegExp.test( string );
 }
 
 export function getTopRightBottomLeftValues( value = '' ) {
