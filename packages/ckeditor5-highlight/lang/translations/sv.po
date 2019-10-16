@@ -47,3 +47,7 @@ msgstr "Ta bort markering"
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
 msgstr "Markera"
+
+msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
+msgid "Text highlight toolbar"
+msgstr ""

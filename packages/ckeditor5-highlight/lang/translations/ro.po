@@ -12,42 +12,42 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Kurdish (https://www.transifex.com/ckeditor/teams/11143/ku/)\n"
-"Language: ku\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "نیشانەکەری  زەرد"
+msgstr "Evidențiator galben"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr "نیشانەکەری  سەوز"
+msgstr "Evidențiator verde"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr "نیشانەکەری پەمەیی"
+msgstr "Evidențiator roz"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr "نیشانەکەری  شین"
+msgstr "Evidențiator albastru"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "پێنووسی سۆر"
+msgstr "Pix roșu"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr "پێنووسی سەوز"
+msgstr "Pix verde"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "لابردنی بەرچاوکەر"
+msgstr "Șterge evidențiere text"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "بەرچاوکردن"
+msgstr "Evidențiere text"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr "تووڵامرازی نیشانکردنی تێکست"
+msgstr "Bară evidențiere text"

@@ -47,3 +47,7 @@ msgstr "Quitar resaltado"
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
 msgstr "Resaltar"
+
+msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
+msgid "Text highlight toolbar"
+msgstr ""

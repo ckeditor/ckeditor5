@@ -47,3 +47,7 @@ msgstr "Retirar o resaltado"
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
 msgstr "Resaltado"
+
+msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
+msgid "Text highlight toolbar"
+msgstr "Barra de ferramentas para resaltar texto"

@@ -47,3 +47,7 @@ msgstr "Enlever le surlignage"
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
 msgstr "Surlignage"
+
+msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
+msgid "Text highlight toolbar"
+msgstr "Barre d'outils du surlignage"

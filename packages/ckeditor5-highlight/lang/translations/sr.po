@@ -47,3 +47,7 @@ msgstr "Уклони истицање"
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
 msgstr "Истицање"
+
+msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
+msgid "Text highlight toolbar"
+msgstr "Алатке за маркирање текста"
