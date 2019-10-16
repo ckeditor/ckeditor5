@@ -11,6 +11,10 @@ The {@link module:font/font~Font} plugin enables the following features in the r
 * {@link module:font/fontcolor~FontColor} &ndash; Allows to control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
 * {@link module:font/fontbackgroundcolor~FontBackgroundColor} &ndash; Allows to control the font background color by applying inline `<span>` elements with a `background-color` in the `style` attribute.
 
+<info-box info>
+	All font features can be removed with the {@link features/remove-format remove format} feature.
+</info-box>
+
 ## Demo
 
 {@snippet features/font}
