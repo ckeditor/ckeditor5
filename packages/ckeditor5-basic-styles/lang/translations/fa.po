@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "تو پر"
+msgstr "درشت"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
@@ -38,8 +38,8 @@ msgstr "خط خورده"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "پایین نویس"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "بالانویس"

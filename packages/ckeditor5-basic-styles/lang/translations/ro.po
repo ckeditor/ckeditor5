@@ -22,7 +22,7 @@ msgstr "Îngroșat"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Oblic"
+msgstr "Cursiv"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
@@ -34,12 +34,12 @@ msgstr "Cod"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Tăiere text cu o linie"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Indice"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Exponent"
