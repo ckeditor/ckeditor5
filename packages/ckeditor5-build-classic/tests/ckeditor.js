@@ -196,7 +196,7 @@ describe( 'ClassicEditor build', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( editor.ui.view.toolbar.items.length ).to.equal( 13 );
+					expect( editor.ui.view.toolbar.items.length ).to.equal( 17 );
 					expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 42 );
 				} );
 		} );
