@@ -23,3 +23,7 @@ msgstr "Zenbakidun zerrenda"
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
 msgstr "Buletdun zerrenda"
+
+msgctxt "Toolbar button tooltip for the To-do List feature."
+msgid "To-do List"
+msgstr ""
