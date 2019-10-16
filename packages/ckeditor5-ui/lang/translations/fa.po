@@ -30,12 +30,20 @@ msgstr "ویرایش قطعه"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "بعدی"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "قبلی"
 
 msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
 msgid "%0 of %1"
-msgstr ""
+msgstr "0% از 1%"
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr "نوارابزار ویرایشگر"
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr "نوارابزار کشویی"

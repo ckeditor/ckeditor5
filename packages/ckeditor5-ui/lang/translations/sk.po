@@ -26,16 +26,24 @@ msgstr "Editor s formátovaním"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr ""
+msgstr "Upraviť odsek"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "Ďalšie"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "Predchádzajúce"
 
 msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
 msgid "%0 of %1"
-msgstr ""
+msgstr "%0 z %1"
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr "Panel nástrojov editora"
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr "Panel nástrojov roletového menu"

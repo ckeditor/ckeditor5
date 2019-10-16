@@ -39,3 +39,11 @@ msgstr "Previous"
 msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
 msgid "%0 of %1"
 msgstr "%0 of %1"
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr ""
