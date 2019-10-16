@@ -21,6 +21,10 @@ ClassicEditor
 				'|',
 				'bulletedList',
 				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
 				'undo',
 				'redo'
 			],
