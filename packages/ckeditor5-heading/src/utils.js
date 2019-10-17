@@ -9,11 +9,11 @@
 
 /**
  * Returns heading options as defined in `config.heading.options` but processed to consider
- * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
+ * the editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
  * in the correct language.
  *
- * Note: The reason behind this method is that there's no way to use {@link module:utils/locale~Locale#t}
- * when the user config is defined because the editor does not exist yet.
+ * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
+ * when the user configuration is defined because the editor does not exist yet.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Array.<module:heading/heading~HeadingOption>}.

@@ -119,9 +119,9 @@ export default class Title extends Plugin {
 	 * Returns the title of the document. Note that because this plugin does not allow any formatting inside
 	 * the title element, the output of this method will be a plain text, with no HTML tags.
 	 *
-	 * Note that it is not recommended to use this method together with features which insert markers to the
+	 * It is not recommended to use this method together with features that insert markers to the
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
-	 * body the result of this method might be incorrect.
+	 * body, the result of this method might be incorrect.
 	 *
 	 * @returns {String} The title of the document.
 	 */
@@ -135,9 +135,9 @@ export default class Title extends Plugin {
 	/**
 	 * Returns the body of the document.
 	 *
-	 * Note that it is not recommended to use this method together with features which insert markers to the
+	 * Note that it is not recommended to use this method together with features that insert markers to the
 	 * data output, like comments or track changes features. If such markers start in the title and end in the
-	 * body the result of this method might be incorrect.
+	 * body, the result of this method might be incorrect.
 	 *
 	 * @returns {String} The body of the document.
 	 */
@@ -269,7 +269,7 @@ export default class Title extends Plugin {
 
 	/**
 	 * Model post-fixer callback that adds an empty paragraph at the end of the document
-	 * when it is needed for the placeholder purpose.
+	 * when it is needed for the placeholder purposes.
 	 *
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
@@ -581,7 +581,7 @@ function shouldRemoveLastParagraph( placeholder, root ) {
  */
 
 /**
- * Use this option to define a custom value of the placeholder for the title field.
+ * Defines a custom value of the placeholder for the title field.
  *
  * Read more in {@link module:heading/title~TitleConfig}.
  *
