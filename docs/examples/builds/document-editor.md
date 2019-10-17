@@ -1,7 +1,7 @@
 ---
 category: examples-builds
 order: 30
-classes: main__content-wide
+classes: 'main__content-wide main__content--no-toc'
 ---
 
 # Document editor
