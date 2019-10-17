@@ -51,10 +51,15 @@
 </div>
 
 <button type="button" id="print-data-action">Open print preview</button>
-<iframe class="visuallyhidden" id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
+<iframe id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
 
 <style>
-	.visuallyhidden {
+	.ck-content h2 {
+		border-bottom: none;
+		margin-bottom: 0;
+	}
+
+	#print-data-container {
 		position: absolute;
 		width: 1px;
 		height: 1px;
