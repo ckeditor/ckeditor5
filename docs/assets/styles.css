@@ -31,8 +31,8 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 /* https://github.com/ckeditor/ckeditor5/issues/5598. */
 @media only screen and (min-width: 1360px) {
 	.main .main__content--no-toc .main__content-inner {
-		/* Because there is `width: auto`, we need to set something minimal. */
-		min-width: 860px;
+		/* Because there is `width: auto`, we need to set some minimal value. */
+		min-width: 910px;
 	}
 }
 
