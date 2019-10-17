@@ -18,7 +18,8 @@ const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
 
 const contentRules = {
 	selector: [],
-	variables: []
+	variables: [],
+	atRules: {}
 };
 
 const webpackConfig = getWebpackConfig();
@@ -49,35 +50,8 @@ runWebpack( webpackConfig )
 		// CSS variables that are used by the `.ck-content` selector.
 		const usedVariables = new Set();
 
-		const selectorCss = contentRules.selector
-			.map( rule => {
-				// Removes all comments from the rule definition.
-				const cssAsArray = rule.css.replace( /\/\*[^*]+\*\//g, '' ).split( '\n' );
-
-				// We want to fix invalid indentations. We need to find a number of how many indentations we want to remove.
-				// Because the last line ends the block, we can use this value.
-				const lastLineIndent = cssAsArray[ cssAsArray.length - 1 ].length - 1;
-
-				const css = cssAsArray
-					.filter( line => line.trim().length > 0 )
-					.map( ( line, index ) => {
-						// Do not touch the first line. It is always correct.
-						if ( index === 0 ) {
-							return line;
-						}
-
-						return line.slice( lastLineIndent );
-					} )
-					.join( '\n' );
-
-				return `/* ${ rule.file.replace( packagesPath + path.sep, '' ) } */\n${ css }`;
-			} )
-			.filter( rule => {
-				// 1st: path to the CSS file, 2nd: selector definition - start block, 3rd: end block
-				// If the rule contains only 3 lines, it means that it does not define any rules.
-				return rule.split( '\n' ).length > 3;
-			} )
-			.join( '\n' );
+		// `.ck-content` selectors.
+		const selectorCss = transformCssRules( contentRules.selector );
 
 		// Find all CSS variables inside the `.ck-content` selector.
 		let match;
@@ -111,6 +85,18 @@ runWebpack( webpackConfig )
 			}
 		}
 
+		const atRulesDefinitions = [];
+
+		// Additional at-rules
+		for ( const atRuleName of Object.keys( contentRules.atRules ) ) {
+			const rules = transformCssRules( contentRules.atRules[ atRuleName ] )
+				.split( '\n' )
+				.map( line => `\t${ line }` )
+				.join( '\n' );
+
+			atRulesDefinitions.push( `@${ atRuleName } {\n${ rules }\n}` );
+		}
+
 		// Build the final content of the CSS file.
 		let data = [
 			'/*',
@@ -128,6 +114,8 @@ runWebpack( webpackConfig )
 
 		data += '}\n\n';
 		data += selectorCss;
+		data += '\n';
+		data += atRulesDefinitions.join( '\n' );
 
 		return writeFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ), data );
 	} )
@@ -238,4 +226,52 @@ function writeFile( file, data ) {
 			return resolve();
 		} );
 	} );
+}
+
+/**
+ * @param {Array} rules
+ * @returns {String}
+ */
+function transformCssRules( rules ) {
+	return rules
+		.map( rule => {
+			// Removes all comments from the rule definition.
+			const cssAsArray = rule.css.replace( /\/\*[^*]+\*\//g, '' ).split( '\n' );
+
+			// We want to fix invalid indentations. We need to find a number of how many indentations we want to remove.
+			// Because the last line ends the block, we can use this value.
+			const lastLineIndent = cssAsArray[ cssAsArray.length - 1 ].length - 1;
+
+			const css = cssAsArray
+				.filter( line => line.trim().length > 0 )
+				.map( ( line, index ) => {
+					// Do not touch the first line. It is always correct.
+					if ( index === 0 ) {
+						return line;
+					}
+
+					const newLine = line.slice( lastLineIndent );
+
+					// If a line is not a CSS definition, do not touch it.
+					if ( !newLine.match( /[A-Z-_0-9]+:/i ) ) {
+						return newLine;
+					}
+
+					// The line is a CSS definition – let's check whether it ends with a semicolon.
+					if ( newLine.endsWith( ';' ) ) {
+						return newLine;
+					}
+
+					return newLine + ';';
+				} )
+				.join( '\n' );
+
+			return `/* ${ rule.file.replace( packagesPath + path.sep, '' ) } */\n${ css }`;
+		} )
+		.filter( rule => {
+			// 1st: path to the CSS file, 2nd: selector definition - start block, 3rd: end block
+			// If the rule contains only 3 lines, it means that it does not define any rules.
+			return rule.split( '\n' ).length > 3;
+		} )
+		.join( '\n' );
 }
