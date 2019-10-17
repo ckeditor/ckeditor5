@@ -48,15 +48,36 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v12.3.1) content styles.
- * Generated on Mon, 19 Aug 2019 12:01:17 GMT.
+ * CKEditor 5 (v12.4.0) content styles.
+ * Generated on Thu, 17 Oct 2019 07:18:45 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
 :root {
 	--ck-image-style-spacing: 1.5em;
+	--ck-todo-list-checkmark-size: 16px;
 }
 
+/* ckeditor5-basic-styles/theme/code.css */
+.ck-content code {
+	background-color: hsla(0, 0%, 78%, 0.3);
+	padding: .15em;
+	border-radius: 2px;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
 /* ckeditor5-image/theme/image.css */
 .ck-content .image {
 	display: table;
@@ -82,26 +103,72 @@ Below there is a full list of content styles used by the editor features. You ca
 	font-size: .75em;
 	outline-offset: -1px;
 }
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized {
-	max-width: 100%;
-	display: block;
-	box-sizing: border-box
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list {
+	list-style: none
 }
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized img {
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list li {
+	margin-bottom: 5px
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list li .todo-list {
+	margin-top: 5px;
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input {
+	-webkit-appearance: none;
+	display: inline-block;
+	position: relative;
+	width: var(--ck-todo-list-checkmark-size);
+	height: var(--ck-todo-list-checkmark-size);
+	vertical-align: middle;
+	border: 0;
+	left: -25px;
+	margin-right: -15px;
+	right: 0;
+	margin-left: 0
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input::before {
+	display: block;
+	position: absolute;
+	box-sizing: border-box;
+	content: '';
 	width: 100%;
+	height: 100%;
+	border: 1px solid hsl(0, 0%, 20%);
+	border-radius: 2px;
+	transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
 }
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized > figcaption {
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input::after {
 	display: block;
+	position: absolute;
+	box-sizing: content-box;
+	pointer-events: none;
+	content: '';
+	left: calc( var(--ck-todo-list-checkmark-size) / 3 );
+	top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+	width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+	height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
+	border-style: solid;
+	border-color: transparent;
+	border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
+	transform: rotate(45deg);
 }
-/* ckeditor5-media-embed/theme/mediaembed.css */
-.ck-content .media {
-	clear: both;
-	margin: 1em 0;
-	display: block;
-	min-width: 15em;
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input[checked]::before {
+	background: hsl(126, 64%, 41%);
+	border-color: hsl(126, 64%, 41%);
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label > input[checked]::after {
+	border-color: hsl(0, 0%, 100%);
+}
+/* ckeditor5-list/theme/todolist.css */
+.ck-content .todo-list .todo-list__label .todo-list__label__description {
+	vertical-align: middle;
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {
@@ -133,26 +200,55 @@ Below there is a full list of content styles used by the editor features. You ca
 	font-weight: bold;
 	background: hsl(0, 0%, 98%);
 }
-/* ckeditor5-basic-styles/theme/code.css */
-.ck-content code {
-	background-color: hsla(0, 0%, 78%, 0.3);
-	padding: .15em;
+/* ckeditor5-page-break/theme/pagebreak.css */
+.ck-content .page-break {
+	position: relative;
+	clear: both;
+	padding: 5px 0;
+	display: flex;
+	align-items: center;
+	justify-content: center
+}
+/* ckeditor5-page-break/theme/pagebreak.css */
+.ck-content .page-break::after {
+	content: '';
+	position: absolute;
+	border-bottom: 2px dashed hsl(0, 0%, 77%);
+	width: 100%;
+}
+/* ckeditor5-page-break/theme/pagebreak.css */
+.ck-content .page-break__label {
+	position: relative;
+	z-index: 1;
+	padding: .3em .6em;
+	display: block;
+	text-transform: uppercase;
+	border: 1px solid hsl(0, 0%, 77%);
 	border-radius: 2px;
+	font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+	font-size: 0.75em;
+	font-weight: bold;
+	color: hsl(0, 0%, 20%);
+	background: #fff;
+	box-shadow: 2px 2px 1px hsla(0, 0%, 0%, 0.15);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+/* ckeditor5-page-break/theme/pagebreak.css */
+.ck-content .page-break {
+	padding: 0
+}
+/* ckeditor5-page-break/theme/pagebreak.css */
+.ck-content .page-break::after {
+	display: none;
 }
 /* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
-	max-width: 50%;
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
-	max-width: 50%;
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
-	max-width: 50%;
-}
-/* ckeditor5-image/theme/imagestyle.css */
-.ck-content .image-style-side:not(.image_resized), .ck-content .image-style-align-left:not(.image_resized), .ck-content .image-style-align-center:not(.image_resized), .ck-content .image-style-align-right:not(.image_resized) {
+.ck-content .image-style-side,
+.ck-content .image-style-align-left,
+.ck-content .image-style-align-center,
+.ck-content .image-style-align-right {
 	max-width: 50%;
 }
 /* ckeditor5-image/theme/imagestyle.css */
@@ -189,5 +285,19 @@ Below there is a full list of content styles used by the editor features. You ca
 .ck-content[dir="rtl"] blockquote {
 	border-left: 0;
 	border-right: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-media-embed/theme/mediaembed.css */
+.ck-content .media {
+	clear: both;
+	margin: 1em 0;
+	display: block;
+	min-width: 15em;
+}
+/* ckeditor5-horizontal-line/theme/horizontalline.css */
+.ck-content hr {
+	border-width: 1px 0 0;
+	border-style: solid;
+	border-color: hsl(0, 0%, 37%);
+	margin: 0;
 }
 ```

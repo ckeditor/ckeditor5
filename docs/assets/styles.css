@@ -2,12 +2,12 @@
  * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  */
 
-/* https://github.com/ckeditor/ckeditor5/issues/913 */
-@media only screen and (min-width: 1600px) {
-	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
-	.main .main__content .main__content-inner,
-	.main .main__content-wide .main__content-inner {
-		width: 840px;
+/* https://github.com/ckeditor/ckeditor5/issues/5598. */
+@media only screen and (min-width: 960px) and (max-width: 1024px ) {
+	.main .main__content {
+		/* Reduce content width including side navigation (340px). */
+		max-width: calc( 100% - 340px );
+		min-width: auto;
 	}
 }
 
@@ -17,31 +17,22 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
 	.main .main__content .main__content-inner,
 	.main .main__content-wide .main__content-inner {
-		max-width: 900px;
 		padding-left: 30px;
 		padding-right: 30px
 	}
 }
 
-/* https://github.com/ckeditor/ckeditor5/issues/913 */
-@media only screen and (min-width: 1360px) {
-	.main .main__content.main__content-wide {
-		padding-right: 0;
-	}
-
-	.main .main__content-wide .main__content-inner {
-		max-width: 840px;
+/* https://github.com/ckeditor/ckeditor5/issues/5598. */
+@media only screen and (max-width: 1360px) {
+	.main .main__content-inner {
+		max-width: 960px;
 	}
 }
-
-/* https://github.com/ckeditor/ckeditor5/issues/1007 */
-@media only screen and (min-width: 1600px) {
-	.main .main__content.main__content-wide {
-		/*
-		 * `.main__content` by default has 760px width and 340px right padding.
-		 * `.main__content-wide` is 40px wider (800px), that's why we are reducing this right padding.
-		 */
-		padding-right: 300px;
+/* https://github.com/ckeditor/ckeditor5/issues/5598. */
+@media only screen and (min-width: 1360px) {
+	.main .main__content--no-toc .main__content-inner {
+		/* Because there is `width: auto`, we need to set some minimal value. */
+		min-width: 910px;
 	}
 }
 
