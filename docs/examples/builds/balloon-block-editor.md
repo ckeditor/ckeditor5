@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 order: 30
+classes: main__content--no-toc
 ---
 
 # Balloon block editor

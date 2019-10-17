@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 order: 20
+classes: main__content--no-toc
 ---
 
 # Inline editor
