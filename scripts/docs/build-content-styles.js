@@ -87,7 +87,7 @@ runWebpack( webpackConfig )
 
 		const atRulesDefinitions = [];
 
-		// Additional at-rules
+		// Additional at-rules.
 		for ( const atRuleName of Object.keys( contentRules.atRules ) ) {
 			const rules = transformCssRules( contentRules.atRules[ atRuleName ] )
 				.split( '\n' )
