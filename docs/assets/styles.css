@@ -11,6 +11,17 @@
 	}
 }
 
+/* https://github.com/ckeditor/ckeditor5/issues/1350
+https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
+@media only screen and (min-width: 960px) and (max-width: 1360px) {
+	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
+	.main .main__content .main__content-inner,
+	.main .main__content-wide .main__content-inner {
+		padding-left: 30px;
+		padding-right: 30px
+	}
+}
+
 /* https://github.com/ckeditor/ckeditor5/issues/5598. */
 @media only screen and (max-width: 1360px) {
 	.main .main__content-inner {
