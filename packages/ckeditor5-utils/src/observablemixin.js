@@ -126,11 +126,11 @@ const ObservableMixin = {
 		bindProperties.forEach( propertyName => {
 			if ( boundProperties.has( propertyName ) ) {
 				/**
-				 * Cannot bind the same property more that once.
+				 * Cannot bind the same property more than once.
 				 *
 				 * @error observable-bind-rebind
 				 */
-				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more that once.', this );
+				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more than once.', this );
 			}
 		} );
 
