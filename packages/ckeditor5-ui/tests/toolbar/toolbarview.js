@@ -778,6 +778,28 @@ describe( 'ToolbarView', () => {
 				expect( groupedItemsDropdown.toolbarView.items.map( i => i ) )
 					.to.have.ordered.members( groupedItems.map( i => i ) );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/5608
+			it( 'has the proper position depending on the UI language direction (LTR UI)', () => {
+				const locale = new Locale( { uiLanguage: 'en' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.panelPosition ).to.equal( 'sw' );
+
+				view.destroy();
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/5608
+			it( 'has the proper position depending on the UI language direction (RTL UI)', () => {
+				const locale = new Locale( { uiLanguage: 'ar' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.panelPosition ).to.equal( 'se' );
+
+				view.destroy();
+			} );
 		} );
 
 		describe( 'item overflow checking logic', () => {

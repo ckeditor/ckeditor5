@@ -6,6 +6,7 @@
 2. Refresh the test.
 3. The toolbar should looks the same. Make sure none of toolbar items wrapped or overflow.
 4. The dropdown button should be displayed at the end of the toolbar, allowing to access grouped features.
+	* The drop–down should be displayed **under** the main toolbar.
 5. Grouped items toolbar should never start or end with a separator, even if one was in the main toolbar space.
 6. Other separators (between items) should be preserved.
 
