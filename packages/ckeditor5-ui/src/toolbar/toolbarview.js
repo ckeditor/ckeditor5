@@ -735,6 +735,11 @@ class DynamicGrouping {
 		const dropdown = createDropdown( locale );
 
 		dropdown.class = 'ck-toolbar__grouped-dropdown';
+
+		// Make sure the dropdown never sticks out to the left/right. It should be under the main toolbar.
+		// (https://github.com/ckeditor/ckeditor5/issues/5608)
+		dropdown.panelPosition = locale.uiLanguageDirection === 'ltr' ? 'sw' : 'se';
+
 		addToolbarToDropdown( dropdown, [] );
 
 		dropdown.buttonView.set( {
