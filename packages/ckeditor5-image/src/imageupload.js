@@ -65,9 +65,9 @@ export default class ImageUpload extends Plugin {
  */
 
 /**
- * List of accepted image types.
+ * The list of accepted image types.
  *
- * The accepted types of images can be customize to allow only certain types of images:
+ * The accepted types of images can be customized to allow only certain types of images:
  *
  *		// Allow only JPEG and PNG images:
  *		const imageUploadConfig = {
@@ -75,10 +75,10 @@ export default class ImageUpload extends Plugin {
  *		};
  *
  * The type string should match [one of the sub-types](https://www.iana.org/assignments/media-types/media-types.xhtml#image)
- * of the image mime-type. E.g. for the `image/jpeg` mime-type add `'jpeg'`.
+ * of the image MIME type. E.g. for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
  *
  * **Note:** This setting only restricts some image types to be selected and uploaded through the CKEditor UI and commands. Image type
- * recognition and filtering should be also implemented on the server which accepts image uploads
+ * recognition and filtering should also be implemented on the server which accepts image uploads.
  *
  * @member {Array.<String>} module:image/imageupload~ImageUploadConfig#types
  * @default [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]

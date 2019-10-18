@@ -186,10 +186,10 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	/**
-	 * Read and upload an image.
+	 * Reads and uploads an image.
 	 *
-	 * The image is read from the disk and as a base64 encoded string it is set temporarily to
-	 * `image[src]`. When the image is successfully uploaded the temporary data is replaced with the target
+	 * The image is read from the disk and as a Base64-encoded string it is set temporarily to
+	 * `image[src]`. When the image is successfully uploaded, the temporary data is replaced with the target
 	 * image's URL (the URL to the uploaded image on the server).
 	 *
 	 * @protected
@@ -291,11 +291,11 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	/**
-	 * Creates `srcset` attribute based on a given file upload response and sets it as an attribute to a specific image element.
+	 * Creates the `srcset` attribute based on a given file upload response and sets it as an attribute to a specific image element.
 	 *
 	 * @protected
 	 * @param {Object} data Data object from which `srcset` will be created.
-	 * @param {module:engine/model/element~Element} image The image element on which `srcset` attribute will be set.
+	 * @param {module:engine/model/element~Element} image The image element on which the `srcset` attribute will be set.
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	_parseAndSetSrcsetAttributeOnImage( data, image, writer ) {
