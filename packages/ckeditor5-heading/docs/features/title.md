@@ -5,9 +5,9 @@ menu-title: Document title
 
 # Document title
 
-The {@link module:heading/title~Title} feature enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of your document.
+The {@link module:heading/title~Title} feature enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.
 
-This feature can be used to implement an editor with a clear division of content into the title and body sections, similar to solutions available in Medium, Grammarly, Slack post editor or some content management systems.
+This feature can be used to implement a rich-text editor with a clear division of content into the title and body sections, similar to solutions available in Medium, Grammarly, Slack post editor or some content management systems.
 
 ## Demo
 
@@ -42,7 +42,7 @@ ClassicEditor
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 
-```bash
+```plaintext
 npm install --save @ckeditor/ckeditor5-heading
 ```
 
