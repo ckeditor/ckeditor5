@@ -11,7 +11,7 @@ import TableStyleEditing from '../../src/tablestyleediting';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe( 'Table styles conversion', () => {
+describe.only( 'Table styles conversion', () => {
 	let editor, model;
 
 	beforeEach( () => {
@@ -183,17 +183,7 @@ describe( 'Table styles conversion', () => {
 					left: 'solid'
 				}, tableCell ) );
 
-				assertEqualMarkup( editor.getData(),
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td style="border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;">foo</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
+				assertTableCellStyle( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
 			} );
 		} );
 	} );
@@ -231,5 +221,16 @@ describe( 'Table styles conversion', () => {
 		}
 
 		expect( tableCell.getAttribute( key ) ).to.deep.equal( styleObject );
+	}
+
+	/**
+	 * Assertion helper for testing <td> style attribute.
+	 *
+	 * @param {String} tableCellStyle A style to assert on td.
+	 */
+	function assertTableCellStyle( tableCellStyle ) {
+		assertEqualMarkup( editor.getData(),
+			`<figure class="table"><table><tbody><tr><td style="${ tableCellStyle }">foo</td></tr></tbody></table></figure>`
+		);
 	}
 } );
