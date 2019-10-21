@@ -24,62 +24,82 @@ export default class TableStyleEditing extends Plugin {
 		const schema = model.schema;
 		const conversion = editor.conversion;
 
-		schema.extend( 'table', {
-			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor', 'width', 'height' ]
-		} );
+		// Table attributes.
 
+		// Border
+		schema.extend( 'table', {
+			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
+		} );
+		upcastBorderStyles( conversion, 'table' );
+		downcastTableAttribute( conversion, 'borderColor', 'border-color' );
+		downcastTableAttribute( conversion, 'borderStyle', 'border-style' );
+		downcastTableAttribute( conversion, 'borderWidth', 'border-width' );
+
+		// Background
+		schema.extend( 'table', {
+			allowAttributes: [ 'backgroundColor' ]
+		} );
+		upcastAttribute( conversion, 'table', 'backgroundColor', 'background-color' );
+		downcastTableAttribute( conversion, 'backgroundColor', 'background-color' );
+
+		// Width
+		schema.extend( 'table', {
+			allowAttributes: [ 'width' ]
+		} );
+		upcastAttribute( conversion, 'table', 'width', 'width' );
+		downcastTableAttribute( conversion, 'width', 'width' );
+
+		// Height
+		schema.extend( 'table', {
+			allowAttributes: [ 'height' ]
+		} );
+		upcastAttribute( conversion, 'table', 'height', 'height' );
+		downcastTableAttribute( conversion, 'height', 'height' );
+
+		// Table row attributes.
 		schema.extend( 'tableRow', {
 			allowAttributes: [ 'height' ]
 		} );
+		upcastAttribute( conversion, 'tableRow', 'height', 'height' );
+		downcastToStyle( conversion, 'tableRow', 'height', 'height' );
 
+		// Table cell attributes.
 		schema.extend( 'tableCell', {
-			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor', 'width', 'height',
-				'padding', 'verticalAlignment' ]
+			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
 		} );
-
-		// Table attributes.
-		setupTableConversion( conversion, 'background-color', 'backgroundColor' );
-		setupTableConversion( conversion, 'width' );
-		setupTableConversion( conversion, 'height' );
-
-		// Table row attributes.
-		setupConversion( conversion, 'height', 'tableRow' );
-
 		upcastBorderStyles( conversion, 'td' );
 		upcastBorderStyles( conversion, 'th' );
-		upcastBorderStyles( conversion, 'table' );
+		downcastToStyle( conversion, 'tableCell', 'borderStyle', 'border-style' );
+		downcastToStyle( conversion, 'tableCell', 'borderColor', 'border-color' );
+		downcastToStyle( conversion, 'tableCell', 'borderWidth', 'border-width' );
 
-		downcastToStyle( conversion, 'borderStyle', 'border-style' );
-		downcastToStyle( conversion, 'borderColor', 'border-color' );
-		downcastToStyle( conversion, 'borderWidth', 'border-width' );
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'backgroundColor' ]
+		} );
+		upcastAttribute( conversion, 'tableCell', 'backgroundColor', 'background-color' );
+		downcastToStyle( conversion, 'tableCell', 'backgroundColor', 'background-color' );
 
-		setupConversion( conversion, 'background-color', 'tableCell', 'backgroundColor' );
-		setupConversion( conversion, 'padding', 'tableCell' );
-		setupConversion( conversion, 'vertical-align', 'tableCell', 'verticalAlignment' );
-		setupConversion( conversion, 'width', 'tableCell' );
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'padding' ]
+		} );
+		upcastAttribute( conversion, 'tableCell', 'padding', 'padding' );
+		downcastToStyle( conversion, 'tableCell', 'padding', 'padding' );
+
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'verticalAlignment' ]
+		} );
+		upcastAttribute( conversion, 'tableCell', 'verticalAlignment', 'vertical-align' );
+		downcastToStyle( conversion, 'tableCell', 'verticalAlignment', 'vertical-align' );
+
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'width' ]
+		} );
+		upcastAttribute( conversion, 'tableCell', 'width', 'width' );
+		downcastToStyle( conversion, 'tableCell', 'width', 'width' );
 	}
 }
 
-function setupConversion( conversion, styleName, modelName, modelAttribute ) {
-	// General upcast 'border' attribute (requires model border attribute to be allowed).
-	upcastAttribute( conversion, styleName, modelName, modelAttribute );
-
-	// Downcast table cell only (table has own downcast converter).
-	conversion.for( 'downcast' ).attributeToAttribute( {
-		model: {
-			name: modelName,
-			key: modelAttribute || styleName
-		},
-		view: modelAttributeValue => ( {
-			key: 'style',
-			value: {
-				[ styleName ]: modelAttributeValue
-			}
-		} )
-	} );
-}
-
-function upcastAttribute( conversion, styleName, modelName, modelAttribute ) {
+function upcastAttribute( conversion, modelElement, modelAttribute, styleName ) {
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
 			styles: {
@@ -87,8 +107,8 @@ function upcastAttribute( conversion, styleName, modelName, modelAttribute ) {
 			}
 		},
 		model: {
-			name: modelName,
-			key: modelAttribute || styleName,
+			name: modelElement,
+			key: modelAttribute,
 			value: viewElement => viewElement.getNormalizedStyle( styleName )
 		}
 	} );
@@ -144,28 +164,29 @@ function upcastBorderStyles( conversion, viewElement ) {
 	} ) );
 }
 
-function downcastToStyle( conversion, modelAttribute, viewStyleName ) {
+function downcastToStyle( conversion, modelElement, modelAttribute, styleName ) {
 	conversion.for( 'downcast' ).attributeToAttribute( {
-		model: modelAttribute,
+		model: {
+			name: modelElement,
+			key: modelAttribute
+		},
 		view: modelAttributeValue => ( {
 			key: 'style',
 			value: {
-				[ viewStyleName ]: modelAttributeValue
+				[ styleName ]: modelAttributeValue
 			}
 		} )
 	} );
 }
 
-function setupTableConversion( conversion, styleName, modelAttribute ) {
-	upcastAttribute( conversion, styleName, 'table' );
-
-	// Properly downcast table border attribute on <table> and not on <figure>.
-	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ styleName }:table`, ( evt, data, conversionApi ) => {
+// Properly downcast table border attribute on <table> and not on <figure>.
+function downcastTableAttribute( conversion, modelAttribute, styleName ) {
+	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
 
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
-		writer.setStyle( modelAttribute || styleName, attributeNewValue, table );
+		writer.setStyle( styleName, attributeNewValue, table );
 	} ) );
 }
