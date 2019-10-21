@@ -8,6 +8,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import TableEditing from '../../src/tableediting';
 import TableStyleEditing from '../../src/tablestyleediting';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Table styles conversion', () => {
 	let editor, model;
@@ -151,6 +153,47 @@ describe( 'Table styles conversion', () => {
 				assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
 				assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
 				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+			} );
+		} );
+	} );
+
+	describe( 'downcast', () => {
+		describe( 'table cell', () => {
+			let tableCell;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+			} );
+
+			it( 'should downcast borderStyle attribute', () => {
+				model.change( writer => writer.setAttribute( 'borderStyle', {
+					top: 'solid',
+					right: 'solid',
+					bottom: 'solid',
+					left: 'solid'
+				}, tableCell ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td style="border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;">foo</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 		} );
 	} );
