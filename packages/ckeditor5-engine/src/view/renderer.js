@@ -102,13 +102,6 @@ export default class Renderer {
 		this.isFocused = false;
 
 		/**
-		 * Indicates if the composition is in progress inside the view document view.
-		 *
-		 * @member {Boolean}
-		 */
-		this.isComposing = false;
-
-		/**
 		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
@@ -769,11 +762,6 @@ export default class Renderer {
 	 * @returns {Boolean}
 	 */
 	_domSelectionNeedsUpdate( domSelection ) {
-		// Remain DOM selection untouched while composing. See #1782.
-		if ( this.isComposing ) {
-			return false;
-		}
-
 		if ( !this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			// Current DOM selection is in incorrect position. We need to update it.
 			return true;
