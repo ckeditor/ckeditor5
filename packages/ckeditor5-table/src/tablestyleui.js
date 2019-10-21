@@ -219,13 +219,13 @@ export default class TableStyleUI extends Plugin {
 
 				const tableCell = findAncestor( 'tableCell', firstPosition );
 
-				const backgroundColor = tableCell.getAttribute( 'background-color' );
+				const backgroundColor = tableCell.getAttribute( 'backgroundColor' );
 
 				// eslint-disable-next-line no-undef,no-alert
 				const newColor = prompt( 'Set new background color:', backgroundColor || '' );
 
 				editor.model.change( writer => {
-					writer.setAttribute( 'background-color', newColor, tableCell );
+					writer.setAttribute( 'backgroundColor', newColor, tableCell );
 				} );
 			} );
 
