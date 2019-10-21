@@ -35,11 +35,15 @@ export default class TableStyleEditing extends Plugin {
 		schema.extend( 'tableCell', {
 			allowAttributes: [
 				'borderWidth', 'borderColor', 'borderStyle',
-				'backgroundColor', 'padding', 'vertical-align', 'width', 'height' ]
+				'backgroundColor',
+				'padding',
+				'verticalAlignment',
+				'width', 'height'
+			]
 		} );
 
 		// Table attributes.
-		setupTableConversion( conversion, 'background-color' );
+		setupTableConversion( conversion, 'background-color', 'backgroundColor' );
 		setupTableConversion( conversion, 'width' );
 		setupTableConversion( conversion, 'height' );
 
@@ -56,7 +60,7 @@ export default class TableStyleEditing extends Plugin {
 
 		setupConversion( conversion, 'background-color', 'tableCell', 'backgroundColor' );
 		setupConversion( conversion, 'padding', 'tableCell' );
-		setupConversion( conversion, 'vertical-align', 'tableCell' );
+		setupConversion( conversion, 'vertical-align', 'tableCell', 'verticalAlignment' );
 		setupConversion( conversion, 'width', 'tableCell' );
 	}
 }
@@ -157,7 +161,7 @@ function downcastToStyle( conversion, modelAttribute, viewStyleName ) {
 	} );
 }
 
-function setupTableConversion( conversion, styleName ) {
+function setupTableConversion( conversion, styleName, modelAttribute ) {
 	upcastAttribute( conversion, styleName, 'table' );
 
 	// Properly downcast table border attribute on <table> and not on <figure>.
@@ -167,6 +171,6 @@ function setupTableConversion( conversion, styleName ) {
 
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
-		writer.setStyle( styleName, attributeNewValue, table );
+		writer.setStyle( modelAttribute || styleName, attributeNewValue, table );
 	} ) );
 }

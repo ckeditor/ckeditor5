@@ -167,6 +167,13 @@ describe( 'Table styles conversion', () => {
 
 				assertTRBLAttribute( tableCell, 'padding', '2px', '4em' );
 			} );
+
+			it( 'should upcast vertical-align', () => {
+				editor.setData( '<table><tr><td style="vertical-align:top">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+			} );
 		} );
 
 		describe( 'table row', () => {
@@ -358,6 +365,12 @@ describe( 'Table styles conversion', () => {
 				}, tableCell ) );
 
 				assertTableCellStyle( 'padding:2px 3px 4px 5px;' );
+			} );
+
+			it( 'should downcast verticalAlignment', () => {
+				model.change( writer => writer.setAttribute( 'verticalAlignment', 'middle', tableCell ) );
+
+				assertTableCellStyle( 'vertical-align:middle;' );
 			} );
 
 			describe( 'change attribute', () => {
