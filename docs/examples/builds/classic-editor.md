@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 order: 10
+classes: main__content--no-toc
 ---
 
 # Classic editor

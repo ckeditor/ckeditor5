@@ -200,4 +200,40 @@
 	.document-editor .ck-content table td {
 		vertical-align: middle;
 	}
+
+	@media only screen and (max-width: 960px) {
+		/* Because on mobile 2cm paddings are to big. */
+		.document-editor__editable-container .document-editor__editable.ck-editor__editable {
+			padding: 1.5em;
+		}
+	}
+
+	@media only screen and (max-width: 1200px) {
+		.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
+			width: 100%;
+		}
+	}
+
+	/* Style document editor a'ka Google Docs.*/
+	@media only screen and (min-width: 1360px) {
+		.main .main__content.main__content-wide {
+			padding-right: 0;
+		}
+	}
+
+	@media only screen and (min-width: 1600px) {
+		.main .main__content.main__content-wide {
+			width: 24cm;
+		}
+
+		.main .main__content.main__content-wide .main__content-inner {
+			width: auto;
+			margin: 0 50px;
+		}
+
+		/* Keep "page" look based on viewport width. */
+		.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
+			width: 60%;
+		}
+	}
 </style>

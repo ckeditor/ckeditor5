@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 order: 40
+classes: main__content--no-toc
 ---
 
 # Custom build
