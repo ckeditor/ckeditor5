@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, console, setTimeout */
+/* global document, Event, console */
 
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
@@ -17,6 +17,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import View from '../../src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 describe( 'ToolbarView', () => {
@@ -594,9 +595,11 @@ describe( 'ToolbarView', () => {
 		} );
 
 		describe( 'render()', () => {
-			it( 'starts observing toolbar resize immediatelly after render', () => {
+			let view, resizeObserverInstance, groupedItems, ungroupedItems;
+
+			beforeEach( () => {
 				function FakeResizeObserver( callback ) {
-					this.callback = callback;
+					this._callback = callback;
 				}
 
 				FakeResizeObserver.prototype.observe = sinon.spy();
@@ -604,19 +607,30 @@ describe( 'ToolbarView', () => {
 
 				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
 
-				const view = new ToolbarView( locale, {
+				view = new ToolbarView( locale, {
 					shouldGroupWhenFull: true
 				} );
 
 				view.render();
 
-				sinon.assert.calledOnce( view._behavior.resizeObserver.observe );
-				sinon.assert.calledWithExactly( view._behavior.resizeObserver.observe, view.element );
+				resizeObserverInstance = view._behavior.resizeObserver;
+				groupedItems = view._behavior.groupedItems;
+				ungroupedItems = view._behavior.ungroupedItems;
 
+				document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.element.remove();
 				view.destroy();
 			} );
 
-			it( 'updates the UI when the toolbar is being resized (expanding)', done => {
+			it( 'starts observing toolbar resize immediatelly after render', () => {
+				sinon.assert.calledOnce( resizeObserverInstance.observe );
+				sinon.assert.calledWithExactly( resizeObserverInstance.observe, view.element );
+			} );
+
+			it( 'updates the UI when the toolbar is being resized (expanding)', () => {
 				view.element.style.width = '200px';
 
 				view.items.add( focusable() );
@@ -625,20 +639,18 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 				expect( ungroupedItems ).to.have.length( 1 );
 				expect( groupedItems ).to.have.length( 4 );
 
 				view.element.style.width = '500px';
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 
-				setTimeout( () => {
-					expect( ungroupedItems ).to.have.length( 5 );
-					expect( groupedItems ).to.have.length( 0 );
-
-					done();
-				}, 100 );
+				expect( ungroupedItems ).to.have.length( 5 );
+				expect( groupedItems ).to.have.length( 0 );
 			} );
 
-			it( 'updates the UI when the toolbar is being resized (narrowing)', done => {
+			it( 'updates the UI when the toolbar is being resized (narrowing)', () => {
 				view.element.style.width = '500px';
 
 				view.items.add( focusable() );
@@ -647,20 +659,18 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 				expect( ungroupedItems ).to.have.length( 5 );
 				expect( groupedItems ).to.have.length( 0 );
 
 				view.element.style.width = '200px';
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 
-				setTimeout( () => {
-					expect( ungroupedItems ).to.have.length( 1 );
-					expect( groupedItems ).to.have.length( 4 );
-
-					done();
-				}, 100 );
+				expect( ungroupedItems ).to.have.length( 1 );
+				expect( groupedItems ).to.have.length( 4 );
 			} );
 
-			it( 'does not react to changes in height', done => {
+			it( 'does not react to changes in height', () => {
 				view.element.style.width = '500px';
 				view.element.style.height = '200px';
 
@@ -672,43 +682,22 @@ describe( 'ToolbarView', () => {
 
 				sinon.spy( view._behavior, '_updateGrouping' );
 				view.element.style.width = '500px';
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 
-				setTimeout( () => {
-					sinon.assert.calledOnce( view._behavior._updateGrouping );
-					view.element.style.height = '500px';
+				sinon.assert.calledOnce( view._behavior._updateGrouping );
+				view.element.style.height = '500px';
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 
-					setTimeout( () => {
-						sinon.assert.calledOnce( view._behavior._updateGrouping );
-						done();
-					}, 100 );
-				}, 100 );
+				sinon.assert.calledOnce( view._behavior._updateGrouping );
 			} );
 
 			it( 'updates the state of grouped items upon resize', () => {
-				function FakeResizeObserver( callback ) {
-					this.callback = callback;
-				}
-
-				FakeResizeObserver.prototype.observe = sinon.spy();
-				FakeResizeObserver.prototype.disconnect = sinon.spy();
-
-				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
-
-				const view = new ToolbarView( locale, {
-					shouldGroupWhenFull: true
-				} );
-
 				testUtils.sinon.spy( view._behavior, '_updateGrouping' );
+				sinon.assert.notCalled( view._behavior._updateGrouping );
 
-				view.render();
+				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
 
-				view._behavior.resizeObserver.callback( [
-					{ contentRect: { width: 42 } }
-				] );
-
-				sinon.assert.calledTwice( view._behavior._updateGrouping );
-
-				view.destroy();
+				sinon.assert.calledOnce( view._behavior._updateGrouping );
 			} );
 		} );
 
