@@ -657,6 +657,286 @@ describe( 'Table styles conversion', () => {
 				);
 			} );
 		} );
+
+		describe( 'table', () => {
+			let table;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+				table = model.document.getRoot().getNodeByPath( [ 0 ] );
+			} );
+
+			it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderColor', {
+					top: '#f00',
+					right: '#f00',
+					bottom: '#f00',
+					left: '#f00'
+				}, table ) );
+
+				assertTableStyle( 'border-top:#f00;border-right:#f00;border-bottom:#f00;border-left:#f00;' );
+			} );
+
+			it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderColor', {
+					top: '#f00',
+					right: 'hsla(0, 100%, 50%, 0.5)',
+					bottom: 'deeppink',
+					left: 'rgb(255, 0, 0)'
+				}, table ) );
+
+				assertTableStyle(
+					'border-top:#f00;' +
+					'border-right:hsla(0, 100%, 50%, 0.5);' +
+					'border-bottom:deeppink;' +
+					'border-left:rgb(255, 0, 0);'
+				);
+			} );
+
+			it( 'should downcast borderStyle attribute (same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderStyle', {
+					top: 'solid',
+					right: 'solid',
+					bottom: 'solid',
+					left: 'solid'
+				}, table ) );
+
+				assertTableStyle( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
+			} );
+
+			it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderStyle', {
+					top: 'solid',
+					right: 'ridge',
+					bottom: 'dotted',
+					left: 'dashed'
+				}, table ) );
+
+				assertTableStyle( 'border-top:solid;border-right:ridge;border-bottom:dotted;border-left:dashed;' );
+			} );
+
+			it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderWidth', {
+					top: '42px',
+					right: '.1em',
+					bottom: '1337rem',
+					left: 'thick'
+				}, table ) );
+
+				assertTableStyle( 'border-top:42px;border-right:.1em;border-bottom:1337rem;border-left:thick;' );
+			} );
+
+			it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderWidth', {
+					top: '42px',
+					right: '42px',
+					bottom: '42px',
+					left: '42px'
+				}, table ) );
+
+				assertTableStyle( 'border-top:42px;border-right:42px;border-bottom:42px;border-left:42px;' );
+			} );
+
+			it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
+				model.change( writer => {
+					writer.setAttribute( 'borderColor', {
+						top: '#f00',
+						right: '#f00',
+						bottom: '#f00',
+						left: '#f00'
+					}, table );
+
+					writer.setAttribute( 'borderStyle', {
+						top: 'solid',
+						right: 'solid',
+						bottom: 'solid',
+						left: 'solid'
+					}, table );
+
+					writer.setAttribute( 'borderWidth', {
+						top: '42px',
+						right: '42px',
+						bottom: '42px',
+						left: '42px'
+					}, table );
+				} );
+
+				assertTableStyle(
+					'border-top:42px solid #f00;' +
+					'border-right:42px solid #f00;' +
+					'border-bottom:42px solid #f00;' +
+					'border-left:42px solid #f00;'
+				);
+			} );
+
+			it( 'should downcast borderColor, borderStyle and borderWidth attributes together (different top, right, bottom, left)', () => {
+				model.change( writer => {
+					writer.setAttribute( 'borderColor', {
+						top: '#f00',
+						right: 'hsla(0, 100%, 50%, 0.5)',
+						bottom: 'deeppink',
+						left: 'rgb(255, 0, 0)'
+					}, table );
+
+					writer.setAttribute( 'borderStyle', {
+						top: 'solid',
+						right: 'ridge',
+						bottom: 'dotted',
+						left: 'dashed'
+					}, table );
+
+					writer.setAttribute( 'borderWidth', {
+						top: '42px',
+						right: '.1em',
+						bottom: '1337rem',
+						left: 'thick'
+					}, table );
+				} );
+
+				assertTableStyle(
+					'border-top:42px solid #f00;' +
+					'border-right:.1em ridge hsla(0, 100%, 50%, 0.5);' +
+					'border-bottom:1337rem dotted deeppink;' +
+					'border-left:thick dashed rgb(255, 0, 0);'
+				);
+			} );
+
+			it( 'should downcast backgroundColor', () => {
+				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+				assertTableStyle( 'background-color:#f00;' );
+			} );
+
+			describe( 'change attribute', () => {
+				beforeEach( () => {
+					model.change( writer => {
+						writer.setAttribute( 'borderColor', {
+							top: '#f00',
+							right: '#f00',
+							bottom: '#f00',
+							left: '#f00'
+						}, table );
+
+						writer.setAttribute( 'borderStyle', {
+							top: 'solid',
+							right: 'solid',
+							bottom: 'solid',
+							left: 'solid'
+						}, table );
+
+						writer.setAttribute( 'borderWidth', {
+							top: '42px',
+							right: '42px',
+							bottom: '42px',
+							left: '42px'
+						}, table );
+					} );
+				} );
+
+				it( 'should downcast borderColor attribute change', () => {
+					model.change( writer => writer.setAttribute( 'borderColor', {
+						top: 'deeppink',
+						right: 'deeppink',
+						bottom: 'deeppink',
+						left: 'deeppink'
+					}, table ) );
+
+					assertTableStyle(
+						'border-top:42px solid deeppink;' +
+						'border-right:42px solid deeppink;' +
+						'border-bottom:42px solid deeppink;' +
+						'border-left:42px solid deeppink;'
+					);
+				} );
+
+				it( 'should downcast borderStyle attribute change', () => {
+					model.change( writer => writer.setAttribute( 'borderStyle', {
+						top: 'ridge',
+						right: 'ridge',
+						bottom: 'ridge',
+						left: 'ridge'
+					}, table ) );
+
+					assertTableStyle(
+						'border-top:42px ridge #f00;' +
+						'border-right:42px ridge #f00;' +
+						'border-bottom:42px ridge #f00;' +
+						'border-left:42px ridge #f00;'
+					);
+				} );
+
+				it( 'should downcast borderWidth attribute change', () => {
+					model.change( writer => writer.setAttribute( 'borderWidth', {
+						top: 'thick',
+						right: 'thick',
+						bottom: 'thick',
+						left: 'thick'
+					}, table ) );
+
+					assertTableStyle(
+						'border-top:thick solid #f00;' +
+						'border-right:thick solid #f00;' +
+						'border-bottom:thick solid #f00;' +
+						'border-left:thick solid #f00;'
+					);
+				} );
+
+				it( 'should downcast borderColor attribute removal', () => {
+					model.change( writer => writer.removeAttribute( 'borderColor', table ) );
+
+					assertTableStyle(
+						'border-top:42px solid;' +
+						'border-right:42px solid;' +
+						'border-bottom:42px solid;' +
+						'border-left:42px solid;'
+					);
+				} );
+
+				it( 'should downcast borderStyle attribute removal', () => {
+					model.change( writer => writer.removeAttribute( 'borderStyle', table ) );
+
+					assertTableStyle(
+						'border-top:42px #f00;' +
+						'border-right:42px #f00;' +
+						'border-bottom:42px #f00;' +
+						'border-left:42px #f00;'
+					);
+				} );
+
+				it( 'should downcast borderWidth attribute removal', () => {
+					model.change( writer => writer.removeAttribute( 'borderWidth', table ) );
+
+					assertTableStyle(
+						'border-top:solid #f00;' +
+						'border-right:solid #f00;' +
+						'border-bottom:solid #f00;' +
+						'border-left:solid #f00;'
+					);
+				} );
+
+				it( 'should downcast borderColor, borderStyle and borderWidth attributes removal', () => {
+					model.change( writer => {
+						writer.removeAttribute( 'borderColor', table );
+						writer.removeAttribute( 'borderStyle', table );
+						writer.removeAttribute( 'borderWidth', table );
+					} );
+
+					assertEqualMarkup(
+						editor.getData(),
+						'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
+					);
+				} );
+			} );
+		} );
 	} );
 
 	/**
@@ -702,6 +982,17 @@ describe( 'Table styles conversion', () => {
 	function assertTableCellStyle( tableCellStyle ) {
 		assertEqualMarkup( editor.getData(),
 			`<figure class="table"><table><tbody><tr><td style="${ tableCellStyle }">foo</td></tr></tbody></table></figure>`
+		);
+	}
+
+	/**
+	 * Assertion helper for testing <table> style attribute.
+	 *
+	 * @param {String} tableStyle A style to assert on table.
+	 */
+	function assertTableStyle( tableStyle ) {
+		assertEqualMarkup( editor.getData(),
+			`<figure class="table"><table style="${ tableStyle }"><tbody><tr><td>foo</td></tr></tbody></table></figure>`
 		);
 	}
 } );
