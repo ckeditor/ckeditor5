@@ -165,14 +165,25 @@ describe.only( 'Table styles conversion', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>foo</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+			} );
+
+			it( 'should downcast borderColor attribute', () => {
+				model.change( writer => writer.setAttribute( 'borderColor', {
+					top: '#f00',
+					right: '#f00',
+					bottom: '#f00',
+					left: '#f00'
+				}, tableCell ) );
+
+				assertTableCellStyle( 'border-top:#f00;border-right:#f00;border-bottom:#f00;border-left:#f00;' );
 			} );
 
 			it( 'should downcast borderStyle attribute', () => {
@@ -184,6 +195,49 @@ describe.only( 'Table styles conversion', () => {
 				}, tableCell ) );
 
 				assertTableCellStyle( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
+			} );
+
+			it( 'should downcast borderWidth attribute', () => {
+				model.change( writer => writer.setAttribute( 'borderWidth', {
+					top: '42px',
+					right: '42px',
+					bottom: '42px',
+					left: '42px'
+				}, tableCell ) );
+
+				assertTableCellStyle( 'border-top:42px;border-right:42px;border-bottom:42px;border-left:42px;' );
+			} );
+
+			it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
+				model.change( writer => {
+					writer.setAttribute( 'borderColor', {
+						top: '#f00',
+						right: '#f00',
+						bottom: '#f00',
+						left: '#f00'
+					}, tableCell );
+
+					writer.setAttribute( 'borderStyle', {
+						top: 'solid',
+						right: 'solid',
+						bottom: 'solid',
+						left: 'solid'
+					}, tableCell );
+
+					writer.setAttribute( 'borderWidth', {
+						top: '42px',
+						right: '42px',
+						bottom: '42px',
+						left: '42px'
+					}, tableCell );
+				} );
+
+				assertTableCellStyle(
+					'border-top:42px solid #f00;' +
+					'border-right:42px solid #f00;' +
+					'border-bottom:42px solid #f00;' +
+					'border-left:42px solid #f00;'
+				);
 			} );
 		} );
 	} );
