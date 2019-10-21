@@ -132,7 +132,7 @@ Note that to allow importing JavaScript files without providing their correspond
 
 The easiest way to integrate collaboration plugins in the Angular application is to create a custom build first and later import it from the Angular application - see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
 
-We provide a few ready-to-use integrations featuring the collaborative editing in Angular applications:
+For such scenario we provide a few ready-to-use integrations featuring the collaborative editing in Angular applications:
 
 - [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
 
