@@ -25,7 +25,7 @@ export default class TableStyleEditing extends Plugin {
 		const conversion = editor.conversion;
 
 		schema.extend( 'table', {
-			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle', 'background-color', 'width', 'height' ]
+			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor', 'width', 'height' ]
 		} );
 
 		schema.extend( 'tableRow', {
@@ -33,13 +33,8 @@ export default class TableStyleEditing extends Plugin {
 		} );
 
 		schema.extend( 'tableCell', {
-			allowAttributes: [
-				'borderWidth', 'borderColor', 'borderStyle',
-				'backgroundColor',
-				'padding',
-				'verticalAlignment',
-				'width', 'height'
-			]
+			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor', 'width', 'height',
+				'padding', 'verticalAlignment' ]
 		} );
 
 		// Table attributes.
