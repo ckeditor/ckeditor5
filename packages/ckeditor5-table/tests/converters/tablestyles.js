@@ -184,6 +184,141 @@ describe( 'Table styles conversion', () => {
 				expect( tableRow.getAttribute( 'height' ) ).to.equal( '20px' );
 			} );
 		} );
+
+		describe( 'table', () => {
+			it( 'should upcast border shorthand', () => {
+				editor.setData( '<table style="border:1px solid #f00"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', '#f00' );
+				assertTRBLAttribute( table, 'borderStyle', 'solid' );
+				assertTRBLAttribute( table, 'borderWidth', '1px' );
+			} );
+
+			it( 'should upcast border-color shorthand', () => {
+				editor.setData( '<table style="border-color:#f00"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', '#f00' );
+			} );
+
+			it( 'should upcast border-style shorthand', () => {
+				editor.setData( '<table style="border-style:ridge"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderStyle', 'ridge' );
+			} );
+
+			it( 'should upcast border-width shorthand', () => {
+				editor.setData( '<table style="border-width:1px"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderWidth', '1px' );
+			} );
+
+			it( 'should upcast border-top shorthand', () => {
+				editor.setData( '<table style="border-top:1px solid #f00"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', '#f00', null, null, null );
+				assertTRBLAttribute( table, 'borderStyle', 'solid', null, null, null );
+				assertTRBLAttribute( table, 'borderWidth', '1px', null, null, null );
+			} );
+
+			it( 'should upcast border-right shorthand', () => {
+				editor.setData( '<table style="border-right:1px solid #f00"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', null, '#f00', null, null );
+				assertTRBLAttribute( table, 'borderStyle', null, 'solid', null, null );
+				assertTRBLAttribute( table, 'borderWidth', null, '1px', null, null );
+			} );
+
+			it( 'should upcast border-bottom shorthand', () => {
+				editor.setData( '<table style="border-bottom:1px solid #f00"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', null, null, '#f00', null );
+				assertTRBLAttribute( table, 'borderStyle', null, null, 'solid', null );
+				assertTRBLAttribute( table, 'borderWidth', null, null, '1px', null );
+			} );
+
+			it( 'should upcast border-left shorthand', () => {
+				editor.setData( '<table style="border-left:1px solid #f00"><tr><td>foo</td></tr></table>' );
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', null, null, null, '#f00' );
+				assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
+				assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
+			} );
+
+			it( 'should upcast border-top-* styles', () => {
+				editor.setData(
+					'<table style="border-top-width:1px;border-top-style:solid;border-top-color:#f00"><tr><td>foo</td></tr></table>'
+				);
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', '#f00', null, null, null );
+				assertTRBLAttribute( table, 'borderStyle', 'solid', null, null, null );
+				assertTRBLAttribute( table, 'borderWidth', '1px', null, null, null );
+			} );
+
+			it( 'should upcast border-right-* styles', () => {
+				editor.setData(
+					'<table style="border-right-width:1px;border-right-style:solid;border-right-color:#f00"><tr><td>foo</td></tr></table>'
+				);
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', null, '#f00', null, null );
+				assertTRBLAttribute( table, 'borderStyle', null, 'solid', null, null );
+				assertTRBLAttribute( table, 'borderWidth', null, '1px', null, null );
+			} );
+
+			it( 'should upcast border-bottom-* styles', () => {
+				editor.setData(
+					'<table style="border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#f00">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', null, null, '#f00', null );
+				assertTRBLAttribute( table, 'borderStyle', null, null, 'solid', null );
+				assertTRBLAttribute( table, 'borderWidth', null, null, '1px', null );
+			} );
+
+			it( 'should upcast border-left-* styles', () => {
+				editor.setData(
+					'<table style="border-left-width:1px;border-left-style:solid;border-left-color:#f00"><tr><td>foo</td></tr></table>'
+				);
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				assertTRBLAttribute( table, 'borderColor', null, null, null, '#f00' );
+				assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
+				assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
+			} );
+
+			it( 'should upcast background-color', () => {
+				editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+			} );
+		} );
 	} );
 
 	describe( 'downcast', () => {
