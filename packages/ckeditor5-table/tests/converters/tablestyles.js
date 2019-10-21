@@ -11,7 +11,7 @@ import TableStyleEditing from '../../src/tablestyleediting';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe.only( 'Table styles conversion', () => {
+describe( 'Table styles conversion', () => {
 	let editor, model;
 
 	beforeEach( () => {
@@ -23,8 +23,7 @@ describe.only( 'Table styles conversion', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				// Since this part of test tests only view->model conversion editing pipeline is not necessary
-				// so defining model->view converters won't be necessary.
+				// Since this part of test tests only data conversion so editing pipeline is not necessary.
 				editor.editing.destroy();
 			} );
 	} );
@@ -154,6 +153,13 @@ describe.only( 'Table styles conversion', () => {
 				assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
 				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
 			} );
+
+			it( 'should upcast background-color', () => {
+				editor.setData( '<table><tr><td style="background-color:#f00">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'backgroundColor' ) ).to.deep.equal( '#f00' );
+			} );
 		} );
 	} );
 
@@ -165,11 +171,11 @@ describe.only( 'Table styles conversion', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -308,6 +314,12 @@ describe.only( 'Table styles conversion', () => {
 					'border-bottom:1337rem dotted deeppink;' +
 					'border-left:thick dashed rgb(255, 0, 0);'
 				);
+			} );
+
+			it( 'should downcast backgroundColor', () => {
+				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+
+				assertTableCellStyle( 'background-color:#f00;' );
 			} );
 
 			describe( 'change attribute', () => {

@@ -35,7 +35,7 @@ export default class TableStyleEditing extends Plugin {
 		schema.extend( 'tableCell', {
 			allowAttributes: [
 				'borderWidth', 'borderColor', 'borderStyle',
-				'background-color', 'padding', 'vertical-align', 'width', 'height' ]
+				'backgroundColor', 'padding', 'vertical-align', 'width', 'height' ]
 		} );
 
 		// Table attributes.
@@ -54,22 +54,22 @@ export default class TableStyleEditing extends Plugin {
 		downcastToStyle( conversion, 'borderColor', 'border-color' );
 		downcastToStyle( conversion, 'borderWidth', 'border-width' );
 
-		setupConversion( conversion, 'background-color', 'tableCell' );
+		setupConversion( conversion, 'background-color', 'tableCell', 'backgroundColor' );
 		setupConversion( conversion, 'padding', 'tableCell' );
 		setupConversion( conversion, 'vertical-align', 'tableCell' );
 		setupConversion( conversion, 'width', 'tableCell' );
 	}
 }
 
-function setupConversion( conversion, styleName, modelName ) {
+function setupConversion( conversion, styleName, modelName, modelAttribute ) {
 	// General upcast 'border' attribute (requires model border attribute to be allowed).
-	upcastAttribute( conversion, styleName, modelName );
+	upcastAttribute( conversion, styleName, modelName, modelAttribute );
 
 	// Downcast table cell only (table has own downcast converter).
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
 			name: modelName,
-			key: styleName
+			key: modelAttribute || styleName
 		},
 		view: modelAttributeValue => ( {
 			key: 'style',
@@ -80,7 +80,7 @@ function setupConversion( conversion, styleName, modelName ) {
 	} );
 }
 
-function upcastAttribute( conversion, styleName, modelName ) {
+function upcastAttribute( conversion, styleName, modelName, modelAttribute ) {
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
 			styles: {
@@ -89,7 +89,7 @@ function upcastAttribute( conversion, styleName, modelName ) {
 		},
 		model: {
 			name: modelName,
-			key: styleName,
+			key: modelAttribute || styleName,
 			value: viewElement => viewElement.getNormalizedStyle( styleName )
 		}
 	} );
