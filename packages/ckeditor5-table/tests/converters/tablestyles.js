@@ -158,7 +158,16 @@ describe( 'Table styles conversion', () => {
 				editor.setData( '<table><tr><td style="background-color:#f00">foo</td></tr></table>' );
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( tableCell.getAttribute( 'backgroundColor' ) ).to.deep.equal( '#f00' );
+				expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+			} );
+		} );
+
+		describe( 'table row', () => {
+			it( 'should upcast height attribute', () => {
+				editor.setData( '<table><tr style="height:20px"><td>foo</td></tr></table>' );
+				const tableRow = model.document.getRoot().getNodeByPath( [ 0, 0 ] );
+
+				expect( tableRow.getAttribute( 'height' ) ).to.equal( '20px' );
 			} );
 		} );
 	} );
@@ -441,6 +450,34 @@ describe( 'Table styles conversion', () => {
 						'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 					);
 				} );
+			} );
+		} );
+
+		describe( 'table row', () => {
+			let tableRow;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				tableRow = model.document.getRoot().getNodeByPath( [ 0, 0 ] );
+			} );
+
+			it( 'should downcast height attribute', () => {
+				model.change( writer => writer.setAttribute( 'height', '20px', tableRow ) );
+
+				assertEqualMarkup(
+					editor.getData(),
+					'<figure class="table"><table><tbody><tr style="height:20px;"><td>foo</td></tr></tbody></table></figure>'
+				);
 			} );
 		} );
 	} );
