@@ -150,17 +150,9 @@ function upcastBorderStyles( conversion, viewElement ) {
 
 		conversionApi.consumable.consume( data.viewItem, toMatch );
 
-		if ( conversionApi.schema.checkAttribute( modelElement, 'borderStyle' ) ) {
-			conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
-		}
-
-		if ( conversionApi.schema.checkAttribute( modelElement, 'borderColor' ) ) {
-			conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
-		}
-
-		if ( conversionApi.schema.checkAttribute( modelElement, 'borderWidth' ) ) {
-			conversionApi.writer.setAttribute( 'borderWidth', data.viewItem.getNormalizedStyle( 'border-width' ), modelElement );
-		}
+		conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
+		conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
+		conversionApi.writer.setAttribute( 'borderWidth', data.viewItem.getNormalizedStyle( 'border-width' ), modelElement );
 	} ) );
 }
 
