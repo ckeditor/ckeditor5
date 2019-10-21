@@ -160,6 +160,13 @@ describe( 'Table styles conversion', () => {
 
 				expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
 			} );
+
+			it( 'should upcast padding shorthand', () => {
+				editor.setData( '<table><tr><td style="padding:2px 4em">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'padding', '2px', '4em' );
+			} );
 		} );
 
 		describe( 'table row', () => {
@@ -228,7 +235,7 @@ describe( 'Table styles conversion', () => {
 				assertTableCellStyle( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
 			} );
 
-			it( 'should downcast borderStyle attribute (different same top, right, bottom, left)', () => {
+			it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
 				model.change( writer => writer.setAttribute( 'borderStyle', {
 					top: 'solid',
 					right: 'ridge',
@@ -329,6 +336,28 @@ describe( 'Table styles conversion', () => {
 				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
 
 				assertTableCellStyle( 'background-color:#f00;' );
+			} );
+
+			it( 'should downcast padding (same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'padding', {
+					top: '2px',
+					right: '2px',
+					bottom: '2px',
+					left: '2px'
+				}, tableCell ) );
+
+				assertTableCellStyle( 'padding:2px;' );
+			} );
+
+			it( 'should downcast padding (different top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'padding', {
+					top: '2px',
+					right: '3px',
+					bottom: '4px',
+					left: '5px'
+				}, tableCell ) );
+
+				assertTableCellStyle( 'padding:2px 3px 4px 5px;' );
 			} );
 
 			describe( 'change attribute', () => {
