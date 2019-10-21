@@ -175,7 +175,7 @@ describe.only( 'Table styles conversion', () => {
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 			} );
 
-			it( 'should downcast borderColor attribute', () => {
+			it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
 				model.change( writer => writer.setAttribute( 'borderColor', {
 					top: '#f00',
 					right: '#f00',
@@ -186,7 +186,23 @@ describe.only( 'Table styles conversion', () => {
 				assertTableCellStyle( 'border-top:#f00;border-right:#f00;border-bottom:#f00;border-left:#f00;' );
 			} );
 
-			it( 'should downcast borderStyle attribute', () => {
+			it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderColor', {
+					top: '#f00',
+					right: 'hsla(0, 100%, 50%, 0.5)',
+					bottom: 'deeppink',
+					left: 'rgb(255, 0, 0)'
+				}, tableCell ) );
+
+				assertTableCellStyle(
+					'border-top:#f00;' +
+					'border-right:hsla(0, 100%, 50%, 0.5);' +
+					'border-bottom:deeppink;' +
+					'border-left:rgb(255, 0, 0);'
+				);
+			} );
+
+			it( 'should downcast borderStyle attribute (same top, right, bottom, left)', () => {
 				model.change( writer => writer.setAttribute( 'borderStyle', {
 					top: 'solid',
 					right: 'solid',
@@ -197,7 +213,29 @@ describe.only( 'Table styles conversion', () => {
 				assertTableCellStyle( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
 			} );
 
-			it( 'should downcast borderWidth attribute', () => {
+			it( 'should downcast borderStyle attribute (different same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderStyle', {
+					top: 'solid',
+					right: 'ridge',
+					bottom: 'dotted',
+					left: 'dashed'
+				}, tableCell ) );
+
+				assertTableCellStyle( 'border-top:solid;border-right:ridge;border-bottom:dotted;border-left:dashed;' );
+			} );
+
+			it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'borderWidth', {
+					top: '42px',
+					right: '.1em',
+					bottom: '1337rem',
+					left: 'thick'
+				}, tableCell ) );
+
+				assertTableCellStyle( 'border-top:42px;border-right:.1em;border-bottom:1337rem;border-left:thick;' );
+			} );
+
+			it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
 				model.change( writer => writer.setAttribute( 'borderWidth', {
 					top: '42px',
 					right: '42px',
@@ -237,6 +275,38 @@ describe.only( 'Table styles conversion', () => {
 					'border-right:42px solid #f00;' +
 					'border-bottom:42px solid #f00;' +
 					'border-left:42px solid #f00;'
+				);
+			} );
+
+			it( 'should downcast borderColor, borderStyle and borderWidth attributes together (different top, right, bottom, left)', () => {
+				model.change( writer => {
+					writer.setAttribute( 'borderColor', {
+						top: '#f00',
+						right: 'hsla(0, 100%, 50%, 0.5)',
+						bottom: 'deeppink',
+						left: 'rgb(255, 0, 0)'
+					}, tableCell );
+
+					writer.setAttribute( 'borderStyle', {
+						top: 'solid',
+						right: 'ridge',
+						bottom: 'dotted',
+						left: 'dashed'
+					}, tableCell );
+
+					writer.setAttribute( 'borderWidth', {
+						top: '42px',
+						right: '.1em',
+						bottom: '1337rem',
+						left: 'thick'
+					}, tableCell );
+				} );
+
+				assertTableCellStyle(
+					'border-top:42px solid #f00;' +
+					'border-right:.1em ridge hsla(0, 100%, 50%, 0.5);' +
+					'border-bottom:1337rem dotted deeppink;' +
+					'border-left:thick dashed rgb(255, 0, 0);'
 				);
 			} );
 		} );
