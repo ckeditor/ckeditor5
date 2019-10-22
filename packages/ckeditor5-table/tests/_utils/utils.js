@@ -12,6 +12,7 @@ import {
 	downcastTableHeadingRowsChange
 } from '../../src/converters/downcast';
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
 
@@ -234,6 +235,65 @@ export function defaultConversion( conversion, asWidget = false ) {
 			value: viewElement => viewElement.getStyle( 'border' )
 		}
 	} );
+}
+
+/**
+ * Assertion helper for top-right-bottom-left attribute object.
+ *
+ * @param {module:engine/model/node~Node} element
+ * @param {String} key Attribute key
+ * @param {String} top Top value. Pass null to omit value in attributes object.
+ * @param {String} [right=top] Right value - defaults to top if not provided.
+ * Pass null to omit value in attributes object.
+ * @param {String} [bottom=top] Bottom value - defaults to top (right value must be defined).
+ * Pass null to omit value in attributes object.
+ * @param {String} [left=right] Left value - defaults to right (bottom and right values must be defined).
+ * Pass null to omit value in attributes object.
+ */
+export function assertTRBLAttribute( element, key, top, right = top, bottom = top, left = right ) {
+	const styleObject = {};
+
+	if ( top ) {
+		styleObject.top = top;
+	}
+
+	if ( right ) {
+		styleObject.right = right;
+	}
+
+	if ( bottom ) {
+		styleObject.bottom = bottom;
+	}
+
+	if ( left ) {
+		styleObject.left = left;
+	}
+
+	expect( element.getAttribute( key ) ).to.deep.equal( styleObject );
+}
+
+/**
+ * Assertion helper for testing <table> style attribute.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {String} tableStyle A style to assert on table.
+ */
+export function assertTableStyle( editor, tableStyle ) {
+	assertEqualMarkup( editor.getData(),
+		`<figure class="table"><table style="${ tableStyle }"><tbody><tr><td>foo</td></tr></tbody></table></figure>`
+	);
+}
+
+/**
+ * Assertion helper for testing <td> style attribute.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {String} tableCellStyle A style to assert on td.
+ */
+export function assertTableCellStyle( editor, tableCellStyle ) {
+	assertEqualMarkup( editor.getData(),
+		`<figure class="table"><table><tbody><tr><td style="${ tableCellStyle }">foo</td></tr></tbody></table></figure>`
+	);
 }
 
 // Formats table cell attributes

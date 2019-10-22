@@ -10,6 +10,7 @@ import TableEditing from '../src/tableediting';
 import TableCellProperties from '../src/tablecellproperites';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertTableCellStyle, assertTRBLAttribute } from './_utils/utils';
 
 describe( 'TableCellProperties', () => {
 	let editor, model;
@@ -216,7 +217,7 @@ describe( 'TableCellProperties', () => {
 					left: '#f00'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'border-top:#f00;border-right:#f00;border-bottom:#f00;border-left:#f00;' );
+				assertTableCellStyle( editor, 'border-top:#f00;border-right:#f00;border-bottom:#f00;border-left:#f00;' );
 			} );
 
 			it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
@@ -227,7 +228,7 @@ describe( 'TableCellProperties', () => {
 					left: 'rgb(255, 0, 0)'
 				}, tableCell ) );
 
-				assertTableCellStyle(
+				assertTableCellStyle( editor,
 					'border-top:#f00;' +
 					'border-right:hsla(0, 100%, 50%, 0.5);' +
 					'border-bottom:deeppink;' +
@@ -243,7 +244,7 @@ describe( 'TableCellProperties', () => {
 					left: 'solid'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
+				assertTableCellStyle( editor, 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
 			} );
 
 			it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
@@ -254,7 +255,7 @@ describe( 'TableCellProperties', () => {
 					left: 'dashed'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'border-top:solid;border-right:ridge;border-bottom:dotted;border-left:dashed;' );
+				assertTableCellStyle( editor, 'border-top:solid;border-right:ridge;border-bottom:dotted;border-left:dashed;' );
 			} );
 
 			it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
@@ -265,7 +266,7 @@ describe( 'TableCellProperties', () => {
 					left: 'thick'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'border-top:42px;border-right:.1em;border-bottom:1337rem;border-left:thick;' );
+				assertTableCellStyle( editor, 'border-top:42px;border-right:.1em;border-bottom:1337rem;border-left:thick;' );
 			} );
 
 			it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
@@ -276,7 +277,7 @@ describe( 'TableCellProperties', () => {
 					left: '42px'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'border-top:42px;border-right:42px;border-bottom:42px;border-left:42px;' );
+				assertTableCellStyle( editor, 'border-top:42px;border-right:42px;border-bottom:42px;border-left:42px;' );
 			} );
 
 			it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
@@ -303,7 +304,7 @@ describe( 'TableCellProperties', () => {
 					}, tableCell );
 				} );
 
-				assertTableCellStyle(
+				assertTableCellStyle( editor,
 					'border-top:42px solid #f00;' +
 					'border-right:42px solid #f00;' +
 					'border-bottom:42px solid #f00;' +
@@ -335,7 +336,7 @@ describe( 'TableCellProperties', () => {
 					}, tableCell );
 				} );
 
-				assertTableCellStyle(
+				assertTableCellStyle( editor,
 					'border-top:42px solid #f00;' +
 					'border-right:.1em ridge hsla(0, 100%, 50%, 0.5);' +
 					'border-bottom:1337rem dotted deeppink;' +
@@ -346,7 +347,7 @@ describe( 'TableCellProperties', () => {
 			it( 'should downcast backgroundColor', () => {
 				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
 
-				assertTableCellStyle( 'background-color:#f00;' );
+				assertTableCellStyle( editor, 'background-color:#f00;' );
 			} );
 
 			it( 'should downcast padding (same top, right, bottom, left)', () => {
@@ -357,7 +358,7 @@ describe( 'TableCellProperties', () => {
 					left: '2px'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'padding:2px;' );
+				assertTableCellStyle( editor, 'padding:2px;' );
 			} );
 
 			it( 'should downcast padding (different top, right, bottom, left)', () => {
@@ -368,13 +369,13 @@ describe( 'TableCellProperties', () => {
 					left: '5px'
 				}, tableCell ) );
 
-				assertTableCellStyle( 'padding:2px 3px 4px 5px;' );
+				assertTableCellStyle( editor, 'padding:2px 3px 4px 5px;' );
 			} );
 
 			it( 'should downcast verticalAlignment', () => {
 				model.change( writer => writer.setAttribute( 'verticalAlignment', 'middle', tableCell ) );
 
-				assertTableCellStyle( 'vertical-align:middle;' );
+				assertTableCellStyle( editor, 'vertical-align:middle;' );
 			} );
 
 			describe( 'change attribute', () => {
@@ -411,7 +412,7 @@ describe( 'TableCellProperties', () => {
 						left: 'deeppink'
 					}, tableCell ) );
 
-					assertTableCellStyle(
+					assertTableCellStyle( editor,
 						'border-top:42px solid deeppink;' +
 						'border-right:42px solid deeppink;' +
 						'border-bottom:42px solid deeppink;' +
@@ -427,7 +428,7 @@ describe( 'TableCellProperties', () => {
 						left: 'ridge'
 					}, tableCell ) );
 
-					assertTableCellStyle(
+					assertTableCellStyle( editor,
 						'border-top:42px ridge #f00;' +
 						'border-right:42px ridge #f00;' +
 						'border-bottom:42px ridge #f00;' +
@@ -443,7 +444,7 @@ describe( 'TableCellProperties', () => {
 						left: 'thick'
 					}, tableCell ) );
 
-					assertTableCellStyle(
+					assertTableCellStyle( editor,
 						'border-top:thick solid #f00;' +
 						'border-right:thick solid #f00;' +
 						'border-bottom:thick solid #f00;' +
@@ -454,7 +455,7 @@ describe( 'TableCellProperties', () => {
 				it( 'should downcast borderColor attribute removal', () => {
 					model.change( writer => writer.removeAttribute( 'borderColor', tableCell ) );
 
-					assertTableCellStyle(
+					assertTableCellStyle( editor,
 						'border-top:42px solid;' +
 						'border-right:42px solid;' +
 						'border-bottom:42px solid;' +
@@ -465,7 +466,7 @@ describe( 'TableCellProperties', () => {
 				it( 'should downcast borderStyle attribute removal', () => {
 					model.change( writer => writer.removeAttribute( 'borderStyle', tableCell ) );
 
-					assertTableCellStyle(
+					assertTableCellStyle( editor,
 						'border-top:42px #f00;' +
 						'border-right:42px #f00;' +
 						'border-bottom:42px #f00;' +
@@ -476,7 +477,7 @@ describe( 'TableCellProperties', () => {
 				it( 'should downcast borderWidth attribute removal', () => {
 					model.change( writer => writer.removeAttribute( 'borderWidth', tableCell ) );
 
-					assertTableCellStyle(
+					assertTableCellStyle( editor,
 						'border-top:solid #f00;' +
 						'border-right:solid #f00;' +
 						'border-bottom:solid #f00;' +
@@ -498,51 +499,5 @@ describe( 'TableCellProperties', () => {
 				} );
 			} );
 		} );
-
-		/**
-		 * Assertion helper for top-right-bottom-left attribute object.
-		 *
-		 * @param {module:engine/model/node~Node} tableCell
-		 * @param {String} key Attribute key
-		 * @param {String} top Top value. Pass null to omit value in attributes object.
-		 * @param {String} [right=top] Right value - defaults to top if not provided.
-		 * Pass null to omit value in attributes object.
-		 * @param {String} [bottom=top] Bottom value - defaults to top (right value must be defined).
-		 * Pass null to omit value in attributes object.
-		 * @param {String} [left=right] Left value - defaults to right (bottom and right values must be defined).
-		 * Pass null to omit value in attributes object.
-		 */
-		function assertTRBLAttribute( tableCell, key, top, right = top, bottom = top, left = right ) {
-			const styleObject = {};
-
-			if ( top ) {
-				styleObject.top = top;
-			}
-
-			if ( right ) {
-				styleObject.right = right;
-			}
-
-			if ( bottom ) {
-				styleObject.bottom = bottom;
-			}
-
-			if ( left ) {
-				styleObject.left = left;
-			}
-
-			expect( tableCell.getAttribute( key ) ).to.deep.equal( styleObject );
-		}
-
-		/**
-		 * Assertion helper for testing <td> style attribute.
-		 *
-		 * @param {String} tableCellStyle A style to assert on td.
-		 */
-		function assertTableCellStyle( tableCellStyle ) {
-			assertEqualMarkup( editor.getData(),
-				`<figure class="table"><table><tbody><tr><td style="${ tableCellStyle }">foo</td></tr></tbody></table></figure>`
-			);
-		}
 	} );
 } );
