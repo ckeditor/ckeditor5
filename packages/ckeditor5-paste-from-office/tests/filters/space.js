@@ -100,6 +100,22 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
+			it( 'should normalize spaces inside special "span.spacerun" elements that contain no data', () => {
+				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
+					'<p> Baz <span style=\'mso-spacerun:yes\'></span></p>';
+
+				const expected = '<p> <span style="mso-spacerun:yes">&nbsp; &nbsp;</span>Foo</p>' +
+					'<p> Baz <span style="mso-spacerun:yes"></span></p>';
+
+				const domParser = new DOMParser();
+				const htmlDocument = domParser.parseFromString( input, 'text/html' );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.not.equal( expected );
+
+				normalizeSpacerunSpans( htmlDocument );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
+			} );
 		} );
 	} );
 } );
