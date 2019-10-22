@@ -10,7 +10,10 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import TableStyle from '../../src/tablestyle';
+import TableProperties from '../../src/tableproperites';
+import TableCellProperties from '../../src/tablecellproperites';
+import TableColumnRowProperties from '../../src/tablecolumnrowproperites';
+import TableStyleUI from '../../src/tablestyleui';
 
 const sourceElement = document.querySelector( '#editor' );
 const clonedSource = sourceElement.cloneNode( true );
@@ -19,7 +22,8 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
-		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableStyle ],
+		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableColumnRowProperties, TableCellProperties,
+			TableStyleUI ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
