@@ -87,6 +87,10 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
-		writer.setStyle( styleName, attributeNewValue, table );
+		if ( attributeNewValue ) {
+			writer.setStyle( styleName, attributeNewValue, table );
+		} else {
+			writer.removeAttribute( styleName, table );
+		}
 	} ) );
 }

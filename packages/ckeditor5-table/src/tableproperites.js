@@ -26,7 +26,7 @@ export default class TableProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	afterInit() {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;

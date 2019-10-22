@@ -19,7 +19,14 @@ export default class TableColumnRowProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	static get pluginName() {
+		return 'TableColumnRowProperties';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
