@@ -74,7 +74,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "^4.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^11.0.9",
-    "@ckeditor/ckeditor5-dev-env": "^16.0.0",
+    "@ckeditor/ckeditor5-dev-env": "^17.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^16.9.0",
     "@ckeditor/ckeditor5-dev-utils": "^12.0.3",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^8.0.3",
