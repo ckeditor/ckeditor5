@@ -135,7 +135,11 @@ describe( 'Styles', () => {
 	} );
 
 	describe( 'hasProperty()', () => {
-		it( 'should return false if property is not set', () => {
+		it( 'should return false if normalized property is not set', () => {
+			expect( styles.hasProperty( 'bar' ) ).to.be.false;
+		} );
+
+		it( 'should return false if normalized property is not set', () => {
 			expect( styles.hasProperty( 'foo' ) ).to.be.false;
 		} );
 
@@ -146,9 +150,9 @@ describe( 'Styles', () => {
 		} );
 
 		it( 'should return true if property is set', () => {
-			styles.setStyle( 'color:deeppink' );
+			styles.setStyle( 'bar:deeppink' );
 
-			expect( styles.hasProperty( 'color' ) ).to.be.true;
+			expect( styles.hasProperty( 'bar' ) ).to.be.true;
 		} );
 
 		it( 'should return true if normalized shorthanded property is set', () => {

@@ -332,7 +332,7 @@ export default class Element extends Node {
 		}
 
 		// Check if styles are the same.
-		for ( const property of Object.keys( this._styles._styles ) ) {
+		for ( const property of this._styles.getStyleNames() ) {
 			if (
 				!otherElement._styles.hasProperty( property ) ||
 				otherElement._styles.getInlineProperty( property ) !== this._styles.getInlineProperty( property )

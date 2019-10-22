@@ -229,10 +229,24 @@ export default class Styles {
 	 * @param {String} name
 	 * @returns {Boolean}
 	 */
-	hasProperty( name ) {
-		// TODO: this behavior is not in sync with getProperty.
-		// TODO: also what to do on `border` vs `border-top` vs `border-color`...
-		return Array.from( this.getStyleNames() ).includes( name );
+	hasProperty( propertyName ) {
+		const normalized = this.converter.getNormalized( propertyName, this._styles );
+
+		if ( !normalized ) {
+			// Try return styles set directly - values that are not parsed.
+			return this._styles[ propertyName ] !== undefined;
+		}
+
+		if ( isObject( normalized ) ) {
+			const styles = this.converter.getReducedForm( propertyName, normalized );
+
+			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
+
+			// Only return a value if it is set;
+			return Array.isArray( propertyDescriptor );
+		} else {
+			return true;
+		}
 	}
 
 	/**
