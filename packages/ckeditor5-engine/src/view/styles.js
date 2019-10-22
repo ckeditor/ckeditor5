@@ -7,7 +7,7 @@
  * @module engine/view/styles
  */
 
-import { get, has, isObject, merge, set, unset } from 'lodash-es';
+import { get, isObject, merge, set, unset } from 'lodash-es';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
@@ -230,9 +230,9 @@ export default class Styles {
 	 * @returns {Boolean}
 	 */
 	hasProperty( name ) {
-		const nameNorm = toPath( name );
-
-		return has( this._styles, nameNorm ) || !!this._styles[ name ];
+		// TODO: this behavior is not in sync with getProperty.
+		// TODO: also what to do on `border` vs `border-top` vs `border-color`...
+		return Array.from( this.getStyleNames() ).includes( name );
 	}
 
 	/**
