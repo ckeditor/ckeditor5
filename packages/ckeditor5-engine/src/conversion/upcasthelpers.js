@@ -244,8 +244,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *		// Default conversion of font-weight style will result in setting bold attribute to true.
 	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 	 *			view: {
-	 *				key: 'style',
-	 *				value: {
+	 *				styles: {
 	 *					'font-weight': 'bold'
 	 *				}
 	 *			},
@@ -255,8 +254,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *		// This converter will pass any value of a style property define a callback.
 	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 	 *			view: {
-	 *				key: 'style',
-	 *				value: {
+	 *				styles: {
 	 *					'line-height': /[\s\S]+/
 	 *				}
 	 *			},
