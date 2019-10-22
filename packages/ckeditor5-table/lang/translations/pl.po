@@ -90,4 +90,4 @@ msgstr "Scal komórki"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Pasek narzędzi tabel"
