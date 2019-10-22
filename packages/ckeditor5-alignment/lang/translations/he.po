@@ -12,30 +12,30 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
-"Language: et\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Hebrew (https://www.transifex.com/ckeditor/teams/11143/he/)\n"
+"Language: he\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
 msgctxt "Toolbar button tooltip for aligning the text to the left."
 msgid "Align left"
-msgstr "Vasakjoondus"
+msgstr "יישור לשמאל"
 
 msgctxt "Toolbar button tooltip for aligning the text to the right."
 msgid "Align right"
-msgstr "Paremjoondus"
+msgstr "יישור לימין"
 
 msgctxt "Toolbar button tooltip for aligning the text to center."
 msgid "Align center"
-msgstr "Keskjoondus"
+msgstr "יישור באמצע"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "Rööpjoondus"
+msgstr "מרכוז גבולות"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
-msgstr "Teksti joondamine"
+msgstr "יישור טקסט"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr "Teksti joonduse tööriistariba"
+msgstr "סרגל כלים יישור טקסט"
