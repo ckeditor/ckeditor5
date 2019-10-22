@@ -120,6 +120,18 @@ describe( 'TableCellProperties', () => {
 				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
 			} );
 
+			it( 'should upcast mixed shorthands', () => {
+				editor.setData(
+					'<table><tr><td style="border-top:1px solid #f00;border-bottom:2em ridge rgba(255,0,0,1)">foo</td></tr></table>'
+				);
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
+				assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, 'ridge', null );
+				assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, '2em', null );
+			} );
+
 			it( 'should upcast border-top-* styles', () => {
 				editor.setData(
 					'<table><tr><td style="border-top-width:1px;border-top-style:solid;border-top-color:#f00">foo</td></tr></table>'

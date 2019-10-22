@@ -24,28 +24,22 @@ export function upcastAttribute( conversion, modelElement, modelAttribute, style
 
 export function upcastBorderStyles( conversion, viewElement ) {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElement, ( evt, data, conversionApi ) => {
-		let matcherPattern;
+		// TODO: this is counter-intuitive: ie.: if only `border-top` is defined then `hasStyle( 'border' )` also returns true.
+		// TODO: this might needs to be fixed in styles normalizer.
+		const stylesToConsume = [
+			'border-top',
+			'border-right',
+			'border-bottom',
+			'border-left'
+		].filter( styleName => data.viewItem.hasStyle( styleName ) );
 
-		if ( data.viewItem.hasStyle( 'border' ) ) {
-			matcherPattern = {
-				styles: [ 'border' ]
-			};
-		} else {
-			const stylesToConsume = [
-				'border-top',
-				'border-right',
-				'border-bottom',
-				'border-left'
-			].filter( styleName => data.viewItem.hasStyle( styleName ) );
-
-			if ( stylesToConsume.length ) {
-				matcherPattern = {
-					styles: stylesToConsume
-				};
-			} else {
-				return;
-			}
+		if ( !stylesToConsume.length ) {
+			return;
 		}
+
+		const matcherPattern = {
+			styles: stylesToConsume
+		};
 
 		// Try to consume appropriate values from consumable values list.
 		const toMatch = matcherPattern;
