@@ -7,7 +7,7 @@
  * @module engine/view/styles/utils
  */
 
-const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|rgba?\(|hsla?\(|^currentColor|0)$/;
+const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
 
 export function isColor( string ) {
 	return colorRegExp.test( string );
