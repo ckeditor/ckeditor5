@@ -8,8 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TableStyleEditing from './tablestyleediting';
 import TableStyleUI from './tablestyleui';
+import TableProperties from './tableproperites';
+import TableCellProperties from './tablecellproperites';
+import TableColumnRowProperties from './tablecolumnrowproperites';
 
 /**
  * The table style feature.
@@ -21,6 +23,6 @@ export default class TableStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableStyleEditing, TableStyleUI ];
+		return [ TableProperties, TableCellProperties, TableColumnRowProperties, TableStyleUI ];
 	}
 }
