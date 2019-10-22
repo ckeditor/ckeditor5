@@ -114,50 +114,6 @@ export function viewTable( tableData, attributes = {} ) {
 	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
 }
 
-/**
- * Formats model or view table - useful for chai assertions debugging.
- *
- * @param {String} tableString
- * @returns {String}
- */
-export function formatTable( tableString ) {
-	return tableString
-		.replace( /<tableRow>/g, '\n<tableRow>\n    ' )
-		.replace( /<thead>/g, '\n<thead>\n    ' )
-		.replace( /<tbody>/g, '\n<tbody>\n    ' )
-		.replace( /<tr>/g, '\n<tr>\n    ' )
-		.replace( /<\/tableRow>/g, '\n</tableRow>' )
-		.replace( /<\/thead>/g, '\n</thead>' )
-		.replace( /<\/tbody>/g, '\n</tbody>' )
-		.replace( /<\/tr>/g, '\n</tr>' )
-		.replace( /<\/table>/g, '\n</table>' )
-		.replace( /<\/figure>/g, '\n</figure>' );
-}
-
-/**
- * Returns formatted model table string.
- *
- * @param {Array.<String>} tableData
- * @param {Object} [attributes]
- * @returns {String}
- */
-export function formattedModelTable( tableData, attributes ) {
-	const tableString = modelTable( tableData, attributes );
-
-	return formatTable( tableString );
-}
-
-/**
- * Returns formatted view table string.
- *
- * @param {Array.<String>} tableData
- * @param {Object} [attributes]
- * @returns {String}
- */
-export function formattedViewTable( tableData, attributes ) {
-	return formatTable( viewTable( tableData, attributes ) );
-}
-
 export function defaultSchema( schema, registerParagraph = true ) {
 	schema.register( 'table', {
 		allowWhere: '$block',

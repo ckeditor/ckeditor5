@@ -7,8 +7,9 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import SetHeaderColumnCommand from '../../src/commands/setheadercolumncommand';
-import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SetHeaderColumnCommand', () => {
 	let editor, model, command;
@@ -81,7 +82,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 		} );
@@ -93,7 +94,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 		} );
@@ -105,13 +106,13 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 		} );
@@ -123,7 +124,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			command.execute( { forceValue: true } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 3 } ) );
 		} );
@@ -135,7 +136,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			command.execute( { forceValue: false } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 		} );

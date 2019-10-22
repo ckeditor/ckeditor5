@@ -7,8 +7,9 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import RemoveColumnCommand from '../../src/commands/removecolumncommand';
-import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RemoveColumnCommand', () => {
 	let editor, model, command;
@@ -69,7 +70,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '02' ],
 				[ '<paragraph>10[]</paragraph>', '12' ],
 				[ '20', '22' ]
@@ -85,7 +86,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '<paragraph>[]01</paragraph>' ],
 				[ '11' ],
 				[ '21' ]
@@ -101,7 +102,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '01' ],
 				[ '<paragraph>[]11</paragraph>' ],
 				[ '21' ]
@@ -119,7 +120,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 3, contents: '00' }, '03' ],
 				[ { colspan: 2, contents: '10' }, '13' ],
 				[ { colspan: 2, contents: '<paragraph>20[]</paragraph>' }, '23' ],
@@ -138,7 +139,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 2, contents: '[]00' }, '03' ],
 				[ '10', '13' ],
 				[ '21', '22', '23' ]

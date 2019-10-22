@@ -9,8 +9,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import { formatTable, modelTable } from '../_utils/utils';
+import { modelTable } from '../_utils/utils';
 import TableEditing from '../../src/tableediting';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
@@ -31,7 +32,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	function expectModel( data ) {
-		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable( data ) );
+		assertEqualMarkup( getModelData( model, { withoutSelection: true } ), data );
 	}
 
 	it( 'should convert table figure', () => {

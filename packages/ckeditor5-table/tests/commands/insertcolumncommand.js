@@ -7,8 +7,9 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
-import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -57,7 +58,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11[]', '', '12' ],
 					[ '21', '', '22' ]
 				] ) );
@@ -70,7 +71,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '<paragraph>12[]</paragraph>', '', '13' ]
 				] ) );
 			} );
@@ -83,7 +84,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '12', '' ],
 					[ '21', '22[]', '' ]
 				] ) );
@@ -98,7 +99,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11[]', '', '12' ],
 					[ '21', '', '22' ],
 					[ '31', '', '32' ]
@@ -114,7 +115,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '12[]', '', '13' ],
 					[ '21', '22', '', '23' ],
 					[ '31', '32', '', '33' ]
@@ -130,7 +131,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11[]', '', '12' ],
 					[ { colspan: 3, contents: '21' } ],
 					[ '31', '', '32' ]
@@ -146,7 +147,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '12[]', '', '13', '14', '15' ],
 					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
 					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]
@@ -181,7 +182,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '', '12[]' ],
 					[ '21', '', '22' ]
 				] ) );
@@ -194,7 +195,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );
 			} );
@@ -207,7 +208,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '', '11', '12' ],
 					[ '', '[]21', '22' ]
 				] ) );
@@ -222,7 +223,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '', '12[]' ],
 					[ '21', '', '22' ],
 					[ '31', '', '32' ]
@@ -238,7 +239,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '12', '', '13[]' ],
 					[ '21', '22', '', '23' ],
 					[ '31', '32', '', '33' ]
@@ -254,7 +255,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '', '12[]' ],
 					[ { colspan: 3, contents: '21' } ],
 					[ '31', '', '32' ]
@@ -270,7 +271,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getData( model ), modelTable( [
 					[ '11', '12', '', '13[]', '14', '15' ],
 					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
 					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]

@@ -6,9 +6,10 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from './_utils/utils';
+import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
 
 import TableUtils from '../src/tableutils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
@@ -59,7 +60,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ]
@@ -74,7 +75,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ) );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '', '' ],
 				[ '11[]', '12' ],
 				[ '21', '22' ]
@@ -90,7 +91,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -107,7 +108,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -124,7 +125,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 2, contents: '11[]' }, '13', '14' ],
 				[ { colspan: 2, rowspan: 7, contents: '21' }, '23', '24' ],
 				[ '', '' ],
@@ -143,7 +144,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
 				[ '22', '23' ],
 				[ '', '', '' ],
@@ -162,7 +163,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
 				[ '22', '23' ],
 				[ '', '', '' ],
@@ -180,7 +181,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -199,7 +200,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ]
 			] ) );
@@ -213,7 +214,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
@@ -227,7 +228,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
@@ -243,7 +244,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00[]', '01', '', '' ],
 				[ { colspan: 2, contents: '10' }, '', '' ],
 				[ '20', { rowspan: 2, contents: '21' }, '', '' ],
@@ -262,7 +263,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '', '', '00[]', '01' ],
 				[ '', '', { colspan: 2, contents: '10' } ],
 				[ '', '', '20', { rowspan: 2, contents: '21' } ],
@@ -280,7 +281,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ],
 				[ '31', '', '32' ]
@@ -296,7 +297,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '12', '', '13' ],
 				[ '21', '22', '', '23' ],
 				[ '31', '32', '', '33' ]
@@ -312,7 +313,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00[]', '', '01' ],
 				[ { colspan: 3, contents: '10' } ],
 				[ '20', '', '21' ]
@@ -328,7 +329,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '11[]', '12', '', '', '13', '14', '15' ],
 				[ '21', '22', '', '', { colspan: 2, contents: '23' }, '25' ],
 				[ { colspan: 6, contents: '31' }, { colspan: 2, contents: '34' } ]
@@ -344,7 +345,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 4, rowspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ],
 				[ '20', '', '', '21', '22' ]
@@ -361,7 +362,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 4, contents: '00[]' }, '', { rowspan: 2, contents: '01' }, '02' ],
 				[ '', '12' ],
 				[ '', { rowspan: 2, contents: '21' }, '22' ],
@@ -381,7 +382,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ), 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '02' ],
 				[ '10', '[]11', '', '', '12' ],
 				[ '20', { colspan: 4, contents: '21' } ],
@@ -399,7 +400,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', { colspan: 2, contents: '01' }, '02' ],
 				[ '10', '[]11', '', '12' ],
 				[ '20', { colspan: 3, contents: '21' } ],
@@ -417,7 +418,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 2, 1 ] ), 2 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21[]', '' ],
@@ -433,7 +434,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 2, contents: '10[]' }, '' ]
 			] ) );
@@ -447,7 +448,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ { colspan: 2, contents: '10[]' }, { colspan: 2, contents: '' } ]
 			] ) );
@@ -462,7 +463,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02', '03', '04', '05' ],
 				[ { colspan: 3, rowspan: 2, contents: '10[]' }, { colspan: 2, rowspan: 2, contents: '' }, '15' ],
 				[ '25' ]
@@ -478,7 +479,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 2, contents: '00' }, '01', '02' ],
 				[ { rowspan: 2, contents: '10[]' }, { rowspan: 2, contents: '' }, { rowspan: 2, contents: '' }, '12' ],
 				[ '22' ]
@@ -493,7 +494,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 6 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 3, contents: '00' }, '01', '02', '03' ],
 				[ '10[]', '', '', '', '', '' ]
 			] ) );
@@ -507,7 +508,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 3, contents: '00' }, '01' ],
 				[ '10[]', '', '', '11' ]
 			], { headingColumns: 3 } ) );
@@ -524,7 +525,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, '[]11', { rowspan: 2, contents: '12' } ],
 				[ '' ],
@@ -541,7 +542,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ), 4 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 4, contents: '10' }, '[]11', { rowspan: 4, contents: '12' } ],
 				[ '' ],
@@ -560,7 +561,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 4, contents: '00' }, '01', { rowspan: 5, contents: '02' } ],
 				[ '[]11' ],
 				[ '' ],
@@ -580,7 +581,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]' ],
 				[ '10', '' ],
 				[ '20', '21' ]
@@ -598,7 +599,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', { colspan: 2, contents: '' } ],
 				[ '20', '21', '22' ]
@@ -621,7 +622,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', { rowspan: 3, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -644,7 +645,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01[]' ],
 				[ '' ],
 				[ '10', '' ],
@@ -662,7 +663,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 3, contents: '00' }, { colspan: 2, contents: '01[]' } ],
 				[ { colspan: 2, contents: '' } ],
 				[ { colspan: 2, contents: '' } ],
@@ -679,7 +680,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00[]', { rowspan: 3, contents: '01' }, { rowspan: 3, contents: '02' } ],
 				[ '' ],
 				[ '' ],
