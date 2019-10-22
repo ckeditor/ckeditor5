@@ -46,4 +46,4 @@ msgstr "Medium einfügen"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
-msgstr ""
+msgstr "Medien Werkzeugleiste"
