@@ -1276,11 +1276,17 @@
   integrity sha512-5Z6M2C/9IzpvJQ/nZ6EN7SgK9EKogBmXLeC/9rkNQwjYofOEGImAX1nYfnSaoiwyCNIrNpQ6k8j8gv+0e1jRrg==
 
 "@wiris/mathtype-ckeditor5@^7.16.1":
-  version "7.17.0"
-  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.17.0.tgz#12bcf65d3798d1f087cd34f0de1b4dde3d8a6a6d"
-  integrity sha512-rzSyc99xLcp/EV0xjPjFUmGToLaRIfZyyj44OOoKRxpFhVe9lU+NICQi+2qJ64tktw676XGubpD/PvtU+XaHvQ==
+  version "7.17.1"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.17.1.tgz#e476fc93ce0bf9ea45016e5dd748d1286e8296a0"
+  integrity sha512-z98yOiC/2nUKtdceFYWMpZJ6g4Gs3FLfb9yLMKjsyFL5mTbvxnboyy09sKzQib7b11k3pMF7EUNqgxeNROgYUg==
   dependencies:
     "@wiris/ckeditor5-mathml" "^1.0.0"
+    "@wiris/mathtype-integration-js-dev" "^7.17.0"
+
+"@wiris/mathtype-integration-js-dev@^7.17.0":
+  version "7.17.1"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-integration-js-dev/-/mathtype-integration-js-dev-7.17.1.tgz#f924cbce0a92fb8cc206384942633be5d784cb46"
+  integrity sha512-UJ/IQN9oTkZNphVRsfYIVeaTANetIwhY5yMQVxZgtI9jOeEGLY7Mz0HYI2bMxZjrdtnjHrNSqBcHP4XEmTB7Rg==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
