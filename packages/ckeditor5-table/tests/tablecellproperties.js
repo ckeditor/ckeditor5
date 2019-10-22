@@ -202,6 +202,22 @@ describe( 'TableCellProperties', () => {
 
 				expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
 			} );
+
+			it( 'should allow to be overriden (only border-top consumed)', () => {
+				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, {
+						styles: [ 'border-top' ]
+					} );
+				}, { priority: 'high' } ) );
+
+				editor.setData( '<table><tr><td style="border:1px solid blue;">foo</td></tr></table>' );
+
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
+				expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
+				expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+			} );
 		} );
 
 		describe( 'downcast', () => {

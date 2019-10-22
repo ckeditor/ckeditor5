@@ -42,15 +42,13 @@ export function upcastBorderStyles( conversion, viewElement ) {
 		};
 
 		// Try to consume appropriate values from consumable values list.
-		const toMatch = matcherPattern;
-
-		if ( !conversionApi.consumable.test( data.viewItem, toMatch ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, matcherPattern ) ) {
 			return;
 		}
 
 		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
 
-		conversionApi.consumable.consume( data.viewItem, toMatch );
+		conversionApi.consumable.consume( data.viewItem, matcherPattern );
 
 		conversionApi.writer.setAttribute( 'borderStyle', data.viewItem.getNormalizedStyle( 'border-style' ), modelElement );
 		conversionApi.writer.setAttribute( 'borderColor', data.viewItem.getNormalizedStyle( 'border-color' ), modelElement );
