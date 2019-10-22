@@ -204,6 +204,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
 	 *		} );
 	 *
+	 * *Note:* Downcasting to a style properties requires providing a style object as a `value`:
+	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'lineHeight',
 	 *			view: modelAttributeValue => ( {
