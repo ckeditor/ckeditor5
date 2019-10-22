@@ -46,4 +46,8 @@ msgstr "Pasek narzędzi edytora"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "Rozwijany pasek narzędzi"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "Pokaż więcej"

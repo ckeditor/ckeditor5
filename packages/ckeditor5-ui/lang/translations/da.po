@@ -47,3 +47,7 @@ msgstr "Editor værktøjslinje"
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
 msgstr "Dropdown værktøjslinje"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "Vis flere emner"
