@@ -12,50 +12,50 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Khmer (https://www.transifex.com/ckeditor/teams/11143/km/)\n"
-"Language: km\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "កថាខណ្ឌ"
+msgstr "Pagrāfs"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "ក្បាលអត្ថបទ"
+msgstr "Virsraksts"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "ជ្រើសរើស​ក្បាលអត្ថបទ"
+msgstr "Izvēlēties virsrakstu"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "ក្បាលអត្ថបទ 1"
+msgstr "Virsraksts 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "ក្បាលអត្ថបទ 2"
+msgstr "Virsraksts 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "ក្បាលអត្ថបទ 3"
+msgstr "Virsraksts 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr ""
+msgstr "Virsraksts 4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr ""
+msgstr "Virsraksts 5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr ""
+msgstr "Virsraksts 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "Ievadiet virsrakstu"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "Rakstiet vai ielīmējiet saturu šeit."

@@ -51,3 +51,11 @@ msgstr "5. Seviye Başlık"
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
 msgstr "6. Seviye Başlık"
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr "Başlığınızı yazınız"
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr "İçeriğinizi buraya yapıştırın yada yazın."

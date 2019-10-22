@@ -51,3 +51,11 @@ msgstr "Heading 5"
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
 msgstr "Heading 6"
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr "Type your title"
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr "Type or paste your content here."

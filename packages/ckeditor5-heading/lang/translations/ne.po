@@ -51,3 +51,11 @@ msgstr "शीर्षक ५"
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
 msgstr "शीर्षक ६"
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr ""
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr ""
