@@ -1,0 +1,7 @@
+.ck-content pre {
+	padding: 8px 13px;
+	color: #353535;
+	background: #f1f1f1;
+	border: solid 1px var(--ck-color-base-border);
+	border-radius: var(--ck-border-radius);
+}
