@@ -237,6 +237,19 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				key: 'style',
+	 *				value: {
+	 *					'line-height': /[\s\S]+/
+	 *				}
+	 *			},
+	 *			model: {
+	 *				key: 'lineHeight',
+	 *				value: viewElement => viewElement.getStyle( 'line-height' )
+	 *			}
+	 *		} );
+	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *

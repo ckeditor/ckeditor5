@@ -204,6 +204,17 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
 	 *		} );
 	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: 'lineHeight',
+	 *			view: modelAttributeValue => ( {
+	 *				key: 'style',
+	 *				value: {
+	 *					'line-height': modelAttributeValue,
+	 *					'border-bottom': '1px dotted #ba2'
+	 *				}
+	 *			} )
+	 *		} );
+	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
