@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import CodeBlockEditing from './codeblockediting';
-import CodeBlockUI from './codeblockqui';
+import CodeBlockUI from './codeblockui';
 
 /**
  * The code block plugin.
