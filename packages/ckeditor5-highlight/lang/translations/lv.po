@@ -12,42 +12,42 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
-"Language: et\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "Kollane marker"
+msgstr "Dzeltens marķieris"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr "Roheline marker"
+msgstr "Zaļš marķieris"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr "Roosa marker"
+msgstr "Rozā marķieris"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr "Sinine marker"
+msgstr "Zils marķieris"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "Punane pliiats"
+msgstr "Sarkana pildspalva"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr "Roheline pliiats"
+msgstr "Zaļa pildspalva"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "Eemalda esiletõstmine"
+msgstr "Noņemt izcēlumu"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "Tõsta esile"
+msgstr "Izcelt"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr "Teksti markeerimise tööriistariba"
+msgstr "Teksta izcēluma rīkjosla"
