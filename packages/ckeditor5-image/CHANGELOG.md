@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v14.0.0...v15.0.0) (2019-10-23)
+
+### MAJOR BREAKING CHANGES
+
+* Removed `isImageType()` util.
+
+### Features
+
+* Introduced `config.image.upload.types` configuration option for setting allowed image mime-types. Closes [#295](https://github.com/ckeditor/ckeditor5-image/issues/295). Closes [ckeditor/ckeditor5#674](https://github.com/ckeditor/ckeditor5/issues/674). ([8c36aee](https://github.com/ckeditor/ckeditor5-image/commit/8c36aee))
+
+### Bug fixes
+
+* Initial resize of a side image with no width predefined now gives correct percentage values. Closes [#306](https://github.com/ckeditor/ckeditor5-image/issues/306). ([b084de5](https://github.com/ckeditor/ckeditor5-image/commit/b084de5))
+
+### Other changes
+
+* Added `pluginName` property to editing plugins. ([71adead](https://github.com/ckeditor/ckeditor5-image/commit/71adead))
+* Improved the resizer performance. Closes [ckeditor/ckeditor5#5191](https://github.com/ckeditor/ckeditor5/issues/5191). ([c46072b](https://github.com/ckeditor/ckeditor5-image/commit/c46072b))
+* Make the `Clipboard` plugin a required dependency of `ImageUploadEditing`. Closes [ckeditor/ckeditor5-core#193](https://github.com/ckeditor/ckeditor5-core/issues/193). ([311c48c](https://github.com/ckeditor/ckeditor5-image/commit/311c48c))
+* Updated translations. ([27effa2](https://github.com/ckeditor/ckeditor5-image/commit/27effa2)) ([93aa0bb](https://github.com/ckeditor/ckeditor5-image/commit/93aa0bb))
+
+
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v13.1.2...v14.0.0) (2019-08-26)
 
 ### Features
