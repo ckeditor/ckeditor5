@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* Column insertion and cell merging buttons should work correctly when the editor content is right–to–left (RTL). Closes [#200](https://github.com/ckeditor/ckeditor5-table/issues/200). ([ac7be7b](https://github.com/ckeditor/ckeditor5-table/commit/ac7be7b))
+
+### Other changes
+
+* Added `pluginName` to editing plugin. ([1f76c1e](https://github.com/ckeditor/ckeditor5-table/commit/1f76c1e))
+* Updated translations. ([ba00c09](https://github.com/ckeditor/ckeditor5-table/commit/ba00c09)) ([b1ff792](https://github.com/ckeditor/ckeditor5-table/commit/b1ff792))
+
+
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v13.0.2...v14.0.0) (2019-08-26)
 
 ### Features
