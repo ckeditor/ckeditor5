@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v12.2.0...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* Autoformat transformations in blocks containing inline elements. See [ckeditor/ckeditor5#1955](https://github.com/ckeditor/ckeditor5/issues/1955). ([58abd23](https://github.com/ckeditor/ckeditor5-typing/commit/58abd23))
+
+
 ## [12.2.0](https://github.com/ckeditor/ckeditor5-typing/compare/v12.1.1...v12.2.0) (2019-08-26)
 
 ### Features
