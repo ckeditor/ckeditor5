@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v11.1.0...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Remove the `fixListIndentation()` filter in favor of improved list converters fix. See [ckeditor/ckeditor5-list#115](https://github.com/ckeditor/ckeditor5-list/issues/115). ([d594038](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/d594038))
+
+
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v11.0.4...v11.1.0) (2019-08-26)
 
 ### Features
