@@ -10,8 +10,8 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^12.3.0",
-    "@ckeditor/ckeditor5-utils": "^14.0.0",
+    "@ckeditor/ckeditor5-core": "^15.0.0",
+    "@ckeditor/ckeditor5-utils": "^15.0.0",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
