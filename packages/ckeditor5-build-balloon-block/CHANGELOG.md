@@ -3,6 +3,14 @@ Changelog
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.4.0...v15.0.0) (2019-10-23)
 
+We are happy to announce the release of CKEditor 5 v15.0.0. This editor version introduces support for inserting [horizontal lines](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page breaks](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) and [SVG images](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageupload-ImageUploadConfig.html#member-types) into the WYSIWYG editor. It also allows you to define the [document title section](https://ckeditor.com/docs/ckeditor5/latest/features/title.html) thanks to the new title plugin. The editor toolbar is now responsive which improves the UX, especially for mobile devices.
+
+Regarding the build itself, we added the [list indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#indenting-lists) button to the build's default setup. See [ckeditor/ckeditor5#1844](https://github.com/ckeditor/ckeditor5/issues/1844). ([5cbb35f](https://github.com/ckeditor/ckeditor5-build-balloon/commit/5cbb35f))
+
+From other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html).
+
+Blog post coming soon...
+
 ### Dependencies
 
 Major releases (contain major breaking changes):
@@ -40,12 +48,6 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v11.0.5 => [v15.0.0](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v15.0.0)
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v12.0.0 => [v15.0.0](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v15.0.0)
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v14.0.0 => [v15.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v15.0.0)
-
-### Features
-
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Enabled the indent feature in the build. See [ckeditor/ckeditor5#1844](https://github.com/ckeditor/ckeditor5/issues/1844). ([42cfd97](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/42cfd97))
 
 
 ## [12.4.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.1...v12.4.0) (2019-08-26)
