@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.5...v15.0.0) (2019-10-23)
+
+### Features
+
+* Introduced Title plugin. Closes https://github.com/ckeditor/ckeditor5/issues/2003. Closes https://github.com/ckeditor/ckeditor5/issues/2005. ([a65c0ac](https://github.com/ckeditor/ckeditor5-heading/commit/a65c0ac))
+
+### Other changes
+
+* Added `pluginName` property to editing plugin. ([93e8727](https://github.com/ckeditor/ckeditor5-heading/commit/93e8727))
+* Updated translations. ([bcb9dbf](https://github.com/ckeditor/ckeditor5-heading/commit/bcb9dbf)) ([d3d7107](https://github.com/ckeditor/ckeditor5-heading/commit/d3d7107))
+
+
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.4...v11.0.5) (2019-08-26)
 
 ### Bug fixes
