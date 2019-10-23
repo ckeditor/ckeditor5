@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.2.0...v15.0.0) (2019-10-23)
+
+### Features
+
+* Added `pluginName` to the editor plugin part of the feature. ([3b42798](https://github.com/ckeditor/ckeditor5-alignment/commit/3b42798))
+
+### Other changes
+
+* Updated translations. ([a719974](https://github.com/ckeditor/ckeditor5-alignment/commit/a719974)) ([2fed077](https://github.com/ckeditor/ckeditor5-alignment/commit/2fed077))
+
+
 ## [11.2.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.1.3...v11.2.0) (2019-08-26)
 
 ### Features
