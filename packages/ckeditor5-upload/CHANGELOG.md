@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v12.0.0...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* Add missing `catch()` clauses to file loader promises. ([40906d4](https://github.com/ckeditor/ckeditor5-upload/commit/40906d4))
+
+### Other changes
+
+* Updated translations. ([290db0f](https://github.com/ckeditor/ckeditor5-upload/commit/290db0f)) ([1d7e907](https://github.com/ckeditor/ckeditor5-upload/commit/1d7e907))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.1...v12.0.0) (2019-08-26)
 
 ### Features
