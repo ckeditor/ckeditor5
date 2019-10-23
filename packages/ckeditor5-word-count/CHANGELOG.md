@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v10.0.2...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Updated translations. ([ff823db](https://github.com/ckeditor/ckeditor5-word-count/commit/ff823db)) ([6d2cc2b](https://github.com/ckeditor/ckeditor5-word-count/commit/6d2cc2b))
+
+
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-word-count/compare/v10.0.1...v10.0.2) (2019-08-26)
 
 ### Bug fixes
