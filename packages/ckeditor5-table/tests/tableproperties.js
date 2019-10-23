@@ -35,16 +35,13 @@ describe( 'TableProperties', () => {
 		expect( TableProperties.pluginName ).to.equal( 'TableProperties' );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderColor' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderStyle' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderWidth' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'backgroundColor' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'width' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'height' ) ).to.be.true;
-	} );
+	describe( 'border', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderColor' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderStyle' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderWidth' ) ).to.be.true;
+		} );
 
-	describe( 'conversion', () => {
 		describe( 'upcast', () => {
 			it( 'should upcast border shorthand', () => {
 				editor.setData( '<table style="border:1px solid #f00"><tr><td>foo</td></tr></table>' );
@@ -171,30 +168,13 @@ describe( 'TableProperties', () => {
 				assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
 				assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 			} );
-
-			it( 'should upcast background-color', () => {
-				editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
-				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
-			} );
 		} );
 
 		describe( 'downcast', () => {
 			let table;
 
 			beforeEach( () => {
-				setModelData(
-					model,
-					'<table headingRows="0" headingColumns="0">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>foo</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-				table = model.document.getRoot().getNodeByPath( [ 0 ] );
+				table = createEmptyTable();
 			} );
 
 			it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
@@ -332,12 +312,6 @@ describe( 'TableProperties', () => {
 				);
 			} );
 
-			it( 'should downcast backgroundColor', () => {
-				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
-
-				assertTableStyle( editor, 'background-color:#f00;' );
-			} );
-
 			describe( 'change attribute', () => {
 				beforeEach( () => {
 					model.change( writer => {
@@ -460,4 +434,113 @@ describe( 'TableProperties', () => {
 			} );
 		} );
 	} );
+
+	describe( 'background color', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'backgroundColor' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast background-color', () => {
+				editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+			} );
+
+			it( 'should upcast from background shorthand', () => {
+				editor.setData( '<table style="background:#f00 center center"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let table;
+
+			beforeEach( () => {
+				table = createEmptyTable();
+			} );
+
+			it( 'should downcast backgroundColor', () => {
+				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+				assertTableStyle( editor, 'background-color:#f00;' );
+			} );
+		} );
+	} );
+
+	describe( 'width', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'width' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast width', () => {
+				editor.setData( '<table style="width:1337px"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let table;
+
+			beforeEach( () => {
+				table = createEmptyTable();
+			} );
+
+			it( 'should downcast width', () => {
+				model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+				assertTableStyle( editor, 'width:1337px;' );
+			} );
+		} );
+	} );
+
+	describe( 'height', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'height' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast height', () => {
+				editor.setData( '<table style="height:1337px"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let table;
+
+			beforeEach( () => {
+				table = createEmptyTable();
+			} );
+
+			it( 'should downcast height', () => {
+				model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+				assertTableStyle( editor, 'height:1337px;' );
+			} );
+		} );
+	} );
+
+	function createEmptyTable() {
+		setModelData(
+			model,
+			'<table headingRows="0" headingColumns="0">' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		return model.document.getRoot().getNodeByPath( [ 0 ] );
+	}
 } );

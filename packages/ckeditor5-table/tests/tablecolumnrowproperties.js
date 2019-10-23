@@ -12,7 +12,7 @@ import TableColumnRowProperties from '../src/tablecolumnrowproperites';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe.only( 'TableColumnRowProperties', () => {
+describe( 'TableColumnRowProperties', () => {
 	let editor, model;
 
 	beforeEach( () => {
