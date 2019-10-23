@@ -13,6 +13,8 @@ import Text from './text';
 import TextProxy from './textproxy';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
+// @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject } = require( '../dev-utils/utils' );
+
 /**
  * Model element. Type of {@link module:engine/model/node~Node node} that has a {@link module:engine/model/element~Element#name name} and
  * {@link module:engine/model/element~Element#getChildren child nodes}.
@@ -322,6 +324,67 @@ export default class Element extends Node {
 
 		return new Element( json.name, json.attributes, children );
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `<${ this.rootName || this.name }>`;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelElement: ' + this );
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // logExtended() {
+	// @if CK_DEBUG_ENGINE // 	console.log( `ModelElement: ${ this }, ${ this.childCount } children,
+	// @if CK_DEBUG_ENGINE //		attrs: ${ convertMapToStringifiedObject( this.getAttributes() ) }` );
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // logAll() {
+	// @if CK_DEBUG_ENGINE // 	console.log( '--------------------' );
+	// @if CK_DEBUG_ENGINE //
+	// @if CK_DEBUG_ENGINE // 	this.logExtended();
+	// @if CK_DEBUG_ENGINE //	console.log( 'List of children:' );
+	// @if CK_DEBUG_ENGINE //
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE // 		child.log();
+	// @if CK_DEBUG_ENGINE // 	}
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // printTree() {
+	// @if CK_DEBUG_ENGINE // 	let string = '';
+
+	// @if CK_DEBUG_ENGINE // 	string += '\t'.repeat( level );
+	// @if CK_DEBUG_ENGINE // 	string += `<${ this.rootName || this.name }${ convertMapToTags( this.getAttributes() ) }>`;
+
+	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE // 		string += '\n';
+
+	// @if CK_DEBUG_ENGINE // 		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE // 			const textAttrs = convertMapToTags( child._attrs );
+
+	// @if CK_DEBUG_ENGINE // 			string += '\t'.repeat( level + 1 );
+
+	// @if CK_DEBUG_ENGINE // 			if ( textAttrs !== '' ) {
+	// @if CK_DEBUG_ENGINE // 				string += `<$text${ textAttrs }>` + child.data + '</$text>';
+	// @if CK_DEBUG_ENGINE // 			} else {
+	// @if CK_DEBUG_ENGINE // 				string += child.data;
+	// @if CK_DEBUG_ENGINE // 			}
+	// @if CK_DEBUG_ENGINE // 		} else {
+	// @if CK_DEBUG_ENGINE // 			string += child.printTree( level + 1 );
+	// @if CK_DEBUG_ENGINE // 		}
+	// @if CK_DEBUG_ENGINE // 	}
+
+	// @if CK_DEBUG_ENGINE // 	if ( this.childCount ) {
+	// @if CK_DEBUG_ENGINE // 		string += '\n' + '\t'.repeat( level );
+	// @if CK_DEBUG_ENGINE // 	}
+
+	// @if CK_DEBUG_ENGINE // 	string += `</${ this.rootName || this.name }>`;
+
+	// @if CK_DEBUG_ENGINE // 	return string;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 // Converts strings to Text and non-iterables to arrays.

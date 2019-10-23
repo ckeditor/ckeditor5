@@ -233,6 +233,14 @@ export default class Model {
 	 * @param {module:engine/model/operation/operation~Operation} operation The operation to apply.
 	 */
 	applyOperation( operation ) {
+		// @if CK_DEBUG_ENGINE // console.log( 'Applying ' + operation );
+
+		// @if CK_DEBUG_ENGINE // if ( !this._operationLogs ) {
+		// @if CK_DEBUG_ENGINE //	this._operationLogs = [];
+		// @if CK_DEBUG_ENGINE // }
+
+		// @if CK_DEBUG_ENGINE // this._operationLogs.push( JSON.stringify( operation ) );
+
 		operation._execute();
 	}
 

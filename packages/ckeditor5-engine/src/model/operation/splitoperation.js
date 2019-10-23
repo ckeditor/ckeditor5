@@ -250,4 +250,10 @@ export default class SplitOperation extends Operation {
 
 		return split;
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `SplitOperation( ${ this.baseVersion } ): ${ this.splitPosition } ` +
+	// @if CK_DEBUG_ENGINE //		`( ${ this.howMany } ) -> ${ this.insertionPosition }` +
+	// @if CK_DEBUG_ENGINE //		`${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
+	// @if CK_DEBUG_ENGINE // }
 }

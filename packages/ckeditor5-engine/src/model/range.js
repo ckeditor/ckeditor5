@@ -958,4 +958,12 @@ export default class Range {
 	static fromJSON( json, doc ) {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `${ this.root } [ ${ this.start.path.join( ', ' ) } ] - [ ${ this.end.path.join( ', ' ) } ]`;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelPosition: ' + this );
+	// @if CK_DEBUG_ENGINE // }
 }

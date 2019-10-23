@@ -210,4 +210,10 @@ export default class MergeOperation extends Operation {
 
 		return new this( sourcePosition, json.howMany, targetPosition, graveyardPosition, json.baseVersion );
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `MergeOperation( ${ this.baseVersion } ): ` +
+	// @if CK_DEBUG_ENGINE //		`${ this.sourcePosition } -> ${ this.targetPosition }` +
+	// @if CK_DEBUG_ENGINE //		` ( ${ this.howMany } ), ${ this.graveyardPosition }`;
+	// @if CK_DEBUG_ENGINE // }
 }

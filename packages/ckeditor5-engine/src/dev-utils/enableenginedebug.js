@@ -11,26 +11,26 @@
 
 import OperationReplayer from './operationreplayer';
 
-import ModelPosition from '../model/position';
-import ModelRange from '../model/range';
-import ModelText from '../model/text';
-import ModelTextProxy from '../model/textproxy';
-import ModelElement from '../model/element';
-import Operation from '../model/operation/operation';
-import AttributeOperation from '../model/operation/attributeoperation';
-import DetachOperation from '../model/operation/detachoperation';
-import InsertOperation from '../model/operation/insertoperation';
-import MarkerOperation from '../model/operation/markeroperation';
-import MoveOperation from '../model/operation/moveoperation';
-import NoOperation from '../model/operation/nooperation';
-import RenameOperation from '../model/operation/renameoperation';
-import RootAttributeOperation from '../model/operation/rootattributeoperation';
-import SplitOperation from '../model/operation/splitoperation';
-import MergeOperation from '../model/operation/mergeoperation';
+// import ModelPosition from '../model/position';
+// import ModelRange from '../model/range';
+// import ModelText from '../model/text';
+// import ModelTextProxy from '../model/textproxy';
+// import ModelElement from '../model/element';
+// import Operation from '../model/operation/operation';
+// import AttributeOperation from '../model/operation/attributeoperation';
+// import DetachOperation from '../model/operation/detachoperation';
+// import InsertOperation from '../model/operation/insertoperation';
+// import MarkerOperation from '../model/operation/markeroperation';
+// import MoveOperation from '../model/operation/moveoperation';
+// import NoOperation from '../model/operation/nooperation';
+// import RenameOperation from '../model/operation/renameoperation';
+// import RootAttributeOperation from '../model/operation/rootattributeoperation';
+// import SplitOperation from '../model/operation/splitoperation';
+// import MergeOperation from '../model/operation/mergeoperation';
 import Model from '../model/model';
 import ModelDocument from '../model/document';
-import ModelDocumentFragment from '../model/documentfragment';
-import ModelRootElement from '../model/rootelement';
+// import ModelDocumentFragment from '../model/documentfragment';
+// import ModelRootElement from '../model/rootelement';
 
 import ViewDocument from '../view/document';
 import ViewElement from '../view/element';
@@ -156,208 +156,208 @@ export function disableEngineDebug() {
 }
 
 function enableLoggingTools() {
-	sandbox.mock( ModelPosition.prototype, 'toString', function() {
-		return `${ this.root } [ ${ this.path.join( ', ' ) } ]`;
-	} );
+	// sandbox.mock( ModelPosition.prototype, 'toString', function() {
+	// 	return `${ this.root } [ ${ this.path.join( ', ' ) } ]`;
+	// } );
 
-	sandbox.mock( ModelPosition.prototype, 'log', function() {
-		logger.log( 'ModelPosition: ' + this );
-	} );
+	// sandbox.mock( ModelPosition.prototype, 'log', function() {
+	// 	logger.log( 'ModelPosition: ' + this );
+	// } );
 
-	sandbox.mock( ModelRange.prototype, 'toString', function() {
-		return `${ this.root } [ ${ this.start.path.join( ', ' ) } ] - [ ${ this.end.path.join( ', ' ) } ]`;
-	} );
+	// sandbox.mock( ModelRange.prototype, 'toString', function() {
+	// 	return `${ this.root } [ ${ this.start.path.join( ', ' ) } ] - [ ${ this.end.path.join( ', ' ) } ]`;
+	// } );
 
-	sandbox.mock( ModelRange.prototype, 'log', function() {
-		logger.log( 'ModelRange: ' + this );
-	} );
+	// sandbox.mock( ModelRange.prototype, 'log', function() {
+	// 	logger.log( 'ModelRange: ' + this );
+	// } );
 
-	sandbox.mock( ModelText.prototype, 'toString', function() {
-		return `#${ this.data }`;
-	} );
+	// sandbox.mock( ModelText.prototype, 'toString', function() {
+	// 	return `#${ this.data }`;
+	// } );
 
-	sandbox.mock( ModelText.prototype, 'logExtended', function() {
-		logger.log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
-	} );
+	// sandbox.mock( ModelText.prototype, 'logExtended', function() {
+	// 	logger.log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
+	// } );
 
-	sandbox.mock( ModelText.prototype, 'log', function() {
-		logger.log( 'ModelText: ' + this );
-	} );
+	// sandbox.mock( ModelText.prototype, 'log', function() {
+	// 	logger.log( 'ModelText: ' + this );
+	// } );
 
-	sandbox.mock( ModelTextProxy.prototype, 'toString', function() {
-		return `#${ this.data }`;
-	} );
+	// sandbox.mock( ModelTextProxy.prototype, 'toString', function() {
+	// 	return `#${ this.data }`;
+	// } );
 
-	sandbox.mock( ModelTextProxy.prototype, 'logExtended', function() {
-		logger.log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
-	} );
+	// sandbox.mock( ModelTextProxy.prototype, 'logExtended', function() {
+	// 	logger.log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
+	// } );
 
-	sandbox.mock( ModelTextProxy.prototype, 'log', function() {
-		logger.log( 'ModelTextProxy: ' + this );
-	} );
+	// sandbox.mock( ModelTextProxy.prototype, 'log', function() {
+	// 	logger.log( 'ModelTextProxy: ' + this );
+	// } );
 
-	sandbox.mock( ModelElement.prototype, 'toString', function() {
-		return `<${ this.rootName || this.name }>`;
-	} );
+	// sandbox.mock( ModelElement.prototype, 'toString', function() {
+	// 	return `<${ this.rootName || this.name }>`;
+	// } );
 
-	sandbox.mock( ModelElement.prototype, 'log', function() {
-		logger.log( 'ModelElement: ' + this );
-	} );
+	// sandbox.mock( ModelElement.prototype, 'log', function() {
+	// 	logger.log( 'ModelElement: ' + this );
+	// } );
 
-	sandbox.mock( ModelElement.prototype, 'logExtended', function() {
-		logger.log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
-	} );
+	// sandbox.mock( ModelElement.prototype, 'logExtended', function() {
+	// 	logger.log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
+	// } );
 
-	sandbox.mock( ModelElement.prototype, 'logAll', function() {
-		logger.log( '--------------------' );
+	// sandbox.mock( ModelElement.prototype, 'logAll', function() {
+	// 	logger.log( '--------------------' );
 
-		this.logExtended();
-		logger.log( 'List of children:' );
+	// 	this.logExtended();
+	// 	logger.log( 'List of children:' );
 
-		for ( const child of this.getChildren() ) {
-			child.log();
-		}
-	} );
+	// 	for ( const child of this.getChildren() ) {
+	// 		child.log();
+	// 	}
+	// } );
 
-	sandbox.mock( ModelElement.prototype, 'printTree', function( level = 0 ) {
-		let string = '';
+	// sandbox.mock( ModelElement.prototype, 'printTree', function( level = 0 ) {
+	// 	let string = '';
 
-		string += '\t'.repeat( level ) + `<${ this.rootName || this.name }${ mapToTags( this.getAttributes() ) }>`;
+	// 	string += '\t'.repeat( level ) + `<${ this.rootName || this.name }${ mapToTags( this.getAttributes() ) }>`;
 
-		for ( const child of this.getChildren() ) {
-			string += '\n';
+	// 	for ( const child of this.getChildren() ) {
+	// 		string += '\n';
 
-			if ( child.is( 'text' ) ) {
-				const textAttrs = mapToTags( child._attrs );
+	// 		if ( child.is( 'text' ) ) {
+	// 			const textAttrs = mapToTags( child._attrs );
 
-				string += '\t'.repeat( level + 1 );
+	// 			string += '\t'.repeat( level + 1 );
 
-				if ( textAttrs !== '' ) {
-					string += `<$text${ textAttrs }>` + child.data + '</$text>';
-				} else {
-					string += child.data;
-				}
-			} else {
-				string += child.printTree( level + 1 );
-			}
-		}
+	// 			if ( textAttrs !== '' ) {
+	// 				string += `<$text${ textAttrs }>` + child.data + '</$text>';
+	// 			} else {
+	// 				string += child.data;
+	// 			}
+	// 		} else {
+	// 			string += child.printTree( level + 1 );
+	// 		}
+	// 	}
 
-		if ( this.childCount ) {
-			string += '\n' + '\t'.repeat( level );
-		}
+	// 	if ( this.childCount ) {
+	// 		string += '\n' + '\t'.repeat( level );
+	// 	}
 
-		string += `</${ this.rootName || this.name }>`;
+	// 	string += `</${ this.rootName || this.name }>`;
 
-		return string;
-	} );
+	// 	return string;
+	// } );
 
-	sandbox.mock( ModelElement.prototype, 'logTree', function() {
-		logger.log( this.printTree() );
-	} );
+	// sandbox.mock( ModelElement.prototype, 'logTree', function() {
+	// 	logger.log( this.printTree() );
+	// } );
 
-	sandbox.mock( ModelRootElement.prototype, 'toString', function() {
-		return this.rootName;
-	} );
+	// sandbox.mock( ModelRootElement.prototype, 'toString', function() {
+	// 	return this.rootName;
+	// } );
 
-	sandbox.mock( ModelRootElement.prototype, 'log', function() {
-		logger.log( 'ModelRootElement: ' + this );
-	} );
+	// sandbox.mock( ModelRootElement.prototype, 'log', function() {
+	// 	logger.log( 'ModelRootElement: ' + this );
+	// } );
 
-	sandbox.mock( ModelDocumentFragment.prototype, 'toString', function() {
-		return 'documentFragment';
-	} );
+	// sandbox.mock( ModelDocumentFragment.prototype, 'toString', function() {
+	// 	return 'documentFragment';
+	// } );
 
-	sandbox.mock( ModelDocumentFragment.prototype, 'log', function() {
-		logger.log( 'ModelDocumentFragment: ' + this );
-	} );
+	// sandbox.mock( ModelDocumentFragment.prototype, 'log', function() {
+	// 	logger.log( 'ModelDocumentFragment: ' + this );
+	// } );
 
-	sandbox.mock( ModelDocumentFragment.prototype, 'printTree', function() {
-		let string = 'ModelDocumentFragment: [';
+	// sandbox.mock( ModelDocumentFragment.prototype, 'printTree', function() {
+	// 	let string = 'ModelDocumentFragment: [';
 
-		for ( const child of this.getChildren() ) {
-			string += '\n';
+	// 	for ( const child of this.getChildren() ) {
+	// 		string += '\n';
 
-			if ( child.is( 'text' ) ) {
-				const textAttrs = mapToTags( child._attrs );
+	// 		if ( child.is( 'text' ) ) {
+	// 			const textAttrs = mapToTags( child._attrs );
 
-				string += '\t'.repeat( 1 );
+	// 			string += '\t'.repeat( 1 );
 
-				if ( textAttrs !== '' ) {
-					string += `<$text${ textAttrs }>` + child.data + '</$text>';
-				} else {
-					string += child.data;
-				}
-			} else {
-				string += child.printTree( 1 );
-			}
-		}
+	// 			if ( textAttrs !== '' ) {
+	// 				string += `<$text${ textAttrs }>` + child.data + '</$text>';
+	// 			} else {
+	// 				string += child.data;
+	// 			}
+	// 		} else {
+	// 			string += child.printTree( 1 );
+	// 		}
+	// 	}
 
-		string += '\n]';
+	// 	string += '\n]';
 
-		return string;
-	} );
+	// 	return string;
+	// } );
 
-	sandbox.mock( ModelDocumentFragment.prototype, 'logTree', function() {
-		logger.log( this.printTree() );
-	} );
+	// sandbox.mock( ModelDocumentFragment.prototype, 'logTree', function() {
+	// 	logger.log( this.printTree() );
+	// } );
 
-	sandbox.mock( Operation.prototype, 'log', function() {
-		logger.log( this.toString() );
-	} );
+	// sandbox.mock( Operation.prototype, 'log', function() {
+	// 	logger.log( this.toString() );
+	// } );
 
-	sandbox.mock( AttributeOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
-	} );
+	// sandbox.mock( AttributeOperation.prototype, 'toString', function() {
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+	// 		`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
+	// } );
 
-	sandbox.mock( DetachOperation.prototype, 'toString', function() {
-		const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
-		const nodes = Array.from( range.getItems() );
-		const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
+	// sandbox.mock( DetachOperation.prototype, 'toString', function() {
+	// 	const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
+	// 	const nodes = Array.from( range.getItems() );
+	// 	const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
 
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
-	} );
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
+	// } );
 
-	sandbox.mock( InsertOperation.prototype, 'toString', function() {
-		const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
+	// sandbox.mock( InsertOperation.prototype, 'toString', function() {
+	// 	const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
 
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
-	} );
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
+	// } );
 
-	sandbox.mock( MarkerOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
-	} );
+	// sandbox.mock( MarkerOperation.prototype, 'toString', function() {
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+	// 		`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
+	// } );
 
-	sandbox.mock( MoveOperation.prototype, 'toString', function() {
-		const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
+	// sandbox.mock( MoveOperation.prototype, 'toString', function() {
+	// 	const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
 
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ range } -> ${ this.targetPosition }`;
-	} );
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ${ range } -> ${ this.targetPosition }`;
+	// } );
 
-	sandbox.mock( NoOperation.prototype, 'toString', function() {
-		return `NoOperation( ${ this.baseVersion } )`;
-	} );
+	// sandbox.mock( NoOperation.prototype, 'toString', function() {
+	// 	return `NoOperation( ${ this.baseVersion } )`;
+	// } );
 
-	sandbox.mock( RenameOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
-	} );
+	// sandbox.mock( RenameOperation.prototype, 'toString', function() {
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+	// 		`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
+	// } );
 
-	sandbox.mock( RootAttributeOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
-	} );
+	// sandbox.mock( RootAttributeOperation.prototype, 'toString', function() {
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+	// 		`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
+	// } );
 
-	sandbox.mock( MergeOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ this.sourcePosition } -> ${ this.targetPosition } ( ${ this.howMany } ), ${ this.graveyardPosition }`;
-	} );
+	// sandbox.mock( MergeOperation.prototype, 'toString', function() {
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+	// 		`${ this.sourcePosition } -> ${ this.targetPosition } ( ${ this.howMany } ), ${ this.graveyardPosition }`;
+	// } );
 
-	sandbox.mock( SplitOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ this.splitPosition } ` +
-			`( ${ this.howMany } ) -> ${ this.insertionPosition }${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
-	} );
+	// sandbox.mock( SplitOperation.prototype, 'toString', function() {
+	// 	return getClassName( this ) + `( ${ this.baseVersion } ): ${ this.splitPosition } ` +
+	// 		`( ${ this.howMany } ) -> ${ this.insertionPosition }${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
+	// } );
 
 	sandbox.mock( ViewText.prototype, 'toString', function() {
 		return `#${ this.data }`;
@@ -457,19 +457,19 @@ function enableReplayerTools() {
 }
 
 function enableDocumentTools() {
-	const _modelApplyOperation = Model.prototype.applyOperation;
+	// const _modelApplyOperation = Model.prototype.applyOperation;
 
-	sandbox.mock( Model.prototype, 'applyOperation', function( operation ) {
-		logger.log( 'Applying ' + operation );
+	// sandbox.mock( Model.prototype, 'applyOperation', function( operation ) {
+	// 	logger.log( 'Applying ' + operation );
 
-		if ( !this._operationLogs ) {
-			this._operationLogs = [];
-		}
+	// 	if ( !this._operationLogs ) {
+	// 		this._operationLogs = [];
+	// 	}
 
-		this._operationLogs.push( JSON.stringify( operation ) );
+	// 	this._operationLogs.push( JSON.stringify( operation ) );
 
-		return _modelApplyOperation.call( this, operation );
-	} );
+	// 	return _modelApplyOperation.call( this, operation );
+	// } );
 
 	sandbox.mock( ModelDocument.prototype, 'log', function( version = null ) {
 		version = version === null ? this.version : version;
@@ -554,25 +554,18 @@ function dumpTrees( document, version ) {
 	}
 }
 
-// Helper function, returns the class name of a given `Operation`.
-// @param {module:engine/model/operation/operation~Operation}
-// @returns {String} Class name.
-function getClassName( obj ) {
-	return obj.constructor.className;
-}
-
 // Helper function, converts a map to the {"key1":"value1","key2":"value2"} format.
 // @param {Map} map Map to convert.
 // @returns {String} Converted map.
-function mapString( map ) {
-	const obj = {};
+// function mapString( map ) {
+// 	const obj = {};
 
-	for ( const entry of map ) {
-		obj[ entry[ 0 ] ] = entry[ 1 ];
-	}
+// 	for ( const entry of map ) {
+// 		obj[ entry[ 0 ] ] = entry[ 1 ];
+// 	}
 
-	return JSON.stringify( obj );
-}
+// 	return JSON.stringify( obj );
+// }
 
 // Helper function, converts a map to the key1="value1" key2="value1" format.
 // @param {Map} map Map to convert.

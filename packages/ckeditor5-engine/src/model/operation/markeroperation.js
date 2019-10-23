@@ -146,4 +146,9 @@ export default class MarkerOperation extends Operation {
 			json.baseVersion
 		);
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `MarkerOperation( ${ this.baseVersion } ): ` +
+	// @if CK_DEBUG_ENGINE //		`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
+	// @if CK_DEBUG_ENGINE // }
 }
