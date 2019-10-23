@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v11.1.2...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Added `pluginName` property to editing plugin. ([a3bf928](https://github.com/ckeditor/ckeditor5-link/commit/a3bf928))
+* Updated translations. ([34b5552](https://github.com/ckeditor/ckeditor5-link/commit/34b5552)) ([9653092](https://github.com/ckeditor/ckeditor5-link/commit/9653092))
+
+
 ## [11.1.2](https://github.com/ckeditor/ckeditor5-link/compare/v11.1.1...v11.1.2) (2019-08-26)
 
 ### Bug fixes
