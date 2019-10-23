@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.1.0...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* `IndentBlock` should integrate with other features regardless of the editor plugin order. Closes [ckeditor/ckeditor5#2359](https://github.com/ckeditor/ckeditor5/issues/2359). ([cf15eab](https://github.com/ckeditor/ckeditor5-indent/commit/cf15eab))
+
+### Other changes
+
+* Updated translations. ([857389c](https://github.com/ckeditor/ckeditor5-indent/commit/857389c)) ([3a262fd](https://github.com/ckeditor/ckeditor5-indent/commit/3a262fd))
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.0.1...v10.1.0) (2019-08-26)
 
 ### Features
