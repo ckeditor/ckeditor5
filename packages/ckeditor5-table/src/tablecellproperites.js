@@ -28,8 +28,7 @@ export default class TableCellProperties extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const model = editor.model;
-		const schema = model.schema;
+		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
 		// Table cell attributes.

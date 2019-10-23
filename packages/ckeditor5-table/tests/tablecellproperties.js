@@ -35,17 +35,14 @@ describe( 'TableCellProperties', () => {
 		expect( TableCellProperties.pluginName ).to.equal( 'TableCellProperties' );
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderColor' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderStyle' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderWidth' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'backgroundColor' ) ).to.be.true;
-		// expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'width' ) ).to.be.true;
-		// expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'height' ) ).to.be.true;
-	} );
+	describe( 'border', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderColor' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderStyle' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderWidth' ) ).to.be.true;
+		} );
 
-	describe( 'conversion', () => {
-		describe( 'upcast', () => {
+		describe( 'upcast conversion', () => {
 			it( 'should upcast border shorthand', () => {
 				editor.setData( '<table><tr><td style="border:1px solid #f00">foo</td></tr></table>' );
 
@@ -182,27 +179,6 @@ describe( 'TableCellProperties', () => {
 				assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
 			} );
 
-			it( 'should upcast background-color', () => {
-				editor.setData( '<table><tr><td style="background-color:#f00">foo</td></tr></table>' );
-				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-				expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
-			} );
-
-			it( 'should upcast padding shorthand', () => {
-				editor.setData( '<table><tr><td style="padding:2px 4em">foo</td></tr></table>' );
-				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-				assertTRBLAttribute( tableCell, 'padding', '2px', '4em' );
-			} );
-
-			it( 'should upcast vertical-align', () => {
-				editor.setData( '<table><tr><td style="vertical-align:top">foo</td></tr></table>' );
-				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-
-				expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
-			} );
-
 			it( 'should allow to be overriden (only border-top consumed)', () => {
 				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.viewItem, {
@@ -220,7 +196,7 @@ describe( 'TableCellProperties', () => {
 			} );
 		} );
 
-		describe( 'downcast', () => {
+		describe( 'downcast conversion', () => {
 			let tableCell;
 
 			beforeEach( () => {
@@ -372,40 +348,6 @@ describe( 'TableCellProperties', () => {
 				);
 			} );
 
-			it( 'should downcast backgroundColor', () => {
-				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
-
-				assertTableCellStyle( editor, 'background-color:#f00;' );
-			} );
-
-			it( 'should downcast padding (same top, right, bottom, left)', () => {
-				model.change( writer => writer.setAttribute( 'padding', {
-					top: '2px',
-					right: '2px',
-					bottom: '2px',
-					left: '2px'
-				}, tableCell ) );
-
-				assertTableCellStyle( editor, 'padding:2px;' );
-			} );
-
-			it( 'should downcast padding (different top, right, bottom, left)', () => {
-				model.change( writer => writer.setAttribute( 'padding', {
-					top: '2px',
-					right: '3px',
-					bottom: '4px',
-					left: '5px'
-				}, tableCell ) );
-
-				assertTableCellStyle( editor, 'padding:2px 3px 4px 5px;' );
-			} );
-
-			it( 'should downcast verticalAlignment', () => {
-				model.change( writer => writer.setAttribute( 'verticalAlignment', 'middle', tableCell ) );
-
-				assertTableCellStyle( editor, 'vertical-align:middle;' );
-			} );
-
 			describe( 'change attribute', () => {
 				beforeEach( () => {
 					model.change( writer => {
@@ -525,6 +467,139 @@ describe( 'TableCellProperties', () => {
 						'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 					);
 				} );
+			} );
+		} );
+	} );
+
+	describe( 'background color', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'backgroundColor' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast background-color', () => {
+				editor.setData( '<table><tr><td style="background-color:#f00">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let tableCell;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+			} );
+
+			it( 'should downcast backgroundColor', () => {
+				model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+
+				assertTableCellStyle( editor, 'background-color:#f00;' );
+			} );
+		} );
+	} );
+
+	describe( 'vertical alignment', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'verticalAlignment' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast vertical-align', () => {
+				editor.setData( '<table><tr><td style="vertical-align:top">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let tableCell;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+			} );
+
+			it( 'should downcast verticalAlignment', () => {
+				model.change( writer => writer.setAttribute( 'verticalAlignment', 'middle', tableCell ) );
+
+				assertTableCellStyle( editor, 'vertical-align:middle;' );
+			} );
+		} );
+	} );
+
+	describe( 'padding', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'padding' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast padding shorthand', () => {
+				editor.setData( '<table><tr><td style="padding:2px 4em">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				assertTRBLAttribute( tableCell, 'padding', '2px', '4em' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let tableCell;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+			} );
+
+			it( 'should downcast padding (same top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'padding', {
+					top: '2px',
+					right: '2px',
+					bottom: '2px',
+					left: '2px'
+				}, tableCell ) );
+
+				assertTableCellStyle( editor, 'padding:2px;' );
+			} );
+
+			it( 'should downcast padding (different top, right, bottom, left)', () => {
+				model.change( writer => writer.setAttribute( 'padding', {
+					top: '2px',
+					right: '3px',
+					bottom: '4px',
+					left: '5px'
+				}, tableCell ) );
+
+				assertTableCellStyle( editor, 'padding:2px 3px 4px 5px;' );
 			} );
 		} );
 	} );

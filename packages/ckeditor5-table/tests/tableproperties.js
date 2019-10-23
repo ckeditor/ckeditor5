@@ -42,7 +42,7 @@ describe( 'TableProperties', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderWidth' ) ).to.be.true;
 		} );
 
-		describe( 'upcast', () => {
+		describe( 'upcast conversion', () => {
 			it( 'should upcast border shorthand', () => {
 				editor.setData( '<table style="border:1px solid #f00"><tr><td>foo</td></tr></table>' );
 
@@ -170,7 +170,7 @@ describe( 'TableProperties', () => {
 			} );
 		} );
 
-		describe( 'downcast', () => {
+		describe( 'downcast conversion', () => {
 			let table;
 
 			beforeEach( () => {
