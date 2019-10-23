@@ -28,16 +28,14 @@ export default class TableColumnRowProperties extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const model = editor.model;
-		const schema = model.schema;
+		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
-		// Table row attributes.
-		schema.extend( 'tableRow', {
+		schema.extend( 'tableCell', {
 			allowAttributes: [ 'height' ]
 		} );
-		upcastAttribute( conversion, 'tableRow', 'height', 'height' );
-		downcastToStyle( conversion, 'tableRow', 'height', 'height' );
+		upcastAttribute( conversion, 'tableCell', 'height', 'height' );
+		downcastToStyle( conversion, 'tableCell', 'height', 'height' );
 
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'width' ]
