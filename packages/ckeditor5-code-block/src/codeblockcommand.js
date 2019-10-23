@@ -102,14 +102,15 @@ export default class CodeBlockCommand extends Command {
 	 */
 	_applyCodeBlock( writer, blocks ) {
 		const schema = this.editor.model.schema;
-		const allowedBlock = blocks.filter( block => canBeCodeBlock( schema, block ) );
+		const allowedBlocks = blocks.filter( block => canBeCodeBlock( schema, block ) );
 
-		for ( const block of allowedBlock ) {
+		for ( const block of allowedBlocks ) {
 			writer.rename( block, 'codeBlock' );
+			schema.removeDisallowedAttributes( [ block ], writer );
 		}
 
-		allowedBlock.reverse().forEach( ( currentBlock, i ) => {
-			const nextBlock = allowedBlock[ i + 1 ];
+		allowedBlocks.reverse().forEach( ( currentBlock, i ) => {
+			const nextBlock = allowedBlocks[ i + 1 ];
 
 			if ( currentBlock.previousSibling === nextBlock ) {
 				writer.appendElement( 'softBreak', nextBlock );
@@ -149,10 +150,6 @@ function canBeCodeBlock( schema, element ) {
 	}
 
 	if ( !schema.checkChild( element.parent, 'codeBlock' ) ) {
-		return false;
-	}
-
-	if ( !schema.isBlock( element ) && !schema.checkChild( element, '$text' ) ) {
 		return false;
 	}
 
