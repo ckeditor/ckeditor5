@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.2.0...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* To-do list styles should meet WCAG contrast standards and work with other editor features (e.g. font size). Closes [ckeditor/ckeditor5-list#146](https://github.com/ckeditor/ckeditor5-list/issues/146). Closes [ckeditor/ckeditor5-list#136](https://github.com/ckeditor/ckeditor5-list/issues/136). ([0d4a5e2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0d4a5e2))
+
+  Also moved some to-do list styles from ckeditor5-list (code refactoring). 
+
+### Other changes
+
+* Adjusted toolbar styles to allow automatic items grouping (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([e73b50d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/e73b50d))
+
+
 ## [14.2.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.1.1...v14.2.0) (2019-08-26)
 
 ### Features
