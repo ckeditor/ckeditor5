@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v11.0.5...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* Autoformat transformations in blocks containing inline elements. Closes [ckeditor/ckeditor5#1955](https://github.com/ckeditor/ckeditor5/issues/1955). ([133c647](https://github.com/ckeditor/ckeditor5-autoformat/commit/133c647))
+
+### Other changes
+
+* Add `pluginName` property to editing plugins. ([44fcbc7](https://github.com/ckeditor/ckeditor5-autoformat/commit/44fcbc7))
+
+
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-autoformat/compare/v11.0.4...v11.0.5) (2019-08-26)
 
 ### Other changes
