@@ -117,7 +117,7 @@ export class StylesConverter {
 			styles
 		};
 
-		this.fire( 'extract:' + name, data );
+		this.fire( `extract:${ name }`, data );
 
 		if ( data.path ) {
 			return get( styles, data.path );
@@ -126,16 +126,6 @@ export class StylesConverter {
 		if ( data.value ) {
 			return data.value;
 		}
-
-		// if ( this.extractors.has( name ) ) {
-		// 	const extractor = this.extractors.get( name );
-		//
-		// 	if ( typeof extractor === 'string' ) {
-		// 		return this.getNormalized( extractor, styles );
-		// 	}
-		//
-		// 	return extractor( styles, this );
-		// }
 
 		return get( styles, toPath( name ) );
 	}
@@ -226,7 +216,7 @@ export default class Styles {
 	 *
 	 * Supports shorthands.
 	 *
-	 * @param {String} name
+	 * @param {String} propertyName
 	 * @returns {Boolean}
 	 */
 	hasProperty( propertyName ) {

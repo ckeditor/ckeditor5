@@ -131,7 +131,9 @@ function getBorderPropertyPositionNormalizer( property, side ) {
 
 function getBorderPositionExtractor( which ) {
 	return ( evt, data ) => {
-		data.value = extractBorderPosition( data.styles.border, which, data );
+		if ( data.styles.border ) {
+			data.value = extractBorderPosition( data.styles.border, which, data );
+		}
 	};
 }
 
