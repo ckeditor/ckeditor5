@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.5...v15.0.0) (2019-10-23)
+
+### Features
+
+* Provided error handling for save actions. Closes [ckeditor/ckeditor5#1546](https://github.com/ckeditor/ckeditor5/issues/1546). ([d6079bf](https://github.com/ckeditor/ckeditor5-autosave/commit/d6079bf))
+
+### Other changes
+
+* Updated translations. ([115bf18](https://github.com/ckeditor/ckeditor5-autosave/commit/115bf18)) 
+
+
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.4...v11.0.5) (2019-08-26)
 
 ### Other changes
