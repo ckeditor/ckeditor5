@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v11.0.0...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Made the Watchdog#setDestructor() method optional and default to editor => editor.destroy(). Closes [#21](https://github.com/ckeditor/ckeditor5-watchdog/issues/21). ([5a9dc0c](https://github.com/ckeditor/ckeditor5-watchdog/commit/5a9dc0c))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v10.0.1...v11.0.0) (2019-08-26)
 
 ### Features
