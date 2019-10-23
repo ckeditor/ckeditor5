@@ -20,12 +20,12 @@ Changelog
 * Improved performance when working with fake selections. Closes [#1791](https://github.com/ckeditor/ckeditor5-engine/issues/1791). ([f073ad5](https://github.com/ckeditor/ckeditor5-engine/commit/f073ad5))
 * Placeholder should not be visible in the read-only mode. Closes [ckeditor/ckeditor5#1987](https://github.com/ckeditor/ckeditor5/issues/1987). ([730c417](https://github.com/ckeditor/ckeditor5-engine/commit/730c417))
 * Remove only real block fillers on DOM to view conversion. Closes [#404](https://github.com/ckeditor/ckeditor5-engine/issues/404). ([6d2810b](https://github.com/ckeditor/ckeditor5-engine/commit/6d2810b))
-* The renderer shouold not update DOM selection when document has active composition. Closes [#1782](https://github.com/ckeditor/ckeditor5-engine/issues/1782). Closes [ckeditor/ckeditor5#1333](https://github.com/ckeditor/ckeditor5/issues/1333). ([c698683](https://github.com/ckeditor/ckeditor5-engine/commit/c698683))
+* The renderer should not update DOM selection when document has active composition. Closes [#1782](https://github.com/ckeditor/ckeditor5-engine/issues/1782). Closes [ckeditor/ckeditor5#1333](https://github.com/ckeditor/ckeditor5/issues/1333). ([c698683](https://github.com/ckeditor/ckeditor5-engine/commit/c698683))
 
 ### Other changes
 
 * Added error handling to the common code execution paths. Part of [ckeditor/ckeditor5#1304](https://github.com/ckeditor/ckeditor5/issues/1304). ([220b52f](https://github.com/ckeditor/ckeditor5-engine/commit/220b52f))
-* Remove the `Selection#getTopMostBlocks()` method. Closes [ckeditor/ckeditor5-widget#95](https://github.com/ckeditor/ckeditor5-widget/issues/95). Closes [ckeditor/ckeditor5-table#199](https://github.com/ckeditor/ckeditor5-table/issues/199). ([7970f17](https://github.com/ckeditor/ckeditor5-engine/commit/7970f17))
+* Removed the `Selection#getTopMostBlocks()` method. Closes [ckeditor/ckeditor5-widget#95](https://github.com/ckeditor/ckeditor5-widget/issues/95). Closes [ckeditor/ckeditor5-table#199](https://github.com/ckeditor/ckeditor5-table/issues/199). ([7970f17](https://github.com/ckeditor/ckeditor5-engine/commit/7970f17))
 
 
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.1...v14.0.0) (2019-08-26)
