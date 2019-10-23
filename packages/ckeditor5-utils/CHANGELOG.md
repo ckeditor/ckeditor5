@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v14.0.0...v15.0.0) (2019-10-23)
+
+### Features
+
+* Implemented the `getResizeObserver()` helper that offers an entry to the native `ResizeObserver` API (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([875d5a4](https://github.com/ckeditor/ckeditor5-utils/commit/875d5a4))
+* Introduce `assertEqualMarkup()` test util method. Closes [ckeditor/ckeditor5-paste-from-office#14](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/14). ([ee1655f](https://github.com/ckeditor/ckeditor5-utils/commit/ee1655f))
+* Introduced support for creating elements in other XML namespaces. See [ckeditor/ckeditor5#1842](https://github.com/ckeditor/ckeditor5/issues/1842). ([37fbcb9](https://github.com/ckeditor/ckeditor5-utils/commit/37fbcb9))
+
+  Thanks [@Sebobo](https://github.com/Sebobo)!
+
+### Bug fixes
+
+* `Rect#excludeScrollbarsAndBorders` should support RTL environments. Fixed incorrect output of the method. Closes [#297](https://github.com/ckeditor/ckeditor5-utils/issues/297). ([35f34fc](https://github.com/ckeditor/ckeditor5-utils/commit/35f34fc))
+
+### Other changes
+
+* Introduced the `CKEditorError.rethrowUnexpectedError()` helper. Added custom error handling for the `Emitter#fire()` function. Part of [ckeditor/ckeditor5#1304](https://github.com/ckeditor/ckeditor5/issues/1304). ([1d84705](https://github.com/ckeditor/ckeditor5-utils/commit/1d84705))
+
+
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.1...v14.0.0) (2019-08-26)
 
 ### Features
