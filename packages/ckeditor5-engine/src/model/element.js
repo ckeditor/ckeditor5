@@ -13,7 +13,7 @@ import Text from './text';
 import TextProxy from './textproxy';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
-// @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject, convertMapToTags } = require( '../dev-utils/utils' );
 
 /**
  * Model element. Type of {@link module:engine/model/node~Node node} that has a {@link module:engine/model/element~Element#name name} and
@@ -349,7 +349,7 @@ export default class Element extends Node {
 	// @if CK_DEBUG_ENGINE // 	}
 	// @if CK_DEBUG_ENGINE // }
 
-	// @if CK_DEBUG_ENGINE // printTree() {
+	// @if CK_DEBUG_ENGINE // printTree( level = 0) {
 	// @if CK_DEBUG_ENGINE // 	let string = '';
 
 	// @if CK_DEBUG_ENGINE // 	string += '\t'.repeat( level );

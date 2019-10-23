@@ -18,7 +18,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 import { clone } from 'lodash-es';
 
-// @if CK_DEBUG_ENGINE // const { dumpTrees, logDocument } = require( '../dev-tools/utils' );
+// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
 const graveyardName = '$graveyard';
 

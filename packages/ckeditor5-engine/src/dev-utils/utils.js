@@ -55,6 +55,8 @@ const maxTreeDumpLength = 20;
  * @param {*} version
  */
 export function dumpTrees( document, version ) {
+	console.log( document, version );
+
 	let string = '';
 
 	for ( const root of document.roots ) {
@@ -70,6 +72,17 @@ export function dumpTrees( document, version ) {
 	}
 }
 
+export function initDocumentDumping( document ) {
+	document[ treeDump ] = [];
+}
+
+/**
+ * Helper function that dumps document for the given version.
+ *
+ * @private
+ * @param {*} document
+ * @param {*} version
+ */
 export function logDocument( document, version ) {
 	console.log( '--------------------' );
 

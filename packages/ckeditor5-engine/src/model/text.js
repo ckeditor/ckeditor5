@@ -9,7 +9,7 @@
 
 import Node from './node';
 
-// @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-tools/utils' );
+// @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
 /**
  * Model text node. Type of {@link module:engine/model/node~Node node} that contains {@link module:engine/model/text~Text#data text data}.

@@ -26,8 +26,8 @@ import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-// @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-tools/utils' );
-// @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-tools/operation-replayer' ).default;
+// @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
 
 /**
  * Editor's data model. Read about the model in the
@@ -253,8 +253,6 @@ export default class Model {
 		// @if CK_DEBUG_ENGINE //}
 
 		// @if CK_DEBUG_ENGINE //this._appliedOperations.push( operation );
-
-		// @if CK_DEBUG_ENGINE //return _modelApplyOperation.call( this, operation );
 
 		operation._execute();
 	}

@@ -15,7 +15,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import { isPlainObject } from 'lodash-es';
 
-// @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-tools/utils' );
+// @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
 /**
  * View element.
@@ -775,7 +775,7 @@ export default class Element extends Node {
 	 * @method module:engine/view/element~Element#getFillerOffset
 	 */
 
-	// @if CK_DEBUG_ENGINE // printTree() {
+	// @if CK_DEBUG_ENGINE // printTree( level = 0) {
 	// @if CK_DEBUG_ENGINE // 	let string = '';
 
 	// @if CK_DEBUG_ENGINE //	string += '\t'.repeat( level ) + `<${ this.name }${ convertMapToTags( this.getAttributes() ) }>`;

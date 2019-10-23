@@ -12,7 +12,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
-// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-tools/utils' );
+// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
 /**
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
