@@ -4,6 +4,10 @@
  */
 
 /**
+ * Note: This package is used only internally for debugging purposes and should not be used
+ * in other environments. It uses a few special methods not existing in the default
+ * building process. That is also why there are no tests for this file.
+ *
  * @module engine/dev-utils/utils
  */
 
@@ -43,14 +47,11 @@ export function convertMapToStringifiedObject( map ) {
 	return JSON.stringify( obj );
 }
 
-/**
- * @private
- */
-export const treeDump = Symbol( '_treeDump' );
+const treeDump = Symbol( '_treeDump' );
 const maxTreeDumpLength = 20;
 
 /**
- * Helper function, stores the `document` state for a given `version` as a string in a private property.
+ * Helper function that stores the `document` state for a given `version`.
  *
  * @private
  * @param {*} document
@@ -74,12 +75,18 @@ export function dumpTrees( document, version ) {
 	}
 }
 
+/**
+ * Helper function that initializes document dumping.
+ *
+ * @private
+ * @param {*} document
+ */
 export function initDocumentDumping( document ) {
 	document[ treeDump ] = [];
 }
 
 /**
- * Helper function that dumps document for the given version.
+ * Helper function that logs document for the given version.
  *
  * @private
  * @param {*} document

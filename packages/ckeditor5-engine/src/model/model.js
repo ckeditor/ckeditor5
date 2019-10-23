@@ -302,7 +302,7 @@ export default class Model {
 	 *
 	 *		// Let's create a document fragment containing such content as:
 	 *		//
-	 *		// <paragrap>foo</paragraph>
+	 *		// <paragraph>foo</paragraph>
 	 *		// <blockQuote>
 	 *		//    <paragraph>bar</paragraph>
 	 *		// </blockQuote>
