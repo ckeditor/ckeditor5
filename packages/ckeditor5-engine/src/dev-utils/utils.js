@@ -7,6 +7,8 @@
  * @module engine/dev-utils/utils
  */
 
+/* globals console */
+
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.
  *
