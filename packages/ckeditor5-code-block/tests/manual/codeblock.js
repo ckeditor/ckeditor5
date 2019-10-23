@@ -8,11 +8,12 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ CodeBlock, ArticlePluginSet ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'blockQuote', 'codeBlock', 'undo', 'redo', 'insertTable' ]
+		plugins: [ Code, CodeBlock, ArticlePluginSet ],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'code', 'blockQuote', 'codeBlock', 'undo', 'redo', 'insertTable' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import codeBlockIcon from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
+import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
 
 /**
