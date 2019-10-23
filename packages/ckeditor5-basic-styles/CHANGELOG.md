@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.4...v15.0.0) (2019-10-23)
+
+### Features
+
+* Provided support for numeric values for the `font-weight` attribute. Closes [#94](https://github.com/ckeditor/ckeditor5-basic-styles/issues/94). Closes [ckeditor/ckeditor5-paste-from-office#74](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/74). ([25a0d7c](https://github.com/ckeditor/ckeditor5-basic-styles/commit/25a0d7c))
+
+### Other changes
+
+* Added `pluginName` property to editing plugins. ([d91773f](https://github.com/ckeditor/ckeditor5-basic-styles/commit/d91773f))
+* Updated translations. ([56d6060](https://github.com/ckeditor/ckeditor5-basic-styles/commit/56d6060)) 
+
+
 ## [11.1.4](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.3...v11.1.4) (2019-08-26)
 
 ### Bug fixes
