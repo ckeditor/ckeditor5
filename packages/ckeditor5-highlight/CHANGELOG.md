@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.5...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Added `pluginName` property. ([824dcc1](https://github.com/ckeditor/ckeditor5-highlight/commit/824dcc1))
+* Updated translations. ([ac64146](https://github.com/ckeditor/ckeditor5-highlight/commit/ac64146)) ([d87a3ee](https://github.com/ckeditor/ckeditor5-highlight/commit/d87a3ee))
+
+
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.4...v11.0.5) (2019-08-26)
 
 ### Bug fixes
