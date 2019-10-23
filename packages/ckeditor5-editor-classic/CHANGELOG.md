@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v12.1.4...v15.0.0) (2019-10-23)
+
+### Features
+
+* Enabled automatic items grouping in the main editor toolbar when there is not enough space to display them in a single row (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([4d20b70](https://github.com/ckeditor/ckeditor5-editor-classic/commit/4d20b70))
+
+
 ## [12.1.4](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v12.1.3...v12.1.4) (2019-08-26)
 
 ### Other changes
