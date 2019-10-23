@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-remove-format/compare/v10.0.4...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Updated translations. ([93516d9](https://github.com/ckeditor/ckeditor5-remove-format/commit/93516d9)) 
+
+
 ## [10.0.4](https://github.com/ckeditor/ckeditor5-remove-format/compare/v10.0.3...v10.0.4) (2019-08-26)
 
 ### Other changes
