@@ -156,8 +156,8 @@ ClassicEditor
 
 The allowed file types that can be uploaded need to be configured in two places:
 
-* On the client-side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
-* On the server-side, in CKFinder, restricting the file formats that are accepted in CKFinder.
+* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
+* On the server side, in CKFinder, restricting the file formats that are accepted in CKFinder.
 
 #### Client-side configuration
 
