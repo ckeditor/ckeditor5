@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.3.0...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Added custom error handling to the `editor.execute()` method. Part of [ckeditor/ckeditor5#1304](https://github.com/ckeditor/ckeditor5/issues/1304). ([c1babca](https://github.com/ckeditor/ckeditor5-core/commit/c1babca))
+* Updated translations. ([a7d36a8](https://github.com/ckeditor/ckeditor5-core/commit/a7d36a8)) 
+
+
 ## [12.3.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.1...v12.3.0) (2019-08-26)
 
 ### Features
