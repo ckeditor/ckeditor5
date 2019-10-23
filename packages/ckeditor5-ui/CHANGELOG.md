@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v14.0.0...v15.0.0) (2019-10-23)
+
+### MAJOR BREAKING CHANGES
+
+* The internal structure of the component has changed. Toolbar items are no longer direct descendants of the toolbar in DOM, which may affect some integrations (mainly CSS selectors if adjustments were made to the styles).
+
+### Features
+
+* Implemented automatic items grouping in the `ToolbarView` component. Closes [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416). ([46911bf](https://github.com/ckeditor/ckeditor5-ui/commit/46911bf))
+
+### Other changes
+
+* Updated translations. ([c233bb7](https://github.com/ckeditor/ckeditor5-ui/commit/c233bb7)) ([f8f07b2](https://github.com/ckeditor/ckeditor5-ui/commit/f8f07b2))
+
+
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.2...v14.0.0) (2019-08-26)
 
 ### Features
