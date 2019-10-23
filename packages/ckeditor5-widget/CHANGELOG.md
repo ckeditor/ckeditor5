@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.1.0...v15.0.0) (2019-10-23)
+
+### MAJOR BREAKING CHANGES
+
+* The `drag-handler.svg` icon is now `drag-handle.svg`. If you use it in your integration, please update the path.
+* The `hasSelectionHandler` option of the [`toWidget()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_widget_utils.html#static-function-toWidget) utility has been renamed to `hasSelectionHandle`. Consider this change if you create your own widgets using this helper.
+* `.ck-widget__selection-handler` and `.ck-widget_with-selection-handler` CSS classes set on widgets have been renamed to `.ck-widget__selection-handle` and `.ck-widget_with-selection-handle`. This change may affect styling in your integration.
+
+### Bug fixes
+
+* Initial resize of a side image with no width predefined now gives correct percentage values. ([6c2c52e](https://github.com/ckeditor/ckeditor5-widget/commit/6c2c52e))
+* Keyboard navigation should work around widgets in RTL content. Closes [#97](https://github.com/ckeditor/ckeditor5-widget/issues/97). ([dfbf88d](https://github.com/ckeditor/ckeditor5-widget/commit/dfbf88d))
+
+### Other changes
+
+* Improved the resizer performance. Closes [ckeditor/ckeditor5#5191](https://github.com/ckeditor/ckeditor5/issues/5191). ([1d1de77](https://github.com/ckeditor/ckeditor5-widget/commit/1d1de77))
+* Renamed "handler" to "handle" in the entire package. Closes [#99](https://github.com/ckeditor/ckeditor5-widget/issues/99). ([1d35884](https://github.com/ckeditor/ckeditor5-widget/commit/1d35884))
+* Updated translations. ([b9cb673](https://github.com/ckeditor/ckeditor5-widget/commit/b9cb673)) ([daea4f5](https://github.com/ckeditor/ckeditor5-widget/commit/daea4f5))
+
+
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.4...v11.1.0) (2019-08-26)
 
 ### Features
