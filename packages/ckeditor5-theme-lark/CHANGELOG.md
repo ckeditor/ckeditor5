@@ -7,7 +7,7 @@ Changelog
 
 * To-do list styles should meet WCAG contrast standards and work with other editor features (e.g. font size). Closes [ckeditor/ckeditor5-list#146](https://github.com/ckeditor/ckeditor5-list/issues/146). Closes [ckeditor/ckeditor5-list#136](https://github.com/ckeditor/ckeditor5-list/issues/136). ([0d4a5e2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0d4a5e2))
 
-  Also moved some to-do list styles from ckeditor5-list (code refactoring). 
+  Also moved some to-do list styles from `@ckeditor/ckeditor5-list` (code refactoring).
 
 ### Other changes
 
