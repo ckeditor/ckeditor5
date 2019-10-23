@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v11.2.2...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Added `pluginName` property. ([1e8c2c6](https://github.com/ckeditor/ckeditor5-font/commit/1e8c2c6))
+* Updated translations. ([19fda83](https://github.com/ckeditor/ckeditor5-font/commit/19fda83)) ([8dd48c4](https://github.com/ckeditor/ckeditor5-font/commit/8dd48c4))
+
+
 ## [11.2.2](https://github.com/ckeditor/ckeditor5-font/compare/v11.2.1...v11.2.2) (2019-08-26)
 
 ### Other changes

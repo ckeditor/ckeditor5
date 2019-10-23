@@ -58,7 +58,7 @@ msgstr "Убрать цвет"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "Цвет страницы"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
