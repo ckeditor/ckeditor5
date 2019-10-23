@@ -9,14 +9,14 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "ckeditor5": "^12.4.0",
+    "ckeditor5": "^15.0.0",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^12.4.0",
-    "@ckeditor/ckeditor5-editor-classic": "^12.1.4",
-    "@ckeditor/ckeditor5-core": "^12.3.0",
-    "@ckeditor/ckeditor5-engine": "^14.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^15.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^15.0.0",
+    "@ckeditor/ckeditor5-core": "^15.0.0",
+    "@ckeditor/ckeditor5-engine": "^15.0.0",
     "assertion-error": "^1.1.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
