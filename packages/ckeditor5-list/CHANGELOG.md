@@ -1,6 +1,30 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v12.1.0...v15.0.0) (2019-10-23)
+
+### MAJOR BREAKING CHANGES
+
+* The structure of the to–do list has changed (both in the editing and in the data). Please refer to the documentation for the information about used class names as it can impact the existing styles of your application.
+
+### Features
+
+* Introduces content styles for to–do lists. Unified to–do list representation in the editing and data. Extracted feature styles to a todolist.css file. Closes [#147](https://github.com/ckeditor/ckeditor5-list/issues/147). Closes [ckeditor/ckeditor5#2063](https://github.com/ckeditor/ckeditor5/issues/2063). ([5605663](https://github.com/ckeditor/ckeditor5-list/commit/5605663))
+
+### Bug fixes
+
+* Improved conversion of invalid nested lists. Closes [#115](https://github.com/ckeditor/ckeditor5-list/issues/115). ([ea55a54](https://github.com/ckeditor/ckeditor5-list/commit/ea55a54))
+* Keyboard navigation should work inside to-do lists in RTL content (see [ckeditor/ckeditor5-list#134](https://github.com/ckeditor/ckeditor5-list/issues/134)). ([63deb51](https://github.com/ckeditor/ckeditor5-list/commit/63deb51))
+* To-do list item styles should not be interactive when applied to editor data (content). Closes [ckeditor/ckeditor5#2090](https://github.com/ckeditor/ckeditor5/issues/2090). ([5662d4e](https://github.com/ckeditor/ckeditor5-list/commit/5662d4e))
+* Use model-to-view position mapping in todo lists. Closes [ckeditor/ckeditor5#2009](https://github.com/ckeditor/ckeditor5/issues/2009). Closed [ckeditor/ckeditor5#1980](https://github.com/ckeditor/ckeditor5/issues/1980). ([ff460f8](https://github.com/ckeditor/ckeditor5-list/commit/ff460f8))
+
+### Other changes
+
+* Added `pluginName` property to editing plugin. ([48be07f](https://github.com/ckeditor/ckeditor5-list/commit/48be07f))
+* Added `pluginName` property to todo editing plugin. ([3fd6758](https://github.com/ckeditor/ckeditor5-list/commit/3fd6758))
+* Updated translations. ([a6cf5dd](https://github.com/ckeditor/ckeditor5-list/commit/a6cf5dd)) ([4f67d34](https://github.com/ckeditor/ckeditor5-list/commit/4f67d34))
+
+
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-list/compare/v12.0.4...v12.1.0) (2019-08-26)
 
 ### Features
