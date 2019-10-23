@@ -40,3 +40,42 @@ export function convertMapToStringifiedObject( map ) {
 
 	return JSON.stringify( obj );
 }
+
+/**
+ * @private
+ */
+export const treeDump = Symbol( '_treeDump' );
+const maxTreeDumpLength = 20;
+
+/**
+ * Helper function, stores the `document` state for a given `version` as a string in a private property.
+ *
+ * @private
+ * @param {*} document
+ * @param {*} version
+ */
+export function dumpTrees( document, version ) {
+	let string = '';
+
+	for ( const root of document.roots ) {
+		string += root.printTree() + '\n';
+	}
+
+	document[ treeDump ][ version ] = string.substr( 0, string.length - 1 ); // Remove the last "\n".
+
+	const overflow = document[ treeDump ].length - maxTreeDumpLength;
+
+	if ( overflow > 0 ) {
+		document[ treeDump ][ overflow - 1 ] = null;
+	}
+}
+
+export function logDocument( document, version ) {
+	console.log( '--------------------' );
+
+	if ( document[ treeDump ][ version ] ) {
+		console.log( document[ treeDump ][ version ] );
+	} else {
+		console.log( 'Tree log unavailable for given version: ' + version );
+	}
+}

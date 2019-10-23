@@ -26,6 +26,9 @@ import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+// @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-tools/utils' );
+// @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-tools/operation-replayer' ).default;
+
 /**
  * Editor's data model. Read about the model in the
  * {@glink framework/guides/architecture/editing-engine engine architecture guide}.
@@ -116,6 +119,10 @@ export default class Model {
 		} );
 
 		injectSelectionPostFixer( this );
+
+		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
+		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
+		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
 	}
 
 	/**
@@ -241,8 +248,28 @@ export default class Model {
 
 		// @if CK_DEBUG_ENGINE // this._operationLogs.push( JSON.stringify( operation ) );
 
+		// @if CK_DEBUG_ENGINE //if ( !this._appliedOperations ) {
+		// @if CK_DEBUG_ENGINE //	this._appliedOperations = [];
+		// @if CK_DEBUG_ENGINE //}
+
+		// @if CK_DEBUG_ENGINE //this._appliedOperations.push( operation );
+
+		// @if CK_DEBUG_ENGINE //return _modelApplyOperation.call( this, operation );
+
 		operation._execute();
 	}
+
+	// @if CK_DEBUG_ENGINE // getAppliedOperation() {
+	// @if CK_DEBUG_ENGINE //	if ( !this._appliedOperations ) {
+	// @if CK_DEBUG_ENGINE //		return '';
+	// @if CK_DEBUG_ENGINE //	}
+
+	// @if CK_DEBUG_ENGINE //	return this._appliedOperations.map( JSON.stringify ).join( '-------' );
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // createReplayer( stringifiedOperations ) {
+	// @if CK_DEBUG_ENGINE //	return new OperationReplayer( this, '-------', stringifiedOperations );
+	// @if CK_DEBUG_ENGINE // }
 
 	/**
 	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste

@@ -12,6 +12,8 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
+// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-tools/utils' );
+
 /**
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
  * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
@@ -185,6 +187,10 @@ export default class Document {
 	 *
 	 * @event layoutChanged
 	 */
+
+	// @if CK_DEBUG_ENGINE // log( version ) {
+	// @if CK_DEBUG_ENGINE //	logDocument( this, version );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 mix( Document, ObservableMixin );
