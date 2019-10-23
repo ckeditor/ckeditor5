@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
 
 /**
@@ -19,6 +19,20 @@ import CodeBlockCommand from './codeblockcommand';
  * @extends module:core/plugin~Plugin
  */
 export default class CodeBlockEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'CodeBlockEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ShiftEnter ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -34,7 +48,7 @@ export default class CodeBlockEditing extends Plugin {
 
 		// Disallow codeBlock in codeBlock.
 		schema.addChildCheck( ( context, childDef ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDef.name == 'codeBlock' ) {
+			if ( context.endsWith( 'codeBlock' ) && childDef.name === 'codeBlock' ) {
 				return false;
 			}
 		} );
