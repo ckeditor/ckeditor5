@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v13.0.0...v15.0.0) (2019-10-23)
+
+### Other changes
+
+* Bind the `feed` callback function to the editor instance. ([0ba40a9](https://github.com/ckeditor/ckeditor5-mention/commit/0ba40a9))
+
+  Thanks [@oliverguenther](https://github.com/oliverguenther) for the contribution!
+
+
 ## [13.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.1...v13.0.0) (2019-08-26)
 
 ### Other changes
