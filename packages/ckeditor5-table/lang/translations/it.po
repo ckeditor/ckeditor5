@@ -87,3 +87,7 @@ msgstr "Dividi cella orizzontalmente"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Unisci celle"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Barra degli strumenti della tabella"

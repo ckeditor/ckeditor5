@@ -26,11 +26,11 @@ msgstr "Sloupec záhlaví"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Vložit sloupec vlevo"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Vložit sloupec vpravo"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
@@ -87,3 +87,7 @@ msgstr "Rozdělit buňky horizontálně"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Sloučit buňky"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Panel nástrojů tabulky"

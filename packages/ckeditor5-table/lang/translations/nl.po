@@ -87,3 +87,7 @@ msgstr "Splits cel horizontaal"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Cellen samenvoegen"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Tabel werkbalk"

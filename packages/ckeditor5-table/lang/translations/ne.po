@@ -87,3 +87,7 @@ msgstr "क्षैतिज कक्ष विभाजित गर्नु
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "कक्ष मर्ज गर्नुहोस्"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr ""

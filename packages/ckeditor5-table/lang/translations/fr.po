@@ -87,3 +87,7 @@ msgstr "Scinder la cellule horizontalement"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Fusionner les cellules"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Barre d'outils des tableaux"

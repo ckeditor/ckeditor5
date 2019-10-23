@@ -87,3 +87,7 @@ msgstr "水平分割儲存格"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "合併儲存格"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr ""
