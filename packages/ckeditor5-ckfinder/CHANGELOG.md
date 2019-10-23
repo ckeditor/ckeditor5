@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [15.0.0](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.5...v15.0.0) (2019-10-23)
+
+### Bug fixes
+
+* CKFinderCommand should work when either `'link'` or `'imageInsert'` command is enabled. Closes [#48](https://github.com/ckeditor/ckeditor5-ckfinder/issues/48). ([d82a762](https://github.com/ckeditor/ckeditor5-ckfinder/commit/d82a762))
+
+### Other changes
+
+* Updated translations. ([8e44572](https://github.com/ckeditor/ckeditor5-ckfinder/commit/8e44572)) 
+
+
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.4...v11.0.5) (2019-08-26)
 
 ### Bug fixes
