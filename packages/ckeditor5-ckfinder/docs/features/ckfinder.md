@@ -152,6 +152,23 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Configuring allowed file types
+
+The allowed file types that can be uploaded need to be configured in two places:
+
+* On the client-side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
+* On the server-side, in CKFinder, restricting the file formats that are accepted in CKFinder.
+
+#### Client-side configuration
+
+Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.type`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+
+By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
+
+#### Server-side configuration
+
+Use the `allowedExtensions` configuration option to define the file extension allowed to be uploaded with CKFinder for a particular resource type. Refer to the [relevant server-side connector documentation](https://ckeditor.com/docs/ckfinder/latest/) to learn more.
+
 ## Installation
 
 <info-box info>
