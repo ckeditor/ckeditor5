@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Introduced Title plugin. Closes https://github.com/ckeditor/ckeditor5/issues/2003. Closes https://github.com/ckeditor/ckeditor5/issues/2005. ([a65c0ac](https://github.com/ckeditor/ckeditor5-heading/commit/a65c0ac))
+* Introduced the document title feature. Closes https://github.com/ckeditor/ckeditor5/issues/2003. Closes https://github.com/ckeditor/ckeditor5/issues/2005. ([a65c0ac](https://github.com/ckeditor/ckeditor5-heading/commit/a65c0ac))
 
 ### Other changes
 
