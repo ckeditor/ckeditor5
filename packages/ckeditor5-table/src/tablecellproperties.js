@@ -80,6 +80,7 @@ export default class TableCellProperties extends Plugin {
 
 		conversion.attributeToAttribute( {
 			model: {
+				name: 'tableCell',
 				key: 'horizontalAlignment',
 				values: [ 'left', 'right', 'center', 'justify' ]
 			},
