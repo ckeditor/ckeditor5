@@ -31,14 +31,14 @@ export default class TableProperties extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
-		this.enableBorderProperty( schema, conversion );
+		this.enableBorderProperties( schema, conversion );
 		this.enableBackgroundColorProperty( schema, conversion );
 		this.enableWidthProperty( schema, conversion );
 		this.enableHeightProperty( schema, conversion );
 		this.enableAlignmentProperty( schema, conversion );
 	}
 
-	enableBorderProperty( schema, conversion ) {
+	enableBorderProperties( schema, conversion ) {
 		schema.extend( 'table', {
 			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
 		} );
