@@ -16,7 +16,7 @@ import '../theme/codeblock.css';
 /**
  * The code block UI plugin.
  *
- * It introduces the `'codeBlock'` button.
+ * Introduces the `'codeBlock'` button.
  *
  * @extends module:core/plugin~Plugin
  */
