@@ -57,7 +57,7 @@ If you are having troubles with setting up Easy Image, please [contact us](https
 
 ### Configuring allowed file types
 
-The allowed file types that can be uploaded are actually configured in two places:
+The allowed file types that can be uploaded should actually be configured in two places:
 
 * On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
 * On the server side, in Easy Image, restricting the file formats that are accepted in Easy Image.
