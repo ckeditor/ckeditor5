@@ -119,4 +119,98 @@ describe( 'CodeBlockEditing', () => {
 		sinon.assert.calledOnce( enterCommand.execute );
 		sinon.assert.notCalled( shiftEnterCommand.execute );
 	} );
+
+	describe( 'data pipeline m -> v conversion ', () => {
+		it( 'should convert empty codeBlock to empty pre tag', () => {
+			setModelData( model, '<codeBlock></codeBlock>' );
+
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<pre>&nbsp;</pre>' );
+		} );
+
+		it( 'should convert non-empty codeBlock to pre tag', () => {
+			setModelData( model, '<codeBlock>Foo</codeBlock>' );
+
+			expect( editor.getData() ).to.equal( '<pre>Foo</pre>' );
+		} );
+
+		it( 'should convert codeBlock with softBreaks to pre tag #1', () => {
+			setModelData( model,
+				'<codeBlock>' +
+					'Foo<softBreak></softBreak>' +
+					'Bar<softBreak></softBreak>' +
+					'Biz' +
+				'</codeBlock>'
+			);
+
+			expect( editor.getData() ).to.equal( '<pre>Foo\nBar\nBiz</pre>' );
+		} );
+
+		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
+			setModelData( model,
+				'<codeBlock>' +
+					'<softBreak></softBreak>' +
+					'<softBreak></softBreak>' +
+					'Foo' +
+					'<softBreak></softBreak>' +
+					'<softBreak></softBreak>' +
+				'</codeBlock>'
+			);
+
+			expect( editor.getData() ).to.equal( '<pre>\n\nFoo\n\n</pre>' );
+		} );
+	} );
+
+	describe( 'data pipeline v -> m conversion ', () => {
+		it( 'should convert empty pre tag to code block', () => {
+			editor.setData( '<pre></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
+		} );
+
+		it( 'should convert pre tag with multi-line text to code block #1', () => {
+			editor.setData( '<pre>foo\nbar</pre>' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock>[]' +
+					'foo' +
+					'<softBreak></softBreak>' +
+					'bar' +
+				'</codeBlock>'
+			);
+		} );
+
+		it( 'should convert pre tag with multi-line text to code block #2', () => {
+			editor.setData( '<pre>\n\n\nfoo\n\n</pre>' );
+
+			// The result may be unclear. 3 new line characters are converted to 2 softBreak elements.
+			// That's because of HTML rule, leading new line character for <pre/> element is stripped by the DOMParser.
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock>[]' +
+					'<softBreak></softBreak>' +
+					'<softBreak></softBreak>' +
+					'foo' +
+					'<softBreak></softBreak>' +
+					'<softBreak></softBreak>' +
+				'</codeBlock>'
+			);
+		} );
+
+		it( 'should convert pre tag with HTML inside', () => {
+			editor.setData( '<pre><p>Foo</p>\n<p>Bar</p></pre>' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock>[]' +
+					'<p>Foo</p>' +
+					'<softBreak></softBreak>' +
+					'<p>Bar</p>' +
+				'</codeBlock>'
+			);
+		} );
+
+		it( 'should convert pre tag with HTML and nested pre tag', () => {
+			editor.setData( '<pre><p>Foo</p><pre>Bar</pre><p>Biz</p></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>[]<p>Foo</p><pre>Bar</pre><p>Biz</p></codeBlock>' );
+		} );
+	} );
 } );
