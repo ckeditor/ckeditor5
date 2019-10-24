@@ -125,7 +125,7 @@ function dataViewModelPreInsertion( dataController ) {
 		const modelItem = writer.createElement( 'codeBlock' );
 
 		const stringifiedElement = dataController.processor.toData( data.viewItem );
-		const textData = new RegExp( /^<pre>(.*)<\/pre>$/, 's' ).exec( stringifiedElement )[ 1 ];
+		const textData = extractDataFromPreElement( stringifiedElement );
 		const textLines = textData.split( '\n' ).map( data => writer.createText( data ) );
 		const lastLine = textLines[ textLines.length - 1 ];
 
@@ -142,4 +142,15 @@ function dataViewModelPreInsertion( dataController ) {
 		data.modelCursor = writer.createPositionAfter( modelItem );
 		data.modelRange = writer.createRange( data.modelCursor );
 	};
+}
+
+// Returns content of `<pre></pre>` with unescaped html inside.
+//
+// @param {String} stringifiedElement
+function extractDataFromPreElement( stringifiedElement ) {
+	const data = new RegExp( /^<pre>(.*)<\/pre>$/, 's' ).exec( stringifiedElement )[ 1 ];
+
+	return data
+		.replace( /&lt;/g, '<' )
+		.replace( /&gt;/g, '>' );
 }
