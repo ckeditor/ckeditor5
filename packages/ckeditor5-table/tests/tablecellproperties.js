@@ -510,6 +510,84 @@ describe( 'TableCellProperties', () => {
 		} );
 	} );
 
+	describe( 'horizontal alignment', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'horizontalAlignment' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast text-align:left style', () => {
+				editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+			} );
+
+			it( 'should upcast text-align:right style', () => {
+				editor.setData( '<table><tr><td style="text-align:right">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should upcast text-align:center style', () => {
+				editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+			} );
+
+			it( 'should upcast text-align:justify style', () => {
+				editor.setData( '<table><tr><td style="text-align:justify">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let tableCell;
+
+			beforeEach( () => {
+				setModelData(
+					model,
+					'<table headingRows="0" headingColumns="0">' +
+					'<tableRow>' +
+					'<tableCell>' +
+					'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+			} );
+
+			it( 'should downcast horizontalAlignment=left', () => {
+				model.change( writer => writer.setAttribute( 'horizontalAlignment', 'left', tableCell ) );
+
+				assertTableCellStyle( editor, 'text-align:left;' );
+			} );
+
+			it( 'should downcast horizontalAlignment=right', () => {
+				model.change( writer => writer.setAttribute( 'horizontalAlignment', 'right', tableCell ) );
+
+				assertTableCellStyle( editor, 'text-align:right;' );
+			} );
+
+			it( 'should downcast horizontalAlignment=center', () => {
+				model.change( writer => writer.setAttribute( 'horizontalAlignment', 'center', tableCell ) );
+
+				assertTableCellStyle( editor, 'text-align:center;' );
+			} );
+
+			it( 'should downcast horizontalAlignment=justify', () => {
+				model.change( writer => writer.setAttribute( 'horizontalAlignment', 'justify', tableCell ) );
+
+				assertTableCellStyle( editor, 'text-align:justify;' );
+			} );
+		} );
+	} );
+
 	describe( 'vertical alignment', () => {
 		it( 'should set proper schema rules', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'verticalAlignment' ) ).to.be.true;

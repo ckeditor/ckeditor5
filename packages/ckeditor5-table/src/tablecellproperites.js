@@ -31,7 +31,14 @@ export default class TableCellProperties extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 
-		// Table cell attributes.
+		this.enableBorderProperties( schema, conversion );
+		this.enableBackgroundColorProperty( schema, conversion );
+		this.enablePaddingProperty( schema, conversion );
+		this.enableVerticalAlignmentProperty( schema, conversion );
+		this.enableHorizontalAlignmentProperty( schema, editor );
+	}
+
+	enableBorderProperties( schema, conversion ) {
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
 		} );
@@ -40,23 +47,69 @@ export default class TableCellProperties extends Plugin {
 		downcastToStyle( conversion, 'tableCell', 'borderStyle', 'border-style' );
 		downcastToStyle( conversion, 'tableCell', 'borderColor', 'border-color' );
 		downcastToStyle( conversion, 'tableCell', 'borderWidth', 'border-width' );
+	}
 
+	enableBackgroundColorProperty( schema, conversion ) {
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'backgroundColor' ]
 		} );
 		upcastAttribute( conversion, 'tableCell', 'backgroundColor', 'background-color' );
 		downcastToStyle( conversion, 'tableCell', 'backgroundColor', 'background-color' );
+	}
 
+	enablePaddingProperty( schema, conversion ) {
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'padding' ]
 		} );
 		upcastAttribute( conversion, 'tableCell', 'padding', 'padding' );
 		downcastToStyle( conversion, 'tableCell', 'padding', 'padding' );
+	}
 
+	enableVerticalAlignmentProperty( schema, conversion ) {
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'verticalAlignment' ]
 		} );
 		upcastAttribute( conversion, 'tableCell', 'verticalAlignment', 'vertical-align' );
 		downcastToStyle( conversion, 'tableCell', 'verticalAlignment', 'vertical-align' );
+	}
+
+	enableHorizontalAlignmentProperty( schema, editor ) {
+		schema.extend( 'tableCell', {
+			allowAttributes: [ 'horizontalAlignment' ]
+		} );
+
+		editor.conversion.attributeToAttribute( {
+			model: {
+				key: 'horizontalAlignment',
+				values: [ 'left', 'right', 'center', 'justify' ]
+			},
+			view: {
+				// TODO: controversial one but I don't know if we want "default".
+				left: {
+					key: 'style',
+					value: {
+						'text-align': 'left'
+					}
+				},
+				right: {
+					key: 'style',
+					value: {
+						'text-align': 'right'
+					}
+				},
+				center: {
+					key: 'style',
+					value: {
+						'text-align': 'center'
+					}
+				},
+				justify: {
+					key: 'style',
+					value: {
+						'text-align': 'justify'
+					}
+				}
+			}
+		} );
 	}
 }
