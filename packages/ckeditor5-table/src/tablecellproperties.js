@@ -35,7 +35,7 @@ export default class TableCellProperties extends Plugin {
 		this.enableBackgroundColorProperty( schema, conversion );
 		this.enablePaddingProperty( schema, conversion );
 		this.enableVerticalAlignmentProperty( schema, conversion );
-		this.enableHorizontalAlignmentProperty( schema, editor );
+		this.enableHorizontalAlignmentProperty( schema, conversion );
 	}
 
 	enableBorderProperties( schema, conversion ) {
@@ -73,12 +73,12 @@ export default class TableCellProperties extends Plugin {
 		downcastToStyle( conversion, 'tableCell', 'verticalAlignment', 'vertical-align' );
 	}
 
-	enableHorizontalAlignmentProperty( schema, editor ) {
+	enableHorizontalAlignmentProperty( schema, conversion ) {
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'horizontalAlignment' ]
 		} );
 
-		editor.conversion.attributeToAttribute( {
+		conversion.attributeToAttribute( {
 			model: {
 				key: 'horizontalAlignment',
 				values: [ 'left', 'right', 'center', 'justify' ]
