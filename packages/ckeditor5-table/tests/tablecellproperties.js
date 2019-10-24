@@ -7,7 +7,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import TableEditing from '../src/tableediting';
-import TableCellProperties from '../src/tablecellproperites';
+import TableCellProperties from '../src/tablecellproperties';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableCellStyle, assertTRBLAttribute } from './_utils/utils';

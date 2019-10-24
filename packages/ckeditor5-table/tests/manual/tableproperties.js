@@ -10,9 +10,9 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import TableProperties from '../../src/tableproperites';
-import TableCellProperties from '../../src/tablecellproperites';
-import TableColumnRowProperties from '../../src/tablecolumnrowproperites';
+import TableProperties from '../../src/tableproperties';
+import TableCellProperties from '../../src/tablecellproperties';
+import TableColumnRowProperties from '../../src/tablecolumnrowproperties';
 import TableStyleUI from '../../src/tablestyleui';
 
 const sourceElement = document.querySelector( '#editor' );
