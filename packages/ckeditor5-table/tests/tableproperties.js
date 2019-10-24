@@ -529,6 +529,130 @@ describe( 'TableProperties', () => {
 		} );
 	} );
 
+	describe( 'alignment', () => {
+		it( 'should set proper schema rules', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'table' ], 'alignment' ) ).to.be.true;
+		} );
+
+		describe( 'upcast conversion', () => {
+			it( 'should upcast style="margin-left:auto;margin-right:0" to right value', () => {
+				editor.setData( '<table style="margin-left:auto;margin-right:0"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should upcast style="margin-left:0;margin-right:auto" to left value', () => {
+				editor.setData( '<table style="margin-left:0;margin-right:auto"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
+			} );
+
+			it( 'should upcast style="margin-left:auto;margin-right:auto" to center value', () => {
+				editor.setData( '<table style="margin-left:auto;margin-right:auto"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
+			} );
+
+			it( 'should upcast style="margin-left:auto;margin-right:0pt" to right value', () => {
+				editor.setData( '<table style="margin-left:auto;margin-right:0pt"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should upcast style="margin-left:auto;margin-right:0%" to right value', () => {
+				editor.setData( '<table style="margin-left:auto;margin-right:0%"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should not upcast style="margin-left:auto;margin-right:0.23pt" to right value', () => {
+				editor.setData( '<table style="margin-left:auto;margin-right:0.23pt"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.hasAttribute( 'alignment' ) ).to.be.false;
+			} );
+
+			it( 'should upcast align=right attribute', () => {
+				editor.setData( '<table align="right"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should upcast align=left attribute', () => {
+				editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
+			} );
+
+			it( 'should upcast align=center attribute', () => {
+				editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
+			} );
+
+			it( 'should discard align=justify attribute', () => {
+				editor.setData( '<table align="justify"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.hasAttribute( 'alignment' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'downcast conversion', () => {
+			let table;
+
+			beforeEach( () => {
+				table = createEmptyTable();
+			} );
+
+			it( 'should downcast right alignment', () => {
+				model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+
+				assertTableStyle( editor, 'margin-right:0;margin-left:auto;' );
+			} );
+
+			it( 'should downcast left alignment', () => {
+				model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
+
+				assertTableStyle( editor, 'margin-right:auto;margin-left:0;' );
+			} );
+
+			it( 'should downcast centered alignment', () => {
+				model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+
+				assertTableStyle( editor, 'margin-right:auto;margin-left:auto;' );
+			} );
+
+			it( 'should downcast changed alignment', () => {
+				model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+
+				assertTableStyle( editor, 'margin-right:auto;margin-left:auto;' );
+
+				model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+
+				assertTableStyle( editor, 'margin-right:0;margin-left:auto;' );
+			} );
+
+			it( 'should downcast removed alignment', () => {
+				model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+
+				assertTableStyle( editor, 'margin-right:auto;margin-left:auto;' );
+
+				model.change( writer => writer.removeAttribute( 'alignment', table ) );
+
+				assertTableStyle( editor );
+			} );
+		} );
+	} );
+
 	function createEmptyTable() {
 		setModelData(
 			model,

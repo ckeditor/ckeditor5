@@ -235,8 +235,10 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
  * @param {String} tableStyle A style to assert on table.
  */
 export function assertTableStyle( editor, tableStyle ) {
+	const styleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+
 	assertEqualMarkup( editor.getData(),
-		`<figure class="table"><table style="${ tableStyle }"><tbody><tr><td>foo</td></tr></tbody></table></figure>`
+		`<figure class="table"><table${ styleEntry }><tbody><tr><td>foo</td></tr></tbody></table></figure>`
 	);
 }
 
