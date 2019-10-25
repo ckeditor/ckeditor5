@@ -1014,6 +1014,14 @@ export default class Position {
 
 		return new Position( doc.getRoot( json.root ), json.path, json.stickiness );
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `${ this.root } [ ${ this.path.join( ', ' ) } ]`;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelPosition: ' + this );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 /**

@@ -18,6 +18,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 import { clone } from 'lodash-es';
 
+// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
+
 const graveyardName = '$graveyard';
 
 /**
@@ -465,6 +467,11 @@ export default class Document {
 	 * @event change:data
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
 	 */
+
+	// @if CK_DEBUG_ENGINE // log( version = null ) {
+	// @if CK_DEBUG_ENGINE // 	version = version === null ? this.version : version;
+	// @if CK_DEBUG_ENGINE // 	logDocument( this, version );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 mix( Document, EmitterMixin );

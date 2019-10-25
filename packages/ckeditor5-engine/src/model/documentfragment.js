@@ -13,6 +13,8 @@ import Text from './text';
 import TextProxy from './textproxy';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
+// @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
+
 /**
  * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes
  * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
@@ -318,6 +320,44 @@ export default class DocumentFragment {
 
 		return nodes;
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return 'documentFragment';
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelDocumentFragment: ' + this );
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // printTree() {
+	// @if CK_DEBUG_ENGINE //	let string = 'ModelDocumentFragment: [';
+
+	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE //		string += '\n';
+
+	// @if CK_DEBUG_ENGINE //		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE //			const textAttrs = stringifyMap( child._attrs );
+
+	// @if CK_DEBUG_ENGINE //			string += '\t'.repeat( 1 );
+
+	// @if CK_DEBUG_ENGINE //			if ( textAttrs !== '' ) {
+	// @if CK_DEBUG_ENGINE //				string += `<$text${ textAttrs }>` + child.data + '</$text>';
+	// @if CK_DEBUG_ENGINE //			} else {
+	// @if CK_DEBUG_ENGINE //				string += child.data;
+	// @if CK_DEBUG_ENGINE //			}
+	// @if CK_DEBUG_ENGINE //		} else {
+	// @if CK_DEBUG_ENGINE //			string += child.printTree( 1 );
+	// @if CK_DEBUG_ENGINE //		}
+	// @if CK_DEBUG_ENGINE //	}
+
+	// @if CK_DEBUG_ENGINE //	string += '\n]';
+
+	// @if CK_DEBUG_ENGINE //	return string;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 // Converts strings to Text and non-iterables to arrays.
