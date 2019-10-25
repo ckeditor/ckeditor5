@@ -1,7 +1,18 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
 .ck-content pre {
-	padding: 8px 13px;
+	padding: 1em;
 	color: #353535;
-	background: #f1f1f1;
-	border: solid 1px var(--ck-color-base-border);
-	border-radius: var(--ck-border-radius);
+	background: hsla(0, 0%, 78%, 0.3);
+	border: 1px solid hsl(0, 0%, 77%);
+	border-radius: 2px;
+
+	& code {
+		background: unset;
+		padding: 0;
+		border-radius: 0;
+	}
 }
