@@ -32,7 +32,7 @@ const optionsForBuilds = Object.assign( {}, commonOptions, {
 
 Promise.resolve()
 	.then( () => devEnv.generateChangelogForSubRepositories( optionsForDependencies ) )
-	.then( () => devEnv.generateSummaryChangelog( optionsForBuilds ) )
+	.then( response => devEnv.generateSummaryChangelog( Object.assign( optionsForBuilds, response ) ) )
 	.then( () => {
 		console.log( 'Done!' );
 	} )
