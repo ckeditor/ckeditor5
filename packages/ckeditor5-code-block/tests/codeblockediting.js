@@ -166,10 +166,11 @@ describe( 'CodeBlockEditing', () => {
 					'Foo<softBreak></softBreak>' +
 					'Bar<softBreak></softBreak>' +
 					'Biz' +
-				'</codeBlock>'
+				'</codeBlock>' +
+				'<paragraph>A<softBreak></softBreak>B</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal( '<pre><code>Foo\nBar\nBiz</code></pre>' );
+			expect( editor.getData() ).to.equal( '<pre><code>Foo\nBar\nBiz</code></pre><p>A<br>B</p>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
@@ -184,6 +185,36 @@ describe( 'CodeBlockEditing', () => {
 			);
 
 			expect( editor.getData() ).to.equal( '<pre><code>\n\nFoo\n\n</code></pre>' );
+		} );
+
+		it( 'should convert codeBlock with html content', () => {
+			setModelData( model, '<codeBlock>[]</codeBlock>' );
+
+			model.change( writer => writer.insertText( '<div><p>Foo</p></div>', model.document.selection.getFirstPosition() ) );
+
+			expect( editor.getData() ).to.equal( '<pre><code>&lt;div&gt;&lt;p&gt;Foo&lt;/p&gt;&lt;/div&gt;</code></pre>' );
+		} );
+
+		it( 'should be overridable', () => {
+			editor.data.downcastDispatcher.on( 'insert:codeBlock', ( evt, data, api ) => {
+				const targetViewPosition = api.mapper.toViewPosition( model.createPositionBefore( data.item ) );
+				const code = api.writer.createContainerElement( 'code' );
+
+				api.consumable.consume( data.item, 'insert' );
+				api.writer.insert( targetViewPosition, code );
+				api.mapper.bindElements( data.item, code );
+			}, { priority: 'high' } );
+
+			editor.data.downcastDispatcher.on( 'insert:softBreak', ( evt, data, api ) => {
+				const position = api.mapper.toViewPosition( model.createPositionBefore( data.item ) );
+
+				api.consumable.consume( data.item, 'insert' );
+				api.writer.insert( position, api.writer.createText( '\n' ) );
+			}, { priority: 'highest' } );
+
+			setModelData( model, '<codeBlock>Foo<softBreak></softBreak>Bar</codeBlock>' );
+
+			expect( editor.getData() ).to.equal( '<code>Foo\nBar</code>' );
 		} );
 	} );
 
@@ -244,10 +275,33 @@ describe( 'CodeBlockEditing', () => {
 			);
 		} );
 
-		it( 'should convert pre tag with HTML and nested pre tag', () => {
+		it( 'should convert pre > code tag with HTML and nested pre > code tag', () => {
 			editor.setData( '<pre><code><p>Foo</p><pre>Bar</pre><p>Biz</p></code></pre>' );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock>[]<p>Foo</p><pre>Bar</pre><p>Biz</p></codeBlock>' );
+		} );
+
+		it( 'should convert pre > code tag with escaped html content', () => {
+			editor.setData( '<pre><code>&lt;div&gt;&lt;p&gt;Foo&lt;/p&gt;&lt;/div&gt;</code></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>[]<div><p>Foo</p></div></codeBlock>' );
+		} );
+
+		it( 'should be overridable', () => {
+			editor.data.upcastDispatcher.on( 'element:pre', ( evt, data, api ) => {
+				const modelItem = api.writer.createElement( 'codeBlock' );
+
+				api.writer.appendText( 'Hello World!', modelItem );
+				api.writer.insert( modelItem, data.modelCursor );
+				api.consumable.consume( data.viewItem, { name: true } );
+
+				data.modelCursor = api.writer.createPositionAfter( modelItem );
+				data.modelRange = api.writer.createRangeOn( modelItem );
+			}, { priority: 'high' } );
+
+			editor.setData( '<pre><code>Foo Bar</code></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
 		} );
 	} );
 } );
