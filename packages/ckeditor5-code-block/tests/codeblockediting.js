@@ -129,7 +129,7 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>'
 			);
 
-			expect( getViewData( view ) ).to.equal( '<pre><code>{}Foo\nBar\nBiz</code></pre>' );
+			expect( getViewData( view ) ).to.equal( '<pre><code>{}Foo<br></br>Bar<br></br>Biz</code></pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
@@ -143,7 +143,7 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>'
 			);
 
-			expect( getViewData( view ) ).to.equal( '<pre><code>{}\n\nFoo\n\n</code></pre>' );
+			expect( getViewData( view ) ).to.equal( '<pre><code>[]<br></br><br></br>Foo<br></br><br></br></code></pre>' );
 		} );
 	} );
 

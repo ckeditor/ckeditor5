@@ -61,10 +61,9 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ), { priority: 'high' } );
-		editor.editing.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( editor.model ), { priority: 'high' } );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ) );
 
-		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ), { priority: 'high' } );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( editor.model ), { priority: 'high' } );
 
 		editor.data.upcastDispatcher.on( 'element:pre', dataViewModelCodeBlockInsertion( editor.data ) );
