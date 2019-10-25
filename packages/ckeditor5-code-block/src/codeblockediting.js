@@ -61,11 +61,13 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		// Conversion.
-		editor.conversion.for( 'editingDowncast' ).elementToElement( { model: 'codeBlock', view: 'pre' } );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ), { priority: 'high' } );
+		editor.editing.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( editor.model ), { priority: 'high' } );
 
-		editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'codeBlock', view: 'pre' } );
-		editor.data.downcastDispatcher.on( 'insert:softBreak', dataModelViewSoftBreakInsertion( editor.model ), { priority: 'high' } );
-		editor.data.upcastDispatcher.on( 'element:pre', dataViewModelPreInsertion( editor.data ) );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ), { priority: 'high' } );
+		editor.data.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( editor.model ), { priority: 'high' } );
+
+		editor.data.upcastDispatcher.on( 'element:pre', dataViewModelCodeBlockInsertion( editor.data ) );
 	}
 
 	/**
@@ -88,11 +90,33 @@ export default class CodeBlockEditing extends Plugin {
 	}
 }
 
+// A model-to-view converter for the codeBlock element.
+//
+// @param {module:engine/model/model~Model} model
+// @returns {Function} Returns a conversion callback.
+function modelViewCodeBlockInsertion( model ) {
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper, consumable } = conversionApi;
+
+		if ( !consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
+
+		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
+		const pre = writer.createContainerElement( 'pre' );
+		const code = writer.createContainerElement( 'code' );
+
+		writer.insert( writer.createPositionAt( pre, 0 ), code );
+		writer.insert( targetViewPosition, pre );
+		mapper.bindElements( data.item, code );
+	};
+}
+
 // A model-to-view converter for the new line separator.
 //
 // @param {module:engine/model/model~Model} model
 // @returns {Function} Returns a conversion callback.
-function dataModelViewSoftBreakInsertion( model ) {
+function modelViewSoftBreakInsertion( model ) {
 	return ( evt, data, conversionApi ) => {
 		if ( data.item.parent.name !== 'codeBlock' ) {
 			return;
@@ -110,22 +134,32 @@ function dataModelViewSoftBreakInsertion( model ) {
 	};
 }
 
-// A view-to-model converter for `pre` tag.
+// A view-to-model converter for pre > code html.
 //
 // @param {module:engine/controller/datacontroller~DataController} dataController
 // @returns {Function} Returns a conversion callback.
-function dataViewModelPreInsertion( dataController ) {
+function dataViewModelCodeBlockInsertion( dataController ) {
 	return ( evt, data, conversionApi ) => {
-		const { consumable, writer } = conversionApi;
+		const viewItem = data.viewItem;
+		const viewChild = viewItem.getChild( 0 );
 
-		if ( !consumable.consume( data.viewItem, { name: true } ) ) {
+		if ( !viewChild || !viewChild.is( 'code' ) ) {
 			return;
 		}
 
+		const { consumable, writer } = conversionApi;
+
+		if ( !consumable.test( viewItem, { name: true } ) || !consumable.test( viewChild, { name: true } ) ) {
+			return;
+		}
+
+		consumable.consume( viewItem, { name: true } );
+		consumable.consume( viewChild, { name: true } );
+
 		const modelItem = writer.createElement( 'codeBlock' );
 
-		const stringifiedElement = dataController.processor.toData( data.viewItem );
-		const textData = extractDataFromPreElement( stringifiedElement );
+		const stringifiedElement = dataController.processor.toData( viewChild );
+		const textData = extractDataFromCodeElement( stringifiedElement );
 		const textLines = textData.split( '\n' ).map( data => writer.createText( data ) );
 		const lastLine = textLines[ textLines.length - 1 ];
 
@@ -140,15 +174,15 @@ function dataViewModelPreInsertion( dataController ) {
 		writer.insert( modelItem, data.modelCursor );
 
 		data.modelCursor = writer.createPositionAfter( modelItem );
-		data.modelRange = writer.createRange( data.modelCursor );
+		data.modelRange = writer.createRangeOn( modelItem );
 	};
 }
 
 // Returns content of `<pre></pre>` with unescaped html inside.
 //
 // @param {String} stringifiedElement
-function extractDataFromPreElement( stringifiedElement ) {
-	const data = new RegExp( /^<pre>(.*)<\/pre>$/, 's' ).exec( stringifiedElement )[ 1 ];
+function extractDataFromCodeElement( stringifiedElement ) {
+	const data = new RegExp( /^<code>(.*)<\/code>$/, 's' ).exec( stringifiedElement )[ 1 ];
 
 	return data
 		.replace( /&lt;/g, '<' )

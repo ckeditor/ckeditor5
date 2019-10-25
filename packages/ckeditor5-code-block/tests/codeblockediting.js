@@ -16,9 +16,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'CodeBlockEditing', () => {
-	let editor, element, model;
+	let editor, element, model, view;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -31,6 +32,7 @@ describe( 'CodeBlockEditing', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				view = editor.editing.view;
 			} );
 	} );
 
@@ -69,21 +71,6 @@ describe( 'CodeBlockEditing', () => {
 		expect( getModelData( model ) ).to.equal( '<codeBlock>f[o]o</codeBlock>' );
 	} );
 
-	it( 'adds converters to the data pipeline', () => {
-		const data = '<pre>x</pre>';
-
-		editor.setData( data );
-
-		expect( getModelData( model ) ).to.equal( '<codeBlock>[]x</codeBlock>' );
-		expect( editor.getData() ).to.equal( data );
-	} );
-
-	it( 'adds a converter to the view pipeline', () => {
-		setModelData( model, '<codeBlock>x</codeBlock>' );
-
-		expect( editor.getData() ).to.equal( '<pre>x</pre>' );
-	} );
-
 	it( 'should force shiftEnter command when pressing enter inside a codeBlock', () => {
 		const enterCommand = editor.commands.get( 'enter' );
 		const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
@@ -120,17 +107,17 @@ describe( 'CodeBlockEditing', () => {
 		sinon.assert.notCalled( shiftEnterCommand.execute );
 	} );
 
-	describe( 'data pipeline m -> v conversion ', () => {
+	describe( 'editing pipeline m -> v', () => {
 		it( 'should convert empty codeBlock to empty pre tag', () => {
 			setModelData( model, '<codeBlock></codeBlock>' );
 
-			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<pre>&nbsp;</pre>' );
+			expect( getViewData( view ) ).to.equal( '<pre><code>[]</code></pre>' );
 		} );
 
 		it( 'should convert non-empty codeBlock to pre tag', () => {
 			setModelData( model, '<codeBlock>Foo</codeBlock>' );
 
-			expect( editor.getData() ).to.equal( '<pre>Foo</pre>' );
+			expect( getViewData( view ) ).to.equal( '<pre><code>{}Foo</code></pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #1', () => {
@@ -142,7 +129,7 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>'
 			);
 
-			expect( editor.getData() ).to.equal( '<pre>Foo\nBar\nBiz</pre>' );
+			expect( getViewData( view ) ).to.equal( '<pre><code>{}Foo\nBar\nBiz</code></pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
@@ -156,19 +143,71 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>'
 			);
 
-			expect( editor.getData() ).to.equal( '<pre>\n\nFoo\n\n</pre>' );
+			expect( getViewData( view ) ).to.equal( '<pre><code>{}\n\nFoo\n\n</code></pre>' );
+		} );
+	} );
+
+	describe( 'data pipeline m -> v conversion ', () => {
+		it( 'should convert empty codeBlock to empty pre tag', () => {
+			setModelData( model, '<codeBlock></codeBlock>' );
+
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<pre><code>&nbsp;</code></pre>' );
+		} );
+
+		it( 'should convert non-empty codeBlock to pre tag', () => {
+			setModelData( model, '<codeBlock>Foo</codeBlock>' );
+
+			expect( editor.getData() ).to.equal( '<pre><code>Foo</code></pre>' );
+		} );
+
+		it( 'should convert codeBlock with softBreaks to pre tag #1', () => {
+			setModelData( model,
+				'<codeBlock>' +
+					'Foo<softBreak></softBreak>' +
+					'Bar<softBreak></softBreak>' +
+					'Biz' +
+				'</codeBlock>'
+			);
+
+			expect( editor.getData() ).to.equal( '<pre><code>Foo\nBar\nBiz</code></pre>' );
+		} );
+
+		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
+			setModelData( model,
+				'<codeBlock>' +
+					'<softBreak></softBreak>' +
+					'<softBreak></softBreak>' +
+					'Foo' +
+					'<softBreak></softBreak>' +
+					'<softBreak></softBreak>' +
+				'</codeBlock>'
+			);
+
+			expect( editor.getData() ).to.equal( '<pre><code>\n\nFoo\n\n</code></pre>' );
 		} );
 	} );
 
 	describe( 'data pipeline v -> m conversion ', () => {
-		it( 'should convert empty pre tag to code block', () => {
+		it( 'should not convert empty pre tag to code block', () => {
 			editor.setData( '<pre></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		} );
+
+		it( 'should not convert pre with no code child to code block', () => {
+			editor.setData( '<pre><samp></samp></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		} );
+
+		it( 'should convert pre > code to code block', () => {
+			editor.setData( '<pre><code></code></pre>' );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
 		} );
 
-		it( 'should convert pre tag with multi-line text to code block #1', () => {
-			editor.setData( '<pre>foo\nbar</pre>' );
+		it( 'should convert pre > code with multi-line text to code block #1', () => {
+			editor.setData( '<pre><code>foo\nbar</code></pre>' );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock>[]' +
@@ -179,11 +218,9 @@ describe( 'CodeBlockEditing', () => {
 			);
 		} );
 
-		it( 'should convert pre tag with multi-line text to code block #2', () => {
-			editor.setData( '<pre>\n\n\nfoo\n\n</pre>' );
+		it( 'should convert pre > code with multi-line text to code block #2', () => {
+			editor.setData( '<pre><code>\n\nfoo\n\n</code></pre>' );
 
-			// The result may be unclear. 3 new line characters are converted to 2 softBreak elements.
-			// That's because of HTML rule, leading new line character for <pre/> element is stripped by the DOMParser.
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock>[]' +
 					'<softBreak></softBreak>' +
@@ -195,8 +232,8 @@ describe( 'CodeBlockEditing', () => {
 			);
 		} );
 
-		it( 'should convert pre tag with HTML inside', () => {
-			editor.setData( '<pre><p>Foo</p>\n<p>Bar</p></pre>' );
+		it( 'should convert pre > code with HTML inside', () => {
+			editor.setData( '<pre><code><p>Foo</p>\n<p>Bar</p></code></pre>' );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock>[]' +
@@ -208,7 +245,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should convert pre tag with HTML and nested pre tag', () => {
-			editor.setData( '<pre><p>Foo</p><pre>Bar</pre><p>Biz</p></pre>' );
+			editor.setData( '<pre><code><p>Foo</p><pre>Bar</pre><p>Biz</p></code></pre>' );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock>[]<p>Foo</p><pre>Bar</pre><p>Biz</p></codeBlock>' );
 		} );
