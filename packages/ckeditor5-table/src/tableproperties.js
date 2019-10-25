@@ -81,7 +81,7 @@ export default class TableProperties extends Plugin {
 				view: {
 					styles: {
 						'margin-right': /^(auto|0(%|[a-z]{2,4})?)$/,
-						'margin-left': /^(auto|0)/
+						'margin-left': /^(auto|0(%|[a-z]{2,4})?)$/
 					}
 				},
 				model: {
