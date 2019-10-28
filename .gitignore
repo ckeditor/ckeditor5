@@ -4,3 +4,5 @@ coverage/
 packages/
 docs/api/output.json
 lerna-debug.log
+.idea
+.vscode

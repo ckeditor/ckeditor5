@@ -49,7 +49,7 @@ Below there is a full list of content styles used by the editor features. You ca
 ```css
 /*
  * CKEditor 5 (v12.4.0) content styles.
- * Generated on Thu, 17 Oct 2019 07:18:45 GMT.
+ * Generated on Mon, 21 Oct 2019 11:34:56 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -64,26 +64,12 @@ Below there is a full list of content styles used by the editor features. You ca
 	padding: .15em;
 	border-radius: 2px;
 }
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized {
-	max-width: 100%;
-	display: block;
-	box-sizing: border-box
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized img {
-	width: 100%;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized > figcaption {
-	display: block;
-}
 /* ckeditor5-image/theme/image.css */
 .ck-content .image {
 	display: table;
 	clear: both;
 	text-align: center;
-	margin: 1em auto
+	margin: 1em auto;
 }
 /* ckeditor5-image/theme/image.css */
 .ck-content .image > img {
@@ -103,13 +89,34 @@ Below there is a full list of content styles used by the editor features. You ca
 	font-size: .75em;
 	outline-offset: -1px;
 }
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
+/* ckeditor5-media-embed/theme/mediaembed.css */
+.ck-content .media {
+	clear: both;
+	margin: 1em 0;
+	display: block;
+	min-width: 15em;
+}
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list {
-	list-style: none
+	list-style: none;
 }
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list li {
-	margin-bottom: 5px
+	margin-bottom: 5px;
 }
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list li .todo-list {
@@ -127,7 +134,7 @@ Below there is a full list of content styles used by the editor features. You ca
 	left: -25px;
 	margin-right: -15px;
 	right: 0;
-	margin-left: 0
+	margin-left: 0;
 }
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list .todo-list__label > input::before {
@@ -173,20 +180,13 @@ Below there is a full list of content styles used by the editor features. You ca
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {
 	margin: 1em auto;
-	display: table
+	display: table;
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table table {
 	border-collapse: collapse;
 	border-spacing: 0;
-	border: 1px double hsl(0, 0%, 70%)
-}
-/* ckeditor5-table/theme/table.css */
-.ck-content .table table td,
-.ck-content .table table th {
-	min-width: 2em;
-	padding: .4em;
-	border-color: hsl(0, 0%, 85%);
+	border: 1px double hsl(0, 0%, 70%);
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table table td,
@@ -207,7 +207,7 @@ Below there is a full list of content styles used by the editor features. You ca
 	padding: 5px 0;
 	display: flex;
 	align-items: center;
-	justify-content: center
+	justify-content: center;
 }
 /* ckeditor5-page-break/theme/pagebreak.css */
 .ck-content .page-break::after {
@@ -235,14 +235,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-}
-/* ckeditor5-page-break/theme/pagebreak.css */
-.ck-content .page-break {
-	padding: 0
-}
-/* ckeditor5-page-break/theme/pagebreak.css */
-.ck-content .page-break::after {
-	display: none;
 }
 /* ckeditor5-image/theme/imagestyle.css */
 .ck-content .image-style-side,
@@ -286,18 +278,21 @@ Below there is a full list of content styles used by the editor features. You ca
 	border-left: 0;
 	border-right: solid 5px hsl(0, 0%, 80%);
 }
-/* ckeditor5-media-embed/theme/mediaembed.css */
-.ck-content .media {
-	clear: both;
-	margin: 1em 0;
-	display: block;
-	min-width: 15em;
-}
 /* ckeditor5-horizontal-line/theme/horizontalline.css */
 .ck-content hr {
 	border-width: 1px 0 0;
 	border-style: solid;
 	border-color: hsl(0, 0%, 37%);
 	margin: 0;
+}
+@media print {
+	/* ckeditor5-page-break/theme/pagebreak.css */
+	.ck-content .page-break {
+		padding: 0;
+	}
+	/* ckeditor5-page-break/theme/pagebreak.css */
+	.ck-content .page-break::after {
+		display: none;
+	}
 }
 ```
