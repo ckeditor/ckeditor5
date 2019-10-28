@@ -18,80 +18,12 @@ import BackgroundStyles from './styles/backgroundstyles';
 
 export class StylesConverter {
 	/**
-	 * Holds shorthand properties normalizers.
-	 *
-	 * Shorthand properties must be normalized as they can be written in various ways.
-	 * Normalizer must return object describing given shorthand.
-	 *
-	 * Example:
-	 * The `border-color` style is a shorthand property for `border-top-color`, `border-right-color`, `border-bottom-color`
-	 * and `border-left-color`. Similarly there are shorthand for border width (`border-width`) and style (`border-style`).
-	 *
-	 * For `border-color` the given shorthand:
-	 *
-	 *		border-color: #f00 #ba7;
-	 *
-	 * might be written as:
-	 *
-	 *		border-color-top: #f00;
-	 *		border-color-right: #ba7;
-	 *		border-color-bottom: #f00;
-	 *		border-color-left: #ba7;
-	 *
-	 * Normalizers produces coherent object representation for both shorthand and longhand forms:
-	 *
-	 *		stylesConverter.on( 'normalize:border-color', ( evt, data ) => {
-	 *			data.path = 'border.color';
-	 *			data.value = {
-	 *				top: '#f00',
-	 *				right: '#ba7',
-	 *				bottom: '#f00',
-	 *				left: '#ba7'
-	 *			}
-	 *		} );
-	 *
-	 * @event normalize
-	 */
-
-	/**
-	 * An style reducer takes normalized object of style property and outputs array of normalized property-value pairs that can
-	 * be later used to inline a style.
-	 *
-	 * Those work in opposite direction to {@link #normalizers} and always outputs style in the same way.
-	 *
-	 * If normalized style is represented as:
-	 *
-	 *		const style = {
-	 *			border: {
-	 *				color: {
-	 *					top: '#f00',
-	 *					right: '#ba7',
-	 *					bottom: '#f00',
-	 *					left: '#ba7'
-	 *				}
-	 *			}
-	 *		}
-	 *
-	 * The border reducer will output:
-	 *
-	 *		const reduced = [
-	 *			[ 'border-color', '#f00 #ba7' ]
-	 *		];
-	 *
-	 * which can be used to return the inline style string:
-	 *
-	 *		style="border-color:#f00 #ba7;"
-	 *
-	 * @event reduce
-	 */
-
-	/**
 	 * Returns reduced form of style property form normalized object.
 	 *
 	 * @private
 	 * @param {String} styleName
 	 * @param {Object|String} normalizedValue
-	 * @returns {Array.<Array.<String, String>>}
+	 * @returns {module:engine/view/styles~PropertyEntry}
 	 */
 	getReducedForm( styleName, normalizedValue ) {
 		const data = {
@@ -177,7 +109,6 @@ export default class Styles {
 	 */
 	constructor( converter = stylesConverter ) {
 		/**
-		 * @type {{}}
 		 * @private
 		 */
 		this._styles = {};
@@ -352,9 +283,9 @@ export default class Styles {
 	}
 
 	/**
-	 * Returns style properties names as the would appear when using {@link #getInlineStyle()}
+	 * Returns style properties names as the would appear when using {@link #getInlineStyle}
 	 *
-	 * @returns {Array.<String>}
+	 * @returns {module:engine/view/styles~PropertyEntry}
 	 */
 	getStyleNames() {
 		const entries = this._getStylesEntries();
@@ -373,7 +304,7 @@ export default class Styles {
 	 * Returns normalized styles entries for further processing.
 	 *
 	 * @private
-	 * @returns {Array.<Array.<String, String>> ]}
+	 * @returns {module:engine/view/styles~PropertyEntry}
 	 */
 	_getStylesEntries() {
 		const parsed = [];
@@ -485,3 +416,75 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
 
 	set( stylesObject, nameOrPath, valueToSet );
 }
+
+/**
+ * An style reducer takes normalized object of style property and outputs array of normalized property-value pairs that can
+ * be later used to inline a style.
+ *
+ * Those work in opposite direction to "normalize" event and always outputs style in the same way.
+ *
+ * If normalized style is represented as:
+ *
+ *		const style = {
+ *			border: {
+ *				color: {
+ *					top: '#f00',
+ *					right: '#ba7',
+ *					bottom: '#f00',
+ *					left: '#ba7'
+ *				}
+ *			}
+ *		}
+ *
+ * The border reducer will output:
+ *
+ *		const reduced = [
+ *			[ 'border-color', '#f00 #ba7' ]
+ *		];
+ *
+ * which can be used to return the inline style string:
+ *
+ *		style="border-color:#f00 #ba7;"
+ *
+ * @event reduce
+ */
+
+/**
+ * Holds shorthand properties normalizers.
+ *
+ * Shorthand properties must be normalized as they can be written in various ways.
+ * Normalizer must return object describing given shorthand.
+ *
+ * Example:
+ * The `border-color` style is a shorthand property for `border-top-color`, `border-right-color`, `border-bottom-color`
+ * and `border-left-color`. Similarly there are shorthand for border width (`border-width`) and style (`border-style`).
+ *
+ * For `border-color` the given shorthand:
+ *
+ *		border-color: #f00 #ba7;
+ *
+ * might be written as:
+ *
+ *		border-color-top: #f00;
+ *		border-color-right: #ba7;
+ *		border-color-bottom: #f00;
+ *		border-color-left: #ba7;
+ *
+ * Normalizers produces coherent object representation for both shorthand and longhand forms:
+ *
+ *		stylesConverter.on( 'normalize:border-color', ( evt, data ) => {
+ *			data.path = 'border.color';
+ *			data.value = {
+ *				top: '#f00',
+ *				right: '#ba7',
+ *				bottom: '#f00',
+ *				left: '#ba7'
+ *			}
+ *		} );
+ *
+ * @event normalize
+ */
+
+/**
+ * @typedef {Array.<Array.<String>>} module:engine/view/styles~PropertyEntry
+ */
