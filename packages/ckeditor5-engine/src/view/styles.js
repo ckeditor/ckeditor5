@@ -182,7 +182,12 @@ export default class Styles {
 		 */
 		this._styles = {};
 
-		this.converter = converter;
+		// This hides the converter from the watchdog.
+		Object.defineProperty( this, 'converter', {
+			value: converter,
+			enumerable: false,
+			writable: true
+		} );
 	}
 
 	/**
