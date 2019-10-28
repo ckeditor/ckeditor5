@@ -132,4 +132,8 @@ export default class Operation {
 	static fromJSON( json ) {
 		return new this( json.baseVersion );
 	}
+
+	// @if CK_DEBUG_ENGINE // log() {
+	// @if CK_DEBUG_ENGINE // 	console.log( this.toString() );
+	// @if CK_DEBUG_ENGINE // }
 }

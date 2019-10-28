@@ -14,6 +14,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { _move } from './utils';
 
+// @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
+
 /**
  * Operation to move a range of {@link module:engine/model/item~Item model items}
  * to given {@link module:engine/model/position~Position target position}.
@@ -198,4 +200,10 @@ export default class MoveOperation extends Operation {
 
 		return new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
+
+	// @if CK_DEBUG_ENGINE //	return `MoveOperation( ${ this.baseVersion } ): ${ range } -> ${ this.targetPosition }`;
+	// @if CK_DEBUG_ENGINE // }
 }
