@@ -15,9 +15,7 @@
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 const commonOptions = {
 	cwd: process.cwd(),
-	packages: 'packages',
-	// `newVersion` is mostly used for testing purposes. It allows generating changelog that contains the same version for all packages.
-	newVersion: process.argv[ 2 ] || null
+	packages: 'packages'
 };
 const editorBuildsGlob = '@ckeditor/ckeditor5-build-*';
 
