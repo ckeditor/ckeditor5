@@ -1,9 +1,11 @@
 sudo: required
-dist: trusty
+dist: xenial
 addons:
   chrome: stable
   firefox: latest
 language: node_js
+services:
+- xvfb
 node_js:
 - '8'
 cache:
@@ -13,8 +15,6 @@ branches:
   - stable
 before_install:
 - export START_TIME=$( date +%s )
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
 - yarn add @ckeditor/ckeditor5-dev-tests
@@ -28,4 +28,4 @@ after_script:
 - ckeditor5-dev-tests-notify-travis-status
 env:
   global:
-    secure: vMSAfguf5ZiWJfOPrVA/IiP6cNoHZLm+ie1yzto7pkfOGjYH/mll5G5OKHqNJ773jsu5pFz0yEiInq4XkJUheQ5CYQd5TNIUWaB3QiUct8SNbaBDK9UddinwkcMQmUek0eLKKeTXSX92Albl2ly4FU+SiZhMmLAxsS9Xqpf/+V+eE2w9ZiDjnY6h9gmdkr7XLGPS3tQaq6ot2FNGXpC69+4Y8zUyFNTqlHXZbR0yObdhEERIqzXlcgHBX//XIZ5+R7z3CjlLaTsqChangvZZxWLOer+d9HWm1sXzrUFaRAaBW1WsjppPXO5KyjfPy0JH5bkhZURt8almd4TzvM3Nv++8p7Me8ntUZBmrc/1dq3YTQfFRumBTkqHBSjK5PzDHFL1vgfdxdNXXZuWq5zXWxZrEnz/QuN9prhWDrhVb5zQUol1OtvbIICiaR9V4srGRC9s0GiaxiCW5kJoKrdFVQVMTdQ2+X6gL80+HBrZjqnNlT6hvkNbvMVgt/TX4Z8Nk4LucVJrdpsEVEeInF+hwqErfMq5YW1ajmU+vNAhXBJOWOSbiAeRz9a29bo/dNatdMIjHR8aJY2UHVqAznlQ0vrNpt/sNA1nI50nlt8HYgerqKUAeUOocq35YlCZxiyt/Fdoa9Cxz6fXrLdnv1pfpDu89dKs/KC2m2YkGh3zQtrE=
+    secure: ARqk6ZMfRO0+WtJcd4aEBeHcDJpG3S88xhoxn6CeF7iNM2kv73nICatf3CwGc1v5wFvBJSOqzBp1xwZHxI2FImQd6CkL+HXpUeO/Yu0j86YeZENEEEttD4Wbm5Q1tndbD0NZXSpO0TNDQYPm4Cc4nOoRBSEdCxkVaTPhYcjElcDR4Zm+hzCRF65CrEZ/p11VF333x3t8LvKkS5jDH+n3FJJ2l056+v8EphIw/bvVLMdtYoW0z5uYaG425BHQNAfrfrANTCNu6FHfVQKXkG8OUCGGPT4tVAjNsy+wdVoJAVt7RSCxUykdIHcBRWxarTDzDe0uu7z3Gp5E/yDUVFen8DSV1jRaYedMUr39GWQbbcbVGzhn6W5DXcAaM5sADYHFxGum7sJGYSW05DqMmiEkxj/b8Xs67eQ8PAqoH0XxOCo9BcRrAgyH7OuLKOTgot0M+EBVfkbUq5A0Ro7H1LESAmgX/sSmuHD08+kCvIVrMIMb4XxjnElnU+cQYW2y4dPsThCgIcOJl33bo1w5rcQtmNJSlr0XKX1+hKIF0LPNcksotZ91AkSRfY6n6XRlt9CNwiL20M/q9BjboiybIQcPhPQC51nWJU2DEq1zQNKmMXHa2l4/4Aji2vbWY2sxDQ1Hcdn7VPjvTyHuxWqSv0n3XVB5dNZ23aiVkweTnsGfBAY=
