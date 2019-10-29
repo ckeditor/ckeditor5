@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-code-block",
   "version": "0.0.1",
-  "description": "Block Quote feature for CKEditor 5.",
+  "description": "Code Block feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
