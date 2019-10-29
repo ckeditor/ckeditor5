@@ -1,6 +1,6 @@
 ### Suggested merge commit message ([convention](https://github.com/ckeditor/ckeditor5-design/wiki/Git-commit-message-convention))
 
-Type: Message. Closes #000.
+Type: Message. Closes ckeditor/ckeditor5#000.
 
 ---
 
