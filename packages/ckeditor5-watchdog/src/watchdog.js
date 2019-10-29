@@ -337,7 +337,7 @@ export default class Watchdog {
 	 * Checks if the error comes from the editor that is handled by the watchdog (by checking the error context) and
 	 * restarts the editor. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
-	 * @private
+	 * @protected
 	 * @fires error
 	 * @param {Error} error Error.
 	 * @param {ErrorEvent|PromiseRejectionEvent} evt Error event.
