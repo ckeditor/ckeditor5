@@ -119,7 +119,7 @@ The file containing custom variables will be named `custom.css` and it will look
 	--ck-color-dropdown-panel-background: var(--ck-custom-background);
 	--ck-color-dropdown-panel-border: var(--ck-custom-foreground);
 
-	/* -- Overrides the default .ck-splitbutton class colors. -------------------------------------- */
+	/* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
 	--ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
 	--ck-color-split-button-hover-border: var(--ck-custom-foreground);
