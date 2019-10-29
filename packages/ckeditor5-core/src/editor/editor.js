@@ -7,11 +7,11 @@
  * @module core/editor/editor
  */
 
+import Scope from '@ckeditor/ckeditor5-core/src/scope';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
@@ -48,9 +48,16 @@ export default class Editor {
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
-	 * @param {Object} [config] The editor config.
+	 * @param {Object} [config={}] The editor config.
 	 */
-	constructor( config ) {
+	constructor( config = {} ) {
+		/**
+		 * @readonly
+		 * @type {module:core/scope~Scope}
+		 */
+		this.scope = config.scope || new Scope( config );
+		this.scope.addEditor( this );
+
 		const availablePlugins = this.constructor.builtinPlugins;
 
 		/**
@@ -63,7 +70,6 @@ export default class Editor {
 		 * @member {module:utils/config~Config}
 		 */
 		this.config = new Config( config, this.constructor.defaultConfig );
-
 		this.config.define( 'plugins', availablePlugins );
 
 		/**
@@ -74,7 +80,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins );
+		this.plugins = new PluginCollection( this, availablePlugins, this.scope.plugins );
 
 		/**
 		 * Commands registered to the editor.
@@ -91,25 +97,6 @@ export default class Editor {
 		 * @member {module:core/commandcollection~CommandCollection}
 		 */
 		this.commands = new CommandCollection();
-
-		const languageConfig = this.config.get( 'language' ) || {};
-
-		/**
-		 * @readonly
-		 * @member {module:utils/locale~Locale}
-		 */
-		this.locale = new Locale( {
-			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' )
-		} );
-
-		/**
-		 * Shorthand for {@link module:utils/locale~Locale#t}.
-		 *
-		 * @see module:utils/locale~Locale#t
-		 * @method #t
-		 */
-		this.t = this.locale.t;
 
 		/**
 		 * Indicates the editor life-cycle state.
@@ -215,6 +202,24 @@ export default class Editor {
 	}
 
 	/**
+	 * @readonly
+	 * @type {module:utils/locale~Locale}
+	 */
+	get locale() {
+		return this.scope.locale;
+	}
+
+	/**
+	 * Shorthand for {@link module:utils/locale~Locale#t}.
+	 *
+	 * @see module:utils/locale~Locale#t
+	 * @method #t
+	 */
+	get t() {
+		return this.locale.t;
+	}
+
+	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
@@ -239,6 +244,16 @@ export default class Editor {
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
+		// If editor scope is created by this editor
+		// it is enough to destroy the scope, editor will be destroyed along with it.
+		if ( this.scope ) {
+			if ( this.config.scope ) {
+				return this.scope.destroy();
+			}
+
+			this.scope.removeEditor( this );
+		}
+
 		let readyPromise = Promise.resolve();
 
 		if ( this.state == 'initializing' ) {

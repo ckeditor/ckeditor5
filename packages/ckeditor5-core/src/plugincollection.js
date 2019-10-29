@@ -23,33 +23,36 @@ export default class PluginCollection {
 	/**
 	 * Creates an instance of the PluginCollection class.
 	 * Allows loading and initializing plugins and their dependencies.
+	 * Allows to provide a list of already loaded plugins, these plugins won't be destroyed along with this collection.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
 	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
+	 * @param {Iterable.<Array>} externalPlugins List of already initialized plugins represented by a
+	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
-	constructor( editor, availablePlugins = [] ) {
+	constructor( editor, availablePlugins = [], externalPlugins = [] ) {
 		/**
 		 * @protected
-		 * @member {module:core/editor/editor~Editor} module:core/plugin~PluginCollection#_editor
+		 * @type {module:core/editor/editor~Editor}
 		 */
 		this._editor = editor;
+
+		/**
+		 * @protected
+		 * @type {Map}
+		 */
+		this._plugins = new Map();
 
 		/**
 		 * Map of plugin constructors which can be retrieved by their names.
 		 *
 		 * @protected
-		 * @member {Map.<String|Function,Function>} module:core/plugin~PluginCollection#_availablePlugins
+		 * @type {Map.<String|Function,Function>}
 		 */
 		this._availablePlugins = new Map();
-
-		/**
-		 * @protected
-		 * @member {Map} module:core/plugin~PluginCollection#_plugins
-		 */
-		this._plugins = new Map();
 
 		for ( const PluginConstructor of availablePlugins ) {
 			this._availablePlugins.set( PluginConstructor, PluginConstructor );
@@ -57,6 +60,19 @@ export default class PluginCollection {
 			if ( PluginConstructor.pluginName ) {
 				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
 			}
+		}
+
+		/**
+		 * List of constructors of externally loaded plugins.
+		 *
+		 * @private
+		 * @type {Map<Function,Function>}
+		 */
+		this._externalPlugins = new Map();
+
+		for ( const [ PluginConstructor, pluginInstance ] of externalPlugins ) {
+			this._externalPlugins.set( PluginConstructor, pluginInstance );
+			this._externalPlugins.set( pluginInstance, PluginConstructor );
 		}
 	}
 
@@ -246,6 +262,10 @@ export default class PluginCollection {
 					return promise;
 				}
 
+				if ( that._externalPlugins.has( plugin ) ) {
+					return promise;
+				}
+
 				return promise.then( plugin[ method ].bind( plugin ) );
 			}, Promise.resolve() );
 		}
@@ -278,7 +298,7 @@ export default class PluginCollection {
 					} );
 				}
 
-				const plugin = new PluginConstructor( editor );
+				const plugin = that._externalPlugins.get( PluginConstructor ) || new PluginConstructor( editor );
 				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
 
@@ -319,10 +339,13 @@ export default class PluginCollection {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		const promises = Array.from( this )
-			.map( ( [ , pluginInstance ] ) => pluginInstance )
-			.filter( pluginInstance => typeof pluginInstance.destroy == 'function' )
-			.map( pluginInstance => pluginInstance.destroy() );
+		const promises = [];
+
+		for ( const [ , pluginInstance ] of this ) {
+			if ( typeof pluginInstance.destroy == 'function' && !this._externalPlugins.has( pluginInstance ) ) {
+				promises.push( pluginInstance.destroy() );
+			}
+		}
 
 		return Promise.all( promises );
 	}
