@@ -94,7 +94,9 @@ export default class BlockAutoformatEditing {
 				return;
 			}
 
-			const match = pattern.exec( item.data );
+			const text = getStartText( editor.model.createRangeIn( item.parent ) );
+
+			const match = pattern.exec( text );
 
 			if ( !match ) {
 				return;
@@ -118,4 +120,24 @@ export default class BlockAutoformatEditing {
 			} );
 		} );
 	}
+}
+
+/**
+ * Returns the text from given renge up to the first inline element.
+ *
+ * @param {module:engine/model/range~Range} range
+ * @returns {String}
+ */
+export function getStartText( range ) {
+	let text = '';
+
+	for ( const item of range.getItems() ) {
+		if ( !( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
+			return text;
+		}
+
+		text = text + item.data;
+	}
+
+	return text;
 }
