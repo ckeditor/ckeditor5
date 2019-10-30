@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/scope
+ * @module core/context
  */
 
 import Config from '@ckeditor/ckeditor5-utils/src/config';
@@ -12,10 +12,10 @@ import PluginCollection from './plugincollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-export default class Scope {
+export default class Context {
 	constructor( config ) {
 		/**
-		 * Holds all configurations specific to this scope instance.
+		 * Holds all configurations specific to this context instance.
 		 *
 		 * @readonly
 		 * @type {module:utils/config~Config}
@@ -23,7 +23,7 @@ export default class Scope {
 		this.config = new Config( config );
 
 		/**
-		 * The plugins loaded and in use by this scope instance.
+		 * The plugins loaded and in use by this context instance.
 		 *
 		 * @readonly
 		 * @type {module:core/plugincollection~PluginCollection}
@@ -42,7 +42,7 @@ export default class Scope {
 		} );
 
 		/**
-		 * List of editors used with this scope.
+		 * List of editors used with this context.
 		 *
 		 * @private
 		 * @type {Set<module:core/editor/editor~Editor>}
@@ -69,7 +69,7 @@ export default class Scope {
 
 		for ( const plugin of plugins ) {
 			if ( typeof plugin != 'function' ) {
-				throw new CKEditorError( 'scope-initplugins: Only constructor is allowed as a Scope plugin' );
+				throw new CKEditorError( 'context-initplugins: Only constructor is allowed as a Context plugin' );
 			}
 		}
 
@@ -77,15 +77,15 @@ export default class Scope {
 	}
 
 	/**
-	 * Destroys the scope instance, releasing all resources used by it.
+	 * Destroys the context instance, releasing all resources used by it.
 	 *
-	 * @returns {Promise} A promise that resolves once the scope instance is fully destroyed.
+	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
 	 */
 	destroy() {
 		const promises = [];
 
 		for ( const editor of Array.from( this._editors ) ) {
-			editor.scope = null;
+			editor.context = null;
 			promises.push( editor.destroy() );
 		}
 
@@ -95,9 +95,9 @@ export default class Scope {
 
 	static create( config ) {
 		return new Promise( resolve => {
-			const scope = new this( config );
+			const context = new this( config );
 
-			resolve( scope.initPlugins().then( () => scope ) );
+			resolve( context.initPlugins().then( () => context ) );
 		} );
 	}
 }

@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import Scope from '@ckeditor/ckeditor5-core/src/scope';
+import Context from '@ckeditor/ckeditor5-core/src/context';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
@@ -53,10 +53,10 @@ export default class Editor {
 	constructor( config = {} ) {
 		/**
 		 * @readonly
-		 * @type {module:core/scope~Scope}
+		 * @type {module:core/context~Context}
 		 */
-		this.scope = config.scope || new Scope( config );
-		this.scope.addEditor( this );
+		this.context = config.context || new Context( config );
+		this.context.addEditor( this );
 
 		const availablePlugins = this.constructor.builtinPlugins;
 
@@ -80,7 +80,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins, this.scope.plugins );
+		this.plugins = new PluginCollection( this, availablePlugins, this.context.plugins );
 
 		/**
 		 * Commands registered to the editor.
@@ -206,7 +206,7 @@ export default class Editor {
 	 * @type {module:utils/locale~Locale}
 	 */
 	get locale() {
-		return this.scope.locale;
+		return this.context.locale;
 	}
 
 	/**
@@ -244,14 +244,14 @@ export default class Editor {
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
-		// If editor scope is created by this editor
-		// it is enough to destroy the scope, editor will be destroyed along with it.
-		if ( this.scope ) {
-			if ( this.config.scope ) {
-				return this.scope.destroy();
+		// If editor context is created by this editor
+		// it is enough to destroy the context, editor will be destroyed along with it.
+		if ( this.context ) {
+			if ( this.config.context ) {
+				return this.context.destroy();
 			}
 
-			this.scope.removeEditor( this );
+			this.context.removeEditor( this );
 		}
 
 		let readyPromise = Promise.resolve();
