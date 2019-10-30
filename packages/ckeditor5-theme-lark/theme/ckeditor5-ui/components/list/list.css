@@ -23,7 +23,6 @@
 		width: 100%;
 		text-align: left;
 		border-radius: 0;
-		border: 0;
 
 		/* List items should have the same height. Use absolute units to make sure it is so
 		   because e.g. different heading styles may have different height
@@ -45,12 +44,16 @@
 			background: var(--ck-color-list-button-on-background);
 			color: var(--ck-color-list-button-on-text);
 
-			&:hover:not(ck-disabled) {
+			&:hover:not(.ck-disabled) {
 				background: var(--ck-color-list-button-on-background-focus);
 			}
 
 			&:active {
 				box-shadow: none;
+			}
+
+			&:focus:not(.ck-disabled) {
+				border-color: var(--ck-color-base-background);
 			}
 		}
 
