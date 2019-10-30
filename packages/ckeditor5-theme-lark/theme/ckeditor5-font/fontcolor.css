@@ -6,10 +6,13 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck .ck-button.ck-color-table__remove-color {
-	border-bottom: 1px solid var(--ck-color-base-border);
 	padding: calc(var(--ck-spacing-standard) / 2 ) var(--ck-spacing-standard);
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
+
+	&:not(:focus) {
+		border-bottom: 1px solid var(--ck-color-base-border);
+	}
 
 	& .ck.ck-icon {
 		@mixin ck-dir ltr {
