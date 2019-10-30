@@ -15,8 +15,8 @@
 }
 
 .ck.ck-color-grid {
-	grid-gap: calc( var(--ck-spacing-standard) / 2 );
-	padding: var(--ck-spacing-standard);
+	grid-gap: 5px;
+	padding: 8px;
 }
 
 .ck.ck-color-grid__tile {
@@ -43,7 +43,7 @@
 	}
 
 	&.ck-on {
-		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 1px var(--ck-color-base-text);
+		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
 
 		& .ck.ck-icon {
 			display: block;
@@ -59,7 +59,7 @@
 
 	&:focus:not( .ck-disabled ),
 	&:hover:not( .ck-disabled ) {
-		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 1px var(--ck-color-focus-border);
+		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
 	}
 }
 
