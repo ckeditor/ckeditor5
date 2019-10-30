@@ -87,9 +87,13 @@ export default class Context {
 	initPlugins() {
 		const plugins = this.config.get( 'plugins' ) || [];
 
-		for ( const plugin of plugins ) {
-			if ( typeof plugin != 'function' ) {
-				throw new CKEditorError( 'context-initplugins: Only constructor is allowed as a Context plugin' );
+		for ( const Plugin of plugins ) {
+			if ( typeof Plugin != 'function' ) {
+				throw new CKEditorError( 'context-initplugins: Only constructor is allowed as a Context plugin.', null, { Plugin } );
+			}
+
+			if ( Plugin.isContextPlugin !== true ) {
+				throw new CKEditorError( 'context-initplugins: Only plugins marked as a ContextPlugin are allowed.', null, { Plugin } );
 			}
 		}
 

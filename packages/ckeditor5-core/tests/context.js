@@ -4,13 +4,15 @@
  */
 
 import Context from '../src/context';
+import ContextPlugin from '../src/contextplugin';
 import Plugin from '../src/plugin';
 import VirtualTestEditor from './_utils/virtualtesteditor';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Context', () => {
 	it( 'should share the same instance of plugin within editors using the same context', async () => {
-		class ContextPluginA extends Plugin {}
-		class ContextPluginB extends Plugin {}
+		class ContextPluginA extends ContextPlugin {}
+		class ContextPluginB extends ContextPlugin {}
 		class EditorPluginA extends Plugin {}
 
 		const context = await Context.create( { plugins: [ ContextPluginA, ContextPluginB ] } );
@@ -29,8 +31,8 @@ describe( 'Context', () => {
 	} );
 
 	it( 'should share the same instance of plugin (dependencies) within editors using the same context', async () => {
-		class ContextPluginA extends Plugin {}
-		class ContextPluginB extends Plugin {}
+		class ContextPluginA extends ContextPlugin {}
+		class ContextPluginB extends ContextPlugin {}
 		class EditorPluginA extends Plugin {
 			static get requires() {
 				return [ ContextPluginA ];
@@ -56,7 +58,7 @@ describe( 'Context', () => {
 		const initSpy = sinon.spy();
 		const afterInitSpy = sinon.spy();
 
-		class ContextPluginA extends Plugin {
+		class ContextPluginA extends ContextPlugin {
 			init() {
 				initSpy();
 			}
@@ -80,7 +82,7 @@ describe( 'Context', () => {
 		const contextPluginDestroySpy = sinon.spy();
 		const editorPluginDestroySpy = sinon.spy();
 
-		class ContextPlugin extends Plugin {
+		class ContextPluginA extends ContextPlugin {
 			destroy() {
 				contextPluginDestroySpy();
 			}
@@ -92,8 +94,8 @@ describe( 'Context', () => {
 			}
 		}
 
-		const context = await Context.create( { plugins: [ ContextPlugin ] } );
-		const editor = await VirtualTestEditor.create( { context, plugins: [ ContextPlugin, EditorPlugin ] } );
+		const context = await Context.create( { plugins: [ ContextPluginA ] } );
+		const editor = await VirtualTestEditor.create( { context, plugins: [ ContextPluginA, EditorPlugin ] } );
 
 		await editor.destroy();
 
@@ -119,13 +121,13 @@ describe( 'Context', () => {
 	} );
 
 	it( 'should be able to add context plugin to the editor using pluginName property', async () => {
-		class ContextPluginA extends Plugin {
+		class ContextPluginA extends ContextPlugin {
 			static get pluginName() {
 				return 'ContextPluginA';
 			}
 		}
 
-		class ContextPluginB extends Plugin {
+		class ContextPluginB extends ContextPlugin {
 			static get pluginName() {
 				return 'ContextPluginB';
 			}
@@ -140,5 +142,78 @@ describe( 'Context', () => {
 
 		expect( editor.plugins.has( ContextPluginA ) ).to.equal( true );
 		expect( editor.plugins.has( ContextPluginB ) ).to.equal( false );
+	} );
+
+	it( 'should throw when plugin is added to the context by name', async () => {
+		let caughtError;
+
+		try {
+			await Context.create( { plugins: [ 'ContextPlugin' ] } );
+		} catch ( error ) {
+			caughtError = error;
+		}
+
+		expect( caughtError ).to.instanceof( CKEditorError );
+		expect( caughtError.message ).match( /^context-initplugins: Only constructor is allowed as a Context plugin./ );
+	} );
+
+	it( 'should throw when plugin added to the context is not marked as a ContextPlugin #1', async () => {
+		class EditorPlugin extends Plugin {}
+
+		let caughtError;
+
+		try {
+			await Context.create( { plugins: [ EditorPlugin ] } );
+		} catch ( error ) {
+			caughtError = error;
+		}
+
+		expect( caughtError ).to.instanceof( CKEditorError );
+		expect( caughtError.message ).match( /^context-initplugins: Only plugins marked as a ContextPlugin are allowed./ );
+	} );
+
+	it( 'should throw when plugin added to the context is not marked as a ContextPlugin #2', async () => {
+		function EditorPlugin() {}
+
+		let caughtError;
+
+		try {
+			await Context.create( { plugins: [ EditorPlugin ] } );
+		} catch ( error ) {
+			caughtError = error;
+		}
+
+		expect( caughtError ).to.instanceof( CKEditorError );
+		expect( caughtError.message ).match( /^context-initplugins: Only plugins marked as a ContextPlugin are allowed./ );
+	} );
+
+	it( 'should not throw when plugin added to the context has not a ContextPlugin proto but is marked as a ContextPlugin', async () => {
+		function EditorPlugin() {}
+		EditorPlugin.isContextPlugin = true;
+
+		let caughtError;
+
+		try {
+			await Context.create( { plugins: [ EditorPlugin ] } );
+		} catch ( error ) {
+			caughtError = error;
+		}
+
+		expect( caughtError ).to.equal( undefined );
+	} );
+
+	it( 'should throw when plugin added to the context is not marked as a ContextPlugin #2', async () => {
+		function EditorPlugin() {}
+
+		let caughtError;
+
+		try {
+			await Context.create( { plugins: [ EditorPlugin ] } );
+		} catch ( error ) {
+			caughtError = error;
+		}
+
+		expect( caughtError ).to.instanceof( CKEditorError );
+		expect( caughtError.message ).match( /^context-initplugins: Only plugins marked as a ContextPlugin are allowed./ );
 	} );
 } );

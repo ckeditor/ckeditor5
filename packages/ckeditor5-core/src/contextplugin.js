@@ -38,6 +38,15 @@ export default class ContextPlugin {
 	destroy() {
 		this.stopListening();
 	}
+
+	/**
+	 * Static property which marks plugin as an allowed to be use directly by a {@link module:core/context~Context}.
+	 *
+	 * @returns {Boolean}
+	 */
+	static get isContextPlugin() {
+		return true;
+	}
 }
 
 mix( ContextPlugin, ObservableMixin );
