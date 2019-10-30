@@ -35,8 +35,8 @@ a.ck.ck-button {
 	/* Avoid flickering when the foucs border shows up. */
 	border: 1px solid transparent;
 
-	/* Apply some smooth transition to the box-shadow. */
-	transition: box-shadow 200ms ease-in-out;
+	/* Apply some smooth transition to the box-shadow and border. */
+	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/189 */
 	-webkit-appearance: none;
@@ -45,9 +45,6 @@ a.ck.ck-button {
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
-
-		/* Disable border part of the focus ring for the buttons. It is too much. */
-		border-color: transparent;
 	}
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */

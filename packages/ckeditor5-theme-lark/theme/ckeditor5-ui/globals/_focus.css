@@ -12,7 +12,7 @@
 	/**
 	 * A visual style of focused element's outer shadow.
 	 */
-	--ck-focus-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-shadow);
+	--ck-focus-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-outer-shadow);
 
 	/**
 	 * A visual style of focused element's outer shadow (when disabled).
