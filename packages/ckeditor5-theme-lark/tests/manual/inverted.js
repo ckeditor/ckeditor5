@@ -11,10 +11,11 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
 const config = {
-	plugins: [ ArticlePluginSet, Strikethrough, Code ],
-	toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'undo', 'redo' ]
+	plugins: [ ArticlePluginSet, Strikethrough, Code, Highlight ],
+	toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'highlight', '|', 'undo', 'redo' ]
 };
 
 ClassicEditor
