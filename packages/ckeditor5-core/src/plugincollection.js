@@ -55,15 +55,13 @@ export default class PluginCollection {
 		this._availablePlugins = new Map();
 
 		for ( const PluginConstructor of availablePlugins ) {
-			this._availablePlugins.set( PluginConstructor, PluginConstructor );
-
 			if ( PluginConstructor.pluginName ) {
 				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
 			}
 		}
 
 		/**
-		 * List of constructors of externally loaded plugins.
+		 * Map of external plugins which can be retrieved by their constructors or instance.
 		 *
 		 * @private
 		 * @type {Map<Function,Function>}
@@ -73,6 +71,11 @@ export default class PluginCollection {
 		for ( const [ PluginConstructor, pluginInstance ] of externalPlugins ) {
 			this._externalPlugins.set( PluginConstructor, pluginInstance );
 			this._externalPlugins.set( pluginInstance, PluginConstructor );
+
+			// To make it possible to require plugin by its name.
+			if ( PluginConstructor.pluginName ) {
+				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
+			}
 		}
 	}
 

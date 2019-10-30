@@ -12,7 +12,17 @@ import PluginCollection from './plugincollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+/**
+ * @TODO
+ */
 export default class Context {
+	/**
+	 * Creates a context instance with a given configuration.
+	 *
+	 * Usually, not to be used directly. See the static {@link ~Context.create `create()`} method.
+	 *
+	 * @param {Object} [config={}] The context config.
+	 */
 	constructor( config ) {
 		/**
 		 * Holds all configurations specific to this context instance.
@@ -28,13 +38,13 @@ export default class Context {
 		 * @readonly
 		 * @type {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, this.config.get( 'plugins' ) );
+		this.plugins = new PluginCollection( this );
 
 		const languageConfig = this.config.get( 'language' ) || {};
 
 		/**
 		 * @readonly
-		 * @member {module:utils/locale~Locale}
+		 * @type {module:utils/locale~Locale}
 		 */
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
@@ -42,7 +52,7 @@ export default class Context {
 		} );
 
 		/**
-		 * List of editors used with this context.
+		 * List of editors to which this context instance is injected.
 		 *
 		 * @private
 		 * @type {Set<module:core/editor/editor~Editor>}
@@ -51,6 +61,8 @@ export default class Context {
 	}
 
 	/**
+	 * Adds a reference to the to which context is injected.
+	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	addEditor( editor ) {
@@ -58,14 +70,22 @@ export default class Context {
 	}
 
 	/**
+	 * Removes a reference to the editor to which context was injected.
+	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	removeEditor( editor ) {
 		return this._editors.delete( editor );
 	}
 
+	/**
+	 * Loads and initializes plugins specified in the config.
+	 *
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
+	 * once the initialization is completed providing an array of loaded plugins.
+	 */
 	initPlugins() {
-		const plugins = this.config.get( 'plugins' );
+		const plugins = this.config.get( 'plugins' ) || [];
 
 		for ( const plugin of plugins ) {
 			if ( typeof plugin != 'function' ) {
@@ -93,6 +113,12 @@ export default class Context {
 			.then( () => this.plugins.destroy() );
 	}
 
+	/**
+	 * @TODO
+	 *
+	 * @param {Object} [config] The context config.
+	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
+	 */
 	static create( config ) {
 		return new Promise( resolve => {
 			const context = new this( config );

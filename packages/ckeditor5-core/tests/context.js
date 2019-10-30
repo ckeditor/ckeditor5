@@ -76,7 +76,7 @@ describe( 'Context', () => {
 		await context.destroy();
 	} );
 
-	it( 'should not destroy context plugin when only the editor is destroyed', async () => {
+	it( 'should not destroy context along with the editor when context is injected to the editor', async () => {
 		const contextPluginDestroySpy = sinon.spy();
 		const editorPluginDestroySpy = sinon.spy();
 
@@ -101,15 +101,44 @@ describe( 'Context', () => {
 		sinon.assert.notCalled( contextPluginDestroySpy );
 	} );
 
-	it( 'should not destroy context along with editor when context is injected to the editor', () => {
+	it( 'should destroy all editors with injected context when context is destroyed', async () => {
+		const context = await Context.create();
+		const editorA = await VirtualTestEditor.create( { context } );
+		const editorB = await VirtualTestEditor.create( { context } );
+		const editorC = await VirtualTestEditor.create();
 
+		sinon.spy( editorA, 'destroy' );
+		sinon.spy( editorB, 'destroy' );
+		sinon.spy( editorC, 'destroy' );
+
+		await context.destroy();
+
+		sinon.assert.calledOnce( editorA.destroy );
+		sinon.assert.calledOnce( editorB.destroy );
+		sinon.assert.notCalled( editorC.destroy );
 	} );
 
-	it( 'should destroy all editors along with the context when context is injected to them', () => {
+	it( 'should be able to add context plugin to the editor using pluginName property', async () => {
+		class ContextPluginA extends Plugin {
+			static get pluginName() {
+				return 'ContextPluginA';
+			}
+		}
 
-	} );
+		class ContextPluginB extends Plugin {
+			static get pluginName() {
+				return 'ContextPluginB';
+			}
 
-	it( 'should destroy context along with editor when context is created by the editor', () => {
+			static get requires() {
+				return [ ContextPluginA ];
+			}
+		}
 
+		const context = await Context.create( { plugins: [ ContextPluginB ] } );
+		const editor = await VirtualTestEditor.create( { context, plugins: [ 'ContextPluginA' ] } );
+
+		expect( editor.plugins.has( ContextPluginA ) ).to.equal( true );
+		expect( editor.plugins.has( ContextPluginB ) ).to.equal( false );
 	} );
 } );
