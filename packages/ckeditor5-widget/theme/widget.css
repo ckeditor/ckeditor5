@@ -21,13 +21,6 @@
 	/* Make the widget wrapper a relative positioning container for the drag handle. */
 	position: relative;
 
-	/* Show the selection handle on mouse hover over the widget. */
-	&:hover {
-		& .ck-widget__selection-handle {
-			visibility: visible;
-		}
-	}
-
 	& .ck-widget__selection-handle {
 		position: absolute;
 
@@ -35,6 +28,13 @@
 			/* Make sure the icon in not a subject to font-size or line-height to avoid
 			unnecessary spacing around it. */
 			display: block;
+		}
+	}
+
+	/* Show the selection handle on mouse hover over the widget. */
+	&:hover {
+		& .ck-widget__selection-handle {
+			visibility: visible;
 		}
 	}
 
