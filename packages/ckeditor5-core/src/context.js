@@ -52,6 +52,14 @@ export default class Context {
 		} );
 
 		/**
+		 * Shorthand for {@link module:utils/locale~Locale#t}.
+		 *
+		 * @see module:utils/locale~Locale#t
+		 * @method #t
+		 */
+		this.t = this.locale.t;
+
+		/**
 		 * List of editors to which this context instance is injected.
 		 *
 		 * @private
@@ -61,9 +69,11 @@ export default class Context {
 	}
 
 	/**
-	 * Adds a reference to the to which context is injected.
+	 * Adds a reference to the editor to which context is injected.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Boolean} isHost Flag defines if context was created by this editor. It is used to decide if the context
+	 * should be destroyed along with the editor instance.
 	 */
 	addEditor( editor ) {
 		this._editors.add( editor );
@@ -106,14 +116,7 @@ export default class Context {
 	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
 	 */
 	destroy() {
-		const promises = [];
-
-		for ( const editor of Array.from( this._editors ) ) {
-			editor.context = null;
-			promises.push( editor.destroy() );
-		}
-
-		return Promise.all( promises )
+		return Promise.all( Array.from( this._editors, editor => editor.destroy() ) )
 			.then( () => this.plugins.destroy() );
 	}
 

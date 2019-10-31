@@ -6,6 +6,7 @@
 /* globals window, setTimeout */
 
 import Editor from '../../src/editor/editor';
+import Context from '../../src/context';
 import Plugin from '../../src/plugin';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
@@ -180,6 +181,53 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'context integration', () => {
+		it( 'should create a new context when it is not provided through config', () => {
+			const editor = new TestEditor();
+
+			expect( editor.context ).to.be.an.instanceof( Context );
+		} );
+
+		it( 'should use context given through configuration when is defined', async () => {
+			const context = await Context.create();
+			const editor = new TestEditor( { context } );
+
+			expect( editor.context ).to.equal( context );
+		} );
+
+		it( 'should destroy context created by the editor on editor destroy', async () => {
+			const editor = await TestEditor.create();
+			const contextDestroySpy = sinon.spy( editor.context, 'destroy' );
+
+			await editor.destroy();
+
+			sinon.assert.calledOnce( contextDestroySpy );
+		} );
+
+		it( 'should not destroy context along with the editor when context was injected to the editor', async () => {
+			const context = await Context.create();
+			const editor = await TestEditor.create( { context } );
+			const contextDestroySpy = sinon.spy( editor.context, 'destroy' );
+
+			await editor.destroy();
+
+			sinon.assert.notCalled( contextDestroySpy );
+		} );
+
+		it( 'should add context plugins as an external editor plugins', async () => {
+			class ContextPlugin {
+				static get isContextPlugin() {
+					return true;
+				}
+			}
+
+			const context = await Context.create( { plugins: [ ContextPlugin ] } );
+			const editor = new TestEditor( { context } );
+
+			expect( editor.plugins._externalPlugins.has( ContextPlugin ) ).to.equal( true );
+		} );
+	} );
+
 	describe( 'plugins', () => {
 		it( 'should be empty on new editor', () => {
 			const editor = new TestEditor();
@@ -189,32 +237,11 @@ describe( 'Editor', () => {
 	} );
 
 	describe( 'locale', () => {
-		it( 'is instantiated and t() is exposed', () => {
+		it( 'should use Context#locale and Context#t', () => {
 			const editor = new TestEditor();
 
-			expect( editor.locale ).to.be.instanceof( Locale );
-			expect( editor.t ).to.equal( editor.locale.t );
-		} );
-
-		it( 'is configured with the config.language (UI and the content)', () => {
-			const editor = new TestEditor( { language: 'pl' } );
-
-			expect( editor.locale.uiLanguage ).to.equal( 'pl' );
-			expect( editor.locale.contentLanguage ).to.equal( 'pl' );
-		} );
-
-		it( 'is configured with the config.language (different for UI and the content)', () => {
-			const editor = new TestEditor( { language: { ui: 'pl', content: 'ar' } } );
-
-			expect( editor.locale.uiLanguage ).to.equal( 'pl' );
-			expect( editor.locale.contentLanguage ).to.equal( 'ar' );
-		} );
-
-		it( 'is configured with the config.language (just the content)', () => {
-			const editor = new TestEditor( { language: { content: 'ar' } } );
-
-			expect( editor.locale.uiLanguage ).to.equal( 'en' );
-			expect( editor.locale.contentLanguage ).to.equal( 'ar' );
+			expect( editor.locale ).to.equal( editor.context.locale ).to.instanceof( Locale );
+			expect( editor.t ).to.equal( editor.context.t );
 		} );
 	} );
 

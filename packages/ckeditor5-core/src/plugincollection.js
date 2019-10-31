@@ -63,7 +63,7 @@ export default class PluginCollection {
 		/**
 		 * Map of external plugins which can be retrieved by their constructors or instance.
 		 *
-		 * @private
+		 * @protected
 		 * @type {Map<Function,Function>}
 		 */
 		this._externalPlugins = new Map();

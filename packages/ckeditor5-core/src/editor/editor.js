@@ -58,6 +58,14 @@ export default class Editor {
 		this.context = config.context || new Context( config );
 		this.context.addEditor( this );
 
+		/**
+		 * `true` when context is created by this editor or `false` when context is injected to the editor.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._isContextHost = !config.context;
+
 		const availablePlugins = this.constructor.builtinPlugins;
 
 		/**
@@ -81,6 +89,20 @@ export default class Editor {
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
 		this.plugins = new PluginCollection( this, availablePlugins, this.context.plugins );
+
+		/**
+		 * @readonly
+		 * @type {module:utils/locale~Locale}
+		 */
+		this.locale = this.context.locale;
+
+		/**
+		 * Shorthand for {@link module:utils/locale~Locale#t}.
+		 *
+		 * @see module:utils/locale~Locale#t
+		 * @method #t
+		 */
+		this.t = this.locale.t;
 
 		/**
 		 * Commands registered to the editor.
@@ -202,24 +224,6 @@ export default class Editor {
 	}
 
 	/**
-	 * @readonly
-	 * @type {module:utils/locale~Locale}
-	 */
-	get locale() {
-		return this.context.locale;
-	}
-
-	/**
-	 * Shorthand for {@link module:utils/locale~Locale#t}.
-	 *
-	 * @see module:utils/locale~Locale#t
-	 * @method #t
-	 */
-	get t() {
-		return this.locale.t;
-	}
-
-	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
@@ -244,16 +248,6 @@ export default class Editor {
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
-		// If editor context is created by this editor
-		// it is enough to destroy the context, editor will be destroyed along with it.
-		if ( this.context ) {
-			if ( this.config.context ) {
-				return this.context.destroy();
-			}
-
-			this.context.removeEditor( this );
-		}
-
 		let readyPromise = Promise.resolve();
 
 		if ( this.state == 'initializing' ) {
@@ -262,6 +256,12 @@ export default class Editor {
 
 		return readyPromise
 			.then( () => {
+				this.context.removeEditor( this );
+
+				if ( this._isContextHost ) {
+					return this.context.destroy();
+				}
+			} ).then( () => {
 				this.fire( 'destroy' );
 				this.stopListening();
 				this.commands.destroy();

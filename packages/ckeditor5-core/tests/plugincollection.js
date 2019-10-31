@@ -405,6 +405,40 @@ describe( 'PluginCollection', () => {
 					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
+
+		it( 'should get plugin from external plugins instead of creating new instance', async () => {
+			const externalPlugins = new PluginCollection( editor );
+			await externalPlugins.init( [ PluginA, PluginB ] );
+
+			const plugins = new PluginCollection( editor, [], Array.from( externalPlugins ) );
+			await plugins.init( [ PluginA ] );
+
+			expect( getPlugins( plugins ) ).to.length( 1 );
+			expect( plugins.get( PluginA ) ).to.equal( externalPlugins.get( PluginA ) ).to.instanceof( PluginA );
+		} );
+
+		it( 'should get plugin by name from external plugins instead of creating new instance', async () => {
+			const externalPlugins = new PluginCollection( editor );
+			await externalPlugins.init( [ PluginA, PluginB ] );
+
+			const plugins = new PluginCollection( editor, [], Array.from( externalPlugins ) );
+			await plugins.init( [ 'A' ] );
+
+			expect( getPlugins( plugins ) ).to.length( 1 );
+			expect( plugins.get( PluginA ) ).to.equal( externalPlugins.get( PluginA ) ).to.instanceof( PluginA );
+		} );
+
+		it( 'should get dependency of plugin from external plugins instead of creating new instance', async () => {
+			const externalPlugins = new PluginCollection( editor );
+			await externalPlugins.init( [ PluginA, PluginB ] );
+
+			const plugins = new PluginCollection( editor, [], Array.from( externalPlugins ) );
+			await plugins.init( [ PluginC ] );
+
+			expect( getPlugins( plugins ) ).to.length( 2 );
+			expect( plugins.get( PluginB ) ).to.equal( externalPlugins.get( PluginB ) ).to.instanceof( PluginB );
+			expect( plugins.get( PluginC ) ).to.instanceof( PluginC );
+		} );
 	} );
 
 	describe( 'get()', () => {
