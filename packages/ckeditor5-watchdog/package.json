@@ -40,11 +40,15 @@
     "theme"
   ],
   "scripts": {
-    "lint": "eslint --quiet '**/*.js'"
+    "lint": "eslint --quiet '**/*.js'",
+    "stylelint": "stylelint --quiet 'theme/**/*.css' 'docs/**/*.css'"
   },
   "lint-staged": {
     "**/*.js": [
       "eslint --quiet"
+    ],
+    "**/*.css": [
+      "stylelint --quiet"
     ]
   },
   "eslintIgnore": [
