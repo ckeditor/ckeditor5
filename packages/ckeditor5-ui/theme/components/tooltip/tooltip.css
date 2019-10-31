@@ -15,7 +15,7 @@
 	-webkit-backface-visibility: hidden;
 }
 
-.ck-tooltip {
+.ck.ck-tooltip {
 	/* Tooltip is hidden by default. */
 	visibility: hidden;
 	opacity: 0;
