@@ -28,12 +28,12 @@
 		   because e.g. different heading styles may have different height
 		   https://github.com/ckeditor/ckeditor5-heading/issues/63 */
 		padding:
-			calc(.2*var(--ck-line-height-base)*var(--ck-font-size-base))
-			calc(.4*var(--ck-line-height-base)*var(--ck-font-size-base));
+			calc(.2 * var(--ck-line-height-base) * var(--ck-font-size-base))
+			calc(.4 * var(--ck-line-height-base) * var(--ck-font-size-base));
 
 		& .ck-button__label {
 			/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-			line-height: calc(1.2*var(--ck-line-height-base)*var(--ck-font-size-base));
+			line-height: calc(1.2 * var(--ck-line-height-base) * var(--ck-font-size-base));
 		}
 
 		&:active {
@@ -44,12 +44,12 @@
 			background: var(--ck-color-list-button-on-background);
 			color: var(--ck-color-list-button-on-text);
 
-			&:hover:not(.ck-disabled) {
-				background: var(--ck-color-list-button-on-background-focus);
-			}
-
 			&:active {
 				box-shadow: none;
+			}
+
+			&:hover:not(.ck-disabled) {
+				background: var(--ck-color-list-button-on-background-focus);
 			}
 
 			&:focus:not(.ck-disabled) {
@@ -69,7 +69,7 @@
 			background: var(--ck-color-list-background);
 			color: inherit;
 
-			&:hover:not(ck-disabled) {
+			&:hover:not(.ck-disabled) {
 				background: var(--ck-color-list-button-hover-background);
 				color: inherit;
 			}

@@ -17,23 +17,6 @@
 		padding-left: 0;
 		padding-right: 0;
 
-		&,
-		&:hover,
-		&:focus,
-		&:active {
-			background: none;
-		}
-
-		&:active {
-			box-shadow: none;
-		}
-
-		&:focus {
-			& .ck-button__label {
-				text-decoration: underline;
-			}
-		}
-
 		& .ck-button__label {
 			padding: 0 var(--ck-spacing-medium);
 			color: var(--ck-color-link-default);
@@ -47,6 +30,23 @@
 			text-align: center;
 
 			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		&,
+		&:hover,
+		&:focus,
+		&:active {
+			background: none;
+		}
+
+		&:active {
+			box-shadow: none;
+		}
+
+		&:focus {
+			& .ck-button__label {
 				text-decoration: underline;
 			}
 		}

@@ -23,17 +23,13 @@ of the component, floating–point numbers have been used which, for the default
 	& .ck-button__label {
 		@mixin ck-dir ltr {
 			/* Separate the label from the switch */
-			margin-right: calc(2*var(--ck-spacing-large));
+			margin-right: calc(2 * var(--ck-spacing-large));
 		}
 
 		@mixin ck-dir rtl {
 			/* Separate the label from the switch */
-			margin-left: calc(2*var(--ck-spacing-large));
+			margin-left: calc(2 * var(--ck-spacing-large));
 		}
-	}
-
-	&.ck-disabled .ck-button__toggle {
-		@mixin ck-disabled;
 	}
 
 	& .ck-button__toggle {
@@ -55,17 +51,9 @@ of the component, floating–point numbers have been used which, for the default
 		width: var(--ck-switch-button-toggle-width);
 		background: var(--ck-color-switch-button-off-background);
 
-		&:hover {
-			background: var(--ck-color-switch-button-off-hover-background);
-
-			& .ck-button__toggle__inner {
-				box-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
-			}
-		}
-
 		& .ck-button__toggle__inner {
 			@mixin ck-rounded-corners {
-				border-radius: calc(.5*var(--ck-border-radius));
+				border-radius: calc(.5 * var(--ck-border-radius));
 			}
 
 			/* Leave some tiny bit of space around the inner part of the switch */
@@ -77,6 +65,18 @@ of the component, floating–point numbers have been used which, for the default
 			/* Gently animate the inner part of the toggle switch */
 			transition: all 300ms ease;
 		}
+
+		&:hover {
+			background: var(--ck-color-switch-button-off-hover-background);
+
+			& .ck-button__toggle__inner {
+				box-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
+			}
+		}
+	}
+
+	&.ck-disabled .ck-button__toggle {
+		@mixin ck-disabled;
 	}
 
 	&.ck-on .ck-button__toggle {
@@ -96,7 +96,7 @@ of the component, floating–point numbers have been used which, for the default
 			 * 	calc(
 			 * 		var(--ck-switch-button-toggle-width) -
 			 * 		var(--ck-switch-button-toggle-inner-size) -
-			 * 		2*var(--ck-switch-button-toggle-spacing) )
+			 * 		2 * var(--ck-switch-button-toggle-spacing) )
 			 * 	)
 			 */
 			@mixin ck-dir ltr {

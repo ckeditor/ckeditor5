@@ -108,6 +108,7 @@
 	}
 
 	& > .ck.ck-toolbar__items {
+		/* stylelint-disable-next-line no-descending-specificity */
 		& > * {
 			/* (#11) Separate toolbar items. */
 			margin-left: var(--ck-spacing-small);
