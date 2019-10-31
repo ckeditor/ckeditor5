@@ -69,6 +69,46 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-left: 0;
 }
 
+.demo-row {
+	width: 100%;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+.demo-row__half {
+	width: 50%;
+}
+
+.demo-row__half:first-of-type {
+	padding-right: .5rem;
+}
+
+.demo-row__half:last-of-type {
+	padding-left: .5rem;
+}
+
+.demo-row__third {
+	width: 33.3333%;
+}
+
+.demo-row__third > div {
+	padding: 2.5rem;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.demo-row__third:nth-of-type(2) {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+.demo-row h3 {
+	margin: 0;
+}
+
+.demo-row p {
+	margin-bottom: 0;
+}
+
 /* examples/builds/inline-editor.html */
 .live-snippet .image-style-left, .live-snippet .image-style-right {
 	float: left;
@@ -161,44 +201,4 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 
 .live-snippet .document-editor {
 	margin: 1.5em 0;
-}
-
-.demo-row {
-	width: 100%;
-	display: -ms-flexbox;
-	display: flex;
-}
-
-.demo-row__half {
-	width: 50%;
-}
-
-.demo-row__half:first-of-type {
-	padding-right: .5rem;
-}
-
-.demo-row__half:last-of-type {
-	padding-left: .5rem;
-}
-
-.demo-row__third {
-	width: 33.3333%;
-}
-
-.demo-row__third > div {
-	padding: 2.5rem;
-	border: 1px solid rgba(0, 0, 0, 0.15);
-}
-
-.demo-row__third:nth-of-type(2) {
-	padding-left: 1rem;
-	padding-right: 1rem;
-}
-
-.demo-row h3 {
-	margin: 0;
-}
-
-.demo-row p {
-	margin-bottom: 0;
 }
