@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import Context from '@ckeditor/ckeditor5-core/src/context';
+import Context from '../context';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
