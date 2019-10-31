@@ -46,8 +46,10 @@
 
 		&.ck-dropdown__panel_se,
 		&.ck-dropdown__panel_sw {
-			/* Using transform: translate3d( 0, 100%, 0 ) causes blurry dropdown on Chrome 67-78+ on non-retina displays.
-			See ckeditor5#1053. */
+			/*
+			 * Using transform: translate3d( 0, 100%, 0 ) causes blurry dropdown on Chrome 67-78+ on non-retina displays.
+			 * See https://github.com/ckeditor/ckeditor5/issues/1053.
+			 */
 			top: 100%;
 			bottom: auto;
 		}
