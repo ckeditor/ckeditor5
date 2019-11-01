@@ -237,6 +237,33 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
+	 * Converting styles works a bit differently as it requires `view.styles` to be an object and by default
+	 * a model attribute will be set to `true` by such a converter. You can set the model attribute to any value by providing the `value` callback
+	 * that returns a desired value.
+	 *
+	 *		// Default conversion of font-weight style will result in setting bold attribute to true.
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				styles: {
+	 *					'font-weight': 'bold'
+	 *				}
+	 *			},
+	 *			model: 'bold'
+	 *		} );
+	 *
+	 *		// This converter will pass any style value to the `lineHeight` model attribute.
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				styles: {
+	 *					'line-height': /[\s\S]+/
+	 *				}
+	 *			},
+	 *			model: {
+	 *				key: 'lineHeight',
+	 *				value: viewElement => viewElement.getStyle( 'line-height' )
+	 *			}
+	 *		} );
+	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
