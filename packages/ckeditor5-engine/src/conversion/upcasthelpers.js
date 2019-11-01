@@ -238,8 +238,8 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *		} );
 	 *
 	 * Converting styles works a bit differently as it requires `view.styles` to be an object and by default
-	 * a model attribute will be set to `true` by such a converter. You can set the model attribute to any value by providing the `value` callback
-	 * that returns a desired value.
+	 * a model attribute will be set to `true` by such a converter. You can set the model attribute to any value by providing the `value`
+	 * callback that returns the desired value.
 	 *
 	 *		// Default conversion of font-weight style will result in setting bold attribute to true.
 	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
