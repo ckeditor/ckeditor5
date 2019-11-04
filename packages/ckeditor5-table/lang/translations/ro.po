@@ -12,82 +12,82 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Swedish (https://www.transifex.com/ckeditor/teams/11143/sv/)\n"
-"Language: sv\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Lägg in tabell"
+msgstr "Inserează tabel"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr ""
+msgstr "Antet coloană"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Inserează coloană la stânga"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Inserează coloană la dreapta"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Ta bort kolumn"
+msgstr "Șterge coloană"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Kolumn"
+msgstr "Coloană"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr ""
+msgstr "Rând antet"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr ""
+msgstr "Inserează rând dedesubt"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr ""
+msgstr "Inserează rând deasupra"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Ta bort rad"
+msgstr "Șterge rând"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Rad"
+msgstr "Rând"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr ""
+msgstr "Îmbină celula în sus"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr ""
+msgstr "Îmbină celula la dreapta"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr ""
+msgstr "Îmbină celula în jos"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr ""
+msgstr "Îmbină celula la stânga"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr ""
+msgstr "Scindează celula pe verticală"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr ""
+msgstr "Scindează celula pe orizontală"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr ""
+msgstr "Îmbină celulele"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Bară tabel"

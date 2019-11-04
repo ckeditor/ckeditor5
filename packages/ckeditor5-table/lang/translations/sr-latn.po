@@ -87,3 +87,7 @@ msgstr "Deli ćelije vodoravno"
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
 msgstr "Spoj ćelije"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Tabela traka sa alatkama"

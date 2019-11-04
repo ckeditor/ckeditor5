@@ -12,82 +12,82 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Swedish (https://www.transifex.com/ckeditor/teams/11143/sv/)\n"
-"Language: sv\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Lägg in tabell"
+msgstr "Ievietot tabulu"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr ""
+msgstr "Šī kolonna ir galvene"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Ievietot kolonnu pa kreisi"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Ievietot kolonnu pa labi"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Ta bort kolumn"
+msgstr "Dzēst kolonnu"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Kolumn"
+msgstr "Kolonna"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr ""
+msgstr "Šī rinda ir galvene"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr ""
+msgstr "Ievietot rindu zem"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr ""
+msgstr "Ievietot rindu virs"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Ta bort rad"
+msgstr "Dzēst rindu"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Rad"
+msgstr "Rinda"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr ""
+msgstr "Apvienot šūnas uz augšu"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr ""
+msgstr "Apvienot šūnas pa labi"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr ""
+msgstr "Apvienot šūnas uz leju"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr ""
+msgstr "Apvienot šūnas pa kreisi"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr ""
+msgstr "Atdalīt šūnu vertikāli"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr ""
+msgstr "Atdalīt šūnu horizontāli"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr ""
+msgstr "Apvienot šūnas"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Tabulas rīkjosla"
