@@ -81,7 +81,7 @@ export default class DowncastWriter {
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		const paragraph = writer.createContainerElement( 'paragraph' );
+	 *		const paragraph = writer.createContainerElement( 'p' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
@@ -152,13 +152,13 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/attributeelement~AttributeElement}.
 	 *
 	 *		writer.createAttributeElement( 'strong' );
-	 *		writer.createAttributeElement( 'strong', { alignment: 'center' } );
+	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' } );
 	 *
 	 *		// Make `<a>` element contain other attributes element so the `<a>` element is not broken.
 	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' }, { priority: 5 } );
 	 *
 	 *		// Set `id` of a marker element so it is not joined or merged with "normal" elements.
-	 *		writer.createAttributeElement( 'span', { class: 'myMarker' }, { id: 'marker:my' } );
+	 *		writer.createAttributeElement( 'span', { class: 'my-marker' }, { id: 'marker:my' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Element's attributes.
@@ -184,8 +184,16 @@ export default class DowncastWriter {
 	/**
 	 * Creates new {@link module:engine/view/containerelement~ContainerElement}.
 	 *
-	 *		writer.createContainerElement( 'paragraph' );
-	 *		writer.createContainerElement( 'paragraph', { alignment: 'center' } );
+	 *		writer.createContainerElement( 'p' );
+	 *
+	 *		// Create element with custom attributes.
+	 *		writer.createContainerElement( 'div', { id: 'foo-bar', 'data-baz': '123' } );
+	 *
+	 *		// Create element with custom styles.
+	 *		writer.createContainerElement( 'p', { style: 'font-weight: bold; padding-bottom: 10px' } );
+	 *
+	 *		// Create element with custom classes.
+	 *		writer.createContainerElement( 'p', { class: 'foo bar baz' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -199,7 +207,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
 	 *
 	 *		writer.createEditableElement( 'div' );
-	 *		writer.createEditableElement( 'div', { alignment: 'center' } );
+	 *		writer.createEditableElement( 'div', { id: 'foo-1234' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -216,7 +224,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
 	 *		writer.createEmptyElement( 'img' );
-	 *		writer.createEmptyElement( 'img', { alignment: 'center' } );
+	 *		writer.createEmptyElement( 'img', { id: 'foo-1234' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -230,7 +238,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/uielement~UIElement}.
 	 *
 	 *		writer.createUIElement( 'span' );
-	 *		writer.createUIElement( 'span', { alignment: 'center' } );
+	 *		writer.createUIElement( 'span', { id: 'foo-1234' } );
 	 *
 	 * Custom render function can be provided as third parameter:
 	 *
@@ -370,10 +378,10 @@ export default class DowncastWriter {
 	 *
 	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
 	 *
-	 *        <p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
-	 *        <p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
-	 *        <p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
-	 *        <p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
+	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
+	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
+	 *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+	 *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
 	 *
 	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
 	 *
@@ -416,10 +424,10 @@ export default class DowncastWriter {
 	 * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
 	 * or at the end of it's parent element.
 	 *
-	 *        <p>foo^bar</p> -> <p>foo</p><p>bar</p>
-	 *        <div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
-	 *        <p>^foobar</p> -> ^<p>foobar</p>
-	 *        <p>foobar^</p> -> <p>foobar</p>^
+	 *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
+	 *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
+	 *		<p>^foobar</p> -> ^<p>foobar</p>
+	 *		<p>foobar^</p> -> <p>foobar</p>^
 	 *
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer} is that `breakAttributes` breaks all
@@ -480,14 +488,14 @@ export default class DowncastWriter {
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute element:
 	 *
-	 *        <p>foo[]bar</p> -> <p>foo{}bar</p>
-	 *        <p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
-	 *        <p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
+	 *		<p>foo[]bar</p> -> <p>foo{}bar</p>
+	 *		<p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *		<p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
 	 *
 	 * It will also take care about empty attributes when merging:
 	 *
-	 *        <p><b>[]</b></p> -> <p>[]</p>
-	 *        <p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *		<p><b>[]</b></p> -> <p>[]</p>
+	 *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
 	 *
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
@@ -553,8 +561,8 @@ export default class DowncastWriter {
 	 * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
 	 * Precisely, the element after the position is removed and it's contents are moved to element before the position.
 	 *
-	 *        <p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
-	 *        <div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
+	 *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
+	 *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
 	 *
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
@@ -1026,7 +1034,7 @@ export default class DowncastWriter {
 	 *		const selection = writer.createSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
-	 *		const paragraph = writer.createContainerElement( 'paragraph' );
+	 *		const paragraph = writer.createContainerElement( 'p' );
 	 *		const selection = writer.createSelection( paragraph, offset );
 	 *
 	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the

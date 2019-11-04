@@ -210,6 +210,26 @@ export default class DocumentFragment {
 	_fireChange( type, node ) {
 		this.fire( 'change:' + type, node );
 	}
+
+	// @if CK_DEBUG_ENGINE // printTree() {
+	// @if CK_DEBUG_ENGINE //	let string = 'ViewDocumentFragment: [';
+
+	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE //		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( 1 ) + child.data;
+	// @if CK_DEBUG_ENGINE //		} else {
+	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( 1 );
+	// @if CK_DEBUG_ENGINE //		}
+	// @if CK_DEBUG_ENGINE //	}
+
+	// @if CK_DEBUG_ENGINE //	string += '\n]';
+
+	// @if CK_DEBUG_ENGINE //	return string;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 mix( DocumentFragment, EmitterMixin );

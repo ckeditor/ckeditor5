@@ -51,4 +51,8 @@ export default class NoOperation extends Operation {
 	static get className() {
 		return 'NoOperation';
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `NoOperation( ${ this.baseVersion } )`;
+	// @if CK_DEBUG_ENGINE // }
 }
