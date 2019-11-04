@@ -39,6 +39,7 @@ export default class CodeBlockEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
+		const model = editor.model;
 
 		// Command.
 		editor.commands.add( 'codeBlock', new CodeBlockCommand( editor ) );
@@ -61,12 +62,30 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ) );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( model ) );
 
-		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( editor.model ) );
-		editor.data.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( editor.model ), { priority: 'high' } );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( model ) );
+		editor.data.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( model ), { priority: 'high' } );
 
 		editor.data.upcastDispatcher.on( 'element:pre', dataViewModelCodeBlockInsertion( editor.data ) );
+
+		// Intercept the clipboard input when the selection is anchored in the code block and force the clipboard
+		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
+		// "spill out" as separate paragraphs.
+		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
+			const modelSelection = model.document.selection;
+
+			if ( !modelSelection.anchor.parent.is( 'codeBlock' ) ) {
+				return;
+			}
+
+			const text = data.dataTransfer.getData( 'text/plain' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( text ), modelSelection );
+				evt.stop();
+			} );
+		} );
 	}
 
 	/**

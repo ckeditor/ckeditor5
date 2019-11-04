@@ -304,4 +304,38 @@ describe( 'CodeBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
 		} );
 	} );
+
+	describe( 'clipboard integration', () => {
+		it( 'should not intercept input when selection anchored outside any code block', () => {
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			const dataTransferMock = {
+				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar' )
+			};
+
+			editor.editing.view.document.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+			sinon.assert.notCalled( dataTransferMock.getData );
+		} );
+
+		it( 'should intercept input when selection anchored in the code block', () => {
+			setModelData( model, '<codeBlock>f[o]o</codeBlock>' );
+
+			const dataTransferMock = {
+				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
+			};
+
+			editor.editing.view.document.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock,
+				stop: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>fbar\nbaz\n[]o</codeBlock>' );
+			sinon.assert.calledOnce( dataTransferMock.getData );
+		} );
+	} );
 } );
