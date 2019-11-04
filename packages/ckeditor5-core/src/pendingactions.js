@@ -7,7 +7,7 @@
  * @module core/pendingactions
  */
 
-import Plugin from './plugin';
+import ContextPlugin from './contextplugin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -52,7 +52,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class PendingActions extends Plugin {
+export default class PendingActions extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
