@@ -156,6 +156,35 @@ describe( 'BlockAutoformatEditing', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		it( 'should not call callback when after inline element (typing after softBreak in a "matching" paragraph)', () => {
+			// Configure the schema.
+			model.schema.register( 'softBreak', {
+				allowWhere: '$text',
+				isInline: true
+			} );
+			editor.conversion.for( 'upcast' )
+				.elementToElement( {
+					model: 'softBreak',
+					view: 'br'
+				} );
+			editor.conversion.for( 'downcast' )
+				.elementToElement( {
+					model: 'softBreak',
+					view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
+				} );
+
+			const spy = testUtils.sinon.spy();
+			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+
+			setData( model, '<paragraph>* <softBreak></softBreak>[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should stop if callback returned false', () => {
 			new BlockAutoformatEditing( editor, /^[*]\s$/, () => false ); // eslint-disable-line no-new
 

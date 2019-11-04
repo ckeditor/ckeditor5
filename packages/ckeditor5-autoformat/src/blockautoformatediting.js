@@ -88,16 +88,16 @@ export default class BlockAutoformatEditing {
 				return;
 			}
 
-			const item = entry.position.textNode || entry.position.nodeAfter;
+			const blockToFormat = entry.position.parent;
 
-			if ( !item.parent.is( 'paragraph' ) ) {
+			// Block formatting should trigger only if the entire content of a paragraph is a single text node... (see ckeditor5#5671).
+			if ( !blockToFormat.is( 'paragraph' ) || blockToFormat.childCount !== 1 ) {
 				return;
 			}
 
-			const text = getStartText( editor.model.createRangeIn( item.parent ) );
+			const match = pattern.exec( blockToFormat.getChild( 0 ).data );
 
-			const match = pattern.exec( text );
-
+			// ...and this text node's data match the pattern.
 			if ( !match ) {
 				return;
 			}
@@ -105,8 +105,8 @@ export default class BlockAutoformatEditing {
 			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
 			editor.model.enqueueChange( writer => {
 				// Matched range.
-				const start = writer.createPositionAt( item.parent, 0 );
-				const end = writer.createPositionAt( item.parent, match[ 0 ].length );
+				const start = writer.createPositionAt( blockToFormat, 0 );
+				const end = writer.createPositionAt( blockToFormat, match[ 0 ].length );
 				const range = new LiveRange( start, end );
 
 				const wasChanged = callback( { match } );
@@ -120,24 +120,4 @@ export default class BlockAutoformatEditing {
 			} );
 		} );
 	}
-}
-
-/**
- * Returns the text from given renge up to the first inline element.
- *
- * @param {module:engine/model/range~Range} range
- * @returns {String}
- */
-export function getStartText( range ) {
-	let text = '';
-
-	for ( const item of range.getItems() ) {
-		if ( !( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
-			return text;
-		}
-
-		text = text + item.data;
-	}
-
-	return text;
 }
