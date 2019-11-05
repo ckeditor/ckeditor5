@@ -22,3 +22,12 @@
 		border-radius: 0;
 	}
 }
+
+.ck.ck-editor__editable pre {
+	position: relative;
+
+	&[data-language]::after {
+		content: attr(data-language);
+		position: absolute;
+	}
+}
