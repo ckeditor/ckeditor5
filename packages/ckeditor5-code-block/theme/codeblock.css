@@ -10,6 +10,12 @@
 	border: 1px solid hsl(0, 0%, 77%);
 	border-radius: 2px;
 
+	/* Code block are language direction–agnostic. */
+	text-align: left;
+	direction: ltr;
+
+	white-space: pre-wrap;
+
 	& code {
 		background: unset;
 		padding: 0;
