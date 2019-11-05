@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-editor__editable pre {
+	position: relative;
+
+	&[data-language]::after {
+		content: attr(data-language);
+		position: absolute;
+		top: -1px;
+		right: 10px;
+		background: hsl(0, 0%, 46%);
+
+		font-size: 10px;
+		font-family: var(--ck-font-face);
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-medium);
+		color: hsl(0, 0%, 100%);
+	}
+}
+
+.ck.ck-code-block-dropdown .ck-dropdown__panel {
+	/* There could be dozens of languages available. Use scroll to prevent a 10e6px dropdown. */
+	max-height: 250px;
+	overflow-y: auto;
+}
