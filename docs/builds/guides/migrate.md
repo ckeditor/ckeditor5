@@ -136,7 +136,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-bodyClass">bodyClass</a></td>
-			<td>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so such setting is no longer needed. Simply wrap the editor with a <code>&lt;div class=&quot;...&quot;&gt;</code> to achieve a similar result. When using  {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block} or {@link examples/builds/inline-editor inline} editor you may add a class to the element on which the editor is initialized.</td>
+			<td>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so such setting is no longer needed. Simply wrap the editor with a <code>&lt;div class=&quot;...&quot;&gt;</code> to achieve a similar result. When using  {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, or {@link examples/builds/inline-editor inline} editor you may add a class to the element on which the editor is initialized.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-bodyId">bodyId</a></td>
@@ -232,7 +232,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dataIndentationChars">dataIndentationChars</a></td>
-			<td>Refer to the {@link features/indent#configuring-the-block-indentation-feature Configuring the block indentation feature} guide to learn how to customize the indentation behavior using offsets, units or classes.</td>
+			<td>N/A</td>
 		</tr>
 		<tr>
 			<td><span id="defaultLanguage"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-defaultLanguage">defaultLanguage</a></span></td>
@@ -299,7 +299,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_emojiListUrl">emoji_emojiListUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_minChars">emoji_minChars</a></td>
-			<td>Emoji can be pasted into CKEditor 5 as Unicode content.</td>
+			<td>Emoji can be pasted into CKEditor 5 as Unicode content. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut on macOS, <kbd>Win</kbd>+<kbd>.</kbd> on Windows or the relevant emoji key on the touch keyboard of your device to open the picker.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableContextMenu">enableContextMenu</a></td>
