@@ -14,7 +14,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'CodeBlockEditing', () => {
+describe.only( 'CodeBlockCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -35,15 +35,15 @@ describe( 'CodeBlockEditing', () => {
 
 	describe( '#value', () => {
 		it( 'should be true when the first selected element is a codeBlock element #1', () => {
-			setModelData( model, '<codeBlock>f[]oo</codeBlock>' );
+			setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
-			expect( command.value ).to.equal( true );
+			expect( command.value ).to.equal( 'foo' );
 		} );
 
 		it( 'should be true when the first selected element is a codeBlock element', () => {
-			setModelData( model, '<codeBlock>f[oo</codeBlock><paragraph>ba]r</paragraph>' );
+			setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
-			expect( command.value ).to.equal( true );
+			expect( command.value ).to.equal( 'foo' );
 		} );
 
 		it( 'should be false when the first selected element is not a code block #1', () => {
@@ -53,7 +53,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should be false when the first selected element is not a code block #2', () => {
-			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock>ba]r</codeBlock>' );
+			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">ba]r</codeBlock>' );
 
 			expect( command.value ).to.equal( false );
 		} );
@@ -61,13 +61,13 @@ describe( 'CodeBlockEditing', () => {
 
 	describe( '#isEnabled', () => {
 		it( 'should be true when the first selected block is a codeBlock #1', () => {
-			setModelData( model, '<codeBlock>f[]oo</codeBlock>' );
+			setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
 		it( 'should be true when the first selected block is a codeBlock #2', () => {
-			setModelData( model, '<codeBlock>f[oo</codeBlock><paragraph>ba]r</paragraph>' );
+			setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
@@ -79,7 +79,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should be true when the first selected block can be a codeBlock #2', () => {
-			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock>ba]r</codeBlock>' );
+			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">ba]r</codeBlock>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
@@ -91,6 +91,14 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			setModelData( model, '[<limit>foo</limit>]' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should be false when selection starts in a blockless space', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+
+			setModelData( model, 'x[]x' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
@@ -136,7 +144,7 @@ describe( 'CodeBlockEditing', () => {
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>[]</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
 		it( 'should change selected block to codeBlock', () => {
@@ -144,7 +152,7 @@ describe( 'CodeBlockEditing', () => {
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>fo[]o</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 		} );
 
 		it( 'should change multiple selected block to codeBlock', () => {
@@ -152,35 +160,35 @@ describe( 'CodeBlockEditing', () => {
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
 		} );
 
 		it( 'should merge selected blocks with selected codeBlocks', () => {
-			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock>ba]r</codeBlock>' );
+			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="plaintext">ba]r</codeBlock>' );
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
 		} );
 
 		it( 'should not merge codeBlock with siblings when siblings are not selected', () => {
 			setModelData( model,
-				'<codeBlock>foo</codeBlock>' +
+				'<codeBlock language="plaintext">foo</codeBlock>' +
 				'<paragraph>b[a]r</paragraph>' +
-				'<codeBlock>biz</codeBlock>'
+				'<codeBlock language="plaintext">biz</codeBlock>'
 			);
 
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock>foo</codeBlock>' +
-				'<codeBlock>b[a]r</codeBlock>' +
-				'<codeBlock>biz</codeBlock>'
+				'<codeBlock language="plaintext">foo</codeBlock>' +
+				'<codeBlock language="plaintext">b[a]r</codeBlock>' +
+				'<codeBlock language="plaintext">biz</codeBlock>'
 			);
 		} );
 
 		it( 'should change selected empty codeBlock to paragraph', () => {
-			setModelData( model, '<codeBlock>[]</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">[]</codeBlock>' );
 
 			command.execute();
 
@@ -188,7 +196,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should change selected codeBlock to paragraph', () => {
-			setModelData( model, '<codeBlock>f[o]o</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 
 			command.execute();
 
@@ -197,7 +205,7 @@ describe( 'CodeBlockEditing', () => {
 
 		it( 'should change selected multi-line codeBlock to paragraphs', () => {
 			setModelData( model,
-				'<codeBlock>foo<softBreak></softBreak>b[]ar<softBreak></softBreak>biz</codeBlock>'
+				'<codeBlock language="plaintext">foo<softBreak></softBreak>b[]ar<softBreak></softBreak>biz</codeBlock>'
 			);
 
 			command.execute();
@@ -214,15 +222,15 @@ describe( 'CodeBlockEditing', () => {
 
 			command.execute( 'codeBlock' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>f[o]o</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should use forceValue parameter', () => {
-			setModelData( model, '<codeBlock>f[o]o</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 
 			command.execute( { forceValue: true } );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>f[o]o</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 		} );
 	} );
 
@@ -232,7 +240,7 @@ describe( 'CodeBlockEditing', () => {
 
 			command.execute( 'codeBlock' );
 
-			expect( getModelData( model ) ).to.equal( '<blockQuote><codeBlock>f[o]o</codeBlock></blockQuote>' );
+			expect( getModelData( model ) ).to.equal( '<blockQuote><codeBlock language="plaintext">f[o]o</codeBlock></blockQuote>' );
 		} );
 
 		it( 'should change a paragraph inside a blockQuote to codeBlock when blockQuote is selected with siblings', () => {
@@ -245,9 +253,9 @@ describe( 'CodeBlockEditing', () => {
 			command.execute( 'codeBlock' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock>f[oo</codeBlock>' +
-				'<blockQuote><codeBlock>bar</codeBlock></blockQuote>' +
-				'<codeBlock>bi]z</codeBlock>'
+				'<codeBlock language="plaintext">f[oo</codeBlock>' +
+				'<blockQuote><codeBlock language="plaintext">bar</codeBlock></blockQuote>' +
+				'<codeBlock language="plaintext">bi]z</codeBlock>'
 			);
 		} );
 	} );

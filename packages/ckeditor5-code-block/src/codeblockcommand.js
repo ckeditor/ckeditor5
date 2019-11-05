@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -44,15 +43,18 @@ export default class CodeBlockCommand extends Command {
 	 * otherwise the command will remove the code block. If not set, the command will act basing on its current value.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
+		const editor = this.editor;
+		const model = editor.model;
 		const selection = model.document.selection;
+		const config = editor.config.get( 'codeBlock' );
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
+		const language = options.language || config.languages[ 0 ].class;
 
 		model.change( writer => {
 			if ( value ) {
-				this._applyCodeBlock( writer, blocks );
+				this._applyCodeBlock( writer, blocks, language );
 			} else {
 				this._removeCodeBlock( writer, blocks );
 			}
@@ -68,8 +70,9 @@ export default class CodeBlockCommand extends Command {
 	_getValue() {
 		const selection = this.editor.model.document.selection;
 		const firstBlock = first( selection.getSelectedBlocks() );
+		const isCodeBlock = !!( firstBlock && firstBlock.is( 'codeBlock' ) );
 
-		return !!( firstBlock && firstBlock.is( 'codeBlock' ) );
+		return isCodeBlock ? firstBlock.getAttribute( 'language' ) : false;
 	}
 
 	/**
@@ -99,13 +102,15 @@ export default class CodeBlockCommand extends Command {
 	 * @private
 	 * @param {module:engine/model/writer~Writer} writer
 	 * @param {Array.<module:engine/model/element~Element>} blocks
+	 * @param {String} [language]
 	 */
-	_applyCodeBlock( writer, blocks ) {
+	_applyCodeBlock( writer, blocks, language ) {
 		const schema = this.editor.model.schema;
 		const allowedBlocks = blocks.filter( block => canBeCodeBlock( schema, block ) );
 
 		for ( const block of allowedBlocks ) {
 			writer.rename( block, 'codeBlock' );
+			writer.setAttribute( 'language', language, block );
 			schema.removeDisallowedAttributes( [ block ], writer );
 		}
 
@@ -135,11 +140,13 @@ export default class CodeBlockCommand extends Command {
 					const { position } = writer.split( writer.createPositionBefore( item ) );
 
 					writer.rename( position.nodeAfter, 'paragraph' );
+					writer.removeAttribute( 'language', position.nodeAfter );
 					writer.remove( item );
 				}
 			}
 
 			writer.rename( block, 'paragraph' );
+			writer.removeAttribute( 'language', block );
 		}
 	}
 }
