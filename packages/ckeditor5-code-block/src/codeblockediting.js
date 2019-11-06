@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
+import { getLocalizedLanguageDefinitions } from './utils';
 
 /**
  * The editing part of the code block feature.
@@ -36,16 +37,48 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'codeBlock', {
+			languages: [
+				{ class: 'plaintext', label: 'Plain text' },
+				{ class: 'c', label: 'C' },
+				{ class: 'cs', label: 'C#' },
+				{ class: 'cpp', label: 'C++' },
+				{ class: 'css', label: 'CSS' },
+				{ class: 'diff', label: 'Diff' },
+				{ class: 'xml', label: 'HTML/XML' },
+				{ class: 'java', label: 'Java' },
+				{ class: 'javascript', label: 'JavaScript' },
+				{ class: 'php', label: 'PHP' },
+				{ class: 'python', label: 'Python' },
+				{ class: 'ruby', label: 'Ruby' },
+				{ class: 'typescript', label: 'TypeScript' },
+			]
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const model = editor.model;
 
+		const localizedLanguageDefinitions = getLocalizedLanguageDefinitions( editor );
+		const languageClasses = localizedLanguageDefinitions.map( def => def.class );
+		const languageLabels = Object.assign( {}, ...localizedLanguageDefinitions.map( def => ( { [ def.class ]: def.label } ) ) );
+
 		// Command.
 		editor.commands.add( 'codeBlock', new CodeBlockCommand( editor ) );
 
 		// Schema.
-		schema.register( 'codeBlock', { inheritAllFrom: '$block' } );
+		schema.register( 'codeBlock', {
+			inheritAllFrom: '$block',
+			allowAttributes: [ 'language' ]
+		} );
 
 		// Disallow codeBlock in codeBlock.
 		schema.addChildCheck( ( context, childDef ) => {
@@ -55,19 +88,17 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		// Disallow all attributes in `codeBlock`.
-		schema.addAttributeCheck( context => {
+		schema.addAttributeCheck( ( context, attributeName ) => {
 			if ( context.endsWith( 'codeBlock' ) || context.endsWith( 'codeBlock $text' ) ) {
-				return false;
+				return attributeName === 'language';
 			}
 		} );
 
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( model ) );
-
-		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelViewCodeBlockInsertion( model ) );
-		editor.data.downcastDispatcher.on( 'insert:softBreak', modelViewSoftBreakInsertion( model ), { priority: 'high' } );
-
-		editor.data.upcastDispatcher.on( 'element:pre', dataViewModelCodeBlockInsertion( editor.data ) );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, languageLabels ) );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model ) );
+		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToViewSoftBreakInsertion( model ), { priority: 'high' } );
+		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelCodeBlockInsertion( editor.data, languageClasses ) );
 
 		// Intercept the clipboard input when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
@@ -82,7 +113,7 @@ export default class CodeBlockEditing extends Plugin {
 			const text = data.dataTransfer.getData( 'text/plain' );
 
 			model.change( writer => {
-				model.insertContent( writer.createText( text ), modelSelection );
+				model.insertContent( rawSnippetTextToModelDocumentFragment( writer, text ), modelSelection );
 				evt.stop();
 			} );
 		} );
@@ -111,8 +142,10 @@ export default class CodeBlockEditing extends Plugin {
 // A model-to-view converter for the codeBlock element.
 //
 // @param {module:engine/model/model~Model} model
+// @param {Object.<String,String>} [languageLabels] An object associating a programming language
+// classes with human–readable labels (as in the editor config).
 // @returns {Function} Returns a conversion callback.
-function modelViewCodeBlockInsertion( model ) {
+function modelToViewCodeBlockInsertion( model, languageLabels = {} ) {
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 
@@ -120,9 +153,15 @@ function modelViewCodeBlockInsertion( model ) {
 			return;
 		}
 
+		const codeBlockLanguage = data.item.getAttribute( 'language' );
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const pre = writer.createContainerElement( 'pre' );
-		const code = writer.createContainerElement( 'code' );
+		const pre = writer.createContainerElement( 'pre', {
+			// This attribute is only in the editing view.
+			'data-language': languageLabels[ codeBlockLanguage ] || null
+		} );
+		const code = writer.createContainerElement( 'code', {
+			class: codeBlockLanguage
+		} );
 
 		writer.insert( writer.createPositionAt( pre, 0 ), code );
 		writer.insert( targetViewPosition, pre );
@@ -134,7 +173,7 @@ function modelViewCodeBlockInsertion( model ) {
 //
 // @param {module:engine/model/model~Model} model
 // @returns {Function} Returns a conversion callback.
-function modelViewSoftBreakInsertion( model ) {
+function modelToViewSoftBreakInsertion( model ) {
 	return ( evt, data, conversionApi ) => {
 		if ( data.item.parent.name !== 'codeBlock' ) {
 			return;
@@ -155,8 +194,10 @@ function modelViewSoftBreakInsertion( model ) {
 // A view-to-model converter for pre > code html.
 //
 // @param {module:engine/controller/datacontroller~DataController} dataController
+// @param {Array.<String>} languageClasses An array of valid (as in the editor config) CSS classes
+// associated with programming languages.
 // @returns {Function} Returns a conversion callback.
-function dataViewModelCodeBlockInsertion( dataController ) {
+function dataViewToModelCodeBlockInsertion( dataController, languageClasses ) {
 	return ( evt, data, conversionApi ) => {
 		const viewItem = data.viewItem;
 		const viewChild = viewItem.getChild( 0 );
@@ -176,19 +217,24 @@ function dataViewModelCodeBlockInsertion( dataController ) {
 
 		const modelItem = writer.createElement( 'codeBlock' );
 
-		const stringifiedElement = dataController.processor.toData( viewChild );
-		const textData = extractDataFromCodeElement( stringifiedElement );
-		const textLines = textData.split( '\n' ).map( data => writer.createText( data ) );
-		const lastLine = textLines[ textLines.length - 1 ];
-
-		for ( const node of textLines ) {
-			writer.append( node, modelItem );
-
-			if ( node !== lastLine ) {
-				writer.appendElement( 'softBreak', modelItem );
+		// Figure out if any of the <code> element's class names is a valid programming
+		// language class. If so, use it on the model element (becomes the language of the entire block).
+		for ( const className of viewChild.getClassNames() ) {
+			if ( languageClasses.includes( className ) ) {
+				writer.setAttribute( 'language', className, modelItem );
+				break;
 			}
 		}
 
+		if ( !modelItem.hasAttribute( 'language' ) ) {
+			writer.setAttribute( 'language', languageClasses[ 0 ], modelItem );
+		}
+
+		const stringifiedElement = dataController.processor.toData( viewChild );
+		const textData = extractDataFromCodeElement( stringifiedElement );
+		const fragment = rawSnippetTextToModelDocumentFragment( writer, textData );
+
+		writer.append( fragment, modelItem );
 		writer.insert( modelItem, data.modelCursor );
 
 		data.modelCursor = writer.createPositionAfter( modelItem );
@@ -200,9 +246,43 @@ function dataViewModelCodeBlockInsertion( dataController ) {
 //
 // @param {String} stringifiedElement
 function extractDataFromCodeElement( stringifiedElement ) {
-	const data = new RegExp( /^<code>(.*)<\/code>$/, 's' ).exec( stringifiedElement )[ 1 ];
+	const data = new RegExp( /^<code[^>]*>(.*)<\/code>$/, 's' ).exec( stringifiedElement )[ 1 ];
 
 	return data
 		.replace( /&lt;/g, '<' )
 		.replace( /&gt;/g, '>' );
+}
+
+// For a plain text containing the code (snippet), it returns a document fragment containing
+// model text nodes separated by soft breaks (in place of new line characters "\n"), for instance:
+//
+// Input:
+//
+//		"foo()
+//		bar()"
+//
+// Output:
+//
+//		<DocumentFragment>
+//			"foo()"
+//			<softBreak/>
+//			"bar()"
+//		</DocumentFragment>
+//
+// @param {module:engine/model/writer~Writer} writer
+// @param {String} text A raw code text to be converted.
+function rawSnippetTextToModelDocumentFragment( writer, text ) {
+	const fragment = writer.createDocumentFragment();
+	const textLines = text.split( '\n' ).map( data => writer.createText( data ) );
+	const lastLine = textLines[ textLines.length - 1 ];
+
+	for ( const node of textLines ) {
+		writer.append( node, fragment );
+
+		if ( node !== lastLine ) {
+			writer.appendElement( 'softBreak', fragment );
+		}
+	}
+
+	return fragment;
 }
