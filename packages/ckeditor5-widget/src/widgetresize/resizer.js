@@ -71,6 +71,14 @@ export default class Resizer {
 		this.decorate( 'cancel' );
 		this.decorate( 'commit' );
 		this.decorate( 'updateSize' );
+
+		this.on( 'commit', event => {
+			// State might not be initialized (#5195).
+			if ( !this.state.proposedWidth ) {
+				this._cleanup();
+				event.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -157,13 +165,10 @@ export default class Resizer {
 	 * @fires commit
 	 */
 	commit() {
-		if ( this.state.proposedWidth ) {
-			// State might not be initialized (#5195).
-			const unit = this._options.unit;
-			const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
+		const unit = this._options.unit;
+		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
 
-			this._options.onCommit( newValue );
-		}
+		this._options.onCommit( newValue );
 
 		this._cleanup();
 	}
