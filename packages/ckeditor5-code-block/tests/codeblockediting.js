@@ -18,8 +18,18 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import { add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+
 describe( 'CodeBlockEditing', () => {
 	let editor, element, model, view;
+
+	addTranslations( 'en', {
+		'Plain text': 'Plain text'
+	} );
+
+	addTranslations( 'pl', {
+		'Plain text': 'Zwykły tekst'
+	} );
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -27,6 +37,7 @@ describe( 'CodeBlockEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
+				language: 'en',
 				plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ]
 			} )
 			.then( newEditor => {
@@ -239,6 +250,35 @@ describe( 'CodeBlockEditing', () => {
 				'<pre data-language="Plain text">' +
 					'<code class="plaintext">[]<br></br><br></br>Foo<br></br><br></br></code>' +
 				'</pre>' );
+		} );
+
+		it( 'should use localized "Plain text" label', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					language: 'pl',
+					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ]
+				} )
+				.then( newEditor => {
+					const editor = newEditor;
+					const model = editor.model;
+					const view = editor.editing.view;
+
+					setModelData( model,
+						'<codeBlock language="plaintext">foo</codeBlock>'
+					);
+
+					expect( getViewData( view ) ).to.equal(
+						'<pre data-language="Zwykły tekst">' +
+							'<code class="plaintext">{}foo</code>' +
+						'</pre>' );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
 		} );
 	} );
 
