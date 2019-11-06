@@ -8,7 +8,11 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { getLocalizedLanguageDefinitions } from './utils';
 
 import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
@@ -16,7 +20,7 @@ import '../theme/codeblock.css';
 /**
  * The code block UI plugin.
  *
- * Introduces the `'codeBlock'` button.
+ * Introduces the `'codeBlock'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -27,25 +31,79 @@ export default class CodeBlockUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
+		const componentFactory = editor.ui.componentFactory;
+		const localizedLanguageDefinitions = getLocalizedLanguageDefinitions( editor );
 
-		editor.ui.componentFactory.add( 'codeBlock', locale => {
+		componentFactory.add( 'codeBlock', locale => {
 			const command = editor.commands.get( 'codeBlock' );
-			const buttonView = new ButtonView( locale );
+			const dropdownView = createDropdown( locale, SplitButtonView );
+			const splitButtonView = dropdownView.buttonView;
 
-			buttonView.set( {
+			splitButtonView.set( {
 				label: t( 'Code block' ),
-				icon: codeBlockIcon,
 				tooltip: true,
+				icon: codeBlockIcon,
 				isToggleable: true
 			} );
 
-			// Bind button model to command.
-			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			splitButtonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
-			// Execute command.
-			this.listenTo( buttonView, 'execute', () => editor.execute( 'codeBlock' ) );
+			splitButtonView.on( 'execute', () => {
+				editor.execute( 'codeBlock', {
+					language: localizedLanguageDefinitions[ 0 ].class,
+				} );
 
-			return buttonView;
+				editor.editing.view.focus();
+			} );
+
+			dropdownView.on( 'execute', evt => {
+				editor.execute( 'codeBlock', {
+					language: evt.source._codeBlockLanguage,
+					forceValue: true
+				} );
+
+				editor.editing.view.focus();
+			} );
+
+			dropdownView.class = 'ck-code-block-dropdown';
+			dropdownView.bind( 'isEnabled' ).to( command );
+
+			addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( localizedLanguageDefinitions ) );
+
+			return dropdownView;
 		} );
+	}
+
+	/**
+	 * A helper returning a collection of the `codeBlock` dropdown items representing languages
+	 * available for the user to choose from.
+	 *
+	 * @private
+	 * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} localizedLanguageDefinitions
+	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition}
+	 */
+	_getLanguageListItemDefinitions( localizedLanguageDefinitions ) {
+		const editor = this.editor;
+		const command = editor.commands.get( 'codeBlock' );
+		const itemDefinitions = new Collection();
+
+		for ( const languageDef of localizedLanguageDefinitions ) {
+			const definition = {
+				type: 'button',
+				model: new Model( {
+					_codeBlockLanguage: languageDef.class,
+					label: languageDef.label,
+					withText: true
+				} )
+			};
+
+			definition.model.bind( 'isOn' ).to( command, 'value', value => {
+				return value === definition.model._codeBlockLanguage;
+			} );
+
+			itemDefinitions.add( definition );
+		}
+
+		return itemDefinitions;
 	}
 }

@@ -18,17 +18,23 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 
 describe( 'CodeBlockEditing', () => {
 	let editor, element, model, view;
 
-	addTranslations( 'en', {
-		'Plain text': 'Plain text'
+	before( () => {
+		addTranslations( 'en', {
+			'Plain text': 'Plain text'
+		} );
+
+		addTranslations( 'pl', {
+			'Plain text': 'Zwykły tekst'
+		} );
 	} );
 
-	addTranslations( 'pl', {
-		'Plain text': 'Zwykły tekst'
+	after( () => {
+		clearTranslations();
 	} );
 
 	beforeEach( () => {
