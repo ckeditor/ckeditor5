@@ -160,11 +160,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_tokenUrl">cloudServices_tokenUrl</a></td>
-			<td>See {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `cloudServices.tokenUrl`}.</td>
+			<td>See {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl `config.cloudServices.tokenUrl`}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-cloudServices_uploadUrl">cloudServices_uploadUrl</a></td>
-			<td>See {@link module:cloud-services/cloudservices~CloudServicesConfig#uploadUrl `cloudServices.uploadUrl`}. Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more.</td>
+			<td>See {@link module:cloud-services/cloudservices~CloudServicesConfig#uploadUrl `config.cloudServices.uploadUrl`}. Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippetGeshi_url">codeSnippetGeshi_url</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_codeClass">codeSnippet_codeClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_languages">codeSnippet_languages</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_theme">codeSnippet_theme</a></td>
@@ -334,7 +334,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins">extraPlugins</a></td>
-			<td>Enabling extra plugins is possible by creating a {@link builds/guides/development/custom-builds custom build}.</td>
+			<td>Learn how to {@link builds/guides/integration/installing-plugins install plugins in CKEditor 5}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName">fileTools_defaultFileName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders">fileTools_requestHeaders</a></td>
@@ -382,7 +382,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h1">format_h1</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h2">format_h2</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h3">format_h3</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h4">format_h4</a> <br>  <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h5">format_h5</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_h6">format_h6</a></td>
-			<td>All headings are configurable via {@link module:heading/heading~HeadingConfig#options <code>heading.options</code>}. See also the {@link features/headings Headings feature guide}.</td>
+			<td>All headings are configurable via {@link module:heading/heading~HeadingConfig#options `config.heading.options`}. See also the {@link features/headings Headings feature guide}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_tags">format_tags</a></td>
@@ -400,6 +400,10 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-height">height</a></td>
 			<td>
 				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the height setting can be achieved with <code>.ck-editor__editable_inline { height:400px; }</code>.</p>
+				<p>In order to set the height dynamically (from JavaScript) use the view writer:</p>
+				<pre><code>editor.editing.view.change( writer => {
+    writer.setStyle( 'height', '400px', editor.editing.view.document.getRoot() );
+} );</code></pre>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
@@ -413,7 +417,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_alignClasses">image2_alignClasses</a></td>
-			<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
+			<td>Available via more powerful {@link module:image/image~ImageConfig#styles `config.image.styles`}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_image2_maxSize">image2_maxSize</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_prefillDimensions">image2_prefillDimensions</a></td>
@@ -536,7 +540,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-removePlugins">removePlugins</a></td>
-			<td>See {@link module:core/editor/editorconfig~EditorConfig#removePlugins <code>removePlugins</code>}.</td>
+			<td>See {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-resize_dir">resize_dir</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-resize_enabled">resize_enabled</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-resize_maxHeight">resize_maxHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-resize_maxWidth">resize_maxWidth</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-resize_minHeight">resize_minHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-resize_minWidth">resize_minWidth</a></td>
@@ -548,7 +552,10 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-sharedSpaces">sharedSpaces</a></td>
-			<td>N/A. CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link framework/guides/document-editor document editor tutorial} and the {@link examples/framework/multi-root-editor multi-root editor example}.</td>
+			<td>
+				<p>N/A.</p>
+				<p>The {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled editor} allows configuring where should the toolbar and the editable element be inserted.</p>
+				<p>In addition to that, CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link examples/framework/multi-root-editor multi-root editor example}.</p>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-shiftEnterMode">shiftEnterMode</a></td>
@@ -619,8 +626,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbar">toolbar</a></td>
 			<td>
-				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.</p>
-				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar <code>contextualToolbar</code>} to define the toolbar of a balloon editor.</p>
+				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.</p>
+				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link features/blocktoolbar block toolbar} feature.</p>
 			</td>
 		</tr>
 		<tr>
@@ -633,7 +640,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarLocation">toolbarLocation</a></td>
-			<td>N/A. Can be achieved by writing an editor with a customized UI view. See also the {@link module:editor-decoupled/decouplededitor~DecoupledEditor <code>DecoupledEditor</code>} implementation.</td>
+			<td>N/A. Can be achieved by using the {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled editor} or writing an editor with a customized UI view.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarStartupExpanded">toolbarStartupExpanded</a></td>
@@ -645,7 +652,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-undoStackSize">undoStackSize</a></td>
-			<td>See {@link module:typing/typing~TypingConfig#undoStep <code>typing.undoStep</code>}.</td>
+			<td>See {@link module:typing/typing~TypingConfig#undoStep `config.typing.undoStep`}.</td>
 		</tr>
 		<tr>
 			<td><span id="uploadUrl"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uploadUrl">uploadUrl</a></span></td>
@@ -661,6 +668,10 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-width">width</a></td>
 			<td>
 				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For instance, to set the width of any of the editor types, use <code>.ck-editor__editable_inline { width:400px; }</code>.</p>
+				<p>In order to set the width dynamically (from JavaScript) use the view writer:</p>
+				<pre><code>editor.editing.view.change( writer => {
+    writer.setStyle( 'width', '400px', editor.editing.view.document.getRoot() );
+} );</code></pre>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
