@@ -157,10 +157,13 @@ export default class Resizer {
 	 * @fires commit
 	 */
 	commit() {
-		const unit = this._options.unit;
-		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
+		if ( this.state.proposedWidth ) {
+			// State might not be initialized (#5195).
+			const unit = this._options.unit;
+			const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
 
-		this._options.onCommit( newValue );
+			this._options.onCommit( newValue );
+		}
 
 		this._cleanup();
 	}
