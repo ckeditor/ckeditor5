@@ -100,6 +100,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
+
 			it( 'should normalize spaces inside special "span.spacerun" elements that contain no data', () => {
 				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
 					'<p> Baz <span style=\'mso-spacerun:yes\'></span></p>';
