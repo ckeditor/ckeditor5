@@ -46,11 +46,11 @@ export default class CodeBlockCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const config = editor.config.get( 'codeBlock' );
+		const firstLanguageInConfig = editor.config.get( 'codeBlock' ).languages[ 0 ];
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
-		const language = options.language || config.languages[ 0 ].class;
+		const language = options.language || firstLanguageInConfig.class;
 
 		model.change( writer => {
 			if ( value ) {
