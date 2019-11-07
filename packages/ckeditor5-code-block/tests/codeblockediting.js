@@ -447,6 +447,28 @@ describe( 'CodeBlockEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
 		} );
+
+		it( 'should split parents to correctly upcast the code block', () => {
+			editor.setData( '<p>foo<pre><code>code</code></pre>bar</p>' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[]foo</paragraph><codeBlock language="plaintext">codecode</codeBlock><paragraph>bar</paragraph>' );
+		} );
+
+		it( 'should upcast two code blocks in a row (#1)', () => {
+			editor.setData( '<pre><code>foo</code></pre><pre><code>bar</code></pre>' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]foo</codeBlock><codeBlock language="plaintext">bar</codeBlock>' );
+		} );
+
+		it( 'should upcast two code blocks in a row (#2)', () => {
+			editor.setData( `<pre><code>foo</code></pre>
+				<pre><code>bar</code></pre>` );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]foo</codeBlock><codeBlock language="plaintext">bar</codeBlock>' );
+		} );
 	} );
 
 	describe( 'clipboard integration', () => {

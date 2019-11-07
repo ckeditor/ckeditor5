@@ -212,33 +212,71 @@ function dataViewToModelCodeBlockInsertion( dataController, languageClasses ) {
 			return;
 		}
 
-		consumable.consume( viewItem, { name: true } );
-		consumable.consume( viewChild, { name: true } );
-
-		const modelItem = writer.createElement( 'codeBlock' );
+		const codeBlock = writer.createElement( 'codeBlock' );
 
 		// Figure out if any of the <code> element's class names is a valid programming
 		// language class. If so, use it on the model element (becomes the language of the entire block).
 		for ( const className of viewChild.getClassNames() ) {
 			if ( languageClasses.includes( className ) ) {
-				writer.setAttribute( 'language', className, modelItem );
+				writer.setAttribute( 'language', className, codeBlock );
 				break;
 			}
 		}
 
-		if ( !modelItem.hasAttribute( 'language' ) ) {
-			writer.setAttribute( 'language', languageClasses[ 0 ], modelItem );
+		// If no language value was set, use the default language from the config.
+		if ( !codeBlock.hasAttribute( 'language' ) ) {
+			writer.setAttribute( 'language', languageClasses[ 0 ], codeBlock );
 		}
 
 		const stringifiedElement = dataController.processor.toData( viewChild );
 		const textData = extractDataFromCodeElement( stringifiedElement );
 		const fragment = rawSnippetTextToModelDocumentFragment( writer, textData );
 
-		writer.append( fragment, modelItem );
-		writer.insert( modelItem, data.modelCursor );
+		writer.append( fragment, codeBlock );
 
-		data.modelCursor = writer.createPositionAfter( modelItem );
-		data.modelRange = writer.createRangeOn( modelItem );
+		// Let's see if the codeBlock can be inserted the current modelCursor.
+		const splitResult = conversionApi.splitToAllowedParent( codeBlock, data.modelCursor );
+
+		// When there is no split result it means that we can't insert element to model tree,
+		// so let's skip it.
+		if ( !splitResult ) {
+			return;
+		}
+
+		// Insert element on allowed position.
+		writer.insert( codeBlock, splitResult.position );
+
+		consumable.consume( viewItem, { name: true } );
+		consumable.consume( viewChild, { name: true } );
+
+		const parts = conversionApi.getSplitParts( codeBlock );
+
+		// Set conversion result range.
+		data.modelRange = writer.createRange(
+			conversionApi.writer.createPositionBefore( codeBlock ),
+			conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
+		);
+
+		// If we had to split parent to insert our element then we want to continue conversion inside
+		// the split parent.
+		//
+		// before split:
+		//
+		//		<allowed><notAllowed>[]</notAllowed></allowed>
+		//
+		// after split:
+		//
+		//		<allowed>
+		//			<notAllowed></notAllowed>
+		//			<converted></converted>
+		//			<notAllowed>[]</notAllowed>
+		//		</allowed>
+		if ( splitResult.cursorParent ) {
+			data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
+		} else {
+			// Otherwise just continue after the inserted element.
+			data.modelCursor = data.modelRange.end;
+		}
 	};
 }
 
@@ -265,7 +303,7 @@ function extractDataFromCodeElement( stringifiedElement ) {
 //
 //		<DocumentFragment>
 //			"foo()"
-//			<softBreak/>
+//			<softBreak></softBreak>
 //			"bar()"
 //		</DocumentFragment>
 //
