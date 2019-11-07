@@ -14,6 +14,7 @@
 	text-align: left;
 	direction: ltr;
 
+	tab-size: 4;
 	white-space: pre-wrap;
 
 	/* Don't inherit the style, e.g. when in a block quote. */
