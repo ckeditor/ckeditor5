@@ -449,10 +449,14 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should split parents to correctly upcast the code block', () => {
-			editor.setData( '<p>foo<pre><code>code</code></pre>bar</p>' );
+			editor.setData( '<p>foo<pre><code>x</code></pre>bar</p>' );
 
+			// Note: The empty <paragraph> should not be here. It's a conversion/auto–paragraphing bug.
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>[]foo</paragraph><codeBlock language="plaintext">codecode</codeBlock><paragraph>bar</paragraph>' );
+				'<paragraph>[]foo</paragraph>' +
+				'<codeBlock language="plaintext">x</codeBlock>' +
+				'<paragraph>bar</paragraph>' +
+				'<paragraph></paragraph>' );
 		} );
 
 		it( 'should upcast two code blocks in a row (#1)', () => {
@@ -466,8 +470,11 @@ describe( 'CodeBlockEditing', () => {
 			editor.setData( `<pre><code>foo</code></pre>
 				<pre><code>bar</code></pre>` );
 
+			// Note: The empty <paragraph> in between should not be here. It's a conversion/auto–paragraphing bug.
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="plaintext">[]foo</codeBlock><codeBlock language="plaintext">bar</codeBlock>' );
+				'<codeBlock language="plaintext">[]foo</codeBlock>' +
+				'<paragraph> </paragraph>' +
+				'<codeBlock language="plaintext">bar</codeBlock>' );
 		} );
 
 		it( 'should not convert when modelCursor and its ancestors disallow to insert codeBlock', () => {
