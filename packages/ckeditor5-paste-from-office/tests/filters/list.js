@@ -61,6 +61,17 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( stringify( view ) ).to.equal( '<ol><li style="mso-list:">Item 1</li></ol>' );
 			} );
 
+			it( 'handles `mso-list: none` on paragraphs correctly', () => {
+				const html = '<p style="mso-list:none">not numbered<o:p></o:p></p>';
+				const view = htmlDataProcessor.toView( html );
+
+				transformListItemLikeElementsIntoLists( view, '', new View() );
+
+				expect( view.childCount ).to.equal( 1 );
+				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
+				expect( stringify( view ) ).to.equal( '<ol><li style="mso-list:none">not numbered<o:p></o:p></li></ol>' );
+			} );
+
 			it( 'handles empty body correctly', () => {
 				const view = htmlDataProcessor.toView( '' );
 
