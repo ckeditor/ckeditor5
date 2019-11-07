@@ -422,6 +422,17 @@ describe( 'ImageResize', () => {
 			resizerPosition: 'top-right'
 		} ) );
 
+		it.only( 'makes no change when clicking the handle without drag', generateResizeTest2( {
+			isSideImage: true,
+			expectedWidth: 100,
+			pointerOffset: {
+				x: 0,
+				y: 0
+			},
+			resizerPosition: 'bottom-left',
+			modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?"><\/image>/
+		} ) );
+
 		function generateSideResizeTest( options ) {
 			return generateResizeTest( Object.assign( {
 				isSideImage: true,
@@ -762,6 +773,74 @@ describe( 'ImageResize', () => {
 
 					expect( parseFloat( modelWidth, 0 ) )
 						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
+				} );
+		};
+	}
+
+	function generateResizeTest2( options ) {
+		// options.resizerPosition - top-left / top-right / bottom-right / bottom-left
+		// options.pointerOffset - object - pointer offset relative to the dragged corner. Negative values are perfectly fine.
+		// e.g. { x: 10, y: -5 }
+		// options.expectedWidth
+		// [options.isSideImage=false]
+		// Returns a test case that puts
+		return function() {
+			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+			const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
+			const domFigure = view.domConverter.mapViewToDom( widget );
+			const domImage = domFigure.querySelector( 'img' );
+			const imageRect = new Rect( domImage );
+			const resizerPositionParts = options.resizerPosition.split( '-' );
+
+			const modelRegExp = options.modelRegExp ? options.modelRegExp :
+				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d]+)px"><\/image>/;
+
+			focusEditor( editor );
+
+			const initialPointerPosition = {
+				pageX: imageRect.left,
+				pageY: imageRect.top
+			};
+
+			if ( resizerPositionParts.includes( 'right' ) ) {
+				initialPointerPosition.pageX = imageRect.right;
+			}
+
+			if ( resizerPositionParts.includes( 'bottom' ) ) {
+				initialPointerPosition.pageY = imageRect.bottom;
+			}
+
+			const finishPointerPosition = Object.assign( {}, initialPointerPosition );
+
+			finishPointerPosition.pageX += options.pointerOffset.x || 0;
+			finishPointerPosition.pageY += options.pointerOffset.y || 0;
+
+			fireMouseEvent( domResizeHandle, 'mousedown', initialPointerPosition );
+
+			// We need to wait as mousemove events are throttled.
+			return wait( 40 )
+				.then( () => {
+					const figureSize = new Rect( domFigure );
+					// expect( parseInt( domFigure.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
+					expect( figureSize.width ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
+
+					if ( options.checkBeforeMouseUp ) {
+						options.checkBeforeMouseUp( domFigure, domResizeWrapper );
+					}
+
+					fireMouseEvent( domResizeHandle, 'mouseup', finishPointerPosition );
+
+					expect( getData( editor.model, {
+						withoutSelection: true
+					} ) ).to.match( modelRegExp );
+
+					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
+					// const modelWidth = modelItem.getAttribute( 'width' );
+
+					// expect( parseFloat( modelWidth, 0 ) )
+					// 	.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
+
+					expect( modelItem.hasAttribute( 'width' ), 'model width attribute presence' ).to.be.false;
 				} );
 		};
 	}
