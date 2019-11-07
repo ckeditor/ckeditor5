@@ -136,8 +136,9 @@ export default class CodeBlockEditing extends Plugin {
 			if ( positionParent.is( 'codeBlock' ) ) {
 				const lastPosition = doc.selection.getLastPosition();
 				const isSoftBreakBefore = lastPosition.nodeBefore && lastPosition.nodeBefore.is( 'softBreak' );
+				const isSoftEnter = data.isSoft;
 
-				if ( doc.selection.isCollapsed && lastPosition.isAtEnd && isSoftBreakBefore ) {
+				if ( !isSoftEnter && doc.selection.isCollapsed && lastPosition.isAtEnd && isSoftBreakBefore ) {
 					editor.model.change( writer => {
 						writer.remove( lastPosition.nodeBefore );
 						editor.execute( 'enter' );

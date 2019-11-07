@@ -14,6 +14,7 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -22,7 +23,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 
 describe( 'CodeBlockEditing', () => {
-	let editor, element, model, view;
+	let editor, element, model, view, viewDoc;
 
 	before( () => {
 		addTranslations( 'en', {
@@ -51,6 +52,7 @@ describe( 'CodeBlockEditing', () => {
 				editor = newEditor;
 				model = editor.model;
 				view = editor.editing.view;
+				viewDoc = view.document;
 			} );
 	} );
 
@@ -188,9 +190,9 @@ describe( 'CodeBlockEditing', () => {
 
 			setModelData( model, '<codeBlock>foo[]bar</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock>foo<softBreak></softBreak>[]bar</codeBlock>' );
 			sinon.assert.calledOnce( shiftEnterCommand.execute );
@@ -206,9 +208,9 @@ describe( 'CodeBlockEditing', () => {
 
 			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 			sinon.assert.calledOnce( enterCommand.execute );
@@ -220,15 +222,15 @@ describe( 'CodeBlockEditing', () => {
 
 			setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="css">foo</codeBlock>' +
@@ -247,16 +249,16 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not leave the block when pressed twice when in the middle of the code', () => {
 			setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="css">fo<softBreak></softBreak>[]o</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="css">fo<softBreak></softBreak><softBreak></softBreak>[]o</codeBlock>' );
@@ -265,19 +267,30 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not leave the block when pressed twice at the beginning of the code', () => {
 			setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="css"><softBreak></softBreak>[]foo</codeBlock>' );
 
-			editor.editing.view.document.fire( 'enter', {
-				preventDefault: () => {}
-			} );
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="css"><softBreak></softBreak><softBreak></softBreak>[]foo</codeBlock>' );
+		} );
+
+		it( 'should not leave the block when pressed shift+enter twice at the end of the code', () => {
+			setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+
+			viewDoc.fire( 'enter', new DomEventData( viewDoc, {
+				preventDefault: sinon.spy()
+			}, { isSoft: true } ) );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 		} );
 	} );
 
@@ -567,7 +580,7 @@ describe( 'CodeBlockEditing', () => {
 				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar' )
 			};
 
-			editor.editing.view.document.fire( 'clipboardInput', {
+			viewDoc.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				stop: sinon.spy()
 			} );
@@ -583,7 +596,7 @@ describe( 'CodeBlockEditing', () => {
 				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'bar\nbaz\n' )
 			};
 
-			editor.editing.view.document.fire( 'clipboardInput', {
+			viewDoc.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				stop: sinon.spy()
 			} );
