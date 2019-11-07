@@ -16,6 +16,12 @@
 
 	white-space: pre-wrap;
 
+	/* Don't inherit the style, e.g. when in a block quote. */
+	font-style: normal;
+
+	/* Don't let the code be squashed e.g. when in a table cell. */
+	min-width: 60px;
+
 	& code {
 		background: unset;
 		padding: 0;

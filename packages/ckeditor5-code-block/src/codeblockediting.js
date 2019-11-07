@@ -143,6 +143,7 @@ export default class CodeBlockEditing extends Plugin {
 						editor.execute( 'enter' );
 
 						const newBlock = doc.selection.anchor.parent;
+
 						writer.rename( newBlock, DEFAULT_ELEMENT );
 						editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
 						view.scrollToTheSelection();
