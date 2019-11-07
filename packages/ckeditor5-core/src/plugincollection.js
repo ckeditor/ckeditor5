@@ -281,6 +281,14 @@ export default class PluginCollection {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
 
+						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
+							throw new CKEditorError(
+								'plugincollection-context-required: Context plugin can not require plugin which is not context plugin',
+								null,
+								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
+							);
+						}
+
 						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
 							/**
 							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
@@ -293,7 +301,7 @@ export default class PluginCollection {
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` option.',
 								editor,
-								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
+								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
 						}
 
