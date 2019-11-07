@@ -7,7 +7,7 @@
  * @module cloud-services/cloudservices
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
 import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
 
 /**
@@ -18,7 +18,7 @@ import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class CloudServices extends Plugin {
+export default class CloudServices extends ContextPlugin {
 	/**
 	 * @inheritdoc
 	 */
@@ -30,8 +30,7 @@ export default class CloudServices extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-		const config = editor.config;
+		const config = this.context.config;
 
 		const options = config.get( 'cloudServices' ) || {};
 
