@@ -12,6 +12,7 @@
 	font-family: var(--ck-font-face);
 	padding: var(--ck-spacing-tiny) var(--ck-spacing-medium);
 	color: hsl(0, 0%, 100%);
+	white-space: nowrap;
 }
 
 .ck.ck-code-block-dropdown .ck-dropdown__panel {
