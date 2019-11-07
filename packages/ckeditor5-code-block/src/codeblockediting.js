@@ -12,6 +12,8 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
 import { getLocalizedLanguageDefinitions } from './utils';
 
+const DEFAULT_ELEMENT = 'paragraph';
+
 /**
  * The editing part of the code block feature.
  *
@@ -124,14 +126,31 @@ export default class CodeBlockEditing extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const viewDoc = editor.editing.view.document;
+		const view = editor.editing.view;
+		const viewDoc = view.document;
 
 		this.listenTo( viewDoc, 'enter', ( evt, data ) => {
 			const doc = editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
 			if ( positionParent.is( 'codeBlock' ) ) {
-				editor.execute( 'shiftEnter' );
+				const lastPosition = doc.selection.getLastPosition();
+				const isSoftBreakBefore = lastPosition.nodeBefore && lastPosition.nodeBefore.is( 'softBreak' );
+
+				if ( doc.selection.isCollapsed && lastPosition.isAtEnd && isSoftBreakBefore ) {
+					editor.model.change( writer => {
+						writer.remove( lastPosition.nodeBefore );
+						editor.execute( 'enter' );
+
+						const newBlock = doc.selection.anchor.parent;
+						writer.rename( newBlock, DEFAULT_ELEMENT );
+						editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
+						view.scrollToTheSelection();
+					} );
+				} else {
+					editor.execute( 'shiftEnter' );
+				}
+
 				data.preventDefault();
 				evt.stop();
 			}

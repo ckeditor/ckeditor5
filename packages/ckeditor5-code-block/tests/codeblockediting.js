@@ -13,6 +13,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -44,7 +45,7 @@ describe( 'CodeBlockEditing', () => {
 		return ClassicTestEditor
 			.create( element, {
 				language: 'en',
-				plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ]
+				plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph, Undo ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -177,40 +178,107 @@ describe( 'CodeBlockEditing', () => {
 		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
 	} );
 
-	it( 'should force shiftEnter command when pressing enter inside a codeBlock', () => {
-		const enterCommand = editor.commands.get( 'enter' );
-		const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
+	describe( 'enter key handling', () => {
+		it( 'should force shiftEnter command when pressing enter inside a codeBlock', () => {
+			const enterCommand = editor.commands.get( 'enter' );
+			const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
 
-		sinon.spy( enterCommand, 'execute' );
-		sinon.spy( shiftEnterCommand, 'execute' );
+			sinon.spy( enterCommand, 'execute' );
+			sinon.spy( shiftEnterCommand, 'execute' );
 
-		setModelData( model, '<codeBlock>foo[]bar</codeBlock>' );
+			setModelData( model, '<codeBlock>foo[]bar</codeBlock>' );
 
-		editor.editing.view.document.fire( 'enter', {
-			preventDefault: () => {}
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>foo<softBreak></softBreak>[]bar</codeBlock>' );
+			sinon.assert.calledOnce( shiftEnterCommand.execute );
+			sinon.assert.notCalled( enterCommand.execute );
 		} );
 
-		expect( getModelData( model ) ).to.equal( '<codeBlock>foo<softBreak></softBreak>[]bar</codeBlock>' );
-		sinon.assert.calledOnce( shiftEnterCommand.execute );
-		sinon.assert.notCalled( enterCommand.execute );
-	} );
+		it( 'should execute enter command when pressing enter out of codeBlock', () => {
+			const enterCommand = editor.commands.get( 'enter' );
+			const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
 
-	it( 'should execute enter command when pressing enter out of codeBlock', () => {
-		const enterCommand = editor.commands.get( 'enter' );
-		const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
+			sinon.spy( enterCommand, 'execute' );
+			sinon.spy( shiftEnterCommand, 'execute' );
 
-		sinon.spy( enterCommand, 'execute' );
-		sinon.spy( shiftEnterCommand, 'execute' );
+			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
 
-		editor.editing.view.document.fire( 'enter', {
-			preventDefault: () => {}
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
+			sinon.assert.calledOnce( enterCommand.execute );
+			sinon.assert.notCalled( shiftEnterCommand.execute );
 		} );
 
-		expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
-		sinon.assert.calledOnce( enterCommand.execute );
-		sinon.assert.notCalled( shiftEnterCommand.execute );
+		it( 'should leave the block when pressed twice at the end', () => {
+			const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css">foo</codeBlock>' +
+				'<paragraph>[]</paragraph>'
+			);
+
+			sinon.assert.calledOnce( spy );
+
+			editor.execute( 'undo' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+
+			editor.execute( 'undo' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]</codeBlock>' );
+		} );
+
+		it( 'should not leave the block when pressed twice when in the middle of the code', () => {
+			setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
+
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css">fo<softBreak></softBreak>[]o</codeBlock>' );
+
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css">fo<softBreak></softBreak><softBreak></softBreak>[]o</codeBlock>' );
+		} );
+
+		it( 'should not leave the block when pressed twice at the beginning of the code', () => {
+			setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
+
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css"><softBreak></softBreak>[]foo</codeBlock>' );
+
+			editor.editing.view.document.fire( 'enter', {
+				preventDefault: () => {}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="css"><softBreak></softBreak><softBreak></softBreak>[]foo</codeBlock>' );
+		} );
 	} );
 
 	describe( 'editing pipeline m -> v', () => {
