@@ -9,7 +9,7 @@
 
 /* globals window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
 
 /**
  * The Notification plugin.
@@ -23,7 +23,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class Notification extends Plugin {
+export default class Notification extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
