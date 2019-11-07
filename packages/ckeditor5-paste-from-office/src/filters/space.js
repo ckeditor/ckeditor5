@@ -20,8 +20,8 @@ export function normalizeSpacing( htmlString ) {
 	// Run normalizeSafariSpaceSpans() two times to cover nested spans.
 	return normalizeSafariSpaceSpans( normalizeSafariSpaceSpans( htmlString ) )
 		// Remove all \r\n from "spacerun spans" so the last replace line doesn't strip all whitespaces.
-		.replace( /(<span style=['"]mso-spacerun:yes['"]>[\s]*?)[\r\n]+(\s*<\/span>)/g, '$1$2' )
-		.replace( /<span style=['"]mso-spacerun:yes['"]><\/span>/g, '' )
+		.replace( /(<span\s+style=['"]mso-spacerun:yes['"]>[\s]*?)[\r\n]+(\s*<\/span>)/g, '$1$2' )
+		.replace( /<span\s+style=['"]mso-spacerun:yes['"]><\/span>/g, '' )
 		.replace( / <\//g, '\u00A0</' )
 		.replace( / <o:p><\/o:p>/g, '\u00A0<o:p></o:p>' )
 		// Remove <o:p> block filler from empty paragraph. Safari uses \u00A0 instead of &nbsp;.
@@ -41,7 +41,10 @@ export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		// Use `el.childNodes[ 0 ].data.length` instead of `el.innerText.length`. For `el.innerText.length` which
 		// contains spaces mixed with `&nbsp;` Edge browser returns incorrect length.
-		const innerTextLength = el.childNodes[ 0 ].data.length;
+		const innerTextLength = ( el.childNodes &&
+			el.childNodes[ 0 ] &&
+			el.childNodes[ 0 ].data &&
+			el.childNodes[ 0 ].data.length ) || 0;
 
 		el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
 	} );
