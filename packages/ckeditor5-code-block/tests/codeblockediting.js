@@ -469,6 +469,19 @@ describe( 'CodeBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]foo</codeBlock><codeBlock language="plaintext">bar</codeBlock>' );
 		} );
+
+		it( 'should not convert when modelCursor and its ancestors disallow to insert codeBlock', () => {
+			model.document.createRoot( '$title', 'title' );
+
+			model.schema.register( '$title', {
+				disallow: '$block',
+				allow: 'inline'
+			} );
+
+			editor.data.set( { title: '<pre><code>foo</code></pre>' } );
+
+			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+		} );
 	} );
 
 	describe( 'clipboard integration', () => {
