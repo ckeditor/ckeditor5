@@ -7,10 +7,8 @@
  * @module ui/editorui/editoruiview
  */
 
-/* globals document */
-
 import View from '../view';
-import Template from '../template';
+import BodyCollection from './bodycollection';
 
 import '../../theme/components/editorui/editorui.css';
 
@@ -35,7 +33,7 @@ export default class EditorUIView extends View {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection} #body
 		 */
-		this.body = this.createCollection();
+		this.body = new BodyCollection( locale );
 
 		/**
 		 * The element holding elements of the 'body' region.
@@ -51,39 +49,15 @@ export default class EditorUIView extends View {
 	render() {
 		super.render();
 
-		this._renderBodyCollection();
+		this.body.render();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._bodyCollectionContainer.remove();
+		this.body.destroy();
 
 		return super.destroy();
-	}
-
-	/**
-	 * Creates and appends to `<body>` the {@link #body} collection container.
-	 *
-	 * @private
-	 */
-	_renderBodyCollection() {
-		const locale = this.locale;
-		const bodyElement = this._bodyCollectionContainer = new Template( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-reset_all',
-					'ck-body',
-					'ck-rounded-corners'
-				],
-				dir: locale.uiLanguageDirection,
-			},
-			children: this.body
-		} ).render();
-
-		document.body.appendChild( bodyElement );
 	}
 }
