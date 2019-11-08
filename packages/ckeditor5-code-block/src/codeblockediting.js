@@ -127,36 +127,148 @@ export default class CodeBlockEditing extends Plugin {
 	afterInit() {
 		const editor = this.editor;
 		const view = editor.editing.view;
-		const viewDoc = view.document;
+		const model = editor.model;
+		const modelDoc = model.document;
 
-		this.listenTo( viewDoc, 'enter', ( evt, data ) => {
-			const doc = editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
+		this.listenTo( view.document, 'enter', ( evt, data ) => {
+			const positionParent = modelDoc.selection.getLastPosition().parent;
 
-			if ( positionParent.is( 'codeBlock' ) ) {
-				const lastPosition = doc.selection.getLastPosition();
-				const isSoftBreakBefore = lastPosition.nodeBefore && lastPosition.nodeBefore.is( 'softBreak' );
-				const isSoftEnter = data.isSoft;
-
-				if ( !isSoftEnter && doc.selection.isCollapsed && lastPosition.isAtEnd && isSoftBreakBefore ) {
-					editor.model.change( writer => {
-						writer.remove( lastPosition.nodeBefore );
-						editor.execute( 'enter' );
-
-						const newBlock = doc.selection.anchor.parent;
-
-						writer.rename( newBlock, DEFAULT_ELEMENT );
-						editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
-						view.scrollToTheSelection();
-					} );
-				} else {
-					editor.execute( 'shiftEnter' );
-				}
-
-				data.preventDefault();
-				evt.stop();
+			if ( !positionParent.is( 'codeBlock' ) ) {
+				return;
 			}
+
+			// Upon enter key press we can either leave the block if it's "two enters" in a row
+			// or create a new code block line, preserving previous line's indentation.
+			leaveBlock( data.isSoft ) || breakLine();
+
+			data.preventDefault();
+			evt.stop();
 		} );
+
+		// Normally, when the enter (or shift+enter) key is pressed, a soft line break is to be added to the
+		// code block. Let's try to follow the indentation of the previous line when possible, for instance:
+		//
+		//		// Before pressing enter (or shift enter)
+		//		<codeBlock>
+		//		"    foo()"[]                   // Indent of 4 spaces.
+		//		</codeBlock>
+		//
+		//		// After pressing:
+		//		<codeBlock>
+		//			"    foo()"                 // Indent of 4 spaces.
+		//			<softBreak></softBreak>     // A new soft break created by pressing enter.
+		//			"    "[]                    // Retain the indent of 4 spaces.
+		//		</codeBlock>
+		function breakLine() {
+			const lastSelectionPosition = modelDoc.selection.getLastPosition();
+			const node = lastSelectionPosition.nodeBefore || lastSelectionPosition.textNode;
+			let leadingWhiteSpaces;
+
+			// Figure out the indentation (white space chars) at the beginning of the line.
+			if ( node && node.is( 'text' ) ) {
+				leadingWhiteSpaces = node.data.match( /^(\s*)/ )[ 0 ];
+			}
+
+			// Keeping everything in a change block for a single undo step.
+			editor.model.change( writer => {
+				editor.execute( 'shiftEnter' );
+
+				// If the line before being broken in two had some indentation, let's retain it
+				// in the new line.
+				if ( leadingWhiteSpaces ) {
+					writer.insertText( leadingWhiteSpaces, modelDoc.selection.anchor );
+				}
+			} );
+		}
+
+		// Leave the code block when enter (but NOT shift+enter) has been pressed twice at the end
+		// of the code block:
+		//
+		//		// Before:
+		//		<codeBlock>foo[]</codeBlock>
+		//
+		//		// After first press
+		//		<codeBlock>foo<softBreak></softBreak>[]</codeBlock>
+		//
+		//		// After second press
+		//		<codeBlock>foo</codeBlock><paragraph>[]</paragraph>
+		//
+		function leaveBlock( isSoftEnter ) {
+			const lastSelectionPosition = modelDoc.selection.getLastPosition();
+			const nodeBefore = lastSelectionPosition.nodeBefore;
+
+			let emptyLineRangeToRemoveOnDoubleEnter;
+
+			if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore ) {
+				return false;
+			}
+
+			// When the position is directly preceded by a soft break
+			//
+			//		<codeBlock>foo<softBreak></softBreak>[]</codeBlock>
+			//
+			// it creates the following range that will be cleaned up before leaving:
+			//
+			//		<codeBlock>foo[<softBreak></softBreak>]</codeBlock>
+			//
+			if ( nodeBefore.is( 'softBreak' ) ) {
+				emptyLineRangeToRemoveOnDoubleEnter = model.createRangeOn( nodeBefore );
+			}
+
+			// When there's some text before the position made purely of white–space characters
+			//
+			//		<codeBlock>foo<softBreak></softBreak>    []</codeBlock>
+			//
+			// but NOT when it's the first one of the kind
+			//
+			//		<codeBlock>    []</codeBlock>
+			//
+			// it creates the following range to clean up before leaving:
+			//
+			//		<codeBlock>foo[<softBreak></softBreak>    ]</codeBlock>
+			//
+			else if (
+				nodeBefore.is( 'text' ) &&
+				!nodeBefore.data.match( /\S/ ) &&
+				nodeBefore.previousSibling &&
+				nodeBefore.previousSibling.is( 'softBreak' )
+			) {
+				emptyLineRangeToRemoveOnDoubleEnter = model.createRange(
+					model.createPositionBefore( nodeBefore.previousSibling ), model.createPositionAfter( nodeBefore )
+				);
+			}
+
+			// Not leaving the block in the following cases:
+			//
+			//		<codeBlock>    []</codeBlock>
+			//		<codeBlock>  a []</codeBlock>
+			//		<codeBlock>foo<softBreak></softBreak>bar[]</codeBlock>
+			//		<codeBlock>foo<softBreak></softBreak> a []</codeBlock>
+			//
+			else {
+				return false;
+			}
+
+			// We're doing everything in a single change block to have a single undo step.
+			editor.model.change( writer => {
+				// Remove the last <softBreak> and all white space characters that followed it.
+				writer.remove( emptyLineRangeToRemoveOnDoubleEnter );
+
+				// "Clone" the <codeBlock> in the standard way.
+				editor.execute( 'enter' );
+
+				const newBlock = modelDoc.selection.anchor.parent;
+
+				// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
+				writer.rename( newBlock, DEFAULT_ELEMENT );
+				editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
+
+				// Eye candy.
+				view.scrollToTheSelection();
+			} );
+
+			return true;
+		}
 	}
 }
 
