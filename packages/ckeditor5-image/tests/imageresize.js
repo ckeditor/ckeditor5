@@ -422,16 +422,18 @@ describe( 'ImageResize', () => {
 			resizerPosition: 'top-right'
 		} ) );
 
-		it.only( 'makes no change when clicking the handle without drag', generateResizeTest2( {
-			isSideImage: true,
-			expectedWidth: 100,
-			pointerOffset: {
-				x: 0,
-				y: 0
-			},
-			resizerPosition: 'bottom-left',
-			modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?"><\/image>/
-		} ) );
+		it( 'makes no change when clicking the handle without drag', () => {
+			generateResizeTest2( {
+				isSideImage: true,
+				expectedWidth: 100,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-left',
+				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?"><\/image>/
+			} )();
+		} );
 
 		function generateSideResizeTest( options ) {
 			return generateResizeTest( Object.assign( {
@@ -785,60 +787,38 @@ describe( 'ImageResize', () => {
 		// [options.isSideImage=false]
 		// Returns a test case that puts
 		return function() {
-			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-			const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
-			const domFigure = view.domConverter.mapViewToDom( widget );
-			const domImage = domFigure.querySelector( 'img' );
-			const imageRect = new Rect( domImage );
-			const resizerPositionParts = options.resizerPosition.split( '-' );
-
+			const domParts = getWidgetDomParts( widget, options );
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
 				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d]+)px"><\/image>/;
 
 			focusEditor( editor );
 
-			const initialPointerPosition = {
-				pageX: imageRect.left,
-				pageY: imageRect.top
-			};
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, options.resizerPosition );
 
-			if ( resizerPositionParts.includes( 'right' ) ) {
-				initialPointerPosition.pageX = imageRect.right;
-			}
-
-			if ( resizerPositionParts.includes( 'bottom' ) ) {
-				initialPointerPosition.pageY = imageRect.bottom;
-			}
-
-			const finishPointerPosition = Object.assign( {}, initialPointerPosition );
-
-			finishPointerPosition.pageX += options.pointerOffset.x || 0;
-			finishPointerPosition.pageY += options.pointerOffset.y || 0;
-
-			fireMouseEvent( domResizeHandle, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
 
 			// We need to wait as mousemove events are throttled.
 			return wait( 40 )
 				.then( () => {
-					const figureSize = new Rect( domFigure );
-					// expect( parseInt( domFigure.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
+					const figureSize = new Rect( domParts.figure );
 					expect( figureSize.width ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
 					if ( options.checkBeforeMouseUp ) {
-						options.checkBeforeMouseUp( domFigure, domResizeWrapper );
+						options.checkBeforeMouseUp( domParts.figure, domParts.resizeWrapper );
 					}
 
-					fireMouseEvent( domResizeHandle, 'mouseup', finishPointerPosition );
+					const finishPointerPosition = Object.assign( {}, initialPointerPosition );
+
+					finishPointerPosition.pageX += options.pointerOffset.x || 0;
+					finishPointerPosition.pageY += options.pointerOffset.y || 0;
+
+					fireMouseEvent( domParts.resizeHandle, 'mouseup', finishPointerPosition );
 
 					expect( getData( editor.model, {
 						withoutSelection: true
 					} ) ).to.match( modelRegExp );
 
 					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
-					// const modelWidth = modelItem.getAttribute( 'width' );
-
-					// expect( parseFloat( modelWidth, 0 ) )
-					// 	.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 
 					expect( modelItem.hasAttribute( 'width' ), 'model width attribute presence' ).to.be.false;
 				} );
@@ -848,6 +828,38 @@ describe( 'ImageResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function getResizerCoordinates( domFigure, resizerPosition ) {
+		const domImage = domFigure.querySelector( 'img' );
+		const imageRect = new Rect( domImage );
+		const initialPointerPosition = {
+			pageX: imageRect.left,
+			pageY: imageRect.top
+		};
+		const resizerPositionParts = resizerPosition.split( '-' );
+
+		if ( resizerPositionParts.includes( 'right' ) ) {
+			initialPointerPosition.pageX = imageRect.right;
+		}
+
+		if ( resizerPositionParts.includes( 'bottom' ) ) {
+			initialPointerPosition.pageY = imageRect.bottom;
+		}
+
+		return initialPointerPosition;
+	}
+
+	function getWidgetDomParts( widget, options ) {
+		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+		const resizeHandle = resizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
+		const figure = view.domConverter.mapViewToDom( widget );
+
+		return {
+			resizeWrapper,
+			resizeHandle,
+			figure
+		};
 	}
 
 	function getSelectedImageResizer( editor ) {
