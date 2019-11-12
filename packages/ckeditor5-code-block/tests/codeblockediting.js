@@ -17,7 +17,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
@@ -732,6 +732,80 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>' );
 
 			sinon.assert.calledOnce( dataTransferMock.getData );
+		} );
+
+		describe( 'getSelectedContent', () => {
+			it( 'should wrap a partial multi-line selection into a code block (#1)', () => {
+				setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>b]ar</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<codeBlock language="css">o<softBreak></softBreak>b</codeBlock>'
+				);
+			} );
+
+			it( 'should wrap a partial multi-line selection into a code block (#2)', () => {
+				setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>]bar</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<codeBlock language="css">o<softBreak></softBreak></codeBlock>'
+				);
+			} );
+
+			it( 'should wrap a partial multi-line selection into a code block (#3)', () => {
+				setModelData( model, '<codeBlock language="css">[foo<softBreak></softBreak>bar]</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<codeBlock language="css">foo<softBreak></softBreak>bar</codeBlock>'
+				);
+			} );
+
+			it( 'should wrap a complete single-line selection into a code block', () => {
+				setModelData( model, '<codeBlock language="css">[foo]</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<codeBlock language="css">foo</codeBlock>'
+				);
+			} );
+
+			it( 'should wrap a partial single-line selection into an inline code (#1)', () => {
+				setModelData( model, '<codeBlock language="css">[fo]o<softBreak></softBreak>bar</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<$text code="true">fo</$text>'
+				);
+			} );
+
+			it( 'should wrap a partial single-line selection into an inline code (#2)', () => {
+				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<$text code="true">a</$text>'
+				);
+			} );
+
+			it( 'should preserve a code block in a cross-selection (#1)', () => {
+				setModelData( model, '<paragraph>[x</paragraph><codeBlock language="css">fo]o<softBreak></softBreak>bar</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<paragraph>x</paragraph><codeBlock language="css">fo</codeBlock>'
+				);
+			} );
+
+			it( 'should preserve a code block in a cross-selection (#2)', () => {
+				setModelData( model, '<paragraph>[x</paragraph><codeBlock language="css">foo<softBreak></softBreak>b]ar</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<paragraph>x</paragraph><codeBlock language="css">foo<softBreak></softBreak>b</codeBlock>'
+				);
+			} );
+
+			it( 'should preserve a code block in a cross-selection (#3)', () => {
+				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[ar</codeBlock><paragraph>x]</paragraph>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+					'<codeBlock language="css">ar</codeBlock><paragraph>x</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );

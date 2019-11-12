@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import { getLocalizedLanguageDefinitions } from './utils';
 
 const DEFAULT_ELEMENT = 'paragraph';
@@ -118,6 +119,53 @@ export default class CodeBlockEditing extends Plugin {
 				model.insertContent( rawSnippetTextToModelDocumentFragment( writer, text ), modelSelection );
 				evt.stop();
 			} );
+		} );
+
+		// Make sure multi–line selection is always wrapped in a code block. Otherwise, only the raw text
+		// will be copied to the clipboard by the user and, upon the next paste, this bare text will not be
+		// inserted as a code block, which is not the best UX.
+		// Similarly, when the selection in a single line, the selected content should be an inline
+		// code so it can be pasted later on and retain it's preformatted nature.
+		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
+			const anchor = selection.anchor;
+
+			if ( !anchor.parent.is( 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus ) ) {
+				return;
+			}
+
+			const docFragment = evt.return;
+
+			// From:
+			//
+			//		fo[o
+			//		<softBreak></softBreak>
+			//		b]ar
+			//
+			// into:
+			//
+			//		<codeBlock language="...">
+			//			[o
+			//			<softBreak></softBreak>
+			//			b]
+			//		<codeBlock>
+			//
+			if ( docFragment.childCount > 1 || selection.containsEntireContent( anchor.parent ) ) {
+				const codeBlock = anchor.parent._clone();
+				codeBlock._insertChild( 0, docFragment );
+				evt.return = new DocumentFragment( [ codeBlock ] );
+			}
+
+			// From:
+			//
+			//		f[oo]
+			//
+			// into:
+			//
+			//		<$text code="true">oo</text>
+			//
+			else {
+				docFragment.getChild( 0 )._setAttribute( 'code', true );
+			}
 		} );
 	}
 
