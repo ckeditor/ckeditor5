@@ -80,7 +80,7 @@ export default class CodeBlockUI extends Plugin {
 	 *
 	 * @private
 	 * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} localizedLanguageDefinitions
-	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition}
+	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
 	 */
 	_getLanguageListItemDefinitions( localizedLanguageDefinitions ) {
 		const editor = this.editor;

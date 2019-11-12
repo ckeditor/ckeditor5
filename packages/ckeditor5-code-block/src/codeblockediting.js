@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import { getLocalizedLanguageDefinitions } from './utils';
 
 const DEFAULT_ELEMENT = 'paragraph';
@@ -133,39 +132,45 @@ export default class CodeBlockEditing extends Plugin {
 				return;
 			}
 
-			const docFragment = evt.return;
+			model.change( writer => {
+				const docFragment = evt.return;
 
-			// From:
-			//
-			//		fo[o
-			//		<softBreak></softBreak>
-			//		b]ar
-			//
-			// into:
-			//
-			//		<codeBlock language="...">
-			//			[o
-			//			<softBreak></softBreak>
-			//			b]
-			//		<codeBlock>
-			//
-			if ( docFragment.childCount > 1 || selection.containsEntireContent( anchor.parent ) ) {
-				const codeBlock = anchor.parent._clone();
-				codeBlock._insertChild( 0, docFragment );
-				evt.return = new DocumentFragment( [ codeBlock ] );
-			}
+				// From:
+				//
+				//		fo[o
+				//		<softBreak></softBreak>
+				//		b]ar
+				//
+				// into:
+				//
+				//		<codeBlock language="...">
+				//			[o
+				//			<softBreak></softBreak>
+				//			b]
+				//		<codeBlock>
+				//
+				if ( docFragment.childCount > 1 || selection.containsEntireContent( anchor.parent ) ) {
+					const codeBlock = writer.createElement( 'codeBlock', anchor.parent.getAttributes() );
+					writer.append( docFragment, codeBlock );
 
-			// From:
-			//
-			//		f[oo]
-			//
-			// into:
-			//
-			//		<$text code="true">oo</text>
-			//
-			else {
-				docFragment.getChild( 0 )._setAttribute( 'code', true );
-			}
+					const newDocumentFragment = writer.createDocumentFragment();
+					writer.append( codeBlock, newDocumentFragment );
+
+					evt.return = newDocumentFragment;
+				}
+
+				// From:
+				//
+				//		f[oo]
+				//
+				// into:
+				//
+				//		<$text code="true">oo</text>
+				//
+				else {
+					writer.setAttribute( 'code', true, docFragment.getChild( 0 ) );
+				}
+			} );
 		} );
 	}
 
