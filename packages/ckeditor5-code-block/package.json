@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^15.0.0",
+    "@ckeditor/ckeditor5-autoformat": "^15.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^15.0.0",
     "@ckeditor/ckeditor5-block-quote": "^15.0.0",
     "@ckeditor/ckeditor5-engine": "^15.0.0",

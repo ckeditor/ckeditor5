@@ -9,10 +9,11 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import CodeBlock from '../../src/codeblock';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Code, CodeBlock, ArticlePluginSet ],
+		plugins: [ Code, CodeBlock, Autoformat, ArticlePluginSet ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'code', 'blockQuote', 'codeBlock', 'undo', 'redo', 'insertTable' ]
 	} )
 	.then( editor => {
