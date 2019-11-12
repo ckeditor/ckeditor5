@@ -128,7 +128,7 @@ export default class CodeBlockEditing extends Plugin {
 		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
 			const anchor = selection.anchor;
 
-			if ( !anchor.parent.is( 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus ) ) {
+			if ( selection.isCollapsed || !anchor.parent.is( 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus ) ) {
 				return;
 			}
 

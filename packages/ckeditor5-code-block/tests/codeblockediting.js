@@ -735,6 +735,12 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		describe( 'getSelectedContent', () => {
+			it( 'should not engage when there is nothing selected', () => {
+				setModelData( model, '<codeBlock language="css">fo[]o<softBreak></softBreak>bar</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal( '' );
+			} );
+
 			it( 'should wrap a partial multi-line selection into a code block (#1)', () => {
 				setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>b]ar</codeBlock>' );
 
