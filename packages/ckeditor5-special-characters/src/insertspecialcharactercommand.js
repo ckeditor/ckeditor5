@@ -27,13 +27,9 @@ export default class InsertSpecialCharacterCommand extends Command {
 		 * @member {module:typing/inputcommand~InputCommand} #_inputCommand
 		 */
 		this._inputCommand = editor.commands.get( 'input' );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		this.isEnabled = this._inputCommand.isEnabled;
+		// Use the state of `Input` command to determine whether the special characters could be inserted.
+		this.bind( 'isEnabled' ).to( this._inputCommand, 'isEnabled' );
 	}
 
 	/**

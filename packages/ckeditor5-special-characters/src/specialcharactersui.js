@@ -71,10 +71,10 @@ export default class SpecialCharactersUI extends Plugin {
 
 		function printCharacters( selectView ) {
 			const groupName = selectView.element.value;
-			const characters = specialCharacterPlugin.getCharacterForGroup( groupName );
+			const characters = specialCharacterPlugin.getCharactersForGroup( groupName );
 
 			console.log( { groupName, characters } );
-			console.log( 'Rysuj!' );
+			console.log( 'Draw!' );
 		}
 	}
 }

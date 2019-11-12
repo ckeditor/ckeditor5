@@ -25,7 +25,7 @@ export default class SpecialCharacters extends Plugin {
 		 * Registered characters. A pair of a character name and its symbol.
 		 *
 		 * @private
-		 * @member {Map.<String, String>}
+		 * @member {Map.<String, String>} #_characters
 		 */
 		this._characters = new Map();
 
@@ -33,7 +33,7 @@ export default class SpecialCharacters extends Plugin {
 		 * Registered groups. Each group contains a collection with symbol names.
 		 *
 		 * @private
-		 * @member {Map.<String, Set.<String>>}
+		 * @member {Map.<String, Set.<String>>} #_groups
 		 */
 		this._groups = new Map();
 	}
@@ -42,7 +42,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ SpecialCharactersUI, Typing ];
+		return [ Typing, SpecialCharactersUI ];
 	}
 
 	/**
@@ -53,7 +53,7 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Adds a collection of special characters to specified group.
+	 * Adds a collection of special characters to specified group. A title of a special character must be unique.
 	 *
 	 * @param {String} groupName
 	 * @param {Array.<~SpecialCharacterDefinition>} items
@@ -64,9 +64,14 @@ export default class SpecialCharacters extends Plugin {
 		for ( const item of items ) {
 			if ( this._characters.has( item.title ) ) {
 				/**
+				 * The provided title for a special character is already. Titles for special characters must be unique.
+				 *
 				 * @error specialcharacters-duplicated-character-name
+				 * @param {~SpecialCharacterDefinition} item The invalid special character definition.
 				 */
-				throw new CKEditorError( 'specialcharacters-duplicated-character-name', null );
+				throw new CKEditorError(
+					'specialcharacters-duplicated-character-name: Duplicated special character title.', null, { item }
+				);
 			}
 
 			group.add( item.title );
@@ -75,6 +80,8 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
+	 * Returns iterator of special characters groups.
+	 *
 	 * @returns {Iterable.<String>}
 	 */
 	getGroups() {
@@ -82,10 +89,12 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
+	 * Returns a collection of symbol names (titles).
+	 *
 	 * @param {String} groupName
 	 * @returns {Set<String>|undefined}
 	 */
-	getCharacterForGroup( groupName ) {
+	getCharactersForGroup( groupName ) {
 		return this._groups.get( groupName );
 	}
 
@@ -105,6 +114,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @param {String} groupName A name of group to create.
 	 */
 	_getGroup( groupName ) {
+		/* istanbul ignore else */
 		if ( !this._groups.has( groupName ) ) {
 			this._groups.set( groupName, new Set() );
 		}
@@ -112,6 +122,9 @@ export default class SpecialCharacters extends Plugin {
 		return this._groups.get( groupName );
 	}
 }
+
+// TODO: Make an interface for "SpecialCharacters" class.
+// It should provide methods: `addItems()`, `getGroups()`, `getCharactersForGroup()`, `getCharacter()`.
 
 /**
  * @typedef {Object} module:special-characters/specialcharacters~SpecialCharacterDefinition
