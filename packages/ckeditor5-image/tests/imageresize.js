@@ -323,7 +323,6 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'shrinks correctly with left-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: 20,
@@ -333,7 +332,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'shrinks correctly with right-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: -20,
@@ -343,7 +341,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'shrinks correctly with left-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: 20,
@@ -353,7 +350,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'shrinks correctly with right-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: -20,
@@ -363,7 +359,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with left-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: -10,
@@ -373,7 +368,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: 10,
@@ -383,7 +377,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler, y axis only', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 140,
 			pointerOffset: {
 				x: 0,
@@ -393,7 +386,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler, x axis only', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 140,
 			pointerOffset: {
 				x: 40,
@@ -403,7 +395,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with left-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: -20,
@@ -413,7 +404,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: 20,
@@ -442,7 +432,6 @@ describe( 'ImageResize', () => {
 
 		function generateSideResizeTest( options ) {
 			return generateResizeTest( Object.assign( {
-				isSideImage: true,
 				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="([\d.]+)px"><\/image>/
 			}, options ) );
 		}
@@ -722,7 +711,6 @@ describe( 'ImageResize', () => {
 		// options.pointerOffset - object - pointer offset relative to the dragged corner. Negative values are perfectly fine.
 		// e.g. { x: 10, y: -5 }
 		// options.expectedWidth
-		// [options.isSideImage=false]
 		// Returns a test case that puts
 		return async function() {
 			const domParts = getWidgetDomParts( widget, options.resizerPosition );
