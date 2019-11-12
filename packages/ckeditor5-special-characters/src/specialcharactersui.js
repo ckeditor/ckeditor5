@@ -47,7 +47,7 @@ export default class SpecialCharactersUI extends Plugin {
 
 			// When a special character was clicked, insert it to the editor.
 			dropdownView.on( 'execute', ( evt, data ) => {
-				console.log( 'Kliknąłem.', data );
+				console.log( 'Clicked.', data );
 
 				// command.execute( { item: data } );
 			} );
