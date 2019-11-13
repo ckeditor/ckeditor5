@@ -16,6 +16,8 @@
 
 1. Type ``` `foobar` ``` to mark as code `foobar`. ```  ` ``` should be removed.
 
+1. Type `` ``` `` in a new line to create an empty code block. `` ``` `` should be removed.
+
 1. For every autoformat pattern: Undo until you'll see just the pattern (e.g. `- `). Typing should be then possible without triggering the autoformatting again.
 
 1. Typing a different pattern in an already converted block **must not** trigger the autoformatting. For example, typing `- ` in a heading should not convert a heading to a list.

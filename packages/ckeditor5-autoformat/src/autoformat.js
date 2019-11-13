@@ -155,10 +155,10 @@ export default class Autoformat extends Plugin {
 	}
 
 	/**
-	 * Adds autoformatting related to {@link module:code-block/code-block~CodeBlock}.
+	 * Adds autoformatting related to {@link module:code-block/codeblock~CodeBlock}.
 	 *
 	 * When typed:
-	 * - `\`\`\`` &ndash; A paragraph will be changed to a code block.
+	 * - `` ``` `` &ndash; A paragraph will be changed to a code block.
 	 *
 	 * @private
 	 */

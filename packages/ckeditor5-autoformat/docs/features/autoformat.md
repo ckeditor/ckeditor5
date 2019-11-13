@@ -17,6 +17,7 @@ The following block formatting options are available:
 * Numbered list &ndash; Start a line with `1.` or `1)` followed by a space.
 * Headings &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2 or heading 3 (up to heading 6 if {@link module:heading/heading~HeadingConfig#options} defines more headings).
 * Block quote &ndash; Start a line with `>` followed by a space.
+* Code block &ndash; Start a line with `` ``` ``.
 
 ## Inline formatting
 
