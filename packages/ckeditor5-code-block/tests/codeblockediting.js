@@ -734,7 +734,7 @@ describe( 'CodeBlockEditing', () => {
 			sinon.assert.calledOnce( dataTransferMock.getData );
 		} );
 
-		describe( 'getSelectedContent', () => {
+		describe( 'getSelectedContent()', () => {
 			it( 'should not engage when there is nothing selected', () => {
 				setModelData( model, '<codeBlock language="css">fo[]o<softBreak></softBreak>bar</codeBlock>' );
 
