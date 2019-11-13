@@ -12,8 +12,10 @@
 import Template from '../template';
 import ViewCollection from '../viewcollection';
 
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createElement';
+
 export default class BodyCollection extends ViewCollection {
-	render() {
+	attachToDOM() {
 		this._bodyCollectionContainer = new Template( {
 			tag: 'div',
 			attributes: {
@@ -28,14 +30,29 @@ export default class BodyCollection extends ViewCollection {
 			children: this
 		} ).render();
 
-		document.body.appendChild( this._bodyCollectionContainer );
+		let wrapper = document.querySelector( '.ck-body-wrapper' );
+
+		if ( !wrapper ) {
+			wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
+			document.body.appendChild( wrapper );
+		}
+
+		console.log( wrapper );
+
+		wrapper.appendChild( this._bodyCollectionContainer );
 	}
 
-	destroy() {
+	detachFromDOM() {
 		super.destroy();
 
 		if ( this._bodyCollectionContainer ) {
 			this._bodyCollectionContainer.remove();
+		}
+
+		const wrapper = document.querySelector( '.ck-body-wrapper' );
+
+		if ( wrapper.childElementCount == 0 ) {
+			wrapper.remove();
 		}
 	}
 }
