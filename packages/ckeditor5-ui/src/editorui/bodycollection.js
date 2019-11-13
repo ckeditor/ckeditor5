@@ -37,8 +37,6 @@ export default class BodyCollection extends ViewCollection {
 			document.body.appendChild( wrapper );
 		}
 
-		console.log( wrapper );
-
 		wrapper.appendChild( this._bodyCollectionContainer );
 	}
 
