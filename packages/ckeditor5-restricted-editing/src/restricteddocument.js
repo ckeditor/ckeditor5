@@ -8,7 +8,9 @@
  */
 
 import Plugin from './plugin';
-import RestrictedDocumentCommand from './restricteddocumentcommand';
+
+import RestrictedDocumentEditing from './restricteddocumentediting';
+import RestrictedDocumentUI from './restricteddocumentui';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -21,22 +23,7 @@ export default class RestrictedDocument extends Plugin {
 		return 'RestrictedDocument';
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-
-		editor.model.schema.extend( '$text', { allowAttributes: [ 'nonRestricted' ] } );
-
-		editor.conversion.attributeToElement( {
-			model: 'nonRestricted',
-			view: {
-				name: 'span',
-				classes: 'ck-non-restricted'
-			}
-		} );
-
-		editor.commands.add( 'nonRestricted', new RestrictedDocumentCommand( editor ) );
+	static get requires() {
+		return [ RestrictedDocumentEditing, RestrictedDocumentUI ];
 	}
 }
