@@ -164,6 +164,9 @@ export default class Resizer {
 			writer.setStyle( 'width', newWidth, this._options.viewElement );
 		} );
 
+		// Get an actual image width, and:
+		// * reflect this size to the resize wrapper
+		// * apply this **real** size to the state
 		editor.editing.view.change( writer => {
 			const domHandleHost = this._getHandleHost();
 
@@ -177,6 +180,8 @@ export default class Resizer {
 
 			newSize.width = Math.round( domResizeHostRect.width );
 			newSize.height = Math.round( domResizeHostRect.height );
+
+			// writer.setStyle( 'width', domHandleHostRect.width + 'px', this._options.viewElement );
 
 			this.redraw( domHandleHostRect, writer );
 
