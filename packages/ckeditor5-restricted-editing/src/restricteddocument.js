@@ -24,6 +24,16 @@ export default class RestrictedDocument extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this.editor.model.schema.extend( '$text', { allowAttributes: [ 'nonRestricted' ] } );
+		const editor = this.editor;
+
+		editor.model.schema.extend( '$text', { allowAttributes: [ 'nonRestricted' ] } );
+
+		editor.conversion.attributeToElement( {
+			model: 'nonRestricted',
+			view: {
+				name: 'span',
+				classes: 'ck-non-restricted'
+			}
+		} );
 	}
 }
