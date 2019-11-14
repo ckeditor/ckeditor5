@@ -33,13 +33,48 @@ export function getLocalizedLanguageDefinitions( editor ) {
 }
 
 /**
- * For a given model text node, it returns white spaces that precede
- * other characters in that node. This corresponds to the indentation
- * of the code block line.
+ * For a given model text node, it returns white spaces that precede other characters in that node.
+ * This corresponds to the indentation part of the code block line.
  *
  * @param {module:engine/model/text~Text} codeLineNodes
  * @returns {String}
  */
 export function getLeadingWhiteSpaces( textNode ) {
 	return textNode.data.match( /^(\s*)/ )[ 0 ];
+}
+
+/**
+ * For a plain text containing the code (snippet), it returns a document fragment containing
+ * model text nodes separated by soft breaks (in place of new line characters "\n"), for instance:
+ *
+ * Input:
+ *
+ *		"foo()
+ *		bar()"
+ *
+ * Output:
+ *
+ *		<DocumentFragment>
+ *			"foo()"
+ *			<softBreak></softBreak>
+ *			"bar()"
+ *		</DocumentFragment>
+ *
+ * @param {module:engine/model/writer~Writer} writer
+ * @param {String} text A raw code text to be converted.
+ */
+export function rawSnippetTextToModelDocumentFragment( writer, text ) {
+	const fragment = writer.createDocumentFragment();
+	const textLines = text.split( '\n' ).map( data => writer.createText( data ) );
+	const lastLine = textLines[ textLines.length - 1 ];
+
+	for ( const node of textLines ) {
+		writer.append( node, fragment );
+
+		if ( node !== lastLine ) {
+			writer.appendElement( 'softBreak', fragment );
+		}
+	}
+
+	return fragment;
 }

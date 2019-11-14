@@ -123,3 +123,18 @@ export default class CodeBlock extends Plugin {
  *
  * @member {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} module:code-block/codeblock~CodeBlockConfig#languages
  */
+
+/**
+ * A sequence of characters inserted or removed from the code block lines when its indentation
+ * is changed by the user, for instance, using <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keys.
+ *
+ * The default value is a single tab character ("	", `\u0009` in Unicode).
+ *
+ * This configuration is used by `indentCodeBlock` and `outdentCodeBlock` commands (instances of
+ * {@link module:code-block/indentcodeblockcommand~IndentCodeBlockCommand}).
+ *
+ * **Note**: Setting this configuration to `false` will disable the code block indentation commands
+ * and associated keystrokes.
+ *
+ * @member {String} module:code-block/codeblock~CodeBlockConfig#indentSequence
+ */
