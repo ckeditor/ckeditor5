@@ -189,7 +189,7 @@ export function dataViewToModelCodeBlockInsertion( dataController, languageClass
 //
 // @param {String} stringifiedElement
 function extractDataFromCodeElement( stringifiedElement ) {
-	const data = new RegExp( /^<code[^>]*>(.*)<\/code>$/, 's' ).exec( stringifiedElement )[ 1 ];
+	const data = new RegExp( /^<code[^>]*>([\S\s]*)<\/code>$/ ).exec( stringifiedElement )[ 1 ];
 
 	return data
 		.replace( /&lt;/g, '<' )
