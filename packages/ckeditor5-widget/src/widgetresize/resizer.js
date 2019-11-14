@@ -138,16 +138,34 @@ export default class Resizer {
 	 * @param {Event} domEventData
 	 */
 	updateSize( domEventData, editor ) {
+		const newSize = this._proposeNewSize( domEventData );
+
+		// editor.editing.view.change( writer => {
+		// 	const domResizeHost = this._getResizeHost();
+		// 	const unit = this._options.unit;
+
+		// 	const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + this._options.unit;
+
+		// 	newSize.width = parseInt( newWidth );
+		// 	newSize.height = 20;
+		// 	newSize.handleHostWidth = parseInt( newWidth );
+		// 	newSize.handleHostHeight = 20;
+
+		// 	writer.setStyle( 'width', newWidth, this._options.viewElement );
+
+		// 	this.state.update( newSize );
+		// } );
+
 		editor.editing.view.change( writer => {
-			const domHandleHost = this._getHandleHost();
-			const domResizeHost = this._getResizeHost();
 			const unit = this._options.unit;
-			const newSize = this._proposeNewSize( domEventData );
 
 			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + this._options.unit;
 
-			domResizeHost.style.width = newWidth;
 			writer.setStyle( 'width', newWidth, this._options.viewElement );
+		} );
+
+		editor.editing.view.change( writer => {
+			const domHandleHost = this._getHandleHost();
 
 			const domHandleHostRect = new Rect( domHandleHost );
 
