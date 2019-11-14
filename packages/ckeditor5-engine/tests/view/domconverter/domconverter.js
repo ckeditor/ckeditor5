@@ -297,14 +297,42 @@ describe( 'DomConverter', () => {
 				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
 			} );
 
-			it( 'should return true if the node is an instance of the NBSP block filler', () => {
-				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-				// NBSP must be check inside a context.
+
 				const context = document.createElement( 'div' );
 				context.appendChild( nbspFillerInstance );
 
 				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
+			} );
+
+			it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
+				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+				const context = document.createElement( 'div' );
+				context.appendChild( nbspFillerInstance );
+				context.appendChild( document.createTextNode( 'a' ) );
+
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+			} );
+
+			it( 'should return false if there are two nbsp fillers in a block element', () => {
+				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+				const context = document.createElement( 'div' );
+				context.appendChild( nbspFillerInstance );
+				context.appendChild( NBSP_FILLER( document ) ); // eslint-disable-line new-cap
+
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+			} );
+
+			it( 'should return false filler is placed in a non-block element', () => {
+				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+				const context = document.createElement( 'span' );
+				context.appendChild( nbspFillerInstance );
+
+				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
 			} );
 
 			it( 'should return false if the node is an instance of the BR block filler', () => {
@@ -313,20 +341,15 @@ describe( 'DomConverter', () => {
 				expect( converter.isBlockFiller( brFillerInstance ) ).to.be.false;
 			} );
 
-			it( 'should return false if the nbsp filler is inside context', () => {
-				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-				// NBSP must be check inside a context.
-				const context = document.createElement( 'div' );
-				context.appendChild( nbspFillerInstance );
-				// eslint-disable-next-line new-cap
-				context.appendChild( NBSP_FILLER( document ) );
-
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-			} );
-
 			it( 'should return false for inline filler', () => {
 				expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
+			} );
+
+			it( 'should return false for a normal <br> element', () => {
+				const context = document.createElement( 'div' );
+				context.innerHTML = 'x<br>x';
+
+				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
 			} );
 		} );
 
