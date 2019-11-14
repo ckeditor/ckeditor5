@@ -8,6 +8,7 @@
  */
 
 import Plugin from './plugin';
+import RestrictedDocumentCommand from './restricteddocumentcommand';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -35,5 +36,7 @@ export default class RestrictedDocument extends Plugin {
 				classes: 'ck-non-restricted'
 			}
 		} );
+
+		editor.commands.add( 'norRestricted', new RestrictedDocumentCommand( editor ) );
 	}
 }

@@ -11,6 +11,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import RestrictedDocument from './../src/restricteddocument';
+import RestrictedDocumentCommand from '../src/restricteddocumentcommand';
 
 describe( 'RestrictedDocument', () => {
 	let editor, model;
@@ -47,6 +48,12 @@ describe( 'RestrictedDocument', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'nonRestricted' ) ).to.be.true;
 
 		expect( model.schema.checkAttribute( [ '$block' ], 'nonRestricted' ) ).to.be.false;
+	} );
+
+	it( 'should register command', () => {
+		const command = editor.commands.get( 'norRestricted' );
+
+		expect( command ).to.be.instanceof( RestrictedDocumentCommand );
 	} );
 
 	describe( 'conversion', () => {
