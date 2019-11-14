@@ -13,9 +13,13 @@ import RestrictedDocument from '../../src/restricteddocument';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, RestrictedDocument ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		toolbar: [ 'heading', '|',
+			'bold', 'italic', 'link', '|',
+			'bulletedList', 'numberedList', 'blockQuote', '|',
+			'nonRestricted', '|', 'undo', 'redo'
+		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
 	} )
 	.then( editor => {

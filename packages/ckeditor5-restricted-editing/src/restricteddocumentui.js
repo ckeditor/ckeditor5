@@ -9,7 +9,7 @@
 
 import Plugin from './plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
+import restrictedDocumentIcon from '../theme/icons/restricted.svg';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -28,7 +28,7 @@ export default class RestrictedDocumentUI extends Plugin {
 
 			view.set( {
 				label: t( 'Restricted editing' ),
-				icon: boldIcon,
+				icon: restrictedDocumentIcon,
 				tooltip: true,
 				isToggleable: true
 			} );
