@@ -27,9 +27,7 @@ describe( 'RestrictedDocument', () => {
 	afterEach( () => {
 		element.remove();
 
-		if ( editor ) {
-			return editor.destroy();
-		}
+		return editor.destroy();
 	} );
 
 	it( 'should be named', () => {

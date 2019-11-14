@@ -10,7 +10,7 @@ import VirtualTestEditor from './_utils/virtualtesteditor';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import RestrictedDocument from './../src/restricteddocument';
+import RestrictedDocumentEditing from '../src/restricteddocumentediting';
 import RestrictedDocumentCommand from '../src/restricteddocumentcommand';
 
 describe( 'RestrictedDocumentEditing', () => {
@@ -19,22 +19,20 @@ describe( 'RestrictedDocumentEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedDocument ] } );
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedDocumentEditing ] } );
 		model = editor.model;
 	} );
 
 	afterEach( () => {
-		if ( editor ) {
-			return editor.destroy();
-		}
+		return editor.destroy();
 	} );
 
 	it( 'should be named', () => {
-		expect( RestrictedDocument.pluginName ).to.equal( 'RestrictedDocument' );
+		expect( RestrictedDocumentEditing.pluginName ).to.equal( 'RestrictedDocumentEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( 'RestrictedDocument' ) ).to.be.instanceOf( RestrictedDocument );
+		expect( editor.plugins.get( 'RestrictedDocumentEditing' ) ).to.be.instanceOf( RestrictedDocumentEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
