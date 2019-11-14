@@ -86,7 +86,7 @@ export default class WidgetResize extends Plugin {
 
 		this._observer.listenTo( domDocument, 'mousemove', ( event, domEventData ) => {
 			if ( this._activeResizer ) {
-				this._activeResizer.updateSize( domEventData );
+				this._activeResizer.updateSize( domEventData, this.editor );
 			}
 		} );
 
@@ -100,11 +100,14 @@ export default class WidgetResize extends Plugin {
 
 		const redrawFocusedResizer = () => {
 			if ( this._visibleResizer ) {
-				this._visibleResizer.redraw();
+				this.editor.editing.view.change( writer => {
+					this._visibleResizer.redraw( null, writer );
+				} );
 			}
 		};
 
 		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 ); // 5fps
+		// const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 ); // 5fps
 
 		// Redraws occurring upon a change of visible resizer must not be throttled, as it is crucial for the initial
 		// render. Without it the resizer frame would be misaligned with resizing host for a fraction of second.
