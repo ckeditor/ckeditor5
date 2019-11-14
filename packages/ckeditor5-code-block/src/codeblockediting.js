@@ -10,7 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
-import { getLocalizedLanguageDefinitions } from './utils';
+import IndentCodeBlockCommand from './indentcodeblockcommand';
+import { getLocalizedLanguageDefinitions, getLeadingWhiteSpaces } from './utils';
 
 const DEFAULT_ELEMENT = 'paragraph';
 
@@ -57,7 +58,10 @@ export default class CodeBlockEditing extends Plugin {
 				{ class: 'python', label: 'Python' },
 				{ class: 'ruby', label: 'Ruby' },
 				{ class: 'typescript', label: 'TypeScript' },
-			]
+			],
+
+			// A single tab.
+			indentSequence: '	'
 		} );
 	}
 
@@ -73,8 +77,26 @@ export default class CodeBlockEditing extends Plugin {
 		const languageClasses = localizedLanguageDefinitions.map( def => def.class );
 		const languageLabels = Object.assign( {}, ...localizedLanguageDefinitions.map( def => ( { [ def.class ]: def.label } ) ) );
 
-		// Command.
+		// The main command.
 		editor.commands.add( 'codeBlock', new CodeBlockCommand( editor ) );
+
+		// Commands that change the indentation.
+		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor, 'forward' ) );
+		editor.commands.add( 'outdentCodeBlock', new IndentCodeBlockCommand( editor, 'backward' ) );
+
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
+				const command = this.editor.commands.get( commandName );
+
+				if ( command.isEnabled ) {
+					this.editor.execute( commandName );
+					cancel();
+				}
+			};
+		};
+
+		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentCodeBlock' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentCodeBlock' ) );
 
 		// Schema.
 		schema.register( 'codeBlock', {
@@ -219,7 +241,7 @@ export default class CodeBlockEditing extends Plugin {
 
 			// Figure out the indentation (white space chars) at the beginning of the line.
 			if ( node && node.is( 'text' ) ) {
-				leadingWhiteSpaces = node.data.match( /^(\s*)/ )[ 0 ];
+				leadingWhiteSpaces = getLeadingWhiteSpaces( node );
 			}
 
 			// Keeping everything in a change block for a single undo step.
@@ -321,6 +343,19 @@ export default class CodeBlockEditing extends Plugin {
 			} );
 
 			return true;
+		}
+
+		const commands = this.editor.commands;
+
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentCodeBlock' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentCodeBlock' ) );
 		}
 	}
 }

@@ -7,6 +7,7 @@
 
 import CodeBlockEditing from '../src/codeblockediting';
 import CodeBlockCommand from '../src/codeblockcommand';
+import IndentCodeBlockCommand from '../src/indentcodeblockcommand';
 
 import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
@@ -15,8 +16,10 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -155,10 +158,26 @@ describe( 'CodeBlockEditing', () => {
 					} );
 			} );
 		} );
+
+		describe( 'indentSequence', () => {
+			describe( 'default value', () => {
+				it( 'should be set', () => {
+					expect( editor.config.get( 'codeBlock.indentSequence' ) ).to.equal( '	' );
+				} );
+			} );
+		} );
 	} );
 
-	it( 'adds a codeBlock command', () => {
+	it( 'adds a "codeBlock" command', () => {
 		expect( editor.commands.get( 'codeBlock' ) ).to.be.instanceOf( CodeBlockCommand );
+	} );
+
+	it( 'adds an "indentCodeBlock" command', () => {
+		expect( editor.commands.get( 'indentCodeBlock' ) ).to.be.instanceOf( IndentCodeBlockCommand );
+	} );
+
+	it( 'adds an "outdentCodeBlock" command', () => {
+		expect( editor.commands.get( 'outdentCodeBlock' ) ).to.be.instanceOf( IndentCodeBlockCommand );
 	} );
 
 	it( 'allows for codeBlock in the $root', () => {
@@ -178,6 +197,75 @@ describe( 'CodeBlockEditing', () => {
 		editor.execute( 'bold' );
 
 		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+	} );
+
+	describe( 'tab key handling', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = {
+				keyCode: getCode( 'Tab' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			sinon.spy( editor, 'execute' );
+		} );
+
+		afterEach( () => {
+			editor.execute.restore();
+		} );
+
+		it( 'should execute indentCodeBlock command on tab key', () => {
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'indentCodeBlock' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should execute outdentCodeBlock command on Shift+Tab keystroke', () => {
+			domEvtDataStub.keyCode += getCode( 'Shift' );
+
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			// '<codeBlock language="plaintext">	[]foo</codeBlock>
+			model.change( writer => {
+				writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
+			} );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentCodeBlock' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent if command is disabled', () => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent or outdent if alt+tab is pressed', () => {
+			domEvtDataStub.keyCode += getCode( 'alt' );
+
+			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
 	} );
 
 	describe( 'enter key handling', () => {
@@ -413,6 +501,57 @@ describe( 'CodeBlockEditing', () => {
 				preventDefault: sinon.spy()
 			}, data );
 		}
+	} );
+
+	describe( 'intent plugin integration', () => {
+		it( 'should add indent code block command to indent command', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph, Undo, IndentEditing ]
+				} )
+				.then( newEditor => {
+					const editor = newEditor;
+
+					const indentCodeBlockCommand = editor.commands.get( 'indentCodeBlock' );
+					const indentCommand = editor.commands.get( 'indent' );
+					const spy = sinon.spy( indentCodeBlockCommand, 'execute' );
+
+					indentCodeBlockCommand.isEnabled = true;
+					indentCommand.execute();
+
+					sinon.assert.calledOnce( spy );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'should add outdent code block command to outdent command', () => {
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph, Undo, IndentEditing ]
+				} )
+				.then( newEditor => {
+					const editor = newEditor;
+
+					const outdentCodeBlockCommand = editor.commands.get( 'outdentCodeBlock' );
+					const outdentCommand = editor.commands.get( 'outdent' );
+					const spy = sinon.spy( outdentCodeBlockCommand, 'execute' );
+
+					outdentCodeBlockCommand.isEnabled = true;
+					outdentCommand.execute();
+
+					sinon.assert.calledOnce( spy );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'editing pipeline m -> v', () => {

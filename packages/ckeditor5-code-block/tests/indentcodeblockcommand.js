@@ -14,7 +14,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe.only( 'IndentCodeBlockCommand', () => {
+describe( 'IndentCodeBlockCommand', () => {
 	let editor, model, indentCommand, outdentCommand;
 
 	beforeEach( () => {
