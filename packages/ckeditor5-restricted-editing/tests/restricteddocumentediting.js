@@ -18,13 +18,9 @@ describe( 'RestrictedDocumentEditing', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( { plugins: [ Paragraph, RestrictedDocument ] } )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-			} );
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedDocument ] } );
+		model = editor.model;
 	} );
 
 	afterEach( () => {

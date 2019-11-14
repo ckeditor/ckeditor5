@@ -18,19 +18,15 @@ describe( 'RestrictedDocumentUI', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ Paragraph, RestrictedDocument, RestrictedDocumentUI ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ Paragraph, RestrictedDocument, RestrictedDocumentUI ]
+		} );
 
-				buttonView = editor.ui.componentFactory.create( 'nonRestricted' );
-			} );
+		buttonView = editor.ui.componentFactory.create( 'nonRestricted' );
 	} );
 
 	afterEach( () => {
