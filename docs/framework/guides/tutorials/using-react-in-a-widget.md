@@ -1130,7 +1130,7 @@ export default class ProductPreviewEditing extends Plugin {
 	_defineConverters() {
 		const editor = this.editor;
 		const conversion = editor.conversion;
-		const renderProduct = editor.config.get( 'products' ).productRenderer;
+		const renderProduct = editor.config.get( 'products.productRenderer' );
 
 		// <productPreview> converters ((data) view → model)
 		conversion.for( 'upcast' ).elementToElement( {
