@@ -20,8 +20,34 @@ export default class RestrictedDocumentCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.getAttribute( 'nonRestricted' );
+		this.value = !!doc.selection.getAttribute( 'nonRestricted' );
 
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'nonRestricted' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	execute( options = {} ) {
+		const model = this.editor.model;
+		const document = model.document;
+		const selection = document.selection;
+		const valueToSet = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
+
+		model.change( writer => {
+			const ranges = model.schema.getValidRanges( selection.getRanges(), 'nonRestricted' );
+
+			if ( selection.isCollapsed ) {
+				// TODO
+			} else {
+				for ( const range of ranges ) {
+					if ( valueToSet ) {
+						writer.setAttribute( 'nonRestricted', valueToSet, range );
+					} else {
+						writer.removeAttribute( 'nonRestricted', range );
+					}
+				}
+			}
+		} );
 	}
 }

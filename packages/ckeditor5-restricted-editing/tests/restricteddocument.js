@@ -51,7 +51,7 @@ describe( 'RestrictedDocument', () => {
 	} );
 
 	it( 'should register command', () => {
-		const command = editor.commands.get( 'norRestricted' );
+		const command = editor.commands.get( 'nonRestricted' );
 
 		expect( command ).to.be.instanceof( RestrictedDocumentCommand );
 	} );

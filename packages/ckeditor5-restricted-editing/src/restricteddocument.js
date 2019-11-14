@@ -37,6 +37,6 @@ export default class RestrictedDocument extends Plugin {
 			}
 		} );
 
-		editor.commands.add( 'norRestricted', new RestrictedDocumentCommand( editor ) );
+		editor.commands.add( 'nonRestricted', new RestrictedDocumentCommand( editor ) );
 	}
 }
