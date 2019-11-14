@@ -409,90 +409,163 @@ describe( 'CodeBlockEditing', () => {
 			} );
 		} );
 
-		describe( 'leaving block on double enter', () => {
-			it( 'should leave the block when pressed twice at the end', () => {
-				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+		describe( 'leaving block using the enter key', () => {
+			describe( 'leaving the block end', () => {
+				it( 'should leave the block when pressed twice at the end', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
 
-				setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
-				viewDoc.fire( 'enter', getEvent() );
+					viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
 
-				viewDoc.fire( 'enter', getEvent() );
+					viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css">foo</codeBlock>' +
-					'<paragraph>[]</paragraph>'
-				);
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">foo</codeBlock>' +
+						'<paragraph>[]</paragraph>'
+					);
 
-				sinon.assert.calledOnce( spy );
+					sinon.assert.calledOnce( spy );
 
-				editor.execute( 'undo' );
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+					editor.execute( 'undo' );
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
 
-				editor.execute( 'undo' );
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]</codeBlock>' );
-			} );
-
-			it( 'should not leave the block when the selection is not collapsed', () => {
-				setModelData( model, '<codeBlock language="css">f[oo<softBreak></softBreak>]</codeBlock>' );
-
-				viewDoc.fire( 'enter', getEvent() );
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css">f<softBreak></softBreak>[]</codeBlock>' );
-			} );
-
-			it( 'should not leave the block when pressed twice when in the middle of the code', () => {
-				setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
-
-				viewDoc.fire( 'enter', getEvent() );
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css">fo<softBreak></softBreak>[]o</codeBlock>' );
-
-				viewDoc.fire( 'enter', getEvent() );
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css">fo<softBreak></softBreak><softBreak></softBreak>[]o</codeBlock>' );
-			} );
-
-			it( 'should not leave the block when pressed twice at the beginning of the code', () => {
-				setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
-
-				viewDoc.fire( 'enter', getEvent() );
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css"><softBreak></softBreak>[]foo</codeBlock>' );
-
-				viewDoc.fire( 'enter', getEvent() );
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css"><softBreak></softBreak><softBreak></softBreak>[]foo</codeBlock>' );
-			} );
-
-			it( 'should not leave the block when pressed shift+enter twice at the end of the code', () => {
-				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
-
-				viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
-			} );
-
-			it( 'should clean up the last line if has white–space characters only', () => {
-				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
-
-				model.change( writer => {
-					// <codeBlock language="css">foo<softBreak></softBreak>  []</codeBlock>
-					writer.insertText( '  ', model.document.getRoot().getChild( 0 ), 4 );
+					editor.execute( 'undo' );
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]</codeBlock>' );
 				} );
 
-				viewDoc.fire( 'enter', getEvent() );
+				it( 'should not leave the block when the selection is not collapsed', () => {
+					setModelData( model, '<codeBlock language="css">f[oo<softBreak></softBreak>]</codeBlock>' );
 
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="css">foo</codeBlock><paragraph>[]</paragraph>' );
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">f<softBreak></softBreak>[]</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when pressed twice when in the middle of the code', () => {
+					setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">fo<softBreak></softBreak>[]o</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">fo<softBreak></softBreak><softBreak></softBreak>[]o</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when pressed twice at the beginning of the code', () => {
+					setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css"><softBreak></softBreak>[]foo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css"><softBreak></softBreak><softBreak></softBreak>[]foo</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when pressed shift+enter twice at the end of the code', () => {
+					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+				} );
+
+				it( 'should clean up the last line if has white–space characters only', () => {
+					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+
+					model.change( writer => {
+						// <codeBlock language="css">foo<softBreak></softBreak>  []</codeBlock>
+						writer.insertText( '  ', model.document.getRoot().getChild( 0 ), 4 );
+					} );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">foo</codeBlock><paragraph>[]</paragraph>' );
+				} );
+			} );
+
+			describe( 'leaving the block at the beginning', () => {
+				it( 'should leave the block when pressed at the beginning in a new line', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>[]</paragraph>' +
+						'<codeBlock language="css">foo</codeBlock>'
+					);
+
+					sinon.assert.calledOnce( spy );
+
+					editor.execute( 'undo' );
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when the selection is not collapsed (#1)', () => {
+					setModelData( model, '<codeBlock language="css">[f]<softBreak></softBreak>oo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>oo</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when the selection is not collapsed (#2)', () => {
+					setModelData( model, '<codeBlock language="css">[<softBreak></softBreak>oo]</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css"><softBreak></softBreak>[]</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when pressed shift+enter at the beginning of the code', () => {
+					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>foo</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when there is some text after the selection', () => {
+					setModelData( model, '<codeBlock language="css">[]foo<softBreak></softBreak>foo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css"><softBreak></softBreak>[]foo<softBreak></softBreak>foo</codeBlock>' );
+				} );
+
+				it( 'should not leave the block when there is some text before the selection', () => {
+					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+
+					// <codeBlock language="css">    []<softBreak></softBreak>foo</codeBlock>
+					model.change( writer => {
+						writer.insertText( '    ', model.document.getRoot().getChild( 0 ), 0 );
+					} );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					// Extra spaces before "[]" come from the indentation retention mechanism.
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">    <softBreak></softBreak>    []<softBreak></softBreak>foo</codeBlock>' );
+				} );
 			} );
 		} );
 

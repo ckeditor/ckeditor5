@@ -213,7 +213,9 @@ export default class CodeBlockEditing extends Plugin {
 				return;
 			}
 
-			leaveBlockOnEnter( editor, data.isSoft ) || breakLineOnEnter( editor );
+			leaveBlockStartOnEnter( editor, data.isSoft ) ||
+			leaveBlockEndOnEnter( editor, data.isSoft ) ||
+			breakLineOnEnter( editor );
 
 			data.preventDefault();
 			evt.stop();
@@ -261,6 +263,56 @@ function breakLineOnEnter( editor ) {
 	} );
 }
 
+// Leave the code block when Enter (but NOT Shift+Enter) has been pressed twice at the beginning
+// of the code block:
+//
+//		// Before:
+//		<codeBlock>[]<softBreak></softBreak>foo</codeBlock>
+//
+//		// After pressing:
+//		<paragraph>[]</paragraph><codeBlock>foo</codeBlock>
+//
+// @param {module:core/editor/editor~Editor} editor
+// @param {Boolean} isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
+// @returns {Boolean} `true` when selection left the block. `false` if stayed.
+function leaveBlockStartOnEnter( editor, isSoftEnter ) {
+	const model = editor.model;
+	const modelDoc = model.document;
+	const view = editor.editing.view;
+	const lastSelectionPosition = modelDoc.selection.getLastPosition();
+	const nodeAfter = lastSelectionPosition.nodeAfter;
+
+	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtStart ) {
+		return false;
+	}
+
+	if ( !nodeAfter || !nodeAfter.is( 'softBreak' ) ) {
+		return false;
+	}
+
+	// We're doing everything in a single change block to have a single undo step.
+	editor.model.change( writer => {
+		// "Clone" the <codeBlock> in the standard way.
+		editor.execute( 'enter' );
+
+		// The cloned block exists now before the original code block.
+		const newBlock = modelDoc.selection.anchor.parent.previousSibling;
+
+		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
+		writer.rename( newBlock, DEFAULT_ELEMENT );
+		writer.setSelection( newBlock, 'in' );
+		editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
+
+		// Remove the <softBreak> that originally followed the selection position.
+		writer.remove( nodeAfter );
+	} );
+
+	// Eye candy.
+	view.scrollToTheSelection();
+
+	return true;
+}
+
 // Leave the code block when Enter (but NOT Shift+Enter) has been pressed twice at the end
 // of the code block:
 //
@@ -276,14 +328,14 @@ function breakLineOnEnter( editor ) {
 // @param {module:core/editor/editor~Editor} editor
 // @param {Boolean} isSoftEnter When `true`, enter was pressed along with <kbd>Shift</kbd>.
 // @returns {Boolean} `true` when selection left the block. `false` if stayed.
-function leaveBlockOnEnter( editor, isSoftEnter ) {
+function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	const model = editor.model;
 	const modelDoc = model.document;
 	const view = editor.editing.view;
 	const lastSelectionPosition = modelDoc.selection.getLastPosition();
 	const nodeBefore = lastSelectionPosition.nodeBefore;
 
-	let emptyLineRangeToRemoveOnDoubleEnter;
+	let emptyLineRangeToRemoveOnEnter;
 
 	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore ) {
 		return false;
@@ -298,7 +350,7 @@ function leaveBlockOnEnter( editor, isSoftEnter ) {
 	//		<codeBlock>foo[<softBreak></softBreak>]</codeBlock>
 	//
 	if ( nodeBefore.is( 'softBreak' ) ) {
-		emptyLineRangeToRemoveOnDoubleEnter = model.createRangeOn( nodeBefore );
+		emptyLineRangeToRemoveOnEnter = model.createRangeOn( nodeBefore );
 	}
 
 	// When there's some text before the position made purely of white–space characters
@@ -319,7 +371,7 @@ function leaveBlockOnEnter( editor, isSoftEnter ) {
 		nodeBefore.previousSibling &&
 		nodeBefore.previousSibling.is( 'softBreak' )
 	) {
-		emptyLineRangeToRemoveOnDoubleEnter = model.createRange(
+		emptyLineRangeToRemoveOnEnter = model.createRange(
 			model.createPositionBefore( nodeBefore.previousSibling ), model.createPositionAfter( nodeBefore )
 		);
 	}
@@ -338,7 +390,7 @@ function leaveBlockOnEnter( editor, isSoftEnter ) {
 	// We're doing everything in a single change block to have a single undo step.
 	editor.model.change( writer => {
 		// Remove the last <softBreak> and all white space characters that followed it.
-		writer.remove( emptyLineRangeToRemoveOnDoubleEnter );
+		writer.remove( emptyLineRangeToRemoveOnEnter );
 
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
@@ -348,10 +400,10 @@ function leaveBlockOnEnter( editor, isSoftEnter ) {
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );
 		editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
-
-		// Eye candy.
-		view.scrollToTheSelection();
 	} );
+
+	// Eye candy.
+	view.scrollToTheSelection();
 
 	return true;
 }
