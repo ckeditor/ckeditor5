@@ -351,6 +351,28 @@ describe( 'DomConverter', () => {
 
 				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
 			} );
+
+			// SPECIAL CASE (see ckeditor5#5564).
+			it( 'should return true for a <br> element which is the only child of its block parent', () => {
+				const context = document.createElement( 'div' );
+				context.innerHTML = '<br>';
+
+				expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
+			} );
+
+			it( 'should return false for a <br> element which is the only child of its non-block parent', () => {
+				const context = document.createElement( 'span' );
+				context.innerHTML = '<br>';
+
+				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+			} );
+
+			it( 'should return false for a <br> element which is followed by an nbsp', () => {
+				const context = document.createElement( 'span' );
+				context.innerHTML = '&nbsp;';
+
+				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+			} );
 		} );
 
 		describe( 'mode "br"', () => {

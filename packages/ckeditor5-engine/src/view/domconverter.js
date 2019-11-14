@@ -807,11 +807,23 @@ export default class DomConverter {
 	 *
 	 * **Note:**: For the `'nbsp'` mode the method also checks context of a node so it cannot be a detached node.
 	 *
+	 * **Note:** A special case in the `'nbsp'` mode exists where the `<br>` in `<p><br></p>` is treated as a block filler.
+	 *
 	 * @param {Node} domNode DOM node to check.
 	 * @returns {Boolean} True if a node is considered a block filler for given mode.
 	 */
 	isBlockFiller( domNode ) {
-		return this.blockFillerMode == 'br' ? domNode.isEqualNode( BR_FILLER_REF ) : isNbspBlockFiller( domNode, this.blockElements );
+		if ( this.blockFillerMode == 'br' ) {
+			return domNode.isEqualNode( BR_FILLER_REF );
+		}
+
+		// Special case for <p><br></p> in which case the <br> should be treated as filler even
+		// when we're in the 'nbsp' mode. See ckeditor5#5564.
+		if ( domNode.tagName === 'BR' && hasBlockParent( domNode, this.blockElements ) && domNode.parentNode.childNodes.length === 1 ) {
+			return true;
+		}
+
+		return isNbspBlockFiller( domNode, this.blockElements );
 	}
 
 	/**
