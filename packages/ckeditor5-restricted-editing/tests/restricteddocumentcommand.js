@@ -109,48 +109,50 @@ describe( 'RestrictedDocumentCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should do nothing if the command is disabled', () => {
-			setData( model, '<p>fo[ob]ar</p>' );
+		describe( 'non-collapsed selection', () => {
+			it( 'should do nothing if the command is disabled', () => {
+				setData( model, '<p>fo[ob]ar</p>' );
 
-			command.isEnabled = false;
+				command.isEnabled = false;
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
-		} );
+				expect( getData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
+			} );
 
-		it( 'should add attribute on text without attribute', () => {
-			setData( model, '<p>foo[bar]baz</p>' );
+			it( 'should add attribute on text without attribute', () => {
+				setData( model, '<p>foo[bar]baz</p>' );
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equal( '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
-		} );
+				expect( getData( model ) ).to.equal( '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
+			} );
 
-		it( 'should add attribute on selected text if part of selected text have attribute already', () => {
-			setData( model, '<p>[foo<$text nonRestricted="true">bar</$text>]baz</p>' );
+			it( 'should add attribute on selected text if part of selected text have attribute already', () => {
+				setData( model, '<p>[foo<$text nonRestricted="true">bar</$text>]baz</p>' );
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equal( '<p>[<$text nonRestricted="true">foobar</$text>]baz</p>' );
-		} );
+				expect( getData( model ) ).to.equal( '<p>[<$text nonRestricted="true">foobar</$text>]baz</p>' );
+			} );
 
-		it( 'should remove attribute only from selected part of non-restricted text', () => {
-			setData( model, '<p><$text nonRestricted="true">foo[bar]baz</$text></p>' );
+			it( 'should remove attribute only from selected part of non-restricted text', () => {
+				setData( model, '<p><$text nonRestricted="true">foo[bar]baz</$text></p>' );
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equal(
-				'<p><$text nonRestricted="true">foo</$text>[bar]<$text nonRestricted="true">baz</$text></p>'
-			);
-		} );
+				expect( getData( model ) ).to.equal(
+					'<p><$text nonRestricted="true">foo</$text>[bar]<$text nonRestricted="true">baz</$text></p>'
+				);
+			} );
 
-		it( 'should remove attribute from selected text if all text contains attribute', () => {
-			setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>baz</p>' );
+			it( 'should remove attribute from selected text if all text contains attribute', () => {
+				setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>baz</p>' );
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>baz</p>' );
+				expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>baz</p>' );
+			} );
 		} );
 	} );
 } );
