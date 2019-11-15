@@ -86,7 +86,7 @@ export default class WidgetResize extends Plugin {
 
 		this._observer.listenTo( domDocument, 'mousemove', ( event, domEventData ) => {
 			if ( this._activeResizer ) {
-				this._activeResizer.updateSize( domEventData, this.editor );
+				this._activeResizer.updateSize( domEventData );
 			}
 		} );
 
@@ -100,7 +100,7 @@ export default class WidgetResize extends Plugin {
 
 		const redrawFocusedResizer = () => {
 			if ( this._visibleResizer ) {
-				this._visibleResizer.redraw( null );
+				this._visibleResizer.redraw();
 			}
 		};
 
