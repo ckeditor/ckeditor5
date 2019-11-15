@@ -18,7 +18,7 @@ describe( 'RestrictedDocumentCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new RestrictedDocumentCommand( editor, 'nonRestricted' );
+				command = new RestrictedDocumentCommand( editor );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
@@ -27,7 +27,7 @@ describe( 'RestrictedDocumentCommand', () => {
 					isObject: true
 				} );
 
-				editor.model.schema.extend( '$text', { allowAttributes: [ 'nonRestricted' ] } );
+				editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
 			} );
 	} );
 
@@ -40,7 +40,7 @@ describe( 'RestrictedDocumentCommand', () => {
 	describe( 'value', () => {
 		it( 'is true when collapsed selection has the attribute', () => {
 			model.change( writer => {
-				writer.setSelectionAttribute( 'nonRestricted', true );
+				writer.setSelectionAttribute( 'restrictedEditingException', true );
 			} );
 
 			expect( command.value ).to.be.true;
@@ -48,24 +48,24 @@ describe( 'RestrictedDocumentCommand', () => {
 
 		it( 'is false when collapsed selection does not have the attribute', () => {
 			model.change( writer => {
-				writer.setSelectionAttribute( 'nonRestricted', true );
+				writer.setSelectionAttribute( 'restrictedEditingException', true );
 			} );
 
 			model.change( writer => {
-				writer.removeSelectionAttribute( 'nonRestricted' );
+				writer.removeSelectionAttribute( 'restrictedEditingException' );
 			} );
 
 			expect( command.value ).to.be.false;
 		} );
 
 		it( 'is true when selection is inside text with attribute', () => {
-			setData( model, '<p><$text nonRestricted="true">fo[]o</$text></p><h1>bar</h1>' );
+			setData( model, '<p><$text restrictedEditingException="true">fo[]o</$text></p><h1>bar</h1>' );
 
 			expect( command.value ).to.be.true;
 		} );
 
 		it( 'is true when selection is on text with attribute', () => {
-			setData( model, '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
+			setData( model, '<p>foo[<$text restrictedEditingException="true">bar</$text>]baz</p>' );
 
 			expect( command.value ).to.be.true;
 		} );
@@ -76,7 +76,7 @@ describe( 'RestrictedDocumentCommand', () => {
 			model.schema.register( 'x', { inheritAllFrom: '$block' } );
 
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-				if ( ctx.endsWith( 'x $text' ) && attributeName == 'nonRestricted' ) {
+				if ( ctx.endsWith( 'x $text' ) && attributeName == 'restrictedEditingException' ) {
 					return false;
 				}
 			} );
@@ -114,15 +114,15 @@ describe( 'RestrictedDocumentCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'nonRestricted' ) ).to.be.true;
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
 			} );
 
 			it( 'should remove selection attribute if text has non-restricted attribute', () => {
-				setData( model, '<p>abc<$text nonRestricted="true">foo[]bar</$text>baz</p>' );
+				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'nonRestricted' ) ).to.be.false;
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
 			} );
 		} );
 
@@ -142,53 +142,53 @@ describe( 'RestrictedDocumentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equal( '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
+				expect( getData( model ) ).to.equal( '<p>foo[<$text restrictedEditingException="true">bar</$text>]baz</p>' );
 			} );
 
 			it( 'should add attribute on selected text if part of selected text have attribute already', () => {
-				setData( model, '<p>[foo<$text nonRestricted="true">bar</$text>]baz</p>' );
+				setData( model, '<p>[foo<$text restrictedEditingException="true">bar</$text>]baz</p>' );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equal( '<p>[<$text nonRestricted="true">foobar</$text>]baz</p>' );
+				expect( getData( model ) ).to.equal( '<p>[<$text restrictedEditingException="true">foobar</$text>]baz</p>' );
 			} );
 
 			it( 'should remove attribute only from selected part of non-restricted text', () => {
-				setData( model, '<p><$text nonRestricted="true">foo[bar]baz</$text></p>' );
+				setData( model, '<p><$text restrictedEditingException="true">foo[bar]baz</$text></p>' );
 
 				command.execute();
 
 				expect( getData( model ) ).to.equal(
-					'<p><$text nonRestricted="true">foo</$text>[bar]<$text nonRestricted="true">baz</$text></p>'
+					'<p><$text restrictedEditingException="true">foo</$text>[bar]<$text restrictedEditingException="true">baz</$text></p>'
 				);
 			} );
 
 			it( 'should remove attribute from selected text if all text contains attribute', () => {
-				setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>baz</p>' );
+				setData( model, '<p>abc[<$text restrictedEditingException="true">foo]bar</$text>baz</p>' );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>baz</p>' );
+				expect( getData( model ) ).to.equal( '<p>abc[foo]<$text restrictedEditingException="true">bar</$text>baz</p>' );
 			} );
 
 			it( 'should add attribute on selected text if execute parameter was set to true', () => {
-				setData( model, '<p>abc<$text nonRestricted="true">foob[ar</$text>x]yz</p>' );
+				setData( model, '<p>abc<$text restrictedEditingException="true">foob[ar</$text>x]yz</p>' );
 
 				expect( command.value ).to.be.true;
 
 				command.execute( { forceValue: true } );
 
 				expect( command.value ).to.be.true;
-				expect( getData( model ) ).to.equal( '<p>abc<$text nonRestricted="true">foob[arx</$text>]yz</p>' );
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foob[arx</$text>]yz</p>' );
 			} );
 
 			it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
-				setData( model, '<p>a[bc<$text nonRestricted="true">fo]obar</$text>xyz</p>' );
+				setData( model, '<p>a[bc<$text restrictedEditingException="true">fo]obar</$text>xyz</p>' );
 
 				command.execute( { forceValue: false } );
 
 				expect( command.value ).to.be.false;
-				expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text nonRestricted="true">obar</$text>xyz</p>' );
+				expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text restrictedEditingException="true">obar</$text>xyz</p>' );
 			} );
 		} );
 	} );

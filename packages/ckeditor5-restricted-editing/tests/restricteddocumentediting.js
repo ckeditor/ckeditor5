@@ -35,12 +35,12 @@ describe( 'RestrictedDocumentEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'nonRestricted' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'restrictedEditingException' ) ).to.be.true;
 
-		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'nonRestricted' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'nonRestricted' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'restrictedEditingException' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'restrictedEditingException' ) ).to.be.true;
 
-		expect( model.schema.checkAttribute( [ '$block' ], 'nonRestricted' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$block' ], 'restrictedEditingException' ) ).to.be.false;
 	} );
 
 	it( 'should register command', () => {
@@ -55,7 +55,7 @@ describe( 'RestrictedDocumentEditing', () => {
 				editor.setData( '<p>foo <span class="ck-non-restricted">bar</span> baz</p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph>foo <$text nonRestricted="true">bar</$text> baz</paragraph>' );
+					.to.equal( '<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>' );
 			} );
 		} );
 
@@ -64,7 +64,7 @@ describe( 'RestrictedDocumentEditing', () => {
 				const expectedView = '<p>foo <span class="ck-non-restricted">bar</span> baz</p>';
 
 				setModelData( editor.model,
-					'<paragraph>foo <$text nonRestricted="true">bar</$text> baz</paragraph>'
+					'<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>'
 				);
 
 				expect( editor.getData() ).to.equal( expectedView );

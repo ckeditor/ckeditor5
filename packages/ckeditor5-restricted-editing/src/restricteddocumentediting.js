@@ -27,10 +27,10 @@ export default class RestrictedDocumentEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.model.schema.extend( '$text', { allowAttributes: [ 'nonRestricted' ] } );
+		editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
 
 		editor.conversion.attributeToElement( {
-			model: 'nonRestricted',
+			model: 'restrictedEditingException',
 			view: {
 				name: 'span',
 				classes: 'ck-non-restricted'
