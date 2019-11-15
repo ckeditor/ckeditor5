@@ -146,11 +146,11 @@ describe( 'RestrictedDocumentCommand', () => {
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was true', () => {
-			setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>xyz</p>' );
+			setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>baz</p>' );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>xyz</p>' );
+			expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>baz</p>' );
 		} );
 	} );
 } );
