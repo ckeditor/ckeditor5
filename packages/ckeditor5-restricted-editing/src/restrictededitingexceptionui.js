@@ -28,7 +28,7 @@ export default class RestrictedEditingExceptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Restricted editing' ),
+				label: t( 'Enable editing' ),
 				icon: restrictedDocumentIcon,
 				tooltip: true,
 				isToggleable: true

@@ -36,7 +36,7 @@ describe( 'RestrictedEditingExceptionUI', () => {
 	it( 'should register button', () => {
 		expect( buttonView ).to.be.instanceOf( ButtonView );
 		expect( buttonView.isOn ).to.be.false;
-		expect( buttonView.label ).to.equal( 'Restricted editing' );
+		expect( buttonView.label ).to.equal( 'Enable editing' );
 		expect( buttonView.icon ).to.match( /<svg / );
 		expect( buttonView.isToggleable ).to.be.true;
 	} );
