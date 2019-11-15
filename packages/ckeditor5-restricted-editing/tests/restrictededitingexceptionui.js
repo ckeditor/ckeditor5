@@ -26,7 +26,7 @@ describe( 'RestrictedEditingExceptionUI', () => {
 			plugins: [ Paragraph, RestrictedEditingException, RestrictedEditingExceptionUI ]
 		} );
 
-		buttonView = editor.ui.componentFactory.create( 'nonRestricted' );
+		buttonView = editor.ui.componentFactory.create( 'restrictedEditingException' );
 	} );
 
 	afterEach( () => {
@@ -50,7 +50,7 @@ describe( 'RestrictedEditingExceptionUI', () => {
 	} );
 
 	it( 'should bind model to command', () => {
-		const command = editor.commands.get( 'nonRestricted' );
+		const command = editor.commands.get( 'restrictedEditingException' );
 
 		expect( buttonView.isOn ).to.be.false;
 		expect( buttonView.isEnabled ).to.be.true;

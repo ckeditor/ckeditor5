@@ -23,8 +23,8 @@ export default class RestrictedEditingExceptionUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'nonRestricted', locale => {
-			const command = editor.commands.get( 'nonRestricted' );
+		editor.ui.componentFactory.add( 'restrictedEditingException', locale => {
+			const command = editor.commands.get( 'restrictedEditingException' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -36,7 +36,7 @@ export default class RestrictedEditingExceptionUI extends Plugin {
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
-			this.listenTo( view, 'execute', () => editor.execute( 'nonRestricted' ) );
+			this.listenTo( view, 'execute', () => editor.execute( 'restrictedEditingException' ) );
 
 			return view;
 		} );

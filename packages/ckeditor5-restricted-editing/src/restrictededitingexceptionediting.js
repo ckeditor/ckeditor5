@@ -37,6 +37,6 @@ export default class RestrictedEditingExceptionEditing extends Plugin {
 			}
 		} );
 
-		editor.commands.add( 'nonRestricted', new RestrictedEditingExceptionCommand( editor ) );
+		editor.commands.add( 'restrictedEditingException', new RestrictedEditingExceptionCommand( editor ) );
 	}
 }

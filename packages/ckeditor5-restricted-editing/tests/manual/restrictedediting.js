@@ -17,7 +17,7 @@ ClassicEditor
 		toolbar: [ 'heading', '|',
 			'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
-			'nonRestricted', '|', 'undo', 'redo'
+			'restrictedEditingException', '|', 'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]

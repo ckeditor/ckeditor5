@@ -44,7 +44,7 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 	} );
 
 	it( 'should register command', () => {
-		const command = editor.commands.get( 'nonRestricted' );
+		const command = editor.commands.get( 'restrictedEditingException' );
 
 		expect( command ).to.be.instanceof( RestrictedEditingExceptionCommand );
 	} );
