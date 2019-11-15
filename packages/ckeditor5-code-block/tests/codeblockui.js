@@ -188,7 +188,7 @@ describe( 'CodeBlockUI', () => {
 				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
 				const button = dropdown.buttonView;
 
-				expect( button ).to.have.property( 'label', 'Code block' );
+				expect( button ).to.have.property( 'label', 'Insert code block' );
 				expect( button ).to.have.property( 'icon', codeBlockIcon );
 				expect( button ).to.have.property( 'tooltip', true );
 				expect( button ).to.have.property( 'isToggleable', true );
