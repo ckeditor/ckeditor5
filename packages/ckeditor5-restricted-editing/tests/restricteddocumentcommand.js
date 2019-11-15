@@ -119,7 +119,7 @@ describe( 'RestrictedDocumentCommand', () => {
 			expect( getData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
 		} );
 
-		it( 'should add attribute on selected nodes if the command value was false', () => {
+		it( 'should add attribute on text without attribute', () => {
 			setData( model, '<p>foo[bar]baz</p>' );
 
 			command.execute();
@@ -127,7 +127,7 @@ describe( 'RestrictedDocumentCommand', () => {
 			expect( getData( model ) ).to.equal( '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
 		} );
 
-		it( 'should add attribute on selected nodes if the command value was false (non-restricted text in selection)', () => {
+		it( 'should add attribute on selected text if part of selected text have attribute already', () => {
 			setData( model, '<p>[foo<$text nonRestricted="true">bar</$text>]baz</p>' );
 
 			command.execute();
@@ -145,7 +145,7 @@ describe( 'RestrictedDocumentCommand', () => {
 			);
 		} );
 
-		it( 'should remove attribute from selected nodes if the command value was true', () => {
+		it( 'should remove attribute from selected text if all text contains attribute', () => {
 			setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>baz</p>' );
 
 			command.execute();
