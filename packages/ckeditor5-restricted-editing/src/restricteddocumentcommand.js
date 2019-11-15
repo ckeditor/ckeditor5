@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/restricteddocumentcommand
+ * @module restricted-editing/restricteddocumentcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';

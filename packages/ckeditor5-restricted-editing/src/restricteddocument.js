@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/restricteddocument
+ * @module restricted-editing/restricteddocument
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
