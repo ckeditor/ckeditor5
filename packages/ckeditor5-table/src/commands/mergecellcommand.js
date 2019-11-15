@@ -153,7 +153,10 @@ export default class MergeCellCommand extends Command {
 // @param {String} direction
 // @returns {module:engine/model/node~Node|null}
 function getHorizontalCell( tableCell, direction, tableUtils ) {
+	const tableRow = tableCell.parent;
+	const table = tableRow.parent;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
+	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
 	if ( !horizontalCell ) {
 		return;
@@ -168,6 +171,13 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
 
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
+
+	const isMergeWithBodyCell = direction == 'right' && rightCellColumn === headingColumns;
+	const isMergeWithHeadCell = direction == 'left' && leftCellColumn === ( headingColumns - 1 );
+
+	if ( headingColumns && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+		return;
+	}
 
 	// The cell on the right must have index that is distant to the cell on the left by the left cell's width (colspan).
 	const cellsAreTouching = leftCellColumn + leftCellSpan === rightCellColumn;
