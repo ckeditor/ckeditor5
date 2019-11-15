@@ -141,6 +141,16 @@ describe( 'RestrictedDocumentCommand', () => {
 			expect( getData( model ) ).to.equal( '<p>[<$text nonRestricted="true">foobar</$text>]baz</p>' );
 		} );
 
+		it( 'should remove attribute only from selected part of non-restricted text', () => {
+			setData( model, '<p><$text nonRestricted="true">foo[bar]baz</$text></p>' );
+
+			command.execute();
+
+			expect( getData( model ) ).to.equal(
+				'<p><$text nonRestricted="true">foo</$text>[bar]<$text nonRestricted="true">baz</$text></p>'
+			);
+		} );
+
 		it( 'should remove attribute from selected nodes if the command value was true', () => {
 			setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>xyz</p>' );
 
