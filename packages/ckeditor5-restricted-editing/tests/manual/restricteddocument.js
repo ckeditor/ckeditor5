@@ -6,20 +6,28 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
 import ArticlePluginSet from '../_utils/articlepluginset';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+
 import RestrictedDocument from '../../src/restricteddocument';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, RestrictedDocument ],
+		plugins: [ ArticlePluginSet, Table, RestrictedDocument ],
 		toolbar: [ 'heading', '|',
 			'bold', 'italic', 'link', '|',
-			'bulletedList', 'numberedList', 'blockQuote', '|',
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'nonRestricted', '|', 'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
 		}
 	} )
 	.then( editor => {
