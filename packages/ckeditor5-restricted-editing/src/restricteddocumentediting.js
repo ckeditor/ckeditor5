@@ -7,7 +7,7 @@
  * @module core/restricteddocumentediting
  */
 
-import Plugin from './plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedDocumentCommand from './restricteddocumentcommand';
 
 /**

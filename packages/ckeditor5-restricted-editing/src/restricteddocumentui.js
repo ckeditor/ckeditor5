@@ -7,8 +7,9 @@
  * @module core/restricteddocumentui
  */
 
-import Plugin from './plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
 import restrictedDocumentIcon from '../theme/icons/restricted.svg';
 
 /**

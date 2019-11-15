@@ -7,7 +7,7 @@
  * @module core/restricteddocumentcommand
  */
 
-import Command from './command';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
  * @extends module:core/command~Command

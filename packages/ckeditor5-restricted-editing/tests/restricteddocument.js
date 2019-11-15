@@ -5,8 +5,8 @@
 
 /* global document */
 
-import testUtils from './_utils/utils';
-import ClassicTestEditor from './_utils/classictesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import RestrictedDocument from './../src/restricteddocument';
 import RestrictedDocumentUI from './../src/restricteddocumentui';

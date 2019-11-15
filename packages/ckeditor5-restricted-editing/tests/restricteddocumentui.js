@@ -5,9 +5,9 @@
 
 /* globals document */
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import RestrictedDocumentUI from '../src/restricteddocumentui';

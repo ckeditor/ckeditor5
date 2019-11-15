@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-import testUtils from './_utils/utils';
-import VirtualTestEditor from './_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import RestrictedDocumentEditing from '../src/restricteddocumentediting';
 import RestrictedDocumentCommand from '../src/restricteddocumentcommand';
