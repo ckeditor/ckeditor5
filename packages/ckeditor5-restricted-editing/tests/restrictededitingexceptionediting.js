@@ -51,8 +51,8 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 
 	describe( 'conversion', () => {
 		describe( 'upcast', () => {
-			it( 'should convert <span class="ck-non-restricted"> to model attribute', () => {
-				editor.setData( '<p>foo <span class="ck-non-restricted">bar</span> baz</p>' );
+			it( 'should convert <span class="ck-restricted-editing-exception"> to model attribute', () => {
+				editor.setData( '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>' );
@@ -61,7 +61,7 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 
 		describe( 'downcast', () => {
 			it( 'should convert model attribute to <span>', () => {
-				const expectedView = '<p>foo <span class="ck-non-restricted">bar</span> baz</p>';
+				const expectedView = '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>';
 
 				setModelData( editor.model,
 					'<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>'

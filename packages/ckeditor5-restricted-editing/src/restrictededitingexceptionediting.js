@@ -33,7 +33,7 @@ export default class RestrictedEditingExceptionEditing extends Plugin {
 			model: 'restrictedEditingException',
 			view: {
 				name: 'span',
-				classes: 'ck-non-restricted'
+				classes: 'ck-restricted-editing-exception'
 			}
 		} );
 
