@@ -38,7 +38,11 @@ export default class RestrictedDocumentCommand extends Command {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'nonRestricted' );
 
 			if ( selection.isCollapsed ) {
-				writer.setSelectionAttribute( 'nonRestricted', true );
+				if ( valueToSet ) {
+					writer.setSelectionAttribute( 'nonRestricted', true );
+				} else {
+					writer.removeSelectionAttribute( 'nonRestricted' );
+				}
 			} else {
 				for ( const range of ranges ) {
 					if ( valueToSet ) {

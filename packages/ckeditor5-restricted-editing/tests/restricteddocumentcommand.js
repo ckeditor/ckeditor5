@@ -117,6 +117,14 @@ describe( 'RestrictedDocumentCommand', () => {
 
 				expect( model.document.selection.hasAttribute( 'nonRestricted' ) ).to.be.true;
 			} );
+
+			it( 'should remove selection attribute if text has non-restricted attribute', () => {
+				setData( model, '<p>abc<$text nonRestricted="true">foo[]bar</$text>baz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'nonRestricted' ) ).to.be.false;
+			} );
 		} );
 
 		describe( 'non-collapsed selection', () => {
