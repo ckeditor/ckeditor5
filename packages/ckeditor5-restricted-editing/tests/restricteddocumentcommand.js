@@ -108,7 +108,7 @@ describe( 'RestrictedDocumentCommand', () => {
 		} );
 	} );
 
-	describe.only( 'execute()', () => {
+	describe( 'execute()', () => {
 		it( 'should do nothing if the command is disabled', () => {
 			setData( model, '<p>fo[ob]ar</p>' );
 
