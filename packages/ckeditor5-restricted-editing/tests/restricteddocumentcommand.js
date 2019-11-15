@@ -109,6 +109,16 @@ describe( 'RestrictedDocumentCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
+		describe( 'collapsed selection', () => {
+			it( 'should set selection attribute if text without attribute', () => {
+				setData( model, '<p>abcfoo[]barbaz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'nonRestricted' ) ).to.be.true;
+			} );
+		} );
+
 		describe( 'non-collapsed selection', () => {
 			it( 'should do nothing if the command is disabled', () => {
 				setData( model, '<p>fo[ob]ar</p>' );
