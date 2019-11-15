@@ -8,9 +8,9 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedEditingException from './../src/restricteddocument';
-import RestrictedEditingExceptionUI from './../src/restricteddocumentui';
-import RestrictedEditingExceptionEditing from './../src/restricteddocumentediting';
+import RestrictedEditingException from './../src/restrictededitingexception';
+import RestrictedEditingExceptionUI from './../src/restrictededitingexceptionui';
+import RestrictedEditingExceptionEditing from './../src/restrictededitingexceptionediting';
 
 describe( 'RestrictedEditingException', () => {
 	let editor, element;

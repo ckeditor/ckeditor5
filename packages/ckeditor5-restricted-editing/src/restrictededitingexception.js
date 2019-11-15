@@ -4,13 +4,13 @@
  */
 
 /**
- * @module restricted-editing/restricteddocument
+ * @module restricted-editing/restrictededitingexception
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import RestrictedEditingExceptionEditing from './restricteddocumentediting';
-import RestrictedEditingExceptionUI from './restricteddocumentui';
+import RestrictedEditingExceptionEditing from './restrictededitingexceptionediting';
+import RestrictedEditingExceptionUI from './restrictededitingexceptionui';
 
 /**
  * @extends module:core/plugin~Plugin

@@ -10,8 +10,8 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import RestrictedEditingExceptionUI from '../src/restricteddocumentui';
-import RestrictedEditingException from '../src/restricteddocument';
+import RestrictedEditingExceptionUI from '../src/restrictededitingexceptionui';
+import RestrictedEditingException from '../src/restrictededitingexception';
 
 describe( 'RestrictedEditingExceptionUI', () => {
 	let editor, buttonView;

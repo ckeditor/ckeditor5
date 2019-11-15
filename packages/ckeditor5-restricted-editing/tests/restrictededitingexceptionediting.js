@@ -9,8 +9,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import RestrictedEditingExceptionEditing from '../src/restricteddocumentediting';
-import RestrictedEditingExceptionCommand from '../src/restricteddocumentcommand';
+import RestrictedEditingExceptionEditing from '../src/restrictededitingexceptionediting';
+import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand';
 
 describe( 'RestrictedEditingExceptionEditing', () => {
 	let editor, model;

@@ -6,7 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import RestrictedEditingExceptionCommand from '../src/restricteddocumentcommand';
+import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand';
 
 describe( 'RestrictedEditingExceptionCommand', () => {
 	let editor, command, model;

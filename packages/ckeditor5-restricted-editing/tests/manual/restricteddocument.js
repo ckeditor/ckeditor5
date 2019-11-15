@@ -9,7 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
-import RestrictedEditingException from '../../src/restricteddocument';
+import RestrictedEditingException from '../../src/restrictededitingexception';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
