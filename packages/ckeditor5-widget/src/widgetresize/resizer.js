@@ -63,6 +63,14 @@ export default class Resizer {
 		this._domResizerWrapper = null;
 
 		/**
+		 * View to a wrapper of an element controlled by this resizer.
+		 *
+		 * @private
+		 * @type {module:engine/view/element~Element|null}
+		 */
+		this._resizerWrapperView = null;
+
+		/**
 		 * @observable
 		 */
 		this.set( 'isEnabled', true );
@@ -137,10 +145,11 @@ export default class Resizer {
 	 * @fires updateSize
 	 * @param {Event} domEventData
 	 */
-	updateSize( domEventData, editor ) {
+	updateSize( domEventData ) {
 		const newSize = this._proposeNewSize( domEventData );
+		const editingView = this._options.editor.editing.view;
 
-		editor.editing.view.change( writer => {
+		editingView.change( writer => {
 			const unit = this._options.unit;
 			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + unit;
 
@@ -150,24 +159,21 @@ export default class Resizer {
 		// Get an actual image width, and:
 		// * reflect this size to the resize wrapper
 		// * apply this **real** size to the state
-		editor.editing.view.change( writer => {
-			const domHandleHost = this._getHandleHost();
+		const domHandleHost = this._getHandleHost();
+		const domHandleHostRect = new Rect( domHandleHost );
 
-			const domHandleHostRect = new Rect( domHandleHost );
+		newSize.handleHostWidth = Math.round( domHandleHostRect.width );
+		newSize.handleHostHeight = Math.round( domHandleHostRect.height );
 
-			newSize.handleHostWidth = Math.round( domHandleHostRect.width );
-			newSize.handleHostHeight = Math.round( domHandleHostRect.height );
+		// Handle max-width limitation.
+		const domResizeHostRect = new Rect( domHandleHost );
 
-			// Handle max-width limitation.
-			const domResizeHostRect = new Rect( domHandleHost );
+		newSize.width = Math.round( domResizeHostRect.width );
+		newSize.height = Math.round( domResizeHostRect.height );
 
-			newSize.width = Math.round( domResizeHostRect.width );
-			newSize.height = Math.round( domResizeHostRect.height );
+		this.redraw( domHandleHostRect );
 
-			this.redraw( domHandleHostRect, writer );
-
-			this.state.update( newSize );
-		} );
+		this.state.update( newSize );
 	}
 
 	/**
@@ -205,36 +211,38 @@ export default class Resizer {
 	 *
 	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
-	redraw( handleHostRect, writer ) {
+	redraw( handleHostRect ) {
 		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
-			// Refresh only if resizer exists in the DOM.
-			const widgetWrapper = domWrapper.parentElement;
-			const handleHost = this._getHandleHost();
-			const clientRect = handleHostRect || new Rect( handleHost );
+			this._options.editor.editing.view.change( writer => {
+				// Refresh only if resizer exists in the DOM.
+				const widgetWrapper = domWrapper.parentElement;
+				const handleHost = this._getHandleHost();
+				const clientRect = handleHostRect || new Rect( handleHost );
 
-			writer.setStyle( 'width', clientRect.width + 'px', this._resizerWrapperView );
-			writer.setStyle( 'height', clientRect.height + 'px', this._resizerWrapperView );
+				writer.setStyle( 'width', clientRect.width + 'px', this._resizerWrapperView );
+				writer.setStyle( 'height', clientRect.height + 'px', this._resizerWrapperView );
 
-			const offsets = {
-				left: handleHost.offsetLeft,
-				top: handleHost.offsetTop,
-				height: handleHost.offsetHeight,
-				width: handleHost.offsetWidth
-			};
+				const offsets = {
+					left: handleHost.offsetLeft,
+					top: handleHost.offsetTop,
+					height: handleHost.offsetHeight,
+					width: handleHost.offsetWidth
+				};
 
-			// In case a resizing host is not a widget wrapper, we need to compensate
-			// for any additional offsets the resize host might have. E.g. wrapper padding
-			// or simply another editable. By doing that the border and resizers are shown
-			// only around the resize host.
-			if ( !widgetWrapper.isSameNode( handleHost ) ) {
-				writer.setStyle( 'left', offsets.left + 'px', this._resizerWrapperView );
-				writer.setStyle( 'top', offsets.top + 'px', this._resizerWrapperView );
+				// In case a resizing host is not a widget wrapper, we need to compensate
+				// for any additional offsets the resize host might have. E.g. wrapper padding
+				// or simply another editable. By doing that the border and resizers are shown
+				// only around the resize host.
+				if ( !widgetWrapper.isSameNode( handleHost ) ) {
+					writer.setStyle( 'left', offsets.left + 'px', this._resizerWrapperView );
+					writer.setStyle( 'top', offsets.top + 'px', this._resizerWrapperView );
 
-				writer.setStyle( 'height', offsets.height + 'px', this._resizerWrapperView );
-				writer.setStyle( 'width', offsets.width + 'px', this._resizerWrapperView );
-			}
+					writer.setStyle( 'height', offsets.height + 'px', this._resizerWrapperView );
+					writer.setStyle( 'width', offsets.width + 'px', this._resizerWrapperView );
+				}
+			} );
 		}
 
 		function existsInDom( element ) {

@@ -100,9 +100,7 @@ export default class WidgetResize extends Plugin {
 
 		const redrawFocusedResizer = () => {
 			if ( this._visibleResizer ) {
-				this.editor.editing.view.change( writer => {
-					this._visibleResizer.redraw( null, writer );
-				} );
+				this._visibleResizer.redraw( null );
 			}
 		};
 
@@ -178,6 +176,12 @@ mix( WidgetResize, ObservableMixin );
  * Interface describing a resizer. It allows to specify the resizing host, custom logic for calculating aspect ratio, etc.
  *
  * @interface ResizerOptions
+ */
+
+/**
+ * Editor instance associated with the resizer.
+ *
+ * @member {module:core/editor/editor~Editor} module:widget/widgetresize~ResizerOptions#editor
  */
 
 /**
