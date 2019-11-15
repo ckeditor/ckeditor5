@@ -140,26 +140,9 @@ export default class Resizer {
 	updateSize( domEventData, editor ) {
 		const newSize = this._proposeNewSize( domEventData );
 
-		// editor.editing.view.change( writer => {
-		// 	const domResizeHost = this._getResizeHost();
-		// 	const unit = this._options.unit;
-
-		// 	const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + this._options.unit;
-
-		// 	newSize.width = parseInt( newWidth );
-		// 	newSize.height = 20;
-		// 	newSize.handleHostWidth = parseInt( newWidth );
-		// 	newSize.handleHostHeight = 20;
-
-		// 	writer.setStyle( 'width', newWidth, this._options.viewElement );
-
-		// 	this.state.update( newSize );
-		// } );
-
 		editor.editing.view.change( writer => {
 			const unit = this._options.unit;
-
-			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + this._options.unit;
+			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + unit;
 
 			writer.setStyle( 'width', newWidth, this._options.viewElement );
 		} );
@@ -180,8 +163,6 @@ export default class Resizer {
 
 			newSize.width = Math.round( domResizeHostRect.width );
 			newSize.height = Math.round( domResizeHostRect.height );
-
-			// writer.setStyle( 'width', domHandleHostRect.width + 'px', this._options.viewElement );
 
 			this.redraw( domHandleHostRect, writer );
 
@@ -225,7 +206,6 @@ export default class Resizer {
 	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
 	redraw( handleHostRect, writer ) {
-		// TODO review this
 		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
