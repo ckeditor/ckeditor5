@@ -9,21 +9,21 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import RestrictedDocumentEditing from './restricteddocumentediting';
-import RestrictedDocumentUI from './restricteddocumentui';
+import RestrictedEditingExceptionEditing from './restricteddocumentediting';
+import RestrictedEditingExceptionUI from './restricteddocumentui';
 
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedDocument extends Plugin {
+export default class RestrictedEditingException extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedDocument';
+		return 'RestrictedEditingException';
 	}
 
 	static get requires() {
-		return [ RestrictedDocumentEditing, RestrictedDocumentUI ];
+		return [ RestrictedEditingExceptionEditing, RestrictedEditingExceptionUI ];
 	}
 }

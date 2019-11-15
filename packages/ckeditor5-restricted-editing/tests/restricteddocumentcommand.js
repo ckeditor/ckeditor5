@@ -6,9 +6,9 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import RestrictedDocumentCommand from '../src/restricteddocumentcommand';
+import RestrictedEditingExceptionCommand from '../src/restricteddocumentcommand';
 
-describe( 'RestrictedDocumentCommand', () => {
+describe( 'RestrictedEditingExceptionCommand', () => {
 	let editor, command, model;
 
 	beforeEach( () => {
@@ -18,7 +18,7 @@ describe( 'RestrictedDocumentCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new RestrictedDocumentCommand( editor );
+				command = new RestrictedEditingExceptionCommand( editor );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				model.schema.register( 'h1', { inheritAllFrom: '$block' } );

@@ -10,10 +10,10 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import RestrictedDocumentUI from '../src/restricteddocumentui';
-import RestrictedDocument from '../src/restricteddocument';
+import RestrictedEditingExceptionUI from '../src/restricteddocumentui';
+import RestrictedEditingException from '../src/restricteddocument';
 
-describe( 'RestrictedDocumentUI', () => {
+describe( 'RestrictedEditingExceptionUI', () => {
 	let editor, buttonView;
 
 	testUtils.createSinonSandbox();
@@ -23,7 +23,7 @@ describe( 'RestrictedDocumentUI', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, RestrictedDocument, RestrictedDocumentUI ]
+			plugins: [ Paragraph, RestrictedEditingException, RestrictedEditingExceptionUI ]
 		} );
 
 		buttonView = editor.ui.componentFactory.create( 'nonRestricted' );

@@ -9,11 +9,11 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
-import RestrictedDocument from '../../src/restricteddocument';
+import RestrictedEditingException from '../../src/restricteddocument';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Table, RestrictedDocument ],
+		plugins: [ ArticlePluginSet, Table, RestrictedEditingException ],
 		toolbar: [ 'heading', '|',
 			'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',

@@ -9,16 +9,16 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import RestrictedDocumentEditing from '../src/restricteddocumentediting';
-import RestrictedDocumentCommand from '../src/restricteddocumentcommand';
+import RestrictedEditingExceptionEditing from '../src/restricteddocumentediting';
+import RestrictedEditingExceptionCommand from '../src/restricteddocumentcommand';
 
-describe( 'RestrictedDocumentEditing', () => {
+describe( 'RestrictedEditingExceptionEditing', () => {
 	let editor, model;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedDocumentEditing ] } );
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingExceptionEditing ] } );
 		model = editor.model;
 	} );
 
@@ -27,11 +27,11 @@ describe( 'RestrictedDocumentEditing', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( RestrictedDocumentEditing.pluginName ).to.equal( 'RestrictedDocumentEditing' );
+		expect( RestrictedEditingExceptionEditing.pluginName ).to.equal( 'RestrictedEditingExceptionEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( 'RestrictedDocumentEditing' ) ).to.be.instanceOf( RestrictedDocumentEditing );
+		expect( editor.plugins.get( 'RestrictedEditingExceptionEditing' ) ).to.be.instanceOf( RestrictedEditingExceptionEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -46,7 +46,7 @@ describe( 'RestrictedDocumentEditing', () => {
 	it( 'should register command', () => {
 		const command = editor.commands.get( 'nonRestricted' );
 
-		expect( command ).to.be.instanceof( RestrictedDocumentCommand );
+		expect( command ).to.be.instanceof( RestrictedEditingExceptionCommand );
 	} );
 
 	describe( 'conversion', () => {

@@ -8,17 +8,17 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import RestrictedDocumentCommand from './restricteddocumentcommand';
+import RestrictedEditingExceptionCommand from './restricteddocumentcommand';
 
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedDocumentEditing extends Plugin {
+export default class RestrictedEditingExceptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedDocumentEditing';
+		return 'RestrictedEditingExceptionEditing';
 	}
 
 	/**
@@ -37,6 +37,6 @@ export default class RestrictedDocumentEditing extends Plugin {
 			}
 		} );
 
-		editor.commands.add( 'nonRestricted', new RestrictedDocumentCommand( editor ) );
+		editor.commands.add( 'nonRestricted', new RestrictedEditingExceptionCommand( editor ) );
 	}
 }

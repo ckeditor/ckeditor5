@@ -8,11 +8,11 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedDocument from './../src/restricteddocument';
-import RestrictedDocumentUI from './../src/restricteddocumentui';
-import RestrictedDocumentEditing from './../src/restricteddocumentediting';
+import RestrictedEditingException from './../src/restricteddocument';
+import RestrictedEditingExceptionUI from './../src/restricteddocumentui';
+import RestrictedEditingExceptionEditing from './../src/restricteddocumentediting';
 
-describe( 'RestrictedDocument', () => {
+describe( 'RestrictedEditingException', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
@@ -21,7 +21,7 @@ describe( 'RestrictedDocument', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedDocument ] } );
+		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingException ] } );
 	} );
 
 	afterEach( () => {
@@ -31,14 +31,14 @@ describe( 'RestrictedDocument', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( RestrictedDocument.pluginName ).to.equal( 'RestrictedDocument' );
+		expect( RestrictedEditingException.pluginName ).to.equal( 'RestrictedEditingException' );
 	} );
 
-	it( 'should load the RestrictedDocumentEditing plugin', () => {
-		expect( editor.plugins.get( RestrictedDocumentEditing ) ).to.be.instanceOf( RestrictedDocumentEditing );
+	it( 'should load the RestrictedEditingExceptionEditing plugin', () => {
+		expect( editor.plugins.get( RestrictedEditingExceptionEditing ) ).to.be.instanceOf( RestrictedEditingExceptionEditing );
 	} );
 
-	it( 'should load the RestrictedDocumentUI plugin', () => {
-		expect( editor.plugins.get( RestrictedDocumentUI ) ).to.be.instanceOf( RestrictedDocumentUI );
+	it( 'should load the RestrictedEditingExceptionUI plugin', () => {
+		expect( editor.plugins.get( RestrictedEditingExceptionUI ) ).to.be.instanceOf( RestrictedEditingExceptionUI );
 	} );
 } );

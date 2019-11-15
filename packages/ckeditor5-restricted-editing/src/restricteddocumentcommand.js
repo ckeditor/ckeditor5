@@ -12,7 +12,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 /**
  * @extends module:core/command~Command
  */
-export default class RestrictedDocumentCommand extends Command {
+export default class RestrictedEditingExceptionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

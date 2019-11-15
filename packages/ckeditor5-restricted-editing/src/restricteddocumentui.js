@@ -15,7 +15,7 @@ import restrictedDocumentIcon from '../theme/icons/restricted.svg';
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedDocumentUI extends Plugin {
+export default class RestrictedEditingExceptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
