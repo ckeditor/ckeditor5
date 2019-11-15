@@ -170,6 +170,26 @@ describe( 'RestrictedDocumentCommand', () => {
 
 				expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>baz</p>' );
 			} );
+
+			it( 'should add attribute on selected text if execute parameter was set to true', () => {
+				setData( model, '<p>abc<$text nonRestricted="true">foob[ar</$text>x]yz</p>' );
+
+				expect( command.value ).to.be.true;
+
+				command.execute( { forceValue: true } );
+
+				expect( command.value ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>abc<$text nonRestricted="true">foob[arx</$text>]yz</p>' );
+			} );
+
+			it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
+				setData( model, '<p>a[bc<$text nonRestricted="true">fo]obar</$text>xyz</p>' );
+
+				command.execute( { forceValue: false } );
+
+				expect( command.value ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text nonRestricted="true">obar</$text>xyz</p>' );
+			} );
 		} );
 	} );
 } );
