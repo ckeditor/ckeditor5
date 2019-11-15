@@ -35,9 +35,15 @@ describe( 'Bug ckeditor5#5564', () => {
 	it( 'preserves a soft break in an empty paragraph', () => {
 		setModelData( editor.model, '<paragraph>x</paragraph><paragraph><softBreak /></paragraph><paragraph>x</paragraph>' );
 
-		expect( editor.getData() ).to.equal( '<p>x</p><p><br>&nbsp;</p><p>x</p>' );
+		const expectedData = '<p>x</p><p><br>&nbsp;</p><p>x</p>';
+		const actualData = editor.getData();
+
+		expect( actualData ).to.equal( expectedData );
 
 		// Loading this data into the editor will actually create an excessive space as &nbsp; here isn't recognized as a filler.
 		// It's a known issue.
+		editor.setData( actualData );
+
+		expect( editor.getData() ).to.equal( expectedData );
 	} );
 } );

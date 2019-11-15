@@ -349,7 +349,7 @@ describe( 'DomConverter', () => {
 				const context = document.createElement( 'div' );
 				context.innerHTML = 'x<br>x';
 
-				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+				expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
 			} );
 
 			// SPECIAL CASE (see ckeditor5#5564).
@@ -369,7 +369,7 @@ describe( 'DomConverter', () => {
 
 			it( 'should return false for a <br> element which is followed by an nbsp', () => {
 				const context = document.createElement( 'span' );
-				context.innerHTML = '&nbsp;';
+				context.innerHTML = '<br>&nbsp;';
 
 				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
 			} );
