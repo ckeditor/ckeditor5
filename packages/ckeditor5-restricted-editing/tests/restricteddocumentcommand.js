@@ -108,7 +108,7 @@ describe( 'RestrictedDocumentCommand', () => {
 		} );
 	} );
 
-	describe( 'execute()', () => {
+	describe.only( 'execute()', () => {
 		it( 'should do nothing if the command is disabled', () => {
 			setData( model, '<p>fo[ob]ar</p>' );
 
@@ -128,6 +128,17 @@ describe( 'RestrictedDocumentCommand', () => {
 
 			expect( command.value ).to.be.true;
 			expect( getData( model ) ).to.equal( '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
+		} );
+
+		it( 'should add attribute on selected nodes if the command value was false (non-restricted text in selection)', () => {
+			setData( model, '<p>[foo<$text nonRestricted="true">bar</$text>]baz</p>' );
+
+			expect( command.value ).to.be.false;
+
+			command.execute();
+
+			expect( command.value ).to.be.true;
+			expect( getData( model ) ).to.equal( '<p>[<$text nonRestricted="true">foobar</$text>]baz</p>' );
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was true', () => {
