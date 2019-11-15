@@ -412,6 +412,25 @@ describe( 'ImageResize', () => {
 			resizerPosition: 'top-right'
 		} ) );
 
+		it( 'doesn\'t flicker at the beginning of the resize', async () => {
+			// (#5189)
+			const resizerPosition = 'bottom-left';
+			const domParts = getWidgetDomParts( widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+			const resizeWrapperView = widget.getChild( 1 );
+
+			focusEditor( editor );
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+
+			await wait( 40 );
+
+			fireMouseEvent( domParts.resizeHandle, 'mousemove', initialPointerPosition );
+
+			expect( resizeWrapperView.getStyle( 'width' ) ).to.be.equal( '100px' );
+
+			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+		} );
+
 		it( 'makes no change when clicking the handle without drag', () => {
 			const resizerPosition = 'bottom-left';
 			const expectedWidth = 100;
