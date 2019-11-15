@@ -122,22 +122,16 @@ describe( 'RestrictedDocumentCommand', () => {
 		it( 'should add attribute on selected nodes if the command value was false', () => {
 			setData( model, '<p>foo[bar]baz</p>' );
 
-			expect( command.value ).to.be.false;
-
 			command.execute();
 
-			expect( command.value ).to.be.true;
 			expect( getData( model ) ).to.equal( '<p>foo[<$text nonRestricted="true">bar</$text>]baz</p>' );
 		} );
 
 		it( 'should add attribute on selected nodes if the command value was false (non-restricted text in selection)', () => {
 			setData( model, '<p>[foo<$text nonRestricted="true">bar</$text>]baz</p>' );
 
-			expect( command.value ).to.be.false;
-
 			command.execute();
 
-			expect( command.value ).to.be.true;
 			expect( getData( model ) ).to.equal( '<p>[<$text nonRestricted="true">foobar</$text>]baz</p>' );
 		} );
 
@@ -154,12 +148,9 @@ describe( 'RestrictedDocumentCommand', () => {
 		it( 'should remove attribute from selected nodes if the command value was true', () => {
 			setData( model, '<p>abc[<$text nonRestricted="true">foo]bar</$text>xyz</p>' );
 
-			expect( command.value ).to.be.true;
-
 			command.execute();
 
 			expect( getData( model ) ).to.equal( '<p>abc[foo]<$text nonRestricted="true">bar</$text>xyz</p>' );
-			expect( command.value ).to.be.false;
 		} );
 	} );
 } );
