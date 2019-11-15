@@ -40,7 +40,7 @@ export default class CodeBlockUI extends Plugin {
 			const splitButtonView = dropdownView.buttonView;
 
 			splitButtonView.set( {
-				label: t( 'Code block' ),
+				label: t( 'Insert code block' ),
 				tooltip: true,
 				icon: codeBlockIcon,
 				isToggleable: true
