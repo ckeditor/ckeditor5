@@ -218,19 +218,19 @@ describe( 'IndentCodeBlockCommand', () => {
 				expect( outdentCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false when there is no indent sequence in the line (#1)', () => {
+			it( 'should be false when there is no indent sequence in the line (caret inside text)', () => {
 				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
 				expect( outdentCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false when there is no indent sequence in the line (#2)', () => {
+			it( 'should be false when there is no indent sequence in the line (empty line)', () => {
 				setModelData( model, '<codeBlock language="foo">[]</codeBlock>' );
 
 				expect( outdentCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false when there is no indent sequence in the line (#3)', () => {
+			it( 'should be false when there is no indent sequence in the line (caret at the end of a block)', () => {
 				setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
 
 				expect( outdentCommand.isEnabled ).to.be.false;
@@ -247,7 +247,7 @@ describe( 'IndentCodeBlockCommand', () => {
 				expect( outdentCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false when the sequence is not in leading characters of the line (#1)', () => {
+			it( 'should be false when the sequence is not in leading characters of the line', () => {
 				setModelData( model, '<codeBlock language="foo">barfoo[]</codeBlock>' );
 
 				// <codeBlock language="foo">bar	foo[]</codeBlock>
@@ -258,7 +258,7 @@ describe( 'IndentCodeBlockCommand', () => {
 				expect( outdentCommand.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false when the sequence is not in leading characters of the line (#2)', () => {
+			it( 'should be false when the sequence is not in leading characters of the line (after other white-space characters)', () => {
 				setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
 
 				// <codeBlock language="foo">foo[]</codeBlock>
