@@ -76,7 +76,12 @@ export default class DecoupledEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		const view = new DecoupledEditorUIView( this.locale, this.editing.view, this.sourceElement );
+		const shouldGroupWhenFull = this.config.get( 'toolbar.shouldGroupWhenFull' );
+		const view = new DecoupledEditorUIView( this.locale, this.editing.view, {
+			editableElement: this.sourceElement,
+			shouldToolbarGroupWhenFull: shouldGroupWhenFull === undefined ? true : shouldGroupWhenFull
+		} );
+
 		this.ui = new DecoupledEditorUI( this, view );
 	}
 

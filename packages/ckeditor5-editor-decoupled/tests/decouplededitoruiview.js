@@ -46,8 +46,26 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.toolbar.isRendered ).to.be.false;
 			} );
 
-			it( 'has automatic items grouping enabled', () => {
-				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+			describe( 'automatic items grouping', () => {
+				it( 'should be disabled by default', () => {
+					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.undefined;
+				} );
+
+				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
+					const locale = new Locale();
+					const editingView = new EditingView();
+					const editingViewRoot = createRoot( editingView.document );
+					const view = new DecoupledEditorUIView( locale, editingView, {
+						shouldToolbarGroupWhenFull: true
+					} );
+
+					view.editable.name = editingViewRoot.rootName;
+					view.render();
+
+					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+
+					return view.destroy();
+				} );
 			} );
 		} );
 
@@ -66,7 +84,9 @@ describe( 'DecoupledEditorUIView', () => {
 
 			it( 'can be created out of an existing DOM element', () => {
 				const editableElement = document.createElement( 'div' );
-				const testView = new DecoupledEditorUIView( locale, editingView, editableElement );
+				const testView = new DecoupledEditorUIView( locale, editingView, {
+					editableElement
+				} );
 				testView.editable.name = editingViewRoot.rootName;
 
 				testView.render();
