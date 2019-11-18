@@ -179,7 +179,11 @@ export default class CodeBlockEditing extends Plugin {
 
 				// "f[oo]"                          ->   <$text code="true">oo</text>
 				else {
-					writer.setAttribute( 'code', true, docFragment.getChild( 0 ) );
+					const textNode = docFragment.getChild( 0 );
+
+					if ( schema.checkAttribute( textNode, 'code' ) ) {
+						writer.setAttribute( 'code', true, textNode );
+					}
 				}
 			} );
 		} );

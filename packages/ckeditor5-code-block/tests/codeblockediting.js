@@ -986,6 +986,10 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			it( 'should wrap a partial single-line selection into an inline code (#1)', () => {
+				model.schema.extend( '$text', {
+					allowAttributes: 'code'
+				} );
+
 				setModelData( model, '<codeBlock language="css">[fo]o<softBreak></softBreak>bar</codeBlock>' );
 
 				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
@@ -994,11 +998,21 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			it( 'should wrap a partial single-line selection into an inline code (#2)', () => {
+				model.schema.extend( '$text', {
+					allowAttributes: 'code'
+				} );
+
 				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
 
 				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<$text code="true">a</$text>'
 				);
+			} );
+
+			it( 'should now wrap a partial single-line selection into an inline code when the attribute is disallowed', () => {
+				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
+
+				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal( 'a' );
 			} );
 
 			it( 'should preserve a code block in a cross-selection (#1)', () => {
