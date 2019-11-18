@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The {@link module:code-block/codeblock~CodeBlock} features allows inserting and editing blocks of pre–formatted code into the editor. Code blocks have their [specific languages](#configuring-code-block-languages) (e.g. "Java" or "CSS") and support basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the editor. Code blocks have their [specific languages](#configuring-code-block-languages) (e.g. "Java" or "CSS") and support basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 ## Demo
 
@@ -14,7 +14,7 @@ The {@link module:code-block/codeblock~CodeBlock} features allows inserting and 
 
 ## Configuring code block languages
 
-Each code block can have its own language. The language of the code block is represented as a CSS class set on the `<code>` element, both when editing and in the editor data:
+Each code block can have its language. The language of the code block is represented as a CSS class set on the `<code>` element, both when editing and in the editor data:
 
 ```html
 <pre><code class="javascript">window.alert( 'Hello world!' )</code></pre>
@@ -46,7 +46,7 @@ ClassicEditor
 
 Although the live code block highlighting is impossible when editing in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
 
-The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps integrating with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
+The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
 
 ## Tips and tweaks
 
@@ -151,7 +151,7 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in [one of the chapters](#changing-line-indentation):
 
 	* The former is enabled when the selection is anchored anywhere in the code block and allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
-	* The later is enabled when indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from those lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
+	* The later is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from those lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
