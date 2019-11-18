@@ -102,6 +102,30 @@ describe( 'ClassicEditor', () => {
 				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
 				expect( editor.ui.view ).to.be.instanceof( ClassicEditorUIView );
 			} );
+
+			describe( 'automatic toolbar items groupping', () => {
+				it( 'should be on by default', () => {
+					const editorElement = document.createElement( 'div' );
+					const editor = new ClassicEditor( editorElement );
+
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+
+					editorElement.remove();
+				} );
+
+				it( 'can be disabled using config.toolbar.shouldGroupWhenFull', () => {
+					const editorElement = document.createElement( 'div' );
+					const editor = new ClassicEditor( editorElement, {
+						toolbar: {
+							shouldGroupWhenFull: false
+						}
+					} );
+
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.false;
+
+					editorElement.remove();
+				} );
+			} );
 		} );
 	} );
 

@@ -70,7 +70,12 @@ export default class ClassicEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale, this.editing.view ) );
+		const shouldGroupWhenFull = this.config.get( 'toolbar.shouldGroupWhenFull' );
+		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
+			shouldToolbarGroupWhenFull: shouldGroupWhenFull === undefined ? true : shouldGroupWhenFull
+		} );
+
+		this.ui = new ClassicEditorUI( this, view );
 
 		attachToForm( this );
 	}

@@ -59,8 +59,26 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.toolbar );
 			} );
 
-			it( 'has automatic items grouping enabled', () => {
-				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+			describe( 'automatic items grouping', () => {
+				it( 'should be disabled by default', () => {
+					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.undefined;
+				} );
+
+				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
+					const locale = new Locale();
+					const editingView = new EditingView();
+					const editingViewRoot = createRoot( editingView.document );
+					const view = new ClassicEditorUIView( locale, editingView, {
+						shouldToolbarGroupWhenFull: true
+					} );
+
+					view.editable.name = editingViewRoot.rootName;
+					view.render();
+
+					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+
+					return view.destroy();
+				} );
 			} );
 		} );
 
