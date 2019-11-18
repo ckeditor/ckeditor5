@@ -113,13 +113,6 @@ export default class CodeBlockEditing extends Plugin {
 			allowAttributes: [ 'language' ]
 		} );
 
-		// Disallow codeBlock in codeBlock.
-		schema.addChildCheck( ( context, childDef ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDef.name === 'codeBlock' ) {
-				return false;
-			}
-		} );
-
 		// Disallow all attributes in `codeBlock`.
 		schema.addAttributeCheck( ( context, attributeName ) => {
 			if ( context.endsWith( 'codeBlock' ) || context.endsWith( 'codeBlock $text' ) ) {

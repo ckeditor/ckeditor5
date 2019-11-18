@@ -184,6 +184,10 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'codeBlock' ) ).to.be.true;
 	} );
 
+	it( 'disallows for codeBlock in the other codeBlock', () => {
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
+	} );
+
 	it( 'allows only for $text in codeBlock', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], '$text' ) ).to.equal( true );
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], '$block' ) ).to.equal( false );
