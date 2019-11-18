@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The {@link module:code-block/codeblock~CodeBlock} features allows inserting and editing blocks of pre–formatted code into the editor. Code blocks have their [specific languages](#TODO) (e.g. "Java" or "CSS") and support basic editing tools, for instance, [changing the line indentation](#TODO) using the keyboard.
+The {@link module:code-block/codeblock~CodeBlock} features allows inserting and editing blocks of pre–formatted code into the editor. Code blocks have their [specific languages](#configuring-code-block-languages) (e.g. "Java" or "CSS") and support basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 ## Demo
 
@@ -57,16 +57,12 @@ There could be situations when there is no obvious way to set the caret before o
 * To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. A new paragraph will be created before the code block you can type in.
 * To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph will be created after the code block you can type in.
 
-TODO GIF
-
 ### Changing line indentation
 
 You can change the indentation of the code using keyboard shortcuts and toolbar buttons:
 
 * To **increase** indentation: Select the line (or lines) you want to indent. Hit the <kbd>Tab</kbd> key or press the "Increase indent" button in the toolbar.
 * To **decrease** indentation: Select the line (or lines) the indent should decrease. Hit the <kbd>Shift</kbd>+<kbd>Tab</kbd> keys or press the "Decrease indent" button in the toolbar.
-
-TODO GIF
 
 <info-box>
 	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`	`) character.
@@ -79,8 +75,6 @@ TODO GIF
 ### Preserving line indentation
 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).
-
-TODO GIF
 
 ## Installation
 
@@ -154,7 +148,7 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	**Note**: If the selection is already in a code block, executing the command will convert the block back into plain paragraphs.
 * The {@link module:code-block/indentcodeblockcommand~IndentCodeBlockCommand `'indentCodeBlock'` and `'outdentCodeBlock'`} commands.
 
-	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in [one of the chapters](#TODO):
+	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in [one of the chapters](#changing-line-indentation):
 
 	* The former is enabled when the selection is anchored anywhere in the code block and allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
 	* The later is enabled when indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from those lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
