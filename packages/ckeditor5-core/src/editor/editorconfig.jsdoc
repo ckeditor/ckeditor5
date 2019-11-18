@@ -144,7 +144,9 @@
  *			toolbar: {
  *				items: [ 'bold', 'italic', '|', 'undo', 'redo' ],
  *
- *				viewportTopOffset: 30
+ *				viewportTopOffset: 30,
+ *
+ *				shouldGroupWhenFull: true
  *			}
  *		};
  *
@@ -162,6 +164,11 @@
  * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
+ * * **`toolbar.shouldGroupWhenFull`** &ndash; When `true` (default), the toolbar will group its items that
+ * would normally wrap to the next line when there is not enough space to display them in a single row.
+ *
+ *	**Note**: For now this option works for {@link module:editor-classic/classiceditor~ClassicEditor} and
+ * {@link module:editor-decoupled/decouplededitor~DecoupledEditor} only.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */
