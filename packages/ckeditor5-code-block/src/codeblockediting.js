@@ -107,16 +107,20 @@ export default class CodeBlockEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentCodeBlock' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentCodeBlock' ) );
 
-		// Schema.
 		schema.register( 'codeBlock', {
-			inheritAllFrom: '$block',
+			allowWhere: '$block',
+			isBlock: true,
 			allowAttributes: [ 'language' ]
 		} );
 
-		// Disallow all attributes in `codeBlock`.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			if ( context.endsWith( 'codeBlock' ) || context.endsWith( 'codeBlock $text' ) ) {
-				return attributeName === 'language';
+		schema.extend( '$text', {
+			allowIn: 'codeBlock'
+		} );
+
+		// Disallow all attributes on $text inside `codeBlock`.
+		schema.addAttributeCheck( context => {
+			if ( context.endsWith( 'codeBlock $text' ) ) {
+				return false;
 			}
 		} );
 
