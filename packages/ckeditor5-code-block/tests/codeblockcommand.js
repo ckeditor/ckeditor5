@@ -34,25 +34,25 @@ describe( 'CodeBlockCommand', () => {
 	} );
 
 	describe( '#value', () => {
-		it( 'should be true when the first selected element is a codeBlock element - selection inside code block', () => {
+		it( 'should be true when the first selected element is a codeBlock element (selection inside code block)', () => {
 			setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
 			expect( command.value ).to.equal( 'foo' );
 		} );
 
-		it( 'should be true when the first selected element is a codeBlock element - other blocks in selection are not code block', () => {
+		it( 'should be true when the first selected element is a codeBlock element (other blocks in selection are not code block)', () => {
 			setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
 			expect( command.value ).to.equal( 'foo' );
 		} );
 
-		it( 'should be false when the first selected element is not a code block - all blocks are not code block', () => {
+		it( 'should be false when the first selected element is not a code block (all blocks are not code block)', () => {
 			setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			expect( command.value ).to.equal( false );
 		} );
 
-		it( 'should be false when the first selected element is not a code block - selection ends in code block', () => {
+		it( 'should be false when the first selected element is not a code block (selection ends in code block)', () => {
 			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">ba]r</codeBlock>' );
 
 			expect( command.value ).to.equal( false );
@@ -60,31 +60,31 @@ describe( 'CodeBlockCommand', () => {
 	} );
 
 	describe( '#isEnabled', () => {
-		it( 'should be true when the first selected block is a codeBlock #1', () => {
+		it( 'should be true when the first selected block is a codeBlock (selection inside code block)', () => {
 			setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be true when the first selected block is a codeBlock #2', () => {
+		it( 'should be true when the first selected block is a codeBlock (other blocks in selection are not code block)', () => {
 			setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be true when the first selected block can be a codeBlock #1', () => {
+		it( 'should be true when the first selected block can be a codeBlock (collapsed selection)', () => {
 			setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be true when the first selected block can be a codeBlock #2', () => {
+		it( 'should be true when the first selected block can be a codeBlock (non-collapsed selection, ends in code block)', () => {
 			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">ba]r</codeBlock>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be false when selected element is a limit element #1', () => {
+		it( 'should be false when selected element is a limit element (selection on element)', () => {
 			model.schema.register( 'limit', {
 				inheritAllFrom: '$block',
 				isLimit: true
@@ -103,7 +103,7 @@ describe( 'CodeBlockCommand', () => {
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should be false when selected element is a limit element #2', () => {
+		it( 'should be false when selected element is a limit element (selection has mixed limit and non-limit elements)', () => {
 			model.schema.register( 'limit', {
 				inheritAllFrom: '$block',
 				isLimit: true
