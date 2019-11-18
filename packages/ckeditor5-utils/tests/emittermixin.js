@@ -167,7 +167,7 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should wrap an error into the CKEditorError if a native error was thrown', () => {
-			const error = new Error( 'foo' );
+			const error = new TypeError( 'foo' );
 			error.stack = 'bar';
 
 			emitter.on( 'test', () => {
@@ -176,13 +176,7 @@ describe( 'EmitterMixin', () => {
 
 			expectToThrowCKEditorError( () => {
 				emitter.fire( 'test' );
-			}, /unexpected-error/, emitter, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'Error'
-				}
-			} );
+			}, /bar/ );
 		} );
 
 		describe( 'return value', () => {
@@ -191,7 +185,7 @@ describe( 'EmitterMixin', () => {
 			} );
 
 			it( 'is undefined if none of the listeners modified EventInfo#return', () => {
-				emitter.on( 'foo', () => {} );
+				emitter.on( 'foo', () => { } );
 
 				expect( emitter.fire( 'foo' ) ).to.be.undefined;
 			} );
@@ -422,8 +416,8 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not fail with unknown events', () => {
-			emitter.off( 'foo', () => {} );
-			emitter.off( 'foo:bar', () => {} );
+			emitter.off( 'foo', () => { } );
+			emitter.off( 'foo:bar', () => { } );
 
 			emitter.off( 'foo' );
 			emitter.off( 'foo:bar' );
@@ -707,17 +701,17 @@ describe( 'EmitterMixin', () => {
 		} );
 
 		it( 'should not fail with unknown events', () => {
-			listener.stopListening( emitter, 'foo', () => {} );
-			listener.stopListening( emitter, 'foo:bar', () => {} );
+			listener.stopListening( emitter, 'foo', () => { } );
+			listener.stopListening( emitter, 'foo:bar', () => { } );
 			listener.stopListening( emitter, 'foo' );
 			listener.stopListening( emitter, 'foo:bar' );
 		} );
 
 		it( 'should not fail with unknown emitter', () => {
-			listener.listenTo( emitter, 'foo:bar', () => {} );
+			listener.listenTo( emitter, 'foo:bar', () => { } );
 
-			listener.stopListening( {}, 'foo', () => {} );
-			listener.stopListening( {}, 'foo:bar', () => {} );
+			listener.stopListening( {}, 'foo', () => { } );
+			listener.stopListening( {}, 'foo:bar', () => { } );
 			listener.stopListening( {}, 'foo' );
 			listener.stopListening( {}, 'foo:bar' );
 			listener.stopListening( {} );
@@ -727,7 +721,7 @@ describe( 'EmitterMixin', () => {
 			const spy = sinon.spy();
 
 			listener.listenTo( emitter, 'foo', spy );
-			listener.stopListening( emitter, 'foo', () => {} );
+			listener.stopListening( emitter, 'foo', () => { } );
 
 			emitter.fire( 'foo' );
 
@@ -1347,7 +1341,7 @@ describe( '_getEmitterListenedTo', () => {
 	} );
 
 	it( 'should return emitter with given id', () => {
-		listener.listenTo( emitter, 'eventName', () => {} );
+		listener.listenTo( emitter, 'eventName', () => { } );
 		const emitterId = _getEmitterId( emitter );
 
 		expect( _getEmitterListenedTo( listener, emitterId ) ).to.equal( emitter );
