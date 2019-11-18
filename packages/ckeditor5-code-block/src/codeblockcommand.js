@@ -156,9 +156,5 @@ function canBeCodeBlock( schema, element ) {
 		return false;
 	}
 
-	if ( !schema.checkChild( element.parent, 'codeBlock' ) ) {
-		return false;
-	}
-
-	return true;
+	return schema.checkChild( element.parent, 'codeBlock' );
 }
