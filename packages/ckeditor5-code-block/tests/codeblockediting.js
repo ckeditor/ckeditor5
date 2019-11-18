@@ -580,7 +580,7 @@ describe( 'CodeBlockEditing', () => {
 		}
 	} );
 
-	describe( 'intent plugin integration', () => {
+	describe( 'indent plugin integration', () => {
 		it( 'should add indent code block command to indent command', () => {
 			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
