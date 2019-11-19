@@ -45,7 +45,8 @@ export default class RestrictedEditing extends Plugin {
 			model: 'restricted-editing-exception',
 			view: {
 				name: 'span',
-				classes: 'ck-restricted-editing-exception'
+				classes: 'ck-restricted-editing-exception',
+				priority: -10
 			}
 		} );
 	}

@@ -107,6 +107,25 @@ describe( 'RestrictedEditing', () => {
 				expect( editor.getData() ).to.equal( expectedView );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
+
+			it( 'converted <span> should be the outermost attribute element', () => {
+				editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b' } );
+				setModelData( model, '<paragraph><$text bold="true">foo bar baz</$text></paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restricted-editing-exception:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				const expectedView = '<p><span class="ck-restricted-editing-exception"><b>foo bar baz</b></span></p>';
+				expect( editor.getData() ).to.equal( expectedView );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			} );
 		} );
 	} );
 } );
