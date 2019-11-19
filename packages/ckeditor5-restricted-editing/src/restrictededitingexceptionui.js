@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import restrictedDocumentIcon from '../theme/icons/restricted.svg';
+import restrictedDocumentIcon from '../theme/icons/contentlock.svg';
 
 /**
  * @extends module:core/plugin~Plugin
