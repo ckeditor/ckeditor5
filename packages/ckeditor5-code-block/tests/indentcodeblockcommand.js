@@ -15,7 +15,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'IndentCodeBlockCommand', () => {
-	let editor, model, indentCommand, outdentCommand;
+	let editor, model, indentCommand;
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -26,7 +26,6 @@ describe( 'IndentCodeBlockCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 				indentCommand = new IndentCodeBlockCommand( editor, 'forward' );
-				outdentCommand = new IndentCodeBlockCommand( editor, 'backward' );
 			} );
 	} );
 
@@ -34,418 +33,138 @@ describe( 'IndentCodeBlockCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'Forward (indent) command', () => {
-		describe( '#isEnabled', () => {
-			it( 'should be true when the first selected block is a codeBlock #1', () => {
-				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
+	describe( '#isEnabled', () => {
+		it( 'should be true when the first selected block is a codeBlock #1', () => {
+			setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
-				expect( indentCommand.isEnabled ).to.be.true;
-			} );
-
-			it( 'should be true when the first selected block is a codeBlock #2', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
-
-				expect( indentCommand.isEnabled ).to.be.true;
-			} );
-
-			it( 'should be false when there is no code block in the selection', () => {
-				setModelData( model, '<paragraph>foo[]</paragraph>' );
-
-				expect( indentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when the selection is not anchored in the code block', () => {
-				setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">bar</codeBlock><paragraph>ba]z</paragraph>' );
-
-				expect( indentCommand.isEnabled ).to.be.false;
-			} );
-
-			describe( 'config.codeBlock.indentSequence', () => {
-				it( 'should disable the command when the config is not set', () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
-							codeBlock: {
-								indentSequence: false
-							}
-						} )
-						.then( newEditor => {
-							const editor = newEditor;
-							const model = editor.model;
-							const indentCommand = new IndentCodeBlockCommand( editor, 'forward' );
-
-							setModelData( model, '<codeBlock language="foo">[]foo</codeBlock>' );
-
-							expect( indentCommand.isEnabled ).to.be.false;
-
-							return editor.destroy();
-						} );
-				} );
-			} );
+			expect( indentCommand.isEnabled ).to.be.true;
 		} );
 
-		describe( 'execute()', () => {
-			it( 'should indent when a selection is collapsed in an empty code block', () => {
-				setModelData( model, '<codeBlock language="foo">[]</codeBlock>' );
+		it( 'should be true when the first selected block is a codeBlock #2', () => {
+			setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
 
-				indentCommand.execute();
+			expect( indentCommand.isEnabled ).to.be.true;
+		} );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	[]</codeBlock>' );
-			} );
+		it( 'should be false when there is no code block in the selection', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			it( 'should indent when a selection is collapsed', () => {
-				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
+			expect( indentCommand.isEnabled ).to.be.false;
+		} );
 
-				indentCommand.execute();
+		it( 'should be false when the selection is not anchored in the code block', () => {
+			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="foo">bar</codeBlock><paragraph>ba]z</paragraph>' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f	[]oo</codeBlock>' );
-			} );
+			expect( indentCommand.isEnabled ).to.be.false;
+		} );
 
-			it( 'should indent a whole line when a selection is expanded', () => {
-				setModelData( model, '<codeBlock language="foo">f[o]o</codeBlock>' );
+		describe( 'config.codeBlock.indentSequence', () => {
+			it( 'should disable the command when the config is not set', () => {
+				return ModelTestEditor
+					.create( {
+						plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
+						codeBlock: {
+							indentSequence: false
+						}
+					} )
+					.then( newEditor => {
+						const editor = newEditor;
+						const model = editor.model;
+						const indentCommand = new IndentCodeBlockCommand( editor, 'forward' );
 
-				indentCommand.execute();
+						setModelData( model, '<codeBlock language="foo">[]foo</codeBlock>' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[o]o</codeBlock>' );
-			} );
+						expect( indentCommand.isEnabled ).to.be.false;
 
-			it( 'should indent multiple lines when a selection is expanded', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>b]ar</codeBlock>' );
-
-				indentCommand.execute();
-
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[oo<softBreak></softBreak>	b]ar</codeBlock>' );
-			} );
-
-			it( 'should append the indentation to the line\'s leading white spaces (#1)', () => {
-				setModelData( model, '<codeBlock language="foo">[]foo</codeBlock>' );
-
-				// <codeBlock language="foo">    []foo</codeBlock>
-				model.change( writer => {
-					writer.insertText( '    ', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				indentCommand.execute();
-
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">    	[]foo</codeBlock>' );
-			} );
-
-			it( 'should append the indentation to the line\'s leading white spaces (#2)', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>b]ar</codeBlock>' );
-
-				// <codeBlock language="foo">    f[oo<softBreak></softBreak>    b]ar</codeBlock>
-				model.change( writer => {
-					writer.insertText( '    ', model.document.getRoot().getChild( 0 ), 4 );
-					writer.insertText( '    ', model.document.getRoot().getChild( 0 ), 0 );
-				} );
-
-				indentCommand.execute();
-
-				expect( getModelData( model ) ).to.equal(
-					'<codeBlock language="foo">    	f[oo<softBreak></softBreak>    	b]ar</codeBlock>' );
-			} );
-
-			describe( 'config.codeBlock.indentSequence', () => {
-				it( 'should be used when indenting', () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
-							codeBlock: {
-								indentSequence: '  '
-							}
-						} )
-						.then( newEditor => {
-							const editor = newEditor;
-							const model = editor.model;
-							const indentCommand = new IndentCodeBlockCommand( editor, 'forward' );
-
-							setModelData( model, '<codeBlock language="foo">f[o]o</codeBlock>' );
-
-							indentCommand.execute();
-
-							expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">  f[o]o</codeBlock>' );
-
-							return editor.destroy();
-						} );
-				} );
+						return editor.destroy();
+					} );
 			} );
 		} );
 	} );
 
-	describe( 'Backward (outdent) command', () => {
-		describe( '#isEnabled', () => {
-			it( 'should be true when the selection is in a line containing the indent sequence', () => {
-				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
+	describe( 'execute()', () => {
+		it( 'should indent when a selection is collapsed in an empty code block', () => {
+			setModelData( model, '<codeBlock language="foo">[]</codeBlock>' );
 
-				// <codeBlock language="foo">	f[]oo</codeBlock>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
-				} );
+			indentCommand.execute();
 
-				expect( outdentCommand.isEnabled ).to.be.true;
-			} );
-
-			it( 'should be true when any line in the selection contains more than the indent sequence', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><paragraph>ba]r</paragraph>' );
-
-				// <codeBlock language="foo">	f[oo</codeBlock><paragraph>ba]r</paragraph>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				expect( outdentCommand.isEnabled ).to.be.true;
-			} );
-
-			it( 'should be true when any line in the selection contains the indent sequence', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo</codeBlock><codeBlock language="foo">ba]r</codeBlock>' );
-
-				// <codeBlock language="foo">f[oo</codeBlock><codeBlock language="foo">	ba]r</codeBlock>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 1 ) );
-				} );
-
-				expect( outdentCommand.isEnabled ).to.be.true;
-			} );
-
-			it( 'should be false when the indent sequence is in other element', () => {
-				setModelData( model, '<paragraph>foo[]</paragraph>' );
-
-				// <paragraph>	foo[]</paragraph>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when there is no indent sequence in the line (caret inside text)', () => {
-				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when there is no indent sequence in the line (empty line)', () => {
-				setModelData( model, '<codeBlock language="foo">[]</codeBlock>' );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when there is no indent sequence in the line (caret at the end of a block)', () => {
-				setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when there is no corrent sequence in the line', () => {
-				setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
-
-				// <codeBlock language="foo">    foo[]</codeBlock>
-				model.change( writer => {
-					writer.insertText( '    ', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when the sequence is not in leading characters of the line', () => {
-				setModelData( model, '<codeBlock language="foo">barfoo[]</codeBlock>' );
-
-				// <codeBlock language="foo">bar	foo[]</codeBlock>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 3 );
-				} );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			it( 'should be false when the sequence is not in leading characters of the line (after other white-space characters)', () => {
-				setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
-
-				// <codeBlock language="foo">foo[]</codeBlock>
-				model.change( writer => {
-					writer.insertText( '    	    ', model.document.getRoot().getChild( 0 ), 0 );
-				} );
-
-				expect( outdentCommand.isEnabled ).to.be.false;
-			} );
-
-			describe( 'config.codeBlock.indentSequence', () => {
-				it( 'should be respected (#1)', () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
-							codeBlock: {
-								indentSequence: '  '
-							}
-						} )
-						.then( newEditor => {
-							const editor = newEditor;
-							const model = editor.model;
-							const outdentCommand = new IndentCodeBlockCommand( editor, 'backward' );
-
-							setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
-
-							// <codeBlock language="foo">    foo[]</codeBlock>
-							model.change( writer => {
-								writer.insertText( '    ', model.document.getRoot().getChild( 0 ) );
-							} );
-
-							expect( outdentCommand.isEnabled ).to.be.true;
-
-							return editor.destroy();
-						} );
-				} );
-
-				it( 'should be respected (#2)', () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
-							codeBlock: {
-								indentSequence: '  '
-							}
-						} )
-						.then( newEditor => {
-							const editor = newEditor;
-							const model = editor.model;
-							const outdentCommand = new IndentCodeBlockCommand( editor, 'backward' );
-
-							setModelData( model, '<codeBlock language="foo"> foo[]</codeBlock>' );
-
-							// <codeBlock language="foo"> foo[]</codeBlock>
-							model.change( writer => {
-								writer.insertText( ' ', model.document.getRoot().getChild( 0 ) );
-							} );
-
-							expect( outdentCommand.isEnabled ).to.be.false;
-
-							return editor.destroy();
-						} );
-				} );
-
-				it( 'should disable the command when the config is not set', () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
-							codeBlock: {
-								indentSequence: false
-							}
-						} )
-						.then( newEditor => {
-							const editor = newEditor;
-							const model = editor.model;
-							const outdentCommand = new IndentCodeBlockCommand( editor, 'backward' );
-
-							setModelData( model, '<codeBlock language="foo">foo[]</codeBlock>' );
-
-							// <codeBlock language="foo">	foo[]</codeBlock>
-							model.change( writer => {
-								writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
-							} );
-
-							expect( outdentCommand.isEnabled ).to.be.false;
-
-							return editor.destroy();
-						} );
-				} );
-			} );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	[]</codeBlock>' );
 		} );
 
-		describe( 'execute()', () => {
-			it( 'should outdent a single line', () => {
-				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
+		it( 'should indent when a selection is collapsed', () => {
+			setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
 
-				// <codeBlock language="foo">	f[]oo</codeBlock>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
-				} );
+			indentCommand.execute();
 
-				outdentCommand.execute();
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f	[]oo</codeBlock>' );
+		} );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f[]oo</codeBlock>' );
+		it( 'should indent a whole line when a selection is expanded', () => {
+			setModelData( model, '<codeBlock language="foo">f[o]o</codeBlock>' );
+
+			indentCommand.execute();
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[o]o</codeBlock>' );
+		} );
+
+		it( 'should indent multiple lines when a selection is expanded', () => {
+			setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>b]ar</codeBlock>' );
+
+			indentCommand.execute();
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[oo<softBreak></softBreak>	b]ar</codeBlock>' );
+		} );
+
+		it( 'should append the indentation to the line\'s leading white spaces (#1)', () => {
+			setModelData( model, '<codeBlock language="foo">[]foo</codeBlock>' );
+
+			// <codeBlock language="foo">    []foo</codeBlock>
+			model.change( writer => {
+				writer.insertText( '    ', model.document.getRoot().getChild( 0 ) );
 			} );
 
-			it( 'should outdent only one level in a single line', () => {
-				setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
+			indentCommand.execute();
 
-				// <codeBlock language="foo">		f[]oo</codeBlock>
-				model.change( writer => {
-					writer.insertText( '		', model.document.getRoot().getChild( 0 ) );
-				} );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">    	[]foo</codeBlock>' );
+		} );
 
-				outdentCommand.execute();
+		it( 'should append the indentation to the line\'s leading white spaces (#2)', () => {
+			setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>b]ar</codeBlock>' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">	f[]oo</codeBlock>' );
+			// <codeBlock language="foo">    f[oo<softBreak></softBreak>    b]ar</codeBlock>
+			model.change( writer => {
+				writer.insertText( '    ', model.document.getRoot().getChild( 0 ), 4 );
+				writer.insertText( '    ', model.document.getRoot().getChild( 0 ), 0 );
 			} );
 
-			it( 'should outdent multiple lines', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+			indentCommand.execute();
 
-				// <codeBlock language="foo">	f[oo<softBreak></softBreak>	ba]r</codeBlock>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 4 );
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 0 );
-				} );
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="foo">    	f[oo<softBreak></softBreak>    	b]ar</codeBlock>' );
+		} );
 
-				outdentCommand.execute();
+		describe( 'config.codeBlock.indentSequence', () => {
+			it( 'should be used when indenting', () => {
+				return ModelTestEditor
+					.create( {
+						plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
+						codeBlock: {
+							indentSequence: '  '
+						}
+					} )
+					.then( newEditor => {
+						const editor = newEditor;
+						const model = editor.model;
+						const indentCommand = new IndentCodeBlockCommand( editor, 'forward' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
-			} );
+						setModelData( model, '<codeBlock language="foo">f[o]o</codeBlock>' );
 
-			it( 'should outdent only one level across multiple lines', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+						indentCommand.execute();
 
-				// <codeBlock language="foo">	f[oo<softBreak></softBreak>		ba]r</codeBlock>
-				model.change( writer => {
-					writer.insertText( '		', model.document.getRoot().getChild( 0 ), 4 );
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 0 );
-				} );
+						expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">  f[o]o</codeBlock>' );
 
-				outdentCommand.execute();
-
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f[oo<softBreak></softBreak>	ba]r</codeBlock>' );
-			} );
-
-			it( 'should outdent some lines', () => {
-				setModelData( model, '<codeBlock language="foo">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
-
-				// <codeBlock language="foo">f[oo<softBreak></softBreak>	ba]r</codeBlock>
-				model.change( writer => {
-					writer.insertText( '	', model.document.getRoot().getChild( 0 ), 4 );
-				} );
-
-				outdentCommand.execute();
-
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
-			} );
-
-			describe( 'config.codeBlock.indentSequence', () => {
-				it( 'should be respected', () => {
-					return ModelTestEditor
-						.create( {
-							plugins: [ CodeBlockEditing, Paragraph, BlockQuoteEditing, AlignmentEditing, BoldEditing ],
-							codeBlock: {
-								indentSequence: '  '
-							}
-						} )
-						.then( newEditor => {
-							const editor = newEditor;
-							const model = editor.model;
-							const outdentCommand = new IndentCodeBlockCommand( editor, 'backward' );
-
-							setModelData( model, '<codeBlock language="foo">f[]oo</codeBlock>' );
-
-							// <codeBlock language="foo">  f[]oo</codeBlock>
-							model.change( writer => {
-								writer.insertText( '  ', model.document.getRoot().getChild( 0 ) );
-							} );
-
-							outdentCommand.execute();
-
-							expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">f[]oo</codeBlock>' );
-
-							return editor.destroy();
-						} );
-				} );
+						return editor.destroy();
+					} );
 			} );
 		} );
 	} );

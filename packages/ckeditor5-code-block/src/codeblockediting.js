@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
+import OutdentCodeBlockCommand from './outdentcodeblockcommand';
 import {
 	getLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
@@ -90,8 +91,8 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'codeBlock', new CodeBlockCommand( editor ) );
 
 		// Commands that change the indentation.
-		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor, 'forward' ) );
-		editor.commands.add( 'outdentCodeBlock', new IndentCodeBlockCommand( editor, 'backward' ) );
+		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
+		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {

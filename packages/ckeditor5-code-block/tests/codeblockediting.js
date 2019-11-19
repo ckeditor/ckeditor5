@@ -8,6 +8,7 @@
 import CodeBlockEditing from '../src/codeblockediting';
 import CodeBlockCommand from '../src/codeblockcommand';
 import IndentCodeBlockCommand from '../src/indentcodeblockcommand';
+import OutdentCodeBlockCommand from '../src/outdentcodeblockcommand';
 
 import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
@@ -177,7 +178,7 @@ describe( 'CodeBlockEditing', () => {
 	} );
 
 	it( 'adds an "outdentCodeBlock" command', () => {
-		expect( editor.commands.get( 'outdentCodeBlock' ) ).to.be.instanceOf( IndentCodeBlockCommand );
+		expect( editor.commands.get( 'outdentCodeBlock' ) ).to.be.instanceOf( OutdentCodeBlockCommand );
 	} );
 
 	it( 'allows for codeBlock in the $root', () => {
