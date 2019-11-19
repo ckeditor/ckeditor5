@@ -46,7 +46,7 @@ export default class CodeBlockCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const firstLanguageInConfig = editor.config.get( 'codeBlock' ).languages[ 0 ];
+		const firstLanguageInConfig = editor.config.get( 'codeBlock.languages' ).shift();
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
@@ -156,9 +156,5 @@ function canBeCodeBlock( schema, element ) {
 		return false;
 	}
 
-	if ( !schema.checkChild( element.parent, 'codeBlock' ) ) {
-		return false;
-	}
-
-	return true;
+	return schema.checkChild( element.parent, 'codeBlock' );
 }

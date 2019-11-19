@@ -64,7 +64,7 @@ export default class CodeBlock extends Plugin {
  * The code block language descriptor. See {@link module:code-block/codeblock~CodeBlockConfig#languages} to learn more.
  *
  *		{
- *			 class: 'javascript',
+ *			 class: 'language-javascript',
  *			 label: 'JavaScript'
  *		}
  *
@@ -88,11 +88,11 @@ export default class CodeBlock extends Plugin {
  *			.create( editorElement, {
  *				codeBlock: {
  *					languages: [
- * 						{ class: 'plaintext', label: 'Plain text' }, // The default language.
- *						{ class: 'php', label: 'PHP' },
- *						{ class: 'java', label: 'Java' },
- *						{ class: 'javascript', label: 'JavaScript' },
- *						{ class: 'python', label: 'Python' }
+ * 						{ class: 'language-plaintext', label: 'Plain text' }, // The default language.
+ *						{ class: 'language-php', label: 'PHP' },
+ *						{ class: 'language-java', label: 'Java' },
+ *						{ class: 'language-javascript', label: 'JavaScript' },
+ *						{ class: 'language-python', label: 'Python' }
  *					]
  *				}
  *		} )
@@ -102,19 +102,19 @@ export default class CodeBlock extends Plugin {
  * The default value is as follows:
  *
  *		languages: [
- *			{ class: 'plaintext', label: 'Plain text' }, // The default language.
- *			{ class: 'c', label: 'C' },
- *			{ class: 'cs', label: 'C#' },
- *			{ class: 'cpp', label: 'C++' },
- *			{ class: 'css', label: 'CSS' },
- *			{ class: 'diff', label: 'Diff' },
- *			{ class: 'xml', label: 'HTML/XML' },
- *			{ class: 'java', label: 'Java' },
- *			{ class: 'javascript', label: 'JavaScript' },
- *			{ class: 'php', label: 'PHP' },
- *			{ class: 'python', label: 'Python' },
- *			{ class: 'ruby', label: 'Ruby' },
- *			{ class: 'typescript', label: 'TypeScript' },
+ *			{ class: 'language-plaintext', label: 'Plain text' }, // The default language.
+ *			{ class: 'language-c', label: 'C' },
+ *			{ class: 'language-cs', label: 'C#' },
+ *			{ class: 'language-cpp', label: 'C++' },
+ *			{ class: 'language-css', label: 'CSS' },
+ *			{ class: 'language-diff', label: 'Diff' },
+ *			{ class: 'language-xml', label: 'HTML/XML' },
+ *			{ class: 'language-java', label: 'Java' },
+ *			{ class: 'language-javascript', label: 'JavaScript' },
+ *			{ class: 'language-php', label: 'PHP' },
+ *			{ class: 'language-python', label: 'Python' },
+ *			{ class: 'language-ruby', label: 'Ruby' },
+ *			{ class: 'language-typescript', label: 'TypeScript' },
  *		]
  *
  * **Note**: The first language defined in the configuration is considered the default one. This means it will be

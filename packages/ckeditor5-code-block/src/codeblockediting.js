@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
+import OutdentCodeBlockCommand from './outdentcodeblockcommand';
 import {
 	getLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
@@ -54,23 +55,23 @@ export default class CodeBlockEditing extends Plugin {
 
 		editor.config.define( 'codeBlock', {
 			languages: [
-				{ class: 'plaintext', label: 'Plain text' },
-				{ class: 'c', label: 'C' },
-				{ class: 'cs', label: 'C#' },
-				{ class: 'cpp', label: 'C++' },
-				{ class: 'css', label: 'CSS' },
-				{ class: 'diff', label: 'Diff' },
-				{ class: 'xml', label: 'HTML/XML' },
-				{ class: 'java', label: 'Java' },
-				{ class: 'javascript', label: 'JavaScript' },
-				{ class: 'php', label: 'PHP' },
-				{ class: 'python', label: 'Python' },
-				{ class: 'ruby', label: 'Ruby' },
-				{ class: 'typescript', label: 'TypeScript' },
+				{ class: 'language-plaintext', label: 'Plain text' },
+				{ class: 'language-c', label: 'C' },
+				{ class: 'language-cs', label: 'C#' },
+				{ class: 'language-cpp', label: 'C++' },
+				{ class: 'language-css', label: 'CSS' },
+				{ class: 'language-diff', label: 'Diff' },
+				{ class: 'language-xml', label: 'HTML/XML' },
+				{ class: 'language-java', label: 'Java' },
+				{ class: 'language-javascript', label: 'JavaScript' },
+				{ class: 'language-php', label: 'PHP' },
+				{ class: 'language-python', label: 'Python' },
+				{ class: 'language-ruby', label: 'Ruby' },
+				{ class: 'language-typescript', label: 'TypeScript' },
 			],
 
 			// A single tab.
-			indentSequence: '	'
+			indentSequence: '\t'
 		} );
 	}
 
@@ -90,8 +91,8 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'codeBlock', new CodeBlockCommand( editor ) );
 
 		// Commands that change the indentation.
-		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor, 'forward' ) );
-		editor.commands.add( 'outdentCodeBlock', new IndentCodeBlockCommand( editor, 'backward' ) );
+		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
+		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
@@ -107,23 +108,20 @@ export default class CodeBlockEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentCodeBlock' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentCodeBlock' ) );
 
-		// Schema.
 		schema.register( 'codeBlock', {
-			inheritAllFrom: '$block',
+			allowWhere: '$block',
+			isBlock: true,
 			allowAttributes: [ 'language' ]
 		} );
 
-		// Disallow codeBlock in codeBlock.
-		schema.addChildCheck( ( context, childDef ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDef.name === 'codeBlock' ) {
-				return false;
-			}
+		schema.extend( '$text', {
+			allowIn: 'codeBlock'
 		} );
 
-		// Disallow all attributes in `codeBlock`.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			if ( context.endsWith( 'codeBlock' ) || context.endsWith( 'codeBlock $text' ) ) {
-				return attributeName === 'language';
+		// Disallow all attributes on $text inside `codeBlock`.
+		schema.addAttributeCheck( context => {
+			if ( context.endsWith( 'codeBlock $text' ) ) {
+				return false;
 			}
 		} );
 

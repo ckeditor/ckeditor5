@@ -21,7 +21,7 @@
 	font-style: normal;
 
 	/* Don't let the code be squashed e.g. when in a table cell. */
-	min-width: 60px;
+	min-width: 200px;
 
 	& code {
 		background: unset;

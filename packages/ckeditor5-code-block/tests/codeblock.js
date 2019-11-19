@@ -8,7 +8,7 @@ import CodeBlockEditing from '../src/codeblockediting';
 import CodeBlockUI from '../src/codeblockui';
 
 describe( 'CodeBlock', () => {
-	it( 'should require plugins', () => {
+	it( 'should require CodeBlockEditing and CodeBlockUI plugins', () => {
 		expect( CodeBlock.requires ).to.have.members( [ CodeBlockEditing, CodeBlockUI ] );
 	} );
 

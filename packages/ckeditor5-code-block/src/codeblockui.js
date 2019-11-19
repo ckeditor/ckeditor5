@@ -49,8 +49,10 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			splitButtonView.on( 'execute', () => {
+				const defaultLanguageDefinition = localizedLanguageDefinitions[ 0 ];
+
 				editor.execute( 'codeBlock', {
-					language: localizedLanguageDefinitions[ 0 ].class,
+					language: defaultLanguageDefinition.class,
 				} );
 
 				editor.editing.view.focus();
@@ -58,7 +60,7 @@ export default class CodeBlockUI extends Plugin {
 
 			dropdownView.on( 'execute', evt => {
 				editor.execute( 'codeBlock', {
-					language: evt.source._codeBlockLanguage,
+					language: evt.source._codeBlockLanguageClass,
 					forceValue: true
 				} );
 
@@ -91,14 +93,14 @@ export default class CodeBlockUI extends Plugin {
 			const definition = {
 				type: 'button',
 				model: new Model( {
-					_codeBlockLanguage: languageDef.class,
+					_codeBlockLanguageClass: languageDef.class,
 					label: languageDef.label,
 					withText: true
 				} )
 			};
 
 			definition.model.bind( 'isOn' ).to( command, 'value', value => {
-				return value === definition.model._codeBlockLanguage;
+				return value === definition.model._codeBlockLanguageClass;
 			} );
 
 			itemDefinitions.add( definition );
