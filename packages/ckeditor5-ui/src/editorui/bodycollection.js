@@ -12,7 +12,7 @@
 import Template from '../template';
 import ViewCollection from '../viewcollection';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createElement';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 export default class BodyCollection extends ViewCollection {
 	attachToDOM() {
