@@ -65,6 +65,22 @@ describe( 'RestrictedEditing', () => {
 				expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
 				expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
 			} );
+
+			it( 'should convert multiple <span class="ck-restricted-editing-exception">', () => {
+				editor.setData(
+					'<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' +
+					'<p>ABCDEF<span class="ck-restricted-editing-exception">GHIJK</span>LMNOPQRST</p>'
+				);
+
+				expect( model.markers.has( 'restricted-editing-exception:1' ) ).to.be.true;
+				expect( model.markers.has( 'restricted-editing-exception:2' ) ).to.be.true;
+
+				// Data for the first marker is the same as in previous tests so no need to test it again.
+				const secondMarker = model.markers.get( 'restricted-editing-exception:2' );
+
+				expect( secondMarker.getStart().path ).to.deep.equal( [ 1, 6 ] );
+				expect( secondMarker.getEnd().path ).to.deep.equal( [ 1, 11 ] );
+			} );
 		} );
 
 		describe( 'downcast', () => {
