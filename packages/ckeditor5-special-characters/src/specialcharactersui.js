@@ -11,7 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import InsertSpecialCharacterCommand from './insertspecialcharactercommand';
-import SelectView from '@ckeditor/ckeditor5-ui/src/selectview/selectview';
+import SpecialCharactersTableView from './ui/specialcharacterstableview';
+import SpecialCharactersSelectView from './ui/specialcharactersselectview';
 
 /**
  * The special characters UI plugin.
@@ -23,58 +24,77 @@ export default class SpecialCharactersUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const specialCharacterPlugin = editor.plugins.get( 'SpecialCharacters' );
+		const label = t( 'Special characters' );
 
 		const command = new InsertSpecialCharacterCommand( editor );
 		editor.commands.add( 'specialCharacters', command );
 
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
-			// Prepare all special characters groups for displaying in the select view.
-			const specialCharactersGroups = [ ...specialCharacterPlugin.getGroups() ]
-				.map( groupName => ( { label: groupName, value: groupName } ) );
-
+			// Prepare the dropdown element.
 			const dropdownView = createDropdown( locale );
-			const selectView = new SelectView( locale, specialCharactersGroups );
 
 			dropdownView.buttonView.set( {
-				label: t( 'Special characters' ),
+				label,
 				icon: specialCharactersIcon,
 				tooltip: true
 			} );
 
 			dropdownView.bind( 'isEnabled' ).to( command );
-			dropdownView.panelView.children.add( selectView );
 
-			// When a special character was clicked, insert it to the editor.
-			dropdownView.on( 'execute', ( evt, data ) => {
-				console.log( 'Clicked.', data );
-
-				// command.execute( { item: data } );
+			const specialCharactersSelectView = new SpecialCharactersSelectView( locale, {
+				labelText: label,
+				selectOptions: getSelectViewOptions()
 			} );
 
+			const symbolTableView = new SpecialCharactersTableView( locale, {
+				columns: 10 // TODO: Read from config.
+			} );
+
+			symbolTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
+
+			// Insert a special character when a tile was clicked.
+			dropdownView.on( 'execute', ( evt, data ) => {
+				command.execute( { item: data.title } );
+			} );
+
+			// Draw special characters tiles when the dropdown is open.
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
 				if ( !isVisible ) {
 					return;
 				}
 
-				// Draw special characters tiles when the dropdown is opened.
-				printCharacters( selectView );
+				printCharacters( specialCharactersSelectView, symbolTableView.symbolGridView );
 			} );
 
-			// Draw special characters when a user changed a category.
-			selectView.on( 'input', () => {
-				printCharacters( selectView );
+			// Draw special characters tiles for specified category (when a user has changed it).
+			specialCharactersSelectView.on( 'input', () => {
+				printCharacters( specialCharactersSelectView, symbolTableView.symbolGridView );
 			} );
+
+			dropdownView.panelView.children.add( specialCharactersSelectView );
+			dropdownView.panelView.children.add( symbolTableView );
 
 			return dropdownView;
 		} );
 
-		function printCharacters( selectView ) {
-			const groupName = selectView.element.value;
-			const characters = specialCharacterPlugin.getCharactersForGroup( groupName );
+		function printCharacters( selectView, gridView ) {
+			// TODO: Keyboard navigation.
+			gridView.items.clear();
 
-			console.log( { groupName, characters } );
-			console.log( 'Draw!' );
+			const groupName = selectView.value;
+			const characterTitles = specialCharacterPlugin.getCharactersForGroup( groupName );
+
+			for ( const title of characterTitles ) {
+				const character = specialCharacterPlugin.getCharacter( title );
+
+				gridView.items.add( gridView.createSymbolTile( character, title ) );
+			}
+		}
+
+		function getSelectViewOptions() {
+			return [ ...specialCharacterPlugin.getGroups() ]
+				.map( groupName => ( { label: groupName, value: groupName } ) );
 		}
 	}
 }
