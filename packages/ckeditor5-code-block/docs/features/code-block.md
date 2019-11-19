@@ -65,7 +65,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 * To **decrease** indentation: Select the line (or lines) the indent should decrease. Hit the <kbd>Shift</kbd>+<kbd>Tab</kbd> keys or press the "Decrease indent" button in the toolbar.
 
 <info-box>
-	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`	`) character.
+	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
 </info-box>
 
 <info-box>
