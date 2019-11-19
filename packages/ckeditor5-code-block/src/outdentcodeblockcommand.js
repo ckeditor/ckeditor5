@@ -98,7 +98,7 @@ export default class OutdentCodeBlockCommand extends Command {
 		const model = this.editor.model;
 
 		if ( !isModelSelectionInCodeBlock( model.document.selection ) ) {
-			return;
+			return false;
 		}
 
 		// Outdent command can execute only when there is an indent character sequence
