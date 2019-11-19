@@ -71,11 +71,11 @@ describe( 'DecoupledEditor', () => {
 					editorElement.remove();
 				} );
 
-				it( 'can be disabled using config.toolbar.shouldGroupWhenFull', () => {
+				it( 'can be disabled using config.toolbar.shouldNotGroupWhenFull', () => {
 					const editorElement = document.createElement( 'div' );
 					const editor = new DecoupledEditor( editorElement, {
 						toolbar: {
-							shouldGroupWhenFull: false
+							shouldNotGroupWhenFull: true
 						}
 					} );
 
