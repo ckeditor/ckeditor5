@@ -43,7 +43,7 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 		expect( model.schema.checkAttribute( [ '$block' ], 'restrictedEditingException' ) ).to.be.false;
 	} );
 
-	it( 'should register command', () => {
+	it( 'should register the command', () => {
 		const command = editor.commands.get( 'restrictedEditingException' );
 
 		expect( command ).to.be.instanceof( RestrictedEditingExceptionCommand );
@@ -51,7 +51,7 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 
 	describe( 'conversion', () => {
 		describe( 'upcast', () => {
-			it( 'should convert <span class="ck-restricted-editing-exception"> to model attribute', () => {
+			it( 'should convert <span class="ck-restricted-editing-exception"> to the model attribute', () => {
 				editor.setData( '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
@@ -60,7 +60,7 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 		} );
 
 		describe( 'downcast', () => {
-			it( 'should convert model attribute to <span>', () => {
+			it( 'should convert the model attribute to a <span>', () => {
 				const expectedView = '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>';
 
 				setModelData( editor.model,

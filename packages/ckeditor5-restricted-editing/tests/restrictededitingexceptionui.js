@@ -33,7 +33,7 @@ describe( 'RestrictedEditingExceptionUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should register button', () => {
+	it( 'should register a button', () => {
 		expect( buttonView ).to.be.instanceOf( ButtonView );
 		expect( buttonView.isOn ).to.be.false;
 		expect( buttonView.label ).to.equal( 'Enable editing' );
@@ -41,7 +41,7 @@ describe( 'RestrictedEditingExceptionUI', () => {
 		expect( buttonView.isToggleable ).to.be.true;
 	} );
 
-	it( 'should execute command on model execute event', () => {
+	it( 'should execute a command on the button "execute" event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		buttonView.fire( 'execute' );
@@ -49,7 +49,7 @@ describe( 'RestrictedEditingExceptionUI', () => {
 		sinon.assert.calledOnce( executeSpy );
 	} );
 
-	it( 'should bind model to command', () => {
+	it( 'should bind a button to the command', () => {
 		const command = editor.commands.get( 'restrictedEditingException' );
 
 		expect( buttonView.isOn ).to.be.false;
