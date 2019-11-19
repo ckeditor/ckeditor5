@@ -60,7 +60,7 @@ async function startRestrictedMode() {
 
 	await reloadEditor( {
 		plugins: [ ArticlePluginSet, Table, RestrictedEditing ],
-		toolbar: [ 'bold', 'italic', 'link', 'underline', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
+		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
 	} );
 
 	enableSwitchToStandardMode();
