@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+
+:root {
+	--ck-symbol-grid-tile-size: 24px;
+}
+
+.ck.ck-symbol-grid {
+	grid-gap: 5px;
+	padding: 8px;
+	max-height: calc(var(--ck-symbol-grid-tile-size) * 4);
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.ck.ck-symbol-grid__tile {
+	width: var(--ck-symbol-grid-tile-size);
+	height: var(--ck-symbol-grid-tile-size);
+	min-width: var(--ck-symbol-grid-tile-size);
+	min-height: var(--ck-symbol-grid-tile-size);
+	padding: 0;
+	transition: .2s ease box-shadow;
+	border: 0;
+
+	&.ck-disabled {
+		cursor: unset;
+		transition: unset;
+	}
+
+	&.ck-on {
+		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
+
+		& .ck.ck-icon {
+			display: block;
+		}
+	}
+
+	&.ck-on,
+	&:focus:not( .ck-disabled ),
+	&:hover:not( .ck-disabled ) {
+		/* Disable the default .ck-button's border ring. */
+		border: 0;
+	}
+
+	&:focus:not( .ck-disabled ),
+	&:hover:not( .ck-disabled ) {
+		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+	}
+}
+
+.ck.ck-symbol-grid__label {
+	padding: 0 var(--ck-spacing-standard);
+}
