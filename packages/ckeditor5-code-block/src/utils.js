@@ -49,7 +49,7 @@ export function getLeadingWhiteSpaces( textNode ) {
  *
  * Input:
  *
- *		"foo()
+ *		"foo()\n
  *		bar()"
  *
  * Output:
