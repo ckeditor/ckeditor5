@@ -81,6 +81,12 @@ describe( 'RestrictedEditing', () => {
 				expect( secondMarker.getStart().path ).to.deep.equal( [ 1, 6 ] );
 				expect( secondMarker.getEnd().path ).to.deep.equal( [ 1, 11 ] );
 			} );
+
+			it( 'should not convert other <span> elements', () => {
+				editor.setData( '<p>foo <span class="foo bar">bar</span> baz</p>' );
+
+				expect( model.markers.has( 'restricted-editing-exception:1' ) ).to.be.false;
+			} );
 		} );
 
 		describe( 'downcast', () => {
