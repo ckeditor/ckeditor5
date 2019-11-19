@@ -17,7 +17,7 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 Each code block can have its language. The language of the code block is represented as a CSS class set on the `<code>` element, both when editing and in the editor data:
 
 ```html
-<pre><code class="javascript">window.alert( 'Hello world!' )</code></pre>
+<pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
 ```
 
 It is possible to configure which languages are available in the editor. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and XML/HTML):
@@ -27,8 +27,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		codeBlock: {
 			languages: [
-				{ class: 'css', label: 'CSS' },
-				{ class: 'xml', label: 'HTML/XML' }
+				{ class: 'language-css', label: 'CSS' },
+				{ class: 'language-xml', label: 'HTML/XML' }
 			]
 		}
 	} )
@@ -123,19 +123,19 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 	```js
 	codeBlock.languages: [
-		{ class: 'plaintext', label: 'Plain text' }, // The default language.
-		{ class: 'c', label: 'C' },
-		{ class: 'cs', label: 'C#' },
-		{ class: 'cpp', label: 'C++' },
-		{ class: 'css', label: 'CSS' },
-		{ class: 'diff', label: 'Diff' },
-		{ class: 'xml', label: 'HTML/XML' },
-		{ class: 'java', label: 'Java' },
-		{ class: 'javascript', label: 'JavaScript' },
-		{ class: 'php', label: 'PHP' },
-		{ class: 'python', label: 'Python' },
-		{ class: 'ruby', label: 'Ruby' },
-		{ class: 'typescript', label: 'TypeScript' },
+		{ class: 'language-plaintext', label: 'Plain text' }, // The default language.
+		{ class: 'language-c', label: 'C' },
+		{ class: 'language-cs', label: 'C#' },
+		{ class: 'language-cpp', label: 'C++' },
+		{ class: 'language-css', label: 'CSS' },
+		{ class: 'language-diff', label: 'Diff' },
+		{ class: 'language-xml', label: 'HTML/XML' },
+		{ class: 'language-java', label: 'Java' },
+		{ class: 'language-javascript', label: 'JavaScript' },
+		{ class: 'language-php', label: 'PHP' },
+		{ class: 'language-python', label: 'Python' },
+		{ class: 'language-ruby', label: 'Ruby' },
+		{ class: 'language-typescript', label: 'TypeScript' },
 	]
 	```
 
@@ -146,7 +146,7 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	```
 
 	**Note**: If the selection is already in a code block, executing the command will convert the block back into plain paragraphs.
-* The {@link module:code-block/indentcodeblockcommand~IndentCodeBlockCommand `'indentCodeBlock'` and `'outdentCodeBlock'`} commands.
+* The {@link module:code-block/indentcodeblockcommand~IndentCodeBlockCommand `'indentCodeBlock'`} and {@link module:code-block/outdentcodeblockcommand~OutdentCodeBlockCommand `'outdentCodeBlock'`} commands.
 
 	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in [one of the chapters](#changing-line-indentation):
 
