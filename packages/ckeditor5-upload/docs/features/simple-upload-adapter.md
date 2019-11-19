@@ -17,7 +17,7 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 ## Installation
 
 <info-box info>
-	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link builds/guides/overview#available-builds official editor builds}. You will need to create a custom editor build to use it. Check out the {@link builds/guides/integration/installing-plugins "Installing plugins"} guide to learn more.
+	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link builds/guides/overview#available-builds official editor builds}. Check out the {@link builds/guides/integration/installing-plugins "Installing plugins"} guide to learn more.
 </info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
