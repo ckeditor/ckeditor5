@@ -859,10 +859,10 @@ export default class Element extends Node {
 // @param {Object|Map} attrs Attributes to parse.
 // @returns {Map} Parsed attributes.
 function parseAttributes( attrs ) {
-	if ( isPlainObject( attrs ) ) {
-		attrs = objectToMap( attrs );
-	} else {
+	if ( attrs instanceof Map ) {
 		attrs = new Map( attrs );
+	} else {
+		attrs = objectToMap( attrs );
 	}
 
 	for ( const [ key, value ] of attrs ) {
