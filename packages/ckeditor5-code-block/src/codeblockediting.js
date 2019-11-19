@@ -54,19 +54,19 @@ export default class CodeBlockEditing extends Plugin {
 
 		editor.config.define( 'codeBlock', {
 			languages: [
-				{ class: 'plaintext', label: 'Plain text' },
-				{ class: 'c', label: 'C' },
-				{ class: 'cs', label: 'C#' },
-				{ class: 'cpp', label: 'C++' },
-				{ class: 'css', label: 'CSS' },
-				{ class: 'diff', label: 'Diff' },
-				{ class: 'xml', label: 'HTML/XML' },
-				{ class: 'java', label: 'Java' },
-				{ class: 'javascript', label: 'JavaScript' },
-				{ class: 'php', label: 'PHP' },
-				{ class: 'python', label: 'Python' },
-				{ class: 'ruby', label: 'Ruby' },
-				{ class: 'typescript', label: 'TypeScript' },
+				{ class: 'language-plaintext', label: 'Plain text' },
+				{ class: 'language-c', label: 'C' },
+				{ class: 'language-cs', label: 'C#' },
+				{ class: 'language-cpp', label: 'C++' },
+				{ class: 'language-css', label: 'CSS' },
+				{ class: 'language-diff', label: 'Diff' },
+				{ class: 'language-xml', label: 'HTML/XML' },
+				{ class: 'language-java', label: 'Java' },
+				{ class: 'language-javascript', label: 'JavaScript' },
+				{ class: 'language-php', label: 'PHP' },
+				{ class: 'language-python', label: 'Python' },
+				{ class: 'language-ruby', label: 'Ruby' },
+				{ class: 'language-typescript', label: 'TypeScript' },
 			],
 
 			// A single tab.
