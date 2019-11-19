@@ -14,6 +14,7 @@ import RestrictedEditing from '../../src/restrictedediting';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
+const currentModeDisplay = document.getElementById( 'current-mode' );
 
 enableSwitchToStandardMode();
 enableSwitchToRestrictedMode();
@@ -51,6 +52,7 @@ async function startStandardMode() {
 		}
 	} );
 
+	currentModeDisplay.innerHTML = 'Current Mode: <span class="mode mode-standard">STANDARD</span>';
 	enableSwitchToRestrictedMode();
 }
 
@@ -63,6 +65,7 @@ async function startRestrictedMode() {
 		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
 	} );
 
+	currentModeDisplay.innerHTML = 'Current Mode: <span class="mode mode-restricted">RESTRICTED</span>';
 	enableSwitchToStandardMode();
 }
 
