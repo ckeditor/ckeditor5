@@ -19,4 +19,19 @@ export default class RestrictedEditing extends Plugin {
 	static get pluginName() {
 		return 'RestrictedEditing';
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'downcast' ).markerToHighlight( {
+			model: 'restricted-editing-exception',
+			view: {
+				name: 'span',
+				classes: 'ck-restricted-editing-exception'
+			}
+		} );
+	}
 }
