@@ -54,6 +54,19 @@ describe( 'RestrictedEditing', () => {
 			return editor.destroy();
 		} );
 
+		describe( 'upcast', () => {
+			it( 'should convert <span class="ck-restricted-editing-exception"> to marker', () => {
+				editor.setData( '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' );
+
+				expect( model.markers.has( 'restricted-editing-exception:1' ) ).to.be.true;
+
+				const marker = model.markers.get( 'restricted-editing-exception:1' );
+
+				expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
+				expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+			} );
+		} );
+
 		describe( 'downcast', () => {
 			it( 'should convert model marker to <span>', () => {
 				setModelData( model, '<paragraph>foo bar baz</paragraph>' );
