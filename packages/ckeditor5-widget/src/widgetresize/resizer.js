@@ -81,7 +81,7 @@ export default class Resizer {
 		this.decorate( 'updateSize' );
 
 		this.on( 'commit', event => {
-			// State might not be initialized.In this case prevent further handling and make sure that resizer is cleaned up (#5195).
+			// State might not be initialized yet. In this case, prevent further handling and make sure that the resizer is cleaned up (#5195).
 			if ( !this.state.proposedWidth ) {
 				this._cleanup();
 				event.stop();
