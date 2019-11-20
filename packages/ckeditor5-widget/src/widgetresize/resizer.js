@@ -63,12 +63,12 @@ export default class Resizer {
 		this._domResizerWrapper = null;
 
 		/**
-		 * View to a wrapper of an element controlled by this resizer.
+		 * A wrapper that is controlled by the resizer. This is usually a widget element.
 		 *
 		 * @private
 		 * @type {module:engine/view/element~Element|null}
 		 */
-		this._resizerWrapperView = null;
+		this._viewResizerWrapper = null;
 
 		/**
 		 * @observable
@@ -120,7 +120,7 @@ export default class Resizer {
 		writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
 		writer.addClass( 'ck-widget_with-resizer', widgetElement );
 
-		this._resizerWrapperView = viewResizerWrapper;
+		this._viewResizerWrapper = viewResizerWrapper;
 	}
 
 	/**
@@ -221,8 +221,8 @@ export default class Resizer {
 				const handleHost = this._getHandleHost();
 				const clientRect = handleHostRect || new Rect( handleHost );
 
-				writer.setStyle( 'width', clientRect.width + 'px', this._resizerWrapperView );
-				writer.setStyle( 'height', clientRect.height + 'px', this._resizerWrapperView );
+				writer.setStyle( 'width', clientRect.width + 'px', this._viewResizerWrapper );
+				writer.setStyle( 'height', clientRect.height + 'px', this._viewResizerWrapper );
 
 				const offsets = {
 					left: handleHost.offsetLeft,
@@ -236,11 +236,11 @@ export default class Resizer {
 				// or simply another editable. By doing that the border and resizers are shown
 				// only around the resize host.
 				if ( !widgetWrapper.isSameNode( handleHost ) ) {
-					writer.setStyle( 'left', offsets.left + 'px', this._resizerWrapperView );
-					writer.setStyle( 'top', offsets.top + 'px', this._resizerWrapperView );
+					writer.setStyle( 'left', offsets.left + 'px', this._viewResizerWrapper );
+					writer.setStyle( 'top', offsets.top + 'px', this._viewResizerWrapper );
 
-					writer.setStyle( 'height', offsets.height + 'px', this._resizerWrapperView );
-					writer.setStyle( 'width', offsets.width + 'px', this._resizerWrapperView );
+					writer.setStyle( 'height', offsets.height + 'px', this._viewResizerWrapper );
+					writer.setStyle( 'width', offsets.width + 'px', this._viewResizerWrapper );
 				}
 			} );
 		}
