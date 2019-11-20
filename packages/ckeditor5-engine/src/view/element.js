@@ -10,7 +10,7 @@
 import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
-import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import { isPlainObject } from 'lodash-es';
@@ -853,17 +853,13 @@ export default class Element extends Node {
 }
 
 // Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
-// as an object (instead of `Map`), the object is transformed to the map. Attributes with `null` value are removed.
+// as an object (instead of `Iterable`), the object is transformed to the map. Attributes with `null` value are removed.
 // Attributes with non-`String` value are converted to `String`.
 //
-// @param {Object|Map} attrs Attributes to parse.
+// @param {Object|Iterable} attrs Attributes to parse.
 // @returns {Map} Parsed attributes.
 function parseAttributes( attrs ) {
-	if ( attrs instanceof Map ) {
-		attrs = new Map( attrs );
-	} else {
-		attrs = objectToMap( attrs );
-	}
+	attrs = toMap( attrs );
 
 	for ( const [ key, value ] of attrs ) {
 		if ( value === null ) {
