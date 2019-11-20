@@ -1,6 +1,3 @@
 {
-	"extends": "stylelint-config-recommended",
-	"rules": {
-		"at-rule-no-unknown": null
-	}
+	"extends": "stylelint-config-ckeditor5"
 }
