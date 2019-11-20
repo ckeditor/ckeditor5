@@ -34,13 +34,6 @@ export default class EditorUIView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection} #body
 		 */
 		this.body = new BodyCollection( locale );
-
-		/**
-		 * The element holding elements of the 'body' region.
-		 *
-		 * @private
-		 * @member {HTMLElement} #_bodyCollectionContainer
-		 */
 	}
 
 	/**
