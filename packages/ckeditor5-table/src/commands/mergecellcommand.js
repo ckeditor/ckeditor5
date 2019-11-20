@@ -171,9 +171,11 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
 
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
+	const rightCellSpan = parseInt( cellOnRight.getAttribute( 'colspan' ) || 1 );
 
-	const isMergeWithBodyCell = direction == 'right' && rightCellColumn === headingColumns;
-	const isMergeWithHeadCell = direction == 'left' && leftCellColumn === ( headingColumns - 1 );
+	// We cannot merge cells if the result will extend over heading section.
+	const isMergeWithBodyCell = direction == 'right' && ( rightCellColumn + rightCellSpan > headingColumns );
+	const isMergeWithHeadCell = direction == 'left' && ( leftCellColumn + leftCellSpan > headingColumns - 1 );
 
 	if ( headingColumns && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
 		return;
