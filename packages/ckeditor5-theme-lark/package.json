@@ -33,7 +33,8 @@
     "eslint-config-ckeditor5": "^2.0.0",
     "husky": "^1.3.1",
     "lint-staged": "^7.0.0",
-    "stylelint": "^11.1.1"
+    "stylelint": "^11.1.1",
+    "stylelint-config-recommended": "^3.0.0"
   },
   "engines": {
     "node": ">=8.0.0",
@@ -54,7 +55,7 @@
   ],
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
-    "stylelint": "stylelint --quiet 'theme/**/*.css' 'docs/**/*.css'"
+    "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css' 'docs/**/*.css'"
   },
   "main": "./theme/theme.css",
   "lint-staged": {
@@ -62,7 +63,7 @@
       "eslint --quiet"
     ],
     "**/*.css": [
-      "stylelint --quiet"
+      "stylelint --quiet --allow-empty-input"
     ]
   },
   "eslintIgnore": [
