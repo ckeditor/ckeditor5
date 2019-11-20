@@ -49,7 +49,7 @@ export default class BodyCollection extends ViewCollection {
 
 		const wrapper = document.querySelector( '.ck-body-wrapper' );
 
-		if ( wrapper.childElementCount == 0 ) {
+		if ( wrapper && wrapper.childElementCount == 0 ) {
 			wrapper.remove();
 		}
 	}

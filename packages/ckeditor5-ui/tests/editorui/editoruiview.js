@@ -37,41 +37,18 @@ describe( 'EditorUIView', () => {
 	} );
 
 	describe( 'render()', () => {
-		it( 'sets the right class set to the body region', () => {
-			const el = view._bodyCollectionContainer;
-
-			expect( el.parentNode ).to.equal( document.body );
-			expect( el.classList.contains( 'ck' ) ).to.be.true;
-			expect( el.classList.contains( 'ck-body' ) ).to.be.true;
-			expect( el.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
-			expect( el.classList.contains( 'ck-reset_all' ) ).to.be.true;
-		} );
-
-		it( 'sets the right dir attribute to the body region (LTR)', () => {
-			const el = view._bodyCollectionContainer;
-
-			expect( el.getAttribute( 'dir' ) ).to.equal( 'ltr' );
-		} );
-
-		it( 'sets the right dir attribute to the body region (RTL)', () => {
-			const locale = new Locale( { uiLanguage: 'ar' } );
-			const view = new EditorUIView( locale );
-
-			view.render();
-
-			const el = view._bodyCollectionContainer;
-
-			expect( el.getAttribute( 'dir' ) ).to.equal( 'rtl' );
-
-			view.destroy();
+		it( 'attach the body collection', () => {
+			expect( view.body._bodyCollectionContainer.parentNode.classList.contains( 'ck-body-wrapper' ) ).to.be.true;
+			expect( view.body._bodyCollectionContainer.parentNode.parentNode ).to.equal( document.body );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'removes the body region container', () => {
-			const el = view._bodyCollectionContainer;
+		it( 'detach the body collection', () => {
+			const el = view.body._bodyCollectionContainer;
 
 			view.destroy();
+
 			expect( el.parentNode ).to.be.null;
 		} );
 

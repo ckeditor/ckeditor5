@@ -7,7 +7,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
 import Notification from '../../src/notification/notification';
 
 describe( 'Notification', () => {
@@ -29,7 +29,7 @@ describe( 'Notification', () => {
 	describe( 'init()', () => {
 		it( 'should create notification plugin', () => {
 			expect( notification ).to.instanceof( Notification );
-			expect( notification ).to.instanceof( Plugin );
+			expect( notification ).to.instanceof( ContextPlugin );
 		} );
 	} );
 
