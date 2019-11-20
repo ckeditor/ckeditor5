@@ -14,20 +14,22 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Font from '@ckeditor/ckeditor5-font/src/font';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor.builtinPlugins.push(
-	Alignment,
 	PasteFromOffice,
+	Alignment,
 	Code,
 	Strikethrough,
 	Subscript,
 	Superscript,
 	Underline,
 	Font,
-	Highlight,
-	Indent
+	Indent,
+	IndentBlock,
+	ImageResize,
 );
 
 window.ClassicEditor = ClassicEditor;

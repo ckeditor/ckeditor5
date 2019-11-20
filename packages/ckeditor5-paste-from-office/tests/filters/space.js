@@ -81,6 +81,24 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
+
+			// ckeditor5#2095
+			it( 'should detect space spans which are split into multiple lines', () => {
+				const input =
+					'<p><span style=\'font-size:13.0pt;line-height:150%;\n' +
+					'font-family:"Times New Roman",serif\'><span\n' +
+					'style=\'mso-spacerun:yes\'>\n' +
+					'</span><span style=\'mso-spacerun:yes\'>          </span><span\n' +
+					'style=\'mso-spacerun:yes\'>    </span><span style=\'mso-spacerun:yes\'> </span>Test<o:p></o:p></span></p>';
+
+				const expected =
+					'<p><span style=\'font-size:13.0pt;line-height:150%;\nfont-family:"Times New Roman",serif\'>' +
+					'<span style=\'mso-spacerun:yes\'>          </span>' +
+					'<span\nstyle=\'mso-spacerun:yes\'>    </span>' +
+					'<span style=\'mso-spacerun:yes\'> </span>Test<o:p></o:p></span></p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
 		} );
 
 		describe( 'normalizeSpacerunSpans()', () => {
@@ -90,6 +108,24 @@ describe( 'PasteFromOffice - filters', () => {
 
 				const expected = '<p> <span style="mso-spacerun:yes">&nbsp; &nbsp;</span>Foo</p>' +
 					'<p> Baz <span style="mso-spacerun:yes">&nbsp; &nbsp; &nbsp; </span></p>';
+
+				const domParser = new DOMParser();
+				const htmlDocument = domParser.parseFromString( input, 'text/html' );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.not.equal( expected );
+
+				normalizeSpacerunSpans( htmlDocument );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
+			} );
+
+			// ckeditor5#5645
+			it( 'should normalize spaces inside special "span.spacerun" elements that contain no data', () => {
+				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
+					'<p> Baz <span style=\'mso-spacerun:yes\'></span></p>';
+
+				const expected = '<p> <span style="mso-spacerun:yes">&nbsp; &nbsp;</span>Foo</p>' +
+					'<p> Baz <span style="mso-spacerun:yes"></span></p>';
 
 				const domParser = new DOMParser();
 				const htmlDocument = domParser.parseFromString( input, 'text/html' );
