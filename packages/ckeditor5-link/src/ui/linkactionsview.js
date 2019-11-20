@@ -209,7 +209,8 @@ export default class LinkActionsView extends View {
 					'ck-link-actions__preview'
 				],
 				href: bind.to( 'href', href => href && ensureSafeUrl( href ) ),
-				target: '_blank'
+				target: '_blank',
+				rel: 'noopener noreferrer'
 			}
 		} );
 
