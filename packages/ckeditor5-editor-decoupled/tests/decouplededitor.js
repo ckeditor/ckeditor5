@@ -60,6 +60,30 @@ describe( 'DecoupledEditor', () => {
 
 				editor.ui.destroy();
 			} );
+
+			describe( 'automatic toolbar items groupping', () => {
+				it( 'should be on by default', () => {
+					const editorElement = document.createElement( 'div' );
+					const editor = new DecoupledEditor( editorElement );
+
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+
+					editorElement.remove();
+				} );
+
+				it( 'can be disabled using config.toolbar.shouldNotGroupWhenFull', () => {
+					const editorElement = document.createElement( 'div' );
+					const editor = new DecoupledEditor( editorElement, {
+						toolbar: {
+							shouldNotGroupWhenFull: true
+						}
+					} );
+
+					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.false;
+
+					editorElement.remove();
+				} );
+			} );
 		} );
 	} );
 

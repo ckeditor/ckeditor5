@@ -28,10 +28,14 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {HTMLElement} [editableElement] The editable element. If not specified, it will be automatically created by
+	 * @param {Object} [options={}] Configuration options fo the view instance.
+	 * @param {HTMLElement} [options.editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
+	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * in the main {@link editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar toolbar}.
+	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
-	constructor( locale, editingView, editableElement ) {
+	constructor( locale, editingView, options = {} ) {
 		super( locale );
 
 		/**
@@ -41,7 +45,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbar = new ToolbarView( locale, {
-			shouldGroupWhenFull: true
+			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
 		} );
 
 		/**
@@ -50,7 +54,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
 		// Because of the above, make sure the toolbar supports rounded corners.
