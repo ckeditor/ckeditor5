@@ -244,16 +244,25 @@ describe( 'Watchdog', () => {
 			const editorErrorSpy = sinon.spy();
 			watchdog.on( 'error', editorErrorSpy );
 
+			const watchdogErrorHandlerSpy = sinon.spy( watchdog, '_handleError' );
+
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
 			return watchdog.create( element ).then( () => {
+				const error = new Error( 'foo' );
+
 				setTimeout( () => {
-					throw new Error( 'foo' );
+					throw error;
 				} );
+
 				setTimeout( () => {
 					throw 'bar';
+				} );
+
+				setTimeout( () => {
+					throw null;
 				} );
 
 				return new Promise( res => {
@@ -261,6 +270,10 @@ describe( 'Watchdog', () => {
 						window.onerror = originalErrorHandler;
 
 						sinon.assert.notCalled( editorErrorSpy );
+
+						// Assert that only instances of the `Error` class will be checked deeper.
+						sinon.assert.calledOnce( watchdogErrorHandlerSpy );
+						expect( watchdogErrorHandlerSpy.getCall( 0 ).args[ 0 ] ).to.equal( error );
 
 						watchdog.destroy().then( res );
 					} );
