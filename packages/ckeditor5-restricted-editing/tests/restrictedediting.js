@@ -128,4 +128,53 @@ describe( 'RestrictedEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'editing behavior', () => {
+		let model;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditing ] } );
+			model = editor.model;
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should keep markers in the view when editable region is edited', () => {
+			setModelData( model,
+				'<paragraph>foo bar baz</paragraph>' +
+				'<paragraph>xxx y[]yy zzz</paragraph>'
+			);
+
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			const secondParagraph = model.document.getRoot().getChild( 1 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+				writer.addMarker( 'restricted-editing-exception:2', {
+					range: writer.createRange(
+						writer.createPositionAt( secondParagraph, 4 ),
+						writer.createPositionAt( secondParagraph, 7 )
+					),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'R', model.document.selection.getAttributes() ) );
+			} );
+
+			const expectedView = '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' +
+				'<p>xxx <span class="ck-restricted-editing-exception">yRyy</span> zzz</p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
+	} );
 } );

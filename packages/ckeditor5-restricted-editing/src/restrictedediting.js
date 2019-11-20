@@ -43,11 +43,12 @@ export default class RestrictedEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: 'restricted-editing-exception',
-			view: {
+			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
+			view: () => ( {
 				name: 'span',
 				classes: 'ck-restricted-editing-exception',
 				priority: -10
-			}
+			} )
 		} );
 	}
 }
