@@ -217,7 +217,7 @@ export default class Styles {
 	}
 
 	/**
-	 * Return normalized style object;
+	 * Return a normalized style object.
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setStyle( 'margin:1px 2px 3em;' );
