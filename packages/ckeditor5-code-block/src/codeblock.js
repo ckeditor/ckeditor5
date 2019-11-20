@@ -14,7 +14,7 @@ import CodeBlockUI from './codeblockui';
 /**
  * The code block plugin.
  *
- * For more information about this feature check the package page.
+ * For more information about this feature check the {@glink api/code-block package page}.
  *
  * This is a "glue" plugin which loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
  * and {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.
