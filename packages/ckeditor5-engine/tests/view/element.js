@@ -230,7 +230,7 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'isSimilar', () => {
+	describe( 'isSimilar()', () => {
 		const el = new Element( 'p', { foo: 'bar' } );
 		it( 'should return false when comparing to non-element', () => {
 			expect( el.isSimilar( null ) ).to.be.false;
@@ -246,7 +246,7 @@ describe( 'Element', () => {
 			expect( el.isSimilar( other ) ).to.be.true;
 		} );
 
-		it( 'sould return false when name is not the same', () => {
+		it( 'should return false when name is not the same', () => {
 			const other = el._clone();
 			other.name = 'div';
 
@@ -281,24 +281,57 @@ describe( 'Element', () => {
 			expect( el1.isSimilar( el4 ) ).to.be.false;
 		} );
 
-		it( 'should compare styles attribute', () => {
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'p' );
-			const el3 = new Element( 'p' );
-			const el4 = new Element( 'p' );
+		describe( 'comparing styles', () => {
+			let element, other;
 
-			el1._setStyle( 'color', 'red' );
-			el1._setStyle( 'top', '10px' );
-			el2._setStyle( 'top', '20px' );
-			el3._setStyle( 'top', '10px' );
-			el3._setStyle( 'color', 'red' );
-			el4._setStyle( 'color', 'blue' );
-			el4._setStyle( 'top', '10px' );
+			beforeEach( () => {
+				element = new Element( 'p' );
+				other = new Element( 'p' );
 
-			expect( el1.isSimilar( el2 ) ).to.be.false;
-			expect( el1.isSimilar( el3 ) ).to.be.true;
-			expect( el2.isSimilar( el3 ) ).to.be.false;
-			expect( el3.isSimilar( el4 ) ).to.be.false;
+				element._setStyle( 'color', 'red' );
+				element._setStyle( 'top', '10px' );
+			} );
+
+			it( 'should return true when both elements have the same styles set (same order)', () => {
+				other._setStyle( 'color', 'red' );
+				other._setStyle( 'top', '10px' );
+
+				expect( element.isSimilar( other ) ).to.be.true;
+			} );
+
+			it( 'should return true when both elements have the same styles set (different order)', () => {
+				other._setStyle( 'top', '10px' );
+				other._setStyle( 'color', 'red' );
+
+				expect( element.isSimilar( other ) ).to.be.true;
+			} );
+
+			it( 'should return false when the other has fewer styles', () => {
+				other._setStyle( 'top', '20px' );
+
+				expect( element.isSimilar( other ) ).to.be.false;
+			} );
+
+			it( 'should return false when the other has fewer styles (but with same values)', () => {
+				other._setStyle( 'top', '10px' );
+
+				expect( element.isSimilar( other ) ).to.be.false;
+			} );
+
+			it( 'should return false when the other has more styles', () => {
+				other._setStyle( 'top', '10px' );
+				other._setStyle( 'color', 'red' );
+				other._setStyle( 'bottom', '10px' );
+
+				expect( element.isSimilar( other ) ).to.be.false;
+			} );
+
+			it( 'should return false when the other has the same styles set but with different values', () => {
+				other._setStyle( 'top', '10px' );
+				other._setStyle( 'color', 'blue' );
+
+				expect( element.isSimilar( other ) ).to.be.false;
+			} );
 		} );
 	} );
 
