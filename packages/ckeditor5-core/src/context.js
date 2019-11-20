@@ -19,7 +19,7 @@ export default class Context {
 	/**
 	 * Creates a context instance with a given configuration.
 	 *
-	 * Usually, not to be used directly. See the static {@link ~Context.create `create()`} method.
+	 * Usually, not to be used directly. See the static {@link module:core/context~Context.create `create()`} method.
 	 *
 	 * @param {Object} [config={}] The context config.
 	 */
