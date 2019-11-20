@@ -13,7 +13,7 @@ import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
 import OutdentCodeBlockCommand from './outdentcodeblockcommand';
 import {
-	getLocalizedLanguageDefinitions,
+	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
 	rawSnippetTextToModelDocumentFragment
 } from './utils';
@@ -55,19 +55,19 @@ export default class CodeBlockEditing extends Plugin {
 
 		editor.config.define( 'codeBlock', {
 			languages: [
-				{ class: 'language-plaintext', label: 'Plain text' },
-				{ class: 'language-c', label: 'C' },
-				{ class: 'language-cs', label: 'C#' },
-				{ class: 'language-cpp', label: 'C++' },
-				{ class: 'language-css', label: 'CSS' },
-				{ class: 'language-diff', label: 'Diff' },
-				{ class: 'language-xml', label: 'HTML/XML' },
-				{ class: 'language-java', label: 'Java' },
-				{ class: 'language-javascript', label: 'JavaScript' },
-				{ class: 'language-php', label: 'PHP' },
-				{ class: 'language-python', label: 'Python' },
-				{ class: 'language-ruby', label: 'Ruby' },
-				{ class: 'language-typescript', label: 'TypeScript' },
+				{ language: 'plaintext', label: 'Plain text' },
+				{ language: 'c', label: 'C' },
+				{ language: 'cs', label: 'C#' },
+				{ language: 'cpp', label: 'C++' },
+				{ language: 'css', label: 'CSS' },
+				{ language: 'diff', label: 'Diff' },
+				{ language: 'xml', label: 'HTML/XML' },
+				{ language: 'java', label: 'Java' },
+				{ language: 'javascript', label: 'JavaScript' },
+				{ language: 'php', label: 'PHP' },
+				{ language: 'python', label: 'Python' },
+				{ language: 'ruby', label: 'Ruby' },
+				{ language: 'typescript', label: 'TypeScript' },
 			],
 
 			// A single tab.
@@ -83,9 +83,7 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 
-		const localizedLanguageDefinitions = getLocalizedLanguageDefinitions( editor );
-		const languageClasses = localizedLanguageDefinitions.map( def => def.class );
-		const languageLabels = Object.assign( {}, ...localizedLanguageDefinitions.map( def => ( { [ def.class ]: def.label } ) ) );
+		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
 		// The main command.
 		editor.commands.add( 'codeBlock', new CodeBlockCommand( editor ) );
@@ -126,10 +124,10 @@ export default class CodeBlockEditing extends Plugin {
 		} );
 
 		// Conversion.
-		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, languageLabels ) );
-		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model ) );
+		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
+		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
-		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelCodeBlockInsertion( editor.data, languageClasses ) );
+		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelCodeBlockInsertion( editor.data, normalizedLanguagesDefs ) );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and

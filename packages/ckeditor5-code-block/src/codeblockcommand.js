@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import first from '@ckeditor/ckeditor5-utils/src/first';
+import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
 /**
  * The code block command plugin.
@@ -46,11 +47,12 @@ export default class CodeBlockCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const firstLanguageInConfig = editor.config.get( 'codeBlock.languages' ).shift();
+		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
+		const firstLanguageInConfig = normalizedLanguagesDefs[ 0 ];
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
-		const language = options.language || firstLanguageInConfig.class;
+		const language = options.language || firstLanguageInConfig.language;
 
 		model.change( writer => {
 			if ( value ) {

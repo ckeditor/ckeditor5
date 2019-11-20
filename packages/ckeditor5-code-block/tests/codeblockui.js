@@ -79,7 +79,7 @@ describe( 'CodeBlockUI', () => {
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledOnce( focusSpy );
 			sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
-				language: 'language-cs',
+				language: 'cs',
 				forceValue: true
 			} );
 		} );
@@ -157,7 +157,7 @@ describe( 'CodeBlockUI', () => {
 
 				expect( listView.items.get( 2 ).children.first.isOn ).to.be.false;
 
-				command.value = 'language-cs';
+				command.value = 'cs';
 				expect( listView.items.get( 2 ).children.first.isOn ).to.be.true;
 			} );
 
@@ -216,7 +216,7 @@ describe( 'CodeBlockUI', () => {
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledOnce( focusSpy );
 				sinon.assert.calledWithExactly( executeSpy.firstCall, 'codeBlock', {
-					language: 'language-plaintext'
+					language: 'plaintext'
 				} );
 			} );
 		} );

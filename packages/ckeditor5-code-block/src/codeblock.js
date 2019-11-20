@@ -14,7 +14,7 @@ import CodeBlockUI from './codeblockui';
 /**
  * The code block plugin.
  *
- * For more information about this feature check the {@glink api/code-block package page}.
+ * For more information about this feature check the package page.
  *
  * This is a "glue" plugin which loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
  * and {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.
@@ -64,57 +64,83 @@ export default class CodeBlock extends Plugin {
  * The code block language descriptor. See {@link module:code-block/codeblock~CodeBlockConfig#languages} to learn more.
  *
  *		{
- *			 class: 'language-javascript',
+ *			 language: 'javascript',
  *			 label: 'JavaScript'
  *		}
  *
  * @typedef {Object} module:code-block/codeblock~CodeBlockLanguageDefinition
- * @property {String} label The human–readable label associated with the language displayed in the UI.
- * @property {String} class The CSS class associated with the language.
+ * @property {String} language The name of the language that will be stored in the model attribute. Also, when `class`
+ * is not specified, it will also be used to create the CSS class associated with the language (prefixed by "language-").
+ * @property {String} label The human–readable label associated with the language and displayed in the UI.
+ * @property {String} [class] The CSS class associated with the language. When not specified the `language`
+ * property is used to create a class prefixed by "language-".
  */
 
 /**
  * The list of code languages available in the user interface to choose for a particular code block.
- * The language of the code block is represented as a CSS class set on the `<code>` element, both
- * when editing and in the editor data:
  *
- *		<pre><code class="javascript">window.alert( 'Hello world!' )</code></pre>
+ * The language of the code block is represented as a CSS class (by default prefixed by "language-") set on the
+ * `<code>` element, both when editing and in the editor data. The CSS class associated with the language
+ * can be used by third–party code syntax highlighters to detect and apply the correct highlighting.
  *
- * The CSS class associated with the language can be then used by third–party code syntax
- * highlighters to detect and apply the correct highlighting. Use this configuration
- * to match requirements of your integration:
+ * For instance, this language configuration:
  *
  *		ClassicEditor
  *			.create( editorElement, {
  *				codeBlock: {
  *					languages: [
- * 						{ class: 'language-plaintext', label: 'Plain text' }, // The default language.
- *						{ class: 'language-php', label: 'PHP' },
- *						{ class: 'language-java', label: 'Java' },
- *						{ class: 'language-javascript', label: 'JavaScript' },
- *						{ class: 'language-python', label: 'Python' }
+ *						// ...
+ *						{ language: 'javascript', label: 'JavaScript' },
+ *						// ...
  *					]
  *				}
  *		} )
  *		.then( ... )
  *		.catch( ... );
  *
- * The default value is as follows:
+ * will result in the following structure of JavaScript code blocks in the editor editing and data:
+ *
+ *		<pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
+ *
+ * You can customize the CSS class by specifying an optional `class` property in a language definition:
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				codeBlock: {
+ *					languages: [
+ *						// Do not render CSS class for the plain text code blocks.
+ * 						{ language: 'plaintext', label: 'Plain text', class: '' },
+ *
+ *						// Use the "php-code" class for PHP code blocks.
+ *						{ language: 'php', label: 'PHP', class: 'php-code' },
+ *
+ *						// Use the "js" class for JavaScript code blocks.
+ *						{ language: 'javascript', label: 'JavaScript', class: 'js' },
+ *
+ *						// Python code blocks will have the default "language-python" CSS class.
+ *						{ language: 'python', label: 'Python' }
+ *					]
+ *				}
+ *		} )
+ *		.then( ... )
+ *		.catch( ... );
+ *
+ * The default value of the language configuration is as follows:
  *
  *		languages: [
- *			{ class: 'language-plaintext', label: 'Plain text' }, // The default language.
- *			{ class: 'language-c', label: 'C' },
- *			{ class: 'language-cs', label: 'C#' },
- *			{ class: 'language-cpp', label: 'C++' },
- *			{ class: 'language-css', label: 'CSS' },
- *			{ class: 'language-diff', label: 'Diff' },
- *			{ class: 'language-xml', label: 'HTML/XML' },
- *			{ class: 'language-java', label: 'Java' },
- *			{ class: 'language-javascript', label: 'JavaScript' },
- *			{ class: 'language-php', label: 'PHP' },
- *			{ class: 'language-python', label: 'Python' },
- *			{ class: 'language-ruby', label: 'Ruby' },
- *			{ class: 'language-typescript', label: 'TypeScript' },
+ *			{ language: 'plaintext', label: 'Plain text' }, // The default language.
+ *			{ language: 'c', label: 'C' },
+ *			{ language: 'cs', label: 'C#' },
+ *			{ language: 'cpp', label: 'C++' },
+ *			{ language: 'css', label: 'CSS' },
+ *			{ language: 'diff', label: 'Diff' },
+ *			{ language: 'xml', label: 'HTML/XML' },
+ *			{ language: 'java', label: 'Java' },
+ *			{ language: 'javascript', label: 'JavaScript' },
+ *			{ language: 'php', label: 'PHP' },
+ *			{ language: 'python', label: 'Python' },
+ *			{ language: 'ruby', label: 'Ruby' },
+ *			{ language: 'typescript', label: 'TypeScript' },
  *		]
  *
  * **Note**: The first language defined in the configuration is considered the default one. This means it will be

@@ -10,28 +10,71 @@
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
- * Returns code block languages as defined in `config.codeBlock.languages` but processed to consider
- * the editor localization, i.e. to display {@link module:code-block/codeblock~CodeBlockLanguageDefinition}
- * in the correct language.
+ * Returns code block languages as defined in `config.codeBlock.languages` but processed:
  *
- * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
- * when the user configuration is defined because the editor does not exist yet.
+ * * to consider the editor localization, i.e. to display {@link module:code-block/codeblock~CodeBlockLanguageDefinition}
+ * in the correct language — there is no way to use {@link module:utils/locale~Locale#t} when the user
+ * configuration is defined because the editor does not exist yet.
+ * * to make sure each definition has a CSS class associated with it even if not specified
+ * in the original config.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>}.
  */
-export function getLocalizedLanguageDefinitions( editor ) {
+export function getNormalizedAndLocalizedLanguageDefinitions( editor ) {
 	const t = editor.t;
-	const languagesDefs = editor.config.get( 'codeBlock.languages' );
+	const languageDefs = editor.config.get( 'codeBlock.languages' );
 
-	for ( const def of languagesDefs ) {
+	for ( const def of languageDefs ) {
 		if ( def.label === 'Plain text' ) {
 			def.label = t( 'Plain text' );
-			break;
+		}
+
+		if ( def.class === undefined ) {
+			def.class = `language-${ def.language }`;
 		}
 	}
 
-	return languagesDefs;
+	return languageDefs;
+}
+
+/**
+ * Returns an object associating certain language definition properties with another. For instance:
+ *
+ * For:
+ *
+ *		const definitions = {
+ *			{ language: 'php', class: 'language-php', label: 'PHP' },
+ *			{ language: 'javascript', class: 'js', label: 'JavaScript' },
+ *		};
+ *
+ *		getPropertyAssociation( definitions, 'class', 'language' );
+ *
+ * returns:
+ *
+ *		{
+ *			'language-php': 'php'
+ *			'js': 'javascript'
+ *		}
+ *
+ * and
+ *
+ *		getPropertyAssociation( definitions, 'language', 'label' );
+ *
+ * returns:
+ *
+ *		{
+ *			'php': 'PHP'
+ *			'javascript': 'JavaScript'
+ *		}
+ *
+ * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>}
+ * @param {String} key
+ * @param {String} value
+ * @param {Object.<String,String>}
+ */
+export function getPropertyAssociation( languageDefs, key, value ) {
+	return Object.assign( {}, ...languageDefs.map( def => ( { [ def[ key ] ]: def[ value ] } ) ) );
 }
 
 /**

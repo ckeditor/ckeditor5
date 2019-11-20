@@ -12,7 +12,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { getLocalizedLanguageDefinitions } from './utils';
+import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
 import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
@@ -32,7 +32,8 @@ export default class CodeBlockUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
-		const localizedLanguageDefinitions = getLocalizedLanguageDefinitions( editor );
+		const normalizedLanguageDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
+		const defaultLanguageDefinition = normalizedLanguageDefs[ 0 ];
 
 		componentFactory.add( 'codeBlock', locale => {
 			const command = editor.commands.get( 'codeBlock' );
@@ -49,10 +50,8 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			splitButtonView.on( 'execute', () => {
-				const defaultLanguageDefinition = localizedLanguageDefinitions[ 0 ];
-
 				editor.execute( 'codeBlock', {
-					language: defaultLanguageDefinition.class,
+					language: defaultLanguageDefinition.language,
 				} );
 
 				editor.editing.view.focus();
@@ -60,7 +59,7 @@ export default class CodeBlockUI extends Plugin {
 
 			dropdownView.on( 'execute', evt => {
 				editor.execute( 'codeBlock', {
-					language: evt.source._codeBlockLanguageClass,
+					language: evt.source._codeBlockLanguage,
 					forceValue: true
 				} );
 
@@ -70,7 +69,7 @@ export default class CodeBlockUI extends Plugin {
 			dropdownView.class = 'ck-code-block-dropdown';
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( localizedLanguageDefinitions ) );
+			addListToDropdown( dropdownView, this._getLanguageListItemDefinitions( normalizedLanguageDefs ) );
 
 			return dropdownView;
 		} );
@@ -81,26 +80,26 @@ export default class CodeBlockUI extends Plugin {
 	 * available for the user to choose from.
 	 *
 	 * @private
-	 * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} localizedLanguageDefinitions
+	 * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} normalizedLanguageDefs
 	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
 	 */
-	_getLanguageListItemDefinitions( localizedLanguageDefinitions ) {
+	_getLanguageListItemDefinitions( normalizedLanguageDefs ) {
 		const editor = this.editor;
 		const command = editor.commands.get( 'codeBlock' );
 		const itemDefinitions = new Collection();
 
-		for ( const languageDef of localizedLanguageDefinitions ) {
+		for ( const languageDef of normalizedLanguageDefs ) {
 			const definition = {
 				type: 'button',
 				model: new Model( {
-					_codeBlockLanguageClass: languageDef.class,
+					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
 					withText: true
 				} )
 			};
 
 			definition.model.bind( 'isOn' ).to( command, 'value', value => {
-				return value === definition.model._codeBlockLanguageClass;
+				return value === definition.model._codeBlockLanguage;
 			} );
 
 			itemDefinitions.add( definition );
