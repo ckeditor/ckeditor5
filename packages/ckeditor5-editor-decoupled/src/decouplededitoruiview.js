@@ -32,7 +32,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 * @param {HTMLElement} [options.editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
-	 * in the main {@link editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar toolbar}.
+	 * in the main {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
 	constructor( locale, editingView, options = {} ) {
