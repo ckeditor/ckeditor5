@@ -37,9 +37,6 @@
 
 		&.ck-dropdown__panel-visible {
 			display: inline-block;
-
-			/* This will prevent blurry icons in dropdown on Firefox. See #340. */
-			will-change: transform;
 		}
 
 		&.ck-dropdown__panel_ne,
@@ -49,7 +46,12 @@
 
 		&.ck-dropdown__panel_se,
 		&.ck-dropdown__panel_sw {
-			transform: translate3d( 0, 100%, 0 );
+			/*
+			 * Using transform: translate3d( 0, 100%, 0 ) causes blurry dropdown on Chrome 67-78+ on non-retina displays.
+			 * See https://github.com/ckeditor/ckeditor5/issues/1053.
+			 */
+			top: 100%;
+			bottom: auto;
 		}
 
 		&.ck-dropdown__panel_ne,
