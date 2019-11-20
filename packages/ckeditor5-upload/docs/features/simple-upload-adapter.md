@@ -52,7 +52,7 @@ ClassicEditor
 The client side of this feature is configurable using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig `config.simpleUpload`} object.
 
 ```js
-import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/simpleuploadadapter';
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
