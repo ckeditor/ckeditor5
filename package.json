@@ -120,7 +120,7 @@
   },
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
-    "stylelint": "stylelint --quiet 'packages/**/*.css' 'docs/**/*.css'",
+    "stylelint": "stylelint --quiet --allow-empty-input 'packages/**/*.css' 'docs/**/*.css'",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
     "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "bootstrap": "mrgit sync && yarn install",
@@ -147,7 +147,7 @@
       "eslint --quiet"
     ],
     "**/*.css": [
-      "stylelint --quiet"
+      "stylelint --quiet --allow-empty-input"
     ]
   },
   "eslintIgnore": [
