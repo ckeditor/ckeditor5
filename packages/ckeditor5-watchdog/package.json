@@ -41,14 +41,14 @@
   ],
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
-    "stylelint": "stylelint --quiet 'theme/**/*.css' 'docs/**/*.css'"
+    "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css' 'docs/**/*.css'"
   },
   "lint-staged": {
     "**/*.js": [
       "eslint --quiet"
     ],
     "**/*.css": [
-      "stylelint --quiet"
+      "stylelint --quiet --allow-empty-input"
     ]
   },
   "eslintIgnore": [
