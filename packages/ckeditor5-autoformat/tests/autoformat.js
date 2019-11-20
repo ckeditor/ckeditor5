@@ -81,6 +81,15 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">- []</listItem>' );
 		} );
+
+		it( 'should not replace asterisk character after <softBreak>', () => {
+			setData( model, '<paragraph>Foo<softBreak></softBreak>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>* []</paragraph>' );
+		} );
 	} );
 
 	describe( 'Numbered list', () => {
@@ -127,6 +136,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>3. []</paragraph>' );
+		} );
+
+		it( 'should not replace digit character after <softBreak>', () => {
+			setData( model, '<paragraph>Foo<softBreak></softBreak>1.[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
 		} );
 	} );
 
@@ -212,6 +230,15 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph># []</paragraph>' );
 		} );
+
+		it( 'should not replace hash character after <softBreak>', () => {
+			setData( model, '<paragraph>Foo<softBreak></softBreak>#[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak># []</paragraph>' );
+		} );
 	} );
 
 	describe( 'Block quote', () => {
@@ -249,6 +276,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">1. > []</listItem>' );
+		} );
+
+		it( 'should not replace greater-than character after <softBreak>', () => {
+			setData( model, '<paragraph>Foo<softBreak></softBreak>>[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>> []</paragraph>' );
 		} );
 	} );
 
