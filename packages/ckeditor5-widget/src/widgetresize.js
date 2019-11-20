@@ -193,10 +193,6 @@ mix( WidgetResize, ObservableMixin );
  */
 
 /**
- * @member {module:engine/view/downcastwriter~DowncastWriter} module:widget/widgetresize~ResizerOptions#downcastWriter
- */
-
-/**
  * A callback to be executed once the resizing process is done.
  *
  * It receives a `Number` (`newValue`) as a parameter.
@@ -206,9 +202,9 @@ mix( WidgetResize, ObservableMixin );
  *
  * ```js
  * {
+ *	editor,
  *	modelElement: data.item,
  *	viewElement: widget,
- *	downcastWriter: conversionApi.writer,
  *
  *	onCommit( newValue ) {
  *		editor.execute( 'imageResize', { width: newValue } );

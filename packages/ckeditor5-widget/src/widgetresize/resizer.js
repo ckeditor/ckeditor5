@@ -81,7 +81,8 @@ export default class Resizer {
 		this.decorate( 'updateSize' );
 
 		this.on( 'commit', event => {
-			// State might not be initialized yet. In this case, prevent further handling and make sure that the resizer is cleaned up (#5195).
+			// State might not be initialized yet. In this case, prevent further handling and make sure that the resizer is
+			// cleaned up (#5195).
 			if ( !this.state.proposedWidth ) {
 				this._cleanup();
 				event.stop();
@@ -95,32 +96,34 @@ export default class Resizer {
 	attach() {
 		const that = this;
 		const widgetElement = this._options.viewElement;
-		const writer = this._options.downcastWriter;
+		const editingView = this._options.editor.editing.view;
 
-		const viewResizerWrapper = writer.createUIElement( 'div', {
-			class: 'ck ck-reset_all ck-widget__resizer'
-		}, function( domDocument ) {
-			const domElement = this.toDomElement( domDocument );
+		editingView.change( writer => {
+			const viewResizerWrapper = writer.createUIElement( 'div', {
+				class: 'ck ck-reset_all ck-widget__resizer'
+			}, function( domDocument ) {
+				const domElement = this.toDomElement( domDocument );
 
-			that._appendHandles( domElement );
-			that._appendSizeUI( domElement );
+				that._appendHandles( domElement );
+				that._appendSizeUI( domElement );
 
-			that._domResizerWrapper = domElement;
+				that._domResizerWrapper = domElement;
 
-			that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
-				domElement.style.display = newValue ? '' : 'none';
+				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
+					domElement.style.display = newValue ? '' : 'none';
+				} );
+
+				domElement.style.display = that.isEnabled ? '' : 'none';
+
+				return domElement;
 			} );
 
-			domElement.style.display = that.isEnabled ? '' : 'none';
+			// Append the resizer wrapper to the widget's wrapper.
+			writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
+			writer.addClass( 'ck-widget_with-resizer', widgetElement );
 
-			return domElement;
+			this._viewResizerWrapper = viewResizerWrapper;
 		} );
-
-		// Append the resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
-		writer.addClass( 'ck-widget_with-resizer', widgetElement );
-
-		this._viewResizerWrapper = viewResizerWrapper;
 	}
 
 	/**
