@@ -57,7 +57,6 @@ export default class ImageResize extends Plugin {
 
 					modelElement: data.item,
 					viewElement: widget,
-					downcastWriter: conversionApi.writer,
 					editor,
 
 					getHandleHost( domWidgetElement ) {
