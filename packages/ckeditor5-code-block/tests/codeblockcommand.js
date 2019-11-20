@@ -144,7 +144,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="language-plaintext">[]</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
 		it( 'should change selected block to codeBlock', () => {
@@ -152,7 +152,7 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="language-plaintext">fo[]o</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">fo[]o</codeBlock>' );
 		} );
 
 		it( 'should change multiple selected block to codeBlock', () => {
@@ -161,36 +161,36 @@ describe( 'CodeBlockCommand', () => {
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="language-plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+				'<codeBlock language="plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
 		} );
 
 		it( 'should merge selected blocks with selected codeBlocks', () => {
-			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="language-plaintext">ba]r</codeBlock>' );
+			setModelData( model, '<paragraph>f[oo</paragraph><codeBlock language="plaintext">ba]r</codeBlock>' );
 
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="language-plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
+				'<codeBlock language="plaintext">f[oo<softBreak></softBreak>ba]r</codeBlock>' );
 		} );
 
 		it( 'should not merge codeBlock with siblings when siblings are not selected', () => {
 			setModelData( model,
-				'<codeBlock language="language-plaintext">foo</codeBlock>' +
+				'<codeBlock language="plaintext">foo</codeBlock>' +
 				'<paragraph>b[a]r</paragraph>' +
-				'<codeBlock language="language-plaintext">biz</codeBlock>'
+				'<codeBlock language="plaintext">biz</codeBlock>'
 			);
 
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="language-plaintext">foo</codeBlock>' +
-				'<codeBlock language="language-plaintext">b[a]r</codeBlock>' +
-				'<codeBlock language="language-plaintext">biz</codeBlock>'
+				'<codeBlock language="plaintext">foo</codeBlock>' +
+				'<codeBlock language="plaintext">b[a]r</codeBlock>' +
+				'<codeBlock language="plaintext">biz</codeBlock>'
 			);
 		} );
 
 		it( 'should change selected empty codeBlock to paragraph', () => {
-			setModelData( model, '<codeBlock language="language-plaintext">[]</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">[]</codeBlock>' );
 
 			command.execute();
 
@@ -198,7 +198,7 @@ describe( 'CodeBlockCommand', () => {
 		} );
 
 		it( 'should change selected codeBlock to paragraph', () => {
-			setModelData( model, '<codeBlock language="language-plaintext">f[o]o</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 
 			command.execute();
 
@@ -207,7 +207,7 @@ describe( 'CodeBlockCommand', () => {
 
 		it( 'should change selected multi-line codeBlock to paragraphs', () => {
 			setModelData( model,
-				'<codeBlock language="language-plaintext">foo<softBreak></softBreak>b[]ar<softBreak></softBreak>biz</codeBlock>'
+				'<codeBlock language="plaintext">foo<softBreak></softBreak>b[]ar<softBreak></softBreak>biz</codeBlock>'
 			);
 
 			command.execute();
@@ -224,15 +224,15 @@ describe( 'CodeBlockCommand', () => {
 
 			command.execute();
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="language-plaintext">f[o]o</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should use forceValue parameter', () => {
-			setModelData( model, '<codeBlock language="language-plaintext">f[o]o</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 
 			command.execute( { forceValue: true } );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="language-plaintext">f[o]o</codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 		} );
 
 		it( 'should allow setting the language of the new block', () => {
@@ -244,7 +244,7 @@ describe( 'CodeBlockCommand', () => {
 		} );
 
 		it( 'should allow changing the language of the existing block', () => {
-			setModelData( model, '<codeBlock language="language-plaintext">f[o]o</codeBlock>' );
+			setModelData( model, '<codeBlock language="plaintext">f[o]o</codeBlock>' );
 
 			command.execute( { language: 'css', forceValue: true } );
 
@@ -259,7 +259,7 @@ describe( 'CodeBlockCommand', () => {
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<blockQuote><codeBlock language="language-plaintext">f[o]o</codeBlock></blockQuote>' );
+				'<blockQuote><codeBlock language="plaintext">f[o]o</codeBlock></blockQuote>' );
 		} );
 
 		it( 'should change a paragraph inside a blockQuote to codeBlock when blockQuote is selected with siblings', () => {
@@ -272,9 +272,9 @@ describe( 'CodeBlockCommand', () => {
 			command.execute();
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="language-plaintext">f[oo</codeBlock>' +
-				'<blockQuote><codeBlock language="language-plaintext">bar</codeBlock></blockQuote>' +
-				'<codeBlock language="language-plaintext">bi]z</codeBlock>'
+				'<codeBlock language="plaintext">f[oo</codeBlock>' +
+				'<blockQuote><codeBlock language="plaintext">bar</codeBlock></blockQuote>' +
+				'<codeBlock language="plaintext">bi]z</codeBlock>'
 			);
 		} );
 	} );

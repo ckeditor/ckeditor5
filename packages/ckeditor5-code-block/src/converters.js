@@ -7,7 +7,10 @@
  * @module code-block/converters
  */
 
-import { rawSnippetTextToModelDocumentFragment } from './utils';
+import {
+	rawSnippetTextToModelDocumentFragment,
+	getPropertyAssociation
+} from './utils';
 
 /**
  * A model → view (both editing and data) converter for the `codeBlock` element.
@@ -18,19 +21,40 @@ import { rawSnippetTextToModelDocumentFragment } from './utils';
  *
  * Sample output (editing):
  *
- *		<pre data-language="JavaScript"><code class="javascript">foo();<br />bar();</code></pre>
+ *		<pre data-language="JavaScript"><code class="language-javascript">foo();<br />bar();</code></pre>
  *
  * Sample output (data, see {@link module:code-block/converters~modelToDataViewSoftBreakInsertion}):
  *
- *		<pre><code class="javascript">foo();\nbar();</code></pre>
+ *		<pre><code class="language-javascript">foo();\nbar();</code></pre>
  *
  * @param {module:engine/model/model~Model} model
- * @param {Object.<String,String>} [languageLabels={}] An object associating a programming language
- * classes with human–readable labels (as in the editor config). Labels are used in the editing
- * view only.
+ * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
+ * configuration passed to the feature.
+ * @param {Boolean} [useLabels=false] When `true`, the `<pre>` will get a `data-language` attribute with a
+ * human–readable label of the language. Used only in the editing.
  * @returns {Function} Returns a conversion callback.
  */
-export function modelToViewCodeBlockInsertion( model, languageLabels = {} ) {
+export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = false ) {
+	// Language CSS classes:
+	//
+	//		{
+	//			php: 'language-php',
+	//			python: 'language-python',
+	//			javascript: 'js',
+	//			...
+	//		}
+	const languagesToClasses = getPropertyAssociation( languageDefs, 'language', 'class' );
+
+	// Language labels:
+	//
+	//		{
+	//			php: 'PHP',
+	//			python: 'Python',
+	//			javascript: 'JavaScript',
+	//			...
+	//		}
+	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );
+
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 
@@ -40,12 +64,16 @@ export function modelToViewCodeBlockInsertion( model, languageLabels = {} ) {
 
 		const codeBlockLanguage = data.item.getAttribute( 'language' );
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
-		const pre = writer.createContainerElement( 'pre', {
-			// This attribute is only in the editing view.
-			'data-language': languageLabels[ codeBlockLanguage ] || null
-		} );
+		const preAttributes = {};
+
+		// The attribute added only in the editing view.
+		if ( useLabels ) {
+			preAttributes[ 'data-language' ] = languagesToLabels[ codeBlockLanguage ];
+		}
+
+		const pre = writer.createContainerElement( 'pre', preAttributes );
 		const code = writer.createContainerElement( 'code', {
-			class: codeBlockLanguage
+			class: languagesToClasses[ codeBlockLanguage ] || null
 		} );
 
 		writer.insert( writer.createPositionAt( pre, 0 ), code );
@@ -91,18 +119,29 @@ export function modelToDataViewSoftBreakInsertion( model ) {
  *
  * Sample input:
  *
- *		<pre><code class="javascript">foo();\nbar();</code></pre>
+ *		<pre><code class="language-javascript">foo();\nbar();</code></pre>
  *
  * Sample output:
  *
  *		<codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
  *
  * @param {module:engine/controller/datacontroller~DataController} dataController
- * @param {Array.<String>} languageClasses An array of valid (as in the editor config) CSS classes
- * associated with code languages.
+ * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
+ * configuration passed to the feature.
  * @returns {Function} Returns a conversion callback.
  */
-export function dataViewToModelCodeBlockInsertion( dataController, languageClasses ) {
+export function dataViewToModelCodeBlockInsertion( dataController, languageDefs ) {
+	// Language names associated with CSS classes:
+	//
+	//		{
+	//			'language-php': 'php',
+	//			'language-python': 'python',
+	//			js: 'javascript',
+	//			...
+	//		}
+	const classesToLanguages = getPropertyAssociation( languageDefs, 'class', 'language' );
+	const defaultLanguageName = languageDefs[ 0 ].language;
+
 	return ( evt, data, conversionApi ) => {
 		const viewItem = data.viewItem;
 		const viewChild = viewItem.getChild( 0 );
@@ -118,19 +157,29 @@ export function dataViewToModelCodeBlockInsertion( dataController, languageClass
 		}
 
 		const codeBlock = writer.createElement( 'codeBlock' );
+		const viewChildClasses = [ ...viewChild.getClassNames() ];
+
+		// As we're to associate each class with a model language, a lack of class (empty class) can be
+		// also associated with a language if the language definition was configured so. Pushing an empty
+		// string to make sure the association will work.
+		if ( !viewChildClasses.length ) {
+			viewChildClasses.push( '' );
+		}
 
 		// Figure out if any of the <code> element's class names is a valid programming
 		// language class. If so, use it on the model element (becomes the language of the entire block).
-		for ( const className of viewChild.getClassNames() ) {
-			if ( languageClasses.includes( className ) ) {
-				writer.setAttribute( 'language', className, codeBlock );
+		for ( const className of viewChildClasses ) {
+			const language = classesToLanguages[ className ];
+
+			if ( language ) {
+				writer.setAttribute( 'language', language, codeBlock );
 				break;
 			}
 		}
 
 		// If no language value was set, use the default language from the config.
 		if ( !codeBlock.hasAttribute( 'language' ) ) {
-			writer.setAttribute( 'language', languageClasses[ 0 ], codeBlock );
+			writer.setAttribute( 'language', defaultLanguageName, codeBlock );
 		}
 
 		const stringifiedElement = dataController.processor.toData( viewChild );
