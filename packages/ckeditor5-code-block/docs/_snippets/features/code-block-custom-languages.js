@@ -30,8 +30,8 @@ ClassicEditor
 		},
 		codeBlock: {
 			languages: [
-				{ class: 'css', label: 'CSS' },
-				{ class: 'xml', label: 'HTML/XML' }
+				{ language: 'css', label: 'CSS' },
+				{ language: 'xml', label: 'HTML/XML' }
 			]
 		}
 	} )

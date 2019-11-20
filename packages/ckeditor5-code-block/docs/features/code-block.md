@@ -14,21 +14,21 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 
 ## Configuring code block languages
 
-Each code block can have its language. The language of the code block is represented as a CSS class set on the `<code>` element, both when editing and in the editor data:
+Each code block can have its language. The language of the code block is represented as a CSS class of the `<code>` element, both when editing and in the editor data:
 
 ```html
 <pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
 ```
 
-It is possible to configure which languages are available in the editor. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and XML/HTML):
+It is possible to configure which languages are available. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and XML/HTML):
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		codeBlock: {
 			languages: [
-				{ class: 'language-css', label: 'CSS' },
-				{ class: 'language-xml', label: 'HTML/XML' }
+				{ language: 'css', label: 'CSS' },
+				{ language: 'xml', label: 'HTML/XML' }
 			]
 		}
 	} )
@@ -38,8 +38,33 @@ ClassicEditor
 
 {@snippet features/code-block-custom-languages}
 
+By default, the CSS class of the `<code>` element in data and editing is generated using the `language` property (prefixed with "language-"). You can customize it by specifying an optional `class` property:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		codeBlock: {
+			languages: [
+				// Do not render the CSS class for the plain text code blocks.
+				{ language: 'plaintext', label: 'Plain text', class: '' },
+
+				// Use the "php-code" class for PHP code blocks.
+				{ language: 'php', label: 'PHP', class: 'php-code' },
+
+				// Use the "js" class for JavaScript code blocks.
+				{ language: 'javascript', label: 'JavaScript', class: 'js' },
+
+				// Python code blocks will have the default "language-python" CSS class.
+				{ language: 'python', label: 'Python' }
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 <info-box>
-	**Note**: The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from data that have no CSS `class` specified (or no  `class` matching the {@link module:code-block/codeblock~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (`plaintext` CSS class).
+	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblock~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (`language-plaintext` CSS class).
 </info-box>
 
 ### Integration with code highlighters
@@ -117,25 +142,23 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	editor.execute( 'codeBlock', { language: 'css' } );
 	```
 
-	When executing the command, you can use languages defined by the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration. Make sure the `language` you use corresponds to the `class` property in the configuration object.
-
-	The default list of languages is as follows:
+	When executing the command, you can use languages defined by the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration. The default list of languages is as follows:
 
 	```js
 	codeBlock.languages: [
-		{ class: 'language-plaintext', label: 'Plain text' }, // The default language.
-		{ class: 'language-c', label: 'C' },
-		{ class: 'language-cs', label: 'C#' },
-		{ class: 'language-cpp', label: 'C++' },
-		{ class: 'language-css', label: 'CSS' },
-		{ class: 'language-diff', label: 'Diff' },
-		{ class: 'language-xml', label: 'HTML/XML' },
-		{ class: 'language-java', label: 'Java' },
-		{ class: 'language-javascript', label: 'JavaScript' },
-		{ class: 'language-php', label: 'PHP' },
-		{ class: 'language-python', label: 'Python' },
-		{ class: 'language-ruby', label: 'Ruby' },
-		{ class: 'language-typescript', label: 'TypeScript' },
+		{ language: 'plaintext', label: 'Plain text' }, // The default language.
+		{ language: 'c', label: 'C' },
+		{ language: 'cs', label: 'C#' },
+		{ language: 'cpp', label: 'C++' },
+		{ language: 'css', label: 'CSS' },
+		{ language: 'diff', label: 'Diff' },
+		{ language: 'xml', label: 'HTML/XML' },
+		{ language: 'java', label: 'Java' },
+		{ language: 'javascript', label: 'JavaScript' },
+		{ language: 'php', label: 'PHP' },
+		{ language: 'python', label: 'Python' },
+		{ language: 'ruby', label: 'Ruby' },
+		{ language: 'typescript', label: 'TypeScript' },
 	]
 	```
 
