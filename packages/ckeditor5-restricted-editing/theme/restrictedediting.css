@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/*
+ *                                     !! IMPORTANT & TODO !!
+ *
+ * This file contains all kinds of style and some of them should land in theme-lark before going to prod.
+ *                  For now, let's keep them here to avoid additional branch and PR.
+ */
+
+:root {
+	--ck-restricted-editing-color-exception-background: hsla(31, 100%, 65%, .3);
+	--ck-restricted-editing-color-exception-brackets: hsla(31, 100%, 40%, .4);
+}
+
+.ck-editor__editable .ck-restricted-editing-exception {
+	background-color: var(--ck-restricted-editing-color-exception-background);
+	border: 1px solid;
+	border-image: linear-gradient(
+		to right,
+		var(--ck-restricted-editing-color-exception-brackets) 0%,
+		var(--ck-restricted-editing-color-exception-brackets) 5px,
+		hsla(0, 0%, 0%, 0) 6px,
+		hsla(0, 0%, 0%, 0) calc(100% - 6px),
+		var(--ck-restricted-editing-color-exception-brackets) calc(100% - 5px),
+		var(--ck-restricted-editing-color-exception-brackets) 100%
+	) 1;
+}
