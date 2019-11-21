@@ -14,25 +14,21 @@ import RestrictedEditing from '../../src/restrictedediting';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
-const currentModeDisplay = document.getElementById( 'current-mode' );
 
-enableSwitchToStandardMode();
-enableSwitchToRestrictedMode();
+restrictedModeButton.addEventListener( 'change', handleModeChange );
+standardModeButton.addEventListener( 'change', handleModeChange );
 
-function enableSwitchToRestrictedMode() {
-	restrictedModeButton.removeAttribute( 'disabled' );
-	restrictedModeButton.addEventListener( 'click', startRestrictedMode );
-}
+startStandardMode();
 
-function enableSwitchToStandardMode() {
-	standardModeButton.removeAttribute( 'disabled' );
-	standardModeButton.addEventListener( 'click', startStandardMode );
+function handleModeChange( evt ) {
+	if ( evt.target.value === 'standard' ) {
+		startStandardMode();
+	} else {
+		startRestrictedMode();
+	}
 }
 
 async function startStandardMode() {
-	standardModeButton.removeEventListener( 'click', startStandardMode );
-	standardModeButton.setAttribute( 'disabled', 'disabled' );
-
 	await reloadEditor( {
 		plugins: [ ArticlePluginSet, Table, RestrictedEditingException ],
 		toolbar: [
@@ -51,22 +47,13 @@ async function startStandardMode() {
 			]
 		}
 	} );
-
-	currentModeDisplay.innerHTML = 'Current Mode: <span class="mode mode-standard">STANDARD</span>';
-	enableSwitchToRestrictedMode();
 }
 
 async function startRestrictedMode() {
-	restrictedModeButton.removeEventListener( 'click', startRestrictedMode );
-	restrictedModeButton.setAttribute( 'disabled', 'disabled' );
-
 	await reloadEditor( {
 		plugins: [ ArticlePluginSet, Table, RestrictedEditing ],
 		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
 	} );
-
-	currentModeDisplay.innerHTML = 'Current Mode: <span class="mode mode-restricted">RESTRICTED</span>';
-	enableSwitchToStandardMode();
 }
 
 async function reloadEditor( config ) {

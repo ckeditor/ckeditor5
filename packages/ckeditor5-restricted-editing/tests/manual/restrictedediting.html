@@ -1,9 +1,8 @@
 <p>
-	<button id="mode-standard">Switch to standard mode</button>
-	<button id="mode-restricted">Switch to restricted mode</button>
+	<b>Mode</b>:
+	<input type="radio" id="mode-standard" name="mode" value="standard" checked><label for="mode-standard">Standard</label>
+	<input type="radio" id="mode-restricted" name="mode" value="restricted"><label for="mode-restricted">Restricted</label>
 </p>
-
-<p id="current-mode"></p>
 
 <div id="editor">
 	<h2>Heading 1</h2>
@@ -30,23 +29,3 @@
 		<p>Quote</p>
 	</blockquote>
 </div>
-
-<style>
-	#current-mode {
-		/*text-align: center;*/
-		padding: 1em 0;
-	}
-
-	.mode {
-		color: #fff;
-		padding: 0.5em;
-	}
-
-	.mode-standard {
-		background: #4f4fff;
-	}
-
-	.mode-restricted {
-		background: #a72727;
-	}
-</style>
