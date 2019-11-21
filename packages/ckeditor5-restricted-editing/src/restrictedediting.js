@@ -13,6 +13,8 @@ import RestrictedEditingUI from './restrictededitingui';
 
 import '../theme/restrictedediting.css';
 
+const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
+
 /**
  * @extends module:core/plugin~Plugin
  */
@@ -56,6 +58,45 @@ export default class RestrictedEditing extends Plugin {
 				classes: 'ck-restricted-editing-exception',
 				priority: -10
 			} )
+		} );
+
+		this._setupExceptionHighlighting();
+	}
+
+	_setupExceptionHighlighting() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const model = editor.model;
+		const highlightedMarkers = new Set();
+
+		// Adding the class.
+		view.document.registerPostFixer( writer => {
+			const modelSelection = model.document.selection;
+
+			for ( const marker of model.markers.getMarkersAtPosition( modelSelection.anchor ) ) {
+				for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
+					writer.addClass( HIGHLIGHT_CLASS, viewElement );
+					highlightedMarkers.add( viewElement );
+				}
+			}
+		} );
+
+		// Removing the class.
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+			// Make sure the highlight is removed on every possible event, before conversion is started.
+			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
+
+			function removeHighlight() {
+				view.change( writer => {
+					for ( const item of highlightedMarkers.values() ) {
+						writer.removeClass( HIGHLIGHT_CLASS, item );
+						highlightedMarkers.delete( item );
+					}
+				} );
+			}
 		} );
 	}
 }
