@@ -131,7 +131,7 @@ describe( 'RestrictedEditing', () => {
 		} );
 	} );
 
-	describe.only( 'editing behavior', () => {
+	describe( 'editing behavior', () => {
 		let model;
 
 		beforeEach( async () => {
