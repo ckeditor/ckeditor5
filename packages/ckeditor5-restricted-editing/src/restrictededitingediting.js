@@ -65,21 +65,26 @@ export default class RestrictedEditingEditing extends Plugin {
 
 		const selection = editor.model.document.selection;
 
-		this.listenTo( selection, 'change', () => {
-			if ( selection.rangeCount > 1 ) {
-				this._disableCommands( editor );
+		this.listenTo( selection, 'change', this._checkCommands.bind( this ) );
+	}
 
-				return;
-			}
+	_checkCommands() {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
-			const marker = this._getMarker( editor, selection );
+		if ( selection.rangeCount > 1 ) {
+			this._disableCommands( editor );
 
-			if ( isSelectionInExceptionMarker( marker, selection ) ) {
-				this._enableCommands( marker );
-			} else {
-				this._disableCommands();
-			}
-		} );
+			return;
+		}
+
+		const marker = this._getMarker( editor, selection );
+
+		if ( isSelectionInExceptionMarker( marker, selection ) ) {
+			this._enableCommands( marker );
+		} else {
+			this._disableCommands();
+		}
 	}
 
 	_getMarker( editor, selection ) {
