@@ -11,7 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import SymbolGridView from '@ckeditor/ckeditor5-ui/src/symbolgrid/symbolgridview';
+import SymbolGridView from './symbolgridview';
 
 // TODO: Keyboard navigation does not work.
 
