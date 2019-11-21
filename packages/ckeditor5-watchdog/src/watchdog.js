@@ -89,14 +89,12 @@ export default class Watchdog {
 		 */
 		this._boundErrorHandler = evt => {
 			// `evt.error` is exposed by EventError while `evt.reason` is available in PromiseRejectionEvent.
+			const error = evt.error || evt.reason;
 
-			if ( evt.reason ) {
-				// Note that evt.reason might be everything that is in the promise rejection.
-				if ( evt.reason instanceof Error ) {
-					this._handleError( evt.reason, evt );
-				}
-			} else {
-				this._handleError( evt.error, evt );
+			// Note that `evt.reason` might be everything that is in the promise rejection.
+			// Similarly everything that is thrown lands in `evt.error`.
+			if ( error instanceof Error ) {
+				this._handleError( error, evt );
 			}
 		};
 
@@ -339,7 +337,7 @@ export default class Watchdog {
 	 * Checks if the error comes from the editor that is handled by the watchdog (by checking the error context) and
 	 * restarts the editor. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
-	 * @private
+	 * @protected
 	 * @fires error
 	 * @param {Error} error Error.
 	 * @param {ErrorEvent|PromiseRejectionEvent} evt Error event.
