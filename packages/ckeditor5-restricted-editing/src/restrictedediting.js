@@ -28,6 +28,7 @@ export default class RestrictedEditing extends Plugin {
 		super( editor );
 
 		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
+		this._allowedInException = new Set( [ 'bold', 'italic', 'link', 'input', 'delete' ] );
 	}
 
 	/**
@@ -63,6 +64,7 @@ export default class RestrictedEditing extends Plugin {
 		this._disableCommands( editor );
 
 		const selection = editor.model.document.selection;
+
 		this.listenTo( selection, 'change', () => {
 			const marker = Array.from( editor.model.markers.getMarkersAtPosition( selection.focus ) )
 				.find( marker => marker.name.startsWith( 'restricted-editing-exception:' ) );
@@ -78,7 +80,7 @@ export default class RestrictedEditing extends Plugin {
 	}
 
 	_enableCommands( editor ) {
-		const commands = this._getCommandsToToggle( editor );
+		const commands = this._getCommandsToToggle( editor, this._allowedInException );
 
 		for ( const command of commands ) {
 			command.clearForceDisabled( 'RestrictedMode' );
@@ -86,17 +88,17 @@ export default class RestrictedEditing extends Plugin {
 	}
 
 	_disableCommands( editor ) {
-		const names = Array.from( editor.commands.names() ).filter( name => !this._alwaysEnabled.has( name ) );
-		const commands = names.map( name => editor.commands.get( name ) );
+		const commands = this._getCommandsToToggle( editor );
 
 		for ( const command of commands ) {
 			command.forceDisabled( 'RestrictedMode' );
 		}
 	}
 
-	_getCommandsToToggle( editor ) {
+	_getCommandsToToggle( editor, fromSet ) {
 		return Array.from( editor.commands.names() )
 			.filter( name => !this._alwaysEnabled.has( name ) )
+			.filter( name => fromSet ? fromSet.has( name ) : true )
 			.map( name => editor.commands.get( name ) );
 	}
 }

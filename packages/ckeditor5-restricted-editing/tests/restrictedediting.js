@@ -16,6 +16,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 describe( 'RestrictedEditing', () => {
 	let editor, element;
@@ -210,37 +211,41 @@ describe( 'RestrictedEditing', () => {
 	} );
 
 	describe( 'commands integration', () => {
-		let model;
+		let model, firstParagraph;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditing ] } );
 			model = editor.model;
+
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
 		} );
 
 		afterEach( async () => {
 			await editor.destroy();
 		} );
 
-		describe( 'undo command', () => {
+		describe( 'undo', () => {
 			it( 'should be enabled outside exception marker', () => {
-				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 1 );
+				} );
 
 				expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
 			} );
 
 			it( 'should be enabled inside exception marker', () => {
-				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
-				const firstParagraph = model.document.getRoot().getChild( 0 );
-
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
-						range: writer.createRange(
-							writer.createPositionAt( firstParagraph, 4 ),
-							writer.createPositionAt( firstParagraph, 7 ) ),
-						usingOperation: true,
-						affectsData: true
-					} );
-
 					writer.setSelection( firstParagraph, 5 );
 				} );
 
@@ -248,41 +253,83 @@ describe( 'RestrictedEditing', () => {
 			} );
 		} );
 
-		describe( 'redo command', () => {
-			it( 'should be enabled outside exception marker', () => {
-				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+		describe( 'redo', () => {
+			beforeEach( () => {
+				editor.commands.add( 'redo', buildFakeCommand( editor ) );
+			} );
 
+			it( 'should be enabled outside exception marker', () => {
 				model.change( writer => {
-					model.insertContent( writer.createText( 'R', model.document.selection.getAttributes() ) );
+					writer.setSelection( firstParagraph, 1 );
 				} );
-				editor.execute( 'undo' );
 
 				expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
 			} );
 
 			it( 'should be enabled inside exception marker', () => {
-				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
-				const firstParagraph = model.document.getRoot().getChild( 0 );
-
 				model.change( writer => {
-					model.insertContent( writer.createText( 'R', model.document.selection.getAttributes() ) );
-				} );
-
-				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
-						range: writer.createRange(
-							writer.createPositionAt( firstParagraph, 4 ),
-							writer.createPositionAt( firstParagraph, 7 ) ),
-						usingOperation: true,
-						affectsData: true
-					} );
-
 					writer.setSelection( firstParagraph, 5 );
 				} );
-				editor.execute( 'undo' );
 
 				expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'bold', () => {
+			beforeEach( () => {
+				editor.commands.add( 'bold', buildFakeCommand( editor ) );
+			} );
+
+			it( 'should be disabled outside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 1 );
+				} );
+
+				expect( editor.commands.get( 'bold' ).isEnabled ).to.be.false;
+			} );
+
+			it( 'should be enabled inside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				expect( editor.commands.get( 'bold' ).isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'other', () => {
+			beforeEach( () => {
+				editor.commands.add( 'other', buildFakeCommand( editor ) );
+			} );
+
+			it( 'should be disabled outside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 1 );
+				} );
+
+				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+			} );
+
+			it( 'should be disabled inside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 1 );
+				} );
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
 			} );
 		} );
 	} );
+
+	class FakeCommand extends Command {
+		refresh() {
+			this.isEnabled = true;
+		}
+	}
+
+	function buildFakeCommand( editor ) {
+		return new FakeCommand( editor );
+	}
 } );
