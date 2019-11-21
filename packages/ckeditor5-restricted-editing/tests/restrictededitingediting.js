@@ -3,38 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-
-import RestrictedEditingEditing from './../src/restrictededitingediting';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import RestrictedEditingEditing from './../src/restrictededitingediting';
 
 describe( 'RestrictedEditingEditing', () => {
-	let editor, element;
+	let editor;
 
 	testUtils.createSinonSandbox();
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingEditing ] } );
 		} );
 
-		afterEach( () => {
-			element.remove();
-
-			return editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should be named', () => {
@@ -137,7 +128,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingEditing ] } );
 			model = editor.model;
 		} );
 
@@ -214,7 +205,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingEditing ] } );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
@@ -236,6 +227,10 @@ describe( 'RestrictedEditingEditing', () => {
 		} );
 
 		describe( 'undo', () => {
+			beforeEach( () => {
+				editor.commands.add( 'undo', buildFakeCommand( editor ) );
+			} );
+
 			it( 'should be enabled outside exception marker', () => {
 				model.change( writer => {
 					writer.setSelection( firstParagraph, 1 );
@@ -272,6 +267,28 @@ describe( 'RestrictedEditingEditing', () => {
 				} );
 
 				expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'input', () => {
+			beforeEach( () => {
+				editor.commands.add( 'bold', buildFakeCommand( editor ) );
+			} );
+
+			it( 'should be disabled outside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 1 );
+				} );
+
+				expect( editor.commands.get( 'bold' ).isEnabled ).to.be.false;
+			} );
+
+			it( 'should be enabled inside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				expect( editor.commands.get( 'bold' ).isEnabled ).to.be.true;
 			} );
 		} );
 
