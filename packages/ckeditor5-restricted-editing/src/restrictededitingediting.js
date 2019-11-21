@@ -75,7 +75,7 @@ export default class RestrictedEditingEditing extends Plugin {
 			const marker = this._getMarker( editor, selection );
 
 			if ( isSelectionInExceptionMarker( marker, selection ) ) {
-				this._enableCommands();
+				this._enableCommands( marker );
 			} else {
 				this._disableCommands();
 			}
@@ -94,15 +94,30 @@ export default class RestrictedEditingEditing extends Plugin {
 		}
 	}
 
-	_enableCommands() {
+	_enableCommands( marker ) {
 		const editor = this.editor;
+
+		const exceptionDisable = [];
 
 		const commands = this._getCommandNamesToToggle( editor, this._allowedInException )
 			.filter( name => this._allowedInException.has( name ) )
+			.filter( name => {
+				if ( name == 'delete' && marker.getRange().start.isEqual( editor.model.document.selection.focus ) ) {
+					exceptionDisable.push( name );
+
+					return false;
+				}
+
+				return true;
+			} )
 			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
 			command.clearForceDisabled( 'RestrictedMode' );
+		}
+
+		for ( const command of exceptionDisable.map( name => editor.commands.get( name ) ) ) {
+			command.forceDisabled( 'RestrictedMode' );
 		}
 	}
 
