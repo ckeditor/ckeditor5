@@ -481,6 +481,7 @@ export default class View {
 
 			return callbackResult;
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}

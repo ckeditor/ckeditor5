@@ -172,6 +172,7 @@ export default class Model {
 				return callback( this._currentWriter );
 			}
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -224,6 +225,7 @@ export default class Model {
 				this._runPendingChanges();
 			}
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
