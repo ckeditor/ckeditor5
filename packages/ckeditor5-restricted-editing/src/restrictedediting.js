@@ -51,7 +51,27 @@ export default class RestrictedEditing extends Plugin {
 			} )
 		} );
 
-		for ( const command of this.editor.commands.commands() ) {
+		this._disableCommands( editor );
+
+		const selection = editor.model.document.selection;
+		this.listenTo( selection, 'change', () => {
+			const marker = Array.from( editor.model.markers.getMarkersAtPosition( selection.focus ) )
+				.find( marker => marker.name.startsWith( 'restricted-editing-exception:' ) );
+
+			if ( !marker ) {
+				this._disableCommands( editor );
+
+				return;
+			}
+
+			for ( const command of editor.commands.commands() ) {
+				command.clearForceDisabled( 'RestrictedMode' );
+			}
+		} );
+	}
+
+	_disableCommands( editor ) {
+		for ( const command of editor.commands.commands() ) {
 			command.forceDisabled( 'RestrictedMode' );
 		}
 	}

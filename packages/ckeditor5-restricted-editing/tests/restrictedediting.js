@@ -180,11 +180,31 @@ describe( 'RestrictedEditing', () => {
 		} );
 
 		it( 'should block user typing outside exception markers', () => {
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
 			editor.execute( 'input', { text: 'X' } );
 
-			assertEqualMarkup( getModelData( model ), '<paragraph>foo[]bar</paragraph>' );
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+		} );
+
+		it( 'should not block user typing inside exception marker', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
 	} );
 } );
