@@ -301,6 +301,50 @@ describe( 'RestrictedEditingEditing', () => {
 
 				expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
 			} );
+
+			it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 5 ),
+						writer.createPositionAt( firstParagraph, 6 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 6 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 5 ),
+						writer.createPositionAt( firstParagraph, 7 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 7 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
 		} );
 
 		describe( 'bold', () => {

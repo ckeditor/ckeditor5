@@ -66,16 +66,15 @@ export default class RestrictedEditingEditing extends Plugin {
 		const selection = editor.model.document.selection;
 
 		this.listenTo( selection, 'change', () => {
-			if ( !selection.isCollapsed ) {
+			if ( selection.rangeCount > 1 ) {
 				this._disableCommands( editor );
 
 				return;
 			}
 
-			const marker = Array.from( editor.model.markers.getMarkersAtPosition( selection.focus ) )
-				.find( marker => marker.name.startsWith( 'restricted-editing-exception:' ) );
+			const marker = this._getMarker( editor, selection );
 
-			if ( !marker ) {
+			if ( !marker || !marker.getRange().containsRange( selection.getFirstRange(), true ) ) {
 				this._disableCommands( editor );
 
 				return;
@@ -83,6 +82,18 @@ export default class RestrictedEditingEditing extends Plugin {
 
 			this._enableCommands( editor );
 		} );
+	}
+
+	_getMarker( editor, selection ) {
+		for ( const marker of this.editor.model.markers ) {
+			const markerRange = marker.getRange();
+
+			if ( markerRange.containsPosition( selection.focus ) || markerRange.end.isEqual( selection.focus ) ) {
+				if ( marker.name.startsWith( 'restricted-editing-exception:' ) ) {
+					return marker;
+				}
+			}
+		}
 	}
 
 	_enableCommands( editor ) {
