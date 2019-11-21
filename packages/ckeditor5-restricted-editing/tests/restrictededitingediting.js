@@ -462,6 +462,99 @@ describe( 'RestrictedEditingEditing', () => {
 			} );
 		} );
 
+		describe( 'forwardDelete', () => {
+			beforeEach( () => {
+				editor.commands.add( 'forwardDelete', buildFakeCommand( editor ) );
+			} );
+
+			it( 'should be disabled when caret is outside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 1 );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+			} );
+
+			it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 4 );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 7 );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+			} );
+
+			it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 0 ),
+						writer.createPositionAt( firstParagraph, 5 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+			} );
+
+			it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 5 ),
+						writer.createPositionAt( firstParagraph, 6 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 6 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 5 ),
+						writer.createPositionAt( firstParagraph, 7 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 7 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+			} );
+		} );
+
 		describe( 'other', () => {
 			beforeEach( () => {
 				editor.commands.add( 'other', buildFakeCommand( editor ) );

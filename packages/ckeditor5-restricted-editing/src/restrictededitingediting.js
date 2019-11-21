@@ -28,7 +28,7 @@ export default class RestrictedEditingEditing extends Plugin {
 		super( editor );
 
 		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
-		this._allowedInException = new Set( [ 'bold', 'italic', 'link', 'input', 'delete' ] );
+		this._allowedInException = new Set( [ 'bold', 'italic', 'link', 'input', 'delete', 'forwardDelete' ] );
 	}
 
 	/**
@@ -102,7 +102,16 @@ export default class RestrictedEditingEditing extends Plugin {
 		const commands = this._getCommandNamesToToggle( editor, this._allowedInException )
 			.filter( name => this._allowedInException.has( name ) )
 			.filter( name => {
-				if ( name == 'delete' && marker.getRange().start.isEqual( editor.model.document.selection.focus ) ) {
+				const selection = editor.model.document.selection;
+				const markerRange = marker.getRange();
+
+				if ( name == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
+					exceptionDisable.push( name );
+
+					return false;
+				}
+
+				if ( name == 'forwardDelete' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
 					exceptionDisable.push( name );
 
 					return false;
