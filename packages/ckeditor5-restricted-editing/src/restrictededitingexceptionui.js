@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import restrictedDocumentIcon from '../theme/icons/contentlock.svg';
+import unlockIcon from '../theme/icons/contentunlock.svg';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -28,13 +28,15 @@ export default class RestrictedEditingExceptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Enable editing' ),
-				icon: restrictedDocumentIcon,
+				icon: unlockIcon,
 				tooltip: true,
 				isToggleable: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'label' ).to( command, 'value', value => {
+				return value ? t( 'Disable editing' ) : t( 'Enable editing' );
+			} );
 
 			this.listenTo( view, 'execute', () => editor.execute( 'restrictedEditingException' ) );
 

@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+import RestrictedEditingUI from './restrictededitingui';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -19,6 +20,10 @@ export default class RestrictedEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'RestrictedEditing';
+	}
+
+	static get requires() {
+		return [ RestrictedEditingUI ];
 	}
 
 	/**
