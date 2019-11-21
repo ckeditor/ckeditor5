@@ -1,3 +1,5 @@
+**Important:** Be sure to run manual test with the `--debug false` flag. Otherwise errors won't be rethrown by the `CKEditorError.rethrowUnexpectedError()` method.
+
 1. Type `1` in the first editor. Only the first editor should crash and be restarted. The error should be logged in the console.
 
 1. Type `1` in the second editor. Only the second editor should crash and be restarted. The error should be logged in the console.
