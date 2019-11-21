@@ -75,9 +75,9 @@ export default class RestrictedEditingEditing extends Plugin {
 			const marker = this._getMarker( editor, selection );
 
 			if ( isSelectionInExceptionMarker( marker, selection ) ) {
-				this._enableCommands( editor );
+				this._enableCommands();
 			} else {
-				this._disableCommands( editor );
+				this._disableCommands();
 			}
 		} );
 	}
@@ -94,27 +94,31 @@ export default class RestrictedEditingEditing extends Plugin {
 		}
 	}
 
-	_enableCommands( editor ) {
-		const commands = this._getCommandsToToggle( editor, this._allowedInException );
+	_enableCommands() {
+		const editor = this.editor;
+
+		const commands = this._getCommandNamesToToggle( editor, this._allowedInException )
+			.filter( name => this._allowedInException.has( name ) )
+			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
 			command.clearForceDisabled( 'RestrictedMode' );
 		}
 	}
 
-	_disableCommands( editor ) {
-		const commands = this._getCommandsToToggle( editor );
+	_disableCommands() {
+		const editor = this.editor;
+		const commands = this._getCommandNamesToToggle( editor )
+			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
 			command.forceDisabled( 'RestrictedMode' );
 		}
 	}
 
-	_getCommandsToToggle( editor, fromSet ) {
+	_getCommandNamesToToggle( editor ) {
 		return Array.from( editor.commands.names() )
-			.filter( name => !this._alwaysEnabled.has( name ) )
-			.filter( name => fromSet ? fromSet.has( name ) : true )
-			.map( name => editor.commands.get( name ) );
+			.filter( name => !this._alwaysEnabled.has( name ) );
 	}
 }
 
