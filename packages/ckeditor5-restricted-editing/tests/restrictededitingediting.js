@@ -272,7 +272,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 		describe( 'input', () => {
 			beforeEach( () => {
-				editor.commands.add( 'bold', buildFakeCommand( editor ) );
+				editor.commands.add( 'input', buildFakeCommand( editor ) );
 			} );
 
 			it( 'should be disabled outside exception marker', () => {
@@ -280,7 +280,7 @@ describe( 'RestrictedEditingEditing', () => {
 					writer.setSelection( firstParagraph, 1 );
 				} );
 
-				expect( editor.commands.get( 'bold' ).isEnabled ).to.be.false;
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
 			} );
 
 			it( 'should be enabled inside exception marker', () => {
@@ -288,7 +288,18 @@ describe( 'RestrictedEditingEditing', () => {
 					writer.setSelection( firstParagraph, 5 );
 				} );
 
-				expect( editor.commands.get( 'bold' ).isEnabled ).to.be.true;
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 0 ),
+						writer.createPositionAt( firstParagraph, 5 )
+					) );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
 			} );
 		} );
 

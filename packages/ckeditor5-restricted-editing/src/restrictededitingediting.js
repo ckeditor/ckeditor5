@@ -66,6 +66,12 @@ export default class RestrictedEditingEditing extends Plugin {
 		const selection = editor.model.document.selection;
 
 		this.listenTo( selection, 'change', () => {
+			if ( !selection.isCollapsed ) {
+				this._disableCommands( editor );
+
+				return;
+			}
+
 			const marker = Array.from( editor.model.markers.getMarkersAtPosition( selection.focus ) )
 				.find( marker => marker.name.startsWith( 'restricted-editing-exception:' ) );
 
