@@ -741,10 +741,10 @@
     request "^2.83.0"
     semver "^6.2.0"
 
-"@ckeditor/ckeditor5-dev-tests@^16.9.0":
-  version "16.9.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.9.0.tgz#02e893e02ab0c3dcd525bb9bf1c14eca60180c0f"
-  integrity sha512-D5mPLWEuXlnPoFYpR9iGog/WvkkwgVeKf1RWW8ErX79N7tsJ3lUo93sRi1c3rDLvsz9xGBJlutSZx5iuaBumhQ==
+"@ckeditor/ckeditor5-dev-tests@^17.0.0":
+  version "17.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-17.0.0.tgz#8f8b9f4f24eaf82bd8fe78406208d038f3fa5a60"
+  integrity sha512-ckyZlGubCRksBWOBQj10dCHpTANl7QiIS2w2d2SQBafiJzjVkGzwEDxkKB9UrPKCV90vP+pNRVEvY/n1H7aGQA==
   dependencies:
     "@babel/core" "^7.0.0"
     "@ckeditor/ckeditor5-dev-utils" "^12.0.5"
@@ -788,7 +788,7 @@
     style-loader "^1.0.0"
     webpack "^4.39.1"
 
-"@ckeditor/ckeditor5-dev-utils@^12.0.0", "@ckeditor/ckeditor5-dev-utils@^12.0.3", "@ckeditor/ckeditor5-dev-utils@^12.0.5":
+"@ckeditor/ckeditor5-dev-utils@^12.0.0", "@ckeditor/ckeditor5-dev-utils@^12.0.5":
   version "12.0.5"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-12.0.5.tgz#a196208a1b9da9abcaa207fcc77ae0a112b36acf"
   integrity sha512-D7gJuI1XLmYtwcR8bZnmXZdpEF6HGZdkvx97vbuhF9hANH/ype7rsnrbMxj+gZsj+MV6H5F6NG3Fs+TG6Y0B3Q==
@@ -809,7 +809,7 @@
     shelljs "^0.8.1"
     through2 "^3.0.1"
 
-"@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.3", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.5":
+"@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.5":
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-8.0.5.tgz#bd4713603fa4a98bf0217091440a2faa96a5d476"
   integrity sha512-Jr0l3Y7MB7rNT/2hlC2aGD0NM5udYIHULR0hgu6aUvJYyGOn0dxnRs3eHK3O7rEOoAGk038RSb2Q1lk+8Mdxuw==
