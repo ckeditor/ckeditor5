@@ -9,10 +9,12 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import RestrictedEditing from './../src/restrictedediting';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RestrictedEditing', () => {
 	let editor, element;
@@ -129,11 +131,11 @@ describe( 'RestrictedEditing', () => {
 		} );
 	} );
 
-	describe( 'editing behavior', () => {
+	describe.only( 'editing behavior', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditing ] } );
 			model = editor.model;
 		} );
 
@@ -175,6 +177,14 @@ describe( 'RestrictedEditing', () => {
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
+
+		it( 'should block user typing outside exception markers', () => {
+			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo[]bar</paragraph>' );
 		} );
 	} );
 } );

@@ -50,6 +50,10 @@ export default class RestrictedEditing extends Plugin {
 				priority: -10
 			} )
 		} );
+
+		for ( const command of this.editor.commands.commands() ) {
+			command.forceDisabled( 'RestrictedMode' );
+		}
 	}
 }
 
