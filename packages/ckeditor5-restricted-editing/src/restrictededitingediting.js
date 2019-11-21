@@ -74,13 +74,11 @@ export default class RestrictedEditingEditing extends Plugin {
 
 			const marker = this._getMarker( editor, selection );
 
-			if ( !marker || !marker.getRange().containsRange( selection.getFirstRange(), true ) ) {
+			if ( isSelectionInExceptionMarker( marker, selection ) ) {
+				this._enableCommands( editor );
+			} else {
 				this._disableCommands( editor );
-
-				return;
 			}
-
-			this._enableCommands( editor );
 		} );
 	}
 
@@ -88,7 +86,7 @@ export default class RestrictedEditingEditing extends Plugin {
 		for ( const marker of this.editor.model.markers ) {
 			const markerRange = marker.getRange();
 
-			if ( markerRange.containsPosition( selection.focus ) || markerRange.end.isEqual( selection.focus ) ) {
+			if ( isPositionInRangeOrOnRangeBoundary( markerRange, selection.focus ) ) {
 				if ( marker.name.startsWith( 'restricted-editing-exception:' ) ) {
 					return marker;
 				}
@@ -154,4 +152,26 @@ function upcastHighlightToMarker( config ) {
 		);
 		data.modelCursor = data.modelRange.end;
 	} );
+}
+
+function isSelectionInExceptionMarker( marker, selection ) {
+	if ( !marker ) {
+		return false;
+	}
+
+	const markerRange = marker.getRange();
+
+	if ( selection.isCollapsed ) {
+		return isPositionInRangeOrOnRangeBoundary( markerRange, selection.focus );
+	}
+
+	return markerRange.containsRange( selection.getFirstRange(), true );
+}
+
+function isPositionInRangeOrOnRangeBoundary( range, position ) {
+	return (
+		range.containsPosition( position ) ||
+		range.end.isEqual( position ) ||
+		range.start.isEqual( position )
+	);
 }

@@ -275,7 +275,7 @@ describe( 'RestrictedEditingEditing', () => {
 				editor.commands.add( 'input', buildFakeCommand( editor ) );
 			} );
 
-			it( 'should be disabled outside exception marker', () => {
+			it( 'should be disabled when caret is outside exception marker', () => {
 				model.change( writer => {
 					writer.setSelection( firstParagraph, 1 );
 				} );
@@ -283,9 +283,25 @@ describe( 'RestrictedEditingEditing', () => {
 				expect( editor.commands.get( 'input' ).isEnabled ).to.be.false;
 			} );
 
-			it( 'should be enabled inside exception marker', () => {
+			it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
 				model.change( writer => {
 					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 4 );
+				} );
+
+				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
+			} );
+
+			it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 7 );
 				} );
 
 				expect( editor.commands.get( 'input' ).isEnabled ).to.be.true;
