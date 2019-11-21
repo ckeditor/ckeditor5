@@ -391,10 +391,9 @@ describe( 'Editor', () => {
 			}, /^commandcollection-command-not-found:/, editor );
 		} );
 
-		it( 'should catch native errors and wrap them into the CKEditorError errors', () => {
+		it( 'should rethrow native errors as they are in the debug=true mode', () => {
 			const editor = new TestEditor();
 			const error = new TypeError( 'foo' );
-			error.stack = 'bar';
 
 			class SomeCommand extends Command {
 				constructor( editor ) {
@@ -408,15 +407,9 @@ describe( 'Editor', () => {
 
 			editor.commands.add( 'someCommand', new SomeCommand( editor ) );
 
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				editor.execute( 'someCommand' );
-			}, /unexpected-error/, editor, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'TypeError'
-				}
-			} );
+			} ).to.throw( TypeError, /foo/ );
 		} );
 
 		it( 'should rethrow custom CKEditorError errors', () => {

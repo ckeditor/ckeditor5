@@ -274,6 +274,7 @@ export default class Editor {
 		try {
 			this.commands.execute( ...args );
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
