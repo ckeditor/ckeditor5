@@ -114,6 +114,17 @@ export default class Config {
 	}
 
 	/**
+	 * Iterable interface.
+	 *
+	 * Iterates over all top level configuration names.
+	 *
+	 * @returns {Iterable.<String>}
+	 */
+	[ Symbol.iterator ]() {
+		return Object.keys( this._config )[ Symbol.iterator ]();
+	}
+
+	/**
 	 * Saves passed configuration to the specified target (nested object).
 	 *
 	 * @private

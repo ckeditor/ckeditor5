@@ -459,4 +459,10 @@ describe( 'Config', () => {
 			expect( nodesAgain ).to.deep.equal( nodes );
 		} );
 	} );
+
+	describe( 'iterator', () => {
+		it( 'should return top level keys of the configuration', () => {
+			expect( Array.from( config ) ).to.be.deep.equal( [ 'creator', 'language', 'resize', 'toolbar', 'options' ] );
+		} );
+	} );
 } );
