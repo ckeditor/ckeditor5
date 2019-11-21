@@ -33,7 +33,35 @@
 
 <style>
 	.ck-restricted-editing-exception {
-		background-color: #ffcd96;
+		background-color: hsla(31, 100%, 65%, .3);
+	}
+
+	.ck-restricted-editing-exception::before,
+	.ck-restricted-editing-exception::after {
+		content: "​";
+		pointer-events: none;
+		width: 5px;
+		display: inline-block;
+		border: 1px solid;
+		height: 100%;
+	}
+
+	.ck-restricted-editing-exception::before {
+		border-right: 0;
+		border-image: linear-gradient(
+			to right,
+			hsla(0, 0%, 0%, .7) 0%,
+			hsla(0, 0%, 0%, .7) 5px,
+			hsla(0, 0%, 100%, 0) 6px ) 1;
+	}
+
+	.ck-restricted-editing-exception::after {
+		border-left: 0;
+		border-image: linear-gradient(
+			to left,
+			hsla(0, 0%, 0%, .7) 0%,
+			hsla(0, 0%, 0%, .7) 5px,
+			hsla(0, 0%, 100%, 0) 6px ) 1;
 	}
 
 	#current-mode {
