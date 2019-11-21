@@ -9,6 +9,7 @@
 
 import SymbolTileView from './symboltileview';
 import GridView from '@ckeditor/ckeditor5-ui/src/gridview';
+import '../../theme/components/symbolgrid/symbolgrid.css';
 
 /**
  * A grid of {@link module:special-characters/ui/symboltileview~symbolTileView symbol tiles}.
