@@ -239,6 +239,7 @@ const EmitterMixin = {
 
 			return eventInfo.return;
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	},

@@ -1,5 +1,3 @@
-/* globals console */
-
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -109,8 +107,8 @@ export default class CKEditorError extends Error {
 		}
 
 		/**
-		 * An unexpected error occurred inside the CKEditor 5 codebase. The `error.data.originalError` property
-		 * shows the original error properties.
+		 * An unexpected error occurred inside the CKEditor 5 codebase. This error will look like the original one
+		 * to make the debugging easier.
 		 *
 		 * This error is only useful when the editor is initialized using the {@link module:watchdog/watchdog~Watchdog} feature.
 		 * In case of such error (or any {@link module:utils/ckeditorerror~CKEditorError} error) the watchdog should restart the editor.
@@ -120,11 +118,8 @@ export default class CKEditorError extends Error {
 		const error = new CKEditorError( err.message, context );
 
 		// Restore the original stack trace to make the error look like the original one.
+		// See https://github.com/ckeditor/ckeditor5/issues/5595 for more details.
 		error.stack = err.stack;
-
-		console.log( err.stack );
-
-		console.log( err );
 
 		throw error;
 	}

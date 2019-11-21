@@ -106,13 +106,7 @@ describe( 'CKEditorError', () => {
 
 			expectToThrowCKEditorError( () => {
 				CKEditorError.rethrowUnexpectedError( error, context );
-			}, /unexpected-error/, context, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'Error'
-				}
-			} );
+			}, /foo/, context );
 		} );
 	} );
 } );

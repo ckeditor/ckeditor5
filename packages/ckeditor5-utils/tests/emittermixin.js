@@ -176,7 +176,7 @@ describe( 'EmitterMixin', () => {
 
 			expectToThrowCKEditorError( () => {
 				emitter.fire( 'test' );
-			}, /bar/ );
+			}, /foo/ );
 		} );
 
 		describe( 'return value', () => {
