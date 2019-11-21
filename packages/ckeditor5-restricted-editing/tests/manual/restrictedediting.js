@@ -3,19 +3,40 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import RestrictedEditingException from '../../src/restrictededitingexception';
+import RestrictedEditing from '../../src/restrictedediting';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+const restrictedModeButton = document.getElementById( 'mode-restricted' );
+const standardModeButton = document.getElementById( 'mode-standard' );
+const currentModeDisplay = document.getElementById( 'current-mode' );
+
+enableSwitchToStandardMode();
+enableSwitchToRestrictedMode();
+
+function enableSwitchToRestrictedMode() {
+	restrictedModeButton.removeAttribute( 'disabled' );
+	restrictedModeButton.addEventListener( 'click', startRestrictedMode );
+}
+
+function enableSwitchToStandardMode() {
+	standardModeButton.removeAttribute( 'disabled' );
+	standardModeButton.addEventListener( 'click', startStandardMode );
+}
+
+async function startStandardMode() {
+	standardModeButton.removeEventListener( 'click', startStandardMode );
+	standardModeButton.setAttribute( 'disabled', 'disabled' );
+
+	await reloadEditor( {
 		plugins: [ ArticlePluginSet, Table, RestrictedEditingException ],
-		toolbar: [ 'heading', '|',
-			'bold', 'italic', 'link', '|',
+		toolbar: [
+			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'restrictedEditingException', '|', 'undo', 'redo'
 		],
@@ -29,10 +50,29 @@ ClassicEditor
 				'mergeTableCells'
 			]
 		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
 	} );
+
+	currentModeDisplay.innerHTML = 'Current Mode: <span class="mode mode-standard">STANDARD</span>';
+	enableSwitchToRestrictedMode();
+}
+
+async function startRestrictedMode() {
+	restrictedModeButton.removeEventListener( 'click', startRestrictedMode );
+	restrictedModeButton.setAttribute( 'disabled', 'disabled' );
+
+	await reloadEditor( {
+		plugins: [ ArticlePluginSet, Table, RestrictedEditing ],
+		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
+	} );
+
+	currentModeDisplay.innerHTML = 'Current Mode: <span class="mode mode-restricted">RESTRICTED</span>';
+	enableSwitchToStandardMode();
+}
+
+async function reloadEditor( config ) {
+	if ( window.editor ) {
+		await window.editor.destroy();
+	}
+
+	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+}

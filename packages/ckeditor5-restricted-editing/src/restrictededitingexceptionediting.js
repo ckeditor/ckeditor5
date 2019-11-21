@@ -29,11 +29,21 @@ export default class RestrictedEditingExceptionEditing extends Plugin {
 
 		editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
 
-		editor.conversion.attributeToElement( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: 'restrictedEditingException',
 			view: {
 				name: 'span',
 				classes: 'ck-restricted-editing-exception'
+			}
+		} );
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: 'restrictedEditingException',
+			view: ( modelAttributeValue, viewWriter ) => {
+				if ( modelAttributeValue ) {
+					// Make the restricted editing <span> outer-most in the view.
+					return viewWriter.createAttributeElement( 'span', { class: 'ck-restricted-editing-exception' }, { priority: -10 } );
+				}
 			}
 		} );
 

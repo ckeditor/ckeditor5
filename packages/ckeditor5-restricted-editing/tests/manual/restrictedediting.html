@@ -1,3 +1,10 @@
+<p>
+	<button id="mode-standard">Switch to standard mode</button>
+	<button id="mode-restricted">Switch to restricted mode</button>
+</p>
+
+<p id="current-mode"></p>
+
 <div id="editor">
 	<h2>Heading 1</h2>
 	<p>Paragraph <span class="ck-restricted-editing-exception">it is editable</span></p>
@@ -27,5 +34,23 @@
 <style>
 	.ck-restricted-editing-exception {
 		background-color: #ffcd96;
+	}
+
+	#current-mode {
+		/*text-align: center;*/
+		padding: 1em 0;
+	}
+
+	.mode {
+		color: #fff;
+		padding: 0.5em;
+	}
+
+	.mode-standard {
+		background: #4f4fff;
+	}
+
+	.mode-restricted {
+		background: #a72727;
 	}
 </style>

@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-engine": "^15.0.0",
     "@ckeditor/ckeditor5-paragraph": "^15.0.0",
     "@ckeditor/ckeditor5-table": "^15.0.0",
+    "@ckeditor/ckeditor5-utils": "^15.0.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
     "husky": "^2.4.1",

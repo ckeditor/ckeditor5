@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import RestrictedEditingExceptionEditing from '../src/restrictededitingexceptionediting';
 import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RestrictedEditingExceptionEditing', () => {
 	let editor, model;
@@ -69,6 +70,31 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 
 				expect( editor.getData() ).to.equal( expectedView );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			} );
+
+			it( 'converted <span> should be outer most element', () => {
+				editor.conversion.for( 'downcast' ).attributeToElement( {
+					model: 'bold',
+					view: 'b'
+				} );
+				editor.conversion.for( 'downcast' ).attributeToElement( {
+					model: 'italic',
+					view: 'i'
+				} );
+
+				const expectedView = '<p><span class="ck-restricted-editing-exception"><b>foo</b> <i>bar</i> baz</span></p>';
+
+				setModelData( editor.model,
+					'<paragraph>' +
+						'<$text restrictedEditingException="true" bold="true">foo</$text>' +
+						'<$text restrictedEditingException="true"> </$text>' +
+						'<$text restrictedEditingException="true" italic="true">bar</$text>' +
+						'<$text restrictedEditingException="true"> baz</$text>' +
+					'</paragraph>'
+				);
+
+				assertEqualMarkup( editor.getData(), expectedView );
+				assertEqualMarkup( getViewData( editor.editing.view, { withoutSelection: true } ), expectedView );
 			} );
 		} );
 	} );
