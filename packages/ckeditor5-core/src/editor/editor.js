@@ -275,6 +275,7 @@ export default class Editor {
 			this.commands.execute( ...args );
 		} catch ( err ) {
 			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
