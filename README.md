@@ -665,7 +665,7 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-table"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-table.svg" alt="@ckeditor/ckeditor5-table npm package badge"></a>
 	</td>
 	<td>
-		The table feature. Work in progress.
+		The table feature.
 	</td>
 </tr>
 
