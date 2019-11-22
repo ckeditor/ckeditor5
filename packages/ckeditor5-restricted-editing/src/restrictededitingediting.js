@@ -64,6 +64,21 @@ export default class RestrictedEditingEditing extends Plugin {
 			} )
 		} );
 
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
+				const command = this.editor.commands.get( commandName );
+
+				if ( command.isEnabled ) {
+					this.editor.execute( commandName );
+				}
+
+				cancel();
+			};
+		};
+
+		editor.keystrokes.set( 'Tab', getCommandExecuter( 'goToNextRestrictedEditingRegion' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'goToPreviousRestrictedEditingRegion' ) );
+
 		this._setupExceptionHighlighting();
 	}
 

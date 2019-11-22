@@ -12,6 +12,7 @@ import RestrictedEditingEditing from './../src/restrictededitingediting';
 import RestrictedEditingNavigationCommand from '../src/restrictededitingnavigationcommand';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
@@ -420,6 +421,137 @@ describe( 'RestrictedEditingEditing', () => {
 					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">b{a}r</span> baz</p>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'exception cycling with the keyboard', () => {
+		let model, view, domEvtDataStub;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, RestrictedEditingEditing, BoldEditing ]
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+
+			domEvtDataStub = {
+				keyCode: getCode( 'Tab' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			sinon.spy( editor, 'execute' );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should move to the closest next exception on tab key', () => {
+			setModelData( model, '<paragraph>[]foo bar baz qux</paragraph>' );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+
+			// <paragraph>[]foo <marker≥bar</marker> baz qux</paragraph>
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			// <paragraph>[]foo <marker≥bar</marker> <marker≥baz</marker≥ qux</paragraph>
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:2', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingRegion' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not move to the closest next exception on tab key when there is none', () => {
+			setModelData( model, '<paragraph>foo qux[]</paragraph>' );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+
+			// <paragraph><marker≥foo</marker> qux[]</paragraph>
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should move to the closest previous exception on shift+tab key', () => {
+			setModelData( model, '<paragraph>foo bar baz qux[]</paragraph>' );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+
+			// <paragraph>foo <marker≥bar</marker> baz qux[]</paragraph>
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			// <paragraph>foo <marker≥bar</marker> <marker≥baz</marker≥ qux[]</paragraph>
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:2', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			domEvtDataStub.keyCode += getCode( 'Shift' );
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingRegion' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not move to the closest previous exception on shift+tab key when there is none', () => {
+			setModelData( model, '<paragraph>[]foo qux</paragraph>' );
+
+			const paragraph = model.document.getRoot().getChild( 0 );
+
+			// <paragraph>[]foo <marker≥qux</marker></paragraph>
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			domEvtDataStub.keyCode += getCode( 'Shift' );
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 	} );
 } );
