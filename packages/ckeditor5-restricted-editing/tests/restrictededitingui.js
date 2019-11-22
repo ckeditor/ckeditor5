@@ -73,7 +73,9 @@ describe( 'RestrictedEditingUI', () => {
 
 				expect( button.isOn ).to.be.false;
 				expect( button.withText ).to.be.true;
+				expect( button.withKeystroke ).to.be.true;
 				expect( button.label ).to.equal( 'Previous editable region' );
+				expect( button.keystroke ).to.equal( 'Shift+Tab' );
 			} );
 
 			it( 'should have one that goes forward', () => {
@@ -82,7 +84,9 @@ describe( 'RestrictedEditingUI', () => {
 
 				expect( button.isOn ).to.be.false;
 				expect( button.withText ).to.be.true;
+				expect( button.withKeystroke ).to.be.true;
 				expect( button.label ).to.equal( 'Next editable region' );
+				expect( button.keystroke ).to.equal( 'Tab' );
 			} );
 
 			it( 'should focus the view after executing the command', () => {

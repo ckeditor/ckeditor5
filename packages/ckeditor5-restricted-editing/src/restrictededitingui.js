@@ -40,8 +40,16 @@ export default class RestrictedEditingUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 			const listItems = new Collection();
 
-			listItems.add( this._getButtonDefinition( 'goToPreviousRestrictedEditingRegion', t( 'Previous editable region' ) ) );
-			listItems.add( this._getButtonDefinition( 'goToNextRestrictedEditingRegion', t( 'Next editable region' ) ) );
+			listItems.add( this._getButtonDefinition(
+				'goToPreviousRestrictedEditingRegion',
+				t( 'Previous editable region' ),
+				'Shift+Tab'
+			) );
+			listItems.add( this._getButtonDefinition(
+				'goToNextRestrictedEditingRegion',
+				t( 'Next editable region' ),
+				'Tab'
+			) );
 
 			addListToDropdown( dropdownView, listItems );
 
@@ -70,7 +78,7 @@ export default class RestrictedEditingUI extends Plugin {
 	 * @param {String} label Translated label of the button.
 	 * @returns {module:ui/dropdown/utils~ListDropdownItemDefinition}
 	 */
-	_getButtonDefinition( commandName, label ) {
+	_getButtonDefinition( commandName, label, kestroke ) {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 		const definition = {
@@ -78,6 +86,8 @@ export default class RestrictedEditingUI extends Plugin {
 			model: new Model( {
 				label,
 				withText: true,
+				keystroke: kestroke,
+				withKeystroke: true,
 				_commandName: commandName
 			} )
 		};
