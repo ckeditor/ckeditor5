@@ -59,7 +59,7 @@ describe( 'RestrictedEditingUI', () => {
 		it( 'the button should have basic properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Browse editable regions' );
+			expect( button ).to.have.property( 'label', 'Navigate editable regions' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', lockIcon );
 			expect( button ).to.have.property( 'isEnabled', true );
