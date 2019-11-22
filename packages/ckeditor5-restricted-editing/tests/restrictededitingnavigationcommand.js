@@ -202,10 +202,10 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 
 				it( 'should move to the next marker when at the end of adjacent one', () => {
@@ -233,7 +233,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[bar]</paragraph>' );
 				} );
 
 				it( 'should move to the closest marker when created in a reverse order', () => {
@@ -260,10 +260,10 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 			} );
 
@@ -292,10 +292,10 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 
 				it( 'should move to the next marker when the selection start overlaps the marker', () => {
@@ -322,7 +322,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 			} );
 		} );
@@ -497,7 +497,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should move to the previous marker when at the beginning of adjacent one', () => {
@@ -525,7 +525,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph><paragraph>bar</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph><paragraph>bar</paragraph>' );
 				} );
 
 				it( 'should move to the closest previous marker', () => {
@@ -552,10 +552,10 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz qux</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz qux</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
 				} );
 
 				it( 'should move to the closest previous marker when created in a reverse order', () => {
@@ -582,10 +582,10 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz qux</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz qux</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
 				} );
 			} );
 
@@ -614,7 +614,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 		} );

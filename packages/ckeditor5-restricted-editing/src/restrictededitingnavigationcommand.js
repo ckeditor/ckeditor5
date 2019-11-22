@@ -47,7 +47,7 @@ export default class RestrictedEditingNavigationCommand extends Command {
 	 * @fires execute
 	 */
 	execute() {
-		const position = getNearestExceptionPosition( this.editor.model, this._direction );
+		const position = getNearestExceptionRange( this.editor.model, this._direction );
 
 		this.editor.model.change( writer => {
 			writer.setSelection( position );
@@ -61,25 +61,24 @@ export default class RestrictedEditingNavigationCommand extends Command {
 	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
-		return !!getNearestExceptionPosition( this.editor.model, this._direction );
+		return !!getNearestExceptionRange( this.editor.model, this._direction );
 	}
 }
 
-// Returns the start position of the exception marker closest to the last position of the
+// Returns the range of the exception marker closest to the last position of the
 // model selection.
 //
 // @param {module:engine/model/model~Model} model
 // @param {String} direction Either "forward" or "backward".
-// @returns {module:engine/model/position~Position|null}
-function getNearestExceptionPosition( model, direction ) {
+// @returns {module:engine/model/range~Range|null}
+function getNearestExceptionRange( model, direction ) {
 	const selection = model.document.selection;
 	const selectionPosition = selection.getFirstPosition();
-	const markerStartPositions = [];
+	const markerRanges = [];
 
 	// Get all exception marker positions that start after/before the selection position.
 	for ( const marker of model.markers.getMarkersGroup( 'restricted-editing-exception' ) ) {
 		const markerRange = marker.getRange();
-		const markerRangeStart = markerRange.start;
 
 		// Checking parent because there two positions <paragraph>foo^</paragraph><paragraph>^bar</paragraph>
 		// are touching but they will represent different markers.
@@ -95,24 +94,24 @@ function getNearestExceptionPosition( model, direction ) {
 			continue;
 		}
 
-		if ( direction === 'forward' && markerRangeStart.isAfter( selectionPosition ) ) {
-			markerStartPositions.push( markerRangeStart );
-		} else if ( direction === 'backward' && markerRangeStart.isBefore( selectionPosition ) ) {
-			markerStartPositions.push( markerRangeStart );
+		if ( direction === 'forward' && markerRange.start.isAfter( selectionPosition ) ) {
+			markerRanges.push( markerRange );
+		} else if ( direction === 'backward' && markerRange.end.isBefore( selectionPosition ) ) {
+			markerRanges.push( markerRange );
 		}
 	}
 
-	if ( !markerStartPositions.length ) {
+	if ( !markerRanges.length ) {
 		return null;
 	}
 
 	// Get the marker closest to the selection position among many. To know that, we need to sort
 	// them first.
-	return markerStartPositions.sort( ( posA, posB ) => {
+	return markerRanges.sort( ( rangeA, rangeB ) => {
 		if ( direction === 'forward' ) {
-			return posA.isAfter( posB ) ? 1 : -1;
+			return rangeA.start.isAfter( rangeB.start ) ? 1 : -1;
 		} else {
-			return posA.isBefore( posB ) ? 1 : -1;
+			return rangeA.start.isBefore( rangeB.start ) ? 1 : -1;
 		}
 	} ).shift();
 }
