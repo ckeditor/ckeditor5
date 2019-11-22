@@ -35,23 +35,8 @@ export default class RestrictedEditingUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 			const listItems = new Collection();
 
-			listItems.add( {
-				type: 'button',
-				model: new Model( {
-					commandName: 'TODO',
-					label: t( 'Previous editable region' ),
-					withText: true
-				} )
-			} );
-
-			listItems.add( {
-				type: 'button',
-				model: new Model( {
-					commandName: 'TODO',
-					label: t( 'Next editable region' ),
-					withText: true
-				} )
-			} );
+			listItems.add( this._getButtonDefinition( 'goToPreviousRestrictedEditingRegion', t( 'Previous editable region' ) ) );
+			listItems.add( this._getButtonDefinition( 'goToNextRestrictedEditingRegion', t( 'Next editable region' ) ) );
 
 			addListToDropdown( dropdownView, listItems );
 
@@ -63,7 +48,37 @@ export default class RestrictedEditingUI extends Plugin {
 				isOn: false
 			} );
 
+			this.listenTo( dropdownView, 'execute', evt => {
+				editor.execute( evt.source._commandName );
+				editor.editing.view.focus();
+			} );
+
 			return dropdownView;
 		} );
+	}
+
+	/**
+	 * Returns a definition of the navigation button to be used in the dropdown.
+	 *
+	 * @private
+	 * @param {String} commandName Name of the command the button represents.
+	 * @param {String} label Translated label of the button.
+	 * @returns {module:ui/dropdown/utils~ListDropdownItemDefinition}
+	 */
+	_getButtonDefinition( commandName, label ) {
+		const editor = this.editor;
+		const command = editor.commands.get( commandName );
+		const definition = {
+			type: 'button',
+			model: new Model( {
+				label,
+				withText: true,
+				_commandName: commandName
+			} )
+		};
+
+		definition.model.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		return definition;
 	}
 }
