@@ -73,20 +73,39 @@ export default class RestrictedEditingEditing extends Plugin {
 
 			for ( const change of editor.model.document.differ.getChanges() ) {
 				if ( change.type == 'insert' && change.name == '$text' && change.length === 1 ) {
-					const marker = this._getMarker( change.position );
-
-					if ( marker.getEnd().isEqual( change.position ) ) {
-						writer.updateMarker( marker, {
-							range: writer.createRange( marker.getStart(), marker.getEnd().getShiftedBy( 1 ) )
-						} );
-
-						changeApplied = true;
-					}
+					changeApplied = this._tryExtendMarkedEnd( change, writer, changeApplied ) || changeApplied;
+					changeApplied = this._tryExtendMarkerStart( change, writer, changeApplied ) || changeApplied;
 				}
 			}
 
 			return changeApplied;
 		} );
+	}
+
+	_tryExtendMarkerStart( change, writer, changeApplied ) {
+		const markerAtStart = this._getMarker( change.position.getShiftedBy( 1 ) );
+
+		if ( markerAtStart && markerAtStart.getStart().isEqual( change.position.getShiftedBy( 1 ) ) ) {
+			writer.updateMarker( markerAtStart, {
+				range: writer.createRange( markerAtStart.getStart().getShiftedBy( -1 ), markerAtStart.getEnd() )
+			} );
+
+			changeApplied = true;
+		}
+		return changeApplied;
+	}
+
+	_tryExtendMarkedEnd( change, writer, changeApplied ) {
+		const markerAtEnd = this._getMarker( change.position );
+
+		if ( markerAtEnd && markerAtEnd.getEnd().isEqual( change.position ) ) {
+			writer.updateMarker( markerAtEnd, {
+				range: writer.createRange( markerAtEnd.getStart(), markerAtEnd.getEnd().getShiftedBy( 1 ) )
+			} );
+
+			changeApplied = true;
+		}
+		return changeApplied;
 	}
 
 	_checkCommands() {
