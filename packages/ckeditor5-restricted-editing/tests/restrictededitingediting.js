@@ -371,6 +371,23 @@ describe( 'RestrictedEditingEditing', () => {
 
 					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
 				} );
+
+				it( 'should be disabled for non-collapsed selection with more then one range', () => {
+					model.change( writer => {
+						writer.setSelection( [
+							writer.createRange(
+								writer.createPositionAt( firstParagraph, 5 ),
+								writer.createPositionAt( firstParagraph, 6 )
+							),
+							writer.createRange(
+								writer.createPositionAt( firstParagraph, 8 ),
+								writer.createPositionAt( firstParagraph, 9 )
+							)
+						] );
+					} );
+
+					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+				} );
 			} );
 		}
 
