@@ -200,6 +200,30 @@ describe( 'RestrictedEditingEditing', () => {
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
+
+		it( 'should extend maker when typing on the marker boundary (end)', () => {
+			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo barX[] baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restricted-editing-exception:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'commands behavior', () => {
