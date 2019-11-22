@@ -173,6 +173,7 @@ export default class Model {
 			}
 		} catch ( err ) {
 			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -226,6 +227,7 @@ export default class Model {
 			}
 		} catch ( err ) {
 			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
