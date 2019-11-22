@@ -67,6 +67,26 @@ export default class RestrictedEditingEditing extends Plugin {
 
 		this.listenTo( selection, 'change', this._checkCommands.bind( this ) );
 		this.listenTo( editor.model.document, 'change:data', this._checkCommands.bind( this ) );
+
+		editor.model.document.registerPostFixer( writer => {
+			let changeApplied = false;
+
+			for ( const change of editor.model.document.differ.getChanges() ) {
+				if ( change.type == 'insert' && change.name == '$text' && change.length === 1 ) {
+					const marker = this._getMarker( change.position );
+
+					if ( marker.getEnd().isEqual( change.position ) ) {
+						writer.updateMarker( marker, {
+							range: writer.createRange( marker.getStart(), marker.getEnd().getShiftedBy( 1 ) )
+						} );
+
+						changeApplied = true;
+					}
+				}
+			}
+
+			return changeApplied;
+		} );
 	}
 
 	_checkCommands() {
@@ -79,7 +99,7 @@ export default class RestrictedEditingEditing extends Plugin {
 			return;
 		}
 
-		const marker = this._getMarker( editor, selection );
+		const marker = this._getMarker( selection.focus );
 
 		if ( isSelectionInExceptionMarker( marker, selection ) ) {
 			this._enableCommands( marker );
@@ -88,11 +108,13 @@ export default class RestrictedEditingEditing extends Plugin {
 		}
 	}
 
-	_getMarker( editor, selection ) {
-		for ( const marker of this.editor.model.markers ) {
+	_getMarker( position ) {
+		const editor = this.editor;
+
+		for ( const marker of editor.model.markers ) {
 			const markerRange = marker.getRange();
 
-			if ( isPositionInRangeOrOnRangeBoundary( markerRange, selection.focus ) ) {
+			if ( isPositionInRangeOrOnRangeBoundary( markerRange, position ) ) {
 				if ( marker.name.startsWith( 'restricted-editing-exception:' ) ) {
 					return marker;
 				}
