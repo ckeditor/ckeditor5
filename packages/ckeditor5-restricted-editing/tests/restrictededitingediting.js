@@ -301,6 +301,22 @@ describe( 'RestrictedEditingEditing', () => {
 					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
 				} );
 
+				it( 'should be disabled when caret is inside other marker', () => {
+					model.change( writer => {
+						writer.addMarker( 'foo-bar:1', {
+							range: writer.createRange(
+								writer.createPositionAt( firstParagraph, 0 ),
+								writer.createPositionAt( firstParagraph, 3 ) ),
+							usingOperation: true,
+							affectsData: true
+						} );
+
+						writer.setSelection( firstParagraph, 1 );
+					} );
+
+					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+				} );
+
 				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 4 );
