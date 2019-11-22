@@ -225,7 +225,7 @@ describe( 'RestrictedEditingEditing', () => {
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
 
-		it( 'should extend maker when typing on the marker boundary (start)', () => {
+		it( 'should extend marker when typing on the marker boundary (start)', () => {
 			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 			const firstParagraph = model.document.getRoot().getChild( 0 );
 
@@ -245,6 +245,63 @@ describe( 'RestrictedEditingEditing', () => {
 			const expectedRange = model.createRange(
 				model.createPositionAt( firstParagraph, 4 ),
 				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend marker when typing on the marker boundary (collapsed marker)', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( writer.createPositionAt( firstParagraph, 4 ) );
+			} );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo X[]bar baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restricted-editing-exception:1' ).getRange();
+
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 5 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should not move collapsed marker to $graveyard', () => {
+			setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 5 )
+					),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			editor.execute( 'delete' );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo []ar baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restricted-editing-exception:1' ).getRange();
+
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 4 )
 			);
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;

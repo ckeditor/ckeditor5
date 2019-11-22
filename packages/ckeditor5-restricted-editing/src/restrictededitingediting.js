@@ -80,6 +80,23 @@ export default class RestrictedEditingEditing extends Plugin {
 
 			return changeApplied;
 		} );
+
+		editor.model.document.registerPostFixer( writer => {
+			let changeApplied = false;
+
+			for ( const [ name, data ] of editor.model.document.differ._changedMarkers ) {
+				if ( name.startsWith( 'restricted-editing-exception' ) && data.newRange.root.rootName == '$graveyard' ) {
+					writer.updateMarker( name, {
+						// TODO: better location
+						range: writer.createRange( writer.createPositionAt( editor.model.document.selection.focus ) )
+					} );
+
+					changeApplied = true;
+				}
+			}
+
+			return changeApplied;
+		} );
 	}
 
 	_tryExtendMarkerStart( change, writer, changeApplied ) {
