@@ -13,6 +13,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import RestrictedEditingEditing from './../src/restrictededitingediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'RestrictedEditingEditing', () => {
 	let editor;
@@ -201,7 +202,7 @@ describe( 'RestrictedEditingEditing', () => {
 		} );
 	} );
 
-	describe( 'commands integration', () => {
+	describe( 'commands behavior', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
@@ -672,6 +673,45 @@ describe( 'RestrictedEditingEditing', () => {
 				} );
 
 				expect( editor.commands.get( 'other' ).isEnabled ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'commands integration', () => {
+		let model, firstParagraph;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingEditing ] } );
+			model = editor.model;
+
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		describe( 'delete + undo', () => {
+			it( 'should be enabled after data change (no selection change event on undo)', () => {
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 7 );
+				} );
+
+				editor.execute( 'delete' );
+				editor.execute( 'undo' );
+
+				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 			} );
 		} );
 	} );

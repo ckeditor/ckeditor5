@@ -66,6 +66,7 @@ export default class RestrictedEditingEditing extends Plugin {
 		const selection = editor.model.document.selection;
 
 		this.listenTo( selection, 'change', this._checkCommands.bind( this ) );
+		this.listenTo( editor.model.document, 'change:data', this._checkCommands.bind( this ) );
 	}
 
 	_checkCommands() {
