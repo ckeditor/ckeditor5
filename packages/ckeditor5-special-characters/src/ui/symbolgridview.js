@@ -8,13 +8,13 @@
  */
 
 import SymbolTileView from './symboltileview';
-import GridView from '@ckeditor/ckeditor5-ui/src/gridview';
+import GridView from '@ckeditor/ckeditor5-ui/src/grid/gridview';
 import '../../theme/components/symbolgrid/symbolgrid.css';
 
 /**
  * A grid of {@link module:special-characters/ui/symboltileview~symbolTileView symbol tiles}.
  *
- * @extends module:ui/grid~Grid
+ * @extends module:ui/grid~GridView
  */
 export default class SymbolGridView extends GridView {
 	/**
@@ -53,7 +53,7 @@ export default class SymbolGridView extends GridView {
 	 * Creates a new tile for the grid.
 	 *
 	 * @param {String} character A character that will be displayed on the button.
-	 * @param {String} title A label that descrbied the character.
+	 * @param {String} title A label that described the character.
 	 * @returns {module:special-characters/ui/symboltileview~SymbolTileView}
 	 */
 	createSymbolTile( character, title ) {

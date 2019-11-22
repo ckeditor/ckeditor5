@@ -9,7 +9,7 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import SelectView from '@ckeditor/ckeditor5-ui/src/selectview/selectview';
+import SelectView from '@ckeditor/ckeditor5-ui/src/select/selectview';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
@@ -22,7 +22,7 @@ export default class SpecialCharactersSelectView extends View {
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} options
 	 * @param {String} options.labelText A label for the select element.
-	 * @param {Array.<module:ui/selectview/selectview~SelectViewOption>} options.selectOptions Options to chose in the select view.
+	 * @param {Array.<module:ui/select/selectview~SelectViewOption>} options.selectOptions Options to chose in the select view.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -39,7 +39,7 @@ export default class SpecialCharactersSelectView extends View {
 		/**
 		 * Select view for changing a category of special characters.
 		 *
-		 * @member {module:ui/selectview/selectview~SelectView}
+		 * @member {module:ui/select/selectview~SelectView}
 		 */
 		this.selectView = new SelectView( this.locale, options.selectOptions );
 		this.selectView.delegate( 'input' ).to( this );
