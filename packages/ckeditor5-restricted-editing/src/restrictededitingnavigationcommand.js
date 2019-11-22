@@ -80,7 +80,12 @@ function getNearestExceptionPosition( model, direction ) {
 	for ( const marker of model.markers.getMarkersGroup( 'restricted-editing-exception' ) ) {
 		const markerRange = marker.getRange();
 		const markerRangeStart = markerRange.start;
-		const isMarkerRangeTouching = selectionPosition.isTouching( markerRange.start ) || selectionPosition.isTouching( markerRange.end );
+
+		// Checking parent because there two positions <paragraph>foo^</paragraph><paragraph>^bar</paragraph>
+		// are touching but they will represent different markers.
+		const isMarkerRangeTouching =
+			selectionPosition.isTouching( markerRange.start ) && selectionPosition.hasSameParentAs( markerRange.start ) ||
+			selectionPosition.isTouching( markerRange.end ) && selectionPosition.hasSameParentAs( markerRange.end );
 
 		// <paragraph>foo <marker≥b[]ar</marker> baz</paragraph>
 		// <paragraph>foo <marker≥b[ar</marker> ba]z</paragraph>
