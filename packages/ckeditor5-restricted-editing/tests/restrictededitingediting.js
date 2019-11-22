@@ -317,6 +317,21 @@ describe( 'RestrictedEditingEditing', () => {
 					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
 				} );
 
+				it( 'should be disabled for multi-range selection (collapsed ranges)', () => {
+					model.change( writer => {
+						writer.setSelection( [
+							writer.createRange(
+								writer.createPositionAt( firstParagraph, 5 )
+							),
+							writer.createRange(
+								writer.createPositionAt( firstParagraph, 9 )
+							)
+						] );
+					} );
+
+					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+				} );
+
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
 					model.change( writer => {
 						writer.setSelection( writer.createRange(
