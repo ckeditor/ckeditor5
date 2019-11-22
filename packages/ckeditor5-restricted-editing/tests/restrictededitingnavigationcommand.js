@@ -207,6 +207,36 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					forwardCommand.execute();
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz</paragraph>' );
 				} );
+
+				it( 'should move to the closest marker when created in a reverse order', () => {
+					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					// <paragraph>[]foo bar <marker≥baz</marker≥</paragraph>
+					model.change( writer => {
+						writer.addMarker( 'restricted-editing-exception:2', {
+							range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
+							usingOperation: true,
+							affectsData: true
+						} );
+					} );
+
+					// <paragraph>[]foo <marker≥bar</marker> <marker≥baz</marker≥</paragraph>
+					model.change( writer => {
+						writer.addMarker( 'restricted-editing-exception:1', {
+							range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
+							usingOperation: true,
+							affectsData: true
+						} );
+					} );
+
+					forwardCommand.execute();
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz</paragraph>' );
+
+					forwardCommand.execute();
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz</paragraph>' );
+				} );
 			} );
 
 			describe( 'expanded selection', () => {
@@ -460,6 +490,36 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					model.change( writer => {
 						writer.addMarker( 'restricted-editing-exception:2', {
 							range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
+							usingOperation: true,
+							affectsData: true
+						} );
+					} );
+
+					backwardCommand.execute();
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar []baz qux</paragraph>' );
+
+					backwardCommand.execute();
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo []bar baz qux</paragraph>' );
+				} );
+
+				it( 'should move to the closest previous marker when created in a reverse order', () => {
+					setModelData( model, '<paragraph>foo bar baz qux[]</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					// <paragraph>foo bar <marker≥baz</marker≥ qux[]</paragraph>
+					model.change( writer => {
+						writer.addMarker( 'restricted-editing-exception:2', {
+							range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
+							usingOperation: true,
+							affectsData: true
+						} );
+					} );
+
+					// <paragraph>foo <marker≥bar</marker> <marker≥baz</marker≥ qux[]</paragraph>
+					model.change( writer => {
+						writer.addMarker( 'restricted-editing-exception:1', {
+							range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 							usingOperation: true,
 							affectsData: true
 						} );
