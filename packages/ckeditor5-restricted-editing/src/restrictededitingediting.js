@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+import RestrictedEditingNavigationCommand from './restrictededitingnavigationcommand';
 
 const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
 
@@ -28,6 +29,10 @@ export default class RestrictedEditingEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+
+		// Commands that allow navigation in the content.
+		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
+		editor.commands.add( 'goToNextRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
 
 		let createdMarkers = 0;
 

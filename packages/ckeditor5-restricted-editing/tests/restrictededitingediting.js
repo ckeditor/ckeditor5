@@ -9,6 +9,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import RestrictedEditingEditing from './../src/restrictededitingediting';
+import RestrictedEditingNavigationCommand from '../src/restrictededitingnavigationcommand';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -40,6 +41,14 @@ describe( 'RestrictedEditingEditing', () => {
 
 		it( 'should be loaded', () => {
 			expect( editor.plugins.get( RestrictedEditingEditing ) ).to.be.instanceOf( RestrictedEditingEditing );
+		} );
+
+		it( 'adds a "goToPreviousRestrictedEditingRegion" command', () => {
+			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingNavigationCommand );
+		} );
+
+		it( 'adds a "goToNextRestrictedEditingRegion" command', () => {
+			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingNavigationCommand );
 		} );
 	} );
 
