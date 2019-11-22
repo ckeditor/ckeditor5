@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * The command that allows navigation across the exceptions in the editor content.
+ * The command that allows navigation across the exceptions in the edited document.
  *
  * @extends module:core/command~Command
  */
@@ -101,7 +101,8 @@ function getNearestExceptionPosition( model, direction ) {
 		return null;
 	}
 
-	// Get the marker closest to the selection position among many.
+	// Get the marker closest to the selection position among many. To know that, we need to sort
+	// them first.
 	return markerStartPositions.sort( ( posA, posB ) => {
 		if ( direction === 'forward' ) {
 			return posA.isAfter( posB ) ? 1 : -1;
