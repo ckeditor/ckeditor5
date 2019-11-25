@@ -25,8 +25,8 @@ export default class SymbolGridView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} options Component configuration
-	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} [options.symbolDefinitions] Array with definitions
-	 * required to create the {@link module:special-characters/ui/symboltileview~SymbolTileView tiles}.
+	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} [options.symbolDefinitions] Array with
+	 * definitions required to create the {@link module:special-characters/ui/symboltileview~SymbolTileView tiles}.
 	 * @param {Number} options.columns A number of columns to display the tiles.
 	 */
 	constructor( locale, options ) {
