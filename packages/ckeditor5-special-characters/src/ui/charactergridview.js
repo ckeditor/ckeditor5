@@ -22,7 +22,7 @@ export default class CharacterGridView extends View {
 	/**
 	 * Creates an instance of a character grid containing tiles representing special characters.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 * @param {Object} options Component configuration
 	 * @param {Number} options.columns A number of columns in the grid.
 	 */
@@ -32,7 +32,7 @@ export default class CharacterGridView extends View {
 		const viewStyleAttribute = {};
 
 		if ( options && options.columns ) {
-			viewStyleAttribute.gridTemplateColumns = `repeat( ${ options.columns }, 1fr)`;
+			viewStyleAttribute.gridTemplateColumns = `repeat( ${ options.columns }, 1fr )`;
 		}
 
 		/**
