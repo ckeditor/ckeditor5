@@ -18,10 +18,14 @@ const standardModeButton = document.getElementById( 'mode-standard' );
 restrictedModeButton.addEventListener( 'change', handleModeChange );
 standardModeButton.addEventListener( 'change', handleModeChange );
 
-startStandardMode();
+startMode( document.querySelector( 'input[name="mode"]:checked' ).value );
 
 function handleModeChange( evt ) {
-	if ( evt.target.value === 'standard' ) {
+	startMode( evt.target.value );
+}
+
+function startMode( selectedMode ) {
+	if ( selectedMode === 'standard' ) {
 		startStandardMode();
 	} else {
 		startRestrictedMode();
