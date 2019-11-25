@@ -12,6 +12,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedEditingExceptionEditing from './restrictededitingexceptionediting';
 import RestrictedEditingExceptionUI from './restrictededitingexceptionui';
 
+import '../theme/restrictedediting.css';
+
 /**
  * @extends module:core/plugin~Plugin
  */
