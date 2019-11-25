@@ -3,14 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-
-import StandardEditingMode from '../../src/standardeditingmode';
-import RestrictedEditingMode from '../../src/restrictededitingmode';
+/* globals ClassicEditor, window, document */
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -18,7 +11,7 @@ const standardModeButton = document.getElementById( 'mode-standard' );
 restrictedModeButton.addEventListener( 'change', handleModeChange );
 standardModeButton.addEventListener( 'change', handleModeChange );
 
-startMode( document.querySelector( 'input[name="mode"]:checked' ).value );
+startMode( document.querySelector( 'input[name="editor-restriction-mode"]:checked' ).value );
 
 async function handleModeChange( evt ) {
 	await startMode( evt.target.value );
@@ -34,7 +27,7 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, StandardEditingMode ],
+		removePlugins: [ 'RestrictedEditingMode' ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
@@ -55,7 +48,7 @@ async function startStandardEditingMode() {
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, RestrictedEditingMode ],
+		removePlugins: [ 'StandardEditingMode' ],
 		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
 	} );
 }
@@ -65,5 +58,5 @@ async function reloadEditor( config ) {
 		await window.editor.destroy();
 	}
 
-	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+	window.editor = await ClassicEditor.create( document.querySelector( '#restricted-editing-editor' ), config );
 }
