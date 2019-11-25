@@ -4,7 +4,7 @@
  */
 
 /**
- * @module restricted-editing/standardmodeediting
+ * @module restricted-editing/standardeditingmodeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -13,12 +13,12 @@ import RestrictedEditingExceptionCommand from './restrictededitingexceptioncomma
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class StandardModeEditing extends Plugin {
+export default class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'StandardModeEditing';
+		return 'StandardEditingModeEditing';
 	}
 
 	/**

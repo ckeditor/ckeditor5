@@ -4,28 +4,28 @@
  */
 
 /**
- * @module restricted-editing/standardmode
+ * @module restricted-editing/standardeditingmode
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import StandardModeEditing from './standardmodeediting';
-import StandardModeUI from './standardmodeui';
+import StandardEditingModeEditing from './standardeditingmodeediting';
+import StandardEditingModeUI from './standardeditingmodeui';
 
 import '../theme/restrictedediting.css';
 
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class StandardMode extends Plugin {
+export default class StandardEditingMode extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'StandardMode';
+		return 'StandardEditingMode';
 	}
 
 	static get requires() {
-		return [ StandardModeEditing, StandardModeUI ];
+		return [ StandardEditingModeEditing, StandardEditingModeUI ];
 	}
 }

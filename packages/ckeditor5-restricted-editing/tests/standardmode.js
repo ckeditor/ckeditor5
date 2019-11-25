@@ -8,11 +8,11 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import StandardMode from './../src/standardmode';
-import StandardModeUI from './../src/standardmodeui';
-import StandardModeEditing from './../src/standardmodeediting';
+import StandardEditingMode from './../src/standardeditingmode';
+import StandardEditingModeUI from './../src/standardeditingmodeui';
+import StandardEditingModeEditing from './../src/standardeditingmodeediting';
 
-describe( 'StandardMode', () => {
+describe( 'StandardEditingMode', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
@@ -21,7 +21,7 @@ describe( 'StandardMode', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		editor = await ClassicTestEditor.create( element, { plugins: [ StandardMode ] } );
+		editor = await ClassicTestEditor.create( element, { plugins: [ StandardEditingMode ] } );
 	} );
 
 	afterEach( () => {
@@ -31,14 +31,14 @@ describe( 'StandardMode', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( StandardMode.pluginName ).to.equal( 'StandardMode' );
+		expect( StandardEditingMode.pluginName ).to.equal( 'StandardEditingMode' );
 	} );
 
-	it( 'should load the StandardModeEditing plugin', () => {
-		expect( editor.plugins.get( StandardModeEditing ) ).to.be.instanceOf( StandardModeEditing );
+	it( 'should load the StandardEditingModeEditing plugin', () => {
+		expect( editor.plugins.get( StandardEditingModeEditing ) ).to.be.instanceOf( StandardEditingModeEditing );
 	} );
 
-	it( 'should load the StandardModeUI plugin', () => {
-		expect( editor.plugins.get( StandardModeUI ) ).to.be.instanceOf( StandardModeUI );
+	it( 'should load the StandardEditingModeUI plugin', () => {
+		expect( editor.plugins.get( StandardEditingModeUI ) ).to.be.instanceOf( StandardEditingModeUI );
 	} );
 } );
