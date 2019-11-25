@@ -70,7 +70,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					expect( forwardCommand.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false when the selection position is at a marker start and there is no more markers', () => {
+				it( 'should be false when the selection position is at a marker start and there are no more markers', () => {
 					setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -87,7 +87,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					expect( forwardCommand.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false when the selection position is in a marker and there is no more markers', () => {
+				it( 'should be false when the selection position is in a marker and there are no more markers', () => {
 					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -104,7 +104,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					expect( forwardCommand.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false when the selection position is at a marker end and there is no more markers', () => {
+				it( 'should be false when the selection position is at a marker end and there are no more markers', () => {
 					setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -365,7 +365,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					expect( backwardCommand.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false when the selection position is at a marker end and there is no more markers', () => {
+				it( 'should be false when the selection position is at a marker end and there are no more markers', () => {
 					setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -382,7 +382,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					expect( backwardCommand.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false when the selection position is in a marker and there is no more markers', () => {
+				it( 'should be false when the selection position is in a marker and there are no more markers', () => {
 					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -399,7 +399,7 @@ describe( 'RestrictedEditingNavigationCommand', () => {
 					expect( backwardCommand.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false when the selection position is at a marker start and there is no more markers', () => {
+				it( 'should be false when the selection position is at a marker start and there are no more markers', () => {
 					setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
