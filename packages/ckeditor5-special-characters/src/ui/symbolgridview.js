@@ -27,17 +27,11 @@ export default class SymbolGridView extends View {
 	 * @param {Object} options Component configuration
 	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} [options.symbolDefinitions] Array with
 	 * definitions required to create the {@link module:special-characters/ui/symboltileview~SymbolTileView tiles}.
-	 * @param {Number} options.columns A number of columns to display the tiles.
 	 */
 	constructor( locale, options ) {
 		super( locale );
 
 		const symbolDefinitions = options && options.symbolDefinitions || [];
-		const viewStyleAttribute = {};
-
-		if ( options && options.columns ) {
-			viewStyleAttribute.gridTemplateColumns = `repeat( ${ options.columns }, 1fr)`;
-		}
 
 		/**
 		 * Collection of the child tile views.
@@ -100,8 +94,7 @@ export default class SymbolGridView extends View {
 				class: [
 					'ck',
 					'ck-symbol-grid'
-				],
-				style: viewStyleAttribute
+				]
 			}
 		} );
 	}

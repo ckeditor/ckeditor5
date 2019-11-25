@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
- .ck.ck-symbol-grid {
+.ck.ck-symbol-grid {
 	display: grid;
+	grid-template-columns: repeat(10, 1fr);
 }

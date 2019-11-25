@@ -23,12 +23,8 @@ export default class SpecialCharactersTableView extends View {
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} config The configuration object.
-	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} config.symbolDefinitions An array with
-	 * definitions of special characters to be displayed in the table.
-	 * @param {Number} config.columns The number of columns in the color grid.
 	 */
-	constructor( locale, { symbolDefinitions = [], columns } ) {
+	constructor( locale ) {
 		super( locale );
 
 		/**
@@ -56,18 +52,11 @@ export default class SpecialCharactersTableView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * The number of columns in the special characters grid.
-		 *
-		 * @type {Number}
-		 */
-		this.columns = columns;
-
-		/**
 		 * An array with definitions of special characters to be displayed in the table.
 		 *
 		 * @member {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>}
 		 */
-		this.symbolDefinitions = symbolDefinitions;
+		this.symbolDefinitions = [];
 
 		/**
 		 * Preserves the reference to {@link module:special-characters/ui/symbolgridview~SymbolGridView} used to create
@@ -149,8 +138,7 @@ export default class SpecialCharactersTableView extends View {
 	 */
 	_createSymbolGridView() {
 		const symbolGrid = new SymbolGridView( this.locale, {
-			symbolDefinitions: this.symbolDefinitions,
-			columns: this.columns
+			symbolDefinitions: this.symbolDefinitions
 		} );
 
 		symbolGrid.delegate( 'execute' ).to( this );

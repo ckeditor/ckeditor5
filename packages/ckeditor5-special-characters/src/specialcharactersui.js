@@ -44,9 +44,7 @@ export default class SpecialCharactersUI extends Plugin {
 				selectOptions: getSelectViewOptions()
 			} );
 
-			const symbolTableView = new SpecialCharactersTableView( locale, {
-				columns: 10 // TODO: Read from config.
-			} );
+			const symbolTableView = new SpecialCharactersTableView( locale );
 
 			symbolTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
 
