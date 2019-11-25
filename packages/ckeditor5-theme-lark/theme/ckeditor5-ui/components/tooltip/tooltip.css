@@ -18,6 +18,36 @@
 	 */
 	top: 0;
 
+	/*
+	 * For the transition to work, the tooltip must be controlled
+	 * using visibility+opacity. A delay prevents a "tooltip avalanche"
+	 * i.e. when scanning the toolbar with mouse cursor.
+	 */
+	transition: opacity .2s ease-in-out .2s;
+
+	& .ck-tooltip__text {
+		@mixin ck-rounded-corners;
+
+		font-size: .9em;
+		line-height: 1.5;
+		color: var(--ck-color-tooltip-text);
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+		background: var(--ck-color-tooltip-background);
+		position: relative;
+		left: -50%;
+
+		&::after {
+			/*
+			 * For the transition to work, the tooltip must be controlled
+			 * using visibility+opacity. A delay prevents a "tooltip avalanche"
+			 * i.e. when scanning the toolbar with mouse cursor.
+			 */
+			transition: opacity .2s ease-in-out .2s;
+			border-style: solid;
+			left: 50%;
+		}
+	}
+
 	/**
 	 * A class once applied displays the tooltip south of the element.
 	 *
@@ -59,30 +89,4 @@
 			border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size);
 		}
 	}
-
-	& .ck-tooltip__text {
-		@mixin ck-rounded-corners;
-
-		font-size: .9em;
-		line-height: 1.5;
-		color: var(--ck-color-tooltip-text);
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-		background: var(--ck-color-tooltip-background);
-		position: relative;
-		left: -50%;
-
-		&::after {
-			border-style: solid;
-			left: 50%;
-		}
-	}
 }
-
-.ck.ck-tooltip,
-.ck.ck-tooltip .ck-tooltip__text::after {
-	/* For the transition to work, the tooltip must be controlled
-	using visibility+opacity. A delay prevents a "tooltip avalanche"
-	i.e. when scanning the toolbar with mouse cursor. */
-	transition: opacity .2s ease-in-out .2s;
-}
-

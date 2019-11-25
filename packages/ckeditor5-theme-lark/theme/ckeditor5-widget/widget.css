@@ -48,16 +48,6 @@
 	}
 }
 
-.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
-.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
-	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
-	In fact, anything with overflow: hidden.
-	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
-	https://github.com/ckeditor/ckeditor5-widget/issues/44
-	https://github.com/ckeditor/ckeditor5-widget/issues/66 */
-	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
-}
-
 .ck .ck-widget.ck-widget_with-selection-handle {
 	& .ck-widget__selection-handle {
 		padding: 4px;
@@ -83,11 +73,6 @@
 		transform: translateY(-100%);
 		left: calc(0px - var(--ck-widget-outline-thickness));
 
-		/* Advertise using the look of the icon that once clicked the handler, the widget will be selected. */
-		&:hover .ck-icon .ck-icon__selected-indicator {
-			opacity: 1;
-		}
-
 		& .ck-icon {
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
 			width: var(--ck-widget-handler-icon-size);
@@ -102,6 +87,17 @@
 				transition: opacity 300ms var(--ck-widget-handler-animation-curve);
 			}
 		}
+
+		/* Advertise using the look of the icon that once clicked the handler, the widget will be selected. */
+		&:hover .ck-icon .ck-icon__selected-indicator {
+			opacity: 1;
+		}
+	}
+
+	/* Show the selection handler on mouse hover over the widget. */
+	&:hover .ck-widget__selection-handle {
+		opacity: 1;
+		background-color: var(--ck-color-widget-hover-border);
 	}
 
 	/* Show the selection handler when the widget is selected. */
@@ -117,15 +113,20 @@
 			}
 		}
 	}
+}
 
-	/* Show the selection handler on mouse hover over the widget. */
-	&:hover .ck-widget__selection-handle {
-		opacity: 1;
-		background-color: var(--ck-color-widget-hover-border);
-	}
+.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
+.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
+	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
+	In fact, anything with overflow: hidden.
+	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
+	https://github.com/ckeditor/ckeditor5-widget/issues/44
+	https://github.com/ckeditor/ckeditor5-widget/issues/66 */
+	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
 }
 
 /* In a RTL environment, align the selection handler to the right side of the widget */
+/* stylelint-disable-next-line no-descending-specificity */
 .ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle {
 	left: auto;
 	right: calc(0px - var(--ck-widget-outline-thickness));
@@ -137,9 +138,11 @@
 	&.ck-widget_selected:hover {
 		outline-color: var(--ck-color-widget-blurred-border);
 
-		& .ck-widget__selection-handle,
-		& .ck-widget__selection-handle:hover {
-			background: var(--ck-color-widget-blurred-border);
+		&.ck-widget_with-selection-handle {
+			& .ck-widget__selection-handle,
+			& .ck-widget__selection-handle:hover {
+				background: var(--ck-color-widget-blurred-border);
+			}
 		}
 	}
 }
