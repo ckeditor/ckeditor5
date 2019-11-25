@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import RestrictedEditingEditing from './../src/restrictededitingediting';
 import RestrictedEditingNavigationCommand from '../src/restrictededitingnavigationcommand';
@@ -20,22 +17,17 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 
 describe( 'RestrictedEditingEditing', () => {
-	let editor, element;
+	let editor;
 
 	testUtils.createSinonSandbox();
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingEditing ] } );
 		} );
 
-		afterEach( () => {
-			element.remove();
-
-			return editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should be named', () => {
