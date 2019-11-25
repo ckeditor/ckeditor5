@@ -14,7 +14,7 @@ import CodeBlockUI from './codeblockui';
 /**
  * The code block plugin.
  *
- * For more information about this feature check the package page.
+ * For more information about this feature check the {@glink api/code-block package page}.
  *
  * This is a "glue" plugin which loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
  * and {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.
@@ -86,7 +86,7 @@ export default class CodeBlock extends Plugin {
  * For instance, this language configuration:
  *
  *		ClassicEditor
- *			.create( editorElement, {
+ *			.create( document.querySelector( '#editor' ), {
  *				codeBlock: {
  *					languages: [
  *						// ...
@@ -105,7 +105,7 @@ export default class CodeBlock extends Plugin {
  * You can customize the CSS class by specifying an optional `class` property in a language definition:
  *
  *		ClassicEditor
- *			.create( editorElement, {
+ *			.create( document.querySelector( '#editor' ), {
  *				codeBlock: {
  *					languages: [
  *						// Do not render CSS class for the plain text code blocks.
