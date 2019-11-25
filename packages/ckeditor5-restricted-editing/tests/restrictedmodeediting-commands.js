@@ -10,7 +10,7 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import RestrictedModeEditing from './../src/restrictedmodeediting';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'RestrictedEditingEditing - commands', () => {
@@ -22,7 +22,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
@@ -549,7 +549,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, UndoEditing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 
 			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );

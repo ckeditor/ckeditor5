@@ -4,12 +4,12 @@
  */
 
 /**
- * @module restricted-editing/restrictedmode
+ * @module restricted-editing/restrictededitingmode
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import RestrictedModeEditing from './restrictedmodeediting';
-import RestrictedModeUI from './restrictedmodeui';
+import RestrictedEditingModeEditing from './restrictededitingmodeediting';
+import RestrictedEditingModeUI from './restrictededitingmodeui';
 
 import '../theme/restrictedediting.css';
 
@@ -23,15 +23,15 @@ import '../theme/restrictedediting.css';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedMode extends Plugin {
+export default class RestrictedEditingMode extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedMode';
+		return 'RestrictedEditingMode';
 	}
 
 	static get requires() {
-		return [ RestrictedModeEditing, RestrictedModeUI ];
+		return [ RestrictedEditingModeEditing, RestrictedEditingModeUI ];
 	}
 }

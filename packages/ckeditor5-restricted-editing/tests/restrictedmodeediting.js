@@ -15,17 +15,17 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import RestrictedModeEditing from './../src/restrictedmodeediting';
-import RestrictedModeNavigationCommand from '../src/restrictedmodenavigationcommand';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
+import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 
-describe( 'RestrictedModeEditing', () => {
+describe( 'RestrictedEditingModeEditing', () => {
 	let editor;
 
 	testUtils.createSinonSandbox();
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ RestrictedModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing ] } );
 		} );
 
 		afterEach( async () => {
@@ -33,19 +33,20 @@ describe( 'RestrictedModeEditing', () => {
 		} );
 
 		it( 'should be named', () => {
-			expect( RestrictedModeEditing.pluginName ).to.equal( 'RestrictedModeEditing' );
+			expect( RestrictedEditingModeEditing.pluginName ).to.equal( 'RestrictedEditingModeEditing' );
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedModeEditing ) ).to.be.instanceOf( RestrictedModeEditing );
+			expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 		} );
 
 		it( 'adds a "goToPreviousRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedModeNavigationCommand );
+			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) )
+				.to.be.instanceOf( RestrictedEditingModeNavigationCommand );
 		} );
 
 		it( 'adds a "goToNextRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedModeNavigationCommand );
+			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingModeNavigationCommand );
 		} );
 	} );
 
@@ -53,7 +54,7 @@ describe( 'RestrictedModeEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -145,7 +146,7 @@ describe( 'RestrictedModeEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -330,7 +331,7 @@ describe( 'RestrictedModeEditing', () => {
 		let model, viewDoc;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 			viewDoc = editor.editing.view.document;
 		} );
@@ -388,7 +389,7 @@ describe( 'RestrictedModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedModeEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
 			} );
 			model = editor.model;
 			view = editor.editing.view;
@@ -621,7 +622,7 @@ describe( 'RestrictedModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedModeEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
 			} );
 
 			model = editor.model;

@@ -8,11 +8,11 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedModeEditing from './../src/restrictedmodeediting';
-import RestrictedModeUI from './../src/restrictedmodeui';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
+import RestrictedEditingModeUI from './../src/restrictededitingmodeui';
 import lockIcon from '../theme/icons/contentlock.svg';
 
-describe( 'RestrictedModeUI', () => {
+describe( 'RestrictedEditingModeUI', () => {
 	let editor, element, goToPreviousCommand, goToNextCommand;
 
 	testUtils.createSinonSandbox();
@@ -22,7 +22,7 @@ describe( 'RestrictedModeUI', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ RestrictedModeEditing, RestrictedModeUI ]
+			plugins: [ RestrictedEditingModeEditing, RestrictedEditingModeUI ]
 		} );
 
 		goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingRegion' );
@@ -37,11 +37,11 @@ describe( 'RestrictedModeUI', () => {
 
 	describe( 'plugin', () => {
 		it( 'should be named', () => {
-			expect( RestrictedModeUI.pluginName ).to.equal( 'RestrictedModeUI' );
+			expect( RestrictedEditingModeUI.pluginName ).to.equal( 'RestrictedEditingModeUI' );
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedModeUI ) ).to.be.instanceOf( RestrictedModeUI );
+			expect( editor.plugins.get( RestrictedEditingModeUI ) ).to.be.instanceOf( RestrictedEditingModeUI );
 		} );
 	} );
 

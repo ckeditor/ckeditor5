@@ -8,11 +8,11 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedMode from './../src/restrictedmode';
-import RestrictedModeUI from './../src/restrictedmodeui';
-import RestrictedModeEditing from './../src/restrictedmodeediting';
+import RestrictedEditingMode from './../src/restrictededitingmode';
+import RestrictedEditingModeUI from './../src/restrictededitingmodeui';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 
-describe( 'RestrictedMode', () => {
+describe( 'RestrictedEditingMode', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
@@ -21,7 +21,7 @@ describe( 'RestrictedMode', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedMode ] } );
+		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingMode ] } );
 	} );
 
 	afterEach( () => {
@@ -31,14 +31,14 @@ describe( 'RestrictedMode', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( RestrictedMode.pluginName ).to.equal( 'RestrictedMode' );
+		expect( RestrictedEditingMode.pluginName ).to.equal( 'RestrictedEditingMode' );
 	} );
 
-	it( 'should load the RestrictedModeEditing plugin', () => {
-		expect( editor.plugins.get( RestrictedModeEditing ) ).to.be.instanceOf( RestrictedModeEditing );
+	it( 'should load the RestrictedEditingModeEditing plugin', () => {
+		expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 	} );
 
-	it( 'should load the RestrictedModeUI plugin', () => {
-		expect( editor.plugins.get( RestrictedModeUI ) ).to.be.instanceOf( RestrictedModeUI );
+	it( 'should load the RestrictedEditingModeUI plugin', () => {
+		expect( editor.plugins.get( RestrictedEditingModeUI ) ).to.be.instanceOf( RestrictedEditingModeUI );
 	} );
 } );

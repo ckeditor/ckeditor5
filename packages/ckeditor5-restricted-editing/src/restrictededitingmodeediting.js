@@ -4,12 +4,12 @@
  */
 
 /**
- * @module restricted-editing/restrictedmodeediting
+ * @module restricted-editing/restrictededitingmodeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import RestrictedEditingNavigationCommand from './restrictedmodenavigationcommand';
+import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
 
 const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
 
@@ -22,12 +22,12 @@ const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedModeEditing extends Plugin {
+export default class RestrictedEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedModeEditing';
+		return 'RestrictedEditingModeEditing';
 	}
 
 	/**
@@ -90,7 +90,7 @@ export default class RestrictedModeEditing extends Plugin {
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'goToPreviousRestrictedEditingRegion' ) );
 
 		this._setupExceptionHighlighting();
-		this._setupRestrictedMode( editor );
+		this._setupRestrictedEditingMode( editor );
 
 		// Block clipboard completely in restricted mode.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
@@ -159,7 +159,7 @@ export default class RestrictedModeEditing extends Plugin {
 		} );
 	}
 
-	_setupRestrictedMode( editor ) {
+	_setupRestrictedEditingMode( editor ) {
 		this._disableCommands( editor );
 
 		const selection = editor.model.document.selection;
@@ -285,11 +285,11 @@ export default class RestrictedModeEditing extends Plugin {
 			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
-			command.clearForceDisabled( 'RestrictedMode' );
+			command.clearForceDisabled( 'RestrictedEditingMode' );
 		}
 
 		for ( const command of exceptionDisable.map( name => editor.commands.get( name ) ) ) {
-			command.forceDisabled( 'RestrictedMode' );
+			command.forceDisabled( 'RestrictedEditingMode' );
 		}
 	}
 
@@ -299,7 +299,7 @@ export default class RestrictedModeEditing extends Plugin {
 			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
-			command.forceDisabled( 'RestrictedMode' );
+			command.forceDisabled( 'RestrictedEditingMode' );
 		}
 	}
 

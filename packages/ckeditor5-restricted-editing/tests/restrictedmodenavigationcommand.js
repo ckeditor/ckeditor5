@@ -6,9 +6,9 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import RestrictedModeNavigationCommand from '../src/restrictedmodenavigationcommand';
+import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 
-describe( 'RestrictedModeNavigationCommand', () => {
+describe( 'RestrictedEditingModeNavigationCommand', () => {
 	let editor, forwardCommand, backwardCommand, model;
 
 	beforeEach( () => {
@@ -18,8 +18,8 @@ describe( 'RestrictedModeNavigationCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				forwardCommand = new RestrictedModeNavigationCommand( editor, 'forward' );
-				backwardCommand = new RestrictedModeNavigationCommand( editor, 'backward' );
+				forwardCommand = new RestrictedEditingModeNavigationCommand( editor, 'forward' );
+				backwardCommand = new RestrictedEditingModeNavigationCommand( editor, 'backward' );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
