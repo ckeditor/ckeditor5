@@ -4,12 +4,12 @@
  */
 
 /**
- * @module restricted-editing/restrictededitingediting
+ * @module restricted-editing/restrictedmodeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import RestrictedEditingNavigationCommand from './restrictededitingnavigationcommand';
+import RestrictedEditingNavigationCommand from './restrictedmodenavigationcommand';
 
 const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
 
@@ -22,12 +22,12 @@ const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedEditingEditing extends Plugin {
+export default class RestrictedModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedEditingEditing';
+		return 'RestrictedModeEditing';
 	}
 
 	/**

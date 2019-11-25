@@ -4,7 +4,7 @@
  */
 
 /**
- * @module restricted-editing/restrictededitingnavigationcommand
+ * @module restricted-editing/restrictedmodenavigationcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -14,7 +14,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  *
  * @extends module:core/command~Command
  */
-export default class RestrictedEditingNavigationCommand extends Command {
+export default class RestrictedModeNavigationCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *

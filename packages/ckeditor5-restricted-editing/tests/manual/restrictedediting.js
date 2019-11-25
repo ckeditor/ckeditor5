@@ -10,7 +10,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import RestrictedEditingException from '../../src/restrictededitingexception';
-import RestrictedEditing from '../../src/restrictedediting';
+import RestrictedMode from '../../src/restrictedmode';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -55,7 +55,7 @@ async function startStandardMode() {
 
 async function startRestrictedMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, RestrictedEditing ],
+		plugins: [ ArticlePluginSet, Table, RestrictedMode ],
 		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
 	} );
 }

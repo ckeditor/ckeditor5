@@ -4,7 +4,7 @@
  */
 
 /**
- * @module restricted-editing/restrictededitingui
+ * @module restricted-editing/restrictedmodeui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -21,12 +21,12 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedEditingUI extends Plugin {
+export default class RestrictedModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedEditingUI';
+		return 'RestrictedModeUI';
 	}
 
 	/**

@@ -8,44 +8,40 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedEditingEditing from './../src/restrictededitingediting';
-import RestrictedEditingUI from './../src/restrictededitingui';
+import RestrictedModeEditing from './../src/restrictedmodeediting';
+import RestrictedModeUI from './../src/restrictedmodeui';
 import lockIcon from '../theme/icons/contentlock.svg';
 
-describe( 'RestrictedEditingUI', () => {
+describe( 'RestrictedModeUI', () => {
 	let editor, element, goToPreviousCommand, goToNextCommand;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ RestrictedEditingEditing, RestrictedEditingUI ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ RestrictedModeEditing, RestrictedModeUI ]
+		} );
 
-				goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingRegion' );
-				goToNextCommand = editor.commands.get( 'goToNextRestrictedEditingRegion' );
-			} );
+		goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingRegion' );
+		goToNextCommand = editor.commands.get( 'goToNextRestrictedEditingRegion' );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		element.remove();
 
-		return editor.destroy();
+		await editor.destroy();
 	} );
 
 	describe( 'plugin', () => {
 		it( 'should be named', () => {
-			expect( RestrictedEditingUI.pluginName ).to.equal( 'RestrictedEditingUI' );
+			expect( RestrictedModeUI.pluginName ).to.equal( 'RestrictedModeUI' );
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedEditingUI ) ).to.be.instanceOf( RestrictedEditingUI );
+			expect( editor.plugins.get( RestrictedModeUI ) ).to.be.instanceOf( RestrictedModeUI );
 		} );
 	} );
 

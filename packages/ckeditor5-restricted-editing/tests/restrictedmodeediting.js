@@ -5,8 +5,6 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import RestrictedEditingEditing from './../src/restrictededitingediting';
-import RestrictedEditingNavigationCommand from '../src/restrictededitingnavigationcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -17,14 +15,17 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-describe( 'RestrictedEditingEditing', () => {
+import RestrictedModeEditing from './../src/restrictedmodeediting';
+import RestrictedModeNavigationCommand from '../src/restrictedmodenavigationcommand';
+
+describe( 'RestrictedModeEditing', () => {
 	let editor;
 
 	testUtils.createSinonSandbox();
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedModeEditing ] } );
 		} );
 
 		afterEach( async () => {
@@ -32,19 +33,19 @@ describe( 'RestrictedEditingEditing', () => {
 		} );
 
 		it( 'should be named', () => {
-			expect( RestrictedEditingEditing.pluginName ).to.equal( 'RestrictedEditingEditing' );
+			expect( RestrictedModeEditing.pluginName ).to.equal( 'RestrictedModeEditing' );
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedEditingEditing ) ).to.be.instanceOf( RestrictedEditingEditing );
+			expect( editor.plugins.get( RestrictedModeEditing ) ).to.be.instanceOf( RestrictedModeEditing );
 		} );
 
 		it( 'adds a "goToPreviousRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingNavigationCommand );
+			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedModeNavigationCommand );
 		} );
 
 		it( 'adds a "goToNextRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingNavigationCommand );
+			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedModeNavigationCommand );
 		} );
 	} );
 
@@ -52,7 +53,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -144,7 +145,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -329,7 +330,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model, viewDoc;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedModeEditing ] } );
 			model = editor.model;
 			viewDoc = editor.editing.view.document;
 		} );
@@ -387,7 +388,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedModeEditing, BoldEditing ]
 			} );
 			model = editor.model;
 			view = editor.editing.view;
@@ -620,7 +621,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedModeEditing, BoldEditing ]
 			} );
 
 			model = editor.model;
