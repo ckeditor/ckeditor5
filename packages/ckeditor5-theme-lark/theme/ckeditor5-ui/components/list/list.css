@@ -69,7 +69,7 @@
 			background: var(--ck-color-list-background);
 			color: inherit;
 
-			&:hover:not(ck-disabled) {
+			&:hover:not(.ck-disabled) {
 				background: var(--ck-color-list-button-hover-background);
 				color: inherit;
 			}
