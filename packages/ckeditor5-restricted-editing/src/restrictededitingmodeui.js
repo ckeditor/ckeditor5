@@ -76,9 +76,10 @@ export default class RestrictedEditingModeUI extends Plugin {
 	 * @private
 	 * @param {String} commandName Name of the command the button represents.
 	 * @param {String} label Translated label of the button.
+	 * @param {String} keystroke Keystroke of the button.
 	 * @returns {module:ui/dropdown/utils~ListDropdownItemDefinition}
 	 */
-	_getButtonDefinition( commandName, label, kestroke ) {
+	_getButtonDefinition( commandName, label, keystroke ) {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 		const definition = {
@@ -86,7 +87,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 			model: new Model( {
 				label,
 				withText: true,
-				keystroke: kestroke,
+				keystroke,
 				withKeystroke: true,
 				_commandName: commandName
 			} )
