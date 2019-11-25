@@ -5,7 +5,7 @@
 
 import SpecialCharacters from '../src/specialcharacters';
 import SpecialCharactersUI from '../src/specialcharactersui';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import SpecialCharactersEditing from '../src/specialcharactersediting';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SpecialCharacters', () => {
@@ -15,8 +15,8 @@ describe( 'SpecialCharacters', () => {
 		plugin = new SpecialCharacters( {} );
 	} );
 
-	it( 'should require Typing and SpecialCharactersUI', () => {
-		expect( SpecialCharacters.requires ).to.deep.equal( [ Typing, SpecialCharactersUI ] );
+	it( 'should require proper plugins', () => {
+		expect( SpecialCharacters.requires ).to.deep.equal( [ SpecialCharactersEditing, SpecialCharactersUI ] );
 	} );
 
 	it( 'should be named', () => {

@@ -8,9 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import SpecialCharactersUI from './specialcharactersui';
+import SpecialCharactersEditing from './specialcharactersediting';
 
 /**
  * The special characters feature.
@@ -42,7 +42,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Typing, SpecialCharactersUI ];
+		return [ SpecialCharactersEditing, SpecialCharactersUI ];
 	}
 
 	/**
