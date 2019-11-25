@@ -36,7 +36,7 @@ export default class RestrictedEditingEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
+		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingRegion', 'goToNextRestrictedEditingRegion' ] );
 		this._allowedInException = new Set( [ 'bold', 'italic', 'link', 'input', 'delete', 'forwardDelete' ] );
 	}
 
