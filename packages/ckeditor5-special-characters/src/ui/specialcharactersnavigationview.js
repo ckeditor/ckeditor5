@@ -18,7 +18,7 @@ import {
 
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
- * for describing the feature and selecting a particular character group by the user.
+ * for describing the feature and allowing the user to select a particular character group.
  *
  * @extends module:ui/view~View
  */
@@ -66,7 +66,7 @@ export default class SpecialCharactersNavigationView extends View {
 	}
 
 	/**
-	 * Returns a name of the character groups currently selected in the {@link #groupDropdownView}.
+	 * Returns a name of the character group currently selected in the {@link #groupDropdownView}.
 	 *
 	 * @returns {String}
 	 */

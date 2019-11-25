@@ -24,7 +24,7 @@ export default class CharacterGridView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 * @param {Object} options Component configuration
-	 * @param {Number} options.columns A number of columns in the grid.
+	 * @param {Number} [options.columns] A number of columns in the grid.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -56,7 +56,7 @@ export default class CharacterGridView extends View {
 		} );
 
 		/**
-		 * Fired when any {@link #tiles grid tiles} is clicked.
+		 * Fired when any of {@link #tiles grid tiles} is clicked.
 		 *
 		 * @event execute
 		 * @param {Object} data Additional information about the event.
@@ -69,7 +69,7 @@ export default class CharacterGridView extends View {
 	 *
 	 * @param {String} character A human-readable character displayed as label (e.g. "ε").
 	 * @param {String} name A name of the character (e.g. "greek small letter epsilon").
-	 * @returns {module:ui/button/button~ButtonView}
+	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	createTile( character, name ) {
 		const tile = new ButtonView( this.locale );

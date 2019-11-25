@@ -17,6 +17,8 @@ import SpecialCharactersNavigationView from './ui/specialcharactersnavigationvie
 /**
  * The special characters UI plugin.
  *
+ * Introduces the `'specialCharacters'` dropdown.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharactersUI extends Plugin {
@@ -79,8 +81,7 @@ export default class SpecialCharactersUI extends Plugin {
 	 *
 	 * @private
 	 * @param {module:special-characters/specialcharacters~SpecialCharacters} specialCharsPlugin
-	 * @param {module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView#currentGroupName}
-	 * currentGroupName
+	 * @param {String} currentGroupName
 	 * @param {module:special-characters/ui/charactergridview~CharacterGridView} gridView
 	 */
 	_updateGrid( specialCharsPlugin, currentGroupName, gridView ) {
