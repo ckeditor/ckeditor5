@@ -91,6 +91,10 @@ a.ck.ck-button {
 		& .ck-button__label {
 			@mixin ck-disabled;
 		}
+
+		& .ck-button__keystroke {
+			opacity: .3;
+		}
 	}
 
 	&.ck-button_with-text {
@@ -108,6 +112,27 @@ a.ck.ck-button {
 				margin-left: var(--ck-spacing-small);
 			}
 		}
+	}
+
+	&.ck-button_with-keystroke {
+		& .ck-button__label {
+			flex-grow: 1;
+		}
+	}
+
+	& .ck-button__keystroke {
+		color: inherit;
+
+		@mixin ck-dir ltr {
+			margin-left: var(--ck-spacing-large);
+		}
+
+		@mixin ck-dir rtl {
+			margin-right: var(--ck-spacing-large);
+		}
+
+		font-weight: bold;
+		opacity: .7;
 	}
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
