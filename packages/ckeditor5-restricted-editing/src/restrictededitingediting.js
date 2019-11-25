@@ -123,7 +123,13 @@ export default class RestrictedEditingEditing extends Plugin {
 				return;
 			}
 
-			for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
+			const markerNameToElements = editor.editing.mapper.markerNameToElements( marker.name );
+
+			if ( !markerNameToElements ) {
+				return;
+			}
+
+			for ( const viewElement of markerNameToElements ) {
 				writer.addClass( HIGHLIGHT_CLASS, viewElement );
 				highlightedMarkers.add( viewElement );
 			}
