@@ -27,6 +27,9 @@
  * (Optional) The keystroke associated with the button, i.e. <kbd>CTRL+B</kbd>,
  * in the string format compatible with {@link module:utils/keyboard}.
  *
+ * **Note**: Use {@link module:ui/button/button~Button#withKeystroke} if you want to display
+ * the keystroke information next to the {@link module:ui/button/button~Button#label label}.
+ *
  * @observable
  * @member {Boolean} #keystroke
  */
@@ -109,6 +112,18 @@
  * @observable
  * @default false
  * @member {Boolean} #withText
+ */
+
+/**
+ * (Optional) Controls whether the keystroke of the button is displayed next to its
+ * {@link module:ui/button/button~Button#label label}.
+ *
+ * **Note**: This property requires a {@link module:ui/button/button~Button#keystroke keystroke}
+ * to be defined in the first place.
+ *
+ * @observable
+ * @default false
+ * @member {Boolean} #withKeystroke
  */
 
 /**

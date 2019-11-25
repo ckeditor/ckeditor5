@@ -11,6 +11,7 @@ import IconView from '../../src/icon/iconview';
 import TooltipView from '../../src/tooltip/tooltipview';
 import View from '../../src/view';
 import ViewCollection from '../../src/viewcollection';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ButtonView', () => {
 	let locale, view;
@@ -22,6 +23,10 @@ describe( 'ButtonView', () => {
 
 		view = new ButtonView( locale );
 		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -37,6 +42,10 @@ describe( 'ButtonView', () => {
 			expect( view.labelView ).to.be.instanceOf( View );
 			expect( view.labelView.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.labelView.element.classList.contains( 'ck-button__label' ) ).to.be.true;
+		} );
+
+		it( 'creates #keystrokeView', () => {
+			expect( view.keystrokeView ).to.be.instanceOf( View );
 		} );
 
 		it( 'creates #iconView', () => {
@@ -84,6 +93,14 @@ describe( 'ButtonView', () => {
 
 				view.withText = false;
 				expect( view.element.classList.contains( 'ck-button_with-text' ) ).to.false;
+			} );
+
+			it( 'reacts on view#withKeystroke', () => {
+				view.withKeystroke = true;
+				expect( view.element.classList.contains( 'ck-button_with-keystroke' ) ).to.true;
+
+				view.withKeystroke = false;
+				expect( view.element.classList.contains( 'ck-button_with-keystroke' ) ).to.false;
 			} );
 
 			it( 'reacts on view#type', () => {
@@ -288,7 +305,7 @@ describe( 'ButtonView', () => {
 		} );
 	} );
 
-	describe( 'icon', () => {
+	describe( '#iconView', () => {
 		it( 'is omited in #children when view#icon is not defined', () => {
 			view = new ButtonView( locale );
 			view.render();
@@ -319,6 +336,57 @@ describe( 'ButtonView', () => {
 			view.render();
 
 			const spy = sinon.spy( view.iconView, 'destroy' );
+
+			view.destroy();
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( '#keystrokeView', () => {
+		it( 'is omited in #children when view#icon is not defined', () => {
+			view = new ButtonView( locale );
+			view.render();
+
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.keystrokeView.element ).to.be.null;
+		} );
+
+		it( 'is added to the #children when view#withKeystroke is true', () => {
+			testUtils.sinon.stub( env, 'isMac' ).value( false );
+
+			view = new ButtonView( locale );
+			view.keystroke = 'Ctrl+A';
+			view.withKeystroke = true;
+			view.render();
+
+			expect( view.element.childNodes ).to.have.length( 3 );
+			expect( view.element.childNodes[ 2 ] ).to.equal( view.keystrokeView.element );
+
+			expect( view.keystrokeView.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.keystrokeView.element.classList.contains( 'ck-button__keystroke' ) ).to.be.true;
+
+			expect( view.keystrokeView ).to.instanceOf( View );
+			expect( view.keystrokeView.element.textContent ).to.equal( 'Ctrl+A' );
+		} );
+
+		it( 'usese fancy kesytroke preview on Mac', () => {
+			testUtils.sinon.stub( env, 'isMac' ).value( true );
+
+			view = new ButtonView( locale );
+			view.keystroke = 'Ctrl+A';
+			view.withKeystroke = true;
+			view.render();
+
+			expect( view.keystrokeView.element.textContent ).to.equal( '⌘A' );
+		} );
+
+		it( 'is destroyed with the view', () => {
+			view = new ButtonView( locale );
+			view.keystroke = 'Ctrl+A';
+			view.withKeystroke = true;
+			view.render();
+
+			const spy = sinon.spy( view.keystrokeView, 'destroy' );
 
 			view.destroy();
 			sinon.assert.calledOnce( spy );
