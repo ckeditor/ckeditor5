@@ -61,6 +61,10 @@ export default class RestrictedEditingEditing extends Plugin {
 			} )
 		} );
 
+		this._setupRestrictedMode( editor );
+	}
+
+	_setupRestrictedMode( editor ) {
 		this._disableCommands( editor );
 
 		const selection = editor.model.document.selection;
