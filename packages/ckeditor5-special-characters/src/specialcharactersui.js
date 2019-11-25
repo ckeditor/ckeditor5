@@ -20,6 +20,13 @@ import SpecialCharactersNavigationView from './ui/specialcharactersnavigationvie
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharactersUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'SpecialCharactersUI';
+	}
+
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
@@ -32,18 +39,18 @@ export default class SpecialCharactersUI extends Plugin {
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
 			const dropdownView = createDropdown( locale );
 			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsPlugin.getGroups() );
-			const symbolGridView = new CharacterGridView( this.locale, {
+			const gridView = new CharacterGridView( this.locale, {
 				columns: 10
 			} );
 
-			symbolGridView.delegate( 'execute' ).to( dropdownView );
+			gridView.delegate( 'execute' ).to( dropdownView );
 
 			// Set the initial content of the special characters grid.
-			this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, symbolGridView );
+			this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, gridView );
 
 			// Update the grid of special characters when a user changed the character group.
 			navigationView.on( 'execute', () => {
-				this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, symbolGridView );
+				this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, gridView );
 			} );
 
 			dropdownView.buttonView.set( {
@@ -61,7 +68,7 @@ export default class SpecialCharactersUI extends Plugin {
 			} );
 
 			dropdownView.panelView.children.add( navigationView );
-			dropdownView.panelView.children.add( symbolGridView );
+			dropdownView.panelView.children.add( gridView );
 
 			return dropdownView;
 		} );
