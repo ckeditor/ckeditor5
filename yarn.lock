@@ -10946,7 +10946,7 @@ ultron@~1.1.0:
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
   integrity sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
 
-umberto@^1.0.0:
+umberto@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/umberto/-/umberto-1.2.0.tgz#995e75dc3bb6401de945a0227cd59ad0fa8151be"
   integrity sha512-btzoOQIztzY7BOXkZGGa3eEC9OlIQCRrCG59R+wZBOsi3p7q3ZY/ouUA4cLhWiEcrzI7gZihhZAYFoHCIgi6/w==
