@@ -166,23 +166,16 @@ describe( 'EmitterMixin', () => {
 			}, /Foo/, null );
 		} );
 
-		it( 'should wrap an error into the CKEditorError if a native error was thrown', () => {
-			const error = new Error( 'foo' );
-			error.stack = 'bar';
+		it( 'should rethrow the native errors as they are in the dubug=true mode', () => {
+			const error = new TypeError( 'foo' );
 
 			emitter.on( 'test', () => {
 				throw error;
 			} );
 
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				emitter.fire( 'test' );
-			}, /unexpected-error/, emitter, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'Error'
-				}
-			} );
+			} ).to.throw( TypeError, /foo/ );
 		} );
 
 		describe( 'return value', () => {

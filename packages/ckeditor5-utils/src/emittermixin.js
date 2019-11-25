@@ -239,6 +239,8 @@ const EmitterMixin = {
 
 			return eventInfo.return;
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	},

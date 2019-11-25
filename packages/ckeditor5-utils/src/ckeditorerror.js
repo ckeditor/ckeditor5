@@ -94,11 +94,11 @@ export default class CKEditorError extends Error {
 
 	/**
 	 * A utility that ensures the the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
-	 * It is uesful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
+	 * It is useful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
 	 * of a {@link module:utils/ckeditorerror~CKEditorError} error.
 	 *
 	 * @param {Error} err An error.
-	 * @param {Object} context An object conected through properties with the editor instance. This context will be used
+	 * @param {Object} context An object connected through properties with the editor instance. This context will be used
 	 * by the watchdog to verify which editor should be restarted.
 	 */
 	static rethrowUnexpectedError( err, context ) {
@@ -107,21 +107,21 @@ export default class CKEditorError extends Error {
 		}
 
 		/**
-		 * An unexpected error occurred inside the CKEditor 5 codebase. The `error.data.originalError` property
-		 * shows the original error properties.
+		 * An unexpected error occurred inside the CKEditor 5 codebase. This error will look like the original one
+		 * to make the debugging easier.
 		 *
 		 * This error is only useful when the editor is initialized using the {@link module:watchdog/watchdog~Watchdog} feature.
-		 * In case of such error (or any {@link module:utils/ckeditorerror~CKEditorError} error) the wathcdog should restart the editor.
+		 * In case of such error (or any {@link module:utils/ckeditorerror~CKEditorError} error) the watchdog should restart the editor.
 		 *
 		 * @error unexpected-error
 		 */
-		throw new CKEditorError( 'unexpected-error', context, {
-			originalError: {
-				message: err.message,
-				stack: err.stack,
-				name: err.name
-			}
-		} );
+		const error = new CKEditorError( err.message, context );
+
+		// Restore the original stack trace to make the error look like the original one.
+		// See https://github.com/ckeditor/ckeditor5/issues/5595 for more details.
+		error.stack = err.stack;
+
+		throw error;
 	}
 }
 
