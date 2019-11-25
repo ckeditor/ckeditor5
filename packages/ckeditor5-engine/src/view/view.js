@@ -481,6 +481,8 @@ export default class View {
 
 			return callbackResult;
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}

@@ -324,21 +324,14 @@ describe( 'Model', () => {
 			} );
 		} );
 
-		it( 'should catch a non-ckeditor error inside the `change()` block and throw the CKEditorError error outside of it', () => {
+		it( 'should rethrow native errors as they are in the dubug=true mode in the model.change() block', () => {
 			const error = new TypeError( 'foo' );
-			error.stack = 'bar';
 
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				model.change( () => {
 					throw error;
 				} );
-			}, /unexpected-error/, model, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'TypeError'
-				}
-			} );
+			} ).to.throw( TypeError, /foo/ );
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
@@ -349,21 +342,14 @@ describe( 'Model', () => {
 			}, /foo/, null, { foo: 1 } );
 		} );
 
-		it( 'should catch a non-ckeditor error inside the `enqueueChange()` block and throw the CKEditorError error outside of it', () => {
+		it( 'should rethrow native errors as they are in the dubug=true mode in the enqueueChange() block', () => {
 			const error = new TypeError( 'foo' );
-			error.stack = 'bar';
 
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				model.enqueueChange( () => {
 					throw error;
 				} );
-			}, /unexpected-error/, model, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'TypeError'
-				}
-			} );
+			} ).to.throw( TypeError, /foo/ );
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `enqueueChange()` block', () => {
