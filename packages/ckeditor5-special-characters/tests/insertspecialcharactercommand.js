@@ -27,7 +27,7 @@ describe( 'InsertSpecialCharacterCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = editor.commands.get( 'specialCharacters' );
+				command = editor.commands.get( 'insertSpecialCharacter' );
 
 				editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
 					{ title: 'arrow left', character: '←' },

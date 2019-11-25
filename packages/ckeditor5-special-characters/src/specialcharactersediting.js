@@ -40,6 +40,6 @@ export default class SpecialCharactersEditing extends Plugin {
 		const editor = this.editor;
 
 		const command = new InsertSpecialCharacterCommand( editor );
-		editor.commands.add( 'specialCharacters', command );
+		editor.commands.add( 'insertSpecialCharacter', command );
 	}
 }

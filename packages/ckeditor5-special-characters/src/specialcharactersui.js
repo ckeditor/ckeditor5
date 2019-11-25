@@ -24,7 +24,7 @@ export default class SpecialCharactersUI extends Plugin {
 		const t = editor.t;
 		const specialCharacterPlugin = editor.plugins.get( 'SpecialCharacters' );
 		const label = t( 'Special characters' );
-		const command = editor.commands.get( 'specialCharacters' );
+		const command = editor.commands.get( 'insertSpecialCharacter' );
 
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {

@@ -30,6 +30,6 @@ describe( 'SpecialCharactersEditing', () => {
 	} );
 
 	it( 'adds a command', () => {
-		expect( editor.commands.get( 'specialCharacters' ) ).to.be.instanceOf( InsertSpecialCharacterCommand );
+		expect( editor.commands.get( 'insertSpecialCharacter' ) ).to.be.instanceOf( InsertSpecialCharacterCommand );
 	} );
 } );
