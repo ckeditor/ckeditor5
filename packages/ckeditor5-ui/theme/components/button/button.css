@@ -16,6 +16,10 @@ a.ck.ck-button {
 	align-items: center;
 	justify-content: left;
 
+	& .ck-button__label {
+		display: none;
+	}
+
 	&.ck-button_with-text {
 		& .ck-button__label {
 			display: inline-block;
@@ -34,9 +38,5 @@ a.ck.ck-button {
 	/* Get rid of the native focus outline around the tooltip when focused (but not :hover). */
 	&:focus:not(:hover) {
 		@mixin ck-tooltip_disabled;
-	}
-
-	& .ck-button__label {
-		display: none;
 	}
 }
