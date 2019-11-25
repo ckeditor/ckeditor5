@@ -8,7 +8,7 @@ import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe.only( 'CharacterGridView', () => {
+describe( 'CharacterGridView', () => {
 	let view;
 
 	testUtils.createSinonSandbox();

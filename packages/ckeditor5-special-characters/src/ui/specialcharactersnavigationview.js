@@ -48,7 +48,7 @@ export default class SpecialCharactersNavigationView extends View {
 		 *
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
-		this.groupDropdownView = this._createGroupSelector( groupNames );
+		this.groupDropdownView = this._createGroupDropdown( groupNames );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -81,7 +81,7 @@ export default class SpecialCharactersNavigationView extends View {
 	 * @param {Iterable.<String>} groupNames Names of the character groups.
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_createGroupSelector( groupNames ) {
+	_createGroupDropdown( groupNames ) {
 		const locale = this.locale;
 		const t = locale.t;
 		const dropdown = createDropdown( locale );
@@ -94,7 +94,7 @@ export default class SpecialCharactersNavigationView extends View {
 		dropdown.buttonView.set( {
 			isOn: false,
 			withText: true,
-			tooltip: t( 'Character category' )
+			tooltip: t( 'Character categories' )
 		} );
 
 		dropdown.on( 'execute', evt => {
