@@ -12,6 +12,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import SpecialCharactersUI from './specialcharactersui';
 import SpecialCharactersEditing from './specialcharactersediting';
 
+import '../theme/specialcharacters.css';
+
 /**
  * The special characters feature.
  *

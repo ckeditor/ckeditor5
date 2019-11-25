@@ -10,86 +10,90 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
-import SpecialCharactersTableView from './ui/specialcharacterstableview';
-import SpecialCharactersSelectView from './ui/specialcharactersselectview';
+import InsertSpecialCharacterCommand from './insertspecialcharactercommand';
+import CharacterGridView from './ui/charactergridview';
+import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 
 /**
  * The special characters UI plugin.
  *
+ * Introduces the `'specialCharacters'` dropdown.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharactersUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'SpecialCharactersUI';
+	}
+
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const specialCharacterPlugin = editor.plugins.get( 'SpecialCharacters' );
-		const label = t( 'Special characters' );
-		const command = editor.commands.get( 'insertSpecialCharacter' );
+		const specialCharsPlugin = editor.plugins.get( 'SpecialCharacters' );
+		const command = new InsertSpecialCharacterCommand( editor );
+
+		editor.commands.add( 'specialCharacters', command );
 
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
-			// Prepare the dropdown element.
 			const dropdownView = createDropdown( locale );
+			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsPlugin.getGroups() );
+			const gridView = new CharacterGridView( this.locale, {
+				columns: 10
+			} );
+
+			gridView.delegate( 'execute' ).to( dropdownView );
+
+			// Set the initial content of the special characters grid.
+			this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, gridView );
+
+			// Update the grid of special characters when a user changed the character group.
+			navigationView.on( 'execute', () => {
+				this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, gridView );
+			} );
 
 			dropdownView.buttonView.set( {
-				label,
+				label: t( 'Special characters' ),
 				icon: specialCharactersIcon,
 				tooltip: true
 			} );
 
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			const specialCharactersSelectView = new SpecialCharactersSelectView( locale, {
-				labelText: label,
-				selectOptions: getSelectViewOptions()
-			} );
-
-			const symbolTableView = new SpecialCharactersTableView( locale );
-
-			symbolTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
-
 			// Insert a special character when a tile was clicked.
 			dropdownView.on( 'execute', ( evt, data ) => {
-				command.execute( { item: data.title } );
+				editor.execute( 'specialCharacters', { item: data.name } );
+				editor.editing.view.focus();
 			} );
 
-			// Draw special characters tiles when the dropdown is open.
-			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
-				if ( !isVisible ) {
-					return;
-				}
-
-				printCharacters( specialCharactersSelectView, symbolTableView.symbolGridView );
-			} );
-
-			// Draw special characters tiles for specified category (when a user has changed it).
-			specialCharactersSelectView.on( 'input', () => {
-				printCharacters( specialCharactersSelectView, symbolTableView.symbolGridView );
-			} );
-
-			dropdownView.panelView.children.add( specialCharactersSelectView );
-			dropdownView.panelView.children.add( symbolTableView );
+			dropdownView.panelView.children.add( navigationView );
+			dropdownView.panelView.children.add( gridView );
 
 			return dropdownView;
 		} );
+	}
 
-		function printCharacters( selectView, gridView ) {
-			// TODO: Keyboard navigation.
-			gridView.items.clear();
+	/**
+	 * Updates the symbol grid depending on the currently selected character group.
+	 *
+	 * @private
+	 * @param {module:special-characters/specialcharacters~SpecialCharacters} specialCharsPlugin
+	 * @param {String} currentGroupName
+	 * @param {module:special-characters/ui/charactergridview~CharacterGridView} gridView
+	 */
+	_updateGrid( specialCharsPlugin, currentGroupName, gridView ) {
+		// Updating the grid starts with removing all tiles belonging to the old group.
+		gridView.tiles.clear();
 
-			const groupName = selectView.value;
-			const characterTitles = specialCharacterPlugin.getCharactersForGroup( groupName );
+		const characterTitles = specialCharsPlugin.getCharactersForGroup( currentGroupName );
 
-			for ( const title of characterTitles ) {
-				const character = specialCharacterPlugin.getCharacter( title );
+		for ( const title of characterTitles ) {
+			const character = specialCharsPlugin.getCharacter( title );
 
-				gridView.items.add( gridView.createSymbolTile( character, title ) );
-			}
-		}
-
-		function getSelectViewOptions() {
-			return [ ...specialCharacterPlugin.getGroups() ]
-				.map( groupName => ( { label: groupName, value: groupName } ) );
+			gridView.tiles.add( gridView.createTile( character, title ) );
 		}
 	}
 }
