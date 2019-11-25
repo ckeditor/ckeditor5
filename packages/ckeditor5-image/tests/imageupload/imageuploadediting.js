@@ -25,7 +25,6 @@ import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ck
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
@@ -451,7 +450,6 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should throw when other error happens during upload', done => {
 		const file = createNativeFileMock();
 		const error = new Error( 'Foo bar baz' );
-		error.stack = 'biz';
 		const uploadEditing = editor.plugins.get( ImageUploadEditing );
 		const loadSpy = sinon.spy( uploadEditing, '_readAndUpload' );
 		const catchSpy = sinon.spy();
@@ -480,13 +478,8 @@ describe( 'ImageUploadEditing', () => {
 				sinon.assert.calledOnce( catchSpy );
 				const error = catchSpy.getCall( 0 ).args[ 0 ];
 
-				assertCKEditorError( error, /unexpected-error/, editor, {
-					originalError: {
-						name: 'Error',
-						message: 'Foo bar baz',
-						stack: 'biz'
-					}
-				} );
+				expect( error ).to.be.instanceOf( Error );
+				expect( error ).to.haveOwnProperty( 'message', 'Foo bar baz' );
 
 				done();
 			}, 0 );
