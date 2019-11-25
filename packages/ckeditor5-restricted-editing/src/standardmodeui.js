@@ -4,7 +4,7 @@
  */
 
 /**
- * @module restricted-editing/restrictededitingexceptionui
+ * @module restricted-editing/standardmodeui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,7 +15,7 @@ import unlockIcon from '../theme/icons/contentunlock.svg';
 /**
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedEditingExceptionUI extends Plugin {
+export default class StandardModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
