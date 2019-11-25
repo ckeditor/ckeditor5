@@ -130,6 +130,7 @@ a.ck.ck-button {
 	}
 
 	&.ck-button_with-keystroke {
+		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button__label {
 			flex-grow: 1;
 		}
