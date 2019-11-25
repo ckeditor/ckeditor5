@@ -116,6 +116,25 @@ describe( 'RestrictedEditingModeEditing', () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
 
+			it( 'should convert collapsed model marker to <span>', () => {
+				setModelData( model, '<paragraph>foo bar baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restricted-editing-exception:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 4 ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="ck-restricted-editing-exception"></span>bar baz</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_collapsed"></span>bar baz</p>'
+				);
+			} );
+
 			it( 'converted <span> should be the outermost attribute element', () => {
 				editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b' } );
 				setModelData( model, '<paragraph><$text bold="true">foo bar baz</$text></paragraph>' );

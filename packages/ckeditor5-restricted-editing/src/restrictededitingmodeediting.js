@@ -158,13 +158,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				return;
 			}
 
-			const markerNameToElements = editor.editing.mapper.markerNameToElements( marker.name );
-
-			if ( !markerNameToElements ) {
-				return;
-			}
-
-			for ( const viewElement of markerNameToElements ) {
+			for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
 				writer.addClass( HIGHLIGHT_CLASS, viewElement );
 				highlightedMarkers.add( viewElement );
 			}
