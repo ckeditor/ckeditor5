@@ -9,6 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedEditingEditing from './restrictededitingediting';
+import RestrictedEditingUI from './restrictededitingui';
+
+import '../theme/restrictedediting.css';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -22,6 +25,6 @@ export default class RestrictedEditing extends Plugin {
 	}
 
 	static get requires() {
-		return [ RestrictedEditingEditing ];
+		return [ RestrictedEditingEditing, RestrictedEditingUI ];
 	}
 }

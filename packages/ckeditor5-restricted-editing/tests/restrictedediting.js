@@ -9,6 +9,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import RestrictedEditing from './../src/restrictedediting';
+import RestrictedEditingUI from './../src/restrictededitingui';
 import RestrictedEditingEditing from './../src/restrictededitingediting';
 
 describe( 'RestrictedEditing', () => {
@@ -16,30 +17,28 @@ describe( 'RestrictedEditing', () => {
 
 	testUtils.createSinonSandbox();
 
-	describe( 'plugin', () => {
-		beforeEach( async () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
+	beforeEach( async () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
 
-			editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditing ] } );
-		} );
+		editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditing ] } );
+	} );
 
-		afterEach( () => {
-			element.remove();
+	afterEach( () => {
+		element.remove();
 
-			return editor.destroy();
-		} );
+		return editor.destroy();
+	} );
 
-		it( 'should be named', () => {
-			expect( RestrictedEditing.pluginName ).to.equal( 'RestrictedEditing' );
-		} );
+	it( 'should be named', () => {
+		expect( RestrictedEditing.pluginName ).to.equal( 'RestrictedEditing' );
+	} );
 
-		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedEditing ) ).to.be.instanceOf( RestrictedEditing );
-		} );
+	it( 'should load the RestrictedEditingEditing plugin', () => {
+		expect( editor.plugins.get( RestrictedEditingEditing ) ).to.be.instanceOf( RestrictedEditingEditing );
+	} );
 
-		it( 'should loaded RestrictedEditingEditing plugin', () => {
-			expect( editor.plugins.get( RestrictedEditingEditing ) ).to.be.instanceOf( RestrictedEditingEditing );
-		} );
+	it( 'should load the RestrictedEditingUI plugin', () => {
+		expect( editor.plugins.get( RestrictedEditingUI ) ).to.be.instanceOf( RestrictedEditingUI );
 	} );
 } );

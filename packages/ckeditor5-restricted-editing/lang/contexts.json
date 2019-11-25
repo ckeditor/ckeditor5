@@ -1,0 +1,7 @@
+{
+	"Disable editing": "A label of the button indicating that using this button will make a selected text non–editable.",
+	"Enable editing": "A label of the button indicating that using this button will make a selected text editable.",
+	"Previous editable region": "A label of the button that moves selection to the previous editable region in the content.",
+	"Next editable region": "A label of the button that moves selection to the next editable region in the content.",
+	"Navigate editable regions": "A label of the dropdown that provides controls to navigate editable regions in the content."
+}
