@@ -14,7 +14,7 @@ import RestrictedEditingNavigationCommand from './restrictededitingmodenavigatio
 const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
 
 /**
- * The Restricted Editing editing feature.
+ * The Restricted Editing Mode editing feature.
  *
  * * It introduces the exception marker group that renders to `<spans>` with the `ck-restricted-editing-exception` CSS class.
  * * It registers the `'goToPreviousRestrictedEditingRegion'` and `'goToNextRestrictedEditingRegion'` commands.

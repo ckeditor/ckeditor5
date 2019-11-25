@@ -14,7 +14,7 @@ import lockIcon from '../theme/icons/contentlock.svg';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
- * The Restricted Editing UI feature.
+ * The Restricted Editing Mode UI feature.
  *
  * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate exceptions across
  * the document.

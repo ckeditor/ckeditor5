@@ -14,12 +14,12 @@ import RestrictedEditingModeUI from './restrictededitingmodeui';
 import '../theme/restrictedediting.css';
 
 /**
- * The restricted mode plugin.
+ * The Restricted Editing Mode plugin.
  *
  * This is a "glue" plugin which loads the following plugins:
  *
- * * The restricted mode editing feature and
- * * The restricted mode ui feature.
+ * * The {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing restricted mode editing feature} and
+ * * The {@link module:restricted-editing/restrictededitingmodeui~RestrictedEditingModeUI restricted mode ui feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -31,6 +31,9 @@ export default class RestrictedEditingMode extends Plugin {
 		return 'RestrictedEditingMode';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ RestrictedEditingModeEditing, RestrictedEditingModeUI ];
 	}

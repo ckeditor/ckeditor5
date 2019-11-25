@@ -15,6 +15,13 @@ import StandardEditingModeUI from './standardeditingmodeui';
 import '../theme/restrictedediting.css';
 
 /**
+ * The Standard Editing Mode plugin.
+ *
+ * This is a "glue" plugin which loads the following plugins:
+ *
+ * * The {@link module:restricted-editing/standardeditingmodeediting~StandardEditingModeEditing standard mode editing feature} and
+ * * The {@link module:restricted-editing/standardeditingmodeui~StandardEditingModeUI standard mode ui feature}.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class StandardEditingMode extends Plugin {
