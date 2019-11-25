@@ -15,18 +15,18 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import '../../theme/components/symbolgrid/symbolgrid.css';
 
 /**
- * A grid of {@link module:special-characters/ui/symboltileview~symbolTileView symbol tiles}.
+ * A grid of {@link module:special-characters/ui/symboltileview~SymbolTileView symbol tiles}.
  *
  * @extends module:ui/view~View
  */
 export default class SymbolGridView extends View {
 	/**
-	 * Creates an instance of a symbol grid containing {@link module:special-characters/ui/symboltileview~symbolTileView tiles}.
+	 * Creates an instance of a symbol grid containing {@link module:special-characters/ui/symboltileview~SymbolTileView tiles}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} options Component configuration
-	 * @param {Array.<module:ui/symbolgrid/symbolgrid~symbolDefinition>} [options.symbolDefinitions] Array with definitions
-	 * required to create the {@link module:special-characters/ui/symboltileview~symbolTileView tiles}.
+	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} [options.symbolDefinitions] Array with definitions
+	 * required to create the {@link module:special-characters/ui/symboltileview~SymbolTileView tiles}.
 	 * @param {Number} options.columns A number of columns to display the tiles.
 	 */
 	constructor( locale, options ) {

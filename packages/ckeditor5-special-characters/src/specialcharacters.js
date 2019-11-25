@@ -56,7 +56,7 @@ export default class SpecialCharacters extends Plugin {
 	 * Adds a collection of special characters to specified group. A title of a special character must be unique.
 	 *
 	 * @param {String} groupName
-	 * @param {Array.<~SpecialCharacterDefinition>} items
+	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} items
 	 */
 	addItems( groupName, items ) {
 		const group = this._getGroup( groupName );
@@ -67,7 +67,8 @@ export default class SpecialCharacters extends Plugin {
 				 * The provided title for a special character is already. Titles for special characters must be unique.
 				 *
 				 * @error specialcharacters-duplicated-character-name
-				 * @param {~SpecialCharacterDefinition} item The invalid special character definition.
+				 * @param {module:special-characters/specialcharacters~SpecialCharacterDefinition} item The invalid
+				 * special character definition.
 				 */
 				throw new CKEditorError(
 					'specialcharacters-duplicated-character-name: Duplicated special character title.', null, { item }

@@ -70,11 +70,11 @@ export default class SpecialCharactersTableView extends View {
 		this.symbolDefinitions = symbolDefinitions;
 
 		/**
-		 * Preserves the reference to {@link module:ui/symbolgrid/symbolgrid~SymbolGridView} used to create
+		 * Preserves the reference to {@link module:special-characters/ui/symbolgridview~SymbolGridView} used to create
 		 * the default (static) symbol set.
 		 *
 		 * @readonly
-		 * @member {module:ui/symbolgrid/symbolgrid~SymbolGridView}
+		 * @member {module:special-characters/ui/symbolgridview~SymbolGridView}
 		 */
 		this.symbolGridView = this._createSymbolGridView();
 
@@ -145,7 +145,7 @@ export default class SpecialCharactersTableView extends View {
 	 * Creates a static symbol table grid based on the editor configuration.
 	 *
 	 * @private
-	 * @returns {module:ui/symbolgrid/symbolgrid~SymbolGridView}
+	 * @returns {module:special-characters/ui/symbolgridview~SymbolGridView}
 	 */
 	_createSymbolGridView() {
 		const symbolGrid = new SymbolGridView( this.locale, {

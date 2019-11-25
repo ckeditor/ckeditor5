@@ -22,7 +22,7 @@ export default class SpecialCharactersSelectView extends View {
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} options
 	 * @param {String} options.labelText A label for the select element.
-	 * @param {Array.<module:ui/select/selectview~SelectViewOption>} options.selectOptions Options to chose in the select view.
+	 * @param {Array.<module:ui/select/selectview~SelectViewItem>} options.selectOptions Options to chose in the select view.
 	 */
 	constructor( locale, options ) {
 		super( locale );
