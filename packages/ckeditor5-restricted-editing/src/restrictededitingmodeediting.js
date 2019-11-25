@@ -50,29 +50,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
 		editor.commands.add( 'goToNextRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
 
-		let createdMarkers = 0;
-
-		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
-			view: {
-				name: 'span',
-				classes: 'ck-restricted-editing-exception'
-			},
-			model: () => {
-				createdMarkers++;
-
-				return `restricted-editing-exception:${ createdMarkers }`;
-			}
-		} ) );
-
-		editor.conversion.for( 'downcast' ).markerToHighlight( {
-			model: 'restricted-editing-exception',
-			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
-			view: () => ( {
-				name: 'span',
-				classes: 'ck-restricted-editing-exception',
-				priority: -10
-			} )
-		} );
+		this._setupMarkersConversion( editor );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
@@ -96,6 +74,58 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
 			evt.stop();
 		}, { priority: 'highest' } );
+	}
+
+	/**
+	 *
+	 * @param editor
+	 * @private
+	 */
+	_setupMarkersConversion( editor ) {
+		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
+		// Also, the markers will only be created when  when loading the data.
+		let markerNumber = 0;
+
+		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
+			view: {
+				name: 'span',
+				classes: 'ck-restricted-editing-exception'
+			},
+			model: () => {
+				markerNumber++; // Starting from restricted-editing-exception:1 marker.
+
+				return `restricted-editing-exception:${ markerNumber }`;
+			}
+		} ) );
+
+		// Currently the marker helpers are tied to other use-cases and do not render collapsed marker as highlight.
+		// That's why there are 2 downcast converters for them:
+		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
+		editor.conversion.for( 'downcast' ).markerToHighlight( {
+			model: 'restricted-editing-exception',
+			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
+			view: () => ( {
+				name: 'span',
+				classes: 'ck-restricted-editing-exception',
+				priority: -10
+			} )
+		} );
+
+		// 2. But for collapsed marker we need to render it as an element.
+		// Additionally the editing pipeline should always display a collapsed markers.
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: 'restricted-editing-exception',
+			view: ( markerData, viewWriter ) => viewWriter.createUIElement( 'span', {
+				class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
+			} )
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).markerToElement( {
+			model: 'restricted-editing-exception',
+			view: ( markerData, viewWriter ) => viewWriter.createEmptyElement( 'span', {
+				class: 'ck-restricted-editing-exception'
+			} )
+		} );
 	}
 
 	/**

@@ -41,4 +41,8 @@
 			var(--ck-restricted-editing-color-selected-exception-brackets) 100%
 		) 1;
 	}
+
+	&.ck-restricted-editing-exception_collapsed {
+		padding-left: 1em;
+	}
 }
