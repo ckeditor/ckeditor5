@@ -49,6 +49,7 @@ export default class SpecialCharactersNavigationView extends View {
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
 		this.groupDropdownView = this._createGroupDropdown( groupNames );
+		this.groupDropdownView.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 
 		this.setTemplate( {
 			tag: 'div',

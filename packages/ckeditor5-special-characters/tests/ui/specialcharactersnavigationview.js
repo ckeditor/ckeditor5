@@ -63,6 +63,24 @@ describe( 'SpecialCharactersNavigationView', () => {
 			expect( view.currentGroupName ).to.equal( 'groupA' );
 		} );
 
+		it( 'has a right #panelPosition (LTR)', () => {
+			expect( groupDropdownView.panelPosition ).to.equal( 'sw' );
+		} );
+
+		it( 'has a right #panelPosition (RTL)', () => {
+			const locale = {
+				uiLanguageDirection: 'rtl',
+				t: val => val
+			};
+
+			view = new SpecialCharactersNavigationView( locale, [ 'groupA', 'groupB' ] );
+			view.render();
+
+			expect( view.groupDropdownView.panelPosition ).to.equal( 'se' );
+
+			view.destroy();
+		} );
+
 		it( 'binds its buttonView#label to #value', () => {
 			expect( groupDropdownView.buttonView.label ).to.equal( 'groupA' );
 
