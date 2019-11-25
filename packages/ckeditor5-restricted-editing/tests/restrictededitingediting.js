@@ -135,9 +135,14 @@ describe( 'RestrictedEditingEditing', () => {
 					} );
 				} );
 
-				const expectedView = '<p><span class="ck-restricted-editing-exception"><b>foo bar baz</b></span></p>';
-				expect( editor.getData() ).to.equal( expectedView );
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+				expect( editor.getData() ).to.equal(
+					'<p><span class="ck-restricted-editing-exception"><b>foo bar baz</b></span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected"><b>foo bar baz</b></span>' +
+					'</p>'
+				);
 			} );
 		} );
 	} );
