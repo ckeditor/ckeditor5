@@ -22,4 +22,11 @@
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
+
+	& > .ck-dropdown .ck-dropdown__panel {
+		/* There could be dozens of categories available. Use scroll to prevent a 10e6px dropdown. */
+		max-height: 250px;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
 }
