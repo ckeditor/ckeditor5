@@ -9,7 +9,12 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
-import { setupExceptionHighlighting, setupMarkersConversion } from './restrictededitingmode/converters';
+import {
+	extendMarkerWhenTypingOnMarkerBoundary,
+	resurrectCollapsedMarker,
+	setupExceptionHighlighting,
+	upcastHighlightToMarker
+} from './restrictededitingmode/converters';
 import { getMarker, isSelectionInExceptionMarker } from './restrictededitingmode/utils';
 
 /**
@@ -49,7 +54,53 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
 		editor.commands.add( 'goToNextRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
 
-		setupMarkersConversion( editor );
+		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
+		// Also, the markers will only be created when  when loading the data.
+		let markerNumber = 0;
+
+		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
+			view: {
+				name: 'span',
+				classes: 'ck-restricted-editing-exception'
+			},
+			model: () => {
+				markerNumber++; // Starting from restricted-editing-exception:1 marker.
+
+				return `restricted-editing-exception:${ markerNumber }`;
+			}
+		} ) );
+
+		// Currently the marker helpers are tied to other use-cases and do not render collapsed marker as highlight.
+		// That's why there are 2 downcast converters for them:
+		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
+		editor.conversion.for( 'downcast' ).markerToHighlight( {
+			model: 'restricted-editing-exception',
+			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
+			view: () => ( {
+				name: 'span',
+				classes: 'ck-restricted-editing-exception',
+				priority: -10
+			} )
+		} );
+
+		// 2. But for collapsed marker we need to render it as an element.
+		// Additionally the editing pipeline should always display a collapsed markers.
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: 'restricted-editing-exception',
+			view: ( markerData, viewWriter ) => viewWriter.createUIElement( 'span', {
+				class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
+			} )
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).markerToElement( {
+			model: 'restricted-editing-exception',
+			view: ( markerData, viewWriter ) => viewWriter.createEmptyElement( 'span', {
+				class: 'ck-restricted-editing-exception'
+			} )
+		} );
+
+		editor.model.document.registerPostFixer( extendMarkerWhenTypingOnMarkerBoundary( editor ) );
+		editor.model.document.registerPostFixer( resurrectCollapsedMarker( editor ) );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
@@ -67,15 +118,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'goToPreviousRestrictedEditingRegion' ) );
 
 		setupExceptionHighlighting( editor );
-		this._setupRestrictedEditingMode( editor );
-
-		// Block clipboard completely in restricted mode.
-		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
-			evt.stop();
-		}, { priority: 'highest' } );
-	}
-
-	_setupRestrictedEditingMode( editor ) {
 		this._disableCommands( editor );
 
 		const selection = editor.model.document.selection;
@@ -83,61 +125,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this.listenTo( selection, 'change', this._checkCommands.bind( this ) );
 		this.listenTo( editor.model.document, 'change:data', this._checkCommands.bind( this ) );
 
-		editor.model.document.registerPostFixer( writer => {
-			let changeApplied = false;
-
-			for ( const change of editor.model.document.differ.getChanges() ) {
-				if ( change.type == 'insert' && change.name == '$text' && change.length === 1 ) {
-					changeApplied = this._tryExtendMarkedEnd( change, writer, changeApplied ) || changeApplied;
-					changeApplied = this._tryExtendMarkerStart( change, writer, changeApplied ) || changeApplied;
-				}
-			}
-
-			return changeApplied;
-		} );
-
-		editor.model.document.registerPostFixer( writer => {
-			let changeApplied = false;
-
-			for ( const [ name, data ] of editor.model.document.differ._changedMarkers ) {
-				if ( name.startsWith( 'restricted-editing-exception' ) && data.newRange.root.rootName == '$graveyard' ) {
-					writer.updateMarker( name, {
-						// TODO: better location
-						range: writer.createRange( writer.createPositionAt( editor.model.document.selection.focus ) )
-					} );
-
-					changeApplied = true;
-				}
-			}
-
-			return changeApplied;
-		} );
-	}
-
-	_tryExtendMarkerStart( change, writer, changeApplied ) {
-		const markerAtStart = getMarker( this.editor, change.position.getShiftedBy( 1 ) );
-
-		if ( markerAtStart && markerAtStart.getStart().isEqual( change.position.getShiftedBy( 1 ) ) ) {
-			writer.updateMarker( markerAtStart, {
-				range: writer.createRange( markerAtStart.getStart().getShiftedBy( -1 ), markerAtStart.getEnd() )
-			} );
-
-			changeApplied = true;
-		}
-		return changeApplied;
-	}
-
-	_tryExtendMarkedEnd( change, writer, changeApplied ) {
-		const markerAtEnd = getMarker( this.editor, change.position );
-
-		if ( markerAtEnd && markerAtEnd.getEnd().isEqual( change.position ) ) {
-			writer.updateMarker( markerAtEnd, {
-				range: writer.createRange( markerAtEnd.getStart(), markerAtEnd.getEnd().getShiftedBy( 1 ) )
-			} );
-
-			changeApplied = true;
-		}
-		return changeApplied;
+		// Block clipboard completely in restricted mode.
+		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
+			evt.stop();
+		}, { priority: 'highest' } );
 	}
 
 	_checkCommands() {

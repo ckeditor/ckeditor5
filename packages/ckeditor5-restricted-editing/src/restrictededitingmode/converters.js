@@ -13,57 +13,6 @@ import { getMarker } from './utils';
 const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
 
 /**
- *
- * @param editor
- */
-export function setupMarkersConversion( editor ) {
-	// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
-	// Also, the markers will only be created when  when loading the data.
-	let markerNumber = 0;
-
-	editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
-		view: {
-			name: 'span',
-			classes: 'ck-restricted-editing-exception'
-		},
-		model: () => {
-			markerNumber++; // Starting from restricted-editing-exception:1 marker.
-
-			return `restricted-editing-exception:${ markerNumber }`;
-		}
-	} ) );
-
-	// Currently the marker helpers are tied to other use-cases and do not render collapsed marker as highlight.
-	// That's why there are 2 downcast converters for them:
-	// 1. The default marker-to-highlight will wrap selected text with `<span>`.
-	editor.conversion.for( 'downcast' ).markerToHighlight( {
-		model: 'restricted-editing-exception',
-		// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
-		view: () => ( {
-			name: 'span',
-			classes: 'ck-restricted-editing-exception',
-			priority: -10
-		} )
-	} );
-
-	// 2. But for collapsed marker we need to render it as an element.
-	// Additionally the editing pipeline should always display a collapsed markers.
-	editor.conversion.for( 'editingDowncast' ).markerToElement( {
-		model: 'restricted-editing-exception',
-		view: ( markerData, viewWriter ) => viewWriter.createUIElement( 'span', {
-			class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
-		} )
-	} );
-
-	editor.conversion.for( 'dataDowncast' ).markerToElement( {
-		model: 'restricted-editing-exception',
-		view: ( markerData, viewWriter ) => viewWriter.createEmptyElement( 'span', {
-			class: 'ck-restricted-editing-exception'
-		} )
-	} );
-}
-
-/**
  * Adds a visual highlight style to a restricted editing exception the selection is anchored to.
  *
  * Highlight is turned on by adding the `.ck-restricted-editing-exception_selected` class to the
@@ -115,7 +64,40 @@ export function setupExceptionHighlighting( editor ) {
 	} );
 }
 
-function upcastHighlightToMarker( config ) {
+export function resurrectCollapsedMarker( editor ) {
+	return writer => {
+		let changeApplied = false;
+
+		for ( const [ name, data ] of editor.model.document.differ._changedMarkers ) {
+			if ( name.startsWith( 'restricted-editing-exception' ) && data.newRange.root.rootName == '$graveyard' ) {
+				writer.updateMarker( name, {
+					range: writer.createRange( writer.createPositionAt( editor.model.document.selection.focus ) )
+				} );
+
+				changeApplied = true;
+			}
+		}
+
+		return changeApplied;
+	};
+}
+
+export function extendMarkerWhenTypingOnMarkerBoundary( editor ) {
+	return writer => {
+		let changeApplied = false;
+
+		for ( const change of editor.model.document.differ.getChanges() ) {
+			if ( change.type == 'insert' && change.name == '$text' && change.length === 1 ) {
+				changeApplied = _tryExtendMarkedEnd( editor, change.position, writer ) || changeApplied;
+				changeApplied = _tryExtendMarkerStart( editor, change.position, writer ) || changeApplied;
+			}
+		}
+
+		return false;
+	};
+}
+
+export function upcastHighlightToMarker( config ) {
 	return dispatcher => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
 		const { writer } = conversionApi;
 
@@ -149,4 +131,32 @@ function upcastHighlightToMarker( config ) {
 		);
 		data.modelCursor = data.modelRange.end;
 	} );
+}
+
+function _tryExtendMarkerStart( editor, position, writer ) {
+	const markerAtStart = getMarker( editor, position.getShiftedBy( 1 ) );
+
+	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( 1 ) ) ) {
+		writer.updateMarker( markerAtStart, {
+			range: writer.createRange( markerAtStart.getStart().getShiftedBy( -1 ), markerAtStart.getEnd() )
+		} );
+
+		return true;
+	}
+
+	return false;
+}
+
+function _tryExtendMarkedEnd( editor, position, writer ) {
+	const markerAtEnd = getMarker( editor, position );
+
+	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {
+		writer.updateMarker( markerAtEnd, {
+			range: writer.createRange( markerAtEnd.getStart(), markerAtEnd.getEnd().getShiftedBy( 1 ) )
+		} );
+
+		return true;
+	}
+
+	return false;
 }
