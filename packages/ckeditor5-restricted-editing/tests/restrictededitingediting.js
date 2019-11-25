@@ -518,7 +518,7 @@ describe( 'RestrictedEditingEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo {<span class="ck-restricted-editing-exception">ba}r</span> baz</p>'
+					'<p>foo {<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">ba}r</span> baz</p>'
 				);
 			} );
 
