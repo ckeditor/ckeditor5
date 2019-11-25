@@ -117,11 +117,15 @@ export default class RestrictedEditingEditing extends Plugin {
 		view.document.registerPostFixer( writer => {
 			const modelSelection = model.document.selection;
 
-			for ( const marker of model.markers.getMarkersAtPosition( modelSelection.anchor ) ) {
-				for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
-					writer.addClass( HIGHLIGHT_CLASS, viewElement );
-					highlightedMarkers.add( viewElement );
-				}
+			const marker = this._getMarker( modelSelection.anchor );
+
+			if ( !marker ) {
+				return;
+			}
+
+			for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
+				writer.addClass( HIGHLIGHT_CLASS, viewElement );
+				highlightedMarkers.add( viewElement );
 			}
 		} );
 
