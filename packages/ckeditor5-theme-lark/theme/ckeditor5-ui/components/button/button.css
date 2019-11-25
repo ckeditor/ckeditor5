@@ -75,6 +75,21 @@ a.ck.ck-button {
 		}
 	}
 
+	& .ck-button__keystroke {
+		color: inherit;
+
+		@mixin ck-dir ltr {
+			margin-left: var(--ck-spacing-large);
+		}
+
+		@mixin ck-dir rtl {
+			margin-right: var(--ck-spacing-large);
+		}
+
+		font-weight: bold;
+		opacity: .7;
+	}
+
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
 	&.ck-disabled {
 		&:active,
@@ -118,21 +133,6 @@ a.ck.ck-button {
 		& .ck-button__label {
 			flex-grow: 1;
 		}
-	}
-
-	& .ck-button__keystroke {
-		color: inherit;
-
-		@mixin ck-dir ltr {
-			margin-left: var(--ck-spacing-large);
-		}
-
-		@mixin ck-dir rtl {
-			margin-right: var(--ck-spacing-large);
-		}
-
-		font-weight: bold;
-		opacity: .7;
 	}
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
