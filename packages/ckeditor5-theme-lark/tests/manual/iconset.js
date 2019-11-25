@@ -22,6 +22,8 @@ import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/striketh
 import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
 import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
 
+import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
+
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import eraser from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
@@ -81,6 +83,9 @@ const icons = {
 
 	// basic-styles
 	bold, italic, underline, code, strikethrough, subscript, superscript,
+
+	// code block
+	codeBlock,
 
 	// core
 	check, cancel, eraser, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil, pilcrow,

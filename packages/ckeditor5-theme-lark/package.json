@@ -14,6 +14,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^15.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^15.0.0",
+    "@ckeditor/ckeditor5-code-block": "^0.0.1",
     "@ckeditor/ckeditor5-core": "^15.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "^15.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^15.0.0",
