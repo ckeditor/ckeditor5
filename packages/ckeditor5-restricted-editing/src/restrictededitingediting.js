@@ -91,6 +91,11 @@ export default class RestrictedEditingEditing extends Plugin {
 
 		this._setupExceptionHighlighting();
 		this._setupRestrictedMode( editor );
+
+		// Block clipboard completely in restricted mode.
+		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
+			evt.stop();
+		}, { priority: 'highest' } );
 	}
 
 	/**

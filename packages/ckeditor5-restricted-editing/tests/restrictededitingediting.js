@@ -15,6 +15,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 describe( 'RestrictedEditingEditing', () => {
 	let editor;
@@ -321,6 +322,63 @@ describe( 'RestrictedEditingEditing', () => {
 			);
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'pasting', () => {
+		let model, viewDoc;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedEditingEditing ] } );
+			model = editor.model;
+			viewDoc = editor.editing.view.document;
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should block pasting outside exception markers', () => {
+			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+			const spy = sinon.spy();
+			viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+			viewDoc.fire( 'clipboardInput', {
+				dataTransfer: {
+					getData: sinon.spy()
+				}
+			} );
+
+			sinon.assert.notCalled( spy );
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+		} );
+
+		it( 'should not block pasting inside exception marker', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			const spy = sinon.spy();
+			viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+			model.change( writer => {
+				writer.addMarker( 'restricted-editing-exception:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			viewDoc.fire( 'clipboardInput', {
+				dataTransfer: {
+					getData: sinon.spy()
+				}
+			} );
+
+			sinon.assert.notCalled( spy );
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 	} );
 
