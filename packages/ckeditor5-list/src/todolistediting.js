@@ -72,14 +72,14 @@ export default class TodoListEditing extends Plugin {
 		editor.commands.add( 'todoListCheck', new TodoListCheckCommand( editor ) );
 
 		// Define converters.
+		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
+		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
+
 		editing.downcastDispatcher.on(
 			'insert:listItem',
 			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
 			{ priority: 'high' }
 		);
-		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
-		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
-
 		editing.downcastDispatcher.on(
 			'attribute:listType:listItem',
 			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ), editing.view )
