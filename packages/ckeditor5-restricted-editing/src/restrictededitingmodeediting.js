@@ -49,12 +49,35 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const model = editor.model;
-		const doc = model.document;
 
-		// Commands that allow navigation in the content.
+		this._setupConversion();
+		this._setupCommandsToggling();
+
+		// Commands & keystrokes that allow navigation in the content.
 		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
 		editor.commands.add( 'goToNextRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
+		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingRegion' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingRegion' ) );
+
+		// Block clipboard completely in restricted mode.
+		this.listenTo( this.editor.editing.view.document, 'clipboardInput', evt => {
+			evt.stop();
+		}, { priority: 'highest' } );
+	}
+
+	/**
+	 * Setups restricted mode editing conversion:
+	 *
+	 * * ucpast & downcast converters
+	 * * marker highlighting in the edting area
+	 * * marker post-fixers
+	 *
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const model = editor.model;
+		const doc = model.document;
 
 		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
 		// Also, the markers will only be created when  when loading the data.
@@ -104,33 +127,33 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
-		const getCommandExecuter = commandName => {
-			return ( data, cancel ) => {
-				const command = this.editor.commands.get( commandName );
-
-				if ( command.isEnabled ) {
-					this.editor.execute( commandName );
-				}
-
-				cancel();
-			};
-		};
-
-		editor.keystrokes.set( 'Tab', getCommandExecuter( 'goToNextRestrictedEditingRegion' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'goToPreviousRestrictedEditingRegion' ) );
-
 		setupExceptionHighlighting( editor );
+	}
+
+	/**
+	 * Setups the commands handling:
+	 *
+	 * * exposes the navigation commands
+	 * *
+	 *
+	 * @private
+	 */
+	_setupCommandsToggling() {
+		const editor = this.editor;
+		const model = editor.model;
+		const doc = model.document;
+
 		this._disableCommands( editor );
 
 		this.listenTo( doc.selection, 'change', this._checkCommands.bind( this ) );
 		this.listenTo( doc, 'change:data', this._checkCommands.bind( this ) );
-
-		// Block clipboard completely in restricted mode.
-		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
-			evt.stop();
-		}, { priority: 'highest' } );
 	}
 
+	/**
+	 * Checks if commands should be enabled or disabled based on current selection.
+	 *
+	 * @private
+	 */
 	_checkCommands() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
@@ -150,6 +173,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		}
 	}
 
+	/**
+	 * Enables commands in non-restricted regions.
+	 *
+	 * @returns {module:engine/model/markercollection~Marker} marker
+	 * @private
+	 */
 	_enableCommands( marker ) {
 		const editor = this.editor;
 
@@ -186,6 +215,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		}
 	}
 
+	/**
+	 * Disables commands outside non-restricted regions.
+	 *
+	 * @private
+	 */
 	_disableCommands() {
 		const editor = this.editor;
 		const commands = this._getCommandNamesToToggle( editor )
@@ -196,8 +230,28 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		}
 	}
 
+	/**
+	 * Returns command names that should be toggleable.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @returns {Array.<String>}
+	 * @private
+	 */
 	_getCommandNamesToToggle( editor ) {
 		return Array.from( editor.commands.names() )
 			.filter( name => !this._alwaysEnabled.has( name ) );
 	}
+}
+
+// Helper method for executing enabled commands only.
+function getCommandExecuter( editor, commandName ) {
+	return ( data, cancel ) => {
+		const command = editor.commands.get( commandName );
+
+		if ( command.isEnabled ) {
+			editor.execute( commandName );
+		}
+
+		cancel();
+	};
 }
