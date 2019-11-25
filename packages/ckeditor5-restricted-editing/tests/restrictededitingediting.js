@@ -453,7 +453,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			const paragraph = model.document.getRoot().getChild( 0 );
 
-			// <paragraph>[]foo <marker≥bar</marker> baz qux</paragraph>
+			// <paragraph>[]foo <marker>bar</marker> baz qux</paragraph>
 			model.change( writer => {
 				writer.addMarker( 'restricted-editing-exception:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
@@ -462,7 +462,7 @@ describe( 'RestrictedEditingEditing', () => {
 				} );
 			} );
 
-			// <paragraph>[]foo <marker≥bar</marker> <marker≥baz</marker≥ qux</paragraph>
+			// <paragraph>[]foo <marker>bar</marker> <marker>baz</marker≥ qux</paragraph>
 			model.change( writer => {
 				writer.addMarker( 'restricted-editing-exception:2', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
@@ -484,7 +484,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			const paragraph = model.document.getRoot().getChild( 0 );
 
-			// <paragraph><marker≥foo</marker> qux[]</paragraph>
+			// <paragraph><marker>foo</marker> qux[]</paragraph>
 			model.change( writer => {
 				writer.addMarker( 'restricted-editing-exception:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
@@ -505,7 +505,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			const paragraph = model.document.getRoot().getChild( 0 );
 
-			// <paragraph>foo <marker≥bar</marker> baz qux[]</paragraph>
+			// <paragraph>foo <marker>bar</marker> baz qux[]</paragraph>
 			model.change( writer => {
 				writer.addMarker( 'restricted-editing-exception:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
@@ -514,7 +514,7 @@ describe( 'RestrictedEditingEditing', () => {
 				} );
 			} );
 
-			// <paragraph>foo <marker≥bar</marker> <marker≥baz</marker≥ qux[]</paragraph>
+			// <paragraph>foo <marker>bar</marker> <marker>baz</marker≥ qux[]</paragraph>
 			model.change( writer => {
 				writer.addMarker( 'restricted-editing-exception:2', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
@@ -537,7 +537,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			const paragraph = model.document.getRoot().getChild( 0 );
 
-			// <paragraph>[]foo <marker≥qux</marker></paragraph>
+			// <paragraph>[]foo <marker>qux</marker></paragraph>
 			model.change( writer => {
 				writer.addMarker( 'restricted-editing-exception:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
