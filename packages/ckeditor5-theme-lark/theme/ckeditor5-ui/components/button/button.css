@@ -76,7 +76,6 @@ a.ck.ck-button {
 	}
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
-	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-disabled {
 		&:active,
 		&:focus {
@@ -94,7 +93,6 @@ a.ck.ck-button {
 		}
 	}
 
-	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-button_with-text {
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
 
