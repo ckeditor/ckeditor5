@@ -8,10 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
-
-const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
+import { setupExceptionHighlighting, setupMarkersConversion } from './restrictededitingmode/converters';
+import { getMarker, isSelectionInExceptionMarker } from './restrictededitingmode/utils';
 
 /**
  * The Restricted Editing Mode editing feature.
@@ -50,7 +49,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
 		editor.commands.add( 'goToNextRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
 
-		this._setupMarkersConversion( editor );
+		setupMarkersConversion( editor );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
@@ -67,120 +66,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( 'goToNextRestrictedEditingRegion' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'goToPreviousRestrictedEditingRegion' ) );
 
-		this._setupExceptionHighlighting();
+		setupExceptionHighlighting( editor );
 		this._setupRestrictedEditingMode( editor );
 
 		// Block clipboard completely in restricted mode.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
 			evt.stop();
 		}, { priority: 'highest' } );
-	}
-
-	/**
-	 *
-	 * @param editor
-	 * @private
-	 */
-	_setupMarkersConversion( editor ) {
-		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
-		// Also, the markers will only be created when  when loading the data.
-		let markerNumber = 0;
-
-		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
-			view: {
-				name: 'span',
-				classes: 'ck-restricted-editing-exception'
-			},
-			model: () => {
-				markerNumber++; // Starting from restricted-editing-exception:1 marker.
-
-				return `restricted-editing-exception:${ markerNumber }`;
-			}
-		} ) );
-
-		// Currently the marker helpers are tied to other use-cases and do not render collapsed marker as highlight.
-		// That's why there are 2 downcast converters for them:
-		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
-		editor.conversion.for( 'downcast' ).markerToHighlight( {
-			model: 'restricted-editing-exception',
-			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
-			view: () => ( {
-				name: 'span',
-				classes: 'ck-restricted-editing-exception',
-				priority: -10
-			} )
-		} );
-
-		// 2. But for collapsed marker we need to render it as an element.
-		// Additionally the editing pipeline should always display a collapsed markers.
-		editor.conversion.for( 'editingDowncast' ).markerToElement( {
-			model: 'restricted-editing-exception',
-			view: ( markerData, viewWriter ) => viewWriter.createUIElement( 'span', {
-				class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
-			} )
-		} );
-
-		editor.conversion.for( 'dataDowncast' ).markerToElement( {
-			model: 'restricted-editing-exception',
-			view: ( markerData, viewWriter ) => viewWriter.createEmptyElement( 'span', {
-				class: 'ck-restricted-editing-exception'
-			} )
-		} );
-	}
-
-	/**
-	 * Adds a visual highlight style to a restricted editing exception the selection is anchored to.
-	 *
-	 * Highlight is turned on by adding the `.ck-restricted-editing-exception_selected` class to the
-	 * exception in the view:
-	 *
-	 * * The class is removed before the conversion has started, as callbacks added with the `'highest'` priority
-	 * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events.
-	 * * The class is added in the view post fixer, after other changes in the model tree were converted to the view.
-	 *
-	 * This way, adding and removing the highlight does not interfere with conversion.
-	 *
-	 * @private
-	 */
-	_setupExceptionHighlighting() {
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const model = editor.model;
-		const highlightedMarkers = new Set();
-
-		// Adding the class.
-		view.document.registerPostFixer( writer => {
-			const modelSelection = model.document.selection;
-
-			const marker = this._getMarker( modelSelection.anchor );
-
-			if ( !marker ) {
-				return;
-			}
-
-			for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name ) ) {
-				writer.addClass( HIGHLIGHT_CLASS, viewElement );
-				highlightedMarkers.add( viewElement );
-			}
-		} );
-
-		// Removing the class.
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			// Make sure the highlight is removed on every possible event, before conversion is started.
-			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
-
-			function removeHighlight() {
-				view.change( writer => {
-					for ( const item of highlightedMarkers.values() ) {
-						writer.removeClass( HIGHLIGHT_CLASS, item );
-						highlightedMarkers.delete( item );
-					}
-				} );
-			}
-		} );
 	}
 
 	_setupRestrictedEditingMode( editor ) {
@@ -223,7 +115,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	_tryExtendMarkerStart( change, writer, changeApplied ) {
-		const markerAtStart = this._getMarker( change.position.getShiftedBy( 1 ) );
+		const markerAtStart = getMarker( this.editor, change.position.getShiftedBy( 1 ) );
 
 		if ( markerAtStart && markerAtStart.getStart().isEqual( change.position.getShiftedBy( 1 ) ) ) {
 			writer.updateMarker( markerAtStart, {
@@ -236,7 +128,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	_tryExtendMarkedEnd( change, writer, changeApplied ) {
-		const markerAtEnd = this._getMarker( change.position );
+		const markerAtEnd = getMarker( this.editor, change.position );
 
 		if ( markerAtEnd && markerAtEnd.getEnd().isEqual( change.position ) ) {
 			writer.updateMarker( markerAtEnd, {
@@ -258,26 +150,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			return;
 		}
 
-		const marker = this._getMarker( selection.focus );
+		const marker = getMarker( editor, selection.focus );
 
 		if ( isSelectionInExceptionMarker( marker, selection ) ) {
 			this._enableCommands( marker );
 		} else {
 			this._disableCommands();
-		}
-	}
-
-	_getMarker( position ) {
-		const editor = this.editor;
-
-		for ( const marker of editor.model.markers ) {
-			const markerRange = marker.getRange();
-
-			if ( isPositionInRangeOrOnRangeBoundary( markerRange, position ) ) {
-				if ( marker.name.startsWith( 'restricted-editing-exception:' ) ) {
-					return marker;
-				}
-			}
 		}
 	}
 
@@ -331,62 +209,4 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		return Array.from( editor.commands.names() )
 			.filter( name => !this._alwaysEnabled.has( name ) );
 	}
-}
-
-function upcastHighlightToMarker( config ) {
-	return dispatcher => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
-		const { writer } = conversionApi;
-
-		const matcher = new Matcher( config.view );
-		const matcherResult = matcher.match( data.viewItem );
-
-		// If there is no match, this callback should not do anything.
-		if ( !matcherResult ) {
-			return;
-		}
-
-		const match = matcherResult.match;
-
-		// Force consuming element's name (taken from upcast helpers elementToElement converter).
-		match.name = true;
-
-		const { modelRange: convertedChildrenRange } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
-		conversionApi.consumable.consume( data.viewItem, match );
-
-		const markerName = config.model( data.viewItem );
-		const fakeMarkerStart = writer.createElement( '$marker', { 'data-name': markerName } );
-		const fakeMarkerEnd = writer.createElement( '$marker', { 'data-name': markerName } );
-
-		// Insert in reverse order to use converter content positions directly (without recalculating).
-		writer.insert( fakeMarkerEnd, convertedChildrenRange.end );
-		writer.insert( fakeMarkerStart, convertedChildrenRange.start );
-
-		data.modelRange = writer.createRange(
-			writer.createPositionBefore( fakeMarkerStart ),
-			writer.createPositionAfter( fakeMarkerEnd )
-		);
-		data.modelCursor = data.modelRange.end;
-	} );
-}
-
-function isSelectionInExceptionMarker( marker, selection ) {
-	if ( !marker ) {
-		return false;
-	}
-
-	const markerRange = marker.getRange();
-
-	if ( selection.isCollapsed ) {
-		return isPositionInRangeOrOnRangeBoundary( markerRange, selection.focus );
-	}
-
-	return markerRange.containsRange( selection.getFirstRange(), true );
-}
-
-function isPositionInRangeOrOnRangeBoundary( range, position ) {
-	return (
-		range.containsPosition( position ) ||
-		range.end.isEqual( position ) ||
-		range.start.isEqual( position )
-	);
 }
