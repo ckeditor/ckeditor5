@@ -8,7 +8,7 @@
  */
 
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import { getMarker } from './utils';
+import { getMarkerAtPosition } from './utils';
 
 const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
 
@@ -23,6 +23,8 @@ const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
  * * The class is added in the view post fixer, after other changes in the model tree were converted to the view.
  *
  * This way, adding and removing the highlight does not interfere with conversion.
+ *
+ * @param {module:core/editor/editor~Editor} editor
  */
 export function setupExceptionHighlighting( editor ) {
 	const view = editor.editing.view;
@@ -33,7 +35,7 @@ export function setupExceptionHighlighting( editor ) {
 	view.document.registerPostFixer( writer => {
 		const modelSelection = model.document.selection;
 
-		const marker = getMarker( editor, modelSelection.anchor );
+		const marker = getMarkerAtPosition( editor, modelSelection.anchor );
 
 		if ( !marker ) {
 			return;
@@ -64,7 +66,14 @@ export function setupExceptionHighlighting( editor ) {
 	} );
 }
 
-export function resurrectCollapsedMarker( editor ) {
+/**
+ * A post-fixer that prevents removing collapsed marker from the document.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @returns {Function}
+ */
+export function resurrectCollapsedMarkerPostFixer( editor ) {
+	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
 	return writer => {
 		let changeApplied = false;
 
@@ -82,14 +91,21 @@ export function resurrectCollapsedMarker( editor ) {
 	};
 }
 
-export function extendMarkerWhenTypingOnMarkerBoundary( editor ) {
+/**
+ * A post-fixer that extends a marker when user types on it boundaries.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @returns {Function}
+ */
+export function extendMarkerOnTypingPostFixer( editor ) {
+	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
 	return writer => {
 		let changeApplied = false;
 
 		for ( const change of editor.model.document.differ.getChanges() ) {
 			if ( change.type == 'insert' && change.name == '$text' && change.length === 1 ) {
-				changeApplied = _tryExtendMarkedEnd( editor, change.position, writer ) || changeApplied;
 				changeApplied = _tryExtendMarkerStart( editor, change.position, writer ) || changeApplied;
+				changeApplied = _tryExtendMarkedEnd( editor, change.position, writer ) || changeApplied;
 			}
 		}
 
@@ -97,6 +113,16 @@ export function extendMarkerWhenTypingOnMarkerBoundary( editor ) {
 	};
 }
 
+/**
+ * A view highlight to marker conversion helper.
+ *
+ * @param {Object} config Conversion configuration.
+ * @param {module:engine/view/matcher~MatcherPattern} [config.view] Pattern matching all view elements which should be converted. If not
+ * set, the converter will fire for every view element.
+ * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
+ * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+ */
 export function upcastHighlightToMarker( config ) {
 	return dispatcher => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
 		const { writer } = conversionApi;
@@ -133,8 +159,9 @@ export function upcastHighlightToMarker( config ) {
 	} );
 }
 
+// Extend marker if typing detected on marker's start position.
 function _tryExtendMarkerStart( editor, position, writer ) {
-	const markerAtStart = getMarker( editor, position.getShiftedBy( 1 ) );
+	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( 1 ) );
 
 	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( 1 ) ) ) {
 		writer.updateMarker( markerAtStart, {
@@ -147,8 +174,9 @@ function _tryExtendMarkerStart( editor, position, writer ) {
 	return false;
 }
 
+// Extend marker if typing detected on marker's end position.
 function _tryExtendMarkedEnd( editor, position, writer ) {
-	const markerAtEnd = getMarker( editor, position );
+	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {
 		writer.updateMarker( markerAtEnd, {

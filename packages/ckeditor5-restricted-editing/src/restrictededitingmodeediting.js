@@ -10,12 +10,12 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
 import {
-	extendMarkerWhenTypingOnMarkerBoundary,
-	resurrectCollapsedMarker,
+	extendMarkerOnTypingPostFixer,
+	resurrectCollapsedMarkerPostFixer,
 	setupExceptionHighlighting,
 	upcastHighlightToMarker
 } from './restrictededitingmode/converters';
-import { getMarker, isSelectionInExceptionMarker } from './restrictededitingmode/utils';
+import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
 
 /**
  * The Restricted Editing Mode editing feature.
@@ -49,6 +49,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const model = editor.model;
+		const doc = model.document;
 
 		// Commands that allow navigation in the content.
 		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
@@ -99,8 +101,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			} )
 		} );
 
-		editor.model.document.registerPostFixer( extendMarkerWhenTypingOnMarkerBoundary( editor ) );
-		editor.model.document.registerPostFixer( resurrectCollapsedMarker( editor ) );
+		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
+		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
 		const getCommandExecuter = commandName => {
 			return ( data, cancel ) => {
@@ -120,10 +122,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		setupExceptionHighlighting( editor );
 		this._disableCommands( editor );
 
-		const selection = editor.model.document.selection;
-
-		this.listenTo( selection, 'change', this._checkCommands.bind( this ) );
-		this.listenTo( editor.model.document, 'change:data', this._checkCommands.bind( this ) );
+		this.listenTo( doc.selection, 'change', this._checkCommands.bind( this ) );
+		this.listenTo( doc, 'change:data', this._checkCommands.bind( this ) );
 
 		// Block clipboard completely in restricted mode.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
@@ -141,9 +141,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			return;
 		}
 
-		const marker = getMarker( editor, selection.focus );
+		const marker = getMarkerAtPosition( editor, selection.focus );
 
-		if ( isSelectionInExceptionMarker( marker, selection ) ) {
+		if ( isSelectionInMarker( selection, marker ) ) {
 			this._enableCommands( marker );
 		} else {
 			this._disableCommands();

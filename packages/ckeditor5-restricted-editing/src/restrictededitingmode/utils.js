@@ -7,11 +7,20 @@
  * @module restricted-editing/restrictededitingmode/utils
  */
 
-export function getMarker( editor, position ) {
+/**
+ * Returns a single "restricted-editing-exception" marker at a given position. Contrary to
+ * {@link module:engine/model/markercollection~MarkerCollection#getMarkersAtPosition} it return a marker also when the postion is equal
+ * to one of markers start or end positions.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {module:engine/model/position~Position} position
+ * @returns {module:engine/model/markercollection~Marker|undefined} marker
+ */
+export function getMarkerAtPosition( editor, position ) {
 	for ( const marker of editor.model.markers ) {
 		const markerRange = marker.getRange();
 
-		if ( isPositionInRangeOrOnRangeBoundary( markerRange, position ) ) {
+		if ( isPositionInRangeBoundaries( markerRange, position ) ) {
 			if ( marker.name.startsWith( 'restricted-editing-exception:' ) ) {
 				return marker;
 			}
@@ -19,7 +28,14 @@ export function getMarker( editor, position ) {
 	}
 }
 
-export function isPositionInRangeOrOnRangeBoundary( range, position ) {
+/**
+ * Checks if the position is fully contained in range. Positions equal to range start or end are considered "in".
+ *
+ * @param {module:engine/model/range~Range} range
+ * @param {module:engine/model/position~Position} position
+ * @returns {Boolean}
+ */
+export function isPositionInRangeBoundaries( range, position ) {
 	return (
 		range.containsPosition( position ) ||
 		range.end.isEqual( position ) ||
@@ -27,7 +43,19 @@ export function isPositionInRangeOrOnRangeBoundary( range, position ) {
 	);
 }
 
-export function isSelectionInExceptionMarker( marker, selection ) {
+/**
+ * Checks if the selection is fully contained in marker. Positions on marker boundaries are considered "in".
+ *
+ *		<marker>[]foo</marker> -> true
+ *		<marker>f[oo]</marker> -> true
+ *		<marker>f[oo</marker> ba]r -> false
+ *		<marker>foo</marker> []bar -> false
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @param {module:engine/model/markercollection~Marker} marker
+ * @returns {Boolean}
+ */
+export function isSelectionInMarker( selection, marker ) {
 	if ( !marker ) {
 		return false;
 	}
@@ -35,7 +63,7 @@ export function isSelectionInExceptionMarker( marker, selection ) {
 	const markerRange = marker.getRange();
 
 	if ( selection.isCollapsed ) {
-		return isPositionInRangeOrOnRangeBoundary( markerRange, selection.focus );
+		return isPositionInRangeBoundaries( markerRange, selection.focus );
 	}
 
 	return markerRange.containsRange( selection.getFirstRange(), true );
