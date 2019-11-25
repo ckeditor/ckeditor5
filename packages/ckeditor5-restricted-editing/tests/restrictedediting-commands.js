@@ -18,7 +18,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 
 	testUtils.createSinonSandbox();
 
-	describe( 'commands behavior', () => {
+	describe( 'commands toggling', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
@@ -43,58 +43,207 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			await editor.destroy();
 		} );
 
-		describe( 'undo', () => {
-			beforeEach( () => {
-				editor.commands.add( 'undo', buildFakeCommand( editor ) );
-			} );
-
-			it( 'should be enabled outside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 1 );
-				} );
-
-				expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be enabled inside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 5 );
-				} );
-
-				expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
-			} );
-		} );
-
-		describe( 'redo', () => {
-			beforeEach( () => {
-				editor.commands.add( 'redo', buildFakeCommand( editor ) );
-			} );
-
-			it( 'should be enabled outside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 1 );
-				} );
-
-				expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be enabled inside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 5 );
-				} );
-
-				expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
-			} );
-		} );
-
-		const commandsEnabledOnWholeRange = [
-			'input', 'bold', 'link', 'italic'
-		];
-
-		for ( const commandName of commandsEnabledOnWholeRange ) {
-			describe( commandName, () => {
+		describe( 'always enabled commands', () => {
+			describe( 'undo', () => {
 				beforeEach( () => {
-					editor.commands.add( commandName, buildFakeCommand( editor ) );
+					editor.commands.add( 'undo', buildFakeCommand( editor ) );
+				} );
+
+				it( 'should be enabled outside exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 1 );
+					} );
+
+					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
+				} );
+
+				it( 'should be enabled inside exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 5 );
+					} );
+
+					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.true;
+				} );
+			} );
+
+			describe( 'redo', () => {
+				beforeEach( () => {
+					editor.commands.add( 'redo', buildFakeCommand( editor ) );
+				} );
+
+				it( 'should be enabled outside exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 1 );
+					} );
+
+					expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
+				} );
+
+				it( 'should be enabled inside exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 5 );
+					} );
+
+					expect( editor.commands.get( 'redo' ).isEnabled ).to.be.true;
+				} );
+			} );
+		} );
+
+		describe( 'commands enabled in exception marker', () => {
+			const commands = [
+				'input', 'bold', 'link', 'italic'
+			];
+
+			for ( const commandName of commands ) {
+				describe( commandName, () => {
+					beforeEach( () => {
+						editor.commands.add( commandName, buildFakeCommand( editor ) );
+
+						model.change( writer => {
+							writer.setSelection( firstParagraph, 'end' );
+						} );
+					} );
+
+					it( 'should be disabled when caret is outside exception marker', () => {
+						model.change( writer => {
+							writer.setSelection( firstParagraph, 1 );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					} );
+
+					it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
+						model.change( writer => {
+							writer.setSelection( firstParagraph, 5 );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be disabled when caret is inside other marker', () => {
+						model.change( writer => {
+							writer.addMarker( 'foo-bar:1', {
+								range: writer.createRange(
+									writer.createPositionAt( firstParagraph, 0 ),
+									writer.createPositionAt( firstParagraph, 3 ) ),
+								usingOperation: true,
+								affectsData: true
+							} );
+
+							writer.setSelection( firstParagraph, 1 );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					} );
+
+					it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
+						model.change( writer => {
+							writer.setSelection( firstParagraph, 4 );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
+						model.change( writer => {
+							writer.setSelection( firstParagraph, 7 );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be disabled for multi-range selection (collapsed ranges)', () => {
+						model.change( writer => {
+							writer.setSelection( [
+								writer.createRange(
+									writer.createPositionAt( firstParagraph, 5 )
+								),
+								writer.createRange(
+									writer.createPositionAt( firstParagraph, 9 )
+								)
+							] );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					} );
+
+					it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
+						model.change( writer => {
+							writer.setSelection( writer.createRange(
+								writer.createPositionAt( firstParagraph, 0 ),
+								writer.createPositionAt( firstParagraph, 5 )
+							) );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					} );
+
+					it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
+						model.change( writer => {
+							writer.setSelection( writer.createRange(
+								writer.createPositionAt( firstParagraph, 5 ),
+								writer.createPositionAt( firstParagraph, 6 )
+							) );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
+						model.change( writer => {
+							writer.setSelection( writer.createRange(
+								writer.createPositionAt( firstParagraph, 4 ),
+								writer.createPositionAt( firstParagraph, 6 )
+							) );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
+						model.change( writer => {
+							writer.setSelection( writer.createRange(
+								writer.createPositionAt( firstParagraph, 5 ),
+								writer.createPositionAt( firstParagraph, 7 )
+							) );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
+						model.change( writer => {
+							writer.setSelection( writer.createRange(
+								writer.createPositionAt( firstParagraph, 4 ),
+								writer.createPositionAt( firstParagraph, 7 )
+							) );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					} );
+
+					it( 'should be disabled for non-collapsed selection with more then one range', () => {
+						model.change( writer => {
+							writer.setSelection( [
+								writer.createRange(
+									writer.createPositionAt( firstParagraph, 5 ),
+									writer.createPositionAt( firstParagraph, 6 )
+								),
+								writer.createRange(
+									writer.createPositionAt( firstParagraph, 8 ),
+									writer.createPositionAt( firstParagraph, 9 )
+								)
+							] );
+						} );
+
+						expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					} );
+				} );
+			}
+
+			describe( 'delete', () => {
+				beforeEach( () => {
+					editor.commands.add( 'delete', buildFakeCommand( editor ) );
 
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 'end' );
@@ -106,7 +255,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
@@ -114,31 +263,15 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 5 );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 				} );
 
-				it( 'should be disabled when caret is inside other marker', () => {
-					model.change( writer => {
-						writer.addMarker( 'foo-bar:1', {
-							range: writer.createRange(
-								writer.createPositionAt( firstParagraph, 0 ),
-								writer.createPositionAt( firstParagraph, 3 ) ),
-							usingOperation: true,
-							affectsData: true
-						} );
-
-						writer.setSelection( firstParagraph, 1 );
-					} );
-
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
-				} );
-
-				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
+				it( 'should be disabled when caret is inside exception marker (start boundary)', () => {
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 4 );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
@@ -146,22 +279,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						writer.setSelection( firstParagraph, 7 );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
-				} );
-
-				it( 'should be disabled for multi-range selection (collapsed ranges)', () => {
-					model.change( writer => {
-						writer.setSelection( [
-							writer.createRange(
-								writer.createPositionAt( firstParagraph, 5 )
-							),
-							writer.createRange(
-								writer.createPositionAt( firstParagraph, 9 )
-							)
-						] );
-					} );
-
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
@@ -172,7 +290,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
 				} );
 
 				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
@@ -183,7 +301,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
@@ -194,7 +312,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
@@ -205,7 +323,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 				} );
 
 				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
@@ -216,223 +334,109 @@ describe( 'RestrictedEditingEditing - commands', () => {
 						) );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.true;
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+				} );
+			} );
+
+			describe( 'forwardDelete', () => {
+				beforeEach( () => {
+					editor.commands.add( 'forwardDelete', buildFakeCommand( editor ) );
+
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 'end' );
+					} );
 				} );
 
-				it( 'should be disabled for non-collapsed selection with more then one range', () => {
+				it( 'should be disabled when caret is outside exception marker', () => {
 					model.change( writer => {
-						writer.setSelection( [
-							writer.createRange(
-								writer.createPositionAt( firstParagraph, 5 ),
-								writer.createPositionAt( firstParagraph, 6 )
-							),
-							writer.createRange(
-								writer.createPositionAt( firstParagraph, 8 ),
-								writer.createPositionAt( firstParagraph, 9 )
-							)
-						] );
+						writer.setSelection( firstParagraph, 1 );
 					} );
 
-					expect( editor.commands.get( commandName ).isEnabled ).to.be.false;
-				} );
-			} );
-		}
-
-		describe( 'delete', () => {
-			beforeEach( () => {
-				editor.commands.add( 'delete', buildFakeCommand( editor ) );
-
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 'end' );
-				} );
-			} );
-
-			it( 'should be disabled when caret is outside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 1 );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
-			} );
+				it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 5 );
+					} );
 
-			it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 5 );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
-			} );
+				it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 4 );
+					} );
 
-			it( 'should be disabled when caret is inside exception marker (start boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 4 );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
-			} );
+				it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 7 );
+					} );
 
-			it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 7 );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
-			} );
+				it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( firstParagraph, 0 ),
+							writer.createPositionAt( firstParagraph, 5 )
+						) );
+					} );
 
-			it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 0 ),
-						writer.createPositionAt( firstParagraph, 5 )
-					) );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
-			} );
+				it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( firstParagraph, 5 ),
+							writer.createPositionAt( firstParagraph, 6 )
+						) );
+					} );
 
-			it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 5 ),
-						writer.createPositionAt( firstParagraph, 6 )
-					) );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
-			} );
+				it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
+					model.change( writer => {
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 6 )
+						) );
+					} );
 
-			it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 4 ),
-						writer.createPositionAt( firstParagraph, 6 )
-					) );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
-			} );
+				it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
+					model.change( writer => {
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( firstParagraph, 5 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						) );
+					} );
 
-			it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 5 ),
-						writer.createPositionAt( firstParagraph, 7 )
-					) );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
 				} );
 
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
-			} );
+				it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
+					model.change( writer => {
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						) );
+					} );
 
-			it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 4 ),
-						writer.createPositionAt( firstParagraph, 7 )
-					) );
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
 				} );
-
-				expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
 			} );
 		} );
 
-		describe( 'forwardDelete', () => {
-			beforeEach( () => {
-				editor.commands.add( 'forwardDelete', buildFakeCommand( editor ) );
-
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 'end' );
-				} );
-			} );
-
-			it( 'should be disabled when caret is outside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 1 );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
-			} );
-
-			it( 'should be enabled when caret is inside exception marker (not touching boundaries)', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 5 );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be enabled when caret is inside exception marker (start boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 4 );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 7 );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
-			} );
-
-			it( 'should be disabled for non-collapsed selection that expands over exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 0 ),
-						writer.createPositionAt( firstParagraph, 5 )
-					) );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
-			} );
-
-			it( 'should be enabled for non-collapsed selection that is fully contained inside exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 5 ),
-						writer.createPositionAt( firstParagraph, 6 )
-					) );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be enabled for non-collapsed selection inside exception marker (start position on marker boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 4 ),
-						writer.createPositionAt( firstParagraph, 6 )
-					) );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be enabled for non-collapsed selection inside exception marker (end position on marker boundary)', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 5 ),
-						writer.createPositionAt( firstParagraph, 7 )
-					) );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
-			} );
-
-			it( 'should be enabled for non-collapsed selection is equal to exception marker', () => {
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 4 ),
-						writer.createPositionAt( firstParagraph, 7 )
-					) );
-				} );
-
-				expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
-			} );
-		} );
-
-		describe( 'other', () => {
+		describe( 'non-enabled commands', () => {
 			beforeEach( () => {
 				editor.commands.add( 'other', buildFakeCommand( editor ) );
 
@@ -541,7 +545,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		} );
 	} );
 
-	describe( 'commands integration', () => {
+	describe( 'integration', () => {
 		let model, firstParagraph;
 
 		beforeEach( async () => {
