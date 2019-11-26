@@ -93,7 +93,7 @@ There are two main ways to do that.
 
 	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source).
 
-### Note: Building for production
+### Building for production
 
 If you still work with `create-react-app@1` or use a custom configuration for you application that still uses `webpack@3`, you will need to adjust the `UglifyJsPlugin` option to make CKEditor 5 compatible with this setup. CKEditor 5 builds use ES6 so the default JavaScript minifier of `webpack@3` and `create-react-app@1` is not able to digest them.
 
@@ -105,7 +105,7 @@ npm run eject
 
 Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-configuration).
 
-### Note: Using the Document editor build
+### Using the Document editor build
 
 If you use the {@link framework/guides/document-editor Document editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
@@ -139,7 +139,7 @@ class App extends Component {
 export default App;
 ```
 
-### Note: Using the editor with collaboration plugins
+### Using the editor with collaboration plugins
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including collaboration plugins together with the React application.
 
