@@ -6,7 +6,6 @@
 import SpecialCharacters from '../src/specialcharacters';
 import SpecialCharactersUI from '../src/specialcharactersui';
 import SpecialCharactersEditing from '../src/specialcharactersediting';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SpecialCharacters', () => {
 	let plugin;
@@ -36,15 +35,6 @@ describe( 'SpecialCharacters', () => {
 			expect( plugin._characters.size ).to.equal( 2 );
 			expect( plugin._characters.has( 'arrow left' ) ).to.equal( true );
 			expect( plugin._characters.has( 'arrow right' ) ).to.equal( true );
-		} );
-
-		it( 'throw an error when a title is not a unique value', () => {
-			expectToThrowCKEditorError( () => {
-				plugin.addItems( 'Arrows', [
-					{ title: 'arrow left', character: '←' },
-					{ title: 'arrow left', character: '←' }
-				] );
-			}, /^specialcharacters-duplicated-character-name/ )
 		} );
 	} );
 
