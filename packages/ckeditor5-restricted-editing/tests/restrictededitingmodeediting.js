@@ -40,13 +40,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 		} );
 
-		it( 'adds a "goToPreviousRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) )
+		it( 'adds a "goToPreviousRestrictedEditingException" command', () => {
+			expect( editor.commands.get( 'goToPreviousRestrictedEditingException' ) )
 				.to.be.instanceOf( RestrictedEditingModeNavigationCommand );
 		} );
 
-		it( 'adds a "goToNextRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingModeNavigationCommand );
+		it( 'adds a "goToNextRestrictedEditingException" command', () => {
+			expect(
+				editor.commands.get( 'goToNextRestrictedEditingException' )
+			).to.be.instanceOf( RestrictedEditingModeNavigationCommand );
 		} );
 	} );
 
@@ -791,7 +793,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingRegion' );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
@@ -844,7 +846,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingRegion' );
+			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingException' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );

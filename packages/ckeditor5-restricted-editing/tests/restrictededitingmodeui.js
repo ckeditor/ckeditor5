@@ -25,8 +25,8 @@ describe( 'RestrictedEditingModeUI', () => {
 			plugins: [ RestrictedEditingModeEditing, RestrictedEditingModeUI ]
 		} );
 
-		goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingRegion' );
-		goToNextCommand = editor.commands.get( 'goToNextRestrictedEditingRegion' );
+		goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingException' );
+		goToNextCommand = editor.commands.get( 'goToNextRestrictedEditingException' );
 	} );
 
 	afterEach( async () => {
@@ -120,10 +120,10 @@ describe( 'RestrictedEditingModeUI', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
 				goToPreviousButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingRegion' );
+				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingException' );
 
 				goToNextButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingRegion' );
+				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingException' );
 			} );
 		} );
 	} );

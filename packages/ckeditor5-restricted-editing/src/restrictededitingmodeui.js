@@ -41,12 +41,12 @@ export default class RestrictedEditingModeUI extends Plugin {
 			const listItems = new Collection();
 
 			listItems.add( this._getButtonDefinition(
-				'goToPreviousRestrictedEditingRegion',
+				'goToPreviousRestrictedEditingException',
 				t( 'Previous editable region' ),
 				'Shift+Tab'
 			) );
 			listItems.add( this._getButtonDefinition(
-				'goToNextRestrictedEditingRegion',
+				'goToNextRestrictedEditingException',
 				t( 'Next editable region' ),
 				'Tab'
 			) );

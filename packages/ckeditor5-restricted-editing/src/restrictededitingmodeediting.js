@@ -21,7 +21,7 @@ import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmod
  * The Restricted Editing Mode editing feature.
  *
  * * It introduces the exception marker group that renders to `<spans>` with the `ck-restricted-editing-exception` CSS class.
- * * It registers the `'goToPreviousRestrictedEditingRegion'` and `'goToNextRestrictedEditingRegion'` commands.
+ * * It registers the `'goToPreviousRestrictedEditingException'` and `'goToNextRestrictedEditingException'` commands.
  * * Also enables highlighting exception markers that are selected.
  *
  * @extends module:core/plugin~Plugin
@@ -50,7 +50,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		 * @type {Set.<String>}
 		 * @private
 		 */
-		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingRegion', 'goToNextRestrictedEditingRegion' ] );
+		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingException', 'goToNextRestrictedEditingException' ] );
 
 		/**
 		 * Commands allowed in non-restricted areas.
@@ -78,10 +78,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this._setupCommandsToggling();
 
 		// Commands & keystrokes that allow navigation in the content.
-		editor.commands.add( 'goToPreviousRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
-		editor.commands.add( 'goToNextRestrictedEditingRegion', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
-		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingRegion' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingRegion' ) );
+		editor.commands.add( 'goToPreviousRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
+		editor.commands.add( 'goToNextRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
+		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 
 		// Block clipboard completely in restricted mode.
 		this.listenTo( this.editor.editing.view.document, 'clipboardInput', evt => {
