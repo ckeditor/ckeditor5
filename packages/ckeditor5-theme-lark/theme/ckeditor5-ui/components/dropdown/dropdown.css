@@ -57,22 +57,22 @@
 			}
 		}
 
+		/* #23 */
+		& .ck-button__label {
+			width: 7em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
 		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
-		&.ck-disabled .ck-button__label {
-			@mixin ck-disabled;
+	&.ck-disabled .ck-button__label {
+		@mixin ck-disabled;
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/816 */
 		&.ck-on {
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
-		}
-
-		/* #23 */
-		& .ck-button__label {
-			width: 7em;
-			overflow: hidden;
-			text-overflow: ellipsis;
 		}
 	}
 }

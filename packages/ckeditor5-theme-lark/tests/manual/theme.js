@@ -62,6 +62,7 @@ const ui = testUtils.createTestUIView( {
 	'buttonStates': '#button-states',
 	'buttonTypes': '#button-types',
 	'buttonIcon': '#button-icon',
+	'buttonKeystroke': '#button-keystroke',
 	'buttonCustom': '#button-custom',
 	'buttonIconCustom': '#button-icon-custom',
 	'buttonIconStates': '#button-icon-states',
@@ -183,6 +184,22 @@ function renderButton() {
 	// TODO: It requires model interface.
 	disabledActionButton.element.classList.add( 'ck-button-action' );
 
+	// --- Keystrokes ------------------------------------------------------------
+
+	ui.buttonKeystroke.add( toolbar( [
+		button( {
+			label: 'Foo',
+			keystroke: 'Ctrl+A',
+			withKeystroke: true
+		} ),
+		button( {
+			label: 'Bar',
+			icon: boldIcon,
+			keystroke: 'Shift+Tab',
+			withKeystroke: true
+		} )
+	] ) );
+
 	// --- Responsive ------------------------------------------------------------
 
 	for ( let i = 1; i < 4; i++ ) {
@@ -248,6 +265,29 @@ function renderDropdown() {
 			withText: true,
 			isOn: true,
 			icon: boldIcon
+		} )
+	} );
+
+	collection.add( {
+		type: 'button',
+		model: new Model( {
+			label: 'Icon and key',
+			withText: true,
+			icon: boldIcon,
+			keystroke: 'Shift+Tab',
+			withKeystroke: true
+		} )
+	} );
+
+	collection.add( {
+		type: 'button',
+		model: new Model( {
+			label: 'On with a keystroke',
+			withText: true,
+			isOn: true,
+			icon: boldIcon,
+			keystroke: 'Ctrl+A',
+			withKeystroke: true
 		} )
 	} );
 
@@ -475,11 +515,12 @@ function button( {
 	keystroke = null,
 	tooltip,
 	tooltipPosition = 's',
+	withKeystroke = false,
 	icon
 } = {} ) {
 	const button = new ButtonView();
 
-	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
+	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, withKeystroke, tooltipPosition } );
 
 	return button;
 }

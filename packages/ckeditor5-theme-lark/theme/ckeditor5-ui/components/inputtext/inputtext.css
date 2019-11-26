@@ -24,8 +24,7 @@
 	min-height: var(--ck-ui-component-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition-property: box-shadow, border;
-	transition: .2s ease-in-out;
+	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
 
 	&:focus {
 		@mixin ck-focus-ring;
