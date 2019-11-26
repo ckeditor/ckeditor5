@@ -6,7 +6,15 @@ category: features
 
 {@snippet features/build-restricted-editing-source}
 
-The ...
+The restricted editing feature allows to define editable areas in a documents that have restricted editing options. This feature defines
+two modes for the editor:
+
+1. Standard editing mode
+2. Restricted editing mode
+
+The standard editing mode is used as normal editor instance to create content. It also allows to mark regions of the document as non-restricted areas.
+
+The restricted editing mode allows other set of users to fill those non-restricted areas with text. You can additionally define which of editor commands are allowed inside non-restricted areas. The restricted editing mode expects that allowed commands are a text-formatting commands, like `'bold'`, `'italic'` or `'fontColor'`.
 
 ## Demo
 
