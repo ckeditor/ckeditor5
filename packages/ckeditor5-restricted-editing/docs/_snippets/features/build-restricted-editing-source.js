@@ -16,7 +16,3 @@ ClassicEditor.builtinPlugins.push(
 	RestrictedEditingMode, StandardEditingMode, ArticlePluginSet, Table );
 
 window.ClassicEditor = ClassicEditor;
-// window.RestrictedEditingMode = RestrictedEditingMode;
-// window.StandardEditingMode = StandardEditingMode;
-// window.ArticlePluginSet = ArticlePluginSet;
-// window.Ta = Ta;
