@@ -268,6 +268,20 @@ describe( 'RestrictedEditingEditing - commands', () => {
 					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
 				} );
 
+				it( 'should be disabled when caret moves to start boundary and it was enabled previously', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 5 );
+					} );
+
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.true;
+
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 4 );
+					} );
+
+					expect( editor.commands.get( 'delete' ).isEnabled ).to.be.false;
+				} );
+
 				it( 'should be enabled when caret is inside exception marker (end boundary)', () => {
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 7 );
@@ -366,6 +380,20 @@ describe( 'RestrictedEditingEditing - commands', () => {
 				} );
 
 				it( 'should be disabled when caret is inside exception marker (end boundary)', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 7 );
+					} );
+
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.false;
+				} );
+
+				it( 'should be disabled when caret moves to end boundary and it was enabled previously', () => {
+					model.change( writer => {
+						writer.setSelection( firstParagraph, 5 );
+					} );
+
+					expect( editor.commands.get( 'forwardDelete' ).isEnabled ).to.be.true;
+
 					model.change( writer => {
 						writer.setSelection( firstParagraph, 7 );
 					} );

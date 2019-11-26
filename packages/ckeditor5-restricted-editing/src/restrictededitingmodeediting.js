@@ -187,10 +187,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		const marker = getMarkerAtPosition( editor, selection.focus );
 
+		this._disableCommands();
+
 		if ( isSelectionInMarker( selection, marker ) ) {
 			this._enableCommands( marker );
-		} else {
-			this._disableCommands();
 		}
 	}
 
