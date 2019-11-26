@@ -28,6 +28,8 @@ ClassicEditor
 				'indent',
 				'|',
 				'blockQuote',
+				'codeBlock',
+				'|',
 				'undo',
 				'redo'
 			],
