@@ -40,8 +40,28 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		editor.config.define( 'restrictedEditing', {
+			allowedCommands: [ 'bold', 'italic', 'link' ]
+		} );
+
+		/**
+		 * Command names that are enabled outside non-restricted regions.
+		 *
+		 * @type {Set<string>}
+		 * @private
+		 */
 		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingRegion', 'goToNextRestrictedEditingRegion' ] );
-		this._allowedInException = new Set( [ 'bold', 'italic', 'link', 'input', 'delete', 'forwardDelete' ] );
+
+		/**
+		 * Commands allowed in non-restricted areas.
+		 *
+		 * Commands always enabled combines typing feature commands: `'typing'`, `'delete'` and `'forwardDelete'` with commands defined
+		 * in the feature configuration.
+		 *
+		 * @type {Set<string>}
+		 * @private
+		 */
+		this._allowedInException = new Set( [ 'input', 'delete', 'forwardDelete' ] );
 	}
 
 	/**
@@ -49,6 +69,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+
+		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' );
+
+		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
 
 		this._setupConversion();
 		this._setupCommandsToggling();
@@ -131,10 +155,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Setups the commands handling:
-	 *
-	 * * exposes the navigation commands
-	 * *
+	 * Setups the commands toggling - enables or disables commands based on user selection.
 	 *
 	 * @private
 	 */

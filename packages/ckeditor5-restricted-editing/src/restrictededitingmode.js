@@ -38,3 +38,46 @@ export default class RestrictedEditingMode extends Plugin {
 		return [ RestrictedEditingModeEditing, RestrictedEditingModeUI ];
 	}
 }
+
+/**
+ * The configuration of the restricted editing mode feature. Introduced by the
+ * {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} feature.
+ *
+ * Read more in {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig}.
+ *
+ * @member {module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig}
+ * module:core/editor/editorconfig~EditorConfig#restrictedEditing
+ */
+
+/**
+ * The configuration of the restricted editing mode feature.
+ * The option is used by the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} feature.
+ *
+ *		ClassicEditor
+ *			.create( {
+ * 				restrictedEditing: ... // Restricted editing mode feature config.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig
+ */
+
+/**
+ * The command names allowed in non-restricted areas of the content.
+ *
+ * Define which feature commands should be enabled in restricted editing mode. The commands used for typing and deleting text
+ * (`'input'`, `'delete'` and `'forwardDelete'`) are allowed inside non-restricted regions.
+ *
+ * **Note**: The restricted editing mode always allows to use restricted mode navigation commands as well as `'undo'` and `'redo'` commands.
+ *
+ * The default value is:
+ *
+ *		const restrictedEditingConfig = {
+ *			allowedCommands: [ 'bold', 'italic', 'link' ]
+ *		};
+ *
+ * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands
+ */
