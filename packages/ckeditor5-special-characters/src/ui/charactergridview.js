@@ -71,6 +71,14 @@ export default class CharacterGridView extends View {
 			class: 'ck-character-grid__tile'
 		} );
 
+		// Labels are vital for the users to understand what character they're looking at.
+		// For now we're using native title attribute for that, see #5817.
+		tile.extendTemplate( {
+			attributes: {
+				title: name
+			}
+		} );
+
 		tile.on( 'execute', () => {
 			this.fire( 'execute', { name } );
 		} );
