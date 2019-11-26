@@ -8,44 +8,40 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedEditingEditing from './../src/restrictededitingediting';
-import RestrictedEditingUI from './../src/restrictededitingui';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
+import RestrictedEditingModeUI from './../src/restrictededitingmodeui';
 import lockIcon from '../theme/icons/contentlock.svg';
 
-describe( 'RestrictedEditingUI', () => {
+describe( 'RestrictedEditingModeUI', () => {
 	let editor, element, goToPreviousCommand, goToNextCommand;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ RestrictedEditingEditing, RestrictedEditingUI ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ RestrictedEditingModeEditing, RestrictedEditingModeUI ]
+		} );
 
-				goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingRegion' );
-				goToNextCommand = editor.commands.get( 'goToNextRestrictedEditingRegion' );
-			} );
+		goToPreviousCommand = editor.commands.get( 'goToPreviousRestrictedEditingException' );
+		goToNextCommand = editor.commands.get( 'goToNextRestrictedEditingException' );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		element.remove();
 
-		return editor.destroy();
+		await editor.destroy();
 	} );
 
 	describe( 'plugin', () => {
 		it( 'should be named', () => {
-			expect( RestrictedEditingUI.pluginName ).to.equal( 'RestrictedEditingUI' );
+			expect( RestrictedEditingModeUI.pluginName ).to.equal( 'RestrictedEditingModeUI' );
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedEditingUI ) ).to.be.instanceOf( RestrictedEditingUI );
+			expect( editor.plugins.get( RestrictedEditingModeUI ) ).to.be.instanceOf( RestrictedEditingModeUI );
 		} );
 	} );
 
@@ -124,10 +120,10 @@ describe( 'RestrictedEditingUI', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
 				goToPreviousButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingRegion' );
+				sinon.assert.calledWith( spy.firstCall, 'goToPreviousRestrictedEditingException' );
 
 				goToNextButton.fire( 'execute' );
-				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingRegion' );
+				sinon.assert.calledWith( spy.secondCall, 'goToNextRestrictedEditingException' );
 			} );
 		} );
 	} );

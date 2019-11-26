@@ -4,21 +4,27 @@
  */
 
 /**
- * @module restricted-editing/restrictededitingexceptionediting
+ * @module restricted-editing/standardeditingmodeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
 
 /**
+ * The Standard Editing Mode editing feature.
+ *
+ * * It introduces the `restrictedEditingException` text attributes that is rendered as
+ * `<spans>` with the `ck-restricted-editing-exception` CSS class.
+ * * It registers the `'restrictedEditingException'` command.
+ *
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedEditingExceptionEditing extends Plugin {
+export default class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedEditingExceptionEditing';
+		return 'StandardEditingModeEditing';
 	}
 
 	/**

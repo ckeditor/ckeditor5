@@ -3,53 +3,52 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import RestrictedEditingEditing from './../src/restrictededitingediting';
-import RestrictedEditingNavigationCommand from '../src/restrictededitingnavigationcommand';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-describe( 'RestrictedEditingEditing', () => {
-	let editor, element;
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
+import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
+
+describe( 'RestrictedEditingModeEditing', () => {
+	let editor;
 
 	testUtils.createSinonSandbox();
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, { plugins: [ RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing ] } );
 		} );
 
-		afterEach( () => {
-			element.remove();
-
-			return editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should be named', () => {
-			expect( RestrictedEditingEditing.pluginName ).to.equal( 'RestrictedEditingEditing' );
+			expect( RestrictedEditingModeEditing.pluginName ).to.equal( 'RestrictedEditingModeEditing' );
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( RestrictedEditingEditing ) ).to.be.instanceOf( RestrictedEditingEditing );
+			expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 		} );
 
-		it( 'adds a "goToPreviousRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToPreviousRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingNavigationCommand );
+		it( 'adds a "goToPreviousRestrictedEditingException" command', () => {
+			expect( editor.commands.get( 'goToPreviousRestrictedEditingException' ) )
+				.to.be.instanceOf( RestrictedEditingModeNavigationCommand );
 		} );
 
-		it( 'adds a "goToNextRestrictedEditingRegion" command', () => {
-			expect( editor.commands.get( 'goToNextRestrictedEditingRegion' ) ).to.be.instanceOf( RestrictedEditingNavigationCommand );
+		it( 'adds a "goToNextRestrictedEditingException" command', () => {
+			expect(
+				editor.commands.get( 'goToNextRestrictedEditingException' )
+			).to.be.instanceOf( RestrictedEditingModeNavigationCommand );
 		} );
 	} );
 
@@ -57,7 +56,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -69,9 +68,9 @@ describe( 'RestrictedEditingEditing', () => {
 			it( 'should convert <span class="ck-restricted-editing-exception"> to marker', () => {
 				editor.setData( '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' );
 
-				expect( model.markers.has( 'restricted-editing-exception:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
 
-				const marker = model.markers.get( 'restricted-editing-exception:1' );
+				const marker = model.markers.get( 'restrictedEditingException:1' );
 
 				expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
 				expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
@@ -83,11 +82,11 @@ describe( 'RestrictedEditingEditing', () => {
 					'<p>ABCDEF<span class="ck-restricted-editing-exception">GHIJK</span>LMNOPQRST</p>'
 				);
 
-				expect( model.markers.has( 'restricted-editing-exception:1' ) ).to.be.true;
-				expect( model.markers.has( 'restricted-editing-exception:2' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.true;
 
 				// Data for the first marker is the same as in previous tests so no need to test it again.
-				const secondMarker = model.markers.get( 'restricted-editing-exception:2' );
+				const secondMarker = model.markers.get( 'restrictedEditingException:2' );
 
 				expect( secondMarker.getStart().path ).to.deep.equal( [ 1, 6 ] );
 				expect( secondMarker.getEnd().path ).to.deep.equal( [ 1, 11 ] );
@@ -96,7 +95,7 @@ describe( 'RestrictedEditingEditing', () => {
 			it( 'should not convert other <span> elements', () => {
 				editor.setData( '<p>foo <span class="foo bar">bar</span> baz</p>' );
 
-				expect( model.markers.has( 'restricted-editing-exception:1' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
 			} );
 		} );
 
@@ -107,7 +106,7 @@ describe( 'RestrictedEditingEditing', () => {
 				const paragraph = model.document.getRoot().getChild( 0 );
 
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 						usingOperation: true,
 						affectsData: true
@@ -119,6 +118,25 @@ describe( 'RestrictedEditingEditing', () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
 
+			it( 'should convert collapsed model marker to <span>', () => {
+				setModelData( model, '<paragraph>foo bar baz</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 4 ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="ck-restricted-editing-exception"></span>bar baz</p>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_collapsed"></span>bar baz</p>'
+				);
+			} );
+
 			it( 'converted <span> should be the outermost attribute element', () => {
 				editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b' } );
 				setModelData( model, '<paragraph><$text bold="true">foo bar baz</$text></paragraph>' );
@@ -126,16 +144,21 @@ describe( 'RestrictedEditingEditing', () => {
 				const paragraph = model.document.getRoot().getChild( 0 );
 
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
 						usingOperation: true,
 						affectsData: true
 					} );
 				} );
 
-				const expectedView = '<p><span class="ck-restricted-editing-exception"><b>foo bar baz</b></span></p>';
-				expect( editor.getData() ).to.equal( expectedView );
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+				expect( editor.getData() ).to.equal(
+					'<p><span class="ck-restricted-editing-exception"><b>foo bar baz</b></span></p>'
+				);
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected"><b>foo bar baz</b></span>' +
+					'</p>'
+				);
 			} );
 		} );
 	} );
@@ -144,7 +167,7 @@ describe( 'RestrictedEditingEditing', () => {
 		let model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -162,12 +185,12 @@ describe( 'RestrictedEditingEditing', () => {
 			const secondParagraph = model.document.getRoot().getChild( 1 );
 
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true
 				} );
-				writer.addMarker( 'restricted-editing-exception:2', {
+				writer.addMarker( 'restrictedEditingException:2', {
 					range: writer.createRange(
 						writer.createPositionAt( secondParagraph, 4 ),
 						writer.createPositionAt( secondParagraph, 7 )
@@ -189,6 +212,302 @@ describe( 'RestrictedEditingEditing', () => {
 				'<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' +
 				'<p>xxx <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">yRyy</span> zzz</p>' );
 		} );
+
+		it( 'should block user typing outside exception markers', () => {
+			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+		} );
+
+		it( 'should not block user typing inside exception marker', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo bX[]ar baz</paragraph>' );
+		} );
+
+		it( 'should extend maker when typing on the marker boundary (end)', () => {
+			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo barX[] baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend marker when typing on the marker boundary (start)', () => {
+			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo X[]bar baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 8 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should extend marker when typing on the marker boundary (collapsed marker)', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ) ),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( writer.createPositionAt( firstParagraph, 4 ) );
+			} );
+
+			editor.execute( 'input', { text: 'X' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo X[]bar baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 5 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should not move collapsed marker to $graveyard', () => {
+			setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.addMarker( 'restrictedEditingException:1', {
+					range: writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 5 )
+					),
+					usingOperation: true,
+					affectsData: true
+				} );
+			} );
+
+			editor.execute( 'delete' );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo []ar baz</paragraph>' );
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 4 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'clipboard', () => {
+		let model, viewDoc;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedEditingModeEditing ] } );
+			model = editor.model;
+			viewDoc = editor.editing.view.document;
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		describe( 'cut', () => {
+			it( 'should be blocked outside exception markers', () => {
+				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'cut'
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+			} );
+
+			it( 'should be blocked inside exception marker', () => {
+				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'cut'
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+			} );
+		} );
+
+		describe( 'copy', () => {
+			it( 'should not be blocked outside exception markers', () => {
+				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'copy'
+				} );
+
+				sinon.assert.calledOnce( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+			} );
+
+			it( 'should not be blocked inside exception marker', () => {
+				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'copy'
+				} );
+
+				sinon.assert.calledOnce( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+			} );
+		} );
+
+		describe( 'paste', () => {
+			it( 'should be blocked outside exception markers', () => {
+				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+			} );
+
+			it( 'should be blocked inside exception marker', () => {
+				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+			} );
+		} );
 	} );
 
 	describe( 'exception highlighting', () => {
@@ -196,7 +515,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
 			} );
 			model = editor.model;
 			view = editor.editing.view;
@@ -213,7 +532,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -232,7 +551,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -257,7 +576,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>[]foo <$marker>bar</$marker> baz</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -283,7 +602,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 				// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 						usingOperation: true,
 						affectsData: true
@@ -306,7 +625,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 				// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 						usingOperation: true,
 						affectsData: true
@@ -332,7 +651,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 				// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 						usingOperation: true,
 						affectsData: true
@@ -362,7 +681,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 				// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 						usingOperation: true,
 						affectsData: true
@@ -377,7 +696,7 @@ describe( 'RestrictedEditingEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo {<span class="ck-restricted-editing-exception">ba}r</span> baz</p>'
+					'<p>foo {<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">ba}r</span> baz</p>'
 				);
 			} );
 
@@ -390,7 +709,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 				// <paragraph>foo <$marker>b[a]r</$marker> baz</paragraph>
 				model.change( writer => {
-					writer.addMarker( 'restricted-editing-exception:1', {
+					writer.addMarker( 'restrictedEditingException:1', {
 						range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 						usingOperation: true,
 						affectsData: true
@@ -429,7 +748,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, RestrictedEditingEditing, BoldEditing ]
+				plugins: [ Paragraph, RestrictedEditingModeEditing, BoldEditing ]
 			} );
 
 			model = editor.model;
@@ -455,7 +774,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>[]foo <marker>bar</marker> baz qux</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -464,7 +783,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>[]foo <marker>bar</marker> <marker>baz</marker≥ qux</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:2', {
+				writer.addMarker( 'restrictedEditingException:2', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -474,7 +793,7 @@ describe( 'RestrictedEditingEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingRegion' );
+			sinon.assert.calledWithExactly( editor.execute, 'goToNextRestrictedEditingException' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
@@ -486,7 +805,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph><marker>foo</marker> qux[]</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 3 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -507,7 +826,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>foo <marker>bar</marker> baz qux[]</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -516,7 +835,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>foo <marker>bar</marker> <marker>baz</marker≥ qux[]</paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:2', {
+				writer.addMarker( 'restrictedEditingException:2', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 8 ), writer.createPositionAt( paragraph, 11 ) ),
 					usingOperation: true,
 					affectsData: true
@@ -527,7 +846,7 @@ describe( 'RestrictedEditingEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingRegion' );
+			sinon.assert.calledWithExactly( editor.execute, 'goToPreviousRestrictedEditingException' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
@@ -539,7 +858,7 @@ describe( 'RestrictedEditingEditing', () => {
 
 			// <paragraph>[]foo <marker>qux</marker></paragraph>
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
 					usingOperation: true,
 					affectsData: true

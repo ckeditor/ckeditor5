@@ -9,17 +9,17 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import RestrictedEditingExceptionEditing from '../src/restrictededitingexceptionediting';
+import StandardEditingModeEditing from '../src/standardeditingmodeediting';
 import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe( 'RestrictedEditingExceptionEditing', () => {
+describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingExceptionEditing ] } );
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, StandardEditingModeEditing ] } );
 		model = editor.model;
 	} );
 
@@ -28,11 +28,11 @@ describe( 'RestrictedEditingExceptionEditing', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( RestrictedEditingExceptionEditing.pluginName ).to.equal( 'RestrictedEditingExceptionEditing' );
+		expect( StandardEditingModeEditing.pluginName ).to.equal( 'StandardEditingModeEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( 'RestrictedEditingExceptionEditing' ) ).to.be.instanceOf( RestrictedEditingExceptionEditing );
+		expect( editor.plugins.get( 'StandardEditingModeEditing' ) ).to.be.instanceOf( StandardEditingModeEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

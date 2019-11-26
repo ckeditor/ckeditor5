@@ -4,7 +4,7 @@
  */
 
 /**
- * @module restricted-editing/restrictededitingui
+ * @module restricted-editing/restrictededitingmodeui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -14,19 +14,19 @@ import lockIcon from '../theme/icons/contentlock.svg';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
- * The Restricted Editing UI feature.
+ * The Restricted Editing Mode UI feature.
  *
  * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate exceptions across
  * the document.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class RestrictedEditingUI extends Plugin {
+export default class RestrictedEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'RestrictedEditingUI';
+		return 'RestrictedEditingModeUI';
 	}
 
 	/**
@@ -41,12 +41,12 @@ export default class RestrictedEditingUI extends Plugin {
 			const listItems = new Collection();
 
 			listItems.add( this._getButtonDefinition(
-				'goToPreviousRestrictedEditingRegion',
+				'goToPreviousRestrictedEditingException',
 				t( 'Previous editable region' ),
 				'Shift+Tab'
 			) );
 			listItems.add( this._getButtonDefinition(
-				'goToNextRestrictedEditingRegion',
+				'goToNextRestrictedEditingException',
 				t( 'Next editable region' ),
 				'Tab'
 			) );
@@ -76,9 +76,10 @@ export default class RestrictedEditingUI extends Plugin {
 	 * @private
 	 * @param {String} commandName Name of the command the button represents.
 	 * @param {String} label Translated label of the button.
+	 * @param {String} keystroke Keystroke of the button.
 	 * @returns {module:ui/dropdown/utils~ListDropdownItemDefinition}
 	 */
-	_getButtonDefinition( commandName, label, kestroke ) {
+	_getButtonDefinition( commandName, label, keystroke ) {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 		const definition = {
@@ -86,7 +87,7 @@ export default class RestrictedEditingUI extends Plugin {
 			model: new Model( {
 				label,
 				withText: true,
-				keystroke: kestroke,
+				keystroke,
 				withKeystroke: true,
 				_commandName: commandName
 			} )
