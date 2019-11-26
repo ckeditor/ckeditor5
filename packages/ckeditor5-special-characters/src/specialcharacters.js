@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import SpecialCharactersUI from './specialcharactersui';
 import SpecialCharactersEditing from './specialcharactersediting';
 
@@ -64,19 +63,6 @@ export default class SpecialCharacters extends Plugin {
 		const group = this._getGroup( groupName );
 
 		for ( const item of items ) {
-			if ( this._characters.has( item.title ) ) {
-				/**
-				 * The provided title for a special character is already. Titles for special characters must be unique.
-				 *
-				 * @error specialcharacters-duplicated-character-name
-				 * @param {module:special-characters/specialcharacters~SpecialCharacterDefinition} item The invalid
-				 * special character definition.
-				 */
-				throw new CKEditorError(
-					'specialcharacters-duplicated-character-name: Duplicated special character title.', null, { item }
-				);
-			}
-
 			group.add( item.title );
 			this._characters.set( item.title, item.character );
 		}
