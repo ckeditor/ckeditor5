@@ -128,17 +128,17 @@ Note that to allow importing JavaScript files without providing their correspond
 	If you cannot set the target higher than `es5`, try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
 </info-box>
 
-### Using editor with collaboration plugins
+### Using the editor with collaboration plugins
 
-The easiest way to integrate collaboration plugins in the Angular application is to create a custom build first and later import it from the Angular application - see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and later import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
 
-For such scenario we provide a few ready-to-use integrations featuring the collaborative editing in Angular applications:
+For such scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
 
 - [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
 
 - [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
-It is not mandatory to build applications on top of the above samples, however, they should provide a feeling of how to start.
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
 ### Strict mode project tips
 
