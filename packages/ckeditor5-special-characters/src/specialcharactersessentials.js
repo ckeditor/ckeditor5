@@ -13,6 +13,7 @@ import SpecialCharactersCurrency from './specialcharacterscurrency';
 import SpecialCharactersMathematical from './specialcharactersmathematical';
 import SpecialCharactersArrows from './specialcharactersarrows';
 import SpecialCharactersLatin from './specialcharacterslatin';
+import SpecialCharactersText from './specialcharacterstext';
 
 export default class SpecialCharactersEssentials extends Plugin {
 	/**
@@ -21,6 +22,7 @@ export default class SpecialCharactersEssentials extends Plugin {
 	static get requires() {
 		return [
 			SpecialCharactersCurrency,
+			SpecialCharactersText,
 			SpecialCharactersMathematical,
 			SpecialCharactersArrows,
 			SpecialCharactersLatin

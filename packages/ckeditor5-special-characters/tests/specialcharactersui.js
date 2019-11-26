@@ -91,7 +91,7 @@ describe( 'SpecialCharactersUI', () => {
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledOnce( focusSpy );
 			sinon.assert.calledWithExactly( executeSpy.firstCall, 'specialCharacters', {
-				item: 'Left-pointing double angle quotation mark'
+				item: 'Less-than or equal to'
 			} );
 		} );
 
@@ -118,7 +118,7 @@ describe( 'SpecialCharactersUI', () => {
 			it( 'is updated when navigation view fires #execute', () => {
 				const navigation = dropdown.panelView.children.first;
 
-				expect( grid.tiles.get( 0 ).label ).to.equal( '‹' );
+				expect( grid.tiles.get( 0 ).label ).to.equal( '<' );
 				navigation.groupDropdownView.fire( new EventInfo( { label: 'Arrows' }, 'execute' ) );
 
 				expect( grid.tiles.get( 0 ).label ).to.equal( '⇐' );

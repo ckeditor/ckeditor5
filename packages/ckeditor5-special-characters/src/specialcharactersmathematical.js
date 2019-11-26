@@ -13,22 +13,6 @@ export default class SpecialCharactersMathematical extends Plugin {
 	init() {
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
 			{
-				character: '‹',
-				title: 'Single left-pointing angle quotation mark'
-			},
-			{
-				character: '›',
-				title: 'Single right-pointing angle quotation mark'
-			},
-			{
-				character: '«',
-				title: 'Left-pointing double angle quotation mark'
-			},
-			{
-				character: '»',
-				title: 'Right-pointing double angle quotation mark'
-			},
-			{
 				character: '<',
 				title: 'Less-than sign'
 			},
