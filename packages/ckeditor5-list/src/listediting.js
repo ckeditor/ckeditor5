@@ -81,28 +81,28 @@ export default class ListEditing extends Plugin {
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
 		editor.conversion.for( 'editingDowncast' )
-			.add( downcastDispatcher => {
-				downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
-				downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
-				downcastDispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-				downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
-				downcastDispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
-				downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+			.add( dispatcher => {
+				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
+				dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
+				dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
+				dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
+				dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
-			.add( downcastDispatcher => {
-				downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+			.add( dispatcher => {
+				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
 			} );
 
 		editor.conversion.for( 'upcast' )
-			.add( upcastDispatcher => {
-				upcastDispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
-				upcastDispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
-				upcastDispatcher.on( 'element:li', cleanListItem, { priority: 'high' } );
-				upcastDispatcher.on( 'element:li', viewModelConverter );
+			.add( dispatcher => {
+				dispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
+				dispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
+				dispatcher.on( 'element:li', cleanListItem, { priority: 'high' } );
+				dispatcher.on( 'element:li', viewModelConverter );
 			} );
 
 		// Fix indentation of pasted items.
