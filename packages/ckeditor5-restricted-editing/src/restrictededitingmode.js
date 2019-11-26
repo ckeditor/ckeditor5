@@ -55,7 +55,9 @@ export default class RestrictedEditingMode extends Plugin {
  *
  *		ClassicEditor
  *			.create( {
- * 				restrictedEditing: ... // Restricted editing mode feature config.
+ * 				restrictedEditing: {
+ * 					allowedCommands: [ 'bold', 'italic' ]
+ * 				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -66,10 +68,10 @@ export default class RestrictedEditingMode extends Plugin {
  */
 
 /**
- * The command names allowed in non-restricted areas of the content.
+ * The commands names allowed in non-restricted areas of the content.
  *
  * Define which feature commands should be enabled in restricted editing mode. The commands used for typing and deleting text
- * (`'input'`, `'delete'` and `'forwardDelete'`) are allowed inside non-restricted regions.
+ * (`'input'`, `'delete'` and `'forwardDelete'`) are allowed by the feature inside non-restricted regions and does not have to be defined.
  *
  * **Note**: The restricted editing mode always allows to use restricted mode navigation commands as well as `'undo'` and `'redo'` commands.
  *
