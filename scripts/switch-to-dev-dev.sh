@@ -38,6 +38,11 @@ echo "Linking eslint-config-ckeditor5..."
 rm -rf node_modules/eslint-config-ckeditor5
 ln -s ../../ckeditor5-dev/packages/eslint-config-ckeditor5 node_modules/
 
+echo "Linking stylelint-config-ckeditor5..."
+
+rm -rf node_modules/stylelint-config-ckeditor5
+ln -s ../../ckeditor5-dev/packages/stylelint-config-ckeditor5 node_modules/
+
 echo "Linking jsdoc-plugins..."
 
 rm -rf node_modules/@ckeditor/jsdoc-plugins
