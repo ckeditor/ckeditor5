@@ -35,6 +35,7 @@ export default class Autoformat extends Plugin {
 		this._addBasicStylesAutoformats();
 		this._addHeadingAutoformats();
 		this._addBlockQuoteAutoformats();
+		this._addCodeBlockAutoformats();
 	}
 
 	/**
@@ -150,6 +151,21 @@ export default class Autoformat extends Plugin {
 		if ( this.editor.commands.get( 'blockQuote' ) ) {
 			// eslint-disable-next-line no-new
 			new BlockAutoformatEditing( this.editor, /^>\s$/, 'blockQuote' );
+		}
+	}
+
+	/**
+	 * Adds autoformatting related to {@link module:code-block/codeblock~CodeBlock}.
+	 *
+	 * When typed:
+	 * - `` ``` `` &ndash; A paragraph will be changed to a code block.
+	 *
+	 * @private
+	 */
+	_addCodeBlockAutoformats() {
+		if ( this.editor.commands.get( 'codeBlock' ) ) {
+			// eslint-disable-next-line no-new
+			new BlockAutoformatEditing( this.editor, /^```$/, 'codeBlock' );
 		}
 	}
 }

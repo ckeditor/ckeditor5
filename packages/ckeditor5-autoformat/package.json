@@ -16,6 +16,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^15.0.0",
     "@ckeditor/ckeditor5-block-quote": "^15.0.0",
+    "@ckeditor/ckeditor5-code-block": "^0.0.1",
     "@ckeditor/ckeditor5-editor-classic": "^15.0.0",
     "@ckeditor/ckeditor5-engine": "^15.0.0",
     "@ckeditor/ckeditor5-enter": "^15.0.0",

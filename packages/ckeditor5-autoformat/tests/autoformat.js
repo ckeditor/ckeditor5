@@ -12,6 +12,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
@@ -40,6 +41,7 @@ describe( 'Autoformat', () => {
 					ItalicEditing,
 					CodeEditing,
 					BlockQuoteEditing,
+					CodeBlockEditing,
 					ShiftEnter
 				]
 			} )
@@ -288,6 +290,53 @@ describe( 'Autoformat', () => {
 		} );
 	} );
 
+	describe( 'Code block', () => {
+		it( 'should replace triple grave accents with a code block', () => {
+			setData( model, '<paragraph>``[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+		} );
+
+		it( 'should not replace triple grave accents when already in a code block', () => {
+			setData( model, '<codeBlock language="plaintext">``[]</codeBlock>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
+		} );
+
+		it( 'should not replace triple grave accents when inside heading', () => {
+			setData( model, '<heading1>``[]</heading1>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<heading1>```[]</heading1>' );
+		} );
+
+		it( 'should not replace triple grave accents when inside numbered list', () => {
+			setData( model, '<listItem listIndent="0" listType="numbered">1. ``[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. ```[]</listItem>' );
+		} );
+
+		it( 'should not replace triple grave accents when inside buletted list', () => {
+			setData( model, '<listItem listIndent="0" listType="bulleted">1. ``[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">1. ```[]</listItem>' );
+		} );
+	} );
+
 	describe( 'Inline autoformat', () => {
 		it( 'should replace both "**" with bold', () => {
 			setData( model, '<paragraph>**foobar*[]</paragraph>' );
@@ -452,6 +501,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>> []</paragraph>' );
+		} );
+
+		it( 'should not replace "```" with code block', () => {
+			setData( model, '<paragraph>``[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>```[]</paragraph>' );
 		} );
 
 		it( 'should use only configured headings', () => {
