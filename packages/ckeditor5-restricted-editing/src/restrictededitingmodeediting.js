@@ -203,36 +203,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	_enableCommands( marker ) {
 		const editor = this.editor;
 
-		const exceptionDisable = [];
-
 		const commands = this._getCommandNamesToToggle( editor, this._allowedInException )
 			.filter( name => this._allowedInException.has( name ) )
-			.filter( name => {
-				const selection = editor.model.document.selection;
-				const markerRange = marker.getRange();
-
-				if ( name == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
-					exceptionDisable.push( name );
-
-					return false;
-				}
-
-				if ( name == 'forwardDelete' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
-					exceptionDisable.push( name );
-
-					return false;
-				}
-
-				return true;
-			} )
+			.filter( filterDeleteCommandsOnMarkerBoundaries( editor.model.document.selection, marker.getRange() ) )
 			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
 			command.clearForceDisabled( 'RestrictedEditingMode' );
-		}
-
-		for ( const command of exceptionDisable.map( name => editor.commands.get( name ) ) ) {
-			command.forceDisabled( 'RestrictedEditingMode' );
 		}
 	}
 
@@ -274,5 +251,25 @@ function getCommandExecuter( editor, commandName ) {
 		}
 
 		cancel();
+	};
+}
+
+// Additional filtering rule for enabling "delete" and "forwardDelete" commands if selection is on range boundaries:
+//
+// Does not allow to enable command when selection focus is:
+// - is on marker start - "delete" - to prevent removing content before marker
+// - is on marker end - "forwardDelete" - to prevent removing content after marker
+function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
+	return name => {
+		if ( name == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
+			return false;
+		}
+
+		// Only for collapsed selection - non-collapsed seleciton that extends over a marker is handled elsewhere.
+		if ( name == 'forwardDelete' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
+			return false;
+		}
+
+		return true;
 	};
 }
