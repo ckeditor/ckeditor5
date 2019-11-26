@@ -130,27 +130,33 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: 'restrictedEditingException',
 			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
-			view: () => ( {
-				name: 'span',
-				classes: 'ck-restricted-editing-exception',
-				priority: -10
-			} )
+			view: () => {
+				return {
+					name: 'span',
+					classes: 'ck-restricted-editing-exception',
+					priority: -10
+				};
+			}
 		} );
 
 		// 2. But for collapsed marker we need to render it as an element.
 		// Additionally the editing pipeline should always display a collapsed markers.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
-			view: ( markerData, viewWriter ) => viewWriter.createUIElement( 'span', {
-				class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
-			} )
+			view: ( markerData, viewWriter ) => {
+				return viewWriter.createUIElement( 'span', {
+					class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
+				} );
+			}
 		} );
 
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
-			view: ( markerData, viewWriter ) => viewWriter.createEmptyElement( 'span', {
-				class: 'ck-restricted-editing-exception'
-			} )
+			view: ( markerData, viewWriter ) => {
+				return viewWriter.createEmptyElement( 'span', {
+					class: 'ck-restricted-editing-exception'
+				} );
+			}
 		} );
 
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
