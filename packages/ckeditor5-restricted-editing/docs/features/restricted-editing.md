@@ -4,8 +4,6 @@ menu-title: Restricted editing
 category: features
 ---
 
-{@snippet features/build-restricted-editing-source}
-
 The restricted editing feature allows to define editable areas in a documents that have restricted editing options. This feature defines
 two modes for the editor:
 
