@@ -346,7 +346,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 	} );
 
-	describe( 'pasting', () => {
+	describe( 'clipboard', () => {
 		let model, viewDoc;
 
 		beforeEach( async () => {
@@ -359,47 +359,152 @@ describe( 'RestrictedEditingModeEditing', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should block pasting outside exception markers', () => {
-			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
-			const spy = sinon.spy();
-			viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+		describe( 'cut', () => {
+			it( 'should be blocked outside exception markers', () => {
+				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
 
-			viewDoc.fire( 'clipboardInput', {
-				dataTransfer: {
-					getData: sinon.spy()
-				}
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'cut'
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
-			sinon.assert.notCalled( spy );
-			assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+			it( 'should be blocked inside exception marker', () => {
+				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'restricted-editing-exception:1', {
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'cut'
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+			} );
 		} );
 
-		it( 'should not block pasting inside exception marker', () => {
-			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
-			const firstParagraph = model.document.getRoot().getChild( 0 );
-			const spy = sinon.spy();
-			viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+		describe( 'copy', () => {
+			it( 'should not be blocked outside exception markers', () => {
+				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
 
-			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
-					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ), writer.createPositionAt( firstParagraph, 7 ) ),
-					usingOperation: true,
-					affectsData: true
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'copy'
 				} );
+
+				sinon.assert.calledOnce( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
-			model.change( writer => {
-				writer.setSelection( firstParagraph, 5 );
+			it( 'should not be blocked inside exception marker', () => {
+				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'restricted-editing-exception:1', {
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'copy'
+				} );
+
+				sinon.assert.calledOnce( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+			} );
+		} );
+
+		describe( 'paste', () => {
+			it( 'should be blocked outside exception markers', () => {
+				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
-			viewDoc.fire( 'clipboardInput', {
-				dataTransfer: {
-					getData: sinon.spy()
-				}
-			} );
+			it( 'should be blocked inside exception marker', () => {
+				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
 
-			sinon.assert.notCalled( spy );
-			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+				model.change( writer => {
+					writer.addMarker( 'restricted-editing-exception:1', {
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 4 ),
+							writer.createPositionAt( firstParagraph, 7 )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setSelection( firstParagraph, 5 );
+				} );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+			} );
 		} );
 	} );
 

@@ -87,6 +87,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this.listenTo( this.editor.editing.view.document, 'clipboardInput', evt => {
 			evt.stop();
 		}, { priority: 'highest' } );
+		this.listenTo( this.editor.editing.view.document, 'clipboardOutput', ( evt, data ) => {
+			if ( data.method == 'cut' ) {
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
 	}
 
 	/**
