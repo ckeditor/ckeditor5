@@ -41,7 +41,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'restrictedEditing', {
-			allowedCommands: [ 'bold', 'italic', 'link' ]
+			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ]
 		} );
 
 		/**

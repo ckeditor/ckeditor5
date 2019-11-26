@@ -78,7 +78,7 @@ export default class RestrictedEditingMode extends Plugin {
  * The default value is:
  *
  *		const restrictedEditingConfig = {
- *			allowedCommands: [ 'bold', 'italic', 'link' ]
+ *			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ]
  *		};
  *
  * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands
