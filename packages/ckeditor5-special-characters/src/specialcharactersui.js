@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
-import InsertSpecialCharacterCommand from './insertspecialcharactercommand';
 import CharacterGridView from './ui/charactergridview';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 
@@ -33,9 +32,6 @@ export default class SpecialCharactersUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const specialCharsPlugin = editor.plugins.get( 'SpecialCharacters' );
-		const command = new InsertSpecialCharacterCommand( editor );
-
-		editor.commands.add( 'specialCharacters', command );
 
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
@@ -44,6 +40,7 @@ export default class SpecialCharactersUI extends Plugin {
 			const gridView = new CharacterGridView( this.locale, {
 				columns: 10
 			} );
+			const command = editor.commands.get( 'insertSpecialCharacter' );
 
 			gridView.delegate( 'execute' ).to( dropdownView );
 
@@ -65,7 +62,7 @@ export default class SpecialCharactersUI extends Plugin {
 
 			// Insert a special character when a tile was clicked.
 			dropdownView.on( 'execute', ( evt, data ) => {
-				editor.execute( 'specialCharacters', { item: data.name } );
+				editor.execute( 'insertSpecialCharacter', { item: data.name } );
 				editor.editing.view.focus();
 			} );
 
