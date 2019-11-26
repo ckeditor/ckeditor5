@@ -443,6 +443,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-code-block"><code>@ckeditor/ckeditor5-code-block</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-code-block.svg" alt="@ckeditor/ckeditor5-code-block npm package badge"></a>
+	</td>
+	<td>
+		The clipboard integration.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-enter"><code>@ckeditor/ckeditor5-enter</code></a>
 	</td>
 	<td>
@@ -653,7 +665,7 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-table"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-table.svg" alt="@ckeditor/ckeditor5-table npm package badge"></a>
 	</td>
 	<td>
-		The table feature. Work in progress.
+		The table feature.
 	</td>
 </tr>
 
