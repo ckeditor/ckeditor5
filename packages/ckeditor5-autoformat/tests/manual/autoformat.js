@@ -23,7 +23,7 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code, Heading, List, Autoformat, BlockQuote, CodeBlock, ShiftEnter ],
-		toolbar: [ 'heading', '|', 'numberedList', 'bulletedList', 'blockQuote', 'bold', 'italic', 'code', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'numberedList', 'bulletedList', 'blockQuote', 'codeBlock', 'bold', 'italic', 'code', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
