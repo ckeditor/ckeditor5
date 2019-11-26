@@ -61,6 +61,7 @@
     "@ckeditor/ckeditor5-paragraph": "^15.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^15.0.0",
     "@ckeditor/ckeditor5-remove-format": "^15.0.0",
+    "@ckeditor/ckeditor5-restricted-editing": "^0.0.1",
     "@ckeditor/ckeditor5-table": "^15.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^15.0.0",
     "@ckeditor/ckeditor5-typing": "^15.0.0",
@@ -100,9 +101,11 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "style-loader": "^1.0.0",
+    "stylelint": "^11.1.1",
+    "stylelint-config-ckeditor5": "^1.0.0",
     "svgo": "^1.1.0",
     "terser-webpack-plugin": "^2.2.1",
-    "umberto": "^1.0.0",
+    "umberto": "^1.2.0",
     "webpack": "^4.39.1"
   },
   "engines": {
@@ -119,6 +122,7 @@
   },
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
+    "stylelint": "stylelint --quiet --allow-empty-input 'packages/**/*.css' 'docs/**/*.css'",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
     "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "bootstrap": "mrgit sync && yarn install",
@@ -143,6 +147,9 @@
   "lint-staged": {
     "**/*.js": [
       "eslint --quiet"
+    ],
+    "**/*.css": [
+      "stylelint --quiet --allow-empty-input"
     ]
   },
   "eslintIgnore": [
