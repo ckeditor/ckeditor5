@@ -78,7 +78,7 @@ export function resurrectCollapsedMarkerPostFixer( editor ) {
 		let changeApplied = false;
 
 		for ( const [ name, data ] of editor.model.document.differ._changedMarkers ) {
-			if ( name.startsWith( 'restricted-editing-exception' ) && data.newRange.root.rootName == '$graveyard' ) {
+			if ( name.startsWith( 'restrictedEditingException' ) && data.newRange.root.rootName == '$graveyard' ) {
 				writer.updateMarker( name, {
 					range: writer.createRange( writer.createPositionAt( editor.model.document.selection.focus ) )
 				} );

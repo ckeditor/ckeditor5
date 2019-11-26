@@ -77,7 +77,7 @@ function getNearestExceptionRange( model, direction ) {
 	const markerRanges = [];
 
 	// Get all exception marker positions that start after/before the selection position.
-	for ( const marker of model.markers.getMarkersGroup( 'restricted-editing-exception' ) ) {
+	for ( const marker of model.markers.getMarkersGroup( 'restrictedEditingException' ) ) {
 		const markerRange = marker.getRange();
 
 		// Checking parent because there two positions <paragraph>foo^</paragraph><paragraph>^bar</paragraph>

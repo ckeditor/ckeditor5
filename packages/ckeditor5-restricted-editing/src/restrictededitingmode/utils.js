@@ -21,7 +21,7 @@ export function getMarkerAtPosition( editor, position ) {
 		const markerRange = marker.getRange();
 
 		if ( isPositionInRangeBoundaries( markerRange, position ) ) {
-			if ( marker.name.startsWith( 'restricted-editing-exception:' ) ) {
+			if ( marker.name.startsWith( 'restrictedEditingException:' ) ) {
 				return marker;
 			}
 		}

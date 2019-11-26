@@ -29,7 +29,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange(
 						writer.createPositionAt( firstParagraph, 4 ),
 						writer.createPositionAt( firstParagraph, 7 ) ),
@@ -584,7 +584,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange(
 						writer.createPositionAt( firstParagraph, 4 ),
 						writer.createPositionAt( firstParagraph, 7 ) ),
@@ -747,7 +747,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
-				writer.addMarker( 'restricted-editing-exception:1', {
+				writer.addMarker( 'restrictedEditingException:1', {
 					range: writer.createRange(
 						writer.createPositionAt( firstParagraph, 4 ),
 						writer.createPositionAt( firstParagraph, 7 ) ),

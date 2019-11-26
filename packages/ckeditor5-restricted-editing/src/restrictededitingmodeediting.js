@@ -118,9 +118,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				classes: 'ck-restricted-editing-exception'
 			},
 			model: () => {
-				markerNumber++; // Starting from restricted-editing-exception:1 marker.
+				markerNumber++; // Starting from restrictedEditingException:1 marker.
 
-				return `restricted-editing-exception:${ markerNumber }`;
+				return `restrictedEditingException:${ markerNumber }`;
 			}
 		} ) );
 
@@ -128,7 +128,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// That's why there are 2 downcast converters for them:
 		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
-			model: 'restricted-editing-exception',
+			model: 'restrictedEditingException',
 			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
 			view: () => ( {
 				name: 'span',
@@ -140,14 +140,14 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// 2. But for collapsed marker we need to render it as an element.
 		// Additionally the editing pipeline should always display a collapsed markers.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
-			model: 'restricted-editing-exception',
+			model: 'restrictedEditingException',
 			view: ( markerData, viewWriter ) => viewWriter.createUIElement( 'span', {
 				class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
 			} )
 		} );
 
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
-			model: 'restricted-editing-exception',
+			model: 'restrictedEditingException',
 			view: ( markerData, viewWriter ) => viewWriter.createEmptyElement( 'span', {
 				class: 'ck-restricted-editing-exception'
 			} )
