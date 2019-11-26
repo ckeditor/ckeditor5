@@ -151,7 +151,7 @@ For such scenario we provide a few ready-to-use integrations featuring collabora
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
 
-Note: These integrations are meant to be as simple as possible, thus they do not use Create React App CLI, though you should have no problem starting from `CRA` after reading the below sections.
+Note: These integrations are meant to be as simple as possible, so they do not use Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
 
 ## Integrating CKEditor 5 built from source
 
