@@ -11,13 +11,16 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import SpecialCharacters from '../../src/specialcharacters';
+import SpecialCharactersCurrency from '../../src/specialcharacterscurrency';
 import SpecialCharactersMathematical from '../../src/specialcharactersmathematical';
 import SpecialCharactersArrows from '../../src/specialcharactersarrows';
+import SpecialCharactersLatin from '../../src/specialcharacterslatin';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, EasyImage, SpecialCharacters, SpecialCharactersMathematical, SpecialCharactersArrows ],
+		plugins: [ ArticlePluginSet, ImageUpload, EasyImage, SpecialCharacters, SpecialCharactersCurrency,
+			SpecialCharactersMathematical, SpecialCharactersArrows, SpecialCharactersLatin ],
 		toolbar: [
 			'heading',
 			'|',

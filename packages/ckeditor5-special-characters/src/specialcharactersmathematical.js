@@ -12,40 +12,198 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 export default class SpecialCharactersMathematical extends Plugin {
 	init() {
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
-			{ title: 'greek small letter alpha', character: 'α' },
-			{ title: 'greek small letter beta', character: 'β' },
-			{ title: 'greek small letter delta', character: 'δ' },
-			{ title: 'greek small letter epsilon', character: 'ε' },
-			{ title: 'greek small letter theta', character: 'θ' },
-			{ title: 'greek small letter lamda', character: 'λ' },
-			{ title: 'greek small letter mu', character: 'μ' },
-			{ title: 'greek small letter pi', character: 'π' },
-			{ title: 'greek small letter phi', character: 'φ' },
-			{ title: 'greek small letter psi', character: 'ψ' },
-			{ title: 'greek capital letter omega', character: 'Ω' },
-			{ title: 'precedes', character: '≺' },
-			{ title: 'succeeds', character: '≻' },
-			{ title: 'precedes or equal to', character: '≼' },
-			{ title: 'succeeds or equal to', character: '≽' },
-			{ title: 'double precedes', character: '⪻' },
-			{ title: 'double succeeds', character: '⪼' },
-			{ title: 'less-than', character: '<' },
-			{ title: 'greater-than', character: '>' },
-			{ title: 'less-than or equal to', character: '≤' },
-			{ title: 'greater-than or equal to', character: '≥' },
-			{ title: 'equals colon', character: '≕' },
-			{ title: 'double colon equal', character: '⩴' },
-			{ title: 'identical to', character: '≡' },
-			{ title: 'not identical to', character: '≢' },
-			{ title: 'almost equal to', character: '≈' },
-			{ title: 'not almost equal to', character: '≉' },
-			{ title: 'almost equal or equal to', character: '≊' },
-			{ title: 'triple tilde', character: '≋' },
-			{ title: 'true', character: '⊨' },
-			{ title: 'not true', character: '⊭' },
-			{ title: 'for all', character: '∀' },
-			{ title: 'complement', character: '∁' },
-			{ title: 'there exists', character: '∃' }
+			{
+				character: '‹',
+				title: 'Single left-pointing angle quotation mark'
+			},
+			{
+				character: '›',
+				title: 'Single right-pointing angle quotation mark'
+			},
+			{
+				character: '«',
+				title: 'Left-pointing double angle quotation mark'
+			},
+			{
+				character: '»',
+				title: 'Right-pointing double angle quotation mark'
+			},
+			{
+				character: '<',
+				title: 'Less-than sign'
+			},
+			{
+				character: '>',
+				title: 'Greater-than sign'
+			},
+			{
+				character: '≤',
+				title: 'Less-than or equal to'
+			},
+			{
+				character: '≥',
+				title: 'Greater-than or equal to'
+			},
+			{
+				character: '–',
+				title: 'En dash'
+			},
+			{
+				character: '—',
+				title: 'Em dash'
+			},
+			{
+				character: '¯',
+				title: 'Macron'
+			},
+			{
+				character: '‾',
+				title: 'Overline'
+			},
+			{
+				character: '°',
+				title: 'Degree sign'
+			},
+			{
+				character: '−',
+				title: 'Minus sign'
+			},
+			{
+				character: '±',
+				title: 'Plus-minus sign'
+			},
+			{
+				character: '÷',
+				title: 'Division sign'
+			},
+			{
+				character: '⁄',
+				title: 'Fraction slash'
+			},
+			{
+				character: '×',
+				title: 'Multiplication sign'
+			},
+			{
+				character: 'ƒ',
+				title: 'Latin small letter f with hook'
+			},
+			{
+				character: '∫',
+				title: 'Integral'
+			},
+			{
+				character: '∑',
+				title: 'N-ary summation'
+			},
+			{
+				character: '∞',
+				title: 'Infinity'
+			},
+			{
+				character: '√',
+				title: 'Square root'
+			},
+			{
+				character: '∼',
+				title: 'Tilde operator'
+			},
+			{
+				character: '≅',
+				title: 'Approximately equal to'
+			},
+			{
+				character: '≈',
+				title: 'Almost equal to'
+			},
+			{
+				character: '≠',
+				title: 'Not equal to'
+			},
+			{
+				character: '≡',
+				title: 'Identical to'
+			},
+			{
+				character: '∈',
+				title: 'Element of'
+			},
+			{
+				character: '∉',
+				title: 'Not an element of'
+			},
+			{
+				character: '∋',
+				title: 'Contains as member'
+			},
+			{
+				character: '∏',
+				title: 'N-ary product'
+			},
+			{
+				character: '∧',
+				title: 'Logical and'
+			},
+			{
+				character: '∨',
+				title: 'Logical or'
+			},
+			{
+				character: '¬',
+				title: 'Not sign'
+			},
+			{
+				character: '∩',
+				title: 'Intersection'
+			},
+			{
+				character: '∪',
+				title: 'Union'
+			},
+			{
+				character: '∂',
+				title: 'Partial differential'
+			},
+			{
+				character: '∀',
+				title: 'For all'
+			},
+			{
+				character: '∃',
+				title: 'There exists'
+			},
+			{
+				character: '∅',
+				title: 'Empty set'
+			},
+			{
+				character: '∇',
+				title: 'Nabla'
+			},
+			{
+				character: '∗',
+				title: 'Asterisk operator'
+			},
+			{
+				character: '∝',
+				title: 'Proportional to'
+			},
+			{
+				character: '∠',
+				title: 'Angle'
+			},
+			{
+				character: '¼',
+				title: 'Vulgar fraction one quarter'
+			},
+			{
+				character: '½',
+				title: 'Vulgar fraction one half'
+			},
+			{
+				character: '¾',
+				title: 'Vulgar fraction three quarters'
+			}
 		] );
 	}
 }
