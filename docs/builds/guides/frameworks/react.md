@@ -139,6 +139,20 @@ class App extends Component {
 export default App;
 ```
 
+### Note: Using the editor with collaboration plugins
+
+The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including collaboration plugins together with the React application.
+
+For such scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
+
+- [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
+
+- [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
+
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+
+Note: These If you want to start from `create-react-app@2` or `create-react-app@`, you'll need to the below chapters.
+
 ## Integrating CKEditor 5 built from source
 
 Integrating the rich text editor from source allows you to use the full power of {@link framework/guides/overview CKEditor 5 Framework}.
