@@ -47,7 +47,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		/**
 		 * Command names that are enabled outside non-restricted regions.
 		 *
-		 * @type {Set<string>}
+		 * @type {Set.<String>}
 		 * @private
 		 */
 		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingRegion', 'goToNextRestrictedEditingRegion' ] );
