@@ -4,45 +4,7 @@
  */
 
 /*
- *                                     !! IMPORTANT & TODO !!
- *
- * This file contains all kinds of style and some of them should land in theme-lark before going to prod.
- *                  For now, let's keep them here to avoid additional branch and PR.
+ * Note: This file should contain the wireframe styles only. But since there are no such styles,
+ * it acts as a message to the builder telling that it should look for the corresponding styles
+ * **in the theme** when compiling the editor.
  */
-
-:root {
-	--ck-restricted-editing-color-exception-background: hsla(31, 100%, 65%, .2);
-	--ck-restricted-editing-color-exception-brackets: hsla(31, 100%, 40%, .4);
-	--ck-restricted-editing-color-selected-exception-background: hsla(31, 100%, 65%, .5);
-	--ck-restricted-editing-color-selected-exception-brackets: hsla(31, 100%, 40%, .6);
-}
-
-.ck-editor__editable .ck-restricted-editing-exception {
-	transition: .2s ease-in-out background;
-	background-color: var(--ck-restricted-editing-color-exception-background);
-	border: 1px solid;
-	border-image: linear-gradient(
-		to right,
-		var(--ck-restricted-editing-color-exception-brackets) 0%,
-		var(--ck-restricted-editing-color-exception-brackets) 5px,
-		hsla(0, 0%, 0%, 0) 6px,
-		hsla(0, 0%, 0%, 0) calc(100% - 6px),
-		var(--ck-restricted-editing-color-exception-brackets) calc(100% - 5px),
-		var(--ck-restricted-editing-color-exception-brackets) 100%
-	) 1;
-
-	&.ck-restricted-editing-exception_selected {
-		background-color: var(--ck-restricted-editing-color-selected-exception-background);
-		border-image: linear-gradient(
-			to right,
-			var(--ck-restricted-editing-color-selected-exception-brackets) 0%,
-			var(--ck-restricted-editing-color-selected-exception-brackets) 5px,
-			var(--ck-restricted-editing-color-selected-exception-brackets) calc(100% - 5px),
-			var(--ck-restricted-editing-color-selected-exception-brackets) 100%
-		) 1;
-	}
-
-	&.ck-restricted-editing-exception_collapsed {
-		padding-left: 1em;
-	}
-}
