@@ -13,7 +13,7 @@ This package implements the code block feature for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-code-block` package](https://ckeditor.com/docs/ckeditor5/latest/api/code-block.html) page as well as the [Code block feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/code-block.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-code-block` package](https://ckeditor.com/docs/ckeditor5/latest/api/code-block.html) page as well as the [Code block feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

@@ -2,7 +2,7 @@
 category: features
 ---
 
-# Code block
+# Code blocks
 
 {@snippet features/build-code-block-source}
 
