@@ -111,13 +111,9 @@ export default class SpecialCharacters extends Plugin {
 	}
 }
 
-// TODO: Make an interface for "SpecialCharacters" class.
-// It should provide methods: `addItems()`, `getGroups()`, `getCharactersForGroup()`, `getCharacter()`.
-
 /**
  * @typedef {Object} module:special-characters/specialcharacters~SpecialCharacterDefinition
  *
  * @property {String} title A unique title of the character.
- *
  * @property {String} character A symbol that should be inserted to the editor.
  */
