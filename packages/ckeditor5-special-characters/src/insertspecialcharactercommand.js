@@ -34,7 +34,7 @@ export default class InsertSpecialCharacterCommand extends Command {
 
 	/**
 	 * @param {Object} options
-	 * @param {String} options.item A title of the special character that should be added to the editor.
+	 * @param {String} options.item An id of the special character that should be added to the editor.
 	 */
 	execute( options ) {
 		const editor = this.editor;
