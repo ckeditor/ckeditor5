@@ -54,6 +54,23 @@ describe( 'SpecialCharacters', () => {
 		} );
 	} );
 
+	describe( 'addItems()', () => {
+		it( 'works with subsequent calls to the same group', () => {
+			plugin.addItems( 'Mathematical', [ {
+				title: 'dot',
+				character: '.'
+			} ] );
+
+			plugin.addItems( 'Mathematical', [ {
+				title: ',',
+				character: 'comma'
+			} ] );
+
+			const groups = [ ...plugin.getGroups() ];
+			expect( groups ).to.deep.equal( [ 'Mathematical' ] );
+		} );
+	} );
+
 	describe( 'getCharactersForGroup()', () => {
 		it( 'returns a collection of defined special characters names', () => {
 			plugin.addItems( 'Mathematical', [

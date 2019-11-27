@@ -103,7 +103,6 @@ export default class SpecialCharacters extends Plugin {
 	 * @param {String} groupName A name of group to create.
 	 */
 	_getGroup( groupName ) {
-		/* istanbul ignore else */
 		if ( !this._groups.has( groupName ) ) {
 			this._groups.set( groupName, new Set() );
 		}
