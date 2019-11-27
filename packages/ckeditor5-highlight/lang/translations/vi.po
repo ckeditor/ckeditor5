@@ -12,42 +12,42 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Hebrew (https://www.transifex.com/ckeditor/teams/11143/he/)\n"
-"Language: he\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "סימון צהוב"
+msgstr "Bút vàng"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr "סימון ירוק"
+msgstr "Bút xanh lá"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr "סימון וורוד"
+msgstr "Bút hồng"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr "סימון כחול"
+msgstr "Bút xanh dương"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "עט אדום"
+msgstr "Mực đỏ"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr "עט ירוק"
+msgstr "Mực xanh"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "הסר הדגשה"
+msgstr "Xóa làm nổi"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "הדגשה"
+msgstr "Làm nổi"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr "סרגל הדגשת טקסט"
+msgstr "Thanh công cụ làm nổi chữ"
