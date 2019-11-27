@@ -22,8 +22,8 @@ msgstr "רשימה ממוספרת"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr ""
+msgstr "רשימה מנוקדת"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr ""
+msgstr "רשימת מטלות"

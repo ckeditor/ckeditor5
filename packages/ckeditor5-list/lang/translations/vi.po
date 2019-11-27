@@ -12,18 +12,18 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Ukrainian (https://www.transifex.com/ckeditor/teams/11143/uk/)\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
-msgstr "Нумерований список"
+msgstr "Danh sách đánh số"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "Маркерний список"
+msgstr "Danh sách đánh ký hiệu"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr "Список справ"
+msgstr "Danh sách cần làm"
