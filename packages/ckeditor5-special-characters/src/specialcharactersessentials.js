@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import SpecialCharacters from './specialcharacters';
 import SpecialCharactersCurrency from './specialcharacterscurrency';
 import SpecialCharactersMathematical from './specialcharactersmathematical';
 import SpecialCharactersArrows from './specialcharactersarrows';
@@ -31,6 +32,7 @@ export default class SpecialCharactersEssentials extends Plugin {
 	 */
 	static get requires() {
 		return [
+			SpecialCharacters,
 			SpecialCharactersCurrency,
 			SpecialCharactersText,
 			SpecialCharactersMathematical,
