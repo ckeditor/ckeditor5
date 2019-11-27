@@ -38,17 +38,7 @@ export default class InsertSpecialCharacterCommand extends Command {
 	 */
 	execute( options ) {
 		const editor = this.editor;
-		const item = options.item;
-
-		if ( !item ) {
-			return;
-		}
-
-		const character = editor.plugins.get( 'SpecialCharacters' ).getCharacter( item );
-
-		if ( !character ) {
-			return;
-		}
+		const character = editor.plugins.get( 'SpecialCharacters' ).getCharacter( options.item );
 
 		this._inputCommand.execute( { text: character } );
 	}
