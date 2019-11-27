@@ -55,6 +55,23 @@ This is all. At this point, image upload will be automatically enabled in your a
 
 If you are having troubles with setting up Easy Image, please [contact us](https://ckeditor.com/contact/).
 
+### Configuring allowed file types
+
+The allowed file types that can be uploaded should actually be configured in two places:
+
+* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
+* On the server side, in Easy Image, restricting the file formats that are accepted in Easy Image.
+
+#### Client-side configuration
+
+Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+
+By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. This corresponds with file formats supported by Easy Image, but you can modify the list to limit the number of allowed image types.
+
+#### Server-side configuration
+
+Check the {@link @cs guides/easy-image/service-details#supported-file-formats list of file formats supported by Easy Image}. At the moment it is not possible to limit or extend this list so any restrictions need to be introduced on the client side.
+
 ## Responsive images
 
 Another great feature introduced with CKEditor 5 is the ability to have responsive images in the rich-text editor content. With a single image upload, several optimized versions of that image are created, each for a different size of the display. All this is transparent to the end user who uploaded the image.
