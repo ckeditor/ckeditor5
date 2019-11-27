@@ -100,6 +100,7 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * Returns a group of special characters. If the group with the specified name does not exist, it will be created.
 	 *
+	 * @private
 	 * @param {String} groupName A name of group to create.
 	 */
 	_getGroup( groupName ) {
