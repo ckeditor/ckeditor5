@@ -22,7 +22,7 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
-```bash
+```plaintext
 npm install --save @ckeditor/ckeditor5-upload
 ```
 
@@ -72,6 +72,23 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+### Configuring allowed file types
+
+The allowed file types that can be uploaded should actually be configured in two places:
+
+* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
+* On the server side, in your server-side application configuration.
+
+#### Client-side configuration
+
+Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+
+By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
+
+#### Server-side configuration
+
+It is up to you to implement any filtering mechanisms on your server in order to restrict the types of images that are allowed to be uploaded.
 
 ## Server-side configuration
 
