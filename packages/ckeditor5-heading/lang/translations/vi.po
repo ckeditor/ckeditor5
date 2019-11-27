@@ -12,50 +12,50 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
-"Language: hr\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr "Đoạn văn"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Naslov"
+msgstr "Tiêu đề"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Odaberite naslov"
+msgstr "Chọn tiêu đề"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "Naslov 1"
+msgstr "Tiêu đề 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "Naslov 2"
+msgstr "Tiêu đề 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "Naslov 3"
+msgstr "Tiêu đề 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr "Naslov 4"
+msgstr "Tiêu đề 4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr "Naslov 5"
+msgstr "Tiêu đề 5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr "Naslov 6"
+msgstr "Tiêu đề 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr "Utipkajte naslov"
+msgstr "Nhập tựa đề"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr "Utipkajte ili zalijepite Vaš sadržaj ovdje."
+msgstr "Nhập hoặc dán nội dung tại đây"

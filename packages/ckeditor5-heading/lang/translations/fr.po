@@ -22,11 +22,11 @@ msgstr "Paragraphe"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Titre"
+msgstr "En-tête"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Choisir le titre"
+msgstr "Choisir l'en-tête"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
@@ -54,8 +54,8 @@ msgstr "Titre 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "Rentrer votre titre"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "Noter ou coller votre contenu ici"
