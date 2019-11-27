@@ -34,9 +34,9 @@ if ( exec( 'git status -s' ).trim().length ) {
 	exec( 'git add src/version.js' );
 	exec( 'git commit -m "Internal: Updated version of CKEditor 5."' );
 
-	console.log( 'The version has been updated and committed.' );
+	console.log( `The hardcoded version in ckeditor5-utils has been updated to ${ version }.` );
 } else {
-	console.log( 'Nothing to commit. Version is up-to-date.' );
+	console.log( `Nothing to commit. Version in ckeditor5-utils is up-to-date (${ version }).` );
 }
 
 process.chdir( CWD );
