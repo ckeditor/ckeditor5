@@ -741,10 +741,10 @@
     request "^2.83.0"
     semver "^6.2.0"
 
-"@ckeditor/ckeditor5-dev-tests@^17.0.0":
-  version "17.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-17.0.0.tgz#8f8b9f4f24eaf82bd8fe78406208d038f3fa5a60"
-  integrity sha512-ckyZlGubCRksBWOBQj10dCHpTANl7QiIS2w2d2SQBafiJzjVkGzwEDxkKB9UrPKCV90vP+pNRVEvY/n1H7aGQA==
+"@ckeditor/ckeditor5-dev-tests@^17.1.0":
+  version "17.1.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-17.1.0.tgz#ec6dc7e77a358157335206e3710b70539cd90daa"
+  integrity sha512-8uDX2SebhufKKWvMUnOIbOygZhfWqTxQMwb5J+vh+BSzCyh7NZg1bl/gAaTr/MZKo1CDV6tR4voQuWXE9g4fdg==
   dependencies:
     "@babel/core" "^7.0.0"
     "@ckeditor/ckeditor5-dev-utils" "^12.0.5"
@@ -3073,9 +3073,9 @@ copy-descriptor@^0.1.0:
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
 core-js-compat@^3.1.1:
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.4.3.tgz#54f2c5cd77b8b5acc5048904cc795722c9d590d1"
-  integrity sha512-HgW7pxjAdq6EMxT5uOhbTfjgZo8fvWn0D6QXVlWs3z1Eerux7tRrJ4gcgnZNn6S0OMPHlClJuIEPp0hnow44Sg==
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.4.4.tgz#d0aa01b1d626e129455d51aa94c27127c564ba2b"
+  integrity sha512-hBbxJ6sOkaFSvwAXjJ/t/1usGIPK5gTbtqV8+T+u1pZBkgQ3lDQgAguN1g01PJ0b3eyQxgRIEgxqGoviE1QtIQ==
   dependencies:
     browserslist "^4.7.3"
     semver "^6.3.0"
