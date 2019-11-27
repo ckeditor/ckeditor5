@@ -10,6 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class SpecialCharactersLatin extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Latin', [
 			{

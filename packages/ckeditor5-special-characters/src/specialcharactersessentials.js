@@ -15,6 +15,9 @@ import SpecialCharactersArrows from './specialcharactersarrows';
 import SpecialCharactersLatin from './specialcharacterslatin';
 import SpecialCharactersText from './specialcharacterstext';
 
+/**
+ * A plugin combining basic set of characters for the special characters plugin.
+ */
 export default class SpecialCharactersEssentials extends Plugin {
 	/**
 	 * @inheritDoc

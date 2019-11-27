@@ -19,6 +19,9 @@ import '../theme/specialcharacters.css';
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharacters extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 

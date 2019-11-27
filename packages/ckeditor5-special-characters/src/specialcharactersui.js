@@ -28,6 +28,9 @@ export default class SpecialCharactersUI extends Plugin {
 		return 'SpecialCharactersUI';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
