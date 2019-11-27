@@ -138,6 +138,7 @@
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
     "changelog": "node ./scripts/release/changelog.js",
+    "postchangelog": "node ./scripts/release/update-utils-version.js",
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "release:publish": "node ./scripts/release/publish.js",
     "release:stable-branches": "sh ./scripts/update-stable-branches.sh",
