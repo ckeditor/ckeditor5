@@ -17,6 +17,13 @@ import SpecialCharactersText from './specialcharacterstext';
 
 /**
  * A plugin combining basic set of characters for the special characters plugin.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., SpecialCharacters, SpecialCharactersEssentials ],
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
  */
 export default class SpecialCharactersEssentials extends Plugin {
 	/**
