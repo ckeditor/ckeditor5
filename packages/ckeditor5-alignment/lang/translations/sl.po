@@ -12,30 +12,30 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Ukrainian (https://www.transifex.com/ckeditor/teams/11143/uk/)\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Language-Team: Slovenian (https://www.transifex.com/ckeditor/teams/11143/sl/)\n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgctxt "Toolbar button tooltip for aligning the text to the left."
 msgid "Align left"
-msgstr "По лівому краю"
+msgstr "Poravnava levo"
 
 msgctxt "Toolbar button tooltip for aligning the text to the right."
 msgid "Align right"
-msgstr "По правому краю"
+msgstr "Poravnava desno"
 
 msgctxt "Toolbar button tooltip for aligning the text to center."
 msgid "Align center"
-msgstr "По центру"
+msgstr "Sredinska poravnava"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "По ширині"
+msgstr "Postavi na sredino"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
-msgstr "Вирівнювання тексту"
+msgstr "Poravnava besedila"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr "Панель інструментів вирівнювання тексту"
+msgstr "Orodna vrstica besedila"
