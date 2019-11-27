@@ -81,7 +81,7 @@ export default class SpecialCharacters extends Plugin {
 	 * Returns a collection of symbol names (titles).
 	 *
 	 * @param {String} groupName
-	 * @returns {Set<String>|undefined}
+	 * @returns {Set.<String>|undefined}
 	 */
 	getCharactersForGroup( groupName ) {
 		return this._groups.get( groupName );
