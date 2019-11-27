@@ -50,4 +50,4 @@ msgstr "Barre d'outils dans un menu déroulant"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr ""
+msgstr "Montrer plus d'éléments"

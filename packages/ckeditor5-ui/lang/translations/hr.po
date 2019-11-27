@@ -50,4 +50,4 @@ msgstr "Traka padajućeg izbornika"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr ""
+msgstr "Prikaži više stavaka"
