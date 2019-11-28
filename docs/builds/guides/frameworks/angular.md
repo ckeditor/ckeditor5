@@ -32,7 +32,7 @@ Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs
 npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
-Now, add `CKEditorModule` to your application module imports:
+Now, add `CKEditorModule` to modules whose components will be using the `<ckeditor>` component in their templates.
 
 ```ts
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
@@ -46,7 +46,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 } )
 ```
 
-Import the editor build in your Angular component and assign it to a `public` property so it becomes accessible in the template:
+Import the editor build in your Angular component and assign it to a `public` property to make it accessible from the template:
 
 ```ts
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
