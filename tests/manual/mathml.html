@@ -7,6 +7,8 @@
 
 		.ck-content .ck-math-widget {
 			display: inline-block;
+			background: #ffffd6;
+			padding: 0 .2em;
 		}
 	</style>
 </head>
@@ -116,20 +118,28 @@
 			</mrow>
 		</math> in the editor <math xmlns="http://www.w3.org/1998/Math/MathML">
 			<mrow>
-				<apply>
-					<eq />
-					<ci>A</ci>
-					<matrix>
-						<matrixrow>
-							<ci>x</ci>
-							<ci>y</ci>
-						</matrixrow>
-						<matrixrow>
-							<ci>z</ci>
-							<ci>w</ci>
-						</matrixrow>
-					</matrix>
-				</apply>
+				<mi>A</mi>
+				<mo>=</mo>
+				<mfenced open="[" close="]">
+					<mtable>
+						<mtr>
+							<mtd>
+								<mi>x</mi>
+							</mtd>
+							<mtd>
+								<mi>y</mi>
+							</mtd>
+						</mtr>
+						<mtr>
+							<mtd>
+								<mi>z</mi>
+							</mtd>
+							<mtd>
+								<mi>w</mi>
+							</mtd>
+						</mtr>
+					</mtable>
+				</mfenced>
 			</mrow>
 		</math>.
 	</p>
