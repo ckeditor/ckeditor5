@@ -30,9 +30,9 @@ Regardless of the chosen build, creating an editor is done using the static `cre
 Add an element that CKEditor should replace to your HTML page:
 
 ```html
-<textarea name="content" id="editor">
+<div name="content" id="editor">
 	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
-</textarea>
+</div>
 ```
 
 Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link builds/guides/overview#classic-editor Classic editor}:

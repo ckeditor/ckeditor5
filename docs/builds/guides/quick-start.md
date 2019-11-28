@@ -22,7 +22,7 @@ Creating an editor using a CKEditor 5 build is very simple and can be described 
 In your HTML page add an element that CKEditor should replace:
 
 ```html
-<textarea name="content" id="editor"></textarea>
+<div name="content" id="editor"></div>
 ```
 
 Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
@@ -55,9 +55,9 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 </head>
 <body>
 	<h1>Classic editor</h1>
-	<textarea name="content" id="editor">
+	<div name="content" id="editor">
 		&lt;p&gt;This is some sample content.&lt;/p&gt;
-	</textarea>
+	</div>
 	<script>
 		ClassicEditor
 			.create( document.querySelector( '#editor' ) )
