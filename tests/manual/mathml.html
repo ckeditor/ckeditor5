@@ -1,0 +1,136 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.ck-content .ck-math-widget {
+			display: inline-block;
+		}
+	</style>
+</head>
+<div id="editor">
+	<h2>PoC</h2>
+
+	<p>
+		Some <math xmlns="http://www.w3.org/1998/Math/MathML">
+			<mrow>
+				<mrow>
+					<msup>
+						<mi>x</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>+</mo>
+					<mrow>
+						<mn>4</mn>
+						<mo>&InvisibleTimes;</mo>
+						<mi>x</mi>
+					</mrow>
+					<mo>+</mo>
+					<mn>4</mn>
+				</mrow>
+				<mo>=</mo>
+				<mn>0</mn>
+			</mrow>
+		</math> formulas <math xmlns="http://www.w3.org/1998/Math/MathML">
+			<semantics>
+				<mrow>
+					<mi>x</mi>
+					<mo>=</mo>
+					<mfrac>
+						<mrow>
+							<mo form="prefix">&#x2212;
+							</mo>
+							<mi>b</mi>
+							<mo>&#x00B1;
+							</mo>
+							<msqrt>
+								<msup>
+									<mi>b</mi>
+									<mn>2</mn>
+								</msup>
+								<mo>&#x2212;
+								</mo>
+								<mn>4</mn>
+								<mo>&#x2062;
+								</mo>
+								<mi>a</mi>
+								<mo>&#x2062;
+								</mo>
+								<mi>c</mi>
+							</msqrt>
+						</mrow>
+						<mrow>
+							<mn>2</mn>
+							<mo>&#x2062;
+							</mo>
+							<mi>a</mi>
+						</mrow>
+					</mfrac>
+				</mrow>
+				<annotation encoding="TeX">
+					x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
+				</annotation>
+				<annotation encoding="StarMath 5.0">
+					x={-b plusminus sqrt {b^2 - 4 ac}} over {2 a}
+				</annotation>
+			</semantics>
+		</math> displayed <math xmlns="http://www.w3.org/1998/Math/MathML">
+			<mrow>
+				<semantics>
+					<mrow>
+						<msubsup>
+							<mo>&int;</mo>
+							<mn>1</mn>
+							<mi>t</mi>
+						</msubsup>
+						<mfrac>
+							<mrow>
+								<mo>&dd;</mo>
+								<mi>x</mi>
+							</mrow>
+							<mi>x</mi>
+						</mfrac>
+					</mrow>
+					<annotation-xml encoding="MathML-Content">
+						<apply>
+							<int />
+							<bvar>
+								<ci>x</ci>
+							</bvar>
+							<lowlimit>
+								<cn>1</cn>
+							</lowlimit>
+							<uplimit>
+								<ci>t</ci>
+							</uplimit>
+							<apply>
+								<divide />
+								<cn>1</cn>
+								<ci>x</ci>
+							</apply>
+						</apply>
+					</annotation-xml>
+				</semantics>
+			</mrow>
+		</math> in the editor <math xmlns="http://www.w3.org/1998/Math/MathML">
+			<mrow>
+				<apply>
+					<eq />
+					<ci>A</ci>
+					<matrix>
+						<matrixrow>
+							<ci>x</ci>
+							<ci>y</ci>
+						</matrixrow>
+						<matrixrow>
+							<ci>z</ci>
+							<ci>w</ci>
+						</matrixrow>
+					</matrix>
+				</apply>
+			</mrow>
+		</math>.
+	</p>
+</div>
