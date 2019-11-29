@@ -13,8 +13,10 @@ import CKEditorError from './ckeditorerror';
 
 const version = '15.0.0';
 
+/* istanbul ignore next */
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
+/* istanbul ignore next */
 if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	/**
 	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some
