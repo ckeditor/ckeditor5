@@ -479,6 +479,38 @@ describe( 'Watchdog', () => {
 			} );
 		} );
 
+		it( 'Watchdog should warn if the CKEditorError missing its context', () => {
+			const watchdog = new Watchdog();
+
+			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
+			watchdog.setDestructor( editor => editor.destroy() );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			sinon.stub( console, 'warn' );
+
+			return watchdog.create( element ).then( () => {
+				setTimeout( () => throwCKEditorError( 'foo' ) );
+
+				return new Promise( res => {
+					setTimeout( () => {
+						window.onerror = originalErrorHandler;
+
+						expect( watchdog.crashes ).to.deep.equal( [] );
+
+						sinon.assert.calledWithExactly(
+							console.warn,
+							'The error is missing its context and Watchdog cannot restart the proper editor.'
+						);
+
+						watchdog.destroy().then( res );
+					} );
+				} );
+			} );
+		} );
+
 		it( 'Watchdog should omit error if the CKEditorError context is equal to null', () => {
 			const watchdog = new Watchdog();
 
