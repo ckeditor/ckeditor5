@@ -37,7 +37,18 @@ export default class CharacterGridView extends View {
 
 		this.setTemplate( {
 			tag: 'div',
-			children: this.tiles,
+			children: [
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'ck',
+							'ck-character-grid__tiles'
+						]
+					},
+					children: this.tiles
+				}
+			],
 			attributes: {
 				class: [
 					'ck',
