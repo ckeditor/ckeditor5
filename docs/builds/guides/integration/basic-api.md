@@ -30,8 +30,8 @@ Regardless of the chosen build, creating an editor is done using the static `cre
 Add an element that CKEditor should replace to your HTML page:
 
 ```html
-<div name="content" id="editor">
-	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
+<div id="editor">
+	<p>Here goes the initial content of the editor.</p>
 </div>
 ```
 
@@ -56,7 +56,7 @@ Similarly to the previous example, add an element where CKEditor should initiali
 
 ```html
 <div id="editor">
-	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
+	<p>Here goes the initial content of the editor.</p>
 </div>
 ```
 
@@ -81,7 +81,7 @@ Add an element where CKEditor should initialize to your page:
 
 ```html
 <div id="editor">
-	&lt;p&gt;Here goes the initial content of the editor.&lt;/p&gt;
+	<p>Here goes the initial content of the editor.</p>
 </div>
 ```
 
