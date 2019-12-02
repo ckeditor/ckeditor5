@@ -63,7 +63,7 @@ Creating an editor using a CKEditor 5 build is very simple and can be described 
 In your HTML page add an element that CKEditor should replace:
 
 ```html
-<textarea name="content" id="editor"></textarea>
+<div id="editor"></div>
 ```
 
 Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
