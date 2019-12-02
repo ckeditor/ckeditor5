@@ -331,6 +331,12 @@ mix( Editor, ObservableMixin );
  * Content of an editor should be nicely present to the user and show him how it's going to looks like. Textarea element
  * doesn't support such behavior.
  *
+ * Typically you can use a `div` for storing editor content instead:
+ *
+ *		<div id="editor">
+ *			<p>Initial content.</p>
+ *		</div>
+ *
  * Only {@glink builds/guides/overview#classic-editor Classic Editor} has implemented a special system, which
  * **replace** DOM element and load data from it
  * ({@link module:editor-classic/classiceditor~ClassicEditor.create more information}). All other editors
