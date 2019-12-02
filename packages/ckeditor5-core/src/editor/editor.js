@@ -331,7 +331,7 @@ mix( Editor, ObservableMixin );
  * Content of an editor should be nicely present to the user and show him how it's going to looks like. Textarea element
  * doesn't support such behavior.
  *
- * In most cases a `<div>` element can be used:
+ * Typically you can use a `div` for storing editor content instead:
  *
  *		<div id="editor">
  *			<p>Initial content.</p>
