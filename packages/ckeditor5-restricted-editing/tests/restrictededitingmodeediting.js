@@ -19,7 +19,7 @@ import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting'
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 
 describe( 'RestrictedEditingModeEditing', () => {
-	let editor;
+	let editor, model;
 
 	testUtils.createSinonSandbox();
 
@@ -345,6 +345,32 @@ describe( 'RestrictedEditingModeEditing', () => {
 			);
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+	} );
+
+	describe.only( 'post-fixer', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			model = editor.model;
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should not allow to change text outside restricted area', () => {
+			setModelData( model, '<paragraph>[]foofoo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 3, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 6 );
+			} );
+
+			editor.execute( 'delete', { unit: 'word' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo[] bar baz</paragraph>' );
 		} );
 	} );
 
@@ -873,4 +899,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 	} );
+
+	function addExceptionMarker( start, end = start, parent, id = 1 ) {
+		model.change( writer => {
+			writer.addMarker( `restrictedEditingException:${ id }`, {
+				range: writer.createRange( writer.createPositionAt( parent, start ), writer.createPositionAt( parent, end ) ),
+				usingOperation: true,
+				affectsData: true
+			} );
+		} );
+	}
 } );

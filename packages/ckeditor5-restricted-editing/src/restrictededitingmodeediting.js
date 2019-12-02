@@ -162,6 +162,24 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
+		editor.model.on( 'deleteContent', ( evt, args ) => {
+			// console.log( 'bofore:deleteContent', evt.stop() );
+			const [ selection, ] = args;
+
+			const marker = getMarkerAtPosition( editor, selection.focus ) || getMarkerAtPosition( editor, selection.anchor );
+
+			if ( !marker ) {
+				evt.stop();
+				return;
+			}
+
+			const intersection = marker.getRange().getIntersection( selection.getFirstRange() );
+
+			const allowedToDelete = model.createSelection( intersection );
+
+			args.splice( 0, 1, allowedToDelete );
+		}, { priority: 'high' } );
+
 		setupExceptionHighlighting( editor );
 	}
 
