@@ -45,8 +45,8 @@ And use it in your website:
 
 			window.editor = editor;
 		} )
-		.catch( err => {
-			console.error( err.stack );
+		.catch( error => {
+			console.error( 'There was a problem with initializing the editor', error );
 		} );
 </script>
 ```
@@ -67,9 +67,9 @@ DecoupledEditor
 
 			window.editor = editor;
 		} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+		.catch( error => {
+			console.error( 'There was a problem with initializing the editor', error );
+		} );
 ```
 
 **Note:** If you are planning to integrate CKEditor 5 deep into your application, it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`). Read more in the [Advanced setup guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html).

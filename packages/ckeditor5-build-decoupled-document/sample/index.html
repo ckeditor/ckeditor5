@@ -64,8 +64,8 @@
 		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 		document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
 	} )
-	.catch( err => {
-		console.error( err.stack );
+	.catch( error => {
+		console.error( 'There was a problem with initializing the editor', error );
 	} );
 </script>
 
