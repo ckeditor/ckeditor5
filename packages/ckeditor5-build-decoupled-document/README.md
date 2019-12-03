@@ -46,7 +46,7 @@ And use it in your website:
 			window.editor = editor;
 		} )
 		.catch( error => {
-			console.error( 'There was a problem with initializing the editor', error );
+			console.error( 'There was a problem initializing the editor.', error );
 		} );
 </script>
 ```
@@ -68,7 +68,7 @@ DecoupledEditor
 			window.editor = editor;
 		} )
 		.catch( error => {
-			console.error( 'There was a problem with initializing the editor', error );
+			console.error( 'There was a problem initializing the editor.', error );
 		} );
 ```
 

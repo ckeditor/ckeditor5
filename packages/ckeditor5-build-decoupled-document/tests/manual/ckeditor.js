@@ -14,5 +14,5 @@ DecoupledEditor.create( document.querySelector( '#editor' ) )
 		window.editor = editor;
 	} )
 	.catch( error => {
-		console.error( 'There was a problem with initializing the editor', error );
+		console.error( 'There was a problem initializing the editor.', error );
 	} );
