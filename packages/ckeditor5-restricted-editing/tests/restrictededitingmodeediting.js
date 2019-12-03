@@ -344,7 +344,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 	} );
 
-	describe( 'post-fixer', () => {
+	describe( 'enforcing restrictions on deleteContent', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
