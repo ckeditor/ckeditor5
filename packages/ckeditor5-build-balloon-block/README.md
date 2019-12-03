@@ -39,8 +39,8 @@ And use it in your website:
 		.then( editor => {
 			window.editor = editor;
 		} )
-		.catch( err => {
-			console.error( err.stack );
+		.catch( error => {
+			console.error( 'There was a problem with initializing the editor', error );
 		} );
 </script>
 ```
@@ -58,8 +58,8 @@ BalloonEditor
 	.then( editor => {
 		window.editor = editor;
 	} )
-	.catch( err => {
-		console.error( err.stack );
+	.catch( error => {
+		console.error( 'There was a problem with initializing the editor', error );
 	} );
 ```
 
