@@ -62,7 +62,8 @@ export default class CharacterGridView extends View {
 		 *
 		 * @event execute
 		 * @param {Object} data Additional information about the event.
-		 * @param {String} data.name Name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.name A name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.character A human-readable character displayed as label (e.g. "ε").
 		 */
 	}
 
@@ -91,7 +92,7 @@ export default class CharacterGridView extends View {
 		} );
 
 		tile.on( 'execute', () => {
-			this.fire( 'execute', { name } );
+			this.fire( 'execute', { name, character } );
 		} );
 
 		return tile;

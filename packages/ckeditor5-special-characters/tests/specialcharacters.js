@@ -5,7 +5,6 @@
 
 import SpecialCharacters from '../src/specialcharacters';
 import SpecialCharactersUI from '../src/specialcharactersui';
-import SpecialCharactersEditing from '../src/specialcharactersediting';
 
 describe( 'SpecialCharacters', () => {
 	let plugin;
@@ -15,7 +14,7 @@ describe( 'SpecialCharacters', () => {
 	} );
 
 	it( 'should require proper plugins', () => {
-		expect( SpecialCharacters.requires ).to.deep.equal( [ SpecialCharactersEditing, SpecialCharactersUI ] );
+		expect( SpecialCharacters.requires ).to.deep.equal( [ SpecialCharactersUI ] );
 	} );
 
 	it( 'should be named', () => {
