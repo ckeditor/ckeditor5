@@ -41,8 +41,8 @@ And use it in your website:
 		.then( editor => {
 			window.editor = editor;
 		} )
-		.catch( err => {
-			console.error( err.stack );
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
 		} );
 </script>
 ```
@@ -60,8 +60,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 	} )
-	.catch( err => {
-		console.error( err.stack );
+	.catch( error => {
+		console.error( 'There was a problem initializing the editor.', error );
 	} );
 ```
 
