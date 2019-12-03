@@ -11,6 +11,6 @@ ClassicEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		window.editor = editor;
 	} )
-	.catch( err => {
-		console.error( err.stack );
+	.catch( error => {
+		console.error( 'There was a problem with initializing the editor', error );
 	} );
