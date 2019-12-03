@@ -61,15 +61,15 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			// The toolbar needs to be explicitly appended.
-			document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+	.then( editor => {
+		// The toolbar needs to be explicitly appended.
+		document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 
-			window.editor = editor;
-		} )
-		.catch( error => {
-			console.error( 'There was a problem initializing the editor.', error );
-		} );
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( 'There was a problem initializing the editor.', error );
+	} );
 ```
 
 **Note:** If you are planning to integrate CKEditor 5 deep into your application, it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`). Read more in the [Advanced setup guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html).
