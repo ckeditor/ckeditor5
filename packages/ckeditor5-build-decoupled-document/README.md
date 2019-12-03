@@ -45,8 +45,8 @@ And use it in your website:
 
 			window.editor = editor;
 		} )
-		.catch( err => {
-			console.error( err.stack );
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
 		} );
 </script>
 ```
@@ -61,14 +61,14 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			// The toolbar needs to be explicitly appended.
-			document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+	.then( editor => {
+		// The toolbar needs to be explicitly appended.
+		document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 
-			window.editor = editor;
-		} )
-	.catch( err => {
-		console.error( err.stack );
+		window.editor = editor;
+	} )
+	.catch( error => {
+		console.error( 'There was a problem initializing the editor.', error );
 	} );
 ```
 

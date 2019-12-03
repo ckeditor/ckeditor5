@@ -58,15 +58,15 @@
 		<p>You can use this sample to validate whether your <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.</p>`;
 
 	DecoupledEditor.create( editorData )
-	.then( editor => {
-		window.editor = editor;
+		.then( editor => {
+			window.editor = editor;
 
-		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
-		document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+			document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
+		} )
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
+		} );
 </script>
 
 </body>
