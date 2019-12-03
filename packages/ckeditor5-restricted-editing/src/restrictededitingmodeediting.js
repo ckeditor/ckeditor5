@@ -165,6 +165,14 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 		this.listenTo( model, 'applyOperation', restrictAttributeOperation( editor ), { priority: 'high' } );
 
+		const inputCommand = this.editor.commands.get( 'input' );
+
+		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
+		// This check is bit synthetic since only tests are used this way.
+		if ( inputCommand ) {
+			this.listenTo( inputCommand, 'execute', restrictInputRangeOption( editor ), { priority: 'high' } );
+		}
+
 		setupExceptionHighlighting( editor );
 	}
 
@@ -340,4 +348,31 @@ function restrictAttributeOperation( editor ) {
 
 		operation.range = operation.range.getIntersection( marker.getRange() );
 	};
+}
+
+// Ensures that input command is executed with a range that is inside exception marker.
+//
+// This restriction is due to fact that using native spell check changes text outside exception marker.
+function restrictInputRangeOption( editor ) {
+	return ( evt, args ) => {
+		const [ options ] = args;
+		const { range } = options;
+
+		// Only check "input" command executed with a range value.
+		// Selection might be set in exception marker but passed range might point elsewhere.
+		if ( !range ) {
+			return;
+		}
+
+		if ( !isRangeInsideSingleMarker( editor, range ) ) {
+			evt.stop();
+		}
+	};
+}
+
+function isRangeInsideSingleMarker( editor, range ) {
+	const markerAtStart = getMarkerAtPosition( editor, range.start );
+	const markerAtEnd = getMarkerAtPosition( editor, range.end );
+
+	return markerAtStart && markerAtEnd && markerAtEnd === markerAtStart;
 }
