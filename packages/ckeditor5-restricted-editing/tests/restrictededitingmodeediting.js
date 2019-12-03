@@ -53,8 +53,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'conversion', () => {
-		let model;
-
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
 			model = editor.model;
@@ -164,8 +162,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'editing behavior', () => {
-		let model;
-
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
@@ -348,17 +344,66 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 	} );
 
-	describe.only( 'post-fixer', () => {
+	describe( 'post-fixer', () => {
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
-		it( 'should not allow to change text outside restricted area', () => {
+		it( 'should not allow to delete content outside restricted area', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 3, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			model.deleteContent( model.document.selection );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>fo[]o bar baz</paragraph>' );
+		} );
+
+		it( 'should trim deleted content to a exception marker (focus in marker)', () => {
+			setModelData( model, '<paragraph>[]foofoo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 3, 9, firstParagraph );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( firstParagraph, 0 ),
+					writer.createPositionAt( firstParagraph, 6 )
+				) );
+				model.deleteContent( selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo bar baz</paragraph>' );
+		} );
+
+		it( 'should trim deleted content to a exception marker (anchor in marker)', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( firstParagraph, 5 ),
+					writer.createPositionAt( firstParagraph, 8 )
+				) );
+				model.deleteContent( selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo b baz</paragraph>' );
+		} );
+
+		it( 'should trim deleted content to a exception marker and alter the selection argument (delete command integration)', () => {
 			setModelData( model, '<paragraph>[]foofoo bar baz</paragraph>' );
 			const firstParagraph = model.document.getRoot().getChild( 0 );
 
@@ -367,7 +412,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 			model.change( writer => {
 				writer.setSelection( firstParagraph, 6 );
 			} );
-
 			editor.execute( 'delete', { unit: 'word' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo[] bar baz</paragraph>' );
@@ -900,10 +944,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 	} );
 
-	function addExceptionMarker( start, end = start, parent, id = 1 ) {
+	// Helper method that creates an exception marker inside given parent.
+	// Marker range is set to given position offsets (start, end).
+	function addExceptionMarker( startOffset, endOffset = startOffset, parent, id = 1 ) {
 		model.change( writer => {
 			writer.addMarker( `restrictedEditingException:${ id }`, {
-				range: writer.createRange( writer.createPositionAt( parent, start ), writer.createPositionAt( parent, end ) ),
+				range: writer.createRange(
+					writer.createPositionAt( parent, startOffset ),
+					writer.createPositionAt( parent, endOffset )
+				),
 				usingOperation: true,
 				affectsData: true
 			} );

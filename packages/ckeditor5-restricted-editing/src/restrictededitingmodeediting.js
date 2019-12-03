@@ -162,23 +162,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
-		editor.model.on( 'deleteContent', ( evt, args ) => {
-			// console.log( 'bofore:deleteContent', evt.stop() );
-			const [ selection, ] = args;
-
-			const marker = getMarkerAtPosition( editor, selection.focus ) || getMarkerAtPosition( editor, selection.anchor );
-
-			if ( !marker ) {
-				evt.stop();
-				return;
-			}
-
-			const intersection = marker.getRange().getIntersection( selection.getFirstRange() );
-
-			const allowedToDelete = model.createSelection( intersection );
-
-			args.splice( 0, 1, allowedToDelete );
-		}, { priority: 'high' } );
+		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
 		setupExceptionHighlighting( editor );
 	}
@@ -300,5 +284,35 @@ function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
 		}
 
 		return true;
+	};
+}
+
+// Ensures that model.deleteContent() does not delete outside exception markers ranges.
+//
+// The enforced restrictions are:
+// - only execute deleteContent() inside exception markers
+// - restrict passed selection to exception marker
+function restrictDeleteContent( editor ) {
+	return ( evt, args ) => {
+		const [ selection ] = args;
+
+		const marker = getMarkerAtPosition( editor, selection.focus ) || getMarkerAtPosition( editor, selection.anchor );
+
+		// Stop method execution if marker was not found at selection focus.
+		if ( !marker ) {
+			evt.stop();
+
+			return;
+		}
+
+		// Collapsed selection inside exception marker does not require fixing.
+		if ( selection.isCollapsed ) {
+			return;
+		}
+
+		const allowedToDelete = marker.getRange().getIntersection( selection.getFirstRange() );
+
+		// Shrink the selection to the range inside exception marker.
+		selection.setTo( allowedToDelete );
 	};
 }
