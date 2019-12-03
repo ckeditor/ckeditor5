@@ -320,7 +320,7 @@ function restrictDeleteContent( editor ) {
 
 // Ensures that remove attribute operation is executed on proper range.
 //
-// The restriction is enforced by trimming range of an AttributeOperation:
+// The restriction is enforced by trimming range of an AttributeOperation.
 function restrictAttributeOperation( editor ) {
 	return ( evt, args ) => {
 		const [ operation ] = args;
