@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Features
+
+* Enabled code block autoformatting with the `` ``` `` sequence. Closes [ckeditor/ckeditor5#5672](https://github.com/ckeditor/ckeditor5/issues/5672). ([fb2d1b5](https://github.com/ckeditor/ckeditor5-autoformat/commit/fb2d1b5))
+
+### Bug fixes
+
+* `BlockAutoformat` should not react to text typed after inline element. Closes [ckeditor/ckeditor5#5671](https://github.com/ckeditor/ckeditor5/issues/5671). ([241c294](https://github.com/ckeditor/ckeditor5-autoformat/commit/241c294))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v11.0.5...v15.0.0) (2019-10-23)
 
 ### Bug fixes
