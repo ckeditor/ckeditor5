@@ -166,6 +166,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		setupExceptionHighlighting( editor );
 	}
 
+	/**
+	 * Setups additional editing restrictions beyond command toggling.
+	 *
+	 * @private
+	 */
 	_setupRestrictions() {
 		const editor = this.editor;
 
@@ -177,7 +182,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
-			this.listenTo( inputCommand, 'execute', restrictInputRangeOption( editor ), { priority: 'high' } );
+			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 	}
 
@@ -358,7 +363,7 @@ function restrictAttributeOperation( editor ) {
 // Ensures that input command is executed with a range that is inside exception marker.
 //
 // This restriction is due to fact that using native spell check changes text outside exception marker.
-function restrictInputRangeOption( editor ) {
+function disallowInputExecForWrongRange( editor ) {
 	return ( evt, args ) => {
 		const [ options ] = args;
 		const { range } = options;
