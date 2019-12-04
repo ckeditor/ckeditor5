@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Features
+
+* The main editor toolbar should respect the `config.toolbar.shouldNotGroupWhenFull` configuration (see [ckeditor/ckeditor5#5692](https://github.com/ckeditor/ckeditor5/issues/5692)). ([35b3cbf](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/35b3cbf))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.2.2...v15.0.0) (2019-10-23)
 
 ### Features
