@@ -16,8 +16,8 @@ Changelog
 
 * Enabled additional box-shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editables, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
 
-  Also: 
-  * Optimized the color gird component for WCAG AA. 
+  Also:
+  * Optimized the color of a gird component for WCAG AA.
   * Imported insert table UI styles from ckeditor5-table (code refactoring).
      * Improved the table UI contrast and accessibility.
 
