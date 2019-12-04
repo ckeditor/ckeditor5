@@ -76,6 +76,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		this._setupConversion();
 		this._setupCommandsToggling();
+		this._setupRestrictions();
 
 		// Commands & keystrokes that allow navigation in the content.
 		editor.commands.add( 'goToPreviousRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
@@ -162,8 +163,14 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
-		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
-		this.listenTo( model, 'applyOperation', restrictAttributeOperation( editor ), { priority: 'high' } );
+		setupExceptionHighlighting( editor );
+	}
+
+	_setupRestrictions() {
+		const editor = this.editor;
+
+		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+		this.listenTo( editor.model, 'applyOperation', restrictAttributeOperation( editor ), { priority: 'high' } );
 
 		const inputCommand = this.editor.commands.get( 'input' );
 
@@ -172,8 +179,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', restrictInputRangeOption( editor ), { priority: 'high' } );
 		}
-
-		setupExceptionHighlighting( editor );
 	}
 
 	/**
