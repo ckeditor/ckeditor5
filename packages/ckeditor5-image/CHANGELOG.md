@@ -9,7 +9,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([01cdb59](https://github.com/ckeditor/ckeditor5-image/commit/01cdb59)) 
+* Updated translations. ([01cdb59](https://github.com/ckeditor/ckeditor5-image/commit/01cdb59))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v14.0.0...v15.0.0) (2019-10-23)
