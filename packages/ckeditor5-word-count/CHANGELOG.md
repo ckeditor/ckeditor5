@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Other changes
+
+* Updated translations. ([ffa4b14](https://github.com/ckeditor/ckeditor5-word-count/commit/ffa4b14)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v10.0.2...v15.0.0) (2019-10-23)
 
 ### Other changes
