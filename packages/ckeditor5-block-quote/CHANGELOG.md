@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([e49b7b0](https://github.com/ckeditor/ckeditor5-block-quote/commit/e49b7b0)) 
+* Updated translations. ([e49b7b0](https://github.com/ckeditor/ckeditor5-block-quote/commit/e49b7b0))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.1.3...v15.0.0) (2019-10-23)
@@ -13,7 +13,7 @@ Changelog
 ### Other changes
 
 * Add `pluginName` property to editing plugins. ([3d6b419](https://github.com/ckeditor/ckeditor5-block-quote/commit/3d6b419))
-* Updated translations. ([47acb53](https://github.com/ckeditor/ckeditor5-block-quote/commit/47acb53)) 
+* Updated translations. ([47acb53](https://github.com/ckeditor/ckeditor5-block-quote/commit/47acb53))
 
 
 ## [11.1.3](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.1.2...v11.1.3) (2019-08-26)
