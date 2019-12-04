@@ -24,91 +24,31 @@ export default class SpecialCharactersText extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+		const t = editor.t;
+
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Text', [
-			{
-				character: '‹',
-				title: 'Single left-pointing angle quotation mark'
-			},
-			{
-				character: '›',
-				title: 'Single right-pointing angle quotation mark'
-			},
-			{
-				character: '«',
-				title: 'Left-pointing double angle quotation mark'
-			},
-			{
-				character: '»',
-				title: 'Right-pointing double angle quotation mark'
-			},
-			{
-				character: '‘',
-				title: 'Left single quotation mark'
-			},
-			{
-				character: '’',
-				title: 'Right single quotation mark'
-			},
-			{
-				character: '“',
-				title: 'Left double quotation mark'
-			},
-			{
-				character: '”',
-				title: 'Right double quotation mark'
-			},
-			{
-				character: '‚',
-				title: 'Single low-9 quotation mark'
-			},
-			{
-				character: '„',
-				title: 'Double low-9 quotation mark'
-			},
-			{
-				character: '¡',
-				title: 'Inverted exclamation mark'
-			},
-			{
-				character: '¿',
-				title: 'Inverted question mark'
-			},
-			{
-				character: '‥',
-				title: 'Two dot leader'
-			},
-			{
-				character: '…',
-				title: 'Horizontal ellipsis'
-			},
-			{
-				character: '‡',
-				title: 'Double dagger'
-			},
-			{
-				character: '‰',
-				title: 'Per mille sign'
-			},
-			{
-				character: '‱',
-				title: 'Per ten thousand sign'
-			},
-			{
-				character: '‼',
-				title: 'Double exclamation mark'
-			},
-			{
-				character: '⁈',
-				title: 'Question exclamation mark'
-			},
-			{
-				character: '⁉',
-				title: 'Exclamation question mark'
-			},
-			{
-				character: '⁇',
-				title: 'Double question mark'
-			}
+			{ character: '‹', title: t( 'Single left-pointing angle quotation mark' ) },
+			{ character: '›', title: t( 'Single right-pointing angle quotation mark' ) },
+			{ character: '«', title: t( 'Left-pointing double angle quotation mark' ) },
+			{ character: '»', title: t( 'Right-pointing double angle quotation mark' ) },
+			{ character: '‘', title: t( 'Left single quotation mark' ) },
+			{ character: '’', title: t( 'Right single quotation mark' ) },
+			{ character: '“', title: t( 'Left double quotation mark' ) },
+			{ character: '”', title: t( 'Right double quotation mark' ) },
+			{ character: '‚', title: t( 'Single low-9 quotation mark' ) },
+			{ character: '„', title: t( 'Double low-9 quotation mark' ) },
+			{ character: '¡', title: t( 'Inverted exclamation mark' ) },
+			{ character: '¿', title: t( 'Inverted question mark' ) },
+			{ character: '‥', title: t( 'Two dot leader' ) },
+			{ character: '…', title: t( 'Horizontal ellipsis' ) },
+			{ character: '‡', title: t( 'Double dagger' ) },
+			{ character: '‰', title: t( 'Per mille sign' ) },
+			{ character: '‱', title: t( 'Per ten thousand sign' ) },
+			{ character: '‼', title: t( 'Double exclamation mark' ) },
+			{ character: '⁈', title: t( 'Question exclamation mark' ) },
+			{ character: '⁉', title: t( 'Exclamation question mark' ) },
+			{ character: '⁇', title: t( 'Double question mark' ) }
 		] );
 	}
 }

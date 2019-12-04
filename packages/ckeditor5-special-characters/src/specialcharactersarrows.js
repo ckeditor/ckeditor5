@@ -24,25 +24,28 @@ export default class SpecialCharactersArrows extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+		const t = editor.t;
+
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
-			{ title: 'leftwards double arrow', character: '⇐' },
-			{ title: 'rightwards double arrow', character: '⇒' },
-			{ title: 'upwards double arrow', character: '⇑' },
-			{ title: 'downwards double arrow', character: '⇓' },
-			{ title: 'leftwards dashed arrow', character: '⇠' },
-			{ title: 'rightwards dashed arrow', character: '⇢' },
-			{ title: 'upwards dashed arrow', character: '⇡' },
-			{ title: 'downwards dashed arrow', character: '⇣' },
-			{ title: 'leftwards arrow to bar', character: '⇤' },
-			{ title: 'rightwards arrow to bar', character: '⇥' },
-			{ title: 'upwards arrow to bar', character: '⤒' },
-			{ title: 'downwards arrow to bar', character: '⤓' },
-			{ title: 'up down arrow with base', character: '↨' },
-			{ title: 'back with leftwards arrow above', character: '🔙' },
-			{ title: 'end with leftwards arrow above', character: '🔚' },
-			{ title: 'on with exclamation mark with left right arrow above', character: '🔛' },
-			{ title: 'soon with rightwards arrow above', character: '🔜' },
-			{ title: 'top with upwards arrow above', character: '🔝' }
+			{ title: t( 'leftwards double arrow' ), character: '⇐' },
+			{ title: t( 'rightwards double arrow' ), character: '⇒' },
+			{ title: t( 'upwards double arrow' ), character: '⇑' },
+			{ title: t( 'downwards double arrow' ), character: '⇓' },
+			{ title: t( 'leftwards dashed arrow' ), character: '⇠' },
+			{ title: t( 'rightwards dashed arrow' ), character: '⇢' },
+			{ title: t( 'upwards dashed arrow' ), character: '⇡' },
+			{ title: t( 'downwards dashed arrow' ), character: '⇣' },
+			{ title: t( 'leftwards arrow to bar' ), character: '⇤' },
+			{ title: t( 'rightwards arrow to bar' ), character: '⇥' },
+			{ title: t( 'upwards arrow to bar' ), character: '⤒' },
+			{ title: t( 'downwards arrow to bar' ), character: '⤓' },
+			{ title: t( 'up down arrow with base' ), character: '↨' },
+			{ title: t( 'back with leftwards arrow above' ), character: '🔙' },
+			{ title: t( 'end with leftwards arrow above' ), character: '🔚' },
+			{ title: t( 'on with exclamation mark with left right arrow above' ), character: '🔛' },
+			{ title: t( 'soon with rightwards arrow above' ), character: '🔜' },
+			{ title: t( 'top with upwards arrow above' ), character: '🔝' }
 		] );
 	}
 }
