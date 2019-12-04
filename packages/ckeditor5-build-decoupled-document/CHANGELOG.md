@@ -3,6 +3,12 @@ Changelog
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v15.0.0...v16.0.0) (2019-12-04)
 
+We are happy to announce the release of CKEditor 5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
+
+We also did some changes in the default UI colors to improve accessibility. In addition to that, as always, the release contains many [more improvements and bug fixes](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+28%22+is%3Aclosed+-label%3Atype%3Adocs+-label%3Atype%3Atask+-label%3Apackage%3Arestricted-editing+-label%3Apackage%3Acode-block+-label%3Atype%3Afeature).
+
+The blog post is coming soon...
+
 ### Other changes
 
 * Replaced UglifyJS with Terser. See [ckeditor/ckeditor5#1353](https://github.com/ckeditor/ckeditor5/issues/1353). ([3d3d2fa](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/3d3d2fa))
@@ -57,7 +63,7 @@ Regarding the build itself, we added the [indentation](https://ckeditor.com/docs
 
 From other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html).
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v15.0.0-with-horizontal-line-page-break-responsive-toolbar-and-SVG-upload-support/
 
 ### Dependencies
 
