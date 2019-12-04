@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([53e1503](https://github.com/ckeditor/ckeditor5-list/commit/53e1503)) 
+* Updated translations. ([53e1503](https://github.com/ckeditor/ckeditor5-list/commit/53e1503))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v12.1.0...v15.0.0) (2019-10-23)
