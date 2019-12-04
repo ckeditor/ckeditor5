@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Features
+
+* Enabled keystroke preview in `ButtonView`. Implemented the `ButtonView#withKeystroke` property. Closes [ckeditor/ckeditor5#5782](https://github.com/ckeditor/ckeditor5/issues/5782). ([dac8ce0](https://github.com/ckeditor/ckeditor5-ui/commit/dac8ce0))
+
+### Bug fixes
+
+* Use relative positioning for dropdowns to prevent ugly blurring in Chrome. Closes [ckeditor/ckeditor5#1053](https://github.com/ckeditor/ckeditor5/issues/1053). ([95404e3](https://github.com/ckeditor/ckeditor5-ui/commit/95404e3))
+
+### Other changes
+
+* Updated translations. ([16ee253](https://github.com/ckeditor/ckeditor5-ui/commit/16ee253)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v14.0.0...v15.0.0) (2019-10-23)
 
 ### MAJOR BREAKING CHANGES
