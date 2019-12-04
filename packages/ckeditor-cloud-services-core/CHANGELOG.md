@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/compare/v3.0.1...v15.0.0) (2019-10-23)
 
 First release tracked in the changelog.
