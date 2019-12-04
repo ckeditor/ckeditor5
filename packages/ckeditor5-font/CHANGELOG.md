@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Other changes
+
+* Updated translations. ([5203e87](https://github.com/ckeditor/ckeditor5-font/commit/5203e87)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v11.2.2...v15.0.0) (2019-10-23)
 
 ### Other changes
