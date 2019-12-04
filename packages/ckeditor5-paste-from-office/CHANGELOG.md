@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Fixed handling `mso-list:normal`. Closes [ckeditor/ckeditor5#5712](https://github.com/ckeditor/ckeditor5/issues/5712). ([2054e69](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/2054e69))
+
+  Thanks [@bendemboski](https://github.com/bendemboski)!
+* Fixed various issues with oddly formatted space run spans. ([2cd7b0f](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/2cd7b0f))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v11.1.0...v15.0.0) (2019-10-23)
 
 ### Other changes
