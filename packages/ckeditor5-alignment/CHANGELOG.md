@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([9085f7b](https://github.com/ckeditor/ckeditor5-alignment/commit/9085f7b)) 
+* Updated translations. ([9085f7b](https://github.com/ckeditor/ckeditor5-alignment/commit/9085f7b))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.2.0...v15.0.0) (2019-10-23)
