@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([47b693f](https://github.com/ckeditor/ckeditor5-media-embed/commit/47b693f)) 
+* Updated translations. ([47b693f](https://github.com/ckeditor/ckeditor5-media-embed/commit/47b693f))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.1.4...v15.0.0) (2019-10-23)
