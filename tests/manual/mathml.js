@@ -84,37 +84,36 @@ class MathMLEditing extends Plugin {
 		// Model -> Editing view
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'mathml',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createMathMLView( modelItem, viewWriter );
-
-				return toWidget( widgetElement, viewWriter );
-			}
+			view: createMathMLWidget
 		} );
 
 		// Model -> Data view
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'mathml',
-			view: createMathMLView
+			view: createMathUIElement
 		} );
 
-		function createMathMLView( modelItem, viewWriter ) {
+		function createMathMLWidget( modelItem, viewWriter ) {
 			const widgetElement = viewWriter.createContainerElement( 'span', {
 				class: 'ck-math-widget'
 			} );
 
-			const mathContainer = viewWriter.createUIElement( 'span', {}, function( domDocument ) {
-				const containerDOMElement = this.toDomElement( domDocument );
-				const mathDOMElement = document.createElementNS( 'http://www.w3.org/1998/Math/MathML', 'math' );
+			const mathUIElement = createMathUIElement( modelItem, viewWriter );
+
+			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), mathUIElement );
+
+			return toWidget( widgetElement, viewWriter );
+		}
+
+		function createMathUIElement( modelItem, viewWriter ) {
+			return viewWriter.createUIElement( 'math', {}, function( domDocument ) {
+				const mathDOMElement = domDocument.createElementNS( 'http://www.w3.org/1998/Math/MathML', 'math' );
+
+				mathDOMElement.setAttributeNS( 'http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/1998/Math/MathML' );
 				mathDOMElement.innerHTML = modelItem.getAttribute( 'formula' );
 
-				containerDOMElement.appendChild( mathDOMElement );
-
-				return containerDOMElement;
+				return mathDOMElement;
 			} );
-
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), mathContainer );
-
-			return widgetElement;
 		}
 	}
 }
