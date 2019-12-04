@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([5249150](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/5249150)) 
+* Updated translations. ([5249150](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/5249150))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v11.0.5...v15.0.0) (2019-10-23)
@@ -20,7 +20,7 @@ Changelog
 ### Other changes
 
 * Changed the URL under bugs key in package.json file. Now we have one issue tracker. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([7edd73b](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/7edd73b))
-* Updated translations. ([8fb4cc2](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/8fb4cc2)) 
+* Updated translations. ([8fb4cc2](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/8fb4cc2))
 
 
 ## [11.0.4](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v11.0.3...v11.0.4) (2019-07-10)
@@ -37,14 +37,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([7d00af1](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/7d00af1)) 
+* Updated translations. ([7d00af1](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/7d00af1))
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([3a0fe51](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/3a0fe51)) 
+* Updated translations. ([3a0fe51](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/3a0fe51))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v10.0.4...v11.0.0) (2019-02-28)
