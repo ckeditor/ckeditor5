@@ -7,8 +7,9 @@ Changelog
 
 Besides new features introduced by the dependencies, this version also introduces the following features:
 
-* Added more plugin to the Math and chemical formulas feature guide. Message. Closes [#5789](https://github.com/ckeditor/ckeditor5/issues/5789). ([8246e3c](https://github.com/ckeditor/ckeditor5/commit/8246e3c))
+* Introduced code blocks. ([a65e3d8](https://github.com/ckeditor/ckeditor5/commit/a65e3d8))
 * Introduced restricted editing. ([b0e5c1b](https://github.com/ckeditor/ckeditor5/commit/b0e5c1b))
+* Added more plugins to the math and chemical formulas feature guide. Closes [#5789](https://github.com/ckeditor/ckeditor5/issues/5789). ([8246e3c](https://github.com/ckeditor/ckeditor5/commit/8246e3c))
 
 ### Dependencies
 
