@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([bf98b57](https://github.com/ckeditor/ckeditor5-heading/commit/bf98b57)) 
+* Updated translations. ([bf98b57](https://github.com/ckeditor/ckeditor5-heading/commit/bf98b57))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v11.0.5...v15.0.0) (2019-10-23)
