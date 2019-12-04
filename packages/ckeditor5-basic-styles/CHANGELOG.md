@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Other changes
+
+* Updated translations. ([9dfd52c](https://github.com/ckeditor/ckeditor5-basic-styles/commit/9dfd52c)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.4...v15.0.0) (2019-10-23)
 
 ### Features
