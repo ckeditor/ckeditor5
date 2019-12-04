@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Other changes
+
+* Updated translations. ([749ed44](https://github.com/ckeditor/ckeditor5-indent/commit/749ed44)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.1.0...v15.0.0) (2019-10-23)
 
 ### Bug fixes
