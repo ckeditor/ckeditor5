@@ -3,13 +3,11 @@ Changelog
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5/compare/v15.0.0...v16.0.0) (2019-12-04)
 
-### Features
+We are happy to announce the release of CKEditor 5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
 
-Besides new features introduced by the dependencies, this version also introduces the following features:
+We also did some changes in the default UI colors to improve accessibility. In addition to that, as always, the release contains many [more improvements and bug fixes](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+28%22+is%3Aclosed+-label%3Atype%3Adocs+-label%3Atype%3Atask+-label%3Apackage%3Arestricted-editing+-label%3Apackage%3Acode-block+-label%3Atype%3Afeature).
 
-* Introduced code blocks. ([a65e3d8](https://github.com/ckeditor/ckeditor5/commit/a65e3d8))
-* Introduced restricted editing. ([b0e5c1b](https://github.com/ckeditor/ckeditor5/commit/b0e5c1b))
-* Added more plugins to the math and chemical formulas feature guide. Closes [#5789](https://github.com/ckeditor/ckeditor5/issues/5789). ([8246e3c](https://github.com/ckeditor/ckeditor5/commit/8246e3c))
+The blog post is coming soon...
 
 ### Dependencies
 
@@ -82,7 +80,7 @@ Regarding the build itself, we added the [indentation](https://ckeditor.com/docs
 
 From other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html).
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v15.0.0-with-horizontal-line-page-break-responsive-toolbar-and-SVG-upload-support/
 
 ### Dependencies
 
