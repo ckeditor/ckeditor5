@@ -8,8 +8,8 @@ The restricted editing feature allows you to define which parts of a document ca
 
 In order to do that, this feature introduces two editing modes:
 
-* **Standard editing mode** &ndash; In this mode the user can freely edit the content and choose regions that should be editable in the restricted mode.
-* **Restricted editing mode** &ndash; When the editor is initialized in this mode, the user can only edit the content within the regions chosen by the user in the editing mode.
+* **Standard editing mode** &ndash; In this mode the user can freely edit the content and choose regions that should be editable in the restricted editing mode.
+* **Restricted editing mode** &ndash; When the editor is initialized in this mode, the user can only edit the content within the regions chosen by the user in the standard editing mode.
 
 You can imagine a workflow in which a certain group of users is responsible for creating templates of documents while a second group of users can only fill the gaps (for example, fill the missing data, like names, dates, product names, etc.).
 
