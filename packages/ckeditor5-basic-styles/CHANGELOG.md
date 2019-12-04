@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([9dfd52c](https://github.com/ckeditor/ckeditor5-basic-styles/commit/9dfd52c)) 
+* Updated translations. ([9dfd52c](https://github.com/ckeditor/ckeditor5-basic-styles/commit/9dfd52c))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.4...v15.0.0) (2019-10-23)
@@ -17,7 +17,7 @@ Changelog
 ### Other changes
 
 * Added `pluginName` property to editing plugins. ([d91773f](https://github.com/ckeditor/ckeditor5-basic-styles/commit/d91773f))
-* Updated translations. ([56d6060](https://github.com/ckeditor/ckeditor5-basic-styles/commit/56d6060)) 
+* Updated translations. ([56d6060](https://github.com/ckeditor/ckeditor5-basic-styles/commit/56d6060))
 
 
 ## [11.1.4](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.1.3...v11.1.4) (2019-08-26)
