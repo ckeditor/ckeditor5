@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Highlight styles should be prefixed with the `.ck-content` class. Closes [ckeditor/ckeditor5#5677](https://github.com/ckeditor/ckeditor5/issues/5677). ([658baa4](https://github.com/ckeditor/ckeditor5-highlight/commit/658baa4))
+
+### Other changes
+
+* Updated translations. ([65c337a](https://github.com/ckeditor/ckeditor5-highlight/commit/65c337a)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.5...v15.0.0) (2019-10-23)
 
 ### Other changes
