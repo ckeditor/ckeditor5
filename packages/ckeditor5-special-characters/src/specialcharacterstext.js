@@ -48,7 +48,13 @@ export default class SpecialCharactersText extends Plugin {
 			{ character: '‼', title: t( 'Double exclamation mark' ) },
 			{ character: '⁈', title: t( 'Question exclamation mark' ) },
 			{ character: '⁉', title: t( 'Exclamation question mark' ) },
-			{ character: '⁇', title: t( 'Double question mark' ) }
+			{ character: '⁇', title: t( 'Double question mark' ) },
+			{ character: '©', title: t( 'Copyright sign' ) },
+			{ character: '®', title: t( 'Registered sign' ) },
+			{ character: '™', title: t( 'Trade mark sign' ) },
+			{ character: '§', title: t( 'Section sign' ) },
+			{ character: '¶', title: t( 'Paragraph sign' ) },
+			{ character: '⁋', title: t( 'Reversed paragraph sign' ) }
 		] );
 	}
 }
