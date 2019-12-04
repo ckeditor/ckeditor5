@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Improved markup operation performance of the editor with the image plugin enabled. See [ckeditor/ckeditor5#4504](https://github.com/ckeditor/ckeditor5/issues/4504). ([6c7fc94](https://github.com/ckeditor/ckeditor5-image/commit/6c7fc94))
+
+### Other changes
+
+* Updated translations. ([01cdb59](https://github.com/ckeditor/ckeditor5-image/commit/01cdb59)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v14.0.0...v15.0.0) (2019-10-23)
 
 ### MAJOR BREAKING CHANGES
