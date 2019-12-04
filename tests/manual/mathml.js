@@ -98,18 +98,21 @@ class MathMLEditing extends Plugin {
 		} );
 
 		function createMathMLView( modelItem, viewWriter ) {
-			const widgetElement = viewWriter.createUIElement( 'span', {
+			const widgetElement = viewWriter.createContainerElement( 'span', {
 				class: 'ck-math-widget'
-			}, function( domDocument ) {
-				const domElement = this.toDomElement( domDocument );
-
-				const mathElement = document.createElementNS( 'http://www.w3.org/1998/Math/MathML', 'math' );
-				mathElement.innerHTML = modelItem.getAttribute( 'formula' );
-
-				domElement.appendChild( mathElement );
-
-				return domElement;
 			} );
+
+			const mathContainer = viewWriter.createUIElement( 'span', {}, function( domDocument ) {
+				const containerDOMElement = this.toDomElement( domDocument );
+				const mathDOMElement = document.createElementNS( 'http://www.w3.org/1998/Math/MathML', 'math' );
+				mathDOMElement.innerHTML = modelItem.getAttribute( 'formula' );
+
+				containerDOMElement.appendChild( mathDOMElement );
+
+				return containerDOMElement;
+			} );
+
+			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), mathContainer );
 
 			return widgetElement;
 		}
