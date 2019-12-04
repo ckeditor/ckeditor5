@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Only instances of the `Error` class will be handled by`Watchdog`. Closes [ckeditor/ckeditor5#5678](https://github.com/ckeditor/ckeditor5/issues/5678). ([3f24a2e](https://github.com/ckeditor/ckeditor5-watchdog/commit/3f24a2e))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v11.0.0...v15.0.0) (2019-10-23)
 
 ### Other changes
