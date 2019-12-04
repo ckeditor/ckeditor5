@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Link preview in the balloon should have `rel="noopener noreferrer"` set for security reasons. Closes [ckeditor/ckeditor5#5746](https://github.com/ckeditor/ckeditor5/issues/5746). ([5b921b4](https://github.com/ckeditor/ckeditor5-link/commit/5b921b4))
+
+### Other changes
+
+* Updated translations. ([5c84f57](https://github.com/ckeditor/ckeditor5-link/commit/5c84f57)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v11.1.2...v15.0.0) (2019-10-23)
 
 ### Other changes
