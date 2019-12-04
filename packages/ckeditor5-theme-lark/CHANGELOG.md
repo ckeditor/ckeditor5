@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### MAJOR BREAKING CHANGES
+
+* The `--ck-color-focus-shadow` custom property is now `--ck-color-focus-outer-shadow`.
+
+### Features
+
+* Added styles for the code block feature UI (see [ckeditor/ckeditor5#436](https://github.com/ckeditor/ckeditor5/issues/436)). ([dcce0f1](https://github.com/ckeditor/ckeditor5-theme-lark/commit/dcce0f1))
+* Implemented styles for `.ck-button` with a keystroke preview (see [ckeditor/ckeditor5#5782](https://github.com/ckeditor/ckeditor5/issues/5782)). ([8427306](https://github.com/ckeditor/ckeditor5-theme-lark/commit/8427306))
+
+### Bug fixes
+
+* Enabled additional box-shadow on `.ck-button` to meet WCAG AA recommendations. Adjusted the color of the `--ck-color-focus-border` for the same reason (editables, widget selection, etc.). Closes [ckeditor/ckeditor5#5580](https://github.com/ckeditor/ckeditor5/issues/5580). ([0fe1500](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0fe1500))
+
+  Also: 
+  * Optimized the color gird component for WCAG AA. 
+  * Imported insert table UI styles from ckeditor5-table (code refactoring).
+     * Improved the table UI contrast and accessibility.
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v14.2.0...v15.0.0) (2019-10-23)
 
 ### Bug fixes
