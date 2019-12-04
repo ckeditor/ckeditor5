@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([b99249d](https://github.com/ckeditor/ckeditor5-autosave/commit/b99249d)) 
+* Updated translations. ([b99249d](https://github.com/ckeditor/ckeditor5-autosave/commit/b99249d))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.5...v15.0.0) (2019-10-23)
@@ -16,7 +16,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([115bf18](https://github.com/ckeditor/ckeditor5-autosave/commit/115bf18)) 
+* Updated translations. ([115bf18](https://github.com/ckeditor/ckeditor5-autosave/commit/115bf18))
 
 
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.4...v11.0.5) (2019-08-26)
