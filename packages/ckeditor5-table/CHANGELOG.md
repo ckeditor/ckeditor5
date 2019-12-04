@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* The `MergeCellCommand` will not merge column header cells with body cells. ([c9c6954](https://github.com/ckeditor/ckeditor5-table/commit/c9c6954))
+
+### Other changes
+
+* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c)) 
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (2019-10-23)
 
 ### Bug fixes
