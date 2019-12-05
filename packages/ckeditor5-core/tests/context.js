@@ -80,7 +80,7 @@ describe( 'Context', () => {
 	} );
 
 	describe( 'plugins', () => {
-		it( 'should throw when plugin added to the context is not marked as a ContextPlugin #1', async () => {
+		it( 'should throw when plugin added to the context is not marked as a ContextPlugin (Plugin)', async () => {
 			class EditorPlugin extends Plugin {}
 
 			let caughtError;
@@ -92,10 +92,11 @@ describe( 'Context', () => {
 			}
 
 			expect( caughtError ).to.instanceof( CKEditorError );
-			expect( caughtError.message ).match( /^context-initplugins: Only plugins marked as a ContextPlugin are allowed./ );
+			expect( caughtError.message )
+				.match( /^context-initplugins-invalid-plugin: Only plugin marked as a ContextPlugin is allowed./ );
 		} );
 
-		it( 'should throw when plugin added to the context is not marked as a ContextPlugin #2', async () => {
+		it( 'should throw when plugin added to the context is not marked as a ContextPlugin (Function)', async () => {
 			function EditorPlugin() {}
 
 			let caughtError;
@@ -107,7 +108,8 @@ describe( 'Context', () => {
 			}
 
 			expect( caughtError ).to.instanceof( CKEditorError );
-			expect( caughtError.message ).match( /^context-initplugins: Only plugins marked as a ContextPlugin are allowed./ );
+			expect( caughtError.message )
+				.match( /^context-initplugins-invalid-plugin: Only plugin marked as a ContextPlugin is allowed./ );
 		} );
 
 		it( 'should throw when plugin is added to the context by name', async () => {
@@ -120,7 +122,8 @@ describe( 'Context', () => {
 			}
 
 			expect( caughtError ).to.instanceof( CKEditorError );
-			expect( caughtError.message ).match( /^context-initplugins: Only constructor is allowed as a Context plugin./ );
+			expect( caughtError.message )
+				.match( /^context-initplugins-constructor-only: Only constructor is allowed as a Context plugin./ );
 		} );
 
 		it( 'should not throw when plugin as a function, marked as a ContextPlugin is added to the context', async () => {

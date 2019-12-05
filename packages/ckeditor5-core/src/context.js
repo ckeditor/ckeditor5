@@ -72,8 +72,6 @@ export default class Context {
 	 * Adds a reference to the editor to which context is injected.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Boolean} isHost Flag defines if context was created by this editor. It is used to decide if the context
-	 * should be destroyed along with the editor instance.
 	 */
 	addEditor( editor ) {
 		this._editors.add( editor );
@@ -99,11 +97,19 @@ export default class Context {
 
 		for ( const Plugin of plugins ) {
 			if ( typeof Plugin != 'function' ) {
-				throw new CKEditorError( 'context-initplugins: Only constructor is allowed as a Context plugin.', null, { Plugin } );
+				throw new CKEditorError(
+					'context-initplugins-constructor-only: Only constructor is allowed as a Context plugin.',
+					null,
+					{ Plugin }
+				);
 			}
 
 			if ( Plugin.isContextPlugin !== true ) {
-				throw new CKEditorError( 'context-initplugins: Only plugins marked as a ContextPlugin are allowed.', null, { Plugin } );
+				throw new CKEditorError(
+					'context-initplugins-invalid-plugin: Only plugin marked as a ContextPlugin is allowed.',
+					null,
+					{ Plugin }
+				);
 			}
 		}
 
