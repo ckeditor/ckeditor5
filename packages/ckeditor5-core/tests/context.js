@@ -26,6 +26,29 @@ describe( 'Context', () => {
 		} );
 	} );
 
+	describe( 'getConfigForEditor()', () => {
+		it( 'should return the configuration without plugin config', () => {
+			class FooPlugin extends ContextPlugin {}
+			class BarPlugin extends ContextPlugin {}
+			class BomPlugin extends ContextPlugin {}
+
+			const context = new Context( {
+				language: { ui: 'pl', content: 'ar' },
+				plugins: [ FooPlugin, BarPlugin ],
+				extraPlugins: [ BomPlugin ],
+				removePlugins: [ FooPlugin ],
+				foo: 1,
+				bar: 'bom'
+			} );
+
+			expect( context.getConfigForEditor() ).to.be.deep.equal( {
+				language: { ui: 'pl', content: 'ar' },
+				foo: 1,
+				bar: 'bom'
+			} );
+		} );
+	} );
+
 	describe( 'locale', () => {
 		it( 'is instantiated and t() is exposed', () => {
 			const context = new Context();

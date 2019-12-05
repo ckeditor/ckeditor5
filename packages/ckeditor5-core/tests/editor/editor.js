@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout */
+/* globals document, window, setTimeout */
 
 import Editor from '../../src/editor/editor';
 import Context from '../../src/context';
@@ -225,6 +225,41 @@ describe( 'Editor', () => {
 			const editor = new TestEditor( { context } );
 
 			expect( editor.plugins._externalPlugins.has( ContextPlugin ) ).to.equal( true );
+		} );
+
+		it( 'should get configuration from the context', async () => {
+			const context = await Context.create( { cfoo: 'bar' } );
+			const editor = await TestEditor.create( { context } );
+
+			expect( editor.config.get( 'cfoo' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should not overwrite the default configuration', async () => {
+			const context = await Context.create( { cfoo: 'bar' } );
+			const editor = await TestEditor.create( { context, 'cfoo': 'bom' } );
+
+			expect( editor.config.get( 'cfoo' ) ).to.equal( 'bom' );
+		} );
+
+		it( 'should not copy plugins configuration', async () => {
+			class ContextPlugin {
+				static get isContextPlugin() {
+					return true;
+				}
+			}
+
+			const context = await Context.create( { plugins: [ ContextPlugin ] } );
+			const editor = await TestEditor.create( { context } );
+
+			expect( editor.config.get( 'plugins' ) ).to.be.undefined;
+		} );
+
+		it( 'should pass DOM element using reference, not copy', async () => {
+			const element = document.createElement( 'div' );
+			const context = await Context.create( { efoo: element } );
+			const editor = await TestEditor.create( { context } );
+
+			expect( editor.config.get( 'efoo' ) ).to.equal( element );
 		} );
 	} );
 

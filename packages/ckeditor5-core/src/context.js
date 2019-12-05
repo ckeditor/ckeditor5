@@ -111,6 +111,26 @@ export default class Context {
 	}
 
 	/**
+	 * Returns context configuration which will be copied to editors created using this context.
+	 *
+	 * The configuration returned by this method has removed plugins configuration - plugins are shared with all editors
+	 * in a special way.
+	 *
+	 * @returns {Object} Configuration as a plain object.
+	 */
+	getConfigForEditor() {
+		const result = {};
+
+		for ( const name of this.config.names() ) {
+			if ( ![ 'plugins', 'removePlugins', 'extraPlugins' ].includes( name ) ) {
+				result[ name ] = this.config.get( name );
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Destroys the context instance, releasing all resources used by it.
 	 *
 	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.

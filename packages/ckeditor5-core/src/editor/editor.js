@@ -55,7 +55,7 @@ export default class Editor {
 		 * @readonly
 		 * @type {module:core/context~Context}
 		 */
-		this.context = config.context || new Context( config );
+		this.context = config.context || new Context();
 		this.context.addEditor( this );
 
 		/**
@@ -79,6 +79,7 @@ export default class Editor {
 		 */
 		this.config = new Config( config, this.constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
+		this.config.define( this.context.getConfigForEditor() );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
