@@ -460,9 +460,9 @@ describe( 'Config', () => {
 		} );
 	} );
 
-	describe( 'iterator', () => {
-		it( 'should return top level keys of the configuration', () => {
-			expect( Array.from( config ) ).to.be.deep.equal( [ 'creator', 'language', 'resize', 'toolbar', 'options' ] );
+	describe( 'names()', () => {
+		it( 'should return an iterator of top level names of the configuration', () => {
+			expect( Array.from( config.names() ) ).to.be.deep.equal( [ 'creator', 'language', 'resize', 'toolbar', 'options' ] );
 		} );
 	} );
 } );
