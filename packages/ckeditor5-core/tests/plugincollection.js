@@ -8,6 +8,7 @@
 import Editor from '../src/editor/editor';
 import PluginCollection from '../src/plugincollection';
 import Plugin from '../src/plugin';
+import ContextPlugin from '../src/contextplugin';
 import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, availablePlugins;
@@ -336,6 +337,51 @@ describe( 'PluginCollection', () => {
 					expect( plugins.get( PluginA ) ).to.be.an.instanceof( PluginA );
 					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
 				} );
+		} );
+
+		it( 'should throw when context plugin requires not a context plugin', async () => {
+			class FooContextPlugin extends ContextPlugin {}
+			FooContextPlugin.requires = [ PluginA ];
+
+			const plugins = new PluginCollection( editor, [ FooContextPlugin, PluginA ] );
+
+			const consoleErrorStub = sinon.stub( console, 'error' );
+			let error;
+
+			try {
+				await plugins.init( [ FooContextPlugin ] );
+			} catch ( err ) {
+				error = err;
+			}
+
+			assertCKEditorError( error, /^plugincollection-context-required/ );
+			sinon.assert.calledOnce( consoleErrorStub );
+		} );
+
+		it( 'should not throw when non context plugin requires context plugin', async () => {
+			class FooContextPlugin extends ContextPlugin {}
+
+			class BarPlugin extends Plugin {}
+			BarPlugin.requires = [ FooContextPlugin ];
+
+			const plugins = new PluginCollection( editor, [ FooContextPlugin, BarPlugin ] );
+
+			await plugins.init( [ BarPlugin ] );
+
+			expect( getPlugins( plugins ) ).to.length( 2 );
+		} );
+
+		it( 'should not throw when context plugin requires context plugin', async () => {
+			class FooContextPlugin extends ContextPlugin {}
+
+			class BarContextPlugin extends ContextPlugin {}
+			BarContextPlugin.requires = [ FooContextPlugin ];
+
+			const plugins = new PluginCollection( editor, [ FooContextPlugin, BarContextPlugin ] );
+
+			await plugins.init( [ BarContextPlugin ] );
+
+			expect( getPlugins( plugins ) ).to.length( 2 );
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', () => {
