@@ -282,8 +282,20 @@ export default class PluginCollection {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
 
 						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
+							/**
+							 * If a plugin is a `ContextPlugin` all plugins it requires should also be a `ContextPlugin`,
+							 * instead of `Plugin`. In other words, if one plugin can be used in the `Context`,
+							 * all its requirements also should be ready to be used in the`Context`. Note that context
+							 * provides only a part of the API provided by the editor. If one plugin needs a full
+							 * editor API, all plugins which require it, are considered as plugins which need a full
+							 * editor API.
+							 *
+							 * @error plugincollection-context-required
+							 * @param {String} plugin The name of the required plugin.
+							 * @param {String} requiredBy The name of the parent plugin.
+							 */
 							throw new CKEditorError(
-								'plugincollection-context-required: Context plugin can not require plugin which is not context plugin',
+								'plugincollection-context-required: Context plugin can not require plugin which is not a context plugin',
 								null,
 								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
@@ -294,8 +306,8 @@ export default class PluginCollection {
 							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
 							 *
 							 * @error plugincollection-required
-							 * @param {Function} plugin The required plugin.
-							 * @param {Function} requiredBy The parent plugin.
+							 * @param {String} plugin The name of the required plugin.
+							 * @param {String} requiredBy The name of the parent plugin.
 							 */
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
