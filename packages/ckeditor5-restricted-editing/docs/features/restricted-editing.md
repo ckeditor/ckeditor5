@@ -15,6 +15,10 @@ You can imagine a workflow in which a certain group of users is responsible for 
 
 By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities.
 
+<info-box>
+	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode.
+</info-box>
+
 ## Demo
 
 The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode.
