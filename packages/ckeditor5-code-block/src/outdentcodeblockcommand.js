@@ -24,7 +24,7 @@ export default class OutdentCodeBlockCommand extends Command {
 		super( editor );
 
 		/**
-		 * A sequence of characters or removed from the line when the command is executed.
+		 * A sequence of characters removed from the line when the command is executed.
 		 *
 		 * @readonly
 		 * @private
