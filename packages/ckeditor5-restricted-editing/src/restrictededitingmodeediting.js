@@ -18,11 +18,11 @@ import {
 import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
 
 /**
- * The Restricted Editing Mode editing feature.
+ * The restricted editing mode editing feature.
  *
- * * It introduces the exception marker group that renders to `<spans>` with the `ck-restricted-editing-exception` CSS class.
+ * * It introduces the exception marker group that renders to `<span>` elements with the `ck-restricted-editing-exception` CSS class.
  * * It registers the `'goToPreviousRestrictedEditingException'` and `'goToNextRestrictedEditingException'` commands.
- * * Also enables highlighting exception markers that are selected.
+ * * It also enables highlighting exception markers that are selected.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -45,7 +45,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} );
 
 		/**
-		 * Command names that are enabled outside non-restricted regions.
+		 * Command names that are enabled outside the non-restricted regions.
 		 *
 		 * @type {Set.<String>}
 		 * @private
@@ -55,7 +55,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		/**
 		 * Commands allowed in non-restricted areas.
 		 *
-		 * Commands always enabled combines typing feature commands: `'typing'`, `'delete'` and `'forwardDelete'` with commands defined
+		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'forwardDelete'` with commands defined
 		 * in the feature configuration.
 		 *
 		 * @type {Set<string>}
@@ -95,11 +95,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Setups restricted mode editing conversion:
+	 * Sets up the restricted mode editing conversion:
 	 *
-	 * * ucpast & downcast converters
-	 * * marker highlighting in the edting area
-	 * * marker post-fixers
+	 * * ucpast & downcast converters,
+	 * * marker highlighting in the edting area,
+	 * * marker post-fixers.
 	 *
 	 * @private
 	 */
@@ -166,7 +166,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Setups the commands toggling - enables or disables commands based on user selection.
+	 * Sets up the command toggling which enables or disables commands based on the user selection.
 	 *
 	 * @private
 	 */
@@ -182,7 +182,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Checks if commands should be enabled or disabled based on current selection.
+	 * Checks if commands should be enabled or disabled based on the current selection.
 	 *
 	 * @private
 	 */
