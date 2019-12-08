@@ -132,7 +132,7 @@ ClassicEditor
 		// ...
 		link: {
 			decorators: {
-				addTargetToLinks: {
+				addTargetToExternalLinks: {
 					mode: 'manual',
 					label: 'Open in a new tab',
 					attributes: {
