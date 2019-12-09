@@ -10,7 +10,7 @@
 	--ck-color-restricted-editing-selected-exception-brackets: hsla(31, 100%, 40%, .6);
 }
 
-.ck-editor__editable .ck-restricted-editing-exception {
+.ck-editor__editable .restricted-editing-exception {
 	transition: .2s ease-in-out background;
 	background-color: var(--ck-color-restricted-editing-exception-background);
 	border: 1px solid;
@@ -24,7 +24,7 @@
 		var(--ck-color-restricted-editing-exception-brackets) 100%
 	) 1;
 
-	&.ck-restricted-editing-exception_selected {
+	&.restricted-editing-exception_selected {
 		background-color: var(--ck-color-restricted-editing-selected-exception-background);
 		border-image: linear-gradient(
 			to right,
@@ -35,7 +35,7 @@
 		) 1;
 	}
 
-	&.ck-restricted-editing-exception_collapsed {
+	&.restricted-editing-exception_collapsed {
 		padding-left: 1em;
 	}
 }
