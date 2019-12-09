@@ -28,8 +28,18 @@ describe( 'CharacterGridView', () => {
 		} );
 
 		it( 'creates #element from template', () => {
+			const tile = view.createTile( 'ε', 'foo bar baz' );
+			const tilesElement = view.element.firstChild;
+
+			view.tiles.add( tile );
+
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-character-grid' ) ).to.be.true;
+
+			expect( tilesElement.classList.contains( 'ck' ) ).to.be.true;
+			expect( tilesElement.classList.contains( 'ck-character-grid__tiles' ) ).to.be.true;
+
+			expect( tile.element.parentNode ).to.equal( tilesElement );
 		} );
 	} );
 

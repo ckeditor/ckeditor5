@@ -4,6 +4,8 @@
  */
 
 .ck.ck-character-grid {
-	display: grid;
-	grid-template-columns: repeat(10, 1fr);
+	& .ck-character-grid__tiles {
+		display: grid;
+		grid-template-columns: repeat( 10, 1fr );
+	}
 }
