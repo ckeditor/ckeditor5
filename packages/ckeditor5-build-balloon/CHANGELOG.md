@@ -479,7 +479,7 @@ This is a major releases that introduces many smaller features, dozens of bug fi
 
 If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
 
-Blog post is coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v11.0.0-released/
 
 ### Dependencies
 
