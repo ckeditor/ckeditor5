@@ -4,12 +4,24 @@
  */
 
 /**
- * @module special-characters/specialcharacters
+ * @module special-characters/specialcharactersarrows
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SpecialCharacters from './specialcharacters';
 
+/**
+ * A plugin provides special characters for the "Arrows" category.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., SpecialCharacters, SpecialCharactersArrows ],
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class SpecialCharactersArrows extends Plugin {
 	/**
 	 * @inheritDoc
@@ -27,7 +39,7 @@ export default class SpecialCharactersArrows extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
 			{ title: t( 'leftwards double arrow' ), character: '⇐' },
 			{ title: t( 'rightwards double arrow' ), character: '⇒' },
 			{ title: t( 'upwards double arrow' ), character: '⇑' },

@@ -4,12 +4,24 @@
  */
 
 /**
- * @module special-characters/specialcharacters
+ * @module special-characters/specialcharacterstext
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SpecialCharacters from './specialcharacters';
 
+/**
+ * A plugin provides special characters for the "Text" category.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., SpecialCharacters, SpecialCharactersText ],
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class SpecialCharactersText extends Plugin {
 	/**
 	 * @inheritDoc
@@ -27,7 +39,7 @@ export default class SpecialCharactersText extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Text', [
+		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Text', [
 			{ character: '‹', title: t( 'Single left-pointing angle quotation mark' ) },
 			{ character: '›', title: t( 'Single right-pointing angle quotation mark' ) },
 			{ character: '«', title: t( 'Left-pointing double angle quotation mark' ) },

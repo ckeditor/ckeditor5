@@ -4,12 +4,24 @@
  */
 
 /**
- * @module special-characters/specialcharacters
+ * @module special-characters/specialcharacterslatin
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SpecialCharacters from './specialcharacters';
 
+/**
+ * A plugin provides special characters for the "Latin" category.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., SpecialCharacters, SpecialCharactersLatin ],
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class SpecialCharactersLatin extends Plugin {
 	/**
 	 * @inheritDoc
@@ -27,7 +39,7 @@ export default class SpecialCharactersLatin extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Latin', [
+		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Latin', [
 			{ character: 'Ā', title: t( 'Latin capital letter a with macron' ) },
 			{ character: 'ā', title: t( 'Latin small letter a with macron' ) },
 			{ character: 'Ă', title: t( 'Latin capital letter a with breve' ) },

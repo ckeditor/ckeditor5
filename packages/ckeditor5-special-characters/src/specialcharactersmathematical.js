@@ -4,12 +4,24 @@
  */
 
 /**
- * @module special-characters/specialcharacters
+ * @module special-characters/specialcharactersmathematical
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SpecialCharacters from './specialcharacters';
 
+/**
+ * A plugin provides special characters for the "Mathematical" category.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., SpecialCharacters, SpecialCharactersMathematical ],
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class SpecialCharactersMathematical extends Plugin {
 	/**
 	 * @inheritDoc
@@ -27,7 +39,7 @@ export default class SpecialCharactersMathematical extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
+		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
 			{ character: '<', title: t( 'Less-than sign' ) },
 			{ character: '>', title: t( 'Greater-than sign' ) },
 			{ character: '≤', title: t( 'Less-than or equal to' ) },

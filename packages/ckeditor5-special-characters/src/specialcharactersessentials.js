@@ -4,7 +4,7 @@
  */
 
 /**
- * @module special-characters/specialcharacters
+ * @module special-characters/specialcharactersessentials
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -25,6 +25,8 @@ import SpecialCharactersText from './specialcharacterstext';
  *			} )
  *			.then( ... )
  *			.catch( ... );
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharactersEssentials extends Plugin {
 	/**

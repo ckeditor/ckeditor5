@@ -4,12 +4,24 @@
  */
 
 /**
- * @module special-characters/specialcharacters
+ * @module special-characters/specialcharacterscurrency
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SpecialCharacters from './specialcharacters';
 
+/**
+ * A plugin provides special characters for the "Currency" category.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., SpecialCharacters, SpecialCharactersCurrency ],
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class SpecialCharactersCurrency extends Plugin {
 	/**
 	 * @inheritDoc
@@ -27,7 +39,7 @@ export default class SpecialCharactersCurrency extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Currency', [
+		editor.plugins.get( 'SpecialCharacters' ).addItems( 'Currency', [
 			{ character: '$', title: t( 'Dollar sign' ) },
 			{ character: '€', title: t( 'Euro sign' ) },
 			{ character: '¥', title: t( 'Yen sign' ) },
