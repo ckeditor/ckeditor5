@@ -13,7 +13,7 @@ import {
 } from './utils';
 
 /**
- * A model → view (both editing and data) converter for the `codeBlock` element.
+ * A model-to-view (both editing and data) converter for the `codeBlock` element.
  *
  * Sample input:
  *
@@ -30,7 +30,7 @@ import {
  * @param {module:engine/model/model~Model} model
  * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
  * configuration passed to the feature.
- * @param {Boolean} [useLabels=false] When `true`, the `<pre>` will get a `data-language` attribute with a
+ * @param {Boolean} [useLabels=false] When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
  * @returns {Function} Returns a conversion callback.
  */
@@ -83,7 +83,7 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 }
 
 /**
- * A model → data-view converter for the new line (`softBreak`) separator.
+ * A model-to-data view converter for the new line (`softBreak`) separator.
  *
  * Sample input:
  *
@@ -115,7 +115,7 @@ export function modelToDataViewSoftBreakInsertion( model ) {
 }
 
 /**
- * A view → model converter for `<pre>` with `<code>` html.
+ * A view-to-model converter for `<pre>` with the `<code>` HTML.
  *
  * Sample input:
  *

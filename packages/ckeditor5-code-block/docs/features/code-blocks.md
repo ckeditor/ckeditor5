@@ -6,7 +6,11 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the editor. Code blocks have their [specific languages](#configuring-code-block-languages) (e.g. "Java" or "CSS") and support basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS") and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+
+<info-box>
+	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
+</info-box>
 
 ## Demo
 
@@ -14,13 +18,13 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 
 ## Configuring code block languages
 
-Each code block can have its language. The language of the code block is represented as a CSS class of the `<code>` element, both when editing and in the editor data:
+Each code block can be assigned a programming language. The language of the code block is represented as a CSS class of the `<code>` element, both when editing and in the editor data:
 
 ```html
 <pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
 ```
 
-It is possible to configure which languages are available. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and XML/HTML):
+It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and XML/HTML):
 
 ```js
 ClassicEditor
@@ -38,7 +42,7 @@ ClassicEditor
 
 {@snippet features/code-block-custom-languages}
 
-By default, the CSS class of the `<code>` element in data and editing is generated using the `language` property (prefixed with "language-"). You can customize it by specifying an optional `class` property:
+By default, the CSS class of the `<code>` element in the data and editing is generated using the `language` property (prefixed with "language-"). You can customize it by specifying an optional `class` property:
 
 ```js
 ClassicEditor
@@ -64,14 +68,14 @@ ClassicEditor
 ```
 
 <info-box>
-	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblock~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (`language-plaintext` CSS class).
+	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblock~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (the `language-plaintext` CSS class).
 </info-box>
 
 ### Integration with code highlighters
 
-Although the live code block highlighting is impossible when editing in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
+Although live code block highlighting is impossible when editing in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
 
-The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
+The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
 
 ## Tips and tweaks
 
@@ -79,11 +83,11 @@ The code language {@link module:code-block/codeblock~CodeBlockConfig#languages c
 
 There could be situations when there is no obvious way to set the caret before or after a block of code and type. This can happen when the code block is preceded or followed by a widget (e.g. a table) or when the code block is the first or the last child of the document (or both).
 
-* To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. A new paragraph will be created before the code block you can type in.
+* To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. A new paragraph that you can type in will be created before the code block.
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the code blocks in CKEditor 5 rich text editor.}
 
-* To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph will be created after the code block you can type in.
+* To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph that you can type in will be created after the code block.
 
 {@img assets/img/typing-after.gif 770 The animation shows typing after the code blocks in CKEditor 5 rich text editor.}
 
@@ -101,7 +105,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 </info-box>
 
 <info-box>
-	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration `false`.
+	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
 </info-box>
 
 ### Preserving line indentation
@@ -112,13 +116,13 @@ To speed up the editing, when typing in a code block, the indentation of the cur
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
+To add the code blocks feature to your rich-text editor, install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-code-block
 ```
 
-And add it to your plugin list and the toolbar configuration:
+Then add it to your plugin list and the toolbar configuration:
 
 ```js
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
@@ -140,10 +144,10 @@ ClassicEditor
 
 The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
-* The `'codeBlock'` split button with a dropdown allowing to choose the language of the block,
+* The `'codeBlock'` split button with a dropdown allowing to choose the language of the block.
 * The {@link module:code-block/codeblockcommand~CodeBlockCommand `'codeBlock'`} command.
 
-	The command converts selected editor content into a code block. If no content is selected, it creates a new code block at the place of the selection.
+	The command converts selected WYSIWYG editor content into a code block. If no content is selected, it creates a new code block at the place of the selection.
 
 	You can choose which language the code block is written in when executing the command. The language will be set in the editor model and reflected as a CSS class visible in the editing view and the editor (data) output:
 
@@ -171,7 +175,7 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	]
 	```
 
-	**Note**: If you execute a command with a specific `language` when the selection is anchored in a code block and use the additional `forceValue: true` parameter, it will update the language of this particular block.
+	**Note**: If you execute the command with a specific `language` when the selection is anchored in a code block, and use the additional `forceValue: true` parameter, it will update the language of this particular block.
 
 	```js
 	editor.execute( 'codeBlock', { language: 'java', forceValue: true } );
@@ -180,10 +184,10 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	**Note**: If the selection is already in a code block, executing the command will convert the block back into plain paragraphs.
 * The {@link module:code-block/indentcodeblockcommand~IndentCodeBlockCommand `'indentCodeBlock'`} and {@link module:code-block/outdentcodeblockcommand~OutdentCodeBlockCommand `'outdentCodeBlock'`} commands.
 
-	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in [one of the chapters](#changing-line-indentation):
+	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in the [section about indentation](#changing-line-indentation):
 
-	* The former is enabled when the selection is anchored anywhere in the code block and allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
-	* The later is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from those lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
+	* The `'indentCodeBlock'` command is enabled when the selection is anchored anywhere in the code block and it allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
+	* The `'outdentCodeBlock'` command is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from these lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

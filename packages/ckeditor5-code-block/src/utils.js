@@ -12,11 +12,11 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 /**
  * Returns code block languages as defined in `config.codeBlock.languages` but processed:
  *
- * * to consider the editor localization, i.e. to display {@link module:code-block/codeblock~CodeBlockLanguageDefinition}
- * in the correct language — there is no way to use {@link module:utils/locale~Locale#t} when the user
+ * * To consider the editor localization, i.e. to display {@link module:code-block/codeblock~CodeBlockLanguageDefinition}
+ * in the correct language. There is no way to use {@link module:utils/locale~Locale#t} when the user
  * configuration is defined because the editor does not exist yet.
- * * to make sure each definition has a CSS class associated with it even if not specified
- * in the original config.
+ * * To make sure each definition has a CSS class associated with it even if not specified
+ * in the original configuration.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>}.
@@ -39,7 +39,7 @@ export function getNormalizedAndLocalizedLanguageDefinitions( editor ) {
 }
 
 /**
- * Returns an object associating certain language definition properties with another. For instance:
+ * Returns an object associating certain language definition properties with others. For instance:
  *
  * For:
  *
@@ -106,7 +106,7 @@ export function getLeadingWhiteSpaces( textNode ) {
  *		</DocumentFragment>
  *
  * @param {module:engine/model/writer~Writer} writer
- * @param {String} text A raw code text to be converted.
+ * @param {String} text The raw code text to be converted.
  */
 export function rawSnippetTextToModelDocumentFragment( writer, text ) {
 	const fragment = writer.createDocumentFragment();
@@ -140,7 +140,7 @@ export function rawSnippetTextToModelDocumentFragment( writer, text ) {
  *		    baz]qux                                   ^bazqux
  *		</codeBlock>                               </codeBlock>
  *
- * it also works across other non–code blocks:
+ * It also works across other non–code blocks:
  *
  *		<codeBlock>                                <codeBlock>
  *		    foo[bar                                   ^foobar
@@ -150,8 +150,8 @@ export function rawSnippetTextToModelDocumentFragment( writer, text ) {
  *		    baz]qux                                   ^bazqux
  *		</codeBlock>                               </codeBlock>
  *
- * **Note:** The positions are in the reverse order so they do not get outdated when iterating over them and
- * the writer inserts or removes things.
+ * **Note:** The positions are in reverse order so they do not get outdated when iterating over them and
+ * the writer inserts or removes things at the same time.
  *
  * **Note:** The position is situated after the leading white spaces in the text node.
  *
@@ -194,7 +194,7 @@ export function getIndentOutdentPositions( model ) {
 }
 
 /**
- * Checks if any of the blocks within model selection is a code block.
+ * Checks if any of the blocks within the model selection is a code block.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {Boolean}
