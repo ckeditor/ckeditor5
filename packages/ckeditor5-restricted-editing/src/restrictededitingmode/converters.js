@@ -10,12 +10,12 @@
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { getMarkerAtPosition } from './utils';
 
-const HIGHLIGHT_CLASS = 'ck-restricted-editing-exception_selected';
+const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
 
 /**
  * Adds a visual highlight style to a restricted editing exception the selection is anchored to.
  *
- * Highlight is turned on by adding the `.ck-restricted-editing-exception_selected` class to the
+ * Highlight is turned on by adding the `.restricted-editing-exception_selected` class to the
  * exception in the view:
  *
  * * The class is removed before the conversion has started, as callbacks added with the `'highest'` priority
