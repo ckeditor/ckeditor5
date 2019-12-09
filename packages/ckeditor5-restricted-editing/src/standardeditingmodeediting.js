@@ -14,7 +14,7 @@ import RestrictedEditingExceptionCommand from './restrictededitingexceptioncomma
  * The Standard Editing Mode editing feature.
  *
  * * It introduces the `restrictedEditingException` text attributes that is rendered as
- * `<spans>` with the `ck-restricted-editing-exception` CSS class.
+ * `<spans>` with the `restricted-editing-exception` CSS class.
  * * It registers the `'restrictedEditingException'` command.
  *
  * @extends module:core/plugin~Plugin
@@ -39,7 +39,7 @@ export default class StandardEditingModeEditing extends Plugin {
 			model: 'restrictedEditingException',
 			view: {
 				name: 'span',
-				classes: 'ck-restricted-editing-exception'
+				classes: 'restricted-editing-exception'
 			}
 		} );
 
@@ -48,7 +48,7 @@ export default class StandardEditingModeEditing extends Plugin {
 			view: ( modelAttributeValue, viewWriter ) => {
 				if ( modelAttributeValue ) {
 					// Make the restricted editing <span> outer-most in the view.
-					return viewWriter.createAttributeElement( 'span', { class: 'ck-restricted-editing-exception' }, { priority: -10 } );
+					return viewWriter.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
 				}
 			}
 		} );

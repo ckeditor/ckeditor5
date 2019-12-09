@@ -65,8 +65,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		describe( 'upcast', () => {
-			it( 'should convert <span class="ck-restricted-editing-exception"> to marker', () => {
-				editor.setData( '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' );
+			it( 'should convert <span class="restricted-editing-exception"> to marker', () => {
+				editor.setData( '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' );
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
 
@@ -76,10 +76,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 				expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
 			} );
 
-			it( 'should convert multiple <span class="ck-restricted-editing-exception">', () => {
+			it( 'should convert multiple <span class="restricted-editing-exception">', () => {
 				editor.setData(
-					'<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' +
-					'<p>ABCDEF<span class="ck-restricted-editing-exception">GHIJK</span>LMNOPQRST</p>'
+					'<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
+					'<p>ABCDEF<span class="restricted-editing-exception">GHIJK</span>LMNOPQRST</p>'
 				);
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
@@ -113,7 +113,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				const expectedView = '<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>';
+				const expectedView = '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>';
 				expect( editor.getData() ).to.equal( expectedView );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
@@ -131,9 +131,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 				} );
 
-				expect( editor.getData() ).to.equal( '<p>foo <span class="ck-restricted-editing-exception"></span>bar baz</p>' );
+				expect( editor.getData() ).to.equal( '<p>foo <span class="restricted-editing-exception"></span>bar baz</p>' );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_collapsed"></span>bar baz</p>'
+					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_collapsed"></span>bar baz</p>'
 				);
 			} );
 
@@ -152,11 +152,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<p><span class="ck-restricted-editing-exception"><b>foo bar baz</b></span></p>'
+					'<p><span class="restricted-editing-exception"><b>foo bar baz</b></span></p>'
 				);
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<p>' +
-						'<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected"><b>foo bar baz</b></span>' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected"><b>foo bar baz</b></span>' +
 					'</p>'
 				);
 			} );
@@ -205,12 +205,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			expect( editor.getData() ).to.equal(
-				'<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' +
-				'<p>xxx <span class="ck-restricted-editing-exception">yRyy</span> zzz</p>' );
+				'<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
+				'<p>xxx <span class="restricted-editing-exception">yRyy</span> zzz</p>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
-				'<p>foo <span class="ck-restricted-editing-exception">bar</span> baz</p>' +
-				'<p>xxx <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">yRyy</span> zzz</p>' );
+				'<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' +
+				'<p>xxx <span class="restricted-editing-exception restricted-editing-exception_selected">yRyy</span> zzz</p>' );
 		} );
 
 		it( 'should block user typing outside exception markers', () => {
@@ -540,7 +540,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">b{a}r</span> baz</p>'
+				'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>'
 			);
 		} );
 
@@ -559,13 +559,13 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">b{a}r</span> baz</p>'
+				'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>'
 			);
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 0 ) );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>{}foo <span class="ck-restricted-editing-exception">bar</span> baz</p>'
+				'<p>{}foo <span class="restricted-editing-exception">bar</span> baz</p>'
 			);
 		} );
 
@@ -584,13 +584,13 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>{}foo <span class="ck-restricted-editing-exception">bar</span> baz</p>'
+				'<p>{}foo <span class="restricted-editing-exception">bar</span> baz</p>'
 			);
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 6 ) );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">ba{}r</span> baz</p>'
+				'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">ba{}r</span> baz</p>'
 			);
 		} );
 
@@ -614,7 +614,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">bFOO{a}r</span> baz</p>'
+					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">bFOO{a}r</span> baz</p>'
 				);
 			} );
 
@@ -640,7 +640,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">b{}r</span> baz</p>'
+					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{}r</span> baz</p>'
 				);
 			} );
 
@@ -667,7 +667,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				expect( getViewData( view ) ).to.equal(
 					'<p>foo ' +
-						'<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'<strong>b{a</strong>' +
 						'}r</span>' +
 					' baz</p>'
@@ -696,7 +696,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo {<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">ba}r</span> baz</p>'
+					'<p>foo {<span class="restricted-editing-exception restricted-editing-exception_selected">ba}r</span> baz</p>'
 				);
 			} );
 
@@ -728,7 +728,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				expect( getViewData( view ) ).to.equal(
 					'<p>' +
 						'<span>foo </span>' +
-						'<span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">' +
+						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'<span>b</span>{a}r' +
 						'</span>' +
 					' baz</p>'
@@ -737,7 +737,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				model.change( writer => writer.removeMarker( 'fooMarker' ) );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <span class="ck-restricted-editing-exception ck-restricted-editing-exception_selected">b{a}r</span> baz</p>'
+					'<p>foo <span class="restricted-editing-exception restricted-editing-exception_selected">b{a}r</span> baz</p>'
 				);
 			} );
 		} );
