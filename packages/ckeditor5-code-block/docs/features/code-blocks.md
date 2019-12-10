@@ -112,7 +112,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).
 
-{@img assets/img/code-blocks-preserve-indention.gif 770 The animation shows preserving indention inside code blocks in CKEditor 5 rich text editor.}
+{@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indention inside code blocks in CKEditor 5 rich text editor.}
 
 ## Installation
 
