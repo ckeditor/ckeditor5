@@ -85,11 +85,11 @@ There could be situations when there is no obvious way to set the caret before o
 
 * To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. A new paragraph that you can type in will be created before the code block.
 
-{@img assets/img/code-blocks-typing-before.gif 770 The animation shows typing before the code blocks in CKEditor 5 rich text editor.}
+	{@img assets/img/code-blocks-typing-before.gif 770 The animation shows typing before the code blocks in CKEditor 5 rich text editor.}
 
 * To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph that you can type in will be created after the code block.
 
-{@img assets/img/code-blocks-typing-after.gif 770 The animation shows typing after the code blocks in CKEditor 5 rich text editor.}
+	{@img assets/img/code-blocks-typing-after.gif 770 The animation shows typing after the code blocks in CKEditor 5 rich text editor.}
 
 ### Changing line indentation
 
