@@ -581,6 +581,10 @@ export default class PlaceholderUI extends Plugin {
 				withText: true
 			} );
 
+			// Disable placeholder button when command is disabled.
+			const command = editor.commands.get( 'placeholder' );
+			dropdownView.bind( 'isEnabled' ).to( command );
+
 			// Execute the command when the dropdown item is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
@@ -804,6 +808,10 @@ class PlaceholderUI extends Plugin {
 				tooltip: true,
 				withText: true
 			} );
+
+			// Disable placeholder button when command is disabled.
+			const command = editor.commands.get( 'placeholder' );
+			dropdownView.bind( 'isEnabled' ).to( command );
 
 			// Execute the command when the dropdown item is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
