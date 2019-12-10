@@ -17,8 +17,9 @@ ClassicEditor
 		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
 		toolbar: [
 			'heading', '|',
-			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', 'undo', 'redo', 'insertTable', '|',
-			'outdent', 'indent',
+			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', '|',
+			'outdent', 'indent', '|',
+			'undo', 'redo',
 		]
 	} )
 	.then( editor => {
