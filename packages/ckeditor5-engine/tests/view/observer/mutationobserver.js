@@ -404,7 +404,7 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		expect( lastMutations.length ).to.equal( 0 );
+		expect( lastMutations ).to.be.null;
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
@@ -417,7 +417,7 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		expect( lastMutations.length ).to.equal( 0 );
+		expect( lastMutations ).to.be.null;
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
@@ -449,7 +449,7 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		expect( lastMutations.length ).to.equal( 0 );
+		expect( lastMutations ).to.be.null;
 	} );
 
 	// This case is more tricky than the previous one because DOMConverter will return a different
@@ -541,11 +541,15 @@ describe( 'MutationObserver', () => {
 			return element;
 		}
 
+		const renderStub = sinon.stub();
+
 		beforeEach( () => {
 			const uiElement = createUIElement( 'div' );
 			viewRoot._appendChild( uiElement );
 
 			view.forceRender();
+			renderStub.reset();
+			view.on( 'render', renderStub );
 		} );
 
 		it( 'should not collect text mutations from UIElement', () => {
@@ -553,7 +557,15 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( lastMutations.length ).to.equal( 0 );
+			expect( lastMutations ).to.be.null;
+		} );
+
+		it( 'should not cause a render from UIElement', () => {
+			domEditor.childNodes[ 2 ].childNodes[ 0 ].data = 'foom';
+
+			mutationObserver.flush();
+
+			expect( renderStub.callCount ).to.be.equal( 0 );
 		} );
 
 		it( 'should not collect child mutations from UIElement', () => {
@@ -562,7 +574,16 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( lastMutations.length ).to.equal( 0 );
+			expect( lastMutations ).to.be.null;
+		} );
+
+		it( 'should not cause a render when UIElement gets a child', () => {
+			const span = document.createElement( 'span' );
+			domEditor.childNodes[ 2 ].appendChild( span );
+
+			mutationObserver.flush();
+
+			expect( renderStub.callCount ).to.be.equal( 0 );
 		} );
 	} );
 
