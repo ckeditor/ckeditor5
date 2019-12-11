@@ -528,6 +528,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	describe( 'UIElement integration', () => {
+		const renderStub = sinon.stub();
 		function createUIElement( name ) {
 			const element = new UIElement( name );
 
@@ -540,8 +541,6 @@ describe( 'MutationObserver', () => {
 
 			return element;
 		}
-
-		const renderStub = sinon.stub();
 
 		beforeEach( () => {
 			const uiElement = createUIElement( 'div' );
