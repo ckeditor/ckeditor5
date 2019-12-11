@@ -100,6 +100,10 @@ export default class SpecialCharactersEmoji extends Plugin {
 
 After adding the above plugin into the editor, the new special characters category will be available in the dropdown.
 
+<info-box warning>
+    A title of a special character must be unique across the entire special characters set.
+</info-box>
+
 ### Custom special characters category demo
 
 Use the special character icon in the editor's toolbar then select `Emoji` in the select dropdown in order to insert a emoji into the editor.
@@ -127,6 +131,10 @@ class SpecialCharactersArrowsExtended extends Plugin {
 	}
 }
 ```
+
+<info-box warning>
+    A title of a special character must be unique across the entire special characters set.
+</info-box>
 
 ### Extending existing special characters category category demo
 
