@@ -33,7 +33,7 @@ describe( 'SpecialCharactersUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				command = editor.commands.get( 'insertSpecialCharacter' );
+				command = editor.commands.get( 'input' );
 			} );
 	} );
 
@@ -91,8 +91,8 @@ describe( 'SpecialCharactersUI', () => {
 
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.calledWithExactly( executeSpy.firstCall, 'insertSpecialCharacter', {
-				item: 'Less-than or equal to'
+			sinon.assert.calledWithExactly( executeSpy.firstCall, 'input', {
+				text: '≤'
 			} );
 		} );
 

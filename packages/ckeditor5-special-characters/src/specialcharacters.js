@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SpecialCharactersUI from './specialcharactersui';
-import SpecialCharactersEditing from './specialcharactersediting';
 
 import '../theme/specialcharacters.css';
 
@@ -19,6 +18,20 @@ import '../theme/specialcharacters.css';
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharacters extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ SpecialCharactersUI ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'SpecialCharacters';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -40,20 +53,6 @@ export default class SpecialCharacters extends Plugin {
 		 * @member {Map.<String, Set.<String>>} #_groups
 		 */
 		this._groups = new Map();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ SpecialCharactersEditing, SpecialCharactersUI ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get pluginName() {
-		return 'SpecialCharacters';
 	}
 
 	/**
@@ -118,6 +117,6 @@ export default class SpecialCharacters extends Plugin {
 /**
  * @typedef {Object} module:special-characters/specialcharacters~SpecialCharacterDefinition
  *
- * @property {String} title A unique title of the character.
- * @property {String} character A symbol that should be inserted to the editor.
+ * @property {String} title A unique name of the character (e.g. "greek small letter epsilon").
+ * @property {String} character A human-readable character displayed as label (e.g. "ε").
  */

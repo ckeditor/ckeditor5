@@ -61,7 +61,7 @@ describe( 'CharacterGridView', () => {
 			tile.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz' } );
+			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
 		} );
 	} );
 } );
