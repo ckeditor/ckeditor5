@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-mention",
-  "version": "13.0.0",
+  "version": "16.0.0",
   "description": "Mention feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,29 +10,31 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^12.3.0",
-    "@ckeditor/ckeditor5-ui": "^14.0.0",
-    "@ckeditor/ckeditor5-typing": "^12.2.0",
-    "@ckeditor/ckeditor5-utils": "^14.0.0",
+    "@ckeditor/ckeditor5-core": "^16.0.0",
+    "@ckeditor/ckeditor5-ui": "^16.0.0",
+    "@ckeditor/ckeditor5-typing": "^16.0.0",
+    "@ckeditor/ckeditor5-utils": "^16.0.0",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^11.1.4",
-    "@ckeditor/ckeditor5-block-quote": "^11.1.3",
-    "@ckeditor/ckeditor5-clipboard": "^12.0.2",
-    "@ckeditor/ckeditor5-editor-classic": "^12.1.4",
-    "@ckeditor/ckeditor5-engine": "^14.0.0",
-    "@ckeditor/ckeditor5-font": "^11.2.2",
-    "@ckeditor/ckeditor5-link": "^11.1.2",
-    "@ckeditor/ckeditor5-paragraph": "^11.0.5",
-    "@ckeditor/ckeditor5-table": "^14.0.0",
-    "@ckeditor/ckeditor5-undo": "^11.0.5",
-    "@ckeditor/ckeditor5-widget": "^11.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "^16.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^16.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^16.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^16.0.0",
+    "@ckeditor/ckeditor5-engine": "^16.0.0",
+    "@ckeditor/ckeditor5-font": "^16.0.0",
+    "@ckeditor/ckeditor5-link": "^16.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^16.0.0",
+    "@ckeditor/ckeditor5-table": "^16.0.0",
+    "@ckeditor/ckeditor5-undo": "^16.0.0",
+    "@ckeditor/ckeditor5-widget": "^16.0.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
     "husky": "^1.3.1",
     "lint-staged": "^7.0.0",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "stylelint": "^11.1.1",
+    "stylelint-config-ckeditor5": "^1.0.0"
   },
   "engines": {
     "node": ">=8.0.0",
@@ -52,11 +54,15 @@
     "theme"
   ],
   "scripts": {
-    "lint": "eslint --quiet '**/*.js'"
+    "lint": "eslint --quiet '**/*.js'",
+    "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css' 'docs/**/*.css'"
   },
   "lint-staged": {
     "**/*.js": [
       "eslint --quiet"
+    ],
+    "**/*.css": [
+      "stylelint --quiet --allow-empty-input"
     ]
   },
   "eslintIgnore": [
