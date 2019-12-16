@@ -84,7 +84,12 @@ The code language {@link module:code-block/codeblock~CodeBlockConfig#languages c
 There could be situations when there is no obvious way to set the caret before or after a block of code and type. This can happen when the code block is preceded or followed by a widget (e.g. a table) or when the code block is the first or the last child of the document (or both).
 
 * To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. A new paragraph that you can type in will be created before the code block.
+
+	{@img assets/img/code-blocks-typing-before.gif 770 The animation shows typing before the code blocks in CKEditor 5 rich text editor.}
+
 * To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph that you can type in will be created after the code block.
+
+	{@img assets/img/code-blocks-typing-after.gif 770 The animation shows typing after the code blocks in CKEditor 5 rich text editor.}
 
 ### Changing line indentation
 
@@ -92,6 +97,8 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 
 * To **increase** indentation: Select the line (or lines) you want to indent. Hit the <kbd>Tab</kbd> key or press the "Increase indent" button in the toolbar.
 * To **decrease** indentation: Select the line (or lines) the indent should decrease. Hit the <kbd>Shift</kbd>+<kbd>Tab</kbd> keys or press the "Decrease indent" button in the toolbar.
+
+{@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indention inside code blocks in CKEditor 5 rich text editor.}
 
 <info-box>
 	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
@@ -104,6 +111,8 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 ### Preserving line indentation
 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).
+
+{@img assets/img/code-blocks-preserve-indentation.gif 770 The animation shows preserving indention inside code blocks in CKEditor 5 rich text editor.}
 
 ## Installation
 
