@@ -52,7 +52,7 @@ All that with virtually zero server setup.
 
 ### CKFinder
 
-The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file uploader with its server-side connectors (PHP and ASP.NET).
+The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file uploader with its server-side connectors (PHP, Java and ASP.NET).
 
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 

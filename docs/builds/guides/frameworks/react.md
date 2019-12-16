@@ -93,7 +93,7 @@ There are two main ways to do that.
 
 	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source).
 
-### Note: Building for production
+### Building for production
 
 If you still work with `create-react-app@1` or use a custom configuration for you application that still uses `webpack@3`, you will need to adjust the `UglifyJsPlugin` option to make CKEditor 5 compatible with this setup. CKEditor 5 builds use ES6 so the default JavaScript minifier of `webpack@3` and `create-react-app@1` is not able to digest them.
 
@@ -105,7 +105,7 @@ npm run eject
 
 Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-configuration).
 
-### Note: Using the Document editor build
+### Using the Document editor build
 
 If you use the {@link framework/guides/document-editor Document editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
@@ -138,6 +138,20 @@ class App extends Component {
 
 export default App;
 ```
+
+### Using the editor with collaboration plugins
+
+The easiest way to integrate [collaboration plugins](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) in a React application is to build the editor from source including collaboration plugins together with the React application.
+
+For such scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
+
+- [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-react)
+
+- [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-react)
+
+It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+
+Note: These integrations are meant to be as simple as possible, so they do not use Create React App CLI. However, you should have no problem starting from `CRA` after reading the sections below.
 
 ## Integrating CKEditor 5 built from source
 

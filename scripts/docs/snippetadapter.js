@@ -12,7 +12,7 @@ const webpack = require( 'webpack' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-const UglifyJsWebpackPlugin = require( 'uglifyjs-webpack-plugin' );
+const TerserPlugin = require( 'terser-webpack-plugin' );
 const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
 
 const DEFAULT_LANGUAGE = 'en';
@@ -309,14 +309,15 @@ function getWebpackConfig( snippets, config ) {
 
 		optimization: {
 			minimizer: [
-				new UglifyJsWebpackPlugin( {
+				new TerserPlugin( {
 					sourceMap: true,
-					uglifyOptions: {
+					terserOptions: {
 						output: {
-							// Preserve license comments starting with an exclamation mark.
+							// Preserve CKEditor 5 license comments.
 							comments: /^!/
 						}
-					}
+					},
+					extractComments: false
 				} )
 			]
 		},

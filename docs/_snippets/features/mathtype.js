@@ -3,25 +3,64 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
+/* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import MathType from '@wiris/mathtype-ckeditor5';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#mathtype-editor' ), {
 		plugins: [
-			Essentials,
-			Bold,
-			Italic,
-			Heading,
+			ArticlePluginSet,
+			EasyImage,
 			MathType
 		],
-		toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo', '|', 'MathType', 'ChemType' ]
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'MathType',
+				'ChemType',
+				'|',
+				'blockQuote',
+				'link',
+				'mediaEmbed',
+				'insertTable',
+				'|',
+				'undo',
+				'redo'
+			],
+			viewportTopOffset: window.getViewportTopOffsetConfig()
+		},
+		image: {
+			styles: [
+				'full',
+				'alignLeft',
+				'alignRight'
+			],
+			toolbar: [
+				'imageStyle:alignLeft',
+				'imageStyle:full',
+				'imageStyle:alignRight',
+				'|',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.catch( err => {
 		console.error( err.stack );
