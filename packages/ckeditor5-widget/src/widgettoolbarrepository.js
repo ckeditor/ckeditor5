@@ -71,53 +71,21 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 
 		/**
-		 * Flag indicating whether a command is enabled or disabled.
-		 * A disabled command will do nothing when executed.
+		 * Flag indicating whether a plugin is enabled or disabled.
+		 * A disabled plugin won't show any toolbar.
 		 *
-		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
+		 * Plugin can be simply disabled like that:
 		 *
-		 * It is possible to disable a command from "outside". For instance, in your integration you may want to disable
-		 * a certain set of commands for the time being. To do that, you can use the fact that `isEnabled` is observable
-		 * and it fires the `set:isEnabled` event every time anyone tries to modify its value:
+		 *		// Disable the plugin so that no toolbars are visible.
+		 *		editor.plugins.get( 'WidgetToolbarRepository' ).isEnabled = false;
 		 *
-		 *		function disableCommand( cmd ) {
-		 *			cmd.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
-		 *
-		 *			cmd.isEnabled = false;
-		 *
-		 *			// Make it possible to enable the command again.
-		 *			return () => {
-		 *				cmd.off( 'set:isEnabled', forceDisable );
-		 *				cmd.refresh();
-		 *			};
-		 *
-		 *			function forceDisable( evt ) {
-		 *				evt.return = false;
-		 *				evt.stop();
-		 *			}
-		 *		}
-		 *
-		 *		// Usage:
-		 *
-		 *		// Disabling the command.
-		 *		const enableBold = disableCommand( editor.commands.get( 'bold' ) );
-		 *
-		 *		// Enabling the command again.
-		 *		enableBold();
+		 * You can also use {@link #forceDisabled} method.
 		 *
 		 * @observable
 		 * @readonly
 		 * @member {Boolean} #isEnabled
 		 */
 		this.set( 'isEnabled', true );
-
-		/**
-		 * Holds identifiers for {@link #forceDisabled} mechanism.
-		 *
-		 * @type {Set.<String>}
-		 * @private
-		 */
-		this._disableStack = new Set();
 
 		/**
 		 * A map of toolbar definitions.
@@ -131,6 +99,14 @@ export default class WidgetToolbarRepository extends Plugin {
 		 * @private
 		 */
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
+
+		/**
+		 * Holds identifiers for {@link #forceDisabled} mechanism.
+		 *
+		 * @type {Set.<String>}
+		 * @private
+		 */
+		this._disableStack = new Set();
 
 		this.on( 'change:isEnabled', () => {
 			this._updateToolbarsVisibility();
@@ -195,6 +171,44 @@ export default class WidgetToolbarRepository extends Plugin {
 		} );
 	}
 
+	/**
+	 * Forces the plugin to be disabled.
+	 *
+	 * Plugin may be disabled by multiple features or algorithms (at once). When disabling a plugin, unique id should be passed
+	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the plugin.
+	 * The plugin becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
+	 *
+	 * Disabling and enabling a plugin:
+	 *
+	 *		const plugin = editor.plugins.get( 'WidgetToolbarRepository' );
+	 *
+	 *		plugin.isEnabled; // -> true
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> false
+	 *		plugin.clearForceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> true
+	 *
+	 * Plugin disabled by multiple features:
+	 *
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.forceDisabled( 'OtherFeature' );
+	 *		plugin.clearForceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> false
+	 *		plugin.clearForceDisabled( 'OtherFeature' );
+	 *		plugin.isEnabled; // -> true
+	 *
+	 * Multiple disabling with the same identifier is redundant:
+	 *
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.clearForceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> true
+	 *
+	 * **Note:** some plugins or algorithms may have more complex logic when it comes to enabling or disabling certain plugins,
+	 * so the plugin might be still disabled after {@link #clearForceDisabled} was used.
+	 *
+	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the plugin.
+	 */
 	forceDisabled( id ) {
 		this._disableStack.add( id );
 
@@ -204,6 +218,11 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 	}
 
+	/**
+	 * Clears forced disable previously set through {@link #clearForceDisabled}. See {@link #clearForceDisabled}.
+	 *
+	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
+	 */
 	clearForceDisabled( id ) {
 		this._disableStack.delete( id );
 
