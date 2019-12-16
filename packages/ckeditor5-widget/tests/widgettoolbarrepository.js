@@ -510,6 +510,82 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 
 		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
 	} );
+
+	describe.only( 'disableable', () => {
+		describe( 'isEnabled', () => {
+			it( 'is enabled by default', () => {
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'fires change event', () => {
+				const spy = sinon.spy();
+
+				widgetToolbarRepository.on( 'change:isEnabled', spy );
+
+				widgetToolbarRepository.isEnabled = false;
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		describe( 'forceDisabled() / clearForceDisabled()', () => {
+			it( 'forceDisabled() should disable the plugin', () => {
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.isEnabled = true;
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			} );
+
+			it( 'clearForceDisabled() should enable the plugin', () => {
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.clearForceDisabled( 'foo' );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'clearForceDisabled() used with wrong identifier should not enable the plugin', () => {
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.clearForceDisabled( 'bar' );
+				widgetToolbarRepository.isEnabled = true;
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			} );
+
+			it( 'using forceDisabled() twice with the same identifier should not have any effect', () => {
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.clearForceDisabled( 'foo' );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'plugin is enabled only after all disables were cleared', () => {
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.forceDisabled( 'bar' );
+				widgetToolbarRepository.clearForceDisabled( 'foo' );
+				widgetToolbarRepository.isEnabled = true;
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+				widgetToolbarRepository.clearForceDisabled( 'bar' );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'plugin should remain disabled if isEnabled has a callback disabling it', () => {
+				widgetToolbarRepository.on( 'set:isEnabled', evt => {
+					evt.return = false;
+					evt.stop();
+				} );
+
+				widgetToolbarRepository.forceDisabled( 'foo' );
+				widgetToolbarRepository.clearForceDisabled( 'foo' );
+				widgetToolbarRepository.isEnabled = true;
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			} );
+		} );
+	} );
 } );
 
 function getSelectedFakeWidget( selection ) {

@@ -71,6 +71,55 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 
 		/**
+		 * Flag indicating whether a command is enabled or disabled.
+		 * A disabled command will do nothing when executed.
+		 *
+		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
+		 *
+		 * It is possible to disable a command from "outside". For instance, in your integration you may want to disable
+		 * a certain set of commands for the time being. To do that, you can use the fact that `isEnabled` is observable
+		 * and it fires the `set:isEnabled` event every time anyone tries to modify its value:
+		 *
+		 *		function disableCommand( cmd ) {
+		 *			cmd.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+		 *
+		 *			cmd.isEnabled = false;
+		 *
+		 *			// Make it possible to enable the command again.
+		 *			return () => {
+		 *				cmd.off( 'set:isEnabled', forceDisable );
+		 *				cmd.refresh();
+		 *			};
+		 *
+		 *			function forceDisable( evt ) {
+		 *				evt.return = false;
+		 *				evt.stop();
+		 *			}
+		 *		}
+		 *
+		 *		// Usage:
+		 *
+		 *		// Disabling the command.
+		 *		const enableBold = disableCommand( editor.commands.get( 'bold' ) );
+		 *
+		 *		// Enabling the command again.
+		 *		enableBold();
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
+		 * Holds identifiers for {@link #forceDisabled} mechanism.
+		 *
+		 * @type {Set.<String>}
+		 * @private
+		 */
+		this._disableStack = new Set();
+
+		/**
 		 * A map of toolbar definitions.
 		 *
 		 * @protected
@@ -140,6 +189,24 @@ export default class WidgetToolbarRepository extends Plugin {
 			getRelatedElement,
 			balloonClassName,
 		} );
+	}
+
+	forceDisabled( id ) {
+		this._disableStack.add( id );
+
+		if ( this._disableStack.size == 1 ) {
+			this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.isEnabled = false;
+		}
+	}
+
+	clearForceDisabled( id ) {
+		this._disableStack.delete( id );
+
+		if ( this._disableStack.size == 0 ) {
+			this.off( 'set:isEnabled', forceDisable );
+			this.isEnabled = true;
+		}
 	}
 
 	/**
@@ -293,3 +360,9 @@ function isWidgetSelected( selection ) {
  * there is no such element). The function accepts an instance of {@link module:engine/view/selection~Selection}.
  * @property {String} balloonClassName CSS class for the widget balloon when a toolbar is displayed.
  */
+
+// Helper function that forces command to be disabled.
+function forceDisable( evt ) {
+	evt.return = false;
+	evt.stop();
+}
