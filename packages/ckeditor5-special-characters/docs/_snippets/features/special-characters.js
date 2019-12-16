@@ -27,12 +27,12 @@ ClassicEditor
 				'|',
 				'alignment',
 				'|',
+				'specialCharacters',
 				'blockQuote',
 				'link',
 				'imageUpload',
 				'mediaEmbed',
 				'insertTable',
-				'specialCharacters',
 				'|',
 				'undo',
 				'redo'
