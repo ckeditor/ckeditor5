@@ -245,16 +245,12 @@ export default class WidgetToolbarRepository extends Plugin {
 		for ( const definition of this._toolbarDefinitions.values() ) {
 			const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
 
-			if ( !this.isEnabled ) {
+			if ( !this.isEnabled || !relatedElement ) {
 				if ( this._isToolbarInBalloon( definition ) ) {
 					this._hideToolbar( definition );
 				}
 			} else if ( !this.editor.ui.focusTracker.isFocused ) {
 				if ( this._isToolbarVisible( definition ) ) {
-					this._hideToolbar( definition );
-				}
-			} else if ( !relatedElement ) {
-				if ( this._isToolbarInBalloon( definition ) ) {
 					this._hideToolbar( definition );
 				}
 			} else {
