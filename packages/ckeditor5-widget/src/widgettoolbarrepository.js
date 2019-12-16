@@ -219,7 +219,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	}
 
 	/**
-	 * Clears forced disable previously set through {@link #clearForceDisabled}. See {@link #clearForceDisabled}.
+	 * Clears forced disable previously set through {@link #forceDisabled}. See {@link #forceDisabled}.
 	 *
 	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
