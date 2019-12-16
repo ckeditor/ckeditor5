@@ -244,7 +244,7 @@ export default class MutationObserver extends Observer {
 			}
 		}
 
-		// In case only non-relevant mutations were recorded it skip event / force render for the sake of performance (#5600).
+		// In case only non-relevant mutations were recorded it skips the event & force render (#5600).
 		if ( viewMutations.length ) {
 			this.document.fire( 'mutations', viewMutations, viewSelection );
 
