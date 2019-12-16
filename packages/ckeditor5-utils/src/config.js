@@ -114,6 +114,17 @@ export default class Config {
 	}
 
 	/**
+	 * Iterates over all top level configuration names.
+	 *
+	 * @returns {Iterable.<String>}
+	 */
+	* names() {
+		for ( const name of Object.keys( this._config ) ) {
+			yield name;
+		}
+	}
+
+	/**
 	 * Saves passed configuration to the specified target (nested object).
 	 *
 	 * @private
