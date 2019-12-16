@@ -132,6 +132,10 @@ export default class WidgetToolbarRepository extends Plugin {
 		 */
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
+		this.on( 'change:isEnabled', () => {
+			this._updateToolbarsVisibility();
+		} );
+
 		this.listenTo( editor.ui, 'update', () => {
 			this._updateToolbarsVisibility();
 		} );
@@ -222,7 +226,11 @@ export default class WidgetToolbarRepository extends Plugin {
 		for ( const definition of this._toolbarDefinitions.values() ) {
 			const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
 
-			if ( !this.editor.ui.focusTracker.isFocused ) {
+			if ( !this.isEnabled ) {
+				if ( this._isToolbarInBalloon( definition ) ) {
+					this._hideToolbar( definition );
+				}
+			} else if ( !this.editor.ui.focusTracker.isFocused ) {
 				if ( this._isToolbarVisible( definition ) ) {
 					this._hideToolbar( definition );
 				}
