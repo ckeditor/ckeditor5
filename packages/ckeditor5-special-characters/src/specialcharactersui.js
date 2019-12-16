@@ -25,15 +25,15 @@ export default class SpecialCharactersUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'SpecialCharactersUI';
+	static get requires() {
+		return [ Typing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
-		return [ Typing ];
+	static get pluginName() {
+		return 'SpecialCharactersUI';
 	}
 
 	/**

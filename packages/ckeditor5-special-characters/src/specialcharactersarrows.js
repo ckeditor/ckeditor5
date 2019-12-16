@@ -27,9 +27,7 @@ export default class SpecialCharactersArrows extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [
-			SpecialCharacters
-		];
+		return [ SpecialCharacters ];
 	}
 
 	/**

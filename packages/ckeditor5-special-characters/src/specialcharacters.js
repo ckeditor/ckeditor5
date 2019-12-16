@@ -21,6 +21,20 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ SpecialCharactersUI ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'SpecialCharacters';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -39,20 +53,6 @@ export default class SpecialCharacters extends Plugin {
 		 * @member {Map.<String, Set.<String>>} #_groups
 		 */
 		this._groups = new Map();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ SpecialCharactersUI ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get pluginName() {
-		return 'SpecialCharacters';
 	}
 
 	/**

@@ -27,9 +27,7 @@ export default class SpecialCharactersLatin extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [
-			SpecialCharacters
-		];
+		return [ SpecialCharacters ];
 	}
 
 	/**
