@@ -55,6 +55,17 @@ describe( 'BlockToolbar', () => {
 		expect( BlockToolbar.pluginName ).to.equal( 'BlockToolbar' );
 	} );
 
+	it( 'should work with empty config', async () => {
+		// Remove default editor instance.
+		await editor.destroy();
+
+		expect( async () => {
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ BlockToolbar ]
+			} );
+		} ).to.not.throw();
+	} );
+
 	describe( 'child views', () => {
 		describe( 'panelView', () => {
 			it( 'should create a view instance', () => {
@@ -212,6 +223,18 @@ describe( 'BlockToolbar', () => {
 				blockToolbar.panelView.isVisible = true;
 
 				expect( blockToolbar.buttonView.tooltip ).to.be.false;
+			} );
+
+			it( 'should hide the #button if empty config was passed', async () => {
+				// Remove default editor instance.
+				await editor.destroy();
+
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ BlockToolbar ]
+				} );
+
+				const blockToolbar = editor.plugins.get( BlockToolbar );
+				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			} );
 		} );
 	} );

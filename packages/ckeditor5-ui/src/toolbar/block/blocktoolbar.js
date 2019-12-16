@@ -149,7 +149,7 @@ export default class BlockToolbar extends Plugin {
 	 */
 	afterInit() {
 		const factory = this.editor.ui.componentFactory;
-		const config = this.editor.config.get( 'blockToolbar' );
+		const config = this.editor.config.get( 'blockToolbar' ) || [];
 
 		this.toolbarView.fillFromConfig( config, factory );
 
