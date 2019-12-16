@@ -7,4 +7,4 @@ assignees: ''
 
 ---
 
-⚠️ Please **DO NOT report security issues here**, use the contact form at https://ckeditor.com/contact/ instead. ⚠️
+⚠️ Please **DO NOT report security issues here**, use the contact form at [https://ckeditor.com/contact/](https://ckeditor.com/contact/) instead. ⚠️
