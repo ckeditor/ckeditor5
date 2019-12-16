@@ -141,6 +141,32 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
+		it( 'toolbar should be hidden when the plugin gets disabled', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			widgetToolbarRepository.isEnabled = false;
+
+			expect( balloon.visibleView ).to.be.null;
+		} );
+
+		it( 'toolbar should be hidden when the plugin was disabled prior changing selection', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			widgetToolbarRepository.isEnabled = false;
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			expect( balloon.visibleView ).to.be.null;
+		} );
+
 		it( 'toolbar should be hidden when the `getRelatedElement` callback returns null', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
@@ -511,7 +537,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
 	} );
 
-	describe.only( 'disableable', () => {
+	describe( 'disableable', () => {
 		describe( 'isEnabled', () => {
 			it( 'is enabled by default', () => {
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
