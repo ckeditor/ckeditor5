@@ -75,7 +75,7 @@ class PlaceholderUI extends Plugin {
 				withText: true
 			} );
 
-			// Disable placeholder button when command is disabled.
+			// Disable the placeholder button when the command is disabled.
 			const command = editor.commands.get( 'placeholder' );
 			dropdownView.bind( 'isEnabled' ).to( command );
 
