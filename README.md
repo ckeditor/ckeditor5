@@ -671,6 +671,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-special-characters"><code>@ckeditor/ckeditor5-special-characters</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-special-characters.svg" alt="@ckeditor/ckeditor5-special-characters npm package badge"></a>
+	</td>
+	<td>
+		The special characters feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-table"><code>@ckeditor/ckeditor5-table</code></a>
 	</td>
 	<td>
