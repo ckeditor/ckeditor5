@@ -60,6 +60,15 @@ export default class Context {
 		this.t = this.locale.t;
 
 		/**
+		 * When the context is created by an editor then the editor instance is
+		 * stored as an owner of this context.
+		 *
+		 * @readonly
+		 * @type {Boolean}
+		 */
+		this.isCreatedByEditor = false;
+
+		/**
 		 * List of editors to which this context instance is injected.
 		 *
 		 * @private
@@ -69,16 +78,36 @@ export default class Context {
 	}
 
 	/**
-	 * Adds a reference to the editor to which context is injected.
+	 * Adds a reference to the editor which is used with this context.
+	 *
+	 * When the context is created by the editor it is additionally
+	 * marked as a {@link ~Context#isCreatedByEditor} what is used
+	 * in the destroy chain.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Boolean} isContextOwner
 	 */
-	addEditor( editor ) {
+	addEditor( editor, isContextOwner ) {
+		if ( this.isCreatedByEditor ) {
+			/**
+			 * Cannot add multiple editors to the context which is created by the editor.
+			 *
+			 * @error context-addEditor-to-private-context
+			 */
+			throw new CKEditorError(
+				'context-addEditor-to-private-context: Cannot add multiple editors to the context which is created by the editor.'
+			);
+		}
+
 		this._editors.add( editor );
+
+		if ( isContextOwner ) {
+			this.isCreatedByEditor = true;
+		}
 	}
 
 	/**
-	 * Removes a reference to the editor to which context was injected.
+	 * Removes a reference to the editor which was used with this context.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */

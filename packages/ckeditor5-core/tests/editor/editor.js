@@ -186,6 +186,7 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			expect( editor.context ).to.be.an.instanceof( Context );
+			expect( editor.context.isCreatedByEditor ).to.true;
 		} );
 
 		it( 'should use context given through configuration when is defined', async () => {
@@ -193,6 +194,16 @@ describe( 'Editor', () => {
 			const editor = new TestEditor( { context } );
 
 			expect( editor.context ).to.equal( context );
+			expect( editor.context.isCreatedByEditor ).to.false;
+		} );
+
+		it( 'should throw when try to use context created by one editor with the other editor', () => {
+			const editor = new TestEditor();
+
+			expectToThrowCKEditorError( () => {
+				// eslint-disable-next-line no-new
+				new TestEditor( { context: editor.context } );
+			}, /^context-addEditor-to-private-context/ );
 		} );
 
 		it( 'should destroy context created by the editor on editor destroy', async () => {

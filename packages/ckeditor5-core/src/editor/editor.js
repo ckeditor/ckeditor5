@@ -52,19 +52,14 @@ export default class Editor {
 	 */
 	constructor( config = {} ) {
 		/**
+		 * The editor context.
+		 * When it is not provided through the configuration then the editor creates it.
+		 *
 		 * @readonly
 		 * @type {module:core/context~Context}
 		 */
 		this.context = config.context || new Context( { language: config.language } );
-		this.context.addEditor( this );
-
-		/**
-		 * `true` when context is created by this editor or `false` when context is injected to the editor.
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._isContextHost = !config.context;
+		this.context.addEditor( this, !config.context );
 
 		const availablePlugins = this.constructor.builtinPlugins;
 
@@ -257,9 +252,13 @@ export default class Editor {
 
 		return readyPromise
 			.then( () => {
+				// Remove the editor from the context to avoid destroying it
+				// one more time when context will be destroyed.
 				this.context.removeEditor( this );
 
-				if ( this._isContextHost ) {
+				// When the editor was an owner of the context then
+				// the context should be destroyed along with the editor.
+				if ( this.context.isCreatedByEditor ) {
 					return this.context.destroy();
 				}
 			} ).then( () => {
