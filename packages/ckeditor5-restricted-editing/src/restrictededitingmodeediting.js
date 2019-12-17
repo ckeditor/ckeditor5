@@ -20,7 +20,7 @@ import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmod
 /**
  * The Restricted Editing Mode editing feature.
  *
- * * It introduces the exception marker group that renders to `<spans>` with the `ck-restricted-editing-exception` CSS class.
+ * * It introduces the exception marker group that renders to `<spans>` with the `restricted-editing-exception` CSS class.
  * * It registers the `'goToPreviousRestrictedEditingException'` and `'goToNextRestrictedEditingException'` commands.
  * * Also enables highlighting exception markers that are selected.
  *
@@ -116,7 +116,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
 			view: {
 				name: 'span',
-				classes: 'ck-restricted-editing-exception'
+				classes: 'restricted-editing-exception'
 			},
 			model: () => {
 				markerNumber++; // Starting from restrictedEditingException:1 marker.
@@ -134,7 +134,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			view: () => {
 				return {
 					name: 'span',
-					classes: 'ck-restricted-editing-exception',
+					classes: 'restricted-editing-exception',
 					priority: -10
 				};
 			}
@@ -146,7 +146,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			model: 'restrictedEditingException',
 			view: ( markerData, viewWriter ) => {
 				return viewWriter.createUIElement( 'span', {
-					class: 'ck-restricted-editing-exception ck-restricted-editing-exception_collapsed'
+					class: 'restricted-editing-exception restricted-editing-exception_collapsed'
 				} );
 			}
 		} );
@@ -155,7 +155,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			model: 'restrictedEditingException',
 			view: ( markerData, viewWriter ) => {
 				return viewWriter.createEmptyElement( 'span', {
-					class: 'ck-restricted-editing-exception'
+					class: 'restricted-editing-exception'
 				} );
 			}
 		} );
