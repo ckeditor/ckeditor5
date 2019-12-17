@@ -25,7 +25,7 @@ export default class PluginCollection {
 	 * Allows loading and initializing plugins and their dependencies.
 	 * Allows to provide a list of already loaded plugins, these plugins won't be destroyed along with this collection.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {module:core/editor/editor~Editor|module:core/context~Context} context
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
 	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
@@ -33,12 +33,12 @@ export default class PluginCollection {
 	 * @param {Iterable.<Array>} externalPlugins List of already initialized plugins represented by a
 	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
-	constructor( editor, availablePlugins = [], externalPlugins = [] ) {
+	constructor( context, availablePlugins = [], externalPlugins = [] ) {
 		/**
 		 * @protected
-		 * @type {module:core/editor/editor~Editor}
+		 * @type {module:core/editor/editor~Editor|module:core/context~Context}
 		 */
-		this._editor = editor;
+		this._context = context;
 
 		/**
 		 * @protected
@@ -139,7 +139,7 @@ export default class PluginCollection {
 				pluginName = key.pluginName || key.name;
 			}
 
-			throw new CKEditorError( errorMsg, this._editor, { plugin: pluginName } );
+			throw new CKEditorError( errorMsg, this._context, { plugin: pluginName } );
 		}
 
 		return plugin;
@@ -176,7 +176,7 @@ export default class PluginCollection {
 	 */
 	init( plugins, removePlugins = [] ) {
 		const that = this;
-		const editor = this._editor;
+		const context = this._context;
 		const loading = new Set();
 		const loaded = [];
 
@@ -211,7 +211,7 @@ export default class PluginCollection {
 			// Log the error so it's more visible on the console. Hopefully, for better DX.
 			console.error( attachLinkToDocumentation( errorMsg ), { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, this._editor, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorMsg, context, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
@@ -312,7 +312,7 @@ export default class PluginCollection {
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` option.',
-								editor,
+								context,
 								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
 						}
@@ -321,7 +321,7 @@ export default class PluginCollection {
 					} );
 				}
 
-				const plugin = that._externalPlugins.get( PluginConstructor ) || new PluginConstructor( editor );
+				const plugin = that._externalPlugins.get( PluginConstructor ) || new PluginConstructor( context );
 				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
 

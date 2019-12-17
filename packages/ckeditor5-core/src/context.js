@@ -126,6 +126,11 @@ export default class Context {
 
 		for ( const Plugin of plugins ) {
 			if ( typeof Plugin != 'function' ) {
+				/**
+				 * Only constructor is allowed as a Context plugin.
+				 *
+				 * @error context-initplugins-constructor-only
+				 */
 				throw new CKEditorError(
 					'context-initplugins-constructor-only: Only constructor is allowed as a Context plugin.',
 					null,
@@ -134,6 +139,11 @@ export default class Context {
 			}
 
 			if ( Plugin.isContextPlugin !== true ) {
+				/**
+				 * Only plugin marked as a ContextPlugin is allowed to be used with a context.
+				 *
+				 * @error context-initplugins-invalid-plugin
+				 */
 				throw new CKEditorError(
 					'context-initplugins-invalid-plugin: Only plugin marked as a ContextPlugin is allowed.',
 					null,
@@ -149,7 +159,7 @@ export default class Context {
 	 * Returns context configuration which will be copied to editors created using this context.
 	 *
 	 * The configuration returned by this method has removed plugins configuration - plugins are shared with all editors
-	 * in a special way.
+	 * through another mechanism.
 	 *
 	 * @returns {Object} Configuration as a plain object.
 	 */
