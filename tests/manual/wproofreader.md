@@ -1,5 +1,7 @@
 # Wproofreader
 
+Proofreader requires a valid license to work, otherwise it returns 403. Read on the [dev KB article](https://github.com/cksource/ckeditor5-knowledge-base/blob/master/testing-phase.md#wproofreader-samplemanual-test) to set it up locally.
+
 Note: the plugin starts checking only **after focusing** the editor.
 
 ## Inline typo correction
