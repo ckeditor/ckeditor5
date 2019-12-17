@@ -51,7 +51,7 @@ export default class HorizontalLineCommand extends Command {
 			if ( !canSetSelection && model.schema.checkChild( horizontalElement.parent, 'paragraph' ) ) {
 				nextElement = writer.createElement( 'paragraph' );
 
-				writer.insert( nextElement, writer.createPositionAfter( horizontalElement ) );
+				model.insertContent( nextElement, writer.createPositionAfter( horizontalElement ) );
 			}
 
 			// Put the selection inside the element, at the beginning.
