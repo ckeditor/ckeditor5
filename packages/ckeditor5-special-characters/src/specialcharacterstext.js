@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import SpecialCharacters from './specialcharacters';
 
 /**
  * A plugin provides special characters for the "Text" category.
@@ -23,13 +22,6 @@ import SpecialCharacters from './specialcharacters';
  * @extends module:core/plugin~Plugin
  */
 export default class SpecialCharactersText extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ SpecialCharacters ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */

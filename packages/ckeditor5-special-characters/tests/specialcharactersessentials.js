@@ -5,7 +5,6 @@
 
 import SpecialCharactersEssentials from '../src/specialcharactersessentials';
 
-import SpecialCharacters from '../src/specialcharacters';
 import SpecialCharactersCurrency from '../src/specialcharacterscurrency';
 import SpecialCharactersText from '../src/specialcharacterstext';
 import SpecialCharactersMathematical from '../src/specialcharactersmathematical';
@@ -15,7 +14,6 @@ import SpecialCharactersLatin from '../src/specialcharacterslatin';
 describe( 'SpecialCharactersEssentials', () => {
 	it( 'includes other required plugins', () => {
 		expect( SpecialCharactersEssentials.requires ).to.deep.equal( [
-			SpecialCharacters,
 			SpecialCharactersCurrency,
 			SpecialCharactersText,
 			SpecialCharactersMathematical,

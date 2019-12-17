@@ -40,6 +40,7 @@ describe( 'SpecialCharacters', () => {
 			return ClassicTestEditor
 				.create( element, {
 					plugins: [
+						SpecialCharacters,
 						SpecialCharactersMathematical,
 						SpecialCharactersArrows
 					]
