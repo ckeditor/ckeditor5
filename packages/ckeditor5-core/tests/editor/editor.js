@@ -185,16 +185,16 @@ describe( 'Editor', () => {
 		it( 'should create a new context when it is not provided through config', () => {
 			const editor = new TestEditor();
 
-			expect( editor.context ).to.be.an.instanceof( Context );
-			expect( editor.context.isCreatedByEditor ).to.true;
+			expect( editor._context ).to.be.an.instanceof( Context );
+			expect( editor._context.isCreatedByEditor ).to.true;
 		} );
 
 		it( 'should use context given through configuration when is defined', async () => {
 			const context = await Context.create();
 			const editor = new TestEditor( { context } );
 
-			expect( editor.context ).to.equal( context );
-			expect( editor.context.isCreatedByEditor ).to.false;
+			expect( editor._context ).to.equal( context );
+			expect( editor._context.isCreatedByEditor ).to.false;
 		} );
 
 		it( 'should throw when try to use context created by one editor with the other editor', () => {
@@ -202,13 +202,13 @@ describe( 'Editor', () => {
 
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new TestEditor( { context: editor.context } );
+				new TestEditor( { context: editor._context } );
 			}, /^context-addEditor-to-private-context/ );
 		} );
 
 		it( 'should destroy context created by the editor on editor destroy', async () => {
 			const editor = await TestEditor.create();
-			const contextDestroySpy = sinon.spy( editor.context, 'destroy' );
+			const contextDestroySpy = sinon.spy( editor._context, 'destroy' );
 
 			await editor.destroy();
 
@@ -218,7 +218,7 @@ describe( 'Editor', () => {
 		it( 'should not destroy context along with the editor when context was injected to the editor', async () => {
 			const context = await Context.create();
 			const editor = await TestEditor.create( { context } );
-			const contextDestroySpy = sinon.spy( editor.context, 'destroy' );
+			const contextDestroySpy = sinon.spy( editor._context, 'destroy' );
 
 			await editor.destroy();
 
@@ -286,8 +286,8 @@ describe( 'Editor', () => {
 		it( 'should use Context#locale and Context#t', () => {
 			const editor = new TestEditor();
 
-			expect( editor.locale ).to.equal( editor.context.locale ).to.instanceof( Locale );
-			expect( editor.t ).to.equal( editor.context.t );
+			expect( editor.locale ).to.equal( editor._context.locale ).to.instanceof( Locale );
+			expect( editor.t ).to.equal( editor._context.t );
 		} );
 
 		it( 'should use locale instance with a proper configuration', () => {

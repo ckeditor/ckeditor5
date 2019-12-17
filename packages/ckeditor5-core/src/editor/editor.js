@@ -55,11 +55,11 @@ export default class Editor {
 		 * The editor context.
 		 * When it is not provided through the configuration then the editor creates it.
 		 *
-		 * @readonly
+		 * @protected
 		 * @type {module:core/context~Context}
 		 */
-		this.context = config.context || new Context( { language: config.language } );
-		this.context.addEditor( this, !config.context );
+		this._context = config.context || new Context( { language: config.language } );
+		this._context.addEditor( this, !config.context );
 
 		const availablePlugins = this.constructor.builtinPlugins;
 
@@ -74,7 +74,7 @@ export default class Editor {
 		 */
 		this.config = new Config( config, this.constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
-		this.config.define( this.context.getConfigForEditor() );
+		this.config.define( this._context.getConfigForEditor() );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
@@ -84,13 +84,13 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins, this.context.plugins );
+		this.plugins = new PluginCollection( this, availablePlugins, this._context.plugins );
 
 		/**
 		 * @readonly
 		 * @type {module:utils/locale~Locale}
 		 */
-		this.locale = this.context.locale;
+		this.locale = this._context.locale;
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.
@@ -254,12 +254,12 @@ export default class Editor {
 			.then( () => {
 				// Remove the editor from the context to avoid destroying it
 				// one more time when context will be destroyed.
-				this.context.removeEditor( this );
+				this._context.removeEditor( this );
 
 				// When the editor was an owner of the context then
 				// the context should be destroyed along with the editor.
-				if ( this.context.isCreatedByEditor ) {
-					return this.context.destroy();
+				if ( this._context.isCreatedByEditor ) {
+					return this._context.destroy();
 				}
 			} ).then( () => {
 				this.fire( 'destroy' );
