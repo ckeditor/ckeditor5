@@ -66,9 +66,10 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 		const targetViewPosition = mapper.toViewPosition( model.createPositionBefore( data.item ) );
 		const preAttributes = {};
 
-		// The attribute added only in the editing view.
+		// Attributes added only in the editing view.
 		if ( useLabels ) {
 			preAttributes[ 'data-language' ] = languagesToLabels[ codeBlockLanguage ];
+			preAttributes.spellcheck = 'false';
 		}
 
 		const pre = writer.createContainerElement( 'pre', preAttributes );
