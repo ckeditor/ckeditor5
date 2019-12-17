@@ -5,6 +5,7 @@
 
 :root {
 	--ck-color-restricted-editing-exception-background: hsla(31, 100%, 65%, .2);
+	--ck-color-restricted-editing-exception-hover-background: hsla(31, 100%, 65%, .35);
 	--ck-color-restricted-editing-exception-brackets: hsla(31, 100%, 40%, .4);
 	--ck-color-restricted-editing-selected-exception-background: hsla(31, 100%, 65%, .5);
 	--ck-color-restricted-editing-selected-exception-brackets: hsla(31, 100%, 40%, .6);
@@ -13,6 +14,7 @@
 .ck-editor__editable .restricted-editing-exception {
 	transition: .2s ease-in-out background;
 	background-color: var(--ck-color-restricted-editing-exception-background);
+	padding: 0 2px;
 	border: 1px solid;
 	border-image: linear-gradient(
 		to right,
@@ -23,6 +25,10 @@
 		var(--ck-color-restricted-editing-exception-brackets) calc(100% - 5px),
 		var(--ck-color-restricted-editing-exception-brackets) 100%
 	) 1;
+
+	&:hover {
+		background: var(--ck-color-restricted-editing-exception-hover-background);
+	}
 
 	&.restricted-editing-exception_selected {
 		background-color: var(--ck-color-restricted-editing-selected-exception-background);
