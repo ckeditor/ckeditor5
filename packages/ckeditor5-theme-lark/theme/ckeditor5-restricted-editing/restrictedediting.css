@@ -14,7 +14,6 @@
 .ck-editor__editable .restricted-editing-exception {
 	transition: .2s ease-in-out background;
 	background-color: var(--ck-color-restricted-editing-exception-background);
-	padding: 0 2px;
 	border: 1px solid;
 	border-image: linear-gradient(
 		to right,
