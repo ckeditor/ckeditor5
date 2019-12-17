@@ -244,11 +244,14 @@ export default class MutationObserver extends Observer {
 			}
 		}
 
-		this.document.fire( 'mutations', viewMutations, viewSelection );
+		// In case only non-relevant mutations were recorded it skips the event and force render (#5600).
+		if ( viewMutations.length ) {
+			this.document.fire( 'mutations', viewMutations, viewSelection );
 
-		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
-		// view (which has not been changed). In order to "reset DOM" we render the view again.
-		this.view.forceRender();
+			// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
+			// view (which has not been changed). In order to "reset DOM" we render the view again.
+			this.view.forceRender();
+		}
 
 		function sameNodes( child1, child2 ) {
 			// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.

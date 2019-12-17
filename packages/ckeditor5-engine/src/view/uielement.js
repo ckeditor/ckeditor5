@@ -123,6 +123,10 @@ export default class UIElement extends Element {
 	 *			return domElement;
 	 *		};
 	 *
+	 * If changes in your UI element should trigger some editor UI update you should call
+	 * the {@link module:core/editor/editorui~EditorUI#update `editor.ui.update()`} method
+	 * after rendering your UI element.
+	 *
 	 * @param {Document} domDocument
 	 * @returns {HTMLElement}
 	 */
