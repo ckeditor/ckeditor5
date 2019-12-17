@@ -123,7 +123,8 @@ export default class UIElement extends Element {
 	 *			return domElement;
 	 *		};
 	 *
-	 * If you wish to trigger render of entire editor UI you should call {@link module:core/editor/editorui~EditorUI#update} method
+	 * If changes in your UI element should trigger some editor UI update you should call
+	 * the {@link module:core/editor/editorui~EditorUI#update `editor.ui.update()`} method
 	 * after rendering your UI element.
 	 *
 	 * @param {Document} domDocument
