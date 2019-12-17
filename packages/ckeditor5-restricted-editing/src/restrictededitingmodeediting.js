@@ -175,7 +175,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const editor = this.editor;
 
 		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
-		this.listenTo( editor.model, 'applyOperation', restrictAttributeOperation( editor ), { priority: 'high' } );
 
 		const inputCommand = this.editor.commands.get( 'input' );
 
@@ -333,30 +332,6 @@ function restrictDeleteContent( editor ) {
 
 		// Shrink the selection to the range inside exception marker.
 		selection.setTo( allowedToDelete );
-	};
-}
-
-// Ensures that remove attribute operation is executed on proper range.
-//
-// The restriction is enforced by trimming range of an AttributeOperation.
-function restrictAttributeOperation( editor ) {
-	return ( evt, args ) => {
-		const [ operation ] = args;
-
-		if ( operation.type != 'removeAttribute' ) {
-			return;
-		}
-
-		const marker = getMarkerAtPosition( editor, operation.range.start ) || getMarkerAtPosition( editor, operation.range.end );
-
-		// Stop method execution if marker was not found at selection focus.
-		if ( !marker ) {
-			evt.stop();
-
-			return;
-		}
-
-		operation.range = operation.range.getIntersection( marker.getRange() );
 	};
 }
 
