@@ -55,7 +55,7 @@ export default class Editor {
 		 * @readonly
 		 * @type {module:core/context~Context}
 		 */
-		this.context = config.context || new Context();
+		this.context = config.context || new Context( { language: config.language } );
 		this.context.addEditor( this );
 
 		/**

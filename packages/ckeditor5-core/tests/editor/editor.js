@@ -278,6 +278,15 @@ describe( 'Editor', () => {
 			expect( editor.locale ).to.equal( editor.context.locale ).to.instanceof( Locale );
 			expect( editor.t ).to.equal( editor.context.t );
 		} );
+
+		it( 'should use locale instance with a proper configuration', () => {
+			const editor = new TestEditor( {
+				language: 'pl'
+			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
 	} );
 
 	describe( 'state', () => {
