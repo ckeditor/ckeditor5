@@ -42,6 +42,9 @@
 	}
 
 	&.restricted-editing-exception_collapsed {
-		padding-left: 1em;
+		/* Single char is about 10px wide.
+		Value of 8px for collapsed element is because we have additional 2px in left/right borders.
+		Also less than 10px wide is hard to click on target. */
+		padding-left: 8px;
 	}
 }
