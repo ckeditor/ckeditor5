@@ -34,7 +34,7 @@ export default class CodeBlockCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. When the command {@link #value is on}, all top-most code blocks within
+	 * Executes the command. When the command {@link #value is on}, all topmost code blocks within
 	 * the selection will be removed. If it is off, all selected blocks will be flattened and
 	 * wrapped by a code block.
 	 *

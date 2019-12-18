@@ -18,7 +18,7 @@ See the {@link features/code-blocks Code block feature} guide and the {@link mod
 
 ## Installation
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-code-block
 ```
 

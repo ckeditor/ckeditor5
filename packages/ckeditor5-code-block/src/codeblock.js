@@ -14,10 +14,11 @@ import CodeBlockUI from './codeblockui';
 /**
  * The code block plugin.
  *
- * For more information about this feature check the {@glink api/code-block package page}.
+ * For more information about this feature check the {@glink api/code-block package page} and the
+ * {@glink features/code-blocks code block feature guide}.
  *
- * This is a "glue" plugin which loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
- * and {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.
+ * This is a "glue" plugin that loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
+ * and the {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -50,7 +51,7 @@ export default class CodeBlock extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				codeBlock:  ... // Code block feature configuration.
+ * 				codeBlock:  ... // The code block feature configuration.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -70,7 +71,7 @@ export default class CodeBlock extends Plugin {
  *
  * @typedef {Object} module:code-block/codeblock~CodeBlockLanguageDefinition
  * @property {String} language The name of the language that will be stored in the model attribute. Also, when `class`
- * is not specified, it will also be used to create the CSS class associated with the language (prefixed by "language-").
+ * is not specified, it will be used to create the CSS class associated with the language (prefixed by "language-").
  * @property {String} label The human–readable label associated with the language and displayed in the UI.
  * @property {String} [class] The CSS class associated with the language. When not specified the `language`
  * property is used to create a class prefixed by "language-".
@@ -102,13 +103,13 @@ export default class CodeBlock extends Plugin {
  *
  *		<pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
  *
- * You can customize the CSS class by specifying an optional `class` property in a language definition:
+ * You can customize the CSS class by specifying an optional `class` property in the language definition:
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
  *				codeBlock: {
  *					languages: [
- *						// Do not render CSS class for the plain text code blocks.
+ *						// Do not render the CSS class for the plain text code blocks.
  * 						{ language: 'plaintext', label: 'Plain text', class: '' },
  *
  *						// Use the "php-code" class for PHP code blocks.
@@ -144,7 +145,7 @@ export default class CodeBlock extends Plugin {
  *		]
  *
  * **Note**: The first language defined in the configuration is considered the default one. This means it will be
- * applied to code blocks loaded from data that have no CSS `class` specified (or no matching `class` in the config).
+ * applied to code blocks loaded from the data that have no CSS `class` specified (or no matching `class` in the configuration).
  * It will also be used when creating new code blocks using the main UI button. By default it is "Plain text".
  *
  * @member {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} module:code-block/codeblock~CodeBlockConfig#languages
