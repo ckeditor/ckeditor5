@@ -15,11 +15,11 @@ import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mo
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'CKFinderUploadAdapter', () => {
-	let editor, sinonXHR, fileRepository;
+	let editor, sinonXHR, fileRepository, editorElement;
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		sinonXHR = testUtils.sinon.useFakeServer();
@@ -39,6 +39,14 @@ describe( 'CKFinderUploadAdapter', () => {
 
 	afterEach( () => {
 		sinonXHR.restore();
+
+		if ( editorElement ) {
+			editorElement.remove();
+		}
+
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	it( 'should be loaded', () => {
