@@ -60,13 +60,12 @@ export default class Context {
 		this.t = this.locale.t;
 
 		/**
-		 * When the context is created by an editor then the editor instance is
-		 * stored as an owner of this context.
+		 * `true` when the context is created by an editor `false` otherwise.
 		 *
 		 * @readonly
 		 * @type {Boolean}
 		 */
-		this.isCreatedByEditor = false;
+		this.wasCreatedByEditor = false;
 
 		/**
 		 * List of editors to which this context instance is injected.
@@ -81,14 +80,14 @@ export default class Context {
 	 * Adds a reference to the editor which is used with this context.
 	 *
 	 * When the context is created by the editor it is additionally
-	 * marked as a {@link ~Context#isCreatedByEditor} what is used
+	 * marked as a {@link ~Context#wasCreatedByEditor} what is used
 	 * in the destroy chain.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Boolean} isContextOwner
 	 */
 	addEditor( editor, isContextOwner ) {
-		if ( this.isCreatedByEditor ) {
+		if ( this.wasCreatedByEditor ) {
 			/**
 			 * Cannot add multiple editors to the context which is created by the editor.
 			 *
@@ -102,7 +101,7 @@ export default class Context {
 		this._editors.add( editor );
 
 		if ( isContextOwner ) {
-			this.isCreatedByEditor = true;
+			this.wasCreatedByEditor = true;
 		}
 	}
 

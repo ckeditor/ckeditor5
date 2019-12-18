@@ -186,7 +186,7 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			expect( editor._context ).to.be.an.instanceof( Context );
-			expect( editor._context.isCreatedByEditor ).to.true;
+			expect( editor._context.wasCreatedByEditor ).to.true;
 		} );
 
 		it( 'should use context given through configuration when is defined', async () => {
@@ -194,7 +194,7 @@ describe( 'Editor', () => {
 			const editor = new TestEditor( { context } );
 
 			expect( editor._context ).to.equal( context );
-			expect( editor._context.isCreatedByEditor ).to.false;
+			expect( editor._context.wasCreatedByEditor ).to.false;
 		} );
 
 		it( 'should throw when try to use context created by one editor with the other editor', () => {

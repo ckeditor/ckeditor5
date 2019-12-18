@@ -258,7 +258,7 @@ export default class Editor {
 
 				// When the editor was an owner of the context then
 				// the context should be destroyed along with the editor.
-				if ( this._context.isCreatedByEditor ) {
+				if ( this._context.wasCreatedByEditor ) {
 					return this._context.destroy();
 				}
 			} ).then( () => {
