@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, setTimeout, Event */
+/* global window, document, setTimeout, Event, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -320,6 +320,34 @@ describe( 'MentionUI', () => {
 					expect( panelView.isVisible ).to.be.true;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 					expect( mentionsView.items ).to.have.length( 1 );
+				} );
+		} );
+
+		it( 'should update the marker if the selection was moved from one valid position to another', () => {
+			const spy = sinon.spy();
+
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo @ bar []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+				} )
+				.then( () => {
+					editor.model.markers.on( 'update', spy );
+
+					model.change( writer => {
+						writer.setSelection( doc.getRoot().getChild( 0 ), 5 );
+					} );
+
+					sinon.assert.calledOnce( spy );
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 				} );
 		} );
 
@@ -884,20 +912,30 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'asynchronous list with custom trigger', () => {
+			const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
+
+			let feedCallbackStub, feedCallbackTimeout, feedCallbackCallTimes;
+
 			beforeEach( () => {
-				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
+				feedCallbackTimeout = 20;
+				feedCallbackCallTimes = 0;
+
+				function feedCallback( feedText ) {
+					return new Promise( resolve => {
+						setTimeout( () => {
+							feedCallbackCallTimes++;
+							resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
+						}, feedCallbackTimeout );
+					} );
+				}
+
+				feedCallbackStub = testUtils.sinon.stub().callsFake( feedCallback );
 
 				return createClassicTestEditor( {
 					feeds: [
 						{
 							marker: '#',
-							feed: feedText => {
-								return new Promise( resolve => {
-									setTimeout( () => {
-										resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
-									}, 20 );
-								} );
-							}
+							feed: feedCallbackStub
 						}
 					]
 				} );
@@ -912,6 +950,33 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
+					} );
+			} );
+
+			it( 'should fire requestFeed:response when request feed return a response', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+				const eventSpy = sinon.spy();
+				mentionUI.on( 'requestFeed:response', eventSpy );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						sinon.assert.calledOnce( eventSpy );
+						sinon.assert.calledWithExactly(
+							eventSpy,
+							sinon.match.any,
+							{
+								feed: issuesNumbers,
+								marker: '#',
+								feedText: ''
+							}
+						);
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( mentionsView.items ).to.have.length( 4 );
@@ -978,6 +1043,284 @@ describe( 'MentionUI', () => {
 					} )
 					.then( waitForDebounce )
 					.then( () => expect( panelView.isVisible ).to.be.false );
+			} );
+
+			it( 'should show panel debounced', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				return Promise.resolve()
+					.then( wait( 20 ) )
+					.then( () => {
+						sinon.assert.notCalled( feedCallbackStub );
+
+						model.change( writer => {
+							writer.insertText( '1', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( wait( 20 ) )
+					.then( () => {
+						sinon.assert.notCalled( feedCallbackStub );
+
+						model.change( writer => {
+							writer.insertText( '0', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						sinon.assert.calledOnce( feedCallbackStub );
+
+						// Should be called with all typed letters before debounce.
+						sinon.assert.calledWithExactly( feedCallbackStub, '10' );
+
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
+					} );
+			} );
+
+			it( 'should discard requested feed if they came out of order', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				const panelShowSpy = sinon.spy( panelView, 'show' );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 300;
+
+				return Promise.resolve()
+					.then( wait( 20 ) )
+					.then( () => {
+						sinon.assert.notCalled( feedCallbackStub );
+
+						model.change( writer => {
+							writer.insertText( '1', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						sinon.assert.calledOnce( feedCallbackStub );
+						sinon.assert.calledWithExactly( feedCallbackStub, '1' );
+
+						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+
+						// Make second callback resolve before first.
+						feedCallbackTimeout = 50;
+
+						model.change( writer => {
+							writer.insertText( '0', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( wait( 300 ) ) // Wait longer so the longer callback will be resolved.
+					.then( () => {
+						sinon.assert.calledTwice( feedCallbackStub );
+						sinon.assert.calledWithExactly( feedCallbackStub.getCall( 1 ), '10' );
+						sinon.assert.calledOnce( panelShowSpy );
+						expect( feedCallbackCallTimes ).to.equal( 2 );
+
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
+					} );
+			} );
+
+			it( 'should fire requestFeed:discarded event when requested feed came out of order', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				const panelShowSpy = sinon.spy( panelView, 'show' );
+				const eventSpy = sinon.spy();
+				mentionUI.on( 'requestFeed:discarded', eventSpy );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 300;
+
+				return Promise.resolve()
+					.then( wait( 20 ) )
+					.then( () => {
+						sinon.assert.notCalled( feedCallbackStub );
+
+						model.change( writer => {
+							writer.insertText( '1', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						sinon.assert.calledOnce( feedCallbackStub );
+						sinon.assert.calledWithExactly( feedCallbackStub, '1' );
+
+						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+
+						// Make second callback resolve before first.
+						feedCallbackTimeout = 50;
+
+						model.change( writer => {
+							writer.insertText( '0', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( wait( 300 ) ) // Wait longer so the longer callback will be resolved.
+					.then( () => {
+						sinon.assert.calledTwice( feedCallbackStub );
+						sinon.assert.calledWithExactly( feedCallbackStub.getCall( 1 ), '10' );
+						sinon.assert.calledOnce( panelShowSpy );
+						sinon.assert.calledOnce( eventSpy );
+						sinon.assert.calledWithExactly(
+							eventSpy,
+							sinon.match.any,
+							{
+								feed: issuesNumbers,
+								marker: '#',
+								feedText: '1'
+							}
+						);
+						expect( feedCallbackCallTimes ).to.equal( 2 );
+
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
+					} );
+			} );
+
+			it( 'should discard requested feed if mention UI is hidden', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				feedCallbackTimeout = 200;
+
+				return Promise.resolve()
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false; // Should be still hidden;
+						// Should be called with empty string.
+						sinon.assert.calledWithExactly( feedCallbackStub, '' );
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+
+			it( 'should fire requestFeed:error and log warning if requested feed failed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				feedCallbackStub.returns( Promise.reject( 'Request timeout' ) );
+
+				const warnSpy = sinon.spy( console, 'warn' );
+				const eventSpy = sinon.spy();
+				mentionUI.on( 'requestFeed:error', eventSpy );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
+
+						sinon.assert.calledWithExactly( warnSpy, sinon.match( /^mention-feed-callback-error:/ ) );
+						sinon.assert.calledOnce( eventSpy );
+					} );
+			} );
+
+			it( 'should not fail if marker was removed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+				const selectFirstMentionSpy = sinon.spy( mentionsView, 'selectFirst' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 500;
+
+				return Promise.resolve()
+					.then( waitForDebounce )
+					.then( wait( 20 ) )
+					.then( () => {
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 2 );
+						} );
+					} )
+					.then( wait( 20 ) )
+					.then( () => {
+						feedCallbackTimeout = 1000;
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+						} );
+					} )
+					.then( wait( 500 ) )
+					.then( () => {
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						// If there were any errors this will not get called.
+						// The errors might come from unhandled promise rejections errors.
+						sinon.assert.calledOnce( selectFirstMentionSpy );
+					} );
+			} );
+
+			it( 'should not show panel if selection was moved during fetching a feed', () => {
+				setData( model, '<paragraph>foo [#101] bar</paragraph><paragraph></paragraph>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '#101', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 300;
+
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 1 ), 0 );
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				return Promise.resolve()
+					.then( waitForDebounce )
+					.then( () => {
+						sinon.assert.calledOnce( feedCallbackStub );
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 6 );
+						} );
+
+						expect( panelView.isVisible ).to.be.false;
+					} )
+					.then( waitForDebounce )
+					.then( wait( 20 ) )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
 			} );
 		} );
 
@@ -1771,12 +2114,16 @@ describe( 'MentionUI', () => {
 			} );
 	}
 
-	function waitForDebounce() {
-		return new Promise( resolve => {
+	function wait( timeout ) {
+		return () => new Promise( resolve => {
 			setTimeout( () => {
 				resolve();
-			}, 50 );
+			}, timeout );
 		} );
+	}
+
+	function waitForDebounce() {
+		return wait( 180 )();
 	}
 
 	function fireKeyDownEvent( options ) {

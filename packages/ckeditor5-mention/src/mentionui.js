@@ -7,6 +7,8 @@
  * @module mention/mentionui
  */
 
+/* global console */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -14,8 +16,9 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import { debounce } from 'lodash-es';
 
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 
@@ -24,6 +27,16 @@ import DomWrapperView from './ui/domwrapperview';
 import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 3;
+
+// The key codes that mention UI handles when it is open.
+const handledKeyCodes = [
+	keyCodes.arrowup,
+	keyCodes.arrowdown,
+	keyCodes.enter,
+	keyCodes.tab,
+	keyCodes.space,
+	keyCodes.esc
+];
 
 /**
  * The mention UI feature.
@@ -36,6 +49,13 @@ export default class MentionUI extends Plugin {
 	 */
 	static get pluginName() {
 		return 'MentionUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ContextualBalloon ];
 	}
 
 	/**
@@ -59,6 +79,16 @@ export default class MentionUI extends Plugin {
 		 * @private
 		 */
 		this._mentionsConfigurations = new Map();
+
+		/**
+		 * Debounced feed requester. It uses `lodash#debounce` method to delay function call.
+		 *
+		 * @private
+		 * @param {String} marker
+		 * @param {String} feedText
+		 * @method
+		 */
+		this._requestFeedDebounced = debounce( this._requestFeed, 100 );
 
 		editor.config.define( 'mention', { feeds: [] } );
 	}
@@ -116,7 +146,7 @@ export default class MentionUI extends Plugin {
 
 			const marker = mentionDescription.marker;
 
-			if ( !marker || marker.length != 1 ) {
+			if ( !isValidMentionMarker( marker ) ) {
 				/**
 				 * The marker must be a single character.
 				 *
@@ -143,6 +173,9 @@ export default class MentionUI extends Plugin {
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
+
+		this.on( 'requestFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
+		this.on( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
 	}
 
 	/**
@@ -153,13 +186,6 @@ export default class MentionUI extends Plugin {
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
 		this._mentionsView.destroy();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ ContextualBalloon ];
 	}
 
 	/**
@@ -252,17 +278,80 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Returns a promise that resolves with autocomplete items for a given text.
+	 * Requests a feed from a configured callbacks.
 	 *
+	 * @private
+	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:response
+	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:discarded
+	 * @fires module:mention/mentionui~MentionUI#event:requestFeed:error
 	 * @param {String} marker
 	 * @param {String} feedText
-	 * @return {Promise<module:mention/mention~MentionFeedItem>}
-	 * @private
 	 */
-	_getFeed( marker, feedText ) {
-		const { feedCallback } = this._mentionsConfigurations.get( marker );
+	_requestFeed( marker, feedText ) {
+		// Store the last requested feed - it is used to discard any out-of order requests.
+		this._lastRequested = feedText;
 
-		return Promise.resolve().then( () => feedCallback( feedText ) );
+		const { feedCallback } = this._mentionsConfigurations.get( marker );
+		const feedResponse = feedCallback( feedText );
+
+		const isAsynchronous = feedResponse instanceof Promise;
+
+		// For synchronous feeds (e.g. callbacks, arrays) fire the response event immediately.
+		if ( !isAsynchronous ) {
+			/**
+			 * Fired whenever requested feed has a response.
+			 *
+			 * @event requestFeed:response
+			 * @param {Object} data Event data.
+			 * @param {Array.<module:mention/mention~MentionFeedItem>} data.feed Autocomplete items.
+			 * @param {String} data.marker The character which triggers autocompletion for mention.
+			 * @param {String} data.feedText The text for which feed items were requested.
+			 */
+			this.fire( 'requestFeed:response', { feed: feedResponse, marker, feedText } );
+
+			return;
+		}
+
+		// Handle the asynchronous responses.
+		feedResponse
+			.then( response => {
+				// Check the feed text of this response with the last requested one so either:
+				if ( this._lastRequested == feedText ) {
+					// It is the same and fire the response event.
+					this.fire( 'requestFeed:response', { feed: response, marker, feedText } );
+				} else {
+					// It is different - most probably out-of-order one, so fire the discarded event.
+					/**
+					 * Fired whenever the requested feed was discarded. This happens when the response was delayed and
+					 * other feed was already requested.
+					 *
+					 * @event requestFeed:discarded
+					 * @param {Object} data Event data.
+					 * @param {Array.<module:mention/mention~MentionFeedItem>} data.feed Autocomplete items.
+					 * @param {String} data.marker The character which triggers autocompletion for mention.
+					 * @param {String} data.feedText The text for which feed items were requested.
+					 */
+					this.fire( 'requestFeed:discarded', { feed: response, marker, feedText } );
+				}
+			} )
+			.catch( error => {
+				/**
+				 * Fired whenever the requested {@link module:mention/mention~MentionFeed#feed} promise fails with error.
+				 *
+				 * @event requestFeed:error
+				 * @param {Object} data Event data.
+				 * @param {Error} data.error The error that was caught.
+				 */
+				this.fire( 'requestFeed:error', { error } );
+
+				/**
+				 * The callback used for obtaining mention autocomplete feed thrown and error and the mention UI was hidden or
+				 * not displayed at all.
+				 *
+				 * @error mention-feed-callback-error
+				 */
+				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' ) );
+			} );
 	}
 
 	/**
@@ -282,20 +371,13 @@ export default class MentionUI extends Plugin {
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
 
-			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
-			// and you cannot use selection.hasAttribute( 'mention' ) just yet.
-			// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
-			const hasMention = focus.textNode && focus.textNode.hasAttribute( 'mention' );
-
-			const nodeBefore = focus.nodeBefore;
-
-			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
+			if ( hasExistingMention( focus ) ) {
 				this._hideUIAndRemoveMarker();
 
 				return;
 			}
 
-			const feedText = getFeedText( marker, data.text );
+			const feedText = requestFeedText( marker, data.text );
 			const matchedTextLength = marker.length + feedText.length;
 
 			// Create a marker range.
@@ -304,34 +386,20 @@ export default class MentionUI extends Plugin {
 
 			const markerRange = editor.model.createRange( start, end );
 
-			let mentionMarker;
+			if ( checkIfStillInCompletionMode( editor ) ) {
+				const mentionMarker = editor.model.markers.get( 'mention' );
 
-			if ( editor.model.markers.has( 'mention' ) ) {
-				mentionMarker = editor.model.markers.get( 'mention' );
+				// Update the marker - user might've moved the selection to other mention trigger.
+				editor.model.change( writer => {
+					writer.updateMarker( mentionMarker, { range: markerRange } );
+				} );
 			} else {
-				mentionMarker = editor.model.change( writer => writer.addMarker( 'mention', {
-					range: markerRange,
-					usingOperation: false,
-					affectsData: false
-				} ) );
+				editor.model.change( writer => {
+					writer.addMarker( 'mention', { range: markerRange, usingOperation: false, affectsData: false } );
+				} );
 			}
 
-			this._getFeed( marker, feedText )
-				.then( feed => {
-					this._items.clear();
-
-					for ( const feedItem of feed ) {
-						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
-
-						this._items.add( { item, marker } );
-					}
-
-					if ( this._items.length ) {
-						this._showUI( mentionMarker );
-					} else {
-						this._hideUIAndRemoveMarker();
-					}
-				} );
+			this._requestFeedDebounced( marker, feedText );
 		} );
 
 		watcher.on( 'unmatched', () => {
@@ -342,11 +410,44 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
+	 * Handles the feed response event data.
+	 *
+	 * @param data
+	 * @private
+	 */
+	_handleFeedResponse( data ) {
+		const { feed, marker } = data;
+
+		// If the marker is not in the document happens when the selection had changed and the 'mention' marker was removed.
+		if ( !checkIfStillInCompletionMode( this.editor ) ) {
+			return;
+		}
+
+		// Reset the view.
+		this._items.clear();
+
+		for ( const feedItem of feed ) {
+			const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
+
+			this._items.add( { item, marker } );
+		}
+
+		const mentionMarker = this.editor.model.markers.get( 'mention' );
+
+		if ( this._items.length ) {
+			this._showOrUpdateUI( mentionMarker );
+		} else {
+			// Do not show empty mention UI.
+			this._hideUIAndRemoveMarker();
+		}
+	}
+
+	/**
 	 * Shows the mentions balloon. If the panel is already visible, it will reposition it.
 	 *
 	 * @private
 	 */
-	_showUI( markerMarker ) {
+	_showOrUpdateUI( markerMarker ) {
 		if ( this._isUIVisible ) {
 			// Update balloon position as the mention list view may change its size.
 			this._balloon.updatePosition( this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ) );
@@ -360,7 +461,6 @@ export default class MentionUI extends Plugin {
 		}
 
 		this._mentionsView.position = this._balloon.view.position;
-
 		this._mentionsView.selectFirst();
 	}
 
@@ -375,7 +475,7 @@ export default class MentionUI extends Plugin {
 			this._balloon.remove( this._mentionsView );
 		}
 
-		if ( this.editor.model.markers.has( 'mention' ) ) {
+		if ( checkIfStillInCompletionMode( this.editor ) ) {
 			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
@@ -432,7 +532,7 @@ export default class MentionUI extends Plugin {
 	 */
 	_getBalloonPanelPositionData( mentionMarker, preferredPosition ) {
 		const editor = this.editor;
-		const editing = this.editor.editing;
+		const editing = editor.editing;
 		const domConverter = editing.view.domConverter;
 		const mapper = editing.mapper;
 
@@ -566,7 +666,7 @@ function createTestCallback( marker, minimumCharacters ) {
 //
 // @param {String} marker
 // @returns {Function}
-function getFeedText( marker, text ) {
+function requestFeedText( marker, text ) {
 	const regExp = createRegExp( marker, 0 );
 
 	const match = text.match( regExp );
@@ -589,7 +689,7 @@ function createFeedCallback( feedItems ) {
 			// Do not return more than 10 items.
 			.slice( 0, 10 );
 
-		return Promise.resolve( filteredItems );
+		return filteredItems;
 	};
 }
 
@@ -598,14 +698,35 @@ function createFeedCallback( feedItems ) {
 // @param {Number}
 // @returns {Boolean}
 function isHandledKey( keyCode ) {
-	const handledKeyCodes = [
-		keyCodes.arrowup,
-		keyCodes.arrowdown,
-		keyCodes.enter,
-		keyCodes.tab,
-		keyCodes.space,
-		keyCodes.esc
-	];
-
 	return handledKeyCodes.includes( keyCode );
+}
+
+// Checks if position in inside or right after a text with a mention.
+//
+// @param {module:engine/model/position~Position} position.
+// @returns {Boolean}
+function hasExistingMention( position ) {
+	// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
+	// and you cannot use selection.hasAttribute( 'mention' ) just yet.
+	// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
+	const hasMention = position.textNode && position.textNode.hasAttribute( 'mention' );
+
+	const nodeBefore = position.nodeBefore;
+
+	return hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' );
+}
+
+// Checks if string is a valid mention marker.
+//
+// @param {String} marker
+// @returns {Boolean}
+function isValidMentionMarker( marker ) {
+	return marker && marker.length == 1;
+}
+
+// Checks the mention plugins is in completion mode (e.g. when typing is after a valid mention string like @foo).
+//
+// @returns {Boolean}
+function checkIfStillInCompletionMode( editor ) {
+	return editor.model.markers.has( 'mention' );
 }

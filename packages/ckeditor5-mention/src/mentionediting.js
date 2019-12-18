@@ -81,7 +81,7 @@ export function _addMentionAttributes( baseMentionData, data ) {
  * @protected
  * @param {module:engine/view/element~Element} viewElementOrMention
  * @param {String|Object} [data] Mention data to be extended.
- * @return {module:mention/mention~MentionAttribute}
+ * @returns {module:mention/mention~MentionAttribute}
  */
 export function _toMentionAttribute( viewElementOrMention, data ) {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' );
