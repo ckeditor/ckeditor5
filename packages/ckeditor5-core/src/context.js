@@ -91,10 +91,10 @@ export default class Context {
 			/**
 			 * Cannot add multiple editors to the context which is created by the editor.
 			 *
-			 * @error context-addEditor-to-private-context
+			 * @error context-addEditor-private-context
 			 */
 			throw new CKEditorError(
-				'context-addEditor-to-private-context: Cannot add multiple editors to the context which is created by the editor.'
+				'context-addEditor-private-context: Cannot add multiple editors to the context which is created by the editor.'
 			);
 		}
 

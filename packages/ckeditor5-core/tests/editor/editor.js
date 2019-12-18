@@ -203,7 +203,7 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { context: editor._context } );
-			}, /^context-addEditor-to-private-context/ );
+			}, /^context-addEditor-private-context/ );
 		} );
 
 		it( 'should destroy context created by the editor on editor destroy', async () => {
