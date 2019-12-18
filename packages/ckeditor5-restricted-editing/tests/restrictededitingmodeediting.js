@@ -416,6 +416,19 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo[] bar baz</paragraph>' );
 		} );
+
+		it( 'should work with document selection', () => {
+			setModelData( model, '<paragraph>foo [bar] baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 2, 'end', firstParagraph );
+
+			model.change( () => {
+				model.deleteContent( model.document.selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo [] baz</paragraph>' );
+		} );
 	} );
 
 	describe( 'enforcing restrictions on input command', () => {
