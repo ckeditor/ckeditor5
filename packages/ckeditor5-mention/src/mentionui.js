@@ -86,7 +86,7 @@ export default class MentionUI extends Plugin {
 		 * @private
 		 * @param {String} marker
 		 * @param {String} feedText
-		 * @method #_requestFeedDebounced
+		 * @method
 		 */
 		this._requestFeedDebounced = debounce( this._requestFeed, 100 );
 
