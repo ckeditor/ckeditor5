@@ -40,9 +40,7 @@ export default class ContextPlugin {
 	}
 
 	/**
-	 * Static property which marks plugin as an allowed to be use directly by a {@link module:core/context~Context}.
-	 *
-	 * @returns {Boolean}
+	 * @inheritDoc
 	 */
 	static get isContextPlugin() {
 		return true;

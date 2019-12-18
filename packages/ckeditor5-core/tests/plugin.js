@@ -13,28 +13,32 @@ describe( 'Plugin', () => {
 		editor = new Editor();
 	} );
 
+	it( 'should not be marked as a context plugin', () => {
+		expect( Plugin.isContextPlugin ).to.false;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should set the `editor` property', () => {
 			const plugin = new Plugin( editor );
 
 			expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
 		} );
+	} );
 
-		describe( 'destroy()', () => {
-			it( 'should be defined', () => {
-				const plugin = new Plugin( editor );
+	describe( 'destroy()', () => {
+		it( 'should be defined', () => {
+			const plugin = new Plugin( editor );
 
-				expect( plugin.destroy ).to.be.a( 'function' );
-			} );
+			expect( plugin.destroy ).to.be.a( 'function' );
+		} );
 
-			it( 'should stop listening', () => {
-				const plugin = new Plugin( editor );
-				const stopListeningSpy = sinon.spy( plugin, 'stopListening' );
+		it( 'should stop listening', () => {
+			const plugin = new Plugin( editor );
+			const stopListeningSpy = sinon.spy( plugin, 'stopListening' );
 
-				plugin.destroy();
+			plugin.destroy();
 
-				expect( stopListeningSpy.calledOnce ).to.equal( true );
-			} );
+			expect( stopListeningSpy.calledOnce ).to.equal( true );
 		} );
 	} );
 } );
