@@ -13,7 +13,31 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * @TODO
+ * Provides a common, higher level environment for solutions which use multiple {@link module:core/editor/editor~Editor editors}
+ * or/and plugins that work outside of an editor. Use it instead of {@link module:core/editor/editor~Editor.create `Editor.create()`}
+ * in advanced application integrations.
+ *
+ * All configuration options passed to a `Context` will be used as default options for editor instances initialized in that context.
+ *
+ * {@link module:core/contextplugin~ContextPlugin `ContextPlugin`s} passed to a `Context` instance will be shared among all
+ * editor instances initialized in that context. These will be the same plugin instances for all the editors.
+ *
+ * **Note:** `Context` can only be initialized with {@link module:core/contextplugin~ContextPlugin `ContextPlugin`s}
+ * (e.g. {@glink features/collaboration/comments/comments comments}). Regular {@link module:core/plugin~Plugin `Plugin`s} require an
+ * editor instance to work and cannot be added to a `Context`.
+ *
+ * **Note:** You can add `ContextPlugin` to an editor instance, though.
+ *
+ * If you are using multiple editor instances on one page and use any `ContextPlugin`s, create `Context` to share configuration and plugins
+ * among those editors. Some plugins will use the information about all existing editors to better integrate between them.
+ *
+ * If you are using plugins that do not require an editor to work (e.g. {@glink features/collaboration/comments/comments comments})
+ * enable and configure them using `Context`.
+ *
+ * If you are using only a single editor on each page use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
+ * In such case, `Context` instance will be created by the editor instance in a transparent way.
+ *
+ * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
  */
 export default class Context {
 	/**
@@ -185,7 +209,44 @@ export default class Context {
 	}
 
 	/**
-	 * @TODO
+	 * Creates and initializes a new context instance.
+	 *
+	 *		const commonConfig = { ... }; // Configuration for all the plugins and editors.
+	 *		const editorPlugins = [ ... ]; // Regular `Plugin`s here.
+	 *
+	 *		const context = await Context.create( {
+	 *			// Only `ContextPlugin`s here.
+	 *			plugins: [ ... ],
+	 *
+	 *			// Configure language for all the editors (it cannot be overwritten).
+	 *			language: { ... },
+	 *
+	 *			// Configuration for context plugins.
+	 *			comments: { ... },
+	 *			...
+	 *
+	 *			// Default configuration for editor plugins.
+	 *			toolbar: { ... },
+	 *			image: { ... },
+	 *			...
+	 *		} );
+	 *
+	 *		const editor1 = await ClassicEditor.create(
+	 *			document.getElementById( 'editor1' ),
+	 *			{
+	 *				editorPlugins,
+	 *				context
+	 *			}
+	 *		);
+	 *
+	 *		const editor2 = await ClassicEditor.create(
+	 *			document.getElementById( 'editor2' ),
+	 *			{
+	 *				editorPlugins,
+	 *				context,
+	 *				toolbar: { ... } // You can overwrite context's configuration.
+	 *			}
+	 *		);
 	 *
 	 * @param {Object} [config] The context config.
 	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
