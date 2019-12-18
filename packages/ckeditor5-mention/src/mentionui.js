@@ -16,7 +16,7 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import { debounce } from 'lodash-es';
 
@@ -350,7 +350,7 @@ export default class MentionUI extends Plugin {
 				 *
 				 * @error mention-feed-callback-error
 				 */
-				console.warn( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
+				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' ) );
 			} );
 	}
 
