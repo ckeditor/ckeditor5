@@ -322,7 +322,7 @@ export default class MentionUI extends Plugin {
 				} else {
 					// It is different - most probably out-of-order one, so fire the discarded event.
 					/**
-					 * Fired whenever requested feed was discarded. This happens when response was delayed and
+					 * Fired whenever the requested feed was discarded. This happens when the response was delayed and
 					 * other feed was already requested.
 					 *
 					 * @event requestFeed:discarded
@@ -336,7 +336,7 @@ export default class MentionUI extends Plugin {
 			} )
 			.catch( error => {
 				/**
-				 * Fired whenever requested feed method errors.
+				 * Fired whenever the requested {@link module:mention/mention~MentionFeed#feed} promise fails with error.
 				 *
 				 * @event requestFeed:error
 				 * @param {Object} data Event data.
