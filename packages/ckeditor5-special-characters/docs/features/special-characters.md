@@ -76,6 +76,10 @@ The `@ckeditor/ckeditor5-special-characters` package provides a few basic specia
 
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can define a new special characters category.
 
+<info-box warning>
+    The "All" category name is reserved by the plugin and cannot be used as a new name for special characters category.
+</info-box>
+
 Let's create a simple plugin that provides the `Emoji` category in the special characters dropdown.
 
 ```js
