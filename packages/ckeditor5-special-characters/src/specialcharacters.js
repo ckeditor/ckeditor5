@@ -10,11 +10,14 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 import CharacterGridView from './ui/charactergridview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import '../theme/specialcharacters.css';
+
+const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
 
 /**
  * The special characters feature.
@@ -69,12 +72,16 @@ export default class SpecialCharacters extends Plugin {
 		const t = editor.t;
 
 		const inputCommand = editor.commands.get( 'input' );
-		const specialCharsPlugin = editor.plugins.get( 'SpecialCharacters' );
 
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
 			const dropdownView = createDropdown( locale );
-			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsPlugin.getGroups() );
+			const specialCharsGroups = [ ...this.getGroups() ];
+
+			// Add a special group that shows all available special characters.
+			specialCharsGroups.push( ALL_SPECIAL_CHARACTERS_GROUP );
+
+			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
 			const gridView = new CharacterGridView( this.locale, {
 				columns: 10
 			} );
@@ -82,11 +89,11 @@ export default class SpecialCharacters extends Plugin {
 			gridView.delegate( 'execute' ).to( dropdownView );
 
 			// Set the initial content of the special characters grid.
-			this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, gridView );
+			this._updateGrid( navigationView.currentGroupName, gridView );
 
 			// Update the grid of special characters when a user changed the character group.
 			navigationView.on( 'execute', () => {
-				this._updateGrid( specialCharsPlugin, navigationView.currentGroupName, gridView );
+				this._updateGrid( navigationView.currentGroupName, gridView );
 			} );
 
 			dropdownView.buttonView.set( {
@@ -117,6 +124,18 @@ export default class SpecialCharacters extends Plugin {
 	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} items
 	 */
 	addItems( groupName, items ) {
+		if ( groupName === ALL_SPECIAL_CHARACTERS_GROUP ) {
+			/**
+			 * The name "All" for special category group cannot be used because it's a special category which displays all available
+			 * special characters.
+			 *
+			 * @error special-character-invalid-group-name
+			 */
+			throw new CKEditorError(
+				`special-character-invalid-group-name: The name "${ ALL_SPECIAL_CHARACTERS_GROUP }" is reserved and cannot be used.`
+			);
+		}
+
 		const group = this._getGroup( groupName );
 
 		for ( const item of items ) {
@@ -135,12 +154,16 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Returns a collection of symbol names (titles).
+	 * Returns a collection of special characters symbol names (titles).
 	 *
 	 * @param {String} groupName
 	 * @returns {Set.<String>|undefined}
 	 */
 	getCharactersForGroup( groupName ) {
+		if ( groupName === ALL_SPECIAL_CHARACTERS_GROUP ) {
+			return new Set( this._characters.keys() );
+		}
+
 		return this._groups.get( groupName );
 	}
 
@@ -172,18 +195,17 @@ export default class SpecialCharacters extends Plugin {
 	 * Updates the symbol grid depending on the currently selected character group.
 	 *
 	 * @private
-	 * @param {module:special-characters/specialcharacters~SpecialCharacters} specialCharsPlugin
 	 * @param {String} currentGroupName
 	 * @param {module:special-characters/ui/charactergridview~CharacterGridView} gridView
 	 */
-	_updateGrid( specialCharsPlugin, currentGroupName, gridView ) {
+	_updateGrid( currentGroupName, gridView ) {
 		// Updating the grid starts with removing all tiles belonging to the old group.
 		gridView.tiles.clear();
 
-		const characterTitles = specialCharsPlugin.getCharactersForGroup( currentGroupName );
+		const characterTitles = this.getCharactersForGroup( currentGroupName );
 
 		for ( const title of characterTitles ) {
-			const character = specialCharsPlugin.getCharacter( title );
+			const character = this.getCharacter( title );
 
 			gridView.tiles.add( gridView.createTile( character, title ) );
 		}

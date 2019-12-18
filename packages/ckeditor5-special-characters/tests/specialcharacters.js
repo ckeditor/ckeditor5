@@ -14,6 +14,7 @@ import SpecialCharactersArrows from '../src/specialcharactersarrows';
 import SpecialCharactersNavigationView from '../src/ui/specialcharactersnavigationview';
 import CharacterGridView from '../src/ui/charactergridview';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SpecialCharacters', () => {
 	let plugin;
@@ -70,6 +71,14 @@ describe( 'SpecialCharacters', () => {
 
 			it( 'has a navigation view', () => {
 				expect( dropdown.panelView.children.first ).to.be.instanceOf( SpecialCharactersNavigationView );
+			} );
+
+			it( 'a navigation contains the "All" special category', () => {
+				const listView = dropdown.panelView.children.first.groupDropdownView.panelView.children.first;
+
+				// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
+				expect( listView.items.length ).to.equal( 3 );
+				expect( listView.items.last.children.first.label ).to.equal( 'All' );
 			} );
 
 			it( 'has a grid view', () => {
@@ -152,6 +161,27 @@ describe( 'SpecialCharacters', () => {
 			expect( plugin._characters.has( 'arrow left' ) ).to.equal( true );
 			expect( plugin._characters.has( 'arrow right' ) ).to.equal( true );
 		} );
+
+		it( 'works with subsequent calls to the same group', () => {
+			plugin.addItems( 'Mathematical', [ {
+				title: 'dot',
+				character: '.'
+			} ] );
+
+			plugin.addItems( 'Mathematical', [ {
+				title: ',',
+				character: 'comma'
+			} ] );
+
+			const groups = [ ...plugin.getGroups() ];
+			expect( groups ).to.deep.equal( [ 'Mathematical' ] );
+		} );
+
+		it( 'does not accept "All" as a group name', () => {
+			expectToThrowCKEditorError( () => {
+				plugin.addItems( 'All', [] );
+			}, /special-character-invalid-group-name/ );
+		} );
 	} );
 
 	describe( 'getGroups()', () => {
@@ -170,23 +200,6 @@ describe( 'SpecialCharacters', () => {
 		} );
 	} );
 
-	describe( 'addItems()', () => {
-		it( 'works with subsequent calls to the same group', () => {
-			plugin.addItems( 'Mathematical', [ {
-				title: 'dot',
-				character: '.'
-			} ] );
-
-			plugin.addItems( 'Mathematical', [ {
-				title: ',',
-				character: 'comma'
-			} ] );
-
-			const groups = [ ...plugin.getGroups() ];
-			expect( groups ).to.deep.equal( [ 'Mathematical' ] );
-		} );
-	} );
-
 	describe( 'getCharactersForGroup()', () => {
 		it( 'returns a collection of defined special characters names', () => {
 			plugin.addItems( 'Mathematical', [
@@ -197,6 +210,26 @@ describe( 'SpecialCharacters', () => {
 			const characters = plugin.getCharactersForGroup( 'Mathematical' );
 
 			expect( characters.size ).to.equal( 2 );
+			expect( characters.has( 'precedes' ) ).to.equal( true );
+			expect( characters.has( 'succeeds' ) ).to.equal( true );
+		} );
+
+		it( 'returns a collection of all special characters for "All" group', () => {
+			plugin.addItems( 'Arrows', [
+				{ title: 'arrow left', character: '←' },
+				{ title: 'arrow right', character: '→' }
+			] );
+
+			plugin.addItems( 'Mathematical', [
+				{ title: 'precedes', character: '≺' },
+				{ title: 'succeeds', character: '≻' }
+			] );
+
+			const characters = plugin.getCharactersForGroup( 'All' );
+
+			expect( characters.size ).to.equal( 4 );
+			expect( characters.has( 'arrow left' ) ).to.equal( true );
+			expect( characters.has( 'arrow right' ) ).to.equal( true );
 			expect( characters.has( 'precedes' ) ).to.equal( true );
 			expect( characters.has( 'succeeds' ) ).to.equal( true );
 		} );
