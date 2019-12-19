@@ -331,15 +331,14 @@ function restrictDeleteContent( editor ) {
 		// Shrink the selection to the range inside exception marker.
 		const allowedToDelete = marker.getRange().getIntersection( selection.getFirstRange() );
 
-		// Because the DeleteCommand uses the same selection to set selection after calling model.deleteContent() it is better to modify
-		// the argument selection. The only problem is when that when DocumentSelection is passed (or used internally) as it does allows
-		// to be modified.
-		// Instead we change the arguments passed to `deleteContent()` method when document selection was passed.
+		// Some features uses selection passed to model.deleteContent() to set the selection afterwards. For this we need to properly modify
+		// either the document selection using change block...
 		if ( selection.is( 'documentSelection' ) ) {
-			args[ 0 ] = editor.model.createSelection( allowedToDelete );
+			editor.model.change( writer => {
+				writer.setSelection( allowedToDelete );
+			} );
 		}
-		// We need to modify selection passed to deleteContent if it is an instance of selection because DeleteCommand uses passed
-		// selection to set selection afterwards. Since we modifying this here the selection set after the delete content will be invalid.
+		// ... or by modifying passed selection instance directly.
 		else {
 			selection.setTo( allowedToDelete );
 		}
