@@ -13,6 +13,15 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * The base class for {@link module:core/context~Context} plugin classes.
  *
+ * A context plugin can either be initialized for an editor or for a context. In other words, it can either
+ * work within one editor instance or with one or more editor instances that use a single context.
+ * It's the context plugin's role to implement handling for both modes.
+ *
+ * A list of rules for the context plugin:
+ * * it should be possible, for the context plugin to requires another context plugin,
+ * * it should be possible, for the {@link module:core/plugin~Plugin editor plugin} to requires context plugin,
+ * * it should NOT be possible, for the context plugin to require the {@link module:core/plugin~Plugin editor plugin}.
+ *
  * @implements module:core/plugin~PluginInterface
  * @mixes module:utils/observablemixin~ObservableMixin
  */
