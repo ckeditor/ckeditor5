@@ -28,11 +28,11 @@ describe( 'BodyCollection', () => {
 		}
 	} );
 
-	describe( 'attachToDOM', () => {
+	describe( 'attachToDom', () => {
 		it( 'should create wrapper and put the collection in that wrapper', () => {
 			const body = new BodyCollection( locale );
 
-			body.attachToDOM();
+			body.attachToDom();
 
 			const wrappers = Array.from( document.querySelectorAll( '.ck-body-wrapper' ) );
 
@@ -51,7 +51,7 @@ describe( 'BodyCollection', () => {
 		it( 'sets the right dir attribute to the body region (LTR)', () => {
 			const body = new BodyCollection( locale );
 
-			body.attachToDOM();
+			body.attachToDom();
 
 			const el = body._bodyCollectionContainer;
 
@@ -62,7 +62,7 @@ describe( 'BodyCollection', () => {
 			const locale = new Locale( { uiLanguage: 'ar' } );
 			const body = new BodyCollection( locale );
 
-			body.attachToDOM();
+			body.attachToDom();
 
 			const el = body._bodyCollectionContainer;
 
@@ -71,13 +71,13 @@ describe( 'BodyCollection', () => {
 
 		it( 'should put all body elements to the same wrapper', () => {
 			const body1 = new BodyCollection( locale );
-			body1.attachToDOM();
+			body1.attachToDom();
 
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 1 );
 			expect( document.querySelectorAll( '.ck-body' ).length ).to.equal( 1 );
 
 			const body2 = new BodyCollection( locale );
-			body2.attachToDOM();
+			body2.attachToDom();
 
 			const bodyElements = document.querySelectorAll( '.ck-body' );
 
@@ -98,7 +98,7 @@ describe( 'BodyCollection', () => {
 			} );
 
 			// Should work if body is attached before the view is added...
-			body1.attachToDOM();
+			body1.attachToDom();
 			body1.add( view1 );
 
 			const body2 = new BodyCollection( locale );
@@ -113,7 +113,7 @@ describe( 'BodyCollection', () => {
 
 			// ...and it should work if body is attached after the view is added.
 			body2.add( view2 );
-			body2.attachToDOM();
+			body2.attachToDom();
 
 			const wrappers = Array.from( document.querySelectorAll( '.ck-body-wrapper' ) );
 
@@ -137,7 +137,7 @@ describe( 'BodyCollection', () => {
 		it( 'removes the body collection from DOM', () => {
 			const body = new BodyCollection( locale );
 
-			body.attachToDOM();
+			body.attachToDom();
 			body.detachFromDOM();
 
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 0 );
@@ -146,10 +146,10 @@ describe( 'BodyCollection', () => {
 
 		it( 'removes the multiple body collections from dom and remove the wrapper when the last is removed', () => {
 			const body1 = new BodyCollection( locale );
-			body1.attachToDOM();
+			body1.attachToDom();
 
 			const body2 = new BodyCollection( locale );
-			body2.attachToDOM();
+			body2.attachToDom();
 
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 1 );
 			expect( document.querySelectorAll( '.ck-body' ).length ).to.equal( 2 );
@@ -167,7 +167,7 @@ describe( 'BodyCollection', () => {
 
 		it( 'should not throw when be called multiple times', () => {
 			const body = new BodyCollection( locale );
-			body.attachToDOM();
+			body.attachToDom();
 
 			expect( () => {
 				body.detachFromDOM();
@@ -175,7 +175,7 @@ describe( 'BodyCollection', () => {
 			} ).to.not.throw();
 		} );
 
-		it( 'should not throw if attachToDOM was not called before', () => {
+		it( 'should not throw if attachToDom was not called before', () => {
 			const body = new BodyCollection( locale );
 
 			expect( () => {
