@@ -336,7 +336,7 @@ function restrictDeleteContent( editor ) {
 		// to be modified.
 		// Instead we change the arguments passed to `deleteContent()` method when document selection was passed.
 		if ( selection.is( 'documentSelection' ) ) {
-			args.splice( 0, 1, editor.model.createSelection( allowedToDelete ) );
+			args[ 0 ] = editor.model.createSelection( allowedToDelete );
 		}
 		// We need to modify selection passed to deleteContent if it is an instance of selection because DeleteCommand uses passed
 		// selection to set selection afterwards. Since we modifying this here the selection set after the delete content will be invalid.
