@@ -38,6 +38,10 @@ describe( 'SimpleUploadAdapter', () => {
 
 	afterEach( () => {
 		sinonXHR.restore();
+
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should require the FileRepository plugin', () => {
