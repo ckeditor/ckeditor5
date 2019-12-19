@@ -74,7 +74,7 @@ export default class Editor {
 		 */
 		this.config = new Config( config, this.constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
-		this.config.define( this._context._getConfigForEditor() );
+		this.config.define( this._context._getEditorConfig() );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.

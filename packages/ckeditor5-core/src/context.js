@@ -216,7 +216,7 @@ export default class Context {
 	 * @protected
 	 * @returns {Object} Configuration as a plain object.
 	 */
-	_getConfigForEditor() {
+	_getEditorConfig() {
 		const result = {};
 
 		for ( const name of this.config.names() ) {
