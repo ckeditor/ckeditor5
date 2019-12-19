@@ -26,7 +26,7 @@ describe( 'Context', () => {
 		} );
 	} );
 
-	describe( 'getConfigForEditor()', () => {
+	describe( '_getConfigForEditor()', () => {
 		it( 'should return the configuration without plugin config', () => {
 			class FooPlugin extends ContextPlugin {}
 			class BarPlugin extends ContextPlugin {}
@@ -41,7 +41,7 @@ describe( 'Context', () => {
 				bar: 'bom'
 			} );
 
-			expect( context.getConfigForEditor() ).to.be.deep.equal( {
+			expect( context._getConfigForEditor() ).to.be.deep.equal( {
 				language: { ui: 'pl', content: 'ar' },
 				foo: 1,
 				bar: 'bom'

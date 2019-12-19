@@ -84,58 +84,23 @@ export default class Context {
 		this.t = this.locale.t;
 
 		/**
-		 * `true` when the context is created by an editor `false` otherwise.
-		 *
-		 * @readonly
-		 * @type {Boolean}
-		 */
-		this.wasCreatedByEditor = false;
-
-		/**
 		 * List of editors to which this context instance is injected.
 		 *
 		 * @private
 		 * @type {Set<module:core/editor/editor~Editor>}
 		 */
 		this._editors = new Set();
-	}
 
-	/**
-	 * Adds a reference to the editor which is used with this context.
-	 *
-	 * When the context is created by the editor it is additionally
-	 * marked as a {@link ~Context#wasCreatedByEditor} what is used
-	 * in the destroy chain.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Boolean} isContextOwner
-	 */
-	addEditor( editor, isContextOwner ) {
-		if ( this.wasCreatedByEditor ) {
-			/**
-			 * Cannot add multiple editors to the context which is created by the editor.
-			 *
-			 * @error context-addEditor-private-context
-			 */
-			throw new CKEditorError(
-				'context-addEditor-private-context: Cannot add multiple editors to the context which is created by the editor.'
-			);
-		}
-
-		this._editors.add( editor );
-
-		if ( isContextOwner ) {
-			this.wasCreatedByEditor = true;
-		}
-	}
-
-	/**
-	 * Removes a reference to the editor which was used with this context.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 */
-	removeEditor( editor ) {
-		return this._editors.delete( editor );
+		/**
+		 * Reference to the editor which created the context.
+		 * Null when the context was created outside of the editor.
+		 *
+		 * It is used to destroy the context when removing the editor that created the context.
+		 *
+		 * @private
+		 * @type {module:core/editor/editor~Editor|null}
+		 */
+		this._contextOwner = null;
 	}
 
 	/**
@@ -179,14 +144,78 @@ export default class Context {
 	}
 
 	/**
+	 * Destroys the context instance, releasing all resources used by it.
+	 *
+	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
+	 */
+	destroy() {
+		return Promise.all( Array.from( this._editors, editor => editor.destroy() ) )
+			.then( () => this.plugins.destroy() );
+	}
+
+	/**
+	 * Adds a reference to the editor which is used with this context.
+	 *
+	 * When the given editor has created the context then the reference to this editor will be stored
+	 * as a {@link ~Context#_contextOwner}.
+	 *
+	 * This method should be used only by the editor.
+	 *
+	 * @protected
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Boolean} isContextOwner
+	 */
+	_addEditor( editor, isContextOwner ) {
+		if ( this._contextOwner ) {
+			/**
+			 * Cannot add multiple editors to the context which is created by the editor.
+			 *
+			 * @error context-addEditor-private-context
+			 */
+			throw new CKEditorError(
+				'context-addEditor-private-context: Cannot add multiple editors to the context which is created by the editor.'
+			);
+		}
+
+		this._editors.add( editor );
+
+		if ( isContextOwner ) {
+			this._contextOwner = editor;
+		}
+	}
+
+	/**
+	 * Removes a reference to the editor which was used with this context.
+	 * When the context was created by the given editor then the context will be destroyed.
+	 *
+	 * This method should be used only by the editor.
+	 *
+	 * @protected
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context has been destroyed.
+	 */
+	_removeEditor( editor ) {
+		this._editors.delete( editor );
+
+		if ( this._contextOwner === editor ) {
+			return this.destroy();
+		}
+
+		return Promise.resolve();
+	}
+
+	/**
 	 * Returns context configuration which will be copied to editors created using this context.
 	 *
 	 * The configuration returned by this method has removed plugins configuration - plugins are shared with all editors
 	 * through another mechanism.
 	 *
+	 * This method should be used only by the editor.
+	 *
+	 * @protected
 	 * @returns {Object} Configuration as a plain object.
 	 */
-	getConfigForEditor() {
+	_getConfigForEditor() {
 		const result = {};
 
 		for ( const name of this.config.names() ) {
@@ -196,16 +225,6 @@ export default class Context {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Destroys the context instance, releasing all resources used by it.
-	 *
-	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
-	 */
-	destroy() {
-		return Promise.all( Array.from( this._editors, editor => editor.destroy() ) )
-			.then( () => this.plugins.destroy() );
 	}
 
 	/**

@@ -59,7 +59,7 @@ export default class Editor {
 		 * @type {module:core/context~Context}
 		 */
 		this._context = config.context || new Context( { language: config.language } );
-		this._context.addEditor( this, !config.context );
+		this._context._addEditor( this, !config.context );
 
 		const availablePlugins = this.constructor.builtinPlugins;
 
@@ -74,7 +74,7 @@ export default class Editor {
 		 */
 		this.config = new Config( config, this.constructor.defaultConfig );
 		this.config.define( 'plugins', availablePlugins );
-		this.config.define( this._context.getConfigForEditor() );
+		this.config.define( this._context._getConfigForEditor() );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
@@ -252,15 +252,9 @@ export default class Editor {
 
 		return readyPromise
 			.then( () => {
-				// Remove the editor from the context to avoid destroying it
-				// one more time when context will be destroyed.
-				this._context.removeEditor( this );
-
-				// When the editor was an owner of the context then
-				// the context should be destroyed along with the editor.
-				if ( this._context.wasCreatedByEditor ) {
-					return this._context.destroy();
-				}
+				// Remove the editor from the context.
+				// When the context was created by this editor then then the context will be destroyed.
+				return this._context._removeEditor( this );
 			} ).then( () => {
 				this.fire( 'destroy' );
 				this.stopListening();
