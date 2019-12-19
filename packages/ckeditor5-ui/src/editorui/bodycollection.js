@@ -23,7 +23,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  * The editor will detach and destroy this collection
  * when the editor will be {@link module:core/editor/editor~Editor#destroy destroyed}.
  *
- * If you need to control the live cycle of the body collection on your own, you can create your own instance of this class.
+ * If you need to control the life cycle of the body collection on your own, you can create your own instance of this class.
  *
  * Body collection will render itself automatically in the DOM body element as soon as you call {@link ~BodyCollection#attachToDom}.
  * If you create multiple body collections this class will create a special wrapper element in the DOM to limit the number of
