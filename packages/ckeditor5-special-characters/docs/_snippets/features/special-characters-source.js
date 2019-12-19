@@ -8,6 +8,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
 class SpecialCharactersEmoji extends Plugin {
@@ -42,6 +43,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 }
 
 ClassicEditor.builtinPlugins.push( Alignment );
+ClassicEditor.builtinPlugins.push( SpecialCharacters );
 ClassicEditor.builtinPlugins.push( SpecialCharactersEssentials );
 ClassicEditor.builtinPlugins.push( SpecialCharactersEmoji );
 ClassicEditor.builtinPlugins.push( SpecialCharactersArrowsExtended );
