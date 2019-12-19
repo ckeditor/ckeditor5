@@ -188,7 +188,7 @@ describe( 'Editor', () => {
 			expect( editor._context ).to.be.an.instanceof( Context );
 		} );
 
-		it( 'should use context given through configuration when is defined', async () => {
+		it( 'should use context given through config', async () => {
 			const context = await Context.create();
 			const editor = new TestEditor( { context } );
 
@@ -204,13 +204,15 @@ describe( 'Editor', () => {
 			}, /^context-addEditor-private-context/ );
 		} );
 
-		it( 'should destroy context created by the editor on editor destroy', async () => {
+		it( 'should destroy context created by the editor at the end of the editor destroy chain', async () => {
 			const editor = await TestEditor.create();
+			const editorPluginsDestroySpy = sinon.spy( editor.plugins, 'destroy' );
 			const contextDestroySpy = sinon.spy( editor._context, 'destroy' );
 
 			await editor.destroy();
 
 			sinon.assert.calledOnce( contextDestroySpy );
+			expect( editorPluginsDestroySpy.calledBefore( contextDestroySpy ) ).to.true;
 		} );
 
 		it( 'should not destroy context along with the editor when context was injected to the editor', async () => {

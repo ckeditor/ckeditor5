@@ -252,10 +252,6 @@ export default class Editor {
 
 		return readyPromise
 			.then( () => {
-				// Remove the editor from the context.
-				// When the context was created by this editor then then the context will be destroyed.
-				return this._context._removeEditor( this );
-			} ).then( () => {
 				this.fire( 'destroy' );
 				this.stopListening();
 				this.commands.destroy();
@@ -266,7 +262,10 @@ export default class Editor {
 				this.data.destroy();
 				this.editing.destroy();
 				this.keystrokes.destroy();
-			} );
+			} )
+			// Remove the editor from the context.
+			// When the context was created by this editor then then the context will be destroyed.
+			.then( () => this._context._removeEditor( this ) );
 	}
 
 	/**
