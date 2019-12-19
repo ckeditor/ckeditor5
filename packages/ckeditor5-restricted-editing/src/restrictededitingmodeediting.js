@@ -93,10 +93,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		}, { priority: 'highest' } );
 
-		// Set unique class to every $root element for additional styling in restricted editing
 		editor.editing.view.change( writer => {
 			for ( const root of editor.editing.view.document.roots ) {
-				writer.addClass( 'ck-restricted-editing', root );
+				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
 	}
