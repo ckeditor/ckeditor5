@@ -15,7 +15,7 @@ import ViewCollection from '../viewcollection';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
- * This is the special {@link module:ui/viewcollection~ViewCollection ViewCollection} dedicated to elements that are detached
+ * This is a special {@link module:ui/viewcollection~ViewCollection} dedicated to elements that are detached
  * from the DOM structure of the editor, like panels, icons, etc.
  *
  * CKEditor creates the body collection as {@link module:ui/editorui/editoruiview~EditorUIView#body editor.ui.view.body} property.
