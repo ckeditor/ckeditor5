@@ -25,7 +25,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  *
  * If you need to control the life cycle of the body collection on your own, you can create your own instance of this class.
  *
- * Body collection will render itself automatically in the DOM body element as soon as you call {@link ~BodyCollection#attachToDom}.
+ * A body collection will render itself automatically in the DOM body element as soon as you call {@link ~BodyCollection#attachToDom}.
  * If you create multiple body collections this class will create a special wrapper element in the DOM to limit the number of
  * elements created directly in the body and remove it when the last body collection will be
  * {@link ~BodyCollection#detachFromDom detached}.
@@ -39,7 +39,7 @@ export default class BodyCollection extends ViewCollection {
 	 */
 	attachToDom() {
 		/**
-		 * The element holding elements of the 'body' region.
+		 * The element holding elements of the body region.
 		 *
 		 * @protected
 		 * @member {HTMLElement} #_bodyCollectionContainer
