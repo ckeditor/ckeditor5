@@ -234,7 +234,7 @@ export default class Context {
 	 *		const commonConfig = { ... }; // Configuration for all the plugins and editors.
 	 *		const editorPlugins = [ ... ]; // Regular `Plugin`s here.
 	 *
-	 *		const context = await Context.create( {
+	 *		Context.create( {
 	 *			// Only `ContextPlugin`s here.
 	 *			plugins: [ ... ],
 	 *
@@ -249,24 +249,28 @@ export default class Context {
 	 *			toolbar: { ... },
 	 *			image: { ... },
 	 *			...
+	 *		} ).then( context => {
+	 *			const promises = [];
+	 *
+	 *			promises.push( ClassicEditor.create(
+	 *				document.getElementById( 'editor1' ),
+	 *				{
+	 *					editorPlugins,
+	 *					context
+	 *				}
+	 *			) );
+	 *
+	 *			promises.push( ClassicEditor.create(
+	 *				document.getElementById( 'editor2' ),
+	 *				{
+	 *					editorPlugins,
+	 *					context,
+	 *					toolbar: { ... } // You can overwrite context's configuration.
+	 *				}
+	 *			) );
+	 *
+	 *			return Promise.all( promises );
 	 *		} );
-	 *
-	 *		const editor1 = await ClassicEditor.create(
-	 *			document.getElementById( 'editor1' ),
-	 *			{
-	 *				editorPlugins,
-	 *				context
-	 *			}
-	 *		);
-	 *
-	 *		const editor2 = await ClassicEditor.create(
-	 *			document.getElementById( 'editor2' ),
-	 *			{
-	 *				editorPlugins,
-	 *				context,
-	 *				toolbar: { ... } // You can overwrite context's configuration.
-	 *			}
-	 *		);
 	 *
 	 * @param {Object} [config] The context config.
 	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
