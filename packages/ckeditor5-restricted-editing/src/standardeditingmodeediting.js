@@ -54,5 +54,12 @@ export default class StandardEditingModeEditing extends Plugin {
 		} );
 
 		editor.commands.add( 'restrictedEditingException', new RestrictedEditingExceptionCommand( editor ) );
+
+		// Set unique class to every $root element for additional styling in standard editing
+		editor.editing.view.change( writer => {
+			for ( const root of editor.editing.view.document.roots ) {
+				writer.addClass( 'ck-standard-editing', root );
+			}
+		} );
 	}
 }
