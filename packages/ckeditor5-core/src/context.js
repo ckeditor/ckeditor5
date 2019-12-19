@@ -23,7 +23,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * editor instances initialized in that context. These will be the same plugin instances for all the editors.
  *
  * **Note:** `Context` can only be initialized with {@link module:core/contextplugin~ContextPlugin `ContextPlugin`s}
- * (e.g. {@glink features/collaboration/comments/comments comments}). Regular {@link module:core/plugin~Plugin `Plugin`s} require an
+ * (e.g. [comments](https://ckeditor.com/collaboration/comments/)). Regular {@link module:core/plugin~Plugin `Plugin`s} require an
  * editor instance to work and cannot be added to a `Context`.
  *
  * **Note:** You can add `ContextPlugin` to an editor instance, though.
@@ -31,7 +31,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * If you are using multiple editor instances on one page and use any `ContextPlugin`s, create `Context` to share configuration and plugins
  * among those editors. Some plugins will use the information about all existing editors to better integrate between them.
  *
- * If you are using plugins that do not require an editor to work (e.g. {@glink features/collaboration/comments/comments comments})
+ * If you are using plugins that do not require an editor to work (e.g. [comments](https://ckeditor.com/collaboration/comments/))
  * enable and configure them using `Context`.
  *
  * If you are using only a single editor on each page use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
