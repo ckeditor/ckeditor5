@@ -42,7 +42,7 @@
 	}
 }
 
-.ck-restricted-editing .restricted-editing-exception {
+.ck-restricted-editing_mode_restricted .restricted-editing-exception {
 	&:hover {
 		background: var(--ck-color-restricted-editing-exception-hover-background);
 	}
