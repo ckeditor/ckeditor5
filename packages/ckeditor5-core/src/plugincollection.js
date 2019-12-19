@@ -30,10 +30,10 @@ export default class PluginCollection {
 	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
-	 * @param {Iterable.<Array>} externalPlugins List of already initialized plugins represented by a
+	 * @param {Iterable.<Array>} contextPlugins List of already initialized plugins represented by a
 	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
-	constructor( context, availablePlugins = [], externalPlugins = [] ) {
+	constructor( context, availablePlugins = [], contextPlugins = [] ) {
 		/**
 		 * @protected
 		 * @type {module:core/editor/editor~Editor|module:core/context~Context}
@@ -61,16 +61,16 @@ export default class PluginCollection {
 		}
 
 		/**
-		 * Map of external plugins which can be retrieved by their constructors or instance.
+		 * Map of {@link module:core/contextplugin~ContextPlugin context plugins} which can be retrieved by their constructors or instances.
 		 *
 		 * @protected
 		 * @type {Map<Function,Function>}
 		 */
-		this._externalPlugins = new Map();
+		this._contextPlugins = new Map();
 
-		for ( const [ PluginConstructor, pluginInstance ] of externalPlugins ) {
-			this._externalPlugins.set( PluginConstructor, pluginInstance );
-			this._externalPlugins.set( pluginInstance, PluginConstructor );
+		for ( const [ PluginConstructor, pluginInstance ] of contextPlugins ) {
+			this._contextPlugins.set( PluginConstructor, pluginInstance );
+			this._contextPlugins.set( pluginInstance, PluginConstructor );
 
 			// To make it possible to require plugin by its name.
 			if ( PluginConstructor.pluginName ) {
@@ -265,7 +265,7 @@ export default class PluginCollection {
 					return promise;
 				}
 
-				if ( that._externalPlugins.has( plugin ) ) {
+				if ( that._contextPlugins.has( plugin ) ) {
 					return promise;
 				}
 
@@ -321,7 +321,7 @@ export default class PluginCollection {
 					} );
 				}
 
-				const plugin = that._externalPlugins.get( PluginConstructor ) || new PluginConstructor( context );
+				const plugin = that._contextPlugins.get( PluginConstructor ) || new PluginConstructor( context );
 				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
 
@@ -365,7 +365,7 @@ export default class PluginCollection {
 		const promises = [];
 
 		for ( const [ , pluginInstance ] of this ) {
-			if ( typeof pluginInstance.destroy == 'function' && !this._externalPlugins.has( pluginInstance ) ) {
+			if ( typeof pluginInstance.destroy == 'function' && !this._contextPlugins.has( pluginInstance ) ) {
 				promises.push( pluginInstance.destroy() );
 			}
 		}

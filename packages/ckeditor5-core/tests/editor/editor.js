@@ -225,7 +225,7 @@ describe( 'Editor', () => {
 			sinon.assert.notCalled( contextDestroySpy );
 		} );
 
-		it( 'should add context plugins as an external editor plugins', async () => {
+		it( 'should add context plugins to the editor plugins', async () => {
 			class ContextPlugin {
 				static get isContextPlugin() {
 					return true;
@@ -235,7 +235,7 @@ describe( 'Editor', () => {
 			const context = await Context.create( { plugins: [ ContextPlugin ] } );
 			const editor = new TestEditor( { context } );
 
-			expect( editor.plugins._externalPlugins.has( ContextPlugin ) ).to.equal( true );
+			expect( editor.plugins._contextPlugins.has( ContextPlugin ) ).to.equal( true );
 		} );
 
 		it( 'should get configuration from the context', async () => {
