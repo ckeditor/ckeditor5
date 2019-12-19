@@ -163,6 +163,20 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
+		// Naive post-fixer.
+		model.markers.on( 'update:restrictedEditingException', ( evt, marker, oldRange, newRange ) => {
+			if ( !newRange.isFlat ) {
+				model.change( writer => {
+					writer.updateMarker( marker, {
+						range: writer.createRange(
+							writer.createPositionAt( newRange.end.parent, 0 ),
+							newRange.end
+						)
+					} );
+				} );
+			}
+		} );
+
 		setupExceptionHighlighting( editor );
 	}
 

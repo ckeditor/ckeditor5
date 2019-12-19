@@ -17,6 +17,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -54,7 +55,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'conversion', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 		} );
 
@@ -88,6 +89,21 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				expect( secondMarker.getStart().path ).to.deep.equal( [ 1, 6 ] );
 				expect( secondMarker.getEnd().path ).to.deep.equal( [ 1, 11 ] );
+			} );
+
+			it( 'should convert <span class="restricted-editing-exception"> inside table to marker', () => {
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
+
+				const marker = model.markers.get( 'restrictedEditingException:1' );
+
+				expect( marker.getStart().path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
+				expect( marker.getEnd().path ).to.deep.equal( [ 0, 0, 0, 0, 3 ] );
 			} );
 
 			it( 'should not convert other <span> elements', () => {
@@ -156,6 +172,39 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected"><b>foo bar baz</b></span>' +
 					'</p>'
+				);
+			} );
+
+			it( 'converted <span> should be the outermost attribute element', () => {
+				editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b' } );
+				setModelData( model,
+					'<table><tableRow><tableCell>' +
+					'<paragraph><$text bold="true">foo bar baz</$text></paragraph>' +
+					'</tableCell></tableRow></table>'
+				);
+
+				const paragraph = model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+				model.change( writer => {
+					writer.addMarker( 'restrictedEditingException:1', {
+						range: writer.createRange( writer.createPositionAt( paragraph, 0 ), writer.createPositionAt( paragraph, 'end' ) ),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table"><table><tbody><tr><td>' +
+					'<span class="restricted-editing-exception"><b>foo bar baz</b></span>' +
+					'</td></tr></tbody></table></figure>'
+				);
+				assertEqualMarkup( getViewData( editor.editing.view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+					'<span><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
+					'</td></tr></tbody></table>' +
+					'</figure>'
 				);
 			} );
 		} );
