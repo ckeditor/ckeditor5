@@ -133,12 +133,12 @@ describe( 'BodyCollection', () => {
 		} );
 	} );
 
-	describe( 'detachFromDOM', () => {
+	describe( 'detachFromDom', () => {
 		it( 'removes the body collection from DOM', () => {
 			const body = new BodyCollection( locale );
 
 			body.attachToDom();
-			body.detachFromDOM();
+			body.detachFromDom();
 
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 0 );
 			expect( document.querySelectorAll( '.ck-body' ).length ).to.equal( 0 );
@@ -154,12 +154,12 @@ describe( 'BodyCollection', () => {
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 1 );
 			expect( document.querySelectorAll( '.ck-body' ).length ).to.equal( 2 );
 
-			body1.detachFromDOM();
+			body1.detachFromDom();
 
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 1 );
 			expect( document.querySelectorAll( '.ck-body' ).length ).to.equal( 1 );
 
-			body2.detachFromDOM();
+			body2.detachFromDom();
 
 			expect( document.querySelectorAll( '.ck-body-wrapper' ).length ).to.equal( 0 );
 			expect( document.querySelectorAll( '.ck-body' ).length ).to.equal( 0 );
@@ -170,8 +170,8 @@ describe( 'BodyCollection', () => {
 			body.attachToDom();
 
 			expect( () => {
-				body.detachFromDOM();
-				body.detachFromDOM();
+				body.detachFromDom();
+				body.detachFromDom();
 			} ).to.not.throw();
 		} );
 
@@ -179,7 +179,7 @@ describe( 'BodyCollection', () => {
 			const body = new BodyCollection( locale );
 
 			expect( () => {
-				body.detachFromDOM();
+				body.detachFromDom();
 			} ).to.not.throw();
 		} );
 	} );
