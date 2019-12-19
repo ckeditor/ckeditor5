@@ -55,15 +55,13 @@ describe( 'BlockToolbar', () => {
 		expect( BlockToolbar.pluginName ).to.equal( 'BlockToolbar' );
 	} );
 
-	it( 'should work with empty config', async () => {
+	it( 'should not throw when empty config is provided', async () => {
 		// Remove default editor instance.
 		await editor.destroy();
 
-		expect( async () => {
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [ BlockToolbar ]
-			} );
-		} ).to.not.throw();
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ BlockToolbar ]
+		} );
 	} );
 
 	describe( 'child views', () => {
