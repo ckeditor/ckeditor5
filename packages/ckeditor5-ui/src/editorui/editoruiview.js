@@ -49,7 +49,7 @@ export default class EditorUIView extends View {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this.body.detachFromDOM();
+		this.body.detachFromDom();
 
 		return super.destroy();
 	}

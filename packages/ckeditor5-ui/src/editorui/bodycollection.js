@@ -27,7 +27,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  * Body collection will render itself automatically in the DOM body element as soon as you call {@link ~BodyCollection#attachToDom}.
  * If you create multiple body collections this class will create a special wrapper element in the DOM to limit the number of
  * elements created directly in the body and remove it when the last body collection will be
- * {@link ~BodyCollection#detachFromDOM detached}.
+ * {@link ~BodyCollection#detachFromDom detached}.
  *
  * @extends module:ui/viewcollection~ViewCollection
  */
@@ -71,7 +71,7 @@ export default class BodyCollection extends ViewCollection {
 	 * Detach the collection from the DOM structure. Use this method when you do not need to use the body collection
 	 * anymore to clean-up the DOM structure.
 	 */
-	detachFromDOM() {
+	detachFromDom() {
 		super.destroy();
 
 		if ( this._bodyCollectionContainer ) {
