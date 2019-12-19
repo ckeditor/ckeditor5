@@ -27,6 +27,10 @@ describe( 'PendingActions', () => {
 		expect( PendingActions ).to.have.property( 'pluginName', 'PendingActions' );
 	} );
 
+	it( 'should be marked as a context plugin', () => {
+		expect( PendingActions.isContextPlugin ).to.true;
+	} );
+
 	describe( 'init()', () => {
 		it( 'should have hasAny observable', () => {
 			const spy = sinon.spy();
