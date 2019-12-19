@@ -25,10 +25,6 @@
 		var(--ck-color-restricted-editing-exception-brackets) 100%
 	) 1;
 
-	&:hover {
-		background: var(--ck-color-restricted-editing-exception-hover-background);
-	}
-
 	&.restricted-editing-exception_selected {
 		background-color: var(--ck-color-restricted-editing-selected-exception-background);
 		border-image: linear-gradient(
@@ -41,9 +37,13 @@
 	}
 
 	&.restricted-editing-exception_collapsed {
-		/* Single char is about 10px wide.
-		Value of 8px for collapsed element is because we have additional 2px in left/right borders.
-		Also less than 10px wide is hard to click on target. */
-		padding-left: 8px;
+		/* Empty exception should have the same width as exception with at least 1 char */
+		padding-left: 1ch;
+	}
+}
+
+.ck-restricted-editing .restricted-editing-exception {
+	&:hover {
+		background: var(--ck-color-restricted-editing-exception-hover-background);
 	}
 }
