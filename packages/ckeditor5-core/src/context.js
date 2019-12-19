@@ -87,7 +87,7 @@ export default class Context {
 		 * List of editors to which this context instance is injected.
 		 *
 		 * @private
-		 * @type {Set<module:core/editor/editor~Editor>}
+		 * @type {Set.<module:core/editor/editor~Editor>}
 		 */
 		this._editors = new Set();
 
@@ -95,7 +95,7 @@ export default class Context {
 		 * Reference to the editor which created the context.
 		 * Null when the context was created outside of the editor.
 		 *
-		 * It is used to destroy the context when removing the editor that created the context.
+		 * It is used to destroy the context when removing the editor that has created the context.
 		 *
 		 * @private
 		 * @type {module:core/editor/editor~Editor|null}
@@ -115,7 +115,7 @@ export default class Context {
 		for ( const Plugin of plugins ) {
 			if ( typeof Plugin != 'function' ) {
 				/**
-				 * Only constructor is allowed as a Context plugin.
+				 * Only constructor is allowed as a {@link module:core/contextplugin~ContextPlugin}.
 				 *
 				 * @error context-initplugins-constructor-only
 				 */
@@ -128,7 +128,7 @@ export default class Context {
 
 			if ( Plugin.isContextPlugin !== true ) {
 				/**
-				 * Only plugin marked as a ContextPlugin is allowed to be used with a context.
+				 * Only plugin marked as a {@link module:core/contextplugin~ContextPlugin} is allowed to be used with a context.
 				 *
 				 * @error context-initplugins-invalid-plugin
 				 */
@@ -144,7 +144,8 @@ export default class Context {
 	}
 
 	/**
-	 * Destroys the context instance, releasing all resources used by it.
+	 * Destroys the context instance, and all editors used with the context.
+	 * Releasing all resources used by the context.
 	 *
 	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
 	 */
@@ -163,7 +164,7 @@ export default class Context {
 	 *
 	 * @protected
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Boolean} isContextOwner
+	 * @param {Boolean} isContextOwner Stores the given editor as a context owner.
 	 */
 	_addEditor( editor, isContextOwner ) {
 		if ( this._contextOwner ) {
