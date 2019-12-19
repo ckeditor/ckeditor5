@@ -40,6 +40,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( editor.plugins.get( RestrictedEditingModeEditing ) ).to.be.instanceOf( RestrictedEditingModeEditing );
 		} );
 
+		it( 'should have "ck-restricted-editing_mode_restricted" class', () => {
+			for ( const root of editor.editing.view.document.roots ) {
+				expect( root.hasClass( 'ck-restricted-editing_mode_restricted' ) ).to.be.true;
+			}
+		} );
+
 		it( 'adds a "goToPreviousRestrictedEditingException" command', () => {
 			expect( editor.commands.get( 'goToPreviousRestrictedEditingException' ) )
 				.to.be.instanceOf( RestrictedEditingModeNavigationCommand );
