@@ -103,9 +103,9 @@ export function extendMarkerOnTypingPostFixer( editor ) {
 		let changeApplied = false;
 
 		for ( const change of editor.model.document.differ.getChanges() ) {
-			if ( change.type == 'insert' && change.name == '$text' && change.length === 1 ) {
-				changeApplied = _tryExtendMarkerStart( editor, change.position, writer ) || changeApplied;
-				changeApplied = _tryExtendMarkedEnd( editor, change.position, writer ) || changeApplied;
+			if ( change.type == 'insert' && change.name == '$text' ) {
+				changeApplied = _tryExtendMarkerStart( editor, change.position, change.length, writer ) || changeApplied;
+				changeApplied = _tryExtendMarkedEnd( editor, change.position, change.length, writer ) || changeApplied;
 			}
 		}
 
@@ -159,13 +159,13 @@ export function upcastHighlightToMarker( config ) {
 	} );
 }
 
-// Extend marker if typing detected on marker's start position.
-function _tryExtendMarkerStart( editor, position, writer ) {
-	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( 1 ) );
+// Extend marker if change detected on marker's start position.
+function _tryExtendMarkerStart( editor, position, length, writer ) {
+	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( length ) );
 
-	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( 1 ) ) ) {
+	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( length ) ) ) {
 		writer.updateMarker( markerAtStart, {
-			range: writer.createRange( markerAtStart.getStart().getShiftedBy( -1 ), markerAtStart.getEnd() )
+			range: writer.createRange( markerAtStart.getStart().getShiftedBy( -length ), markerAtStart.getEnd() )
 		} );
 
 		return true;
@@ -174,13 +174,13 @@ function _tryExtendMarkerStart( editor, position, writer ) {
 	return false;
 }
 
-// Extend marker if typing detected on marker's end position.
-function _tryExtendMarkedEnd( editor, position, writer ) {
+// Extend marker if change detected on marker's end position.
+function _tryExtendMarkedEnd( editor, position, length, writer ) {
 	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {
 		writer.updateMarker( markerAtEnd, {
-			range: writer.createRange( markerAtEnd.getStart(), markerAtEnd.getEnd().getShiftedBy( 1 ) )
+			range: writer.createRange( markerAtEnd.getStart(), markerAtEnd.getEnd().getShiftedBy( length ) )
 		} );
 
 		return true;

@@ -76,6 +76,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		this._setupConversion();
 		this._setupCommandsToggling();
+		this._setupRestrictions();
 
 		// Commands & keystrokes that allow navigation in the content.
 		editor.commands.add( 'goToPreviousRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'backward' ) );
@@ -163,6 +164,25 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
 
 		setupExceptionHighlighting( editor );
+	}
+
+	/**
+	 * Setups additional editing restrictions beyond command toggling.
+	 *
+	 * @private
+	 */
+	_setupRestrictions() {
+		const editor = this.editor;
+
+		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+
+		const inputCommand = this.editor.commands.get( 'input' );
+
+		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
+		// This check is bit synthetic since only tests are used this way.
+		if ( inputCommand ) {
+			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
+		}
 	}
 
 	/**
@@ -283,4 +303,71 @@ function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
 
 		return true;
 	};
+}
+
+// Ensures that model.deleteContent() does not delete outside exception markers ranges.
+//
+// The enforced restrictions are:
+// - only execute deleteContent() inside exception markers
+// - restrict passed selection to exception marker
+function restrictDeleteContent( editor ) {
+	return ( evt, args ) => {
+		const [ selection ] = args;
+
+		const marker = getMarkerAtPosition( editor, selection.focus ) || getMarkerAtPosition( editor, selection.anchor );
+
+		// Stop method execution if marker was not found at selection focus.
+		if ( !marker ) {
+			evt.stop();
+
+			return;
+		}
+
+		// Collapsed selection inside exception marker does not require fixing.
+		if ( selection.isCollapsed ) {
+			return;
+		}
+
+		// Shrink the selection to the range inside exception marker.
+		const allowedToDelete = marker.getRange().getIntersection( selection.getFirstRange() );
+
+		// Some features uses selection passed to model.deleteContent() to set the selection afterwards. For this we need to properly modify
+		// either the document selection using change block...
+		if ( selection.is( 'documentSelection' ) ) {
+			editor.model.change( writer => {
+				writer.setSelection( allowedToDelete );
+			} );
+		}
+		// ... or by modifying passed selection instance directly.
+		else {
+			selection.setTo( allowedToDelete );
+		}
+	};
+}
+
+// Ensures that input command is executed with a range that is inside exception marker.
+//
+// This restriction is due to fact that using native spell check changes text outside exception marker.
+function disallowInputExecForWrongRange( editor ) {
+	return ( evt, args ) => {
+		const [ options ] = args;
+		const { range } = options;
+
+		// Only check "input" command executed with a range value.
+		// Selection might be set in exception marker but passed range might point elsewhere.
+		if ( !range ) {
+			return;
+		}
+
+		if ( !isRangeInsideSingleMarker( editor, range ) ) {
+			evt.stop();
+		}
+	};
+}
+
+function isRangeInsideSingleMarker( editor, range ) {
+	const markerAtStart = getMarkerAtPosition( editor, range.start );
+	const markerAtEnd = getMarkerAtPosition( editor, range.end );
+
+	return markerAtStart && markerAtEnd && markerAtEnd === markerAtStart;
 }

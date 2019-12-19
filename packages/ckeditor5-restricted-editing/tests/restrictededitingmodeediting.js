@@ -19,7 +19,7 @@ import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting'
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 
 describe( 'RestrictedEditingModeEditing', () => {
-	let editor;
+	let editor, model;
 
 	testUtils.createSinonSandbox();
 
@@ -53,8 +53,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'conversion', () => {
-		let model;
-
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
 			model = editor.model;
@@ -164,8 +162,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'editing behavior', () => {
-		let model;
-
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
@@ -319,6 +315,64 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
 
+		it( 'should retain marker on non-typing change at the marker boundary (start)', () => {
+			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				editor.execute( 'delete', {
+					selection: writer.createSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 4 ),
+						writer.createPositionAt( firstParagraph, 6 )
+					) )
+				} );
+				editor.execute( 'input', {
+					text: 'XX',
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ) )
+				} );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo XX[]r baz</paragraph>' );
+
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 7 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should retain marker on non-typing change at marker boundary (end)', () => {
+			setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				editor.execute( 'delete', {
+					selection: writer.createSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 5 ),
+						writer.createPositionAt( firstParagraph, 7 )
+					) )
+				} );
+				editor.execute( 'input', {
+					text: 'XX',
+					range: writer.createRange( writer.createPositionAt( firstParagraph, 5 ) )
+				} );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo bXX[] baz</paragraph>' );
+
+			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
+			const expectedRange = model.createRange(
+				model.createPositionAt( firstParagraph, 4 ),
+				model.createPositionAt( firstParagraph, 7 )
+			);
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
 		it( 'should not move collapsed marker to $graveyard', () => {
 			setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
 			const firstParagraph = model.document.getRoot().getChild( 0 );
@@ -345,6 +399,187 @@ describe( 'RestrictedEditingModeEditing', () => {
 			);
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'enforcing restrictions on deleteContent', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not allow to delete content outside restricted area', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 3, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			model.deleteContent( model.document.selection );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>fo[]o bar baz</paragraph>' );
+		} );
+
+		it( 'should trim deleted content to a exception marker (focus in marker)', () => {
+			setModelData( model, '<paragraph>[]foofoo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 3, 9, firstParagraph );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( firstParagraph, 0 ),
+					writer.createPositionAt( firstParagraph, 6 )
+				) );
+				model.deleteContent( selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo bar baz</paragraph>' );
+		} );
+
+		it( 'should trim deleted content to a exception marker (anchor in marker)', () => {
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				const selection = writer.createSelection( writer.createRange(
+					writer.createPositionAt( firstParagraph, 5 ),
+					writer.createPositionAt( firstParagraph, 8 )
+				) );
+				model.deleteContent( selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo b baz</paragraph>' );
+		} );
+
+		it( 'should trim deleted content to a exception marker and alter the selection argument (delete command integration)', () => {
+			setModelData( model, '<paragraph>[]foofoo bar baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 3, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 6 );
+			} );
+			editor.execute( 'delete', { unit: 'word' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo[] bar baz</paragraph>' );
+		} );
+
+		it( 'should work with document selection', () => {
+			setModelData( model, '<paragraph>f[oo bar] baz</paragraph>' );
+			const firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 2, 'end', firstParagraph );
+
+			model.change( () => {
+				model.deleteContent( model.document.selection );
+			} );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), '<paragraph>fo baz</paragraph>' );
+		} );
+	} );
+
+	describe( 'enforcing restrictions on input command', () => {
+		let firstParagraph;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			model = editor.model;
+
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+
+			firstParagraph = model.document.getRoot().getChild( 0 );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should prevent changing text before exception marker', () => {
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'input', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 0 ),
+					model.createPositionAt( firstParagraph, 7 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+		} );
+
+		it( 'should prevent changing text before exception marker', () => {
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'input', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 4 ),
+					model.createPositionAt( firstParagraph, 9 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+		} );
+
+		it( 'should prevent changing text before (change crossing different markers)', () => {
+			addExceptionMarker( 0, 4, firstParagraph );
+			addExceptionMarker( 7, 9, firstParagraph, 2 );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'input', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 2 ),
+					model.createPositionAt( firstParagraph, 8 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>fo[]o bar baz</paragraph>' );
+		} );
+
+		it( 'should allow changing text inside single marker', () => {
+			addExceptionMarker( 0, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'input', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 2 ),
+					model.createPositionAt( firstParagraph, 8 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foxxxxxxx[]baz</paragraph>' );
 		} );
 	} );
 
@@ -873,4 +1108,19 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 	} );
+
+	// Helper method that creates an exception marker inside given parent.
+	// Marker range is set to given position offsets (start, end).
+	function addExceptionMarker( startOffset, endOffset = startOffset, parent, id = 1 ) {
+		model.change( writer => {
+			writer.addMarker( `restrictedEditingException:${ id }`, {
+				range: writer.createRange(
+					writer.createPositionAt( parent, startOffset ),
+					writer.createPositionAt( parent, endOffset )
+				),
+				usingOperation: true,
+				affectsData: true
+			} );
+		} );
+	}
 } );
