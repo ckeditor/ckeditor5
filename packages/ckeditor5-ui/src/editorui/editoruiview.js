@@ -42,7 +42,7 @@ export default class EditorUIView extends View {
 	render() {
 		super.render();
 
-		this.body.attachToDOM();
+		this.body.attachToDom();
 	}
 
 	/**
