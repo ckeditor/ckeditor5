@@ -73,6 +73,8 @@ describe( 'InlineEditor', () => {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.sourceElement ).to.be.undefined;
+
+				return editor.destroy();
 			} );
 		} );
 
@@ -81,6 +83,8 @@ describe( 'InlineEditor', () => {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.element );
+
+				return editor.destroy();
 			} );
 		} );
 
@@ -195,8 +199,18 @@ describe( 'InlineEditor', () => {
 						);
 					}
 				)
+				.then( () => {
+					removeEditorDom();
+				} )
 				.then( done )
 				.catch( done );
+
+			function removeEditorDom() {
+				// Remove DOM leftovers to not affect other tests (#6002, #6018).
+				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
+					editorBody.remove();
+				}
+			}
 		} );
 
 		// #25
@@ -331,7 +345,9 @@ describe( 'InlineEditor', () => {
 				} );
 		} );
 
-		it( 'should not throw an error if editor was initialized with the data', () => {
+		it( 'should not throw an error if editor was initialized with the data', async () => {
+			await editor.destroy();
+
 			return InlineEditor
 				.create( '<p>Foo.</p>', {
 					plugins: [ Paragraph, Bold ]
