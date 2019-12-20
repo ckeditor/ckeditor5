@@ -1071,6 +1071,7 @@ describe( 'LinkUI', () => {
 
 				afterEach( () => {
 					editorElement.remove();
+					return editor.destroy();
 				} );
 
 				it( 'should gather information about manual decorators', () => {
