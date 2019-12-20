@@ -15,12 +15,12 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'StrikethroughUI', () => {
-	let editor, strikeView;
+	let editor, strikeView, editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
@@ -35,6 +35,8 @@ describe( 'StrikethroughUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
