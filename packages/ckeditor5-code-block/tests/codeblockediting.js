@@ -575,13 +575,19 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert empty codeBlock to empty pre tag', () => {
 			setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
 
-			expect( getViewData( view ) ).to.equal( '<pre data-language="Plain text"><code class="language-plaintext">[]</code></pre>' );
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext">[]</code>' +
+				'</pre>' );
 		} );
 
 		it( 'should convert non-empty codeBlock to pre tag', () => {
 			setModelData( model, '<codeBlock language="plaintext">Foo</codeBlock>' );
 
-			expect( getViewData( view ) ).to.equal( '<pre data-language="Plain text"><code class="language-plaintext">{}Foo</code></pre>' );
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext">{}Foo</code>' +
+				'</pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #1', () => {
@@ -594,7 +600,7 @@ describe( 'CodeBlockEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<pre data-language="Plain text">' +
+				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">{}Foo<br></br>Bar<br></br>Biz</code>' +
 				'</pre>' );
 		} );
@@ -611,7 +617,7 @@ describe( 'CodeBlockEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<pre data-language="Plain text">' +
+				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">[]<br></br><br></br>Foo<br></br><br></br></code>' +
 				'</pre>' );
 		} );
@@ -635,7 +641,7 @@ describe( 'CodeBlockEditing', () => {
 					);
 
 					expect( getViewData( view ) ).to.equal(
-						'<pre data-language="Zwykły tekst">' +
+						'<pre data-language="Zwykły tekst" spellcheck="false">' +
 							'<code class="language-plaintext">{}foo</code>' +
 						'</pre>' );
 
@@ -666,7 +672,7 @@ describe( 'CodeBlockEditing', () => {
 					setModelData( model, '<codeBlock language="cpp">foo</codeBlock>' );
 
 					expect( getViewData( view ) ).to.equal(
-						'<pre data-language="C++">' +
+						'<pre data-language="C++" spellcheck="false">' +
 							'<code>{}foo</code>' +
 						'</pre>' );
 
