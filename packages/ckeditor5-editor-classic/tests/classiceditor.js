@@ -209,8 +209,16 @@ describe( 'ClassicEditor', () => {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
 			} ).catch( () => {
+				removeEditorDom();
 				done();
 			} );
+
+			function removeEditorDom() {
+				// Remove DOM leftovers to not affect other tests (#6002, #6018).
+				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
+					editorBody.remove();
+				}
+			}
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
@@ -309,7 +317,9 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
-		it( 'does not update the source element if editor was initialized with data', () => {
+		it( 'does not update the source element if editor was initialized with data', async () => {
+			await editor.destroy();
+
 			return ClassicEditor
 				.create( '<p>Foo.</p>', {
 					plugins: [ Paragraph, Bold ]
