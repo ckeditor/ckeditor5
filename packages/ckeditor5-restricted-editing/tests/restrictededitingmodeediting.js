@@ -17,7 +17,6 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
-import { createDataTransfer } from '@ckeditor/ckeditor5-paste-from-office/tests/_utils/utils';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -1139,5 +1138,13 @@ describe( 'RestrictedEditingModeEditing', () => {
 				affectsData: true
 			} );
 		} );
+	}
+
+	function createDataTransfer( data ) {
+		return {
+			getData( type ) {
+				return data[ type ];
+			}
+		};
 	}
 } );
