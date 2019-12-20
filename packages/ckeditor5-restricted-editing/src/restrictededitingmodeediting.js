@@ -69,6 +69,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const viewDoc = editingView.document;
 
 		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' );
 
@@ -85,10 +87,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 
 		// Block clipboard completely in restricted mode.
-		this.listenTo( editor.editing.view.document, 'clipboardInput', evt => {
+		this.listenTo( viewDoc, 'clipboardInput', evt => {
 			evt.stop();
 		}, { priority: 'highest' } );
-		this.listenTo( editor.editing.view.document, 'clipboardOutput', ( evt, data ) => {
+		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' ) {
 				if ( !isRangeInsideSingleMarker( editor, editor.model.document.selection.getFirstRange() ) ) {
 					evt.stop();
@@ -96,8 +98,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		}, { priority: 'highest' } );
 
-		editor.editing.view.change( writer => {
-			for ( const root of editor.editing.view.document.roots ) {
+		editingView.change( writer => {
+			for ( const root of viewDoc.roots ) {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
