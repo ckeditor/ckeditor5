@@ -31,6 +31,8 @@ describe( 'Enter feature', () => {
 	afterEach( () => {
 		element.remove();
 		sinon.restore();
+
+		return editor.destroy();
 	} );
 
 	it( 'creates the commands', () => {
