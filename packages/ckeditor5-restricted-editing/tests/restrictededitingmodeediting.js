@@ -59,8 +59,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 			model = editor.model;
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		describe( 'upcast', () => {
@@ -206,6 +206,54 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'</td></tr></tbody></table>' +
 					'</figure>'
 				);
+			} );
+		} );
+
+		describe( 'flattening exception markers', () => {
+			it( 'should fix non-flat marker range (start is higher in tree)', () => {
+				setModelData( model, '<table><tableRow><tableCell><paragraph>foo bar baz</paragraph></tableCell></tableRow></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+				model.change( writer => {
+					writer.addMarker( `restrictedEditingException:${ 1 }`, {
+						range: writer.createRange(
+							writer.createPositionAt( paragraph, 0 ),
+							writer.createPositionAt( tableCell, 'end' )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				const marker = model.markers.get( 'restrictedEditingException:1' );
+
+				expect( marker.getStart().parent ).to.equal( marker.getEnd().parent );
+				expect( marker.getStart().path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
+				expect( marker.getEnd().path ).to.deep.equal( [ 0, 0, 0, 0, 11 ] );
+			} );
+
+			it( 'should fix non-flat marker range (end is higher in tree)', () => {
+				setModelData( model, '<table><tableRow><tableCell><paragraph>foo bar baz</paragraph></tableCell></tableRow></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+				model.change( writer => {
+					writer.addMarker( `restrictedEditingException:${ 1 }`, {
+						range: writer.createRange(
+							writer.createPositionAt( tableCell, 0 ),
+							writer.createPositionAt( paragraph, 'end' )
+						),
+						usingOperation: true,
+						affectsData: true
+					} );
+				} );
+
+				const marker = model.markers.get( 'restrictedEditingException:1' );
+
+				expect( marker.getStart().parent ).to.equal( marker.getEnd().parent );
+				expect( marker.getStart().path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
+				expect( marker.getEnd().path ).to.deep.equal( [ 0, 0, 0, 0, 11 ] );
 			} );
 		} );
 	} );

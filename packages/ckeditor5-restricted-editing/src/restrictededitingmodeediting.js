@@ -162,20 +162,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
-
-		// Naive post-fixer.
-		model.markers.on( 'update:restrictedEditingException', ( evt, marker, oldRange, newRange ) => {
-			if ( !newRange.isFlat ) {
-				model.change( writer => {
-					writer.updateMarker( marker, {
-						range: writer.createRange(
-							writer.createPositionAt( newRange.end.parent, 0 ),
-							newRange.end
-						)
-					} );
-				} );
-			}
-		} );
+		model.markers.on( 'update:restrictedEditingException', ensureNewMarkerIsFlat( editor ) );
 
 		setupExceptionHighlighting( editor );
 	}
@@ -384,4 +371,27 @@ function isRangeInsideSingleMarker( editor, range ) {
 	const markerAtEnd = getMarkerAtPosition( editor, range.end );
 
 	return markerAtStart && markerAtEnd && markerAtEnd === markerAtStart;
+}
+
+// Checks if new marker range is flat. Non-flat ranges might appear during upcast conversion in nested structures, ie tables.
+function ensureNewMarkerIsFlat( editor ) {
+	const model = editor.model;
+
+	return ( evt, marker, oldRange, newRange ) => {
+		if ( !oldRange && !newRange.isFlat ) {
+			model.change( writer => {
+				const start = newRange.start;
+				const end = newRange.end;
+
+				const startIsHigherInTree = start.path.length > end.path.length;
+
+				const fixedStart = startIsHigherInTree ? newRange.start : writer.createPositionAt( end.parent, 0 );
+				const fixedEnd = startIsHigherInTree ? writer.createPositionAt( start.parent, 'end' ) : newRange.end;
+
+				writer.updateMarker( marker, {
+					range: writer.createRange( fixedStart, fixedEnd )
+				} );
+			} );
+		}
+	};
 }
