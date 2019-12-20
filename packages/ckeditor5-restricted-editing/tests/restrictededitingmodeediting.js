@@ -622,7 +622,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			it( 'should cut selected content inside exception marker (selection inside marker)', () => {
 				setModelData( model, '<paragraph>foo b[a]r baz</paragraph>' );
 				const firstParagraph = model.document.getRoot().getChild( 0 );
-				addExceptionMarker( 4, 7, firstParagraph, 1 );
+				addExceptionMarker( 4, 7, firstParagraph );
 
 				viewDoc.fire( 'clipboardOutput', {
 					content: {
@@ -637,7 +637,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			it( 'should cut selected content inside exception marker (selection touching marker start)', () => {
 				setModelData( model, '<paragraph>foo [ba]r baz</paragraph>' );
 				const firstParagraph = model.document.getRoot().getChild( 0 );
-				addExceptionMarker( 4, 7, firstParagraph, 1 );
+				addExceptionMarker( 4, 7, firstParagraph );
 
 				viewDoc.fire( 'clipboardOutput', {
 					content: {
@@ -652,7 +652,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			it( 'should cut selected content inside exception marker (selection touching marker end)', () => {
 				setModelData( model, '<paragraph>foo b[ar] baz</paragraph>' );
 				const firstParagraph = model.document.getRoot().getChild( 0 );
-				addExceptionMarker( 4, 7, firstParagraph, 1 );
+				addExceptionMarker( 4, 7, firstParagraph );
 
 				viewDoc.fire( 'clipboardOutput', {
 					content: {
