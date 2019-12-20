@@ -45,6 +45,8 @@ describe( 'DecoupledEditor build', () => {
 					expect( newEditor.ui.view.element ).to.be.null;
 					expect( newEditor.ui.view.toolbar.element.parentElement ).to.be.null;
 					expect( newEditor.ui.view.editable.element.parentElement ).to.be.null;
+
+					return newEditor.destroy();
 				} );
 		} );
 	} );
@@ -56,6 +58,8 @@ describe( 'DecoupledEditor build', () => {
 			return DecoupledEditor.create( editorElement )
 				.then( newEditor => {
 					expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
+
+					return newEditor.destroy();
 				} );
 		} );
 	} );
