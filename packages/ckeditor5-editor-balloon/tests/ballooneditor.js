@@ -205,8 +205,18 @@ describe( 'BalloonEditor', () => {
 						);
 					}
 				)
+				.then( () => {
+					removeEditorDom();
+				} )
 				.then( done )
 				.catch( done );
+
+			function removeEditorDom() {
+				// Remove DOM leftovers to not affect other tests (#6002, #6018).
+				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
+					editorBody.remove();
+				}
+			}
 		} );
 
 		// ckeditor/ckeditor5-editor-classic#53
@@ -341,7 +351,9 @@ describe( 'BalloonEditor', () => {
 				} );
 		} );
 
-		it( 'should not throw an error if editor was initialized with the data', () => {
+		it( 'should not throw an error if editor was initialized with the data', async () => {
+			await editor.destroy();
+
 			return BalloonEditor
 				.create( '<p>Foo.</p>', {
 					plugins: [ Paragraph, Bold ]
