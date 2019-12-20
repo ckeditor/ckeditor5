@@ -465,6 +465,8 @@ describe( 'View', () => {
 			domSelection.collapse( newDiv, 0 );
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
+
+			newDiv.remove();
 		} );
 	} );
 } );
