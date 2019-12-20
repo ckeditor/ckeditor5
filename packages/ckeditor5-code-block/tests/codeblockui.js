@@ -161,9 +161,8 @@ describe( 'CodeBlockUI', () => {
 				expect( listView.items.get( 2 ).children.first.isOn ).to.be.true;
 			} );
 
-			it( 'uses localized "Plain text" label', () => {
-				const element = document.createElement( 'div' );
-				document.body.appendChild( element );
+			it( 'uses localized "Plain text" label', async () => {
+				await editor.destroy();
 
 				return ClassicTestEditor
 					.create( element, {
