@@ -29,14 +29,14 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 /* global document */
 
 describe( 'Input feature', () => {
-	let editor, model, modelRoot, view, viewDocument, viewRoot, listenter;
+	let editor, model, modelRoot, view, viewDocument, viewRoot, listenter, domElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		listenter = Object.create( EmitterMixin );
 
-		const domElement = document.createElement( 'div' );
+		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
 		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter, Link ] } )
@@ -66,6 +66,7 @@ describe( 'Input feature', () => {
 
 	afterEach( () => {
 		listenter.stopListening();
+		domElement.remove();
 
 		return editor.destroy();
 	} );
@@ -1022,7 +1023,7 @@ describe( 'Input feature', () => {
 } );
 
 describe( 'Input feature - Android', () => {
-	let editor, model, modelRoot, view, viewDocument, listenter, oldEnvIsAndroid;
+	let editor, model, modelRoot, view, viewDocument, listenter, oldEnvIsAndroid, domElement;
 
 	testUtils.createSinonSandbox();
 
@@ -1034,7 +1035,7 @@ describe( 'Input feature - Android', () => {
 	beforeEach( () => {
 		listenter = Object.create( EmitterMixin );
 
-		const domElement = document.createElement( 'div' );
+		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
 		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter, Link ] } )
@@ -1055,6 +1056,7 @@ describe( 'Input feature - Android', () => {
 
 	afterEach( () => {
 		listenter.stopListening();
+		domElement.remove();
 
 		return editor.destroy();
 	} );
