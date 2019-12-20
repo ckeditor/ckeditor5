@@ -51,7 +51,7 @@ export default class PageBreakCommand extends Command {
 			if ( !canSetSelection && model.schema.checkChild( pageBreakElement.parent, 'paragraph' ) ) {
 				nextElement = writer.createElement( 'paragraph' );
 
-				writer.insert( nextElement, writer.createPositionAfter( pageBreakElement ) );
+				model.insertContent( nextElement, writer.createPositionAfter( pageBreakElement ) );
 			}
 
 			// Put the selection inside the element, at the beginning.
