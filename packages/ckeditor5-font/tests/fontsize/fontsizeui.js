@@ -121,8 +121,8 @@ describe( 'FontSizeUI', () => {
 
 		describe( 'config', () => {
 			beforeEach( () => {
-				// Each test suite creates its own element, so make sure to delete editor created in root
-				// level first, as later element and editor vars are overridden.
+				// Each test case in this group creates its own element, so make sure to delete editor created in
+				// the main beforeEach in this file, as later element and editor vars are overridden (#6002).
 				element.remove();
 				return editor.destroy();
 			} );
