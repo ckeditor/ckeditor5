@@ -374,6 +374,9 @@ function isRangeInsideSingleMarker( editor, range ) {
 }
 
 // Checks if new marker range is flat. Non-flat ranges might appear during upcast conversion in nested structures, ie tables.
+//
+// Note: This marker fixer only consider case which is possible to create using StandardEditing mode plugin.
+// Markers created by developer in the data might break in many other ways.
 function ensureNewMarkerIsFlat( editor ) {
 	const model = editor.model;
 
