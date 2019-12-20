@@ -116,8 +116,16 @@ describe( 'FontFamilyUI', () => {
 		} );
 
 		describe( 'localization', () => {
-			beforeEach( () => {
+			let editorElement;
+
+			beforeEach( async () => {
+				await editor.destroy();
+
 				return localizedEditor( [ 'default', 'Arial' ] );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
 			} );
 
 			it( 'works for the #buttonView', () => {
@@ -136,7 +144,7 @@ describe( 'FontFamilyUI', () => {
 			} );
 
 			function localizedEditor( options ) {
-				const editorElement = document.createElement( 'div' );
+				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
 				return ClassicTestEditor

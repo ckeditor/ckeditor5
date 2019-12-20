@@ -120,6 +120,13 @@ describe( 'FontSizeUI', () => {
 		} );
 
 		describe( 'config', () => {
+			beforeEach( () => {
+				// Each test suite creates its own element, so make sure to delete editor created in root
+				// level first, as later element and editor vars are overridden.
+				element.remove();
+				return editor.destroy();
+			} );
+
 			describe( 'using presets', () => {
 				beforeEach( () => {
 					element = document.createElement( 'div' );
@@ -196,7 +203,10 @@ describe( 'FontSizeUI', () => {
 		} );
 
 		describe( 'localization', () => {
-			beforeEach( () => {
+			beforeEach( async () => {
+				element.remove();
+				await editor.destroy();
+
 				return localizedEditor( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
 			} );
 
