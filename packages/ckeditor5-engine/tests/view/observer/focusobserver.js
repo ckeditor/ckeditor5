@@ -165,6 +165,11 @@ describe( 'FocusObserver', () => {
 			observer = view.getObserver( FocusObserver );
 		} );
 
+		afterEach( () => {
+			view.destroy();
+			domRoot.remove();
+		} );
+
 		it( 'should always render document after selectionChange event', done => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
