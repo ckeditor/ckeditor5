@@ -17,6 +17,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
+import { createDataTransfer } from '@ckeditor/ckeditor5-paste-from-office/tests/_utils/utils';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -731,35 +732,32 @@ describe( 'RestrictedEditingModeEditing', () => {
 				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
-			it( 'should be blocked inside exception marker', () => {
-				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
-				const firstParagraph = model.document.getRoot().getChild( 0 );
-				const spy = sinon.spy();
-				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+			describe( 'collapsed selection', () => {
+				it( 'should paste text inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
 
-				model.change( writer => {
-					writer.addMarker( 'restrictedEditingException:1', {
-						range: writer.createRange(
-							writer.createPositionAt( firstParagraph, 4 ),
-							writer.createPositionAt( firstParagraph, 7 )
-						),
-						usingOperation: true,
-						affectsData: true
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 					} );
-				} );
 
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 5 );
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo b[XXX]ar baz</paragraph>' );
 				} );
+			} );
 
-				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: {
-						getData: sinon.spy()
-					}
+			describe( 'non-collapsed selection', () => {
+				it( 'should paste text inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[a]r baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo b[XXX]ar baz</paragraph>' );
 				} );
-
-				sinon.assert.notCalled( spy );
-				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
 			} );
 		} );
 	} );
