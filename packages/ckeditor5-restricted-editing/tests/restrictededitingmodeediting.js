@@ -619,18 +619,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
-			it( 'should cut selected content inside exception marker', () => {
-				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			it( 'should cut selected content inside exception marker (selection inside marker)', () => {
+				setModelData( model, '<paragraph>foo b[a]r baz</paragraph>' );
 				const firstParagraph = model.document.getRoot().getChild( 0 );
-
 				addExceptionMarker( 4, 7, firstParagraph, 1 );
-
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( firstParagraph, 5 ),
-						writer.createPositionAt( firstParagraph, 6 )
-					) );
-				} );
 
 				viewDoc.fire( 'clipboardOutput', {
 					content: {
@@ -640,6 +632,36 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]r baz</paragraph>' );
+			} );
+
+			it( 'should cut selected content inside exception marker (selection touching marker start)', () => {
+				setModelData( model, '<paragraph>foo [ba]r baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				addExceptionMarker( 4, 7, firstParagraph, 1 );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'cut'
+				} );
+
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo []r baz</paragraph>' );
+			} );
+
+			it( 'should cut selected content inside exception marker (selection touching marker end)', () => {
+				setModelData( model, '<paragraph>foo b[ar] baz</paragraph>' );
+				const firstParagraph = model.document.getRoot().getChild( 0 );
+				addExceptionMarker( 4, 7, firstParagraph, 1 );
+
+				viewDoc.fire( 'clipboardOutput', {
+					content: {
+						isEmpty: true
+					},
+					method: 'cut'
+				} );
+
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[] baz</paragraph>' );
 			} );
 		} );
 
