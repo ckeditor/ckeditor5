@@ -260,9 +260,9 @@ describe( 'Alignment UI', () => {
 		} );
 
 		describe( 'config', () => {
-			beforeEach( () => {
-				element = document.createElement( 'div' );
-				document.body.appendChild( element );
+			beforeEach( async () => {
+				// Clean up the editor created in main test suite hook.
+				await editor.destroy();
 
 				return ClassicTestEditor
 					.create( element, {
@@ -291,9 +291,9 @@ describe( 'Alignment UI', () => {
 				expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
 			} );
 
-			it( 'should have default icon set (RTL content)', () => {
-				const element = document.createElement( 'div' );
-				document.body.appendChild( element );
+			it( 'should have default icon set (RTL content)', async () => {
+				// Clean up the editor created in main test suite hook.
+				await editor.destroy();
 
 				return ClassicTestEditor
 					.create( element, {
