@@ -13,6 +13,7 @@ import SpecialCharactersMathematical from '../src/specialcharactersmathematical'
 import SpecialCharactersArrows from '../src/specialcharactersarrows';
 import SpecialCharactersNavigationView from '../src/ui/specialcharactersnavigationview';
 import CharacterGridView from '../src/ui/charactergridview';
+import CharacterInfoView from '../src/ui/characterinfoview';
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -82,7 +83,11 @@ describe( 'SpecialCharacters', () => {
 			} );
 
 			it( 'has a grid view', () => {
-				expect( dropdown.panelView.children.last ).to.be.instanceOf( CharacterGridView );
+				expect( dropdown.panelView.children.get( 1 ) ).to.be.instanceOf( CharacterGridView );
+			} );
+
+			it( 'has a character info view', () => {
+				expect( dropdown.panelView.children.last ).to.be.instanceOf( CharacterInfoView );
 			} );
 
 			describe( '#buttonView', () => {
@@ -102,7 +107,7 @@ describe( 'SpecialCharacters', () => {
 			} );
 
 			it( 'executes a command and focuses the editing view', () => {
-				const grid = dropdown.panelView.children.last;
+				const grid = dropdown.panelView.children.get( 1 );
 				const executeSpy = sinon.stub( editor, 'execute' );
 				const focusSpy = sinon.stub( editor.editing.view, 'focus' );
 
@@ -119,7 +124,7 @@ describe( 'SpecialCharacters', () => {
 				let grid;
 
 				beforeEach( () => {
-					grid = dropdown.panelView.children.last;
+					grid = dropdown.panelView.children.get( 1 );
 				} );
 
 				it( 'delegates #execute to the dropdown', () => {
@@ -144,6 +149,34 @@ describe( 'SpecialCharacters', () => {
 					expect( grid.tiles.get( 0 ).label ).to.equal( '⇐' );
 				} );
 			} );
+
+			describe( 'character info view', () => {
+				let grid, characterInfo;
+
+				beforeEach( () => {
+					grid = dropdown.panelView.children.get( 1 );
+					characterInfo = dropdown.panelView.children.last;
+				} );
+
+				it( 'is empty when the dropdown was shown', () => {
+					dropdown.fire( 'change:isOpen' );
+
+					expect( characterInfo.character ).to.equal( null );
+					expect( characterInfo.name ).to.equal( null );
+					expect( characterInfo.code ).to.equal( '' );
+				} );
+
+				it( 'is updated when the tile fires #mouseover', () => {
+					const tile = grid.tiles.get( 0 );
+
+					tile.fire( 'mouseover' );
+
+					expect( tile.label ).to.equal( '<' );
+					expect( characterInfo.character ).to.equal( '<' );
+					expect( characterInfo.name ).to.equal( 'Less-than sign' );
+					expect( characterInfo.code ).to.equal( 'U+003c' );
+				} );
+			} );
 		} );
 	} );
 
@@ -163,15 +196,19 @@ describe( 'SpecialCharacters', () => {
 		} );
 
 		it( 'works with subsequent calls to the same group', () => {
-			plugin.addItems( 'Mathematical', [ {
-				title: 'dot',
-				character: '.'
-			} ] );
+			plugin.addItems( 'Mathematical', [
+				{
+					title: 'dot',
+					character: '.'
+				}
+			] );
 
-			plugin.addItems( 'Mathematical', [ {
-				title: ',',
-				character: 'comma'
-			} ] );
+			plugin.addItems( 'Mathematical', [
+				{
+					title: ',',
+					character: 'comma'
+				}
+			] );
 
 			const groups = [ ...plugin.getGroups() ];
 			expect( groups ).to.deep.equal( [ 'Mathematical' ] );

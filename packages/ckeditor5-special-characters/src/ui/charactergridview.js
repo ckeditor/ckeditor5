@@ -88,7 +88,14 @@ export default class CharacterGridView extends View {
 		tile.extendTemplate( {
 			attributes: {
 				title: name
+			},
+			on: {
+				mouseover: tile.bindTemplate.to( 'mouseover' )
 			}
+		} );
+
+		tile.on( 'mouseover', () => {
+			this.fire( 'tileHover', { character, name } );
 		} );
 
 		tile.on( 'execute', () => {

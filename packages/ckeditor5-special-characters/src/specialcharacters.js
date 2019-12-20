@@ -13,6 +13,7 @@ import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 import CharacterGridView from './ui/charactergridview';
+import CharacterInfoView from './ui/characterinfoview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 import '../theme/specialcharacters.css';
@@ -82,11 +83,21 @@ export default class SpecialCharacters extends Plugin {
 			specialCharsGroups.push( ALL_SPECIAL_CHARACTERS_GROUP );
 
 			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
-			const gridView = new CharacterGridView( this.locale, {
-				columns: 10
-			} );
+			const gridView = new CharacterGridView( locale );
+			const infoView = new CharacterInfoView( locale );
 
 			gridView.delegate( 'execute' ).to( dropdownView );
+
+			gridView.on( 'tileHover', ( evt, data ) => {
+				infoView.set( data );
+			} );
+
+			dropdownView.on( 'change:isOpen', () => {
+				infoView.set( {
+					character: null,
+					name: null
+				} );
+			} );
 
 			// Set the initial content of the special characters grid.
 			this._updateGrid( navigationView.currentGroupName, gridView );
@@ -112,6 +123,7 @@ export default class SpecialCharacters extends Plugin {
 
 			dropdownView.panelView.children.add( navigationView );
 			dropdownView.panelView.children.add( gridView );
+			dropdownView.panelView.children.add( infoView );
 
 			return dropdownView;
 		} );
