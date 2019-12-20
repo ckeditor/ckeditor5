@@ -16,6 +16,10 @@ describe( 'getPositionedAncestor', () => {
 		document.body.appendChild( element );
 	} );
 
+	afterEach( () => {
+		element.remove();
+	} );
+
 	it( 'should return null when there is no element', () => {
 		expect( getPositionedAncestor() ).to.be.null;
 	} );
@@ -38,6 +42,8 @@ describe( 'getPositionedAncestor', () => {
 		parent.style.position = 'absolute';
 
 		expect( getPositionedAncestor( element ) ).to.equal( parent );
+
+		parent.remove();
 	} );
 
 	it( 'should find the positioned ancestor (far ancestor)', () => {
@@ -50,5 +56,7 @@ describe( 'getPositionedAncestor', () => {
 		parentA.style.position = 'absolute';
 
 		expect( getPositionedAncestor( element ) ).to.equal( parentA );
+
+		parentA.remove();
 	} );
 } );
