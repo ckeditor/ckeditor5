@@ -54,6 +54,8 @@ describe( 'CloudServices', () => {
 				.then( editor => {
 					const cloudServicesPlugin = editor.plugins.get( 'CloudServices' );
 					expect( cloudServicesPlugin ).to.be.instanceOf( CloudServices );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -61,6 +63,9 @@ describe( 'CloudServices', () => {
 			return ClassicTestEditor
 				.create( element, {
 					plugins: [ CloudServices ]
+				} )
+				.then( editor => {
+					return editor.destroy();
 				} );
 		} );
 
@@ -73,6 +78,8 @@ describe( 'CloudServices', () => {
 					const cloudServicesPlugin = editor.plugins.get( CloudServices );
 
 					expect( cloudServicesPlugin.uploadUrl ).to.be.undefined;
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -88,6 +95,8 @@ describe( 'CloudServices', () => {
 					const cloudServicesPlugin = editor.plugins.get( CloudServices );
 
 					expect( cloudServicesPlugin.uploadUrl ).to.equal( 'https://some-upload-url/' );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -122,6 +131,8 @@ describe( 'CloudServices', () => {
 					const cloudServicesPlugin = editor.plugins.get( CloudServices );
 
 					expect( cloudServicesPlugin.token ).to.equal( null );
+
+					return editor.destroy();
 				} );
 		} );
 	} );
