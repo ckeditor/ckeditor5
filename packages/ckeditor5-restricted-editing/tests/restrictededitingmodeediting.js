@@ -590,7 +590,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'clipboard', () => {
-		let model, viewDoc;
+		let viewDoc;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedEditingModeEditing ] } );
@@ -598,8 +598,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 			viewDoc = editor.editing.view.document;
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		describe( 'cut', () => {
@@ -619,25 +619,17 @@ describe( 'RestrictedEditingModeEditing', () => {
 				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 			} );
 
-			it( 'should be blocked inside exception marker', () => {
+			it( 'should cut selected content inside exception marker', () => {
 				setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 				const firstParagraph = model.document.getRoot().getChild( 0 );
-				const spy = sinon.spy();
-				viewDoc.on( 'clipboardOutput', spy, { priority: 'high' } );
+
+				addExceptionMarker( 4, 7, firstParagraph, 1 );
 
 				model.change( writer => {
-					writer.addMarker( 'restrictedEditingException:1', {
-						range: writer.createRange(
-							writer.createPositionAt( firstParagraph, 4 ),
-							writer.createPositionAt( firstParagraph, 7 )
-						),
-						usingOperation: true,
-						affectsData: true
-					} );
-				} );
-
-				model.change( writer => {
-					writer.setSelection( firstParagraph, 5 );
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( firstParagraph, 5 ),
+						writer.createPositionAt( firstParagraph, 6 )
+					) );
 				} );
 
 				viewDoc.fire( 'clipboardOutput', {
@@ -647,8 +639,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					method: 'cut'
 				} );
 
-				sinon.assert.notCalled( spy );
-				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]r baz</paragraph>' );
 			} );
 		} );
 
@@ -752,7 +743,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'exception highlighting', () => {
-		let model, view;
+		let view;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
@@ -985,7 +976,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 	} );
 
 	describe( 'exception cycling with the keyboard', () => {
-		let model, view, domEvtDataStub;
+		let view, domEvtDataStub;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {

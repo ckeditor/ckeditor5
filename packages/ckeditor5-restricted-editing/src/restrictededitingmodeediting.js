@@ -90,7 +90,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		}, { priority: 'highest' } );
 		this.listenTo( this.editor.editing.view.document, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' ) {
-				evt.stop();
+				if ( !isRangeInsideSingleMarker( editor, editor.model.document.selection.getFirstRange() ) ) {
+					evt.stop();
+				}
 			}
 		}, { priority: 'highest' } );
 
