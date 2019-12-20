@@ -186,8 +186,18 @@ describe( 'DecoupledEditor', () => {
 						);
 					}
 				)
+				.then( () => {
+					removeEditorDom();
+				} )
 				.then( done )
 				.catch( done );
+
+			function removeEditorDom() {
+				// Remove DOM leftovers to not affect other tests (#6002, #6018).
+				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
+					editorBody.remove();
+				}
+			}
 		} );
 
 		it( 'throws error if it is initialized in textarea', done => {
