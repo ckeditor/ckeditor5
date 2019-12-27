@@ -74,7 +74,16 @@ export function getNormalizedAndLocalizedLanguageDefinitions( editor ) {
  * @param {Object.<String,String>}
  */
 export function getPropertyAssociation( languageDefs, key, value ) {
-	return Object.assign( {}, ...languageDefs.map( def => ( { [ def[ key ] ]: def[ value ] } ) ) );
+	return Object.assign( {}, ...languageDefs.map( def => {
+		// Check if element has multiple classes, and if so
+		// take only the first one as a defining language class
+		if ( key === 'class' && def[ key ].indexOf( ' ' ) !== -1 ) {
+			const languageClass = def[ key ].split( ' ' )[ 0 ];
+
+			return { [ languageClass ]: def[ value ] };
+		}
+
+		return { [ def[ key ] ]: def[ value ] }; } ) );
 }
 
 /**
