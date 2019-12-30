@@ -587,7 +587,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 		let viewDoc;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, Clipboard, RestrictedEditingModeEditing ] } );
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, BoldEditing, Typing, Clipboard, RestrictedEditingModeEditing ]
+			} );
 			model = editor.model;
 			viewDoc = editor.editing.view.document;
 		} );
@@ -743,6 +745,19 @@ describe( 'RestrictedEditingModeEditing', () => {
 					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
 				} );
+
+				it( 'should paste allowed text attributes inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p><b>XXX</b></p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo b<$text bold="true">XXX[]</$text>ar baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
+				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
@@ -756,6 +771,19 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 
 					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]r baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ] );
+				} );
+
+				it( 'should paste allowed text attributes inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[a]r baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p><b>XXX</b></p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ] );
 				} );
 			} );
