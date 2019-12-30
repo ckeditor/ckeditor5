@@ -40,7 +40,7 @@ export default class RestrictedEditingExceptionCommand extends Command {
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
 
-				// When selection is inside restricted text
+				// When selection is inside a restricted text
 				if ( selection.hasAttribute( 'restrictedEditingException' ) ) {
 					// Find the full resticted range
 					const isSameRestrictedException = value => {
@@ -55,8 +55,12 @@ export default class RestrictedEditingExceptionCommand extends Command {
 					const restrictedEditingExceptionRange = writer.createRange( restrictedEditingExceptionStart,
 						restrictedEditingExceptionEnd );
 
-					writer.removeAttribute( 'restrictedEditingException', restrictedEditingExceptionRange );
 					writer.removeSelectionAttribute( 'restrictedEditingException' );
+
+					// Remove entire exception if the caret isn't at the end of a restricted text
+					if ( selection.anchor.textNode !== null ) {
+						writer.removeAttribute( 'restrictedEditingException', restrictedEditingExceptionRange );
+					}
 				} else if ( valueToSet ) {
 					// Set attribute on selection with unset attribute
 					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
