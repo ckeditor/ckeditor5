@@ -19,6 +19,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -590,7 +591,9 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, Typing, Clipboard, RestrictedEditingModeEditing ]
+				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, Typing, Clipboard,
+					RestrictedEditingModeEditing
+				]
 			} );
 			model = editor.model;
 			viewDoc = editor.editing.view.document;
@@ -832,6 +835,19 @@ describe( 'RestrictedEditingModeEditing', () => {
 						getModelData( model ),
 						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>ar baz</paragraph>'
 					);
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
+				} );
+
+				it( 'should not allow pasting block elements other then paragraph', () => {
+					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<blockquote><p>XXX</p></blockquote>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
 				} );
 			} );

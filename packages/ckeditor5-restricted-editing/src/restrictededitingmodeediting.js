@@ -96,6 +96,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
 		editor.model.schema.addAttributeCheck( ( context, attributeName ) => allowedAttributes.includes( attributeName ) );
+		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( Array.from( context.getNames() ).includes( '$clipboardHolder' ) ) {
+				return childDefinition.name === '$text';
+			}
+		} );
 
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' ) {
