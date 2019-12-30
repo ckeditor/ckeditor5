@@ -71,8 +71,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const viewDoc = editingView.document;
-
 		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' );
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
@@ -87,31 +85,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 
-		// Block clipboard completely in restricted mode.
-		this.listenTo( viewDoc, 'clipboardInput', evt => {
-			if ( !isRangeInsideSingleMarker( editor, editor.model.document.selection.getFirstRange() ) ) {
-				evt.stop();
-			}
-		}, { priority: 'highest' } );
-
-		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
-		editor.model.schema.addAttributeCheck( ( context, attributeName ) => allowedAttributes.includes( attributeName ) );
-		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( Array.from( context.getNames() ).includes( '$clipboardHolder' ) ) {
-				return childDefinition.name === '$text';
-			}
-		} );
-
-		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
-			if ( data.method == 'cut' ) {
-				if ( !isRangeInsideSingleMarker( editor, editor.model.document.selection.getFirstRange() ) ) {
-					evt.stop();
-				}
-			}
-		}, { priority: 'highest' } );
-
 		editingView.change( writer => {
-			for ( const root of viewDoc.roots ) {
+			for ( const root of editingView.document.roots ) {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
@@ -189,22 +164,51 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Setups additional editing restrictions beyond command toggling.
+	 * Setups additional editing restrictions beyond command toggling:
+	 *
+	 * * delete content range trimming
+	 * * disabling input command outside exception marker
+	 * * restricting clipboard holder to text only
+	 * * restricting text attributes in content
 	 *
 	 * @private
 	 */
 	_setupRestrictions() {
 		const editor = this.editor;
+		const model = editor.model;
+		const viewDoc = editor.editing.view.document;
 
-		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
-		const inputCommand = this.editor.commands.get( 'input' );
+		const inputCommand = editor.commands.get( 'input' );
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
+
+		// Block clipboard completely in restricted mode.
+		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
+			if ( !isRangeInsideSingleMarker( editor, model.document.selection.getFirstRange() ) ) {
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
+		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
+			if ( data.method == 'cut' ) {
+				if ( !isRangeInsideSingleMarker( editor, model.document.selection.getFirstRange() ) ) {
+					evt.stop();
+				}
+			}
+		}, { priority: 'highest' } );
+
+		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
+		model.schema.addAttributeCheck( ( context, attributeName ) => allowedAttributes.includes( attributeName ) );
+		model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( Array.from( context.getNames() ).includes( '$clipboardHolder' ) ) {
+				return childDefinition.name === '$text';
+			}
+		} );
 	}
 
 	/**
