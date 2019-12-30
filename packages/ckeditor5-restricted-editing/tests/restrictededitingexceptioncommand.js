@@ -135,13 +135,39 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
 			} );
 
-			it( 'should remove exception when selection is at the end of restricted text', () => {
+			it( 'should remove selection attribute if selection does not have it (selection at the beginning)', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'restrictedEditingException', 'true' );
+				} );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+			} );
+
+			it( 'should not remove exception when selection is at the end of restricted text', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
 
 				command.execute();
 
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
-				expect( getData( model ) ).to.equal( '<p>abcfoobar[]baz</p>' );
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
+			} );
+
+			it( 'should set selection attribute if selection does not have it (selection at the end)', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
+
+				model.change( writer => {
+					writer.removeSelectionAttribute( 'restrictedEditingException' );
+				} );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
 			} );
 		} );
 
