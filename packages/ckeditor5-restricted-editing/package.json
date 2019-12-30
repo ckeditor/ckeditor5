@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^16.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^16.0.0",
     "@ckeditor/ckeditor5-clipboard": "^16.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^16.0.0",
     "@ckeditor/ckeditor5-engine": "^16.0.0",
