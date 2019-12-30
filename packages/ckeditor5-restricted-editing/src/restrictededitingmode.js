@@ -83,3 +83,15 @@ export default class RestrictedEditingMode extends Plugin {
  *
  * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands
  */
+
+/**
+ * The text attribute names allowed when pasting content ot non-restricted areas.
+ *
+ * The default value is:
+ *
+ *		const restrictedEditingConfig = {
+ *			allowedAttributes: [ 'bold', 'italic', 'link' ]
+ *		};
+ *
+ * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedAttributes
+ */
