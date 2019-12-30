@@ -88,7 +88,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		// Block clipboard completely in restricted mode.
 		this.listenTo( viewDoc, 'clipboardInput', evt => {
-			evt.stop();
+			if ( !isRangeInsideSingleMarker( editor, editor.model.document.selection.getFirstRange() ) ) {
+				evt.stop();
+			}
 		}, { priority: 'highest' } );
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' ) {

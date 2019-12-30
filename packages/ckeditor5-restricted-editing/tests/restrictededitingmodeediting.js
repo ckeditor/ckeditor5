@@ -74,10 +74,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
 
-				const marker = model.markers.get( 'restrictedEditingException:1' );
-
-				expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
-				expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+				assertMarkerRangePaths( [ 0, 4 ], [ 0, 7 ] );
 			} );
 
 			it( 'should convert multiple <span class="restricted-editing-exception">', () => {
@@ -90,10 +87,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.true;
 
 				// Data for the first marker is the same as in previous tests so no need to test it again.
-				const secondMarker = model.markers.get( 'restrictedEditingException:2' );
-
-				expect( secondMarker.getStart().path ).to.deep.equal( [ 1, 6 ] );
-				expect( secondMarker.getEnd().path ).to.deep.equal( [ 1, 11 ] );
+				assertMarkerRangePaths( [ 1, 6 ], [ 1, 11 ], 2 );
 			} );
 
 			it( 'should not convert other <span> elements', () => {
@@ -716,6 +710,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 
 		describe( 'paste', () => {
+			beforeEach( () => {
+				// Required when testing without DOM using VirtualTestEditor - Clipboard feature scrolls after paste event.
+				sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			} );
+
 			it( 'should be blocked outside exception markers', () => {
 				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 				const spy = sinon.spy();
@@ -741,7 +740,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 					} );
 
-					assertEqualMarkup( getModelData( model ), '<paragraph>foo b[XXX]ar baz</paragraph>' );
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
 				} );
 			} );
 
@@ -755,7 +755,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
 					} );
 
-					assertEqualMarkup( getModelData( model ), '<paragraph>foo b[XXX]ar baz</paragraph>' );
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]r baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ] );
 				} );
 			} );
 		} );
@@ -1146,5 +1147,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 				return data[ type ];
 			}
 		};
+	}
+
+	function assertMarkerRangePaths( startPath, endPath, markerId = 1 ) {
+		const marker = model.markers.get( `restrictedEditingException:${ markerId }` );
+
+		expect( marker.getStart().path ).to.deep.equal( startPath );
+		expect( marker.getEnd().path ).to.deep.equal( endPath );
 	}
 } );
