@@ -133,6 +133,24 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
 				expect( getData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
 			} );
+
+			it( 'should not remove exception when selection is at the begining of restricted text', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+			} );
+
+			it( 'should remove exception when selection is at the end of restricted text', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abcfoobar[]baz</p>' );
+			} );
 		} );
 
 		describe( 'non-collapsed selection', () => {
