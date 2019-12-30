@@ -56,7 +56,8 @@ export default class RestrictedEditingMode extends Plugin {
  *		ClassicEditor
  *			.create( {
  * 				restrictedEditing: {
- * 					allowedCommands: [ 'bold', 'italic' ]
+ * 					allowedCommands: [ 'bold', 'italic' ],
+ * 					allowedAttributes: [ 'bold', 'italic' ]
  * 				}
  *			} )
  *			.then( ... )
