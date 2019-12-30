@@ -176,6 +176,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	_setupRestrictions() {
 		const editor = this.editor;
 		const model = editor.model;
+		const selection = model.document.selection;
 		const viewDoc = editor.editing.view.document;
 
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
@@ -188,27 +189,23 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 
-		// Block clipboard completely in restricted mode.
+		// Block clipboard outside exception marker on paste.
 		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
-			if ( !isRangeInsideSingleMarker( editor, model.document.selection.getFirstRange() ) ) {
+			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
 				evt.stop();
 			}
-		}, { priority: 'highest' } );
+		}, { priority: 'high' } );
+
+		// Block clipboard outside exception marker on cut.
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
-			if ( data.method == 'cut' ) {
-				if ( !isRangeInsideSingleMarker( editor, model.document.selection.getFirstRange() ) ) {
-					evt.stop();
-				}
+			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+				evt.stop();
 			}
-		}, { priority: 'highest' } );
+		}, { priority: 'high' } );
 
 		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
-		model.schema.addAttributeCheck( ( context, attributeName ) => allowedAttributes.includes( attributeName ) );
-		model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( Array.from( context.getNames() ).includes( '$clipboardHolder' ) ) {
-				return childDefinition.name === '$text';
-			}
-		} );
+		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
+		model.schema.addChildCheck( allowTextOnlyInClipboardHolder );
 	}
 
 	/**
@@ -396,4 +393,22 @@ function isRangeInsideSingleMarker( editor, range ) {
 	const markerAtEnd = getMarkerAtPosition( editor, range.end );
 
 	return markerAtStart && markerAtEnd && markerAtEnd === markerAtStart;
+}
+
+function onlyAllowAttributesFromList( allowedAttributes ) {
+	return ( context, attributeName ) => {
+		if ( isClipboardContext( context ) ) {
+			return allowedAttributes.includes( attributeName );
+		}
+	};
+}
+
+function allowTextOnlyInClipboardHolder( context, childDefinition ) {
+	if ( isClipboardContext( context ) ) {
+		return childDefinition.name === '$text';
+	}
+}
+
+function isClipboardContext( context ) {
+	return Array.from( context.getNames() ).includes( '$clipboardHolder' );
 }
