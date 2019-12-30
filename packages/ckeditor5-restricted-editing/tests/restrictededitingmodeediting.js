@@ -9,14 +9,16 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -588,7 +590,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, BoldEditing, Typing, Clipboard, RestrictedEditingModeEditing ]
+				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, Typing, Clipboard, RestrictedEditingModeEditing ]
 			} );
 			model = editor.model;
 			viewDoc = editor.editing.view.document;
@@ -758,6 +760,35 @@ describe( 'RestrictedEditingModeEditing', () => {
 					assertEqualMarkup( getModelData( model ), '<paragraph>foo b<$text bold="true">XXX[]</$text>ar baz</paragraph>' );
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
 				} );
+
+				it( 'should not allow to paste disallowed text attributes inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]ar baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
+				} );
+
+				it( 'should filter out disallowed attributes from other text attributes when pasting inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p><b><s><i>XXX</i></s></b></p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup(
+						getModelData( model ),
+						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>ar baz</paragraph>'
+					);
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
+				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
@@ -784,6 +815,35 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 
 					assertEqualMarkup( getModelData( model ), '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ] );
+				} );
+
+				it( 'should not allow to paste disallowed text attributes inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[a]r baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup( getModelData( model ), '<paragraph>foo bXXX[]r baz</paragraph>' );
+					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ] );
+				} );
+
+				it( 'should filter out disallowed attributes from other text attributes when pasting inside exception marker', () => {
+					setModelData( model, '<paragraph>foo b[a]r baz</paragraph>' );
+					const firstParagraph = model.document.getRoot().getChild( 0 );
+					addExceptionMarker( 4, 7, firstParagraph );
+
+					viewDoc.fire( 'clipboardInput', {
+						dataTransfer: createDataTransfer( { 'text/html': '<p><b><s><i>XXX</i></s></b></p>', 'text/plain': 'XXX' } )
+					} );
+
+					assertEqualMarkup(
+						getModelData( model ),
+						'<paragraph>foo b<$text bold="true" italic="true">XXX[]</$text>r baz</paragraph>'
+					);
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 9 ] );
 				} );
 			} );

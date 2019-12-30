@@ -41,7 +41,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'restrictedEditing', {
-			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ]
+			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ],
+			allowedAttributes: [ 'bold', 'italic', 'link' ]
 		} );
 
 		/**
@@ -92,6 +93,10 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
+
+		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
+		editor.model.schema.addAttributeCheck( ( context, attributeName ) => allowedAttributes.includes( attributeName ) );
+
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' ) {
 				if ( !isRangeInsideSingleMarker( editor, editor.model.document.selection.getFirstRange() ) ) {
