@@ -719,7 +719,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 			} );
 
-			it( 'should be blocked outside exception markers', () => {
+			it( 'should be blocked outside exception markers (collapsed selection)', () => {
 				setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 				const spy = sinon.spy();
 				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
@@ -732,6 +732,51 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				sinon.assert.notCalled( spy );
 				assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
+			} );
+
+			it( 'should be blocked outside exception markers (non-collapsed selection)', () => {
+				setModelData( model, '<paragraph>[foo bar baz]</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>[foo bar baz]</paragraph>' );
+			} );
+
+			it( 'should be blocked outside exception markers (non-collapsed selection, starts inside exception marker)', () => {
+				setModelData( model, '<paragraph>foo b[ar baz]</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>foo b[ar baz]</paragraph>' );
+			} );
+
+			it( 'should be blocked outside exception markers (non-collapsed selection, ends inside exception marker)', () => {
+				setModelData( model, '<paragraph>[foo ba]r baz</paragraph>' );
+				const spy = sinon.spy();
+				viewDoc.on( 'clipboardInput', spy, { priority: 'high' } );
+
+				viewDoc.fire( 'clipboardInput', {
+					dataTransfer: {
+						getData: sinon.spy()
+					}
+				} );
+
+				sinon.assert.notCalled( spy );
+				assertEqualMarkup( getModelData( model ), '<paragraph>[foo ba]r baz</paragraph>' );
 			} );
 
 			describe( 'collapsed selection', () => {
