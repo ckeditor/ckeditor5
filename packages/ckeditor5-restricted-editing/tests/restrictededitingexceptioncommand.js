@@ -134,6 +134,24 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				expect( getData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
 			} );
 
+			it( 'should add empty exception before when selection is at the begining of text', () => {
+				setData( model, '<p>[]foobar</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p><$text restrictedEditingException="true">[]</$text>foobar</p>' );
+			} );
+
+			it( 'should add empty exception after when selection is at the end of text', () => {
+				setData( model, '<p>foobar[]</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>foobar<$text restrictedEditingException="true">[]</$text></p>' );
+			} );
+
 			it( 'should not remove exception when selection is at the begining of restricted text', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
 
