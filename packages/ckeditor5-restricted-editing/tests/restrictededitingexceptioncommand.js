@@ -124,6 +124,15 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
 			} );
+
+			it( 'should remove entire selection attribute when inside restricted text', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
+			} );
 		} );
 
 		describe( 'non-collapsed selection', () => {

@@ -38,10 +38,28 @@ export default class RestrictedEditingExceptionCommand extends Command {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'restrictedEditingException' );
 
 			if ( selection.isCollapsed ) {
-				if ( valueToSet ) {
-					writer.setSelectionAttribute( 'restrictedEditingException', true );
-				} else {
+				const position = selection.getFirstPosition();
+
+				// When selection is inside restricted text
+				if ( selection.hasAttribute( 'restrictedEditingException' ) ) {
+					// Find the full resticted range
+					const isSameRestrictedException = value => {
+						return value.item.hasAttribute( 'restrictedEditingException' ) &&
+						value.item.getAttribute( 'restrictedEditingException' ) === this.value;
+					};
+
+					const restrictedEditingExceptionStart = position.getLastMatchingPosition( isSameRestrictedException,
+						{ direction: 'backward' } );
+					const restrictedEditingExceptionEnd = position.getLastMatchingPosition( isSameRestrictedException );
+
+					const restrictedEditingExceptionRange = writer.createRange( restrictedEditingExceptionStart,
+						restrictedEditingExceptionEnd );
+
+					writer.removeAttribute( 'restrictedEditingException', restrictedEditingExceptionRange );
 					writer.removeSelectionAttribute( 'restrictedEditingException' );
+				} else if ( valueToSet ) {
+					// Set attribute on selection with unset attribute
+					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
 				}
 			} else {
 				for ( const range of ranges ) {
