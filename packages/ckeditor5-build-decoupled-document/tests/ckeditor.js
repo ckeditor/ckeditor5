@@ -192,6 +192,7 @@ describe( 'DecoupledEditor build', () => {
 
 				editor.setData( data );
 				expect( editor.getData() ).to.equal( data );
+				expect( editor.model.document.selection.getAttribute( 'fontSize' ) ).to.equal( 'big' );
 			} );
 
 			it( 'font family works', () => {
@@ -199,13 +200,23 @@ describe( 'DecoupledEditor build', () => {
 
 				editor.setData( data );
 				expect( editor.getData() ).to.equal( data );
+				expect( editor.model.document.selection.getAttribute( 'fontFamily' ) ).to.equal( 'Georgia' );
 			} );
 
-			it( 'highlight works', () => {
-				const data = '<p><mark class="marker-green">foo</mark></p>';
+			it( 'font background color works', () => {
+				const data = '<p><span style="background-color:gold;">foo</span></p>';
 
 				editor.setData( data );
 				expect( editor.getData() ).to.equal( data );
+				expect( editor.model.document.selection.getAttribute( 'fontBackgroundColor' ) ).to.equal( 'gold' );
+			} );
+
+			it( 'font color works', () => {
+				const data = '<p><span style="color:red;">foo</span></p>';
+
+				editor.setData( data );
+				expect( editor.getData() ).to.equal( data );
+				expect( editor.model.document.selection.getAttribute( 'fontColor' ) ).to.equal( 'red' );
 			} );
 
 			it( 'alignment works', () => {
