@@ -63,5 +63,16 @@ describe( 'CharacterGridView', () => {
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
 		} );
+
+		it( 'delegates #tileHover from the tile to the grid on hover the tile', () => {
+			const tile = view.createTile( 'ε', 'foo bar baz' );
+			const spy = sinon.spy();
+
+			view.on( 'tileHover', spy );
+			tile.fire( 'mouseover' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'foo bar baz', character: 'ε' } );
+		} );
 	} );
 } );

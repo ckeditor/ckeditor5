@@ -65,6 +65,16 @@ export default class CharacterGridView extends View {
 		 * @param {String} data.name A name of the tile that caused the event (e.g. "greek small letter epsilon").
 		 * @param {String} data.character A human-readable character displayed as label (e.g. "ε").
 		 */
+
+		/**
+		 * Fired when a mouse or other pointing device caused the cursor to move onto any {@link #tiles grid tile}
+		 * (similar to the native `mouseover` DOM event).
+		 *
+		 * @event tileHover
+		 * @param {Object} data Additional information about the event.
+		 * @param {String} data.name A name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.character A human-readable character displayed as label (e.g. "ε").
+		 */
 	}
 
 	/**
@@ -88,7 +98,14 @@ export default class CharacterGridView extends View {
 		tile.extendTemplate( {
 			attributes: {
 				title: name
+			},
+			on: {
+				mouseover: tile.bindTemplate.to( 'mouseover' )
 			}
+		} );
+
+		tile.on( 'mouseover', () => {
+			this.fire( 'tileHover', { name, character } );
 		} );
 
 		tile.on( 'execute', () => {
