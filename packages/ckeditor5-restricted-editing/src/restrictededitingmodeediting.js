@@ -383,6 +383,8 @@ function isRangeInsideSingleMarker( editor, range ) {
 //
 // Note: This marker fixer only consider case which is possible to create using StandardEditing mode plugin.
 // Markers created by developer in the data might break in many other ways.
+//
+// See #6003.
 function ensureNewMarkerIsFlat( editor ) {
 	const model = editor.model;
 
