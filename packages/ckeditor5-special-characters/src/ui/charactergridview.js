@@ -105,7 +105,7 @@ export default class CharacterGridView extends View {
 		} );
 
 		tile.on( 'mouseover', () => {
-			this.fire( 'tileHover', { character, name } );
+			this.fire( 'tileHover', { name, character } );
 		} );
 
 		tile.on( 'execute', () => {
