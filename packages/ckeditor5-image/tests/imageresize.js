@@ -13,6 +13,8 @@ import Image from '../src/image';
 import ImageResize from '../src/imageresize';
 import ImageResizeCommand from '../src/imageresize/imageresizecommand';
 import ImageStyle from '../src/imagestyle';
+import ImageToolbar from '../src/imagetoolbar';
+import ImageTextAlternative from '../src/imagetextalternative';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
@@ -702,6 +704,79 @@ describe( 'ImageResize', () => {
 			resizer.isEnabled = false;
 
 			expect( resizerWrapper.style.display ).to.equal( 'none' );
+		} );
+	} );
+
+	describe( 'widget toolbar integration', () => {
+		let widgetToolbarRepository;
+
+		beforeEach( () => createEditor( {
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
+			image: {
+				toolbar: [ 'imageTextAlternative' ],
+				resizeUnit: 'px'
+			}
+		} ) );
+
+		beforeEach( async () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+
+			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+		} );
+
+		it( 'visibility during resize', async () => {
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+
+			await generateResizeTest( {
+				expectedWidth: 100,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-right',
+				checkBeforeMouseUp: () => {
+					expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				}
+			} )();
+		} );
+
+		it( 'visibility after the resize', async () => {
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+
+			await generateResizeTest( {
+				expectedWidth: 100,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-right'
+			} )();
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+
+		it( 'visibility after resize was canceled', async () => {
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+
+			const resizer = getSelectedImageResizer( editor );
+
+			await generateResizeTest( {
+				expectedWidth: 100,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-right',
+				checkBeforeMouseUp: () => {
+					resizer.cancel();
+					expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				}
+			} )();
 		} );
 	} );
 
