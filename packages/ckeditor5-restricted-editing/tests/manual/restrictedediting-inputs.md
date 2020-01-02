@@ -1,6 +1,6 @@
 ## Restricted editing - Standard mode surrounded by forms
 
-1. The editor should behave exactely the same as editor in Standard Mode.
+1. The editor should behave exactly the same as editor in Standard Mode.
 
 **Expected behaviour**:
   - Pressing "Tab" should set focus on:
@@ -11,7 +11,7 @@
 
 ## Restricted editing - Restricted mode surrounded by forms
 
-1. The editor should behave exactely the same as editor in Restricted Mode.
+1. The editor should behave exactly the same as editor in Restricted Mode.
 2. The editor is surrounded by forms to test keyboard navigation events using "Tab" and "Tab+Shift".
 
 **Expected behaviour**:
