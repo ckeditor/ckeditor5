@@ -1039,7 +1039,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 
-		it( 'should not move to the closest next exception on tab key when there is none', () => {
+		it( 'should set focus outside the editor on tab key when there is none', () => {
 			setModelData( model, '<paragraph>foo qux[]</paragraph>' );
 
 			const paragraph = model.document.getRoot().getChild( 0 );
@@ -1056,8 +1056,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 
 		it( 'should move to the closest previous exception on shift+tab key', () => {
@@ -1092,7 +1092,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 
-		it( 'should not move to the closest previous exception on shift+tab key when there is none', () => {
+		it( 'should set focus outside the editor on tab+shift key when there is none', () => {
 			setModelData( model, '<paragraph>[]foo qux</paragraph>' );
 
 			const paragraph = model.document.getRoot().getChild( 0 );
@@ -1110,8 +1110,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
 
