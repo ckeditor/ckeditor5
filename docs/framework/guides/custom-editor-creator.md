@@ -23,7 +23,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * The multi-root editor implementation. It provides an inline editables and a single toolbar.
+ * The multi-root editor implementation. It provides inline editables and a single toolbar.
  *
  * Unlike other editors, the toolbar is not rendered automatically and needs to be attached to the DOM manually.
  *
