@@ -20,65 +20,18 @@ import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class ImageLoadObserver extends Observer {
-	constructor( view ) {
-		super( view );
-
-		/**
-		 * List of img DOM elements that are observed by this observer.
-		 *
-		 * @private
-		 * @type {Set.<HTMLElement>}
-		 */
-		this._observedElements = new Set();
-	}
-
 	/**
 	 * @inheritDoc
 	 */
-	observe( domRoot, name ) {
-		const viewRoot = this.document.getRoot( name );
+	observe( domRoot ) {
+		this.listenTo( domRoot, 'load', ( event, domEvent ) => {
+			const domElement = domEvent.target;
 
-		// When there is a change in one of the view element
-		// we need to check if there are any new `<img/>` elements to observe.
-		viewRoot.on( 'change:children', ( evt, node ) => {
-			// Wait for the render to be sure that `<img/>` elements are rendered in the DOM root.
-			this.view.once( 'render', () => this._updateObservedElements( domRoot, node ) );
-		} );
-	}
-
-	/**
-	 * Updates the list of observed `<img/>` elements.
-	 *
-	 * @private
-	 * @param {HTMLElement} domRoot DOM root element.
-	 * @param {module:engine/view/element~Element} viewNode View element where children have changed.
-	 */
-	_updateObservedElements( domRoot, viewNode ) {
-		if ( !viewNode.is( 'element' ) || viewNode.is( 'attributeElement' ) ) {
-			return;
-		}
-
-		const domNode = this.view.domConverter.mapViewToDom( viewNode );
-
-		// If there is no `domNode` it means that it was removed from the DOM in the meanwhile.
-		if ( !domNode ) {
-			return;
-		}
-
-		for ( const domElement of domNode.querySelectorAll( 'img' ) ) {
-			if ( !this._observedElements.has( domElement ) ) {
-				this.listenTo( domElement, 'load', ( evt, domEvt ) => this._fireEvents( domEvt ) );
-				this._observedElements.add( domElement );
+			if ( domElement.tagName == 'IMG' ) {
+				this._fireEvents( domEvent );
 			}
-		}
-
-		// Clean up the list of observed elements from elements that has been removed from the root.
-		for ( const domElement of this._observedElements ) {
-			if ( !domRoot.contains( domElement ) ) {
-				this.stopListening( domElement );
-				this._observedElements.delete( domElement );
-			}
-		}
+			// Use capture phase for better performance (#4504).
+		}, { useCapture: true } );
 	}
 
 	/**
@@ -94,14 +47,6 @@ export default class ImageLoadObserver extends Observer {
 			this.document.fire( 'layoutChanged' );
 			this.document.fire( 'imageLoaded', domEvent );
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		this._observedElements.clear();
-		super.destroy();
 	}
 }
 
