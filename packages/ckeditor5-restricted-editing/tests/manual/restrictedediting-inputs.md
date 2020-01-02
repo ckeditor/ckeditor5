@@ -1,19 +1,24 @@
-## Restricted editing - Standard mode surrounded by forms
+## Restricted editing - editor surrounded by forms
 
-1. The editor should behave exactly the same as editor in Standard Mode.
+## Standard mode
 
-**Expected behaviour**:
-  - Pressing "Tab" should set focus on:
-    - Mode form
-    - Editor
-    - Radio form below the editor
-  - Pressing "Tab+Shift" from the latest element should set focus in the oposite direction.
-
-## Restricted editing - Restricted mode surrounded by forms
-
-1. The editor should behave exactly the same as editor in Restricted Mode.
-2. The editor is surrounded by forms to test keyboard navigation events using "Tab" and "Tab+Shift".
+1. Make sure the "Standard" mode is selected.
+2. Focus the "Standard" radio button in the "Mode" form.
+3. Start cycling the focus using the <kbd>Tab</kbd> key.
 
 **Expected behaviour**:
-  - When selection is on the **first** restricted exception, pressing "Tab+Shift" should set focus on the text input with a "value" ("Nick") above the editor
-  - When selection is on the **last** restricted exception, pressing "Tab" should set focus on the radio input with a "label" ("Test 1") below the editor.
+
+- The focus should cycle across:
+	1. The "Mode" form,
+	2. The editor,
+	3. The radio form below the editor,
+- Pressing <kbd>Shift</kbd>+<kbd>Tab</kbd> should cycle focus in the opposite direction.
+
+## Restricted mode
+
+1. Switch to the "Restricted" mode.
+
+**Expected behaviour**:
+
+- When selection is in the **first** restricted exception, pressing <kbd>Shift</kbd>+<kbd>Tab</kbd> should set focus in the text input with a "value" ("Nick") above the editor
+- When selection is in the **last** restricted exception, pressing <kbd>Tab</kbd> should set focus in the radio input with a "label" ("Test 1") below the editor.
