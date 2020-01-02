@@ -186,6 +186,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
+
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
@@ -282,9 +283,14 @@ export default class RestrictedEditingModeEditing extends Plugin {
 function getCommandExecuter( editor, commandName ) {
 	return ( data, cancel ) => {
 		const command = editor.commands.get( commandName );
+		const navigationCommands = commandName === 'goToPreviousRestrictedEditingException' ||
+			commandName === 'goToNextRestrictedEditingException';
 
 		if ( command.isEnabled ) {
 			editor.execute( commandName );
+		} else if ( navigationCommands ) {
+			// Allows to set focus on elements outside of the editable if commands are disabled
+			return;
 		}
 
 		cancel();
