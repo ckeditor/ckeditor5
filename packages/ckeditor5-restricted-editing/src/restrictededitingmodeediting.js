@@ -93,6 +93,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
+
+		editor.editing.view.change( writer => {
+			for ( const root of editor.editing.view.document.roots ) {
+				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
+			}
+		} );
 	}
 
 	/**

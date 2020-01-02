@@ -35,6 +35,12 @@ describe( 'StandardEditingModeEditing', () => {
 		expect( editor.plugins.get( 'StandardEditingModeEditing' ) ).to.be.instanceOf( StandardEditingModeEditing );
 	} );
 
+	it( 'root should have "ck-restricted-editing_mode_standard" class', () => {
+		for ( const root of editor.editing.view.document.roots ) {
+			expect( root.hasClass( 'ck-restricted-editing_mode_standard' ) ).to.be.true;
+		}
+	} );
+
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'restrictedEditingException' ) ).to.be.true;
 
