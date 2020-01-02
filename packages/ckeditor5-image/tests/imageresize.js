@@ -726,9 +726,11 @@ describe( 'ImageResize', () => {
 			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
 		} );
 
-		it( 'visibility during the resize', async () => {
+		it( 'default toolbar visibility', async () => {
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
 
+		it( 'visibility during the resize', async () => {
 			await generateResizeTest( {
 				expectedWidth: 100,
 				modelRegExp: /.+/,
@@ -744,8 +746,6 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'visibility after the resize', async () => {
-			expect( widgetToolbarRepository.isEnabled ).to.be.true;
-
 			await generateResizeTest( {
 				expectedWidth: 100,
 				modelRegExp: /.+/,
@@ -760,8 +760,6 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'visibility after the resize was canceled', async () => {
-			expect( widgetToolbarRepository.isEnabled ).to.be.true;
-
 			const resizer = getSelectedImageResizer( editor );
 
 			await generateResizeTest( {
