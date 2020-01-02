@@ -135,22 +135,27 @@ export default class WidgetResize extends Plugin {
 	 */
 	attachTo( options ) {
 		const resizer = new Resizer( options );
-		const widgetToolbarRepository = this.editor.plugins.get( 'WidgetToolbarRepository' );
+		const plugins = this.editor.plugins;
 
 		resizer.attach();
 
-		// Hiding widget toolbar to improve the performance (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
-		resizer.on( 'begin', () => {
-			widgetToolbarRepository.forceDisabled( 'resize' );
-		} );
+		if ( plugins.has( 'WidgetToolbarRepository' ) ) {
+			// Hiding widget toolbar to improve the performance
+			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
+			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
 
-		resizer.on( 'cancel', () => {
-			widgetToolbarRepository.clearForceDisabled( 'resize' );
-		} );
+			resizer.on( 'begin', () => {
+				widgetToolbarRepository.forceDisabled( 'resize' );
+			} );
 
-		resizer.on( 'commit', () => {
-			widgetToolbarRepository.clearForceDisabled( 'resize' );
-		} );
+			resizer.on( 'cancel', () => {
+				widgetToolbarRepository.clearForceDisabled( 'resize' );
+			} );
+
+			resizer.on( 'commit', () => {
+				widgetToolbarRepository.clearForceDisabled( 'resize' );
+			} );
+		}
 
 		this._resizers.set( options.viewElement, resizer );
 
