@@ -71,6 +71,23 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 
 		/**
+		 * Flag indicating whether a plugin is enabled or disabled.
+		 * A disabled plugin won't show any toolbar.
+		 *
+		 * Plugin can be simply disabled like that:
+		 *
+		 *		// Disable the plugin so that no toolbars are visible.
+		 *		editor.plugins.get( 'WidgetToolbarRepository' ).isEnabled = false;
+		 *
+		 * You can also use {@link #forceDisabled} method.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
 		 * A map of toolbar definitions.
 		 *
 		 * @protected
@@ -82,6 +99,18 @@ export default class WidgetToolbarRepository extends Plugin {
 		 * @private
 		 */
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
+
+		/**
+		 * Holds identifiers for {@link #forceDisabled} mechanism.
+		 *
+		 * @type {Set.<String>}
+		 * @private
+		 */
+		this._disableStack = new Set();
+
+		this.on( 'change:isEnabled', () => {
+			this._updateToolbarsVisibility();
+		} );
 
 		this.listenTo( editor.ui, 'update', () => {
 			this._updateToolbarsVisibility();
@@ -143,6 +172,67 @@ export default class WidgetToolbarRepository extends Plugin {
 	}
 
 	/**
+	 * Forces the plugin to be disabled.
+	 *
+	 * Plugin may be disabled by multiple features or algorithms (at once). When disabling a plugin, unique id should be passed
+	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the plugin.
+	 * The plugin becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
+	 *
+	 * Disabling and enabling a plugin:
+	 *
+	 *		const plugin = editor.plugins.get( 'WidgetToolbarRepository' );
+	 *
+	 *		plugin.isEnabled; // -> true
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> false
+	 *		plugin.clearForceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> true
+	 *
+	 * Plugin disabled by multiple features:
+	 *
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.forceDisabled( 'OtherFeature' );
+	 *		plugin.clearForceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> false
+	 *		plugin.clearForceDisabled( 'OtherFeature' );
+	 *		plugin.isEnabled; // -> true
+	 *
+	 * Multiple disabling with the same identifier is redundant:
+	 *
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.forceDisabled( 'MyFeature' );
+	 *		plugin.clearForceDisabled( 'MyFeature' );
+	 *		plugin.isEnabled; // -> true
+	 *
+	 * **Note:** some plugins or algorithms may have more complex logic when it comes to enabling or disabling certain plugins,
+	 * so the plugin might be still disabled after {@link #clearForceDisabled} was used.
+	 *
+	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the plugin.
+	 */
+	forceDisabled( id ) {
+		this._disableStack.add( id );
+
+		if ( this._disableStack.size == 1 ) {
+			this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.isEnabled = false;
+		}
+	}
+
+	/**
+	 * Clears forced disable previously set through {@link #forceDisabled}. See {@link #forceDisabled}.
+	 *
+	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
+	 */
+	clearForceDisabled( id ) {
+		this._disableStack.delete( id );
+
+		if ( this._disableStack.size == 0 ) {
+			this.off( 'set:isEnabled', forceDisable );
+			this.isEnabled = true;
+		}
+	}
+
+	/**
 	 * Iterates over stored toolbars and makes them visible or hidden.
 	 *
 	 * @private
@@ -155,12 +245,12 @@ export default class WidgetToolbarRepository extends Plugin {
 		for ( const definition of this._toolbarDefinitions.values() ) {
 			const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
 
-			if ( !this.editor.ui.focusTracker.isFocused ) {
-				if ( this._isToolbarVisible( definition ) ) {
+			if ( !this.isEnabled || !relatedElement ) {
+				if ( this._isToolbarInBalloon( definition ) ) {
 					this._hideToolbar( definition );
 				}
-			} else if ( !relatedElement ) {
-				if ( this._isToolbarInBalloon( definition ) ) {
+			} else if ( !this.editor.ui.focusTracker.isFocused ) {
+				if ( this._isToolbarVisible( definition ) ) {
 					this._hideToolbar( definition );
 				}
 			} else {
@@ -293,3 +383,9 @@ function isWidgetSelected( selection ) {
  * there is no such element). The function accepts an instance of {@link module:engine/view/selection~Selection}.
  * @property {String} balloonClassName CSS class for the widget balloon when a toolbar is displayed.
  */
+
+// Helper function that forces command to be disabled.
+function forceDisable( evt ) {
+	evt.return = false;
+	evt.stop();
+}
