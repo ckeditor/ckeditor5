@@ -146,15 +146,15 @@ export default class WidgetResize extends Plugin {
 
 			resizer.on( 'begin', () => {
 				widgetToolbarRepository.forceDisabled( 'resize' );
-			} );
+			}, { priority: 'lowest' } );
 
 			resizer.on( 'cancel', () => {
 				widgetToolbarRepository.clearForceDisabled( 'resize' );
-			} );
+			}, { priority: 'highest' } );
 
 			resizer.on( 'commit', () => {
 				widgetToolbarRepository.clearForceDisabled( 'resize' );
-			} );
+			}, { priority: 'highest' } );
 		}
 
 		this._resizers.set( options.viewElement, resizer );
