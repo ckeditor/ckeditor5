@@ -148,7 +148,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 			it( 'should remove attribute from text node if a text has the non-restricted attribute (forceValue="false")', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
 
-				command.execute();
+				command.execute( { forceValue: false } );
 
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
 				expect( getData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
@@ -157,7 +157,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 			it( 'should not remove attribute from text node if a text has the non-restricted attribute (forceValue="true")', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
 
-				command.execute();
+				command.execute( { forceValue: true } );
 
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
 				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
