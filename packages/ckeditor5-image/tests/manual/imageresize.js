@@ -32,6 +32,10 @@ const commonConfig = {
 			'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
 		]
 	},
+	table: {
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+		tableToolbar: [ 'bold', 'italic' ]
+	},
 	cloudServices: CS_CONFIG
 };
 
