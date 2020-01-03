@@ -13,6 +13,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
@@ -688,7 +689,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, Typing, Clipboard,
+				plugins: [ Paragraph, BoldEditing, ItalicEditing, StrikethroughEditing, BlockQuoteEditing, LinkEditing, Typing, Clipboard,
 					RestrictedEditingModeEditing
 				]
 			} );
@@ -899,10 +900,15 @@ describe( 'RestrictedEditingModeEditing', () => {
 					addExceptionMarker( 4, 7, firstParagraph );
 
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><b>XXX</b></p>', 'text/plain': 'XXX' } )
+						dataTransfer: createDataTransfer( {
+							'text/html': '<p><a href="foo"><b><i>XXX</i></b></a></p>',
+							'text/plain': 'XXX'
+						} )
 					} );
 
-					assertEqualMarkup( getModelData( model ), '<paragraph>foo b<$text bold="true">XXX[]</$text>ar baz</paragraph>' );
+					assertEqualMarkup( getModelData( model ),
+						'<paragraph>foo b<$text bold="true" italic="true" linkHref="foo">XXX[]</$text>ar baz</paragraph>'
+					);
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
 				} );
 
