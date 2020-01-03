@@ -22,6 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -209,16 +210,9 @@ describe( 'ClassicEditor', () => {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
 			} ).catch( () => {
-				removeEditorDom();
+				removeEditorBodyOrphans();
 				done();
 			} );
-
-			function removeEditorDom() {
-				// Remove DOM leftovers to not affect other tests (#6002, #6018).
-				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
-					editorBody.remove();
-				}
-			}
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
