@@ -43,10 +43,7 @@ export default class RestrictedEditingExceptionCommand extends Command {
 				// When selection is inside a restricted text
 				if ( selection.hasAttribute( 'restrictedEditingException' ) ) {
 					// Find the full resticted range
-					const isSameRestrictedException = value => {
-						return value.item.hasAttribute( 'restrictedEditingException' ) &&
-						value.item.getAttribute( 'restrictedEditingException' ) === this.value;
-					};
+					const isSameRestrictedException = value => value.item.getAttribute( 'restrictedEditingException' ) === this.value;
 
 					const restrictedEditingExceptionStart = position.getLastMatchingPosition( isSameRestrictedException,
 						{ direction: 'backward' } );
