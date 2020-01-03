@@ -776,6 +776,19 @@ describe( 'ImageResize', () => {
 				}
 			} )();
 		} );
+
+		it( 'restores toolbar when clicking the handle without drag', () => {
+			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#pullrequestreview-337725256).
+			const resizerPosition = 'bottom-left';
+			const domParts = getWidgetDomParts( widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+
+			focusEditor( editor );
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
 	} );
 
 	function isVisible( element ) {
