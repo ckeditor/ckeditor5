@@ -1,6 +1,6 @@
 ---
 name: "💅 Enhancement"
-about: Improving an existing functionality.
+about: Improve an existing functionality.
 title: ''
 labels: type:enhancement
 assignees: ''
