@@ -24,6 +24,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'BalloonEditor', () => {
 	let editor, editorElement;
@@ -206,17 +207,10 @@ describe( 'BalloonEditor', () => {
 					}
 				)
 				.then( () => {
-					removeEditorDom();
+					removeEditorBodyOrphans();
 				} )
 				.then( done )
 				.catch( done );
-
-			function removeEditorDom() {
-				// Remove DOM leftovers to not affect other tests (#6002, #6018).
-				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
-					editorBody.remove();
-				}
-			}
 		} );
 
 		// ckeditor/ckeditor5-editor-classic#53
