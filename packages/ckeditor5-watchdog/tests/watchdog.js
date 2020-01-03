@@ -59,13 +59,6 @@ describe( 'Watchdog', () => {
 			);
 		} );
 
-		it( 'should not throw an error when the destructor is not defined', () => {
-			const watchdog = new Watchdog();
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-
-			expect( () => watchdog.create() ).to.not.throw();
-		} );
-
 		it( 'should properly copy the config', () => {
 			const watchdog = new Watchdog();
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
