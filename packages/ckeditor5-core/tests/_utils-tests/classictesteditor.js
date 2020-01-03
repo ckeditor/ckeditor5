@@ -23,6 +23,7 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
@@ -89,6 +90,8 @@ describe( 'ClassicTestEditor', () => {
 
 					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 					expect( editor.sourceElement ).to.equal( editorElement );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -102,6 +105,8 @@ describe( 'ClassicTestEditor', () => {
 					expect( ui.getEditableElement().tagName ).to.equal( 'DIV' );
 					expect( ui.getEditableElement() ).to.equal( view.editable.element );
 					expect( view.editable.name ).to.equal( 'main' );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -117,6 +122,8 @@ describe( 'ClassicTestEditor', () => {
 			return ClassicTestEditor.create( editorElement, { plugins: [ PluginTextInRoot ] } )
 				.then( editor => {
 					expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( 'foo' );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -226,6 +233,7 @@ describe( 'ClassicTestEditor', () => {
 					throw new Error( 'It should throw an error' );
 				}, err => {
 					assertCKEditorError( err, /^editor-create-initial-data:/, null );
+					removeEditorBodyOrphans();
 				} );
 		} );
 	} );
