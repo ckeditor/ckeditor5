@@ -63,6 +63,14 @@ export default class Resizer {
 		this._domResizerWrapper = null;
 
 		/**
+		 * A wrapper that is controlled by the resizer. This is usually a widget element.
+		 *
+		 * @private
+		 * @type {module:engine/view/element~Element|null}
+		 */
+		this._viewResizerWrapper = null;
+
+		/**
 		 * @observable
 		 */
 		this.set( 'isEnabled', true );
@@ -71,6 +79,15 @@ export default class Resizer {
 		this.decorate( 'cancel' );
 		this.decorate( 'commit' );
 		this.decorate( 'updateSize' );
+
+		this.on( 'commit', event => {
+			// State might not be initialized yet. In this case, prevent further handling and make sure that the resizer is
+			// cleaned up (#5195).
+			if ( !this.state.proposedWidth ) {
+				this._cleanup();
+				event.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -79,30 +96,34 @@ export default class Resizer {
 	attach() {
 		const that = this;
 		const widgetElement = this._options.viewElement;
-		const writer = this._options.downcastWriter;
+		const editingView = this._options.editor.editing.view;
 
-		const viewResizerWrapper = writer.createUIElement( 'div', {
-			class: 'ck ck-reset_all ck-widget__resizer'
-		}, function( domDocument ) {
-			const domElement = this.toDomElement( domDocument );
+		editingView.change( writer => {
+			const viewResizerWrapper = writer.createUIElement( 'div', {
+				class: 'ck ck-reset_all ck-widget__resizer'
+			}, function( domDocument ) {
+				const domElement = this.toDomElement( domDocument );
 
-			that._appendHandles( domElement );
-			that._appendSizeUI( domElement );
+				that._appendHandles( domElement );
+				that._appendSizeUI( domElement );
 
-			that._domResizerWrapper = domElement;
+				that._domResizerWrapper = domElement;
 
-			that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
-				domElement.style.display = newValue ? '' : 'none';
+				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
+					domElement.style.display = newValue ? '' : 'none';
+				} );
+
+				domElement.style.display = that.isEnabled ? '' : 'none';
+
+				return domElement;
 			} );
 
-			domElement.style.display = that.isEnabled ? '' : 'none';
+			// Append the resizer wrapper to the widget's wrapper.
+			writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
+			writer.addClass( 'ck-widget_with-resizer', widgetElement );
 
-			return domElement;
+			this._viewResizerWrapper = viewResizerWrapper;
 		} );
-
-		// Append the resizer wrapper to the widget's wrapper.
-		writer.insert( writer.createPositionAt( widgetElement, 'end' ), viewResizerWrapper );
-		writer.addClass( 'ck-widget_with-resizer', widgetElement );
 	}
 
 	/**
@@ -128,13 +149,20 @@ export default class Resizer {
 	 * @param {Event} domEventData
 	 */
 	updateSize( domEventData ) {
-		const domHandleHost = this._getHandleHost();
-		const domResizeHost = this._getResizeHost();
-		const unit = this._options.unit;
 		const newSize = this._proposeNewSize( domEventData );
+		const editingView = this._options.editor.editing.view;
 
-		domResizeHost.style.width = ( unit === '%' ? newSize.widthPercents : newSize.width ) + this._options.unit;
+		editingView.change( writer => {
+			const unit = this._options.unit;
+			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + unit;
 
+			writer.setStyle( 'width', newWidth, this._options.viewElement );
+		} );
+
+		// Get an actual image width, and:
+		// * reflect this size to the resize wrapper
+		// * apply this **real** size to the state
+		const domHandleHost = this._getHandleHost();
 		const domHandleHostRect = new Rect( domHandleHost );
 
 		newSize.handleHostWidth = Math.round( domHandleHostRect.width );
@@ -187,36 +215,37 @@ export default class Resizer {
 	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
 	redraw( handleHostRect ) {
-		// TODO review this
 		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
-			// Refresh only if resizer exists in the DOM.
-			const widgetWrapper = domWrapper.parentElement;
-			const handleHost = this._getHandleHost();
-			const clientRect = handleHostRect || new Rect( handleHost );
+			this._options.editor.editing.view.change( writer => {
+				// Refresh only if resizer exists in the DOM.
+				const widgetWrapper = domWrapper.parentElement;
+				const handleHost = this._getHandleHost();
+				const clientRect = handleHostRect || new Rect( handleHost );
 
-			domWrapper.style.width = clientRect.width + 'px';
-			domWrapper.style.height = clientRect.height + 'px';
+				writer.setStyle( 'width', clientRect.width + 'px', this._viewResizerWrapper );
+				writer.setStyle( 'height', clientRect.height + 'px', this._viewResizerWrapper );
 
-			const offsets = {
-				left: handleHost.offsetLeft,
-				top: handleHost.offsetTop,
-				height: handleHost.offsetHeight,
-				width: handleHost.offsetWidth
-			};
+				const offsets = {
+					left: handleHost.offsetLeft,
+					top: handleHost.offsetTop,
+					height: handleHost.offsetHeight,
+					width: handleHost.offsetWidth
+				};
 
-			// In case a resizing host is not a widget wrapper, we need to compensate
-			// for any additional offsets the resize host might have. E.g. wrapper padding
-			// or simply another editable. By doing that the border and resizers are shown
-			// only around the resize host.
-			if ( !widgetWrapper.isSameNode( handleHost ) ) {
-				domWrapper.style.left = offsets.left + 'px';
-				domWrapper.style.top = offsets.top + 'px';
+				// In case a resizing host is not a widget wrapper, we need to compensate
+				// for any additional offsets the resize host might have. E.g. wrapper padding
+				// or simply another editable. By doing that the border and resizers are shown
+				// only around the resize host.
+				if ( !widgetWrapper.isSameNode( handleHost ) ) {
+					writer.setStyle( 'left', offsets.left + 'px', this._viewResizerWrapper );
+					writer.setStyle( 'top', offsets.top + 'px', this._viewResizerWrapper );
 
-				domWrapper.style.height = offsets.height + 'px';
-				domWrapper.style.width = offsets.width + 'px';
-			}
+					writer.setStyle( 'height', offsets.height + 'px', this._viewResizerWrapper );
+					writer.setStyle( 'width', offsets.width + 'px', this._viewResizerWrapper );
+				}
+			} );
 		}
 
 		function existsInDom( element ) {

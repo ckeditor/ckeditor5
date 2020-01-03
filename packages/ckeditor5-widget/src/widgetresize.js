@@ -135,8 +135,27 @@ export default class WidgetResize extends Plugin {
 	 */
 	attachTo( options ) {
 		const resizer = new Resizer( options );
+		const plugins = this.editor.plugins;
 
 		resizer.attach();
+
+		if ( plugins.has( 'WidgetToolbarRepository' ) ) {
+			// Hiding widget toolbar to improve the performance
+			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#issuecomment-564528765).
+			const widgetToolbarRepository = plugins.get( 'WidgetToolbarRepository' );
+
+			resizer.on( 'begin', () => {
+				widgetToolbarRepository.forceDisabled( 'resize' );
+			}, { priority: 'lowest' } );
+
+			resizer.on( 'cancel', () => {
+				widgetToolbarRepository.clearForceDisabled( 'resize' );
+			}, { priority: 'highest' } );
+
+			resizer.on( 'commit', () => {
+				widgetToolbarRepository.clearForceDisabled( 'resize' );
+			}, { priority: 'highest' } );
+		}
 
 		this._resizers.set( options.viewElement, resizer );
 
@@ -179,15 +198,17 @@ mix( WidgetResize, ObservableMixin );
  */
 
 /**
+ * Editor instance associated with the resizer.
+ *
+ * @member {module:core/editor/editor~Editor} module:widget/widgetresize~ResizerOptions#editor
+ */
+
+/**
  * @member {module:engine/model/element~Element} module:widget/widgetresize~ResizerOptions#modelElement
  */
 
 /**
  * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresize~ResizerOptions#viewElement
- */
-
-/**
- * @member {module:engine/view/downcastwriter~DowncastWriter} module:widget/widgetresize~ResizerOptions#downcastWriter
  */
 
 /**
@@ -200,9 +221,9 @@ mix( WidgetResize, ObservableMixin );
  *
  * ```js
  * {
+ *	editor,
  *	modelElement: data.item,
  *	viewElement: widget,
- *	downcastWriter: conversionApi.writer,
  *
  *	onCommit( newValue ) {
  *		editor.execute( 'imageResize', { width: newValue } );
