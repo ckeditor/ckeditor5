@@ -23,7 +23,7 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
+import { removeEditorBodyOrphans } from '../_utils/cleanup';
 
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
