@@ -13,6 +13,8 @@ import Image from '../src/image';
 import ImageResize from '../src/imageresize';
 import ImageResizeCommand from '../src/imageresize/imageresizecommand';
 import ImageStyle from '../src/imagestyle';
+import ImageToolbar from '../src/imagetoolbar';
+import ImageTextAlternative from '../src/imagetextalternative';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
@@ -323,7 +325,6 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'shrinks correctly with left-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: 20,
@@ -333,7 +334,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'shrinks correctly with right-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: -20,
@@ -343,7 +343,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'shrinks correctly with left-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: 20,
@@ -353,7 +352,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'shrinks correctly with right-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 80,
 			pointerOffset: {
 				x: -20,
@@ -363,7 +361,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with left-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: -10,
@@ -373,7 +370,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: 10,
@@ -383,7 +379,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler, y axis only', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 140,
 			pointerOffset: {
 				x: 0,
@@ -393,7 +388,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-bottom handler, x axis only', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 140,
 			pointerOffset: {
 				x: 40,
@@ -403,7 +397,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with left-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: -20,
@@ -413,7 +406,6 @@ describe( 'ImageResize', () => {
 		} ) );
 
 		it( 'enlarges correctly with right-top handler', generateSideResizeTest( {
-			isSideImage: true,
 			expectedWidth: 120,
 			pointerOffset: {
 				x: 20,
@@ -422,9 +414,45 @@ describe( 'ImageResize', () => {
 			resizerPosition: 'top-right'
 		} ) );
 
+		it( 'doesn\'t flicker at the beginning of the resize', async () => {
+			// (#5189)
+			const resizerPosition = 'bottom-left';
+			const domParts = getWidgetDomParts( widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+			const resizeWrapperView = widget.getChild( 1 );
+
+			focusEditor( editor );
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+
+			await wait( 40 );
+
+			fireMouseEvent( domParts.resizeHandle, 'mousemove', initialPointerPosition );
+
+			expect( resizeWrapperView.getStyle( 'width' ) ).to.be.equal( '100px' );
+
+			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+		} );
+
+		it( 'makes no change when clicking the handle without drag', () => {
+			const resizerPosition = 'bottom-left';
+			const expectedWidth = 100;
+			const domParts = getWidgetDomParts( widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+
+			focusEditor( editor );
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+
+			expect( getDomWidth( domParts.figure ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
+
+			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+
+			const modelItem = editor.model.document.getRoot().getChild( 1 );
+
+			expect( modelItem.getAttribute( 'width' ), 'model width attribute' ).to.be.undefined;
+		} );
+
 		function generateSideResizeTest( options ) {
 			return generateResizeTest( Object.assign( {
-				isSideImage: true,
 				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="([\d.]+)px"><\/image>/
 			}, options ) );
 		}
@@ -679,6 +707,90 @@ describe( 'ImageResize', () => {
 		} );
 	} );
 
+	describe( 'widget toolbar integration', () => {
+		let widgetToolbarRepository;
+
+		beforeEach( () => createEditor( {
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
+			image: {
+				toolbar: [ 'imageTextAlternative' ],
+				resizeUnit: 'px'
+			}
+		} ) );
+
+		beforeEach( async () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+
+			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+		} );
+
+		it( 'default toolbar visibility', async () => {
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+
+		it( 'visibility during the resize', async () => {
+			await generateResizeTest( {
+				expectedWidth: 100,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-right',
+				checkBeforeMouseUp: () => {
+					expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				}
+			} )();
+		} );
+
+		it( 'visibility after the resize', async () => {
+			await generateResizeTest( {
+				expectedWidth: 100,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-right'
+			} )();
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+
+		it( 'visibility after the resize was canceled', async () => {
+			const resizer = getSelectedImageResizer( editor );
+
+			await generateResizeTest( {
+				expectedWidth: 100,
+				modelRegExp: /.+/,
+				pointerOffset: {
+					x: 0,
+					y: 0
+				},
+				resizerPosition: 'bottom-right',
+				checkBeforeMouseUp: () => {
+					resizer.cancel();
+					expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				}
+			} )();
+		} );
+
+		it( 'restores toolbar when clicking the handle without drag', () => {
+			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#pullrequestreview-337725256).
+			const resizerPosition = 'bottom-left';
+			const domParts = getWidgetDomParts( widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+
+			focusEditor( editor );
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
+		} );
+	} );
+
 	function isVisible( element ) {
 		// Checks if the DOM element is visible to the end user.
 		return element.offsetParent !== null && !element.classList.contains( 'ck-hidden' );
@@ -704,71 +816,90 @@ describe( 'ImageResize', () => {
 		// options.pointerOffset - object - pointer offset relative to the dragged corner. Negative values are perfectly fine.
 		// e.g. { x: 10, y: -5 }
 		// options.expectedWidth
-		// [options.isSideImage=false]
 		// Returns a test case that puts
-		return function() {
+		return async function() {
+			const domParts = getWidgetDomParts( widget, options.resizerPosition );
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-			const domResizeHandle = domResizeWrapper.querySelector( `.ck-widget__resizer__handle-${ options.resizerPosition }` );
-			const domFigure = view.domConverter.mapViewToDom( widget );
-			const domImage = domFigure.querySelector( 'img' );
-			const imageRect = new Rect( domImage );
-			const resizerPositionParts = options.resizerPosition.split( '-' );
 
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
 				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d]+)px"><\/image>/;
 
 			focusEditor( editor );
 
-			const initialPointerPosition = {
-				pageX: imageRect.left,
-				pageY: imageRect.top
-			};
+			const initialPointerPosition = getResizerCoordinates( domParts.figure, options.resizerPosition );
 
-			if ( resizerPositionParts.includes( 'right' ) ) {
-				initialPointerPosition.pageX = imageRect.right;
-			}
+			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+			fireMouseEvent( domParts.resizeHandle, 'mousemove', initialPointerPosition );
 
-			if ( resizerPositionParts.includes( 'bottom' ) ) {
-				initialPointerPosition.pageY = imageRect.bottom;
-			}
+			// We need to wait as mousemove events are throttled.
+			await wait( 40 );
 
 			const finishPointerPosition = Object.assign( {}, initialPointerPosition );
 
 			finishPointerPosition.pageX += options.pointerOffset.x || 0;
 			finishPointerPosition.pageY += options.pointerOffset.y || 0;
 
-			fireMouseEvent( domResizeHandle, 'mousedown', initialPointerPosition );
-			fireMouseEvent( domResizeHandle, 'mousemove', initialPointerPosition );
+			fireMouseEvent( domParts.resizeHandle, 'mousemove', finishPointerPosition );
 
-			// We need to wait as mousemove events are throttled.
-			return wait( 40 )
-				.then( () => {
-					fireMouseEvent( domResizeHandle, 'mousemove', finishPointerPosition );
+			expect( parseInt( domParts.figure.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
-					expect( parseInt( domFigure.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
+			if ( options.checkBeforeMouseUp ) {
+				options.checkBeforeMouseUp( domParts.figure, domResizeWrapper );
+			}
 
-					if ( options.checkBeforeMouseUp ) {
-						options.checkBeforeMouseUp( domFigure, domResizeWrapper );
-					}
+			fireMouseEvent( domParts.resizeHandle, 'mouseup', finishPointerPosition );
 
-					fireMouseEvent( domResizeHandle, 'mouseup', finishPointerPosition );
+			expect( getData( editor.model, {
+				withoutSelection: true
+			} ) ).to.match( modelRegExp );
 
-					expect( getData( editor.model, {
-						withoutSelection: true
-					} ) ).to.match( modelRegExp );
+			const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
+			const modelWidth = modelItem.getAttribute( 'width' );
 
-					const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
-					const modelWidth = modelItem.getAttribute( 'width' );
-
-					expect( parseFloat( modelWidth, 0 ) )
-						.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
-				} );
+			expect( parseFloat( modelWidth, 0 ) )
+				.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
 		};
 	}
 
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function getResizerCoordinates( domFigure, resizerPosition ) {
+		const domImage = domFigure.querySelector( 'img' );
+		const imageRect = new Rect( domImage );
+		const initialPointerPosition = {
+			pageX: imageRect.left,
+			pageY: imageRect.top
+		};
+		const resizerPositionParts = resizerPosition.split( '-' );
+
+		if ( resizerPositionParts.includes( 'right' ) ) {
+			initialPointerPosition.pageX = imageRect.right;
+		}
+
+		if ( resizerPositionParts.includes( 'bottom' ) ) {
+			initialPointerPosition.pageY = imageRect.bottom;
+		}
+
+		return initialPointerPosition;
+	}
+
+	function getWidgetDomParts( widget, resizerPosition ) {
+		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
+		const resizeHandle = resizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
+		const figure = view.domConverter.mapViewToDom( widget );
+
+		return {
+			resizeWrapper,
+			resizeHandle,
+			figure
+		};
+	}
+
+	function getDomWidth( domElement ) {
+		return new Rect( domElement ).width;
 	}
 
 	function getSelectedImageResizer( editor ) {
