@@ -172,6 +172,22 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
 			} );
 
+			it( 'should remove attribute from text nodes when other attributes are present', () => {
+				setData( model,
+					'<p>' +
+					'<$text bold="true">abc</$text>' +
+					'<$text bold="true" restrictedEditingException="true">foo[]</$text>' +
+					'<$text restrictedEditingException="true">bar</$text>' +
+					'baz' +
+					'</p>'
+				);
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p><$text bold="true">abcfoo[]</$text>barbaz</p>' );
+			} );
+
 			it( 'should remove selection attribute if selection does not have it (selection at the beginning)', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
 
