@@ -56,7 +56,8 @@ export default class RestrictedEditingMode extends Plugin {
  *		ClassicEditor
  *			.create( {
  * 				restrictedEditing: {
- * 					allowedCommands: [ 'bold', 'italic' ]
+ * 					allowedCommands: [ 'bold', 'link', 'unlink' ],
+ * 					allowedAttributes: [ 'bold', 'linkHref' ]
  * 				}
  *			} )
  *			.then( ... )
@@ -82,4 +83,16 @@ export default class RestrictedEditingMode extends Plugin {
  *		};
  *
  * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands
+ */
+
+/**
+ * The text attribute names allowed when pasting content ot non-restricted areas.
+ *
+ * The default value is:
+ *
+ *		const restrictedEditingConfig = {
+ *			allowedAttributes: [ 'bold', 'italic', 'linkHref' ]
+ *		};
+ *
+ * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedAttributes
  */

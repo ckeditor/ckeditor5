@@ -41,7 +41,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'restrictedEditing', {
-			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ]
+			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ],
+			allowedAttributes: [ 'bold', 'italic', 'linkHref' ]
 		} );
 
 		/**
@@ -69,7 +70,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-
+		const editingView = editor.editing.view;
 		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' );
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
@@ -84,18 +85,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 
-		// Block clipboard completely in restricted mode.
-		this.listenTo( this.editor.editing.view.document, 'clipboardInput', evt => {
-			evt.stop();
-		}, { priority: 'highest' } );
-		this.listenTo( this.editor.editing.view.document, 'clipboardOutput', ( evt, data ) => {
-			if ( data.method == 'cut' ) {
-				evt.stop();
-			}
-		}, { priority: 'highest' } );
-
-		editor.editing.view.change( writer => {
-			for ( const root of editor.editing.view.document.roots ) {
+		editingView.change( writer => {
+			for ( const root of editingView.document.roots ) {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
@@ -174,22 +165,48 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Setups additional editing restrictions beyond command toggling.
+	 * Setups additional editing restrictions beyond command toggling:
+	 *
+	 * * delete content range trimming
+	 * * disabling input command outside exception marker
+	 * * restricting clipboard holder to text only
+	 * * restricting text attributes in content
 	 *
 	 * @private
 	 */
 	_setupRestrictions() {
 		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const viewDoc = editor.editing.view.document;
 
-		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
-		const inputCommand = this.editor.commands.get( 'input' );
+		const inputCommand = editor.commands.get( 'input' );
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
+
+		// Block clipboard outside exception marker on paste.
+		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
+			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+
+		// Block clipboard outside exception marker on cut.
+		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
+			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+
+		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
+		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
+		model.schema.addChildCheck( allowTextOnlyInClipboardHolder );
 	}
 
 	/**
@@ -405,4 +422,18 @@ function ensureNewMarkerIsFlat( editor ) {
 			} );
 		}
 	};
+}
+
+function onlyAllowAttributesFromList( allowedAttributes ) {
+	return ( context, attributeName ) => {
+		if ( context.startsWith( '$clipboardHolder' ) ) {
+			return allowedAttributes.includes( attributeName );
+		}
+	};
+}
+
+function allowTextOnlyInClipboardHolder( context, childDefinition ) {
+	if ( context.startsWith( '$clipboardHolder' ) ) {
+		return childDefinition.name === '$text';
+	}
 }
