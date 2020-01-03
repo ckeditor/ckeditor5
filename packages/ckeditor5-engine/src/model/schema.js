@@ -1268,6 +1268,23 @@ export class SchemaContext {
 	endsWith( query ) {
 		return Array.from( this.getNames() ).join( ' ' ).endsWith( query );
 	}
+
+	/**
+	 * Checks whether the context starts with the given nodes.
+	 *
+	 *		const ctx = new SchemaContext( [ rootElement, paragraphElement, textNode ] );
+	 *
+	 *		ctx.endsWith( '$root' ); // -> true
+	 *		ctx.endsWith( '$root paragraph' ); // -> true
+	 *		ctx.endsWith( '$text' ); // -> false
+	 *		ctx.endsWith( 'paragraph' ); // -> false
+	 *
+	 * @param {String} query
+	 * @returns {Boolean}
+	 */
+	startsWith( query ) {
+		return Array.from( this.getNames() ).join( ' ' ).startsWith( query );
+	}
 }
 
 /**
