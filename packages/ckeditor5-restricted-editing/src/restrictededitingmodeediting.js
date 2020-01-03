@@ -426,18 +426,14 @@ function ensureNewMarkerIsFlat( editor ) {
 
 function onlyAllowAttributesFromList( allowedAttributes ) {
 	return ( context, attributeName ) => {
-		if ( isClipboardContext( context ) ) {
+		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return allowedAttributes.includes( attributeName );
 		}
 	};
 }
 
 function allowTextOnlyInClipboardHolder( context, childDefinition ) {
-	if ( isClipboardContext( context ) ) {
+	if ( context.startsWith( '$clipboardHolder' ) ) {
 		return childDefinition.name === '$text';
 	}
-}
-
-function isClipboardContext( context ) {
-	return Array.from( context.getNames() ).includes( '$clipboardHolder' );
 }
