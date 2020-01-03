@@ -22,6 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -187,17 +188,10 @@ describe( 'DecoupledEditor', () => {
 					}
 				)
 				.then( () => {
-					removeEditorDom();
+					removeEditorBodyOrphans();
 				} )
 				.then( done )
 				.catch( done );
-
-			function removeEditorDom() {
-				// Remove DOM leftovers to not affect other tests (#6002, #6018).
-				for ( const editorBody of document.body.querySelectorAll( 'div.ck.ck-body' ) ) {
-					editorBody.remove();
-				}
-			}
 		} );
 
 		it( 'throws error if it is initialized in textarea', done => {
