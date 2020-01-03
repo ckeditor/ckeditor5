@@ -12,6 +12,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { destroyEditorOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'Watchdog', () => {
 	let element;
@@ -77,6 +78,8 @@ describe( 'Watchdog', () => {
 			return watchdog.create( element, config ).then( () => {
 				expect( watchdog.editor.config._config.foo ).to.not.equal( config.foo );
 				expect( watchdog.editor.config._config.bar ).to.equal( config.bar );
+
+				return watchdog.destroy();
 			} );
 		} );
 
@@ -164,6 +167,8 @@ describe( 'Watchdog', () => {
 				err => {
 					expect( err ).to.be.instanceOf( Error );
 					expect( err.message ).to.equal( 'foo' );
+
+					return destroyEditorOrphans();
 				}
 			);
 		} );
@@ -182,6 +187,8 @@ describe( 'Watchdog', () => {
 					err => {
 						expect( err ).to.be.instanceOf( Error );
 						expect( err.message ).to.equal( 'foo' );
+
+						return destroyEditorOrphans();
 					}
 				);
 		} );
@@ -651,6 +658,9 @@ describe( 'Watchdog', () => {
 				const editorGetDataError = new Error( 'Some error' );
 				const getDataStub = sinon.stub( watchdog.editor.data, 'get' )
 					.throwsException( editorGetDataError );
+				// Keep the reference to cleanly destroy it at in the end, as during the TC it
+				// throws an exception during destruction.
+				const firstEditor = watchdog.editor;
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -681,7 +691,10 @@ describe( 'Watchdog', () => {
 							'An error happened during the editor destructing.'
 						);
 
-						watchdog.destroy().then( res );
+						watchdog.destroy().then( () => {
+							getDataStub.restore();
+							return firstEditor.destroy();
+						} ).then( res );
 					} );
 				} );
 			} );
@@ -929,6 +942,15 @@ describe( 'Watchdog', () => {
 	} );
 
 	describe( 'state', () => {
+		let orphanEditors = [];
+
+		afterEach( () => {
+			return Promise.all( orphanEditors.map( editor => editor.destroy() ) )
+				.then( () => {
+					orphanEditors = [];
+				} );
+		} );
+
 		it( 'should reflect the state of the watchdog', () => {
 			const watchdog = Watchdog.for( ClassicTestEditor );
 
@@ -939,6 +961,7 @@ describe( 'Watchdog', () => {
 			expect( watchdog.state ).to.equal( 'initializing' );
 
 			return watchdog.create( element ).then( () => {
+				orphanEditors.push( watchdog.editor );
 				expect( watchdog.state ).to.equal( 'ready' );
 
 				return watchdog.create( element ).then( () => {
@@ -975,6 +998,8 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( element ).then( () => {
+				orphanEditors.push( watchdog.editor );
+
 				return watchdog.create( element ).then( () => {
 					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
