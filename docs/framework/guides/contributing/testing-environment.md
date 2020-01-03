@@ -23,7 +23,7 @@ It accepts the following arguments that must be passed after the `--` option:
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
 * `--coverage` (alias `-c`) &ndash; Whether to generate code coverage.
 * `--verbose` (alias `-v`) &ndash; Allows switching on webpack logs.
-* `--files` &ndash; Specifies test files to run. Accepts a package name or a glob. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
+* `--files` &ndash; Specifies test files to run. Accepts a package name or a glob. For example `--files=engine` will run tests from `ckeditor5-engine` package. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
 * `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 
@@ -54,6 +54,7 @@ In order to start the manual tests server, use the `yarn run manual` task.
 The task accepts the following options:
 
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
+* `--files` &ndash; Specifies test files to run. Accepts a package name or a glob. For example `--files=ckeditor5` will run tests from the main repository. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
 * `--additionalLanguages="ar,pl,..."` &ndash; Specifies extra languages to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 
