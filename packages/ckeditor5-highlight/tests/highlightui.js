@@ -205,10 +205,6 @@ describe( 'HighlightUI', () => {
 				return localizedEditor();
 			} );
 
-			afterEach( () => {
-
-			} );
-
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
