@@ -411,23 +411,6 @@ export default class Resizer {
 	}
 
 	/**
-	 * Determines the position of a given resize handle.
-	 *
-	 * @private
-	 * @param {HTMLElement} domHandle Handle used to calculate the reference point.
-	 * @returns {String|undefined} Returns a string like `"top-left"` or `undefined` if not matched.
-	 */
-	_getHandlePosition( domHandle ) {
-		const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
-
-		for ( const position of resizerPositions ) {
-			if ( domHandle.classList.contains( getResizerClass( position ) ) ) {
-				return position;
-			}
-		}
-	}
-
-	/**
 	 * @event begin
 	 */
 
