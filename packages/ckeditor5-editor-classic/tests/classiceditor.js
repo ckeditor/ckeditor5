@@ -22,6 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -209,6 +210,7 @@ describe( 'ClassicEditor', () => {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
 			} ).catch( () => {
+				removeEditorBodyOrphans();
 				done();
 			} );
 		} );
@@ -309,7 +311,9 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
-		it( 'does not update the source element if editor was initialized with data', () => {
+		it( 'does not update the source element if editor was initialized with data', async () => {
+			await editor.destroy();
+
 			return ClassicEditor
 				.create( '<p>Foo.</p>', {
 					plugins: [ Paragraph, Bold ]
