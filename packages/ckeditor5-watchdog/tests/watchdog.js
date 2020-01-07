@@ -12,7 +12,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { destroyEditorOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'Watchdog', () => {
 	let element;
@@ -721,6 +720,22 @@ describe( 'Watchdog', () => {
 				} );
 			} );
 		} );
+
+		// Searches for orphaned editors based on DOM.
+		//
+		// This is useful if in your tests you have no access to editor, instance because editor
+		// creation method doesn't complete in a graceful manner.
+		function destroyEditorOrphans() {
+			const promises = [];
+
+			for ( const editableOrphan of document.querySelectorAll( '.ck-editor__editable' ) ) {
+				if ( editableOrphan.ckeditorInstance ) {
+					promises.push( editableOrphan.ckeditorInstance.destroy() );
+				}
+			}
+
+			return Promise.all( promises );
+		}
 	} );
 
 	describe( 'async error handling', () => {
