@@ -58,13 +58,6 @@ describe( 'Watchdog', () => {
 			);
 		} );
 
-		it( 'should not throw an error when the destructor is not defined', () => {
-			const watchdog = new Watchdog();
-			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
-
-			expect( () => watchdog.create() ).to.not.throw();
-		} );
-
 		it( 'should properly copy the config', () => {
 			const watchdog = new Watchdog();
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -77,6 +70,8 @@ describe( 'Watchdog', () => {
 			return watchdog.create( element, config ).then( () => {
 				expect( watchdog.editor.config._config.foo ).to.not.equal( config.foo );
 				expect( watchdog.editor.config._config.bar ).to.equal( config.bar );
+
+				return watchdog.destroy();
 			} );
 		} );
 
@@ -164,6 +159,8 @@ describe( 'Watchdog', () => {
 				err => {
 					expect( err ).to.be.instanceOf( Error );
 					expect( err.message ).to.equal( 'foo' );
+
+					return destroyEditorOrphans();
 				}
 			);
 		} );
@@ -182,6 +179,8 @@ describe( 'Watchdog', () => {
 					err => {
 						expect( err ).to.be.instanceOf( Error );
 						expect( err.message ).to.equal( 'foo' );
+
+						return destroyEditorOrphans();
 					}
 				);
 		} );
@@ -651,6 +650,9 @@ describe( 'Watchdog', () => {
 				const editorGetDataError = new Error( 'Some error' );
 				const getDataStub = sinon.stub( watchdog.editor.data, 'get' )
 					.throwsException( editorGetDataError );
+				// Keep the reference to cleanly destroy it at in the end, as during the TC it
+				// throws an exception during destruction.
+				const firstEditor = watchdog.editor;
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -681,7 +683,10 @@ describe( 'Watchdog', () => {
 							'An error happened during the editor destructing.'
 						);
 
-						watchdog.destroy().then( res );
+						watchdog.destroy().then( () => {
+							getDataStub.restore();
+							return firstEditor.destroy();
+						} ).then( res );
 					} );
 				} );
 			} );
@@ -715,6 +720,22 @@ describe( 'Watchdog', () => {
 				} );
 			} );
 		} );
+
+		// Searches for orphaned editors based on DOM.
+		//
+		// This is useful if in your tests you have no access to editor, instance because editor
+		// creation method doesn't complete in a graceful manner.
+		function destroyEditorOrphans() {
+			const promises = [];
+
+			for ( const editableOrphan of document.querySelectorAll( '.ck-editor__editable' ) ) {
+				if ( editableOrphan.ckeditorInstance ) {
+					promises.push( editableOrphan.ckeditorInstance.destroy() );
+				}
+			}
+
+			return Promise.all( promises );
+		}
 	} );
 
 	describe( 'async error handling', () => {
@@ -929,6 +950,15 @@ describe( 'Watchdog', () => {
 	} );
 
 	describe( 'state', () => {
+		let orphanEditors = [];
+
+		afterEach( () => {
+			return Promise.all( orphanEditors.map( editor => editor.destroy() ) )
+				.then( () => {
+					orphanEditors = [];
+				} );
+		} );
+
 		it( 'should reflect the state of the watchdog', () => {
 			const watchdog = Watchdog.for( ClassicTestEditor );
 
@@ -939,6 +969,7 @@ describe( 'Watchdog', () => {
 			expect( watchdog.state ).to.equal( 'initializing' );
 
 			return watchdog.create( element ).then( () => {
+				orphanEditors.push( watchdog.editor );
 				expect( watchdog.state ).to.equal( 'ready' );
 
 				return watchdog.create( element ).then( () => {
@@ -975,6 +1006,8 @@ describe( 'Watchdog', () => {
 			window.onerror = undefined;
 
 			return watchdog.create( element ).then( () => {
+				orphanEditors.push( watchdog.editor );
+
 				return watchdog.create( element ).then( () => {
 					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
