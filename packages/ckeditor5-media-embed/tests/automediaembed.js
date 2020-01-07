@@ -383,20 +383,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 					}
 				} )
 				.then( newEditor => {
-					editor = newEditor;
-
-					setData( editor.model, '<paragraph>[]</paragraph>' );
-					pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+					setData( newEditor.model, '<paragraph>[]</paragraph>' );
+					pasteHtml( newEditor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
 					clock.tick( 100 );
 
-					expect( getData( editor.model ) ).to.equal(
+					expect( getData( newEditor.model ) ).to.equal(
 						'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
 					);
 
 					editorElement.remove();
 
-					return editor.destroy();
+					return newEditor.destroy();
 				} );
 		} );
 	} );
