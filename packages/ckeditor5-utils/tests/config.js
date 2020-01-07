@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -457,6 +457,12 @@ describe( 'Config', () => {
 
 			// But array members should remain the same contents should be equal:
 			expect( nodesAgain ).to.deep.equal( nodes );
+		} );
+	} );
+
+	describe( 'names()', () => {
+		it( 'should return an iterator of top level names of the configuration', () => {
+			expect( Array.from( config.names() ) ).to.be.deep.equal( [ 'creator', 'language', 'resize', 'toolbar', 'options' ] );
 		} );
 	} );
 } );

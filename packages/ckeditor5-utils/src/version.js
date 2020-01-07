@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,11 +9,14 @@
 
 /* globals window, global */
 
-import { version } from 'ckeditor5/package.json';
 import CKEditorError from './ckeditorerror';
 
+const version = '16.0.0';
+
+/* istanbul ignore next */
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
+/* istanbul ignore next */
 if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	/**
 	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some

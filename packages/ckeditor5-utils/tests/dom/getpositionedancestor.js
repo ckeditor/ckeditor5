@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,10 @@ describe( 'getPositionedAncestor', () => {
 		element = document.createElement( 'a' );
 
 		document.body.appendChild( element );
+	} );
+
+	afterEach( () => {
+		element.remove();
 	} );
 
 	it( 'should return null when there is no element', () => {
@@ -38,6 +42,8 @@ describe( 'getPositionedAncestor', () => {
 		parent.style.position = 'absolute';
 
 		expect( getPositionedAncestor( element ) ).to.equal( parent );
+
+		parent.remove();
 	} );
 
 	it( 'should find the positioned ancestor (far ancestor)', () => {
@@ -50,5 +56,7 @@ describe( 'getPositionedAncestor', () => {
 		parentA.style.position = 'absolute';
 
 		expect( getPositionedAncestor( element ) ).to.equal( parentA );
+
+		parentA.remove();
 	} );
 } );

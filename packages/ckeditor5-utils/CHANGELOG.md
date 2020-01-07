@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Improved error rethrowing by replacing the error stack. Closes [ckeditor/ckeditor5#5595](https://github.com/ckeditor/ckeditor5/issues/5595). ([7685c0d](https://github.com/ckeditor/ckeditor5-utils/commit/7685c0d))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v14.0.0...v15.0.0) (2019-10-23)
 
 ### Features

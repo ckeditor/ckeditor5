@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -104,7 +104,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	/**
 	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
 	 *
-	 * @pivate
+	 * @private
 	 * @param {Node} node DOM Node of the ProxyEmitter.
 	 * @returns {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */

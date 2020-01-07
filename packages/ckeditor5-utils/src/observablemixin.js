@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -126,11 +126,11 @@ const ObservableMixin = {
 		bindProperties.forEach( propertyName => {
 			if ( boundProperties.has( propertyName ) ) {
 				/**
-				 * Cannot bind the same property more that once.
+				 * Cannot bind the same property more than once.
 				 *
 				 * @error observable-bind-rebind
 				 */
-				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more that once.', this );
+				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more than once.', this );
 			}
 		} );
 
