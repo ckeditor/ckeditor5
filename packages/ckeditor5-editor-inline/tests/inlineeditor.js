@@ -23,6 +23,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'InlineEditor', () => {
 	let editor, editorElement;
@@ -73,6 +74,8 @@ describe( 'InlineEditor', () => {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.sourceElement ).to.be.undefined;
+
+				return editor.destroy();
 			} );
 		} );
 
@@ -81,6 +84,8 @@ describe( 'InlineEditor', () => {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.element );
+
+				return editor.destroy();
 			} );
 		} );
 
@@ -195,6 +200,9 @@ describe( 'InlineEditor', () => {
 						);
 					}
 				)
+				.then( () => {
+					removeEditorBodyOrphans();
+				} )
 				.then( done )
 				.catch( done );
 		} );
@@ -331,7 +339,9 @@ describe( 'InlineEditor', () => {
 				} );
 		} );
 
-		it( 'should not throw an error if editor was initialized with the data', () => {
+		it( 'should not throw an error if editor was initialized with the data', async () => {
+			await editor.destroy();
+
 			return InlineEditor
 				.create( '<p>Foo.</p>', {
 					plugins: [ Paragraph, Bold ]
