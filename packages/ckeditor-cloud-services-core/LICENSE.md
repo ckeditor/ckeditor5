@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor Cloud Services Core** – https://github.com/ckeditor/ckeditor-cloud-services-core <br>
-Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2020, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
 
