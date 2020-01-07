@@ -17,21 +17,3 @@ export function removeEditorBodyOrphans() {
 		bodyOrphan.remove();
 	}
 }
-
-/**
- * Searches for orphaned editors based on DOM.
- *
- * This is useful if in your tests you have no access to editor, instance because editor
- * creation method doesn't complete in a graceful manner.
- */
-export function destroyEditorOrphans() {
-	const promises = [];
-
-	for ( const editableOrphan of document.querySelectorAll( '.ck-editor__editable' ) ) {
-		if ( editableOrphan.ckeditorInstance ) {
-			promises.push( editableOrphan.ckeditorInstance.destroy() );
-		}
-	}
-
-	return Promise.all( promises );
-}
