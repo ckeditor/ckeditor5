@@ -186,7 +186,7 @@ describe( 'DropdownView', () => {
 
 	describe( 'render()', () => {
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new DropdownView( locale,
+			const view = new DropdownView( locale,
 				new ButtonView( locale ),
 				new DropdownPanelView( locale ) );
 
@@ -195,10 +195,12 @@ describe( 'DropdownView', () => {
 			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
+
+			view.element.remove();
 		} );
 
 		it( 'adds #element to #focusTracker', () => {
-			view = new DropdownView( locale,
+			const view = new DropdownView( locale,
 				new ButtonView( locale ),
 				new DropdownPanelView( locale ) );
 
@@ -207,6 +209,8 @@ describe( 'DropdownView', () => {
 			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
+
+			view.element.remove();
 		} );
 
 		describe( 'activates keyboard navigation for the dropdown', () => {
