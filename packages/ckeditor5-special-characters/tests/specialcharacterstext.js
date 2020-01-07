@@ -38,7 +38,6 @@ describe( 'SpecialCharactersText', () => {
 		return editor.destroy();
 	} );
 
-
 	it( 'adds new items', () => {
 		expect( addItemsSpy.callCount ).to.equal( 1 );
 	} );
