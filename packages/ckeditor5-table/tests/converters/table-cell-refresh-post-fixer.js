@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,12 +18,12 @@ import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Table cell refresh post-fixer', () => {
-	let editor, model, doc, root, view, refreshItemSpy;
+	let editor, model, doc, root, view, refreshItemSpy, element;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const element = document.createElement( 'div' );
+		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
@@ -52,6 +52,11 @@ describe( 'Table cell refresh post-fixer', () => {
 				injectTableCellRefreshPostFixer( model );
 				refreshItemSpy = sinon.spy( model.document.differ, 'refreshItem' );
 			} );
+	} );
+
+	afterEach( () => {
+		element.remove();
+		return editor.destroy();
 	} );
 
 	it( 'should rename <span> to <p> when adding more <paragraph> elements to the same table cell', () => {

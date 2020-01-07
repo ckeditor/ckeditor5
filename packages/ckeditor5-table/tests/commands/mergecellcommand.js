@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -93,6 +93,46 @@ describe( 'MergeCellCommand', () => {
 				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if mergeable cell is in other table section then current cell', () => {
+				setData( model, modelTable( [
+					[ '00[]', '01' ]
+				], { headingColumns: 1 } ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if merged cell would cross heading section (mergeable cell with colspan)', () => {
+				setData( model, modelTable( [
+					[ '00[]', { colspan: 2, contents: '01' }, '02', '03' ]
+				], { headingColumns: 2 } ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true if merged cell would not cross heading section (mergeable cell with colspan)', () => {
+				setData( model, modelTable( [
+					[ '00[]', { colspan: 2, contents: '01' }, '02', '03' ]
+				], { headingColumns: 3 } ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if merged cell would cross heading section (current cell with colspan)', () => {
+				setData( model, modelTable( [
+					[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
+				], { headingColumns: 2 } ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true if merged cell would not cross heading section (current cell with colspan)', () => {
+				setData( model, modelTable( [
+					[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
+				], { headingColumns: 3 } ) );
+
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 
@@ -271,6 +311,22 @@ describe( 'MergeCellCommand', () => {
 
 			it( 'should be false if not in a cell', () => {
 				setData( model, '<paragraph>11[]</paragraph>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if mergeable cell is in other table section then current cell', () => {
+				setData( model, modelTable( [
+					[ '00', '01[]' ],
+				], { headingColumns: 1 } ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if merged cell would cross heading section (mergeable cell with colspan)', () => {
+				setData( model, modelTable( [
+					[ { colspan: 2, contents: '00' }, '02[]', '03' ]
+				], { headingColumns: 2 } ) );
 
 				expect( command.isEnabled ).to.be.false;
 			} );

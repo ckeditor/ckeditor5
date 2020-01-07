@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -153,7 +153,10 @@ export default class MergeCellCommand extends Command {
 // @param {String} direction
 // @returns {module:engine/model/node~Node|null}
 function getHorizontalCell( tableCell, direction, tableUtils ) {
+	const tableRow = tableCell.parent;
+	const table = tableRow.parent;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
+	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
 	if ( !horizontalCell ) {
 		return;
@@ -168,6 +171,15 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
 
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
+	const rightCellSpan = parseInt( cellOnRight.getAttribute( 'colspan' ) || 1 );
+
+	// We cannot merge cells if the result will extend over heading section.
+	const isMergeWithBodyCell = direction == 'right' && ( rightCellColumn + rightCellSpan > headingColumns );
+	const isMergeWithHeadCell = direction == 'left' && ( leftCellColumn + leftCellSpan > headingColumns - 1 );
+
+	if ( headingColumns && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+		return;
+	}
 
 	// The cell on the right must have index that is distant to the cell on the left by the left cell's width (colspan).
 	const cellsAreTouching = leftCellColumn + leftCellSpan === rightCellColumn;

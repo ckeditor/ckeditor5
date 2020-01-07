@@ -1,41 +1,10 @@
 /*
- * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-
-:root {
-	--ck-insert-table-dropdown-padding: 10px;
-	--ck-insert-table-dropdown-box-height: 11px;
-	--ck-insert-table-dropdown-box-width: 12px;
-	--ck-insert-table-dropdown-box-margin: 1px;
-	--ck-insert-table-dropdown-box-border-color: hsl(0, 0%, 75%);
-	--ck-insert-table-dropdown-box-border-active-color: hsl(208, 73%, 61%);
-	--ck-insert-table-dropdown-box-active-background: hsl(208, 100%, 89%);
-}
 
 .ck .ck-insert-table-dropdown__grid {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	/* The width of a container should match 10 items in a row so there will be a 10x10 grid. */
-	width: calc(var(--ck-insert-table-dropdown-box-width) * 10 + var(--ck-insert-table-dropdown-box-margin) * 20 + var(--ck-insert-table-dropdown-padding) * 2);
-	padding: var(--ck-insert-table-dropdown-padding) var(--ck-insert-table-dropdown-padding) 0;
 }
-
-.ck .ck-insert-table-dropdown__label {
-	text-align: center;
-}
-
-.ck .ck-insert-table-dropdown-grid-box {
-	width: var(--ck-insert-table-dropdown-box-width);
-	height: var(--ck-insert-table-dropdown-box-height);
-	margin: var(--ck-insert-table-dropdown-box-margin);
-	border: 1px solid var(--ck-insert-table-dropdown-box-border-color);
-	border-radius: 1px;
-
-	&.ck-on {
-		border-color: var(--ck-insert-table-dropdown-box-border-active-color);
-		background: var(--ck-insert-table-dropdown-box-active-background);
-	}
-}
-

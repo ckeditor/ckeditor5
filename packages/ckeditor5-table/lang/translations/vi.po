@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -62,32 +62,32 @@ msgstr "Hàng"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr ""
+msgstr "Sát nhập ô lên trên"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr ""
+msgstr "Sát nhập ô qua phải"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr ""
+msgstr "Sát nhập ô xuống dưới"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr ""
+msgstr "Sát nhập ô qua trái"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr ""
+msgstr "Tách ô theo chiều dọc"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr ""
+msgstr "Tách ô theo chiều ngang"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr ""
+msgstr "Sát nhập ô"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Thanh công cụ bảng"
