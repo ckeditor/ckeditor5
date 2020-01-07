@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -116,8 +116,16 @@ describe( 'FontFamilyUI', () => {
 		} );
 
 		describe( 'localization', () => {
-			beforeEach( () => {
+			let editorElement;
+
+			beforeEach( async () => {
+				await editor.destroy();
+
 				return localizedEditor( [ 'default', 'Arial' ] );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
 			} );
 
 			it( 'works for the #buttonView', () => {
@@ -136,7 +144,7 @@ describe( 'FontFamilyUI', () => {
 			} );
 
 			function localizedEditor( options ) {
-				const editorElement = document.createElement( 'div' );
+				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 
 				return ClassicTestEditor

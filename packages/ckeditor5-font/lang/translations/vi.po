@@ -12,110 +12,110 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
-"Language: lt\n"
-"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Šrifto dydis"
+msgstr "Cỡ chữ"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr "Mažytis"
+msgstr "Bé"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr "Mažas"
+msgstr "Nhỏ"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr "Didelis"
+msgstr "Lớn"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr "Milžiniškas"
+msgstr "Khổng lồ"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr "Šrifto šeima"
+msgstr "Họ chữ"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
-msgstr "Numatyta"
+msgstr "Mặc định"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr "Šrifto spalva"
+msgstr "Màu chữ"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr "Šrifto fono spalva"
+msgstr "Màu nền chữ"
 
 msgctxt "Label or a button that removes the color from the text (font color and background)."
 msgid "Remove color"
-msgstr "Pašalinti spalvą"
+msgstr "Xóa màu"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "Màu văn bản"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
-msgstr "Juoda"
+msgstr "Đen"
 
 msgctxt "Label of a button that applies a dim grey text color (font color and background)"
 msgid "Dim grey"
-msgstr "Pilkšva"
+msgstr "Xám mờ"
 
 msgctxt "Label of a button that applies a grey text color (font color and background)"
 msgid "Grey"
-msgstr "Pilka"
+msgstr "Xám"
 
 msgctxt "Label of a button that applies a light grey text color (font color and background)"
 msgid "Light grey"
-msgstr "Šviesiai pilka"
+msgstr "Xám nhạt"
 
 msgctxt "Label of a button that applies a white text color (font color and background)"
 msgid "White"
-msgstr "Balta"
+msgstr "Trắng"
 
 msgctxt "Label of a button that applies a red text color (font color and background)"
 msgid "Red"
-msgstr "Raudona"
+msgstr "Đỏ"
 
 msgctxt "Label of a button that applies a orange text color (font color and background)"
 msgid "Orange"
-msgstr "Oranžinė"
+msgstr "Cam"
 
 msgctxt "Label of a button that applies a yellow text color (font color and background)"
 msgid "Yellow"
-msgstr "Geltona"
+msgstr "Vàng"
 
 msgctxt "Label of a button that applies a light green text color (font color and background)"
 msgid "Light green"
-msgstr "Šviesiai žalia"
+msgstr "Xanh lá nhạt"
 
 msgctxt "Label of a button that applies a green text color (font color and background)"
 msgid "Green"
-msgstr "Žalia"
+msgstr "Xanh lá"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr "Aquamarine"
+msgstr "Xanh ngọc biển"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr "Turkio"
+msgstr "Xanh ngọc bích"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
-msgstr "Šviesiai mėlyna"
+msgstr "Xanh dương"
 
 msgctxt "Label of a button that applies a blue text color (font color and background)"
 msgid "Blue"
-msgstr "Mėlyna"
+msgstr "Xanh biển"
 
 msgctxt "Label of a button that applies a purple text color (font color and background)"
 msgid "Purple"
-msgstr "Violetinė"
+msgstr "Tím"
