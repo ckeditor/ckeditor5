@@ -94,13 +94,12 @@ describe( 'RemoveFormatUI', () => {
 						language: 'pl'
 					} )
 					.then( newEditor => {
-						editor = newEditor;
-						button = editor.ui.componentFactory.create( 'removeFormat' );
-						command = editor.commands.get( 'removeFormat' );
+						button = newEditor.ui.componentFactory.create( 'removeFormat' );
+						command = newEditor.commands.get( 'removeFormat' );
 
 						editorElement.remove();
 
-						return editor.destroy();
+						return newEditor.destroy();
 					} );
 			}
 		} );
