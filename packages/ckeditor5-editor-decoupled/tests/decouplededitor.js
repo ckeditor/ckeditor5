@@ -22,6 +22,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -186,6 +187,9 @@ describe( 'DecoupledEditor', () => {
 						);
 					}
 				)
+				.then( () => {
+					removeEditorBodyOrphans();
+				} )
 				.then( done )
 				.catch( done );
 		} );
