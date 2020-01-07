@@ -236,13 +236,12 @@ describe( 'HighlightUI', () => {
 						language: 'pl'
 					} )
 					.then( newEditor => {
-						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'highlight' );
-						command = editor.commands.get( 'highlight' );
+						dropdown = newEditor.ui.componentFactory.create( 'highlight' );
+						command = newEditor.commands.get( 'highlight' );
 
 						editorElement.remove();
 
-						return editor.destroy();
+						return newEditor.destroy();
 					} );
 			}
 		} );
