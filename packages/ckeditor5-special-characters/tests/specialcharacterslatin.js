@@ -13,10 +13,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'SpecialCharactersLatin', () => {
 	testUtils.createSinonSandbox();
 
-	let addItemsSpy, addItemsFirstCallArgs;
+	let editor, editorElement, addItemsSpy, addItemsFirstCallArgs;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 
 		addItemsSpy = sinon.spy( SpecialCharacters.prototype, 'addItems' );
 
@@ -25,13 +25,17 @@ describe( 'SpecialCharactersLatin', () => {
 			.create( editorElement, {
 				plugins: [ SpecialCharacters, SpecialCharactersLatin ]
 			} )
-			.then( () => {
+			.then( newEditor => {
+				editor = newEditor;
 				addItemsFirstCallArgs = addItemsSpy.args[ 0 ];
 			} );
 	} );
 
 	afterEach( () => {
 		addItemsSpy.restore();
+
+		editorElement.remove();
+		return editor.destroy();
 	} );
 
 	it( 'adds new items', () => {
