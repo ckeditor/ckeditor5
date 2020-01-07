@@ -14,12 +14,12 @@ import StandardEditingModeUI from '../src/standardeditingmodeui';
 import StandardEditingModeEditing from '../src/standardeditingmodeediting';
 
 describe( 'StandardEditingModeUI', () => {
-	let editor, buttonView;
+	let editor, buttonView, editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
@@ -30,6 +30,7 @@ describe( 'StandardEditingModeUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
 		return editor.destroy();
 	} );
 
