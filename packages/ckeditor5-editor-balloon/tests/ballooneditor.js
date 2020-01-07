@@ -24,6 +24,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup';
 
 describe( 'BalloonEditor', () => {
 	let editor, editorElement;
@@ -205,6 +206,9 @@ describe( 'BalloonEditor', () => {
 						);
 					}
 				)
+				.then( () => {
+					removeEditorBodyOrphans();
+				} )
 				.then( done )
 				.catch( done );
 		} );
@@ -341,7 +345,9 @@ describe( 'BalloonEditor', () => {
 				} );
 		} );
 
-		it( 'should not throw an error if editor was initialized with the data', () => {
+		it( 'should not throw an error if editor was initialized with the data', async () => {
+			await editor.destroy();
+
 			return BalloonEditor
 				.create( '<p>Foo.</p>', {
 					plugins: [ Paragraph, Bold ]
