@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Other changes
+
+* Split debug tools between the engine files. You do not need to add debug plugin to the editor if you want to use `--debug engine` building flag anymore. Closes [ckeditor/ckeditor5#5649](https://github.com/ckeditor/ckeditor5/issues/5649). ([353f091](https://github.com/ckeditor/ckeditor5-engine/commit/353f091))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v14.0.0...v15.0.0) (2019-10-23)
 
 ### MAJOR BREAKING CHANGES

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -2009,6 +2009,8 @@ describe( 'Renderer', () => {
 				container = document.getSelection().anchorNode;
 
 				expect( domEditable.contains( container ) ).to.be.true;
+
+				domEditable.remove();
 			} );
 
 			it( 'should bind fake selection container to view selection', () => {
@@ -3719,6 +3721,11 @@ describe( 'Renderer', () => {
 			viewRoot = createViewRoot( viewDoc );
 			view.attachDomRoot( domRoot );
 			converter = view.domConverter;
+		} );
+
+		afterEach( () => {
+			view.destroy();
+			domRoot.remove();
 		} );
 
 		it( 'should properly render unwrapped attributes #1', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -202,6 +202,19 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'styled',
 	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
+	 *		} );
+	 *
+	 * *Note:* Downcasting to a style property requires providing `value` as an object:
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: 'lineHeight',
+	 *			view: modelAttributeValue => ( {
+	 *				key: 'style',
+	 *				value: {
+	 *					'line-height': modelAttributeValue,
+	 *					'border-bottom': '1px dotted #ba2'
+	 *				}
+	 *			} )
 	 *		} );
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
