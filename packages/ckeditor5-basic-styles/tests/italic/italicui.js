@@ -15,12 +15,12 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'ItalicUI', () => {
-	let editor, italicView;
+	let editor, italicView, editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
@@ -35,6 +35,8 @@ describe( 'ItalicUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 

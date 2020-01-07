@@ -14,12 +14,12 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'SubscriptUI', () => {
-	let editor, subView;
+	let editor, subView, editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
@@ -34,6 +34,8 @@ describe( 'SubscriptUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
