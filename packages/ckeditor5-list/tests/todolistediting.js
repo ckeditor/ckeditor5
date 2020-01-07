@@ -1185,5 +1185,7 @@ describe( 'TodoListEditing', () => {
 		expect( getModelData( model, { rootName: 'dynamicRoot' } ) ).to.equal(
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
 		);
+
+		dynamicRootElement.remove();
 	} );
 } );
