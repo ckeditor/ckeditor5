@@ -112,9 +112,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			throw new CKEditorError( 'restricted-editing-command-not-found: Trying to enable command that does not exist.', this );
 		}
 
-		if ( command ) {
-			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
-		}
+		command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 
 		this._alwaysEnabled.add( commandName );
 	}
