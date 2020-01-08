@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,12 +14,12 @@ import StandardEditingModeUI from '../src/standardeditingmodeui';
 import StandardEditingModeEditing from '../src/standardeditingmodeediting';
 
 describe( 'StandardEditingModeUI', () => {
-	let editor, buttonView;
+	let editor, buttonView, editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
@@ -30,6 +30,7 @@ describe( 'StandardEditingModeUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
 		return editor.destroy();
 	} );
 

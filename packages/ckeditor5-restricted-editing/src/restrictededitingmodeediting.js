@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,7 +41,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'restrictedEditing', {
-			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ]
+			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ],
+			allowedAttributes: [ 'bold', 'italic', 'linkHref' ]
 		} );
 
 		/**
@@ -69,7 +70,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-
+		const editingView = editor.editing.view;
 		const allowedCommands = editor.config.get( 'restrictedEditing.allowedCommands' );
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
@@ -84,18 +85,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 
-		// Block clipboard completely in restricted mode.
-		this.listenTo( this.editor.editing.view.document, 'clipboardInput', evt => {
-			evt.stop();
-		}, { priority: 'highest' } );
-		this.listenTo( this.editor.editing.view.document, 'clipboardOutput', ( evt, data ) => {
-			if ( data.method == 'cut' ) {
-				evt.stop();
-			}
-		}, { priority: 'highest' } );
-
-		editor.editing.view.change( writer => {
-			for ( const root of editor.editing.view.document.roots ) {
+		editingView.change( writer => {
+			for ( const root of editingView.document.roots ) {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
@@ -168,27 +159,54 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		doc.registerPostFixer( extendMarkerOnTypingPostFixer( editor ) );
 		doc.registerPostFixer( resurrectCollapsedMarkerPostFixer( editor ) );
+		model.markers.on( 'update:restrictedEditingException', ensureNewMarkerIsFlat( editor ) );
 
 		setupExceptionHighlighting( editor );
 	}
 
 	/**
-	 * Setups additional editing restrictions beyond command toggling.
+	 * Setups additional editing restrictions beyond command toggling:
+	 *
+	 * * delete content range trimming
+	 * * disabling input command outside exception marker
+	 * * restricting clipboard holder to text only
+	 * * restricting text attributes in content
 	 *
 	 * @private
 	 */
 	_setupRestrictions() {
 		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const viewDoc = editor.editing.view.document;
 
-		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
-		const inputCommand = this.editor.commands.get( 'input' );
+		const inputCommand = editor.commands.get( 'input' );
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
+
+		// Block clipboard outside exception marker on paste.
+		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
+			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+
+		// Block clipboard outside exception marker on cut.
+		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
+			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+
+		const allowedAttributes = editor.config.get( 'restrictedEditing.allowedAttributes' );
+		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
+		model.schema.addChildCheck( allowTextOnlyInClipboardHolder );
 	}
 
 	/**
@@ -375,4 +393,46 @@ function isRangeInsideSingleMarker( editor, range ) {
 	const markerAtEnd = getMarkerAtPosition( editor, range.end );
 
 	return markerAtStart && markerAtEnd && markerAtEnd === markerAtStart;
+}
+
+// Checks if new marker range is flat. Non-flat ranges might appear during upcast conversion in nested structures, ie tables.
+//
+// Note: This marker fixer only consider case which is possible to create using StandardEditing mode plugin.
+// Markers created by developer in the data might break in many other ways.
+//
+// See #6003.
+function ensureNewMarkerIsFlat( editor ) {
+	const model = editor.model;
+
+	return ( evt, marker, oldRange, newRange ) => {
+		if ( !oldRange && !newRange.isFlat ) {
+			model.change( writer => {
+				const start = newRange.start;
+				const end = newRange.end;
+
+				const startIsHigherInTree = start.path.length > end.path.length;
+
+				const fixedStart = startIsHigherInTree ? newRange.start : writer.createPositionAt( end.parent, 0 );
+				const fixedEnd = startIsHigherInTree ? writer.createPositionAt( start.parent, 'end' ) : newRange.end;
+
+				writer.updateMarker( marker, {
+					range: writer.createRange( fixedStart, fixedEnd )
+				} );
+			} );
+		}
+	};
+}
+
+function onlyAllowAttributesFromList( allowedAttributes ) {
+	return ( context, attributeName ) => {
+		if ( context.startsWith( '$clipboardHolder' ) ) {
+			return allowedAttributes.includes( attributeName );
+		}
+	};
+}
+
+function allowTextOnlyInClipboardHolder( context, childDefinition ) {
+	if ( context.startsWith( '$clipboardHolder' ) ) {
+		return childDefinition.name === '$text';
+	}
 }
