@@ -131,12 +131,12 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 					writer.setSelectionAttribute( 'restrictedEditingException', true );
 				} );
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
-
 				command.execute( { forceValue: true } );
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
 			} );
 
-			it( 'should remove attribute from text node if a text has the non-restricted attribute', () => {
+			it( 'should remove an attribute from text node if a text has the non-restricted attribute', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
 
 				command.execute();
