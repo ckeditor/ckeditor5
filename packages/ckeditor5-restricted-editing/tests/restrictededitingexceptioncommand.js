@@ -117,12 +117,110 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
 			} );
 
-			it( 'should remove the selection attribute if a text has the non-restricted attribute', () => {
+			it( 'should not set the selection attribute if there is a text without the attribute (forceValue="false")', () => {
+				setData( model, '<p>abcfoo[]barbaz</p>' );
+
+				command.execute( { forceValue: false } );
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+			} );
+
+			it( 'should not change the selection attribute if selection has the attribute already (forceValue="true")', () => {
+				setData( model, '<p>abcfoo[]barbaz</p>' );
+				model.change( writer => {
+					writer.setSelectionAttribute( 'restrictedEditingException', true );
+				} );
+
+				command.execute( { forceValue: true } );
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+			} );
+
+			it( 'should remove an attribute from text node if a text has the non-restricted attribute', () => {
 				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
 
 				command.execute();
 
 				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
+			} );
+
+			it( 'should remove attribute from text node if a text has the non-restricted attribute (forceValue="false")', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
+
+				command.execute( { forceValue: false } );
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
+			} );
+
+			it( 'should not remove attribute from text node if a text has the non-restricted attribute (forceValue="true")', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
+
+				command.execute( { forceValue: true } );
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
+			} );
+
+			it( 'should not remove exception when selection is at the beginning of restricted text', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+			} );
+
+			it( 'should remove attribute from text nodes when other attributes are present', () => {
+				setData( model,
+					'<p>' +
+					'<$text bold="true">abc</$text>' +
+					'<$text bold="true" restrictedEditingException="true">foo[]</$text>' +
+					'<$text restrictedEditingException="true">bar</$text>' +
+					'baz' +
+					'</p>'
+				);
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p><$text bold="true">abcfoo[]</$text>barbaz</p>' );
+			} );
+
+			it( 'should remove selection attribute if selection does not have it (selection at the beginning)', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'restrictedEditingException', 'true' );
+				} );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abc[]<$text restrictedEditingException="true">foobar</$text>baz</p>' );
+			} );
+
+			it( 'should not remove exception when selection is at the end of restricted text', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foobar</$text>[]baz</p>' );
+			} );
+
+			it( 'should set selection attribute if selection does not have it (selection at the end)', () => {
+				setData( model, '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
+
+				model.change( writer => {
+					writer.removeSelectionAttribute( 'restrictedEditingException' );
+				} );
+
+				command.execute();
+
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( getData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
 			} );
 		} );
 

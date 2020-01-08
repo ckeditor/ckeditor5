@@ -39,9 +39,18 @@ export default class RestrictedEditingExceptionCommand extends Command {
 
 			if ( selection.isCollapsed ) {
 				if ( valueToSet ) {
-					writer.setSelectionAttribute( 'restrictedEditingException', true );
+					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
 				} else {
+					const isSameException = value => value.item.getAttribute( 'restrictedEditingException' ) === this.value;
+					const exceptionStart = selection.focus.getLastMatchingPosition( isSameException, { direction: 'backward' } );
+					const exceptionEnd = selection.focus.getLastMatchingPosition( isSameException );
+					const focus = selection.focus;
+
 					writer.removeSelectionAttribute( 'restrictedEditingException' );
+
+					if ( !( focus.isEqual( exceptionStart ) || focus.isEqual( exceptionEnd ) ) ) {
+						writer.removeAttribute( 'restrictedEditingException', writer.createRange( exceptionStart, exceptionEnd ) );
+					}
 				}
 			} else {
 				for ( const range of ranges ) {
