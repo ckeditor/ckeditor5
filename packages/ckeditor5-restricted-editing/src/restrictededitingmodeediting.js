@@ -303,9 +303,8 @@ function getCommandExecuter( editor, commandName ) {
 
 		if ( command.isEnabled ) {
 			editor.execute( commandName );
+			cancel();
 		}
-
-		cancel();
 	};
 }
 
