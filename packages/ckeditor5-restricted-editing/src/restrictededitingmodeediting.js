@@ -282,17 +282,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 function getCommandExecuter( editor, commandName ) {
 	return ( data, cancel ) => {
 		const command = editor.commands.get( commandName );
-		const navigationCommands = commandName === 'goToPreviousRestrictedEditingException' ||
-			commandName === 'goToNextRestrictedEditingException';
 
 		if ( command.isEnabled ) {
 			editor.execute( commandName );
-		} else if ( navigationCommands ) {
-			// Allows to set focus on elements outside of the editable if commands are disabled
-			return;
+			cancel();
 		}
-
-		cancel();
 	};
 }
 
