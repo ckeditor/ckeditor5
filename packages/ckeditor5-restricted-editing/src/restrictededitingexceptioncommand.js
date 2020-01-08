@@ -38,29 +38,21 @@ export default class RestrictedEditingExceptionCommand extends Command {
 			const ranges = model.schema.getValidRanges( selection.getRanges(), 'restrictedEditingException' );
 
 			if ( selection.isCollapsed ) {
-				const position = selection.getFirstPosition();
-
-				// When selection is inside a restricted text
-				if ( selection.hasAttribute( 'restrictedEditingException' ) ) {
-					// Find the full resticted range
-					const isSameRestrictedException = value => value.item.getAttribute( 'restrictedEditingException' ) === this.value;
-
-					const restrictedEditingExceptionStart = position.getLastMatchingPosition( isSameRestrictedException,
+				if ( valueToSet ) {
+					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
+				} else {
+					const isSameException = value => value.item.getAttribute( 'restrictedEditingException' ) === this.value;
+					const exceptionStart = selection.focus.getLastMatchingPosition( isSameException,
 						{ direction: 'backward' } );
-					const restrictedEditingExceptionEnd = position.getLastMatchingPosition( isSameRestrictedException );
-
-					const restrictedEditingExceptionRange = writer.createRange( restrictedEditingExceptionStart,
-						restrictedEditingExceptionEnd );
+					const exceptionEnd = selection.focus.getLastMatchingPosition( isSameException );
+					const focus = selection.focus;
 
 					writer.removeSelectionAttribute( 'restrictedEditingException' );
 
-					// Remove entire exception if the caret isn't at the end of a restricted text
-					if ( selection.anchor.textNode !== null ) {
-						writer.removeAttribute( 'restrictedEditingException', restrictedEditingExceptionRange );
+					if ( !( focus.isEqual( exceptionStart ) || focus.isEqual( exceptionEnd ) ) ) {
+						writer.removeAttribute( 'restrictedEditingException', writer.createRange( exceptionStart,
+							exceptionEnd ) );
 					}
-				} else if ( valueToSet ) {
-					// Set attribute on selection with unset attribute
-					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
 				}
 			} else {
 				for ( const range of ranges ) {
