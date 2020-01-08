@@ -1039,7 +1039,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 
-		it( 'should set focus outside the editor on tab key when there is none', () => {
+		it( 'should let the focus go outside the editor on tab key when in the last exception', () => {
 			setModelData( model, '<paragraph>foo qux[]</paragraph>' );
 
 			const paragraph = model.document.getRoot().getChild( 0 );
@@ -1092,7 +1092,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
 
-		it( 'should set focus outside the editor on tab+shift key when there is none', () => {
+		it( 'should let the focus go outside the editor on shift+tab when in the first exception', () => {
 			setModelData( model, '<paragraph>[]foo qux</paragraph>' );
 
 			const paragraph = model.document.getRoot().getChild( 0 );
