@@ -1,4 +1,4 @@
-## Restricted editing - editor surrounded by forms
+## Restricted editing - focus cycling in an editor surrounded by forms
 
 ## Standard mode
 
