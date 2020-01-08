@@ -82,6 +82,32 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
+	describe( 'mouse listeners', () => {
+		/**
+		 * @todo: move to aseparate suite (it's widgetresize not resizer)
+		 */
+		let resizerInstance, renderedElement;
+
+		beforeEach( () => {
+			resizerInstance = createResizer();
+			resizerInstance.attach();
+
+			renderedElement = resizerInstance._viewResizerWrapper.render( document );
+		} );
+
+		afterEach( () => {
+			renderedElement.remove();
+		} );
+
+		describe( 'mousedown', () => {
+			it( 'doesnt break if called with element other than a handle', () => {
+				resizerInstance._mouseDownListener( null, {
+					target: document.createElement( 'a' )
+				} );
+			} );
+		} );
+	} );
+
 	function createResizer() {
 		const model = new Element( 'resizable' );
 		const viewElement = new ContainerElement( 'div' );
