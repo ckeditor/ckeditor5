@@ -16,7 +16,7 @@ import MarginStyles from './styles/marginstyles';
 import PaddingStyles from './styles/paddingstyles';
 import BackgroundStyles from './styles/backgroundstyles';
 
-export class StylesConverter {
+export class StylesProcessor {
 	/**
 	 * Returns reduced form of style property form normalized object.
 	 *
@@ -88,10 +88,10 @@ export class StylesConverter {
 	}
 }
 
-mix( StylesConverter, EmitterMixin );
+mix( StylesProcessor, EmitterMixin );
 
 // TODO: It's a singleton because it needs to be the same object for all view/Elements instances.
-export const stylesConverter = new StylesConverter();
+export const stylesConverter = new StylesProcessor();
 
 BorderStyles.attach( stylesConverter );
 MarginStyles.attach( stylesConverter );

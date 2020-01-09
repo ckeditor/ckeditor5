@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles, { StylesConverter } from '../../src/view/styles';
+import Styles, { StylesProcessor } from '../../src/view/styles';
 import encodedImage from './_utils/encodedimage.txt';
 import PaddingStyles from '../../src/view/styles/paddingstyles';
 
@@ -11,7 +11,7 @@ describe( 'Styles', () => {
 	let styles, converter;
 
 	beforeEach( () => {
-		converter = new StylesConverter();
+		converter = new StylesProcessor();
 
 		// Define simple "foo" shorthand normalizers, similar to the "margin" shorthand normalizers, for testing purposes.
 		converter.on( 'normalize:foo', ( evt, data ) => {
