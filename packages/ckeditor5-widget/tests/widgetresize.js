@@ -7,18 +7,58 @@
 
 import WidgetResize from '../src/widgetresize';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+// ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-describe( 'WidgetResize', () => {
-	let editor, editorElement;
+import {
+	toWidget
+} from '../src/utils';
+import {
+	setData as setModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-	before( async () => {
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
+describe( 'WidgetResize', () => {
+	let editor, editorElement, view, widget, widgetModel;
+
+	const mouseMock = {
+		down( editor, domTarget ) {
+			this._getPlugin( editor )._mouseDownListener( {}, {
+				target: domTarget
+			} );
+		},
+
+		move( editor, domTarget, eventData ) {
+			const combinedEventData = Object.assign( {}, eventData, {
+				target: domTarget
+			} );
+
+			this._getPlugin( editor )._mouseMoveListener( {}, combinedEventData );
+		},
+
+		up() {
+			this._getPlugin( editor )._mouseUpListener();
+		},
+
+		_getPlugin( editor ) {
+			return editor.plugins.get( WidgetResize );
+		}
+	};
+
+	beforeEach( async () => {
 		editorElement = createEditorElement();
 		editor = await createEditor( editorElement );
+		view = editor.editing.view;
+
+		setModelData( editor.model, '[<widget></widget>]' );
+
+		widget = view.document.getRoot().getChild( 0 );
+		widgetModel = editor.model.document.getRoot().getChild( 0 );
 	} );
 
-	after( () => {
+	afterEach( () => {
 		editorElement.remove();
 		return editor.destroy();
 	} );
@@ -30,12 +70,67 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'mouse listeners', () => {
-		it( 'doesnt break when called with unexpected element', () => {
+		let resizer, resizerOptions;
+
+		beforeEach( () => {
+			resizerOptions = {
+				unit: 'px',
+
+				modelElement: widgetModel,
+				viewElement: widget,
+				editor,
+
+				getHandleHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				getResizeHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				isCentered: () => false,
+
+				onCommit: sinon.stub()
+			};
+
+			resizer = editor.plugins.get( WidgetResize )
+				.attachTo( resizerOptions );
+		} );
+
+		it( 'doesnt break when called with unexpected element', async () => {
 			const unrelatedElement = document.createElement( 'div' );
+
+			focusEditor( editor );
+
+			resizer.redraw(); // @todo this shouldn't be necessary.
+			// await wait( 40 );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
 				target: unrelatedElement
 			} );
+		} );
+
+		it( 'passes new width to the options.onCommit()', async () => {
+			focusEditor( editor );
+
+			resizer.redraw(); // @todo this shouldn't be necessary.
+
+			const usedResizer = 'top-right';
+			const domParts = getWidgetDomParts( widget, usedResizer );
+			const initialPointerPosition = getElementCornerCoordinates( domParts.widget, usedResizer );
+			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+
+			finalPointerPosition.pageX += 20;
+
+			mouseMock.down( editor, domParts.resizeHandle );
+
+			await wait( 40 );
+
+			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			mouseMock.up();
+
+			expect( resizerOptions.onCommit.callCount ).to.be.equal( 1 );
+			sinon.assert.calledWithExactly( resizerOptions.onCommit, '120px' );
 		} );
 	} );
 
@@ -75,10 +170,10 @@ describe( 'WidgetResize', () => {
 
 	function createEditor( element ) {
 		return new Promise( ( resolve, reject ) => {
-			ClassicTestEditor
+			ClassicEditor
 				.create( element, {
 					plugins: [
-						ArticlePluginSet, WidgetResize
+						ArticlePluginSet, WidgetResize, simpleWidgetPlugin
 					]
 				} )
 				.then( newEditor => {
@@ -86,6 +181,30 @@ describe( 'WidgetResize', () => {
 				} )
 				.catch( reject );
 		} );
+
+		function simpleWidgetPlugin( editor ) {
+			editor.model.schema.register( 'widget', {
+				inheritAllFrom: '$block',
+				isObject: true
+			} );
+
+			editor.conversion.for( 'downcast' )
+				.elementToElement( {
+					model: 'widget',
+					view: ( modelItem, viewWriter ) => {
+						const div = viewWriter.createContainerElement( 'div' );
+						viewWriter.setStyle( 'height', '100px', div );
+						viewWriter.setStyle( 'width', '100px', div );
+						viewWriter.setStyle( 'position', 'absolute', div );
+						viewWriter.setStyle( 'top', '10px', div );
+						viewWriter.setStyle( 'bottom', '10px', div );
+
+						return toWidget( div, viewWriter, {
+							label: 'element label'
+						} );
+					}
+				} );
+		}
 	}
 
 	function createEditorElement() {
@@ -106,5 +225,43 @@ describe( 'WidgetResize', () => {
 			MOUSE_BUTTON_MAIN, null );
 
 		target.dispatchEvent( event );
+	}
+
+	function getWidgetDomParts( widget, resizerPosition ) {
+		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 0 ) );
+
+		return {
+			resizeWrapper,
+			resizeHandle: resizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` ),
+			widget: view.domConverter.mapViewToDom( widget )
+		};
+	}
+
+	function getElementCornerCoordinates( domWrapper, cornerPosition ) {
+		const wrapperRect = new Rect( domWrapper );
+		const initialPointerPosition = {
+			pageX: wrapperRect.left,
+			pageY: wrapperRect.top
+		};
+		const cornerPositionParts = cornerPosition.split( '-' );
+
+		if ( cornerPositionParts.includes( 'right' ) ) {
+			initialPointerPosition.pageX = wrapperRect.right;
+		}
+
+		if ( cornerPositionParts.includes( 'bottom' ) ) {
+			initialPointerPosition.pageY = wrapperRect.bottom;
+		}
+
+		return initialPointerPosition;
+	}
+
+	function focusEditor( editor ) {
+		editor.editing.view.focus();
+		editor.ui.focusTracker.isFocused = true;
+	}
+
+	function wait( delay ) {
+		return new Promise( resolve => window.setTimeout( () => resolve(), delay ) );
 	}
 } );
