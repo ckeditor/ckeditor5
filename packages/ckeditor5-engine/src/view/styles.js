@@ -16,80 +16,6 @@ import MarginStyles from './styles/marginstyles';
 import PaddingStyles from './styles/paddingstyles';
 import BackgroundStyles from './styles/backgroundstyles';
 
-export class StylesProcessor {
-	/**
-	 * Returns reduced form of style property form normalized object.
-	 *
-	 * @private
-	 * @param {String} styleName
-	 * @param {Object|String} normalizedValue
-	 * @returns {module:engine/view/styles~PropertyEntry}
-	 */
-	getReducedForm( styleName, normalizedValue ) {
-		const data = {
-			value: normalizedValue
-		};
-
-		this.fire( 'reduce:' + styleName, data );
-
-		return data.reduced || [ [ styleName, normalizedValue ] ];
-	}
-
-	getNormalized( name, styles ) {
-		if ( !name ) {
-			return merge( {}, styles );
-		}
-
-		if ( styles[ name ] ) {
-			return styles[ name ];
-		}
-
-		const data = {
-			name,
-			styles
-		};
-
-		this.fire( `extract:${ name }`, data );
-
-		if ( data.path ) {
-			return get( styles, data.path );
-		}
-
-		if ( data.value ) {
-			return data.value;
-		}
-
-		return get( styles, toPath( name ) );
-	}
-
-	/**
-	 * Parse style property value to a normalized form.
-	 *
-	 * @param {String} propertyName Name of style property.
-	 * @param {String} value Value of style property.
-	 * @param {Object} styles
-	 * @private
-	 */
-	toNormalizedForm( propertyName, value, styles ) {
-		if ( isObject( value ) ) {
-			appendStyleValue( styles, toPath( propertyName ), value );
-
-			return;
-		}
-
-		const data = {
-			path: propertyName,
-			value
-		};
-
-		this.fire( 'normalize:' + propertyName, data );
-
-		appendStyleValue( styles, data.path, data.value );
-	}
-}
-
-mix( StylesProcessor, EmitterMixin );
-
 /**
  * Styles class.
  *
@@ -321,6 +247,80 @@ export default class Styles {
 		return parsed;
 	}
 }
+
+export class StylesProcessor {
+	/**
+	 * Returns reduced form of style property form normalized object.
+	 *
+	 * @private
+	 * @param {String} styleName
+	 * @param {Object|String} normalizedValue
+	 * @returns {module:engine/view/styles~PropertyEntry}
+	 */
+	getReducedForm( styleName, normalizedValue ) {
+		const data = {
+			value: normalizedValue
+		};
+
+		this.fire( 'reduce:' + styleName, data );
+
+		return data.reduced || [ [ styleName, normalizedValue ] ];
+	}
+
+	getNormalized( name, styles ) {
+		if ( !name ) {
+			return merge( {}, styles );
+		}
+
+		if ( styles[ name ] ) {
+			return styles[ name ];
+		}
+
+		const data = {
+			name,
+			styles
+		};
+
+		this.fire( `extract:${ name }`, data );
+
+		if ( data.path ) {
+			return get( styles, data.path );
+		}
+
+		if ( data.value ) {
+			return data.value;
+		}
+
+		return get( styles, toPath( name ) );
+	}
+
+	/**
+	 * Parse style property value to a normalized form.
+	 *
+	 * @param {String} propertyName Name of style property.
+	 * @param {String} value Value of style property.
+	 * @param {Object} styles
+	 * @private
+	 */
+	toNormalizedForm( propertyName, value, styles ) {
+		if ( isObject( value ) ) {
+			appendStyleValue( styles, toPath( propertyName ), value );
+
+			return;
+		}
+
+		const data = {
+			path: propertyName,
+			value
+		};
+
+		this.fire( 'normalize:' + propertyName, data );
+
+		appendStyleValue( styles, data.path, data.value );
+	}
+}
+
+mix( StylesProcessor, EmitterMixin );
 
 BorderStyles.attach( Styles.processor );
 MarginStyles.attach( Styles.processor );
