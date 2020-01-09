@@ -91,12 +91,12 @@ export class StylesProcessor {
 mix( StylesProcessor, EmitterMixin );
 
 // TODO: It's a singleton because it needs to be the same object for all view/Elements instances.
-export const stylesConverter = new StylesProcessor();
+export const stylesProcessor = new StylesProcessor();
 
-BorderStyles.attach( stylesConverter );
-MarginStyles.attach( stylesConverter );
-PaddingStyles.attach( stylesConverter );
-BackgroundStyles.attach( stylesConverter );
+BorderStyles.attach( stylesProcessor );
+MarginStyles.attach( stylesProcessor );
+PaddingStyles.attach( stylesProcessor );
+BackgroundStyles.attach( stylesProcessor );
 
 /**
  * Styles class.
@@ -107,7 +107,7 @@ export default class Styles {
 	/**
 	 * Creates Styles instance.
 	 */
-	constructor( converter = stylesConverter ) {
+	constructor( processor = stylesProcessor ) {
 		/**
 		 * @private
 		 */
@@ -115,7 +115,7 @@ export default class Styles {
 
 		// This hides the converter from the watchdog.
 		Object.defineProperty( this, 'converter', {
-			value: converter,
+			value: processor,
 			enumerable: false,
 			writable: true
 		} );
