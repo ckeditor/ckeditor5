@@ -9,12 +9,12 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
  * @module engine/view/styles
  */
 
-export function addPaddingStylesProcessor( stylesConverter ) {
-	stylesConverter.on( 'normalize:padding', getPositionShorthandNormalizer( 'padding' ) );
-	stylesConverter.on( 'normalize:padding-top', ( evt, data ) => ( data.path = 'padding.top' ) );
-	stylesConverter.on( 'normalize:padding-right', ( evt, data ) => ( data.path = 'padding.right' ) );
-	stylesConverter.on( 'normalize:padding-bottom', ( evt, data ) => ( data.path = 'padding.bottom' ) );
-	stylesConverter.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'padding.left' ) );
+export function addPaddingStylesProcessor( stylesProcessor ) {
+	stylesProcessor.on( 'normalize:padding', getPositionShorthandNormalizer( 'padding' ) );
+	stylesProcessor.on( 'normalize:padding-top', ( evt, data ) => ( data.path = 'padding.top' ) );
+	stylesProcessor.on( 'normalize:padding-right', ( evt, data ) => ( data.path = 'padding.right' ) );
+	stylesProcessor.on( 'normalize:padding-bottom', ( evt, data ) => ( data.path = 'padding.bottom' ) );
+	stylesProcessor.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'padding.left' ) );
 
-	stylesConverter.on( 'reduce:padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+	stylesProcessor.on( 'reduce:padding', getTopRightBottomLeftValueReducer( 'padding' ) );
 }

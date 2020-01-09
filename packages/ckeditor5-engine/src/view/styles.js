@@ -20,16 +20,16 @@ export default class Styles {
 	/**
 	 * Creates Styles instance.
 	 */
-	constructor( processor ) {
+	constructor( styleProcessor ) {
 		/**
 		 * @private
 		 */
 		this._styles = {};
 
-		// This hides the converter from the watchdog.
-		Object.defineProperty( this, 'converter', {
+		// This hides the styleProcessor from the watchdog.
+		Object.defineProperty( this, 'styleProcessor', {
 			get() {
-				return processor || Styles.processor;
+				return styleProcessor || Styles.processor;
 			},
 			enumerable: false
 		} );
@@ -69,7 +69,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			this.converter.toNormalizedForm( key, value, this._styles );
+			this.styleProcessor.toNormalizedForm( key, value, this._styles );
 		}
 	}
 
@@ -82,7 +82,7 @@ export default class Styles {
 	 * @returns {Boolean}
 	 */
 	hasProperty( propertyName ) {
-		const normalized = this.converter.getNormalized( propertyName, this._styles );
+		const normalized = this.styleProcessor.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
@@ -90,7 +90,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = this.converter.getReducedForm( propertyName, normalized );
+			const styles = this.styleProcessor.getReducedForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -128,7 +128,7 @@ export default class Styles {
 				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			this.converter.toNormalizedForm( nameOrObject, value, this._styles );
+			this.styleProcessor.toNormalizedForm( nameOrObject, value, this._styles );
 		}
 	}
 
@@ -161,7 +161,7 @@ export default class Styles {
 	 * @returns {Object|undefined}
 	 */
 	getNormalized( name ) {
-		return this.converter.getNormalized( name, this._styles );
+		return this.styleProcessor.getNormalized( name, this._styles );
 	}
 
 	/**
@@ -187,7 +187,7 @@ export default class Styles {
 	 * @returns {String|undefined}
 	 */
 	getInlineProperty( propertyName ) {
-		const normalized = this.converter.getNormalized( propertyName, this._styles );
+		const normalized = this.styleProcessor.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
@@ -195,7 +195,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = this.converter.getReducedForm( propertyName, normalized );
+			const styles = this.styleProcessor.getReducedForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -238,9 +238,9 @@ export default class Styles {
 		const keys = Object.keys( this._styles ).sort();
 
 		for ( const key of keys ) {
-			const normalized = this.converter.getNormalized( key, this._styles );
+			const normalized = this.styleProcessor.getNormalized( key, this._styles );
 
-			parsed.push( ...this.converter.getReducedForm( key, normalized ) );
+			parsed.push( ...this.styleProcessor.getReducedForm( key, normalized ) );
 		}
 
 		return parsed;
@@ -472,7 +472,7 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
  *
  * Normalizers produces coherent object representation for both shorthand and longhand forms:
  *
- *		stylesConverter.on( 'normalize:border-color', ( evt, data ) => {
+ *		stylesProcessor.on( 'normalize:border-color', ( evt, data ) => {
  *			data.path = 'border.color';
  *			data.value = {
  *				top: '#f00',
