@@ -12,7 +12,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import { addBorderStylesProcessor } from './styles/borderstyles';
-import MarginStyles from './styles/marginstyles';
+import { addMarginStylesProcessor } from './styles/marginstyles';
 import PaddingStyles from './styles/paddingstyles';
 import BackgroundStyles from './styles/backgroundstyles';
 
@@ -323,7 +323,7 @@ export class StylesProcessor {
 mix( StylesProcessor, EmitterMixin );
 
 addBorderStylesProcessor( Styles.processor );
-MarginStyles.attach( Styles.processor );
+addMarginStylesProcessor( Styles.processor );
 PaddingStyles.attach( Styles.processor );
 BackgroundStyles.attach( Styles.processor );
 

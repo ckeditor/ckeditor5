@@ -4,14 +4,14 @@
  */
 
 import Styles, { StylesProcessor } from '../../../src/view/styles';
-import MarginStyles from '../../../src/view/styles/marginstyles';
+import { addMarginStylesProcessor } from '../../../src/view/styles/marginstyles';
 
 describe( 'Margin styles normalizer', () => {
 	let styles;
 
 	beforeEach( () => {
 		const converter = new StylesProcessor();
-		MarginStyles.attach( converter );
+		addMarginStylesProcessor( converter );
 		styles = new Styles( converter );
 	} );
 

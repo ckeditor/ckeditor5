@@ -9,15 +9,14 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
  * @module engine/view/styles
  */
 
-export default class MarginStyles {
-	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:margin', getPositionShorthandNormalizer( 'margin' ) );
+export function addMarginStylesProcessor( stylesConverter ) {
+	stylesConverter.on( 'normalize:margin', getPositionShorthandNormalizer( 'margin' ) );
 
-		stylesConverter.on( 'normalize:margin-top', ( evt, data ) => ( data.path = 'margin.top' ) );
-		stylesConverter.on( 'normalize:margin-right', ( evt, data ) => ( data.path = 'margin.right' ) );
-		stylesConverter.on( 'normalize:margin-bottom', ( evt, data ) => ( data.path = 'margin.bottom' ) );
-		stylesConverter.on( 'normalize:margin-left', ( evt, data ) => ( data.path = 'margin.left' ) );
+	stylesConverter.on( 'normalize:margin-top', ( evt, data ) => ( data.path = 'margin.top' ) );
+	stylesConverter.on( 'normalize:margin-right', ( evt, data ) => ( data.path = 'margin.right' ) );
+	stylesConverter.on( 'normalize:margin-bottom', ( evt, data ) => ( data.path = 'margin.bottom' ) );
+	stylesConverter.on( 'normalize:margin-left', ( evt, data ) => ( data.path = 'margin.left' ) );
 
-		stylesConverter.on( 'reduce:margin', getTopRightBottomLeftValueReducer( 'margin' ) );
-	}
+	stylesConverter.on( 'reduce:margin', getTopRightBottomLeftValueReducer( 'margin' ) );
 }
+
