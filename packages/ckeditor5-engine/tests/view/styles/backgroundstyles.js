@@ -4,14 +4,14 @@
  */
 
 import Styles, { StylesProcessor } from '../../../src/view/styles';
-import BackgroundStyles from '../../../src/view/styles/backgroundstyles';
+import { addBackgroundStylesProcessor } from '../../../src/view/styles/backgroundstyles';
 
 describe( 'Background styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const converter = new StylesProcessor();
-		BackgroundStyles.attach( converter );
+		addBackgroundStylesProcessor( converter );
 		styles = new Styles( converter );
 	} );
 

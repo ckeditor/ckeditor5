@@ -9,18 +9,16 @@ import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
  * @module engine/view/styles
  */
 
-export default class BackgroundStyles {
-	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:background', normalizeBackground );
-		stylesConverter.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
-		stylesConverter.on( 'reduce:background', ( evt, data ) => {
-			const ret = [];
+export function addBackgroundStylesProcessor( stylesConverter ) {
+	stylesConverter.on( 'normalize:background', normalizeBackground );
+	stylesConverter.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
+	stylesConverter.on( 'reduce:background', ( evt, data ) => {
+		const ret = [];
 
-			ret.push( [ 'background-color', data.value.color ] );
+		ret.push( [ 'background-color', data.value.color ] );
 
-			data.reduced = ret;
-		} );
-	}
+		data.reduced = ret;
+	} );
 }
 
 function normalizeBackground( evt, data ) {
