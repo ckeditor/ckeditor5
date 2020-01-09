@@ -4,14 +4,14 @@
  */
 
 import Styles, { StylesProcessor } from '../../../src/view/styles';
-import BorderStyles from '../../../src/view/styles/borderstyles';
+import { addBorderStylesProcessor } from '../../../src/view/styles/borderstyles';
 
 describe( 'Border styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const converter = new StylesProcessor();
-		BorderStyles.attach( converter );
+		addBorderStylesProcessor( converter );
 		styles = new Styles( converter );
 	} );
 

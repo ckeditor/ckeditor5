@@ -6,69 +6,68 @@
 import { getShorthandValues, getTopRightBottomLeftValueReducer, getTopRightBottomLeftValues, isLength, isLineStyle } from './utils';
 
 /**
- * @module engine/view/styles
+ * @module engine/view/styles/borderstyle
  */
-export default class BorderStyles {
-	static attach( stylesConverter ) {
-		stylesConverter.on( 'normalize:border', borderNormalizer );
 
-		// Border-position shorthands.
-		stylesConverter.on( 'normalize:border-top', getBorderPositionNormalizer( 'top' ) );
-		stylesConverter.on( 'normalize:border-right', getBorderPositionNormalizer( 'right' ) );
-		stylesConverter.on( 'normalize:border-bottom', getBorderPositionNormalizer( 'bottom' ) );
-		stylesConverter.on( 'normalize:border-left', getBorderPositionNormalizer( 'left' ) );
+export function addBorderStylesProcessor( stylesConverter ) {
+	stylesConverter.on( 'normalize:border', borderNormalizer );
 
-		// Border-property shorthands.
-		stylesConverter.on( 'normalize:border-color', getBorderPropertyNormalizer( 'color' ) );
-		stylesConverter.on( 'normalize:border-width', getBorderPropertyNormalizer( 'width' ) );
-		stylesConverter.on( 'normalize:border-style', getBorderPropertyNormalizer( 'style' ) );
+	// Border-position shorthands.
+	stylesConverter.on( 'normalize:border-top', getBorderPositionNormalizer( 'top' ) );
+	stylesConverter.on( 'normalize:border-right', getBorderPositionNormalizer( 'right' ) );
+	stylesConverter.on( 'normalize:border-bottom', getBorderPositionNormalizer( 'bottom' ) );
+	stylesConverter.on( 'normalize:border-left', getBorderPositionNormalizer( 'left' ) );
 
-		// Border longhands.
-		stylesConverter.on( 'normalize:border-top-color', getBorderPropertyPositionNormalizer( 'color', 'top' ) );
-		stylesConverter.on( 'normalize:border-top-style', getBorderPropertyPositionNormalizer( 'style', 'top' ) );
-		stylesConverter.on( 'normalize:border-top-width', getBorderPropertyPositionNormalizer( 'width', 'top' ) );
+	// Border-property shorthands.
+	stylesConverter.on( 'normalize:border-color', getBorderPropertyNormalizer( 'color' ) );
+	stylesConverter.on( 'normalize:border-width', getBorderPropertyNormalizer( 'width' ) );
+	stylesConverter.on( 'normalize:border-style', getBorderPropertyNormalizer( 'style' ) );
 
-		stylesConverter.on( 'normalize:border-right-color', getBorderPropertyPositionNormalizer( 'color', 'right' ) );
-		stylesConverter.on( 'normalize:border-right-style', getBorderPropertyPositionNormalizer( 'style', 'right' ) );
-		stylesConverter.on( 'normalize:border-right-width', getBorderPropertyPositionNormalizer( 'width', 'right' ) );
+	// Border longhands.
+	stylesConverter.on( 'normalize:border-top-color', getBorderPropertyPositionNormalizer( 'color', 'top' ) );
+	stylesConverter.on( 'normalize:border-top-style', getBorderPropertyPositionNormalizer( 'style', 'top' ) );
+	stylesConverter.on( 'normalize:border-top-width', getBorderPropertyPositionNormalizer( 'width', 'top' ) );
 
-		stylesConverter.on( 'normalize:border-bottom-color', getBorderPropertyPositionNormalizer( 'color', 'bottom' ) );
-		stylesConverter.on( 'normalize:border-bottom-style', getBorderPropertyPositionNormalizer( 'style', 'bottom' ) );
-		stylesConverter.on( 'normalize:border-bottom-width', getBorderPropertyPositionNormalizer( 'width', 'bottom' ) );
+	stylesConverter.on( 'normalize:border-right-color', getBorderPropertyPositionNormalizer( 'color', 'right' ) );
+	stylesConverter.on( 'normalize:border-right-style', getBorderPropertyPositionNormalizer( 'style', 'right' ) );
+	stylesConverter.on( 'normalize:border-right-width', getBorderPropertyPositionNormalizer( 'width', 'right' ) );
 
-		stylesConverter.on( 'normalize:border-left-color', getBorderPropertyPositionNormalizer( 'color', 'left' ) );
-		stylesConverter.on( 'normalize:border-left-style', getBorderPropertyPositionNormalizer( 'style', 'left' ) );
-		stylesConverter.on( 'normalize:border-left-width', getBorderPropertyPositionNormalizer( 'width', 'left' ) );
+	stylesConverter.on( 'normalize:border-bottom-color', getBorderPropertyPositionNormalizer( 'color', 'bottom' ) );
+	stylesConverter.on( 'normalize:border-bottom-style', getBorderPropertyPositionNormalizer( 'style', 'bottom' ) );
+	stylesConverter.on( 'normalize:border-bottom-width', getBorderPropertyPositionNormalizer( 'width', 'bottom' ) );
 
-		stylesConverter.on( 'extract:border-top', getBorderPositionExtractor( 'top' ) );
-		stylesConverter.on( 'extract:border-right', getBorderPositionExtractor( 'right' ) );
-		stylesConverter.on( 'extract:border-bottom', getBorderPositionExtractor( 'bottom' ) );
-		stylesConverter.on( 'extract:border-left', getBorderPositionExtractor( 'left' ) );
+	stylesConverter.on( 'normalize:border-left-color', getBorderPropertyPositionNormalizer( 'color', 'left' ) );
+	stylesConverter.on( 'normalize:border-left-style', getBorderPropertyPositionNormalizer( 'style', 'left' ) );
+	stylesConverter.on( 'normalize:border-left-width', getBorderPropertyPositionNormalizer( 'width', 'left' ) );
 
-		stylesConverter.on( 'extract:border-top-color', ( evt, data ) => ( data.path = 'border.color.top' ) );
-		stylesConverter.on( 'extract:border-right-color', ( evt, data ) => ( data.path = 'border.color.right' ) );
-		stylesConverter.on( 'extract:border-bottom-color', ( evt, data ) => ( data.path = 'border.color.bottom' ) );
-		stylesConverter.on( 'extract:border-left-color', ( evt, data ) => ( data.path = 'border.color.left' ) );
+	stylesConverter.on( 'extract:border-top', getBorderPositionExtractor( 'top' ) );
+	stylesConverter.on( 'extract:border-right', getBorderPositionExtractor( 'right' ) );
+	stylesConverter.on( 'extract:border-bottom', getBorderPositionExtractor( 'bottom' ) );
+	stylesConverter.on( 'extract:border-left', getBorderPositionExtractor( 'left' ) );
 
-		stylesConverter.on( 'extract:border-top-width', ( evt, data ) => ( data.path = 'border.width.top' ) );
-		stylesConverter.on( 'extract:border-right-width', ( evt, data ) => ( data.path = 'border.width.right' ) );
-		stylesConverter.on( 'extract:border-bottom-width', ( evt, data ) => ( data.path = 'border.width.bottom' ) );
-		stylesConverter.on( 'extract:border-left-width', ( evt, data ) => ( data.path = 'border.width.left' ) );
+	stylesConverter.on( 'extract:border-top-color', ( evt, data ) => ( data.path = 'border.color.top' ) );
+	stylesConverter.on( 'extract:border-right-color', ( evt, data ) => ( data.path = 'border.color.right' ) );
+	stylesConverter.on( 'extract:border-bottom-color', ( evt, data ) => ( data.path = 'border.color.bottom' ) );
+	stylesConverter.on( 'extract:border-left-color', ( evt, data ) => ( data.path = 'border.color.left' ) );
 
-		stylesConverter.on( 'extract:border-top-style', ( evt, data ) => ( data.path = 'border.style.top' ) );
-		stylesConverter.on( 'extract:border-right-style', ( evt, data ) => ( data.path = 'border.style.right' ) );
-		stylesConverter.on( 'extract:border-bottom-style', ( evt, data ) => ( data.path = 'border.style.bottom' ) );
-		stylesConverter.on( 'extract:border-left-style', ( evt, data ) => ( data.path = 'border.style.left' ) );
+	stylesConverter.on( 'extract:border-top-width', ( evt, data ) => ( data.path = 'border.width.top' ) );
+	stylesConverter.on( 'extract:border-right-width', ( evt, data ) => ( data.path = 'border.width.right' ) );
+	stylesConverter.on( 'extract:border-bottom-width', ( evt, data ) => ( data.path = 'border.width.bottom' ) );
+	stylesConverter.on( 'extract:border-left-width', ( evt, data ) => ( data.path = 'border.width.left' ) );
 
-		stylesConverter.on( 'reduce:border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
-		stylesConverter.on( 'reduce:border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
-		stylesConverter.on( 'reduce:border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
-		stylesConverter.on( 'reduce:border-top', getBorderPositionReducer( 'top' ) );
-		stylesConverter.on( 'reduce:border-right', getBorderPositionReducer( 'right' ) );
-		stylesConverter.on( 'reduce:border-bottom', getBorderPositionReducer( 'bottom' ) );
-		stylesConverter.on( 'reduce:border-left', getBorderPositionReducer( 'left' ) );
-		stylesConverter.on( 'reduce:border', borderReducer );
-	}
+	stylesConverter.on( 'extract:border-top-style', ( evt, data ) => ( data.path = 'border.style.top' ) );
+	stylesConverter.on( 'extract:border-right-style', ( evt, data ) => ( data.path = 'border.style.right' ) );
+	stylesConverter.on( 'extract:border-bottom-style', ( evt, data ) => ( data.path = 'border.style.bottom' ) );
+	stylesConverter.on( 'extract:border-left-style', ( evt, data ) => ( data.path = 'border.style.left' ) );
+
+	stylesConverter.on( 'reduce:border-color', getTopRightBottomLeftValueReducer( 'border-color' ) );
+	stylesConverter.on( 'reduce:border-style', getTopRightBottomLeftValueReducer( 'border-style' ) );
+	stylesConverter.on( 'reduce:border-width', getTopRightBottomLeftValueReducer( 'border-width' ) );
+	stylesConverter.on( 'reduce:border-top', getBorderPositionReducer( 'top' ) );
+	stylesConverter.on( 'reduce:border-right', getBorderPositionReducer( 'right' ) );
+	stylesConverter.on( 'reduce:border-bottom', getBorderPositionReducer( 'bottom' ) );
+	stylesConverter.on( 'reduce:border-left', getBorderPositionReducer( 'left' ) );
+	stylesConverter.on( 'reduce:border', borderReducer );
 }
 
 function borderNormalizer( evt, data ) {
