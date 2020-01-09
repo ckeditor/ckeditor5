@@ -13,7 +13,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import { addBorderStylesProcessor } from './styles/borderstyles';
 import { addMarginStylesProcessor } from './styles/marginstyles';
-import PaddingStyles from './styles/paddingstyles';
+import { addPaddingStylesProcessor } from './styles/paddingstyles';
 import BackgroundStyles from './styles/backgroundstyles';
 
 /**
@@ -324,7 +324,7 @@ mix( StylesProcessor, EmitterMixin );
 
 addBorderStylesProcessor( Styles.processor );
 addMarginStylesProcessor( Styles.processor );
-PaddingStyles.attach( Styles.processor );
+addPaddingStylesProcessor( Styles.processor );
 BackgroundStyles.attach( Styles.processor );
 
 // Parses inline styles and puts property - value pairs into styles map.

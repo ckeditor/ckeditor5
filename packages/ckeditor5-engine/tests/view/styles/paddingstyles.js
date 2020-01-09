@@ -4,14 +4,14 @@
  */
 
 import Styles, { StylesProcessor } from '../../../src/view/styles';
-import PaddingStyles from '../../../src/view/styles/paddingstyles';
+import { addPaddingStylesProcessor } from '../../../src/view/styles/paddingstyles';
 
 describe( 'Padding styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const converter = new StylesProcessor();
-		PaddingStyles.attach( converter );
+		addPaddingStylesProcessor( converter );
 		styles = new Styles( converter );
 	} );
 

@@ -5,7 +5,7 @@
 
 import Styles, { StylesProcessor } from '../../src/view/styles';
 import encodedImage from './_utils/encodedimage.txt';
-import PaddingStyles from '../../src/view/styles/paddingstyles';
+import { addPaddingStylesProcessor } from '../../src/view/styles/paddingstyles';
 
 describe( 'Styles', () => {
 	let styles, converter;
@@ -23,7 +23,7 @@ describe( 'Styles', () => {
 			data.value = { top: data.value };
 		} );
 
-		PaddingStyles.attach( converter );
+		addPaddingStylesProcessor( converter );
 		styles = new Styles( converter );
 	} );
 
