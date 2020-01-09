@@ -11,11 +11,6 @@ import { get, isObject, merge, set, unset } from 'lodash-es';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-import { addBorderStylesProcessor } from './styles/borderstyles';
-import { addMarginStylesProcessor } from './styles/marginstyles';
-import { addPaddingStylesProcessor } from './styles/paddingstyles';
-import { addBackgroundStylesProcessor } from './styles/backgroundstyles';
-
 /**
  * Styles class.
  *
@@ -55,6 +50,10 @@ export default class Styles {
 		}
 
 		return this._processor;
+	}
+
+	static setProcessor( processor ) {
+		this._processor = processor;
 	}
 
 	/**
@@ -321,11 +320,6 @@ export class StylesProcessor {
 }
 
 mix( StylesProcessor, EmitterMixin );
-
-addBorderStylesProcessor( Styles.processor );
-addMarginStylesProcessor( Styles.processor );
-addPaddingStylesProcessor( Styles.processor );
-addBackgroundStylesProcessor( Styles.processor );
 
 // Parses inline styles and puts property - value pairs into styles map.
 //
