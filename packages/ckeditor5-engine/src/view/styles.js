@@ -90,14 +90,6 @@ export class StylesProcessor {
 
 mix( StylesProcessor, EmitterMixin );
 
-// TODO: It's a singleton because it needs to be the same object for all view/Elements instances.
-const stylesProcessor = new StylesProcessor();
-
-BorderStyles.attach( stylesProcessor );
-MarginStyles.attach( stylesProcessor );
-PaddingStyles.attach( stylesProcessor );
-BackgroundStyles.attach( stylesProcessor );
-
 /**
  * Styles class.
  *
@@ -107,7 +99,7 @@ export default class Styles {
 	/**
 	 * Creates Styles instance.
 	 */
-	constructor( processor = stylesProcessor ) {
+	constructor( processor ) {
 		/**
 		 * @private
 		 */
@@ -116,7 +108,7 @@ export default class Styles {
 		// This hides the converter from the watchdog.
 		Object.defineProperty( this, 'converter', {
 			get() {
-				return processor;
+				return processor || Styles.processor;
 			},
 			enumerable: false
 		} );
@@ -129,6 +121,14 @@ export default class Styles {
 	 */
 	get size() {
 		return this.getStyleNames().length;
+	}
+
+	static get processor() {
+		if ( !this._processor ) {
+			this._processor = new StylesProcessor();
+		}
+
+		return this._processor;
 	}
 
 	/**
@@ -321,6 +321,11 @@ export default class Styles {
 		return parsed;
 	}
 }
+
+BorderStyles.attach( Styles.processor );
+MarginStyles.attach( Styles.processor );
+PaddingStyles.attach( Styles.processor );
+BackgroundStyles.attach( Styles.processor );
 
 // Parses inline styles and puts property - value pairs into styles map.
 //
