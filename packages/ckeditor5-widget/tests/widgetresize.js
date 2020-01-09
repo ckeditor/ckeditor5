@@ -117,7 +117,7 @@ describe( 'WidgetResize', () => {
 
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
-			const initialPointerPosition = getElementCornerCoordinates( domParts.widget, usedResizer );
+			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
 			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
 
 			finalPointerPosition.pageX += 20;
@@ -155,11 +155,14 @@ describe( 'WidgetResize', () => {
 
 			localElement.remove();
 
-			return localEditor.destroy();
+			if ( localEditor ) {
+				return localEditor.destroy();
+			}
 		} );
 
 		it( 'are detached when plugin is destroyed', async () => {
 			await localEditor.destroy();
+			localEditor = null;
 
 			// Trigger mouse event.
 			fireMouseEvent( document.body, 'mousedown', {} );
@@ -237,7 +240,7 @@ describe( 'WidgetResize', () => {
 		};
 	}
 
-	function getElementCornerCoordinates( domWrapper, cornerPosition ) {
+	function getElementCenterPoint( domWrapper, cornerPosition ) {
 		const wrapperRect = new Rect( domWrapper );
 		const initialPointerPosition = {
 			pageX: wrapperRect.left,
