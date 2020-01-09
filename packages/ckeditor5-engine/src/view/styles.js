@@ -91,7 +91,7 @@ export class StylesProcessor {
 mix( StylesProcessor, EmitterMixin );
 
 // TODO: It's a singleton because it needs to be the same object for all view/Elements instances.
-export const stylesProcessor = new StylesProcessor();
+const stylesProcessor = new StylesProcessor();
 
 BorderStyles.attach( stylesProcessor );
 MarginStyles.attach( stylesProcessor );
