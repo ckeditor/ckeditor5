@@ -115,9 +115,10 @@ export default class Styles {
 
 		// This hides the converter from the watchdog.
 		Object.defineProperty( this, 'converter', {
-			value: processor,
-			enumerable: false,
-			writable: true
+			get() {
+				return processor;
+			},
+			enumerable: false
 		} );
 	}
 
