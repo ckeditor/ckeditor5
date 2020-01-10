@@ -85,6 +85,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
 
+		// Handle custom keydown behaviour.
+		this.listenTo( editingView.document, 'keydown', ( ...args ) => onKeyDown( editor, ...args ), { priority: 'high' } );
+
 		editingView.change( writer => {
 			for ( const root of editingView.document.roots ) {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
@@ -306,6 +309,37 @@ function getCommandExecuter( editor, commandName ) {
 			cancel();
 		}
 	};
+}
+
+// Helper for handling custom keydown behaviour.
+export function onKeyDown( editor, eventInfo, evtData ) {
+	const model = editor.model;
+	const selection = model.document.selection;
+	const ctrlA = evtData.ctrlKey && evtData.keyCode === 65;
+
+	// Ctrl+A handler.
+	// If collapsed selection is inside a restricted editing exception, select text only within the exception.
+	//
+	// Note: Second Ctrl+A will select the entire text in the editor.
+	if ( ctrlA ) {
+		const marker = getMarkerAtPosition( editor, selection.focus );
+
+		if ( marker ) {
+			const { start: { offset: selecitonStart }, end: { offset: selecitonEnd } } = selection.getFirstRange();
+			const { start: { offset: markerStart }, end: { offset: markerEnd } } = marker.getRange();
+
+			const selectionIsInsideException = selecitonStart > markerStart && selecitonEnd < markerEnd;
+
+			if ( selectionIsInsideException || selection.isCollapsed ) {
+				evtData.preventDefault();
+				evtData.stopPropagation();
+
+				model.change( writer => {
+					writer.setSelection( marker.getRange() );
+				} );
+			}
+		}
+	}
 }
 
 // Additional filtering rule for enabling "delete" and "forwardDelete" commands if selection is on range boundaries:
