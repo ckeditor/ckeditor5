@@ -10,14 +10,16 @@ import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
  */
 
 export function addBackgroundStylesProcessor( stylesProcessor ) {
-	stylesProcessor.on( 'normalize:background', normalizeBackground );
-	stylesProcessor.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
-	stylesProcessor.on( 'reduce:background', ( evt, data ) => {
-		const ret = [];
+	stylesProcessor.registerListeners( 'background', stylesProcessor => {
+		stylesProcessor.on( 'normalize:background', normalizeBackground );
+		stylesProcessor.on( 'normalize:background-color', ( evt, data ) => ( data.path = 'background.color' ) );
+		stylesProcessor.on( 'reduce:background', ( evt, data ) => {
+			const ret = [];
 
-		ret.push( [ 'background-color', data.value.color ] );
+			ret.push( [ 'background-color', data.value.color ] );
 
-		data.reduced = ret;
+			data.reduced = ret;
+		} );
 	} );
 }
 

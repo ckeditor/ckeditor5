@@ -10,11 +10,13 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
  */
 
 export function addPaddingStylesProcessor( stylesProcessor ) {
-	stylesProcessor.on( 'normalize:padding', getPositionShorthandNormalizer( 'padding' ) );
-	stylesProcessor.on( 'normalize:padding-top', ( evt, data ) => ( data.path = 'padding.top' ) );
-	stylesProcessor.on( 'normalize:padding-right', ( evt, data ) => ( data.path = 'padding.right' ) );
-	stylesProcessor.on( 'normalize:padding-bottom', ( evt, data ) => ( data.path = 'padding.bottom' ) );
-	stylesProcessor.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'padding.left' ) );
+	stylesProcessor.registerListeners( 'padding', stylesProcessor => {
+		stylesProcessor.on( 'normalize:padding', getPositionShorthandNormalizer( 'padding' ) );
+		stylesProcessor.on( 'normalize:padding-top', ( evt, data ) => ( data.path = 'padding.top' ) );
+		stylesProcessor.on( 'normalize:padding-right', ( evt, data ) => ( data.path = 'padding.right' ) );
+		stylesProcessor.on( 'normalize:padding-bottom', ( evt, data ) => ( data.path = 'padding.bottom' ) );
+		stylesProcessor.on( 'normalize:padding-left', ( evt, data ) => ( data.path = 'padding.left' ) );
 
-	stylesProcessor.on( 'reduce:padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+		stylesProcessor.on( 'reduce:padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+	} );
 }

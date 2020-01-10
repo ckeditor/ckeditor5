@@ -248,6 +248,10 @@ export default class Styles {
 }
 
 export class StylesProcessor {
+	constructor() {
+		this._groups = new Set();
+	}
+
 	/**
 	 * Returns reduced form of style property form normalized object.
 	 *
@@ -316,6 +320,14 @@ export class StylesProcessor {
 		this.fire( 'normalize:' + propertyName, data );
 
 		appendStyleValue( styles, data.path, data.value );
+	}
+
+	registerListeners( groupName, callback ) {
+		if ( this._groups.has( groupName ) ) {
+			return;
+		}
+
+		callback( this );
 	}
 }
 

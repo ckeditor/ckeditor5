@@ -10,9 +10,9 @@ describe( 'Background styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
-		const converter = new StylesProcessor();
-		addBackgroundStylesProcessor( converter );
-		styles = new Styles( converter );
+		const stylesProcessor = new StylesProcessor();
+		addBackgroundStylesProcessor( stylesProcessor );
+		styles = new Styles( stylesProcessor );
 	} );
 
 	it( 'should normalize background', () => {
