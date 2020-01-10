@@ -318,7 +318,7 @@ export function onKeyDown( editor, eventInfo, evtData ) {
 	const ctrlA = evtData.ctrlKey && evtData.keyCode === 65;
 
 	// Ctrl+A handler.
-	// If collapsed selection is inside a restricted editing exception, select text only within the exception.
+	// If selection range is inside a restricted editing exception, select text only within the exception.
 	//
 	// Note: Second Ctrl+A will select the entire text in the editor.
 	if ( ctrlA ) {
