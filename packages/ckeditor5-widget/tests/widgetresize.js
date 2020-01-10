@@ -171,14 +171,91 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	function createEditor( element ) {
+	describe.only( 'Integration (percents)', () => {
+		let localEditor, localElement, widget, widgetModel;
+
+		beforeEach( async () => {
+			localElement = createEditorElement();
+			localEditor = await createEditor( localElement );
+
+			setModelData( localEditor.model, '[<widget></widget>]' );
+
+			widget = localEditor.editing.view.document.getRoot().getChild( 0 );
+			widgetModel = localEditor.model.document.getRoot().getChild( 0 );
+
+			editor.plugins.get( WidgetResize )
+				.attachTo( {
+					unit: 'px',
+
+					modelElement: widgetModel,
+					viewElement: widget,
+					editor,
+
+					getHandleHost( domWidgetElement ) {
+						return domWidgetElement;
+					},
+
+					getResizeHost( domWidgetElement ) {
+						return domWidgetElement;
+					},
+
+					isCentered: () => false,
+
+					onCommit: sinon.stub()
+				} );
+		} );
+
+		afterEach( () => {
+			localElement.remove();
+
+			if ( localEditor ) {
+				return localEditor.destroy();
+			}
+		} );
+
+		it( 'properly sets the state for subsequent resizes', async () => {
+			// focusEditor( editor );
+
+			// resizer.redraw(); // @todo this shouldn't be necessary.
+
+			// const usedResizer = 'top-right';
+			// const domParts = getWidgetDomParts( widget, usedResizer, localEditor.editing.view );
+			// const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
+			// const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+
+			// finalPointerPosition.pageX += 50;
+
+			// mouseMock.down( editor, domParts.resizeHandle );
+
+			// await wait( 40 );
+
+			// mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			// mouseMock.up();
+
+			// await wait( 40 );
+
+			// mouseMock.down( editor, domParts.resizeHandle );
+
+			// await wait( 40 );
+
+			// finalPointerPosition.pageX += 50;
+			// mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			// mouseMock.up();
+
+			// expect( resizerOptions.onCommit.callCount ).to.be.equal( 1 );
+			// sinon.assert.calledWithExactly( resizerOptions.onCommit, '200px' );
+			expect( true ).to.be.true;
+		} );
+	} );
+
+	function createEditor( element, config ) {
 		return new Promise( ( resolve, reject ) => {
 			ClassicEditor
-				.create( element, {
+				.create( element, Object.assign( {
 					plugins: [
 						ArticlePluginSet, WidgetResize, simpleWidgetPlugin
 					]
-				} )
+				}, config ) )
 				.then( newEditor => {
 					resolve( newEditor );
 				} )
@@ -230,8 +307,8 @@ describe( 'WidgetResize', () => {
 		target.dispatchEvent( event );
 	}
 
-	function getWidgetDomParts( widget, resizerPosition ) {
-		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 0 ) );
+	function getWidgetDomParts( widget, resizerPosition, localView ) {
+		const resizeWrapper = ( localView || view ).domConverter.mapViewToDom( widget.getChild( 0 ) );
 
 		return {
 			resizeWrapper,
