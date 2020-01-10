@@ -29,7 +29,7 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe.skip( 'Renderer', () => {
+describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
 
 	testUtils.createSinonSandbox();

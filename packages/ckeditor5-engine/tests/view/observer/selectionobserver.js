@@ -14,7 +14,7 @@ import FocusObserver from '../../../src/view/observer/focusobserver';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
-describe.skip( 'SelectionObserver', () => {
+describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
 
 	beforeEach( done => {
