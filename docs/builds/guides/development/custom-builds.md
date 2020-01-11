@@ -163,6 +163,16 @@ yarn run build
 
 You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTP, not as a local file). Make sure to **clear the cache**.
 
+#### Starting the local development server
+
+To make development easier, you may optionally start a local development server by executing the following command:
+
+```bash
+yarn run start
+```
+
+This will start `webpack-dev-server` with source watching and live reloading (available at `http://localhost:8080/` by default).
+
 ## Updating the build
 
 You may decide to update your build at any time. Since it is a fork of the official build, you can simply merge the changes that happened meanwhile in that build, using Git commands:
