@@ -9,10 +9,14 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastTableAttribute, upcastAttribute, upcastBorderStyles } from './tableproperties/utils';
-import { addBorderStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/borderstyles';
 import Styles from '@ckeditor/ckeditor5-engine/src/view/styles';
+import { addBorderStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/borderstyles';
+import { addPaddingStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/paddingstyles';
+import { addBackgroundStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/backgroundstyles';
 
 addBorderStylesProcessor( Styles.processor );
+addPaddingStylesProcessor( Styles.processor );
+addBackgroundStylesProcessor( Styles.processor );
 
 /**
  * The table properties feature.
