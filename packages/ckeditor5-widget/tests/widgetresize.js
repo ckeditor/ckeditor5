@@ -157,7 +157,7 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe.only( 'mouse listeners (stubbed)', () => {
+	describe( 'mouse listeners (stubbed)', () => {
 		it( 'are detached when plugin is destroyed', async () => {
 			await editor.destroy();
 			const plugin = editor.plugins.get( WidgetResize );
@@ -171,7 +171,58 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe.only( 'Integration (pixels)', () => {
+	describe( '_proposeNewSize()', () => {
+		let resizer, resizerOptions;
+
+		beforeEach( async () => {
+			resizerOptions = {
+				unit: 'px',
+
+				modelElement: widgetModel,
+				viewElement: widget,
+				editor,
+
+				getHandleHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				getResizeHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				onCommit: sinon.stub()
+			};
+
+			resizer = editor.plugins.get( WidgetResize )
+				.attachTo( resizerOptions );
+		} );
+
+		it( 'assumes a centered image if no isCentered option is provided', async () => {
+			focusEditor( editor );
+
+			resizer.redraw(); // @todo this shouldn't be necessary.
+
+			const usedResizer = 'top-right';
+			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
+			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
+			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+
+			finalPointerPosition.pageX += 20;
+
+			mouseMock.down( editor, domParts.resizeHandle );
+
+			await wait( 40 );
+
+			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			mouseMock.up();
+
+			await wait( 40 );
+
+			// THe image should be enlarged by a twice of the mouse movement distance.
+			sinon.assert.calledWithExactly( resizerOptions.onCommit, '140px' );
+		} );
+	} );
+	describe( 'Integration (pixels)', () => {
 		let resizer, resizerOptions;
 
 		beforeEach( async () => {
