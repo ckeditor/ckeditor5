@@ -26,8 +26,10 @@ export default class Styles {
 		 */
 		this._styles = {};
 
-		// This hides the styleProcessor from the watchdog.
-		Object.defineProperty( this, 'styleProcessor', {
+		// Hide _styleProcessor from the watchdog by making this property non-enumarable. Watchdog checks errors for their editor origin
+		// by checking if two objects are connected through properties. Using singleton is against this check as it would detect
+		// that two editors are connected through single style processor instance.
+		Object.defineProperty( this, '_styleProcessor', {
 			get() {
 				return styleProcessor || Styles.processor;
 			},
@@ -69,7 +71,7 @@ export default class Styles {
 		for ( const key of map.keys() ) {
 			const value = map.get( key );
 
-			this.styleProcessor.toNormalizedForm( key, value, this._styles );
+			this._styleProcessor.toNormalizedForm( key, value, this._styles );
 		}
 	}
 
@@ -82,7 +84,7 @@ export default class Styles {
 	 * @returns {Boolean}
 	 */
 	hasProperty( propertyName ) {
-		const normalized = this.styleProcessor.getNormalized( propertyName, this._styles );
+		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
@@ -90,7 +92,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = this.styleProcessor.getReducedForm( propertyName, normalized );
+			const styles = this._styleProcessor.getReducedForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -128,7 +130,7 @@ export default class Styles {
 				this.insertProperty( key, nameOrObject[ key ] );
 			}
 		} else {
-			this.styleProcessor.toNormalizedForm( nameOrObject, value, this._styles );
+			this._styleProcessor.toNormalizedForm( nameOrObject, value, this._styles );
 		}
 	}
 
@@ -161,7 +163,7 @@ export default class Styles {
 	 * @returns {Object|undefined}
 	 */
 	getNormalized( name ) {
-		return this.styleProcessor.getNormalized( name, this._styles );
+		return this._styleProcessor.getNormalized( name, this._styles );
 	}
 
 	/**
@@ -190,7 +192,7 @@ export default class Styles {
 	 * @returns {String|undefined}
 	 */
 	getInlineProperty( propertyName ) {
-		const normalized = this.styleProcessor.getNormalized( propertyName, this._styles );
+		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
@@ -198,7 +200,7 @@ export default class Styles {
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = this.styleProcessor.getReducedForm( propertyName, normalized );
+			const styles = this._styleProcessor.getReducedForm( propertyName, normalized );
 
 			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
@@ -241,9 +243,9 @@ export default class Styles {
 		const keys = Object.keys( this._styles );
 
 		for ( const key of keys ) {
-			const normalized = this.styleProcessor.getNormalized( key, this._styles );
+			const normalized = this._styleProcessor.getNormalized( key, this._styles );
 
-			parsed.push( ...this.styleProcessor.getReducedForm( key, normalized ) );
+			parsed.push( ...this._styleProcessor.getReducedForm( key, normalized ) );
 		}
 
 		return parsed;
