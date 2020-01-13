@@ -35,7 +35,10 @@ export default class PageBreakUI extends Plugin {
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( 'pageBreak' ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( 'pageBreak' );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );
