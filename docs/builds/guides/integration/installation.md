@@ -14,6 +14,7 @@ There are several options to download CKEditor 5 builds:
 
 * [CDN](#cdn)
 * [npm](#npm)
+* [Online builder](#online-builder)
 * [Zip download](#zip-download)
 
 For the list of available builds check the {@link builds/guides/overview#available-builds Overview} page.
@@ -43,6 +44,10 @@ npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 
 CKEditor will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
+
+### Online builder
+
+Go to the [Online builder page](https://ckeditor.com/ckeditor-5/online-builder/), go through a few creator steps to pick plugins and toolbar items and visualize the editor. Then download the prepared build with a simple instruction how to run it.
 
 ### Zip download
 
