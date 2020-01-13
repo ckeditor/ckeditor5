@@ -172,78 +172,64 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe.only( 'Integration (percents)', () => {
-		let localEditor, localElement, widget, widgetModel;
+		let resizer, resizerOptions;
 
 		beforeEach( async () => {
-			localElement = createEditorElement();
-			localEditor = await createEditor( localElement );
+			resizerOptions = {
+				unit: 'px',
 
-			setModelData( localEditor.model, '[<widget></widget>]' );
+				modelElement: widgetModel,
+				viewElement: widget,
+				editor,
 
-			widget = localEditor.editing.view.document.getRoot().getChild( 0 );
-			widgetModel = localEditor.model.document.getRoot().getChild( 0 );
+				getHandleHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
 
-			editor.plugins.get( WidgetResize )
-				.attachTo( {
-					unit: 'px',
+				getResizeHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
 
-					modelElement: widgetModel,
-					viewElement: widget,
-					editor,
+				isCentered: () => false,
 
-					getHandleHost( domWidgetElement ) {
-						return domWidgetElement;
-					},
+				onCommit: sinon.stub()
+			};
 
-					getResizeHost( domWidgetElement ) {
-						return domWidgetElement;
-					},
-
-					isCentered: () => false,
-
-					onCommit: sinon.stub()
-				} );
-		} );
-
-		afterEach( () => {
-			localElement.remove();
-
-			if ( localEditor ) {
-				return localEditor.destroy();
-			}
+			resizer = editor.plugins.get( WidgetResize )
+				.attachTo( resizerOptions );
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
-			// focusEditor( editor );
+			focusEditor( editor );
 
-			// resizer.redraw(); // @todo this shouldn't be necessary.
+			resizer.redraw(); // @todo this shouldn't be necessary.
 
-			// const usedResizer = 'top-right';
-			// const domParts = getWidgetDomParts( widget, usedResizer, localEditor.editing.view );
-			// const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
-			// const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+			const usedResizer = 'top-right';
+			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
+			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
+			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
 
-			// finalPointerPosition.pageX += 50;
+			finalPointerPosition.pageX += 50;
 
-			// mouseMock.down( editor, domParts.resizeHandle );
+			mouseMock.down( editor, domParts.resizeHandle );
 
-			// await wait( 40 );
+			await wait( 40 );
 
-			// mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			// mouseMock.up();
+			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			mouseMock.up();
 
-			// await wait( 40 );
+			await wait( 40 );
 
-			// mouseMock.down( editor, domParts.resizeHandle );
+			mouseMock.down( editor, domParts.resizeHandle );
 
-			// await wait( 40 );
+			await wait( 40 );
 
-			// finalPointerPosition.pageX += 50;
-			// mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			// mouseMock.up();
+			finalPointerPosition.pageX += 50;
+			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			mouseMock.up();
 
-			// expect( resizerOptions.onCommit.callCount ).to.be.equal( 1 );
-			// sinon.assert.calledWithExactly( resizerOptions.onCommit, '200px' );
+			expect( resizerOptions.onCommit.callCount ).to.be.equal( 1 );
+			sinon.assert.calledWithExactly( resizerOptions.onCommit, '200px' );
 			expect( true ).to.be.true;
 		} );
 	} );
