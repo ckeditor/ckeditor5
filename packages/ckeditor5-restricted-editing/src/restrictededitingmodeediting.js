@@ -84,9 +84,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.commands.add( 'goToNextRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
-
-		// Handle custom keydown behaviour.
-		this.listenTo( editingView.document, 'keydown', ( ...args ) => onKeyDown( editor, ...args ), { priority: 'high' } );
+		editor.keystrokes.set( 'Ctrl+A', ( ...args ) => onSelectAll( editor, ...args ) );
 
 		editingView.change( writer => {
 			for ( const root of editingView.document.roots ) {
@@ -311,34 +309,31 @@ function getCommandExecuter( editor, commandName ) {
 	};
 }
 
-// Helper for handling custom keydown behaviour.
-export function onKeyDown( editor, eventInfo, evtData ) {
+// Helper for handling Ctrl+A keydown behaviour.
+function onSelectAll( editor, data, cancel ) {
 	const model = editor.model;
-	const selection = model.document.selection;
-	const ctrlA = evtData.ctrlKey && evtData.keyCode === 65;
+	const selection = editor.model.document.selection;
+	const marker = getMarkerAtPosition( editor, selection.focus );
 
-	// Ctrl+A handler.
+	if ( !marker ) {
+		return;
+	}
+
 	// If selection range is inside a restricted editing exception, select text only within the exception.
 	//
-	// Note: Second Ctrl+A will select the entire text in the editor.
-	if ( ctrlA ) {
-		const marker = getMarkerAtPosition( editor, selection.focus );
+	// Note: Second Ctrl+A press is also blocked and it won't select the entire text in the editor.
+	// Just like in the widget.
+	const selectionRange = selection.getFirstRange();
+	const markerRange = marker.getRange();
 
-		if ( marker ) {
-			const { start: { offset: selecitonStart }, end: { offset: selecitonEnd } } = selection.getFirstRange();
-			const { start: { offset: markerStart }, end: { offset: markerEnd } } = marker.getRange();
+	const selectionIsInsideException = markerRange.containsRange( selectionRange, true );
 
-			const selectionIsInsideException = selecitonStart > markerStart && selecitonEnd < markerEnd;
+	if ( selectionIsInsideException || selection.isCollapsed ) {
+		cancel();
 
-			if ( selectionIsInsideException || selection.isCollapsed ) {
-				evtData.preventDefault();
-				evtData.stopPropagation();
-
-				model.change( writer => {
-					writer.setSelection( marker.getRange() );
-				} );
-			}
-		}
+		model.change( writer => {
+			writer.setSelection( marker.getRange() );
+		} );
 	}
 }
 
@@ -353,7 +348,7 @@ function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
 			return false;
 		}
 
-		// Only for collapsed selection - non-collapsed seleciton that extends over a marker is handled elsewhere.
+		// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
 		if ( name == 'forwardDelete' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
 			return false;
 		}
