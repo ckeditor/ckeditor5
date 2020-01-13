@@ -232,7 +232,7 @@ describe( 'Styles', () => {
 		it( 'should output custom style names', () => {
 			styles.setStyle( 'foo: 2;bar: baz;foo-bar-baz:none;' );
 
-			expect( styles.getStyleNames() ).to.deep.equal( [ 'bar', 'foo', 'foo-bar-baz' ] );
+			expect( styles.getStyleNames() ).to.deep.equal( [ 'foo', 'bar', 'foo-bar-baz' ] );
 		} );
 
 		it( 'should output full names for known style names', () => {

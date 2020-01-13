@@ -63,7 +63,10 @@ describe( 'Border styles normalization', () => {
 		styles.setStyle( 'border:1px solid blue;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
-			'border-top:1px solid blue;border-right:1px solid blue;border-bottom:1px solid blue;border-left:1px solid blue;'
+			'border-bottom:1px solid blue;' +
+			'border-left:1px solid blue;' +
+			'border-right:1px solid blue;' +
+			'border-top:1px solid blue;'
 		);
 		expect( styles.getInlineProperty( 'border-color' ) ).to.equal( 'blue' );
 		expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'solid' );
@@ -86,7 +89,10 @@ describe( 'Border styles normalization', () => {
 		styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
-			'border-top:7px dotted #ccc;border-right:1px solid blue;border-bottom:1px solid blue;border-left:2.7em dashed #665511;'
+			'border-bottom:1px solid blue;' +
+			'border-left:2.7em dashed #665511;' +
+			'border-right:1px solid blue;' +
+			'border-top:7px dotted #ccc;'
 		);
 
 		expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
@@ -131,7 +137,10 @@ describe( 'Border styles normalization', () => {
 		styles.insertProperty( 'border-top', '7px dotted #ccc' );
 
 		expect( styles.getInlineStyle() ).to.equal(
-			'border-top:7px dotted #ccc;border-right:1px solid blue;border-bottom:1px solid blue;border-left:2.7em dashed #665511;'
+			'border-bottom:1px solid blue;' +
+			'border-left:2.7em dashed #665511;' +
+			'border-right:1px solid blue;' +
+			'border-top:7px dotted #ccc;'
 		);
 		expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 		expect( styles.getInlineProperty( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
@@ -144,7 +153,10 @@ describe( 'Border styles normalization', () => {
 		styles.removeProperty( 'border-color' );
 
 		expect( styles.getInlineStyle() ).to.equal(
-			'border-top:1px solid;border-right:1px solid;border-bottom:1px solid;border-left:1px solid;'
+			'border-bottom:1px solid;' +
+			'border-left:1px solid;' +
+			'border-right:1px solid;' +
+			'border-top:1px solid;'
 		);
 
 		expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
@@ -160,7 +172,12 @@ describe( 'Border styles normalization', () => {
 	it( 'should output border with only style shorthand (style)', () => {
 		styles.setStyle( 'border:solid;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'border-top:solid;border-right:solid;border-bottom:solid;border-left:solid;' );
+		expect( styles.getInlineStyle() ).to.equal(
+			'border-bottom:solid;' +
+			'border-left:solid;' +
+			'border-right:solid;' +
+			'border-top:solid;'
+		);
 		expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 		expect( styles.getInlineProperty( 'border-color' ) ).to.be.undefined;
 		expect( styles.getInlineProperty( 'border-style' ) ).to.equal( 'solid' );
@@ -174,7 +191,12 @@ describe( 'Border styles normalization', () => {
 	it( 'should output border with only style shorthand (color)', () => {
 		styles.setStyle( 'border:#f00;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'border-top:#f00;border-right:#f00;border-bottom:#f00;border-left:#f00;' );
+		expect( styles.getInlineStyle() ).to.equal(
+			'border-bottom:#f00;' +
+			'border-left:#f00;' +
+			'border-right:#f00;' +
+			'border-top:#f00;'
+		);
 		expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 		expect( styles.getInlineProperty( 'border-color' ) ).to.equal( '#f00' );
 		expect( styles.getInlineProperty( 'border-style' ) ).to.be.undefined;
@@ -188,7 +210,12 @@ describe( 'Border styles normalization', () => {
 	it( 'should output border with only style shorthand (width)', () => {
 		styles.setStyle( 'border:1px;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'border-top:1px;border-right:1px;border-bottom:1px;border-left:1px;' );
+		expect( styles.getInlineStyle() ).to.equal(
+			'border-bottom:1px;' +
+			'border-left:1px;' +
+			'border-right:1px;' +
+			'border-top:1px;'
+		);
 		expect( styles.getInlineProperty( 'border' ) ).to.be.undefined;
 		expect( styles.getInlineProperty( 'border-color' ) ).to.be.undefined;
 		expect( styles.getInlineProperty( 'border-style' ) ).to.be.undefined;
@@ -565,7 +592,10 @@ describe( 'Border styles normalization', () => {
 			);
 
 			expect( styles.getInlineStyle() ).to.equal(
-				'border-top:none;border-right:3.0pt dotted #FFC000;border-bottom:3.0pt dotted #FFC000;border-left:none;'
+				'border-bottom:3.0pt dotted #FFC000;' +
+				'border-left:none;' +
+				'border-right:3.0pt dotted #FFC000;' +
+				'border-top:none;'
 			);
 			expect( styles.getInlineProperty( 'border-top' ) ).to.equal( 'none' );
 			expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '3.0pt dotted #FFC000' );

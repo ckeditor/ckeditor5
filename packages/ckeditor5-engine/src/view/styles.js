@@ -177,7 +177,10 @@ export default class Styles {
 			return;
 		}
 
-		return entries.map( arr => arr.join( ':' ) ).join( ';' ) + ';';
+		return entries
+			.map( arr => arr.join( ':' ) )
+			.sort()
+			.join( ';' ) + ';';
 	}
 
 	/**
@@ -235,7 +238,7 @@ export default class Styles {
 	_getStylesEntries() {
 		const parsed = [];
 
-		const keys = Object.keys( this._styles ).sort();
+		const keys = Object.keys( this._styles );
 
 		for ( const key of keys ) {
 			const normalized = this.styleProcessor.getNormalized( key, this._styles );
