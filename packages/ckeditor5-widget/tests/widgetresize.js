@@ -21,7 +21,7 @@ import {
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'WidgetResize', () => {
-	let editor, editorElement, view, widget, widgetModel;
+	let editor, editorElement, view, widget, widgetModel, customConfig;
 
 	const mouseMock = {
 		down( editor, domTarget ) {
@@ -49,7 +49,7 @@ describe( 'WidgetResize', () => {
 
 	beforeEach( async () => {
 		editorElement = createEditorElement();
-		editor = await createEditor( editorElement );
+		editor = await createEditor( editorElement, customConfig );
 		view = editor.editing.view;
 
 		setModelData( editor.model, '[<widget></widget>]' );
@@ -134,16 +134,24 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe( 'mouse listeners (stubbed)', () => {
+	describe.only( 'mouse listeners (stubbed)', () => {
 		let mouseListenerStubs, localEditor, localElement;
 
-		beforeEach( async () => {
+		before( () => {
 			mouseListenerStubs = {
 				down: sinon.stub( WidgetResize.prototype, '_mouseDownListener' ),
 				move: sinon.stub( WidgetResize.prototype, '_mouseMoveListener' ),
 				up: sinon.stub( WidgetResize.prototype, '_mouseUpListener' )
 			};
+		} );
 
+		after( () => {
+			for ( const stub of Object.values( mouseListenerStubs ) ) {
+				stub.restore();
+			}
+		} );
+
+		beforeEach( async () => {
 			localElement = createEditorElement();
 			localEditor = await createEditor( localElement );
 		} );
