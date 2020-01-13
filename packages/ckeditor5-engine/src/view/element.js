@@ -379,7 +379,7 @@ export default class Element extends Node {
 	 * Undefined is returned if style does not exist.
 	 *
 	 * @param {String} property
-	 * @returns {String|Object|undefined}
+	 * @returns {String|undefined}
 	 */
 	getStyle( property ) {
 		return this._styles.getInlineProperty( property );
