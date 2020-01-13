@@ -47,7 +47,10 @@ export default class RemoveFormatUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute the command.
-			this.listenTo( view, 'execute', () => editor.execute( REMOVE_FORMAT ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( REMOVE_FORMAT );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );
