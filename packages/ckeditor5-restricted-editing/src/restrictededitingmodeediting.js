@@ -84,7 +84,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		editor.commands.add( 'goToNextRestrictedEditingException', new RestrictedEditingNavigationCommand( editor, 'forward' ) );
 		editor.keystrokes.set( 'Tab', getCommandExecuter( editor, 'goToNextRestrictedEditingException' ) );
 		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( editor, 'goToPreviousRestrictedEditingException' ) );
-		editor.keystrokes.set( 'Ctrl+A', ( ...args ) => onSelectAll( editor, ...args ) );
+		editor.keystrokes.set( 'Ctrl+A', getSelectAllHandler( editor ) );
 
 		editingView.change( writer => {
 			for ( const root of editingView.document.roots ) {
@@ -310,31 +310,30 @@ function getCommandExecuter( editor, commandName ) {
 }
 
 // Helper for handling Ctrl+A keydown behaviour.
-function onSelectAll( editor, data, cancel ) {
-	const model = editor.model;
-	const selection = editor.model.document.selection;
-	const marker = getMarkerAtPosition( editor, selection.focus );
+function getSelectAllHandler( editor ) {
+	return ( data, cancel ) => {
+		const model = editor.model;
+		const selection = editor.model.document.selection;
+		const marker = getMarkerAtPosition( editor, selection.focus );
 
-	if ( !marker ) {
-		return;
-	}
+		if ( !marker ) {
+			return;
+		}
 
-	// If selection range is inside a restricted editing exception, select text only within the exception.
-	//
-	// Note: Second Ctrl+A press is also blocked and it won't select the entire text in the editor.
-	// Just like in the widget.
-	const selectionRange = selection.getFirstRange();
-	const markerRange = marker.getRange();
+		// If selection range is inside a restricted editing exception, select text only within the exception.
+		//
+		// Note: Second Ctrl+A press is also blocked and it won't select the entire text in the editor.
+		const selectionRange = selection.getFirstRange();
+		const markerRange = marker.getRange();
 
-	const selectionIsInsideException = markerRange.containsRange( selectionRange, true );
+		if ( markerRange.containsRange( selectionRange, true ) || selection.isCollapsed ) {
+			cancel();
 
-	if ( selectionIsInsideException || selection.isCollapsed ) {
-		cancel();
-
-		model.change( writer => {
-			writer.setSelection( marker.getRange() );
-		} );
-	}
+			model.change( writer => {
+				writer.setSelection( marker.getRange() );
+			} );
+		}
+	};
 }
 
 // Additional filtering rule for enabling "delete" and "forwardDelete" commands if selection is on range boundaries:
