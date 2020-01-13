@@ -17,7 +17,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import RestrictedEditingModeEditing, { onKeyDown } from './../src/restrictededitingmodeediting';
+import RestrictedEditingModeEditing, { onSelectAll } from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
@@ -1389,7 +1389,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			model = editor.model;
 			view = editor.editing.view;
 
-			sinon.spy( onKeyDown );
+			sinon.spy( onSelectAll );
 		} );
 
 		afterEach( () => {
@@ -1451,6 +1451,35 @@ describe( 'RestrictedEditingModeEditing', () => {
 					sinon.assert.calledOnce( evtData.stopPropagation );
 					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
+
+				it( 'should not change the selection if the caret is not inside an exception', () => {
+					setModelData( model, '<paragraph>foo ba[]r baz</paragraph>' );
+
+					// no markers
+					// <paragraph>foo ba[]r baz</paragraph>
+
+					view.document.fire( 'keydown', evtData );
+
+					sinon.assert.notCalled( evtData.preventDefault );
+					sinon.assert.notCalled( evtData.stopPropagation );
+					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo ba[]r baz</paragraph>' );
+				} );
+
+				it( 'should not extend the selection outside an exception when press Ctrl+A second time', () => {
+					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					// <paragraph>foo <marker>b[]ar</marker> baz</paragraph>
+					addExceptionMarker( 4, 7, paragraph );
+
+					view.document.fire( 'keydown', evtData );
+					view.document.fire( 'keydown', evtData );
+
+					sinon.assert.calledTwice( evtData.preventDefault );
+					sinon.assert.calledTwice( evtData.stopPropagation );
+					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
@@ -1469,19 +1498,65 @@ describe( 'RestrictedEditingModeEditing', () => {
 					expect( getModelData( model ) ).to.be.equal( '<paragraph>[foo bar] baz</paragraph>' );
 				} );
 
+				it( 'should select text within an exception when end of selection range is equal exception end', () => {
+					setModelData( model, '<paragraph>foo b[ar] baz</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					// <paragraph>foo <marker>b[ar]</marker> baz</paragraph>
+					addExceptionMarker( 4, 7, paragraph );
+
+					view.document.fire( 'keydown', evtData );
+
+					sinon.assert.calledOnce( evtData.preventDefault );
+					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+				} );
+
+				it( 'should select text within an exception when start of selection range is equal exception start', () => {
+					setModelData( model, '<paragraph>foo [ba]r baz</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					// <paragraph>foo <marker>[ba]r</marker> baz</paragraph>
+					addExceptionMarker( 4, 7, paragraph );
+
+					view.document.fire( 'keydown', evtData );
+
+					sinon.assert.calledOnce( evtData.preventDefault );
+					sinon.assert.calledOnce( evtData.stopPropagation );
+					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+				} );
+
 				it( 'should not select text within an exception when a part of the selection range is outside an exception', () => {
 					setModelData( model, '<paragraph>fo[o ba]r baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
 					// <paragraph>fo[o <marker>ba]r</marker> baz</paragraph>
-					addExceptionMarker( 8, 11, paragraph );
+					addExceptionMarker( 4, 7, paragraph );
 
 					view.document.fire( 'keydown', evtData );
 
 					sinon.assert.notCalled( evtData.preventDefault );
 					sinon.assert.notCalled( evtData.stopPropagation );
 					expect( getModelData( model ) ).to.be.equal( '<paragraph>fo[o ba]r baz</paragraph>' );
+				} );
+
+				it( 'should not extend the selection outside an exception when press Ctrl+A second time', () => {
+					setModelData( model, '<paragraph>foo [bar] baz</paragraph>' );
+
+					const paragraph = model.document.getRoot().getChild( 0 );
+
+					// <paragraph>foo <marker>[bar]</marker> baz</paragraph>
+					addExceptionMarker( 4, 7, paragraph );
+
+					view.document.fire( 'keydown', evtData );
+					view.document.fire( 'keydown', evtData );
+
+					sinon.assert.calledTwice( evtData.preventDefault );
+					sinon.assert.calledTwice( evtData.stopPropagation );
+					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 		} );
