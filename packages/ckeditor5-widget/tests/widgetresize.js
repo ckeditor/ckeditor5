@@ -21,7 +21,7 @@ import {
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'WidgetResize', () => {
-	let editor, editorElement, view, widget, widgetModel, customConfig;
+	let editor, editorElement, view, widget, widgetModel, customConfig, mouseListenerStubs;
 
 	const mouseMock = {
 		down( editor, domTarget ) {
@@ -47,6 +47,26 @@ describe( 'WidgetResize', () => {
 		}
 	};
 
+	before( () => {
+		mouseListenerStubs = {
+			down: sinon.spy( WidgetResize.prototype, '_mouseDownListener' ),
+			move: sinon.spy( WidgetResize.prototype, '_mouseMoveListener' ),
+			up: sinon.spy( WidgetResize.prototype, '_mouseUpListener' )
+		};
+	} );
+
+	beforeEach( () => {
+		for ( const stub of Object.values( mouseListenerStubs ) ) {
+			stub.resetHistory();
+		}
+	} );
+
+	after( () => {
+		for ( const stub of Object.values( mouseListenerStubs ) ) {
+			stub.restore();
+		}
+	} );
+
 	beforeEach( async () => {
 		editorElement = createEditorElement();
 		editor = await createEditor( editorElement, customConfig );
@@ -60,7 +80,10 @@ describe( 'WidgetResize', () => {
 
 	afterEach( () => {
 		editorElement.remove();
-		return editor.destroy();
+
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	describe( 'plugin', () => {
@@ -135,47 +158,16 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe.only( 'mouse listeners (stubbed)', () => {
-		let mouseListenerStubs, localEditor, localElement;
-
-		before( () => {
-			mouseListenerStubs = {
-				down: sinon.stub( WidgetResize.prototype, '_mouseDownListener' ),
-				move: sinon.stub( WidgetResize.prototype, '_mouseMoveListener' ),
-				up: sinon.stub( WidgetResize.prototype, '_mouseUpListener' )
-			};
-		} );
-
-		after( () => {
-			for ( const stub of Object.values( mouseListenerStubs ) ) {
-				stub.restore();
-			}
-		} );
-
-		beforeEach( async () => {
-			localElement = createEditorElement();
-			localEditor = await createEditor( localElement );
-		} );
-
-		afterEach( () => {
-			for ( const stub of Object.values( mouseListenerStubs ) ) {
-				stub.restore();
-			}
-
-			localElement.remove();
-
-			if ( localEditor ) {
-				return localEditor.destroy();
-			}
-		} );
-
 		it( 'are detached when plugin is destroyed', async () => {
-			await localEditor.destroy();
-			localEditor = null;
+			await editor.destroy();
+			const plugin = editor.plugins.get( WidgetResize );
+			editor = null;
 
 			// Trigger mouse event.
 			fireMouseEvent( document.body, 'mousedown', {} );
+
 			// Ensure nothing got called.
-			expect( mouseListenerStubs.down.callCount ).to.be.equal( 0 );
+			expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
 		} );
 	} );
 
