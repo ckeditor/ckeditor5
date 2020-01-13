@@ -109,7 +109,7 @@ export default class Element extends Node {
 		 * Normalized styles.
 		 *
 		 * @protected
-		 * @member {Map} module:engine/view/element~Element#_styles
+		 * @member {module:engine/view/styles~Styles} module:engine/view/element~Element#_styles
 		 */
 		this._styles = new Styles();
 
