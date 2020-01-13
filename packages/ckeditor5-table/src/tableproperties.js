@@ -9,14 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastTableAttribute, upcastAttribute, upcastBorderStyles } from './tableproperties/utils';
-import Styles from '@ckeditor/ckeditor5-engine/src/view/styles';
-import { addBorderStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/borderstyles';
-import { addPaddingStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/paddingstyles';
-import { addBackgroundStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/backgroundstyles';
 
-addBorderStylesProcessor( Styles.processor );
-addPaddingStylesProcessor( Styles.processor );
-addBackgroundStylesProcessor( Styles.processor );
+import { addBorderStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/borderstyles';
+import { addBackgroundStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/backgroundstyles';
 
 /**
  * The table properties feature.
@@ -38,6 +33,10 @@ export default class TableProperties extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
+		const viewDoc = editor.editing.view.document;
+
+		viewDoc.addStyleProcessorRules( addBorderStylesProcessor );
+		viewDoc.addStyleProcessorRules( addBackgroundStylesProcessor );
 
 		this.enableBorderProperties( schema, conversion );
 		this.enableBackgroundColorProperty( schema, conversion );

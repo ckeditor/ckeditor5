@@ -9,6 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastToStyle, upcastAttribute, upcastBorderStyles } from './tableproperties/utils';
+import { addBorderStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/borderstyles';
+import { addPaddingStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/paddingstyles';
+import { addBackgroundStylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/styles/backgroundstyles';
 
 /**
  * The table cell properties feature.
@@ -30,6 +33,11 @@ export default class TableCellProperties extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
+		const viewDoc = editor.editing.view.document;
+
+		viewDoc.addStyleProcessorRules( addBorderStylesProcessor );
+		viewDoc.addStyleProcessorRules( addPaddingStylesProcessor );
+		viewDoc.addStyleProcessorRules( addBackgroundStylesProcessor );
 
 		this.enableBorderProperties( schema, conversion );
 		this.enableBackgroundColorProperty( schema, conversion );
