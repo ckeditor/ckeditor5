@@ -65,8 +65,8 @@ export function getTopRightBottomLeftValues( value = '' ) {
 }
 
 export function getTopRightBottomLeftValueReducer( styleShorthand ) {
-	return data => {
-		const { top, right, bottom, left } = ( data.value || {} );
+	return value => {
+		const { top, right, bottom, left } = ( value || {} );
 
 		const reduced = [];
 
@@ -87,7 +87,7 @@ export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( data.value ) ] );
+			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( value ) ] );
 		}
 
 		return reduced;

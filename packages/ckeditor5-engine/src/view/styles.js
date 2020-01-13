@@ -266,14 +266,10 @@ export class StylesProcessor {
 	 * @returns {module:engine/view/styles~PropertyEntry}
 	 */
 	getReducedForm( styleName, normalizedValue ) {
-		const data = {
-			value: normalizedValue
-		};
-
 		if ( this._reducers.has( styleName ) ) {
 			const reducer = this._reducers.get( styleName );
 
-			return reducer( data );
+			return reducer( normalizedValue );
 		}
 
 		return [ [ styleName, normalizedValue ] ];

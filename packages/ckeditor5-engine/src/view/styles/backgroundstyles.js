@@ -12,10 +12,10 @@ import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
 export function addBackgroundStylesProcessor( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'background', normalizeBackground );
 	stylesProcessor.setNormalizer( 'background-color', value => ( { path: 'background.color', value } ) );
-	stylesProcessor.setReducer( 'background', data => {
+	stylesProcessor.setReducer( 'background', value => {
 		const ret = [];
 
-		ret.push( [ 'background-color', data.value.color ] );
+		ret.push( [ 'background-color', value.color ] );
 
 		return ret;
 	} );

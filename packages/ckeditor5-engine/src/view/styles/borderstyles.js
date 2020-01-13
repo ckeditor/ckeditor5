@@ -180,19 +180,19 @@ function normalizeBorderShorthand( string ) {
 	return result;
 }
 
-function borderReducer( data ) {
+function borderReducer( value ) {
 	const reduced = [];
 
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'top' ), 'top' ) );
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'right' ), 'right' ) );
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'bottom' ), 'bottom' ) );
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( data.value, 'left' ), 'left' ) );
+	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'top' ), 'top' ) );
+	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'right' ), 'right' ) );
+	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'bottom' ), 'bottom' ) );
+	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'left' ), 'left' ) );
 
 	return reduced;
 }
 
 function getBorderPositionReducer( which ) {
-	return data => ( data.reduced = reduceBorderPosition( data.value, which ) );
+	return value => reduceBorderPosition( value, which );
 }
 
 function reduceBorderPosition( value, which ) {
