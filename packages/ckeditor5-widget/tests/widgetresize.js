@@ -235,18 +235,12 @@ describe( 'WidgetResize', () => {
 	} );
 
 	function createEditor( element, config ) {
-		return new Promise( ( resolve, reject ) => {
-			ClassicEditor
-				.create( element, Object.assign( {
-					plugins: [
-						ArticlePluginSet, WidgetResize, simpleWidgetPlugin
-					]
-				}, config ) )
-				.then( newEditor => {
-					resolve( newEditor );
-				} )
-				.catch( reject );
-		} );
+		return ClassicEditor
+			.create( element, Object.assign( {
+				plugins: [
+					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
+				]
+			}, config ) );
 
 		function simpleWidgetPlugin( editor ) {
 			editor.model.schema.register( 'widget', {
