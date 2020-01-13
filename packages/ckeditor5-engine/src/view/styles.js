@@ -8,8 +8,6 @@
  */
 
 import { get, isObject, merge, set, unset } from 'lodash-es';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Styles class.
@@ -254,7 +252,9 @@ export default class Styles {
 
 export class StylesProcessor {
 	constructor() {
-		this._groups = new Set();
+		this._normalizers = new Map();
+		this._extractors = new Map();
+		this._reducers = new Map();
 	}
 
 	/**
@@ -270,9 +270,13 @@ export class StylesProcessor {
 			value: normalizedValue
 		};
 
-		this.fire( 'reduce:' + styleName, data );
+		if ( this._reducers.has( styleName ) ) {
+			const reducer = this._reducers.get( styleName );
 
-		return data.reduced || [ [ styleName, normalizedValue ] ];
+			return reducer( data );
+		}
+
+		return [ [ styleName, normalizedValue ] ];
 	}
 
 	getNormalized( name, styles ) {
@@ -289,14 +293,22 @@ export class StylesProcessor {
 			styles
 		};
 
-		this.fire( `extract:${ name }`, data );
+		if ( this._extractors.has( name ) ) {
+			const extractor = this._extractors.get( name );
 
-		if ( data.path ) {
-			return get( styles, data.path );
-		}
+			if ( typeof extractor === 'string' ) {
+				return get( styles, extractor );
+			}
 
-		if ( data.value ) {
-			return data.value;
+			const { path, value } = extractor( data );
+
+			if ( path ) {
+				return get( styles, path );
+			}
+
+			if ( value ) {
+				return value;
+			}
 		}
 
 		return get( styles, toPath( name ) );
@@ -322,21 +334,29 @@ export class StylesProcessor {
 			value
 		};
 
-		this.fire( 'normalize:' + propertyName, data );
+		if ( this._normalizers.has( propertyName ) ) {
+			const normalizer = this._normalizers.get( propertyName );
 
-		appendStyleValue( styles, data.path, data.value );
+			const { path, value } = normalizer( data );
+
+			appendStyleValue( styles, path, value );
+		} else {
+			appendStyleValue( styles, propertyName, value );
+		}
 	}
 
-	registerListeners( groupName, callback ) {
-		if ( this._groups.has( groupName ) ) {
-			return;
-		}
+	setNormalizer( propertyName, callback ) {
+		this._normalizers.set( propertyName, callback );
+	}
 
-		callback( this );
+	setExtractor( propertyName, callbackOrPath ) {
+		this._extractors.set( propertyName, callbackOrPath );
+	}
+
+	setReducer( propertyName, callback ) {
+		this._reducers.set( propertyName, callback );
 	}
 }
-
-mix( StylesProcessor, EmitterMixin );
 
 // Parses inline styles and puts property - value pairs into styles map.
 //

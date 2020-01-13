@@ -14,14 +14,14 @@ describe( 'Styles', () => {
 		converter = new StylesProcessor();
 
 		// Define simple "foo" shorthand normalizers, similar to the "margin" shorthand normalizers, for testing purposes.
-		converter.on( 'normalize:foo', ( evt, data ) => {
-			data.path = 'foo';
-			data.value = { top: data.value, right: data.value, bottom: data.value, left: data.value };
-		} );
-		converter.on( 'normalize:foo-top', ( evt, data ) => {
-			data.path = 'foo';
-			data.value = { top: data.value };
-		} );
+		converter.setNormalizer( 'foo', data => ( {
+			path: 'foo',
+			value: { top: data.value, right: data.value, bottom: data.value, left: data.value }
+		} ) );
+		converter.setNormalizer( 'foo-top', data => ( {
+			path: 'foo',
+			value: { top: data.value }
+		} ) );
 
 		addPaddingStylesProcessor( converter );
 		styles = new Styles( converter );

@@ -10,14 +10,12 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
  */
 
 export function addMarginStylesProcessor( stylesProcessor ) {
-	stylesProcessor.registerListeners( 'margin', stylesProcessor => {
-		stylesProcessor.on( 'normalize:margin', getPositionShorthandNormalizer( 'margin' ) );
+	stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
 
-		stylesProcessor.on( 'normalize:margin-top', ( evt, data ) => ( data.path = 'margin.top' ) );
-		stylesProcessor.on( 'normalize:margin-right', ( evt, data ) => ( data.path = 'margin.right' ) );
-		stylesProcessor.on( 'normalize:margin-bottom', ( evt, data ) => ( data.path = 'margin.bottom' ) );
-		stylesProcessor.on( 'normalize:margin-left', ( evt, data ) => ( data.path = 'margin.left' ) );
+	stylesProcessor.setNormalizer( 'margin-top', data => ( { path: 'margin.top', value: data.value } ) );
+	stylesProcessor.setNormalizer( 'margin-right', data => ( { path: 'margin.right', value: data.value } ) );
+	stylesProcessor.setNormalizer( 'margin-bottom', data => ( { path: 'margin.bottom', value: data.value } ) );
+	stylesProcessor.setNormalizer( 'margin-left', data => ( { path: 'margin.left', value: data.value } ) );
 
-		stylesProcessor.on( 'reduce:margin', getTopRightBottomLeftValueReducer( 'margin' ) );
-	} );
+	stylesProcessor.setReducer( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
 }

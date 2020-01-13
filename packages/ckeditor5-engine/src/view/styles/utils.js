@@ -65,7 +65,7 @@ export function getTopRightBottomLeftValues( value = '' ) {
 }
 
 export function getTopRightBottomLeftValueReducer( styleShorthand ) {
-	return ( evt, data ) => {
+	return data => {
 		const { top, right, bottom, left } = ( data.value || {} );
 
 		const reduced = [];
@@ -90,7 +90,7 @@ export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( data.value ) ] );
 		}
 
-		data.reduced = reduced;
+		return reduced;
 	};
 }
 
@@ -111,9 +111,11 @@ export function getTopRightBottomLeftShorthandValue( { left, right, top, bottom 
 }
 
 export function getPositionShorthandNormalizer( longhand ) {
-	return ( evt, data ) => {
-		data.path = longhand;
-		data.value = getTopRightBottomLeftValues( data.value );
+	return data => {
+		return {
+			path: longhand,
+			value: getTopRightBottomLeftValues( data.value )
+		};
 	};
 }
 
