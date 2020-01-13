@@ -111,10 +111,10 @@ export function getTopRightBottomLeftShorthandValue( { left, right, top, bottom 
 }
 
 export function getPositionShorthandNormalizer( longhand ) {
-	return data => {
+	return value => {
 		return {
 			path: longhand,
-			value: getTopRightBottomLeftValues( data.value )
+			value: getTopRightBottomLeftValues( value )
 		};
 	};
 }

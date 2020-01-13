@@ -12,10 +12,10 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
 export function addMarginStylesProcessor( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
 
-	stylesProcessor.setNormalizer( 'margin-top', data => ( { path: 'margin.top', value: data.value } ) );
-	stylesProcessor.setNormalizer( 'margin-right', data => ( { path: 'margin.right', value: data.value } ) );
-	stylesProcessor.setNormalizer( 'margin-bottom', data => ( { path: 'margin.bottom', value: data.value } ) );
-	stylesProcessor.setNormalizer( 'margin-left', data => ( { path: 'margin.left', value: data.value } ) );
+	stylesProcessor.setNormalizer( 'margin-top', value => ( { path: 'margin.top', value } ) );
+	stylesProcessor.setNormalizer( 'margin-right', value => ( { path: 'margin.right', value } ) );
+	stylesProcessor.setNormalizer( 'margin-bottom', value => ( { path: 'margin.bottom', value } ) );
+	stylesProcessor.setNormalizer( 'margin-left', value => ( { path: 'margin.left', value } ) );
 
 	stylesProcessor.setReducer( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
 }

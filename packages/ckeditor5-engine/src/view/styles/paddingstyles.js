@@ -11,10 +11,10 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
 
 export function addPaddingStylesProcessor( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'padding', getPositionShorthandNormalizer( 'padding' ) );
-	stylesProcessor.setNormalizer( 'padding-top', data => ( { path: 'padding.top', value: data.value } ) );
-	stylesProcessor.setNormalizer( 'padding-right', data => ( { path: 'padding.right', value: data.value } ) );
-	stylesProcessor.setNormalizer( 'padding-bottom', data => ( { path: 'padding.bottom', value: data.value } ) );
-	stylesProcessor.setNormalizer( 'padding-left', data => ( { path: 'padding.left', value: data.value } ) );
+	stylesProcessor.setNormalizer( 'padding-top', value => ( { path: 'padding.top', value } ) );
+	stylesProcessor.setNormalizer( 'padding-right', value => ( { path: 'padding.right', value } ) );
+	stylesProcessor.setNormalizer( 'padding-bottom', value => ( { path: 'padding.bottom', value } ) );
+	stylesProcessor.setNormalizer( 'padding-left', value => ( { path: 'padding.left', value } ) );
 
 	stylesProcessor.setReducer( 'padding', getTopRightBottomLeftValueReducer( 'padding' ) );
 }

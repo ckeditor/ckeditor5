@@ -313,26 +313,21 @@ export class StylesProcessor {
 	 * @param {Object} styles
 	 * @private
 	 */
-	toNormalizedForm( propertyName, value, styles ) {
-		if ( isObject( value ) ) {
-			appendStyleValue( styles, toPath( propertyName ), value );
+	toNormalizedForm( propertyName, propertyValue, styles ) {
+		if ( isObject( propertyValue ) ) {
+			appendStyleValue( styles, toPath( propertyName ), propertyValue );
 
 			return;
 		}
 
-		const data = {
-			path: propertyName,
-			value
-		};
-
 		if ( this._normalizers.has( propertyName ) ) {
 			const normalizer = this._normalizers.get( propertyName );
 
-			const { path, value } = normalizer( data );
+			const { path, value } = normalizer( propertyValue );
 
 			appendStyleValue( styles, path, value );
 		} else {
-			appendStyleValue( styles, propertyName, value );
+			appendStyleValue( styles, propertyName, propertyValue );
 		}
 	}
 

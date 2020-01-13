@@ -11,7 +11,7 @@ import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
 
 export function addBackgroundStylesProcessor( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'background', normalizeBackground );
-	stylesProcessor.setNormalizer( 'background-color', data => ( { path: 'background.color', value: data.value } ) );
+	stylesProcessor.setNormalizer( 'background-color', value => ( { path: 'background.color', value } ) );
 	stylesProcessor.setReducer( 'background', data => {
 		const ret = [];
 
@@ -21,10 +21,10 @@ export function addBackgroundStylesProcessor( stylesProcessor ) {
 	} );
 }
 
-function normalizeBackground( data ) {
+function normalizeBackground( value ) {
 	const background = {};
 
-	const parts = data.value.split( ' ' );
+	const parts = value.split( ' ' );
 
 	for ( const part of parts ) {
 		if ( isRepeat( part ) ) {

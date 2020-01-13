@@ -70,8 +70,8 @@ export function addBorderStylesProcessor( stylesProcessor ) {
 	stylesProcessor.setReducer( 'border', borderReducer );
 }
 
-function borderNormalizer( data ) {
-	const { color, style, width } = normalizeBorderShorthand( data.value );
+function borderNormalizer( value ) {
+	const { color, style, width } = normalizeBorderShorthand( value );
 
 	return {
 		path: 'border',
@@ -84,8 +84,8 @@ function borderNormalizer( data ) {
 }
 
 function getBorderPositionNormalizer( side ) {
-	return data => {
-		const { color, style, width } = normalizeBorderShorthand( data.value );
+	return value => {
+		const { color, style, width } = normalizeBorderShorthand( value );
 
 		const border = {};
 
@@ -109,10 +109,10 @@ function getBorderPositionNormalizer( side ) {
 }
 
 function getBorderPropertyNormalizer( propertyName ) {
-	return data => {
+	return value => {
 		return {
 			path: 'border',
-			value: toBorderPropertyShorthand( data.value, propertyName )
+			value: toBorderPropertyShorthand( value, propertyName )
 		};
 	};
 }
@@ -124,12 +124,12 @@ function toBorderPropertyShorthand( value, property ) {
 }
 
 function getBorderPropertyPositionNormalizer( property, side ) {
-	return data => {
+	return value => {
 		return {
 			path: 'border',
 			value: {
 				[ property ]: {
-					[ side ]: data.value
+					[ side ]: value
 				}
 			}
 		};
