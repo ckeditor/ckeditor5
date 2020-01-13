@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import TableCellPropertiesUI from './tablecellpropertiesui';
 import { downcastToStyle, upcastAttribute, upcastBorderStyles } from './tableproperties/utils';
 
 /**
@@ -21,6 +22,13 @@ export default class TableCellProperties extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TableCellProperties';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableCellPropertiesUI ];
 	}
 
 	/**
