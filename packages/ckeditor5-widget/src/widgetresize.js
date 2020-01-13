@@ -105,6 +105,10 @@ export default class WidgetResize extends Plugin {
 
 	destroy() {
 		this._observer.stopListening();
+
+		for ( const resizer of this._resizers.values() ) {
+			resizer.destroy();
+		}
 	}
 
 	/**
