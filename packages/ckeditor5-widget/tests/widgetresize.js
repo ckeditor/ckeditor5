@@ -171,7 +171,7 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe.only( 'Integration (percents)', () => {
+	describe.only( 'Integration (pixels)', () => {
 		let resizer, resizerOptions;
 
 		beforeEach( async () => {
@@ -228,9 +228,9 @@ describe( 'WidgetResize', () => {
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
-			expect( resizerOptions.onCommit.callCount ).to.be.equal( 1 );
-			sinon.assert.calledWithExactly( resizerOptions.onCommit, '200px' );
-			expect( true ).to.be.true;
+			expect( resizerOptions.onCommit.callCount ).to.be.equal( 2 );
+			sinon.assert.calledWithExactly( resizerOptions.onCommit.firstCall, '150px' );
+			sinon.assert.calledWithExactly( resizerOptions.onCommit.secondCall, '200px' );
 		} );
 	} );
 
