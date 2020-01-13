@@ -288,11 +288,6 @@ export class StylesProcessor {
 			return styles[ name ];
 		}
 
-		const data = {
-			name,
-			styles
-		};
-
 		if ( this._extractors.has( name ) ) {
 			const extractor = this._extractors.get( name );
 
@@ -300,11 +295,7 @@ export class StylesProcessor {
 				return get( styles, extractor );
 			}
 
-			const { path, value } = extractor( data );
-
-			if ( path ) {
-				return get( styles, path );
-			}
+			const value = extractor( name, styles );
 
 			if ( value ) {
 				return value;
