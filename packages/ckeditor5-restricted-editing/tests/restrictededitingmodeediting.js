@@ -17,7 +17,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import RestrictedEditingModeEditing, { onSelectAll } from './../src/restrictededitingmodeediting';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
@@ -1388,8 +1388,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			model = editor.model;
 			view = editor.editing.view;
-
-			sinon.spy( onSelectAll );
 		} );
 
 		afterEach( () => {
