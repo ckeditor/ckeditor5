@@ -43,7 +43,10 @@ export default class UnderlineUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( UNDERLINE ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( UNDERLINE );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );

@@ -42,7 +42,10 @@ export default class SubscriptUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( SUBSCRIPT ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( SUBSCRIPT );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );
