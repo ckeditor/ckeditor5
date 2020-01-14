@@ -23,6 +23,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 describe( 'WidgetResize', () => {
 	let editor, editorElement, view, widget, widgetModel, customConfig, mouseListenerSpies;
 
+	const commitStub = sinon.stub();
 	const mouseMock = {
 		down( editor, domTarget ) {
 			this._getPlugin( editor )._mouseDownListener( {}, {
@@ -74,6 +75,7 @@ describe( 'WidgetResize', () => {
 		for ( const stub of Object.values( mouseListenerSpies ) ) {
 			stub.resetHistory();
 		}
+		commitStub.resetHistory();
 
 		// It's crucial to have a precisely defined editor size for this test suite.
 		editor.editing.view.change( writer => {
@@ -97,15 +99,12 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'mouse listeners', () => {
-		let resizer, resizerOptions;
+		let resizer;
 
 		beforeEach( () => {
-			resizerOptions = {
-				isCentered: () => false,
-				onCommit: sinon.stub()
-			};
-
-			resizer = createResizer( resizerOptions );
+			resizer = createResizer( {
+				isCentered: () => false
+			} );
 		} );
 
 		it( 'doesnt break when called with unexpected element', async () => {
@@ -139,8 +138,8 @@ describe( 'WidgetResize', () => {
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
-			expect( resizerOptions.onCommit.callCount ).to.be.equal( 1 );
-			sinon.assert.calledWithExactly( resizerOptions.onCommit, '120px' );
+			expect( commitStub.callCount ).to.be.equal( 1 );
+			sinon.assert.calledWithExactly( commitStub, '120px' );
 		} );
 	} );
 
@@ -176,14 +175,10 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( '_proposeNewSize()', () => {
-		let resizer, resizerOptions;
+		let resizer;
 
 		beforeEach( async () => {
-			resizerOptions = {
-				onCommit: sinon.stub()
-			};
-
-			resizer = createResizer( resizerOptions );
+			resizer = createResizer();
 		} );
 
 		it( 'assumes a centered image if no isCentered option is provided', async () => {
@@ -208,19 +203,16 @@ describe( 'WidgetResize', () => {
 			await wait( 40 );
 
 			// THe image should be enlarged by a twice of the mouse movement distance.
-			sinon.assert.calledWithExactly( resizerOptions.onCommit, '140px' );
+			sinon.assert.calledWithExactly( commitStub, '140px' );
 		} );
 	} );
 	describe( 'Integration (pixels)', () => {
-		let resizer, resizerOptions;
+		let resizer;
 
 		beforeEach( async () => {
-			resizerOptions = {
-				isCentered: () => false,
-				onCommit: sinon.stub()
-			};
-
-			resizer = createResizer( resizerOptions );
+			resizer = createResizer( {
+				isCentered: () => false
+			} );
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
@@ -252,9 +244,9 @@ describe( 'WidgetResize', () => {
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
-			expect( resizerOptions.onCommit.callCount ).to.be.equal( 2 );
-			sinon.assert.calledWithExactly( resizerOptions.onCommit.firstCall, '150px' );
-			sinon.assert.calledWithExactly( resizerOptions.onCommit.secondCall, '200px' );
+			expect( commitStub.callCount ).to.be.equal( 2 );
+			sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
+			sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
 		} );
 	} );
 
@@ -271,8 +263,7 @@ describe( 'WidgetResize', () => {
 			resizer = createResizer( resizerOptions );
 		} );
 
-		it( 'properly sets the state for subsequent resizes', async function() {
-			this.timeout( 45000 );
+		it( 'properly sets the state for subsequent resizes', async () => {
 			focusEditor( editor );
 
 			resizer.redraw(); // @todo this shouldn't be necessary.
@@ -359,7 +350,7 @@ describe( 'WidgetResize', () => {
 				return domWidgetElement;
 			},
 
-			onCommit: sinon.stub()
+			onCommit: commitStub
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
