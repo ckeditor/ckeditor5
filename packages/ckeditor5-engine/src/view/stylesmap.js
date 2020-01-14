@@ -379,7 +379,15 @@ export default class StylesMap {
 	}
 }
 
+/**
+ * Style processor is responsible for writing and reading a normalized styles object.
+ */
 export class StylesProcessor {
+	/**
+	 * Creates StylesProcessor instance.
+	 *
+	 * @private
+	 */
 	constructor() {
 		this._normalizers = new Map();
 		this._extractors = new Map();
@@ -387,23 +395,57 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * Returns reduced form of style property form normalized object.
+	 * Parse style string value to a normalized object and appends it to styles object.
 	 *
-	 * @private
-	 * @param {String} styleName
-	 * @param {Object|String} normalizedValue
-	 * @returns {module:engine/view/stylesmap~PropertyEntry}
+	 *		const styles = {};
+	 *
+	 *		stylesProcessor.toNormalizedForm( 'margin', '1px', styles );
+	 *
+	 *		// styles will consist: { margin: { top: '1px', right: '1px', bottom: '1px', left: '1px; } }
+	 *
+	 * *Note*: To define normalizer callbacks use {@link #setNormalizer}.
+	 *
+	 * @param {String} name Name of style property.
+	 * @param {String} propertyValue Value of style property.
+	 * @param {Object} styles Object holding normalized styles.
 	 */
-	getReducedForm( styleName, normalizedValue ) {
-		if ( this._reducers.has( styleName ) ) {
-			const reducer = this._reducers.get( styleName );
+	toNormalizedForm( name, propertyValue, styles ) {
+		if ( isObject( propertyValue ) ) {
+			appendStyleValue( styles, toPath( name ), propertyValue );
 
-			return reducer( normalizedValue );
+			return;
 		}
 
-		return [ [ styleName, normalizedValue ] ];
+		if ( this._normalizers.has( name ) ) {
+			const normalizer = this._normalizers.get( name );
+
+			const { path, value } = normalizer( propertyValue );
+
+			appendStyleValue( styles, path, value );
+		} else {
+			appendStyleValue( styles, name, propertyValue );
+		}
 	}
 
+	/**
+	 * Returns a normalized version of a style property.
+	 *		const styles = {
+	 *			margin: { top: '1px', right: '1px', bottom: '1px', left: '1px; },
+	 *			background: { color: '#f00' }
+	 *		};
+	 *
+	 *		stylesProcessor.getNormalized( 'background' );
+	 *		// will return: { color: '#f00' }
+	 *
+	 *		stylesProcessor.getNormalized( 'margin-top' );
+	 *		// will return: '1px'
+	 *
+	 * *Note*: In some cases extracting single value requires defining an extractor callback {@link #setExtractor}.
+	 *
+	 * @param {String} name Name of style property.
+	 * @param {Object} styles Object holding normalized styles.
+	 * @returns {*}
+	 */
 	getNormalized( name, styles ) {
 		if ( !name ) {
 			return merge( {}, styles );
@@ -431,29 +473,20 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * Parse style property value to a normalized form.
+	 * Returns reduced form of style property form normalized object.
 	 *
-	 * @param {String} propertyName Name of style property.
-	 * @param {String} propertyValue Value of style property.
-	 * @param {Object} styles
-	 * @private
+	 * @param {String} name
+	 * @param {Object|String} normalizedValue
+	 * @returns {module:engine/view/stylesmap~PropertyEntry}
 	 */
-	toNormalizedForm( propertyName, propertyValue, styles ) {
-		if ( isObject( propertyValue ) ) {
-			appendStyleValue( styles, toPath( propertyName ), propertyValue );
+	getReducedForm( name, normalizedValue ) {
+		if ( this._reducers.has( name ) ) {
+			const reducer = this._reducers.get( name );
 
-			return;
+			return reducer( normalizedValue );
 		}
 
-		if ( this._normalizers.has( propertyName ) ) {
-			const normalizer = this._normalizers.get( propertyName );
-
-			const { path, value } = normalizer( propertyValue );
-
-			appendStyleValue( styles, path, value );
-		} else {
-			appendStyleValue( styles, propertyName, propertyValue );
-		}
+		return [ [ name, normalizedValue ] ];
 	}
 
 	setNormalizer( propertyName, callback ) {
@@ -546,6 +579,7 @@ function parseInlineStyles( stylesString ) {
 	return stylesMap;
 }
 
+// Return lodash compatible path from style name.
 function toPath( name ) {
 	return name.replace( '-', '.' );
 }
