@@ -72,9 +72,29 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Checks if single style rule is set.
+	 * Checks if a given style is set.
 	 *
-	 * Supports shorthands.
+	 *		styles.setTo( 'margin-left:1px;' );
+	 *
+	 *		styles.hasProperty( 'margin-left' );    // returns true
+	 *		styles.hasProperty( 'padding' );        // returns false
+	 *
+	 * *Note:* This check supports normalized style names.
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
+	 *		styles.setTo( 'margin:2px;' );
+	 *
+	 *		styles.hasProperty( 'margin' );         // returns true
+	 *		styles.hasProperty( 'margin-top' );     // returns true
+	 *		styles.hasProperty( 'margin-left' );    // returns true
+	 *
+	 *		styles.removeProperty( 'margin-top' );
+	 *
+	 *		styles.hasProperty( 'margin' );         // returns false
+	 *		styles.hasProperty( 'margin-top' );     // returns false
+	 *		styles.hasProperty( 'margin-left' );    // returns true
 	 *
 	 * @param {String} propertyName
 	 * @returns {Boolean}
