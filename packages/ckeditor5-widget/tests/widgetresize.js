@@ -69,6 +69,8 @@ describe( 'WidgetResize', () => {
 
 		setModelData( editor.model, '[<widget></widget>]' );
 
+		focusEditor( editor );
+
 		widget = view.document.getRoot().getChild( 0 );
 		widgetModel = editor.model.document.getRoot().getChild( 0 );
 
@@ -108,8 +110,6 @@ describe( 'WidgetResize', () => {
 		it( 'doesnt break when called with unexpected element', async () => {
 			const unrelatedElement = document.createElement( 'div' );
 
-			focusEditor( editor );
-
 			resizer.redraw(); // @todo this shouldn't be necessary.
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
@@ -118,8 +118,6 @@ describe( 'WidgetResize', () => {
 		} );
 
 		it( 'passes new width to the options.onCommit()', async () => {
-			focusEditor( editor );
-
 			resizer.redraw(); // @todo this shouldn't be necessary.
 
 			const usedResizer = 'top-right';
@@ -154,7 +152,6 @@ describe( 'WidgetResize', () => {
 	} );
 
 	it( 'nothing bad happens if activeResizer got unset', async () => {
-		focusEditor( editor );
 		const resizer = createResizer( {
 			isCentered: () => true
 		} );
@@ -184,8 +181,6 @@ describe( 'WidgetResize', () => {
 		} );
 
 		it( 'assumes a centered image if no isCentered option is provided', async () => {
-			focusEditor( editor );
-
 			resizer.redraw(); // @todo this shouldn't be necessary.
 
 			const usedResizer = 'top-right';
@@ -216,8 +211,6 @@ describe( 'WidgetResize', () => {
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
-			focusEditor( editor );
-
 			resizer.redraw(); // @todo this shouldn't be necessary.
 
 			const usedResizer = 'top-right';
@@ -260,8 +253,6 @@ describe( 'WidgetResize', () => {
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
-			focusEditor( editor );
-
 			resizer.redraw(); // @todo this shouldn't be necessary.
 
 			const usedResizer = 'top-right';
