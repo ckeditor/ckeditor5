@@ -123,8 +123,6 @@ describe( 'WidgetResize', () => {
 
 			mouseMock.down( editor, domParts.resizeHandle );
 
-			await wait( 40 );
-
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
@@ -158,8 +156,6 @@ describe( 'WidgetResize', () => {
 
 		mouseMock.down( editor, domParts.resizeHandle );
 
-		await wait( 40 );
-
 		mouseMock.move( editor, domParts.resizeHandle, initialPointerPosition );
 		mouseMock.up();
 	} );
@@ -181,12 +177,8 @@ describe( 'WidgetResize', () => {
 
 			mouseMock.down( editor, domParts.resizeHandle );
 
-			await wait( 40 );
-
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
-
-			await wait( 40 );
 
 			// THe image should be enlarged by a twice of the mouse movement distance.
 			sinon.assert.calledWithExactly( commitStub, '140px' );
@@ -207,16 +199,10 @@ describe( 'WidgetResize', () => {
 
 			mouseMock.down( editor, domParts.resizeHandle );
 
-			await wait( 40 );
-
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
-			await wait( 40 );
-
 			mouseMock.down( editor, domParts.resizeHandle );
-
-			await wait( 40 );
 
 			finalPointerPosition.pageX += 50;
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
@@ -245,16 +231,10 @@ describe( 'WidgetResize', () => {
 
 			mouseMock.down( editor, domParts.resizeHandle );
 
-			await wait( 40 );
-
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
-			await wait( 40 );
-
 			mouseMock.down( editor, domParts.resizeHandle );
-
-			await wait( 40 );
 
 			finalPointerPosition.pageX += 100;
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
@@ -370,9 +350,5 @@ describe( 'WidgetResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
-	}
-
-	function wait( delay ) {
-		return new Promise( resolve => window.setTimeout( () => resolve(), delay ) );
 	}
 } );
