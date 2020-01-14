@@ -35,7 +35,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbar = new ToolbarView( locale );
+		this.toolbar = new ToolbarView( locale, { shouldGroupWhenFull: true } );
 
 		/**
 		 * The offset from the top edge of the web browser's viewport which makes the
