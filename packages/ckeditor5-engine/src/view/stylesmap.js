@@ -111,23 +111,12 @@ export default class StylesMap {
 			return false;
 		}
 
-		const normalized = this._styleProcessor.getNormalized( name, this._styles );
+		const styles = this._styleProcessor.getReducedForm( name, this._styles );
 
-		if ( !normalized ) {
-			// Try return styles set directly - values that are not parsed.
-			return this._styles[ name ] !== undefined;
-		}
+		const propertyDescriptor = styles.find( ( [ property ] ) => property === name );
 
-		if ( isObject( normalized ) ) {
-			const styles = this._styleProcessor.getReducedForm( name, normalized );
-
-			const propertyDescriptor = styles.find( ( [ property ] ) => property === name );
-
-			// Only return a value if it is set;
-			return Array.isArray( propertyDescriptor );
-		} else {
-			return true;
-		}
+		// Only return a value if it is set;
+		return Array.isArray( propertyDescriptor );
 	}
 
 	/**
@@ -289,24 +278,20 @@ export default class StylesMap {
 			return '';
 		}
 
-		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );
-
-		if ( !normalized ) {
+		if ( this._styles[ propertyName ] && !isObject( this._styles[ propertyName ] ) ) {
 			// Try return styles set directly - values that are not parsed.
 			return this._styles[ propertyName ];
 		}
 
-		if ( isObject( normalized ) ) {
-			const styles = this._styleProcessor.getReducedForm( propertyName, normalized );
+		const styles = this._styleProcessor.getReducedForm( propertyName, this._styles );
 
-			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
+		const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
 
-			// Only return a value if it is set;
-			if ( Array.isArray( propertyDescriptor ) ) {
-				return propertyDescriptor[ 1 ];
-			}
+		// Only return a value if it is set;
+		if ( Array.isArray( propertyDescriptor ) ) {
+			return propertyDescriptor[ 1 ];
 		} else {
-			return normalized;
+			return '';
 		}
 	}
 
@@ -344,9 +329,7 @@ export default class StylesMap {
 		const keys = Object.keys( this._styles );
 
 		for ( const key of keys ) {
-			const normalized = this._styleProcessor.getNormalized( key, this._styles );
-
-			parsed.push( ...this._styleProcessor.getReducedForm( key, normalized ) );
+			parsed.push( ...this._styleProcessor.getReducedForm( key, this._styles ) );
 		}
 
 		return parsed;
@@ -476,10 +459,12 @@ export class StylesProcessor {
 	 * Returns reduced form of style property form normalized object.
 	 *
 	 * @param {String} name
-	 * @param {Object|String} normalizedValue
-	 * @returns {module:engine/view/stylesmap~PropertyEntry}
+	 * @param {String} name Name of style property.
+	 * @param {Object} styles Object holding normalized styles.
 	 */
-	getReducedForm( name, normalizedValue ) {
+	getReducedForm( name, styles ) {
+		const normalizedValue = this.getNormalized( name, styles );
+
 		if ( this._reducers.has( name ) ) {
 			const reducer = this._reducers.get( name );
 
