@@ -371,7 +371,7 @@ describe( 'WidgetResize', () => {
 					view: ( modelItem, viewWriter ) => {
 						const div = viewWriter.createContainerElement( 'div' );
 						viewWriter.setStyle( 'height', '100px', div );
-						viewWriter.setStyle( 'width', '100px', div );
+						viewWriter.setStyle( 'width', '25%', div ); // It evaluates to 100px.
 
 						return toWidget( div, viewWriter, {
 							label: 'element label'
