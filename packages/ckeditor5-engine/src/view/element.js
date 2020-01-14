@@ -339,7 +339,7 @@ export default class Element extends Node {
 		for ( const property of this._styles.getStyleNames() ) {
 			if (
 				!otherElement._styles.has( property ) ||
-				otherElement._styles.getInlineProperty( property ) !== this._styles.getInlineProperty( property )
+				otherElement._styles.getAsString( property ) !== this._styles.getAsString( property )
 			) {
 				return false;
 			}
@@ -380,11 +380,31 @@ export default class Element extends Node {
 	 * Returns style value for given property.
 	 * Undefined is returned if style does not exist.
 	 *
+	 * *Note*: This method will only return normalized styles if a style processor was defined. Otherwise the style names are not
+	 * normalized.
+	 *
+	 * For an element with style set to: 'margin:1px
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
+	 *		const element = view.change( writer => {
+	 *			const element = writer.createElement();
+	 *			writer.setStyle( 'margin', '1px' )
+	 *			writer.setStyle( 'margin-bottom', '3em' )
+	 *
+	 *			return element;
+	 *		} );
+	 *
+	 *		element.getStyle( 'margin' );
+	 *
+	 *		// will return 'margin: 1px 1px 3em;'
+	 *
 	 * @param {String} property
 	 * @returns {String|undefined}
 	 */
 	getStyle( property ) {
-		return this._styles.getInlineProperty( property );
+		return this._styles.has( property ) ? this._styles.getAsString( property ) : undefined;
 	}
 
 	/**

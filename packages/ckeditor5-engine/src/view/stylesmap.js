@@ -211,6 +211,9 @@ export default class StylesMap {
 	/**
 	 * Returns a normalized style object or a single value.
 	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
 	 *		const styles = new Styles();
 	 *		styles.setTo( 'margin:1px 2px 3em;' );
 	 *
@@ -270,14 +273,26 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns property value string.
+	 * Returns property as a value string.
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
+	 *		const styles = new Styles();
+	 *		styles.setTo( 'margin:1px;' );
+	 *		styles.set( 'margin-bottom:3em;' );
+	 *
+	 *		styles.getAsString( 'margin' );
+	 *		// will return 'margin: 1px 1px 3em;'
+	 *
+	 * *Note*: To get normalized version of a longhand property use {@link #getNormalized} method.
 	 *
 	 * @param {String} propertyName
 	 * @returns {String|undefined}
 	 */
-	getInlineProperty( propertyName ) {
+	getAsString( propertyName ) {
 		if ( this.isEmpty ) {
-			return;
+			return '';
 		}
 
 		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );

@@ -45,6 +45,6 @@ describe( 'Background styles normalization', () => {
 		styles.setTo( 'background:#f00;' );
 
 		expect( styles.toString() ).to.equal( 'background-color:#f00;' );
-		expect( styles.getInlineProperty( 'background-color' ) ).to.equal( '#f00' );
+		expect( styles.getAsString( 'background-color' ) ).to.equal( '#f00' );
 	} );
 } );

@@ -72,46 +72,46 @@ describe( 'StylesMap', () => {
 
 			it( 'should work with both types of quotes and ignore values inside quotes', () => {
 				stylesMap.setTo( 'background-image:url("im;color:g.jpg")' );
-				expect( stylesMap.getInlineProperty( 'background-image' ) ).to.equal( 'url("im;color:g.jpg")' );
+				expect( stylesMap.getAsString( 'background-image' ) ).to.equal( 'url("im;color:g.jpg")' );
 
 				stylesMap.setTo( 'background-image:url(\'im;color:g.jpg\')' );
-				expect( stylesMap.getInlineProperty( 'background-image' ) ).to.equal( 'url(\'im;color:g.jpg\')' );
+				expect( stylesMap.getAsString( 'background-image' ) ).to.equal( 'url(\'im;color:g.jpg\')' );
 			} );
 
 			it( 'should not be confused by whitespaces', () => {
 				stylesMap.setTo( '\ncolor:\n red ' );
 
-				expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'red' );
+				expect( stylesMap.getAsString( 'color' ) ).to.equal( 'red' );
 			} );
 
 			it( 'should not be confused by duplicated semicolon', () => {
 				stylesMap.setTo( 'color: red;; display: inline' );
 
-				expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'red' );
-				expect( stylesMap.getInlineProperty( 'display' ) ).to.equal( 'inline' );
+				expect( stylesMap.getAsString( 'color' ) ).to.equal( 'red' );
+				expect( stylesMap.getAsString( 'display' ) ).to.equal( 'inline' );
 			} );
 
 			it( 'should not throw when value is missing', () => {
 				stylesMap.setTo( 'color:; display: inline' );
 
-				expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( '' );
-				expect( stylesMap.getInlineProperty( 'display' ) ).to.equal( 'inline' );
+				expect( stylesMap.getAsString( 'color' ) ).to.equal( '' );
+				expect( stylesMap.getAsString( 'display' ) ).to.equal( 'inline' );
 			} );
 
 			it( 'should not throw when colon is duplicated', () => {
 				stylesMap.setTo( 'color:: red; display: inline' );
 
 				// The result makes no sense, but here we just check that the algorithm doesn't crash.
-				expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( ': red' );
-				expect( stylesMap.getInlineProperty( 'display' ) ).to.equal( 'inline' );
+				expect( stylesMap.getAsString( 'color' ) ).to.equal( ': red' );
+				expect( stylesMap.getAsString( 'display' ) ).to.equal( 'inline' );
 			} );
 
 			it( 'should not throw when random stuff passed', () => {
 				stylesMap.setTo( 'color: red;:; ;;" ":  display: inline; \'aaa;:' );
 
 				// The result makes no sense, but here we just check that the algorithm doesn't crash.
-				expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'red' );
-				expect( stylesMap.getInlineProperty( 'display' ) ).to.be.undefined;
+				expect( stylesMap.getAsString( 'color' ) ).to.equal( 'red' );
+				expect( stylesMap.getAsString( 'display' ) ).to.be.undefined;
 			} );
 		} );
 	} );
@@ -128,11 +128,11 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
-	describe( 'getInlineProperty', () => {
+	describe( 'getAsString()', () => {
 		it( 'should return empty string for missing shorthand', () => {
 			stylesMap.setTo( 'margin-top:1px' );
 
-			expect( stylesMap.getInlineProperty( 'margin' ) ).to.be.undefined;
+			expect( stylesMap.getAsString( 'margin' ) ).to.be.undefined;
 		} );
 	} );
 
@@ -176,37 +176,37 @@ describe( 'StylesMap', () => {
 		it( 'should insert new property (empty styles)', () => {
 			stylesMap.set( 'color', 'blue' );
 
-			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+			expect( stylesMap.getAsString( 'color' ) ).to.equal( 'blue' );
 		} );
 
 		it( 'should insert new property (other properties are set)', () => {
 			stylesMap.setTo( 'margin: 1px;' );
 			stylesMap.set( 'color', 'blue' );
 
-			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+			expect( stylesMap.getAsString( 'color' ) ).to.equal( 'blue' );
 		} );
 
 		it( 'should overwrite property', () => {
 			stylesMap.setTo( 'color: red;' );
 			stylesMap.set( 'color', 'blue' );
 
-			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
+			expect( stylesMap.getAsString( 'color' ) ).to.equal( 'blue' );
 		} );
 
 		it( 'should set multiple styles by providing an object', () => {
 			stylesMap.setTo( 'color: red;' );
 			stylesMap.set( { color: 'blue', foo: '1px' } );
 
-			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
-			expect( stylesMap.getInlineProperty( 'foo-top' ) ).to.equal( '1px' );
+			expect( stylesMap.getAsString( 'color' ) ).to.equal( 'blue' );
+			expect( stylesMap.getAsString( 'foo-top' ) ).to.equal( '1px' );
 		} );
 
 		it( 'should set object property', () => {
 			stylesMap.setTo( 'foo:1px;' );
 			stylesMap.set( 'foo', { right: '2px' } );
 
-			expect( stylesMap.getInlineProperty( 'foo-left' ) ).to.equal( '1px' );
-			expect( stylesMap.getInlineProperty( 'foo-right' ) ).to.equal( '2px' );
+			expect( stylesMap.getAsString( 'foo-left' ) ).to.equal( '1px' );
+			expect( stylesMap.getAsString( 'foo-right' ) ).to.equal( '2px' );
 		} );
 	} );
 
@@ -214,14 +214,14 @@ describe( 'StylesMap', () => {
 		it( 'should do nothing if property is not set', () => {
 			stylesMap.remove( 'color' );
 
-			expect( stylesMap.getInlineProperty( 'color' ) ).to.be.undefined;
+			expect( stylesMap.getAsString( 'color' ) ).to.equal( '' );
 		} );
 
 		it( 'should insert new property (other properties are set)', () => {
 			stylesMap.setTo( 'color:blue' );
 			stylesMap.remove( 'color' );
 
-			expect( stylesMap.getInlineProperty( 'color' ) ).to.be.undefined;
+			expect( stylesMap.getAsString( 'color' ) ).to.equal( '' );
 		} );
 
 		it( 'should remove normalized property', () => {
@@ -229,7 +229,7 @@ describe( 'StylesMap', () => {
 
 			stylesMap.remove( 'margin-top' );
 
-			expect( stylesMap.getInlineProperty( 'margin-top' ) ).to.be.undefined;
+			expect( stylesMap.getAsString( 'margin-top' ) ).to.be.undefined;
 		} );
 	} );
 
