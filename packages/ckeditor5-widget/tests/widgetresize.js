@@ -102,9 +102,7 @@ describe( 'WidgetResize', () => {
 		let resizer;
 
 		beforeEach( () => {
-			resizer = createResizer( {
-				isCentered: () => false
-			} );
+			resizer = createResizer();
 		} );
 
 		it( 'doesnt break when called with unexpected element', async () => {
@@ -157,7 +155,9 @@ describe( 'WidgetResize', () => {
 
 	it( 'nothing bad happens if activeResizer got unset', async () => {
 		focusEditor( editor );
-		const resizer = createResizer();
+		const resizer = createResizer( {
+			isCentered: () => true
+		} );
 		resizer.redraw(); // @todo this shouldn't be necessary.
 
 		const usedResizer = 'top-right';
@@ -178,7 +178,9 @@ describe( 'WidgetResize', () => {
 		let resizer;
 
 		beforeEach( async () => {
-			resizer = createResizer();
+			resizer = createResizer( {
+				isCentered: () => true
+			} );
 		} );
 
 		it( 'assumes a centered image if no isCentered option is provided', async () => {
@@ -210,9 +212,7 @@ describe( 'WidgetResize', () => {
 		let resizer;
 
 		beforeEach( async () => {
-			resizer = createResizer( {
-				isCentered: () => false
-			} );
+			resizer = createResizer();
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
@@ -251,16 +251,12 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'Integration (percents)', () => {
-		let resizer, resizerOptions;
+		let resizer;
 
 		beforeEach( async () => {
-			resizerOptions = {
-				unit: undefined,
-				isCentered: () => false,
-				onCommit: sinon.stub()
-			};
-
-			resizer = createResizer( resizerOptions );
+			resizer = createResizer( {
+				unit: undefined
+			} );
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
@@ -292,9 +288,9 @@ describe( 'WidgetResize', () => {
 			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
 			mouseMock.up();
 
-			expect( resizerOptions.onCommit.callCount ).to.be.equal( 2 );
-			sinon.assert.calledWithExactly( resizerOptions.onCommit.firstCall, '50%' );
-			sinon.assert.calledWithExactly( resizerOptions.onCommit.secondCall, '75%' );
+			expect( commitStub.callCount ).to.be.equal( 2 );
+			sinon.assert.calledWithExactly( commitStub.firstCall, '50%' );
+			sinon.assert.calledWithExactly( commitStub.secondCall, '75%' );
 		} );
 	} );
 
@@ -342,10 +338,10 @@ describe( 'WidgetResize', () => {
 			viewElement: widget,
 			editor,
 
+			isCentered: () => false,
 			getHandleHost( domWidgetElement ) {
 				return domWidgetElement;
 			},
-
 			getResizeHost( domWidgetElement ) {
 				return domWidgetElement;
 			},
