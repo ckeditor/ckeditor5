@@ -101,27 +101,11 @@ describe( 'WidgetResize', () => {
 
 		beforeEach( () => {
 			resizerOptions = {
-				unit: 'px',
-
-				modelElement: widgetModel,
-				viewElement: widget,
-				editor,
-
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
 				isCentered: () => false,
-
 				onCommit: sinon.stub()
 			};
 
-			resizer = editor.plugins.get( WidgetResize )
-				.attachTo( resizerOptions );
+			resizer = createResizer( resizerOptions );
 		} );
 
 		it( 'doesnt break when called with unexpected element', async () => {
@@ -130,7 +114,6 @@ describe( 'WidgetResize', () => {
 			focusEditor( editor );
 
 			resizer.redraw(); // @todo this shouldn't be necessary.
-			// await wait( 40 );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
 				target: unrelatedElement
@@ -174,36 +157,15 @@ describe( 'WidgetResize', () => {
 	} );
 
 	it( 'nothing bad happens if activeResizer got unset', async () => {
-		const resizerOptions = {
-			unit: 'px',
-
-			modelElement: widgetModel,
-			viewElement: widget,
-			editor,
-
-			getHandleHost( domWidgetElement ) {
-				return domWidgetElement;
-			},
-
-			getResizeHost( domWidgetElement ) {
-				return domWidgetElement;
-			},
-
-			onCommit: sinon.stub()
-		};
-
-		const resizer = editor.plugins.get( WidgetResize ).attachTo( resizerOptions );
-		// ----------
 		focusEditor( editor );
+		const resizer = createResizer();
 		resizer.redraw(); // @todo this shouldn't be necessary.
 
 		const usedResizer = 'top-right';
 		const domParts = getWidgetDomParts( widget, usedResizer );
 		const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
 
-		const plugin = editor.plugins.get( WidgetResize );
-		// resizer._activeResizer = null;
-		plugin._getResizerByHandle = sinon.stub().returns( null );
+		editor.plugins.get( WidgetResize )._getResizerByHandle = sinon.stub().returns( null );
 
 		mouseMock.down( editor, domParts.resizeHandle );
 
@@ -218,25 +180,10 @@ describe( 'WidgetResize', () => {
 
 		beforeEach( async () => {
 			resizerOptions = {
-				unit: 'px',
-
-				modelElement: widgetModel,
-				viewElement: widget,
-				editor,
-
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
 				onCommit: sinon.stub()
 			};
 
-			resizer = editor.plugins.get( WidgetResize )
-				.attachTo( resizerOptions );
+			resizer = createResizer( resizerOptions );
 		} );
 
 		it( 'assumes a centered image if no isCentered option is provided', async () => {
@@ -269,27 +216,11 @@ describe( 'WidgetResize', () => {
 
 		beforeEach( async () => {
 			resizerOptions = {
-				unit: 'px',
-
-				modelElement: widgetModel,
-				viewElement: widget,
-				editor,
-
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
 				isCentered: () => false,
-
 				onCommit: sinon.stub()
 			};
 
-			resizer = editor.plugins.get( WidgetResize )
-				.attachTo( resizerOptions );
+			resizer = createResizer( resizerOptions );
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
@@ -332,25 +263,12 @@ describe( 'WidgetResize', () => {
 
 		beforeEach( async () => {
 			resizerOptions = {
-				modelElement: widgetModel,
-				viewElement: widget,
-				editor,
-
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
+				unit: undefined,
 				isCentered: () => false,
-
 				onCommit: sinon.stub()
 			};
 
-			resizer = editor.plugins.get( WidgetResize )
-				.attachTo( resizerOptions );
+			resizer = createResizer( resizerOptions );
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async function() {
@@ -423,6 +341,28 @@ describe( 'WidgetResize', () => {
 		const element = document.createElement( 'div' );
 		document.body.appendChild( element );
 		return element;
+	}
+
+	function createResizer( resizerOptions ) {
+		const defaultOptions = {
+			unit: 'px',
+
+			modelElement: widgetModel,
+			viewElement: widget,
+			editor,
+
+			getHandleHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			getResizeHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			onCommit: sinon.stub()
+		};
+
+		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
 	}
 
 	function fireMouseEvent( target, eventType, eventData ) {
