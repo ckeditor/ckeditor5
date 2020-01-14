@@ -324,6 +324,8 @@ export default class DowncastWriter {
 	 *			position: 'fixed'
 	 *		}, element );
 	 *
+	 * *Note*: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#set}.
+	 *
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
 	 * @param {module:engine/view/element~Element} element Element to set styles on.
@@ -341,6 +343,8 @@ export default class DowncastWriter {
 	 *
 	 *		writer.removeStyle( 'color', element );  // Removes 'color' style.
 	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * *Note*: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#remove}.
 	 *
 	 * @param {Array.<String>|String} property
 	 * @param {module:engine/view/element~Element} element

@@ -732,6 +732,8 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
+	 * *Note*: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#set}.
+	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
 	 * @protected
 	 * @param {String|Object} property Property name or object with key - value pairs.
@@ -749,6 +751,8 @@ export default class Element extends Node {
 	 *
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * *Note*: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#remove}.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle
 	 * @protected

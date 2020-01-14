@@ -96,7 +96,7 @@ export default class StylesMap {
 	 *		styles.has( 'margin-top' );     // returns false
 	 *		styles.has( 'margin-left' );    // returns true
 	 *
-	 * @param {String} name
+	 * @param {String} name Style name.
 	 * @returns {Boolean}
 	 */
 	has( name ) {
@@ -152,7 +152,6 @@ export default class StylesMap {
 	 *
 	 * @param {String|Object} nameOrObject Style property name or object with multiple properties.
 	 * @param {String} value Value to set.
-	 * @returns {Boolean}
 	 */
 	set( nameOrObject, value ) {
 		if ( isObject( nameOrObject ) ) {
@@ -185,7 +184,7 @@ export default class StylesMap {
 	 *
 	 *		styles.toString();   // returns 'margin-bottom:1px;margin-left:1px;'
 	 *
-	 * @param name
+	 * @param {String} name Style name.
 	 */
 	remove( name ) {
 		unset( this._styles, toPath( name ) );
@@ -193,7 +192,7 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns a normalized style object or value.
+	 * Returns a normalized style object or a single value.
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setTo( 'margin:1px 2px 3em;' );
@@ -211,7 +210,7 @@ export default class StylesMap {
 	 *
 	 * *Note*: This method will only return normalized styles if a style processor was defined.
 	 *
-	 * @param {String} name
+	 * @param {String} name Style name.
 	 * @returns {Object|String|undefined}
 	 */
 	getNormalized( name ) {
