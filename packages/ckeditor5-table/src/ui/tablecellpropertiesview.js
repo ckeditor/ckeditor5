@@ -24,8 +24,6 @@ import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dr
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
-
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
@@ -41,6 +39,7 @@ import alignBottomIcon from '../../theme/icons/align-bottom.svg';
 
 import '../../theme/form.css';
 import '../../theme/tablecellproperties.css';
+import FormRowView from './formrowview';
 
 const ALIGNMENT_ICONS = {
 	left: alignLeftIcon,
@@ -125,6 +124,45 @@ export default class TableCellPropertiesView extends View {
 			verticalAlignment: 'middle'
 		} );
 
+		const borderRowView = new FormRowView( locale, {
+			labelView: this.borderRowLabel,
+			children: [
+				this.borderRowLabel,
+				this.borderStyleDropdown,
+				this.borderColorInput,
+				this.borderWidthInput
+			]
+		} );
+
+		borderRowView.class = 'ck-table-cell-properties-form__border-row';
+
+		const paddingBackgroundRowView = new FormRowView( locale, {
+			children: [
+				this.backgroundInput,
+				this.paddingInput,
+			]
+		} );
+
+		const alignmentRowView = new FormRowView( locale, {
+			labelView: this.alignmentLabel,
+			children: [
+				this.alignmentLabel,
+				this.horizontalAlignmentToolbar,
+				this.verticalAlignmentToolbar,
+			]
+		} );
+
+		alignmentRowView.class = 'ck-table-cell-properties-form__alignment-row';
+
+		const actionRowView = new FormRowView( locale, {
+			children: [
+				this.saveButtonView,
+				this.cancelButtonView,
+			]
+		} );
+
+		actionRowView.class = 'ck-table-form__action-row';
+
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
@@ -150,60 +188,10 @@ export default class TableCellPropertiesView extends View {
 					]
 				},
 
-				// Border
-				createFormRowDefinition( {
-					ariaLabelledBy: this.borderRowLabel,
-					className: 'ck-table-cell-properties-form__border-row',
-					children: [
-						this.borderRowLabel,
-
-						// TODO: This should become a new component or be integrated into LabeledInputView.
-						{
-							tag: 'div',
-							attributes: {
-								class: [
-									'ck',
-									'ck-labeled-dropdown',
-									'ck-table-cell-properties-form__border-style'
-								],
-							},
-							children: [
-								this.borderStyleDropdownLabel,
-								this.borderStyleDropdown,
-							]
-						},
-						this.borderColorInput,
-						this.borderWidthInput,
-					]
-				} ),
-
-				// Background & Padding
-				createFormRowDefinition( {
-					children: [
-						this.backgroundInput,
-						this.paddingInput,
-					]
-				} ),
-
-				// Alignment
-				createFormRowDefinition( {
-					ariaLabelledBy: this.alignmentLabel,
-					className: 'ck-table-cell-properties-form__alignment-row',
-					children: [
-						this.alignmentLabel,
-						this.horizontalAlignmentToolbar,
-						this.verticalAlignmentToolbar
-					]
-				} ),
-
-				// Action buttons
-				createFormRowDefinition( {
-					className: 'ck-table-form__action-row',
-					children: [
-						this.saveButtonView,
-						this.cancelButtonView
-					]
-				} )
+				borderRowView,
+				paddingBackgroundRowView,
+				alignmentRowView,
+				actionRowView
 			]
 		} );
 	}
@@ -220,10 +208,10 @@ export default class TableCellPropertiesView extends View {
 
 		const focusableChildViews = [
 			this.borderStyleDropdown,
-			this.borderWidthInput,
 			this.borderColorInput,
-			this.paddingInput,
+			this.borderWidthInput,
 			this.backgroundInput,
+			this.paddingInput,
 			this.horizontalAlignmentToolbar,
 			this.verticalAlignmentToolbar,
 			this.saveButtonView,
@@ -259,7 +247,7 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Style ---------------------------------------------------
 
-		const borderStyleDropdown = this.borderStyleDropdown = createDropdown( locale );
+		const borderStyleDropdown = createDropdown( locale );
 		borderStyleDropdown.buttonView.set( {
 			isOn: false,
 			withText: true,
@@ -284,8 +272,29 @@ export default class TableCellPropertiesView extends View {
 
 		addListToDropdown( borderStyleDropdown, this._getBorderStyleDefinitions() );
 
-		this.borderStyleDropdownLabel = new LabelView( locale );
-		this.borderStyleDropdownLabel.text = t( 'Style' );
+		const borderStyleLabel = new LabelView( locale );
+		borderStyleLabel.text = t( 'Style' );
+
+		// TODO: This should become a new component or be integrated into LabeledInputView.
+		this.borderStyleDropdown = new View( locale );
+		this.borderStyleDropdown.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-labeled-dropdown',
+					'ck-table-cell-properties-form__border-style'
+				],
+			},
+			children: [
+				borderStyleLabel,
+				borderStyleDropdown,
+			]
+		} );
+
+		this.borderStyleDropdown.focus = () => {
+			borderStyleDropdown.focus();
+		};
 
 		// -- Width ---------------------------------------------------
 
@@ -539,43 +548,4 @@ function createAlignmentButton( locale, label, icon ) {
 	} );
 
 	return button;
-}
-
-function createFormRowDefinition( {
-	children,
-	className,
-	ariaLabelledBy
-} ) {
-	const def = {
-		tag: 'div',
-		attributes: {
-			class: [
-				'ck',
-				'ck-form__row'
-			]
-		},
-		children
-	};
-
-	// Note: Flexbox does not work on fieldset elements in Chrome
-	// (https://bugs.chromium.org/p/chromium/issues/detail?id=375693).
-	// This is why "role" is used and the label has an id. It's a hack but better than nothing.
-	if ( ariaLabelledBy ) {
-		const id = `ck-editor__aria-label_${ uid() }`;
-
-		ariaLabelledBy.extendTemplate( {
-			attributes: {
-				id
-			}
-		} );
-
-		def.attributes.role = 'group';
-		def.attributes[ 'aria-labelledby' ] = id;
-	}
-
-	if ( className ) {
-		def.attributes.class.push( className );
-	}
-
-	return def;
 }

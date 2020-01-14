@@ -271,10 +271,9 @@ export default class TableCellPropertiesUI extends Plugin {
 		editor.editing.view.focus();
 
 		if ( this._isViewInBalloon ) {
-			// TODO below
-			// Blur the input element before removing it from DOM to prevent issues in some browsers.
+			// Blur any input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
-			// this.formView.saveButtonView.focus();
+			this.view.saveButtonView.focus();
 
 			this._balloon.remove( this.view );
 
