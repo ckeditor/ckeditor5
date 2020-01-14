@@ -20,6 +20,12 @@ export default class StylesMap {
 	 */
 	constructor( styleProcessor ) {
 		/**
+		 * Keeps and internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
+		 * value access model using lodash's get, set, unset, etc methods.
+		 *
+		 * When no style processor rules are defined the it acts as simple key-value storage.
+		 *
+		 * @type {Object}
 		 * @private
 		 */
 		this._styles = {};
