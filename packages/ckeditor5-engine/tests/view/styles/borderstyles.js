@@ -62,7 +62,7 @@ describe( 'Border styles normalization', () => {
 	it( 'should output inline shorthand rules #1', () => {
 		styles.setTo( 'border:1px solid blue;' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:1px solid blue;' +
 			'border-left:1px solid blue;' +
 			'border-right:1px solid blue;' +
@@ -80,7 +80,7 @@ describe( 'Border styles normalization', () => {
 			color: { top: 'blue' }
 		} );
 
-		expect( styles.getInlineStyle( 'border' ) ).to.equal( 'border-top:blue;' );
+		expect( styles.toString( 'border' ) ).to.equal( 'border-top:blue;' );
 		// TODO: expect( styles.has( 'border-top-color' ) ).to.be.true;
 		// expect( styles.getInlineProperty( 'border-top-color' ) ).to.equal( 'blue' );
 	} );
@@ -88,7 +88,7 @@ describe( 'Border styles normalization', () => {
 	it( 'should output inline shorthand rules #2', () => {
 		styles.setTo( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:1px solid blue;' +
 			'border-left:2.7em dashed #665511;' +
 			'border-right:1px solid blue;' +
@@ -136,7 +136,7 @@ describe( 'Border styles normalization', () => {
 		styles.set( 'border-left', '#665511 dashed 2.7em' );
 		styles.set( 'border-top', '7px dotted #ccc' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:1px solid blue;' +
 			'border-left:2.7em dashed #665511;' +
 			'border-right:1px solid blue;' +
@@ -152,7 +152,7 @@ describe( 'Border styles normalization', () => {
 		styles.setTo( 'border:1px solid blue;' );
 		styles.remove( 'border-color' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:1px solid;' +
 			'border-left:1px solid;' +
 			'border-right:1px solid;' +
@@ -172,7 +172,7 @@ describe( 'Border styles normalization', () => {
 	it( 'should output border with only style shorthand (style)', () => {
 		styles.setTo( 'border:solid;' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:solid;' +
 			'border-left:solid;' +
 			'border-right:solid;' +
@@ -191,7 +191,7 @@ describe( 'Border styles normalization', () => {
 	it( 'should output border with only style shorthand (color)', () => {
 		styles.setTo( 'border:#f00;' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:#f00;' +
 			'border-left:#f00;' +
 			'border-right:#f00;' +
@@ -210,7 +210,7 @@ describe( 'Border styles normalization', () => {
 	it( 'should output border with only style shorthand (width)', () => {
 		styles.setTo( 'border:1px;' );
 
-		expect( styles.getInlineStyle() ).to.equal(
+		expect( styles.toString() ).to.equal(
 			'border-bottom:1px;' +
 			'border-left:1px;' +
 			'border-right:1px;' +
@@ -591,7 +591,7 @@ describe( 'Border styles normalization', () => {
 				'border-right:dotted #FFC000 3.0pt;'
 			);
 
-			expect( styles.getInlineStyle() ).to.equal(
+			expect( styles.toString() ).to.equal(
 				'border-bottom:3.0pt dotted #FFC000;' +
 				'border-left:none;' +
 				'border-right:3.0pt dotted #FFC000;' +

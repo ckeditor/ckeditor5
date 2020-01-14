@@ -62,7 +62,7 @@ describe( 'Margin styles normalizer', () => {
 	it( 'should output inline style (1 value defined)', () => {
 		styles.setTo( 'margin:1px;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'margin:1px;' );
+		expect( styles.toString() ).to.equal( 'margin:1px;' );
 		expect( styles.getInlineProperty( 'margin' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '1px' );
@@ -73,7 +73,7 @@ describe( 'Margin styles normalizer', () => {
 	it( 'should output inline style (2 values defined)', () => {
 		styles.setTo( 'margin:1px .34cm;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'margin:1px .34cm;' );
+		expect( styles.toString() ).to.equal( 'margin:1px .34cm;' );
 		expect( styles.getInlineProperty( 'margin' ) ).to.equal( '1px .34cm' );
 		expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '.34cm' );
@@ -84,7 +84,7 @@ describe( 'Margin styles normalizer', () => {
 	it( 'should output inline style (3 values defined)', () => {
 		styles.setTo( 'margin:1px .34cm 90.1rem;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'margin:1px .34cm 90.1rem;' );
+		expect( styles.toString() ).to.equal( 'margin:1px .34cm 90.1rem;' );
 		expect( styles.getInlineProperty( 'margin' ) ).to.equal( '1px .34cm 90.1rem' );
 		expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '.34cm' );
@@ -95,7 +95,7 @@ describe( 'Margin styles normalizer', () => {
 	it( 'should output inline style (3 values defined, only last different)', () => {
 		styles.setTo( 'margin:1px 1px 90.1rem;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'margin:1px 1px 90.1rem;' );
+		expect( styles.toString() ).to.equal( 'margin:1px 1px 90.1rem;' );
 		expect( styles.getInlineProperty( 'margin' ) ).to.equal( '1px 1px 90.1rem' );
 		expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '1px' );
@@ -106,7 +106,7 @@ describe( 'Margin styles normalizer', () => {
 	it( 'should output inline style (4 values defined)', () => {
 		styles.setTo( 'margin:1px .34cm 90.1rem thick;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'margin:1px .34cm 90.1rem thick;' );
+		expect( styles.toString() ).to.equal( 'margin:1px .34cm 90.1rem thick;' );
 		expect( styles.getInlineProperty( 'margin' ) ).to.equal( '1px .34cm 90.1rem thick' );
 		expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '.34cm' );
@@ -117,7 +117,7 @@ describe( 'Margin styles normalizer', () => {
 	it( 'should output inline style (4 values defined, only last different)', () => {
 		styles.setTo( 'margin:1px 1px 1px thick;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'margin:1px 1px 1px thick;' );
+		expect( styles.toString() ).to.equal( 'margin:1px 1px 1px thick;' );
 		expect( styles.getInlineProperty( 'margin' ) ).to.equal( '1px 1px 1px thick' );
 		expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '1px' );
@@ -151,28 +151,28 @@ describe( 'Margin styles normalizer', () => {
 		it( 'should output margin-top', () => {
 			styles.setTo( 'margin-top:1px;' );
 
-			expect( styles.getInlineStyle() ).to.equal( 'margin-top:1px;' );
+			expect( styles.toString() ).to.equal( 'margin-top:1px;' );
 			expect( styles.getInlineProperty( 'margin-top' ) ).to.equal( '1px' );
 		} );
 
 		it( 'should output margin-right', () => {
 			styles.setTo( 'margin-right:1px;' );
 
-			expect( styles.getInlineStyle() ).to.equal( 'margin-right:1px;' );
+			expect( styles.toString() ).to.equal( 'margin-right:1px;' );
 			expect( styles.getInlineProperty( 'margin-right' ) ).to.equal( '1px' );
 		} );
 
 		it( 'should output margin-bottom', () => {
 			styles.setTo( 'margin-bottom:1px;' );
 
-			expect( styles.getInlineStyle() ).to.equal( 'margin-bottom:1px;' );
+			expect( styles.toString() ).to.equal( 'margin-bottom:1px;' );
 			expect( styles.getInlineProperty( 'margin-bottom' ) ).to.equal( '1px' );
 		} );
 
 		it( 'should output margin-left', () => {
 			styles.setTo( 'margin-left:1px;' );
 
-			expect( styles.getInlineStyle() ).to.equal( 'margin-left:1px;' );
+			expect( styles.toString() ).to.equal( 'margin-left:1px;' );
 			expect( styles.getInlineProperty( 'margin-left' ) ).to.equal( '1px' );
 		} );
 	} );

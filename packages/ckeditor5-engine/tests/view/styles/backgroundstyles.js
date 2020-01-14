@@ -44,7 +44,7 @@ describe( 'Background styles normalization', () => {
 	it( 'should output inline background-color style', () => {
 		styles.setTo( 'background:#f00;' );
 
-		expect( styles.getInlineStyle() ).to.equal( 'background-color:#f00;' );
+		expect( styles.toString() ).to.equal( 'background-color:#f00;' );
 		expect( styles.getInlineProperty( 'background-color' ) ).to.equal( '#f00' );
 	} );
 } );

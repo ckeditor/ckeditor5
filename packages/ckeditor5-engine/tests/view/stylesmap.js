@@ -116,15 +116,15 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
-	describe( 'getInlineStyle()', () => {
-		it( 'should return undefined for empty styles', () => {
-			expect( stylesMap.getInlineStyle() ).to.be.undefined;
+	describe( 'toString()', () => {
+		it( 'should return empty string for empty styles', () => {
+			expect( stylesMap.toString() ).to.equal( '' );
 		} );
 
 		it( 'should return sorted styles string if styles are set', () => {
 			stylesMap.setTo( 'margin-top:1px;color:blue;' );
 
-			expect( stylesMap.getInlineStyle() ).to.equal( 'color:blue;margin-top:1px;' );
+			expect( stylesMap.toString() ).to.equal( 'color:blue;margin-top:1px;' );
 		} );
 	} );
 

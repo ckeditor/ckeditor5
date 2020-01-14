@@ -266,7 +266,9 @@ export default class Element extends Node {
 		}
 
 		if ( key == 'style' ) {
-			return this._styles.getInlineStyle();
+			const inlineStyle = this._styles.toString();
+
+			return inlineStyle == '' ? undefined : inlineStyle;
 		}
 
 		return this._attrs.get( key );
@@ -514,7 +516,7 @@ export default class Element extends Node {
 	 */
 	getIdentity() {
 		const classes = Array.from( this._classes ).sort().join( ',' );
-		const styles = this._styles.getInlineStyle();
+		const styles = this._styles.toString();
 		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
 
 		return this.name +

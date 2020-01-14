@@ -166,7 +166,7 @@ export default class StylesMap {
 	/**
 	 * Removes given style.
 	 *
-	 *		styles.setTo( 'background:#foo;margin-right:2px;' );
+	 *		styles.setTo( 'background:#f00;margin-right:2px;' );
 	 *
 	 *		styles.remove( 'background' );
 	 *
@@ -218,16 +218,35 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns a string containing normalized styles string or undefined if no style properties are set.
+	 * Returns a normalized style string. Styles are sorted by name.
 	 *
-	 * @returns {String|undefined}
+	 *		styles.set( 'margin' , '1px' );
+	 *		styles.set( 'background', '#f00' );
+	 *
+	 *		styles.toString();
+	 *	 	// Will return: 'background:#f00;margin:1px;'
+	 *
+	 * *Note:* This method supports normalized styles if defined.
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
+	 *		styles.set( 'margin' , '1px' );
+	 *		styles.set( 'background', '#f00' );
+	 *		styles.remove( 'margin-top' );
+	 *		styles.remove( 'margin-right' );
+	 *
+	 *		styles.toString();
+	 *	 	// Will return: 'background:#f00;margin-bottom:1px;margin-left:1px;'
+	 *
+	 * @returns {String}
 	 */
-	getInlineStyle() {
+	toString() {
 		const entries = this._getStylesEntries();
 
 		// Return undefined for empty styles map.
 		if ( !entries.length ) {
-			return;
+			return '';
 		}
 
 		return entries
