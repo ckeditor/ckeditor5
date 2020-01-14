@@ -21,7 +21,7 @@ import {
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'WidgetResize', () => {
-	let editor, editorElement, view, widget, widgetModel, customConfig, mouseListenerStubs;
+	let editor, editorElement, view, widget, widgetModel, customConfig, mouseListenerSpies;
 
 	const mouseMock = {
 		down( editor, domTarget ) {
@@ -48,7 +48,7 @@ describe( 'WidgetResize', () => {
 	};
 
 	before( () => {
-		mouseListenerStubs = {
+		mouseListenerSpies = {
 			down: sinon.spy( WidgetResize.prototype, '_mouseDownListener' ),
 			move: sinon.spy( WidgetResize.prototype, '_mouseMoveListener' ),
 			up: sinon.spy( WidgetResize.prototype, '_mouseUpListener' )
@@ -56,7 +56,7 @@ describe( 'WidgetResize', () => {
 	} );
 
 	after( () => {
-		for ( const stub of Object.values( mouseListenerStubs ) ) {
+		for ( const stub of Object.values( mouseListenerSpies ) ) {
 			stub.restore();
 		}
 	} );
@@ -71,7 +71,7 @@ describe( 'WidgetResize', () => {
 		widget = view.document.getRoot().getChild( 0 );
 		widgetModel = editor.model.document.getRoot().getChild( 0 );
 
-		for ( const stub of Object.values( mouseListenerStubs ) ) {
+		for ( const stub of Object.values( mouseListenerSpies ) ) {
 			stub.resetHistory();
 		}
 
@@ -161,18 +161,16 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe( 'mouse listeners (stubbed)', () => {
-		it( 'are detached when plugin is destroyed', async () => {
-			await editor.destroy();
-			const plugin = editor.plugins.get( WidgetResize );
-			editor = null;
+	it( 'are detached when plugin is destroyed', async () => {
+		await editor.destroy();
+		const plugin = editor.plugins.get( WidgetResize );
+		editor = null;
 
-			// Trigger mouse event.
-			fireMouseEvent( document.body, 'mousedown', {} );
+		// Trigger mouse event.
+		fireMouseEvent( document.body, 'mousedown', {} );
 
-			// Ensure nothing got called.
-			expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
-		} );
+		// Ensure nothing got called.
+		expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
 	} );
 
 	describe( '_proposeNewSize()', () => {
