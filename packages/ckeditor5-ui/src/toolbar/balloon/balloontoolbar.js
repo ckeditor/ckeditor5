@@ -147,7 +147,7 @@ export default class BalloonToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
-		const toolbarView = new ToolbarView( this.editor.locale );
+		const toolbarView = new ToolbarView( this.editor.locale, { shouldGroupWhenFull: true } );
 
 		toolbarView.extendTemplate( {
 			attributes: {
@@ -188,6 +188,12 @@ export default class BalloonToolbar extends Plugin {
 		this.listenTo( this.editor.ui, 'update', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
+
+		// Set toolbar's max-width to be half of the editable's width.
+		const editableRect = new Rect( this.editor.editing.view.getDomRoot() );
+		const maxToolbarWidth = editableRect.width / 2;
+
+		this.toolbarView.element.style.maxWidth = `${ maxToolbarWidth }px`;
 
 		// Add the toolbar to the common editor contextual balloon.
 		this._balloon.add( {
