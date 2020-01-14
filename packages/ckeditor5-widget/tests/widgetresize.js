@@ -21,7 +21,7 @@ import {
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'WidgetResize', () => {
-	let editor, editorElement, view, widget, widgetModel, customConfig, mouseListenerSpies;
+	let editor, editorElement, view, widget, widgetModel, mouseListenerSpies;
 
 	const commitStub = sinon.stub();
 	const mouseMock = {
@@ -64,7 +64,7 @@ describe( 'WidgetResize', () => {
 
 	beforeEach( async () => {
 		editorElement = createEditorElement();
-		editor = await createEditor( editorElement, customConfig );
+		editor = await createEditor( editorElement );
 		view = editor.editing.view;
 
 		setModelData( editor.model, '[<widget></widget>]' );
@@ -266,13 +266,13 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	function createEditor( element, config ) {
+	function createEditor( element ) {
 		return ClassicEditor
-			.create( element, Object.assign( {
+			.create( element, {
 				plugins: [
 					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
 				]
-			}, config ) );
+			} );
 
 		function simpleWidgetPlugin( editor ) {
 			editor.model.schema.register( 'widget', {
