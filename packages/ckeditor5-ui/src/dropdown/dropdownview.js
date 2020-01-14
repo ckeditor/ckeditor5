@@ -131,6 +131,23 @@ export default class DropdownView extends View {
 		this.set( 'class' );
 
 		/**
+		 * (Optional) The `id` attribute of the dropdown (i.e. to pair with a `<label>` element).
+		 *
+		 * @observable
+		 * @member {String} #id
+		 */
+		this.set( 'id' );
+
+		/**
+		 * Set to `true` when the field has some error. Usually controlled via
+		 * {@link module:ui/labeledview/labeledview~LabeledView#errorText}.
+		 *
+		 * @observable
+		 * @member {Boolean} #hasError
+		 */
+		this.set( 'hasError', false );
+
+		/**
 		 * The position of the panel, relative to the dropdown.
 		 *
 		 * **Note**: When `'auto'`, the panel will use one of the remaining positions to stay
@@ -175,8 +192,12 @@ export default class DropdownView extends View {
 					'ck',
 					'ck-dropdown',
 					bind.to( 'class' ),
+					bind.if( 'hasError', 'ck-error' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
-				]
+				],
+				id: bind.to( 'id' ),
+				'aria-invalid': bind.if( 'hasError', true ),
+				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 
 			children: [
