@@ -120,7 +120,7 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Inserts single style property.
+	 * Sets a given style.
 	 *
 	 * Can insert one by one
 	 *
@@ -134,16 +134,30 @@ export default class StylesMap {
 	 *			'margin-right': '1em'
 	 *		} );
 	 *
-	 * Supports shorthands.
+	 * *Note:* This method supports normalized styles if defined.
 	 *
-	 * @param {String|Object} nameOrObject
-	 * @param {String|Object} value
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
+	 *		styles.set( 'margin', '2px' );
+	 *
+	 * The above code will set margin to a normalized value:
+	 *
+	 *		const margin = {
+	 *			top: '2px',
+	 *			right: '2px',
+	 *			bottom: '2px',
+	 *			left: '2px',
+	 *		};
+	 *
+	 * @param {String|Object} nameOrObject Style property name or object with multiple properties.
+	 * @param {String} value Value to set.
 	 * @returns {Boolean}
 	 */
 	set( nameOrObject, value ) {
 		if ( isObject( nameOrObject ) ) {
-			for ( const key of Object.keys( nameOrObject ) ) {
-				this.set( key, nameOrObject[ key ] );
+			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
+				this._styleProcessor.toNormalizedForm( key, value, this._styles );
 			}
 		} else {
 			this._styleProcessor.toNormalizedForm( nameOrObject, value, this._styles );
@@ -327,7 +341,7 @@ export class StylesProcessor {
 	 * Parse style property value to a normalized form.
 	 *
 	 * @param {String} propertyName Name of style property.
-	 * @param {String} value Value of style property.
+	 * @param {String} propertyValue Value of style property.
 	 * @param {Object} styles
 	 * @private
 	 */
