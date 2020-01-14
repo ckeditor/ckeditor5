@@ -13,6 +13,8 @@ In this guide you can learn how to add plugins to your editor in the two most co
 * When you use an {@link builds/guides/overview editor build},
 * When you {@link framework/guides/quick-start build your editor from source}.
 
+If you are looking for an easy way to create a custom build of CKEditor 5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create easily a build with a custom set of plugins through a simple and intuitive UI.
+
 ## Requirements
 
 In order to start developing CKEditor 5 you will require:
