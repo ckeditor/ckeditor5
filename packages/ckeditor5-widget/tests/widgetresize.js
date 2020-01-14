@@ -173,6 +173,46 @@ describe( 'WidgetResize', () => {
 		expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
 	} );
 
+	it( 'nothing bad happens if activeResizer got unset', async () => {
+		const resizerOptions = {
+			unit: 'px',
+
+			modelElement: widgetModel,
+			viewElement: widget,
+			editor,
+
+			getHandleHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			getResizeHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			onCommit: sinon.stub()
+		};
+
+		const resizer = editor.plugins.get( WidgetResize ).attachTo( resizerOptions );
+		// ----------
+		focusEditor( editor );
+		resizer.redraw(); // @todo this shouldn't be necessary.
+
+		const usedResizer = 'top-right';
+		const domParts = getWidgetDomParts( widget, usedResizer );
+		const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
+
+		const plugin = editor.plugins.get( WidgetResize );
+		// resizer._activeResizer = null;
+		plugin._getResizerByHandle = sinon.stub().returns( null );
+
+		mouseMock.down( editor, domParts.resizeHandle );
+
+		await wait( 40 );
+
+		mouseMock.move( editor, domParts.resizeHandle, initialPointerPosition );
+		mouseMock.up();
+	} );
+
 	describe( '_proposeNewSize()', () => {
 		let resizer, resizerOptions;
 
