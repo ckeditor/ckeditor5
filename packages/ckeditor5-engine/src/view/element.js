@@ -336,7 +336,7 @@ export default class Element extends Node {
 		// Check if styles are the same.
 		for ( const property of this._styles.getStyleNames() ) {
 			if (
-				!otherElement._styles.hasProperty( property ) ||
+				!otherElement._styles.has( property ) ||
 				otherElement._styles.getInlineProperty( property ) !== this._styles.getInlineProperty( property )
 			) {
 				return false;
@@ -437,7 +437,7 @@ export default class Element extends Node {
 	 */
 	hasStyle( ...property ) {
 		for ( const name of property ) {
-			if ( !this._styles.hasProperty( name ) ) {
+			if ( !this._styles.has( name ) ) {
 				return false;
 			}
 		}

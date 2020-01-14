@@ -81,7 +81,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		expect( styles.getInlineStyle( 'border' ) ).to.equal( 'border-top:blue;' );
-		// TODO: expect( styles.hasProperty( 'border-top-color' ) ).to.be.true;
+		// TODO: expect( styles.has( 'border-top-color' ) ).to.be.true;
 		// expect( styles.getInlineProperty( 'border-top-color' ) ).to.equal( 'blue' );
 	} );
 

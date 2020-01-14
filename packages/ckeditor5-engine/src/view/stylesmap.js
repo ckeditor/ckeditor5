@@ -76,8 +76,8 @@ export default class StylesMap {
 	 *
 	 *		styles.setTo( 'margin-left:1px;' );
 	 *
-	 *		styles.hasProperty( 'margin-left' );    // returns true
-	 *		styles.hasProperty( 'padding' );        // returns false
+	 *		styles.has( 'margin-left' );    // returns true
+	 *		styles.has( 'padding' );        // returns false
 	 *
 	 * *Note:* This check supports normalized style names.
 	 *
@@ -86,20 +86,20 @@ export default class StylesMap {
 	 *
 	 *		styles.setTo( 'margin:2px;' );
 	 *
-	 *		styles.hasProperty( 'margin' );         // returns true
-	 *		styles.hasProperty( 'margin-top' );     // returns true
-	 *		styles.hasProperty( 'margin-left' );    // returns true
+	 *		styles.has( 'margin' );         // returns true
+	 *		styles.has( 'margin-top' );     // returns true
+	 *		styles.has( 'margin-left' );    // returns true
 	 *
 	 *		styles.removeProperty( 'margin-top' );
 	 *
-	 *		styles.hasProperty( 'margin' );         // returns false
-	 *		styles.hasProperty( 'margin-top' );     // returns false
-	 *		styles.hasProperty( 'margin-left' );    // returns true
+	 *		styles.has( 'margin' );         // returns false
+	 *		styles.has( 'margin-top' );     // returns false
+	 *		styles.has( 'margin-left' );    // returns true
 	 *
 	 * @param {String} propertyName
 	 * @returns {Boolean}
 	 */
-	hasProperty( propertyName ) {
+	has( propertyName ) {
 		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {

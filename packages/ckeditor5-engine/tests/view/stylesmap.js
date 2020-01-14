@@ -136,39 +136,39 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
-	describe( 'hasProperty()', () => {
+	describe( 'has()', () => {
 		it( 'should return false if property is not set', () => {
-			expect( stylesMap.hasProperty( 'bar' ) ).to.be.false;
+			expect( stylesMap.has( 'bar' ) ).to.be.false;
 		} );
 
 		it( 'should return false if normalized longhand property is not set', () => {
 			stylesMap.setTo( 'foo-top:1px' );
 
-			expect( stylesMap.hasProperty( 'foo' ) ).to.be.false;
+			expect( stylesMap.has( 'foo' ) ).to.be.false;
 		} );
 
 		it( 'should return true if normalized longhand property is set', () => {
 			stylesMap.setTo( 'foo-top:1px' );
 
-			expect( stylesMap.hasProperty( 'foo-top' ) ).to.be.true;
+			expect( stylesMap.has( 'foo-top' ) ).to.be.true;
 		} );
 
 		it( 'should return true if non-normalized property is set', () => {
 			stylesMap.setTo( 'bar:deeppink' );
 
-			expect( stylesMap.hasProperty( 'bar' ) ).to.be.true;
+			expect( stylesMap.has( 'bar' ) ).to.be.true;
 		} );
 
 		it( 'should return true if normalized shorthanded property is set', () => {
 			stylesMap.setTo( 'foo:1px' );
 
-			expect( stylesMap.hasProperty( 'foo' ) ).to.be.true;
+			expect( stylesMap.has( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'should return true if normalized long-hand property is set', () => {
 			stylesMap.setTo( 'foo:1px' );
 
-			expect( stylesMap.hasProperty( 'foo-top' ) ).to.be.true;
+			expect( stylesMap.has( 'foo-top' ) ).to.be.true;
 		} );
 	} );
 
