@@ -385,6 +385,34 @@ export default class Element extends Node {
 		return this._styles.getInlineProperty( property );
 	}
 
+	/**
+	 * Returns a normalized style object or single style value.
+	 *
+	 * For an element with style set to: margin:1px 2px 3em;
+	 *
+	 *		element.getNormalizedStyle( 'margin' ) );
+	 *
+	 * will return:
+	 *
+	 *		{
+	 *			top: '1px',
+	 *			right: '2px',
+	 *			bottom: '3em',
+	 *			left: '2px'    // a normalized value from margin shorthand
+	 *		}
+	 *
+	 * and reading for single style value:
+	 *
+	 *		styles.getNormalizedStyle( 'margin-left' );
+	 *
+	 * Will return a `2px` string.
+	 *
+	 * *Note*: This method will only return normalized styles if a style processor was defined. Otherwise the style names are not
+	 * normalized.
+	 *
+	 * @param {String} property Name of CSS property
+	 * @returns {Object|String|undefined}
+	 */
 	getNormalizedStyle( property ) {
 		return this._styles.getNormalized( property );
 	}
