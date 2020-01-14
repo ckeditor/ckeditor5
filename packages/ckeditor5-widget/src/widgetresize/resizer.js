@@ -83,7 +83,7 @@ export default class Resizer {
 		this.on( 'commit', event => {
 			// State might not be initialized yet. In this case, prevent further handling and make sure that the resizer is
 			// cleaned up (#5195).
-			if ( !this.state.proposedWidth ) {
+			if ( !this.state.proposedWidth && !this.state.proposedWidthPercents ) {
 				this._cleanup();
 				event.stop();
 			}
@@ -153,7 +153,7 @@ export default class Resizer {
 		const editingView = this._options.editor.editing.view;
 
 		editingView.change( writer => {
-			const unit = this._options.unit;
+			const unit = this._options.unit || '%';
 			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + unit;
 
 			writer.setStyle( 'width', newWidth, this._options.viewElement );
@@ -185,8 +185,8 @@ export default class Resizer {
 	 * @fires commit
 	 */
 	commit() {
-		const unit = this._options.unit;
-		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + this._options.unit;
+		const unit = this._options.unit || '%';
+		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + unit;
 
 		this._options.onCommit( newValue );
 
