@@ -1232,7 +1232,7 @@ describe( 'MentionUI', () => {
 
 				feedCallbackStub.returns( Promise.reject( 'Request timeout' ) );
 
-				const warnSpy = sinon.spy( console, 'warn' );
+				const warnSpy = sinon.stub( console, 'warn' );
 				const eventSpy = sinon.spy();
 				mentionUI.on( 'requestFeed:error', eventSpy );
 
