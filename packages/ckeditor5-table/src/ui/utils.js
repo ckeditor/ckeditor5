@@ -9,6 +9,7 @@
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { getTableWidgetAncestor } from '../utils';
+import { findAncestor } from '../commands/utils';
 
 /**
  * A helper utility that positions the
@@ -21,7 +22,7 @@ export function repositionContextualBalloon( editor ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
 	if ( getTableWidgetAncestor( editor.editing.view.document.selection ) ) {
-		const position = getBalloonPositionData( editor );
+		const position = getBalloonCellPositionData( editor );
 
 		balloon.updatePosition( position );
 	}
@@ -30,18 +31,23 @@ export function repositionContextualBalloon( editor ) {
 /**
  * Returns the positioning options that control the geometry of the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} with respect
- * to the selected element in the editor content.
+ * to the selected table cell in the editor content.
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {module:utils/dom/position~Options}
  */
-export function getBalloonPositionData( editor ) {
+export function getBalloonCellPositionData( editor ) {
+	const model = editor.model;
+	const document = model.document;
+	const selection = document.selection;
 	const editingView = editor.editing.view;
+	const firstPosition = selection.getFirstPosition();
+	const modelTableCell = findAncestor( 'tableCell', firstPosition );
+	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 	const defaultPositions = BalloonPanelView.defaultPositions;
-	const modelWidget = getTableWidgetAncestor( editor.editing.view.document.selection );
 
 	return {
-		target: editingView.domConverter.viewToDom( modelWidget ),
+		target: editingView.domConverter.viewToDom( viewTableCell ),
 		positions: [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,

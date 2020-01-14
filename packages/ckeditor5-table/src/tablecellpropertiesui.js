@@ -14,7 +14,7 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
 import tableCellProperties from './../theme/icons/table-cell-properties.svg';
-import { repositionContextualBalloon, getBalloonPositionData } from './ui/utils';
+import { repositionContextualBalloon, getBalloonCellPositionData } from './ui/utils';
 import { findAncestor } from './commands/utils';
 
 const DEFAULT_BORDER_STYLE = 'none';
@@ -235,7 +235,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		if ( !this._isViewInBalloon ) {
 			this._balloon.add( {
 				view: this.view,
-				position: getBalloonPositionData( editor )
+				position: getBalloonCellPositionData( editor )
 			} );
 		}
 
@@ -310,8 +310,10 @@ function unifyQuadDirectionPropertyValue( value ) {
 		return;
 	}
 
-	// Unify width to one value. If different values are set default to top (or right, etc).
-	value = value.top || value.right || value.bottom || value.left;
-
-	return value;
+	// Unify to one value. If different values are set default to top (or right, etc).
+	for ( const prop in value ) {
+		if ( value[ prop ] && value[ prop ] !== 'none' ) {
+			return value[ prop ];
+		}
+	}
 }

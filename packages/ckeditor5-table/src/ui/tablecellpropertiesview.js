@@ -172,16 +172,16 @@ export default class TableCellPropertiesView extends View {
 								this.borderStyleDropdown,
 							]
 						},
+						this.borderColorInput,
 						this.borderWidthInput,
-						this.borderColorInput
 					]
 				} ),
 
 				// Background & Padding
 				createFormRowDefinition( {
 					children: [
-						this.paddingInput,
 						this.backgroundInput,
+						this.paddingInput,
 					]
 				} ),
 
@@ -198,7 +198,7 @@ export default class TableCellPropertiesView extends View {
 
 				// Action buttons
 				createFormRowDefinition( {
-					className: 'ck-table-cell-properties-form__action-row',
+					className: 'ck-table-form__action-row',
 					children: [
 						this.saveButtonView,
 						this.cancelButtonView

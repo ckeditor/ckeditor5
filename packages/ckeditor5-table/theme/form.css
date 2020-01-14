@@ -55,7 +55,9 @@
 			}
 		}
 
-		&.ck-table-cell-properties-form__action-row {
+		&.ck-table-form__action-row {
+			margin-top: var(--ck-spacing-large);
+
 			& .ck-button-save,
 			& .ck-button-cancel {
 				justify-content: center;
