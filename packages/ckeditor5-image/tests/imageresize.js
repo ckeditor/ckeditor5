@@ -84,6 +84,18 @@ describe( 'ImageResize', () => {
 			expect( editor.getData() )
 				.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
+
+		it( 'doesn\'t downcast consumed tokens', () => {
+			editor.conversion.for( 'downcast' ).add( dispatcher =>
+				dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:width:image' );
+				}, { priority: 'high' } )
+			);
+			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
+
+			expect( editor.getData() )
+				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		} );
 	} );
 
 	describe( 'schema', () => {
