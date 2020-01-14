@@ -115,7 +115,7 @@ export default class Element extends Node {
 
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.
-			this._styles.setStyle( this._attrs.get( 'style' ) );
+			this._styles.setTo( this._attrs.get( 'style' ) );
 
 			this._attrs.delete( 'style' );
 		}
@@ -643,7 +643,7 @@ export default class Element extends Node {
 		if ( key == 'class' ) {
 			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
-			this._styles.setStyle( value );
+			this._styles.setTo( value );
 		} else {
 			this._attrs.set( key, value );
 		}

@@ -16,7 +16,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border shorthand', () => {
-		styles.setStyle( 'border:1px solid blue;' );
+		styles.setTo( 'border:1px solid blue;' );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: 'blue', right: 'blue', bottom: 'blue', left: 'blue' },
@@ -26,7 +26,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border shorthand with only style', () => {
-		styles.setStyle( 'border:solid;' );
+		styles.setTo( 'border:solid;' );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: undefined, right: undefined, bottom: undefined, left: undefined },
@@ -36,7 +36,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border shorthand with other shorthands', () => {
-		styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
+		styles.setTo( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: '#ccc', right: 'blue', bottom: 'blue', left: '#665511' },
@@ -46,7 +46,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border longhand', () => {
-		styles.setStyle( 'border-color: #f00 #ba2;' +
+		styles.setTo( 'border-color: #f00 #ba2;' +
 			'border-style: solid;' +
 			'border-width: 1px;' +
 			'border-bottom-width: 2px;' +
@@ -60,7 +60,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output inline shorthand rules #1', () => {
-		styles.setStyle( 'border:1px solid blue;' );
+		styles.setTo( 'border:1px solid blue;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:1px solid blue;' +
@@ -86,7 +86,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output inline shorthand rules #2', () => {
-		styles.setStyle( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
+		styles.setTo( 'border:1px solid blue;border-left:#665511 dashed 2.7em;border-top:7px dotted #ccc;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:1px solid blue;' +
@@ -102,7 +102,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border + border-position(only color defined)', () => {
-		styles.setStyle( 'border:1px solid blue;border-left:#665511;' );
+		styles.setTo( 'border:1px solid blue;border-left:#665511;' );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: 'blue', right: 'blue', bottom: 'blue', left: '#665511' },
@@ -112,7 +112,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border + border-position(only style defined)', () => {
-		styles.setStyle( 'border:1px solid blue;border-left:ridge;' );
+		styles.setTo( 'border:1px solid blue;border-left:ridge;' );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: 'blue', right: 'blue', bottom: 'blue', left: 'blue' },
@@ -122,7 +122,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should parse border + border-position(only width defined)', () => {
-		styles.setStyle( 'border:1px solid blue;border-left:1337px' );
+		styles.setTo( 'border:1px solid blue;border-left:1337px' );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: 'blue', right: 'blue', bottom: 'blue', left: 'blue' },
@@ -132,7 +132,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should merge rules on insert other shorthand', () => {
-		styles.setStyle( 'border:1px solid blue;' );
+		styles.setTo( 'border:1px solid blue;' );
 		styles.insertProperty( 'border-left', '#665511 dashed 2.7em' );
 		styles.insertProperty( 'border-top', '7px dotted #ccc' );
 
@@ -149,7 +149,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output', () => {
-		styles.setStyle( 'border:1px solid blue;' );
+		styles.setTo( 'border:1px solid blue;' );
 		styles.removeProperty( 'border-color' );
 
 		expect( styles.getInlineStyle() ).to.equal(
@@ -170,7 +170,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output border with only style shorthand (style)', () => {
-		styles.setStyle( 'border:solid;' );
+		styles.setTo( 'border:solid;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:solid;' +
@@ -189,7 +189,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output border with only style shorthand (color)', () => {
-		styles.setStyle( 'border:#f00;' );
+		styles.setTo( 'border:#f00;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:#f00;' +
@@ -208,7 +208,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output border with only style shorthand (width)', () => {
-		styles.setStyle( 'border:1px;' );
+		styles.setTo( 'border:1px;' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:1px;' +
@@ -228,7 +228,7 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'normalized values getters', () => {
 		it( 'should output border-*-color', () => {
-			styles.setStyle( 'border:1px solid #f00;' );
+			styles.setTo( 'border:1px solid #f00;' );
 
 			[ 'top', 'right', 'bottom', 'left' ].forEach( position => {
 				expect( styles.getNormalized( `border-${ position }-color` ) ).to.equal( '#f00' );
@@ -236,7 +236,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should output border-*-width', () => {
-			styles.setStyle( 'border:1px solid #f00;' );
+			styles.setTo( 'border:1px solid #f00;' );
 
 			[ 'top', 'right', 'bottom', 'left' ].forEach( position => {
 				expect( styles.getNormalized( `border-${ position }-width` ) ).to.equal( '1px' );
@@ -244,7 +244,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should output border-*-style', () => {
-			styles.setStyle( 'border:1px solid #f00;' );
+			styles.setTo( 'border:1px solid #f00;' );
 
 			[ 'top', 'right', 'bottom', 'left' ].forEach( position => {
 				expect( styles.getNormalized( `border-${ position }-style` ) ).to.equal( 'solid' );
@@ -254,25 +254,25 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'border reducers', () => {
 		it( 'should output border-top', () => {
-			styles.setStyle( 'border:1px solid #f00' );
+			styles.setTo( 'border:1px solid #f00' );
 
 			expect( styles.getInlineProperty( 'border-top' ) ).to.equal( '1px solid #f00' );
 		} );
 
 		it( 'should output border-right', () => {
-			styles.setStyle( 'border:1px solid #f00' );
+			styles.setTo( 'border:1px solid #f00' );
 
 			expect( styles.getInlineProperty( 'border-right' ) ).to.equal( '1px solid #f00' );
 		} );
 
 		it( 'should output border-bottom', () => {
-			styles.setStyle( 'border:1px solid #f00' );
+			styles.setTo( 'border:1px solid #f00' );
 
 			expect( styles.getInlineProperty( 'border-bottom' ) ).to.equal( '1px solid #f00' );
 		} );
 
 		it( 'should output border-left', () => {
-			styles.setStyle( 'border:1px solid #f00' );
+			styles.setTo( 'border:1px solid #f00' );
 
 			expect( styles.getInlineProperty( 'border-left' ) ).to.equal( '1px solid #f00' );
 		} );
@@ -280,7 +280,7 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'border-color', () => {
 		it( 'should set all border colors (1 value defined)', () => {
-			styles.setStyle( 'border-color:cyan;' );
+			styles.setTo( 'border-color:cyan;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				color: {
@@ -293,7 +293,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border colors (2 values defined)', () => {
-			styles.setStyle( 'border-color:cyan magenta;' );
+			styles.setTo( 'border-color:cyan magenta;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				color: {
@@ -306,7 +306,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border colors (3 values defined)', () => {
-			styles.setStyle( 'border-color:cyan magenta pink;' );
+			styles.setTo( 'border-color:cyan magenta pink;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				color: {
@@ -319,7 +319,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border colors (4 values defined)', () => {
-			styles.setStyle( 'border-color:cyan magenta pink beige;' );
+			styles.setTo( 'border-color:cyan magenta pink beige;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				color: {
@@ -332,7 +332,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should merge with border shorthand', () => {
-			styles.setStyle( 'border:1px solid blue;border-color:cyan black;' );
+			styles.setTo( 'border:1px solid blue;border-color:cyan black;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				color: { top: 'cyan', right: 'black', bottom: 'cyan', left: 'black' },
@@ -342,7 +342,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse #RGB color value', () => {
-			styles.setStyle( 'border:#f00;' );
+			styles.setTo( 'border:#f00;' );
 
 			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
 				top: '#f00',
@@ -353,7 +353,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse #RGBA color value', () => {
-			styles.setStyle( 'border:#f00A;' );
+			styles.setTo( 'border:#f00A;' );
 
 			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
 				top: '#f00A',
@@ -364,7 +364,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse rgb() color value', () => {
-			styles.setStyle( 'border:rgb(0, 30%,35);' );
+			styles.setTo( 'border:rgb(0, 30%,35);' );
 
 			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
 				top: 'rgb(0, 30%, 35)',
@@ -375,7 +375,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse hsl() color value', () => {
-			styles.setStyle( 'border:hsl(0, 100%, 50%);' );
+			styles.setTo( 'border:hsl(0, 100%, 50%);' );
 
 			expect( styles.getNormalized( 'border-color' ) ).to.deep.equal( {
 				top: 'hsl(0, 100%, 50%)',
@@ -388,7 +388,7 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'border-style', () => {
 		it( 'should set all border styles (1 value defined)', () => {
-			styles.setStyle( 'border-style:solid;' );
+			styles.setTo( 'border-style:solid;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				style: {
@@ -401,7 +401,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border styles (2 values defined)', () => {
-			styles.setStyle( 'border-style:solid dotted;' );
+			styles.setTo( 'border-style:solid dotted;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				style: {
@@ -414,7 +414,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border styles (3 values defined)', () => {
-			styles.setStyle( 'border-style:solid dotted dashed;' );
+			styles.setTo( 'border-style:solid dotted dashed;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				style: {
@@ -427,7 +427,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border styles (4 values defined)', () => {
-			styles.setStyle( 'border-style:solid dotted dashed ridge;' );
+			styles.setTo( 'border-style:solid dotted dashed ridge;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				style: {
@@ -440,7 +440,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse none value', () => {
-			styles.setStyle( 'border:none;' );
+			styles.setTo( 'border:none;' );
 
 			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
 				top: 'none',
@@ -451,7 +451,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse line-style value', () => {
-			styles.setStyle( 'border:solid;' );
+			styles.setTo( 'border:solid;' );
 
 			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
 				top: 'solid',
@@ -462,7 +462,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should not parse non line-style value', () => {
-			styles.setStyle( 'border:blue' );
+			styles.setTo( 'border:blue' );
 
 			expect( styles.getNormalized( 'border-style' ) ).to.deep.equal( {
 				top: undefined,
@@ -475,7 +475,7 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'border-width', () => {
 		it( 'should set all border widths (1 value defined)', () => {
-			styles.setStyle( 'border-width:1px;' );
+			styles.setTo( 'border-width:1px;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				width: {
@@ -488,7 +488,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border widths (2 values defined)', () => {
-			styles.setStyle( 'border-width:1px .34cm;' );
+			styles.setTo( 'border-width:1px .34cm;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				width: {
@@ -501,7 +501,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border widths (3 values defined)', () => {
-			styles.setStyle( 'border-width:1px .34cm 90.1rem;' );
+			styles.setTo( 'border-width:1px .34cm 90.1rem;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				width: {
@@ -514,7 +514,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should set all border widths (4 values defined)', () => {
-			styles.setStyle( 'border-width:1px .34cm 90.1rem thick;' );
+			styles.setTo( 'border-width:1px .34cm 90.1rem thick;' );
 
 			expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 				width: {
@@ -527,7 +527,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse px value', () => {
-			styles.setStyle( 'border:1px;' );
+			styles.setTo( 'border:1px;' );
 
 			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
 				top: '1px',
@@ -538,7 +538,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse em value', () => {
-			styles.setStyle( 'border:1em;' );
+			styles.setTo( 'border:1em;' );
 
 			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
 				top: '1em',
@@ -549,7 +549,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse thin value', () => {
-			styles.setStyle( 'border:thin' );
+			styles.setTo( 'border:thin' );
 
 			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
 				top: 'thin',
@@ -560,7 +560,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse medium value', () => {
-			styles.setStyle( 'border:medium' );
+			styles.setTo( 'border:medium' );
 
 			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
 				top: 'medium',
@@ -571,7 +571,7 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		it( 'should parse thick value', () => {
-			styles.setStyle( 'border:thick' );
+			styles.setTo( 'border:thick' );
 
 			expect( styles.getNormalized( 'border-width' ) ).to.deep.equal( {
 				top: 'thick',
@@ -584,7 +584,7 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'border-* position', () => {
 		it( 'should output all positions', () => {
-			styles.setStyle(
+			styles.setTo(
 				'border-top:none;' +
 				'border-left:none;' +
 				'border-bottom:dotted #FFC000 3.0pt;' +
@@ -606,7 +606,7 @@ describe( 'Border styles normalization', () => {
 
 	describe( 'getStyleNames() - border', () => {
 		it( 'should set all border colors (1 value defined)', () => {
-			styles.setStyle( 'border-color: deeppink deepskyblue;' +
+			styles.setTo( 'border-color: deeppink deepskyblue;' +
 				'border-style: solid;' +
 				'border-width: 1px;' +
 				'border-bottom-width: 2px;' +

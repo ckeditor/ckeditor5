@@ -16,7 +16,7 @@ describe( 'Padding styles normalization', () => {
 	} );
 
 	it( 'should set all paddings (1 value defined)', () => {
-		styles.setStyle( 'padding:1px;' );
+		styles.setTo( 'padding:1px;' );
 
 		expect( styles.getNormalized( 'padding' ) ).to.deep.equal( {
 			top: '1px',
@@ -27,7 +27,7 @@ describe( 'Padding styles normalization', () => {
 	} );
 
 	it( 'should set all paddings (2 values defined)', () => {
-		styles.setStyle( 'padding:1px .34cm;' );
+		styles.setTo( 'padding:1px .34cm;' );
 
 		expect( styles.getNormalized( 'padding' ) ).to.deep.equal( {
 			top: '1px',
@@ -38,7 +38,7 @@ describe( 'Padding styles normalization', () => {
 	} );
 
 	it( 'should set all paddings (3 values defined)', () => {
-		styles.setStyle( 'padding:1px .34cm 90.1rem;' );
+		styles.setTo( 'padding:1px .34cm 90.1rem;' );
 
 		expect( styles.getNormalized( 'padding' ) ).to.deep.equal( {
 			top: '1px',
@@ -49,7 +49,7 @@ describe( 'Padding styles normalization', () => {
 	} );
 
 	it( 'should set all paddings (4 values defined)', () => {
-		styles.setStyle( 'padding:1px .34cm 90.1rem thick;' );
+		styles.setTo( 'padding:1px .34cm 90.1rem thick;' );
 
 		expect( styles.getNormalized( 'padding' ) ).to.deep.equal( {
 			top: '1px',
@@ -61,7 +61,7 @@ describe( 'Padding styles normalization', () => {
 
 	describe( 'padding-*', () => {
 		it( 'should set proper padding', () => {
-			styles.setStyle( 'padding-top:1px;' );
+			styles.setTo( 'padding-top:1px;' );
 
 			expect( styles.getNormalized( 'padding' ) ).to.deep.equal( {
 				top: '1px'
@@ -69,7 +69,7 @@ describe( 'Padding styles normalization', () => {
 		} );
 
 		it( 'should set proper padding with padding shorthand', () => {
-			styles.setStyle( 'padding: 2em;padding-top:1px;' );
+			styles.setTo( 'padding: 2em;padding-top:1px;' );
 
 			expect( styles.getNormalized( 'padding' ) ).to.deep.equal( {
 				top: '1px',

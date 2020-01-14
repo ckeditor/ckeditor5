@@ -57,18 +57,16 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Re-sets internal styles definition.
+	 * Set styles map to a new value.
 	 *
-	 * @param {String} styleString
+	 *		styles.setTo( 'border:1px solid blue;margin-top:1px;' );
+	 *
+	 * @param {String} inlineStyle
 	 */
-	setStyle( styleString ) {
+	setTo( inlineStyle ) {
 		this.clear();
 
-		const map = parseInlineStyles( styleString );
-
-		for ( const key of map.keys() ) {
-			const value = map.get( key );
-
+		for ( const [ key, value ] of Array.from( parseInlineStyles( inlineStyle ).entries() ) ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
 		}
 	}
@@ -146,7 +144,7 @@ export default class StylesMap {
 	 * Returns a normalized style object or value.
 	 *
 	 *		const styles = new Styles();
-	 *		styles.setStyle( 'margin:1px 2px 3em;' );
+	 *		styles.setTo( 'margin:1px 2px 3em;' );
 	 *
 	 *		console.log( styles.getNormalized( 'margin' ) );
 	 *		// will log:
