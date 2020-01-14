@@ -124,12 +124,12 @@ export default class StylesMap {
 	 *
 	 * Can insert one by one
 	 *
-	 *		styles.insertProperty( 'color', 'blue' );
-	 *		styles.insertProperty( 'margin-right', '1em' );
+	 *		styles.set( 'color', 'blue' );
+	 *		styles.set( 'margin-right', '1em' );
 	 *
 	 * or many styles at once:
 	 *
-	 *		styles.insertProperty( {
+	 *		styles.set( {
 	 *			color: 'blue',
 	 *			'margin-right': '1em'
 	 *		} );
@@ -140,10 +140,10 @@ export default class StylesMap {
 	 * @param {String|Object} value
 	 * @returns {Boolean}
 	 */
-	insertProperty( nameOrObject, value ) {
+	set( nameOrObject, value ) {
 		if ( isObject( nameOrObject ) ) {
 			for ( const key of Object.keys( nameOrObject ) ) {
-				this.insertProperty( key, nameOrObject[ key ] );
+				this.set( key, nameOrObject[ key ] );
 			}
 		} else {
 			this._styleProcessor.toNormalizedForm( nameOrObject, value, this._styles );

@@ -172,30 +172,30 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
-	describe( 'insertProperty()', () => {
+	describe( 'set()', () => {
 		it( 'should insert new property (empty styles)', () => {
-			stylesMap.insertProperty( 'color', 'blue' );
+			stylesMap.set( 'color', 'blue' );
 
 			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
 		} );
 
 		it( 'should insert new property (other properties are set)', () => {
 			stylesMap.setTo( 'margin: 1px;' );
-			stylesMap.insertProperty( 'color', 'blue' );
+			stylesMap.set( 'color', 'blue' );
 
 			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
 		} );
 
 		it( 'should overwrite property', () => {
 			stylesMap.setTo( 'color: red;' );
-			stylesMap.insertProperty( 'color', 'blue' );
+			stylesMap.set( 'color', 'blue' );
 
 			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
 		} );
 
 		it( 'should set multiple styles by providing an object', () => {
 			stylesMap.setTo( 'color: red;' );
-			stylesMap.insertProperty( { color: 'blue', foo: '1px' } );
+			stylesMap.set( { color: 'blue', foo: '1px' } );
 
 			expect( stylesMap.getInlineProperty( 'color' ) ).to.equal( 'blue' );
 			expect( stylesMap.getInlineProperty( 'foo-top' ) ).to.equal( '1px' );
@@ -203,7 +203,7 @@ describe( 'StylesMap', () => {
 
 		it( 'should set object property', () => {
 			stylesMap.setTo( 'foo:1px;' );
-			stylesMap.insertProperty( 'foo', { right: '2px' } );
+			stylesMap.set( 'foo', { right: '2px' } );
 
 			expect( stylesMap.getInlineProperty( 'foo-left' ) ).to.equal( '1px' );
 			expect( stylesMap.getInlineProperty( 'foo-right' ) ).to.equal( '2px' );

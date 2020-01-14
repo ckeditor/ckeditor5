@@ -74,7 +74,7 @@ describe( 'Border styles normalization', () => {
 	} );
 
 	it( 'should output only defined inline styles', () => {
-		styles.insertProperty( 'border-color', { top: 'blue' } );
+		styles.set( 'border-color', { top: 'blue' } );
 
 		expect( styles.getNormalized( 'border' ) ).to.deep.equal( {
 			color: { top: 'blue' }
@@ -133,8 +133,8 @@ describe( 'Border styles normalization', () => {
 
 	it( 'should merge rules on insert other shorthand', () => {
 		styles.setTo( 'border:1px solid blue;' );
-		styles.insertProperty( 'border-left', '#665511 dashed 2.7em' );
-		styles.insertProperty( 'border-top', '7px dotted #ccc' );
+		styles.set( 'border-left', '#665511 dashed 2.7em' );
+		styles.set( 'border-top', '7px dotted #ccc' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:1px solid blue;' +

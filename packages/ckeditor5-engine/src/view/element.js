@@ -546,7 +546,7 @@ export default class Element extends Node {
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
-		cloned._styles.insertProperty( this._styles.getNormalized() );
+		cloned._styles.set( this._styles.getNormalized() );
 
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
@@ -741,7 +741,7 @@ export default class Element extends Node {
 	_setStyle( property, value ) {
 		this._fireChange( 'attributes', this );
 
-		this._styles.insertProperty( property, value );
+		this._styles.set( property, value );
 	}
 
 	/**
