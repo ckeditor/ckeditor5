@@ -101,16 +101,12 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'mouse listeners', () => {
-		let resizer;
-
 		beforeEach( () => {
-			resizer = createResizer();
+			createResizer();
 		} );
 
 		it( 'doesnt break when called with unexpected element', async () => {
 			const unrelatedElement = document.createElement( 'div' );
-
-			resizer.redraw(); // @todo this shouldn't be necessary.
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
 				target: unrelatedElement
@@ -118,8 +114,6 @@ describe( 'WidgetResize', () => {
 		} );
 
 		it( 'passes new width to the options.onCommit()', async () => {
-			resizer.redraw(); // @todo this shouldn't be necessary.
-
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
@@ -152,10 +146,9 @@ describe( 'WidgetResize', () => {
 	} );
 
 	it( 'nothing bad happens if activeResizer got unset', async () => {
-		const resizer = createResizer( {
+		createResizer( {
 			isCentered: () => true
 		} );
-		resizer.redraw(); // @todo this shouldn't be necessary.
 
 		const usedResizer = 'top-right';
 		const domParts = getWidgetDomParts( widget, usedResizer );
@@ -172,17 +165,13 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( '_proposeNewSize()', () => {
-		let resizer;
-
 		beforeEach( async () => {
-			resizer = createResizer( {
+			createResizer( {
 				isCentered: () => true
 			} );
 		} );
 
 		it( 'assumes a centered image if no isCentered option is provided', async () => {
-			resizer.redraw(); // @todo this shouldn't be necessary.
-
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
@@ -204,15 +193,11 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 	describe( 'Integration (pixels)', () => {
-		let resizer;
-
 		beforeEach( async () => {
-			resizer = createResizer();
+			createResizer();
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
-			resizer.redraw(); // @todo this shouldn't be necessary.
-
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
@@ -244,17 +229,13 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'Integration (percents)', () => {
-		let resizer;
-
 		beforeEach( async () => {
-			resizer = createResizer( {
+			createResizer( {
 				unit: undefined
 			} );
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
-			resizer.redraw(); // @todo this shouldn't be necessary.
-
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
