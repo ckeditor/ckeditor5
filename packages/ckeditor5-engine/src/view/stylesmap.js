@@ -36,11 +36,24 @@ export default class StylesMap {
 	}
 
 	/**
+	 * Returns true if style map has no styles set.
+	 *
+	 * @returns {Boolean}
+	 */
+	get isEmpty() {
+		return !Object.entries( this._styles ).length;
+	}
+
+	/**
 	 * Number of styles defined.
 	 *
 	 * @type {Number}
 	 */
 	get size() {
+		if ( this.isEmpty ) {
+			return 0;
+		}
+
 		return this.getStyleNames().length;
 	}
 
@@ -100,6 +113,10 @@ export default class StylesMap {
 	 * @returns {Boolean}
 	 */
 	has( name ) {
+		if ( this.isEmpty ) {
+			return false;
+		}
+
 		const normalized = this._styleProcessor.getNormalized( name, this._styles );
 
 		if ( !normalized ) {
@@ -242,14 +259,11 @@ export default class StylesMap {
 	 * @returns {String}
 	 */
 	toString() {
-		const entries = this._getStylesEntries();
-
-		// Return undefined for empty styles map.
-		if ( !entries.length ) {
+		if ( this.isEmpty ) {
 			return '';
 		}
 
-		return entries
+		return this._getStylesEntries()
 			.map( arr => arr.join( ':' ) )
 			.sort()
 			.join( ';' ) + ';';
@@ -262,6 +276,10 @@ export default class StylesMap {
 	 * @returns {String|undefined}
 	 */
 	getInlineProperty( propertyName ) {
+		if ( this.isEmpty ) {
+			return;
+		}
+
 		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );
 
 		if ( !normalized ) {
@@ -284,11 +302,15 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns style properties names as the would appear when using {@link #getInlineStyle}
+	 * Returns style properties names as the would appear when using {@link #toString}
 	 *
 	 * @returns {module:engine/view/stylesmap~PropertyEntry}
 	 */
 	getStyleNames() {
+		if ( this.isEmpty ) {
+			return [];
+		}
+
 		const entries = this._getStylesEntries();
 
 		return entries.map( ( [ key ] ) => key );

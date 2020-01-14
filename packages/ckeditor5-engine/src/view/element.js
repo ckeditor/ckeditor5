@@ -223,7 +223,7 @@ export default class Element extends Node {
 			yield 'class';
 		}
 
-		if ( this._styles.size > 0 ) {
+		if ( !this._styles.isEmpty ) {
 			yield 'style';
 		}
 
@@ -245,7 +245,7 @@ export default class Element extends Node {
 			yield [ 'class', this.getAttribute( 'class' ) ];
 		}
 
-		if ( this._styles.size > 0 ) {
+		if ( !this._styles.isEmpty ) {
 			yield [ 'style', this.getAttribute( 'style' ) ];
 		}
 	}
@@ -286,7 +286,7 @@ export default class Element extends Node {
 		}
 
 		if ( key == 'style' ) {
-			return this._styles.size > 0;
+			return !this._styles.isEmpty;
 		}
 
 		return this._attrs.has( key );
@@ -676,7 +676,7 @@ export default class Element extends Node {
 
 		// Remove style attribute.
 		if ( key == 'style' ) {
-			if ( this._styles.size ) {
+			if ( !this._styles.isEmpty ) {
 				this._styles.clear();
 
 				return true;
