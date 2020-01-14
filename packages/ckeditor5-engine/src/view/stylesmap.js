@@ -18,7 +18,7 @@ export default class StylesMap {
 	/**
 	 * Creates Styles instance.
 	 */
-	constructor( styleProcessor ) {
+	constructor() {
 		/**
 		 * Keeps and internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 		 * value access model using lodash's get, set, unset, etc methods.
@@ -35,7 +35,7 @@ export default class StylesMap {
 		// that two editors are connected through single style processor instance.
 		Object.defineProperty( this, '_styleProcessor', {
 			get() {
-				return styleProcessor || StylesMap.processor;
+				return StylesMap._styleProcessor;
 			},
 			enumerable: false
 		} );
@@ -61,18 +61,6 @@ export default class StylesMap {
 		}
 
 		return this.getStyleNames().length;
-	}
-
-	static get processor() {
-		if ( !this._processor ) {
-			this._processor = new StylesProcessor();
-		}
-
-		return this._processor;
-	}
-
-	static setProcessor( processor ) {
-		this._processor = processor;
 	}
 
 	/**
@@ -362,6 +350,32 @@ export default class StylesMap {
 		}
 
 		return parsed;
+	}
+
+	/**
+	 * Returns global StylesProcessor instance.
+	 *
+	 * @returns {module:engine/view/stylesmap~StylesProcessor}
+	 * @private
+	 */
+	static get _styleProcessor() {
+		if ( !this._processor ) {
+			this._processor = new StylesProcessor();
+		}
+
+		return this._processor;
+	}
+
+	/**
+	 * Set new StylesProcessor instance.
+	 *
+	 * This is an internal method used mostly in tests.
+	 *
+	 * @param processor
+	 * @protected
+	 */
+	static _setProcessor( processor ) {
+		this._processor = processor;
 	}
 }
 

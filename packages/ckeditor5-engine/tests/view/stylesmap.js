@@ -26,7 +26,8 @@ describe( 'StylesMap', () => {
 		stylesProcessor.setReducer( 'foo', getTopRightBottomLeftValueReducer( 'foo' ) );
 
 		addPaddingStylesProcessor( stylesProcessor );
-		stylesMap = new StylesMap( stylesProcessor );
+		StylesMap._setProcessor( stylesProcessor );
+		stylesMap = new StylesMap();
 	} );
 
 	describe( 'size getter', () => {

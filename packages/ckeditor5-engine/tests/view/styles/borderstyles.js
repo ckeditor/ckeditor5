@@ -9,10 +9,14 @@ import { addBorderStylesProcessor } from '../../../src/view/styles/borderstyles'
 describe( 'Border styles normalization', () => {
 	let styles;
 
+	before( () => {
+		const stylesProcessor = new StylesProcessor();
+		StylesMap._setProcessor( stylesProcessor );
+		addBorderStylesProcessor( stylesProcessor );
+	} );
+
 	beforeEach( () => {
-		const converter = new StylesProcessor();
-		addBorderStylesProcessor( converter );
-		styles = new StylesMap( converter );
+		styles = new StylesMap();
 	} );
 
 	it( 'should parse border shorthand', () => {

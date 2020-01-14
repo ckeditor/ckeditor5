@@ -162,7 +162,7 @@ export default class Document {
 	}
 
 	addStyleProcessorRules( callback ) {
-		callback( StylesMap.processor );
+		callback( StylesMap._styleProcessor );
 	}
 
 	/**
