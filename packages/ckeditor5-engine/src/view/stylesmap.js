@@ -150,16 +150,21 @@ export default class StylesMap {
 	 *			left: '2px',
 	 *		};
 	 *
+	 * This method allows also to set normalized values directly:
+	 *
+	 *		styles.set( 'border-color', { top: 'blue' } );
+	 *		styles.set( 'margin', { right: '2em' } );
+	 *
 	 * @param {String|Object} nameOrObject Style property name or object with multiple properties.
-	 * @param {String} value Value to set.
+	 * @param {String|Object} valueOrObject Value to set.
 	 */
-	set( nameOrObject, value ) {
+	set( nameOrObject, valueOrObject ) {
 		if ( isObject( nameOrObject ) ) {
 			for ( const [ key, value ] of Object.entries( nameOrObject ) ) {
 				this._styleProcessor.toNormalizedForm( key, value, this._styles );
 			}
 		} else {
-			this._styleProcessor.toNormalizedForm( nameOrObject, value, this._styles );
+			this._styleProcessor.toNormalizedForm( nameOrObject, valueOrObject, this._styles );
 		}
 	}
 

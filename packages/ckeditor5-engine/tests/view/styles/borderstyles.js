@@ -85,8 +85,8 @@ describe( 'Border styles normalization', () => {
 		} );
 
 		expect( styles.toString( 'border' ) ).to.equal( 'border-top:blue;' );
-		// TODO: expect( styles.has( 'border-top-color' ) ).to.be.true;
-		// expect( styles.getAsString( 'border-top-color' ) ).to.equal( 'blue' );
+		expect( styles.has( 'border-top-color' ) ).to.be.true;
+		expect( styles.getAsString( 'border-top-color' ) ).to.equal( 'blue' );
 	} );
 
 	it( 'should output inline shorthand rules #2', () => {
