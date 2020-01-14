@@ -55,12 +55,6 @@ describe( 'WidgetResize', () => {
 		};
 	} );
 
-	beforeEach( () => {
-		for ( const stub of Object.values( mouseListenerStubs ) ) {
-			stub.resetHistory();
-		}
-	} );
-
 	after( () => {
 		for ( const stub of Object.values( mouseListenerStubs ) ) {
 			stub.restore();
@@ -76,6 +70,16 @@ describe( 'WidgetResize', () => {
 
 		widget = view.document.getRoot().getChild( 0 );
 		widgetModel = editor.model.document.getRoot().getChild( 0 );
+
+		for ( const stub of Object.values( mouseListenerStubs ) ) {
+			stub.resetHistory();
+		}
+
+		// It's crucial to have a precisely defined editor size for this test suite.
+		editor.editing.view.change( writer => {
+			const viewEditableRoot = editor.editing.view.document.getRoot();
+			writer.setAttribute( 'style', 'width: 400px; padding: 0px; overflow: hidden', viewEditableRoot );
+		} );
 	} );
 
 	afterEach( () => {
@@ -285,6 +289,68 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
+	describe( 'Integration (percents)', () => {
+		let resizer, resizerOptions;
+
+		beforeEach( async () => {
+			resizerOptions = {
+				modelElement: widgetModel,
+				viewElement: widget,
+				editor,
+
+				getHandleHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				getResizeHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				isCentered: () => false,
+
+				onCommit: sinon.stub()
+			};
+
+			resizer = editor.plugins.get( WidgetResize )
+				.attachTo( resizerOptions );
+		} );
+
+		it( 'properly sets the state for subsequent resizes', async function() {
+			this.timeout( 45000 );
+			focusEditor( editor );
+
+			resizer.redraw(); // @todo this shouldn't be necessary.
+
+			const usedResizer = 'top-right';
+			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
+			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
+			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+
+			finalPointerPosition.pageX += 100;
+
+			mouseMock.down( editor, domParts.resizeHandle );
+
+			await wait( 40 );
+
+			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			mouseMock.up();
+
+			await wait( 40 );
+
+			mouseMock.down( editor, domParts.resizeHandle );
+
+			await wait( 40 );
+
+			finalPointerPosition.pageX += 100;
+			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
+			mouseMock.up();
+
+			expect( resizerOptions.onCommit.callCount ).to.be.equal( 2 );
+			sinon.assert.calledWithExactly( resizerOptions.onCommit.firstCall, '50%' );
+			sinon.assert.calledWithExactly( resizerOptions.onCommit.secondCall, '75%' );
+		} );
+	} );
+
 	function createEditor( element, config ) {
 		return ClassicEditor
 			.create( element, Object.assign( {
@@ -306,9 +372,6 @@ describe( 'WidgetResize', () => {
 						const div = viewWriter.createContainerElement( 'div' );
 						viewWriter.setStyle( 'height', '100px', div );
 						viewWriter.setStyle( 'width', '100px', div );
-						viewWriter.setStyle( 'position', 'absolute', div );
-						viewWriter.setStyle( 'top', '10px', div );
-						viewWriter.setStyle( 'bottom', '10px', div );
 
 						return toWidget( div, viewWriter, {
 							label: 'element label'
