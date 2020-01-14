@@ -90,27 +90,27 @@ export default class StylesMap {
 	 *		styles.has( 'margin-top' );     // returns true
 	 *		styles.has( 'margin-left' );    // returns true
 	 *
-	 *		styles.removeProperty( 'margin-top' );
+	 *		styles.remove( 'margin-top' );
 	 *
 	 *		styles.has( 'margin' );         // returns false
 	 *		styles.has( 'margin-top' );     // returns false
 	 *		styles.has( 'margin-left' );    // returns true
 	 *
-	 * @param {String} propertyName
+	 * @param {String} name
 	 * @returns {Boolean}
 	 */
-	has( propertyName ) {
-		const normalized = this._styleProcessor.getNormalized( propertyName, this._styles );
+	has( name ) {
+		const normalized = this._styleProcessor.getNormalized( name, this._styles );
 
 		if ( !normalized ) {
 			// Try return styles set directly - values that are not parsed.
-			return this._styles[ propertyName ] !== undefined;
+			return this._styles[ name ] !== undefined;
 		}
 
 		if ( isObject( normalized ) ) {
-			const styles = this._styleProcessor.getReducedForm( propertyName, normalized );
+			const styles = this._styleProcessor.getReducedForm( name, normalized );
 
-			const propertyDescriptor = styles.find( ( [ property ] ) => property === propertyName );
+			const propertyDescriptor = styles.find( ( [ property ] ) => property === name );
 
 			// Only return a value if it is set;
 			return Array.isArray( propertyDescriptor );
@@ -165,11 +165,29 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Removes styles property.
+	 * Removes given style.
+	 *
+	 *		styles.setTo( 'background:#foo;margin-right:2px;' );
+	 *
+	 *		styles.remove( 'background' );
+	 *
+	 *		styles.toString();   // returns 'margin-right:2px;'
+	 *
+	 * *Note:* This method supports normalized styles if defined.
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *
+	 *		styles.setTo( 'margin:1px' );
+	 *
+	 *		styles.remove( 'margin-top' );
+	 *		styles.remove( 'margin-right' );
+	 *
+	 *		styles.toString();   // returns 'margin-bottom:1px;margin-left:1px;'
 	 *
 	 * @param name
 	 */
-	removeProperty( name ) {
+	remove( name ) {
 		unset( this._styles, toPath( name ) );
 		delete this._styles[ name ];
 	}

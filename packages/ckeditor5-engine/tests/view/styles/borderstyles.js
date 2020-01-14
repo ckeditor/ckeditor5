@@ -150,7 +150,7 @@ describe( 'Border styles normalization', () => {
 
 	it( 'should output', () => {
 		styles.setTo( 'border:1px solid blue;' );
-		styles.removeProperty( 'border-color' );
+		styles.remove( 'border-color' );
 
 		expect( styles.getInlineStyle() ).to.equal(
 			'border-bottom:1px solid;' +

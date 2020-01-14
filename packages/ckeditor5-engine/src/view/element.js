@@ -759,7 +759,7 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		property = Array.isArray( property ) ? property : [ property ];
-		property.forEach( name => this._styles.removeProperty( name ) );
+		property.forEach( name => this._styles.remove( name ) );
 	}
 
 	/**

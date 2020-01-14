@@ -210,16 +210,16 @@ describe( 'StylesMap', () => {
 		} );
 	} );
 
-	describe( 'removeProperty()', () => {
+	describe( 'remove()', () => {
 		it( 'should do nothing if property is not set', () => {
-			stylesMap.removeProperty( 'color' );
+			stylesMap.remove( 'color' );
 
 			expect( stylesMap.getInlineProperty( 'color' ) ).to.be.undefined;
 		} );
 
 		it( 'should insert new property (other properties are set)', () => {
 			stylesMap.setTo( 'color:blue' );
-			stylesMap.removeProperty( 'color' );
+			stylesMap.remove( 'color' );
 
 			expect( stylesMap.getInlineProperty( 'color' ) ).to.be.undefined;
 		} );
@@ -227,7 +227,7 @@ describe( 'StylesMap', () => {
 		it( 'should remove normalized property', () => {
 			stylesMap.setTo( 'margin:1px' );
 
-			stylesMap.removeProperty( 'margin-top' );
+			stylesMap.remove( 'margin-top' );
 
 			expect( stylesMap.getInlineProperty( 'margin-top' ) ).to.be.undefined;
 		} );
