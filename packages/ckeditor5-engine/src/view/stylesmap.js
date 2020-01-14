@@ -143,7 +143,7 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Return a normalized style object.
+	 * Returns a normalized style object or value.
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setStyle( 'margin:1px 2px 3em;' );
@@ -154,11 +154,15 @@ export default class StylesMap {
 	 *		//     top: '1px',
 	 *		//     right: '2px',
 	 *		//     bottom: '3em',
-	 *		//     left: '2px'
+	 *		//     left: '2px'     // normalized value from margin shorthand
 	 *		// }
 	 *
+	 *		console.log( styles.getNormalized( 'margin-left' ) ); // will log '2px'
+	 *
+	 * *Note*: This method will only return normalized styles if a style processor was defined.
+	 *
 	 * @param {String} name
-	 * @returns {Object|undefined}
+	 * @returns {Object|String|undefined}
 	 */
 	getNormalized( name ) {
 		return this._styleProcessor.getNormalized( name, this._styles );
