@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles, { StylesProcessor } from '../../../src/view/styles';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addPaddingStylesProcessor } from '../../../src/view/styles/paddingstyles';
 
 describe( 'Padding styles normalization', () => {
@@ -12,7 +12,7 @@ describe( 'Padding styles normalization', () => {
 	beforeEach( () => {
 		const converter = new StylesProcessor();
 		addPaddingStylesProcessor( converter );
-		styles = new Styles( converter );
+		styles = new StylesMap( converter );
 	} );
 
 	it( 'should set all paddings (1 value defined)', () => {

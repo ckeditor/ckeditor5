@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles, { StylesProcessor } from '../../../src/view/styles';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addBackgroundStylesProcessor } from '../../../src/view/styles/backgroundstyles';
 
 describe( 'Background styles normalization', () => {
@@ -12,7 +12,7 @@ describe( 'Background styles normalization', () => {
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
 		addBackgroundStylesProcessor( stylesProcessor );
-		styles = new Styles( stylesProcessor );
+		styles = new StylesMap( stylesProcessor );
 	} );
 
 	it( 'should normalize background', () => {

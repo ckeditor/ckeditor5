@@ -11,7 +11,7 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Styles from './styles';
+import StylesMap from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -162,7 +162,7 @@ export default class Document {
 	}
 
 	addStyleProcessorRules( callback ) {
-		callback( Styles.processor );
+		callback( StylesMap.processor );
 	}
 
 	/**

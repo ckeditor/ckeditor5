@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles, { StylesProcessor } from '../../src/view/styles';
+import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
 import encodedImage from './_utils/encodedimage.txt';
 import { addPaddingStylesProcessor } from '../../src/view/styles/paddingstyles';
 
-describe( 'Styles', () => {
+describe( 'StylesMap', () => {
 	let styles, converter;
 
 	beforeEach( () => {
@@ -24,7 +24,7 @@ describe( 'Styles', () => {
 		} ) );
 
 		addPaddingStylesProcessor( converter );
-		styles = new Styles( converter );
+		styles = new StylesMap( converter );
 	} );
 
 	describe( 'size getter', () => {

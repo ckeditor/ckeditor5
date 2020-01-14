@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles, { StylesProcessor } from '../../../src/view/styles';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addMarginStylesProcessor } from '../../../src/view/styles/marginstyles';
 
 describe( 'Margin styles normalizer', () => {
@@ -12,7 +12,7 @@ describe( 'Margin styles normalizer', () => {
 	beforeEach( () => {
 		const converter = new StylesProcessor();
 		addMarginStylesProcessor( converter );
-		styles = new Styles( converter );
+		styles = new StylesMap( converter );
 	} );
 
 	it( 'should set all margins (1 value defined)', () => {

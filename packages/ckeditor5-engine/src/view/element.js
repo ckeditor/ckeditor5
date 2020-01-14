@@ -14,7 +14,7 @@ import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import { isPlainObject } from 'lodash-es';
-import Styles from './styles';
+import StylesMap from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -109,9 +109,9 @@ export default class Element extends Node {
 		 * Normalized styles.
 		 *
 		 * @protected
-		 * @member {module:engine/view/styles~Styles} module:engine/view/element~Element#_styles
+		 * @member {module:engine/view/stylesmap~StylesMap} module:engine/view/element~Element#_styles
 		 */
-		this._styles = new Styles();
+		this._styles = new StylesMap();
 
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.

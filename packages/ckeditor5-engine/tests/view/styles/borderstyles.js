@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Styles, { StylesProcessor } from '../../../src/view/styles';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addBorderStylesProcessor } from '../../../src/view/styles/borderstyles';
 
 describe( 'Border styles normalization', () => {
@@ -12,7 +12,7 @@ describe( 'Border styles normalization', () => {
 	beforeEach( () => {
 		const converter = new StylesProcessor();
 		addBorderStylesProcessor( converter );
-		styles = new Styles( converter );
+		styles = new StylesMap( converter );
 	} );
 
 	it( 'should parse border shorthand', () => {

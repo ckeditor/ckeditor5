@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/view/styles
+ * @module engine/view/stylesmap
  */
 
 import { get, isObject, merge, set, unset } from 'lodash-es';
@@ -14,7 +14,7 @@ import { get, isObject, merge, set, unset } from 'lodash-es';
  *
  * Handles styles normalization.
  */
-export default class Styles {
+export default class StylesMap {
 	/**
 	 * Creates Styles instance.
 	 */
@@ -29,7 +29,7 @@ export default class Styles {
 		// that two editors are connected through single style processor instance.
 		Object.defineProperty( this, '_styleProcessor', {
 			get() {
-				return styleProcessor || Styles.processor;
+				return styleProcessor || StylesMap.processor;
 			},
 			enumerable: false
 		} );
@@ -214,7 +214,7 @@ export default class Styles {
 	/**
 	 * Returns style properties names as the would appear when using {@link #getInlineStyle}
 	 *
-	 * @returns {module:engine/view/styles~PropertyEntry}
+	 * @returns {module:engine/view/stylesmap~PropertyEntry}
 	 */
 	getStyleNames() {
 		const entries = this._getStylesEntries();
@@ -233,7 +233,7 @@ export default class Styles {
 	 * Returns normalized styles entries for further processing.
 	 *
 	 * @private
-	 * @returns {module:engine/view/styles~PropertyEntry}
+	 * @returns {module:engine/view/stylesmap~PropertyEntry}
 	 */
 	_getStylesEntries() {
 		const parsed = [];
@@ -263,7 +263,7 @@ export class StylesProcessor {
 	 * @private
 	 * @param {String} styleName
 	 * @param {Object|String} normalizedValue
-	 * @returns {module:engine/view/styles~PropertyEntry}
+	 * @returns {module:engine/view/stylesmap~PropertyEntry}
 	 */
 	getReducedForm( styleName, normalizedValue ) {
 		if ( this._reducers.has( styleName ) ) {
@@ -505,5 +505,5 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
  */
 
 /**
- * @typedef {Array.<Array.<String>>} module:engine/view/styles~PropertyEntry
+ * @typedef {Array.<Array.<String>>} module:engine/view/stylesmap~PropertyEntry
  */
