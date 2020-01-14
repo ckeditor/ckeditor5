@@ -33,7 +33,7 @@
 			}
 
 			& .ck-button__label {
-				width: 4em;
+				width: 100%;
 			}
 		}
 	}

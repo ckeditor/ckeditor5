@@ -15,31 +15,36 @@
 				min-width: 100%;
 			}
 
-			& .ck-labeled-input,
-			& .ck-labeled-dropdown {
+			& .ck-labeled-view {
 				display: flex;
 				flex-direction: column-reverse;
 				align-items: center;
 
-				& .ck-label {
+				& > .ck-label {
 					font-size: 10px;
 				}
-			}
 
-			& .ck-labeled-dropdown {
-				flex-grow: 0;
+				& .ck.ck-dropdown {
+					flex-grow: 0;
+				}
 			}
 
 			& .ck-table-cell-properties-form__border-style {
 				width: 80px;
 				min-width: 80px;
+				flex-grow: 0;
 			}
 
 			& .ck-table-cell-properties-form__border-width {
-				width: 70px;
-				min-width: 70px;
+				width: 80px;
+				min-width: 80px;
 				flex-grow: 0;
 			}
+		}
+
+		& .ck-table-cell-properties-form__background,
+		& .ck-table-cell-properties-form__padding {
+			width: 50%;
 		}
 
 		&.ck-table-cell-properties-form__alignment-row {

@@ -17,10 +17,10 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
-import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
+import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
+import { labeledInputCreator, labeledDropdownCreator } from '@ckeditor/ckeditor5-ui/src/labeledview/creators';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
@@ -247,18 +247,23 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Style ---------------------------------------------------
 
-		const borderStyleDropdown = createDropdown( locale );
-		borderStyleDropdown.buttonView.set( {
+		const borderStyleDropdown = this.borderStyleDropdown = new LabeledView( locale, labeledDropdownCreator );
+		borderStyleDropdown.set( {
+			label: t( 'Style' ),
+			class: 'ck-table-cell-properties-form__border-style'
+		} );
+
+		borderStyleDropdown.view.buttonView.set( {
 			isOn: false,
 			withText: true,
 			tooltip: t( 'Style' )
 		} );
 
-		borderStyleDropdown.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
+		borderStyleDropdown.view.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
 			return this._borderStyleLabels[ value ];
 		} );
 
-		borderStyleDropdown.on( 'execute', evt => {
+		borderStyleDropdown.view.on( 'execute', evt => {
 			const value = evt.source._borderStyleValue;
 
 			// Update the UI.
@@ -270,63 +275,39 @@ export default class TableCellPropertiesView extends View {
 			} );
 		} );
 
-		addListToDropdown( borderStyleDropdown, this._getBorderStyleDefinitions() );
-
-		const borderStyleLabel = new LabelView( locale );
-		borderStyleLabel.text = t( 'Style' );
-
-		// TODO: This should become a new component or be integrated into LabeledInputView.
-		this.borderStyleDropdown = new View( locale );
-		this.borderStyleDropdown.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-labeled-dropdown',
-					'ck-table-cell-properties-form__border-style'
-				],
-			},
-			children: [
-				borderStyleLabel,
-				borderStyleDropdown,
-			]
-		} );
-
-		this.borderStyleDropdown.focus = () => {
-			borderStyleDropdown.focus();
-		};
+		addListToDropdown( borderStyleDropdown.view, this._getBorderStyleDefinitions() );
 
 		// -- Width ---------------------------------------------------
 
-		const borderWidthInput = this.borderWidthInput = new LabeledInputView( locale, InputTextView );
+		const borderWidthInput = this.borderWidthInput = new LabeledView( locale, labeledInputCreator );
 
 		borderWidthInput.set( {
 			label: t( 'Width' ),
 			class: 'ck-table-cell-properties-form__border-width',
 		} );
 
-		borderWidthInput.bind( 'value' ).to( this, 'borderWidth' );
-		borderWidthInput.bind( 'isReadOnly' ).to( this, 'borderStyle', value => {
-			return value === 'none';
+		borderWidthInput.view.bind( 'value' ).to( this, 'borderWidth' );
+		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
+			return value !== 'none';
 		} );
-		borderWidthInput.inputView.on( 'input', () => {
+		borderWidthInput.view.on( 'input', () => {
 			this.fire( 'update', {
-				borderWidth: borderWidthInput.inputView.element.value
+				borderWidth: borderWidthInput.view.element.value
 			} );
 		} );
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = this.borderColorInput = new LabeledInputView( locale, InputTextView );
+		const borderColorInput = this.borderColorInput = new LabeledView( locale, labeledInputCreator );
 		borderColorInput.label = t( 'Color' );
-		borderColorInput.bind( 'value' ).to( this, 'borderColor' );
-		borderColorInput.bind( 'isReadOnly' ).to( this, 'borderStyle', value => {
-			return value === 'none';
+		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
+		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
+			return value !== 'none';
 		} );
 
-		borderColorInput.inputView.on( 'input', () => {
+		borderColorInput.view.on( 'input', () => {
 			this.fire( 'update', {
-				borderColor: borderColorInput.inputView.element.value
+				borderColor: borderColorInput.view.element.value
 			} );
 		} );
 	}
@@ -337,14 +318,17 @@ export default class TableCellPropertiesView extends View {
 	_createBackgroundField() {
 		const locale = this.locale;
 		const t = this.t;
-		const backgroundInput = this.backgroundInput = new LabeledInputView( locale, InputTextView );
+		const backgroundInput = this.backgroundInput = new LabeledView( locale, labeledInputCreator );
 
-		backgroundInput.label = t( 'Background' );
-		backgroundInput.bind( 'value' ).to( this, 'backgroundColor' );
+		backgroundInput.set( {
+			label: t( 'Background' ),
+			class: 'ck-table-cell-properties-form__background',
+		} );
 
-		backgroundInput.inputView.on( 'input', () => {
+		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
+		backgroundInput.view.on( 'input', () => {
 			this.fire( 'update', {
-				backgroundColor: backgroundInput.inputView.element.value
+				backgroundColor: backgroundInput.view.element.value
 			} );
 		} );
 	}
@@ -355,17 +339,17 @@ export default class TableCellPropertiesView extends View {
 	_createPaddingField() {
 		const locale = this.locale;
 		const t = this.t;
-		const paddingInput = this.paddingInput = new LabeledInputView( locale, InputTextView );
+		const paddingInput = this.paddingInput = new LabeledView( locale, labeledInputCreator );
 
 		paddingInput.set( {
 			label: t( 'Padding' ),
 			class: 'ck-table-cell-properties-form__padding',
 		} );
 
-		paddingInput.bind( 'value' ).to( this, 'padding' );
-		paddingInput.inputView.on( 'input', () => {
+		paddingInput.view.bind( 'value' ).to( this, 'padding' );
+		paddingInput.view.on( 'input', () => {
 			this.fire( 'update', {
-				padding: paddingInput.inputView.element.value
+				padding: paddingInput.view.element.value
 			} );
 		} );
 	}
