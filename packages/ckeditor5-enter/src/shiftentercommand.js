@@ -83,7 +83,7 @@ function softBreakAction( model, writer, selection ) {
 
 	if ( isSelectionEmpty ) {
 		const attributesToCopy = getCopyOnEnterAttributes( model.schema, selection.getAttributes() );
-		insertBreak( writer, range.end );
+		insertBreak( model, writer, range.end );
 
 		writer.removeSelectionAttribute( selection.getAttributeKeys() );
 		writer.setSelectionAttribute( attributesToCopy );
@@ -95,7 +95,7 @@ function softBreakAction( model, writer, selection ) {
 		//
 		// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x<br>^x</h>
 		if ( isContainedWithinOneElement ) {
-			insertBreak( writer, selection.focus );
+			insertBreak( model, writer, selection.focus );
 		}
 		// Selection over multiple elements.
 		//
@@ -116,10 +116,10 @@ function softBreakAction( model, writer, selection ) {
 	}
 }
 
-function insertBreak( writer, position ) {
+function insertBreak( model, writer, position ) {
 	const breakLineElement = writer.createElement( 'softBreak' );
 
-	writer.insert( breakLineElement, position );
+	model.insertContent( breakLineElement, position );
 	writer.setSelection( breakLineElement, 'after' );
 }
 
