@@ -82,6 +82,63 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
+	describe( '_proposeNewSize', () => {
+		let resizer;
+
+		beforeEach( () => {
+			const state = {
+				originalWidth: 40,
+				originalHeight: 40,
+				originalWidthPercents: 10,
+				aspectRatio: 1,
+				_referenceCoordinates: {
+					x: 0,
+					y: 0
+				},
+				activeHandlePosition: 'bottom-right'
+			};
+
+			resizer = createResizer();
+			resizer.state = state;
+		} );
+
+		it( 'enlarges center-aligned objects correctly', () => {
+			// Note that center-aligned objects needs to be enlarged twice as much
+			// as your x-axis mouse distance, since it expands towards both directions.
+			const proposedSize = resizer._proposeNewSize( {
+				pageX: 50,
+				pageY: 50
+			} );
+
+			expect( proposedSize.width, 'width' ).to.be.equal( 60 );
+			expect( proposedSize.height, 'height' ).to.be.equal( 60 );
+			expect( proposedSize.widthPercents, 'widthPercents' ).to.be.equal( 15 );
+		} );
+
+		it( 'enlarges objects correctly', () => {
+			resizer._options.isCentered = () => false;
+
+			const proposedSize = resizer._proposeNewSize( {
+				pageX: 50,
+				pageY: 50
+			} );
+
+			expect( proposedSize.width, 'width' ).to.be.equal( 50 );
+			expect( proposedSize.height, 'height' ).to.be.equal( 50 );
+			expect( proposedSize.widthPercents, 'widthPercents' ).to.be.equal( 12.5 );
+		} );
+
+		it( 'rounds returned width and height properties', () => {
+			const proposedSize = resizer._proposeNewSize( {
+				pageX: 50.000000000002,
+				pageY: 50.000000000002
+			} );
+
+			expect( proposedSize.width, 'width' ).to.be.equal( 60 );
+			expect( proposedSize.height, 'height' ).to.be.equal( 60 );
+		} );
+	} );
+
 	function createResizer() {
 		const model = new Element( 'resizable' );
 		const viewElement = new ContainerElement( 'div' );
