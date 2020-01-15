@@ -26,16 +26,13 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-
-// TODO: These **must** be transferred to ckeditor5-core.
-import alignLeftIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-right.svg';
-import alignCenterIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-center.svg';
-import alignJustifyIcon from '@ckeditor/ckeditor5-alignment/theme/icons/align-justify.svg';
-
-import alignTopIcon from '../../theme/icons/align-top.svg';
-import alignMiddleIcon from '../../theme/icons/align-middle.svg';
-import alignBottomIcon from '../../theme/icons/align-bottom.svg';
+import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
+import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
+import alignJustifyIcon from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
+import alignTopIcon from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
+import alignMiddleIcon from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
+import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
 
 import '../../theme/form.css';
 import '../../theme/tablecellproperties.css';
