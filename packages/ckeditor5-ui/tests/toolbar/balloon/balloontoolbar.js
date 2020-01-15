@@ -344,6 +344,19 @@ describe( 'BalloonToolbar', () => {
 			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
+
+		it( 'should set balloon toolbar max-width to half of the editable width', () => {
+			const spy = sinon.spy( balloonToolbar, '_setToolbarMaxWidth' );
+			testUtils.sinon.stub( editingView.getDomRoot(), 'getBoundingClientRect' ).returns( { width: 100 } );
+
+			setData( model, '<paragraph>b[a]r</paragraph>' );
+
+			balloonToolbar.show();
+
+			sinon.assert.calledOnce( balloonAddSpy );
+			sinon.assert.calledOnce( spy );
+			expect( balloonToolbar.toolbarView.element.style.maxWidth ).to.be.equal( '50px' );
+		} );
 	} );
 
 	describe( 'hide()', () => {
