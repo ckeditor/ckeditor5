@@ -70,6 +70,11 @@ describe( 'ToolbarView', () => {
 
 				toolbar.destroy();
 			} );
+
+			it( 'toolbar should group items by default', () => {
+				const toolbar = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				expect( toolbar.options.shouldGroupWhenFull ).to.be.true;
+			} );
 		} );
 
 		it( 'should create view#items collection', () => {
