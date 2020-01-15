@@ -465,7 +465,30 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * Returns reduced form of style property form normalized object.
+	 * Returns a reduced form of style property form normalized object.
+	 *
+	 * For default margin reducer, the below code:
+	 *
+	 *		stylesProcessor.getReducedForm( 'margin', {
+	 *			margin: { top: '1px', right: '1px', bottom: '2px', left: '1px; }
+	 *		} );
+	 *
+	 * will return:
+	 *
+	 *		[
+	 *			[ 'margin', '1px 1px 2px' ]
+	 *		]
+	 *
+	 * because it might be represented as a shorthand 'margin' value. However if one of margin long hand values is missing it should return:
+	 *
+	 *		[
+	 *			[ 'margin-top', '1px' ],
+	 *			[ 'margin-right', '1px' ],
+	 *			[ 'margin-bottom', '2px' ]
+	 *			// the 'left' value is missing - cannot use 'margin' shorthand.
+	 *		]
+	 *
+	 * *Note*: To define reducer callbacks use {@link #setReducer}.
 	 *
 	 * @param {String} name
 	 * @param {String} name Name of style property.
@@ -488,10 +511,88 @@ export class StylesProcessor {
 		return [ [ name, normalizedValue ] ];
 	}
 
+	/**
+	 * Adds a normalizer method for style property.
+	 *
+	 * A normalizer returns describing how the value should be normalized.
+	 *
+	 * For instance 'margin' style is a shorthand for four margin values:
+	 *
+	 * - 'margin-top'
+	 * - 'margin-right'
+	 * - 'margin-bottom'
+	 * - 'margin-left'
+	 *
+	 * and can be written in various ways if some values are equal to others. For instance `'margin: 1px 2em;'` is a shorthand for
+	 * `'margin-top: 1px;margin-right: 2em;margin-bottom: 1px;margin-left: 2em'`.
+	 *
+	 * A normalizer should parse various margin notations as a single object:
+	 *
+	 *		const styles = {
+	 *			margin: {
+	 *				top: '1px',
+	 *				right: '2em',
+	 *				bottom: '1px',
+	 *				left: '2em'
+	 *			}
+	 *		};
+	 *
+	 * Thus a normalizer for 'margin' style should return an object defining style path and value to store:
+	 *
+	 *		const returnValue = {
+	 *			path: 'margin',
+	 *			value: {
+	 *				top: '1px',
+	 *				right: '2em',
+	 *				bottom: '1px',
+	 *				left: '2em'
+	 *			}
+	 *		};
+	 *
+	 * Additionally to fully support all margin notations there should be also defined 4 normalizers for longhand margin notations. Below
+	 * is an example for 'margin-top' style property normalizer:
+	 *
+	 *		stylesProcessor.setNormalizer( 'margin-top', valueString => {
+	 *			return {
+	 *				path: 'margin.top',
+	 *				value: valueString
+	 *			}
+	 *		} );
+	 *
+	 * @param {String} propertyName
+	 * @param {Function} callback
+	 */
 	setNormalizer( propertyName, callback ) {
 		this._normalizers.set( propertyName, callback );
 	}
 
+	/**
+	 * Most normalized style values are stored as one level objects. It is assumed that `'margin-top'` style will be stored as:
+	 *
+	 *		const styles = {
+	 *			margin: {
+	 *				top: 'value'
+	 *			}
+	 *		}
+	 *
+	 * However, some styles can have conflicting notations and thus it might be harder to extract a style value from shorthand. For instance
+	 * the 'border-top-style' can be defined using `'border-top:solid'`, `'border-style:solid none none none'` or by `'border:solid'`
+	 * shorthands. The default border styles processors stores styles as:
+	 *
+	 *		const styles = {
+	 *			border: {
+	 *				style: {
+	 *					top: 'solid'
+	 *				}
+	 *			}
+	 *		}
+	 *
+	 * as it is better to modify border style independently from other values. On the other part the output of the border might be
+	 * desired as `border-top`, `border-left`, etc notation.
+	 *
+	 * @param propertyName
+	 * @param callbackOrPath
+	 */
 	setExtractor( propertyName, callbackOrPath ) {
 		this._extractors.set( propertyName, callbackOrPath );
 	}
