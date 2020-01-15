@@ -161,6 +161,17 @@ export default class Document {
 		this.stopListening();
 	}
 
+	/**
+	 * Adds a style processor normalization rules.
+	 *
+	 * Available style rules are:
+	 * - background: {@link module:engine/view/styles/background~addBackgroundRules}
+	 * - border: {@link module:engine/view/styles/border~addBorderRules}
+	 * - margin: {@link module:engine/view/styles/background~addMarginRules}
+	 * - padding: {@link module:engine/view/styles/padding~addPaddingRules}
+	 *
+	 * @param {Function} callback
+	 */
 	addStyleProcessorRules( callback ) {
 		callback( StylesMap._styleProcessor );
 	}
