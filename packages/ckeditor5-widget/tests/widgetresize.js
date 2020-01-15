@@ -21,7 +21,7 @@ import {
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'WidgetResize', () => {
-	let editor, editorElement, view, widget, widgetModel, mouseListenerSpies;
+	let editor, editorElement, widget, mouseListenerSpies;
 
 	const commitStub = sinon.stub();
 	const mouseMock = {
@@ -30,7 +30,6 @@ describe( 'WidgetResize', () => {
 				target: domTarget
 			} );
 		},
-
 		move( editor, domTarget, eventData ) {
 			const combinedEventData = Object.assign( {}, eventData, {
 				target: domTarget
@@ -38,7 +37,6 @@ describe( 'WidgetResize', () => {
 
 			this._getPlugin( editor )._mouseMoveListener( {}, combinedEventData );
 		},
-
 		up() {
 			this._getPlugin( editor )._mouseUpListener();
 		},
@@ -65,14 +63,12 @@ describe( 'WidgetResize', () => {
 	beforeEach( async () => {
 		editorElement = createEditorElement();
 		editor = await createEditor( editorElement );
-		view = editor.editing.view;
 
 		setModelData( editor.model, '[<widget></widget>]' );
 
 		focusEditor( editor );
 
-		widget = view.document.getRoot().getChild( 0 );
-		widgetModel = editor.model.document.getRoot().getChild( 0 );
+		widget = editor.editing.view.document.getRoot().getChild( 0 );
 
 		for ( const stub of Object.values( mouseListenerSpies ) ) {
 			stub.resetHistory();
@@ -169,7 +165,7 @@ describe( 'WidgetResize', () => {
 
 		it( 'assumes a centered image if no isCentered option is provided', async () => {
 			const usedResizer = 'top-right';
-			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
+			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
 			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
 
@@ -191,7 +187,7 @@ describe( 'WidgetResize', () => {
 
 		it( 'properly sets the state for subsequent resizes', async () => {
 			const usedResizer = 'top-right';
-			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
+			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
 			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
 
@@ -223,7 +219,7 @@ describe( 'WidgetResize', () => {
 
 		it( 'properly sets the state for subsequent resizes', async () => {
 			const usedResizer = 'top-right';
-			const domParts = getWidgetDomParts( widget, usedResizer, editor.editing.view );
+			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
 			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
 
@@ -283,6 +279,8 @@ describe( 'WidgetResize', () => {
 	}
 
 	function createResizer( resizerOptions ) {
+		const widgetModel = editor.model.document.getRoot().getChild( 0 );
+
 		const defaultOptions = {
 			unit: 'px',
 
@@ -318,8 +316,9 @@ describe( 'WidgetResize', () => {
 		target.dispatchEvent( event );
 	}
 
-	function getWidgetDomParts( widget, resizerPosition, localView ) {
-		const resizeWrapper = ( localView || view ).domConverter.mapViewToDom( widget.getChild( 0 ) );
+	function getWidgetDomParts( widget, resizerPosition ) {
+		const view = editor.editing.view;
+		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 0 ) );
 
 		return {
 			resizeWrapper,
