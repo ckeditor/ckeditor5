@@ -233,6 +233,13 @@ export default class TableCellPropertiesView extends View {
 		this._focusCycler.focusFirst();
 	}
 
+	resetFields() {
+		this.borderWidthInput.view.element.value =
+			this.borderColorInput.view.element.value =
+			this.paddingInput.view.element.value =
+			this.backgroundInput.view.element.value = '';
+	}
+
 	/**
 	 * TODO
 	 */

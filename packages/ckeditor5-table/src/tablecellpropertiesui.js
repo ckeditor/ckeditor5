@@ -209,11 +209,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		const view = this.view;
 
-		view.borderWidthInput.view.element.value =
-			view.borderColorInput.view.element.value =
-			view.paddingInput.view.element.value =
-			view.backgroundInput.view.element.value = '';
-
+		view.resetFields();
 		view.set( {
 			borderWidth,
 			borderColor,
