@@ -5,7 +5,7 @@
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "ckeditor/ckeditor-cloud-services-core",
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
-    "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment",
+    "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#i/6049",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services",
     "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder",
     "@ckeditor/ckeditor5-code-block": "ckeditor/ckeditor5-code-block",
-    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core",
+    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#i/6049",
     "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image",
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
