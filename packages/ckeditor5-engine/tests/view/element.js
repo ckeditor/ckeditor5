@@ -833,6 +833,18 @@ describe( 'Element', () => {
 			} );
 		} );
 
+		describe( 'getNormalizedStyle', () => {
+			it( 'should get normalized style', () => {
+				el._setStyle( {
+					color: 'red',
+					'margin-top': '1px'
+				} );
+
+				expect( el.getNormalizedStyle( 'color' ) ).to.equal( 'red' );
+				expect( el.getNormalizedStyle( 'margin-top' ) ).to.equal( '1px' );
+			} );
+		} );
+
 		describe( 'getStyleNames', () => {
 			it( 'should return iterator with all style names', () => {
 				const names = [ 'color', 'position' ];
