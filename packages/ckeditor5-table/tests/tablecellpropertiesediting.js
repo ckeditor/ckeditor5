@@ -7,18 +7,18 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import TableEditing from '../src/tableediting';
-import TableColumnRowProperties from '../src/tablecolumnrowproperties';
+import TableCellPropertiesEditing from '../src/tablecellpropertiesediting';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe( 'TableColumnRowProperties', () => {
+describe( 'TableCellPropertiesEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableColumnRowProperties, Paragraph, TableEditing ]
+				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -32,7 +32,7 @@ describe( 'TableColumnRowProperties', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TableColumnRowProperties.pluginName ).to.equal( 'TableColumnRowProperties' );
+		expect( TableCellPropertiesEditing.pluginName ).to.equal( 'TableCellPropertiesEditing' );
 	} );
 
 	describe( 'column width', () => {

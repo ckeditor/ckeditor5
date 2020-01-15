@@ -13,7 +13,6 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
 import TableProperties from '../../src/tableproperties';
 import TableCellProperties from '../../src/tablecellproperties';
-import TableColumnRowProperties from '../../src/tablecolumnrowproperties';
 
 const sourceElement = document.querySelector( '#editor' );
 const clonedSource = sourceElement.cloneNode( true );
@@ -22,7 +21,7 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
-		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableColumnRowProperties, TableCellProperties ],
+		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
