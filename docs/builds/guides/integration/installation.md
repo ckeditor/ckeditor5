@@ -47,7 +47,7 @@ CKEditor will then be available at `node_modules/@ckeditor/ckeditor5-build-[name
 
 ### Online builder
 
-Go to the [Online builder page](https://ckeditor.com/ckeditor-5/online-builder/), go through a few creator steps to pick plugins and toolbar items and visualize the editor. Then download the prepared build with a simple instruction how to run it.
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
 
 ### Zip download
 
@@ -77,5 +77,4 @@ Once the CKEditor script is loaded, you can {@link builds/guides/integration/bas
 
 	Also, for a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@link builds/guides/integration/advanced-setup Advanced setup} for more information about it.
 </info-box>
-
 
