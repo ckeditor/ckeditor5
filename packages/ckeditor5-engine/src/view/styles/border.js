@@ -14,6 +14,34 @@ import { getShorthandValues, getTopRightBottomLeftValueReducer, getTopRightBotto
  *
  *		editor.editing.view.document.addStyleProcessorRules( addBorderRules );
  *
+ * This rules merges all [border](https://developer.mozilla.org/en-US/docs/Web/CSS/border) styles notation shorthands:
+ *
+ * - border
+ * - border-top
+ * - border-right
+ * - border-bottom
+ * - border-left
+ * - border-color
+ * - border-style
+ * - border-width
+ *
+ * and all corresponding longhand forms (like `border-top-color`, `border-top-style`, etc).
+ *
+ * It does not handle other shorthands (like `border-radius` or `border-image`).
+ *
+ * The normalized model stores border values as:
+ *
+ *		const styles = {
+ *			border: {
+ *				color: { top, right, bottom, left },
+ *				style: { top, right, bottom, left },
+ *				width: { top, right, bottom, left },
+ *			}
+ *		};
+ *
+ * The `border` value is reduced to a 4 values for each box edge (even if they could be further reduces to a single
+ * `border:<width> <style> <color>` style.
+ *
  * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
 export function addBorderRules( stylesProcessor ) {

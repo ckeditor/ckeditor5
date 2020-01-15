@@ -14,6 +14,21 @@ import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
  *
  *		editor.editing.view.document.addStyleProcessorRules( addBackgroundRules );
  *
+ * The normalized value is stored as:
+ *
+ *		const styles = {
+ *			background: {
+ *				color,
+ *				repeat,
+ *				position,
+ *				attachment,
+ *				image
+ *			}
+ *		};
+ *
+ * *Note*: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
+ * `'background-color'` value.
+ *
  * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
 export function addBackgroundRules( stylesProcessor ) {

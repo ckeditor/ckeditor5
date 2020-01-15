@@ -14,6 +14,17 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
  *
  *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
  *
+ * The normalized value is stored as:
+ *
+ *		const styles = {
+ *			margin: {
+ *				top,
+ *				right,
+ *				bottom,
+ *				left
+ *			}
+ *		};
+ *
  * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
 export function addMarginRules( stylesProcessor ) {

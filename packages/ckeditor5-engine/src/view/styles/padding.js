@@ -14,6 +14,17 @@ import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } fro
  *
  *		editor.editing.view.document.addStyleProcessorRules( addPaddingRules );
  *
+ * The normalized value is stored as:
+ *
+ *		const styles = {
+ *			padding: {
+ *				top,
+ *				right,
+ *				bottom,
+ *				left
+ *			}
+ *		};
+ *
  * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
 export function addPaddingRules( stylesProcessor ) {
