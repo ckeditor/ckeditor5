@@ -251,4 +251,18 @@ describe( 'StylesMap', () => {
 			expect( stylesMap.getStyleNames() ).to.deep.equal( [ 'foo' ] );
 		} );
 	} );
+
+	describe( 'static _styleProcessor getter', () => {
+		it( 'should return StyleProcessor instance', () => {
+			// Set undefined to reset field value for code coverage.
+			StylesMap._setProcessor( undefined );
+			expect( StylesMap._styleProcessor ).to.be.instanceOf( StylesProcessor );
+		} );
+
+		it( 'should return the same StyleProcessor instance on consecutive calls', () => {
+			const stylesProcessor = StylesMap._styleProcessor;
+
+			expect( StylesMap._styleProcessor ).to.equal( stylesProcessor );
+		} );
+	} );
 } );
