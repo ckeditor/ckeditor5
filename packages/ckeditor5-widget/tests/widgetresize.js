@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document */
+/* globals document, Event */
 
 import WidgetResize from '../src/widgetresize';
 
@@ -132,8 +132,8 @@ describe( 'WidgetResize', () => {
 		const plugin = editor.plugins.get( WidgetResize );
 		editor = null;
 
-		// Trigger mouse event.
-		fireMouseEvent( document.body, 'mousedown', {} );
+		const event = new Event( 'mousedown', { bubbles: true } );
+		document.body.dispatchEvent( event );
 
 		// Ensure nothing got called.
 		expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
@@ -285,20 +285,6 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
-	}
-
-	function fireMouseEvent( target, eventType, eventData ) {
-		// Id of the left mouse button.
-		const MOUSE_BUTTON_MAIN = 0;
-
-		// Using initMouseEvent instead of MouseEvent constructor, as MouseEvent constructor doesn't support passing pageX
-		// and pageY. See https://stackoverflow.com/questions/45843458/setting-click-events-pagex-and-pagey-always-reverts-to-0
-		// However there's still a problem, that events created with `initMouseEvent` have **floored** pageX, pageY numbers.
-		const event = document.createEvent( 'MouseEvent' );
-		event.initMouseEvent( eventType, true, true, window, null, 0, 0, eventData.pageX, eventData.pageY, false, false, false, false,
-			MOUSE_BUTTON_MAIN, null );
-
-		target.dispatchEvent( event );
 	}
 
 	function getWidgetDomParts( widget, resizerPosition ) {
