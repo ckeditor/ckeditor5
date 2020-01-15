@@ -181,8 +181,10 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 	describe( 'Integration (pixels)', () => {
+		let resizer;
+
 		beforeEach( async () => {
-			createResizer();
+			resizer = createResizer();
 		} );
 
 		it( 'properly sets the state for subsequent resizes', async () => {
@@ -207,6 +209,13 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount ).to.be.equal( 2 );
 			sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
 			sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
+		} );
+
+		it( 'hides the resize wrapper when resizer gets disabled', () => {
+			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
+			expect( resizerWrapper.style.display ).to.equal( '' );
+			resizer.isEnabled = false;
+			expect( resizerWrapper.style.display ).to.equal( 'none' );
 		} );
 	} );
 
