@@ -152,7 +152,7 @@ describe( 'Border styles normalization', () => {
 		expect( styles.getAsString( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
 	} );
 
-	it( 'should output', () => {
+	it( 'should output single values if one shorthand is removed', () => {
 		styles.setTo( 'border:1px solid blue;' );
 		styles.remove( 'border-color' );
 
@@ -605,6 +605,16 @@ describe( 'Border styles normalization', () => {
 			expect( styles.getAsString( 'border-right' ) ).to.equal( '3.0pt dotted #FFC000' );
 			expect( styles.getAsString( 'border-bottom' ) ).to.equal( '3.0pt dotted #FFC000' );
 			expect( styles.getAsString( 'border-left' ) ).to.equal( 'none' );
+		} );
+
+		it( 'should output nothing if no border style defined', () => {
+			styles.setTo( 'color:blue;' );
+
+			expect( styles.toString() ).to.equal( 'color:blue;' );
+			expect( styles.getAsString( 'border-top' ) ).to.be.undefined;
+			expect( styles.getAsString( 'border-right' ) ).to.be.undefined;
+			expect( styles.getAsString( 'border-bottom' ) ).to.be.undefined;
+			expect( styles.getAsString( 'border-left' ) ).to.be.undefined;
 		} );
 	} );
 
