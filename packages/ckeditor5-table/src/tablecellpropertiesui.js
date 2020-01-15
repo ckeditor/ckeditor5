@@ -165,7 +165,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		const document = model.document;
 		const selection = document.selection;
 
-		this.view.on( 'update', ( evt, data ) => {
+		this.view.on( 'change', ( evt, property, value ) => {
 			const firstPosition = selection.getFirstPosition();
 			const tableCell = findAncestor( 'tableCell', firstPosition );
 
@@ -173,19 +173,15 @@ export default class TableCellPropertiesUI extends Plugin {
 			// as a single undo steps. It's a better UX than dozens of undo steps, e.g. each
 			// for a single value change.
 			editor.model.enqueueChange( this._batch, writer => {
-				for ( const property in data ) {
-					const value = data[ property ];
-
-					if ( QUAD_DIRECTION_ATTRIBUTES.includes( property ) ) {
-						writer.setAttribute( property, {
-							top: value,
-							right: value,
-							bottom: value,
-							left: value
-						}, tableCell );
-					} else {
-						writer.setAttribute( property, value, tableCell );
-					}
+				if ( QUAD_DIRECTION_ATTRIBUTES.includes( property ) ) {
+					writer.setAttribute( property, {
+						top: value,
+						right: value,
+						bottom: value,
+						left: value
+					}, tableCell );
+				} else {
+					writer.setAttribute( property, value, tableCell );
 				}
 			} );
 		} );
@@ -209,7 +205,6 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		const view = this.view;
 
-		view.resetFields();
 		view.set( {
 			borderWidth,
 			borderColor,

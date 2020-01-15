@@ -52,7 +52,8 @@ const ALIGNMENT_ICONS = {
 };
 
 /**
- * TODO
+ * The class representing a table cell properties form, allowing users to customize
+ * certain style aspects of a table cell, for instance, border, padding, text alignment, etc..
  *
  * @extends module:ui/view~View
  */
@@ -78,6 +79,71 @@ export default class TableCellPropertiesView extends View {
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
 		this.keystrokes = new KeystrokeHandler();
+
+		this.set( {
+			/**
+			 * The value of the cell border style.
+			 *
+			 * @observable
+			 * @default 'none'
+			 * @member #borderStyle
+			 */
+			borderStyle: 'none',
+
+			/**
+			 * The value of the cell border width style.
+			 *
+			 * @observable
+			 * @default null
+			 * @member #borderWidth
+			 */
+			borderWidth: null,
+
+			/**
+			 * The value of the cell border color style.
+			 *
+			 * @observable
+			 * @default null
+			 * @member #borderColor
+			 */
+			borderColor: null,
+
+			/**
+			 * The value of the cell padding style.
+			 *
+			 * @observable
+			 * @default null
+			 * @member #padding
+			 */
+			padding: null,
+
+			/**
+			 * The value of the cell background color style.
+			 *
+			 * @observable
+			 * @default null
+			 * @member #backgroundColor
+			 */
+			backgroundColor: null,
+
+			/**
+			 * The value of the horizontal text alignment style.
+			 *
+			 * @observable
+			 * @default 'left'
+			 * @member #horizontalAlignment
+			 */
+			horizontalAlignment: 'left',
+
+			/**
+			 * The value of the vertical text alignment style.
+			 *
+			 * @observable
+			 * @default 'middle'
+			 * @member #verticalAlignment
+			 */
+			verticalAlignment: 'middle'
+		} );
 
 		/**
 		 * A collection of views that can be focused in the form.
@@ -114,55 +180,6 @@ export default class TableCellPropertiesView extends View {
 		this._createAlignmentFields();
 		this._createActionButtons();
 
-		this.set( {
-			borderStyle: 'none',
-			borderWidth: null,
-			borderColor: null,
-			padding: null,
-			backgroundColor: null,
-			horizontalAlignment: 'left',
-			verticalAlignment: 'middle'
-		} );
-
-		const borderRowView = new FormRowView( locale, {
-			labelView: this.borderRowLabel,
-			children: [
-				this.borderRowLabel,
-				this.borderStyleDropdown,
-				this.borderColorInput,
-				this.borderWidthInput
-			]
-		} );
-
-		borderRowView.class = 'ck-table-cell-properties-form__border-row';
-
-		const paddingBackgroundRowView = new FormRowView( locale, {
-			children: [
-				this.backgroundInput,
-				this.paddingInput,
-			]
-		} );
-
-		const alignmentRowView = new FormRowView( locale, {
-			labelView: this.alignmentLabel,
-			children: [
-				this.alignmentLabel,
-				this.horizontalAlignmentToolbar,
-				this.verticalAlignmentToolbar,
-			]
-		} );
-
-		alignmentRowView.class = 'ck-table-cell-properties-form__alignment-row';
-
-		const actionRowView = new FormRowView( locale, {
-			children: [
-				this.saveButtonView,
-				this.cancelButtonView,
-			]
-		} );
-
-		actionRowView.class = 'ck-table-form__action-row';
-
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
@@ -188,10 +205,38 @@ export default class TableCellPropertiesView extends View {
 					]
 				},
 
-				borderRowView,
-				paddingBackgroundRowView,
-				alignmentRowView,
-				actionRowView
+				new FormRowView( locale, {
+					labelView: this._borderRowLabel,
+					children: [
+						this._borderRowLabel,
+						this.borderStyleDropdown,
+						this.borderColorInput,
+						this.borderWidthInput
+					],
+					class: 'ck-table-cell-properties-form__border-row'
+				} ),
+				new FormRowView( locale, {
+					children: [
+						this.backgroundInput,
+						this.paddingInput,
+					]
+				} ),
+				new FormRowView( locale, {
+					labelView: this._alignmentLabel,
+					children: [
+						this._alignmentLabel,
+						this.horizontalAlignmentToolbar,
+						this.verticalAlignmentToolbar,
+					],
+					class: 'ck-table-cell-properties-form__alignment-row'
+				} ),
+				new FormRowView( locale, {
+					children: [
+						this.saveButtonView,
+						this.cancelButtonView,
+					],
+					class: 'ck-table-form__action-row'
+				} )
 			]
 		} );
 	}
@@ -202,11 +247,13 @@ export default class TableCellPropertiesView extends View {
 	render() {
 		super.render();
 
+		// Enable the "submit" event for this view. It can be triggered by the #saveButtonView
+		// which is of the "submit" DOM "type".
 		submitHandler( {
 			view: this
 		} );
 
-		const focusableChildViews = [
+		[
 			this.borderStyleDropdown,
 			this.borderColorInput,
 			this.borderWidthInput,
@@ -216,9 +263,7 @@ export default class TableCellPropertiesView extends View {
 			this.verticalAlignmentToolbar,
 			this.saveButtonView,
 			this.cancelButtonView
-		];
-
-		focusableChildViews.forEach( v => {
+		].forEach( v => {
 			// Register the view as focusable.
 			this._focusables.add( v );
 
@@ -226,22 +271,25 @@ export default class TableCellPropertiesView extends View {
 			this.focusTracker.add( v.element );
 		} );
 
+		// Mainly for closing using "Esc" and navigation using "Tab".
 		this.keystrokes.listenTo( this.element );
 	}
 
+	/**
+	 * Focuses the fist focusable field in the form.
+	 */
 	focus() {
 		this._focusCycler.focusFirst();
 	}
 
-	resetFields() {
-		this.borderWidthInput.view.element.value =
-			this.borderColorInput.view.element.value =
-			this.paddingInput.view.element.value =
-			this.backgroundInput.view.element.value = '';
-	}
-
 	/**
-	 * TODO
+	 * Creates the following form fields:
+	 *
+	 * * {@link #borderStyleDropdown},
+	 * * {@link #borderWidthInput},
+	 * * {@link #borderColorInput}.
+	 *
+	 * @private
 	 */
 	_createBorderFields() {
 		const locale = this.locale;
@@ -249,7 +297,7 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Group label ---------------------------------------------
 
-		const borderRowLabel = this.borderRowLabel = new LabelView( locale );
+		const borderRowLabel = this._borderRowLabel = new LabelView( locale );
 		borderRowLabel.text = t( 'Border' );
 
 		// -- Style ---------------------------------------------------
@@ -275,11 +323,6 @@ export default class TableCellPropertiesView extends View {
 
 			// Update the UI.
 			this.borderStyle = value;
-
-			// Update the editor model.
-			this.fire( 'update', {
-				borderStyle: evt.source._borderStyleValue
-			} );
 		} );
 
 		addListToDropdown( borderStyleDropdown.view, this._getBorderStyleDefinitions() );
@@ -298,9 +341,7 @@ export default class TableCellPropertiesView extends View {
 			return value !== 'none';
 		} );
 		borderWidthInput.view.on( 'input', () => {
-			this.fire( 'update', {
-				borderWidth: borderWidthInput.view.element.value
-			} );
+			this.borderWidth = borderWidthInput.view.element.value;
 		} );
 
 		// -- Color ---------------------------------------------------
@@ -313,14 +354,16 @@ export default class TableCellPropertiesView extends View {
 		} );
 
 		borderColorInput.view.on( 'input', () => {
-			this.fire( 'update', {
-				borderColor: borderColorInput.view.element.value
-			} );
+			this.borderColor = borderColorInput.view.element.value;
 		} );
 	}
 
 	/**
-	 * TODO
+	 * Creates the following form fields:
+	 *
+	 * * {@link #backgroundInput}.
+	 *
+	 * @private
 	 */
 	_createBackgroundField() {
 		const locale = this.locale;
@@ -334,14 +377,16 @@ export default class TableCellPropertiesView extends View {
 
 		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
 		backgroundInput.view.on( 'input', () => {
-			this.fire( 'update', {
-				backgroundColor: backgroundInput.view.element.value
-			} );
+			this.backgroundColor = backgroundInput.view.element.value;
 		} );
 	}
 
 	/**
-	 * TODO
+	 * Creates the following form fields:
+	 *
+	 * * {@link #paddingInput}.
+	 *
+	 * @private
 	 */
 	_createPaddingField() {
 		const locale = this.locale;
@@ -355,21 +400,24 @@ export default class TableCellPropertiesView extends View {
 
 		paddingInput.view.bind( 'value' ).to( this, 'padding' );
 		paddingInput.view.on( 'input', () => {
-			this.fire( 'update', {
-				padding: paddingInput.view.element.value
-			} );
+			this.padding = paddingInput.view.element.value;
 		} );
 	}
 
 	/**
-	 * TODO
+	 * Creates the following form fields:
+	 *
+	 * * {@link #horizontalAlignmentToolbar},
+	 * * {@link #verticalAlignmentToolbar}.
+	 *
+	 * @private
 	 */
 	_createAlignmentFields() {
 		const locale = this.locale;
 		const t = this.t;
 
-		this.alignmentLabel = new LabelView( locale );
-		this.alignmentLabel.text = t( 'Text alignment' );
+		this._alignmentLabel = new LabelView( locale );
+		this._alignmentLabel.text = t( 'Text alignment' );
 
 		// -- Horizontal ---------------------------------------------------
 
@@ -385,7 +433,12 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
+	 * Creates the following form controls:
 	 *
+	 * * {@link #saveButtonView},
+	 * * {@link #cancelButtonView}.
+	 *
+	 * @private
 	 */
 	_createActionButtons() {
 		const locale = this.locale;
@@ -425,7 +478,10 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Provides a set of {@link #borderStyleDropdown} item definitions.
+	 *
+	 * @private
+	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
 	 */
 	_getBorderStyleDefinitions() {
 		const itemDefinitions = new Collection();
@@ -451,19 +507,23 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Fills an alignment (either horizontal or vertical) with buttons
+	 * that have certain labels and interact with a certain view property
+	 * upon execution.
 	 *
-	 * @param {*} toolbar
-	 * @param {*} labels
-	 * @param {*} propertyName
+	 * @private
+	 * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbar
+	 * @param {Array.<String>} labels
+	 * @param {String} propertyName
 	 */
 	_fillAlignmentToolbar( toolbar, labels, propertyName ) {
 		for ( const alignment in labels ) {
-			const button = createAlignmentButton(
-				this.locale,
-				labels[ alignment ],
-				ALIGNMENT_ICONS[ alignment ]
-			);
+			const button = new ButtonView( this.locale );
+
+			button.set( {
+				label: labels[ alignment ],
+				icon: ALIGNMENT_ICONS[ alignment ],
+			} );
 
 			button.bind( 'isOn' ).to( this, propertyName, value => {
 				return value === alignment;
@@ -472,11 +532,6 @@ export default class TableCellPropertiesView extends View {
 			button.on( 'execute', () => {
 				// Update the UI.
 				this[ propertyName ] = alignment;
-
-				// Update the editor model.
-				this.fire( 'update', {
-					[ propertyName ]: alignment
-				} );
 			} );
 
 			toolbar.items.add( button );
@@ -484,7 +539,10 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Provides localized labels for {@link #borderStyleDropdown} items.
+	 *
+	 * @private
+	 * @type {Object.<String,String>}
 	 */
 	get _borderStyleLabels() {
 		const t = this.t;
@@ -503,7 +561,10 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Provides localized labels for {@link #horizontalAlignmentToolbar} buttons.
+	 *
+	 * @private
+	 * @type {Object.<String,String>}
 	 */
 	get _horizontalAlignmentLabels() {
 		const t = this.t;
@@ -517,7 +578,10 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Provides localized labels for {@link #verticalAlignmentToolbar} buttons.
+	 *
+	 * @private
+	 * @type {Object.<String,String>}
 	 */
 	get _verticalAlignmentLabels() {
 		const t = this.t;
@@ -528,15 +592,4 @@ export default class TableCellPropertiesView extends View {
 			bottom: t( 'Align cell text to the bottom' )
 		};
 	}
-}
-
-function createAlignmentButton( locale, label, icon ) {
-	const button = new ButtonView( locale );
-
-	button.set( {
-		label,
-		icon,
-	} );
-
-	return button;
 }
