@@ -22,7 +22,7 @@ export function isColor( string ) {
 const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ];
 
 /**
- * Checks if string contains line style CSS value.
+ * Checks if string contains [line style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) CSS value.
  *
  * @param {String} string
  * @returns {Boolean}
