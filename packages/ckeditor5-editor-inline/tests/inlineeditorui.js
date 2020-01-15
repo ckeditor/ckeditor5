@@ -83,15 +83,13 @@ describe( 'InlineEditorUI', () => {
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-			it( 'pin() is called on editor.ui#update', () => {
+			it( 'pin() is called on editor.ui#update when editable element is in the DOM', () => {
 				const spy = sinon.stub( view.panel, 'pin' );
 
-				view.panel.hide();
-
-				editor.ui.fire( 'update' );
-				sinon.assert.notCalled( spy );
-
+				viewElement.ownerDocument.body.append( viewElement );
 				view.panel.show();
+
+				expect( viewElement.ownerDocument.body.contains( viewElement ) ).to.be.true;
 
 				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
@@ -99,6 +97,48 @@ describe( 'InlineEditorUI', () => {
 					target: view.editable.element,
 					positions: sinon.match.array
 				} );
+			} );
+
+			it( 'pin() is not called on editor.ui#update when panel is hidden', () => {
+				const spy = sinon.stub( view.panel, 'pin' );
+
+				view.panel.hide();
+
+				editor.ui.fire( 'update' );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'pin() is not called on editor.ui#update when panel is visible but editable element is not in the DOM', () => {
+				const spy = sinon.stub( view.panel, 'pin' );
+
+				view.panel.show();
+
+				expect( !viewElement.ownerDocument.body.contains( viewElement ) ).to.be.true;
+
+				editor.ui.fire( 'update' );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'toolbar max-width is set on editor.ui#update only once when editable element is in the DOM', () => {
+				const spy = sinon.spy( editor.ui, '_setToolbarMaxWidth' );
+				testUtils.sinon.stub( viewElement, 'getBoundingClientRect' ).returns( { width: 100 } );
+
+				viewElement.ownerDocument.body.append( viewElement );
+				view.panel.show();
+
+				expect( view.toolbar.element.style.maxWidth ).to.be.equal( '' );
+
+				editor.ui.fire( 'update' );
+
+				expect( view.toolbar.element.style.maxWidth ).to.be.equal( '100px' );
+
+				editor.ui.fire( 'update' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'toolbar should group items by default', () => {
+				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
 			} );
 		} );
 
