@@ -3,13 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module engine/view/styles/margin
+ */
+
 import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } from './utils';
 
 /**
- * @module engine/view/styles
+ * Adds a margin CSS styles processing rules.
+ *
+ *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+ *
+ * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
-
-export function addMarginStylesProcessor( stylesProcessor ) {
+export function addMarginRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
 
 	stylesProcessor.setNormalizer( 'margin-top', value => ( { path: 'margin.top', value } ) );

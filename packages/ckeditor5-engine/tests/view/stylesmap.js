@@ -5,7 +5,7 @@
 
 import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
 import encodedImage from './_utils/encodedimage.txt';
-import { addPaddingStylesProcessor } from '../../src/view/styles/paddingstyles';
+import { addPaddingRules } from '../../src/view/styles/padding';
 import { getTopRightBottomLeftValueReducer } from '../../src/view/styles/utils';
 
 describe( 'StylesMap', () => {
@@ -25,7 +25,7 @@ describe( 'StylesMap', () => {
 		} ) );
 		stylesProcessor.setReducer( 'foo', getTopRightBottomLeftValueReducer( 'foo' ) );
 
-		addPaddingStylesProcessor( stylesProcessor );
+		addPaddingRules( stylesProcessor );
 		StylesMap._setProcessor( stylesProcessor );
 		stylesMap = new StylesMap();
 	} );

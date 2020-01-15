@@ -3,13 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module engine/view/styles/padding
+ */
+
 import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } from './utils';
 
 /**
- * @module engine/view/styles
+ * Adds a margin CSS styles processing rules.
+ *
+ *		editor.editing.view.document.addStyleProcessorRules( addPaddingRules );
+ *
+ * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
-
-export function addPaddingStylesProcessor( stylesProcessor ) {
+export function addPaddingRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'padding', getPositionShorthandNormalizer( 'padding' ) );
 	stylesProcessor.setNormalizer( 'padding-top', value => ( { path: 'padding.top', value } ) );
 	stylesProcessor.setNormalizer( 'padding-right', value => ( { path: 'padding.right', value } ) );

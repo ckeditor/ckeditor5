@@ -3,13 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module engine/view/styles/border
+ */
+
 import { getShorthandValues, getTopRightBottomLeftValueReducer, getTopRightBottomLeftValues, isLength, isLineStyle } from './utils';
 
 /**
- * @module engine/view/styles/borderstyle
+ * Adds a border CSS styles processing rules.
+ *
+ *		editor.editing.view.document.addStyleProcessorRules( addBorderRules );
+ *
+ * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
-
-export function addBorderStylesProcessor( stylesProcessor ) {
+export function addBorderRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'border', borderNormalizer );
 
 	// Border-position shorthands.

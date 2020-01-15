@@ -4,7 +4,7 @@
  */
 
 import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addBorderStylesProcessor } from '../../../src/view/styles/borderstyles';
+import { addBorderRules } from '../../../src/view/styles/border';
 
 describe( 'Border styles normalization', () => {
 	let styles;
@@ -12,7 +12,7 @@ describe( 'Border styles normalization', () => {
 	before( () => {
 		const stylesProcessor = new StylesProcessor();
 		StylesMap._setProcessor( stylesProcessor );
-		addBorderStylesProcessor( stylesProcessor );
+		addBorderRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {

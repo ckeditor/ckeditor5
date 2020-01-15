@@ -4,7 +4,7 @@
  */
 
 import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addBackgroundStylesProcessor } from '../../../src/view/styles/backgroundstyles';
+import { addBackgroundRules } from '../../../src/view/styles/background';
 
 describe( 'Background styles normalization', () => {
 	let styles;
@@ -12,7 +12,7 @@ describe( 'Background styles normalization', () => {
 	before( () => {
 		const stylesProcessor = new StylesProcessor();
 		StylesMap._setProcessor( stylesProcessor );
-		addBackgroundStylesProcessor( stylesProcessor );
+		addBackgroundRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {

@@ -4,7 +4,7 @@
  */
 
 import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addMarginStylesProcessor } from '../../../src/view/styles/marginstyles';
+import { addMarginRules } from '../../../src/view/styles/margin';
 
 describe( 'Margin styles normalizer', () => {
 	let styles;
@@ -12,7 +12,7 @@ describe( 'Margin styles normalizer', () => {
 	before( () => {
 		const stylesProcessor = new StylesProcessor();
 		StylesMap._setProcessor( stylesProcessor );
-		addMarginStylesProcessor( stylesProcessor );
+		addMarginRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {

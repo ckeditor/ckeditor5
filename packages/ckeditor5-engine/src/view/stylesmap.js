@@ -94,7 +94,7 @@ export default class StylesMap {
 	 * *Note:* This check supports normalized style names.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.setTo( 'margin:2px;' );
 	 *
@@ -142,7 +142,7 @@ export default class StylesMap {
 	 * *Note:* This method supports normalized styles if defined.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.set( 'margin', '2px' );
 	 *
@@ -185,7 +185,7 @@ export default class StylesMap {
 	 * *Note:* This method supports normalized styles if defined.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.setTo( 'margin:1px' );
 	 *
@@ -205,7 +205,7 @@ export default class StylesMap {
 	 * Returns a normalized style object or a single value.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setTo( 'margin:1px 2px 3em;' );
@@ -242,7 +242,7 @@ export default class StylesMap {
 	 * *Note:* This method supports normalized styles if defined.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.set( 'margin' , '1px' );
 	 *		styles.set( 'background', '#f00' );
@@ -269,7 +269,7 @@ export default class StylesMap {
 	 * Returns property as a value string or undefined if property is not set.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setTo( 'margin:1px;' );

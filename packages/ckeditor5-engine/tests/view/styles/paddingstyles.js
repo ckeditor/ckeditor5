@@ -4,7 +4,7 @@
  */
 
 import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addPaddingStylesProcessor } from '../../../src/view/styles/paddingstyles';
+import { addPaddingRules } from '../../../src/view/styles/padding';
 
 describe( 'Padding styles normalization', () => {
 	let styles;
@@ -12,7 +12,7 @@ describe( 'Padding styles normalization', () => {
 	before( () => {
 		const stylesProcessor = new StylesProcessor();
 		StylesMap._setProcessor( stylesProcessor );
-		addPaddingStylesProcessor( stylesProcessor );
+		addPaddingRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {

@@ -3,13 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module engine/view/styles/background
+ */
+
 import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
 
 /**
- * @module engine/view/styles
+ * Adds a background CSS styles processing rules.
+ *
+ *		editor.editing.view.document.addStyleProcessorRules( addBackgroundRules );
+ *
+ * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
-
-export function addBackgroundStylesProcessor( stylesProcessor ) {
+export function addBackgroundRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'background', normalizeBackground );
 	stylesProcessor.setNormalizer( 'background-color', value => ( { path: 'background.color', value } ) );
 	stylesProcessor.setReducer( 'background', value => {

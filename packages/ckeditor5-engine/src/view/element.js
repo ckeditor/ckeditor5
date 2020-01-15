@@ -386,7 +386,7 @@ export default class Element extends Node {
 	 * For an element with style set to: 'margin:1px
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const element = view.change( writer => {
 	 *			const element = writer.createElement();
