@@ -9,42 +9,84 @@
 
 const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
 
+/**
+ * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isColor( string ) {
 	return colorRegExp.test( string );
 }
 
 const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ];
 
+/**
+ * Checks if string contains line style CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isLineStyle( string ) {
 	return lineStyleValues.includes( string );
 }
 
 const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+([a-z]+|%)|0)$/;
 
+/**
+ * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isLength( string ) {
 	return lengthRegExp.test( string );
 }
 
 const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-repeat' ];
 
+/**
+ * Checks if string contains [background repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isRepeat( string ) {
 	return repeatValues.includes( string );
 }
 
 const positionValues = [ 'center', 'top', 'bottom', 'left', 'right' ];
 
+/**
+ * Checks if string contains [background position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isPosition( string ) {
 	return positionValues.includes( string );
 }
 
 const attachmentValues = [ 'fixed', 'scroll', 'local' ];
 
+/**
+ * Checks if string contains [background attachment](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isAttachment( string ) {
 	return attachmentValues.includes( string );
 }
 
 const urlRegExp = /^url\(/;
 
+/**
+ * Checks if string contains [URL](https://developer.mozilla.org/en-US/docs/Web/CSS/url) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
 export function isURL( string ) {
 	return urlRegExp.test( string );
 }
@@ -64,6 +106,15 @@ export function getTopRightBottomLeftValues( value = '' ) {
 	return { top, bottom, right, left };
 }
 
+/**
+ * Default reducer for CSS properties that concerns edges of a box
+ * [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notations:
+ *
+ *		stylesProcessor.setReducer( 'padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+ *
+ * @param {String} styleShorthand
+ * @returns {Function}
+ */
 export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 	return value => {
 		const { top, right, bottom, left } = ( value || {} );
@@ -94,7 +145,16 @@ export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 	};
 }
 
-export function getTopRightBottomLeftShorthandValue( { left, right, top, bottom } ) {
+/**
+ * Returns a proper 1-to-4 value of a CSS [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation.
+ *
+ *		getTopRightBottomLeftShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
+ *		// will return '1px 1px 2px'
+ *
+ * @param {String} styleShorthand
+ * @returns {Function}
+ */
+export function getTopRightBottomLeftShorthandValue( { top, right, bottom, left } ) {
 	const out = [];
 
 	if ( left !== right ) {
@@ -110,15 +170,35 @@ export function getTopRightBottomLeftShorthandValue( { left, right, top, bottom 
 	return out.join( ' ' );
 }
 
-export function getPositionShorthandNormalizer( longhand ) {
+/**
+ * Creates a normalizer for a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) 1-to-4 value.
+ *
+ *		stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
+ *
+ * @param {String} shorthand
+ * @returns {Function}
+ */
+export function getPositionShorthandNormalizer( shorthand ) {
 	return value => {
 		return {
-			path: longhand,
+			path: shorthand,
 			value: getTopRightBottomLeftValues( value )
 		};
 	};
 }
 
+/**
+ * Parses parts of a 1-to-4 value notation - handles some CSS values with spaces (like RGB()).
+ *
+ *		getShorthandValues( 'red blue RGB(0, 0, 0)');
+ *		// will return [ 'red', 'blue', 'RGB(0, 0, 0)' ]
+ *
+ * @param {String} string
+ * @returns {Array.<String>}
+ */
 export function getShorthandValues( string ) {
-	return string.replace( /, /g, ',' ).split( ' ' ).map( string => string.replace( /,/g, ', ' ) );
+	return string
+		.replace( /, /g, ',' ) // Exclude comma from spaces evaluation as values are separated by spaces.
+		.split( ' ' )
+		.map( string => string.replace( /,/g, ', ' ) ); // Restore original notation.
 }

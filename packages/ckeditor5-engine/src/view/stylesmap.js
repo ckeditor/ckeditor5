@@ -512,7 +512,7 @@ export class StylesProcessor {
 	}
 
 	/**
-	 * Adds a normalizer method for style property.
+	 * Adds a normalizer method for a style property.
 	 *
 	 * A normalizer returns describing how the value should be normalized.
 	 *
@@ -559,14 +559,16 @@ export class StylesProcessor {
 	 *			}
 	 *		} );
 	 *
-	 * @param {String} propertyName
+	 * @param {String} name
 	 * @param {Function} callback
 	 */
-	setNormalizer( propertyName, callback ) {
-		this._normalizers.set( propertyName, callback );
+	setNormalizer( name, callback ) {
+		this._normalizers.set( name, callback );
 	}
 
 	/**
+	 * Adds a extractor callback for a style property.
+	 *
 	 * Most normalized style values are stored as one level objects. It is assumed that `'margin-top'` style will be stored as:
 	 *
 	 *		const styles = {
@@ -590,15 +592,58 @@ export class StylesProcessor {
 	 * as it is better to modify border style independently from other values. On the other part the output of the border might be
 	 * desired as `border-top`, `border-left`, etc notation.
 	 *
-	 * @param propertyName
-	 * @param callbackOrPath
+	 * In the above example a reducer should return a side border value that combines style, color and width:
+	 *
+	 *		stylesConverter.setExtractor( 'border-top', styles => {
+	 *			return {
+	 *				color: styles.border.color.top,
+	 *				style: styles.border.style.top,
+	 *				width: styles.border.width.top
+	 *			}
+	 *		} );
+	 *
+	 * @param {String} name
+	 * @param {Function|String} callbackOrPath Callback that return a requested value or path string for single values.
 	 */
-	setExtractor( propertyName, callbackOrPath ) {
-		this._extractors.set( propertyName, callbackOrPath );
+	setExtractor( name, callbackOrPath ) {
+		this._extractors.set( name, callbackOrPath );
 	}
 
-	setReducer( propertyName, callback ) {
-		this._reducers.set( propertyName, callback );
+	/**
+	 * Adds a reducer callback for a style property.
+	 *
+	 * Reducer returns a minimal notation for given style name. For longhand properties it is not required to write a reducer as
+	 * by default the direct value from style path is taken.
+	 *
+	 * For shorthand styles a reducer should return minimal style notation either by returning single name-value tuple or multiple tuples
+	 * if a shorthand cannot be used. For instance for a margin shorthand a reducer might return:
+	 *
+	 *		const marginShortHandTuple = [
+	 *			[ 'margin', '1px 1px 2px' ]
+	 *		];
+	 *
+	 * or a longhand tuples for defined values:
+	 *
+	 *		// Considering margin.bottom and margin.left are undefined.
+	 *		const marginLonghandsTuples = [
+	 *			[ 'margin-top', '1px' ],
+	 *			[ 'margin-right', '1px' ]
+	 *		];
+	 *
+	 * A reducer obtains a normalized style value:
+	 *
+	 *		// Simplified reducer that always outputs 4 values which are always present:
+	 *		stylesProcessor.setReducer( 'margin', margin => {
+	 *			return [
+	 *				[ 'margin', `${ margin.top } ${ margin.right } ${ margin.bottom } ${ margin.left }` ]
+	 *			]
+	 *		} );
+	 *
+	 * @param {String} name
+	 * @param {Function} callback
+	 */
+	setReducer( name, callback ) {
+		this._reducers.set( name, callback );
 	}
 }
 
