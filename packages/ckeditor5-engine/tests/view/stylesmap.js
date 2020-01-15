@@ -215,14 +215,14 @@ describe( 'StylesMap', () => {
 		it( 'should do nothing if property is not set', () => {
 			stylesMap.remove( 'color' );
 
-			expect( stylesMap.getAsString( 'color' ) ).to.equal( '' );
+			expect( stylesMap.getAsString( 'color' ) ).to.be.undefined;
 		} );
 
 		it( 'should insert new property (other properties are set)', () => {
 			stylesMap.setTo( 'color:blue' );
 			stylesMap.remove( 'color' );
 
-			expect( stylesMap.getAsString( 'color' ) ).to.equal( '' );
+			expect( stylesMap.getAsString( 'color' ) ).to.be.undefined;
 		} );
 
 		it( 'should remove normalized property', () => {

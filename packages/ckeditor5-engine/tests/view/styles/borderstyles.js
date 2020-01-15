@@ -99,7 +99,7 @@ describe( 'Border styles normalization', () => {
 			'border-top:7px dotted #ccc;'
 		);
 
-		expect( styles.getAsString( 'border' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
 		expect( styles.getAsString( 'border-style' ) ).to.equal( 'dotted solid solid dashed' );
 		expect( styles.getAsString( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
@@ -146,7 +146,7 @@ describe( 'Border styles normalization', () => {
 			'border-right:1px solid blue;' +
 			'border-top:7px dotted #ccc;'
 		);
-		expect( styles.getAsString( 'border' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-color' ) ).to.equal( '#ccc blue blue #665511' );
 		expect( styles.getAsString( 'border-style' ) ).to.equal( 'dotted solid solid dashed' );
 		expect( styles.getAsString( 'border-width' ) ).to.equal( '7px 1px 1px 2.7em' );
@@ -163,8 +163,8 @@ describe( 'Border styles normalization', () => {
 			'border-top:1px solid;'
 		);
 
-		expect( styles.getAsString( 'border' ) ).to.equal( '' );
-		expect( styles.getAsString( 'border-color' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border' ) ).to.be.undefined;
+		expect( styles.getAsString( 'border-color' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-style' ) ).to.equal( 'solid' );
 		expect( styles.getAsString( 'border-width' ) ).to.equal( '1px' );
 		expect( styles.getAsString( 'border-top' ) ).to.equal( '1px solid' );
@@ -182,10 +182,10 @@ describe( 'Border styles normalization', () => {
 			'border-right:solid;' +
 			'border-top:solid;'
 		);
-		expect( styles.getAsString( 'border' ) ).to.equal( '' );
-		expect( styles.getAsString( 'border-color' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border' ) ).to.be.undefined;
+		expect( styles.getAsString( 'border-color' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-style' ) ).to.equal( 'solid' );
-		expect( styles.getAsString( 'border-width' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border-width' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-top' ) ).to.equal( 'solid' );
 		expect( styles.getAsString( 'border-right' ) ).to.equal( 'solid' );
 		expect( styles.getAsString( 'border-bottom' ) ).to.equal( 'solid' );
@@ -201,10 +201,10 @@ describe( 'Border styles normalization', () => {
 			'border-right:#f00;' +
 			'border-top:#f00;'
 		);
-		expect( styles.getAsString( 'border' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-color' ) ).to.equal( '#f00' );
-		expect( styles.getAsString( 'border-style' ) ).to.equal( '' );
-		expect( styles.getAsString( 'border-width' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border-style' ) ).to.be.undefined;
+		expect( styles.getAsString( 'border-width' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-top' ) ).to.equal( '#f00' );
 		expect( styles.getAsString( 'border-right' ) ).to.equal( '#f00' );
 		expect( styles.getAsString( 'border-bottom' ) ).to.equal( '#f00' );
@@ -220,9 +220,9 @@ describe( 'Border styles normalization', () => {
 			'border-right:1px;' +
 			'border-top:1px;'
 		);
-		expect( styles.getAsString( 'border' ) ).to.equal( '' );
-		expect( styles.getAsString( 'border-color' ) ).to.equal( '' );
-		expect( styles.getAsString( 'border-style' ) ).to.equal( '' );
+		expect( styles.getAsString( 'border' ) ).to.be.undefined;
+		expect( styles.getAsString( 'border-color' ) ).to.be.undefined;
+		expect( styles.getAsString( 'border-style' ) ).to.be.undefined;
 		expect( styles.getAsString( 'border-width' ) ).to.equal( '1px' );
 		expect( styles.getAsString( 'border-top' ) ).to.equal( '1px' );
 		expect( styles.getAsString( 'border-right' ) ).to.equal( '1px' );

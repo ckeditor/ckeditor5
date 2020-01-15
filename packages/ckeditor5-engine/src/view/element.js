@@ -404,7 +404,7 @@ export default class Element extends Node {
 	 * @returns {String|undefined}
 	 */
 	getStyle( property ) {
-		return this._styles.has( property ) ? this._styles.getAsString( property ) : undefined;
+		return this._styles.getAsString( property );
 	}
 
 	/**

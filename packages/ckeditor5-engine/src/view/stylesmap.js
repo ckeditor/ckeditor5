@@ -47,7 +47,10 @@ export default class StylesMap {
 	 * @returns {Boolean}
 	 */
 	get isEmpty() {
-		return !Object.entries( this._styles ).length;
+		const entries = Object.entries( this._styles );
+		const from = Array.from( entries );
+
+		return !from.length;
 	}
 
 	/**
@@ -73,7 +76,9 @@ export default class StylesMap {
 	setTo( inlineStyle ) {
 		this.clear();
 
-		for ( const [ key, value ] of Array.from( parseInlineStyles( inlineStyle ).entries() ) ) {
+		const parsedStyles = Array.from( parseInlineStyles( inlineStyle ).entries() );
+
+		for ( const [ key, value ] of parsedStyles ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
 		}
 	}
@@ -261,7 +266,7 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns property as a value string.
+	 * Returns property as a value string or undefined if property is not set.
 	 *
 	 *		// Enable 'margin' shorthand processing:
 	 *		editor.editing.view.document.addStyleProcessorRules( addMarginStylesProcessor );
@@ -280,7 +285,7 @@ export default class StylesMap {
 	 */
 	getAsString( propertyName ) {
 		if ( this.isEmpty ) {
-			return '';
+			return;
 		}
 
 		if ( this._styles[ propertyName ] && !isObject( this._styles[ propertyName ] ) ) {
@@ -295,8 +300,6 @@ export default class StylesMap {
 		// Only return a value if it is set;
 		if ( Array.isArray( propertyDescriptor ) ) {
 			return propertyDescriptor[ 1 ];
-		} else {
-			return '';
 		}
 	}
 
@@ -439,7 +442,8 @@ export class StylesProcessor {
 			return merge( {}, styles );
 		}
 
-		if ( styles[ name ] ) {
+		// Might be empty string.
+		if ( styles[ name ] !== undefined ) {
 			return styles[ name ];
 		}
 
@@ -469,6 +473,11 @@ export class StylesProcessor {
 	 */
 	getReducedForm( name, styles ) {
 		const normalizedValue = this.getNormalized( name, styles );
+
+		// Might be empty string.
+		if ( normalizedValue === undefined ) {
+			return [];
+		}
 
 		if ( this._reducers.has( name ) ) {
 			const reducer = this._reducers.get( name );
