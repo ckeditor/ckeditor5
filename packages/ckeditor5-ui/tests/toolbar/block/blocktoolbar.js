@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -53,6 +53,15 @@ describe( 'BlockToolbar', () => {
 
 	it( 'should have pluginName property', () => {
 		expect( BlockToolbar.pluginName ).to.equal( 'BlockToolbar' );
+	} );
+
+	it( 'should not throw when empty config is provided', async () => {
+		// Remove default editor instance.
+		await editor.destroy();
+
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ BlockToolbar ]
+		} );
 	} );
 
 	describe( 'child views', () => {
@@ -212,6 +221,18 @@ describe( 'BlockToolbar', () => {
 				blockToolbar.panelView.isVisible = true;
 
 				expect( blockToolbar.buttonView.tooltip ).to.be.false;
+			} );
+
+			it( 'should hide the #button if empty config was passed', async () => {
+				// Remove default editor instance.
+				await editor.destroy();
+
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ BlockToolbar ]
+				} );
+
+				const blockToolbar = editor.plugins.get( BlockToolbar );
+				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			} );
 		} );
 	} );
