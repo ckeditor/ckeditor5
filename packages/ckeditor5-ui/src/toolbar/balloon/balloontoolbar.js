@@ -190,10 +190,9 @@ export default class BalloonToolbar extends Plugin {
 		} );
 
 		// Set toolbar's max-width to be half of the editable's width.
-		const editableRect = new Rect( this.editor.editing.view.getDomRoot() );
-		const maxToolbarWidth = editableRect.width / 2;
+		const maxToolbarWidth = new Rect( this.editor.editing.view.getDomRoot() ).width;
 
-		this.toolbarView.element.style.maxWidth = `${ maxToolbarWidth }px`;
+		this._setToolbarMaxWidth( maxToolbarWidth / 2 );
 
 		// Add the toolbar to the common editor contextual balloon.
 		this._balloon.add( {
@@ -266,6 +265,15 @@ export default class BalloonToolbar extends Plugin {
 		this._fireSelectionChangeDebounced.cancel();
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
+	}
+
+	/**
+	 * Set max-width for toolbar.
+	 *
+	 * @private
+	 */
+	_setToolbarMaxWidth( width ) {
+		this.toolbarView.element.style.maxWidth = `${ width }px`;
 	}
 
 	/**
