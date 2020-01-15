@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,7 +33,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
  *
  * This set of plugins follows [Editor Recommendations](https://github.com/ckeditor/editor-recommendations).
  *
- * It is maintained for **test and development purpopses**. The core team uses it to simplify
+ * It is maintained for **test and development purposes**. The core team uses it to simplify
  * creating typical editors in tests and documentation.
  *
  * @extends module:core/plugin~Plugin

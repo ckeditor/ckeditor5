@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -184,7 +184,7 @@ export default class Command {
 	}
 
 	/**
-	 * Clears forced disable previously set through {@link #clearForceDisabled}. See {@link #clearForceDisabled}.
+	 * Clears forced disable previously set through {@link #forceDisabled}. See {@link #forceDisabled}.
 	 *
 	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
