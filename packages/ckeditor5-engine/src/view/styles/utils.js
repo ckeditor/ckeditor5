@@ -117,7 +117,7 @@ export function getTopRightBottomLeftValues( value = '' ) {
  */
 export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 	return value => {
-		const { top, right, bottom, left } = ( value || {} );
+		const { top, right, bottom, left } = value;
 
 		const reduced = [];
 
