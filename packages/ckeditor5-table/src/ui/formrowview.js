@@ -10,13 +10,25 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 /**
- * TODO
+ * The class representing a single row in the complex form,
+ * used by {@link module:table/ui/tablecellpropertiesview~TableCellPropertiesView}.
  *
+ * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table),
+ * it will become a component in ckeditor5-ui.
+ *
+ * @private
  * @extends module:ui/view~View
  */
 export default class FormRowView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the form row class.
+	 *
+	 * @param {module:utils/locale~Locale} locale The locale instance.
+	 * @param {Object} options
+	 * @param {Array.<module:ui/view~View>} options.children
+	 * @param {String} [options.class]
+	 * @param {module:ui/view~View} [options.labelView] When passed, the row gets the `group` and `aria-labelledby`
+	 * DOM attributes and get described by the label.
 	 */
 	constructor( locale, options = {} ) {
 		super( locale );
@@ -32,28 +44,6 @@ export default class FormRowView extends View {
 		this.set( 'class', options.class || null );
 
 		/**
-		 * TODO
-		 *
-		 * @observable
-		 * @member {String} #role
-		 */
-		this.set( '_role', null );
-
-		/**
-		 * TODO
-		 *
-		 * @member {String} #ariaLabelledBy
-		 */
-		this.set( '_ariaLabelledBy', null );
-
-		if ( options.labelView ) {
-			this.set( {
-				_role: 'group',
-				_ariaLabelledBy: options.labelView.id
-			} );
-		}
-
-		/**
 		 * A collection of row items (buttons, dropdowns, etc.).
 		 *
 		 * @readonly
@@ -63,6 +53,35 @@ export default class FormRowView extends View {
 
 		if ( options.children ) {
 			options.children.forEach( child => this.children.add( child ) );
+		}
+
+		/**
+		 * The role property reflected by the `role` DOM attribute of the {@link #element}.
+		 *
+		 * **Note**: Used only when a `labelView` is passed to constructor `options`.
+		 *
+		 * @private
+		 * @observable
+		 * @member {String} #role
+		 */
+		this.set( '_role', null );
+
+		/**
+		 * The ARIA property reflected by the `aria-labelledby` DOM attribute of the {@link #element}.
+		 *
+		 * **Note**: Used only when a `labelView` is passed to constructor `options`.
+		 *
+		 * @private
+		 * @observable
+		 * @member {String} #ariaLabelledBy
+		 */
+		this.set( '_ariaLabelledBy', null );
+
+		if ( options.labelView ) {
+			this.set( {
+				_role: 'group',
+				_ariaLabelledBy: options.labelView.id
+			} );
 		}
 
 		this.setTemplate( {
