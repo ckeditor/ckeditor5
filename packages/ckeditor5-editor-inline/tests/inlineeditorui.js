@@ -97,6 +97,8 @@ describe( 'InlineEditorUI', () => {
 					target: view.editable.element,
 					positions: sinon.match.array
 				} );
+
+				viewElement.remove();
 			} );
 
 			it( 'pin() is not called on editor.ui#update when panel is hidden', () => {
@@ -135,6 +137,8 @@ describe( 'InlineEditorUI', () => {
 				editor.ui.fire( 'update' );
 
 				sinon.assert.calledOnce( spy );
+
+				viewElement.remove();
 			} );
 
 			it( 'toolbar should group items by default', () => {
