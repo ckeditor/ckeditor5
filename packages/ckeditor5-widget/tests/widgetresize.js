@@ -156,30 +156,6 @@ describe( 'WidgetResize', () => {
 		mouseMock.up();
 	} );
 
-	describe( '_proposeNewSize()', () => {
-		beforeEach( async () => {
-			createResizer( {
-				isCentered: () => true
-			} );
-		} );
-
-		it( 'assumes a centered image if no isCentered option is provided', async () => {
-			const usedResizer = 'top-right';
-			const domParts = getWidgetDomParts( widget, usedResizer );
-			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
-			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
-
-			finalPointerPosition.pageX += 20;
-
-			mouseMock.down( editor, domParts.resizeHandle );
-
-			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			mouseMock.up();
-
-			// THe image should be enlarged by a twice of the mouse movement distance.
-			sinon.assert.calledWithExactly( commitStub, '140px' );
-		} );
-	} );
 	describe( 'Integration (pixels)', () => {
 		let resizer;
 
