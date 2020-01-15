@@ -10,10 +10,10 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+
 import TableProperties from '../../src/tableproperties';
 import TableCellProperties from '../../src/tablecellproperties';
 import TableColumnRowProperties from '../../src/tablecolumnrowproperties';
-import TableStyleUI from '../../src/tablestyleui';
 
 const sourceElement = document.querySelector( '#editor' );
 const clonedSource = sourceElement.cloneNode( true );
@@ -22,13 +22,12 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
-		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableColumnRowProperties, TableCellProperties,
-			TableStyleUI ],
+		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableColumnRowProperties, TableCellProperties ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellStyle' ],
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
