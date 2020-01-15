@@ -133,6 +133,10 @@ export default class InlineEditorUI extends EditorUI {
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
 		view.listenTo( editor.ui, 'update', () => {
+			if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
+				return;
+			}
+
 			// Don't pin if the panel is not already visible. It prevents the panel
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
@@ -142,9 +146,8 @@ export default class InlineEditorUI extends EditorUI {
 				} );
 
 				// Set toolbar's max-width only once.
-				if ( !toolbar.element.style.maxWidth ) {
-					const editableRect = new Rect( editableElement );
-					toolbar.element.style.maxWidth = `${ editableRect.width }px`;
+				if ( toolbar.element.style.maxWidth === '' ) {
+					this._setToolbarMaxWidth( new Rect( editableElement ).width );
 				}
 			}
 		} );
@@ -181,5 +184,17 @@ export default class InlineEditorUI extends EditorUI {
 				isDirectHost: false
 			} );
 		}
+	}
+
+	/**
+	 * Set max-width for toolbar.
+	 *
+	 * @private
+	 */
+	_setToolbarMaxWidth( width ) {
+		const view = this.view;
+		const toolbar = view.toolbar;
+
+		toolbar.element.style.maxWidth = `${ width }px`;
 	}
 }
