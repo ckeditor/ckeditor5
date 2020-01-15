@@ -679,46 +679,6 @@ describe( 'ImageResize', () => {
 		}
 	} );
 
-	// TODO move to Resizer tests.
-	describe( 'Resizer', () => {
-		beforeEach( () => createEditor() );
-
-		it( 'uses rounded (int) values', async () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			widget = viewDocument.getRoot().getChild( 1 );
-
-			await generateResizeTest( {
-				expectedWidth: 97,
-				// Makes it resize the image to 97.2188px, unless there's a rounding.
-				pointerOffset: {
-					x: 7.3,
-					y: -1
-				},
-				resizerPosition: 'bottom-left',
-				checkBeforeMouseUp( domFigure, domResizeWrapper ) {
-					expect( domFigure.style.width ).to.match( /^\d\dpx$/ );
-					expect( domResizeWrapper.style.width ).to.match( /^\d\dpx$/ );
-				}
-			} )();
-
-			expect( editor.model.document.getRoot().getChild( 1 ).getAttribute( 'width' ) ).to.match( /^\d\dpx$/ );
-		} );
-
-		it( 'hides the resize wrapper when its disabled', () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			const resizer = getSelectedImageResizer( editor );
-			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
-
-			expect( resizerWrapper.style.display ).to.equal( '' );
-
-			resizer.isEnabled = false;
-
-			expect( resizerWrapper.style.display ).to.equal( 'none' );
-		} );
-	} );
-
 	describe( 'widget toolbar integration', () => {
 		let widgetToolbarRepository;
 
