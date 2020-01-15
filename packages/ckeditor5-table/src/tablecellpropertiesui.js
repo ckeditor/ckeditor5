@@ -64,8 +64,8 @@ export default class TableCellPropertiesUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		/**
-		 * The batch used to undo all changes made by the form (which are live)
-		 * if "Cancel" was pressed. Each time the view is shown, a new batch is created.
+		 * The batch used to undo all changes made by the form (which are live, as the user types)
+		 * when "Cancel" was pressed. Each time the view is shown, a new batch is created.
 		 *
 		 * @private
 		 * @member {module:engine/model/batch~Batch}
@@ -123,7 +123,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		 */
 		this.view = new TableCellPropertiesView( editor.locale );
 
-		// Render the view so its #element is available for clickOutsideHandler.
+		// Render the view so its #element is available for the clickOutsideHandler.
 		this.view.render();
 
 		this.listenTo( this.view, 'submit', () => {
@@ -159,6 +159,15 @@ export default class TableCellPropertiesUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * In this method the UI -> editor data binding is registered.
+	 *
+	 * Registers a listener that updates the editor model when any observable property of
+	 * the {@link #view} has changed. This makes the view live, which means the changes are
+	 * visible in the editing as soon as the user types or changes fields' values.
+	 *
+	 * @private
+	 */
 	_startRespondingToChangesInView() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -187,6 +196,14 @@ export default class TableCellPropertiesUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * In this method the editor data -> UI binding is created.
+	 *
+	 * When executed, this method obtains the value attribute values of the cell the selection is anchored
+	 * to and passed them to the {@link #view}. This way, the UI stays up–to–date with the editor data.
+	 *
+	 * @private
+	 */
 	_fillViewFormFromSelectedCell() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -203,9 +220,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		const horizontalAlignment = tableCell.getAttribute( 'horizontalAlignment' ) || DEFAULT_HORIZONTAL_ALIGNMENT;
 		const verticalAlignment = tableCell.getAttribute( 'verticalAlignment' ) || DEFAULT_VERTICAL_ALIGNMENT;
 
-		const view = this.view;
-
-		view.set( {
+		this.view.set( {
 			borderWidth,
 			borderColor,
 			borderStyle,
@@ -216,6 +231,15 @@ export default class TableCellPropertiesUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * Shows the {@link #view} in the {@link #_balloon}.
+	 *
+	 * **Note**: Each time a view is shown, the new {@link #_batch} is created that contains
+	 * all changes made to the document when the view is visible, allowing a single undo step
+	 * for all of them.
+	 *
+	 * @private
+	 */
 	_showView() {
 		if ( this._isViewVisible ) {
 			return;
@@ -243,9 +267,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * Removes the {@link #view} from the {@link #_balloon}.
 	 *
-	 * See {@link #_addFormView}, {@link #_addActionsView}.
-	 *
-	 * @protected
+	 * @private
 	 */
 	_hideView() {
 		if ( !this._isViewInBalloon ) {
@@ -275,7 +297,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when the {@link #view} is the visible view in the {@link #_balloon}.
+	 * Returns `true` when the {@link #view} is the visible in the {@link #_balloon}.
 	 *
 	 * @private
 	 * @type {Boolean}

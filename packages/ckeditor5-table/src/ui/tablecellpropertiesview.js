@@ -316,10 +316,7 @@ export default class TableCellPropertiesView extends View {
 		} );
 
 		borderStyleDropdown.view.on( 'execute', evt => {
-			const value = evt.source._borderStyleValue;
-
-			// Update the UI.
-			this.borderStyle = value;
+			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
 		addListToDropdown( borderStyleDropdown.view, this._getBorderStyleDefinitions() );
@@ -527,7 +524,6 @@ export default class TableCellPropertiesView extends View {
 			} );
 
 			button.on( 'execute', () => {
-				// Update the UI.
 				this[ propertyName ] = alignment;
 			} );
 
