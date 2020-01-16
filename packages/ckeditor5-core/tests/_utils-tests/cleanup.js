@@ -11,7 +11,7 @@ import { removeEditorBodyOrphans } from '../_utils/cleanup';
 
 describe( 'cleanup util', () => {
 	describe( 'removeEditorBodyOrphans()', () => {
-		it( 'cleans up all editor elements', () => {
+		it( 'removes the body collection wrapper', () => {
 			const locale = new Locale();
 			const uiViews = [ new EditorUIView( locale ), new EditorUIView( locale ) ];
 
@@ -19,11 +19,27 @@ describe( 'cleanup util', () => {
 				view.render();
 			}
 
-			expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 2 );
+			// Body collection reuses its wrapper, hence 1.
+			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).to.have.length( 1 );
 
 			removeEditorBodyOrphans();
 
+			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).to.have.length( 0 );
 			expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 0 );
+		} );
+
+		// Right now, body collection should reuse its wrapper, but it doesn't cost us much to
+		// ensure that we remove all.
+		it( 'removes all body collection wrappers', () => {
+			const wrapper = document.createElement( 'div' );
+			wrapper.classList.add( 'ck-body-wrapper' );
+
+			document.body.appendChild( wrapper );
+			document.body.appendChild( wrapper.cloneNode() );
+
+			removeEditorBodyOrphans();
+
+			expect( document.querySelectorAll( '.ck-body-wrapper' ) ).to.have.length( 0 );
 		} );
 	} );
 } );

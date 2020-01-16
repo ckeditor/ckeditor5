@@ -13,7 +13,7 @@
  * See https://github.com/ckeditor/ckeditor5/issues/6018 for more details.
  */
 export function removeEditorBodyOrphans() {
-	for ( const bodyOrphan of document.querySelectorAll( '.ck-body' ) ) {
+	for ( const bodyOrphan of document.querySelectorAll( '.ck-body-wrapper' ) ) {
 		bodyOrphan.remove();
 	}
 }
