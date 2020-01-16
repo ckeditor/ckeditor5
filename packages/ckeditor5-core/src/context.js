@@ -234,43 +234,45 @@ export default class Context {
 	 *		const commonConfig = { ... }; // Configuration for all the plugins and editors.
 	 *		const editorPlugins = [ ... ]; // Regular `Plugin`s here.
 	 *
-	 *		Context.create( {
-	 *			// Only `ContextPlugin`s here.
-	 *			plugins: [ ... ],
+	 *		Context
+	 *			.create( {
+	 *				// Only `ContextPlugin`s here.
+	 *				plugins: [ ... ],
 	 *
-	 *			// Configure language for all the editors (it cannot be overwritten).
-	 *			language: { ... },
+	 *				// Configure language for all the editors (it cannot be overwritten).
+	 *				language: { ... },
 	 *
-	 *			// Configuration for context plugins.
-	 *			comments: { ... },
-	 *			...
+	 *				// Configuration for context plugins.
+	 *				comments: { ... },
+	 *				...
 	 *
-	 *			// Default configuration for editor plugins.
-	 *			toolbar: { ... },
-	 *			image: { ... },
-	 *			...
-	 *		} ).then( context => {
-	 *			const promises = [];
+	 *				// Default configuration for editor plugins.
+	 *				toolbar: { ... },
+	 *				image: { ... },
+	 *				...
+	 *			} )
+	 *			.then( context => {
+	 *				const promises = [];
 	 *
-	 *			promises.push( ClassicEditor.create(
-	 *				document.getElementById( 'editor1' ),
-	 *				{
-	 *					editorPlugins,
-	 *					context
-	 *				}
-	 *			) );
+	 *				promises.push( ClassicEditor.create(
+	 *					document.getElementById( 'editor1' ),
+	 *					{
+	 *						editorPlugins,
+	 *						context
+	 *					}
+	 *				) );
 	 *
-	 *			promises.push( ClassicEditor.create(
-	 *				document.getElementById( 'editor2' ),
-	 *				{
-	 *					editorPlugins,
-	 *					context,
-	 *					toolbar: { ... } // You can overwrite context's configuration.
-	 *				}
-	 *			) );
+	 *				promises.push( ClassicEditor.create(
+	 *					document.getElementById( 'editor2' ),
+	 *					{
+	 *						editorPlugins,
+	 *						context,
+	 *						toolbar: { ... } // You can overwrite context's configuration.
+	 *					}
+	 *				) );
 	 *
-	 *			return Promise.all( promises );
-	 *		} );
+	 *				return Promise.all( promises );
+	 *			} );
 	 *
 	 * @param {Object} [config] The context config.
 	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
