@@ -19,9 +19,9 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  * from the DOM structure of the editor, like panels, icons, etc.
  *
  * The body collection is available in the {@link module:ui/editorui/editoruiview~EditorUIView#body `editor.ui.view.body`} property.
- * Any plugin can add a {@link module:ui/view~View view} to this collection. Those views will render in a container placed directly in the `<body>` element.
- * The editor will detach and destroy this collection
- * when the editor will be {@link module:core/editor/editor~Editor#destroy destroyed}.
+ * Any plugin can add a {@link module:ui/view~View view} to this collection.
+ * Those views will render in a container placed directly in the `<body>` element.
+ * The editor will detach and destroy this collection when the editor will be {@link module:core/editor/editor~Editor#destroy destroyed}.
  *
  * If you need to control the life cycle of the body collection on your own, you can create your own instance of this class.
  *
