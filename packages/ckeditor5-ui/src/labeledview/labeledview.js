@@ -13,16 +13,53 @@ import LabelView from '../label/labelview';
 import '../../theme/components/labeledview/labeledview.css';
 
 /**
- * The labeled view class.
+ * The labeled view class. It can be used to enhance any view with the following features:
+ *
+ * * a label,
+ * * (optional) an error message,
+ * * (optional) an info (status) text,
+ *
+ * all bound logically by proper DOM attributes for UX and accessibility.  It also provides an interface
+ * (e.g. observable properties) that allows controlling those additional features.
+ *
+ * The constructor of this class requires a callback that returns a view to be labeled. The callback
+ * is called with unique ids that allow binding of DOM properties:
+ *
+ *		const labeledInputView = new LabeledView( locale, ( labeledView, viewUid, statusUid ) => {
+ *			const inputView = new InputTextView( labeledView.locale );
+ *
+ *			inputView.set( {
+ *				id: viewUid,
+ *				ariaDescribedById: statusUid
+ *			} );
+ *
+ *			inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
+ *			inputView.bind( 'hasError' ).to( labeledView, 'errorText', value => !!value );
+ *
+ *			return inputView;
+ *		} );
+ *
+ *		labeledInputView.label = 'User name';
+ *		labeledInputView.infoText = 'Full name like for instance, John Doe.';
+ *		labeledInputView.render();
+ *
+ *		document.body.append( labeledInputView.element );
+ *
+ * See {@link module:ui/labeledview/creators} to learn more about labeled input helpers.
  *
  * @extends module:ui/view~View
  */
 export default class LabeledView extends View {
 	/**
-	 * Creates an instance of the labeled view class.
+	 * Creates an instance of the labeled view class using a provided creator function
+	 * that provides the view to be labeled.
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
-	 * @param {Function} viewCreator TODO
+	 * @param {Function} viewCreator A function that returns a {@link module:ui/view~View}
+	 * that will be labeled. Two strings are passed to the creator function:
+	 *
+	 * * an UID string that allows DOM binding of the {@link #labelView label} and the labeled view,
+	 * * an UID string that allows DOM binding of the {@link #statusView status} and the labeled view
 	 */
 	constructor( locale, viewCreator ) {
 		super( locale );
@@ -55,15 +92,11 @@ export default class LabeledView extends View {
 
 		/**
 		 * The validation error text. When set, it will be displayed
-		 * next to the {@link #field} as a typical validation error message.
+		 * next to the {@link #view} as a typical validation error message.
 		 * Set it to `null` to hide the message.
 		 *
 		 * **Note:** Setting this property to anything but `null` will automatically
 		 * make the `hasError` of the {@link #view} `true`.
-		 *
-		 * **Note:** Typing in the {@link #field} which fires the
-		 * {@link module:ui/inputtext/inputtextview~InputTextView#event:input `input` event}
-		 * resets this property back to `null`, indicating that the input field can be re–validated.
 		 *
 		 * @observable
 		 * @member {String|null} #errorText
@@ -71,14 +104,14 @@ export default class LabeledView extends View {
 		this.set( 'errorText', null );
 
 		/**
-		 * The additional information text displayed next to the {@link #field} which can
-		 * be used to inform the user about the purpose of the input, provide help or hints.
+		 * The additional information text displayed next to the {@link #view} which can
+		 * be used to inform the user about its purpose, provide help or hints.
 		 *
 		 * Set it to `null` to hide the message.
 		 *
 		 * **Note:** This text will be displayed in the same place as {@link #errorText} but the
 		 * latter always takes precedence: if the {@link #errorText} is set, it replaces
-		 * {@link #errorText} for as long as the value of the input is invalid.
+		 * {@link #infoText}.
 		 *
 		 * @observable
 		 * @member {String|null} #infoText
@@ -167,7 +200,8 @@ export default class LabeledView extends View {
 	 * next to the {@link #view}. See {@link #_statusText}.
 	 *
 	 * @private
-	 * @param {String} statusUid Unique id of the status, shared with the input's `aria-describedby` attribute.
+	 * @param {String} statusUid Unique id of the status, shared with the {@link #view view's}
+	 * `aria-describedby` attribute.
 	 * @returns {module:ui/view~View}
 	 */
 	_createStatusView( statusUid ) {
@@ -197,7 +231,7 @@ export default class LabeledView extends View {
 	}
 
 	/**
-	 * Focuses the input.
+	 * Focuses the {@link #view}.
 	 */
 	focus() {
 		this.view.focus();
