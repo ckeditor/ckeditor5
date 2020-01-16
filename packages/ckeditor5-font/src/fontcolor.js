@@ -134,7 +134,7 @@ export default class FontColor extends Plugin {
  *			]
  *		};
  *
- * *Note*: The colors are displayed in the `'fontColor'` dropdown.
+ * **Note**: The colors are displayed in the `'fontColor'` dropdown.
  *
  * @member {Array.<String|Object>} module:font/fontcolor~FontColorConfig#colors
  */
