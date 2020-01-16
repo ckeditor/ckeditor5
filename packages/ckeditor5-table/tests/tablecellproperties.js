@@ -18,7 +18,7 @@ describe( 'TableCellProperties', () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
-		await ClassicTestEditor.create( {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ TableCellProperties, Paragraph, TableEditing ]
 		} );
 	} );
