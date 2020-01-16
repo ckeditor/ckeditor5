@@ -14,6 +14,9 @@ import TableCellPropertiesEditing from './tablecellpropertiesediting';
 /**
  * The table cell properties feature.
  *
+ * This is a "glue" plugin which loads the {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing table editing feature}
+ * and table UI feature.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TableCellProperties extends Plugin {
@@ -24,6 +27,9 @@ export default class TableCellProperties extends Plugin {
 		return 'TableCellProperties';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ TableCellPropertiesEditing ];
 	}
