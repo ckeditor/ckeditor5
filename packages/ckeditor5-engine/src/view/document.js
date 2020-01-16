@@ -167,7 +167,7 @@ export default class Document {
 	 * Available style rules are:
 	 * - background: {@link module:engine/view/styles/background~addBackgroundRules}
 	 * - border: {@link module:engine/view/styles/border~addBorderRules}
-	 * - margin: {@link module:engine/view/styles/background~addMarginRules}
+	 * - margin: {@link module:engine/view/styles/margin~addMarginRules}
 	 * - padding: {@link module:engine/view/styles/padding~addPaddingRules}
 	 *
 	 * @param {Function} callback

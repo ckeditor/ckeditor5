@@ -329,7 +329,7 @@ export default class StylesMap {
 	 * Returns normalized styles entries for further processing.
 	 *
 	 * @private
-	 * @returns {Array.<String, String>}
+	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
 	 */
 	_getStylesEntries() {
 		const parsed = [];
@@ -493,7 +493,7 @@ export class StylesProcessor {
 	 * @param {String} name
 	 * @param {String} name Name of style property.
 	 * @param {Object} styles Object holding normalized styles.
-	 * @returns {Array.<Array.<String, String>>}
+	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
 	 */
 	getReducedForm( name, styles ) {
 		const normalizedValue = this.getNormalized( name, styles );
@@ -744,3 +744,15 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
 
 	set( stylesObject, nameOrPath, valueToSet );
 }
+
+/**
+ * A CSS style property descriptor that contains tuplet of two strings:
+ *
+ * - first string describes property name
+ * - second string describes property value
+ *
+ *		const marginDescriptor = [ 'margin', '2px 3em' ];
+ *		const marginTopDescriptor = [ 'margin-top', '2px' ];
+ *
+ * @typedef {Array.<String, String>} module:engine/view/stylesmap~PropertyDescriptor
+ */
