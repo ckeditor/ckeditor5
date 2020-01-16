@@ -126,10 +126,7 @@ export default class SelectionObserver extends Observer {
 	 * @param {Document} domDocument DOM document.
 	 */
 	_handleSelectionChange( domDocument ) {
-		// Selection is handled when document is not focused but is read-only. This is because in read-only
-		// mode contenteditable is set as false and editor won't receive focus but we still need to know
-		// selection position.
-		if ( !this.isEnabled || ( !this.document.isFocused && !this.document.isReadOnly ) ) {
+		if ( !this.isEnabled ) {
 			return;
 		}
 
@@ -140,6 +137,14 @@ export default class SelectionObserver extends Observer {
 		// will be updated, so selections will equal and event will not be fired, as expected.
 		const domSelection = domDocument.defaultView.getSelection();
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
+
+		// Do not convert selection if new view selection has no ranges in it.
+		//
+		// It means that the DOM selection was in some way incorrect. Ranges that were in the DOM selection could not be
+		// converted to the view selection. This happens when the selection is moved outside an editable.
+		if ( newViewSelection.rangeCount == 0 ) {
+			return;
+		}
 
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
