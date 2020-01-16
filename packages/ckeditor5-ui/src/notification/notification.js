@@ -9,7 +9,7 @@
 
 /* globals window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin';
 
 /**
  * The Notification plugin.
@@ -21,9 +21,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * Note that every unhandled and not stopped `warning` notification will be displayed as a system alert.
  * See {@link module:ui/notification/notification~Notification#showWarning}.
  *
- * @extends module:core/plugin~Plugin
+ * @extends module:core/contextplugin~ContextPlugin
  */
-export default class Notification extends Plugin {
+export default class Notification extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
