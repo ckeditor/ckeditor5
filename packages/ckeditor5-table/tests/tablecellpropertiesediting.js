@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import TableEditing from '../src/tableediting';
 import TableCellPropertiesEditing from '../src/tablecellpropertiesediting';
@@ -16,20 +16,16 @@ import { assertTableCellStyle, assertTRBLAttribute } from './_utils/utils';
 describe( 'TableCellPropertiesEditing', () => {
 	let editor, model;
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( {
+			plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
+		} );
 
-				model = editor.model;
-			} );
+		model = editor.model;
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -156,9 +152,11 @@ describe( 'TableCellPropertiesEditing', () => {
 
 			it( 'should upcast border-bottom-* styles', () => {
 				editor.setData(
-					'<table><tr>' +
-					'<td style="border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#f00">foo</td>' +
-					'</tr></table>'
+					'<table>' +
+						'<tr>' +
+							'<td style="border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#f00">foo</td>' +
+						'</tr>' +
+					'</table>'
 				);
 
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -170,7 +168,11 @@ describe( 'TableCellPropertiesEditing', () => {
 
 			it( 'should upcast border-left-* styles', () => {
 				editor.setData(
-					'<table><tr><td style="border-left-width:1px;border-left-style:solid;border-left-color:#f00">foo</td></tr></table>'
+					'<table>' +
+						'<tr>' +
+							'<td style="border-left-width:1px;border-left-style:solid;border-left-color:#f00">foo</td>' +
+						'</tr>' +
+					'</table>'
 				);
 
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -204,11 +206,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -493,11 +495,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -553,11 +555,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -610,11 +612,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -649,11 +651,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 				tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -704,11 +706,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 
@@ -747,11 +749,11 @@ describe( 'TableCellPropertiesEditing', () => {
 				setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
-					'<tableRow>' +
-					'<tableCell>' +
-					'<paragraph>foo</paragraph>' +
-					'</tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 
