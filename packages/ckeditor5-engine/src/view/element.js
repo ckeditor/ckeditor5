@@ -377,28 +377,27 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns style value for given property.
-	 * Undefined is returned if style does not exist.
+	 * Returns style value for the given property mae.
+	 * If the style does not exist `undefined` is returned.
 	 *
-	 * *Note*: This method will only return normalized styles if a style processor was defined. Otherwise the style names are not
-	 * normalized.
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#get `StylesMap#get()`} for details.
 	 *
-	 * For an element with style set to: 'margin:1px
+	 * For an element with style set to `'margin:1px'`:
 	 *
 	 *		// Enable 'margin' shorthand processing:
 	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const element = view.change( writer => {
 	 *			const element = writer.createElement();
-	 *			writer.setStyle( 'margin', '1px' )
-	 *			writer.setStyle( 'margin-bottom', '3em' )
+	 *			writer.setStyle( 'margin', '1px' );
+	 *			writer.setStyle( 'margin-bottom', '3em' );
 	 *
 	 *			return element;
 	 *		} );
 	 *
-	 *		element.getStyle( 'margin' );
-	 *
-	 *		// will return 'margin: 1px 1px 3em;'
+	 *		element.getStyle( 'margin' ); // -> 'margin: 1px 1px 3em;'
 	 *
 	 * @param {String} property
 	 * @returns {String|undefined}
@@ -429,8 +428,10 @@ export default class Element extends Node {
 	 *
 	 * Will return a `2px` string.
 	 *
-	 * *Note*: This method will only return normalized styles if a style processor was defined. Otherwise the style names are not
-	 * normalized.
+	 * **Note**: This method will return normalized values only if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#getNormalized `StylesMap#getNormalized()`} for details.
+	 *
 	 *
 	 * @param {String} property Name of CSS property
 	 * @returns {Object|String|undefined}

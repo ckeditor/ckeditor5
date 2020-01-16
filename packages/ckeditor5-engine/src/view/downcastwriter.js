@@ -343,10 +343,12 @@ export default class DowncastWriter {
 	/**
 	 * Removes specified style from the element.
 	 *
-	 *		writer.removeStyle( 'color', element );  // Removes 'color' style.
+	 *		writer.removeStyle( 'color', element ); // Removes 'color' style.
 	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
 	 *
-	 * **Note**: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#remove}.
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @param {Array.<String>|String} property
 	 * @param {module:engine/view/element~Element} element
