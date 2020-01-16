@@ -115,12 +115,12 @@ export default class Context {
 		for ( const Plugin of plugins ) {
 			if ( typeof Plugin != 'function' ) {
 				/**
-				 * Only constructor is allowed as a {@link module:core/contextplugin~ContextPlugin}.
+				 * Only a constructor function is allowed as a {@link module:core/contextplugin~ContextPlugin context plugin}.
 				 *
 				 * @error context-initplugins-constructor-only
 				 */
 				throw new CKEditorError(
-					'context-initplugins-constructor-only: Only constructor is allowed as a Context plugin.',
+					'context-initplugins-constructor-only: Only a constructor function is allowed as a context plugin.',
 					null,
 					{ Plugin }
 				);
@@ -128,12 +128,13 @@ export default class Context {
 
 			if ( Plugin.isContextPlugin !== true ) {
 				/**
-				 * Only plugin marked as a {@link module:core/contextplugin~ContextPlugin} is allowed to be used with a context.
+				 * Only a plugin marked as a {@link module:core/contextplugin~ContextPlugin.isContextPlugin context plugin}
+				 * is allowed to be used with a context.
 				 *
 				 * @error context-initplugins-invalid-plugin
 				 */
 				throw new CKEditorError(
-					'context-initplugins-invalid-plugin: Only plugin marked as a ContextPlugin is allowed.',
+					'context-initplugins-invalid-plugin: Only a plugin marked as a ContextPlugin is allowed to be used with a context.',
 					null,
 					{ Plugin }
 				);
