@@ -14,6 +14,7 @@ import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/b
 import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './converters/tableproperties';
 import TableEditing from './tableediting';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
+import TableBorderColorCommand from './commands/tablebordercolorcommand';
 
 /**
  * The table properties editing feature.
@@ -48,6 +49,8 @@ export default class TablePropertiesEditing extends Plugin {
 		viewDoc.addStyleProcessorRules( addBackgroundRules );
 
 		enableBorderProperties( schema, conversion );
+		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );
+
 		enableAlignmentProperty( schema, conversion );
 		enableProperty( schema, conversion, 'width', 'width' );
 		enableProperty( schema, conversion, 'height', 'height' );
