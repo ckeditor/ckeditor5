@@ -11,17 +11,19 @@ import { removeEditorBodyOrphans } from '../_utils/cleanup';
 
 describe( 'cleanup util', () => {
 	describe( 'removeEditorBodyOrphans()', () => {
-		const locale = new Locale();
-		const uiViews = [ new EditorUIView( locale ), new EditorUIView( locale ) ];
+		it( 'cleans up all editor elements', () => {
+			const locale = new Locale();
+			const uiViews = [ new EditorUIView( locale ), new EditorUIView( locale ) ];
 
-		for ( const view of uiViews ) {
-			view.render();
-		}
+			for ( const view of uiViews ) {
+				view.render();
+			}
 
-		expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 2 );
+			expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 2 );
 
-		removeEditorBodyOrphans();
+			removeEditorBodyOrphans();
 
-		expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 0 );
+			expect( document.querySelectorAll( '.ck-body' ) ).to.have.length( 0 );
+		} );
 	} );
 } );

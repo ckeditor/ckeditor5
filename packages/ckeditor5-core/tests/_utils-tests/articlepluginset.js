@@ -45,7 +45,7 @@ describe( 'ArticlePluginSet', () => {
 		editorElement.remove();
 	} );
 
-	it.only( 'should be loaded', () => {
+	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ArticlePluginSet ) ).to.be.instanceOf( ArticlePluginSet );
 	} );
 
