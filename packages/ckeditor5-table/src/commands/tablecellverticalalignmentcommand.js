@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/commands/tablecellbackgroundcolorcommand
+ * @module table/commands/tablecellverticalalignmentcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -12,24 +12,24 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findAncestor } from './utils';
 
 /**
- * The table cell background color command.
+ * The table cell vertical alignment command.
  *
  * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellBackgroundColor'` editor command.
+ * `'tableCellVerticalAlignment'` editor command.
  *
- * To change cell backgroundColor of the selected cell, execute the command:
+ * To change cell vertical alignment of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellBackgroundColor', {
+ *		editor.execute( 'tableCellVerticalAlignment', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellBackgroundColorCommand extends Command {
+export default class TableCellVerticalAlignmentCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'backgroundColor';
+		this.attributeName = 'verticalAlignment';
 	}
 
 	/**
@@ -58,8 +58,8 @@ export default class TableCellBackgroundColorCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set backgroundColor.
-	 * If backgroundColor is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set vertical alignment.
+	 * If vertical alignment is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

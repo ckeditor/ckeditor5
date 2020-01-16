@@ -17,6 +17,8 @@ import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
 import TableCellWidthCommand from './commands/tablecellwidthcommand';
 import TableCellHeightCommand from './commands/tablecellheightcommand';
 import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand';
+import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand';
+import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand';
 
 /**
  * The table cell properties editing feature.
@@ -61,6 +63,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 
 		enableBorderProperties( schema, conversion );
 		enableHorizontalAlignmentProperty( schema, conversion );
+		editor.commands.add( 'tableCellHorizontalAlignment', new TableCellHorizontalAlignmentCommand( editor ) );
 
 		enableProperty( schema, conversion, 'width', 'width' );
 		editor.commands.add( 'tableCellWidth', new TableCellWidthCommand( editor ) );
@@ -75,6 +78,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellBackgroundColor', new TableCellBackgroundColorCommand( editor ) );
 
 		enableProperty( schema, conversion, 'verticalAlignment', 'vertical-align' );
+		editor.commands.add( 'tableCellVerticalAlignment', new TableCellVerticalAlignmentCommand( editor ) );
 	}
 }
 
