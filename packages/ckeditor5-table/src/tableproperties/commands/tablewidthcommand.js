@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablebordercolorcommand
+ * @module table/tableproperties/commands/tablewidthcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table border color command.
+ * The table width command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBorderColor'` editor command.
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * `'tableWidth'` editor command.
  *
- * To change border color of the selected , execute the command:
+ * To change width of the selected table, execute the command:
  *
- *		editor.execute( 'tableBorderColor', {
+ *		editor.execute( 'tableWidth', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableBorderColorCommand extends Command {
+export default class TableWidthCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'borderColor';
+		this.attributeName = 'width';
 	}
 
 	/**
@@ -39,7 +39,7 @@ export default class TableBorderColorCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = Array.from( selection.getSelectedBlocks() ).find( block => block.is( 'table' ) );
+		const table = findAncestor( 'table', selection.getFirstPosition() );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -50,7 +50,7 @@ export default class TableBorderColorCommand extends Command {
 			return;
 		}
 
-		return getSingleValue( table.getAttribute( this.attributeName ) );
+		return table.getAttribute( this.attributeName );
 	}
 
 	/**
@@ -58,8 +58,7 @@ export default class TableBorderColorCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set border color.
-	 * If border color is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set width. If width is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -79,4 +78,3 @@ export default class TableBorderColorCommand extends Command {
 		} );
 	}
 }
-

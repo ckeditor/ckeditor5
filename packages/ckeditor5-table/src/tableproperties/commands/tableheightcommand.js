@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablewidthcommand
+ * @module table/tableproperties/commands/tableheightcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table width command.
+ * The table height command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableWidth'` editor command.
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * `'tableHeight'` editor command.
  *
- * To change width of the selected table, execute the command:
+ * To change height of the selected table, execute the command:
  *
- *		editor.execute( 'tableWidth', {
+ *		editor.execute( 'tableHeight', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableWidthCommand extends Command {
+export default class TableHeightCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'width';
+		this.attributeName = 'height';
 	}
 
 	/**
@@ -58,7 +58,7 @@ export default class TableWidthCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set width. If width is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set height. If height is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

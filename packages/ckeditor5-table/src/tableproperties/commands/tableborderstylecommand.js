@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tableheightcommand
+ * @module table/tableproperties/commands/tableborderstylecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor, getSingleValue } from '../../commands/utils';
 
 /**
- * The table height command.
+ * The table style border command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableHeight'` editor command.
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * `'tableBorderStyle'` editor command.
  *
- * To change height of the selected table, execute the command:
+ * To change border of the selected , execute the command:
  *
- *		editor.execute( 'tableHeight', {
+ *		editor.execute( 'tableBorderStyle', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableHeightCommand extends Command {
+export default class TableBorderStyleCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'height';
+		this.attributeName = 'borderStyle';
 	}
 
 	/**
@@ -39,7 +39,7 @@ export default class TableHeightCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = findAncestor( 'table', selection.getFirstPosition() );
+		const table = Array.from( selection.getSelectedBlocks() ).find( block => block.is( 'table' ) );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -50,7 +50,7 @@ export default class TableHeightCommand extends Command {
 			return;
 		}
 
-		return table.getAttribute( this.attributeName );
+		return getSingleValue( table.getAttribute( this.attributeName ) );
 	}
 
 	/**
@@ -58,7 +58,8 @@ export default class TableHeightCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set height. If height is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set border style.
+	 * If border style is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -78,3 +79,4 @@ export default class TableHeightCommand extends Command {
 		} );
 	}
 }
+

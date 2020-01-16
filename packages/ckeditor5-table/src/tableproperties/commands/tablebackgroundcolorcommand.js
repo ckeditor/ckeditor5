@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tableborderstylecommand
+ * @module table/tableproperties/commands/tablebackgroundcolorcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table style border command.
+ * The table background color command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBorderStyle'` editor command.
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * `'tableBackgroundColor'` editor command.
  *
- * To change border of the selected , execute the command:
+ * To change backgroundColor of the selected, execute the command:
  *
- *		editor.execute( 'tableBorderStyle', {
+ *		editor.execute( 'tableBackgroundColor', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableBorderStyleCommand extends Command {
+export default class TableBackgroundColorCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'borderStyle';
+		this.attributeName = 'backgroundColor';
 	}
 
 	/**
@@ -42,7 +42,7 @@ export default class TableBorderStyleCommand extends Command {
 		const table = Array.from( selection.getSelectedBlocks() ).find( block => block.is( 'table' ) );
 
 		this.isEnabled = !!table;
-		this.value = this._getValue( table );
+		this.value = table && this._getValue( table );
 	}
 
 	_getValue( table ) {
@@ -50,7 +50,7 @@ export default class TableBorderStyleCommand extends Command {
 			return;
 		}
 
-		return getSingleValue( table.getAttribute( this.attributeName ) );
+		return table.getAttribute( this.attributeName );
 	}
 
 	/**
@@ -58,8 +58,8 @@ export default class TableBorderStyleCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set border style.
-	 * If border style is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set backgroundColor.
+	 * If backgroundColor is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -79,4 +79,3 @@ export default class TableBorderStyleCommand extends Command {
 		} );
 	}
 }
-

@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablebackgroundcolorcommand
+ * @module table/tableproperties/commands/tablealignmentcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table background color command.
+ * The table alignment command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBackgroundColor'` editor command.
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * `'tableAlignment'` editor command.
  *
- * To change backgroundColor of the selected, execute the command:
+ * To change alignment of the selected table, execute the command:
  *
- *		editor.execute( 'tableBackgroundColor', {
+ *		editor.execute( 'tableAlignment', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableBackgroundColorCommand extends Command {
+export default class TableAlignmentCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'backgroundColor';
+		this.attributeName = 'alignment';
 	}
 
 	/**
@@ -39,10 +39,10 @@ export default class TableBackgroundColorCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = Array.from( selection.getSelectedBlocks() ).find( block => block.is( 'table' ) );
+		const table = findAncestor( 'table', selection.getFirstPosition() );
 
 		this.isEnabled = !!table;
-		this.value = table && this._getValue( table );
+		this.value = this._getValue( table );
 	}
 
 	_getValue( table ) {
@@ -58,8 +58,8 @@ export default class TableBackgroundColorCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set backgroundColor.
-	 * If backgroundColor is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set alignment.
+	 * If alignment is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

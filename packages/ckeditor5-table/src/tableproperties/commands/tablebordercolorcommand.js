@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablealignmentcommand
+ * @module table/tableproperties/commands/tablebordercolorcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor, getSingleValue } from '../../commands/utils';
 
 /**
- * The table alignment command.
+ * The table border color command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableAlignment'` editor command.
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * `'tableBorderColor'` editor command.
  *
- * To change alignment of the selected table, execute the command:
+ * To change border color of the selected , execute the command:
  *
- *		editor.execute( 'tableAlignment', {
+ *		editor.execute( 'tableBorderColor', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableAlignmentCommand extends Command {
+export default class TableBorderColorCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'alignment';
+		this.attributeName = 'borderColor';
 	}
 
 	/**
@@ -39,7 +39,7 @@ export default class TableAlignmentCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = findAncestor( 'table', selection.getFirstPosition() );
+		const table = Array.from( selection.getSelectedBlocks() ).find( block => block.is( 'table' ) );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -50,7 +50,7 @@ export default class TableAlignmentCommand extends Command {
 			return;
 		}
 
-		return table.getAttribute( this.attributeName );
+		return getSingleValue( table.getAttribute( this.attributeName ) );
 	}
 
 	/**
@@ -58,8 +58,8 @@ export default class TableAlignmentCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set alignment.
-	 * If alignment is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set border color.
+	 * If border color is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -79,3 +79,4 @@ export default class TableAlignmentCommand extends Command {
 		} );
 	}
 }
+

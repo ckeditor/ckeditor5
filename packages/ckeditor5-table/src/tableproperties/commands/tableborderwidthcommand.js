@@ -4,17 +4,17 @@
  */
 
 /**
- * @module table/commands/tableborderwidthcommand
+ * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor, getSingleValue } from '../../commands/utils';
 
 /**
  * The table width border command.
  *
- * The command is registered by {@link module:table/tablepropertiesediting~TablePropertiesEditing} as
+ * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
  * `'tableBorderWidth'` editor command.
  *
  * To change border of the selected , execute the command:

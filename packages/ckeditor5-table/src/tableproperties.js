@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import TablePropertiesEditing from './tablepropertiesediting';
+import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 
 /**
  * The table properties feature.
