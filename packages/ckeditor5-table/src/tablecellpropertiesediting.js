@@ -13,6 +13,7 @@ import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/borde
 import { addPaddingRules } from '@ckeditor/ckeditor5-engine/src/view/styles/padding';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 import TableEditing from './tableediting';
+import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
 
 /**
  * The table cell properties editing feature.
@@ -60,6 +61,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, 'width', 'width' );
 		enableProperty( schema, conversion, 'height', 'height' );
 		enableProperty( schema, conversion, 'padding', 'padding' );
+		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor ) );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		enableProperty( schema, conversion, 'verticalAlignment', 'vertical-align' );
 	}
