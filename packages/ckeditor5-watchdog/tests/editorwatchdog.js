@@ -5,15 +5,15 @@
 
 /* globals setTimeout, window, console, document */
 
-import Watchdog from '../src/watchdog';
+import EditorWatchdog from '../src/editorwatchdog';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-describe( 'Watchdog', () => {
+describe( 'EditorWatchdog', () => {
 	let element;
 
 	beforeEach( () => {
@@ -27,39 +27,37 @@ describe( 'Watchdog', () => {
 	} );
 
 	describe( 'create()', () => {
-		it( 'should create an editor instance', () => {
-			const watchdog = new Watchdog();
+		it( 'should create an editor instance', async () => {
+			const watchdog = new EditorWatchdog();
 
 			const editorCreateSpy = sinon.spy( ClassicTestEditor, 'create' );
 			const editorDestroySpy = sinon.spy( ClassicTestEditor.prototype, 'destroy' );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
-			return watchdog.create( element, {} )
-				.then( () => {
-					sinon.assert.calledOnce( editorCreateSpy );
-					sinon.assert.notCalled( editorDestroySpy );
+			await watchdog.create( element, {} );
 
-					return watchdog.destroy();
-				} )
-				.then( () => {
-					sinon.assert.calledOnce( editorCreateSpy );
-					sinon.assert.calledOnce( editorDestroySpy );
-				} );
+			sinon.assert.calledOnce( editorCreateSpy );
+			sinon.assert.notCalled( editorDestroySpy );
+
+			await watchdog.destroy();
+
+			sinon.assert.calledOnce( editorCreateSpy );
+			sinon.assert.calledOnce( editorDestroySpy );
 		} );
 
-		it( 'should throw an error when the creator is not defined', () => {
-			const watchdog = new Watchdog();
+		it( 'should throw an error when the creator is not defined', async () => {
+			const watchdog = new EditorWatchdog();
 
-			expectToThrowCKEditorError(
-				() => watchdog.create(),
-				/^watchdog-creator-not-defined/,
-				null
-			);
+			try {
+				await watchdog.create();
+			} catch ( err ) {
+				assertCKEditorError( err, /^watchdog-creator-not-defined/, null );
+			}
 		} );
 
-		it( 'should properly copy the config', () => {
-			const watchdog = new Watchdog();
+		it( 'should properly copy the config', async () => {
+			const watchdog = new EditorWatchdog();
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
 			const config = {
@@ -67,16 +65,16 @@ describe( 'Watchdog', () => {
 				bar: document.createElement( 'div' )
 			};
 
-			return watchdog.create( element, config ).then( () => {
-				expect( watchdog.editor.config._config.foo ).to.not.equal( config.foo );
-				expect( watchdog.editor.config._config.bar ).to.equal( config.bar );
+			await watchdog.create( element, config );
 
-				return watchdog.destroy();
-			} );
+			expect( watchdog.editor.config._config.foo ).to.not.equal( config.foo );
+			expect( watchdog.editor.config._config.bar ).to.equal( config.bar );
+
+			await watchdog.destroy();
 		} );
 
-		it( 'should support editor data passed as the first argument', () => {
-			const watchdog = new Watchdog();
+		it( 'should support editor data passed as the first argument', async () => {
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
@@ -85,30 +83,28 @@ describe( 'Watchdog', () => {
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
 
-			return watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } )
-				.then( () => {
-					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
 
-					return new Promise( res => {
-						setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
 
-						watchdog.on( 'restart', () => {
-							window.onerror = originalErrorHandler;
-							res();
-						} );
-					} );
-				} )
-				.then( () => {
-					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-					return watchdog.destroy();
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
 				} );
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
 		} );
 	} );
 
 	describe( 'editor', () => {
 		it( 'should be the current editor instance', () => {
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -147,7 +143,7 @@ describe( 'Watchdog', () => {
 
 	describe( 'error handling', () => {
 		it( 'Watchdog should not restart editor during the initialization', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( el =>
 				ClassicTestEditor.create( el )
@@ -166,7 +162,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should not restart editor during the destroy', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( el => ClassicTestEditor.create( el ) );
 			watchdog.setDestructor( () => Promise.reject( new Error( 'foo' ) ) );
@@ -186,7 +182,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should not hide intercepted errors', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -214,7 +210,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -236,7 +232,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should not intercept non-editor errors', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -281,8 +277,8 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should not intercept other editor errors', () => {
-			const watchdog1 = Watchdog.for( ClassicTestEditor );
-			const watchdog2 = Watchdog.for( ClassicTestEditor );
+			const watchdog1 = EditorWatchdog.for( ClassicTestEditor );
+			const watchdog2 = EditorWatchdog.for( ClassicTestEditor );
 
 			const config = {
 				plugins: []
@@ -319,7 +315,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -341,7 +337,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -373,7 +369,7 @@ describe( 'Watchdog', () => {
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
 			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -409,7 +405,7 @@ describe( 'Watchdog', () => {
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
 			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
+			const watchdog = new EditorWatchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -444,7 +440,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should not crash permantently when average time between errors is longer than `minimumNonErrorTimePeriod`', () => {
-			const watchdog = new Watchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
+			const watchdog = new EditorWatchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -479,7 +475,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should warn if the CKEditorError missing its context', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 			watchdog.setDestructor( editor => editor.destroy() );
@@ -511,7 +507,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'Watchdog should omit error if the CKEditorError context is equal to null', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -535,7 +531,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'editor should be restarted with the data before the crash #1', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -562,7 +558,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'editor should be restarted with the data before the crash #2', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -595,13 +591,13 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'editor should be restarted with the data of the latest document version before the crash', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
-			window.onerror = undefined;
+			window.onerror = sinon.spy();
 
 			return watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -633,7 +629,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'editor should be restarted with the latest available data before the crash', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
@@ -693,7 +689,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'should use the custom destructor if passed', () => {
-			const watchdog = new Watchdog();
+			const watchdog = new EditorWatchdog();
 			const destructionSpy = sinon.spy();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -753,7 +749,7 @@ describe( 'Watchdog', () => {
 				return;
 			}
 
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 			const originalErrorHandler = window.onerror;
 
 			window.onerror = undefined;
@@ -784,7 +780,7 @@ describe( 'Watchdog', () => {
 				return;
 			}
 
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 			const originalErrorHandler = window.onerror;
 			const editorErrorSpy = sinon.spy();
 
@@ -819,7 +815,7 @@ describe( 'Watchdog', () => {
 			// This will ensure that the second data save action will be put off in time.
 			const SAVE_INTERVAL = 30;
 
-			const watchdog = Watchdog.for( ClassicTestEditor, {
+			const watchdog = EditorWatchdog.for( ClassicTestEditor, {
 				saveInterval: SAVE_INTERVAL,
 			} );
 
@@ -852,7 +848,7 @@ describe( 'Watchdog', () => {
 
 	describe( 'static for()', () => {
 		it( 'should be a shortcut method for creating the watchdog', () => {
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -884,7 +880,7 @@ describe( 'Watchdog', () => {
 
 	describe( 'crashes', () => {
 		it( 'should be an array of caught errors by the watchdog', () => {
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -919,7 +915,7 @@ describe( 'Watchdog', () => {
 					return;
 				}
 
-				const watchdog = Watchdog.for( ClassicTestEditor );
+				const watchdog = EditorWatchdog.for( ClassicTestEditor );
 
 				// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 				const originalErrorHandler = window.onerror;
@@ -960,7 +956,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'should reflect the state of the watchdog', () => {
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
@@ -994,7 +990,7 @@ describe( 'Watchdog', () => {
 		} );
 
 		it( 'should be observable', () => {
-			const watchdog = Watchdog.for( ClassicTestEditor );
+			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 			const states = [];
 
 			watchdog.on( 'change:state', ( evt, propName, newValue ) => {
@@ -1071,7 +1067,7 @@ describe( 'Watchdog', () => {
 				}
 			}
 
-			const watchdog = Watchdog.for( MultiRootEditor );
+			const watchdog = EditorWatchdog.for( MultiRootEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;

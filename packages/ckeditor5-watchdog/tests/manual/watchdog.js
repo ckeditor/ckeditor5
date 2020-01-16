@@ -8,7 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import Watchdog from '../../src/watchdog';
+import EditorWatchdog from '../../src/editorwatchdog';
 
 class TypingError {
 	constructor( editor ) {
@@ -63,7 +63,7 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 } );
 
 function createWatchdog( editorElement, stateElement, name ) {
-	const watchdog = Watchdog.for( ClassicEditor );
+	const watchdog = EditorWatchdog.for( ClassicEditor );
 
 	watchdog.create( editorElement, editorConfig );
 
