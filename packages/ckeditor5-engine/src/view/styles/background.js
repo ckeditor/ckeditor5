@@ -26,7 +26,7 @@ import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
  *			}
  *		};
  *
- * *Note*: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
+ * **Note**: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
  * `'background-color'` value.
  *
  * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
