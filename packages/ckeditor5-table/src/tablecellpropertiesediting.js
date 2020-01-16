@@ -12,6 +12,7 @@ import { downcastToStyle, upcastAttribute, upcastBorderStyles } from './tablepro
 import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
 import { addPaddingRules } from '@ckeditor/ckeditor5-engine/src/view/styles/padding';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
+import TableEditing from './tableediting';
 
 /**
  * The table cell properties editing feature.
@@ -37,7 +38,14 @@ export default class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	static get requires() {
+		return [ TableEditing ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
