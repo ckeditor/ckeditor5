@@ -382,7 +382,7 @@ export default class Element extends Node {
 	 *
 	 * **Note**: This method can work with normalized style names if
 	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
-	 * See {@link module:engine/view/stylesmap~StylesMap#get `StylesMap#get()`} for details.
+	 * See {@link module:engine/view/stylesmap~StylesMap#getAsString `StylesMap#getAsString()`} for details.
 	 *
 	 * For an element with style set to `'margin:1px'`:
 	 *
@@ -755,7 +755,7 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
-	  **Note**: This method can work with normalized style names if
+	 * **Note**: This method can work with normalized style names if
 	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
@@ -777,7 +777,7 @@ export default class Element extends Node {
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
-	  **Note**: This method can work with normalized style names if
+	 * **Note**: This method can work with normalized style names if
 	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
