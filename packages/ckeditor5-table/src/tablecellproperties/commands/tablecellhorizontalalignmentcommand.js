@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellverticalalignmentcommand
+ * @module table/tablecellproperties/commands/tablecellhorizontalalignmentcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table cell vertical alignment command.
+ * The table cell horizontal alignment command.
  *
- * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellVerticalAlignment'` editor command.
+ * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * `'tableCellHorizontalAlignment'` editor command.
  *
- * To change cell vertical alignment of the selected cell, execute the command:
+ * To change cell horizontal alignment of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellVerticalAlignment', {
+ *		editor.execute( 'tableCellHorizontalAlignment', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellVerticalAlignmentCommand extends Command {
+export default class TableCellHorizontalAlignmentCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'verticalAlignment';
+		this.attributeName = 'horizontalAlignment';
 	}
 
 	/**
@@ -58,8 +58,8 @@ export default class TableCellVerticalAlignmentCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set vertical alignment.
-	 * If vertical alignment is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set horizontal alignment.
+	 * If horizontal alignment is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

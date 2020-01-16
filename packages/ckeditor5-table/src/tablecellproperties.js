@@ -9,13 +9,14 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import TableCellPropertiesEditing from './tablecellpropertiesediting';
+import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
 
 /**
  * The table cell properties feature.
  *
- * This is a "glue" plugin which loads the {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing table editing feature}
- * and table UI feature.
+ * This is a "glue" plugin which loads the
+ * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table editing feature} and
+ * table UI feature.
  *
  * @extends module:core/plugin~Plugin
  */

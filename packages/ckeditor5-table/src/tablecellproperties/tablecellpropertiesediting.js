@@ -4,15 +4,16 @@
  */
 
 /**
- * @module table/tablecellpropertiesediting
+ * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './converters/tableproperties';
 import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
 import { addPaddingRules } from '@ckeditor/ckeditor5-engine/src/view/styles/padding';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
-import TableEditing from './tableediting';
+
+import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
+import TableEditing from './../tableediting';
 import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
 import TableCellWidthCommand from './commands/tablecellwidthcommand';
 import TableCellHeightCommand from './commands/tablecellheightcommand';

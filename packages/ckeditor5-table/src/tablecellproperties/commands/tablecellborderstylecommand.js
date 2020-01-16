@@ -4,17 +4,17 @@
  */
 
 /**
- * @module table/commands/tablecellborderstylecommand
+ * @module table/tablecellproperties/commands/tablecellborderstylecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor, getSingleValue } from '../../commands/utils';
 
 /**
  * The table cell border style command.
  *
- * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
  * `'tableCellBorderStyle'` editor command.
  *
  * To change cell border style of the selected cell, execute the command:

@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellbordercolorcommand
+ * @module table/tablecellproperties/commands/tablecellverticalalignmentcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table cell border color command.
+ * The table cell vertical alignment command.
  *
- * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellBorderColor'` editor command.
+ * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * `'tableCellVerticalAlignment'` editor command.
  *
- * To change cell border color of the selected cell, execute the command:
+ * To change cell vertical alignment of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellBorderColor', {
+ *		editor.execute( 'tableCellVerticalAlignment', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellBorderColorCommand extends Command {
+export default class TableCellVerticalAlignmentCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'borderColor';
+		this.attributeName = 'verticalAlignment';
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class TableCellBorderColorCommand extends Command {
 			return;
 		}
 
-		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		return tableCell.getAttribute( this.attributeName );
 	}
 
 	/**
@@ -58,8 +58,8 @@ export default class TableCellBorderColorCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set border color.
-	 * If border color is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set vertical alignment.
+	 * If vertical alignment is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -79,4 +79,3 @@ export default class TableCellBorderColorCommand extends Command {
 		} );
 	}
 }
-

@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellbackgroundcolorcommand
+ * @module table/tablecellproperties/commands/tablecellpaddingcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor, getSingleValue } from '../../commands/utils';
 
 /**
- * The table cell background color command.
+ * The table cell padding command.
  *
- * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellBackgroundColor'` editor command.
+ * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * `'tableCellPadding'` editor command.
  *
- * To change cell backgroundColor of the selected cell, execute the command:
+ * To change cell padding of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellBackgroundColor', {
+ *		editor.execute( 'tableCellPadding', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellBackgroundColorCommand extends Command {
+export default class TableCellPaddingCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'backgroundColor';
+		this.attributeName = 'padding';
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class TableCellBackgroundColorCommand extends Command {
 			return;
 		}
 
-		return tableCell.getAttribute( this.attributeName );
+		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
 	}
 
 	/**
@@ -58,8 +58,7 @@ export default class TableCellBackgroundColorCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set backgroundColor.
-	 * If backgroundColor is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set padding. If padding is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -79,3 +78,4 @@ export default class TableCellBackgroundColorCommand extends Command {
 		} );
 	}
 }
+

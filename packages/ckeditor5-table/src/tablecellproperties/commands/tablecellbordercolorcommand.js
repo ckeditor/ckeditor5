@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellheightcommand
+ * @module table/tablecellproperties/commands/tablecellbordercolorcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor, getSingleValue } from '../../commands/utils';
 
 /**
- * The table cell height command.
+ * The table cell border color command.
  *
- * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellHeight'` editor command.
+ * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * `'tableCellBorderColor'` editor command.
  *
- * To change cell height of the selected cell, execute the command:
+ * To change cell border color of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellHeight', {
+ *		editor.execute( 'tableCellBorderColor', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellHeightCommand extends Command {
+export default class TableCellBorderColorCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'height';
+		this.attributeName = 'borderColor';
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class TableCellHeightCommand extends Command {
 			return;
 		}
 
-		return tableCell.getAttribute( this.attributeName );
+		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
 	}
 
 	/**
@@ -58,7 +58,8 @@ export default class TableCellHeightCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set height. If height is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set border color.
+	 * If border color is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -78,3 +79,4 @@ export default class TableCellHeightCommand extends Command {
 		} );
 	}
 }
+

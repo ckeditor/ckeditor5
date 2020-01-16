@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellhorizontalalignmentcommand
+ * @module table/tablecellproperties/commands/tablecellbackgroundcolorcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
- * The table cell horizontal alignment command.
+ * The table cell background color command.
  *
- * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellHorizontalAlignment'` editor command.
+ * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * `'tableCellBackgroundColor'` editor command.
  *
- * To change cell horizontal alignment of the selected cell, execute the command:
+ * To change cell backgroundColor of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellHorizontalAlignment', {
+ *		editor.execute( 'tableCellBackgroundColor', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellHorizontalAlignmentCommand extends Command {
+export default class TableCellBackgroundColorCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'horizontalAlignment';
+		this.attributeName = 'backgroundColor';
 	}
 
 	/**
@@ -58,8 +58,8 @@ export default class TableCellHorizontalAlignmentCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set horizontal alignment.
-	 * If horizontal alignment is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set backgroundColor.
+	 * If backgroundColor is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
