@@ -531,7 +531,7 @@ export default class Element extends Node {
 	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
 	 *		element.getIdentity();
 	 *
-	 * NOTE: Classes, styles and other attributes are sorted alphabetically.
+	 * **Note**: Classes, styles and other attributes are sorted alphabetically.
 	 *
 	 * @returns {String}
 	 */
@@ -755,7 +755,9 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
-	 * *Note*: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#set}.
+	  **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
 	 * @protected
@@ -775,7 +777,9 @@ export default class Element extends Node {
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
-	 * *Note*: Handles also normalized styles if defined. See {@link module:engine/view/stylesmap~StylesMap#remove}.
+	  **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle
 	 * @protected
