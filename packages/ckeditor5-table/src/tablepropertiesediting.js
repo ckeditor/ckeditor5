@@ -13,6 +13,7 @@ import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/b
 
 import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './converters/tableproperties';
 import TableEditing from './tableediting';
+import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 
 /**
  * The table properties editing feature.
@@ -50,7 +51,9 @@ export default class TablePropertiesEditing extends Plugin {
 		enableAlignmentProperty( schema, conversion );
 		enableProperty( schema, conversion, 'width', 'width' );
 		enableProperty( schema, conversion, 'height', 'height' );
+
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
+		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
 	}
 }
 
