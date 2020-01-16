@@ -49,11 +49,11 @@ export default class TableCellPropertiesEditing extends Plugin {
 
 		enableBorderProperties( schema, conversion );
 		enableHorizontalAlignmentProperty( schema, conversion );
-		enablePropertyConversion( schema, conversion, 'width', 'width' );
-		enablePropertyConversion( schema, conversion, 'height', 'height' );
-		enablePropertyConversion( schema, conversion, 'padding', 'padding' );
-		enablePropertyConversion( schema, conversion, 'backgroundColor', 'background-color' );
-		enablePropertyConversion( schema, conversion, 'verticalAlignment', 'vertical-align' );
+		enableProperty( schema, conversion, 'width', 'width' );
+		enableProperty( schema, conversion, 'height', 'height' );
+		enableProperty( schema, conversion, 'padding', 'padding' );
+		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
+		enableProperty( schema, conversion, 'verticalAlignment', 'vertical-align' );
 	}
 }
 
@@ -123,7 +123,7 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 // @param {String} styleName
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enablePropertyConversion( schema, conversion, modelAttribute, styleName ) {
+function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ modelAttribute ]
 	} );

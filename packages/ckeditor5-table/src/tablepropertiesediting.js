@@ -40,9 +40,9 @@ export default class TablePropertiesEditing extends Plugin {
 
 		enableBorderProperties( schema, conversion );
 		enableAlignmentProperty( schema, conversion );
-		enablePropertyConversion( schema, conversion, 'width', 'width' );
-		enablePropertyConversion( schema, conversion, 'height', 'height' );
-		enablePropertyConversion( schema, conversion, 'backgroundColor', 'background-color' );
+		enableProperty( schema, conversion, 'width', 'width' );
+		enableProperty( schema, conversion, 'height', 'height' );
+		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 	}
 }
 
@@ -142,7 +142,7 @@ function enableAlignmentProperty( schema, conversion ) {
 // @param {String} styleName
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enablePropertyConversion( schema, conversion, modelAttribute, styleName ) {
+function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
