@@ -51,8 +51,6 @@ export default class TablePropertiesEditing extends Plugin {
 		const viewDoc = editor.editing.view.document;
 
 		viewDoc.addStyleProcessorRules( addBorderRules );
-		viewDoc.addStyleProcessorRules( addBackgroundRules );
-
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor ) );
@@ -67,6 +65,7 @@ export default class TablePropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, 'height', 'height' );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor ) );
 
+		viewDoc.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
 	}
