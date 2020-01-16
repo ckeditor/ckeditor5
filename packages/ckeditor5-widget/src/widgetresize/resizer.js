@@ -139,6 +139,8 @@ export default class Resizer {
 
 		this._sizeUI.bindToState( this._options, this.state );
 
+		this.initialViewWidth = this._options.viewElement.getStyle( 'width' );
+
 		this.state.begin( domResizeHandle, this._getHandleHost(), this._getResizeHost() );
 	}
 
@@ -188,9 +190,8 @@ export default class Resizer {
 		const unit = this._options.unit || '%';
 		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + unit;
 
-		this._options.onCommit( newValue );
-
 		this._cleanup();
+		this._options.onCommit( newValue );
 	}
 
 	/**
@@ -269,6 +270,12 @@ export default class Resizer {
 	_cleanup() {
 		this._sizeUI.dismiss();
 		this._sizeUI.isVisible = false;
+
+		const editingView = this._options.editor.editing.view;
+
+		editingView.change( writer => {
+			writer.setStyle( 'width', this.initialViewWidth, this._options.viewElement );
+		} );
 	}
 
 	/**
