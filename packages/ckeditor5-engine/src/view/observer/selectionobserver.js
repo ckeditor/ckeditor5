@@ -138,10 +138,10 @@ export default class SelectionObserver extends Observer {
 		const domSelection = domDocument.defaultView.getSelection();
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
-		// Do not convert selection if new view selection has no ranges in it.
+		// Do not convert selection change if the new view selection has no ranges in it.
 		//
-		// It means that the DOM selection was in some way incorrect. Ranges that were in the DOM selection could not be
-		// converted to the view selection. This happens when the selection is moved outside an editable.
+		// It means that the DOM selection is in some way incorrect. Ranges that were in the DOM selection could not be
+		// converted to the view. This happens when the DOM selection was moved outside of the editable element.
 		if ( newViewSelection.rangeCount == 0 ) {
 			return;
 		}
