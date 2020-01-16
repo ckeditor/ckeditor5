@@ -39,3 +39,19 @@
 		padding-left: 1em;
 	}
 }
+
+.ck-restricted-editing_mode_restricted {
+	cursor: default;
+
+	& *:not(.restricted-editing-exception) {
+		cursor: default;
+	}
+}
+
+.ck-restricted-editing_mode_restricted .restricted-editing-exception {
+	cursor: text;
+
+	& * {
+		cursor: text;
+	}
+}
