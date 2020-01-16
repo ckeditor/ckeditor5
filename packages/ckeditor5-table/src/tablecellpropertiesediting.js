@@ -19,6 +19,9 @@ import TableCellHeightCommand from './commands/tablecellheightcommand';
 import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand';
 import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand';
 import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand';
+import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand';
+import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
+import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
 
 /**
  * The table cell properties editing feature.
@@ -62,6 +65,10 @@ export default class TableCellPropertiesEditing extends Plugin {
 		viewDoc.addStyleProcessorRules( addBackgroundRules );
 
 		enableBorderProperties( schema, conversion );
+		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor ) );
+		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor ) );
+		editor.commands.add( 'tableCellBorderWidth', new TableCellBorderWidthCommand( editor ) );
+
 		enableHorizontalAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableCellHorizontalAlignment', new TableCellHorizontalAlignmentCommand( editor ) );
 
