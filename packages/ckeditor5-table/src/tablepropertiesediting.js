@@ -19,6 +19,7 @@ import TableBorderStyleCommand from './commands/tableborderstylecommand';
 import TableBorderWidthCommand from './commands/tableborderwidthcommand';
 import TableWidthCommand from './commands/tablewidthcommand';
 import TableHeightCommand from './commands/tableheightcommand';
+import TableAlignmentCommand from './commands/tablealignmentcommand';
 
 /**
  * The table properties editing feature.
@@ -58,6 +59,7 @@ export default class TablePropertiesEditing extends Plugin {
 		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor ) );
 
 		enableAlignmentProperty( schema, conversion );
+		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor ) );
 
 		enableProperty( schema, conversion, 'width', 'width' );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor ) );
