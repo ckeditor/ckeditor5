@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellpaddingcommand
+ * @module table/commands/tablecellwidthcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor } from './utils';
 
 /**
- * The table cell padding command.
+ * The table cell width command.
  *
  * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellPadding'` editor command.
+ * `'tableCellWidth'` editor command.
  *
- * To change cell padding of the selected cell, execute the command:
+ * To change cell width of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellPadding', {
+ *		editor.execute( 'tableCellWidth', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellPaddingCommand extends Command {
+export default class TableCellWidthCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'padding';
+		this.attributeName = 'width';
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class TableCellPaddingCommand extends Command {
 			return;
 		}
 
-		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		return tableCell.getAttribute( this.attributeName );
 	}
 
 	/**
@@ -58,7 +58,7 @@ export default class TableCellPaddingCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set padding. If padding is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set width. If width is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -78,4 +78,3 @@ export default class TableCellPaddingCommand extends Command {
 		} );
 	}
 }
-

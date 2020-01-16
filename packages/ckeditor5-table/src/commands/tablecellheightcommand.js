@@ -4,32 +4,32 @@
  */
 
 /**
- * @module table/commands/tablecellpaddingcommand
+ * @module table/commands/tablecellheightcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getSingleValue } from './utils';
+import { findAncestor } from './utils';
 
 /**
- * The table cell padding command.
+ * The table cell height command.
  *
  * The command is registered by {@link module:table/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellPadding'` editor command.
+ * `'tableCellHeight'` editor command.
  *
- * To change cell padding of the selected cell, execute the command:
+ * To change cell height of the selected cell, execute the command:
  *
- *		editor.execute( 'tableCellPadding', {
+ *		editor.execute( 'tableCellHeight', {
  *			value: '5px'
  *		} );
  *
  * @extends module:core/command~Command
  */
-export default class TableCellPaddingCommand extends Command {
+export default class TableCellHeightCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.attributeName = 'padding';
+		this.attributeName = 'height';
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class TableCellPaddingCommand extends Command {
 			return;
 		}
 
-		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		return tableCell.getAttribute( this.attributeName );
 	}
 
 	/**
@@ -58,7 +58,7 @@ export default class TableCellPaddingCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set padding. If padding is not set the command will remove the attribute.
+	 * @param {Boolean} [options.value] If set the command will set height. If height is not set the command will remove the attribute.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -78,4 +78,3 @@ export default class TableCellPaddingCommand extends Command {
 		} );
 	}
 }
-

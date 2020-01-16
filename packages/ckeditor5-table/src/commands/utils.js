@@ -7,6 +7,8 @@
  * @module table/commands/utils
  */
 
+import { isObject } from 'lodash-es';
+
 /**
  * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
  *
@@ -54,4 +56,16 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
 	const tableCell = writer.createElement( 'tableCell', attributes );
 	writer.insertElement( 'paragraph', tableCell );
 	writer.insert( tableCell, insertPosition );
+}
+
+export function getSingleValue( objectOrString ) {
+	if ( !objectOrString || !isObject( objectOrString ) ) {
+		return objectOrString;
+	}
+
+	const { top, right, bottom, left } = objectOrString;
+
+	if ( top == right && right == bottom && bottom == left ) {
+		return top;
+	}
 }
