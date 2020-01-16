@@ -16,6 +16,7 @@ import TableEditing from './tableediting';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 import TableBorderColorCommand from './commands/tablebordercolorcommand';
 import TableBorderStyleCommand from './commands/tableborderstylecommand';
+import TableBorderWidthCommand from './commands/tableborderwidthcommand';
 
 /**
  * The table properties editing feature.
@@ -52,6 +53,7 @@ export default class TablePropertiesEditing extends Plugin {
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor ) );
+		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor ) );
 
 		enableAlignmentProperty( schema, conversion );
 		enableProperty( schema, conversion, 'width', 'width' );
