@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
-import { downcastTableAttribute, upcastAttribute, upcastBorderStyles } from './tableproperties/utils';
+import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './converters/tableproperties';
 import TableEditing from './tableediting';
 
 /**
@@ -154,6 +154,6 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastAttribute( conversion, 'table', modelAttribute, styleName );
+	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
 	downcastTableAttribute( conversion, modelAttribute, styleName );
 }

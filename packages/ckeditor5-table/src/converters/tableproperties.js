@@ -4,10 +4,18 @@
  */
 
 /**
- * @module table/tableproperites/utils
+ * @module table/converters/tableproperites
  */
 
-export function upcastAttribute( conversion, modelElement, modelAttribute, styleName ) {
+/**
+ * Conversion helper for upcasting attribute using normalized styles.
+ *
+ * @param {module:engine/conversion/conversion~Conversion} conversion
+ * @param {String} modelElement
+ * @param {String} modelAttribute
+ * @param {String} styleName
+ */
+export function upcastStyleToAttribute( conversion, modelElement, modelAttribute, styleName ) {
 	conversion.for( 'upcast' ).attributeToAttribute( {
 		view: {
 			styles: {
@@ -22,8 +30,14 @@ export function upcastAttribute( conversion, modelElement, modelAttribute, style
 	} );
 }
 
-export function upcastBorderStyles( conversion, viewElement ) {
-	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElement, ( evt, data, conversionApi ) => {
+/**
+ * Conversion helper for upcasting border styles for view element.
+ *
+ * @param {module:engine/conversion/conversion~Conversion} conversion
+ * @param {String} viewElementName
+ */
+export function upcastBorderStyles( conversion, viewElementName ) {
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
 		// TODO: this is counter-intuitive: ie.: if only `border-top` is defined then `hasStyle( 'border' )` also returns true.
 		// TODO: this might needs to be fixed in styles normalizer.
 		const stylesToConsume = [
@@ -56,7 +70,15 @@ export function upcastBorderStyles( conversion, viewElement ) {
 	} ) );
 }
 
-export function downcastToStyle( conversion, modelElement, modelAttribute, styleName ) {
+/**
+ * Conversion helper for downcasting attribute to a style.
+ *
+ * @param {module:engine/conversion/conversion~Conversion} conversion
+ * @param {String} modelElement
+ * @param {String} modelAttribute
+ * @param {String} styleName
+ */
+export function downcastAttributeToStyle( conversion, modelElement, modelAttribute, styleName ) {
 	conversion.for( 'downcast' ).attributeToAttribute( {
 		model: {
 			name: modelElement,
@@ -71,7 +93,13 @@ export function downcastToStyle( conversion, modelElement, modelAttribute, style
 	} );
 }
 
-// Properly downcast table border attribute on <table> and not on <figure>.
+/**
+ * Conversion helper for downcasting attributes from model's table to a view table (not to figure).
+ *
+ * @param {module:engine/conversion/conversion~Conversion} conversion
+ * @param {String} modelAttribute
+ * @param {String} styleName
+ */
 export function downcastTableAttribute( conversion, modelAttribute, styleName ) {
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;

@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { downcastToStyle, upcastAttribute, upcastBorderStyles } from './tableproperties/utils';
+import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './converters/tableproperties';
 import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
 import { addPaddingRules } from '@ckeditor/ckeditor5-engine/src/view/styles/padding';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
@@ -75,9 +75,9 @@ function enableBorderProperties( schema, conversion ) {
 	} );
 	upcastBorderStyles( conversion, 'td' );
 	upcastBorderStyles( conversion, 'th' );
-	downcastToStyle( conversion, 'tableCell', 'borderStyle', 'border-style' );
-	downcastToStyle( conversion, 'tableCell', 'borderColor', 'border-color' );
-	downcastToStyle( conversion, 'tableCell', 'borderWidth', 'border-width' );
+	downcastAttributeToStyle( conversion, 'tableCell', 'borderStyle', 'border-style' );
+	downcastAttributeToStyle( conversion, 'tableCell', 'borderColor', 'border-color' );
+	downcastAttributeToStyle( conversion, 'tableCell', 'borderWidth', 'border-width' );
 }
 
 // Enables `'horizontalAlignment'` attribute for table cells.
@@ -135,6 +135,6 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ modelAttribute ]
 	} );
-	upcastAttribute( conversion, 'tableCell', modelAttribute, styleName );
-	downcastToStyle( conversion, 'tableCell', modelAttribute, styleName );
+	upcastStyleToAttribute( conversion, 'tableCell', modelAttribute, styleName );
+	downcastAttributeToStyle( conversion, 'tableCell', modelAttribute, styleName );
 }
