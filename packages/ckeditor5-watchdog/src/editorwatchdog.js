@@ -121,6 +121,49 @@ export default class EditorWatchdog extends Watchdog {
 	 * @param {Function} destructor
 	 */
 
+	setInitializationArgs( elementOrData, config ) {
+		this._elementOrData = elementOrData;
+
+		this._config = cloneDeepWith( config, value => {
+			// Leave DOM references.
+			return isElement( value ) ? value : undefined;
+		} );
+	}
+
+	updateContext( context ) {
+		this._config.context = context;
+	}
+
+	/**
+	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
+	 * the state to `initializing`.
+	 *
+	 * @public
+	 * @fires restart
+	 * @returns {Promise}
+	 */
+	async restart() {
+		this.state = 'initializing';
+
+		try {
+			await this._destroy();
+		} catch ( err ) {
+			console.error( 'An error happened during the editor destructing.', err );
+		}
+
+		if ( typeof this._elementOrData === 'string' ) {
+			await this.create( this._data, this._config );
+		} else {
+			const updatedConfig = Object.assign( {}, this._config, {
+				initialData: this._data
+			} );
+
+			await this.create( this._elementOrData, updatedConfig );
+		}
+
+		this.fire( 'restart' );
+	}
+
 	/**
 	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
 	 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
@@ -130,7 +173,7 @@ export default class EditorWatchdog extends Watchdog {
 	 *
 	 * @returns {Promise}
 	 */
-	async create( elementOrData, config ) {
+	async create( elementOrData = this._elementOrData, config = this._config ) {
 		if ( !this._creator ) {
 			/**
 			 * The watchdog's editor creator is not defined. Define it by using
@@ -182,12 +225,15 @@ export default class EditorWatchdog extends Watchdog {
 
 	async _destroy() {
 		this._stopErrorHandling();
+
 		// Save data if there is a remaining editor data change.
 		this._throttledSave.flush();
 
-		await this._destructor( this._editor );
+		const pendingDestruction = this._destructor( this._editor );
 
 		this._editor = null;
+
+		await pendingDestruction;
 	}
 
 	/**
@@ -234,36 +280,6 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
-	 * the state to `initializing`.
-	 *
-	 * @public
-	 * @fires restart
-	 * @returns {Promise}
-	 */
-	async restart() {
-		this.state = 'initializing';
-
-		try {
-			await this._destroy();
-		} catch ( err ) {
-			console.error( 'An error happened during the editor destructing.', err );
-		}
-
-		if ( typeof this._elementOrData === 'string' ) {
-			await this.create( this._data, this._config );
-		} else {
-			const updatedConfig = Object.assign( {}, this._config, {
-				initialData: this._data
-			} );
-
-			await this.create( this._elementOrData, updatedConfig );
-		}
-
-		this.fire( 'restart' );
-	}
-
-	/**
 	 * Traverses both structures to find out whether the error context is connected
 	 * with the current editor.
 	 *
@@ -271,6 +287,8 @@ export default class EditorWatchdog extends Watchdog {
 	 * @param {module:utils/ckeditorerror~CKEditorError} error
 	 */
 	_isErrorComingFromThisInstance( error ) {
+		// TODO - remove context from the path.
+
 		return areConnectedThroughProperties( this._editor, error.context );
 	}
 

@@ -144,11 +144,12 @@ describe( 'EditorWatchdog', () => {
 	describe( 'error handling', () => {
 		it( 'Watchdog should not restart editor during the initialization', () => {
 			const watchdog = new EditorWatchdog();
+			let editor;
 
-			watchdog.setCreator( el =>
-				ClassicTestEditor.create( el )
-					.then( () => Promise.reject( new Error( 'foo' ) ) )
-			);
+			watchdog.setCreator( async el => {
+				editor = await ClassicTestEditor.create( el );
+				await Promise.reject( new Error( 'foo' ) );
+			} );
 
 			return watchdog.create( element ).then(
 				() => { throw new Error( '`watchdog.create()` should throw an error.' ); },
@@ -156,29 +157,35 @@ describe( 'EditorWatchdog', () => {
 					expect( err ).to.be.instanceOf( Error );
 					expect( err.message ).to.equal( 'foo' );
 
-					return destroyEditorOrphans();
+					return editor.destroy();
 				}
 			);
 		} );
 
-		it( 'Watchdog should not restart editor during the destroy', () => {
+		it( 'Watchdog should not restart editor during the destroy', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( el => ClassicTestEditor.create( el ) );
 			watchdog.setDestructor( () => Promise.reject( new Error( 'foo' ) ) );
 
-			return Promise.resolve()
-				.then( () => watchdog.create( element ) )
-				.then( () => watchdog.destroy() )
-				.then(
-					() => { throw new Error( '`watchdog.create()` should throw an error.' ); },
-					err => {
-						expect( err ).to.be.instanceOf( Error );
-						expect( err.message ).to.equal( 'foo' );
+			await watchdog.create( element );
 
-						return destroyEditorOrphans();
-					}
-				);
+			let caughtError = false;
+			const editor = watchdog.editor;
+
+			try {
+				await watchdog.destroy();
+			} catch ( err ) {
+				caughtError = true;
+				expect( err ).to.be.instanceOf( Error );
+				expect( err.message ).to.equal( 'foo' );
+
+				await editor.destroy();
+			}
+
+			if ( !caughtError ) {
+				throw new Error( '`watchdog.create()` should throw an error.' );
+			}
 		} );
 
 		it( 'Watchdog should not hide intercepted errors', () => {
@@ -716,22 +723,6 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 		} );
-
-		// Searches for orphaned editors based on DOM.
-		//
-		// This is useful if in your tests you have no access to editor, instance because editor
-		// creation method doesn't complete in a graceful manner.
-		function destroyEditorOrphans() {
-			const promises = [];
-
-			for ( const editableOrphan of document.querySelectorAll( '.ck-editor__editable' ) ) {
-				if ( editableOrphan.ckeditorInstance ) {
-					promises.push( editableOrphan.ckeditorInstance.destroy() );
-				}
-			}
-
-			return Promise.all( promises );
-		}
 	} );
 
 	describe( 'async error handling', () => {

@@ -13,11 +13,11 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
- * A base watchdog class.
+ * An abstract watchdog class that handles most of the error handling process and the state of the underlying component.
  *
- * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
- * how to use it.
+ * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and how to use it.
  *
+ * @private
  * @abstract
  */
 export default class Watchdog {
