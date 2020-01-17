@@ -3,21 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import TableEditing from '../src/tableediting';
 import TableCellProperties from '../src/tablecellproperties';
+import TableCellPropertiesUI from '../src/tablecellpropertiesui';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableCellStyle, assertTRBLAttribute } from './_utils/utils';
 
 describe( 'TableCellProperties', () => {
-	let editor, model;
+	let element, editor, model;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
+		element = document.createElement( 'div' );
+
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
 				plugins: [ TableCellProperties, Paragraph, TableEditing ]
 			} )
 			.then( newEditor => {
@@ -29,10 +36,15 @@ describe( 'TableCellProperties', () => {
 
 	afterEach( () => {
 		editor.destroy();
+		element.remove();
 	} );
 
 	it( 'should have pluginName', () => {
 		expect( TableCellProperties.pluginName ).to.equal( 'TableCellProperties' );
+	} );
+
+	it( 'should require TableCellPropertiesUI', () => {
+		expect( TableCellProperties.requires ).to.deep.equal( [ TableCellPropertiesUI ] );
 	} );
 
 	describe( 'border', () => {

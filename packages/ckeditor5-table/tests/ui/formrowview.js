@@ -7,7 +7,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import FormRowView from '../../src/ui/formrowview';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
-describe.only( 'FormRowView', () => {
+describe( 'FormRowView', () => {
 	let view, locale;
 
 	beforeEach( () => {
