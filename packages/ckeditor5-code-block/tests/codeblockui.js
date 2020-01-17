@@ -121,7 +121,7 @@ describe( 'CodeBlockUI', () => {
 							withText: true
 						},
 						{
-							label: 'HTML/XML',
+							label: 'HTML',
 							withText: true
 						},
 						{
@@ -146,6 +146,10 @@ describe( 'CodeBlockUI', () => {
 						},
 						{
 							label: 'TypeScript',
+							withText: true
+						},
+						{
+							label: 'XML',
 							withText: true
 						}
 					] );
