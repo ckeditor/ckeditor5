@@ -3,14 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import TableEditing from '../src/tableediting';
-import TableProperties from '../src/tableproperties';
-import { assertTableStyle, assertTRBLAttribute } from './_utils/utils';
+import TableEditing from '../../src/tableediting';
+import TableProperties from '../../src/tableproperties';
+
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
 describe( 'TableProperties', () => {
 	let editor, model;
