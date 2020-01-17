@@ -102,34 +102,17 @@ export default class IndentBlock extends Plugin {
 		const locale = this.editor.locale;
 		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
 
-		conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element', ( evt, data, conversionApi ) => {
-			const element = data.viewItem;
-
-			if ( !element.hasStyle( marginProperty ) ) {
-				return;
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				styles: {
+					[ marginProperty ]: /[\s\S]+/
+				}
+			},
+			model: {
+				key: 'blockIndent',
+				value: viewElement => viewElement.getStyle( marginProperty )
 			}
-
-			// Try to consume appropriate values from consumable values list.
-			if ( !testStyle( marginProperty ) && !testStyle( 'margin' ) ) {
-				return;
-			}
-
-			if ( !data.modelRange ) {
-				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-			}
-
-			const items = Array.from( data.modelRange.getItems() );
-			const node = items.shift();
-
-			if ( conversionApi.schema.checkAttribute( node, 'blockIndent' ) ) {
-				conversionApi.writer.setAttribute( 'blockIndent', element.getNormalizedStyle( marginProperty ), node );
-				conversionApi.consumable.consume( data.viewItem, { styles: marginProperty } );
-			}
-
-			function testStyle( styleName ) {
-				return conversionApi.consumable.test( data.viewItem, { styles: styleName } );
-			}
-		} ) );
+		} );
 
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: 'blockIndent',
