@@ -77,6 +77,14 @@ export default class TableCellPropertiesView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
+		/**
+		 * A collection of child views in the form.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
+		this.children = this.createCollection();
+
 		this.set( {
 			/**
 			 * The value of the cell border style.
@@ -171,11 +179,55 @@ export default class TableCellPropertiesView extends View {
 			}
 		} );
 
+		this._createHeaderView();
 		this._createBorderFields();
 		this._createBackgroundField();
 		this._createPaddingField();
 		this._createAlignmentFields();
 		this._createActionButtons();
+
+		// Form header.
+		this.children.add( this._headerView );
+
+		// Border row.
+		this.children.add( new FormRowView( locale, {
+			labelView: this._borderRowLabel,
+			children: [
+				this._borderRowLabel,
+				this.borderStyleDropdown,
+				this.borderColorInput,
+				this.borderWidthInput
+			],
+			class: 'ck-table-cell-properties-form__border-row'
+		} ) );
+
+		// Background and padding row.
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.backgroundInput,
+				this.paddingInput,
+			]
+		} ) );
+
+		// Text alignment row.
+		this.children.add( new FormRowView( locale, {
+			labelView: this._alignmentLabel,
+			children: [
+				this._alignmentLabel,
+				this.horizontalAlignmentToolbar,
+				this.verticalAlignmentToolbar,
+			],
+			class: 'ck-table-cell-properties-form__alignment-row'
+		} ) );
+
+		// Action row.
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.saveButtonView,
+				this.cancelButtonView,
+			],
+			class: 'ck-table-form__action-row'
+		} ) );
 
 		this.setTemplate( {
 			tag: 'form',
@@ -188,53 +240,7 @@ export default class TableCellPropertiesView extends View {
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
 			},
-			children: [
-				{
-					tag: 'div',
-					attributes: {
-						class: [
-							'ck',
-							'ck-form__header'
-						]
-					},
-					children: [
-						'Cell properties'
-					]
-				},
-
-				new FormRowView( locale, {
-					labelView: this._borderRowLabel,
-					children: [
-						this._borderRowLabel,
-						this.borderStyleDropdown,
-						this.borderColorInput,
-						this.borderWidthInput
-					],
-					class: 'ck-table-cell-properties-form__border-row'
-				} ),
-				new FormRowView( locale, {
-					children: [
-						this.backgroundInput,
-						this.paddingInput,
-					]
-				} ),
-				new FormRowView( locale, {
-					labelView: this._alignmentLabel,
-					children: [
-						this._alignmentLabel,
-						this.horizontalAlignmentToolbar,
-						this.verticalAlignmentToolbar,
-					],
-					class: 'ck-table-cell-properties-form__alignment-row'
-				} ),
-				new FormRowView( locale, {
-					children: [
-						this.saveButtonView,
-						this.cancelButtonView,
-					],
-					class: 'ck-table-form__action-row'
-				} )
-			]
+			children: this.children
 		} );
 	}
 
@@ -277,6 +283,31 @@ export default class TableCellPropertiesView extends View {
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Creates the header of the form with a localized label.
+	 *
+	 * @private
+	 */
+	_createHeaderView() {
+		const locale = this.locale;
+		const t = this.t;
+
+		this._headerView = new View( locale );
+
+		this._headerView.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-form__header'
+				]
+			},
+			children: [
+				t( 'Cell properties' )
+			]
+		} );
 	}
 
 	/**
