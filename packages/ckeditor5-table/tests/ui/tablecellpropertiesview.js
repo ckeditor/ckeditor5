@@ -17,13 +17,14 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-describe.only( 'TableCellPropertiesView', () => {
-	let view;
+describe( 'TableCellPropertiesView', () => {
+	let view, locale;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new TableCellPropertiesView( { t: val => val } );
+		locale = { t: val => val };
+		view = new TableCellPropertiesView( locale );
 		view.render();
 	} );
 
@@ -32,11 +33,15 @@ describe.only( 'TableCellPropertiesView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'creates view#children collection', () => {
+		it( 'should set view#locale', () => {
+			expect( view.locale ).to.equal( locale );
+		} );
+
+		it( 'should create view#children collection', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'defines the public data interface (observable properties)', () => {
+		it( 'should define the public data interface (observable properties)', () => {
 			expect( view ).to.include( {
 				borderStyle: 'none',
 				borderWidth: null,
