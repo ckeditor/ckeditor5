@@ -9,7 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import TableEditing from '../src/tableediting';
 import TableProperties from '../src/tableproperties';
-import TablePropertiesEditing from '../src/tablepropertiesediting';
+import TablePropertiesEditing from '../src/tableproperties/tablepropertiesediting';
 
 describe( 'TableProperties', () => {
 	let editor, editorElement;
