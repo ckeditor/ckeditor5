@@ -36,4 +36,6 @@ export function addMarginRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'margin-left', value => ( { path: 'margin.left', value } ) );
 
 	stylesProcessor.setReducer( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
+
+	stylesProcessor.setStyleRelation( 'margin', [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] );
 }

@@ -35,4 +35,6 @@ export function addPaddingRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'padding-left', value => ( { path: 'padding.left', value } ) );
 
 	stylesProcessor.setReducer( 'padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+
+	stylesProcessor.setStyleRelation( 'padding', [ 'padding-top', 'padding-right', 'padding-bottom', 'padding-left' ] );
 }

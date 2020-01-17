@@ -103,6 +103,29 @@ export function addBorderRules( stylesProcessor ) {
 	stylesProcessor.setReducer( 'border-bottom', getBorderPositionReducer( 'bottom' ) );
 	stylesProcessor.setReducer( 'border-left', getBorderPositionReducer( 'left' ) );
 	stylesProcessor.setReducer( 'border', borderReducer );
+
+	stylesProcessor.setStyleRelation( 'border', [
+		'border-color', 'border-style', 'border-width',
+		'border-top', 'border-right', 'border-bottom', 'border-left',
+		'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+		'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+		'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
+	] );
+
+	stylesProcessor.setStyleRelation( 'border-color', [
+		'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'
+	] );
+	stylesProcessor.setStyleRelation( 'border-style', [
+		'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'
+	] );
+	stylesProcessor.setStyleRelation( 'border-width', [
+		'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
+	] );
+
+	stylesProcessor.setStyleRelation( 'border-top', [ 'border-top-color', 'border-top-style', 'border-top-width' ] );
+	stylesProcessor.setStyleRelation( 'border-right', [ 'border-right-color', 'border-right-style', 'border-right-width' ] );
+	stylesProcessor.setStyleRelation( 'border-bottom', [ 'border-bottom-color', 'border-bottom-style', 'border-bottom-width' ] );
+	stylesProcessor.setStyleRelation( 'border-left', [ 'border-left-color', 'border-left-style', 'border-left-width' ] );
 }
 
 function borderNormalizer( value ) {

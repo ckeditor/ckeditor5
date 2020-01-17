@@ -368,6 +368,27 @@ export default class StylesMap {
 	}
 
 	/**
+	 * Returns related style names.
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *
+	 *		StylesMap.getRelatedStyles( 'margin' );
+	 *		// will return: [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ];
+	 *
+	 *		StylesMap.getRelatedStyles( 'margin-top' );
+	 *		// will return: [ 'margin' ];
+	 *
+	 * **Note**: To define style relations use {@link #setStyleRelation}.
+	 *
+	 * @param {String} name
+	 * @returns {Array.<String>}
+	 */
+	static getRelatedStyles( name ) {
+		return this._styleProcessor.getRelatedStyles( name );
+	}
+
+	/**
 	 * Returns normalized styles entries for further processing.
 	 *
 	 * @private
@@ -425,6 +446,7 @@ export class StylesProcessor {
 		this._normalizers = new Map();
 		this._extractors = new Map();
 		this._reducers = new Map();
+		this._consumables = new Map();
 	}
 
 	/**
@@ -552,6 +574,24 @@ export class StylesProcessor {
 		}
 
 		return [ [ name, normalizedValue ] ];
+	}
+
+	/**
+	 * Returns related style names.
+	 *
+	 *		stylesProcessor.getRelatedStyles( 'margin' );
+	 *		// will return: [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ];
+	 *
+	 *		stylesProcessor.getRelatedStyles( 'margin-top' );
+	 *		// will return: [ 'margin' ];
+	 *
+	 * **Note**: To define style relations use {@link #setStyleRelation}.
+	 *
+	 * @param {String} name
+	 * @returns {Array.<String>}
+	 */
+	getRelatedStyles( name ) {
+		return this._consumables.get( name ) || [];
 	}
 
 	/**
@@ -687,6 +727,45 @@ export class StylesProcessor {
 	 */
 	setReducer( name, callback ) {
 		this._reducers.set( name, callback );
+	}
+
+	/**
+	 * Defines a style shorthand relation to other style notations.
+	 *
+	 *		stylesProcessor.setStyleRelation( 'margin', [
+	 *			'margin-top',
+	 *			'margin-right',
+	 *			'margin-bottom',
+	 *			'margin-left'
+	 *		] );
+	 *
+	 * This enables expanding of style names for shorthands. For instance, if defined, view consumable entries are automatically created
+	 * for long-hand margin style notation alongside 'margin' entry.
+	 *
+	 * @param {String} shorthandName
+	 * @param {Array.<String>} styleNames
+	 */
+	setStyleRelation( shorthandName, styleNames ) {
+		this._mapStyleNames( shorthandName, styleNames );
+
+		for ( const alsoName of styleNames ) {
+			this._mapStyleNames( alsoName, [ shorthandName ] );
+		}
+	}
+
+	/**
+	 * Set two-way binding of style names.
+	 *
+	 * @param {String} name
+	 * @param {Array.<String>} styleNames
+	 * @private
+	 */
+	_mapStyleNames( name, styleNames ) {
+		if ( !this._consumables.has( name ) ) {
+			this._consumables.set( name, [] );
+		}
+
+		this._consumables.get( name ).push( ...styleNames );
 	}
 }
 
