@@ -250,7 +250,9 @@ export function assertTableStyle( editor, tableStyle ) {
  */
 export function assertTableCellStyle( editor, tableCellStyle ) {
 	assertEqualMarkup( editor.getData(),
-		`<figure class="table"><table><tbody><tr><td style="${ tableCellStyle }">foo</td></tr></tbody></table></figure>`
+		'<figure class="table"><table><tbody><tr>' +
+			`<td${ tableCellStyle ? ` style="${ tableCellStyle }"` : '' }>foo</td>` +
+		'</tr></tbody></table></figure>'
 	);
 }
 
