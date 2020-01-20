@@ -10,11 +10,11 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { assertTableStyle, modelTable } from '../../_utils/utils';
 import TablePropertiesEditing from '../../../src/tableproperties/tablepropertiesediting';
-import TableHorizontalAlignmentCommand from '../../../src/tableproperties/commands/tablealignmentcommand';
+import TableBackgroundColorCommand from '../../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableHorizontalAlignmentCommand', () => {
+		describe( 'TableBackgroundColorCommand', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -23,7 +23,7 @@ describe( 'table properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableHorizontalAlignmentCommand( editor );
+				command = new TableBackgroundColorCommand( editor );
 			} );
 
 			afterEach( () => {
@@ -58,16 +58,16 @@ describe( 'table properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table has no alignment property', () => {
+					it( 'should be undefined if selected table has no backgroundColor property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table has alignment property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { alignment: 'center' } ) );
+					it( 'should be set if selected table has backgroundColor property', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
 
-						expect( command.value ).to.equal( 'center' );
+						expect( command.value ).to.equal( 'blue' );
 					} );
 				} );
 
@@ -79,9 +79,9 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { alignment: 'center' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { backgroundColor: 'blue' } ) );
 
-						expect( command.value ).to.equal( 'center' );
+						expect( command.value ).to.equal( 'blue' );
 					} );
 				} );
 			} );
@@ -92,29 +92,29 @@ describe( 'table properties', () => {
 					const batch = model.createBatch();
 					const spy = sinon.spy( model, 'enqueueChange' );
 
-					command.execute( { value: 'right', batch } );
+					command.execute( { value: '#f00', batch } );
 					sinon.assert.calledWith( spy, batch );
 				} );
 
 				describe( 'collapsed selection', () => {
-					it( 'should set selected table alignment to a passed value', () => {
+					it( 'should set selected table backgroundColor to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
-						command.execute( { value: 'right' } );
+						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'margin-left:auto;margin-right:0;' );
+						assertTableStyle( editor, 'background-color:#f00;' );
 					} );
 
-					it( 'should change selected table alignment to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { alignment: 'center' } ) );
+					it( 'should change selected table backgroundColor to a passed value', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
 
-						command.execute( { value: 'right' } );
+						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'margin-left:auto;margin-right:0;' );
+						assertTableStyle( editor, 'background-color:#f00;' );
 					} );
 
-					it( 'should remove alignment from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { alignment: 'center' } ) );
+					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
+						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
 
 						command.execute();
 
@@ -123,23 +123,23 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should set selected table alignment to a passed value', () => {
+					it( 'should set selected table backgroundColor to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
-						command.execute( { value: 'right' } );
+						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'margin-left:auto;margin-right:0;' );
+						assertTableStyle( editor, 'background-color:#f00;' );
 					} );
 
-					it( 'should change selected table alignment to a passed value', () => {
+					it( 'should change selected table backgroundColor to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
-						command.execute( { value: 'right' } );
+						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'margin-left:auto;margin-right:0;' );
+						assertTableStyle( editor, 'background-color:#f00;' );
 					} );
 
-					it( 'should remove alignment from a selected table if no value is passed', () => {
+					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
