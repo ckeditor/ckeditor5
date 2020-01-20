@@ -64,12 +64,12 @@ export default class TableHeightCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const { value } = options;
+		const { value, batch } = options;
 
 		const tables = Array.from( selection.getSelectedBlocks() )
 			.map( element => findAncestor( 'table', model.createPositionAt( element, 0 ) ) );
 
-		model.change( writer => {
+		model.enqueueChange( batch || 'default', writer => {
 			if ( value ) {
 				tables.forEach( table => writer.setAttribute( this.attributeName, value, table ) );
 			} else {
