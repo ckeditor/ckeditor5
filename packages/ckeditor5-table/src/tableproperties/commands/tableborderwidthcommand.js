@@ -39,7 +39,7 @@ export default class TableBorderWidthCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = Array.from( selection.getSelectedBlocks() ).find( block => block.is( 'table' ) );
+		const table = findAncestor( 'table', selection.getFirstPosition() );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -65,12 +65,12 @@ export default class TableBorderWidthCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const { value } = options;
+		const { value, batch } = options;
 
 		const tables = Array.from( selection.getSelectedBlocks() )
 			.map( element => findAncestor( 'table', model.createPositionAt( element, 0 ) ) );
 
-		model.change( writer => {
+		model.enqueueChange( batch || 'default', writer => {
 			if ( value ) {
 				tables.forEach( table => writer.setAttribute( this.attributeName, value, table ) );
 			} else {
@@ -79,4 +79,3 @@ export default class TableBorderWidthCommand extends Command {
 		} );
 	}
 }
-
