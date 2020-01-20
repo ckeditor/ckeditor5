@@ -18,7 +18,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
 import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
-import { labeledInputCreator, labeledDropdownCreator } from '@ckeditor/ckeditor5-ui/src/labeledview/creators';
+import { createLabeledInputText, createLabeledDropdown } from '@ckeditor/ckeditor5-ui/src/labeledview/utils';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -330,7 +330,7 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Style ---------------------------------------------------
 
-		const borderStyleDropdown = this.borderStyleDropdown = new LabeledView( locale, labeledDropdownCreator );
+		const borderStyleDropdown = this.borderStyleDropdown = new LabeledView( locale, createLabeledDropdown );
 		borderStyleDropdown.set( {
 			label: t( 'Style' ),
 			class: 'ck-table-cell-properties-form__border-style'
@@ -354,7 +354,7 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Width ---------------------------------------------------
 
-		const borderWidthInput = this.borderWidthInput = new LabeledView( locale, labeledInputCreator );
+		const borderWidthInput = this.borderWidthInput = new LabeledView( locale, createLabeledInputText );
 
 		borderWidthInput.set( {
 			label: t( 'Width' ),
@@ -371,7 +371,7 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = this.borderColorInput = new LabeledView( locale, labeledInputCreator );
+		const borderColorInput = this.borderColorInput = new LabeledView( locale, createLabeledInputText );
 		borderColorInput.label = t( 'Color' );
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
@@ -393,7 +393,7 @@ export default class TableCellPropertiesView extends View {
 	_createBackgroundField() {
 		const locale = this.locale;
 		const t = this.t;
-		const backgroundInput = this.backgroundInput = new LabeledView( locale, labeledInputCreator );
+		const backgroundInput = this.backgroundInput = new LabeledView( locale, createLabeledInputText );
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
@@ -416,7 +416,7 @@ export default class TableCellPropertiesView extends View {
 	_createPaddingField() {
 		const locale = this.locale;
 		const t = this.t;
-		const paddingInput = this.paddingInput = new LabeledView( locale, labeledInputCreator );
+		const paddingInput = this.paddingInput = new LabeledView( locale, createLabeledInputText );
 
 		paddingInput.set( {
 			label: t( 'Padding' ),
