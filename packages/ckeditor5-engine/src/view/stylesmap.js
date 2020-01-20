@@ -379,7 +379,8 @@ export default class StylesMap {
 	 *		StylesMap.getRelatedStyles( 'margin-top' );
 	 *		// will return: [ 'margin' ];
 	 *
-	 * **Note**: To define style relations use {@link module:engine/view/stylesmap~StylesProcessor#setStyleRelation}.
+	 * **Note**: To define new style relations load an existing style processor (as shown above) or use
+	 * {@link module:engine/view/stylesmap~StylesProcessor#setStyleRelation `StylesProcessor.setStyleRelation()`}.
 	 *
 	 * @param {String} name
 	 * @returns {Array.<String>}
@@ -585,7 +586,8 @@ export class StylesProcessor {
 	 *		stylesProcessor.getRelatedStyles( 'margin-top' );
 	 *		// will return: [ 'margin' ];
 	 *
-	 * **Note**: To define style relations use {@link #setStyleRelation}.
+	 * **Note**: To define new style relations load an existing style processor or use
+	 * {@link module:engine/view/stylesmap~StylesProcessor#setStyleRelation `StylesProcessor.setStyleRelation()`}.
 	 *
 	 * @param {String} name
 	 * @returns {Array.<String>}
@@ -677,7 +679,7 @@ export class StylesProcessor {
 	 *
 	 * In the above example a reducer should return a side border value that combines style, color and width:
 	 *
-	 *		stylesConverter.setExtractor( 'border-top', styles => {
+	 *		styleProcessor.setExtractor( 'border-top', styles => {
 	 *			return {
 	 *				color: styles.border.color.top,
 	 *				style: styles.border.style.top,
@@ -739,8 +741,14 @@ export class StylesProcessor {
 	 *			'margin-left'
 	 *		] );
 	 *
-	 * This enables expanding of style names for shorthands. For instance, if defined, view consumable entries are automatically created
-	 * for long-hand margin style notation alongside 'margin' entry.
+	 * This enables expanding of style names for shorthands. For instance, if defined,
+	 * {@link module:engine/conversion/viewconsumable~ViewConsumable view consumable} items are automatically created
+	 * for long-hand margin style notation alongside the `'margin'` item.
+	 *
+	 * This means that when an element being converted has a style `margin`, a converter for `margin-left` will work just
+	 * fine since the view consumable will contain a consumable `margin-left` item (thanks to the relation) and
+	 * `element.getStyle( 'margin-left' )` will work as well assuming that the style processor was correctly configured.
+	 * However, once `margin-left` is consumed, `margin` will not be consumable anymore.
 	 *
 	 * @param {String} shorthandName
 	 * @param {Array.<String>} styleNames
