@@ -7,11 +7,11 @@
  * @module core/editor/editor
  */
 
+import Context from '../context';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
@@ -48,9 +48,19 @@ export default class Editor {
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
-	 * @param {Object} [config] The editor config.
+	 * @param {Object} [config={}] The editor config.
 	 */
-	constructor( config ) {
+	constructor( config = {} ) {
+		/**
+		 * The editor context.
+		 * When it is not provided through the configuration then the editor creates it.
+		 *
+		 * @protected
+		 * @type {module:core/context~Context}
+		 */
+		this._context = config.context || new Context( { language: config.language } );
+		this._context._addEditor( this, !config.context );
+
 		const availablePlugins = this.constructor.builtinPlugins;
 
 		/**
@@ -63,8 +73,8 @@ export default class Editor {
 		 * @member {module:utils/config~Config}
 		 */
 		this.config = new Config( config, this.constructor.defaultConfig );
-
 		this.config.define( 'plugins', availablePlugins );
+		this.config.define( this._context._getEditorConfig() );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
@@ -74,7 +84,21 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins );
+		this.plugins = new PluginCollection( this, availablePlugins, this._context.plugins );
+
+		/**
+		 * @readonly
+		 * @type {module:utils/locale~Locale}
+		 */
+		this.locale = this._context.locale;
+
+		/**
+		 * Shorthand for {@link module:utils/locale~Locale#t}.
+		 *
+		 * @see module:utils/locale~Locale#t
+		 * @method #t
+		 */
+		this.t = this.locale.t;
 
 		/**
 		 * Commands registered to the editor.
@@ -91,25 +115,6 @@ export default class Editor {
 		 * @member {module:core/commandcollection~CommandCollection}
 		 */
 		this.commands = new CommandCollection();
-
-		const languageConfig = this.config.get( 'language' ) || {};
-
-		/**
-		 * @readonly
-		 * @member {module:utils/locale~Locale}
-		 */
-		this.locale = new Locale( {
-			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' )
-		} );
-
-		/**
-		 * Shorthand for {@link module:utils/locale~Locale#t}.
-		 *
-		 * @see module:utils/locale~Locale#t
-		 * @method #t
-		 */
-		this.t = this.locale.t;
 
 		/**
 		 * Indicates the editor life-cycle state.
@@ -257,7 +262,10 @@ export default class Editor {
 				this.data.destroy();
 				this.editing.destroy();
 				this.keystrokes.destroy();
-			} );
+			} )
+			// Remove the editor from the context.
+			// When the context was created by this editor then then the context will be destroyed.
+			.then( () => this._context._removeEditor( this ) );
 	}
 
 	/**

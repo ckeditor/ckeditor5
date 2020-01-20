@@ -46,6 +46,13 @@ export default class Plugin {
 	destroy() {
 		this.stopListening();
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get isContextPlugin() {
+		return false;
+	}
 }
 
 mix( Plugin, ObservableMixin );
@@ -178,6 +185,14 @@ mix( Plugin, ObservableMixin );
  *
  * @method #destroy
  * @returns {null|Promise}
+ */
+
+/**
+ * A flag which defines if plugin is allowed or not allowed to be use directly by a {@link module:core/context~Context}.
+ *
+ * @static
+ * @readonly
+ * @member {Boolean} module:core/plugin~PluginInterface.isContextPlugin
  */
 
 /**

@@ -7,7 +7,7 @@
  * @module core/pendingactions
  */
 
-import Plugin from './plugin';
+import ContextPlugin from './contextplugin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -50,9 +50,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are any ongoing actions.
  * Read more about saving the data in the {@glink builds/guides/integration/saving-data Saving and getting data} guide.
  *
- * @extends module:core/plugin~Plugin
+ * @extends module:core/contextplugin~ContextPlugin
  */
-export default class PendingActions extends Plugin {
+export default class PendingActions extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
