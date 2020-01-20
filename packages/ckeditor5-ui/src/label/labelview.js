@@ -41,7 +41,8 @@ export default class LabelView extends View {
 		this.set( 'for' );
 
 		/**
-		 * TODO
+		 * An unique id of the label. It can be used by other UI components to reference
+		 * the label, for instance, using the `aria-describedby` DOM attribute.
 		 *
 		 * @member {String} #id
 		 */
