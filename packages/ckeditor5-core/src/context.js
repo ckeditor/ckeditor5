@@ -8,6 +8,7 @@
  */
 
 import Config from '@ckeditor/ckeditor5-utils/src/config';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import PluginCollection from './plugincollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -86,10 +87,10 @@ export default class Context {
 		/**
 		 * List of editors to which this context instance is injected.
 		 *
-		 * @private
-		 * @type {Set.<module:core/editor/editor~Editor>}
+		 * @readonly
+		 * @type {module:utils/collection~Collection}
 		 */
-		this._editors = new Set();
+		this.editors = new Collection();
 
 		/**
 		 * Reference to the editor which created the context.
@@ -151,7 +152,7 @@ export default class Context {
 	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
 	 */
 	destroy() {
-		return Promise.all( Array.from( this._editors, editor => editor.destroy() ) )
+		return Promise.all( Array.from( this.editors, editor => editor.destroy() ) )
 			.then( () => this.plugins.destroy() );
 	}
 
@@ -179,7 +180,7 @@ export default class Context {
 			);
 		}
 
-		this._editors.add( editor );
+		this.editors.add( editor );
 
 		if ( isContextOwner ) {
 			this._contextOwner = editor;
@@ -197,7 +198,7 @@ export default class Context {
 	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context has been destroyed.
 	 */
 	_removeEditor( editor ) {
-		this._editors.delete( editor );
+		this.editors.remove( editor );
 
 		if ( this._contextOwner === editor ) {
 			return this.destroy();
