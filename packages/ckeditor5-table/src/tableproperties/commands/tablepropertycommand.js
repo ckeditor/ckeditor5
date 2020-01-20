@@ -49,7 +49,9 @@ export default class TablePropertyCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set width. If width is not set the command will remove the attribute.
+	 * @param {*} [options.value] If set the command will set the attribute on selected table.
+	 * If it is not set the command will remove the attribute from selected table.
+	 * @param {module:engine/model/batch~Batch} [options.batch] Pass batch instance to the command for creating single undo step.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -57,14 +59,13 @@ export default class TablePropertyCommand extends Command {
 
 		const { value, batch } = options;
 
-		const tables = Array.from( selection.getSelectedBlocks() )
-			.map( element => findAncestor( 'table', model.createPositionAt( element, 0 ) ) );
+		const table = findAncestor( 'table', selection.getFirstPosition() );
 
 		model.enqueueChange( batch || 'default', writer => {
 			if ( value ) {
-				tables.forEach( table => writer.setAttribute( this.attributeName, value, table ) );
+				writer.setAttribute( this.attributeName, value, table );
 			} else {
-				tables.forEach( table => writer.removeAttribute( this.attributeName, table ) );
+				writer.removeAttribute( this.attributeName, table );
 			}
 		} );
 	}

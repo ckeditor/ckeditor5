@@ -51,7 +51,7 @@ export default class TableCellPropertyCommand extends Command {
 	 * @param {Object} [options]
 	 * @param {*} [options.value] If set the command will set the attribute on selected table cells.
 	 * If it is not set the command will remove the attribute from selected table cells.
-	 * @param {module:engine/model/batch~Batch} [options.batch]
+	 * @param {module:engine/model/batch~Batch} [options.batch] Pass batch instance to the command for creating single undo step.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
