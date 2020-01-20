@@ -9,7 +9,6 @@
 
 import EditorUIView from '../../editorui/editoruiview';
 import LabelView from '../../label/labelview';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * The boxed editor UI view class. This class represents an editor interface
@@ -25,8 +24,6 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 */
 	constructor( locale ) {
 		super( locale );
-
-		const ariaLabelUid = uid();
 
 		/**
 		 * Collection of the child views located in the top (`.ck-editor__top`)
@@ -53,7 +50,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/view~View} #_voiceLabelView
 		 */
-		this._voiceLabelView = this._createVoiceLabel( ariaLabelUid );
+		this._voiceLabelView = this._createVoiceLabel();
 
 		this.setTemplate( {
 			tag: 'div',
@@ -68,7 +65,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 				role: 'application',
 				dir: locale.uiLanguageDirection,
 				lang: locale.uiLanguage,
-				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`
+				'aria-labelledby': this._voiceLabelView.id
 			},
 
 			children: [
@@ -106,7 +103,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 	 * @private
 	 * @returns {module:ui/label/labelview~LabelView}
 	 */
-	_createVoiceLabel( ariaLabelUid ) {
+	_createVoiceLabel() {
 		const t = this.t;
 		const voiceLabel = new LabelView();
 
@@ -114,7 +111,6 @@ export default class BoxedEditorUIView extends EditorUIView {
 
 		voiceLabel.extendTemplate( {
 			attributes: {
-				id: `ck-editor__aria-label_${ ariaLabelUid }`,
 				class: 'ck-voice-label'
 			}
 		} );
