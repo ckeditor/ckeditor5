@@ -60,6 +60,14 @@ describe( 'DropdownView', () => {
 			expect( view.isEnabled ).to.be.true;
 		} );
 
+		it( 'sets view#class', () => {
+			expect( view.class ).to.be.undefined;
+		} );
+
+		it( 'sets view#id', () => {
+			expect( view.id ).to.be.undefined;
+		} );
+
 		it( 'sets view#panelPosition "auto"', () => {
 			expect( view.panelPosition ).to.equal( 'auto' );
 		} );
@@ -178,6 +186,13 @@ describe( 'DropdownView', () => {
 					it( 'reacts on view#class', () => {
 						view.class = 'custom-css-class';
 						expect( view.element.classList.contains( 'custom-css-class' ) ).to.be.true;
+					} );
+				} );
+
+				describe( 'id', () => {
+					it( 'reacts on view#id', () => {
+						view.id = 'foo';
+						expect( view.element.id ).to.equal( 'foo' );
 					} );
 				} );
 			} );
