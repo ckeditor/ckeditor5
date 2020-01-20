@@ -43,7 +43,7 @@ export default class TextWatcher {
 		const model = this.model;
 		const document = model.document;
 
-		document.selection.on( 'change:range', ( evt, { directChange } ) => {
+		this.listenTo( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -62,7 +62,7 @@ export default class TextWatcher {
 			this._evaluateTextBeforeSelection( 'selection' );
 		} );
 
-		document.on( 'change:data', ( evt, batch ) => {
+		this.listenTo( document, 'change:data', ( evt, batch ) => {
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
@@ -128,4 +128,3 @@ export default class TextWatcher {
 }
 
 mix( TextWatcher, EmitterMixin );
-
