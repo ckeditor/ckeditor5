@@ -45,7 +45,8 @@ import '../../theme/components/labeledview/labeledview.css';
  *
  *		document.body.append( labeledInputView.element );
  *
- * See {@link module:ui/labeledview/creators} to learn more about labeled input helpers.
+ * See {@link module:ui/labeledview/utils} to discover ready–to–use labeled input helpers for common
+ * UI components.
  *
  * @extends module:ui/view~View
  */
@@ -56,10 +57,11 @@ export default class LabeledView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Function} viewCreator A function that returns a {@link module:ui/view~View}
-	 * that will be labeled. Two strings are passed to the creator function:
+	 * that will be labeled. The following arguments are passed to the creator function:
 	 *
-	 * * an UID string that allows DOM binding of the {@link #labelView label} and the labeled view,
-	 * * an UID string that allows DOM binding of the {@link #statusView status} and the labeled view
+	 * * an instance of the `LabeledView` to allow binding observable properties,
+	 * * an UID string that connects the {@link #labelView label} and the labeled view in DOM,
+	 * * an UID string that connects the {@link #statusView status} and the labeled view in DOM.
 	 */
 	constructor( locale, viewCreator ) {
 		super( locale );
@@ -127,7 +129,7 @@ export default class LabeledView extends View {
 		this.set( 'class' );
 
 		/**
-		 * The label view.
+		 * The label view instance that describes the entire view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
 		 */
