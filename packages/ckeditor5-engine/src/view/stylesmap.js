@@ -379,7 +379,7 @@ export default class StylesMap {
 	 *		StylesMap.getRelatedStyles( 'margin-top' );
 	 *		// will return: [ 'margin' ];
 	 *
-	 * **Note**: To define style relations use {@link #setStyleRelation}.
+	 * **Note**: To define style relations use {@link module:engine/view/stylesmap~StylesProcessor#setStyleRelation}.
 	 *
 	 * @param {String} name
 	 * @returns {Array.<String>}
