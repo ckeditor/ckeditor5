@@ -26,6 +26,10 @@ describe( 'LabeledView', () => {
 		labeledView.render();
 	} );
 
+	afterEach( () => {
+		labeledView.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should set labeledView#locale', () => {
 			expect( labeledView.locale ).to.deep.equal( locale );
@@ -151,7 +155,7 @@ describe( 'LabeledView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the #view in DOM', () => {
+		it( 'should focus the #view in DOM', () => {
 			const spy = sinon.spy( view, 'focus' );
 
 			labeledView.focus();
