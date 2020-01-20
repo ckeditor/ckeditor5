@@ -139,15 +139,6 @@ export default class DropdownView extends View {
 		this.set( 'id' );
 
 		/**
-		 * Set to `true` when the field has some error. Usually controlled via
-		 * {@link module:ui/labeledview/labeledview~LabeledView#errorText}.
-		 *
-		 * @observable
-		 * @member {Boolean} #hasError
-		 */
-		this.set( 'hasError', false );
-
-		/**
 		 * The position of the panel, relative to the dropdown.
 		 *
 		 * **Note**: When `'auto'`, the panel will use one of the remaining positions to stay
