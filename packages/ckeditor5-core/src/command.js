@@ -8,6 +8,7 @@
  */
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import ForceDisabledMixin from '@ckeditor/ckeditor5-utils/src/forcedisabledmixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -139,65 +140,6 @@ export default class Command {
 	}
 
 	/**
-	 * Disables the command.
-	 *
-	 * Command may be disabled by multiple features or algorithms (at once). When disabling a command, unique id should be passed
-	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the command.
-	 * The command becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
-	 *
-	 * Disabling and enabling a command:
-	 *
-	 *		command.isEnabled; // -> true
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> false
-	 *		command.clearForceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> true
-	 *
-	 * Command disabled by multiple features:
-	 *
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.forceDisabled( 'OtherFeature' );
-	 *		command.clearForceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> false
-	 *		command.clearForceDisabled( 'OtherFeature' );
-	 *		command.isEnabled; // -> true
-	 *
-	 * Multiple disabling with the same identifier is redundant:
-	 *
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.clearForceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> true
-	 *
-	 * **Note:** some commands or algorithms may have more complex logic when it comes to enabling or disabling certain commands,
-	 * so the command might be still disabled after {@link #clearForceDisabled} was used.
-	 *
-	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the command.
-	 */
-	forceDisabled( id ) {
-		this._disableStack.add( id );
-
-		if ( this._disableStack.size == 1 ) {
-			this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
-			this.isEnabled = false;
-		}
-	}
-
-	/**
-	 * Clears forced disable previously set through {@link #forceDisabled}. See {@link #forceDisabled}.
-	 *
-	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
-	 */
-	clearForceDisabled( id ) {
-		this._disableStack.delete( id );
-
-		if ( this._disableStack.size == 0 ) {
-			this.off( 'set:isEnabled', forceDisable );
-			this.refresh();
-		}
-	}
-
-	/**
 	 * Executes the command.
 	 *
 	 * A command may accept parameters. They will be passed from {@link module:core/editor/editor~Editor#execute `editor.execute()`}
@@ -232,10 +174,4 @@ export default class Command {
 	 */
 }
 
-mix( Command, ObservableMixin );
-
-// Helper function that forces command to be disabled.
-function forceDisable( evt ) {
-	evt.return = false;
-	evt.stop();
-}
+mix( Command, ObservableMixin, ForceDisabledMixin );
