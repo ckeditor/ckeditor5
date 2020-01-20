@@ -79,4 +79,3 @@ export default class TableCellBorderColorCommand extends Command {
 		} );
 	}
 }
-

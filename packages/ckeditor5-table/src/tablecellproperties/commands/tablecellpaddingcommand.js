@@ -78,4 +78,3 @@ export default class TableCellPaddingCommand extends Command {
 		} );
 	}
 }
-
