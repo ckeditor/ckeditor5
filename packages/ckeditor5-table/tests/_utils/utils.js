@@ -89,6 +89,37 @@ export function setTableCellWithObjectAttributes( model, attributes, cellContent
 }
 
 /**
+ * Helper method for creating a test table, with a single table cell, which attributes might be objects.
+ *
+ *		setTableWithObjectAttributes(
+ *			model,
+ *			{
+ *				borderColor: { top: '#f00', left: '#ba2' }
+ *				backgroundColor: '#f00'
+ *			},
+ *			'fo[o]'
+ *		);
+ *
+ * This will create a model table with one table cell with a "foo" text. Selection will be set on last "o" and a table will have three
+ * attributes.
+ *
+ * @param {module:engine/model/model~Model} model
+ * @param {Object} attributes
+ * @param {String} cellContent
+ */
+export function setTableWithObjectAttributes( model, attributes, cellContent ) {
+	setData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
+
+	const table = model.document.getRoot().getChild( 0 );
+
+	model.change( writer => {
+		for ( const [ key, value ] of Object.entries( attributes ) ) {
+			writer.setAttribute( key, value, table );
+		}
+	} );
+}
+
+/**
  * Returns a view representation of a table shorthand notation:
  *
  *		viewTable( [
