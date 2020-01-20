@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from './textwatcher';
 import { escapeRegExp } from 'lodash-es';
+import ForceDisabledMixin from '@ckeditor/ckeditor5-utils/src/forcedisabledmixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 // All named transformations.
 const TRANSFORMATIONS = {
@@ -92,12 +94,70 @@ export default class TextTransformation extends Plugin {
 				include: DEFAULT_TRANSFORMATIONS
 			}
 		} );
+
+		this.editor = editor;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
+		const model = this.editor.model;
+		const modelDocument = model.document;
+		const modelSelection = modelDocument.selection;
+
+		/**
+		 * Flag indicating whether a plugin is enabled or disabled.
+		 * A disabled plugin will not transform text.
+		 *
+		 * Plugin can be simply disabled like that:
+		 *
+		 *		// Disable the plugin so that no toolbars are visible.
+		 *		editor.plugins.get( 'TextTransformation' ).isEnabled = false;
+		 *
+		 * You can also use {@link module:utils/forcedisabledmixin~ForceDisabledMixin#forceDisabled} method.
+		 *
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
+		 * Holds identifiers for {@link module:utils/forcedisabledmixin~ForceDisabledMixin#forceDisabled} mechanism.
+		 *
+		 * @type {Set.<String>}
+		 * @private
+		 */
+		this._disableStack = new Set();
+
+		/**
+		 * Holds a set of active {@link module:typing/textwatcher~TextWatcher}
+		 *
+		 * @type {Set.<TextWatcher>}
+		 * @private
+		 */
+		this._watchersStack = new Set();
+
+		this.on( 'change:isEnabled', () => {
+			this.isEnabled ? this._enableTransformationWatchers() : this._disableTransformationWatchers();
+		} );
+
+		this._enableTransformationWatchers();
+
+		this.listenTo( modelDocument, 'change:data', () => {
+			// Disable plugin when typing in code block.
+			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
+		} );
+	}
+
+	/**
+	 * Create new set of TextWatchers listening to the editor for typing and selection events.
+	 *
+	 * @private
+	 */
+	_enableTransformationWatchers() {
 		const editor = this.editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
@@ -110,7 +170,7 @@ export default class TextTransformation extends Plugin {
 
 			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
 
-			watcher.on( 'matched:data', ( evt, data ) => {
+			const watcherCallback = ( evt, data ) => {
 				if ( !input.isInput( data.batch ) ) {
 					return;
 				}
@@ -142,10 +202,29 @@ export default class TextTransformation extends Plugin {
 						changeIndex += replaceWith.length;
 					}
 				} );
-			} );
+			};
+
+			this._watchersStack.add( watcher );
+
+			watcher.on( 'matched:data', watcherCallback );
 		}
 	}
+
+	/**
+	 * Disable each running TextWatcher and clear the set of enabled watchers after all.
+	 *
+	 * @private
+	 */
+	_disableTransformationWatchers() {
+		this._watchersStack.forEach( watcher => {
+			watcher.stopListening();
+		} );
+
+		this._watchersStack.clear();
+	}
 }
+
+mix( TextTransformation, ForceDisabledMixin );
 
 // Normalizes the configuration `from` parameter value.
 // The normalized value for the `from` parameter is a RegExp instance. If the passed `from` is already a RegExp instance,
