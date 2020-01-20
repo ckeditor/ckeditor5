@@ -13,6 +13,7 @@ import {
 } from '../../src/converters/downcast';
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
 
@@ -53,6 +54,38 @@ export function modelTable( tableData, attributes ) {
 	} );
 
 	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
+}
+
+/**
+ * Helper method for creating a test table with a single table cell which attributes might be objects.
+ *
+ *		setTableCellWithObjectAttributes(
+ *			model,
+ *			{
+ *				margin: { top: '1px', left: '2px' },
+ *				borderColor: { top: '#f00', left: '#ba2' }
+ *				backgroundColor: '#f00'
+ *			},
+ *			'fo[o]'
+ *		);
+ *
+ * This will create a model table with one table cell with a "foo" text. Selection will be set on last "o" and a table cell will have three
+ * attributes.
+ *
+ * @param {module:engine/model/model~Model} model
+ * @param {Object} attributes
+ * @param {String} cellContent
+ */
+export function setTableCellWithObjectAttributes( model, attributes, cellContent ) {
+	setData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
+
+	const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+	model.change( writer => {
+		for ( const [ key, value ] of Object.entries( attributes ) ) {
+			writer.setAttribute( key, value, tableCell );
+		}
+	} );
 }
 
 /**
