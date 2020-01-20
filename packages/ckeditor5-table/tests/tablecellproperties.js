@@ -11,32 +11,34 @@ import TableEditing from '../src/tableediting';
 import TableCellProperties from '../src/tablecellproperties';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
 
-describe( 'TableCellProperties', () => {
+describe( 'table cell properties', () => {
 	let editor, editorElement;
 
-	beforeEach( async () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+	describe( 'TableCellProperties', () => {
+		beforeEach( async () => {
+			editorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( editorElement );
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ TableCellProperties, Paragraph, TableEditing ]
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ TableCellProperties, Paragraph, TableEditing ]
+			} );
 		} );
-	} );
 
-	afterEach( async () => {
-		editorElement.remove();
-		await editor.destroy();
-	} );
+		afterEach( async () => {
+			editorElement.remove();
+			await editor.destroy();
+		} );
 
-	it( 'should be loaded', () => {
-		expect( editor.plugins.get( TableCellProperties ) ).to.instanceOf( TableCellProperties );
-	} );
+		it( 'should be loaded', () => {
+			expect( editor.plugins.get( TableCellProperties ) ).to.instanceOf( TableCellProperties );
+		} );
 
-	it( 'should load TableCellPropertiesEditing plugin', () => {
-		expect( editor.plugins.get( TableCellPropertiesEditing ) ).to.instanceOf( TableCellPropertiesEditing );
-	} );
+		it( 'should load TableCellPropertiesEditing plugin', () => {
+			expect( editor.plugins.get( TableCellPropertiesEditing ) ).to.instanceOf( TableCellPropertiesEditing );
+		} );
 
-	it( 'should have pluginName', () => {
-		expect( TableCellProperties.pluginName ).to.equal( 'TableCellProperties' );
+		it( 'should have pluginName', () => {
+			expect( TableCellProperties.pluginName ).to.equal( 'TableCellProperties' );
+		} );
 	} );
 } );
