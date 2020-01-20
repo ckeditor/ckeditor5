@@ -65,12 +65,12 @@ export default class TableCellHorizontalAlignmentCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const { value } = options;
+		const { value, batch } = options;
 
 		const tableCells = Array.from( selection.getSelectedBlocks() )
 			.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) );
 
-		model.change( writer => {
+		model.enqueueChange( batch || 'default', writer => {
 			if ( value ) {
 				tableCells.forEach( tableCell => writer.setAttribute( this.attributeName, value, tableCell ) );
 			} else {
