@@ -18,7 +18,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * To change cell width of the selected cell, execute the command:
  *
  *		editor.execute( 'tableCellWidth', {
- *			value: '5px'
+ *			value: '50px'
  *		} );
  *
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand

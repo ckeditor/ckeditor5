@@ -19,7 +19,7 @@ import { getSingleValue } from '../../commands/utils';
  * To change cell border style of the selected cell, execute the command:
  *
  *		editor.execute( 'tableCellBorderStyle', {
- *			value: '5px'
+ *			value: 'dashed'
  *		} );
  *
  * @extends module:core/command~Command

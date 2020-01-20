@@ -18,7 +18,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * To change cell horizontal alignment of the selected cell, execute the command:
  *
  *		editor.execute( 'tableCellHorizontalAlignment', {
- *			value: '5px'
+ *			value: 'right'
  *		} );
  *
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand

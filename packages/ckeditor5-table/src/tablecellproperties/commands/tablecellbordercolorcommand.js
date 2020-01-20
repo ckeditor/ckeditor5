@@ -19,7 +19,7 @@ import { getSingleValue } from '../../commands/utils';
  * To change cell border color of the selected cell, execute the command:
  *
  *		editor.execute( 'tableCellBorderColor', {
- *			value: '5px'
+ *			value: '#f00'
  *		} );
  *
  * @extends module:core/command~Command
