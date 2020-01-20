@@ -34,7 +34,7 @@ describe( 'BoxedEditorUIView', () => {
 			expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 			expect( element.attributes[ 'aria-labelledby' ].value )
 				.to.equal( view.element.firstChild.id )
-				.to.match( /^ck-editor__aria-label_\w+$/ );
+				.to.match( /^ck-editor__label_\w+$/ );
 		} );
 
 		it( 'bootstraps the voice label from template', () => {
