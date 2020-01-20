@@ -7,9 +7,7 @@
  * @module table/tablecellproperties/commands/tablecellverticalalignmentcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-
-import { findAncestor } from '../../commands/utils';
+import TableCellPropertyCommand from './tablecellpropertycommand';
 
 /**
  * The table cell vertical alignment command.
@@ -20,62 +18,25 @@ import { findAncestor } from '../../commands/utils';
  * To change cell vertical alignment of the selected cell, execute the command:
  *
  *		editor.execute( 'tableCellVerticalAlignment', {
- *			value: '5px'
+ *			value: 'top'
  *		} );
  *
- * @extends module:core/command~Command
+ * The editor UI allows to set those attributes from
+ * [a `vertical-align` CSS attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align):
+ *
+ * * `'top'`
+ * * `'bottom'`
+ * * `'middle'`
+ *
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
  */
-export default class TableCellVerticalAlignmentCommand extends Command {
-	constructor( editor ) {
-		super( editor );
-
-		this.attributeName = 'verticalAlignment';
-	}
-
+export default class TableCellVerticalAlignmentCommand extends TableCellPropertyCommand {
 	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-
-		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
-
-		this.isEnabled = !!tableCell;
-		this.value = this._getValue( tableCell );
-	}
-
-	_getValue( tableCell ) {
-		if ( !tableCell ) {
-			return;
-		}
-
-		return tableCell.getAttribute( this.attributeName );
-	}
-
-	/**
-	 * Executes the command.
+	 * Creates a new `TableCellVerticalAlignmentCommand` instance.
 	 *
-	 * @fires execute
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.value] If set the command will set vertical alignment.
-	 * If vertical alignment is not set the command will remove the attribute.
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 */
-	execute( options = {} ) {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-
-		const { value, batch } = options;
-
-		const tableCells = Array.from( selection.getSelectedBlocks() )
-			.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) );
-
-		model.enqueueChange( batch || 'default', writer => {
-			if ( value ) {
-				tableCells.forEach( tableCell => writer.setAttribute( this.attributeName, value, tableCell ) );
-			} else {
-				tableCells.forEach( tableCell => writer.removeAttribute( this.attributeName, tableCell ) );
-			}
-		} );
+	constructor( editor ) {
+		super( editor, 'verticalAlignment' );
 	}
 }
