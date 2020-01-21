@@ -12,6 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
 import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
+import { addMarginRules } from '@ckeditor/ckeditor5-engine/src/view/styles/margin';
 
 /**
  * The block indentation feature.
@@ -56,6 +57,7 @@ export default class IndentBlock extends Plugin {
 		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
 
 		if ( useOffsetConfig ) {
+			editor.editing.view.document.addStyleProcessorRules( addMarginRules );
 			this._setupConversionUsingOffset( editor.conversion );
 
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
@@ -112,19 +114,6 @@ export default class IndentBlock extends Plugin {
 			}
 		} );
 
-		// The margin shorthand should also work.
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				styles: {
-					'margin': /[\s\S]+/
-				}
-			},
-			model: {
-				key: 'blockIndent',
-				value: viewElement => normalizeToMarginSideStyle( viewElement.getStyle( 'margin' ), marginProperty )
-			}
-		} );
-
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: 'blockIndent',
 			view: modelAttributeValue => {
@@ -163,46 +152,6 @@ export default class IndentBlock extends Plugin {
 
 		this.editor.conversion.attributeToAttribute( definition );
 	}
-}
-
-// Normalizes the margin shorthand value to the value of margin-left or margin-right CSS property.
-//
-// As such it will return:
-//
-// - '1em' -> '1em'
-// - '2px 1em' -> '1em'
-// - '2px 1em 3px' -> '1em'
-// - '2px 10px 3px 1em'
-//		-> '1em' (side "margin-left")
-//		-> '10px' (side "margin-right")
-//
-// @param {String} marginStyleValue Margin style value.
-// @param {String} side "margin-left" or "margin-right" depending on which margin should be returned.
-// @returns {String} Extracted value of margin-left or margin-right.
-function normalizeToMarginSideStyle( marginStyleValue, side ) {
-	// Splits the margin shorthand, ie margin: 2em 4em.
-	const marginEntries = marginStyleValue.split( ' ' );
-
-	let marginValue;
-
-	// If only one value defined, ie: `margin: 1px`.
-	marginValue = marginEntries[ 0 ];
-
-	// If only two values defined, ie: `margin: 1px 2px`.
-	if ( marginEntries[ 1 ] ) {
-		marginValue = marginEntries[ 1 ];
-	}
-
-	// If four values defined, ie: `margin: 1px 2px 3px 4px`.
-	if ( marginEntries[ 3 ] ) {
-		if ( side === 'margin-left' ) {
-			marginValue = marginEntries[ 3 ];
-		} else {
-			marginValue = marginEntries[ 1 ];
-		}
-	}
-
-	return marginValue;
 }
 
 /**
