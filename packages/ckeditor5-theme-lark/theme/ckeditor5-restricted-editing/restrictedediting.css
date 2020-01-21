@@ -43,6 +43,7 @@
 .ck-restricted-editing_mode_restricted {
 	cursor: default;
 
+	/* For some reason, we also need to override user agent styles for links inside the editor. */
 	& *:not(.restricted-editing-exception) {
 		cursor: default;
 	}
