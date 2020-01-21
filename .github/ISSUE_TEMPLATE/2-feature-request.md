@@ -9,7 +9,7 @@ assignees: ''
 
 ## 📝 Provide a description of the new feature
 
-*What is the expected behavior of the proposed feature?*
+_What is the expected behavior of the proposed feature?_
 
 ---
 
