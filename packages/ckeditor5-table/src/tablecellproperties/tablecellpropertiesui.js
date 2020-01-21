@@ -67,7 +67,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		/**
 		 * The cell properties form view displayed inside the balloon.
 		 *
-		 * @member {module:table/ui/tablecellpropertiesview~TableCellPropertiesView}
+		 * @member {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
 		 */
 		this.view = this._createPropertiesView();
 
@@ -107,11 +107,11 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:table/ui/tablecellpropertiesview~TableCellPropertiesView} instance.
+	 * Creates the {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView} instance.
 	 *
 	 * @private
-	 * @returns {module:table/ui/tablecellpropertiesview~TableCellPropertiesView} The cell properties form
-	 * view instance.
+	 * @returns {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView} The cell
+	 * properties form view instance.
 	 */
 	_createPropertiesView() {
 		const editor = this.editor;

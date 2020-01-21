@@ -11,7 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 /**
  * The class representing a single row in the complex form,
- * used by {@link module:table/ui/tablecellpropertiesview~TableCellPropertiesView}.
+ * used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}.
  *
  * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table),
  * it will become a component in ckeditor5-ui.
