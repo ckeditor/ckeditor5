@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,9 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import StylesMap from './stylesmap';
+
+// @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
 /**
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
@@ -159,6 +162,22 @@ export default class Document {
 	}
 
 	/**
+	 * Adds a style processor normalization rules.
+	 *
+	 * The available style processors:
+	 *
+	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
+	 * * border: {@link module:engine/view/styles/border~addBorderRules}
+	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
+	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
+	 *
+	 * @param {Function} callback
+	 */
+	addStyleProcessorRules( callback ) {
+		callback( StylesMap._styleProcessor );
+	}
+
+	/**
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @protected
@@ -185,6 +204,10 @@ export default class Document {
 	 *
 	 * @event layoutChanged
 	 */
+
+	// @if CK_DEBUG_ENGINE // log( version ) {
+	// @if CK_DEBUG_ENGINE //	logDocument( this, version );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 mix( Document, ObservableMixin );

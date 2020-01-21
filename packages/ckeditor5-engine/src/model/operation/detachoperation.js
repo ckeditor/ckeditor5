@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,6 +11,8 @@ import Operation from './operation';
 import Range from '../range';
 import { _remove } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+// @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
 /**
  * Operation to permanently remove node from detached root.
@@ -90,4 +92,12 @@ export default class DetachOperation extends Operation {
 	static get className() {
 		return 'DetachOperation';
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
+	// @if CK_DEBUG_ENGINE //	const nodes = Array.from( range.getItems() );
+	// @if CK_DEBUG_ENGINE //	const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
+
+	// @if CK_DEBUG_ENGINE //	return `DetachOperation( ${ this.baseVersion } ): ${ nodeString } -> ${ range }`;
+	// @if CK_DEBUG_ENGINE // }
 }

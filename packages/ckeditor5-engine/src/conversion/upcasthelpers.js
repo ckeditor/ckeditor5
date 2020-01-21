@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -234,6 +234,33 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 *					return match[ 1 ];
 	 *				}
+	 *			}
+	 *		} );
+	 *
+	 * Converting styles works a bit differently as it requires `view.styles` to be an object and by default
+	 * a model attribute will be set to `true` by such a converter. You can set the model attribute to any value by providing the `value`
+	 * callback that returns the desired value.
+	 *
+	 *		// Default conversion of font-weight style will result in setting bold attribute to true.
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				styles: {
+	 *					'font-weight': 'bold'
+	 *				}
+	 *			},
+	 *			model: 'bold'
+	 *		} );
+	 *
+	 *		// This converter will pass any style value to the `lineHeight` model attribute.
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				styles: {
+	 *					'line-height': /[\s\S]+/
+	 *				}
+	 *			},
+	 *			model: {
+	 *				key: 'lineHeight',
+	 *				value: viewElement => viewElement.getStyle( 'line-height' )
 	 *			}
 	 *		} );
 	 *

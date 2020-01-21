@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -250,4 +250,10 @@ export default class SplitOperation extends Operation {
 
 		return split;
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	return `SplitOperation( ${ this.baseVersion } ): ${ this.splitPosition } ` +
+	// @if CK_DEBUG_ENGINE //		`( ${ this.howMany } ) -> ${ this.insertionPosition }` +
+	// @if CK_DEBUG_ENGINE //		`${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
+	// @if CK_DEBUG_ENGINE // }
 }

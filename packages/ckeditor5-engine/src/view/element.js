@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,6 +14,9 @@ import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Matcher from './matcher';
 import { isPlainObject } from 'lodash-es';
+import StylesMap from './stylesmap';
+
+// @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
 /**
  * View element.
@@ -103,16 +106,17 @@ export default class Element extends Node {
 		}
 
 		/**
-		 * Map of styles.
+		 * Normalized styles.
 		 *
 		 * @protected
-		 * @member {Map} module:engine/view/element~Element#_styles
+		 * @member {module:engine/view/stylesmap~StylesMap} module:engine/view/element~Element#_styles
 		 */
-		this._styles = new Map();
+		this._styles = new StylesMap();
 
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.
-			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
+			this._styles.setTo( this._attrs.get( 'style' ) );
+
 			this._attrs.delete( 'style' );
 		}
 
@@ -219,7 +223,7 @@ export default class Element extends Node {
 			yield 'class';
 		}
 
-		if ( this._styles.size > 0 ) {
+		if ( !this._styles.isEmpty ) {
 			yield 'style';
 		}
 
@@ -241,7 +245,7 @@ export default class Element extends Node {
 			yield [ 'class', this.getAttribute( 'class' ) ];
 		}
 
-		if ( this._styles.size > 0 ) {
+		if ( !this._styles.isEmpty ) {
 			yield [ 'style', this.getAttribute( 'style' ) ];
 		}
 	}
@@ -262,17 +266,9 @@ export default class Element extends Node {
 		}
 
 		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
-				let styleString = '';
+			const inlineStyle = this._styles.toString();
 
-				for ( const [ property, value ] of this._styles ) {
-					styleString += `${ property }:${ value };`;
-				}
-
-				return styleString;
-			}
-
-			return undefined;
+			return inlineStyle == '' ? undefined : inlineStyle;
 		}
 
 		return this._attrs.get( key );
@@ -290,7 +286,7 @@ export default class Element extends Node {
 		}
 
 		if ( key == 'style' ) {
-			return this._styles.size > 0;
+			return !this._styles.isEmpty;
 		}
 
 		return this._attrs.has( key );
@@ -340,8 +336,11 @@ export default class Element extends Node {
 		}
 
 		// Check if styles are the same.
-		for ( const [ property, value ] of this._styles ) {
-			if ( !otherElement._styles.has( property ) || otherElement._styles.get( property ) !== value ) {
+		for ( const property of this._styles.getStyleNames() ) {
+			if (
+				!otherElement._styles.has( property ) ||
+				otherElement._styles.getAsString( property ) !== this._styles.getAsString( property )
+			) {
 				return false;
 			}
 		}
@@ -378,14 +377,67 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns style value for given property.
-	 * Undefined is returned if style does not exist.
+	 * Returns style value for the given property mae.
+	 * If the style does not exist `undefined` is returned.
+	 *
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#getAsString `StylesMap#getAsString()`} for details.
+	 *
+	 * For an element with style set to `'margin:1px'`:
+	 *
+	 *		// Enable 'margin' shorthand processing:
+	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *
+	 *		const element = view.change( writer => {
+	 *			const element = writer.createElement();
+	 *			writer.setStyle( 'margin', '1px' );
+	 *			writer.setStyle( 'margin-bottom', '3em' );
+	 *
+	 *			return element;
+	 *		} );
+	 *
+	 *		element.getStyle( 'margin' ); // -> 'margin: 1px 1px 3em;'
 	 *
 	 * @param {String} property
 	 * @returns {String|undefined}
 	 */
 	getStyle( property ) {
-		return this._styles.get( property );
+		return this._styles.getAsString( property );
+	}
+
+	/**
+	 * Returns a normalized style object or single style value.
+	 *
+	 * For an element with style set to: margin:1px 2px 3em;
+	 *
+	 *		element.getNormalizedStyle( 'margin' ) );
+	 *
+	 * will return:
+	 *
+	 *		{
+	 *			top: '1px',
+	 *			right: '2px',
+	 *			bottom: '3em',
+	 *			left: '2px'    // a normalized value from margin shorthand
+	 *		}
+	 *
+	 * and reading for single style value:
+	 *
+	 *		styles.getNormalizedStyle( 'margin-left' );
+	 *
+	 * Will return a `2px` string.
+	 *
+	 * **Note**: This method will return normalized values only if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#getNormalized `StylesMap#getNormalized()`} for details.
+	 *
+	 *
+	 * @param {String} property Name of CSS property
+	 * @returns {Object|String|undefined}
+	 */
+	getNormalizedStyle( property ) {
+		return this._styles.getNormalized( property );
 	}
 
 	/**
@@ -394,7 +446,7 @@ export default class Element extends Node {
 	 * @returns {Iterable.<String>}
 	 */
 	getStyleNames() {
-		return this._styles.keys();
+		return this._styles.getStyleNames();
 	}
 
 	/**
@@ -479,18 +531,18 @@ export default class Element extends Node {
 	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
 	 *		element.getIdentity();
 	 *
-	 * NOTE: Classes, styles and other attributes are sorted alphabetically.
+	 * **Note**: Classes, styles and other attributes are sorted alphabetically.
 	 *
 	 * @returns {String}
 	 */
 	getIdentity() {
 		const classes = Array.from( this._classes ).sort().join( ',' );
-		const styles = Array.from( this._styles ).map( i => `${ i[ 0 ] }:${ i[ 1 ] }` ).sort().join( ';' );
+		const styles = this._styles.toString();
 		const attributes = Array.from( this._attrs ).map( i => `${ i[ 0 ] }="${ i[ 1 ] }"` ).sort().join( ' ' );
 
 		return this.name +
 			( classes == '' ? '' : ` class="${ classes }"` ) +
-			( styles == '' ? '' : ` style="${ styles }"` ) +
+			( !styles ? '' : ` style="${ styles }"` ) +
 			( attributes == '' ? '' : ` ${ attributes }` );
 	}
 
@@ -517,7 +569,7 @@ export default class Element extends Node {
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
-		cloned._styles = new Map( this._styles );
+		cloned._styles.set( this._styles.getNormalized() );
 
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
@@ -614,7 +666,7 @@ export default class Element extends Node {
 		if ( key == 'class' ) {
 			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
-			parseInlineStyles( this._styles, value );
+			this._styles.setTo( value );
 		} else {
 			this._attrs.set( key, value );
 		}
@@ -645,7 +697,7 @@ export default class Element extends Node {
 
 		// Remove style attribute.
 		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
+			if ( !this._styles.isEmpty ) {
 				this._styles.clear();
 
 				return true;
@@ -703,6 +755,10 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
+	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
 	 * @protected
 	 * @param {String|Object} property Property name or object with key - value pairs.
@@ -712,15 +768,7 @@ export default class Element extends Node {
 	_setStyle( property, value ) {
 		this._fireChange( 'attributes', this );
 
-		if ( isPlainObject( property ) ) {
-			const keys = Object.keys( property );
-
-			for ( const key of keys ) {
-				this._styles.set( key, property[ key ] );
-			}
-		} else {
-			this._styles.set( property, value );
-		}
+		this._styles.set( property, value );
 	}
 
 	/**
@@ -728,6 +776,10 @@ export default class Element extends Node {
 	 *
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle
 	 * @protected
@@ -738,7 +790,7 @@ export default class Element extends Node {
 		this._fireChange( 'attributes', this );
 
 		property = Array.isArray( property ) ? property : [ property ];
-		property.forEach( name => this._styles.delete( name ) );
+		property.forEach( name => this._styles.remove( name ) );
 	}
 
 	/**
@@ -772,6 +824,32 @@ export default class Element extends Node {
 	 * @abstract
 	 * @method module:engine/view/element~Element#getFillerOffset
 	 */
+
+	// @if CK_DEBUG_ENGINE // printTree( level = 0) {
+	// @if CK_DEBUG_ENGINE // 	let string = '';
+
+	// @if CK_DEBUG_ENGINE //	string += '\t'.repeat( level ) + `<${ this.name }${ convertMapToTags( this.getAttributes() ) }>`;
+
+	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
+	// @if CK_DEBUG_ENGINE //		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( level + 1 ) + child.data;
+	// @if CK_DEBUG_ENGINE //		} else {
+	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( level + 1 );
+	// @if CK_DEBUG_ENGINE //		}
+	// @if CK_DEBUG_ENGINE //	}
+
+	// @if CK_DEBUG_ENGINE //	if ( this.childCount ) {
+	// @if CK_DEBUG_ENGINE //		string += '\n' + '\t'.repeat( level );
+	// @if CK_DEBUG_ENGINE //	}
+
+	// @if CK_DEBUG_ENGINE //	string += `</${ this.name }>`;
+
+	// @if CK_DEBUG_ENGINE //	return string;
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // logTree() {
+	// @if CK_DEBUG_ENGINE // 	console.log( this.printTree() );
+	// @if CK_DEBUG_ENGINE // }
 }
 
 // Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
@@ -796,82 +874,6 @@ function parseAttributes( attrs ) {
 	}
 
 	return attrs;
-}
-
-// Parses inline styles and puts property - value pairs into styles map.
-// Styles map is cleared before insertion.
-//
-// @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
-// @param {String} stylesString Styles to parse.
-function parseInlineStyles( stylesMap, stylesString ) {
-	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
-	let quoteType = null;
-	let propertyNameStart = 0;
-	let propertyValueStart = 0;
-	let propertyName = null;
-
-	stylesMap.clear();
-
-	// Do not set anything if input string is empty.
-	if ( stylesString === '' ) {
-		return;
-	}
-
-	// Fix inline styles that do not end with `;` so they are compatible with algorithm below.
-	if ( stylesString.charAt( stylesString.length - 1 ) != ';' ) {
-		stylesString = stylesString + ';';
-	}
-
-	// Seek the whole string for "special characters".
-	for ( let i = 0; i < stylesString.length; i++ ) {
-		const char = stylesString.charAt( i );
-
-		if ( quoteType === null ) {
-			// No quote found yet or last found quote was a closing quote.
-			switch ( char ) {
-				case ':':
-					// Most of time colon means that property name just ended.
-					// Sometimes however `:` is found inside property value (for example in background image url).
-					if ( !propertyName ) {
-						// Treat this as end of property only if property name is not already saved.
-						// Save property name.
-						propertyName = stylesString.substr( propertyNameStart, i - propertyNameStart );
-						// Save this point as the start of property value.
-						propertyValueStart = i + 1;
-					}
-
-					break;
-
-				case '"':
-				case '\'':
-					// Opening quote found (this is an opening quote, because `quoteType` is `null`).
-					quoteType = char;
-
-					break;
-
-				case ';': {
-					// Property value just ended.
-					// Use previously stored property value start to obtain property value.
-					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
-
-					if ( propertyName ) {
-						// Save parsed part.
-						stylesMap.set( propertyName.trim(), propertyValue.trim() );
-					}
-
-					propertyName = null;
-
-					// Save this point as property name start. Property name starts immediately after previous property value ends.
-					propertyNameStart = i + 1;
-
-					break;
-				}
-			}
-		} else if ( char === quoteType ) {
-			// If a quote char is found and it is a closing quote, mark this fact by `null`-ing `quoteType`.
-			quoteType = null;
-		}
-	}
 }
 
 // Parses class attribute and puts all classes into classes set.

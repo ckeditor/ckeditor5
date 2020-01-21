@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -2009,6 +2009,8 @@ describe( 'Renderer', () => {
 				container = document.getSelection().anchorNode;
 
 				expect( domEditable.contains( container ) ).to.be.true;
+
+				domEditable.remove();
 			} );
 
 			it( 'should bind fake selection container to view selection', () => {
@@ -3706,48 +3708,6 @@ describe( 'Renderer', () => {
 				return viewData.repeat( repeat );
 			}
 		} );
-
-		// #1782
-		it( 'should leave dom selection untouched while composing', () => {
-			const { view: viewP, selection: newSelection } = parse( '<container:p>[]</container:p>' );
-
-			viewRoot._appendChild( viewP );
-			selection._setTo( newSelection );
-
-			renderer.markToSync( 'children', viewRoot );
-			renderer.render();
-
-			// Mock IME typing in Safari: <p>[c]</p>.
-			renderer.isComposing = true;
-			const domText = document.createTextNode( 'c' );
-			domRoot.firstChild.appendChild( domText );
-			const range = document.createRange();
-			range.setStart( domText, 0 );
-			range.setEnd( domText, 1 );
-			const domSelection = document.getSelection();
-			domSelection.removeAllRanges();
-			domSelection.addRange( range );
-
-			// <container:p>c[]</container:p>
-			viewP._appendChild( new ViewText( 'c' ) );
-			selection._setTo( [
-				new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 0 ), 1 ) )
-			] );
-
-			renderer.markToSync( 'children', viewP );
-			renderer.render();
-
-			expect( domRoot.childNodes.length ).to.equal( 1 );
-			expect( domRoot.firstChild.childNodes.length ).to.equal( 1 );
-			expect( domRoot.firstChild.firstChild.data ).to.equal( 'c' );
-
-			const currentRange = domSelection.getRangeAt( 0 );
-			expect( currentRange.collapsed ).to.equal( false );
-			expect( currentRange.startContainer ).to.equal( domRoot.firstChild.firstChild );
-			expect( currentRange.startOffset ).to.equal( 0 );
-			expect( currentRange.endContainer ).to.equal( domRoot.firstChild.firstChild );
-			expect( currentRange.endOffset ).to.equal( 1 );
-		} );
 	} );
 
 	describe( '#922', () => {
@@ -3761,6 +3721,11 @@ describe( 'Renderer', () => {
 			viewRoot = createViewRoot( viewDoc );
 			view.attachDomRoot( domRoot );
 			converter = view.domConverter;
+		} );
+
+		afterEach( () => {
+			view.destroy();
+			domRoot.remove();
 		} );
 
 		it( 'should properly render unwrapped attributes #1', () => {

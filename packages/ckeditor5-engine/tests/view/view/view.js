@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -804,21 +804,14 @@ describe( 'view', () => {
 			expect( result3 ).to.undefined;
 		} );
 
-		it( 'should catch native errors and wrap them into the CKEditorError errors', () => {
+		it( 'should rethrow native errors as they are in the dubug=true mode', () => {
 			const error = new TypeError( 'foo' );
-			error.stack = 'bar';
 
-			expectToThrowCKEditorError( () => {
+			expect( () => {
 				view.change( () => {
 					throw error;
 				} );
-			}, /unexpected-error/, view, {
-				originalError: {
-					message: 'foo',
-					stack: 'bar',
-					name: 'TypeError'
-				}
-			} );
+			} ).to.throw( TypeError, /foo/ );
 		} );
 
 		it( 'should rethrow custom CKEditorError errors', () => {

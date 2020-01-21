@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,6 +7,10 @@ import ViewElement from '../../src/view/element';
 import ViewText from '../../src/view/text';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewConsumable from '../../src/conversion/viewconsumable';
+import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
+import { addBorderRules } from '../../src/view/styles/border';
+import { addMarginRules } from '../../src/view/styles/margin';
+import { addPaddingRules } from '../../src/view/styles/padding';
 
 describe( 'ViewConsumable', () => {
 	let viewConsumable, el;
@@ -547,6 +551,83 @@ describe( 'ViewConsumable', () => {
 			expect( newConsumable.test( child1, { name: true, attributes: 'title' } ) ).to.be.true;
 			expect( newConsumable.test( child2, { name: true } ) ).to.be.true;
 			expect( newConsumable.test( child3, { name: true, styles: 'top', classes: [ 'qux', 'bar' ] } ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'style shorthands handling', () => {
+		before( () => {
+			const stylesProcessor = new StylesProcessor();
+
+			StylesMap._setProcessor( stylesProcessor );
+
+			addBorderRules( stylesProcessor );
+			addMarginRules( stylesProcessor );
+			addPaddingRules( stylesProcessor );
+		} );
+
+		describe( 'add', () => {
+			it( 'should add padding shorthands', () => {
+				viewConsumable.add( el, { styles: [ 'margin' ] } );
+
+				expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'margin-bottom' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'margin-right' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'margin-left' } ) ).to.be.true;
+			} );
+
+			it( 'should add margin shorthands', () => {
+				viewConsumable.add( el, { styles: [ 'padding' ] } );
+
+				expect( viewConsumable.test( el, { styles: 'padding-top' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'padding-bottom' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'padding-right' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'padding-left' } ) ).to.be.true;
+			} );
+
+			it( 'should add table shorthands', () => {
+				viewConsumable.add( el, { styles: [ 'border' ] } );
+
+				expect( viewConsumable.test( el, { styles: 'border-style' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-top-style' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-bottom-style' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-right-style' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-left-style' } ) ).to.be.true;
+
+				expect( viewConsumable.test( el, { styles: 'border-color' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-top-color' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-bottom-color' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-right-color' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-left-color' } ) ).to.be.true;
+
+				expect( viewConsumable.test( el, { styles: 'border-width' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-top-width' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-bottom-width' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-right-width' } ) ).to.be.true;
+				expect( viewConsumable.test( el, { styles: 'border-left-width' } ) ).to.be.true;
+			} );
+		} );
+
+		it( 'should return false when testing style shorthand for consumed longhand', () => {
+			viewConsumable.add( el, { styles: [ 'margin' ] } );
+
+			expect( viewConsumable.test( el, { styles: 'margin' } ) ).to.be.true;
+			viewConsumable.consume( el, { styles: 'margin' } );
+			expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { styles: 'margin-bottom' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { styles: 'margin-right' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { styles: 'margin-left' } ) ).to.be.false;
+		} );
+
+		it( 'should return false when testing style shorthand for consumed shorthand', () => {
+			viewConsumable.add( el, { styles: [ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] } );
+
+			expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.true;
+			viewConsumable.consume( el, { styles: 'margin-top' } );
+			expect( viewConsumable.test( el, { styles: 'margin' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { styles: 'margin-top' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { styles: 'margin-bottom' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { styles: 'margin-right' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { styles: 'margin-left' } ) ).to.be.true;
 		} );
 	} );
 } );

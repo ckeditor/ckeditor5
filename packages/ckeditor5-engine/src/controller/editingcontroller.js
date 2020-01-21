@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,6 +16,8 @@ import { clearAttributes, convertCollapsedSelection, convertRangeSelection, inse
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
+
+// @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
@@ -73,7 +75,7 @@ export default class EditingController {
 		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
 		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
 		//
-		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/1528
 		this.listenTo( this.model, '_beforeChanges', () => {
 			this.view._disableRendering( true );
 		}, { priority: 'highest' } );
@@ -121,6 +123,16 @@ export default class EditingController {
 
 			return viewRoot;
 		} );
+
+		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.model.document );
+		// @if CK_DEBUG_ENGINE // initDocumentDumping( this.view.document );
+
+		// @if CK_DEBUG_ENGINE // dumpTrees( this.model.document, this.model.document.version );
+		// @if CK_DEBUG_ENGINE // dumpTrees( this.view.document, this.model.document.version );
+
+		// @if CK_DEBUG_ENGINE // this.model.document.on( 'change', () => {
+		// @if CK_DEBUG_ENGINE //	dumpTrees( this.view.document, this.model.document.version );
+		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
 	}
 
 	/**

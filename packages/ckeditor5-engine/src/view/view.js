@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -105,7 +105,6 @@ export default class View {
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
-		this._renderer.bind( 'isComposing' ).to( this.document );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -482,6 +481,8 @@ export default class View {
 
 			return callbackResult;
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}

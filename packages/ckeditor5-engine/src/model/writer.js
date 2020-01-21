@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1328,7 +1328,7 @@ export default class Writer {
 	 */
 	_assertWriterUsedCorrectly() {
 		/**
-		 * Trying to use a writer outside a {@link module:engine/model/model~Model#change `change()` or
+		 * Trying to use a writer outside a {@link module:engine/model/model~Model#change `change()`} or
 		 * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`} blocks.
 		 *
 		 * The writer can only be used inside these blocks which ensures that the model

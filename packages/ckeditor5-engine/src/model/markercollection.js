@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -289,7 +289,7 @@ mix( MarkerCollection, EmitterMixin );
  * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating
  * namespaces for custom elements (e.g. comments, highlights). You can use this prefixes in
  * {@link module:engine/model/markercollection~MarkerCollection#event:update} listeners to listen on changes in a group of markers.
- * For instance: `model.markers.on( 'set:user', callback );` will be called whenever any `user:*` markers changes.
+ * For instance: `model.markers.on( 'update:user', callback );` will be called whenever any `user:*` markers changes.
  *
  * There are two types of markers.
  *

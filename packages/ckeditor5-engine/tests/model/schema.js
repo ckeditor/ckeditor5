@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -3247,6 +3247,62 @@ describe( 'SchemaContext', () => {
 			const ctx = new SchemaContext( [ 'foo' ] );
 
 			expect( ctx.endsWith( 'bar', 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'startsWith()', () => {
+		it( 'returns true if the start of the context matches the query - 1 item', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.startsWith( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns true if the start of the context matches the query - 2 items', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.startsWith( 'foo bar' ) ).to.be.true;
+		} );
+
+		it( 'returns true if the start of the context matches the query - full match of 3 items', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom' ] );
+
+			expect( ctx.startsWith( 'foo bar bom' ) ).to.be.true;
+		} );
+
+		it( 'returns true if the start of the context matches the query - full match of 1 items', () => {
+			const ctx = new SchemaContext( [ 'foo' ] );
+
+			expect( ctx.startsWith( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns true if not only the start of the context matches the query', () => {
+			const ctx = new SchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
+
+			expect( ctx.startsWith( 'foo foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if query matches the middle of the context', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.startsWith( 'bom' ) ).to.be.false;
+		} );
+
+		it( 'returns false if query matches the end of the context', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.startsWith( 'dom' ) ).to.be.false;
+		} );
+
+		it( 'returns false if query does not match', () => {
+			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+
+			expect( ctx.startsWith( 'dom bar' ) ).to.be.false;
+		} );
+
+		it( 'returns false if query is longer than context', () => {
+			const ctx = new SchemaContext( [ 'foo' ] );
+
+			expect( ctx.startsWith( 'bar', 'foo' ) ).to.be.false;
 		} );
 	} );
 } );

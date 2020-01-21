@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,6 +25,9 @@ import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+// @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
+// @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
 
 /**
  * Editor's data model. Read about the model in the
@@ -116,6 +119,10 @@ export default class Model {
 		} );
 
 		injectSelectionPostFixer( this );
+
+		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
+		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
+		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
 	}
 
 	/**
@@ -165,6 +172,8 @@ export default class Model {
 				return callback( this._currentWriter );
 			}
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -217,6 +226,8 @@ export default class Model {
 				this._runPendingChanges();
 			}
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -233,8 +244,34 @@ export default class Model {
 	 * @param {module:engine/model/operation/operation~Operation} operation The operation to apply.
 	 */
 	applyOperation( operation ) {
+		// @if CK_DEBUG_ENGINE // console.log( 'Applying ' + operation );
+
+		// @if CK_DEBUG_ENGINE // if ( !this._operationLogs ) {
+		// @if CK_DEBUG_ENGINE //	this._operationLogs = [];
+		// @if CK_DEBUG_ENGINE // }
+
+		// @if CK_DEBUG_ENGINE // this._operationLogs.push( JSON.stringify( operation ) );
+
+		// @if CK_DEBUG_ENGINE //if ( !this._appliedOperations ) {
+		// @if CK_DEBUG_ENGINE //	this._appliedOperations = [];
+		// @if CK_DEBUG_ENGINE //}
+
+		// @if CK_DEBUG_ENGINE //this._appliedOperations.push( operation );
+
 		operation._execute();
 	}
+
+	// @if CK_DEBUG_ENGINE // getAppliedOperation() {
+	// @if CK_DEBUG_ENGINE //	if ( !this._appliedOperations ) {
+	// @if CK_DEBUG_ENGINE //		return '';
+	// @if CK_DEBUG_ENGINE //	}
+
+	// @if CK_DEBUG_ENGINE //	return this._appliedOperations.map( JSON.stringify ).join( '-------' );
+	// @if CK_DEBUG_ENGINE // }
+
+	// @if CK_DEBUG_ENGINE // createReplayer( stringifiedOperations ) {
+	// @if CK_DEBUG_ENGINE //	return new OperationReplayer( this, '-------', stringifiedOperations );
+	// @if CK_DEBUG_ENGINE // }
 
 	/**
 	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
@@ -269,7 +306,7 @@ export default class Model {
 	 *
 	 *		// Let's create a document fragment containing such content as:
 	 *		//
-	 *		// <paragrap>foo</paragraph>
+	 *		// <paragraph>foo</paragraph>
 	 *		// <blockQuote>
 	 *		//    <paragraph>bar</paragraph>
 	 *		// </blockQuote>

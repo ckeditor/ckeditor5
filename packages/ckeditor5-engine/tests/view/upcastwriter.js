@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -508,8 +508,8 @@ describe( 'UpcastWriter', () => {
 
 			writer.removeStyle( [ 'color', 'position' ], el );
 
-			expect( el.hasStyle( 'color' ) ).to.false;
-			expect( el.hasStyle( 'position' ) ).to.false;
+			expect( el.hasStyle( 'color' ) ).to.be.false;
+			expect( el.hasStyle( 'position' ) ).to.be.false;
 			expect( Array.from( el.getStyleNames() ).length ).to.equal( 0 );
 		} );
 

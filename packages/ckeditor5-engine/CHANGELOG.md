@@ -1,6 +1,40 @@
 Changelog
 =========
 
+## [16.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Other changes
+
+* Split debug tools between the engine files. You do not need to add debug plugin to the editor if you want to use `--debug engine` building flag anymore. Closes [ckeditor/ckeditor5#5649](https://github.com/ckeditor/ckeditor5/issues/5649). ([353f091](https://github.com/ckeditor/ckeditor5-engine/commit/353f091))
+
+
+## [15.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v14.0.0...v15.0.0) (2019-10-23)
+
+### MAJOR BREAKING CHANGES
+
+* The behavior of block filler detection on DOM to view conversion was changed. Now, it specifically checks the parent of a text node to check whether it is a block. Which means that a list of block element names has to be used. If you use custom elements or use one of the HTML elements which CKEditor 5 does not recognize as a block element, see [#404](https://github.com/ckeditor/ckeditor5-engine/issues/404) and `DomConverter.blockElements` documentation.
+* The `Selection#getTopMostBlocks()` was removed from the public API. Use `Selection#getSelectedBlocks()` instead.
+* The `Selection#getSelectedBlocks()` does not return blocks nested in other blocks now.
+
+### Features
+
+* Added support for creating elements from other XML namespaces. See [ckeditor/ckeditor5#2088](https://github.com/ckeditor/ckeditor5/issues/2088). ([a9190c9](https://github.com/ckeditor/ckeditor5-engine/commit/a9190c9))
+
+### Bug fixes
+
+* Added a proper check for name-only view matcher in attribute upcast converters. Closes [#1786](https://github.com/ckeditor/ckeditor5-engine/issues/1786). ([2210696](https://github.com/ckeditor/ckeditor5-engine/commit/2210696))
+* Improved filtering out disallowed attributes on child elements. [#1789](https://github.com/ckeditor/ckeditor5-engine/issues/1789). ([c5033b6](https://github.com/ckeditor/ckeditor5-engine/commit/c5033b6))
+* Improved performance when working with fake selections. Closes [#1791](https://github.com/ckeditor/ckeditor5-engine/issues/1791). ([f073ad5](https://github.com/ckeditor/ckeditor5-engine/commit/f073ad5))
+* Placeholder should not be visible in the read-only mode. Closes [ckeditor/ckeditor5#1987](https://github.com/ckeditor/ckeditor5/issues/1987). ([730c417](https://github.com/ckeditor/ckeditor5-engine/commit/730c417))
+* Remove only real block fillers on DOM to view conversion. Closes [#404](https://github.com/ckeditor/ckeditor5-engine/issues/404). ([6d2810b](https://github.com/ckeditor/ckeditor5-engine/commit/6d2810b))
+* The renderer should not update DOM selection when document has active composition. Closes [#1782](https://github.com/ckeditor/ckeditor5-engine/issues/1782). Closes [ckeditor/ckeditor5#1333](https://github.com/ckeditor/ckeditor5/issues/1333). ([c698683](https://github.com/ckeditor/ckeditor5-engine/commit/c698683))
+
+### Other changes
+
+* Added error handling to the common code execution paths. Part of [ckeditor/ckeditor5#1304](https://github.com/ckeditor/ckeditor5/issues/1304). ([220b52f](https://github.com/ckeditor/ckeditor5-engine/commit/220b52f))
+* Removed the `Selection#getTopMostBlocks()` method. Closes [ckeditor/ckeditor5-widget#95](https://github.com/ckeditor/ckeditor5-widget/issues/95). Closes [ckeditor/ckeditor5-table#199](https://github.com/ckeditor/ckeditor5-table/issues/199). ([7970f17](https://github.com/ckeditor/ckeditor5-engine/commit/7970f17))
+
+
 ## [14.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.1...v14.0.0) (2019-08-26)
 
 ### Features

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -179,4 +179,10 @@ export default class InsertOperation extends Operation {
 
 		return insert;
 	}
+
+	// @if CK_DEBUG_ENGINE // toString() {
+	// @if CK_DEBUG_ENGINE // 	const nodeString = this.nodes.length > 1 ? `[ ${ this.nodes.length } ]` : this.nodes.getNode( 0 );
+
+	// @if CK_DEBUG_ENGINE //	return `InsertOperation( ${ this.baseVersion } ): ${ nodeString } -> ${ this.position }`;
+	// @if CK_DEBUG_ENGINE // }
 }
