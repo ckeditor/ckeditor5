@@ -15,14 +15,15 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import { repositionContextualBalloon, getBalloonCellPositionData } from '../ui/utils';
-import { findAncestor } from '../commands/utils';
 
 const DEFAULT_BORDER_STYLE = 'none';
 const DEFAULT_HORIZONTAL_ALIGNMENT = 'left';
 const DEFAULT_VERTICAL_ALIGNMENT = 'middle';
-
-// Attributes that set the same value for "top", "right", "bottom", and "left".
-const QUAD_DIRECTION_ATTRIBUTES = [ 'borderStyle', 'borderWidth', 'borderColor', 'padding' ];
+const CELL_PROPERTIES = [
+	'borderStyle', 'borderColor', 'borderWidth',
+	'padding', 'backgroundColor',
+	'horizontalAlignment', 'verticalAlignment',
+];
 
 /**
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
@@ -64,7 +65,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		/**
-		 * The properties form view displayed inside the balloon.
+		 * The cell properties form view displayed inside the balloon.
 		 *
 		 * @member {module:table/ui/tablecellpropertiesview~TableCellPropertiesView}
 		 */
@@ -161,7 +162,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * In this method the UI -> editor data binding is registered.
 	 *
-	 * Registers a listener that updates the editor model when any observable property of
+	 * Registers a listener that updates the editor data when any observable property of
 	 * the {@link #view} has changed. This makes the view live, which means the changes are
 	 * visible in the editing as soon as the user types or changes fields' values.
 	 *
@@ -169,65 +170,54 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	_startRespondingToChangesInView() {
 		const editor = this.editor;
-		const model = editor.model;
-		const document = model.document;
-		const selection = document.selection;
 
-		this.view.on( 'change', ( evt, property, value ) => {
-			const firstPosition = selection.getFirstPosition();
-			const tableCell = findAncestor( 'tableCell', firstPosition );
+		this.view.on( 'change', ( evt, propertyName, newValue ) => {
+			// Not all observable properties of the #view must be related to the cell editing.
+			// For instance, they can belong to some internal logic.
+			if ( !CELL_PROPERTIES.includes( propertyName ) ) {
+				return;
+			}
 
-			// Enqueue all changes into a single batch so clicking "Cancel" can undo them
-			// as a single undo steps. It's a better UX than dozens of undo steps, e.g. each
-			// for a single value change.
-			editor.model.enqueueChange( this._batch, writer => {
-				if ( QUAD_DIRECTION_ATTRIBUTES.includes( property ) ) {
-					writer.setAttribute( property, {
-						top: value,
-						right: value,
-						bottom: value,
-						left: value
-					}, tableCell );
-				} else {
-					writer.setAttribute( property, value, tableCell );
-				}
+			editor.execute( propertyNameToCommandName( propertyName ), {
+				value: newValue,
+				batch: this._batch
 			} );
 		} );
 	}
 
 	/**
-	 * In this method the editor data -> UI binding is created.
+	 * In this method the editor data -> UI binding is happening.
 	 *
-	 * When executed, this method obtains the value attribute values of the cell the selection is anchored
-	 * to and passed them to the {@link #view}. This way, the UI stays up–to–date with the editor data.
+	 * When executed, this method obtains selected cell property values from various table commands
+	 * and passes them to the {@link #view}.
+	 *
+	 * This way, the UI stays up–to–date with the editor data.
 	 *
 	 * @private
 	 */
-	_fillViewFormFromSelectedCell() {
+	_fillViewFormFromCommandValues() {
 		const editor = this.editor;
-		const model = editor.model;
-		const document = model.document;
-		const selection = document.selection;
-		const firstPosition = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', firstPosition );
+		const data = {};
 
-		const borderWidth = unifyQuadDirectionPropertyValue( tableCell.getAttribute( 'borderWidth' ) ) || '';
-		const borderColor = unifyQuadDirectionPropertyValue( tableCell.getAttribute( 'borderColor' ) ) || '';
-		const borderStyle = unifyQuadDirectionPropertyValue( tableCell.getAttribute( 'borderStyle' ) ) || DEFAULT_BORDER_STYLE;
-		const padding = unifyQuadDirectionPropertyValue( tableCell.getAttribute( 'padding' ) ) || '';
-		const backgroundColor = tableCell.getAttribute( 'backgroundColor' ) || '';
-		const horizontalAlignment = tableCell.getAttribute( 'horizontalAlignment' ) || DEFAULT_HORIZONTAL_ALIGNMENT;
-		const verticalAlignment = tableCell.getAttribute( 'verticalAlignment' ) || DEFAULT_VERTICAL_ALIGNMENT;
+		for ( const propertyName of CELL_PROPERTIES ) {
+			let value = editor.commands.get( propertyNameToCommandName( propertyName ) ).value;
 
-		this.view.set( {
-			borderWidth,
-			borderColor,
-			borderStyle,
-			padding,
-			backgroundColor,
-			horizontalAlignment,
-			verticalAlignment
-		} );
+			if ( !value ) {
+				if ( propertyName === 'borderStyle' ) {
+					value = DEFAULT_BORDER_STYLE;
+				} else if ( propertyName === 'horizontalAlignment' ) {
+					value = DEFAULT_HORIZONTAL_ALIGNMENT;
+				} else if ( propertyName === 'verticalAlignment' ) {
+					value = DEFAULT_VERTICAL_ALIGNMENT;
+				} else {
+					value = '';
+				}
+			}
+
+			data[ propertyName ] = value;
+		}
+
+		this.view.set( data );
 	}
 
 	/**
@@ -257,7 +247,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		this._batch = editor.model.createBatch();
 
 		// Update the view with the model values.
-		this._fillViewFormFromSelectedCell();
+		this._fillViewFormFromCommandValues();
 
 		// Basic a11y.
 		this.view.focus();
@@ -316,15 +306,11 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 }
 
-function unifyQuadDirectionPropertyValue( value ) {
-	if ( !value ) {
-		return;
-	}
-
-	// Unify to one value. If different values are set default to top (or right, etc).
-	for ( const prop in value ) {
-		if ( value[ prop ] && value[ prop ] !== 'none' ) {
-			return value[ prop ];
-		}
-	}
+// Translates view's properties into command names.
+//
+//		'borderWidth' -> 'tableCellBorderWidth'
+//
+// @param {String} propertyName
+function propertyNameToCommandName( propertyName ) {
+	return `tableCell${ propertyName[ 0 ].toUpperCase() }${ propertyName.slice( 1 ) }`;
 }

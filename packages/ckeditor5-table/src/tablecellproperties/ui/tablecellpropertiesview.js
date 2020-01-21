@@ -99,37 +99,37 @@ export default class TableCellPropertiesView extends View {
 			 * The value of the cell border width style.
 			 *
 			 * @observable
-			 * @default null
+			 * @default ''
 			 * @member #borderWidth
 			 */
-			borderWidth: null,
+			borderWidth: '',
 
 			/**
 			 * The value of the cell border color style.
 			 *
 			 * @observable
-			 * @default null
+			 * @default ''
 			 * @member #borderColor
 			 */
-			borderColor: null,
+			borderColor: '',
 
 			/**
 			 * The value of the cell padding style.
 			 *
 			 * @observable
-			 * @default null
+			 * @default ''
 			 * @member #padding
 			 */
-			padding: null,
+			padding: '',
 
 			/**
 			 * The value of the cell background color style.
 			 *
 			 * @observable
-			 * @default null
+			 * @default ''
 			 * @member #backgroundColor
 			 */
-			backgroundColor: null,
+			backgroundColor: '',
 
 			/**
 			 * The value of the horizontal text alignment style.
