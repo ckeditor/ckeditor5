@@ -9,7 +9,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { assertEqualMarkup, expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
@@ -83,16 +83,6 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 			setModelData( editor.model, '<paragraph>[]foo bar baz qux</paragraph>' );
 			addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ) );
-		} );
-
-		it( 'should throw if non-existing command is being enabled', () => {
-			expectToThrowCKEditorError(
-				() => {
-					plugin.enableCommand( 'foo' );
-				},
-				/^restricted-editing-command-not-found/,
-				editor
-			);
 		} );
 
 		it( 'should enable the command globally', () => {

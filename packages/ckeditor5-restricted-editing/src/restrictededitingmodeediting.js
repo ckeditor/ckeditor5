@@ -16,7 +16,6 @@ import {
 	upcastHighlightToMarker
 } from './restrictededitingmode/converters';
 import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
 
@@ -103,15 +102,6 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	enableCommand( commandName ) {
 		const command = this.editor.commands.get( commandName );
-
-		if ( !command ) {
-			/**
-			 * Trying to enable command that does not exist.
-			 *
-			 * @error restricted-editing-command-not-found
-			 */
-			throw new CKEditorError( 'restricted-editing-command-not-found: Trying to enable command that does not exist.', this );
-		}
 
 		command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 
