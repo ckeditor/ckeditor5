@@ -44,10 +44,10 @@ describe( 'TableCellPropertiesView', () => {
 		it( 'should define the public data interface (observable properties)', () => {
 			expect( view ).to.include( {
 				borderStyle: 'none',
-				borderWidth: null,
-				borderColor: null,
-				padding: null,
-				backgroundColor: null,
+				borderWidth: '',
+				borderColor: '',
+				padding: '',
+				backgroundColor: '',
 				horizontalAlignment: 'left',
 				verticalAlignment: 'middle'
 			} );

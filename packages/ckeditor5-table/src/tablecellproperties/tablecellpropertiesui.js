@@ -75,13 +75,10 @@ export default class TableCellPropertiesUI extends Plugin {
 		 * The batch used to undo all changes made by the form (which are live, as the user types)
 		 * when "Cancel" was pressed. Each time the view is shown, a new batch is created.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:engine/model/batch~Batch}
 		 */
-		this._batch = null;
-
-		// Make the form dynamic, i.e. create bindings between view fields and the model.
-		this._startRespondingToChangesInView();
+		this._undoStepBatch = null;
 
 		editor.ui.componentFactory.add( 'tableCellProperties', locale => {
 			const view = new ButtonView( locale );
@@ -129,17 +126,17 @@ export default class TableCellPropertiesUI extends Plugin {
 		} );
 
 		this.listenTo( view, 'cancel', () => {
-			editor.execute( 'undo', this._batch );
+			editor.execute( 'undo', this._undoStepBatch );
 			this._hideView();
 		} );
 
-		// Close the balloon on Esc key press when the **form has focus**.
+		// Close the balloon on Esc key press.
 		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideView();
 			cancel();
 		} );
 
-		// Reposition the balloon or hide the form if an image widget is no longer selected.
+		// Reposition the balloon or hide the form if a table cell is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
 			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
 				this._hideView();
@@ -156,22 +153,11 @@ export default class TableCellPropertiesUI extends Plugin {
 			callback: () => this._hideView()
 		} );
 
-		return view;
-	}
-
-	/**
-	 * In this method the UI -> editor data binding is registered.
-	 *
-	 * Registers a listener that updates the editor data when any observable property of
-	 * the {@link #view} has changed. This makes the view live, which means the changes are
-	 * visible in the editing as soon as the user types or changes fields' values.
-	 *
-	 * @private
-	 */
-	_startRespondingToChangesInView() {
-		const editor = this.editor;
-
-		this.view.on( 'change', ( evt, propertyName, newValue ) => {
+		// Create the "UI -> editor data" binding.
+		// This listener updates the editor data (via table commands) when any observable
+		// property of the view has changed. This makes the view live, which means the changes are
+		// visible in the editing as soon as the user types or changes fields' values.
+		view.on( 'change', ( evt, propertyName, newValue ) => {
 			// Not all observable properties of the #view must be related to the cell editing.
 			// For instance, they can belong to some internal logic.
 			if ( !CELL_PROPERTIES.includes( propertyName ) ) {
@@ -180,13 +166,15 @@ export default class TableCellPropertiesUI extends Plugin {
 
 			editor.execute( propertyNameToCommandName( propertyName ), {
 				value: newValue,
-				batch: this._batch
+				batch: this._undoStepBatch
 			} );
 		} );
+
+		return view;
 	}
 
 	/**
-	 * In this method the editor data -> UI binding is happening.
+	 * In this method the "editor data -> UI" binding is happening.
 	 *
 	 * When executed, this method obtains selected cell property values from various table commands
 	 * and passes them to the {@link #view}.
@@ -223,28 +211,22 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * Shows the {@link #view} in the {@link #_balloon}.
 	 *
-	 * **Note**: Each time a view is shown, the new {@link #_batch} is created that contains
+	 * **Note**: Each time a view is shown, the new {@link #_undoStepBatch} is created that contains
 	 * all changes made to the document when the view is visible, allowing a single undo step
 	 * for all of them.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_showView() {
-		if ( this._isViewVisible ) {
-			return;
-		}
-
 		const editor = this.editor;
 
-		if ( !this._isViewInBalloon ) {
-			this._balloon.add( {
-				view: this.view,
-				position: getBalloonCellPositionData( editor )
-			} );
-		}
+		this._balloon.add( {
+			view: this.view,
+			position: getBalloonCellPositionData( editor )
+		} );
 
 		// Create a new batch. Clicking "Cancel" will undo this batch.
-		this._batch = editor.model.createBatch();
+		this._undoStepBatch = editor.model.createBatch();
 
 		// Update the view with the model values.
 		this._fillViewFormFromCommandValues();
@@ -256,7 +238,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * Removes the {@link #view} from the {@link #_balloon}.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_hideView() {
 		if ( !this._isViewInBalloon ) {
@@ -266,23 +248,16 @@ export default class TableCellPropertiesUI extends Plugin {
 		const editor = this.editor;
 
 		this.stopListening( editor.ui, 'update' );
-		this.stopListening( this._balloon, 'change:visibleView' );
 
-		// Make sure the focus always gets back to the editable _before_ removing the focused properties view.
-		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-		editor.editing.view.focus();
+		// Blur any input element before removing it from DOM to prevent issues in some browsers.
+		// See https://github.com/ckeditor/ckeditor5/issues/1501.
+		this.view.saveButtonView.focus();
 
-		if ( this._isViewInBalloon ) {
-			// Blur any input element before removing it from DOM to prevent issues in some browsers.
-			// See https://github.com/ckeditor/ckeditor5/issues/1501.
-			this.view.saveButtonView.focus();
+		this._balloon.remove( this.view );
 
-			this._balloon.remove( this.view );
-
-			// Because the form has an input which has focus, the focus must be brought back
-			// to the editor. Otherwise, it would be lost.
-			this.editor.editing.view.focus();
-		}
+		// Make sure the focus is not lost in the process by putting it directly
+		// into the editing view.
+		this.editor.editing.view.focus();
 	}
 
 	/**
