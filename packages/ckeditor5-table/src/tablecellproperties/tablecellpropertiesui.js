@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecellpropertiesui
+ * @module table/tablecellproperties/tablecellpropertiesui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

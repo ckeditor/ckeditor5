@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/ui/tablecellpropertiesview
+ * @module table/tablecellproperties/ui/tablecellpropertiesview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
