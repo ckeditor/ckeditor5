@@ -37,11 +37,10 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-const buttons = document.querySelectorAll( '#test-controls button' );
-const fileNames = Array.from( buttons ).map( button => button.getAttribute( 'data-file-name' ) );
-
-preloadData( fileNames.map( name => `_utils/${ name }.txt` ) )
+preloadData()
 	.then( fixtures => {
+		const buttons = document.querySelectorAll( '#test-controls button' );
+
 		for ( const button of buttons ) {
 			button.addEventListener( 'click', function() {
 				const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
@@ -52,12 +51,18 @@ preloadData( fileNames.map( name => `_utils/${ name }.txt` ) )
 		}
 	} );
 
-function preloadData( urls ) {
-	// @todo: simplify it - inline literals instead of looping over arrays.
-	return Promise.all( urls.map( url => window.fetch( url ).then( resp => resp.text() ) ) )
+function preloadData() {
+	return Promise.all( [ getFileContents( 'small' ), getFileContents( 'medium' ), getFileContents( 'large' ) ] )
 		.then( responses => {
-			return Object.fromEntries(
-				Array.from( responses.keys() ).map( index => [ fileNames[ index ], responses[ index ] ] )
-			);
+			return {
+				small: responses[ 0 ],
+				medium: responses[ 1 ],
+				large: responses[ 2 ]
+			};
 		} );
+
+	function getFileContents( fileName ) {
+		return window.fetch( `_utils/${ fileName }.txt` )
+			.then( resp => resp.text() );
+	}
 }
