@@ -8,29 +8,29 @@ import normalizeHtml from '../../tests/_utils/normalizehtml';
 describe( 'utils', () => {
 	describe( 'normalizeHtml', () => {
 		it( 'should sort attributes', () => {
-			const actual = '<a style="border:1px" class="" href="file://"></a>';
-			const expected = '<a class="" href="file://" style="border:1px"></a>';
+			const actual = '<a style="padding:1px" class="" href="file://"></a>';
+			const expected = '<a class="" href="file://" style="padding:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should normalize styles', () => {
-			const actual = '<a style="border:1px"></a>';
-			const expected = '<a style="border:1px"></a>';
+			const actual = '<a style="padding:1px"></a>';
+			const expected = '<a style="padding:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should lowercase attributes', () => {
-			const actual = '<A CLASS="" HREF="file://" STYLE="border:1px"></A>';
-			const expected = '<a class="" href="file://" style="border:1px"></a>';
+			const actual = '<A CLASS="" HREF="file://" STYLE="padding:1px"></A>';
+			const expected = '<a class="" href="file://" style="padding:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should trim whitespace', () => {
-			const actual = '<a class="  " href="file://"      style="border:  1px"></a>';
-			const expected = '<a class="" href="file://" style="border:1px"></a>';
+			const actual = '<a class="  " href="file://"      style="padding:  1px"></a>';
+			const expected = '<a class="" href="file://" style="padding:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
