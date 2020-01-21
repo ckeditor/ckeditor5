@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,9 +15,7 @@
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 const commonOptions = {
 	cwd: process.cwd(),
-	packages: 'packages',
-	// `newVersion` is mostly used for testing purposes. It allows generating changelog that contains the same version for all packages.
-	newVersion: process.argv[ 2 ] || null
+	packages: 'packages'
 };
 const editorBuildsGlob = '@ckeditor/ckeditor5-build-*';
 
@@ -32,7 +30,7 @@ const optionsForBuilds = Object.assign( {}, commonOptions, {
 
 Promise.resolve()
 	.then( () => devEnv.generateChangelogForSubRepositories( optionsForDependencies ) )
-	.then( () => devEnv.generateSummaryChangelog( optionsForBuilds ) )
+	.then( response => devEnv.generateSummaryChangelog( Object.assign( optionsForBuilds, response ) ) )
 	.then( () => {
 		console.log( 'Done!' );
 	} )

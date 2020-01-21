@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -17,7 +17,7 @@ Full command to update the entire project:
 git pull && mrgit sync && mrgit exec 'node ../../scripts/bump-year.js' && node scripts/bump-year.js
 
 And after reviewing the changes:
-mrgit commit -m "Internal: Bumped the year. [skip ci]" && mrgit push git commit -am "Internal: Bumped the year." && git push
+mrgit commit -m "Internal: Bumped the year. [skip ci]" && mrgit push && git commit -am "Internal: Bumped the year." && git push
 
 */
 
