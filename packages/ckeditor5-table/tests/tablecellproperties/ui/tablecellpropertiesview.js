@@ -5,7 +5,7 @@
 
 /* globals Event */
 
-import TableCellPropertiesView from '../../src/ui/tablecellpropertiesview';
+import TableCellPropertiesView from '../../../src/tablecellproperties/ui/tablecellpropertiesview';
 import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';

@@ -14,9 +14,9 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableCellPropertiesUI from '@ckeditor/ckeditor5-table/src/tablecellpropertiesui';
-import TableCellPropertiesUIView from '@ckeditor/ckeditor5-table/src/ui/tablecellpropertiesview';
+import Table from '../../src/table';
+import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
+import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 // import View from '@ckeditor/ckeditor5-ui/src/view';
 
