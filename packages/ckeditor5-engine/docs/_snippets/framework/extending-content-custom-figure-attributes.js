@@ -3,14 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals ClassicEditor, Plugin,  console, window, document */
+/* globals ClassicEditor,  console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 /**
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
-class CustomFigureAttributes extends Plugin {
+class CustomFigureAttributes {
+	/**
+	 * Plugin's constructor - receives editor instance on creation.
+	 */
+	constructor( editor ) {
+		// Save reference to the editor.
+		this.editor = editor;
+	}
+
 	/**
 	 * Setups conversion and extends table & image features schema.
 	 *

@@ -8,10 +8,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Font from '@ckeditor/ckeditor5-font/src/font';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 ClassicEditor.builtinPlugins.push( Code );
 ClassicEditor.builtinPlugins.push( Font );
 
 window.ClassicEditor = ClassicEditor;
-window.Plugin = Plugin;

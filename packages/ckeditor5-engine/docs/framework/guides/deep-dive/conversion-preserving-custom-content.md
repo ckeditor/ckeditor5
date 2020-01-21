@@ -287,12 +287,17 @@ To overcome this limitation it is sufficient to write a custom converter that ad
 The sample below is extensible. To add your own attributes to preserve, just add another `setupCustomAttributeConversion()` call with desired names.
 
 ```js
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 /**
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
-class CustomFigureAttributes extends Plugin {
+class CustomFigureAttributes {
+	/**
+	 * Plugin's constructor - receives editor instance on creation.
+	 */
+	constructor( editor ) {
+		// Save reference to the editor.
+		this.editor = editor;
+}
 
 	/**
 	 * Setups conversion and extends table & image features schema.
