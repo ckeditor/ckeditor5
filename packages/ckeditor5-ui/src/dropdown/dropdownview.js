@@ -183,11 +183,9 @@ export default class DropdownView extends View {
 					'ck',
 					'ck-dropdown',
 					bind.to( 'class' ),
-					bind.if( 'hasError', 'ck-error' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				],
 				id: bind.to( 'id' ),
-				'aria-invalid': bind.if( 'hasError', true ),
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 
