@@ -96,7 +96,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
-	 * Enables command with given `commandName` in restricted editing mode.
+	 * Makes the given command always enabled in the restricted editing mode (regardless
+	 * of selection location).
 	 *
 	 * @param {String} commandName Name of the command to enable.
 	 */
