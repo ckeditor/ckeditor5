@@ -99,6 +99,9 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 * Makes the given command always enabled in the restricted editing mode (regardless
 	 * of selection location).
 	 *
+	 * To enable some commands in non-restricted areas of the content use
+	 * {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands} configuration option.
+	 *
 	 * @param {String} commandName Name of the command to enable.
 	 */
 	enableCommand( commandName ) {

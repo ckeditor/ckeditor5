@@ -82,6 +82,9 @@ export default class RestrictedEditingMode extends Plugin {
  *			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ]
  *		};
  *
+ * To make a command always enabled (also outside non-restricted areas) use
+ * {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand} method.
+ *
  * @member {Array.<String>} module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands
  */
 
