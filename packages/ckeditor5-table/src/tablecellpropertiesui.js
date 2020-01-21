@@ -64,6 +64,13 @@ export default class TableCellPropertiesUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		/**
+		 * The properties form view displayed inside the balloon.
+		 *
+		 * @member {module:table/ui/tablecellpropertiesview~TableCellPropertiesView}
+		 */
+		this.view = this._createPropertiesView();
+
+		/**
 		 * The batch used to undo all changes made by the form (which are live, as the user types)
 		 * when "Cancel" was pressed. Each time the view is shown, a new batch is created.
 		 *
@@ -71,9 +78,6 @@ export default class TableCellPropertiesUI extends Plugin {
 		 * @member {module:engine/model/batch~Batch}
 		 */
 		this._batch = null;
-
-		// Create the view that displays the properties form.
-		this._createPropertiesView();
 
 		// Make the form dynamic, i.e. create bindings between view fields and the model.
 		this._startRespondingToChangesInView();
@@ -113,30 +117,23 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	_createPropertiesView() {
 		const editor = this.editor;
-		const view = editor.editing.view;
-		const viewDocument = view.document;
-
-		/**
-		 * The properties form view displayed inside the balloon.
-		 *
-		 * @member {module:table/ui/tablecellpropertiesview~TableCellPropertiesView}
-		 */
-		this.view = new TableCellPropertiesView( editor.locale );
+		const viewDocument = editor.editing.view.document;
+		const view = new TableCellPropertiesView( editor.locale );
 
 		// Render the view so its #element is available for the clickOutsideHandler.
-		this.view.render();
+		view.render();
 
-		this.listenTo( this.view, 'submit', () => {
+		this.listenTo( view, 'submit', () => {
 			this._hideView();
 		} );
 
-		this.listenTo( this.view, 'cancel', () => {
+		this.listenTo( view, 'cancel', () => {
 			editor.execute( 'undo', this._batch );
 			this._hideView();
 		} );
 
 		// Close the balloon on Esc key press when the **form has focus**.
-		this.view.keystrokes.set( 'Esc', ( data, cancel ) => {
+		view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideView();
 			cancel();
 		} );
@@ -152,11 +149,13 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
-			emitter: this.view,
+			emitter: view,
 			activator: () => this._isViewInBalloon,
 			contextElements: [ this._balloon.view.element ],
 			callback: () => this._hideView()
 		} );
+
+		return view;
 	}
 
 	/**
