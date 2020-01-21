@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,9 +10,9 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+
 import TableProperties from '../../src/tableproperties';
 import TableCellProperties from '../../src/tablecellproperties';
-import TableColumnRowProperties from '../../src/tablecolumnrowproperties';
 
 const sourceElement = document.querySelector( '#editor' );
 const clonedSource = sourceElement.cloneNode( true );
@@ -21,11 +21,7 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
-		plugins: [
-			ArticlePluginSet, Alignment, Indent, IndentBlock,
-
-			TableProperties, TableColumnRowProperties, TableCellProperties
-		],
+		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
