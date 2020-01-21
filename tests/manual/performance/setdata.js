@@ -28,17 +28,7 @@ ClassicEditor
 			'mediaEmbed',
 			'undo',
 			'redo'
-		],
-		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
-		}
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
