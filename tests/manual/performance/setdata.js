@@ -52,9 +52,6 @@ const fileNames = Array.from( buttons ).map( button => button.getAttribute( 'dat
 
 preloadData( fileNames.map( name => `_utils/${ name }.txt` ) )
 	.then( fixtures => {
-		console.log( 'fixtures' );
-		console.log( fixtures );
-
 		for ( const button of buttons ) {
 			button.addEventListener( 'click', function() {
 				const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
