@@ -270,6 +270,10 @@ export default class UpcastWriter {
 	 *			position: 'fixed'
 	 *		} );
 	 *
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
+	 *
 	 * @see module:engine/view/element~Element#_setStyle
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
@@ -287,6 +291,10 @@ export default class UpcastWriter {
 	 *
 	 *		writer.removeStyle( element, 'color' );  // Removes 'color' style.
 	 *		writer.removeStyle( element, [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @see module:engine/view/element~Element#_removeStyle
 	 * @param {Array.<String>|String} property Style property name or names to be removed.

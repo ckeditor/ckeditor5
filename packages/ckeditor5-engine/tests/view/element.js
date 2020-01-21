@@ -9,8 +9,6 @@ import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 
-import encodedImage from './_utils/encodedimage.txt';
-
 describe( 'Element', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
@@ -68,17 +66,18 @@ describe( 'Element', () => {
 			expect( el._classes.has( 'three' ) ).to.be.true;
 		} );
 
-		it( 'should move style attribute to style map', () => {
+		it( 'should move style attribute to style proxy', () => {
 			const el = new Element( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
 
 			expect( el._attrs.has( 'style' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
+
 			expect( el._styles.has( 'one' ) ).to.be.true;
-			expect( el._styles.get( 'one' ) ).to.equal( 'style1' );
+			expect( el._styles.getAsString( 'one' ) ).to.equal( 'style1' );
 			expect( el._styles.has( 'two' ) ).to.be.true;
-			expect( el._styles.get( 'two' ) ).to.equal( 'style2' );
+			expect( el._styles.getAsString( 'two' ) ).to.equal( 'style2' );
 			expect( el._styles.has( 'three' ) ).to.be.true;
-			expect( el._styles.get( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+			expect( el._styles.getAsString( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
 		} );
 	} );
 
@@ -200,9 +199,9 @@ describe( 'Element', () => {
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
 			expect( clone._styles.has( 'color' ) ).to.be.true;
-			expect( clone._styles.get( 'color' ) ).to.equal( 'red' );
+			expect( clone._styles.getAsString( 'color' ) ).to.equal( 'red' );
 			expect( clone._styles.has( 'font-size' ) ).to.be.true;
-			expect( clone._styles.get( 'font-size' ) ).to.equal( '12px' );
+			expect( clone._styles.getAsString( 'font-size' ) ).to.equal( '12px' );
 		} );
 
 		it( 'should clone custom properties', () => {
@@ -517,12 +516,12 @@ describe( 'Element', () => {
 			it( 'should replace all styles', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'top', '10px' );
-				el._setAttribute( 'style', 'border:none' );
+				el._setAttribute( 'style', 'margin-top:2em;' );
 
 				expect( el.hasStyle( 'color' ) ).to.be.false;
 				expect( el.hasStyle( 'top' ) ).to.be.false;
-				expect( el.hasStyle( 'border' ) ).to.be.true;
-				expect( el.getStyle( 'border' ) ).to.equal( 'none' );
+				expect( el.hasStyle( 'margin-top' ) ).to.be.true;
+				expect( el.getStyle( 'margin-top' ) ).to.equal( '2em' );
 			} );
 		} );
 
@@ -571,7 +570,7 @@ describe( 'Element', () => {
 				el._setStyle( 'font-weight', 'bold' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
-					[ 'class', 'abc xyz' ], [ 'style', 'width:20px;font-weight:bold;' ]
+					[ 'class', 'abc xyz' ], [ 'style', 'font-weight:bold;width:20px;' ]
 				] );
 			} );
 		} );
@@ -799,8 +798,7 @@ describe( 'Element', () => {
 			it( 'should set element style', () => {
 				el._setStyle( 'color', 'red' );
 
-				expect( el._styles.has( 'color' ) ).to.be.true;
-				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
+				expect( el._styles._styles.color ).to.equal( 'red' );
 			} );
 
 			it( 'should fire change event with attributes type', done => {
@@ -818,10 +816,8 @@ describe( 'Element', () => {
 					position: 'fixed'
 				} );
 
-				expect( el._styles.has( 'color' ) ).to.be.true;
-				expect( el._styles.has( 'position' ) ).to.be.true;
-				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
-				expect( el._styles.get( 'position' ) ).to.equal( 'fixed' );
+				expect( el._styles._styles.color ).to.equal( 'red' );
+				expect( el._styles._styles.position ).to.equal( 'fixed' );
 			} );
 		} );
 
@@ -829,11 +825,23 @@ describe( 'Element', () => {
 			it( 'should get style', () => {
 				el._setStyle( {
 					color: 'red',
-					border: '1px solid red'
+					'margin-top': '1px'
 				} );
 
 				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( el.getStyle( 'border' ) ).to.equal( '1px solid red' );
+				expect( el.getStyle( 'margin-top' ) ).to.equal( '1px' );
+			} );
+		} );
+
+		describe( 'getNormalizedStyle', () => {
+			it( 'should get normalized style', () => {
+				el._setStyle( {
+					color: 'red',
+					'margin-top': '1px'
+				} );
+
+				expect( el.getNormalizedStyle( 'color' ) ).to.equal( 'red' );
+				expect( el.getNormalizedStyle( 'margin-top' ) ).to.equal( '1px' );
 			} );
 		} );
 
@@ -905,68 +913,6 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 				expect( el.hasStyle( 'margin-top' ) ).to.be.false;
 				expect( el.hasStyle( 'color' ) ).to.be.true;
-			} );
-		} );
-
-		describe( 'styles parsing edge cases and incorrect styles', () => {
-			it( 'should not crash and not add any styles if styles attribute was empty', () => {
-				const element = new Element( 'div', { style: '' } );
-				const styles = Array.from( element.getStyleNames() );
-
-				expect( styles ).to.deep.equal( [] );
-			} );
-
-			it( 'should be able to parse big styles definition', () => {
-				expect( () => {
-					// eslint-disable-next-line no-new
-					new Element( 'div', { style: `background-image:url('data:image/jpeg;base64,${ encodedImage }')` } );
-				} ).not.to.throw();
-			} );
-
-			it( 'should work with both types of quotes and ignore values inside quotes', () => {
-				let element;
-
-				element = new Element( 'div', { style: 'background-image:url("im;color:g.jpg")' } );
-				expect( element.getStyle( 'background-image' ) ).to.equal( 'url("im;color:g.jpg")' );
-
-				element = new Element( 'div', { style: 'background-image:url(\'im;color:g.jpg\')' } );
-				expect( element.getStyle( 'background-image' ) ).to.equal( 'url(\'im;color:g.jpg\')' );
-			} );
-
-			it( 'should not be confused by whitespaces', () => {
-				const element = new Element( 'div', { style: '\ncolor:\n red ' } );
-
-				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-			} );
-
-			it( 'should not be confused by duplicated semicolon', () => {
-				const element = new Element( 'div', { style: 'color: red;; display: inline' } );
-
-				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
-			} );
-
-			it( 'should not throw when value is missing', () => {
-				const element = new Element( 'div', { style: 'color:; display: inline' } );
-
-				expect( element.getStyle( 'color' ) ).to.equal( '' );
-				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
-			} );
-
-			it( 'should not throw when colon is duplicated', () => {
-				const element = new Element( 'div', { style: 'color:: red; display: inline' } );
-
-				// The result makes no sense, but here we just check that the algorithm doesn't crash.
-				expect( element.getStyle( 'color' ) ).to.equal( ': red' );
-				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
-			} );
-
-			it( 'should not throw when random stuff passed', () => {
-				const element = new Element( 'div', { style: 'color: red;:; ;;" ":  display: inline; \'aaa;:' } );
-
-				// The result makes no sense, but here we just check that the algorithm doesn't crash.
-				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( element.getStyle( 'display' ) ).to.be.undefined;
 			} );
 		} );
 	} );
@@ -1069,10 +1015,10 @@ describe( 'Element', () => {
 
 		it( 'should return styles in sorted order', () => {
 			const el = new Element( 'foo', {
-				style: 'border: 1px solid red; background-color: red'
+				style: 'margin-top: 2em; background-color: red'
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;border:1px solid red"' );
+			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;margin-top:2em;"' );
 		} );
 
 		it( 'should return attributes in sorted order', () => {
@@ -1095,7 +1041,7 @@ describe( 'Element', () => {
 			el._addClass( [ 'three', 'two', 'one' ] );
 
 			expect( el.getIdentity() ).to.equal(
-				'baz class="one,three,two" style="border-radius:10px;text-align:center" bar="two" foo="one"'
+				'baz class="one,three,two" style="border-radius:10px;text-align:center;" bar="two" foo="one"'
 			);
 		} );
 	} );

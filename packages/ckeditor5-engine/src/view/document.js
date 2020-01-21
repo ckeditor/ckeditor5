@@ -11,6 +11,7 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import StylesMap from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -158,6 +159,22 @@ export default class Document {
 	destroy() {
 		this.roots.map( root => root.destroy() );
 		this.stopListening();
+	}
+
+	/**
+	 * Adds a style processor normalization rules.
+	 *
+	 * The available style processors:
+	 *
+	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
+	 * * border: {@link module:engine/view/styles/border~addBorderRules}
+	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
+	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
+	 *
+	 * @param {Function} callback
+	 */
+	addStyleProcessorRules( callback ) {
+		callback( StylesMap._styleProcessor );
 	}
 
 	/**
