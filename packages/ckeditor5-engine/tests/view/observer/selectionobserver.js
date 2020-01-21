@@ -20,7 +20,7 @@ describe( 'SelectionObserver', () => {
 	beforeEach( done => {
 		domDocument = document;
 		domRoot = domDocument.createElement( 'div' );
-		domRoot.innerHTML = '<div contenteditable="true"></div><div contenteditable="true" id="additional"></div><p>X</p>';
+		domRoot.innerHTML = '<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>';
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
 
@@ -138,9 +138,10 @@ describe( 'SelectionObserver', () => {
 		}, 70 );
 
 		const domSelection = domDocument.getSelection();
-		const domX = domRoot.childNodes[ 2 ].childNodes[ 0 ];
+		const editable = domRoot.childNodes[ 1 ];
+		editable.focus();
 
-		domSelection.collapse( domX, 0 );
+		domSelection.collapse( editable, 0 );
 	} );
 
 	it( 'should not enter infinite loop', () => {
