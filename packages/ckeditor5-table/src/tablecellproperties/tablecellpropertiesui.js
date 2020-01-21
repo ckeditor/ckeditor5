@@ -9,13 +9,13 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { getTableWidgetAncestor } from './utils';
+import { getTableWidgetAncestor } from '../utils';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
-import tableCellProperties from './../theme/icons/table-cell-properties.svg';
-import { repositionContextualBalloon, getBalloonCellPositionData } from './ui/utils';
-import { findAncestor } from './commands/utils';
+import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
+import { repositionContextualBalloon, getBalloonCellPositionData } from '../ui/utils';
+import { findAncestor } from '../commands/utils';
 
 const DEFAULT_BORDER_STYLE = 'none';
 const DEFAULT_HORIZONTAL_ALIGNMENT = 'left';
