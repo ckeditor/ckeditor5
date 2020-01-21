@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -324,6 +324,10 @@ export default class DowncastWriter {
 	 *			position: 'fixed'
 	 *		}, element );
 	 *
+	 * **Note**: The passed style can be normalized if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
+	 *
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
 	 * @param {module:engine/view/element~Element} element Element to set styles on.
@@ -339,8 +343,12 @@ export default class DowncastWriter {
 	/**
 	 * Removes specified style from the element.
 	 *
-	 *		writer.removeStyle( 'color', element );  // Removes 'color' style.
+	 *		writer.removeStyle( 'color', element ); // Removes 'color' style.
 	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * **Note**: This method can work with normalized style names if
+	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @param {Array.<String>|String} property
 	 * @param {module:engine/view/element~Element} element

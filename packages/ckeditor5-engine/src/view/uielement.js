@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -122,6 +122,10 @@ export default class UIElement extends Element {
 	 *
 	 *			return domElement;
 	 *		};
+	 *
+	 * If changes in your UI element should trigger some editor UI update you should call
+	 * the {@link module:core/editor/editorui~EditorUI#update `editor.ui.update()`} method
+	 * after rendering your UI element.
 	 *
 	 * @param {Document} domDocument
 	 * @returns {HTMLElement}

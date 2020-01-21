@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -204,7 +204,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
 	 *		} );
 	 *
-	 * *Note:* Downcasting to a style property requires providing `value` as an object:
+	 * **Note**: Downcasting to a style property requires providing `value` as an object:
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'lineHeight',

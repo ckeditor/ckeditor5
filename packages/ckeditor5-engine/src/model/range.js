@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -387,7 +387,6 @@ export default class Range {
 	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @method getItems
 	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 * @returns {Iterable.<module:engine/model/item~Item>}
 	 */

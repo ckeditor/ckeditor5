@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -172,6 +172,8 @@ export default class Model {
 				return callback( this._currentWriter );
 			}
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -224,6 +226,8 @@ export default class Model {
 				this._runPendingChanges();
 			}
 		} catch ( err ) {
+			// @if CK_DEBUG // throw err;
+			/* istanbul ignore next */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
