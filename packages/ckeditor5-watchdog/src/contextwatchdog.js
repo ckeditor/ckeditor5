@@ -89,7 +89,11 @@ export default class ContextWatchdog extends Watchdog {
 
 					this._watchdogs.set( itemName, watchdog );
 
-					await watchdog.create( itemConfig.sourceElementOrData, itemConfig.config );
+					const editorConfig = watchdog._cloneConfig( itemConfig.config );
+
+					editorConfig.context = this._context;
+
+					await watchdog.create( itemConfig.sourceElementOrData, editorConfig );
 				} else {
 					throw new Error( `Not supported item type: '${ itemConfig.type }'.` );
 				}
@@ -112,7 +116,7 @@ export default class ContextWatchdog extends Watchdog {
 				this._watchdogs.delete( itemName );
 
 				if ( !watchdog ) {
-					throw new Error( 'Watchdog with the given name was not added: ' + itemName );
+					throw new Error( `There is no watchdog named: '${ itemName }'.` );
 				}
 
 				await watchdog.destroy();
@@ -166,15 +170,14 @@ export default class ContextWatchdog extends Watchdog {
 
 			await Promise.all(
 				Array.from( this._watchdogs.values() )
-					.map( watchdog => this._setupWatchdog( watchdog ) )
+					.map( async watchdog => {
+						watchdog.updateContext( this._context );
+						await watchdog.create();
+					} )
 			);
 
 			this.state = 'ready';
 		}, isInternal );
-	}
-
-	async _setupWatchdog( watchdog ) {
-		watchdog.updateContext( this._context );
 	}
 
 	async _destroy( isInternal = false ) {
@@ -261,7 +264,7 @@ class ActionQueue {
 		}
 	}
 
-	async clear() {
+	clear() {
 		this._queuedActions = [];
 	}
 }

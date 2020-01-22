@@ -119,7 +119,10 @@ export default class EditorWatchdog extends Watchdog {
 	 * @param {Function} destructor
 	 */
 
-	/** @param {Context} */
+	/**
+	 * @protected
+	 * @param {Context}
+	 */
 	updateContext( context ) {
 		this._config.context = context;
 	}
@@ -185,8 +188,6 @@ export default class EditorWatchdog extends Watchdog {
 		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 		// when an error occurs in one of these editors, the watchdog will restart all of them.
 		this._config = this._cloneConfig( config );
-
-		// console.log( this._config.context.toString() );
 
 		const editor = await this._creator( elementOrData, this._config );
 
@@ -289,7 +290,7 @@ export default class EditorWatchdog extends Watchdog {
 			}
 
 			if ( key === 'context' ) {
-				return context;
+				return value;
 			}
 		} );
 	}
