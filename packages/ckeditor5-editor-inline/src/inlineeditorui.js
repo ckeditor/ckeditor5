@@ -11,7 +11,7 @@ import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
 
 /**
  * The inline editor UI class.
@@ -144,11 +144,6 @@ export default class InlineEditorUI extends EditorUI {
 					target: editableElement,
 					positions: view.panelPositions
 				} );
-
-				// Set toolbar's max-width only once.
-				if ( toolbar.element.style.maxWidth === '' ) {
-					this._setToolbarMaxWidth( new Rect( editableElement ).width );
-				}
 			}
 		} );
 
@@ -160,6 +155,13 @@ export default class InlineEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar
 		} );
+
+		// Set toolbar's max-width on the initialization and update it on the editable resize.
+		const widthObserver = getResizeObserver( ( [ entry ] ) => {
+			this._setToolbarMaxWidth( entry.contentRect.width );
+		} );
+
+		widthObserver.observe( editableElement );
 	}
 
 	/**
@@ -195,6 +197,6 @@ export default class InlineEditorUI extends EditorUI {
 		const view = this.view;
 		const toolbar = view.toolbar;
 
-		toolbar.element.style.maxWidth = `${ width }px`;
+		toolbar.maxWidth = width;
 	}
 }

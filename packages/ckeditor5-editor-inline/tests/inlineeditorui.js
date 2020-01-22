@@ -121,24 +121,19 @@ describe( 'InlineEditorUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'toolbar max-width is set on editor.ui#update only once when editable element is in the DOM', () => {
-				const spy = sinon.spy( editor.ui, '_setToolbarMaxWidth' );
-				testUtils.sinon.stub( viewElement, 'getBoundingClientRect' ).returns( { width: 100 } );
+			// TODO: HELP?
+			it( 'toolbar max-width is set to the value of width of the editable element', () => {
+				document.body.appendChild( viewElement );
 
-				viewElement.ownerDocument.body.append( viewElement );
-				view.panel.show();
+				viewElement.style.width = '400px';
 
-				expect( view.toolbar.element.style.maxWidth ).to.be.equal( '' );
+				expect( viewElement.ownerDocument.body.contains( viewElement ) ).to.be.true;
+				expect( view.toolbar.element.ownerDocument.body.contains( view.toolbar.element ) ).to.be.true;
+				expect( view.toolbar.element.style.maxWidth ).to.be.equal( '400px' );
 
-				editor.ui.fire( 'update' );
+				document.body.removeChild( viewElement );
 
-				expect( view.toolbar.element.style.maxWidth ).to.be.equal( '100px' );
-
-				editor.ui.fire( 'update' );
-
-				sinon.assert.calledOnce( spy );
-
-				viewElement.remove();
+				expect( viewElement ).to.not.exist;
 			} );
 
 			it( 'toolbar should group items by default', () => {
