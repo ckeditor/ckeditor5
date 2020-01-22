@@ -22,6 +22,7 @@ import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmode
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;
@@ -60,6 +61,36 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect(
 				editor.commands.get( 'goToNextRestrictedEditingException' )
 			).to.be.instanceOf( RestrictedEditingModeNavigationCommand );
+		} );
+	} );
+
+	describe( 'enableCommand()', () => {
+		let plugin, command;
+
+		class FakeCommand extends Command {
+			refresh() {
+				this.isEnabled = true;
+			}
+		}
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing ] } );
+			model = editor.model;
+
+			plugin = editor.plugins.get( RestrictedEditingModeEditing );
+			command = new FakeCommand( editor );
+			editor.commands.add( 'fakeCommand', command );
+
+			setModelData( editor.model, '<paragraph>[]foo bar baz qux</paragraph>' );
+			addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ) );
+		} );
+
+		it( 'should enable the command globally', () => {
+			expect( command.isEnabled ).to.be.false;
+
+			plugin.enableCommand( 'fakeCommand' );
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
 
