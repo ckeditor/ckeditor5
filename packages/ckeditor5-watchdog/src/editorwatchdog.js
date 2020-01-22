@@ -10,7 +10,7 @@
 /* globals console */
 
 import { throttle, cloneDeepWith, isElement } from 'lodash-es';
-import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
+import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog from './watchdog';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 

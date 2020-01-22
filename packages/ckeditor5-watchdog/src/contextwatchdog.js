@@ -11,7 +11,8 @@
 
 import Watchdog from './watchdog';
 import EditorWatchdog from './editorwatchdog';
-import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
+import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
+import getSubNodes from './utils/getsubnodes';
 
 export default class ContextWatchdog extends Watchdog {
 	/**
@@ -21,12 +22,34 @@ export default class ContextWatchdog extends Watchdog {
 		super( config );
 
 		/**
+		 * @protected
 		 * @type {Map.<string,EditorWatchdog>}
 		 */
 		this._watchdogs = new Map();
 
-		/** @type {Context|null} */
+		/**
+		 * @private
+		 * @type {Context|null}
+		 */
 		this._context = null;
+
+		/**
+		 * @private
+		 * @type {Set.<*>|undefined}
+		 */
+		this._contextProps;
+
+		/**
+		 * @private
+		 * @type {ActionQueue}
+		 */
+		this._actionQueue = new ActionQueue();
+
+		/**
+		 * @private
+		 * @type {Object}
+		 */
+		this._contextConfig = contextConfig;
 
 		/**
 		 * The context configuration.
@@ -34,10 +57,6 @@ export default class ContextWatchdog extends Watchdog {
 		 * @private
 		 * @member {Object|undefined} #_config
 		 */
-
-		this._actionQueue = new ActionQueue();
-
-		this._contextConfig = contextConfig;
 	}
 
 	/**
@@ -136,7 +155,10 @@ export default class ContextWatchdog extends Watchdog {
 	 */
 	async _create( isInternal = false ) {
 		await this._actionQueue.enqueue( async () => {
+			this._startErrorHandling();
+
 			this._context = await this._creator( this._contextConfig );
+			this._contextProps = getSubNodes( this._context );
 
 			await Promise.all(
 				Array.from( this._watchdogs.values() )
@@ -149,9 +171,6 @@ export default class ContextWatchdog extends Watchdog {
 
 	async _setupWatchdog( watchdog ) {
 		watchdog.updateContext( this._context );
-
-		// TODO
-		await watchdog.create();
 	}
 
 	async _destroy( isInternal = false ) {
@@ -161,6 +180,7 @@ export default class ContextWatchdog extends Watchdog {
 			const context = this._context;
 
 			this._context = null;
+			this._contextProps = new Set();
 
 			await Promise.all(
 				Array.from( this._watchdogs.values() )
@@ -173,9 +193,9 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	_isErrorComingFromThisInstance( error ) {
-		// TODO
-
-		return areConnectedThroughProperties( this._context, error.context );
+		// Return true only if the error comes directly from the context.
+		// Ignore cases when the error comes from editors.
+		return areConnectedThroughProperties( this._contextProps, error.context );
 	}
 
 	static for( Context, watchdogConfig ) {

@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, setTimeout, window */
 
 import ContextWatchdog from '../src/contextwatchdog';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Context from '@ckeditor/ckeditor5-core/src/context';
 import sinon from 'sinon';
 import { expect } from 'chai';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ContextWatchdog', () => {
 	let element1, element2;
-	const contextOptions = {};
 	let mainWatchdog;
 
 	beforeEach( () => {
@@ -32,7 +32,7 @@ describe( 'ContextWatchdog', () => {
 	} );
 
 	it.skip( 'case: editor, contextItem', async () => {
-		mainWatchdog = ContextWatchdog.for( Context, contextOptions );
+		mainWatchdog = ContextWatchdog.for( Context, {} );
 
 		mainWatchdog.add( {
 			editor1: {
@@ -52,9 +52,9 @@ describe( 'ContextWatchdog', () => {
 		await mainWatchdog.destroy();
 	} );
 
-	describe( 'case: no editors and contextItems', () => {
+	describe( 'for no items added', () => {
 		it( 'should create only context', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, contextOptions );
+			mainWatchdog = ContextWatchdog.for( Context, {} );
 
 			await mainWatchdog.waitForReady();
 
@@ -64,7 +64,7 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should have proper states', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, contextOptions );
+			mainWatchdog = ContextWatchdog.for( Context, {} );
 
 			expect( mainWatchdog.state ).to.equal( 'initializing' );
 
@@ -76,11 +76,37 @@ describe( 'ContextWatchdog', () => {
 
 			expect( mainWatchdog.state ).to.equal( 'destroyed' );
 		} );
+
+		describe( 'in case of error handling', () => {
+			it( 'should restart the `Context`', async () => {
+				mainWatchdog = ContextWatchdog.for( Context, {} );
+				const errorSpy = sinon.spy();
+
+				await mainWatchdog.waitForReady();
+
+				const oldContext = mainWatchdog.context;
+
+				const originalErrorHandler = window.onerror;
+				window.onerror = sinon.spy();
+
+				mainWatchdog.on( 'restart', errorSpy );
+
+				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( errorSpy );
+
+				expect( mainWatchdog.context ).to.not.equal( oldContext );
+
+				window.onerror = originalErrorHandler;
+			} );
+		} );
 	} );
 
-	describe( 'case: multiple editors', () => {
+	describe( 'for multiple editors', () => {
 		it( 'should allow adding multiple items without waiting', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, contextOptions );
+			mainWatchdog = ContextWatchdog.for( Context, {} );
 
 			mainWatchdog.add( {
 				editor1: {
@@ -106,7 +132,7 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should allow adding and removing items without waiting', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, contextOptions );
+			mainWatchdog = ContextWatchdog.for( Context, {} );
 
 			mainWatchdog.add( {
 				editor1: {
@@ -140,10 +166,47 @@ describe( 'ContextWatchdog', () => {
 
 			await mainWatchdog.destroy();
 		} );
+
+		describe( 'in case of error handling', () => {
+			it( 'should restart the whole structure of editors if an error happens inside the `Context`', async () => {
+				mainWatchdog = ContextWatchdog.for( Context, {} );
+				mainWatchdog.add( {
+					editor1: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					}
+				} );
+
+				await mainWatchdog.waitForReady();
+
+				const oldContext = mainWatchdog.context;
+				const restartSpy = sinon.spy();
+				const originalErrorHandler = window.onerror;
+
+				window.onerror = sinon.spy();
+
+				mainWatchdog.on( 'error', () => {
+					window.onerror = originalErrorHandler;
+				} );
+				mainWatchdog.on( 'restart', restartSpy );
+
+				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( mainWatchdog.context ).to.not.equal( oldContext );
+
+				window.onerror = originalErrorHandler;
+			} );
+		} );
 	} );
 
 	it( 'case: recreating watchdog', async () => {
-		mainWatchdog = ContextWatchdog.for( Context, contextOptions );
+		mainWatchdog = ContextWatchdog.for( Context, {} );
 
 		await mainWatchdog.destroy();
 		let err;
@@ -165,3 +228,11 @@ describe( 'ContextWatchdog', () => {
 		expect( err.message ).to.match( /Cannot add items do destroyed watchdog\./ );
 	} );
 } );
+
+function throwCKEditorError( name, context ) {
+	throw new CKEditorError( name, context );
+}
+
+function waitCycle() {
+	return new Promise( res => setTimeout( res ) );
+}
