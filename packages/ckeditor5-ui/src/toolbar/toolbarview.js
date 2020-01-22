@@ -21,6 +21,9 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -60,6 +63,14 @@ export default class ToolbarView extends View {
 		 * @member {String} #ariaLabel
 		 */
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
+
+		/**
+		 * Maximum width of the toolbar element.
+		 *
+		 * @default 'auto'
+		 * @member {String} #maxWidth
+		 */
+		this.set( 'maxWidth', 'auto' );
 
 		/**
 		 * A collection of toolbar items (buttons, dropdowns, etc.).
@@ -171,7 +182,10 @@ export default class ToolbarView extends View {
 					bind.to( 'class' )
 				],
 				role: 'toolbar',
-				'aria-label': bind.to( 'ariaLabel' )
+				'aria-label': bind.to( 'ariaLabel' ),
+				style: {
+					maxWidth: bind.to( 'maxWidth', maxWidth => toPx( maxWidth ) )
+				}
 			},
 
 			children: this.children,
