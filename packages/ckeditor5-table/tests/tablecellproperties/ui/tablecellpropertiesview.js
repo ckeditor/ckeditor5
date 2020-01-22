@@ -88,7 +88,7 @@ describe( 'TableCellPropertiesView', () => {
 
 					expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 					expect( row.classList.contains( 'ck-table-cell-properties-form__border-row' ) ).to.be.true;
-					expect( row.childNodes[ 0 ] ).to.equal( view._borderRowLabel.element );
+					expect( row.childNodes[ 0 ].textContent ).to.equal( 'Border' );
 					expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
 					expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
 					expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
@@ -295,7 +295,7 @@ describe( 'TableCellPropertiesView', () => {
 
 					expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 					expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).to.be.true;
-					expect( row.childNodes[ 0 ] ).to.equal( view._alignmentLabel.element );
+					expect( row.childNodes[ 0 ].textContent ).to.equal( 'Text alignment' );
 					expect( row.childNodes[ 1 ] ).to.equal( view.horizontalAlignmentToolbar.element );
 					expect( row.childNodes[ 2 ] ).to.equal( view.verticalAlignmentToolbar.element );
 				} );
