@@ -42,6 +42,14 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
+		 * TODO
+		 *
+		 * @abstract
+		 * @protected
+		 * @method #_restart
+		 */
+
+		/**
 		 * Specifies the state of the editor handled by the watchdog. The state can be one of the following values:
 		 *
 		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready,
@@ -176,7 +184,7 @@ export default class Watchdog {
 			this.state = 'crashed';
 
 			if ( this._shouldRestart() ) {
-				this.restart();
+				this._restart();
 			} else {
 				this.state = 'crashedPermanently';
 			}

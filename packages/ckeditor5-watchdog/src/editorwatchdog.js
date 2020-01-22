@@ -9,8 +9,6 @@
 
 /* globals console */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import { throttle, cloneDeepWith, isElement } from 'lodash-es';
 import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
 import Watchdog from './watchdog';
@@ -121,15 +119,7 @@ export default class EditorWatchdog extends Watchdog {
 	 * @param {Function} destructor
 	 */
 
-	setInitializationArgs( elementOrData, config ) {
-		this._elementOrData = elementOrData;
-
-		this._config = cloneDeepWith( config, value => {
-			// Leave DOM references.
-			return isElement( value ) ? value : undefined;
-		} );
-	}
-
+	/** @param {Context} */
 	updateContext( context ) {
 		this._config.context = context;
 	}
@@ -142,7 +132,7 @@ export default class EditorWatchdog extends Watchdog {
 	 * @fires restart
 	 * @returns {Promise}
 	 */
-	async restart() {
+	async _restart() {
 		this.state = 'initializing';
 
 		try {
@@ -194,10 +184,9 @@ export default class EditorWatchdog extends Watchdog {
 
 		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 		// when an error occurs in one of these editors, the watchdog will restart all of them.
-		this._config = cloneDeepWith( config, value => {
-			// Leave DOM references.
-			return isElement( value ) ? value : undefined;
-		} );
+		this._config = this._cloneConfig( config );
+
+		// console.log( this._config.context.toString() );
 
 		const editor = await this._creator( elementOrData, this._config );
 
@@ -229,11 +218,11 @@ export default class EditorWatchdog extends Watchdog {
 		// Save data if there is a remaining editor data change.
 		this._throttledSave.flush();
 
-		const pendingDestruction = this._destructor( this._editor );
+		const editor = this._editor;
 
 		this._editor = null;
 
-		await pendingDestruction;
+		await this._destructor( editor );
 	}
 
 	/**
@@ -292,6 +281,19 @@ export default class EditorWatchdog extends Watchdog {
 		return areConnectedThroughProperties( this._editor, error.context );
 	}
 
+	_cloneConfig( config ) {
+		return cloneDeepWith( config, ( value, key ) => {
+			// Leave DOM references.
+			if ( isElement( value ) ) {
+				return value;
+			}
+
+			if ( key === 'context' ) {
+				return context;
+			}
+		} );
+	}
+
 	/**
 	 * A shorthand method for creating an instance of the watchdog. For the full usage, see the
 	 * {@link ~Watchdog `Watchdog` class description}.
@@ -319,8 +321,6 @@ export default class EditorWatchdog extends Watchdog {
 	 * @event restart
 	 */
 }
-
-mix( Watchdog, ObservableMixin );
 
 /**
  * The watchdog plugin configuration.
