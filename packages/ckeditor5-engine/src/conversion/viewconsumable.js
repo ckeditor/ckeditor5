@@ -9,6 +9,7 @@
 
 import { isArray } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import StylesMap from '../view/stylesmap';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
@@ -507,6 +508,12 @@ class ViewElementConsumables {
 			}
 
 			consumables.set( name, true );
+
+			if ( type === 'styles' ) {
+				for ( const alsoName of StylesMap.getRelatedStyles( name ) ) {
+					consumables.set( alsoName, true );
+				}
+			}
 		}
 	}
 
@@ -568,6 +575,12 @@ class ViewElementConsumables {
 				this._consume( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
 			} else {
 				consumables.set( name, false );
+
+				if ( type == 'styles' ) {
+					for ( const toConsume of StylesMap.getRelatedStyles( name ) ) {
+						consumables.set( toConsume, false );
+					}
+				}
 			}
 		}
 	}
