@@ -37,17 +37,13 @@ export function repositionContextualBalloon( editor ) {
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonCellPositionData( editor ) {
-	const model = editor.model;
-	const document = model.document;
-	const selection = document.selection;
-	const editingView = editor.editing.view;
-	const firstPosition = selection.getFirstPosition();
+	const firstPosition = editor.model.document.selection.getFirstPosition();
 	const modelTableCell = findAncestor( 'tableCell', firstPosition );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return {
-		target: editingView.domConverter.viewToDom( viewTableCell ),
+		target: editor.editing.view.domConverter.viewToDom( viewTableCell ),
 		positions: [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,
