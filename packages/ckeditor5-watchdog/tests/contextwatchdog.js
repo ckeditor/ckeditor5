@@ -187,9 +187,6 @@ describe( 'ContextWatchdog', () => {
 
 				window.onerror = sinon.spy();
 
-				mainWatchdog.on( 'error', () => {
-					window.onerror = originalErrorHandler;
-				} );
 				mainWatchdog.on( 'restart', restartSpy );
 
 				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );

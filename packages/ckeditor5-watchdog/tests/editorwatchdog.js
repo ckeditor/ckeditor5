@@ -12,7 +12,12 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import sinon from 'sinon';
+import { expect } from 'chai';
 
+// The error handling testing with mocha & chai is quite broken and hard to test.
+// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+//
 describe( 'EditorWatchdog', () => {
 	let element;
 
@@ -321,7 +326,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 		} );
 
-		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -330,20 +335,20 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor.model.document ) );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor.model.document ) );
 
-						watchdog.destroy().then( res );
-					} );
+			await new Promise( res => {
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+
+					watchdog.destroy().then( res );
 				} );
 			} );
 		} );
 
-		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', () => {
+		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -352,30 +357,30 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo', {
-					foo: [ 1, 2, 3, {
-						bar: new Set( [
-							new Map( [
-								[ 'foo', 'bar' ],
-								[ 0, watchdog.editor ]
-							] )
-						] )
-					} ]
-				} ) );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
+			setTimeout( () => throwCKEditorError( 'foo', {
+				foo: [ 1, 2, 3, {
+					bar: new Set( [
+						new Map( /** @type any */( [
+							[ 'foo', 'bar' ],
+							[ 0, watchdog.editor ]
+						] ) )
+					] )
+				} ]
+			} ) );
 
-						watchdog.destroy().then( res );
-					} );
+			await new Promise( res => {
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+
+					watchdog.destroy().then( res );
 				} );
 			} );
 		} );
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
-			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', () => {
+			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -390,28 +395,26 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ) );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					setTimeout( () => {
-						expect( errorSpy.callCount ).to.equal( 4 );
-						expect( watchdog.crashes.length ).to.equal( 4 );
-						expect( restartSpy.callCount ).to.equal( 3 );
+			setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ) );
 
-						window.onerror = originalErrorHandler;
+			await waitCycle();
 
-						watchdog.destroy().then( res );
-					} );
-				} );
-			} );
+			expect( errorSpy.callCount ).to.equal( 4 );
+			expect( watchdog.crashes.length ).to.equal( 4 );
+			expect( restartSpy.callCount ).to.equal( 3 );
+
+			window.onerror = originalErrorHandler;
+
+			await watchdog.destroy();
 		} );
 
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
-			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', () => {
+			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', async () => {
 			const watchdog = new EditorWatchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -426,27 +429,26 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ) );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					setTimeout( () => {
-						expect( errorSpy.callCount ).to.equal( 3 );
-						expect( watchdog.crashes.length ).to.equal( 3 );
-						expect( restartSpy.callCount ).to.equal( 2 );
+			setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ) );
 
-						window.onerror = originalErrorHandler;
+			await waitCycle();
 
-						watchdog.destroy().then( res );
-					} );
-				} );
-			} );
+			expect( errorSpy.callCount ).to.equal( 3 );
+			expect( watchdog.crashes.length ).to.equal( 3 );
+			expect( restartSpy.callCount ).to.equal( 2 );
+
+			window.onerror = originalErrorHandler;
+
+			await watchdog.destroy();
 		} );
 
-		it( 'Watchdog should not crash permantently when average time between errors is longer than `minimumNonErrorTimePeriod`', () => {
+		it( 'Watchdog should not crash permanently when average time between errors' +
+		' is longer than `minimumNonErrorTimePeriod`', async () => {
 			const watchdog = new EditorWatchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -461,27 +463,27 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ), 5 );
-				setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ), 10 );
-				setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ), 15 );
-				setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ), 20 );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					setTimeout( () => {
-						expect( errorSpy.callCount ).to.equal( 4 );
-						expect( watchdog.crashes.length ).to.equal( 4 );
-						expect( restartSpy.callCount ).to.equal( 4 );
+			setTimeout( () => throwCKEditorError( 'foo1', watchdog.editor ), 5 );
+			setTimeout( () => throwCKEditorError( 'foo2', watchdog.editor ), 10 );
+			setTimeout( () => throwCKEditorError( 'foo3', watchdog.editor ), 15 );
+			setTimeout( () => throwCKEditorError( 'foo4', watchdog.editor ), 20 );
 
-						window.onerror = originalErrorHandler;
-
-						watchdog.destroy().then( res );
-					}, 20 );
-				} );
+			await new Promise( res => {
+				setTimeout( res, 20 );
 			} );
+
+			expect( errorSpy.callCount ).to.equal( 4 );
+			expect( watchdog.crashes.length ).to.equal( 4 );
+			expect( restartSpy.callCount ).to.equal( 4 );
+
+			window.onerror = originalErrorHandler;
+
+			await watchdog.destroy();
 		} );
 
-		it( 'Watchdog should warn if the CKEditorError missing its context', () => {
+		it( 'Watchdog should warn if the CKEditorError missing its context', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -493,27 +495,25 @@ describe( 'EditorWatchdog', () => {
 
 			sinon.stub( console, 'warn' );
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo' ) );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					setTimeout( () => {
-						window.onerror = originalErrorHandler;
+			setTimeout( () => throwCKEditorError( 'foo' ) );
 
-						expect( watchdog.crashes ).to.deep.equal( [] );
+			await waitCycle();
 
-						sinon.assert.calledWithExactly(
-							console.warn,
-							'The error is missing its context and Watchdog cannot restart the proper editor.'
-						);
+			window.onerror = originalErrorHandler;
 
-						watchdog.destroy().then( res );
-					} );
-				} );
-			} );
+			expect( watchdog.crashes ).to.deep.equal( [] );
+
+			sinon.assert.calledWithExactly(
+				console.warn,
+				'The error is missing its context and Watchdog cannot restart the proper editor.'
+			);
+
+			await watchdog.destroy();
 		} );
 
-		it( 'Watchdog should omit error if the CKEditorError context is equal to null', () => {
+		it( 'Watchdog should omit error if the CKEditorError context is equal to null', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -522,19 +522,17 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				setTimeout( () => throwCKEditorError( 'foo', null ) );
+			await watchdog.create( element );
 
-				return new Promise( res => {
-					setTimeout( () => {
-						window.onerror = originalErrorHandler;
+			setTimeout( () => throwCKEditorError( 'foo', null ) );
 
-						expect( watchdog.crashes ).to.deep.equal( [] );
+			await waitCycle();
 
-						watchdog.destroy().then( res );
-					} );
-				} );
-			} );
+			window.onerror = originalErrorHandler;
+
+			expect( watchdog.crashes ).to.deep.equal( [] );
+
+			await watchdog.destroy();
 		} );
 
 		it( 'editor should be restarted with the data before the crash #1', () => {
@@ -946,7 +944,7 @@ describe( 'EditorWatchdog', () => {
 				} );
 		} );
 
-		it( 'should reflect the state of the watchdog', () => {
+		it( 'should reflect the state of the watchdog', async () => {
 			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 
 			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -955,32 +953,28 @@ describe( 'EditorWatchdog', () => {
 
 			expect( watchdog.state ).to.equal( 'initializing' );
 
-			return watchdog.create( element ).then( () => {
-				orphanEditors.push( watchdog.editor );
-				expect( watchdog.state ).to.equal( 'ready' );
+			await watchdog.create( element );
 
-				return watchdog.create( element ).then( () => {
-					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
-					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
+			orphanEditors.push( watchdog.editor );
+			expect( watchdog.state ).to.equal( 'ready' );
 
-					return new Promise( res => {
-						setTimeout( () => {
-							window.onerror = originalErrorHandler;
+			await watchdog.create( element );
 
-							expect( watchdog.state ).to.equal( 'ready' );
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
 
-							watchdog.destroy().then( () => {
-								expect( watchdog.state ).to.equal( 'destroyed' );
+			await waitCycle();
 
-								res();
-							} );
-						} );
-					} );
-				} );
-			} );
+			window.onerror = originalErrorHandler;
+
+			expect( watchdog.state ).to.equal( 'ready' );
+
+			await watchdog.destroy();
+
+			expect( watchdog.state ).to.equal( 'destroyed' );
 		} );
 
-		it( 'should be observable', () => {
+		it( 'should be observable', async () => {
 			const watchdog = EditorWatchdog.for( ClassicTestEditor );
 			const states = [];
 
@@ -988,7 +982,6 @@ describe( 'EditorWatchdog', () => {
 				states.push( newValue );
 			} );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -1109,4 +1102,8 @@ function isUnhandledRejectionEventSupported() {
 
 		setTimeout( () => res( false ) );
 	} );
+}
+
+function waitCycle() {
+	return new Promise( res => setTimeout( res ) );
 }
