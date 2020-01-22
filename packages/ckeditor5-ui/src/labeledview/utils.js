@@ -28,7 +28,7 @@ import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
  *		const labeledInputView = new LabeledView( locale, createLabeledDropdown );
  *		console.log( labeledInputView.view ); // An input instance.
  *
- * @param {module:ui/input/labeledview~LabeledView} labeledView The instance of the labeled view.
+ * @param {module:ui/labeledview/labeledview~LabeledView} labeledView The instance of the labeled view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledview/labeledview~LabeledView#labelView labeled view's label} and the input.
  * @param {String} statusUid An UID string that allows DOM logical connection between the
