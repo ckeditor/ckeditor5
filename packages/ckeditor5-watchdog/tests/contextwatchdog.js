@@ -31,6 +31,29 @@ describe( 'ContextWatchdog', () => {
 		sinon.restore();
 	} );
 
+	it( 'should disable adding items once the Watchdog is destroyed', async () => {
+		mainWatchdog = ContextWatchdog.for( Context, {} );
+
+		await mainWatchdog.destroy();
+		let err;
+
+		try {
+			await mainWatchdog.add( {
+				editor2: {
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element1,
+					config: {}
+				},
+			} );
+		} catch ( _err ) {
+			err = _err;
+		}
+
+		expect( err ).to.be.instanceOf( Error );
+		expect( err.message ).to.match( /Cannot add items do destroyed watchdog\./ );
+	} );
+
 	it.skip( 'case: editor, contextItem', async () => {
 		mainWatchdog = ContextWatchdog.for( Context, {} );
 
@@ -75,6 +98,19 @@ describe( 'ContextWatchdog', () => {
 			await mainWatchdog.destroy();
 
 			expect( mainWatchdog.state ).to.equal( 'destroyed' );
+		} );
+
+		it( 'should set custom destructor if provided', async () => {
+			const mainWatchdog = new ContextWatchdog();
+			const customDestructor = sinon.spy( context => context.destroy() );
+
+			mainWatchdog.setCreator( config => Context.create( config ) );
+			mainWatchdog.setDestructor( customDestructor );
+			mainWatchdog._create();
+
+			await mainWatchdog.destroy();
+
+			sinon.assert.calledOnce( customDestructor );
 		} );
 
 		describe( 'in case of error handling', () => {
@@ -129,6 +165,70 @@ describe( 'ContextWatchdog', () => {
 			await mainWatchdog.waitForReady();
 
 			await mainWatchdog.destroy();
+		} );
+
+		it( 'should throw when multiple items with the same name are added', async () => {
+			mainWatchdog = ContextWatchdog.for( Context, {} );
+
+			mainWatchdog.add( {
+				editor1: {
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element1,
+					config: {}
+				},
+			} );
+
+			await mainWatchdog.waitForReady();
+
+			let err;
+			try {
+				await mainWatchdog.add( {
+					editor1: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					},
+				} );
+			} catch ( _err ) {
+				err = _err;
+			}
+
+			mainWatchdog._actionQueue.clear();
+
+			await mainWatchdog.destroy();
+
+			expect( err ).to.be.instanceOf( Error );
+			expect( err.message ).to.match( /Watchdog with the given name is already added: 'editor1'./ );
+		} );
+
+		it( 'should throw when the item is of not known type', async () => {
+			mainWatchdog = ContextWatchdog.for( Context, {} );
+
+			await mainWatchdog.waitForReady();
+
+			let err;
+			try {
+				await mainWatchdog.add( {
+					editor1: {
+						type: 'foo',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					},
+				} );
+			} catch ( _err ) {
+				mainWatchdog._stopErrorHandling();
+				err = _err;
+			}
+
+			mainWatchdog._actionQueue.clear();
+
+			await mainWatchdog.destroy();
+
+			expect( err ).to.be.instanceOf( Error );
+			expect( err.message ).to.match( /Not supported item type: 'foo'\./ );
 		} );
 
 		it( 'should allow adding and removing items without waiting', async () => {
@@ -200,29 +300,6 @@ describe( 'ContextWatchdog', () => {
 				window.onerror = originalErrorHandler;
 			} );
 		} );
-	} );
-
-	it( 'case: recreating watchdog', async () => {
-		mainWatchdog = ContextWatchdog.for( Context, {} );
-
-		await mainWatchdog.destroy();
-		let err;
-
-		try {
-			await mainWatchdog.add( {
-				editor2: {
-					type: 'editor',
-					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
-					sourceElementOrData: element1,
-					config: {}
-				},
-			} );
-		} catch ( _err ) {
-			err = _err;
-		}
-
-		expect( err ).to.be.instanceOf( Error );
-		expect( err.message ).to.match( /Cannot add items do destroyed watchdog\./ );
 	} );
 } );
 

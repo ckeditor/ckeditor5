@@ -75,6 +75,10 @@ export default class ContextWatchdog extends Watchdog {
 			await Promise.all( Object.entries( items ).map( async ( [ itemName, itemConfig ] ) => {
 				let watchdog;
 
+				if ( this._watchdogs.has( itemName ) ) {
+					throw new Error( `Watchdog with the given name is already added: '${ itemName }'.` );
+				}
+
 				if ( itemConfig.type === 'editor' ) {
 					watchdog = new EditorWatchdog();
 					watchdog.setCreator( itemConfig.creator );
@@ -87,7 +91,7 @@ export default class ContextWatchdog extends Watchdog {
 
 					await watchdog.create( itemConfig.sourceElementOrData, itemConfig.config );
 				} else {
-					throw new Error( 'Not supported editor type ' + itemConfig.type );
+					throw new Error( `Not supported item type: '${ itemConfig.type }'.` );
 				}
 			} ) );
 
@@ -255,5 +259,9 @@ class ActionQueue {
 				resolve();
 			}
 		}
+	}
+
+	async clear() {
+		this._queuedActions = [];
 	}
 }
