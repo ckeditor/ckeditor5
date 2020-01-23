@@ -7,7 +7,7 @@
  * @module engine/view/styles/margin
  */
 
-import { getPositionShorthandNormalizer, getTopRightBottomLeftValueReducer } from './utils';
+import { getPositionShorthandNormalizer, getBoxEdgesValueReducer } from './utils';
 
 /**
  * Adds a margin CSS styles processing rules.
@@ -35,7 +35,7 @@ export function addMarginRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'margin-bottom', value => ( { path: 'margin.bottom', value } ) );
 	stylesProcessor.setNormalizer( 'margin-left', value => ( { path: 'margin.left', value } ) );
 
-	stylesProcessor.setReducer( 'margin', getTopRightBottomLeftValueReducer( 'margin' ) );
+	stylesProcessor.setReducer( 'margin', getBoxEdgesValueReducer( 'margin' ) );
 
 	stylesProcessor.setStyleRelation( 'margin', [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] );
 }

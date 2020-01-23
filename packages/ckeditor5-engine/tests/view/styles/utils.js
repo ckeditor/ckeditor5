@@ -5,8 +5,8 @@
 
 import {
 	getShorthandValues,
-	getTopRightBottomLeftShorthandValue,
-	getTopRightBottomLeftValues,
+	getBoxEdgesShorthandValue,
+	getBoxEdgesValues,
 	isColor,
 	isLength,
 	isLineStyle
@@ -69,29 +69,29 @@ describe( 'Styles utils', () => {
 		} );
 	} );
 
-	describe( 'getTopRightBottomLeftShorthandValue()', () => {
+	describe( 'getBoxEdgesShorthandValue()', () => {
 		it( 'should output one value for same values', () => {
-			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
+			expect( getBoxEdgesShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should output two value for top == bottom and right == left', () => {
-			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
+			expect( getBoxEdgesShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should output three values if bottom is different then top', () => {
-			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
+			expect( getBoxEdgesShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
 				.to.equal( 'foo foo bar' );
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getTopRightBottomLeftShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
+			expect( getBoxEdgesShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
 				.to.equal( 'foo foo foo bar' );
 		} );
 	} );
 
-	describe( 'getTopRightBottomLeftValues()', () => {
+	describe( 'getBoxEdgesValues()', () => {
 		it( 'should parse empty string', () => {
-			expect( getTopRightBottomLeftValues( '' ) ).to.deep.equal( {
+			expect( getBoxEdgesValues( '' ) ).to.deep.equal( {
 				top: undefined,
 				right: undefined,
 				bottom: undefined,
@@ -100,7 +100,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse one value', () => {
-			expect( getTopRightBottomLeftValues( 'foo' ) ).to.deep.equal( {
+			expect( getBoxEdgesValues( 'foo' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -109,7 +109,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse one value', () => {
-			expect( getTopRightBottomLeftValues( 'foo' ) ).to.deep.equal( {
+			expect( getBoxEdgesValues( 'foo' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -118,7 +118,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse two value', () => {
-			expect( getTopRightBottomLeftValues( 'foo bar' ) ).to.deep.equal( {
+			expect( getBoxEdgesValues( 'foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'bar',
 				bottom: 'foo',
@@ -127,7 +127,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse three values', () => {
-			expect( getTopRightBottomLeftValues( 'foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxEdgesValues( 'foo foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'bar',
@@ -136,7 +136,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getTopRightBottomLeftValues( 'foo foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxEdgesValues( 'foo foo foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
