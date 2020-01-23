@@ -58,6 +58,22 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
 	writer.insert( tableCell, insertPosition );
 }
 
+/**
+ * Returns a string if all four values of box edges are equal.
+ *
+ * If string is passed it is treated as a single value (pass-through).
+ *
+ *		// returns 'foo':
+ *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
+ *		getSingleValue( 'foo' );
+ *
+ *		// Returns undefined:
+ *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
+ *		getSingleValue( { top: 'foo', right: 'foo' } );
+ *
+ * @param objectOrString
+ * @returns {module:engine/view/stylesmap~BoxEdges|String}
+ */
 export function getSingleValue( objectOrString ) {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
 		return objectOrString;
