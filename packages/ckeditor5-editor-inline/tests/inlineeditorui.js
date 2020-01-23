@@ -127,7 +127,7 @@ describe( 'InlineEditorUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'toolbar max-width is set to the value of width of the editable element, otherwise it can be wider then editor', done => {
+			it( 'should set inline toolbar max-width to the width of the editable element', done => {
 				document.body.appendChild( viewElement );
 
 				expect( document.body.contains( viewElement ) ).to.be.true;
@@ -143,10 +143,6 @@ describe( 'InlineEditorUI', () => {
 
 					done();
 				}, 100 );
-			} );
-
-			it( 'toolbar should group items by default', () => {
-				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
 			} );
 		} );
 
