@@ -183,7 +183,7 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'inline toolbar should group items by default', () => {
+		it( 'inline toolbar should not group items when shouldNotGroupWhenFull option is enabled', () => {
 			const editorElement = document.createElement( 'div' );
 			return InlineEditor.create( editorElement, {
 				toolbar: {
