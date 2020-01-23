@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, setTimeout */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -53,6 +53,12 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		describe( 'panel', () => {
+			afterEach( () => {
+				if ( document.body.contains( viewElement ) ) {
+					document.body.removeChild( viewElement );
+				}
+			} );
+
 			it( 'binds view.panel#isVisible to editor.ui#focusTracker', () => {
 				ui.focusTracker.isFocused = false;
 				expect( view.panel.isVisible ).to.be.false;
@@ -86,10 +92,10 @@ describe( 'InlineEditorUI', () => {
 			it( 'pin() is called on editor.ui#update when editable element is in the DOM', () => {
 				const spy = sinon.stub( view.panel, 'pin' );
 
-				viewElement.ownerDocument.body.append( viewElement );
+				document.body.appendChild( viewElement );
 				view.panel.show();
 
-				expect( viewElement.ownerDocument.body.contains( viewElement ) ).to.be.true;
+				expect( document.body.contains( viewElement ) ).to.be.true;
 
 				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
@@ -115,25 +121,28 @@ describe( 'InlineEditorUI', () => {
 
 				view.panel.show();
 
-				expect( !viewElement.ownerDocument.body.contains( viewElement ) ).to.be.true;
+				expect( document.body.contains( viewElement ) ).to.be.false;
 
 				editor.ui.fire( 'update' );
 				sinon.assert.notCalled( spy );
 			} );
 
-			// TODO: HELP?
-			it( 'toolbar max-width is set to the value of width of the editable element', () => {
+			it( 'toolbar max-width is set to the value of width of the editable element, otherwise it can be wider then editor', done => {
 				document.body.appendChild( viewElement );
+
+				expect( document.body.contains( viewElement ) ).to.be.true;
 
 				viewElement.style.width = '400px';
 
-				expect( viewElement.ownerDocument.body.contains( viewElement ) ).to.be.true;
-				expect( view.toolbar.element.ownerDocument.body.contains( view.toolbar.element ) ).to.be.true;
-				expect( view.toolbar.element.style.maxWidth ).to.be.equal( '400px' );
+				// Unfortunately we have to wait for async ResizeObserver execution.
+				// ResizeObserver which has been called after changing width of viewElement,
+				// needs 2x requestAnimationFrame or timeout to update a layout.
+				// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
+				setTimeout( () => {
+					expect( view.toolbar.maxWidth ).to.be.equal( '400px' );
 
-				document.body.removeChild( viewElement );
-
-				expect( viewElement ).to.not.exist;
+					done();
+				}, 100 );
 			} );
 
 			it( 'toolbar should group items by default', () => {
