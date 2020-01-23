@@ -35,6 +35,14 @@ import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand'
  * - horizontal and vertical alignment: `horizontalAlignment`, `verticalAlignment`
  * - cell width & height: `width` & `height`
  *
+ * It also registers commands used to manipulate the above attributes:
+ *
+ * - border: `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` commands
+ * - background color: `'tableCellBackgroundColor'`
+ * - cell padding: `'tableCellPadding'`
+ * - horizontal and vertical alignment: `'tableCellHorizontalAlignment'`, `'tableCellVerticalAlignment'`
+ * - width & height: `'tableCellWidth'` & `'tableCellHeight'`
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TableCellPropertiesEditing extends Plugin {

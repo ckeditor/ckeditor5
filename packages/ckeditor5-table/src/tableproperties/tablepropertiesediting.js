@@ -24,6 +24,20 @@ import TableAlignmentCommand from './commands/tablealignmentcommand';
 /**
  * The table properties editing feature.
  *
+ * Introduces table's model attributes and their conversion:
+ *
+ * - border: `borderStyle`, `borderColor` and `borderWidth`
+ * - background color: `backgroundColor`
+ * - horizontal alignment: `alignment`
+ * - width & height: `width` & `height`
+ *
+ * It also registers commands used to manipulate the above attributes:
+ *
+ * - border: `'tableBorderStyle'`, `'tableBorderColor'` and `'tableBorderWidth'` commands
+ * - background color: `'tableBackgroundColor'`
+ * - horizontal alignment: `'tableAlignment'`
+ * - width & height: `'tableWidth'` & `'tableHeight'`
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class TablePropertiesEditing extends Plugin {
