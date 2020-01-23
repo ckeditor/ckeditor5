@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { loadPerformanceData } from '../../_utils/utils';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -37,7 +38,7 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-preloadData()
+loadPerformanceData()
 	.then( fixtures => {
 		const buttons = document.querySelectorAll( '#test-controls button' );
 
@@ -50,19 +51,3 @@ preloadData()
 			button.disabled = false;
 		}
 	} );
-
-function preloadData() {
-	return Promise.all( [ getFileContents( 'small' ), getFileContents( 'medium' ), getFileContents( 'large' ) ] )
-		.then( responses => {
-			return {
-				small: responses[ 0 ],
-				medium: responses[ 1 ],
-				large: responses[ 2 ]
-			};
-		} );
-
-	function getFileContents( fileName ) {
-		return window.fetch( `_utils/${ fileName }.txt` )
-			.then( resp => resp.text() );
-	}
-}
