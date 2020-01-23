@@ -15,8 +15,8 @@ import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertie
  * The table cell properties feature.
  *
  * This is a "glue" plugin which loads the
- * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table editing feature} and
- * table UI feature.
+ * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table properties editing feature} and
+ * table cell properties UI feature.
  *
  * @extends module:core/plugin~Plugin
  */
