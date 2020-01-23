@@ -885,3 +885,21 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
  *
  * @typedef {Array.<String, String>} module:engine/view/stylesmap~PropertyDescriptor
  */
+
+/**
+ * An object describing box edges values.
+ *
+ *		const margin = {
+ *			top: '1px',
+ *			right: '3px',
+ *			bottom: '3px',
+ *			left: '7px'
+ *		}
+ *
+ * @typedef {Object} module:engine/view/stylesmap~BoxEdges
+ *
+ * @property {String} top Top edge value.
+ * @property {String} right Right edge value.
+ * @property {String} bottom Bottom edge value.
+ * @property {String} left Left edge value.
+ */
