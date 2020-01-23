@@ -15,6 +15,10 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
+import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 /**
  * The contextual toolbar.
@@ -125,6 +129,19 @@ export default class BalloonToolbar extends Plugin {
 				this.show();
 			}
 		} );
+
+		this.listenTo( editor, 'ready', () => {
+			const editableElement = this.editor.ui.view.editable.element;
+
+			// Set toolbar's max-width on the initialization and update it on the editable resize.
+			const widthObserver = getResizeObserver( ( [ entry ] ) => {
+				// In the balloon editor toolbar's max-width should be set to half of the editable's width.
+				// It's a safe value, because at the moment we don't re-calculate it when position of the selection changes.
+				this._setToolbarMaxWidth( entry.contentRect.width / 2 );
+			} );
+
+			widthObserver.observe( editableElement );
+		} );
 	}
 
 	/**
@@ -188,11 +205,6 @@ export default class BalloonToolbar extends Plugin {
 		this.listenTo( this.editor.ui, 'update', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
-
-		// Set toolbar's max-width to be half of the editable's width.
-		const maxToolbarWidth = new Rect( this.editor.editing.view.getDomRoot() ).width;
-
-		this._setToolbarMaxWidth( maxToolbarWidth / 2 );
 
 		// Add the toolbar to the common editor contextual balloon.
 		this._balloon.add( {
@@ -273,7 +285,7 @@ export default class BalloonToolbar extends Plugin {
 	 * @private
 	 */
 	_setToolbarMaxWidth( width ) {
-		this.toolbarView.element.style.maxWidth = `${ width }px`;
+		this.toolbarView.maxWidth = toPx( width );
 	}
 
 	/**
