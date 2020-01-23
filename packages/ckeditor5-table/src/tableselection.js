@@ -11,19 +11,20 @@ import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 // TODO: refactor to an Observer
-export default class TableSelection {
-	constructor() {
+export default class TableSelection extends Plugin {
+	constructor( editor ) {
+		super( editor );
+
 		this._isSelecting = false;
 		this._highlighted = new Set();
 	}
 
-	// OWN mouse events?
-	attach( editor, tableUtils ) {
-		// table selection observer...?
-		this.tableUtils = tableUtils;
-		this.editor = editor;
+	init() {
+		const editor = this.editor;
+		this.tableUtils = editor.plugins.get( 'TableUtils' );
 
 		const viewDocument = editor.editing.view.document;
 

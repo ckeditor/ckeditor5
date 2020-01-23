@@ -10,10 +10,11 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Table from '../../src/table';
 import TableToolbar from '../../src/tabletoolbar';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import TableSelection from '../../src/tableselection';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Table, TableToolbar ],
+		plugins: [ ArticlePluginSet, Table, TableToolbar, TableSelection ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],

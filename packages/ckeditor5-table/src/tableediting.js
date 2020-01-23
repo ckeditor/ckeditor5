@@ -36,7 +36,6 @@ import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph
 import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-post-fixer';
 
 import '../theme/tableediting.css';
-import TableSelection from './tableselection';
 
 /**
  * The table editing feature.
@@ -145,9 +144,6 @@ export default class TableEditing extends Plugin {
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
-
-		this.tableSelection = new TableSelection();
-		this.tableSelection.attach( editor, this.editor.plugins.get( TableUtils ) );
 	}
 
 	/**
