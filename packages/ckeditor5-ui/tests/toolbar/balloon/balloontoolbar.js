@@ -20,7 +20,7 @@ import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-u
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* global document, window, Event */
+/* global document, window, Event, setTimeout */
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
@@ -345,17 +345,24 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
-		it( 'should set balloon toolbar max-width to half of the editable width', () => {
-			const spy = sinon.spy( balloonToolbar, '_setToolbarMaxWidth' );
-			testUtils.sinon.stub( editingView.getDomRoot(), 'getBoundingClientRect' ).returns( { width: 100 } );
+		it( 'should set balloon toolbar max-width to half of the editable width, otherwise it can be wider then editor', done => {
+			const viewElement = editor.ui.view.editable.element;
 
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			setData( model, '<paragraph>b[ar]</paragraph>' );
 
-			balloonToolbar.show();
+			expect( document.body.contains( viewElement ) ).to.be.true;
 
-			sinon.assert.calledOnce( balloonAddSpy );
-			sinon.assert.calledOnce( spy );
-			expect( balloonToolbar.toolbarView.element.style.maxWidth ).to.be.equal( '50px' );
+			viewElement.style.width = '400px';
+
+			// Unfortunately we have to wait for async ResizeObserver execution.
+			// ResizeObserver which has been called after changing width of viewElement,
+			// needs 2x requestAnimationFrame or timeout to update a layout.
+			// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
+			setTimeout( () => {
+				expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( '200px' );
+
+				done();
+			}, 100 );
 		} );
 	} );
 
