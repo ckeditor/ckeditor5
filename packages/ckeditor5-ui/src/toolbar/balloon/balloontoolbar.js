@@ -49,6 +49,14 @@ export default class BalloonToolbar extends Plugin {
 		super( editor );
 
 		/**
+		 * A normalized `config.balloonToolbar` object.
+		 *
+		 * @type {Object}
+		 * @private
+		 */
+		this._balloonConfig = normalizeToolbarConfig( this.editor.config.get( 'balloonToolbar' ) );
+
+		/**
 		 * The toolbar view displayed in the balloon.
 		 *
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
@@ -130,18 +138,20 @@ export default class BalloonToolbar extends Plugin {
 			}
 		} );
 
-		this.listenTo( editor, 'ready', () => {
-			const editableElement = this.editor.ui.view.editable.element;
+		if ( !this._balloonConfig.shouldNotGroupWhenFull ) {
+			this.listenTo( editor, 'ready', () => {
+				const editableElement = editor.ui.view.editable.element;
 
-			// Set toolbar's max-width on the initialization and update it on the editable resize.
-			const widthObserver = getResizeObserver( ( [ entry ] ) => {
-				// In the balloon editor toolbar's max-width should be set to half of the editable's width.
-				// It's a safe value, because at the moment we don't re-calculate it when position of the selection changes.
-				this._setToolbarMaxWidth( entry.contentRect.width / 2 );
+				// Set toolbar's max-width on the initialization and update it on the editable resize.
+				const widthObserver = getResizeObserver( ( [ entry ] ) => {
+					// In the balloon editor toolbar's max-width should be set to half of the editable's width.
+					// It's a safe value, because at the moment we don't re-calculate it when position of the selection changes.
+					this._setToolbarMaxWidth( entry.contentRect.width / 2 );
+				} );
+
+				widthObserver.observe( editableElement );
 			} );
-
-			widthObserver.observe( editableElement );
-		} );
+		}
 	}
 
 	/**
@@ -151,10 +161,9 @@ export default class BalloonToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const config = normalizeToolbarConfig( this.editor.config.get( 'balloonToolbar' ) );
 		const factory = this.editor.ui.componentFactory;
 
-		this.toolbarView.fillFromConfig( config.items, factory );
+		this.toolbarView.fillFromConfig( this._balloonConfig.items, factory );
 	}
 
 	/**
@@ -164,7 +173,8 @@ export default class BalloonToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
-		const toolbarView = new ToolbarView( this.editor.locale, { shouldGroupWhenFull: true } );
+		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
+		const toolbarView = new ToolbarView( this.editor.locale, { shouldGroupWhenFull } );
 
 		toolbarView.extendTemplate( {
 			attributes: {
