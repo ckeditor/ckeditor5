@@ -18,6 +18,7 @@ import ModelElement from './element';
 import ModelRange from './range';
 import ModelPosition from './position';
 import ModelSelection from './selection';
+import OperationFactory from './operation/operationfactory';
 
 import insertContent from './utils/insertcontent';
 import deleteContent from './utils/deletecontent';
@@ -753,6 +754,18 @@ export default class Model {
 	 */
 	createBatch( type ) {
 		return new Batch( type );
+	}
+
+	/**
+	 * Creates an `Operation` instance from a JSON object with the operation data (e.g. taken from a parsed JSON string).
+	 *
+	 * This is an alias for {@link module:engine/model/operation/operationfactory~OperationFactory#fromJSON}.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @returns {module:engine/model/operation/operation~Operation}
+	 */
+	createOperationFromJSON( json ) {
+		return OperationFactory.fromJSON( json, this.document );
 	}
 
 	/**
