@@ -142,7 +142,7 @@ describe( 'InlineEditorUI', () => {
 					expect( view.toolbar.maxWidth ).to.be.equal( '400px' );
 
 					done();
-				}, 100 );
+				}, 500 );
 			} );
 		} );
 
