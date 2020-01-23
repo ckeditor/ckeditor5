@@ -280,5 +280,20 @@ describe( 'Context', () => {
 			sinon.assert.calledOnce( editorB.destroy );
 			sinon.assert.notCalled( editorC.destroy );
 		} );
+
+		it( 'should not crash when destroyed for the second time', async () => {
+			const context = await Context.create();
+
+			await VirtualTestEditor.create( { context } );
+			await context.destroy();
+			await context.destroy();
+		} );
+
+		it( 'should not crash when destroyed for the second time - editor own managed context', async () => {
+			const editor = await VirtualTestEditor.create();
+
+			await editor.destroy();
+			await editor.destroy();
+		} );
 	} );
 } );

@@ -198,7 +198,9 @@ export default class Context {
 	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context has been destroyed.
 	 */
 	_removeEditor( editor ) {
-		this.editors.remove( editor );
+		if ( this.editors.has( editor ) ) {
+			this.editors.remove( editor );
+		}
 
 		if ( this._contextOwner === editor ) {
 			return this.destroy();
