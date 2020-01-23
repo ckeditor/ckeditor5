@@ -120,14 +120,6 @@ export default class EditorWatchdog extends Watchdog {
 	 */
 
 	/**
-	 * @protected
-	 * @param {Context}
-	 */
-	updateContext( context ) {
-		this._config.context = context;
-	}
-
-	/**
 	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
 	 * the state to `initializing`.
 	 *
@@ -161,12 +153,13 @@ export default class EditorWatchdog extends Watchdog {
 	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
 	 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
 	 *
-	 * @param {HTMLElement|String|Object.<String|String>} elementOrData
+	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData]
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
+	 * @param {Object} [context]
 	 *
 	 * @returns {Promise}
 	 */
-	async create( elementOrData = this._elementOrData, config = this._config ) {
+	async create( elementOrData = this._elementOrData, config = this._config, context ) {
 		if ( !this._creator ) {
 			/**
 			 * The watchdog's editor creator is not defined. Define it by using
@@ -187,7 +180,9 @@ export default class EditorWatchdog extends Watchdog {
 
 		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 		// when an error occurs in one of these editors, the watchdog will restart all of them.
-		this._config = this._cloneConfig( config );
+		this._config = this._cloneConfig( config ) || {};
+
+		this._config.context = context;
 
 		const editor = await this._creator( elementOrData, this._config );
 
@@ -254,6 +249,14 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
+	 * @protected
+	 * @param {Set} props
+	 */
+	_setExcludedProperties( props ) {
+		this._excludedProps = props;
+	}
+
+	/**
 	 * Returns the editor data.
 	 *
 	 * @private
@@ -273,13 +276,11 @@ export default class EditorWatchdog extends Watchdog {
 	 * Traverses both structures to find out whether the error context is connected
 	 * with the current editor.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:utils/ckeditorerror~CKEditorError} error
 	 */
 	_isErrorComingFromThisInstance( error ) {
-		// TODO - remove context from the path.
-
-		return areConnectedThroughProperties( this._editor, error.context );
+		return areConnectedThroughProperties( this._editor, error.context, this._excludedProps );
 	}
 
 	_cloneConfig( config ) {

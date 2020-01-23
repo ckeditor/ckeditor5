@@ -35,9 +35,9 @@ export default class ContextWatchdog extends Watchdog {
 
 		/**
 		 * @private
-		 * @type {Set.<*>|undefined}
+		 * @type {Set.<*>}
 		 */
-		this._contextProps;
+		this._contextProps = new Set();
 
 		/**
 		 * @private
@@ -66,36 +66,46 @@ export default class ContextWatchdog extends Watchdog {
 		return this._context;
 	}
 
+	/**
+	 *
+	 * @param {String} name The watchdog name (the key under which the watchdog config was passed to the add() method).
+	 */
+	getWatchdog( name ) {
+		return this._watchdogs.get( name );
+	}
+
 	async add( items ) {
 		await this._actionQueue.enqueue( async () => {
 			if ( this.state === 'destroyed' ) {
 				throw new Error( 'Cannot add items do destroyed watchdog.' );
 			}
 
-			await Promise.all( Object.entries( items ).map( async ( [ itemName, itemConfig ] ) => {
+			if ( !this._context ) {
+				throw new Error( 'Context was not created yet. You should call the `ContextWatchdog#create()` method first.' );
+			}
+
+			await Promise.all( Object.entries( items ).map( async ( [ itemName, item ] ) => {
 				let watchdog;
 
 				if ( this._watchdogs.has( itemName ) ) {
 					throw new Error( `Watchdog with the given name is already added: '${ itemName }'.` );
 				}
 
-				if ( itemConfig.type === 'editor' ) {
+				if ( item.type === 'editor' ) {
+					// TODO - await EditorWatchdog.createFrom( item, context ) ?
 					watchdog = new EditorWatchdog();
-					watchdog.setCreator( itemConfig.creator );
+					watchdog.setCreator( item.creator );
+					watchdog._setExcludedProperties( this._contextProps );
 
-					if ( itemConfig.destructor ) {
-						watchdog.setDestructor( itemConfig.destructor );
+					if ( item.destructor ) {
+						watchdog.setDestructor( item.destructor );
 					}
 
 					this._watchdogs.set( itemName, watchdog );
 
-					const editorConfig = watchdog._cloneConfig( itemConfig.config );
-
-					editorConfig.context = this._context;
-
-					await watchdog.create( itemConfig.sourceElementOrData, editorConfig );
+					await watchdog.create( item.sourceElementOrData, item.config, this._context );
 				} else {
-					throw new Error( `Not supported item type: '${ itemConfig.type }'.` );
+					throw new Error( `Not supported item type: '${ item.type }'.` );
 				}
 			} ) );
 
@@ -125,12 +135,25 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * TODO
+	 * Waits for all previous actions.
 	 */
 	async waitForReady() {
 		await this._actionQueue.enqueue( () => { } );
 	}
 
+	/**
+	 * Creates the Context watchdog and all internal watchdogs.
+	 */
+	async create() {
+		await this._actionQueue.enqueue( async () => {
+			this._create( true );
+		} );
+	}
+
+	/**
+	 * Destroys the `ContextWatchdog` and all internal watchdogs. This method can't be undone.
+	 * Once the `ContextWatchdog` is destroyed new items can not be added.
+	 */
 	async destroy() {
 		await this._actionQueue.enqueue( async () => {
 			this.state = 'destroyed';
@@ -171,8 +194,8 @@ export default class ContextWatchdog extends Watchdog {
 			await Promise.all(
 				Array.from( this._watchdogs.values() )
 					.map( async watchdog => {
-						watchdog.updateContext( this._context );
-						await watchdog.create();
+						watchdog._setExcludedProperties( this._contextProps );
+						await watchdog.create( undefined, undefined, this._context );
 					} )
 			);
 
@@ -200,6 +223,12 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	_isErrorComingFromThisInstance( error ) {
+		for ( const watchdog of this._watchdogs.values() ) {
+			if ( watchdog._isErrorComingFromThisInstance( error ) ) {
+				return false;
+			}
+		}
+
 		// Return true only if the error comes directly from the context.
 		// Ignore cases when the error comes from editors.
 		return areConnectedThroughProperties( this._contextProps, error.context );
@@ -264,6 +293,11 @@ class ActionQueue {
 		}
 	}
 
+	/**
+	 * @protected
+	 *
+	 * Clears all queued actions (e.g. in case of an error).
+	 */
 	clear() {
 		this._queuedActions = [];
 	}

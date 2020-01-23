@@ -15,6 +15,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 describe( 'ContextWatchdog', () => {
 	let element1, element2;
 	let mainWatchdog;
+	let originalErrorHandler;
 
 	beforeEach( () => {
 		element1 = document.createElement( 'div' );
@@ -22,9 +23,14 @@ describe( 'ContextWatchdog', () => {
 
 		document.body.appendChild( element1 );
 		document.body.appendChild( element2 );
+
+		originalErrorHandler = window.onerror;
+		window.onerror = sinon.spy();
 	} );
 
 	afterEach( () => {
+		window.onerror = originalErrorHandler;
+
 		element1.remove();
 		element2.remove();
 
@@ -122,9 +128,6 @@ describe( 'ContextWatchdog', () => {
 
 				const oldContext = mainWatchdog.context;
 
-				const originalErrorHandler = window.onerror;
-				window.onerror = sinon.spy();
-
 				mainWatchdog.on( 'restart', errorSpy );
 
 				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );
@@ -134,8 +137,6 @@ describe( 'ContextWatchdog', () => {
 				sinon.assert.calledOnce( errorSpy );
 
 				expect( mainWatchdog.context ).to.not.equal( oldContext );
-
-				window.onerror = originalErrorHandler;
 			} );
 		} );
 	} );
@@ -308,6 +309,25 @@ describe( 'ContextWatchdog', () => {
 			await mainWatchdog.destroy();
 		} );
 
+		it( 'should not change the input items', async () => {
+			mainWatchdog = ContextWatchdog.for( Context, {} );
+
+			mainWatchdog.add( Object.freeze( {
+				editor1: {
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element1,
+					config: {}
+				}
+			} ) );
+
+			mainWatchdog._restart();
+
+			await mainWatchdog.waitForReady();
+
+			await mainWatchdog.destroy();
+		} );
+
 		describe( 'in case of error handling', () => {
 			it( 'should restart the whole structure of editors if an error happens inside the `Context`', async () => {
 				mainWatchdog = ContextWatchdog.for( Context, {} );
@@ -324,9 +344,6 @@ describe( 'ContextWatchdog', () => {
 
 				const oldContext = mainWatchdog.context;
 				const restartSpy = sinon.spy();
-				const originalErrorHandler = window.onerror;
-
-				window.onerror = sinon.spy();
 
 				mainWatchdog.on( 'restart', restartSpy );
 
@@ -339,12 +356,10 @@ describe( 'ContextWatchdog', () => {
 				expect( mainWatchdog._watchdogs.get( 'editor1' ).state ).to.equal( 'ready' );
 				expect( mainWatchdog.context ).to.not.equal( oldContext );
 
-				window.onerror = originalErrorHandler;
-
 				await mainWatchdog.destroy();
 			} );
 
-			it( 'should restart the editor if an error happens inside the editor', async () => {
+			it( 'should restart only the editor if an error happens inside the editor', async () => {
 				mainWatchdog = ContextWatchdog.for( Context, {} );
 				mainWatchdog.add( {
 					editor1: {
@@ -359,22 +374,78 @@ describe( 'ContextWatchdog', () => {
 
 				const oldContext = mainWatchdog.context;
 				const restartSpy = sinon.spy();
-				const originalErrorHandler = window.onerror;
 
-				window.onerror = sinon.spy();
+				const oldEditor = mainWatchdog.getWatchdog( 'editor1' ).editor;
 
 				mainWatchdog.on( 'restart', restartSpy );
 
-				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );
+				setTimeout( () => throwCKEditorError( 'foo', oldEditor ) );
 
 				await waitCycle();
 
-				window.onerror = originalErrorHandler;
+				sinon.assert.notCalled( restartSpy );
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( mainWatchdog.context ).to.equal( oldContext );
 
-				expect( mainWatchdog._watchdogs.get( 'editor1' ).state ).to.equal( 'ready' );
-				expect( mainWatchdog.context ).to.not.equal( oldContext );
+				expect( mainWatchdog.getWatchdog( 'editor1' ).editor ).to.not.equal( oldEditor );
+				expect( mainWatchdog.getWatchdog( 'editor1' ).state ).to.equal( 'ready' );
+
+				await mainWatchdog.destroy();
+			} );
+
+			it( 'should restart only the editor if an error happens inside one of the editors', async () => {
+				mainWatchdog = ContextWatchdog.for( Context, {} );
+
+				mainWatchdog.add( {
+					editor1: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					},
+					editor2: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					}
+				} );
+
+				await mainWatchdog.waitForReady();
+
+				const oldContext = mainWatchdog.context;
+
+				const editorWatchdog1 = mainWatchdog.getWatchdog( 'editor1' );
+				const editorWatchdog2 = mainWatchdog.getWatchdog( 'editor2' );
+
+				const oldEditor1 = editorWatchdog1.editor;
+				const oldEditor2 = editorWatchdog2.editor;
+
+				const mainWatchdogRestartSpy = sinon.spy();
+				const editorWatchdog1RestartSpy = sinon.spy();
+				const editorWatchdog2RestartSpy = sinon.spy();
+
+				mainWatchdog.on( 'restart', mainWatchdogRestartSpy );
+				editorWatchdog1.on( 'restart', editorWatchdog1RestartSpy );
+				editorWatchdog2.on( 'restart', editorWatchdog2RestartSpy );
+
+				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog1.editor ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( editorWatchdog1RestartSpy );
+
+				sinon.assert.notCalled( mainWatchdogRestartSpy );
+				sinon.assert.notCalled( editorWatchdog2RestartSpy );
+
+				expect( editorWatchdog1.state ).to.equal( 'ready' );
+				expect( editorWatchdog2.state ).to.equal( 'ready' );
+				expect( mainWatchdog.state ).to.equal( 'ready' );
+
+				expect( oldEditor1 ).to.not.equal( editorWatchdog1.editor );
+				expect( oldEditor2 ).to.equal( editorWatchdog2.editor );
+
+				expect( mainWatchdog.context ).to.equal( oldContext );
 
 				await mainWatchdog.destroy();
 			} );

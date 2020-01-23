@@ -15,13 +15,13 @@ import getSubNodes from './getsubnodes';
  * @param {Object|Array} obj1
  * @param {Object|Array} obj2
  */
-export default function areConnectedThroughProperties( obj1, obj2 ) {
+export default function areConnectedThroughProperties( obj1, obj2, excludedProperties = new Set() ) {
 	if ( obj1 === obj2 && isObject( obj1 ) ) {
 		return true;
 	}
 
-	const subNodes1 = getSubNodes( obj1 );
-	const subNodes2 = getSubNodes( obj2 );
+	const subNodes1 = getSubNodes( obj1, excludedProperties );
+	const subNodes2 = getSubNodes( obj2, excludedProperties );
 
 	for ( const node of subNodes1 ) {
 		if ( subNodes2.has( node ) ) {

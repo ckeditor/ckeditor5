@@ -9,7 +9,7 @@
 
 /* globals EventTarget, Event */
 
-export default function getSubNodes( head ) {
+export default function getSubNodes( head, excludedProperties = new Set() ) {
 	const nodes = [ head ];
 
 	// Nodes are stored to prevent infinite looping.
@@ -18,7 +18,7 @@ export default function getSubNodes( head ) {
 	while ( nodes.length > 0 ) {
 		const node = nodes.shift();
 
-		if ( subNodes.has( node ) || shouldNodeBeSkipped( node ) ) {
+		if ( subNodes.has( node ) || shouldNodeBeSkipped( node ) || excludedProperties.has( node ) ) {
 			continue;
 		}
 
