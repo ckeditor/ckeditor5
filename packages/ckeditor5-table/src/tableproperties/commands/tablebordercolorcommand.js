@@ -13,10 +13,10 @@ import { getSingleValue } from '../../commands/utils';
 /**
  * The table border color command.
  *
- * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
  * `'tableBorderColor'` editor command.
  *
- * To change border color of the selected , execute the command:
+ * To change the border color of the selected table, execute the command:
  *
  *		editor.execute( 'tableBorderColor', {
  *			value: '#f00'
@@ -28,7 +28,7 @@ export default class TableBorderColorCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBorderColorCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'borderColor' );

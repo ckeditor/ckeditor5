@@ -12,10 +12,10 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
 /**
  * The table cell horizontal alignment command.
  *
- * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
  * `'tableCellHorizontalAlignment'` editor command.
  *
- * To change cell horizontal alignment of the selected cell, execute the command:
+ * To change the horizontal text alignment of selected cells, execute the command:
  *
  *		editor.execute( 'tableCellHorizontalAlignment', {
  *			value: 'right'
@@ -27,7 +27,7 @@ export default class TableCellHorizontalAlignmentCommand extends TableCellProper
 	/**
 	 * Creates a new `TableCellHorizontalAlignmentCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'horizontalAlignment' );

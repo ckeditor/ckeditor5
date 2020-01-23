@@ -12,10 +12,10 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
 /**
  * The table cell background color command.
  *
- * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
  * `'tableCellBackgroundColor'` editor command.
  *
- * To change cell `backgroundColor` attribute of the selected cells, execute the command:
+ * To change the background color of selected cells, execute the command:
  *
  *		editor.execute( 'tableCellBackgroundColor', {
  *			value: '#f00'
@@ -27,7 +27,7 @@ export default class TableCellBackgroundColorCommand extends TableCellPropertyCo
 	/**
 	 * Creates a new `TableCellBackgroundColorCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'backgroundColor' );

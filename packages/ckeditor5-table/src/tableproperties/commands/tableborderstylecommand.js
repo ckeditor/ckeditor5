@@ -13,10 +13,10 @@ import { getSingleValue } from '../../commands/utils';
 /**
  * The table style border command.
  *
- * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
  * `'tableBorderStyle'` editor command.
  *
- * To change border of the selected , execute the command:
+ * To change the border style of the selected table, execute the command:
  *
  *		editor.execute( 'tableBorderStyle', {
  *			value: 'dashed'
@@ -28,7 +28,7 @@ export default class TableBorderStyleCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBorderStyleCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'borderStyle' );

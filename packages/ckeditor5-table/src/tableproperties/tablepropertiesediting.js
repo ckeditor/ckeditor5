@@ -85,7 +85,7 @@ function enableBorderProperties( schema, conversion ) {
 	downcastTableAttribute( conversion, 'borderWidth', 'border-width' );
 }
 
-// Enables `'alignment'` attribute for table.
+// Enables the `'alignment'` attribute for table.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion

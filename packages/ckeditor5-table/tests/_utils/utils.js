@@ -57,7 +57,7 @@ export function modelTable( tableData, attributes ) {
 }
 
 /**
- * Helper method for creating a test table with a single table cell which attributes might be objects.
+ * A helper method for creating a test table with a single table cell of which attributes are defined as objects.
  *
  *		setTableCellWithObjectAttributes(
  *			model,
@@ -69,8 +69,8 @@ export function modelTable( tableData, attributes ) {
  *			'fo[o]'
  *		);
  *
- * This will create a model table with one table cell with a "foo" text. Selection will be set on last "o" and a table cell will have three
- * attributes.
+ * This will create a model table with one table cell with a "foo" text.
+ * The selection will be set on the last "o" and a table cell will have three attributes.
  *
  * @param {module:engine/model/model~Model} model
  * @param {Object} attributes
@@ -89,7 +89,7 @@ export function setTableCellWithObjectAttributes( model, attributes, cellContent
 }
 
 /**
- * Helper method for creating a test table, with a single table cell, which attributes might be objects.
+ * A helper method for creating a test table, with a single table cell. Table attributes are defined as objects.
  *
  *		setTableWithObjectAttributes(
  *			model,
@@ -100,8 +100,8 @@ export function setTableCellWithObjectAttributes( model, attributes, cellContent
  *			'fo[o]'
  *		);
  *
- * This will create a model table with one table cell with a "foo" text. Selection will be set on last "o" and a table will have three
- * attributes.
+ * This will create a model table with one table cell with a "foo" text.
+ * The selection will be set on last "o" and a table will have three attributes.
  *
  * @param {module:engine/model/model~Model} model
  * @param {Object} attributes
@@ -258,17 +258,17 @@ export function defaultConversion( conversion, asWidget = false ) {
 }
 
 /**
- * Assertion helper for top-right-bottom-left attribute object.
+ * An assertion helper for top-right-bottom-left attribute object.
  *
  * @param {module:engine/model/node~Node} element
  * @param {String} key Attribute key
- * @param {String} top Top value. Pass null to omit value in attributes object.
+ * @param {String} top Top value. Pass `null` to omit the value in the attributes object.
  * @param {String} [right=top] Right value - defaults to top if not provided.
- * Pass null to omit value in attributes object.
+ * Pass `null` to omit the value in the attributes object.
  * @param {String} [bottom=top] Bottom value - defaults to top (right value must be defined).
- * Pass null to omit value in attributes object.
+ * Pass `null` to omit the value in the attributes object.
  * @param {String} [left=right] Left value - defaults to right (bottom and right values must be defined).
- * Pass null to omit value in attributes object.
+ * Pass `null` to omit the value in the attributes object.
  */
 export function assertTRBLAttribute( element, key, top, right = top, bottom = top, left = right ) {
 	const styleObject = {};
@@ -293,7 +293,7 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
 }
 
 /**
- * Assertion helper for testing <table> style attribute.
+ * An assertion helper for testing the `<table>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {String} tableStyle A style to assert on table.
@@ -307,7 +307,7 @@ export function assertTableStyle( editor, tableStyle ) {
 }
 
 /**
- * Assertion helper for testing <td> style attribute.
+ * An assertion helper for testing the `<td>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {String} tableCellStyle A style to assert on td.

@@ -14,7 +14,7 @@ import { findAncestor } from '../../commands/utils';
 /**
  * The table cell attribute command.
  *
- * The command is a base command for other table cell attributes commands.
+ * The command is a base command for other table property commands.
  *
  * @extends module:core/command~Command
  */
@@ -22,7 +22,7 @@ export default class TablePropertyCommand extends Command {
 	/**
 	 * Creates a new `TablePropertyCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 * @param {String} attributeName Table cell attribute name.
 	 */
 	constructor( editor, attributeName ) {
@@ -49,9 +49,10 @@ export default class TablePropertyCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {*} [options.value] If set the command will set the attribute on selected table.
-	 * If it is not set the command will remove the attribute from selected table.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Pass batch instance to the command for creating single undo step.
+	 * @param {*} [options.value] If set, the command will set the attribute on the selected table.
+	 * If not set, the command will remove the attribute from the selected table.
+	 * @param {module:engine/model/batch~Batch} [options.batch] Pass the model batch instance to the command to aggregate changes,
+	 * e.g. allow a single undo step for multiple executions.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -71,7 +72,7 @@ export default class TablePropertyCommand extends Command {
 	}
 
 	/**
-	 * Returns attribute value for a table cell.
+	 * Returns the attribute value for a table.
 	 *
 	 * @param {module:engine/model/element~Element} table
 	 * @returns {String|undefined}

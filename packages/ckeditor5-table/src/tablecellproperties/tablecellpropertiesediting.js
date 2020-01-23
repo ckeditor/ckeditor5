@@ -104,7 +104,7 @@ function enableBorderProperties( schema, conversion ) {
 	downcastAttributeToStyle( conversion, 'tableCell', 'borderWidth', 'border-width' );
 }
 
-// Enables `'horizontalAlignment'` attribute for table cells.
+// Enables the `'horizontalAlignment'` attribute for table cells.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion

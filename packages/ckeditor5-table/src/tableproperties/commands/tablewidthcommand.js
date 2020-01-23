@@ -12,7 +12,7 @@ import TablePropertyCommand from './tablepropertycommand';
 /**
  * The table width command.
  *
- * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
  * `'tableWidth'` editor command.
  *
  * To change width of the selected table, execute the command:
@@ -27,7 +27,7 @@ export default class TableWidthCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableWidthCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'width' );

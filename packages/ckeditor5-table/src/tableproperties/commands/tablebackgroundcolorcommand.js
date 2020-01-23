@@ -12,10 +12,10 @@ import TablePropertyCommand from './tablepropertycommand';
 /**
  * The table background color command.
  *
- * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
  * `'tableBackgroundColor'` editor command.
  *
- * To change backgroundColor of the selected, execute the command:
+ * To change the background color of the selected table, execute the command:
  *
  *		editor.execute( 'tableBackgroundColor', {
  *			value: '#f00'
@@ -27,7 +27,7 @@ export default class TableBackgroundColorCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBackgroundColorCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'backgroundColor' );
