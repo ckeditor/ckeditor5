@@ -383,7 +383,7 @@ describe( 'BalloonToolbar', () => {
 				expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( '200px' );
 
 				done();
-			}, 100 );
+			}, 500 );
 		} );
 	} );
 
