@@ -159,12 +159,15 @@ export default class InlineEditorUI extends EditorUI {
 			toolbar
 		} );
 
-		// Set toolbar's max-width on the initialization and update it on the editable resize.
-		const widthObserver = getResizeObserver( ( [ entry ] ) => {
-			this._setToolbarMaxWidth( entry.contentRect.width );
-		} );
+		// Set toolbar's max-width on the initialization and update it on the editable resize,
+		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
+		if ( !this._toolbarConfig.shouldNotGroupWhenFull ) {
+			const widthObserver = getResizeObserver( ( [ entry ] ) => {
+				this._setToolbarMaxWidth( entry.contentRect.width );
+			} );
 
-		widthObserver.observe( editableElement );
+			widthObserver.observe( editableElement );
+		}
 	}
 
 	/**
