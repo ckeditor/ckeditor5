@@ -102,6 +102,27 @@ describe( 'BalloonToolbar', () => {
 			} );
 	} );
 
+	it( 'balloon toolbar should not group items when shouldNotGroupWhenFull option is enabled', () => {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
+			plugins: [ Paragraph, Bold, Italic, Underline, BalloonToolbar ],
+			balloonToolbar: {
+				items: [ 'bold', 'italic', 'underline' ],
+				shouldNotGroupWhenFull: true
+			}
+		} ).then( editor => {
+			const balloonToolbar = editor.plugins.get( BalloonToolbar );
+
+			expect( balloonToolbar.toolbarView.options.shouldGroupWhenFull ).to.be.false;
+
+			return editor.destroy();
+		} ).then( () => {
+			editorElement.remove();
+		} );
+	} );
+
 	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', () => {
 		const clock = testUtils.sinon.useFakeTimers();
 		const spy = testUtils.sinon.spy();
