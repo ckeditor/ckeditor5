@@ -151,7 +151,7 @@ export function getTopRightBottomLeftValueReducer( styleShorthand ) {
  *		getTopRightBottomLeftShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
  *		// will return '1px 1px 2px'
  *
- * @param {String} styleShorthand
+ * @param {module:engine/view/stylesmap~BoxEdges} styleShorthand
  * @returns {Function}
  */
 export function getTopRightBottomLeftShorthandValue( { top, right, bottom, left } ) {
