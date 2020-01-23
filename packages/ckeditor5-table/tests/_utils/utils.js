@@ -16,6 +16,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
+const BORDER_REG_EXP = /[\s\S]+/;
 
 /**
  * Returns a model representation of a table shorthand notation:
@@ -247,7 +248,7 @@ export function defaultConversion( conversion, asWidget = false ) {
 		view: {
 			name: 'td',
 			styles: {
-				border: /[\s\S]+/
+				border: BORDER_REG_EXP
 			}
 		},
 		model: {
