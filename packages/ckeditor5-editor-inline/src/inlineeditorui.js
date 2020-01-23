@@ -12,6 +12,9 @@ import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabl
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 /**
  * The inline editor UI class.
@@ -197,6 +200,6 @@ export default class InlineEditorUI extends EditorUI {
 		const view = this.view;
 		const toolbar = view.toolbar;
 
-		toolbar.maxWidth = width;
+		toolbar.maxWidth = toPx( width );
 	}
 }
