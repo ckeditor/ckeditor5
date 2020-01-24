@@ -122,15 +122,6 @@ describe( 'LinkUI', () => {
 			editor.editing.view.document.isFocused = true;
 		} );
 
-		it( 'should not work if the link command is disabled', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-			editor.commands.get( 'link' ).isEnabled = false;
-
-			linkUIFeature._showUI();
-
-			expect( balloon.visibleView ).to.be.null;
-		} );
-
 		it( 'should not throw if the UI is already visible', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
@@ -532,19 +523,6 @@ describe( 'LinkUI', () => {
 	describe( 'keyboard support', () => {
 		it( 'should show the UI on Ctrl+K keystroke', () => {
 			const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
-			const command = editor.commands.get( 'link' );
-
-			command.isEnabled = false;
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.k,
-				ctrlKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-			sinon.assert.notCalled( spy );
-
-			command.isEnabled = true;
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,

@@ -188,9 +188,7 @@ export default class LinkUI extends Plugin {
 			// Prevent focusing the search bar in FF and opening new tab in Edge. #153, #154.
 			cancel();
 
-			if ( linkCommand.isEnabled ) {
-				this._showUI( true );
-			}
+			this._showUI( true );
 		} );
 
 		editor.ui.componentFactory.add( 'link', locale => {
@@ -355,20 +353,12 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Shows the correct UI type for the current state of the command. It is either
-	 * {@link #formView} or {@link #actionsView}.
+	 * Shows the correct UI type. It is either {@link #formView} or {@link #actionsView}.
 	 *
 	 * @param {Boolean} forceVisible
 	 * @private
 	 */
 	_showUI( forceVisible = false ) {
-		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' );
-
-		if ( !linkCommand.isEnabled ) {
-			return;
-		}
-
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
 			this._addActionsView();
