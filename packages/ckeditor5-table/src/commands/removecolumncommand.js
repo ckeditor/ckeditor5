@@ -51,6 +51,7 @@ export default class RemoveColumnCommand extends Command {
 		const table = tableRow.parent;
 
 		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+		const row = table.getChildIndex( tableRow );
 
 		// Cache the table before removing or updating colspans.
 		const tableMap = [ ...new TableWalker( table ) ];
@@ -58,23 +59,14 @@ export default class RemoveColumnCommand extends Command {
 		// Get column index of removed column.
 		const cellData = tableMap.find( value => value.cell === tableCell );
 		const removedColumn = cellData.column;
-		const removedRow = cellData.row;
-
-		let cellToFocus;
-
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-		const columns = tableUtils.getColumns( tableCell.parent.parent );
-
-		const columnToFocus = removedColumn === columns - 1 ? removedColumn - 1 : removedColumn + 1;
-		const rowToFocus = removedRow;
 
 		model.change( writer => {
 			// Update heading columns attribute if removing a row from head section.
-			if ( headingColumns && removedRow <= headingColumns ) {
+			if ( headingColumns && row <= headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
 			}
 
-			for ( const { cell, row, column, rowspan, colspan } of tableMap ) {
+			for ( const { cell, column, colspan } of tableMap ) {
 				// If colspaned cell overlaps removed column decrease it's span.
 				if ( column <= removedColumn && colspan > 1 && column + colspan > removedColumn ) {
 					updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
@@ -82,17 +74,7 @@ export default class RemoveColumnCommand extends Command {
 					// The cell in removed column has colspan of 1.
 					writer.remove( cell );
 				}
-
-				if ( isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan ) ) {
-					cellToFocus = cell;
-				}
 			}
-
-			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
-}
-
-function isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan ) {
-	return ( row <= rowToFocus && row + rowspan >= rowToFocus ) && ( column <= columnToFocus && column + colspan >= columnToFocus );
 }
