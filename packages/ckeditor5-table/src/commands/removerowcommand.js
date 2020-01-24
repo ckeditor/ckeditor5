@@ -48,36 +48,30 @@ export default class RemoveRowCommand extends Command {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const removedRow = table.getChildIndex( tableRow );
-
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRow } ) ];
-
-		const cellData = tableMap.find( value => value.cell === tableCell );
-
+		const currentRow = table.getChildIndex( tableRow );
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		const rowToFocus = removedRow;
-		const columnToFocus = cellData.column;
-
 		model.change( writer => {
-			if ( headingRows && removedRow <= headingRows ) {
+			if ( headingRows && currentRow <= headingRows ) {
 				updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
 			}
+
+			const tableMap = [ ...new TableWalker( table, { endRow: currentRow } ) ];
 
 			const cellsToMove = new Map();
 
 			// Get cells from removed row that are spanned over multiple rows.
 			tableMap
-				.filter( ( { row, rowspan } ) => row === removedRow && rowspan > 1 )
+				.filter( ( { row, rowspan } ) => row === currentRow && rowspan > 1 )
 				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
 
 			// Reduce rowspan on cells that are above removed row and overlaps removed row.
 			tableMap
-				.filter( ( { row, rowspan } ) => row <= removedRow - 1 && row + rowspan > removedRow )
+				.filter( ( { row, rowspan } ) => row <= currentRow - 1 && row + rowspan > currentRow )
 				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
 
 			// Move cells to another row.
-			const targetRow = removedRow + 1;
+			const targetRow = currentRow + 1;
 			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
 
 			let previousCell;
@@ -99,16 +93,6 @@ export default class RemoveRowCommand extends Command {
 			}
 
 			writer.remove( tableRow );
-
-			const { cell: cellToFocus } = [ ...new TableWalker( table ) ].find( ( { row, column, rowspan, colspan } ) => {
-				return isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan );
-			} );
-
-			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
-}
-
-function isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan ) {
-	return ( row <= rowToFocus && row + rowspan >= rowToFocus + 1 ) && ( column <= columnToFocus && column + colspan >= columnToFocus + 1 );
 }
