@@ -107,32 +107,6 @@ export default class TextTransformation extends Plugin {
 		const modelSelection = modelDocument.selection;
 
 		/**
-		 * Flag indicating whether a plugin is enabled or disabled.
-		 * A disabled plugin will not transform text.
-		 *
-		 * Plugin can be simply disabled like that:
-		 *
-		 *		// Disable the plugin so that no toolbars are visible.
-		 *		editor.plugins.get( 'TextTransformation' ).isEnabled = false;
-		 *
-		 * You can also use {@link module:utils/forcedisabledmixin~ForceDisabledMixin#forceDisabled} method.
-		 *
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #isEnabled
-		 */
-		this.set( 'isEnabled', true );
-
-		/**
-		 * Holds identifiers for {@link module:utils/forcedisabledmixin~ForceDisabledMixin#forceDisabled} mechanism.
-		 *
-		 * @type {Set.<String>}
-		 * @private
-		 */
-		this._disableStack = new Set();
-
-		/**
 		 * Holds a set of active {@link module:typing/textwatcher~TextWatcher}
 		 *
 		 * @type {Set.<TextWatcher>}
