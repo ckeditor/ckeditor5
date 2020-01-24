@@ -72,7 +72,7 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
  *		getSingleValue( { top: 'foo', right: 'foo' } );
  *
  * @param objectOrString
- * @returns {module:engine/view/stylesmap~BoxEdges|String}
+ * @returns {module:engine/view/stylesmap~BoxSides|String}
  */
 export function getSingleValue( objectOrString ) {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
