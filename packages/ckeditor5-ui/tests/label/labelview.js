@@ -20,6 +20,15 @@ describe( 'LabelView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-label' ) ).to.be.true;
 		} );
+
+		it( 'should define the #id', () => {
+			expect( view.id ).to.match( /^ck-editor__label_.+/ );
+		} );
+
+		it( 'should assign an #id to the #element attribute', () => {
+			expect( view.element.id ).to.equal( view.id );
+			expect( view.element.id ).to.match( /^ck-editor__label_.+/ );
+		} );
 	} );
 
 	describe( 'DOM bindings', () => {

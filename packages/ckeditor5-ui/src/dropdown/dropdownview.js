@@ -131,6 +131,14 @@ export default class DropdownView extends View {
 		this.set( 'class' );
 
 		/**
+		 * (Optional) The `id` attribute of the dropdown (i.e. to pair with a `<label>` element).
+		 *
+		 * @observable
+		 * @member {String} #id
+		 */
+		this.set( 'id' );
+
+		/**
 		 * The position of the panel, relative to the dropdown.
 		 *
 		 * **Note**: When `'auto'`, the panel will use one of the remaining positions to stay
@@ -176,7 +184,9 @@ export default class DropdownView extends View {
 					'ck-dropdown',
 					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
-				]
+				],
+				id: bind.to( 'id' ),
+				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 
 			children: [

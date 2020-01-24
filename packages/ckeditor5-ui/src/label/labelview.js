@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import '../../theme/components/label/label.css';
 
@@ -39,6 +40,14 @@ export default class LabelView extends View {
 		 */
 		this.set( 'for' );
 
+		/**
+		 * An unique id of the label. It can be used by other UI components to reference
+		 * the label, for instance, using the `aria-describedby` DOM attribute.
+		 *
+		 * @member {String} #id
+		 */
+		this.id = `ck-editor__label_${ uid() }`;
+
 		const bind = this.bindTemplate;
 
 		this.setTemplate( {
@@ -48,6 +57,7 @@ export default class LabelView extends View {
 					'ck',
 					'ck-label'
 				],
+				id: this.id,
 				for: bind.to( 'for' )
 			},
 			children: [
