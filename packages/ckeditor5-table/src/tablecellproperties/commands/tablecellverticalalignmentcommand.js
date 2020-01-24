@@ -12,17 +12,17 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
 /**
  * The table cell vertical alignment command.
  *
- * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
  * `'tableCellVerticalAlignment'` editor command.
  *
- * To change cell vertical alignment of the selected cell, execute the command:
+ * To change the vertical text alignment of selected cells, execute the command:
  *
  *		editor.execute( 'tableCellVerticalAlignment', {
  *			value: 'top'
  *		} );
  *
- * The editor UI allows to set those attributes from
- * [a `vertical-align` CSS attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align):
+ * The following values are allowed corresponding to
+ * [the `vertical-align` CSS attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/vertical-align):
  *
  * * `'top'`
  * * `'bottom'`
@@ -34,7 +34,7 @@ export default class TableCellVerticalAlignmentCommand extends TableCellProperty
 	/**
 	 * Creates a new `TableCellVerticalAlignmentCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'verticalAlignment' );

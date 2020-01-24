@@ -13,10 +13,10 @@ import { getSingleValue } from '../../commands/utils';
 /**
  * The table cell border width command.
  *
- * The command is registered by {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
+ * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
  * `'tableCellBorderWidth'` editor command.
  *
- * To change cell border width of the selected cell, execute the command:
+ * To change the border width of selected cells, execute the command:
  *
  *		editor.execute( 'tableCellBorderWidth', {
  *			value: '5px'
@@ -28,7 +28,7 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 	/**
 	 * Creates a new `TableCellBorderWidthCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'borderWidth' );

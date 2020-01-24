@@ -12,10 +12,10 @@ import TablePropertyCommand from './tablepropertycommand';
 /**
  * The table alignment command.
  *
- * The command is registered by {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
+ * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
  * `'tableAlignment'` editor command.
  *
- * To change alignment of the selected table, execute the command:
+ * To change the alignment of the selected table, execute the command:
  *
  *		editor.execute( 'tableAlignment', {
  *			value: 'right'
@@ -27,7 +27,7 @@ export default class TableAlignmentCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableAlignmentCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */
 	constructor( editor ) {
 		super( editor, 'alignment' );

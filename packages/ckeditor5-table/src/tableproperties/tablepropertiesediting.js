@@ -21,8 +21,26 @@ import TableWidthCommand from './commands/tablewidthcommand';
 import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
 
+// RegExp used for matching margin style in converters.
+const MARGIN_REG_EXP = /^(auto|0(%|[a-z]{2,4})?)$/;
+const ALIGN_VALUES_REG_EXP = /^(left|right|center)$/;
+
 /**
  * The table properties editing feature.
+ *
+ * Introduces table's model attributes and their conversion:
+ *
+ * - border: `borderStyle`, `borderColor` and `borderWidth`
+ * - background color: `backgroundColor`
+ * - horizontal alignment: `alignment`
+ * - width & height: `width` & `height`
+ *
+ * It also registers commands used to manipulate the above attributes:
+ *
+ * - border: `'tableBorderStyle'`, `'tableBorderColor'` and `'tableBorderWidth'` commands
+ * - background color: `'tableBackgroundColor'`
+ * - horizontal alignment: `'tableAlignment'`
+ * - width & height: `'tableWidth'` & `'tableHeight'`
  *
  * @extends module:core/plugin~Plugin
  */
@@ -85,7 +103,7 @@ function enableBorderProperties( schema, conversion ) {
 	downcastTableAttribute( conversion, 'borderWidth', 'border-width' );
 }
 
-// Enables `'alignment'` attribute for table.
+// Enables the `'alignment'` attribute for table.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
@@ -97,8 +115,8 @@ function enableAlignmentProperty( schema, conversion ) {
 		.attributeToAttribute( {
 			view: {
 				styles: {
-					'margin-right': /^(auto|0(%|[a-z]{2,4})?)$/,
-					'margin-left': /^(auto|0(%|[a-z]{2,4})?)$/
+					'margin-right': MARGIN_REG_EXP,
+					'margin-left': MARGIN_REG_EXP
 				}
 			},
 			model: {
@@ -122,7 +140,7 @@ function enableAlignmentProperty( schema, conversion ) {
 		.attributeToAttribute( {
 			view: {
 				attributes: {
-					align: /^(left|right|center)$/
+					align: ALIGN_VALUES_REG_EXP
 				}
 			},
 			model: {
