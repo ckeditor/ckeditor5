@@ -6,8 +6,9 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import SetHeaderRowCommand from '../../src/commands/setheaderrowcommand';
-import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SetHeaderRowCommand', () => {
 	let editor, model, command;
@@ -92,7 +93,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -110,7 +111,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -137,7 +138,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -155,7 +156,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '[]00' ],
 				[ '10' ],
 				[ '20' ],
@@ -173,7 +174,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute( { forceValue: true } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -191,7 +192,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute( { forceValue: false } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00' ],
 				[ '[]10' ],
 				[ '20' ],
@@ -208,7 +209,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 2, contents: '10[]' }, '12' ],
 				[ { colspan: 2, contents: '' }, '22' ]
@@ -227,7 +228,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 2, rowspan: 2, contents: '10' }, '12' ],
 				[ '22[]' ],
@@ -245,7 +246,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01' ],
 				[ '', '[]11' ]
 			], { headingRows: 1 } ) );
@@ -259,7 +260,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '' ]
 			], { headingRows: 1 } ) );
@@ -274,7 +275,7 @@ describe( 'SetHeaderRowCommand', () => {
 
 			command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '[]01', '02' ],
 				[ { colspan: 2, rowspan: 2, contents: '10' }, '12' ],
 				[ '22' ]
