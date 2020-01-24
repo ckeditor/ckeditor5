@@ -15,11 +15,11 @@ assignees: ''
 
 ### ✔️ Expected result
 
-*What is the expected result of the above steps?*
+_What is the expected result of the above steps?_
 
 ### ❌ Actual result
 
-*What is the actual result of the above steps?*
+_What is the actual result of the above steps?_
 
 ## 📃 Other details
 

@@ -72,6 +72,7 @@ The `<CKEditor>` component supports the following properties:
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
+* `onError` &ndash; A function called when the editor has crashed during the initialization. It receives the error object as a parameter.
 
 The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two parameters:
 
