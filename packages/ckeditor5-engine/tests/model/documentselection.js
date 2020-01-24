@@ -442,6 +442,50 @@ describe( 'DocumentSelection', () => {
 
 			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
 		} );
+
+		it( 'should fire change:marker event when selection markers change', () => {
+			model.change( writer => {
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change:marker', spy );
+
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 1 ] ),
+					writer.createPositionFromPath( root, [ 2, 2 ] )
+				) );
+
+				expect( spy.called ).to.be.false;
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
+
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 3 ] )
+					),
+					usingOperation: false
+				} );
+
+				expect( spy.calledTwice ).to.be.true;
+				spy.resetHistory();
+
+				writer.setSelection( writer.createPositionFromPath( root, [ 2, 6 ] ) );
+
+				expect( spy.calledOnce ).to.be.true;
+
+				writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
+
+				expect( spy.calledTwice ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
