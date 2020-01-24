@@ -11,7 +11,7 @@ import InputTextView from '../inputtext/inputtextview';
 import { createDropdown } from '../dropdown/utils';
 
 /**
- * A helper for creating labeled dropdowns.
+ * A helper for creating labeled inputs.
  *
  * It creates an instance of a {@link module:ui/inputtext/inputtextview~InputTextView input text} that is
  * logically related to a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
