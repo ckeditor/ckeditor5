@@ -146,7 +146,8 @@ export function getBoxSidesValueReducer( styleShorthand ) {
 }
 
 /**
- * Returns a proper 1-to-4 value of a CSS [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation.
+ * Returns a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation
+ * of a CSS property value.
  *
  *		getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
  *		// will return '1px 1px 2px'
