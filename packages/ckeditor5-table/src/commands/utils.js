@@ -61,7 +61,7 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
 /**
  * Returns a string if all four values of box sides are equal.
  *
- * If string is passed it is treated as a single value (pass-through).
+ * If a string is passed, it is treated as a single value (pass-through).
  *
  *		// returns 'foo':
  *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
