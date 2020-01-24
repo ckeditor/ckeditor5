@@ -23,13 +23,13 @@ export default class ContextWatchdog extends Watchdog {
 
 		/**
 		 * @protected
-		 * @type {Map.<string,EditorWatchdog>}
+		 * @type {Map.<string,module:watchdog/watchdog~EditorWatchdog>}
 		 */
 		this._watchdogs = new Map();
 
 		/**
 		 * @private
-		 * @type {Context|null}
+		 * @type {module:core/context~Context|null}
 		 */
 		this._context = null;
 
@@ -60,13 +60,17 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * @type {Context|null}
+	 * The context instance. Keep in mind that this property might be changed when the ContextWatchdog restarts,
+	 * so do not keep this instance internally. Always operate on the `contextWatchdog.context` property.
+	 *
+	 * @type {module:core/context~Context|null}
 	 */
 	get context() {
 		return this._context;
 	}
 
 	/**
+	 * Returns the watchdog for the added item by its name.
 	 *
 	 * @param {String} name The watchdog name (the key under which the watchdog config was passed to the add() method).
 	 */
@@ -74,6 +78,12 @@ export default class ContextWatchdog extends Watchdog {
 		return this._watchdogs.get( name );
 	}
 
+	/**
+	 * Adds items to the watchdog. Internally watchdogs will be created for all of these items and they will be available
+	 *
+	 *
+	 * @param {Array.<Object.<string,module:watchdog/contextwatchdog~WatchdogItem>>} items
+	 */
 	async add( items ) {
 		await this._actionQueue.enqueue( async () => {
 			if ( this.state === 'destroyed' ) {
@@ -142,7 +152,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Creates the Context watchdog and all internal watchdogs.
+	 * Creates the Context watchdog.
 	 */
 	async create() {
 		await this._actionQueue.enqueue( async () => {
@@ -151,7 +161,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Destroys the `ContextWatchdog` and all internal watchdogs. This method can't be undone.
+	 * Destroys the `ContextWatchdog` and all added items. This method can't be undone.
 	 * Once the `ContextWatchdog` is destroyed new items can not be added.
 	 */
 	async destroy() {
@@ -163,6 +173,8 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
+	 * Restarts the `ContextWatchdog`.
+	 *
 	 * @protected
 	 */
 	async _restart() {
@@ -203,6 +215,11 @@ export default class ContextWatchdog extends Watchdog {
 		}, isInternal );
 	}
 
+	/**
+	 * Destroys the Context and all added items.
+	 *
+	 * @param {Boolean} isInternal
+	 */
 	async _destroy( isInternal = false ) {
 		await this._actionQueue.enqueue( async () => {
 			this._stopErrorHandling();
@@ -222,6 +239,11 @@ export default class ContextWatchdog extends Watchdog {
 		}, isInternal );
 	}
 
+	/**
+	 * Checks whether the error comes from the Context and not from Editor or ContextItem instances.
+	 *
+	 * @param {Error} error
+	 */
 	_isErrorComingFromThisInstance( error ) {
 		for ( const watchdog of this._watchdogs.values() ) {
 			if ( watchdog._isErrorComingFromThisInstance( error ) ) {
@@ -234,13 +256,18 @@ export default class ContextWatchdog extends Watchdog {
 		return areConnectedThroughProperties( this._contextProps, error.context );
 	}
 
+	/**
+	 *
+	 * @param {module:core/context~Context} Context
+	 * @param {module:watchdog/watchdog~WatchdogConfig} watchdogConfig
+	 */
 	static for( Context, watchdogConfig ) {
 		const watchdog = new this( watchdogConfig );
 
 		watchdog.setCreator( config => Context.create( config ) );
 		watchdog.setDestructor( context => context.destroy() );
 
-		watchdog._create();
+		watchdog.create();
 
 		return watchdog;
 	}
@@ -260,6 +287,9 @@ class ActionQueue {
 	}
 
 	/**
+	 * It adds asynchronous actions (functions) to the queue and runs them one by one.
+	 * If the `isInternal` option is passed then it runs the provided function immediately.
+	 *
 	 * @param {Function} action
 	 * @param {Boolean} isInternal
 	 */
@@ -302,3 +332,12 @@ class ActionQueue {
 		this._queuedActions = [];
 	}
 }
+
+/**
+ * @typedef {Object} WatchdogItem
+ *
+ * @property {Function} creator
+ * @property {Function} destructor
+ * @property {String|HTMLElement} sourceElementOrData
+ * @property {any} config
+ */
