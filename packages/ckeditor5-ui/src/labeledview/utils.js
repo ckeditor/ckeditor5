@@ -7,8 +7,8 @@
  * @module ui/labeledview/utils
  */
 
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import InputTextView from '../inputtext/inputtextview';
+import { createDropdown } from '../dropdown/utils';
 
 /**
  * A helper for creating labeled dropdowns.
