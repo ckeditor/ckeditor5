@@ -733,11 +733,13 @@ class LiveSelection extends Selection {
 	setTo( selectable, optionsOrPlaceOrOffset, options ) {
 		super.setTo( selectable, optionsOrPlaceOrOffset, options );
 		this._updateAttributes( true );
+		this._updateMarkers();
 	}
 
 	setFocus( itemOrPosition, offset ) {
 		super.setFocus( itemOrPosition, offset );
 		this._updateAttributes( true );
+		this._updateMarkers();
 	}
 
 	setAttribute( key, value ) {
@@ -873,7 +875,7 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire( 'change:marker', { oldMarkers } );
+			this.fire( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
