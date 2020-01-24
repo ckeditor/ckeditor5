@@ -7,7 +7,7 @@
  * @module engine/view/styles/padding
  */
 
-import { getPositionShorthandNormalizer, getBoxEdgesValueReducer } from './utils';
+import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils';
 
 /**
  * Adds a margin CSS styles processing rules.
@@ -34,7 +34,7 @@ export function addPaddingRules( stylesProcessor ) {
 	stylesProcessor.setNormalizer( 'padding-bottom', value => ( { path: 'padding.bottom', value } ) );
 	stylesProcessor.setNormalizer( 'padding-left', value => ( { path: 'padding.left', value } ) );
 
-	stylesProcessor.setReducer( 'padding', getBoxEdgesValueReducer( 'padding' ) );
+	stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
 
 	stylesProcessor.setStyleRelation( 'padding', [ 'padding-top', 'padding-right', 'padding-bottom', 'padding-left' ] );
 }

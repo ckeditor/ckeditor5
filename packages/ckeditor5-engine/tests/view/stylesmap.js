@@ -6,7 +6,7 @@
 import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
 import encodedImage from './_utils/encodedimage.txt';
 import { addPaddingRules } from '../../src/view/styles/padding';
-import { getBoxEdgesValueReducer } from '../../src/view/styles/utils';
+import { getBoxSidesValueReducer } from '../../src/view/styles/utils';
 
 describe( 'StylesMap', () => {
 	let stylesMap, stylesProcessor;
@@ -23,7 +23,7 @@ describe( 'StylesMap', () => {
 			path: 'foo.top',
 			value
 		} ) );
-		stylesProcessor.setReducer( 'foo', getBoxEdgesValueReducer( 'foo' ) );
+		stylesProcessor.setReducer( 'foo', getBoxSidesValueReducer( 'foo' ) );
 
 		addPaddingRules( stylesProcessor );
 		StylesMap._setProcessor( stylesProcessor );

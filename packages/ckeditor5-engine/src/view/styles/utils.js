@@ -91,7 +91,7 @@ export function isURL( string ) {
 	return urlRegExp.test( string );
 }
 
-export function getBoxEdgesValues( value = '' ) {
+export function getBoxSidesValues( value = '' ) {
 	if ( value === '' ) {
 		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
 	}
@@ -110,12 +110,12 @@ export function getBoxEdgesValues( value = '' ) {
  * Default reducer for CSS properties that concerns edges of a box
  * [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notations:
  *
- *		stylesProcessor.setReducer( 'padding', getBoxEdgesValueReducer( 'padding' ) );
+ *		stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
  *
  * @param {String} styleShorthand
  * @returns {Function}
  */
-export function getBoxEdgesValueReducer( styleShorthand ) {
+export function getBoxSidesValueReducer( styleShorthand ) {
 	return value => {
 		const { top, right, bottom, left } = value;
 
@@ -138,7 +138,7 @@ export function getBoxEdgesValueReducer( styleShorthand ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getBoxEdgesShorthandValue( value ) ] );
+			reduced.push( [ styleShorthand, getBoxSidesShorthandValue( value ) ] );
 		}
 
 		return reduced;
@@ -148,13 +148,13 @@ export function getBoxEdgesValueReducer( styleShorthand ) {
 /**
  * Returns a proper 1-to-4 value of a CSS [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation.
  *
- *		getBoxEdgesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
+ *		getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
  *		// will return '1px 1px 2px'
  *
- * @param {module:engine/view/stylesmap~BoxEdges} styleShorthand
+ * @param {module:engine/view/stylesmap~BoxSides} styleShorthand
  * @returns {Function}
  */
-export function getBoxEdgesShorthandValue( { top, right, bottom, left } ) {
+export function getBoxSidesShorthandValue( { top, right, bottom, left } ) {
 	const out = [];
 
 	if ( left !== right ) {
@@ -182,7 +182,7 @@ export function getPositionShorthandNormalizer( shorthand ) {
 	return value => {
 		return {
 			path: shorthand,
-			value: getBoxEdgesValues( value )
+			value: getBoxSidesValues( value )
 		};
 	};
 }

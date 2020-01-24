@@ -7,7 +7,7 @@
  * @module engine/view/styles/border
  */
 
-import { getShorthandValues, getBoxEdgesValueReducer, getBoxEdgesValues, isLength, isLineStyle } from './utils';
+import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLength, isLineStyle } from './utils';
 
 /**
  * Adds a border CSS styles processing rules.
@@ -95,9 +95,9 @@ export function addBorderRules( stylesProcessor ) {
 	stylesProcessor.setExtractor( 'border-bottom-style', 'border.style.bottom' );
 	stylesProcessor.setExtractor( 'border-left-style', 'border.style.left' );
 
-	stylesProcessor.setReducer( 'border-color', getBoxEdgesValueReducer( 'border-color' ) );
-	stylesProcessor.setReducer( 'border-style', getBoxEdgesValueReducer( 'border-style' ) );
-	stylesProcessor.setReducer( 'border-width', getBoxEdgesValueReducer( 'border-width' ) );
+	stylesProcessor.setReducer( 'border-color', getBoxSidesValueReducer( 'border-color' ) );
+	stylesProcessor.setReducer( 'border-style', getBoxSidesValueReducer( 'border-style' ) );
+	stylesProcessor.setReducer( 'border-width', getBoxSidesValueReducer( 'border-width' ) );
 	stylesProcessor.setReducer( 'border-top', getBorderPositionReducer( 'top' ) );
 	stylesProcessor.setReducer( 'border-right', getBorderPositionReducer( 'right' ) );
 	stylesProcessor.setReducer( 'border-bottom', getBorderPositionReducer( 'bottom' ) );
@@ -134,9 +134,9 @@ function borderNormalizer( value ) {
 	return {
 		path: 'border',
 		value: {
-			color: getBoxEdgesValues( color ),
-			style: getBoxEdgesValues( style ),
-			width: getBoxEdgesValues( width )
+			color: getBoxSidesValues( color ),
+			style: getBoxSidesValues( style ),
+			width: getBoxSidesValues( width )
 		}
 	};
 }
@@ -177,7 +177,7 @@ function getBorderPropertyNormalizer( propertyName ) {
 
 function toBorderPropertyShorthand( value, property ) {
 	return {
-		[ property ]: getBoxEdgesValues( value )
+		[ property ]: getBoxSidesValues( value )
 	};
 }
 

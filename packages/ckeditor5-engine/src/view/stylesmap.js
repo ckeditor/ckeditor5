@@ -887,7 +887,7 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
  */
 
 /**
- * An object describing box edges values.
+ * An object describing box sides values.
  *
  *		const margin = {
  *			top: '1px',
@@ -896,10 +896,10 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
  *			left: '7px'
  *		}
  *
- * @typedef {Object} module:engine/view/stylesmap~BoxEdges
+ * @typedef {Object} module:engine/view/stylesmap~BoxSides
  *
- * @property {String} top Top edge value.
- * @property {String} right Right edge value.
- * @property {String} bottom Bottom edge value.
- * @property {String} left Left edge value.
+ * @property {String} top Top side value.
+ * @property {String} right Right side value.
+ * @property {String} bottom Bottom side value.
+ * @property {String} left Left side value.
  */
