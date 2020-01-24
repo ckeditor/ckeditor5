@@ -885,3 +885,29 @@ function appendStyleValue( stylesObject, nameOrPath, valueOrObject ) {
  *
  * @typedef {Array.<String, String>} module:engine/view/stylesmap~PropertyDescriptor
  */
+
+/**
+ * An object describing values associated with the sides of a box, for instance margins, paddings,
+ * border widths, border colors, etc.
+ *
+ *		const margin = {
+ *			top: '1px',
+ *			right: '3px',
+ *			bottom: '3px',
+ *			left: '7px'
+ *		};
+ *
+ *		const borderColor = {
+ *			top: 'red',
+ *			right: 'blue',
+ *			bottom: 'blue',
+ *			left: 'red'
+ *		};
+ *
+ * @typedef {Object} module:engine/view/stylesmap~BoxSides
+ *
+ * @property {String} top Top side value.
+ * @property {String} right Right side value.
+ * @property {String} bottom Bottom side value.
+ * @property {String} left Left side value.
+ */
