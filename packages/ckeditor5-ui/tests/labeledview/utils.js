@@ -22,9 +22,6 @@ describe( 'LabeledView utils', () => {
 		locale = { t: val => val };
 	} );
 
-	afterEach( () => {
-	} );
-
 	describe( 'createLabeledInputText()', () => {
 		let labeledView;
 
