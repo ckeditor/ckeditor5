@@ -175,7 +175,7 @@ export default class TableEditing extends Plugin {
 			cancel();
 
 			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
+				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
 			} );
 		}
 	}
