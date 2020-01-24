@@ -59,7 +59,7 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
 }
 
 /**
- * Returns a string if all four values of box edges are equal.
+ * Returns a string if all four values of box sides are equal.
  *
  * If string is passed it is treated as a single value (pass-through).
  *
