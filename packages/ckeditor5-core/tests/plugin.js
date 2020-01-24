@@ -41,4 +41,72 @@ describe( 'Plugin', () => {
 			expect( stopListeningSpy.calledOnce ).to.equal( true );
 		} );
 	} );
+
+	describe( 'forceDisabled() / clearForceDisabled()', () => {
+		let plugin;
+
+		beforeEach( () => {
+			plugin = new Plugin( editor );
+		} );
+
+		afterEach( () => {
+			plugin.destroy();
+		} );
+
+		it( 'forceDisabled() should disable the plugin', () => {
+			plugin.forceDisabled( 'foo' );
+			plugin.isEnabled = true;
+
+			expect( plugin.isEnabled ).to.be.false;
+		} );
+
+		it( 'clearForceDisabled() should enable the plugin', () => {
+			plugin.forceDisabled( 'foo' );
+			plugin.clearForceDisabled( 'foo' );
+
+			expect( plugin.isEnabled ).to.be.true;
+		} );
+
+		it( 'clearForceDisabled() used with wrong identifier should not enable the plugin', () => {
+			plugin.forceDisabled( 'foo' );
+			plugin.clearForceDisabled( 'bar' );
+			plugin.isEnabled = true;
+
+			expect( plugin.isEnabled ).to.be.false;
+		} );
+
+		it( 'using forceDisabled() twice with the same identifier should not have any effect', () => {
+			plugin.forceDisabled( 'foo' );
+			plugin.forceDisabled( 'foo' );
+			plugin.clearForceDisabled( 'foo' );
+
+			expect( plugin.isEnabled ).to.be.true;
+		} );
+
+		it( 'plugin is enabled only after all disables were cleared', () => {
+			plugin.forceDisabled( 'foo' );
+			plugin.forceDisabled( 'bar' );
+			plugin.clearForceDisabled( 'foo' );
+			plugin.isEnabled = true;
+
+			expect( plugin.isEnabled ).to.be.false;
+
+			plugin.clearForceDisabled( 'bar' );
+
+			expect( plugin.isEnabled ).to.be.true;
+		} );
+
+		it( 'plugin should remain disabled if isEnabled has a callback disabling it', () => {
+			plugin.on( 'set:isEnabled', evt => {
+				evt.return = false;
+				evt.stop();
+			} );
+
+			plugin.forceDisabled( 'foo' );
+			plugin.clearForceDisabled( 'foo' );
+			plugin.isEnabled = true;
+
+			expect( plugin.isEnabled ).to.be.false;
+		} );
+	} );
 } );
