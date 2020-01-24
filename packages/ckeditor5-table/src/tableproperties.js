@@ -15,7 +15,7 @@ import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
  * The table properties feature.
  *
  * This is a "glue" plugin which loads the
- * {@link module:table/tableproperties/tablepropertiesediting~TableCellPropertiesEditing table editing feature} and
+ * {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table editing feature} and
  * table UI feature.
  *
  * @extends module:core/plugin~Plugin
