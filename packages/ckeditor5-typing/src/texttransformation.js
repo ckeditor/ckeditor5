@@ -10,8 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from './textwatcher';
 import { escapeRegExp } from 'lodash-es';
-import ForceDisabledMixin from '@ckeditor/ckeditor5-utils/src/forcedisabledmixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 // All named transformations.
 const TRANSFORMATIONS = {
@@ -197,8 +195,6 @@ export default class TextTransformation extends Plugin {
 		this._watchersStack.clear();
 	}
 }
-
-mix( TextTransformation, ForceDisabledMixin );
 
 // Normalizes the configuration `from` parameter value.
 // The normalized value for the `from` parameter is a RegExp instance. If the passed `from` is already a RegExp instance,
