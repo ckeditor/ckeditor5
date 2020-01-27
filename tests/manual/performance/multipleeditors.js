@@ -9,7 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { loadPerformanceData } from '../../_utils/utils';
 
-const editorCount = 6;
+const editorCount = 5;
 
 loadPerformanceData()
 	.then( fixtures => {
