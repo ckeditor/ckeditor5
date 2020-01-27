@@ -46,7 +46,7 @@ describe( 'Text transformation feature', () => {
 
 		beforeEach( () => {
 			return createEditorInstance().then( () => {
-				TextTransformationPlugin = editor.plugins.get( 'TextTransformation' );
+				TextTransformationPlugin = editor.plugins.get( TextTransformation );
 			} );
 		} );
 
@@ -64,23 +64,26 @@ describe( 'Text transformation feature', () => {
 			sinon.assert.calledOnce( enableWatchersSpy );
 		} );
 
-		it( 'should disable watchers when is disabled', () => {
+		it( 'should have active watchers when is enabled', () => {
+			const enableWatchersSpy = sinon.spy( TextTransformationPlugin, '_enableTransformationWatchers' );
+
+			TextTransformationPlugin.isEnabled = false;
+			TextTransformationPlugin.isEnabled = true;
+
+			expect( TextTransformationPlugin.isEnabled ).to.be.true;
+			expect( TextTransformationPlugin._watchersStack.size ).to.be.at.least( 1 );
+			sinon.assert.calledOnce( enableWatchersSpy );
+		} );
+
+		it( 'should not have active watchers when is disabled', () => {
 			const disableWatchersSpy = sinon.spy( TextTransformationPlugin, '_disableTransformationWatchers' );
 
 			TextTransformationPlugin.isEnabled = false;
 
-			sinon.assert.calledOnce( disableWatchersSpy );
-		} );
-
-		it( 'should have active watchers when is enabled', () => {
-			expect( TextTransformationPlugin.isEnabled ).to.be.true;
-			expect( TextTransformationPlugin._watchersStack.size ).to.be.at.least( 1 );
-		} );
-
-		it( 'should not have active watchers when is disabled', () => {
-			TextTransformationPlugin.isEnabled = false;
-
 			expect( TextTransformationPlugin.isEnabled ).to.be.false;
+
+			sinon.assert.calledOnce( disableWatchersSpy );
+
 			expect( TextTransformationPlugin._watchersStack.size ).to.be.equal( 0 );
 		} );
 	} );
@@ -208,7 +211,6 @@ describe( 'Text transformation feature', () => {
 			const plugin = editor.plugins.get( 'TextTransformation' );
 
 			expect( plugin.isEnabled ).to.be.false;
-			expect( plugin._watchersStack.size ).to.be.equal( 0 );
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
