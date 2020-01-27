@@ -204,11 +204,11 @@ describe( 'DecoupledEditor build', () => {
 			} );
 
 			it( 'font background color works', () => {
-				const data = '<p><span style="background-color:gold;">foo</span></p>';
+				const data = '<p><span style="background-color:hsl(60,75%,60%);">foo</span></p>';
 
 				editor.setData( data );
 				expect( editor.getData() ).to.equal( data );
-				expect( editor.model.document.selection.getAttribute( 'fontBackgroundColor' ) ).to.equal( 'gold' );
+				expect( editor.model.document.selection.getAttribute( 'fontBackgroundColor' ) ).to.equal( 'hsl(60,75%,60%)' );
 			} );
 
 			it( 'font color works', () => {
