@@ -8,8 +8,8 @@
 import AlignmentEditing from '../src/alignmentediting';
 import AlignmentUI from '../src/alignmentui';
 
-import alignLeftIcon from '../theme/icons/align-left.svg';
-import alignRightIcon from '../theme/icons/align-right.svg';
+import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 

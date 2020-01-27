@@ -13,10 +13,10 @@ import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src
 
 import { isSupported } from './utils';
 
-import alignLeftIcon from '../theme/icons/align-left.svg';
-import alignRightIcon from '../theme/icons/align-right.svg';
-import alignCenterIcon from '../theme/icons/align-center.svg';
-import alignJustifyIcon from '../theme/icons/align-justify.svg';
+import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
+import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
+import alignJustifyIcon from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
 
 const icons = new Map( [
 	[ 'left', alignLeftIcon ],
