@@ -11,6 +11,7 @@ import TextTransformation from '../src/texttransformation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -37,6 +38,54 @@ describe( 'Text transformation feature', () => {
 	it( 'has proper name', () => {
 		return createEditorInstance().then( () => {
 			expect( TextTransformation.pluginName ).to.equal( 'TextTransformation' );
+		} );
+	} );
+
+	describe( 'plugin', () => {
+		let TextTransformationPlugin, enableWatchersSpy, disableWatchersSpy;
+
+		beforeEach( () => {
+			TextTransformationPlugin = new TextTransformation( editor );
+			enableWatchersSpy = sinon.spy( TextTransformationPlugin, '_enableTransformationWatchers' );
+			disableWatchersSpy = sinon.spy( TextTransformationPlugin, '_disableTransformationWatchers' );
+
+			TextTransformationPlugin.init();
+		} );
+
+		it( 'should be enabled after initialization', () => {
+			expect( TextTransformationPlugin.isEnabled ).to.be.true;
+		} );
+
+		it( 'should initialize watchers after initialization', () => {
+			sinon.assert.calledOnce( enableWatchersSpy );
+		} );
+
+		it( 'should initialize watchers again when is enabled', () => {
+			sinon.assert.calledOnce( enableWatchersSpy );
+
+			TextTransformationPlugin.isEnabled = false;
+			TextTransformationPlugin.isEnabled = true;
+
+			sinon.assert.calledTwice( enableWatchersSpy );
+			expect( TextTransformationPlugin._watchersStack.size ).to.be.at.least( 1 );
+		} );
+
+		it( 'should disable watchers when is disabled', () => {
+			TextTransformationPlugin.isEnabled = false;
+
+			sinon.assert.calledOnce( disableWatchersSpy );
+		} );
+
+		it( 'should have active watchers when is enabled', () => {
+			expect( TextTransformationPlugin.isEnabled ).to.be.true;
+			expect( TextTransformationPlugin._watchersStack.size ).to.be.at.least( 1 );
+		} );
+
+		it( 'should not have active watchers when is disabled', () => {
+			TextTransformationPlugin.isEnabled = false;
+
+			expect( TextTransformationPlugin.isEnabled ).to.be.false;
+			expect( TextTransformationPlugin._watchersStack.size ).to.be.equal( 0 );
 		} );
 	} );
 
@@ -355,7 +404,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Typing, Paragraph, Bold, TextTransformation ]
+				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlockEditing ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
@@ -363,10 +412,6 @@ describe( 'Text transformation feature', () => {
 				model = editor.model;
 				doc = model.document;
 
-				model.schema.register( 'softBreak', {
-					allowWhere: '$text',
-					isInline: true
-				} );
 				editor.conversion.elementToElement( {
 					model: 'softBreak',
 					view: 'br'
