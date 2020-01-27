@@ -204,6 +204,19 @@ describe( 'Text transformation feature', () => {
 				.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
 		} );
 
+		it( 'should be disabled inside code blocks', () => {
+			setData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
+
+			simulateTyping( '1/2' );
+
+			const plugin = editor.plugins.get( 'TextTransformation' );
+
+			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin._watchersStack.size ).to.be.equal( 0 );
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
+		} );
+
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
