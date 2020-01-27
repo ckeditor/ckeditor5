@@ -116,7 +116,7 @@ export default class CodeBlock extends Plugin {
  *						// Use the "php-code" class for PHP code blocks.
  *						{ language: 'php', label: 'PHP', class: 'php-code' },
  *
- *						// Use only the "js" class for JavaScript code blocks.
+ * 						// Use the "js" class for JavaScript code blocks (the first class is defining).
  *						{ language: 'javascript', label: 'JavaScript', class: 'js javascript js-code' },
  *
  *						// Python code blocks will have the default "language-python" CSS class.

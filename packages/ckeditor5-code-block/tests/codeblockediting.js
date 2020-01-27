@@ -1041,6 +1041,7 @@ describe( 'CodeBlockEditing', () => {
 					} );
 			} );
 
+			// https://github.com/ckeditor/ckeditor5/issues/5924
 			it( 'should upcast using only the first class from config as a defining language class', () => {
 				return ClassicTestEditor.create( '<pre><code class="baz">foo</code></pre>', {
 					plugins: [ CodeBlockEditing ],
