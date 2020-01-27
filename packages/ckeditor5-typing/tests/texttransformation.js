@@ -42,49 +42,49 @@ describe( 'Text transformation feature', () => {
 	} );
 
 	describe( 'plugin', () => {
-		let TextTransformationPlugin;
+		let plugin;
 
 		beforeEach( () => {
 			return createEditorInstance().then( () => {
-				TextTransformationPlugin = editor.plugins.get( TextTransformation );
+				plugin = editor.plugins.get( TextTransformation );
 			} );
 		} );
 
 		it( 'should be enabled after initialization', () => {
-			TextTransformationPlugin.init();
+			plugin.init();
 
-			expect( TextTransformationPlugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).to.be.true;
 		} );
 
 		it( 'should initialize watchers after initialization', () => {
-			const enableWatchersSpy = sinon.spy( TextTransformationPlugin, '_enableTransformationWatchers' );
+			const enableWatchersSpy = sinon.spy( plugin, '_enableTransformationWatchers' );
 
-			TextTransformationPlugin.init();
+			plugin.init();
 
 			sinon.assert.calledOnce( enableWatchersSpy );
 		} );
 
 		it( 'should have active watchers when is enabled', () => {
-			const enableWatchersSpy = sinon.spy( TextTransformationPlugin, '_enableTransformationWatchers' );
+			const enableWatchersSpy = sinon.spy( plugin, '_enableTransformationWatchers' );
 
-			TextTransformationPlugin.isEnabled = false;
-			TextTransformationPlugin.isEnabled = true;
+			plugin.isEnabled = false;
+			plugin.isEnabled = true;
 
-			expect( TextTransformationPlugin.isEnabled ).to.be.true;
-			expect( TextTransformationPlugin._watchersStack.size ).to.be.at.least( 1 );
+			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin._watchersStack.size ).to.be.at.least( 1 );
 			sinon.assert.calledOnce( enableWatchersSpy );
 		} );
 
 		it( 'should not have active watchers when is disabled', () => {
-			const disableWatchersSpy = sinon.spy( TextTransformationPlugin, '_disableTransformationWatchers' );
+			const disableWatchersSpy = sinon.spy( plugin, '_disableTransformationWatchers' );
 
-			TextTransformationPlugin.isEnabled = false;
+			plugin.isEnabled = false;
 
-			expect( TextTransformationPlugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).to.be.false;
 
 			sinon.assert.calledOnce( disableWatchersSpy );
 
-			expect( TextTransformationPlugin._watchersStack.size ).to.be.equal( 0 );
+			expect( plugin._watchersStack.size ).to.be.equal( 0 );
 		} );
 	} );
 
