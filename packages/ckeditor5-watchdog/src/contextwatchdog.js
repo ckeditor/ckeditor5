@@ -57,6 +57,14 @@ export default class ContextWatchdog extends Watchdog {
 		 * @private
 		 * @member {Object|undefined} #_config
 		 */
+
+		this._destructor = context => context.destroy();
+
+		this._actionQueue.onEmpty( () => {
+			if ( this.state !== 'destroyed' ) {
+				this.state = 'ready';
+			}
+		} );
 	}
 
 	/**
@@ -82,19 +90,20 @@ export default class ContextWatchdog extends Watchdog {
 	 * Adds items to the watchdog. Internally watchdogs will be created for all of these items and they will be available
 	 *
 	 *
-	 * @param {Array.<Object.<string,module:watchdog/contextwatchdog~WatchdogItem>>} items
+	 * @param {Array.<Object.<string,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
 	 */
-	async add( items ) {
+	async add( itemConfigurations ) {
 		await this._actionQueue.enqueue( async () => {
 			if ( this.state === 'destroyed' ) {
-				throw new Error( 'Cannot add items do destroyed watchdog.' );
+				throw new Error( 'Cannot add items to destroyed watchdog.' );
 			}
 
 			if ( !this._context ) {
 				throw new Error( 'Context was not created yet. You should call the `ContextWatchdog#create()` method first.' );
 			}
 
-			await Promise.all( Object.entries( items ).map( async ( [ itemName, item ] ) => {
+			// Create new watchdogs.
+			await Promise.all( Object.entries( itemConfigurations ).map( async ( [ itemName, item ] ) => {
 				let watchdog;
 
 				if ( this._watchdogs.has( itemName ) ) {
@@ -118,8 +127,6 @@ export default class ContextWatchdog extends Watchdog {
 					throw new Error( `Not supported item type: '${ item.type }'.` );
 				}
 			} ) );
-
-			this.state = 'ready';
 		} );
 	}
 
@@ -156,7 +163,7 @@ export default class ContextWatchdog extends Watchdog {
 	 */
 	async create() {
 		await this._actionQueue.enqueue( async () => {
-			this._create( true );
+			await this._create( true );
 		} );
 	}
 
@@ -184,7 +191,7 @@ export default class ContextWatchdog extends Watchdog {
 			try {
 				await this._destroy( true );
 			} catch ( err ) {
-				console.error( 'An error happened during the editor destructing.', err );
+				console.error( 'An error happened during destructing.', err );
 			}
 
 			await this._create( true );
@@ -210,8 +217,6 @@ export default class ContextWatchdog extends Watchdog {
 						await watchdog.create( undefined, undefined, this._context );
 					} )
 			);
-
-			this.state = 'ready';
 		}, isInternal );
 	}
 
@@ -265,7 +270,6 @@ export default class ContextWatchdog extends Watchdog {
 		const watchdog = new this( watchdogConfig );
 
 		watchdog.setCreator( config => Context.create( config ) );
-		watchdog.setDestructor( context => context.destroy() );
 
 		watchdog.create();
 
@@ -284,6 +288,15 @@ class ActionQueue {
 		 * @type {WeakMap.<Function, Function>}
 		 */
 		this._resolveCallbacks = new WeakMap();
+
+		/**
+		 * @type {Array.<Function>}
+		 */
+		this._onEmptyCallbacks = [];
+	}
+
+	onEmpty( onEmptyCallback ) {
+		this._onEmptyCallbacks.push( onEmptyCallback );
 	}
 
 	/**
@@ -311,6 +324,7 @@ class ActionQueue {
 
 		while ( this._queuedActions.length ) {
 			const action = this._queuedActions[ 0 ];
+
 			const resolve = this._resolveCallbacks.get( action );
 
 			await action();
@@ -320,6 +334,10 @@ class ActionQueue {
 			if ( resolve ) {
 				resolve();
 			}
+		}
+
+		if ( this._queuedActions.length === 0 ) {
+			this._onEmptyCallbacks.forEach( cb => cb() );
 		}
 	}
 
@@ -334,10 +352,22 @@ class ActionQueue {
 }
 
 /**
- * @typedef {Object} WatchdogItem
+ * The WatchdogItemConfiguration interface
  *
- * @property {Function} creator
- * @property {Function} destructor
- * @property {String|HTMLElement} sourceElementOrData
- * @property {any} config
+ * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
+ */
+
+/**
+ * The EditorWatchdogConfiguration interface specifies how editors should be created and destroyed.
+ *
+ * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
+ *
+ * @property {Function} creator A function that needs to be called to initialize the editor.
+ *
+ * @property {Function} [destructor] A function that is responsible for destructing the editor.
+ *
+ * @property {String|HTMLElement} sourceElementOrData The source element or data which will be passed
+ * as the first argument to the `Editor.create()` method.
+ *
+ * @property {any} config An editor configuration.
  */

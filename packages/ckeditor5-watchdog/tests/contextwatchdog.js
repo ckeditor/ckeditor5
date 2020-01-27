@@ -41,6 +41,7 @@ describe( 'ContextWatchdog', () => {
 		mainWatchdog = ContextWatchdog.for( Context, {} );
 
 		await mainWatchdog.destroy();
+
 		let err;
 
 		try {
@@ -57,7 +58,7 @@ describe( 'ContextWatchdog', () => {
 		}
 
 		expect( err ).to.be.instanceOf( Error );
-		expect( err.message ).to.match( /Cannot add items do destroyed watchdog\./ );
+		expect( err.message ).to.match( /Cannot add items to destroyed watchdog\./ );
 	} );
 
 	it.skip( 'case: editor, contextItem', async () => {
@@ -222,7 +223,23 @@ describe( 'ContextWatchdog', () => {
 			await mainWatchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match( /There is no watchdog named: 'foo'./ );
+			expect( err.message ).to.match( /There is no watchdog named: 'foo'\./ );
+		} );
+
+		it( 'should throw when the item is added before the context is created', async () => {
+			const mainWatchdog = new ContextWatchdog( {}, {} );
+
+			let err;
+			try {
+				await mainWatchdog.add( {} );
+			} catch ( _err ) {
+				err = _err;
+			}
+
+			expect( err ).to.be.instanceOf( Error );
+			expect( err.message ).to.match(
+				/Context was not created yet\. You should call the `ContextWatchdog#create\(\)` method first\./
+			);
 		} );
 
 		it( 'should allow setting editor custom destructors', async () => {
