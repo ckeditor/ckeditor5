@@ -11,7 +11,7 @@ import TextTransformation from '../src/texttransformation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -417,7 +417,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlockEditing ]
+				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
