@@ -71,6 +71,11 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 
 		/**
+		 * @observable
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
 		 * A map of toolbar definitions.
 		 *
 		 * @protected
