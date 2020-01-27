@@ -11,11 +11,10 @@ import CodeBlock from '../../src/codeblock';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet, TextTransformation ],
+		plugins: [ Code, CodeBlock, Autoformat, Indent, ArticlePluginSet ],
 		toolbar: [
 			'heading', '|',
 			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', '|',
