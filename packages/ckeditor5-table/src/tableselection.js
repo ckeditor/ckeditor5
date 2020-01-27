@@ -91,6 +91,29 @@ export default class TableSelection extends Plugin {
 
 			this.stopSelection();
 		} );
+
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			const viewSelection = viewWriter.document.selection;
+
+			if ( this._isSelecting ) {
+				this.clearPreviousSelection();
+
+				for ( const tableCell of this.getSelection() ) {
+					const viewElement = conversionApi.mapper.toViewElement( tableCell );
+
+					viewWriter.addClass( 'selected', viewElement );
+					this._highlighted.add( viewElement );
+				}
+
+				const ranges = viewSelection.getRanges();
+				const from = Array.from( ranges );
+
+				viewWriter.setSelection( from, { fake: true, label: 'TABLE' } );
+			} else {
+				this.clearPreviousSelection();
+			}
+		}, { priority: 'lowest' } ) );
 	}
 
 	isSelectingBlaBla() {
@@ -171,39 +194,17 @@ export default class TableSelection extends Plugin {
 
 	redrawSelection() {
 		const editor = this.editor;
-		const mapper = editor.editing.mapper;
-		const view = editor.editing.view;
 		const model = editor.model;
 
 		const modelRanges = [];
 
-		const selected = [ ...this.getSelection() ];
-		const previous = [ ...this._highlighted.values() ];
-
-		this._highlighted.clear();
-
-		for ( const tableCell of selected ) {
-			const viewElement = mapper.toViewElement( tableCell );
+		for ( const tableCell of this.getSelection() ) {
 			modelRanges.push( model.createRangeOn( tableCell ) );
-
-			this._highlighted.add( viewElement );
 		}
 
 		// Update model's selection
 		model.change( writer => {
 			writer.setSelection( modelRanges );
-		} );
-
-		view.change( writer => {
-			for ( const previouslyHighlighted of previous ) {
-				if ( !selected.includes( previouslyHighlighted ) ) {
-					writer.removeClass( 'selected', previouslyHighlighted );
-				}
-			}
-
-			for ( const currently of this._highlighted ) {
-				writer.addClass( 'selected', currently );
-			}
 		} );
 	}
 
