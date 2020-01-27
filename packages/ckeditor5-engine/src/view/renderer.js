@@ -116,8 +116,6 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
-
-		this.renderSelection = true;
 	}
 
 	/**
@@ -233,11 +231,8 @@ export default class Renderer {
 			this._inlineFiller = null;
 		}
 
-		// TODO: Add temporary solution to pausing selection rendering.
-		if ( this.renderSelection ) {
-			this._updateSelection();
-			this._updateFocus();
-		}
+		this._updateSelection();
+		this._updateFocus();
 
 		this.markedTexts.clear();
 		this.markedAttributes.clear();

@@ -21,7 +21,6 @@ import FakeSelectionObserver from './observer/fakeselectionobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
-import SelectionRendererObserver from './observer/selectionrendererobserver';
 import InputObserver from './observer/inputobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -174,7 +173,6 @@ export default class View {
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
-		this.addObserver( SelectionRendererObserver );
 
 		if ( env.isAndroid ) {
 			this.addObserver( InputObserver );
