@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -183,6 +183,15 @@ CloudServices.Token = Token;
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#webSocketUrl
+ */
+
+/**
+ * Optional parameter used for integration with Cloud Services, when uploading the editor build to Cloud Services.
+ *
+ * Whenever the editor build or the configuration changes, this parameter should be set to a new, unique value, to differentiate
+ * the new bundle (build + configuration) from the old ones.
+ *
+ * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#bundleVersion
  */
 
 /**
