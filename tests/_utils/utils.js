@@ -34,12 +34,13 @@ export function loadPerformanceData() {
 
 	return Promise.all( predefinedFiles.map( fileName => getFileContents( fileName ) ) )
 		.then( responses => {
-			return {
-				small: responses[ 0 ],
-				medium: responses[ 1 ],
-				large: responses[ 2 ],
-				'small-inline-css': responses[ 3 ]
-			};
+			const returnValue = {};
+
+			for ( let i = 0; i < predefinedFiles.length; i++ ) {
+				returnValue[ predefinedFiles[ i ] ] = responses[ i ];
+			}
+
+			return returnValue;
 		} );
 
 	function getFileContents( fileName ) {
