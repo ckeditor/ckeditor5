@@ -42,35 +42,31 @@ describe( 'Text transformation feature', () => {
 	} );
 
 	describe( 'plugin', () => {
-		let TextTransformationPlugin, enableWatchersSpy, disableWatchersSpy;
+		let TextTransformationPlugin;
 
 		beforeEach( () => {
-			TextTransformationPlugin = new TextTransformation( editor );
-			enableWatchersSpy = sinon.spy( TextTransformationPlugin, '_enableTransformationWatchers' );
-			disableWatchersSpy = sinon.spy( TextTransformationPlugin, '_disableTransformationWatchers' );
-
-			TextTransformationPlugin.init();
+			return createEditorInstance().then( () => {
+				TextTransformationPlugin = editor.plugins.get( 'TextTransformation' );
+			} );
 		} );
 
 		it( 'should be enabled after initialization', () => {
+			TextTransformationPlugin.init();
+
 			expect( TextTransformationPlugin.isEnabled ).to.be.true;
 		} );
 
 		it( 'should initialize watchers after initialization', () => {
+			const enableWatchersSpy = sinon.spy( TextTransformationPlugin, '_enableTransformationWatchers' );
+
+			TextTransformationPlugin.init();
+
 			sinon.assert.calledOnce( enableWatchersSpy );
-		} );
-
-		it( 'should initialize watchers again when is enabled', () => {
-			sinon.assert.calledOnce( enableWatchersSpy );
-
-			TextTransformationPlugin.isEnabled = false;
-			TextTransformationPlugin.isEnabled = true;
-
-			sinon.assert.calledTwice( enableWatchersSpy );
-			expect( TextTransformationPlugin._watchersStack.size ).to.be.at.least( 1 );
 		} );
 
 		it( 'should disable watchers when is disabled', () => {
+			const disableWatchersSpy = sinon.spy( TextTransformationPlugin, '_disableTransformationWatchers' );
+
 			TextTransformationPlugin.isEnabled = false;
 
 			sinon.assert.calledOnce( disableWatchersSpy );
