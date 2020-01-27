@@ -35,7 +35,7 @@ function paragraphInTableCell() {
 }
 
 describe( 'downcast converters', () => {
-	let editor, model, doc, root, viewDocument;
+	let editor, model, doc, root, view;
 
 	testUtils.createSinonSandbox();
 
@@ -49,7 +49,7 @@ describe( 'downcast converters', () => {
 				model = editor.model;
 				doc = model.document;
 				root = doc.getRoot( 'main' );
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
 
 				defaultSchema( model.schema );
 				defaultConversion( editor.conversion );
@@ -60,7 +60,7 @@ describe( 'downcast converters', () => {
 		it( 'should create table with tbody', () => {
 			setModelData( model, modelTable( [ [ '' ] ] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -77,7 +77,7 @@ describe( 'downcast converters', () => {
 				[ '10' ]
 			], { headingRows: 1 } ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<thead>' +
@@ -97,7 +97,7 @@ describe( 'downcast converters', () => {
 				[ '10' ]
 			], { headingRows: 2 } ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<thead>' +
@@ -115,7 +115,7 @@ describe( 'downcast converters', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 3, headingRows: 1 } ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<thead>' +
@@ -134,7 +134,7 @@ describe( 'downcast converters', () => {
 				[ '<paragraph>00</paragraph><paragraph>foo</paragraph>', '01' ]
 			] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -164,7 +164,7 @@ describe( 'downcast converters', () => {
 				[ '<paragraph alignment="right">00</paragraph>' ]
 			] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -194,7 +194,7 @@ describe( 'downcast converters', () => {
 
 			setModelData( model, modelTable( [ [ '' ] ] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<table foo="bar">' +
 					'<tr><td><p></p></td></tr>' +
 				'</table>'
@@ -210,7 +210,7 @@ describe( 'downcast converters', () => {
 
 			setModelData( model, modelTable( [ [ '[]' ] ] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
@@ -228,7 +228,7 @@ describe( 'downcast converters', () => {
 				writer.wrap( range, wrapper );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<div>' +
 					'<figure class="table">' +
 						'<table>' +
@@ -248,7 +248,7 @@ describe( 'downcast converters', () => {
 					[ '10', '11', '12' ]
 				], { headingColumns: 2 } ) );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -266,7 +266,7 @@ describe( 'downcast converters', () => {
 					[ { colspan: 2, contents: '10' }, '12', '13' ]
 				], { headingColumns: 3 } ) );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -300,7 +300,7 @@ describe( 'downcast converters', () => {
 					[ '32', '33' ]
 				], { headingColumns: 3 } ) );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -323,7 +323,7 @@ describe( 'downcast converters', () => {
 						model = editor.model;
 						doc = model.document;
 						root = doc.getRoot( 'main' );
-						viewDocument = editor.editing.view;
+						view = editor.editing.view;
 
 						defaultSchema( model.schema );
 						defaultConversion( editor.conversion, true );
@@ -333,7 +333,7 @@ describe( 'downcast converters', () => {
 			it( 'should create table as a widget', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -366,7 +366,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ]
 			] ) );
@@ -388,7 +388,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ]
 			] ) );
@@ -402,7 +402,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -427,7 +427,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -453,7 +453,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -479,7 +479,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -502,7 +502,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { rowspan: 3, contents: '00' }, '01' ],
 				[ '22' ],
 				[ '' ]
@@ -530,7 +530,7 @@ describe( 'downcast converters', () => {
 				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { rowspan: 3, contents: '00', isHeading: true }, '01' ],
 				[ '22' ],
 				[ '' ],
@@ -546,7 +546,7 @@ describe( 'downcast converters', () => {
 						model = editor.model;
 						doc = model.document;
 						root = doc.getRoot( 'main' );
-						viewDocument = editor.editing.view;
+						view = editor.editing.view;
 
 						defaultSchema( model.schema );
 						defaultConversion( editor.conversion, true );
@@ -565,7 +565,7 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -600,7 +600,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 1 );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '', '01' ]
 			] ) );
 		} );
@@ -618,7 +618,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 1 );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { colspan: 2, contents: '00' }, '', '13' ]
 			] ) );
 		} );
@@ -636,7 +636,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { rowspan: 2, contents: '00' }, '', '13' ],
 				[ '', '11', '12' ]
 			] ) );
@@ -658,7 +658,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '', '01' ],
 				[ { colspan: 2, contents: '10' }, '11' ]
 			] ) );
@@ -679,7 +679,7 @@ describe( 'downcast converters', () => {
 				writer.remove( firstRow.getChild( 1 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { colspan: 2, contents: '00' } ],
 				[ '10', '11' ]
 			] ) );
@@ -693,7 +693,7 @@ describe( 'downcast converters', () => {
 						model = editor.model;
 						doc = model.document;
 						root = doc.getRoot( 'main' );
-						viewDocument = editor.editing.view;
+						view = editor.editing.view;
 
 						defaultSchema( model.schema );
 						defaultConversion( editor.conversion, true );
@@ -711,7 +711,7 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -743,7 +743,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 1, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { isHeading: true, contents: '00' }, '01' ],
 				[ { isHeading: true, contents: '10' }, '11' ]
 			], { headingColumns: 1 } ) );
@@ -761,7 +761,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 3, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
 				[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
 			] ) );
@@ -779,7 +779,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 1, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
 				[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
 			], { headingColumns: 3 } ) );
@@ -796,7 +796,7 @@ describe( 'downcast converters', () => {
 				writer.removeAttribute( 'headingColumns', table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -812,7 +812,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 1, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table" headingColumns="1">' +
 					'<table>' +
 						'<tbody>' +
@@ -841,7 +841,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[
 					{ isHeading: true, rowspan: 2, contents: '00' },
 					{ isHeading: true, contents: '01' },
@@ -872,7 +872,7 @@ describe( 'downcast converters', () => {
 						model = editor.model;
 						doc = model.document;
 						root = doc.getRoot( 'main' );
-						viewDocument = editor.editing.view;
+						view = editor.editing.view;
 
 						defaultSchema( model.schema );
 						defaultConversion( editor.conversion, true );
@@ -888,7 +888,7 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingRows', 1, table );
 				} );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -920,7 +920,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -940,7 +940,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -961,7 +961,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ],
@@ -981,7 +981,7 @@ describe( 'downcast converters', () => {
 				writer.removeAttribute( 'headingRows', table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -999,7 +999,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { headingRows: 2 } ) );
@@ -1015,7 +1015,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 1, table );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 				'<figure class="table" headingRows="1">' +
 					'<table>' +
 						'<tbody>' +
@@ -1044,7 +1044,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', tableRow, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '', '' ],
 				[ '00', '01' ],
 				[ '10', '11' ]
@@ -1070,7 +1070,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', tableRow, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '10', '11' ],
@@ -1086,7 +1086,7 @@ describe( 'downcast converters', () => {
 						model = editor.model;
 						doc = model.document;
 						root = doc.getRoot( 'main' );
-						viewDocument = editor.editing.view;
+						view = editor.editing.view;
 
 						defaultSchema( model.schema );
 						defaultConversion( editor.conversion, true );
@@ -1102,7 +1102,7 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingColumns', 1, table );
 				} );
 
-				assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ),
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1133,7 +1133,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 1 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ]
 			] ) );
 		} );
@@ -1150,7 +1150,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 0 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '10', '11' ]
 			] ) );
 		} );
@@ -1167,7 +1167,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 1 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ]
 			], { headingRows: 2 } ) );
 		} );
@@ -1184,7 +1184,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 0 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '10', '11' ]
 			], { headingRows: 2 } ) );
 		} );
@@ -1202,7 +1202,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 0 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '10', '11' ]
 			] ) );
 		} );
@@ -1219,7 +1219,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 1 ) );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00', '01' ]
 			], { headingRows: 1 } ) );
 		} );
@@ -1233,7 +1233,7 @@ describe( 'downcast converters', () => {
 					model = editor.model;
 					doc = model.document;
 					root = doc.getRoot( 'main' );
-					viewDocument = editor.editing.view;
+					view = editor.editing.view;
 
 					defaultSchema( model.schema );
 					defaultConversion( editor.conversion, true );
@@ -1247,7 +1247,7 @@ describe( 'downcast converters', () => {
 				[ '00[]' ]
 			] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '00' ]
 			], { asWidget: true } ) );
 
@@ -1263,7 +1263,7 @@ describe( 'downcast converters', () => {
 				writer.setSelection( nodeByPath.nextSibling, 0 );
 			} );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '<p>00</p><p></p>' ]
 			], { asWidget: true } ) );
 		} );
@@ -1276,7 +1276,7 @@ describe( 'downcast converters', () => {
 				[ '<paragraph foo="bar">00[]</paragraph>' ]
 			] ) );
 
-			assertEqualMarkup( getViewData( viewDocument, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 				[ '<p foo="bar">00</p>' ]
 			], { asWidget: true } ) );
 		} );
