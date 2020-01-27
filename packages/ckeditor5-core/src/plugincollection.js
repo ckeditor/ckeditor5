@@ -23,37 +23,56 @@ export default class PluginCollection {
 	/**
 	 * Creates an instance of the PluginCollection class.
 	 * Allows loading and initializing plugins and their dependencies.
+	 * Allows to provide a list of already loaded plugins, these plugins won't be destroyed along with this collection.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {module:core/editor/editor~Editor|module:core/context~Context} context
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
 	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
+	 * @param {Iterable.<Array>} contextPlugins List of already initialized plugins represented by a
+	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
-	constructor( editor, availablePlugins = [] ) {
+	constructor( context, availablePlugins = [], contextPlugins = [] ) {
 		/**
 		 * @protected
-		 * @member {module:core/editor/editor~Editor} module:core/plugin~PluginCollection#_editor
+		 * @type {module:core/editor/editor~Editor|module:core/context~Context}
 		 */
-		this._editor = editor;
+		this._context = context;
+
+		/**
+		 * @protected
+		 * @type {Map}
+		 */
+		this._plugins = new Map();
 
 		/**
 		 * Map of plugin constructors which can be retrieved by their names.
 		 *
 		 * @protected
-		 * @member {Map.<String|Function,Function>} module:core/plugin~PluginCollection#_availablePlugins
+		 * @type {Map.<String|Function,Function>}
 		 */
 		this._availablePlugins = new Map();
 
-		/**
-		 * @protected
-		 * @member {Map} module:core/plugin~PluginCollection#_plugins
-		 */
-		this._plugins = new Map();
-
 		for ( const PluginConstructor of availablePlugins ) {
-			this._availablePlugins.set( PluginConstructor, PluginConstructor );
+			if ( PluginConstructor.pluginName ) {
+				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
+			}
+		}
 
+		/**
+		 * Map of {@link module:core/contextplugin~ContextPlugin context plugins} which can be retrieved by their constructors or instances.
+		 *
+		 * @protected
+		 * @type {Map<Function,Function>}
+		 */
+		this._contextPlugins = new Map();
+
+		for ( const [ PluginConstructor, pluginInstance ] of contextPlugins ) {
+			this._contextPlugins.set( PluginConstructor, pluginInstance );
+			this._contextPlugins.set( pluginInstance, PluginConstructor );
+
+			// To make it possible to require plugin by its name.
 			if ( PluginConstructor.pluginName ) {
 				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
 			}
@@ -120,7 +139,7 @@ export default class PluginCollection {
 				pluginName = key.pluginName || key.name;
 			}
 
-			throw new CKEditorError( errorMsg, this._editor, { plugin: pluginName } );
+			throw new CKEditorError( errorMsg, this._context, { plugin: pluginName } );
 		}
 
 		return plugin;
@@ -157,7 +176,7 @@ export default class PluginCollection {
 	 */
 	init( plugins, removePlugins = [] ) {
 		const that = this;
-		const editor = this._editor;
+		const context = this._context;
 		const loading = new Set();
 		const loaded = [];
 
@@ -192,7 +211,7 @@ export default class PluginCollection {
 			// Log the error so it's more visible on the console. Hopefully, for better DX.
 			console.error( attachLinkToDocumentation( errorMsg ), { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, this._editor, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorMsg, context, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
@@ -246,6 +265,10 @@ export default class PluginCollection {
 					return promise;
 				}
 
+				if ( that._contextPlugins.has( plugin ) ) {
+					return promise;
+				}
+
 				return promise.then( plugin[ method ].bind( plugin ) );
 			}, Promise.resolve() );
 		}
@@ -258,19 +281,39 @@ export default class PluginCollection {
 					PluginConstructor.requires.forEach( RequiredPluginConstructorOrName => {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
 
+						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
+							/**
+							 * If a plugin is a `ContextPlugin` all plugins it requires should also be a `ContextPlugin`,
+							 * instead of `Plugin`. In other words, if one plugin can be used in the `Context`,
+							 * all its requirements also should be ready to be used in the`Context`. Note that context
+							 * provides only a part of the API provided by the editor. If one plugin needs a full
+							 * editor API, all plugins which require it, are considered as plugins which need a full
+							 * editor API.
+							 *
+							 * @error plugincollection-context-required
+							 * @param {String} plugin The name of the required plugin.
+							 * @param {String} requiredBy The name of the parent plugin.
+							 */
+							throw new CKEditorError(
+								'plugincollection-context-required: Context plugin can not require plugin which is not a context plugin',
+								null,
+								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
+							);
+						}
+
 						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
 							/**
 							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
 							 *
 							 * @error plugincollection-required
-							 * @param {Function} plugin The required plugin.
-							 * @param {Function} requiredBy The parent plugin.
+							 * @param {String} plugin The name of the required plugin.
+							 * @param {String} requiredBy The name of the parent plugin.
 							 */
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` option.',
-								editor,
-								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
+								context,
+								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
 						}
 
@@ -278,7 +321,7 @@ export default class PluginCollection {
 					} );
 				}
 
-				const plugin = new PluginConstructor( editor );
+				const plugin = that._contextPlugins.get( PluginConstructor ) || new PluginConstructor( context );
 				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
 
@@ -319,10 +362,13 @@ export default class PluginCollection {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		const promises = Array.from( this )
-			.map( ( [ , pluginInstance ] ) => pluginInstance )
-			.filter( pluginInstance => typeof pluginInstance.destroy == 'function' )
-			.map( pluginInstance => pluginInstance.destroy() );
+		const promises = [];
+
+		for ( const [ , pluginInstance ] of this ) {
+			if ( typeof pluginInstance.destroy == 'function' && !this._contextPlugins.has( pluginInstance ) ) {
+				promises.push( pluginInstance.destroy() );
+			}
+		}
 
 		return Promise.all( promises );
 	}
