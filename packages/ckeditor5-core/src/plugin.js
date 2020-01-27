@@ -50,7 +50,6 @@ export default class Plugin {
 		 *
 		 * You can also use {@link #forceDisabled} method.
 		 *
-		 *
 		 * @observable
 		 * @readonly
 		 * @member {Boolean} #isEnabled
