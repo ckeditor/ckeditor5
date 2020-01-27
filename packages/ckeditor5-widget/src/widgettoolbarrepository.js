@@ -71,23 +71,6 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 
 		/**
-		 * Flag indicating whether a plugin is enabled or disabled.
-		 * A disabled plugin won't show any toolbar.
-		 *
-		 * Plugin can be simply disabled like that:
-		 *
-		 *		// Disable the plugin so that no toolbars are visible.
-		 *		editor.plugins.get( 'WidgetToolbarRepository' ).isEnabled = false;
-		 *
-		 * You can also use {@link #forceDisabled} method.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #isEnabled
-		 */
-		this.set( 'isEnabled', true );
-
-		/**
 		 * A map of toolbar definitions.
 		 *
 		 * @protected
