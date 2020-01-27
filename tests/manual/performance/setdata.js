@@ -3,42 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { loadPerformanceData } from '../../_utils/utils';
+import { loadPerformanceData, createPerformanceEditor } from '../../_utils/utils';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet ],
-		toolbar: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'blockQuote',
-			'insertTable',
-			'mediaEmbed',
-			'undo',
-			'redo'
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
-
-loadPerformanceData()
+createPerformanceEditor( document.querySelector( '#editor' ) )
+	.then( loadPerformanceData )
 	.then( fixtures => {
 		const buttons = document.querySelectorAll( '#test-controls button' );
 

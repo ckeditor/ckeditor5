@@ -1,0 +1,33 @@
+<h2>The three greatest things
+	<span style="text-decoration: line-through; font-family: 'Trebuchet MS', Helvetica, sans-serif; font-size: 32px; background-color: #c2e0f4; color: #e03e2d;">You Learn from Traveling</span>
+</h2>
+
+<p>Like all the great things on
+	<span style="background-color: #fee7c0;">earth traveling teaches us</span>
+	by example. Here are some of the most precious lessons I&rsquo;ve
+	<span style="color: #e03e2d; font-family: helvetica, arial, sans-serif; font-size: 19px;">learned over the years of traveling</span>
+.</p>
+
+<figure class="media">
+	<oembed url="https://www.youtube.com/watch?v=CB70skVw3nU"></oembed>
+</figure>
+
+<h3>Appreciation of diversity</h3>
+
+<p>Getting used to an entirely different culture can be
+	challengi<span style="font-size: 11px;">ng. While it&rsquo;s also nice t</span>o
+	learn about cu<span style="font-size: 11px; font-family: 'Courier New', Courier, monospace;">ltures online or from boo</span>ks,
+	nothing comes close to experiencing cultural diversity in person. You learn to
+	<span style="background-color: #f8cac6;">appreciate each and every single</span>
+	one of
+	th<span style="text-decoration: underline;"><span style="color: #e67e23; text-decoration: underline;">e differences while you become</span> </span>more
+	culturally fluid.</p>
+<blockquote>
+
+	<p>The real voyage of
+		<span style="background-color: #c2e0f4;">discovery consists not in seeking new landscapes</span>,
+		but having new eyes.
+	</p>
+
+	<p><strong>Marcel Proust</strong></p>
+</blockquote>
