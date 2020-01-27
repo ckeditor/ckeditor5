@@ -50,6 +50,10 @@ describe( 'Text transformation feature', () => {
 			} );
 		} );
 
+		afterEach( () => {
+			plugin.destroy();
+		} );
+
 		it( 'should be enabled after initialization', () => {
 			plugin.init();
 
