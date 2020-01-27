@@ -22,6 +22,7 @@ import MergeCellsCommand from '../src/commands/mergecellscommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -224,7 +225,7 @@ describe( 'TableEditing', () => {
 
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -240,7 +241,7 @@ describe( 'TableEditing', () => {
 
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -253,8 +254,9 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) )
-					.to.equal( '<paragraph>[]</paragraph>' + formattedModelTable( [ [ '11', '12' ] ] ) );
+				assertEqualMarkup( getModelData( model ), '[]' + modelTable( [
+					[ '11', '12' ]
+				] ) );
 			} );
 
 			it( 'should move to next cell', () => {
@@ -266,7 +268,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '[12]' ]
 				] ) );
 			} );
@@ -278,7 +280,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				] ) );
@@ -295,7 +297,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '12[]' ]
 				] ) );
 			} );
@@ -308,7 +310,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '12' ],
 					[ '[21]', '22' ]
 				] ) );
@@ -321,7 +323,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[
 						'11',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
@@ -339,7 +341,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '<paragraph>[foo</paragraph><image></image>]' ]
 				] ) );
 			} );
@@ -359,7 +361,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '<blockQuote><paragraph>[foo]</paragraph></blockQuote>' ]
 				] ) );
 			} );
@@ -377,7 +379,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11[]', '12' ]
 				] ) );
 			} );
@@ -407,7 +409,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-					expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '[11]', '12' ]
 					] ) );
 
@@ -427,7 +429,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.notCalled( domEvtDataStub.preventDefault );
 					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 
-					expect( formatTable( getModelData( model ) ) ).to.equal( '[<block>foo</block>]' );
+					assertEqualMarkup( getModelData( model ), '[<block>foo</block>]' );
 
 					// Should not cancel event.
 					sinon.assert.calledOnce( spy );
@@ -452,8 +454,9 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) )
-					.to.equal( '<paragraph>[]</paragraph>' + formattedModelTable( [ [ '11', '12' ] ] ) );
+				assertEqualMarkup( getModelData( model ), '[]' + modelTable( [
+					[ '11', '12' ]
+				] ) );
 			} );
 
 			it( 'should move to previous cell', () => {
@@ -466,7 +469,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '[11]', '12' ]
 				] ) );
 			} );
@@ -478,8 +481,8 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal(
-					'<paragraph>foo</paragraph>' + formattedModelTable( [ [ '[]11', '12' ] ] )
+				assertEqualMarkup( getModelData( model ),
+					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]11', '12' ] ] )
 				);
 			} );
 
@@ -491,7 +494,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '11', '[12]' ],
 					[ '21', '22' ]
 				] ) );
@@ -504,7 +507,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[
 						'[11]',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
@@ -522,7 +525,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '<paragraph>[foo</paragraph><image></image>]', 'bar' ]
 				] ) );
 			} );
@@ -559,7 +562,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			expect( formatTable( getModelData( model ) ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should do nothing if table cell has already a block content', () => {
@@ -570,7 +573,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 		} );
@@ -597,7 +600,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]11' ]
 			] ) );
 		} );

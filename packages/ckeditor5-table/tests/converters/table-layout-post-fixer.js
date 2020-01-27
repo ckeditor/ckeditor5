@@ -8,8 +8,9 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../../src/tableediting';
-import { formatTable, formattedModelTable, modelTable } from './../_utils/utils';
+import { modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Table layout post-fixer', () => {
 	let editor, model, root;
@@ -43,7 +44,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '' ]
@@ -62,7 +63,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ '00', { rowspan: 2, contents: '10' }, '', '' ],
 				[ '10', { colspan: 2, contents: '12' } ],
 				[ '20', '21', '', '' ]
@@ -81,7 +82,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
@@ -100,7 +101,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
 				[ '20', '21', '22' ]
@@ -119,7 +120,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 2, contents: '11' }, '12' ],
 				[ '22' ]
@@ -147,22 +148,22 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			const expectedTableA = formattedModelTable( [
+			const expectedTableA = modelTable( [
 				[ '11', '' ],
 				[ '21', '22' ]
 			] );
-			const expectedTableB = formattedModelTable( [
+			const expectedTableB = modelTable( [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
-			const expectedTableC = formattedModelTable( [
+			const expectedTableC = modelTable( [
 				[ 'xx', '' ],
 				[ 'yy', 'yy' ]
 			] );
 
 			const expectedTables = expectedTableA + expectedTableB + expectedTableC;
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( expectedTables );
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), expectedTables );
 		} );
 
 		it( 'should not crash on table remove', () => {
@@ -190,13 +191,13 @@ describe( 'Table layout post-fixer', () => {
 				writer => _removeColumn( writer, 1, [ 0, 1 ] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				// Table should have added empty cells.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '' ],
 					[ 'a', 'b' ],
 					[ '10', '' ]
 				] ),
 				// Table will have empty column after undo.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '01', '' ],
 					[ 'a', 'b', '' ],
 					[ '10', '11', '' ]
@@ -212,13 +213,13 @@ describe( 'Table layout post-fixer', () => {
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				writer => _removeColumn( writer, 1, [ 0, 2 ] ),
 				// There should be empty cells added.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '' ],
 					[ 'a', 'b' ],
 					[ '10', '' ]
 				] ),
 				// Table will have empty column after undo.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '' ],
 					[ '10', '' ]
 				] ) );
@@ -233,13 +234,13 @@ describe( 'Table layout post-fixer', () => {
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				writer => _insertColumn( writer, 1, [ 0, 2 ] ),
 				// There should be empty cells added.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '', '01' ],
 					[ 'a', 'b', '' ],
 					[ '10', '', '11' ]
 				] ),
 				// Table will have empty column after undo.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '', '01' ],
 					[ '10', '', '11' ]
 				] ) );
@@ -254,13 +255,13 @@ describe( 'Table layout post-fixer', () => {
 				writer => _insertColumn( writer, 1, [ 0, 1 ] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				// There should be empty cells added.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '', '01' ],
 					[ 'a', 'b', '' ],
 					[ '10', '', '11' ]
 				] ),
 				// Table will have empty column after undo.
-				formattedModelTable( [
+				modelTable( [
 					[ '00', '01', '' ],
 					[ 'a', 'b', '' ],
 					[ '10', '11', '' ]
@@ -282,12 +283,12 @@ describe( 'Table layout post-fixer', () => {
 					_insertColumn( writer, 1, [ 1 ] );
 				},
 				// There should be empty cells added.
-				formattedModelTable( [
+				modelTable( [
 					[ { colspan: 4, contents: '00' }, '' ],
 					[ '10', '', '11', '', '12' ]
 				] ),
 				// Table will have empty column after undo.
-				formattedModelTable( [
+				modelTable( [
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '', '11', '12' ]
 				] ) );
@@ -308,12 +309,12 @@ describe( 'Table layout post-fixer', () => {
 					_insertColumn( writer, 3, [ 1 ] );
 				},
 				// There should be empty cells added.
-				formattedModelTable( [
+				modelTable( [
 					[ { colspan: 4, contents: '00' }, '' ],
 					[ '10', '', '11', '', '12' ]
 				] ),
 				// Table will have empty column after undo.
-				formattedModelTable( [
+				modelTable( [
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '11', '', '12' ]
 				] ) );
@@ -334,11 +335,11 @@ describe( 'Table layout post-fixer', () => {
 				writer => {
 					_removeRow( writer, 1 );
 				},
-				formattedModelTable( [
+				modelTable( [
 					[ '11', '12', '13' ],
 					[ '31', '32', '33' ]
 				], { headingRows: 1 } ),
-				formattedModelTable( [
+				modelTable( [
 					[ '11', { rowspan: 2, contents: '12' }, '13', '' ],
 					[ '31', '32', '33' ]
 				] ) );
@@ -358,11 +359,11 @@ describe( 'Table layout post-fixer', () => {
 					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
 					_removeAttribute( writer, 'rowspan', [ 0, 0, 1 ] );
 				},
-				formattedModelTable( [
+				modelTable( [
 					[ '11', '12', '13', '' ],
 					[ '31', '32', '33', '' ]
 				], { headingRows: 1 } ),
-				formattedModelTable( [
+				modelTable( [
 					[ '11', '12', '13', '' ],
 					[ '21', '23', '', '' ],
 					[ '31', '32', '33', '' ]
@@ -376,15 +377,15 @@ describe( 'Table layout post-fixer', () => {
 
 			model.enqueueChange( 'transparent', externalCallback );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after operations' ).to.equal( modelAfter );
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelAfter );
 
 			editor.execute( 'undo' );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after undo' ).to.equal( modelAfterUndo );
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelAfterUndo );
 
 			editor.execute( 'redo' );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after redo' ).to.equal( modelAfter );
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelAfter );
 		}
 
 		function _removeColumn( writer, columnIndex, rows ) {

@@ -9,7 +9,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import { defaultConversion, defaultSchema, formatTable, modelTable } from '../_utils/utils';
+import { modelTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
@@ -17,15 +19,11 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, Widget ]
+				plugins: [ TableEditing, Paragraph, ImageEditing, Widget ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-
-				defaultSchema( model.schema, false );
-
-				defaultConversion( editor.conversion, true );
 
 				// Since this part of test tests only view->model conversion editing pipeline is not necessary
 				// so defining model->view converters won't be necessary.
@@ -34,7 +32,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	function expectModel( data ) {
-		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable( data ) );
+		assertEqualMarkup( getModelData( model, { withoutSelection: true } ), data );
 	}
 
 	it( 'should convert table figure', () => {
@@ -551,11 +549,11 @@ describe( 'upcastTable()', () => {
 
 			expectModel(
 				'<table>' +
-					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
-					'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+				'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
 				'</table>'
 			);
 		} );

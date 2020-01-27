@@ -7,6 +7,8 @@
  * @module table/commands/utils
  */
 
+import { isObject } from 'lodash-es';
+
 /**
  * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
  *
@@ -54,4 +56,32 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
 	const tableCell = writer.createElement( 'tableCell', attributes );
 	writer.insertElement( 'paragraph', tableCell );
 	writer.insert( tableCell, insertPosition );
+}
+
+/**
+ * Returns a string if all four values of box sides are equal.
+ *
+ * If a string is passed, it is treated as a single value (pass-through).
+ *
+ *		// returns 'foo':
+ *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
+ *		getSingleValue( 'foo' );
+ *
+ *		// Returns undefined:
+ *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
+ *		getSingleValue( { top: 'foo', right: 'foo' } );
+ *
+ * @param objectOrString
+ * @returns {module:engine/view/stylesmap~BoxSides|String}
+ */
+export function getSingleValue( objectOrString ) {
+	if ( !objectOrString || !isObject( objectOrString ) ) {
+		return objectOrString;
+	}
+
+	const { top, right, bottom, left } = objectOrString;
+
+	if ( top == right && right == bottom && bottom == left ) {
+		return top;
+	}
 }
