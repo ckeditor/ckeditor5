@@ -29,6 +29,9 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
 ClassicEditor
@@ -56,6 +59,8 @@ ClassicEditor
 			RemoveFormat,
 			StandardEditingMode,
 			SpecialCharacters,
+			ImageUpload,
+			ImageResize,
 			WordCount
 		],
 		toolbar: {
@@ -99,12 +104,16 @@ ClassicEditor
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		},
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', 'imageTextAlternative' ]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		addWordCountListener( editor );
+		addUploadMockAdapter( editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -127,4 +136,10 @@ function addWordCountListener( editor ) {
 	} );
 
 	document.getElementById( 'word-count-wrapper' ).style.display = 'block';
+}
+
+function addUploadMockAdapter( editor ) {
+	editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+		return new UploadAdapterMock( loader );
+	};
 }
