@@ -21,29 +21,22 @@ describe( 'MouseObserver', () => {
 		view.destroy();
 	} );
 
-	it( 'should define domEventTypes', () => {
-		expect( observer.domEventType ).to.deep.equal( [
-			'mousedown',
-			'mousemove',
-			'mouseup',
-			'mouseleave'
-		] );
+	it( 'should define domEventType', () => {
+		expect( observer.domEventType ).to.equal( 'mousedown' );
 	} );
 
 	describe( 'onDomEvent', () => {
-		for ( const eventName of [ 'mousedown', 'mousemove', 'mouseup', 'mouseleave' ] ) {
-			it( `should fire ${ eventName } with the right event data`, () => {
-				const spy = sinon.spy();
+		it( 'should fire mousedown with the right event data', () => {
+			const spy = sinon.spy();
 
-				viewDocument.on( eventName, spy );
+			viewDocument.on( 'mousedown', spy );
 
-				observer.onDomEvent( { type: eventName, target: document.body } );
+			observer.onDomEvent( { type: 'mousedown', target: document.body } );
 
-				expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
 
-				const data = spy.args[ 0 ][ 1 ];
-				expect( data.domTarget ).to.equal( document.body );
-			} );
-		}
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+		} );
 	} );
 } );
