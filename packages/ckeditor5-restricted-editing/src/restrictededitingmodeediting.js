@@ -17,6 +17,8 @@ import {
 } from './restrictededitingmode/converters';
 import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
 
+const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
+
 /**
  * The Restricted Editing Mode editing feature.
  *
@@ -91,6 +93,23 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
+	}
+
+	/**
+	 * Makes the given command always enabled in the restricted editing mode (regardless
+	 * of selection location).
+	 *
+	 * To enable some commands in non-restricted areas of the content use
+	 * {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig#allowedCommands} configuration option.
+	 *
+	 * @param {String} commandName Name of the command to enable.
+	 */
+	enableCommand( commandName ) {
+		const command = this.editor.commands.get( commandName );
+
+		command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
+
+		this._alwaysEnabled.add( commandName );
 	}
 
 	/**
@@ -265,7 +284,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
-			command.clearForceDisabled( 'RestrictedEditingMode' );
+			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
 
@@ -280,7 +299,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			.map( name => editor.commands.get( name ) );
 
 		for ( const command of commands ) {
-			command.forceDisabled( 'RestrictedEditingMode' );
+			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
 
