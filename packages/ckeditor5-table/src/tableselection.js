@@ -12,8 +12,8 @@ import { findAncestor } from './commands/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import MouseSelectionObserver from './tableselection/mouseselectionobserver';
 
-// TODO: refactor to an Observer
 export default class TableSelection extends Plugin {
 	constructor( editor ) {
 		super( editor );
@@ -27,6 +27,8 @@ export default class TableSelection extends Plugin {
 		this.tableUtils = editor.plugins.get( 'TableUtils' );
 
 		const viewDocument = editor.editing.view.document;
+
+		editor.editing.view.addObserver( MouseSelectionObserver );
 
 		this.listenTo( viewDocument, 'keydown', () => {
 			if ( this.isSelectingBlaBla() ) {
