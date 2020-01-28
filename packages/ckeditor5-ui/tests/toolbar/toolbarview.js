@@ -443,12 +443,26 @@ describe( 'ToolbarView', () => {
 
 	describe( 'toolbar with a dynamic item grouping', () => {
 		let locale, view, groupedItems, ungroupedItems, groupedItemsDropdown;
+		let resizeCallback, observeSpy, unobserveSpy;
 
 		beforeEach( () => {
+			observeSpy = sinon.spy();
+			unobserveSpy = sinon.spy();
+
+			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+				resizeCallback = callback;
+
+				return {
+					observe: observeSpy,
+					unobserve: unobserveSpy
+				};
+			} );
+
 			locale = new Locale();
 			view = new ToolbarView( locale, {
 				shouldGroupWhenFull: true
 			} );
+
 			view.render();
 			view.element.style.width = '200px';
 			document.body.appendChild( view.element );
@@ -595,25 +609,18 @@ describe( 'ToolbarView', () => {
 		} );
 
 		describe( 'render()', () => {
-			let view, resizeObserverInstance, groupedItems, ungroupedItems;
+			let view, groupedItems, ungroupedItems;
 
 			beforeEach( () => {
-				function FakeResizeObserver( callback ) {
-					this._callback = callback;
-				}
-
-				FakeResizeObserver.prototype.observe = sinon.spy();
-				FakeResizeObserver.prototype.disconnect = sinon.spy();
-
-				testUtils.sinon.stub( global.window, 'ResizeObserver' ).value( FakeResizeObserver );
-
 				view = new ToolbarView( locale, {
 					shouldGroupWhenFull: true
 				} );
 
+				observeSpy.resetHistory();
+				unobserveSpy.resetHistory();
+
 				view.render();
 
-				resizeObserverInstance = view._behavior.resizeObserver;
 				groupedItems = view._behavior.groupedItems;
 				ungroupedItems = view._behavior.ungroupedItems;
 
@@ -626,8 +633,8 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'starts observing toolbar resize immediatelly after render', () => {
-				sinon.assert.calledOnce( resizeObserverInstance.observe );
-				sinon.assert.calledWithExactly( resizeObserverInstance.observe, view.element );
+				sinon.assert.calledOnce( observeSpy );
+				sinon.assert.calledWithExactly( observeSpy, view.element );
 			} );
 
 			it( 'updates the UI when the toolbar is being resized (expanding)', () => {
@@ -639,12 +646,18 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 				expect( ungroupedItems ).to.have.length( 1 );
 				expect( groupedItems ).to.have.length( 4 );
 
 				view.element.style.width = '500px';
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 
 				expect( ungroupedItems ).to.have.length( 5 );
 				expect( groupedItems ).to.have.length( 0 );
@@ -659,12 +672,18 @@ describe( 'ToolbarView', () => {
 				view.items.add( focusable() );
 				view.items.add( focusable() );
 
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 				expect( ungroupedItems ).to.have.length( 5 );
 				expect( groupedItems ).to.have.length( 0 );
 
 				view.element.style.width = '200px';
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 
 				expect( ungroupedItems ).to.have.length( 1 );
 				expect( groupedItems ).to.have.length( 4 );
@@ -682,11 +701,17 @@ describe( 'ToolbarView', () => {
 
 				sinon.spy( view._behavior, '_updateGrouping' );
 				view.element.style.width = '500px';
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 
 				sinon.assert.calledOnce( view._behavior._updateGrouping );
 				view.element.style.height = '500px';
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 
 				sinon.assert.calledOnce( view._behavior._updateGrouping );
 			} );
@@ -695,7 +720,10 @@ describe( 'ToolbarView', () => {
 				testUtils.sinon.spy( view._behavior, '_updateGrouping' );
 				sinon.assert.notCalled( view._behavior._updateGrouping );
 
-				resizeObserverInstance._callback( [ { contentRect: new Rect( view.element ) } ] );
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
 
 				sinon.assert.calledOnce( view._behavior._updateGrouping );
 			} );
@@ -726,7 +754,7 @@ describe( 'ToolbarView', () => {
 				sinon.assert.calledOnce( groupedItemsDropdown.destroy );
 			} );
 
-			it( 'disconnects the #resizeObserver', () => {
+			it( 'should destroy the #resizeObserver', () => {
 				view.element.style.width = '200px';
 
 				const itemA = focusable();
@@ -739,10 +767,10 @@ describe( 'ToolbarView', () => {
 				view.items.add( itemC );
 				view.items.add( itemD );
 
-				sinon.spy( view._behavior.resizeObserver, 'disconnect' );
+				sinon.spy( view._behavior.resizeObserver, 'destroy' );
 
 				view.destroy();
-				sinon.assert.calledOnce( view._behavior.resizeObserver.disconnect );
+				sinon.assert.calledOnce( view._behavior.resizeObserver.destroy );
 			} );
 		} );
 

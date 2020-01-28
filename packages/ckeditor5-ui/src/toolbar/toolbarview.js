@@ -14,7 +14,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
-import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -484,7 +484,7 @@ class DynamicGrouping {
 		 * **Note:** Created in {@link #_enableGroupingOnResize}.
 		 *
 		 * @readonly
-		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
 		 */
 		this.resizeObserver = null;
 
@@ -570,7 +570,7 @@ class DynamicGrouping {
 		// so let's make sure it's actually destroyed along with the toolbar.
 		this.groupedItemsDropdown.destroy();
 
-		this.resizeObserver.disconnect();
+		this.resizeObserver.destroy();
 	}
 
 	/**
@@ -673,15 +673,13 @@ class DynamicGrouping {
 		let previousWidth;
 
 		// TODO: Consider debounce.
-		this.resizeObserver = getResizeObserver( ( [ entry ] ) => {
+		this.resizeObserver = new ResizeObserver( this.viewElement, entry => {
 			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
 				this._updateGrouping();
 
 				previousWidth = entry.contentRect.width;
 			}
 		} );
-
-		this.resizeObserver.observe( this.viewElement );
 
 		this._updateGrouping();
 	}
