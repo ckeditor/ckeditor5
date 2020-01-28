@@ -11,7 +11,7 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import TableEditing from '../src/tableediting';
-import { formatTable, formattedModelTable, formattedViewTable, modelTable } from './_utils/utils';
+import { modelTable } from './_utils/utils';
 import InsertRowCommand from '../src/commands/insertrowcommand';
 import InsertTableCommand from '../src/commands/inserttablecommand';
 import InsertColumnCommand from '../src/commands/insertcolumncommand';
@@ -632,14 +632,14 @@ describe( 'TableEditing', () => {
 
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
 
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -654,7 +654,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -662,12 +662,12 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ '10', '11' ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
@@ -682,7 +682,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -690,12 +690,12 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
 			], { asWidget: true } ) );
@@ -710,7 +710,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '00', '01' ],
 				[ '10', '[]11' ]
 			] ) );
@@ -718,12 +718,12 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
 			], { asWidget: true } ) );
@@ -742,13 +742,13 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 2, 2 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, { contents: '02', isSelected: true } ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, { contents: '12', isSelected: true } ],
 				[ { contents: '20', isSelected: true }, { contents: '21', isSelected: true }, { contents: '22', isSelected: true } ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[
 					{ contents: '00', class: 'selected', isSelected: true },
 					{ contents: '01', class: 'selected', isSelected: true },
@@ -769,13 +769,13 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
 				[ '20', '21', '22' ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[
 					{ contents: '00', class: 'selected', isSelected: true },
 					{ contents: '01', class: 'selected', isSelected: true },
@@ -803,7 +803,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -813,12 +813,12 @@ describe( 'TableEditing', () => {
 
 			view.document.fire( 'mouseup', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ '10', '11' ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
@@ -826,7 +826,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ '10', '11' ]
 			] ) );
@@ -841,7 +841,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -851,12 +851,12 @@ describe( 'TableEditing', () => {
 
 			view.document.fire( 'mouseleave', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ '10', '11' ]
 			] ) );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
@@ -864,7 +864,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
 				[ '10', '11' ]
 			] ) );
@@ -879,7 +879,7 @@ describe( 'TableEditing', () => {
 			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousedown', domEvtDataStub );
 
-			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) + '<paragraph>foo</paragraph>' );
@@ -898,7 +898,7 @@ describe( 'TableEditing', () => {
 				writer.setSelection( writer.createRange( writer.createPositionAt( model.document.getRoot().getChild( 1 ), 0 ) ) );
 			} );
 
-			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+			expect( getViewData( view ) ).to.equal( modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { asWidget: true } ) + '<p>{}foo</p>' );
