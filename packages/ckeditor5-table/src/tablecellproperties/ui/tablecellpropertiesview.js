@@ -335,7 +335,7 @@ export default class TableCellPropertiesView extends View {
 			this.cancelButtonView
 		].forEach( view => {
 			// Register the view as focusable.
-			this._focusables.add( v );
+			this._focusables.add( view );
 
 			// Register the view in the focus tracker.
 			this.focusTracker.add( view.element );
