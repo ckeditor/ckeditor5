@@ -90,7 +90,7 @@ function selectionPostFixer( writer, model ) {
 		}
 	}
 
-	// Update the selection only when at least one range was fixed.
+	// If any of ranges were corrected update the selection.
 	if ( wasFixed ) {
 		writer.setSelection( mergeIntersectingRanges( ranges ), { backward: selection.isBackward } );
 	}
@@ -119,7 +119,7 @@ function tryFixingRange( range, schema ) {
 function tryFixingCollapsedRange( range, schema ) {
 	const originalPosition = range.start;
 
-	let nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
+	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
 
 	// This might be null ie when editor data is empty.
 	// In such cases there is no need to fix the selection range.
@@ -131,29 +131,11 @@ function tryFixingCollapsedRange( range, schema ) {
 		return nearestSelectionRange;
 	}
 
-	let fixedPosition = nearestSelectionRange.start;
-
-	const startLimitElement = schema.getLimitElement( originalPosition );
-
-	// TODO: beautify or unify with non-collapsed:
-	const shouldTryHarderFix = startLimitElement &&
-		fixedPosition.nodeAfter &&
-		!schema.checkChild( fixedPosition, '$text' ) &&
-		schema.isLimit( fixedPosition.nodeAfter );
-
-	if ( shouldTryHarderFix ) {
-		nearestSelectionRange = schema.getNearestSelectionRange( Position._createAt( fixedPosition.nodeAfter, 0 ) );
-		fixedPosition = nearestSelectionRange.start;
-	}
+	const fixedPosition = nearestSelectionRange.start;
 
 	// Fixed position is the same as original - no need to return corrected range.
 	if ( originalPosition.isEqual( fixedPosition ) ) {
 		return null;
-	}
-
-	// Check single node selection (happens in tables).
-	if ( fixedPosition.nodeAfter && schema.isLimit( fixedPosition.nodeAfter ) ) {
-		return new Range( fixedPosition, Position._createAfter( fixedPosition.nodeAfter ) );
 	}
 
 	return new Range( fixedPosition );
@@ -267,29 +249,29 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 	return startIsOnBlock || endIsOnBlock;
 }
 
+// Returns a minimal non-intersecting array of ranges.
+//
 // @param {Array.<module:engine/model/range~Range>} ranges
 // @returns {Array.<module:engine/model/range~Range>}
 function mergeIntersectingRanges( ranges ) {
-	// Do not modify original array.
-	const rangesCopy = [ ...ranges ];
-	const deIntersected = [];
+	const nonIntersectingRanges = [];
 
 	// First range will be always de-intersected.
-	deIntersected.push( rangesCopy.shift() );
+	nonIntersectingRanges.push( ranges.shift() );
 
-	for ( const range of rangesCopy ) {
-		if ( range.isIntersecting( deIntersected[ deIntersected.length - 1 ] ) ) {
-			const lastRange = deIntersected.pop();
+	for ( const range of ranges ) {
+		const previousRange = nonIntersectingRanges.pop();
 
-			const merged = new Range( lastRange.start, range.end );
-
-			deIntersected.push( merged );
+		if ( range.isIntersecting( previousRange ) ) {
+			const merged = new Range( previousRange.start, range.end );
+			nonIntersectingRanges.push( merged );
 		} else {
-			deIntersected.push( range );
+			nonIntersectingRanges.push( previousRange );
+			nonIntersectingRanges.push( range );
 		}
 	}
 
-	return deIntersected;
+	return nonIntersectingRanges;
 }
 
 // Checks if node exists and if it's an object.
