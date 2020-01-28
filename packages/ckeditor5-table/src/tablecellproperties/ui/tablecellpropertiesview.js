@@ -338,7 +338,7 @@ export default class TableCellPropertiesView extends View {
 			this._focusables.add( v );
 
 			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
+			this.focusTracker.add( view.element );
 		} );
 
 		// Mainly for closing using "Esc" and navigation using "Tab".
