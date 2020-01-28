@@ -50,14 +50,14 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * Specifies the state of the editor handled by the watchdog. The state can be one of the following values:
+		 * Specifies the state of the instance handled by the watchdog. The state can be one of the following values:
 		 *
-		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready,
-		 * * `ready` - a state when a user can interact with the editor,
+		 * * `initializing` - before the first initialization, and after crashes, before the instance is ready,
+		 * * `ready` - a state when a user can interact with the instance,
 		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
 		 * depending on how many and how frequency errors have been caught recently,
-		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
-		 * * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`
+		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the instance crashed,
+		 * * `destroyed` - a state when the instance is manually destroyed by the user after calling `watchdog.destroy()`
 		 *
 		 * @public
 		 * @observable
@@ -123,20 +123,29 @@ export default class Watchdog {
 	}
 
 	/**
-	 * @param {Function} creator
+	 * Sets the function that is responsible for the editor creation.
+	 *
+	 * @param {Function} creator A callback that takes source element or data as the first argument
+	 * and the editor configuration as the second argument and returns the promise that resolves
+	 * to the editor instance.
 	 */
 	setCreator( creator ) {
 		this._creator = creator;
 	}
 
 	/**
-	 * @param {Function} destructor
+	 * Sets the function that is responsible for the editor destruction.
+	 *
+	 * @param {Function} destructor A callback that takes the editor instance and returns the promise
+	 * to the destructing process.
 	 */
 	setDestructor( destructor ) {
 		this._destructor = destructor;
 	}
 
 	/**
+	 * Starts error handling by attaching global error handlers.
+	 *
 	 * @protected
 	 * @returns {Promise}
 	 */
@@ -146,6 +155,8 @@ export default class Watchdog {
 	}
 
 	/**
+	 * Stops error handling by detaching global error handlers.
+	 *
 	 * @protected
 	 * @returns {Promise}
 	 */
@@ -192,10 +203,10 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks whether the error should be handled.
+	 * Checks whether the error should be handled by the watchdog.
 	 *
 	 * @private
-	 * @param {Error} error Error
+	 * @param {Error} error An error that was caught by the error handling process.
 	 */
 	_shouldReactToError( error ) {
 		return (
@@ -215,7 +226,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the editor should be restarted or if it should be marked as crashed.
+	 * Checks if the watchdog should restart the underlying instance.
 	 */
 	_shouldRestart() {
 		if ( this.crashes.length <= this._crashNumberLimit ) {
@@ -245,13 +256,11 @@ mix( Watchdog, ObservableMixin );
  *
  * @typedef {Object} WatchdogConfig
  *
- * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor crashes
- * when the watchdog stops restarting the editor in case of errors.
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of instance crashes
+ * when the watchdog stops restarting the instance in case of errors.
  * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the instance. This prevents an infinite restart loop.
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last instance errors
  * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
- * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
- * Note that for large documents this might have an impact on the editor performance.
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the instance. This prevents an infinite restart loop.
  */

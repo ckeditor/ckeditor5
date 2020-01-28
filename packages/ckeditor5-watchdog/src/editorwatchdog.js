@@ -22,7 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class EditorWatchdog extends Watchdog {
 	/**
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
+	 * @param {module:watchdog/editorwatchdog~EditorWatchdogConfig} [config] The watchdog plugin configuration.
 	 */
 	constructor( config = {} ) {
 		super( config );
@@ -155,7 +155,7 @@ export default class EditorWatchdog extends Watchdog {
 	 *
 	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData]
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
-	 * @param {Object} [context]
+	 * @param {Object} [context] A context for the editor.
 	 *
 	 * @returns {Promise}
 	 */
@@ -180,7 +180,7 @@ export default class EditorWatchdog extends Watchdog {
 
 		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 		// when an error occurs in one of these editors, the watchdog will restart all of them.
-		this._config = this._cloneConfig( config ) || {};
+		this._config = this._cloneEditorConfiguration( config ) || {};
 
 		this._config.context = context;
 
@@ -208,6 +208,9 @@ export default class EditorWatchdog extends Watchdog {
 		return this._destroy();
 	}
 
+	/**
+	 * @private
+	 */
 	async _destroy() {
 		this._stopErrorHandling();
 
@@ -283,7 +286,13 @@ export default class EditorWatchdog extends Watchdog {
 		return areConnectedThroughProperties( this._editor, error.context, this._excludedProps );
 	}
 
-	_cloneConfig( config ) {
+	/**
+	 * A function used to clone the editor configuration
+	 *
+	 * @private
+	 * @param {Object} config
+	 */
+	_cloneEditorConfiguration( config ) {
 		return cloneDeepWith( config, ( value, key ) => {
 			// Leave DOM references.
 			if ( isElement( value ) ) {
@@ -325,17 +334,10 @@ export default class EditorWatchdog extends Watchdog {
 }
 
 /**
- * The watchdog plugin configuration.
+ * The editor watchdog plugin configuration.
  *
- * @typedef {Object} WatchdogConfig
+ * @typedef {WatchdogConfig} EditorWatchdogConfig
  *
- * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor crashes
- * when the watchdog stops restarting the editor in case of errors.
- * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors
- * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
  * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
  * Note that for large documents this might have an impact on the editor performance.
  */
