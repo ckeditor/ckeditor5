@@ -42,7 +42,10 @@ export default class SuperscriptUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( SUPERSCRIPT ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( SUPERSCRIPT );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );

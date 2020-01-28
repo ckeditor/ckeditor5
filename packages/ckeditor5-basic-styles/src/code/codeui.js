@@ -44,7 +44,10 @@ export default class CodeUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( CODE ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( CODE );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );

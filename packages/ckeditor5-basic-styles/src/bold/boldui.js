@@ -43,7 +43,10 @@ export default class BoldUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( BOLD ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( BOLD );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );
