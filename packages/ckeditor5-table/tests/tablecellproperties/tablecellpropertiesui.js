@@ -213,7 +213,7 @@ describe( 'table cell properties', () => {
 					const spy = testUtils.sinon.stub( editor, 'execute' );
 
 					tableCellPropertiesUI._undoStepBatch = 'foo';
-					tableCellPropertiesView.fire( 'change', 'borderStyle', 'dotted' );
+					tableCellPropertiesView.borderStyle = 'dotted';
 
 					sinon.assert.calledOnce( spy );
 					sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
@@ -222,8 +222,10 @@ describe( 'table cell properties', () => {
 				it( 'should not affect the editor state if internal property has changed', () => {
 					const spy = testUtils.sinon.stub( editor, 'execute' );
 
+					tableCellPropertiesView.set( 'internalProp', 'foo' );
+
 					tableCellPropertiesUI._undoStepBatch = 'foo';
-					tableCellPropertiesView.fire( 'change', 'internalProp', 'foo' );
+					tableCellPropertiesView.internalProp = 'bar';
 
 					sinon.assert.notCalled( spy );
 				} );

@@ -19,11 +19,6 @@ import { repositionContextualBalloon, getBalloonCellPositionData } from '../ui/u
 const DEFAULT_BORDER_STYLE = 'none';
 const DEFAULT_HORIZONTAL_ALIGNMENT = 'left';
 const DEFAULT_VERTICAL_ALIGNMENT = 'middle';
-const CELL_PROPERTIES = [
-	'borderStyle', 'borderColor', 'borderWidth',
-	'padding', 'backgroundColor',
-	'horizontalAlignment', 'verticalAlignment',
-];
 
 /**
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
@@ -154,21 +149,16 @@ export default class TableCellPropertiesUI extends Plugin {
 		} );
 
 		// Create the "UI -> editor data" binding.
-		// This listener updates the editor data (via table commands) when any observable
+		// These listeners update the editor data (via table commands) when any observable
 		// property of the view has changed. This makes the view live, which means the changes are
 		// visible in the editing as soon as the user types or changes fields' values.
-		view.on( 'change', ( evt, propertyName, newValue ) => {
-			// Not all observable properties of the #view must be related to the cell editing.
-			// For instance, they can belong to some internal logic.
-			if ( !CELL_PROPERTIES.includes( propertyName ) ) {
-				return;
-			}
-
-			editor.execute( propertyNameToCommandName( propertyName ), {
-				value: newValue,
-				batch: this._undoStepBatch
-			} );
-		} );
+		view.on( 'change:borderStyle', this._getPropertyChangeCallback( 'tableCellBorderStyle' ) );
+		view.on( 'change:borderColor', this._getPropertyChangeCallback( 'tableCellBorderColor' ) );
+		view.on( 'change:borderWidth', this._getPropertyChangeCallback( 'tableCellBorderWidth' ) );
+		view.on( 'change:padding', this._getPropertyChangeCallback( 'tableCellPadding' ) );
+		view.on( 'change:backgroundColor', this._getPropertyChangeCallback( 'tableCellBackgroundColor' ) );
+		view.on( 'change:horizontalAlignment', this._getPropertyChangeCallback( 'tableCellHorizontalAlignment' ) );
+		view.on( 'change:verticalAlignment', this._getPropertyChangeCallback( 'tableCellVerticalAlignment' ) );
 
 		return view;
 	}
@@ -268,13 +258,21 @@ export default class TableCellPropertiesUI extends Plugin {
 	get _isViewInBalloon() {
 		return this._balloon.hasView( this.view );
 	}
-}
 
-// Translates view's properties into command names.
-//
-//		'borderWidth' -> 'tableCellBorderWidth'
-//
-// @param {String} propertyName
-function propertyNameToCommandName( propertyName ) {
-	return `tableCell${ propertyName[ 0 ].toUpperCase() }${ propertyName.slice( 1 ) }`;
+	/**
+	 * Creates a callback that when executed upon {@link #view view's} property change
+	 * executes a related editor command with the new property value.
+	 *
+	 * @private
+	 * @param {String} commandName
+	 * @returns {Function}
+	 */
+	_getPropertyChangeCallback( commandName ) {
+		return ( evt, propertyName, newValue ) => {
+			this.editor.execute( commandName, {
+				value: newValue,
+				batch: this._undoStepBatch
+			} );
+		};
+	}
 }
