@@ -41,7 +41,7 @@ describe( 'Text transformation feature', () => {
 		} );
 	} );
 
-	describe( 'plugin', () => {
+	describe( '#isEnabled', () => {
 		let plugin;
 
 		beforeEach( () => {
@@ -55,17 +55,7 @@ describe( 'Text transformation feature', () => {
 		} );
 
 		it( 'should be enabled after initialization', () => {
-			plugin.init();
-
 			expect( plugin.isEnabled ).to.be.true;
-		} );
-
-		it( 'should initialize watchers after initialization', () => {
-			const enableWatchersSpy = sinon.spy( plugin, '_enableTransformationWatchers' );
-
-			plugin.init();
-
-			sinon.assert.calledOnce( enableWatchersSpy );
 		} );
 
 		it( 'should have active watchers when is enabled', () => {
