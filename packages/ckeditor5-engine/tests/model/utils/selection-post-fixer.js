@@ -100,7 +100,7 @@ describe( 'Selection post-fixer', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><image></image>' );
 		} );
 
-		describe( 'non-collapsed selection - table scenarios', () => {
+		describe( 'selection - table scenarios', () => {
 			beforeEach( () => {
 				setModelData( model,
 					'<paragraph>[]foo</paragraph>' +
@@ -195,6 +195,43 @@ describe( 'Selection post-fixer', () => {
 						'</tableRow>' +
 					'</table>]' +
 					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should fix #5 - collapsed selection between tables', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'[]' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
+							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
+							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>baz</paragraph>'
 				);
 			} );
 
@@ -1093,43 +1130,6 @@ describe( 'Selection post-fixer', () => {
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
-				);
-			} );
-
-			it( 'should fix selection between tables', () => {
-				setModelData( model,
-					'<paragraph>foo</paragraph>' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'[]' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
-							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>baz</paragraph>'
-				);
-
-				assertEqualMarkup( getModelData( model ),
-					'<paragraph>foo</paragraph>' +
-					'[<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>]' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
-							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>baz</paragraph>'
 				);
 			} );
 		} );
