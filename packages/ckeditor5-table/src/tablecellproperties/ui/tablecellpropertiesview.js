@@ -333,7 +333,7 @@ export default class TableCellPropertiesView extends View {
 			this.verticalAlignmentToolbar,
 			this.saveButtonView,
 			this.cancelButtonView
-		].forEach( v => {
+		].forEach( view => {
 			// Register the view as focusable.
 			this._focusables.add( v );
 
