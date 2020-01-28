@@ -28,13 +28,13 @@ The `@ckeditor/ckeditor5-special-characters` package provides special characters
 
 ## Adding a new special character category
 
-By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can define a new special characters category.
+You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
 <info-box warning>
     The "All" category name is reserved by the plugin and cannot be used as a new name for special characters category.
 </info-box>
 
-Let's create a simple plugin that provides the `Emoji` category in the special characters dropdown.
+For example, the following plugin adds the `Emoji` category in the special characters dropdown.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -111,23 +111,14 @@ npm install --save @ckeditor/ckeditor5-special-characters
 And add it to your plugin list configuration:
 
 ```js
-// The plugin provides API for management special characters and their categories.
+// Core plugin that provides the API for management special characters and their categories.
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-
-// `SpecialCharacters` does not provide any special character. They are delivered by another plugins.
-// You can import those ones that you want to use in the editor.
-import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
-import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical';
-import SpecialCharactersArrows from '@ckeditor/ckeditor5-special-characters/src/specialcharactersarrows';
-import SpecialCharactersLatin from '@ckeditor/ckeditor5-special-characters/src/specialcharacterslatin';
-import SpecialCharactersText from '@ckeditor/ckeditor5-special-characters/src/specialcharacterstext';
-
-// Or import the plugin combining basic set of characters. The imports above can be replaced with the `SpecialCharactersEssentials` plugin.
+// Plugin that combines the basic set of special characters.
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, ... ],
+		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
 		toolbar: [ 'specialCharacters', ... ],
 	} )
 	.then( ... )
