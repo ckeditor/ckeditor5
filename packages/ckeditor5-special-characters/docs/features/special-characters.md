@@ -17,13 +17,13 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 ## Special characters in the package
 
-The `@ckeditor/ckeditor5-special-characters` package provides a few basic special characters grouped into the following categories:
+The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
 - {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
 - {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
 - {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
 - {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – Mathematical special characters,
-- {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – Text special characters
+- {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
 - {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
 
 ## Adding a new special character category
