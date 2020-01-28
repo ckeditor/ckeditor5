@@ -42,7 +42,7 @@ ClassicEditor
 
 {@snippet features/code-block-custom-languages}
 
-By default, the CSS class of the `<code>` element in the data and editing is generated using the `language` property (prefixed with "language-"). You can customize it by specifying an optional `class` property:
+By default, the CSS class of the `<code>` element in the data and editing is generated using the `language` property (prefixed with "language-"). You can customize it by specifying an optional `class` property. You can set **multiple classes** but **only the first one** will be used as defining language class:
 
 ```js
 ClassicEditor
@@ -56,7 +56,8 @@ ClassicEditor
 				{ language: 'php', label: 'PHP', class: 'php-code' },
 
 				// Use the "js" class for JavaScript code blocks.
-				{ language: 'javascript', label: 'JavaScript', class: 'js' },
+				// Note that only the first ("js") class will determine the language of the block when loading data.
+				{ language: 'javascript', label: 'JavaScript', class: 'js javascript js-code' },
 
 				// Python code blocks will have the default "language-python" CSS class.
 				{ language: 'python', label: 'Python' }

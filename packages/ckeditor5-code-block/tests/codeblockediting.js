@@ -781,6 +781,38 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'should set multiple classes on the <code> if it was configured so', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ],
+					codeBlock: {
+						languages: [
+							{ language: 'javascript', label: 'JavaScript', class: 'language-js' },
+							{ language: 'swift', label: 'Swift', class: 'swift ios-code' },
+						]
+					}
+				} )
+				.then( editor => {
+					const model = editor.model;
+
+					setModelData( model,
+						'<codeBlock language="swift">foo</codeBlock>' +
+						'<codeBlock language="javascript">foo</codeBlock>'
+					);
+					expect( editor.getData() ).to.equal(
+						'<pre><code class="swift ios-code">foo</code></pre>' +
+						'<pre><code class="language-js">foo</code></pre>'
+					);
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'data pipeline v -> m conversion ', () => {
@@ -1007,6 +1039,48 @@ describe( 'CodeBlockEditing', () => {
 
 						return editor.destroy();
 					} );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/5924
+			it( 'should upcast using only the first class from config as a defining language class', () => {
+				// "baz" is the first class configured for the "baz" language.
+				return ClassicTestEditor.create( '<pre><code class="baz">foo</code></pre>', {
+					plugins: [ CodeBlockEditing ],
+					codeBlock: {
+						languages: [
+							{ language: 'foo', label: 'Foo', class: 'foo' },
+							{ language: 'baz', label: 'Baz', class: 'baz bar' },
+							{ language: 'qux', label: 'Qux', class: 'qux' },
+						]
+					}
+				} ).then( editor => {
+					model = editor.model;
+
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="baz">[]foo</codeBlock>' );
+
+					return editor.destroy();
+				} );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/5924
+			it( 'should not upcast if the class is not the first (defining) language class', () => {
+				// "bar" is the second class configured for the "baz" language.
+				return ClassicTestEditor.create( '<pre><code class="bar">foo</code></pre>', {
+					plugins: [ CodeBlockEditing ],
+					codeBlock: {
+						languages: [
+							{ language: 'foo', label: 'Foo', class: 'foo' },
+							{ language: 'baz', label: 'Baz', class: 'baz bar' },
+							{ language: 'qux', label: 'Qux', class: 'qux' },
+						]
+					}
+				} ).then( editor => {
+					model = editor.model;
+
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">[]foo</codeBlock>' );
+
+					return editor.destroy();
+				} );
 			} );
 		} );
 	} );

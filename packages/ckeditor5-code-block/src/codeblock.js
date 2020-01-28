@@ -51,7 +51,7 @@ export default class CodeBlock extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				codeBlock:  ... // The code block feature configuration.
+ *				codeBlock:  ... // The code block feature configuration.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -103,20 +103,22 @@ export default class CodeBlock extends Plugin {
  *
  *		<pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
  *
- * You can customize the CSS class by specifying an optional `class` property in the language definition:
+ * You can customize the CSS class by specifying an optional `class` property in the language definition.
+ * You can set **multiple classes** but **only the first one** will be used as defining language class:
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
  *				codeBlock: {
  *					languages: [
  *						// Do not render the CSS class for the plain text code blocks.
- * 						{ language: 'plaintext', label: 'Plain text', class: '' },
+ *						{ language: 'plaintext', label: 'Plain text', class: '' },
  *
  *						// Use the "php-code" class for PHP code blocks.
  *						{ language: 'php', label: 'PHP', class: 'php-code' },
  *
  *						// Use the "js" class for JavaScript code blocks.
- *						{ language: 'javascript', label: 'JavaScript', class: 'js' },
+ *						// Note that only the first ("js") class will determine the language of the block when loading data.
+ *						{ language: 'javascript', label: 'JavaScript', class: 'js javascript js-code' },
  *
  *						// Python code blocks will have the default "language-python" CSS class.
  *						{ language: 'python', label: 'Python' }
