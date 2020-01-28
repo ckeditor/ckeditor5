@@ -265,7 +265,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				assertEqualMarkup( getModelData( model ), '[]' + modelTable( [
+				assertEqualMarkup( getModelData( model ), '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
@@ -465,7 +465,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				assertEqualMarkup( getModelData( model ), '[]' + modelTable( [
+				assertEqualMarkup( getModelData( model ), '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
