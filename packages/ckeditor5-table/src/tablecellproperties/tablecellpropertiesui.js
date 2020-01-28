@@ -184,28 +184,17 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @private
 	 */
 	_fillViewFormFromCommandValues() {
-		const editor = this.editor;
-		const data = {};
+		const commands = this.editor.commands;
 
-		for ( const propertyName of CELL_PROPERTIES ) {
-			let value = editor.commands.get( propertyNameToCommandName( propertyName ) ).value;
-
-			if ( !value ) {
-				if ( propertyName === 'borderStyle' ) {
-					value = DEFAULT_BORDER_STYLE;
-				} else if ( propertyName === 'horizontalAlignment' ) {
-					value = DEFAULT_HORIZONTAL_ALIGNMENT;
-				} else if ( propertyName === 'verticalAlignment' ) {
-					value = DEFAULT_VERTICAL_ALIGNMENT;
-				} else {
-					value = '';
-				}
-			}
-
-			data[ propertyName ] = value;
-		}
-
-		this.view.set( data );
+		this.view.set( {
+			borderStyle: commands.get( 'tableCellBorderStyle' ).value || DEFAULT_BORDER_STYLE,
+			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
+			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
+			padding: commands.get( 'tableCellPadding' ).value || '',
+			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
+			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
+			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || DEFAULT_VERTICAL_ALIGNMENT,
+		} );
 	}
 
 	/**
