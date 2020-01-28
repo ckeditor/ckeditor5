@@ -92,7 +92,7 @@ To use both the image upload functionality and the file manager user interface i
 The easiest way to load the CKFinder library is to include the `<script>` tag loading the `ckfinder.js` file first:
 
 ```html
-<script src="https://example.com/ckfinder/ckfinder.js"></script>
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
 ```
 
 Then:
