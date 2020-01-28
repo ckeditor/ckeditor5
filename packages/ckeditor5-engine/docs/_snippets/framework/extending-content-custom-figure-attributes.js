@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals ClassicEditor,  console, window, document */
+/* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 

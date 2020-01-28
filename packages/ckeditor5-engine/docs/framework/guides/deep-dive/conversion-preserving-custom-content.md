@@ -158,7 +158,7 @@ function ConvertDivAttributes( editor ) {
 		}
 	} );
 
-	// Model-to-view converter for the <div> element (attrbiutes are converted separately).
+	// Model-to-view converter for the <div> element (attributes are converted separately).
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'div',
 		view: 'div'
@@ -297,7 +297,7 @@ class CustomFigureAttributes {
 	constructor( editor ) {
 		// Save reference to the editor.
 		this.editor = editor;
-}
+	}
 
 	/**
 	 * Setups conversion and extends table & image features schema.
