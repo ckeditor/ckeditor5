@@ -16,10 +16,13 @@ import getSubNodes from './utils/getsubnodes';
 
 /**
  * The Context Watchdog class.
+ *
+ * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
+ * how to use it.
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
-	 * @param {Object} [contextConfig] Context configuration.
+	 * @param {Object} [contextConfig] {@link module:core/context~Context} configuration.
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
 	constructor( contextConfig = {}, watchdogConfig = {} ) {
@@ -32,24 +35,33 @@ export default class ContextWatchdog extends Watchdog {
 		this._watchdogs = new Map();
 
 		/**
+		 * The current context instance.
+		 *
 		 * @private
 		 * @type {module:core/context~Context|null}
 		 */
 		this._context = null;
 
 		/**
+		 * Context props (nodes/references) that are gathered during the initial context creation
+		 * and are used to distinguish error origin.
+		 *
 		 * @private
 		 * @type {Set.<*>}
 		 */
 		this._contextProps = new Set();
 
 		/**
+		 * An action queue, which is used to handle async functions queuing.
+		 *
 		 * @private
 		 * @type {ActionQueue}
 		 */
 		this._actionQueue = new ActionQueue();
 
 		/**
+		 * Config for the {@link module:core/context~Context}.
+		 *
 		 * @private
 		 * @type {Object}
 		 */
@@ -62,6 +74,7 @@ export default class ContextWatchdog extends Watchdog {
 		 * @member {Object|undefined} #_config
 		 */
 
+		// Default destructor.
 		this._destructor = context => context.destroy();
 
 		this._actionQueue.onEmpty( () => {
@@ -82,19 +95,24 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns the watchdog for the added item by its name.
+	 * Returns the watchdog for the added item by its name. Depending on the item type
+	 * the instance can be retrieved from the watchdog.
 	 *
-	 * @param {String} name The watchdog name (the key under which the watchdog config was passed to the add() method).
+	 * 	const editorWatchdog = contextWatchdog.getWatchdog( 'editor1' );
+	 * 	const editor1 = editorWatchdog.editor;
+	 *
+	 * @param {String} name The item name (the key under which the item config was passed to the add() method).
 	 */
 	getWatchdog( name ) {
 		return this._watchdogs.get( name );
 	}
 
 	/**
-	 * Adds items to the watchdog. Internally watchdogs will be created for all of these items and they will be available
+	 * Adds items to the watchdog. Internally watchdogs will be created for these items and they will be available later using
+	 * the {@link #getWatchdog} method.
 	 *
-	 *
-	 * @param {Array.<Object.<string,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
+	 * @param {Array.<Object.<String,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
+	 * @returns {Promise}
 	 */
 	async add( itemConfigurations ) {
 		await this._actionQueue.enqueue( async () => {
@@ -135,9 +153,11 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * TODO
+	 * Removes item by its name from the created items. It destroys the internal watchdog for this item and remove
+	 * the item from the item list.
 	 *
 	 * @param {Array.<String>} itemNames
+	 * @returns {Promise}
 	 */
 	async remove( itemNames ) {
 		await this._actionQueue.enqueue( async () => {
@@ -157,6 +177,8 @@ export default class ContextWatchdog extends Watchdog {
 
 	/**
 	 * Waits for all previous actions.
+	 *
+	 * @returns {Promise}
 	 */
 	async waitForReady() {
 		await this._actionQueue.enqueue( () => { } );
@@ -164,6 +186,8 @@ export default class ContextWatchdog extends Watchdog {
 
 	/**
 	 * Creates the Context watchdog.
+	 *
+	 * @returns {Promise}
 	 */
 	async create() {
 		await this._actionQueue.enqueue( async () => {
@@ -174,6 +198,8 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Destroys the `ContextWatchdog` and all added items. This method can't be undone.
 	 * Once the `ContextWatchdog` is destroyed new items can not be added.
+	 *
+	 * @returns {Promise}
 	 */
 	async destroy() {
 		await this._actionQueue.enqueue( async () => {
@@ -206,6 +232,8 @@ export default class ContextWatchdog extends Watchdog {
 
 	/**
 	 * @protected
+	 * @param {Boolean} isInternal If the action is internal and should be invoked immediately.
+	 * @returns {Promise}
 	 */
 	async _create( isInternal = false ) {
 		await this._actionQueue.enqueue( async () => {
@@ -227,7 +255,8 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Destroys the Context and all added items.
 	 *
-	 * @param {Boolean} isInternal
+	 * @param {Boolean} isInternal If the action is internal and should be invoked immediately.
+	 * @returns {Promise}
 	 */
 	async _destroy( isInternal = false ) {
 		await this._actionQueue.enqueue( async () => {
@@ -252,6 +281,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * Checks whether the error comes from the Context and not from Editor or ContextItem instances.
 	 *
 	 * @param {Error} error
+	 * @returns {Boolean}
 	 */
 	_isErrorComingFromThisInstance( error ) {
 		for ( const watchdog of this._watchdogs.values() ) {
@@ -266,10 +296,10 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 *
 	 * @param {module:core/context~Context} Context
 	 * @param {Object} [contextConfig]
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig]
+	 * @returns {module:watchdog/contextwatchdog~ContextWatchdog}
 	 */
 	static for( Context, contextConfig, watchdogConfig ) {
 		const watchdog = new this( contextConfig, watchdogConfig );
@@ -282,6 +312,11 @@ export default class ContextWatchdog extends Watchdog {
 	}
 }
 
+/**
+ * An action queue is used to queue async functions.
+ *
+ * @private
+ */
 class ActionQueue {
 	constructor() {
 		/**
@@ -300,6 +335,11 @@ class ActionQueue {
 		this._onEmptyCallbacks = [];
 	}
 
+	/**
+	 * A method used to register callbacks that will be run when the queue becomes empty.
+	 *
+	 * @param {Function} onEmptyCallback A callback that will be run whenever the queue becomes empty.
+	 */
 	onEmpty( onEmptyCallback ) {
 		this._onEmptyCallbacks.push( onEmptyCallback );
 	}
@@ -308,8 +348,8 @@ class ActionQueue {
 	 * It adds asynchronous actions (functions) to the queue and runs them one by one.
 	 * If the `isInternal` option is passed then it runs the provided function immediately.
 	 *
-	 * @param {Function} action
-	 * @param {Boolean} isInternal
+	 * @param {Function} action A function that should be enqueued.
+	 * @param {Boolean} isInternal If the action is internal and should be invoked immediately.
 	 */
 	async enqueue( action, isInternal = false ) {
 		// Run all internal callbacks immediately.
