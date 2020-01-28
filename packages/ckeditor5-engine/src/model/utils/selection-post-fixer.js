@@ -121,14 +121,14 @@ function tryFixingCollapsedRange( range, schema ) {
 
 	let nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
 
-	// console.log( '-------------------' );
-	// console.log( range.start.path, range.end.path );
-	// console.log( nearestSelectionRange.start.path, nearestSelectionRange.end.path );
-
 	// This might be null ie when editor data is empty.
 	// In such cases there is no need to fix the selection range.
 	if ( !nearestSelectionRange ) {
 		return null;
+	}
+
+	if ( !nearestSelectionRange.isCollapsed ) {
+		return nearestSelectionRange;
 	}
 
 	let fixedPosition = nearestSelectionRange.start;

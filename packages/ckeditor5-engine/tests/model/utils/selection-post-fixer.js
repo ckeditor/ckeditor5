@@ -10,7 +10,7 @@ import { injectSelectionPostFixer } from '../../../src/model/utils/selection-pos
 import { getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe.only( 'Selection post-fixer', () => {
+describe( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {
 		it( 'is a function', () => {
 			expect( injectSelectionPostFixer ).to.be.a( 'function' );
@@ -1052,7 +1052,7 @@ describe.only( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
