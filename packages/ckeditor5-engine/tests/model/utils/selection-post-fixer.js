@@ -997,7 +997,7 @@ describe( 'Selection post-fixer', () => {
 		} );
 
 		describe( 'collapsed selection', () => {
-			it( 'should fix #1 - selection in limit element & before limit element', () => {
+			beforeEach( () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -1008,7 +1008,9 @@ describe( 'Selection post-fixer', () => {
 					'</table>' +
 					'<paragraph>bar</paragraph>'
 				);
+			} );
 
+			it( 'should fix #1 - selection in limit element & before limit element', () => {
 				// <table>[]<tableRow>...
 				model.change( writer => {
 					writer.setSelection(
@@ -1029,16 +1031,6 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #2 - selection in limit element & before limit+object element', () => {
-				setModelData( model,
-					'<paragraph>foo</paragraph>' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>bar</paragraph>'
-				);
 				// <table><tableRow>[]<tableCell>...
 				model.change( writer => {
 					const row = modelRoot.getChild( 1 ).getChild( 0 );
