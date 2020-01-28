@@ -57,29 +57,6 @@ describe( 'Text transformation feature', () => {
 		it( 'should be enabled after initialization', () => {
 			expect( plugin.isEnabled ).to.be.true;
 		} );
-
-		it( 'should have active watchers when is enabled', () => {
-			const enableWatchersSpy = sinon.spy( plugin, '_enableTransformationWatchers' );
-
-			plugin.isEnabled = false;
-			plugin.isEnabled = true;
-
-			expect( plugin.isEnabled ).to.be.true;
-			expect( plugin._watchersStack.size ).to.be.at.least( 1 );
-			sinon.assert.calledOnce( enableWatchersSpy );
-		} );
-
-		it( 'should not have active watchers when is disabled', () => {
-			const disableWatchersSpy = sinon.spy( plugin, '_disableTransformationWatchers' );
-
-			plugin.isEnabled = false;
-
-			expect( plugin.isEnabled ).to.be.false;
-
-			sinon.assert.calledOnce( disableWatchersSpy );
-
-			expect( plugin._watchersStack.size ).to.be.equal( 0 );
-		} );
 	} );
 
 	describe( 'transformations', () => {
