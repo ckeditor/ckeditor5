@@ -19,10 +19,11 @@ import getSubNodes from './utils/getsubnodes';
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
+	 * @param {Object} [contextConfig] Context configuration.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
-	constructor( config = {}, contextConfig = {} ) {
-		super( config );
+	constructor( contextConfig = {}, watchdogConfig = {} ) {
+		super( watchdogConfig );
 
 		/**
 		 * @protected
@@ -267,10 +268,11 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 *
 	 * @param {module:core/context~Context} Context
-	 * @param {module:watchdog/watchdog~WatchdogConfig} watchdogConfig
+	 * @param {Object} [contextConfig]
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig]
 	 */
-	static for( Context, watchdogConfig ) {
-		const watchdog = new this( watchdogConfig );
+	static for( Context, contextConfig, watchdogConfig ) {
+		const watchdog = new this( contextConfig, watchdogConfig );
 
 		watchdog.setCreator( config => Context.create( config ) );
 
