@@ -101,8 +101,7 @@ export default class TextTransformation extends Plugin {
 	 */
 	init() {
 		const model = this.editor.model;
-		const modelDocument = model.document;
-		const modelSelection = modelDocument.selection;
+		const modelSelection = model.document.selection;
 
 		/**
 		 * Holds a set of active {@link module:typing/textwatcher~TextWatcher}
@@ -116,12 +115,12 @@ export default class TextTransformation extends Plugin {
 			this.isEnabled ? this._enableTransformationWatchers() : this._disableTransformationWatchers();
 		} );
 
-		this._enableTransformationWatchers();
-
-		this.listenTo( modelDocument, 'change:data', () => {
-			// Disable plugin when typing in code block.
+		modelSelection.on( 'change:range', () => {
+			// Disable plugin when selection is inside a code block.
 			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
 		} );
+
+		this._enableTransformationWatchers();
 	}
 
 	/**
