@@ -241,7 +241,10 @@ export function createUIComponent( editor, commandName, label, icon ) {
 		buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 		// Execute command.
-		buttonView.on( 'execute', () => editor.execute( commandName ) );
+		buttonView.on( 'execute', () => {
+			editor.execute( commandName );
+			editor.editing.view.focus();
+		} );
 
 		return buttonView;
 	} );
