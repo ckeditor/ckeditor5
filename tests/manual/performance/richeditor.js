@@ -15,6 +15,7 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
@@ -45,6 +46,7 @@ ClassicEditor
 			Subscript,
 			Superscript,
 			Underline,
+			Code,
 			CodeBlock,
 			FontBackgroundColor,
 			FontColor,
@@ -73,6 +75,7 @@ ClassicEditor
 				'subscript',
 				'superscript',
 				'underline',
+				'code',
 				'alignment',
 				'link',
 				'removeFormat',
