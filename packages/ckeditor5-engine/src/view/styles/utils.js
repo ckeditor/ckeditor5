@@ -91,7 +91,7 @@ export function isURL( string ) {
 	return urlRegExp.test( string );
 }
 
-export function getTopRightBottomLeftValues( value = '' ) {
+export function getBoxSidesValues( value = '' ) {
 	if ( value === '' ) {
 		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
 	}
@@ -110,12 +110,12 @@ export function getTopRightBottomLeftValues( value = '' ) {
  * Default reducer for CSS properties that concerns edges of a box
  * [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notations:
  *
- *		stylesProcessor.setReducer( 'padding', getTopRightBottomLeftValueReducer( 'padding' ) );
+ *		stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
  *
  * @param {String} styleShorthand
  * @returns {Function}
  */
-export function getTopRightBottomLeftValueReducer( styleShorthand ) {
+export function getBoxSidesValueReducer( styleShorthand ) {
 	return value => {
 		const { top, right, bottom, left } = value;
 
@@ -138,7 +138,7 @@ export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getTopRightBottomLeftShorthandValue( value ) ] );
+			reduced.push( [ styleShorthand, getBoxSidesShorthandValue( value ) ] );
 		}
 
 		return reduced;
@@ -146,15 +146,16 @@ export function getTopRightBottomLeftValueReducer( styleShorthand ) {
 }
 
 /**
- * Returns a proper 1-to-4 value of a CSS [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation.
+ * Returns a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation
+ * of a CSS property value.
  *
- *		getTopRightBottomLeftShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
+ *		getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
  *		// will return '1px 1px 2px'
  *
- * @param {String} styleShorthand
+ * @param {module:engine/view/stylesmap~BoxSides} styleShorthand
  * @returns {Function}
  */
-export function getTopRightBottomLeftShorthandValue( { top, right, bottom, left } ) {
+export function getBoxSidesShorthandValue( { top, right, bottom, left } ) {
 	const out = [];
 
 	if ( left !== right ) {
@@ -182,7 +183,7 @@ export function getPositionShorthandNormalizer( shorthand ) {
 	return value => {
 		return {
 			path: shorthand,
-			value: getTopRightBottomLeftValues( value )
+			value: getBoxSidesValues( value )
 		};
 	};
 }
