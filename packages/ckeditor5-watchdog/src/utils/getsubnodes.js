@@ -12,6 +12,8 @@
 export default function getSubNodes( head, excludedProperties = new Set() ) {
 	const nodes = [ head ];
 
+	// @if CK_DEBUG_WATCHDOG // const prevNodeMap = new Map();
+
 	// Nodes are stored to prevent infinite looping.
 	const subNodes = new Set();
 
@@ -28,29 +30,54 @@ export default function getSubNodes( head, excludedProperties = new Set() ) {
 		if ( node[ Symbol.iterator ] ) {
 			// The custom editor iterators might cause some problems if the editor is crashed.
 			try {
-				nodes.push( ...node );
+				for ( const n of node ) {
+					nodes.push( n );
+
+					// @if CK_DEBUG_WATCHDOG // if ( !prevNodeMap.has( node[ key ] ) ) {
+					// @if CK_DEBUG_WATCHDOG // 	prevNodeMap.set( n, node );
+					// @if CK_DEBUG_WATCHDOG // }
+				}
 			} catch ( err ) {
+				// Do not log errors for broken structures
+				// since we are in the error handling process already.
 				// eslint-disable-line no-empty
 			}
 		} else {
-			nodes.push( ...Object.values( node ) );
+			for ( const key in node ) {
+				// We share references (objects) in the ProtobufFactory within the editors,
+				// hence the whole object should be skipped. Although, it's not a perfect
+				// solution since new places like that might occur in the future.
+				if ( key === 'nested' ) {
+					continue;
+				}
+
+				nodes.push( node[ key ] );
+
+				// @if CK_DEBUG_WATCHDOG // if ( !prevNodeMap.has( node[ key ] ) ) {
+				// @if CK_DEBUG_WATCHDOG // 	prevNodeMap.set( n, node );
+				// @if CK_DEBUG_WATCHDOG // }
+			}
 		}
 	}
+
+	// @if CK_DEBUG_WATCHDOG // return { subNodes, prevNodeMap };
 
 	return subNodes;
 }
 
 function shouldNodeBeSkipped( node ) {
 	const type = Object.prototype.toString.call( node );
+	const typeOfNode = typeof node;
 
 	return (
-		type === '[object Number]' ||
-		type === '[object Boolean]' ||
-		type === '[object String]' ||
-		type === '[object Symbol]' ||
-		type === '[object Function]' ||
+		typeOfNode === 'number' ||
+		typeOfNode === 'boolean' ||
+		typeOfNode === 'string' ||
+		typeOfNode === 'symbol' ||
+		typeOfNode === 'function' ||
 		type === '[object Date]' ||
 		type === '[object RegExp]' ||
+		type === '[object Module]' ||
 
 		node === undefined ||
 		node === null ||
