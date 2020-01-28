@@ -9,6 +9,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
 
 /**
@@ -31,6 +32,8 @@ export default class TextWatcher {
 		this.testCallback = testCallback;
 		this.hasMatch = false;
 
+		this.set( 'isEnabled', true );
+
 		this._startListening();
 	}
 
@@ -44,6 +47,11 @@ export default class TextWatcher {
 		const document = model.document;
 
 		this.listenTo( document.selection, 'change:range', ( evt, { directChange } ) => {
+			// Evaluate text before a selection only when TextWatcher is enabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -63,6 +71,11 @@ export default class TextWatcher {
 		} );
 
 		this.listenTo( document, 'change:data', ( evt, batch ) => {
+			// Evaluate text before a selection only when TextWatcher is enabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
@@ -127,4 +140,4 @@ export default class TextWatcher {
 	}
 }
 
-mix( TextWatcher, EmitterMixin );
+mix( TextWatcher, EmitterMixin, ObservableMixin );
