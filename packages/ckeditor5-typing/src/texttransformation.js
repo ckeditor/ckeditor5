@@ -103,18 +103,6 @@ export default class TextTransformation extends Plugin {
 		const model = this.editor.model;
 		const modelSelection = model.document.selection;
 
-		/**
-		 * Holds a set of active {@link module:typing/textwatcher~TextWatcher}
-		 *
-		 * @type {Set.<TextWatcher>}
-		 * @private
-		 */
-		this._watchersStack = new Set();
-
-		this.on( 'change:isEnabled', () => {
-			this.isEnabled ? this._enableTransformationWatchers() : this._disableTransformationWatchers();
-		} );
-
 		modelSelection.on( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
 			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
@@ -175,23 +163,9 @@ export default class TextTransformation extends Plugin {
 				} );
 			};
 
-			this._watchersStack.add( watcher );
-
 			watcher.on( 'matched:data', watcherCallback );
+			watcher.bind( 'isEnabled' ).to( this );
 		}
-	}
-
-	/**
-	 * Disable each running TextWatcher and clear the set of enabled watchers after all.
-	 *
-	 * @private
-	 */
-	_disableTransformationWatchers() {
-		this._watchersStack.forEach( watcher => {
-			watcher.stopListening();
-		} );
-
-		this._watchersStack.clear();
 	}
 }
 
