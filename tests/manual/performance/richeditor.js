@@ -32,6 +32,7 @@ import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/stan
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
@@ -63,7 +64,8 @@ ClassicEditor
 			SpecialCharacters,
 			ImageUpload,
 			ImageResize,
-			WordCount
+			WordCount,
+			IndentBlock
 		],
 		toolbar: {
 			items: [
