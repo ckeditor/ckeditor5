@@ -34,6 +34,16 @@ export default class TextWatcher {
 
 		this.set( 'isEnabled', true );
 
+		// Toggle text watching on isEnabled state change.
+		this.on( 'change:isEnabled', () => {
+			if ( this.isEnabled ) {
+				this._startListening();
+			} else {
+				this.stopListening( model.document.selection );
+				this.stopListening( model.document );
+			}
+		} );
+
 		this._startListening();
 	}
 
@@ -47,11 +57,6 @@ export default class TextWatcher {
 		const document = model.document;
 
 		this.listenTo( document.selection, 'change:range', ( evt, { directChange } ) => {
-			// Evaluate text before a selection only when TextWatcher is enabled.
-			if ( !this.isEnabled ) {
-				return;
-			}
-
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -71,11 +76,6 @@ export default class TextWatcher {
 		} );
 
 		this.listenTo( document, 'change:data', ( evt, batch ) => {
-			// Evaluate text before a selection only when TextWatcher is enabled.
-			if ( !this.isEnabled ) {
-				return;
-			}
-
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
