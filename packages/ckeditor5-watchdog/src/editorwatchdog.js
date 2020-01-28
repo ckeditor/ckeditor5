@@ -94,8 +94,7 @@ export default class EditorWatchdog extends Watchdog {
 	 *
 	 *		watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
 	 *
-	 * @abstract
-	 * @method setCreator
+	 * @method #setCreator
 	 * @param {Function} creator
 	 */
 
@@ -114,8 +113,7 @@ export default class EditorWatchdog extends Watchdog {
 	 *				} );
 	 *		} );
 	 *
-	 * @abstract
-	 * @method setDestructor
+	 * @method #setDestructor
 	 * @param {Function} destructor
 	 */
 

@@ -88,8 +88,7 @@ export default class Watchdog {
 		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
 		/**
-		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
-		 * and restarts the editor.
+		 * Checks if the event error comes from the underlying instance and restarts the instance.
 		 *
 		 * @private
 		 * @type {Function}
@@ -123,20 +122,18 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for the editor creation.
+	 * Sets the function that is responsible for the instance creation.
 	 *
-	 * @param {Function} creator A callback that takes source element or data as the first argument
-	 * and the editor configuration as the second argument and returns the promise that resolves
-	 * to the editor instance.
+	 * @param {Function} creator A callback returning promise that is responsible for instance creation.
 	 */
 	setCreator( creator ) {
 		this._creator = creator;
 	}
 
 	/**
-	 * Sets the function that is responsible for the editor destruction.
+	 * Sets the function that is responsible for the instance destruction.
 	 *
-	 * @param {Function} destructor A callback that takes the editor instance and returns the promise
+	 * @param {Function} destructor A callback that takes the instance and returns the promise
 	 * to the destructing process.
 	 */
 	setDestructor( destructor ) {
@@ -166,8 +163,8 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the error comes from the editor that is handled by the watchdog (by checking the error context) and
-	 * restarts the editor. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
+	 * Checks if the error comes from the instance that is handled by the watchdog  and
+	 * restarts it. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
 	 * @private
 	 * @fires error
@@ -176,7 +173,7 @@ export default class Watchdog {
 	 */
 	_handleError( error, evt ) {
 		// @if CK_DEBUG // if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
-		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
+		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper instance.' );
 		// @if CK_DEBUG // }
 
 		if ( this._shouldReactToError( error ) ) {
