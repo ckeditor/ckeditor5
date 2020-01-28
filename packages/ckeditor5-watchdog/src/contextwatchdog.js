@@ -14,6 +14,9 @@ import EditorWatchdog from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import getSubNodes from './utils/getsubnodes';
 
+/**
+ * The Context Watchdog class.
+ */
 export default class ContextWatchdog extends Watchdog {
 	/**
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
@@ -336,9 +339,7 @@ class ActionQueue {
 			}
 		}
 
-		if ( this._queuedActions.length === 0 ) {
-			this._onEmptyCallbacks.forEach( cb => cb() );
-		}
+		this._onEmptyCallbacks.forEach( cb => cb() );
 	}
 
 	/**

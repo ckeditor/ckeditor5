@@ -211,4 +211,22 @@ describe( 'areConnectedThroughProperties()', () => {
 
 		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
 	} );
+
+	it( 'should skip excluded properties', () => {
+		const shared = { foo: [] };
+		const el1 = { shared };
+		const el2 = { shared };
+
+		expect( areConnectedThroughProperties( el1, el2, new Set( [ shared ] ) ) ).to.be.false;
+	} );
+
+	it( 'should skip excluded properties #2', () => {
+		const shared = {};
+		const sharedNotExcluded = {};
+
+		const el1 = { shared, sharedNotExcluded };
+		const el2 = { shared, sharedNotExcluded };
+
+		expect( areConnectedThroughProperties( el1, el2, new Set( [ shared ] ) ) ).to.be.true;
+	} );
 } );
