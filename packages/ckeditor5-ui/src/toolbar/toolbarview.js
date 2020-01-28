@@ -507,7 +507,7 @@ class DynamicGrouping {
 		 * **Note:** Created in {@link #_enableGroupingOnResize}.
 		 *
 		 * @readonly
-		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
 		 */
 		this.resizeObserver = null;
 
@@ -594,7 +594,7 @@ class DynamicGrouping {
 		// so let's make sure it's actually destroyed along with the toolbar.
 		this.groupedItemsDropdown.destroy();
 
-		this.resizeObserver.disconnect();
+		this.resizeObserver.destroy();
 	}
 
 	/**
