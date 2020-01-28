@@ -43,7 +43,10 @@ export default class BlockQuoteUI extends Plugin {
 			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( buttonView, 'execute', () => editor.execute( 'blockQuote' ) );
+			this.listenTo( buttonView, 'execute', () => {
+				editor.execute( 'blockQuote' );
+				editor.editing.view.focus();
+			} );
 
 			return buttonView;
 		} );
