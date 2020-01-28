@@ -10,16 +10,33 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 /**
  * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
-function CustomFigureAttributes( editor ) {
-	// Define on which elements the CSS classes should be preserved:
-	setupCustomClassConversion( 'img', 'image', editor );
-	setupCustomClassConversion( 'table', 'table', editor );
+class CustomFigureAttributes {
+	/**
+	 * Plugin's constructor - receives editor instance on creation.
+	 */
+	constructor( editor ) {
+		// Save reference to the editor.
+		this.editor = editor;
+	}
 
-	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
+	/**
+	 * Setups conversion and extends table & image features schema.
+	 *
+	 * Schema extending must be done in the “afterInit()” call because plugins define their schema in “init()“.
+	 */
+	afterInit() {
+		const editor = this.editor;
 
-	// Define custom attributes that should be preserved.
-	setupCustomAttributeConversion( 'img', 'image', 'id', editor );
-	setupCustomAttributeConversion( 'table', 'table', 'id', editor );
+		// Define on which elements the CSS classes should be preserved:
+		setupCustomClassConversion( 'img', 'image', editor );
+		setupCustomClassConversion( 'table', 'table', editor );
+
+		editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
+
+		// Define custom attributes that should be preserved.
+		setupCustomAttributeConversion( 'img', 'image', 'id', editor );
+		setupCustomAttributeConversion( 'table', 'table', 'id', editor );
+	}
 }
 
 /**
