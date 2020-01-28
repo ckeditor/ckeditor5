@@ -212,7 +212,7 @@ describe( 'ResizeObserver()', () => {
 			expect( () => {
 				observerA.destroy();
 				observerA.destroy();
-			} ).should.not.throw;
+			} ).to.not.throw();
 		} );
 	} );
 

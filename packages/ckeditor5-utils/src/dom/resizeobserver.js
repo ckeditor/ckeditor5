@@ -114,16 +114,19 @@ export default class ResizeObserver {
 	static _deleteElementCallback( element, callback ) {
 		const callbacks = ResizeObserver._getElementCallbacks( element );
 
-		// Remove the element callback.
-		callbacks.delete( callback );
+		// Remove the element callback. Check if exist first in case someone
+		// called destroy() twice.
+		if ( callbacks ) {
+			callbacks.delete( callback );
 
-		// If no callbacks left for the element, also remove the element.
-		if ( !callbacks.size ) {
-			ResizeObserver._elementCallbacks.delete( element );
-			ResizeObserver._observerInstance.unobserve( element );
+			// If no callbacks left for the element, also remove the element.
+			if ( !callbacks.size ) {
+				ResizeObserver._elementCallbacks.delete( element );
+				ResizeObserver._observerInstance.unobserve( element );
+			}
 		}
 
-		if ( !ResizeObserver._elementCallbacks.size ) {
+		if ( ResizeObserver._elementCallbacks && !ResizeObserver._elementCallbacks.size ) {
 			ResizeObserver._observerInstance = null;
 			ResizeObserver._elementCallbacks = null;
 		}
