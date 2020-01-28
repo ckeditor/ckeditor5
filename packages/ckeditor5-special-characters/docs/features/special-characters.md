@@ -15,52 +15,6 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 {@snippet features/special-characters}
 
-## Installation
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-special-characters`](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-special-characters
-```
-
-And add it to your plugin list configuration:
-
-```js
-// The plugin provides API for management special characters and their categories. 
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-
-// `SpecialCharacters` does not provide any special character. They are delivered by another plugins.
-// You can import those ones that you want to use in the editor.
-import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
-import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical';
-import SpecialCharactersArrows from '@ckeditor/ckeditor5-special-characters/src/specialcharactersarrows';
-import SpecialCharactersLatin from '@ckeditor/ckeditor5-special-characters/src/specialcharacterslatin';
-import SpecialCharactersText from '@ckeditor/ckeditor5-special-characters/src/specialcharacterstext';
-
-// Or import the plugin combining basic set of characters. The imports above can be replaced with the `SpecialCharactersEssentials` plugin.
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, ... ],
-		toolbar: [ 'specialCharacters', ... ],
-	} )
-	.then( ... )
-	.catch( ... );
-```
-
-<info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
-</info-box>
-
-## Common API
-
-The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin registers the UI button component (`'specialCharacters'`).
-
-<info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
-</info-box>
-
 ## Special characters in the package
 
 The `@ckeditor/ckeditor5-special-characters` package provides a few basic special characters grouped into the following categories:
@@ -145,6 +99,52 @@ class SpecialCharactersArrowsExtended extends Plugin {
 Use the special character icon in the editor's toolbar then select `Arrows` in the select dropdown in order to add new arrows.
 
 {@snippet features/special-characters-extended-category}
+
+## Installation
+
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-special-characters`](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters) package:
+
+```plaintext
+npm install --save @ckeditor/ckeditor5-special-characters
+```
+
+And add it to your plugin list configuration:
+
+```js
+// The plugin provides API for management special characters and their categories.
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+
+// `SpecialCharacters` does not provide any special character. They are delivered by another plugins.
+// You can import those ones that you want to use in the editor.
+import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
+import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical';
+import SpecialCharactersArrows from '@ckeditor/ckeditor5-special-characters/src/specialcharactersarrows';
+import SpecialCharactersLatin from '@ckeditor/ckeditor5-special-characters/src/specialcharacterslatin';
+import SpecialCharactersText from '@ckeditor/ckeditor5-special-characters/src/specialcharacterstext';
+
+// Or import the plugin combining basic set of characters. The imports above can be replaced with the `SpecialCharactersEssentials` plugin.
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SpecialCharacters, ... ],
+		toolbar: [ 'specialCharacters', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+## Common API
+
+The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin registers the UI button component (`'specialCharacters'`).
+
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 
