@@ -1,3 +1,3 @@
 # Performance: rich editor
 
-Use this editor to verify whether there's no interference between multiple features.
+Use this editor to make sure editor features do not interfere with each other.
