@@ -10,6 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableEditing from '../src/tableediting';
 import TableCellProperties from '../src/tablecellproperties';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
+import TableCellPropertiesUI from '../src/tablecellproperties/tablecellpropertiesui';
 
 describe( 'table cell properties', () => {
 	let editor, editorElement;
@@ -31,6 +32,10 @@ describe( 'table cell properties', () => {
 
 		it( 'should be loaded', () => {
 			expect( editor.plugins.get( TableCellProperties ) ).to.instanceOf( TableCellProperties );
+		} );
+
+		it( 'should load TableCellPropertiesUI plugin', () => {
+			expect( editor.plugins.get( TableCellPropertiesUI ) ).to.instanceOf( TableCellPropertiesUI );
 		} );
 
 		it( 'should load TableCellPropertiesEditing plugin', () => {

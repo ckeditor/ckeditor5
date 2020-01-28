@@ -26,7 +26,7 @@ ClassicEditor
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
