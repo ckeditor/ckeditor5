@@ -78,6 +78,7 @@ export function getPropertyAssociation( languageDefs, key, value ) {
 
 	for ( const def of languageDefs ) {
 		if ( key === 'class' ) {
+			// Only the first class is considered.
 			association[ def[ key ].split( ' ' ).shift() ] = def[ value ];
 		} else {
 			association[ def[ key ] ] = def[ value ];
