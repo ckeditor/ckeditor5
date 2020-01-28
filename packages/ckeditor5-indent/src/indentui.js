@@ -68,7 +68,10 @@ export default class IndentUI extends Plugin {
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
-			this.listenTo( view, 'execute', () => editor.execute( commandName ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( commandName );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );
