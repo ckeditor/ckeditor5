@@ -114,7 +114,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #1 - range start outside table, end on table cell', () => {
+			it( 'should fix #1 (range start outside table, end on table cell)', () => {
 				// <paragraph>f[oo</paragraph><table><tableRow><tableCell></tableCell>]<tableCell>...
 				model.change( writer => {
 					writer.setSelection( writer.createRange(
@@ -135,7 +135,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #2 - range start on table cell, end outside table', () => {
+			it( 'should fix #2 (range start on table cell, end outside table)', () => {
 				// ...<table><tableRow><tableCell></tableCell>[<tableCell></tableCell></tableRow></table><paragraph>b]ar</paragraph>
 				model.change( writer => {
 					writer.setSelection( writer.createRange(
@@ -198,7 +198,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #5 - collapsed selection between tables', () => {
+			it( 'should fix #5 (collapsed selection between tables)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -328,7 +328,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #1 - selection over paragraphs outside table', () => {
+			it( 'should not fix #1 (selection over paragraphs outside table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -354,7 +354,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #2 - selection over image in table', () => {
+			it( 'should not fix #2 (selection over image in table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -382,7 +382,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #3 - selection over paragraph & image in table', () => {
+			it( 'should not fix #3 (selection over paragraph & image in table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -410,7 +410,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #4 - selection over image & paragraph in table', () => {
+			it( 'should not fix #4 (selection over image & paragraph in table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -438,7 +438,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #5 - selection over blockQuote in table', () => {
+			it( 'should not fix #5 (selection over blockQuote in table)', () => {
 				model.schema.register( 'blockQuote', {
 					allowWhere: '$block',
 					allowContentOf: '$root'
@@ -574,7 +574,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix multiple ranges #1 - not overlapping ranges', () => {
+			it( 'should not fix multiple ranges #1 (not overlapping ranges)', () => {
 				model.change( writer => {
 					const ranges = [
 						writer.createRange(
@@ -606,7 +606,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix multiple ranges on objects - table selection', () => {
+			it( 'should not fix multiple ranges on objects (table selection)', () => {
 				setModelData( model,
 					'<table>' +
 						'<tableRow>' +
@@ -634,7 +634,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should allow selection on block - limit element', () => {
+			it( 'should allow selection on block (limit element)', () => {
 				model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 				setModelData( model,
@@ -974,7 +974,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #4 - object in object', () => {
+			it( 'should not fix #4 (object in object)', () => {
 				model.schema.register( 'div', {
 					allowIn: [ '$root', 'div' ],
 					isObject: true
@@ -1047,7 +1047,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #1 - selection in limit element & before limit element', () => {
+			it( 'should fix #1 (selection in limit element & before limit element)', () => {
 				// <table>[]<tableRow>...
 				model.change( writer => {
 					writer.setSelection(
@@ -1067,7 +1067,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #2 - selection in limit element & before limit+object element', () => {
+			it( 'should fix #2 (selection in limit element & before limit+object element)', () => {
 				// <table><tableRow>[]<tableCell>...
 				model.change( writer => {
 					const row = modelRoot.getChild( 1 ).getChild( 0 );
@@ -1089,7 +1089,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #3 - selection in limit&object element & before object element', () => {
+			it( 'should fix #3 (selection in limit&object element & before object element)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
