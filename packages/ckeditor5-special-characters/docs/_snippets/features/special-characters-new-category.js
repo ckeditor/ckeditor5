@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console, ClassicEditor */
+/* globals window, document, console, ClassicEditor, SpecialCharactersEssentials */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-function ExtraCat( editor ) {
-	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji2', [
+function SpecialCharactersEmoji( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ title: 'smiley face', character: '😊' },
 		{ title: 'rocket', character: '🚀' },
 		{ title: 'basketball', character: '🏀' },
@@ -19,9 +19,7 @@ function ExtraCat( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-new-category' ), {
-		removePlugins: [
-			'SpecialCharactersArrowsExtended'
-		],
+		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersEmoji ],
 		toolbar: {
 			items: [
 				'heading',
@@ -60,7 +58,6 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		},
-		extraPlugins: [ ExtraCat ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},

@@ -3,15 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console, ClassicEditor */
+/* globals window, document, console, ClassicEditor, SpecialCharactersEssentials */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
+function SpecialCharactersArrowsExtended( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+		{ title: 'simple arrow left', character: '←' },
+		{ title: 'simple arrow up', character: '↑' },
+		{ title: 'simple arrow right', character: '→' },
+		{ title: 'simple arrow down', character: '↓' }
+	] );
+}
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-extended-category' ), {
-		removePlugins: [
-			'SpecialCharactersEmoji'
-		],
+		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersArrowsExtended ],
 		toolbar: {
 			items: [
 				'heading',

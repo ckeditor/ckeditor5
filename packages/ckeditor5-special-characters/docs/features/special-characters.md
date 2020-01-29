@@ -21,7 +21,7 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
-For example, the following plugin adds the `Emoji` category in the special characters dropdown.
+For example, the following plugin adds the "Emoji" category in the special characters dropdown.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -51,7 +51,7 @@ After adding the above plugin into the editor, the new special characters catego
 
 #### Custom special characters category demo
 
-Use the special character icon in the editor's toolbar then select `Emoji` in the select dropdown in order to insert a emoji into the editor.
+Use the special character icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
 
 {@snippet features/special-characters-new-category}
 
@@ -66,7 +66,6 @@ class SpecialCharactersArrowsExtended extends Plugin {
 	}
 
 	init() {
-		// The `Arrows` category is provided by the `SpecialCharactersArrows` plugin.
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
 			{ title: 'simple arrow left', character: '←' },
 			{ title: 'simple arrow up', character: '↑' },
@@ -83,7 +82,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 
 #### Extending existing special characters category category demo
 
-Use the special character icon in the editor's toolbar then select `Arrows` in the select dropdown in order to add new arrows.
+Use the special character icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
 
 {@snippet features/special-characters-extended-category}
 
@@ -115,6 +114,12 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+#### Removing special character categories demo
+
+After clicking special character icon in the editor's toolbar you can see that only few categories are available compared to other instances.
+
+{@snippet features/special-characters-limited-categories}
 
 ## Installation
 
