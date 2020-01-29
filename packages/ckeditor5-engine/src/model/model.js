@@ -759,7 +759,7 @@ export default class Model {
 	/**
 	 * Creates an operation instance from a JSON object (parsed JSON string).
 	 *
-	 * This is an alias for {@link module:engine/model/operation/operationfactory~OperationFactory#fromJSON}.
+	 * This is an alias for {@link module:engine/model/operation/operationfactory~OperationFactory.fromJSON `OperationFactory.fromJSON()`}.
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @returns {module:engine/model/operation/operation~Operation}
