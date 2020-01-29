@@ -17,6 +17,7 @@ import InsertColumnCommand from '../src/commands/insertcolumncommand';
 import RemoveRowCommand from '../src/commands/removerowcommand';
 import RemoveColumnCommand from '../src/commands/removecolumncommand';
 import SplitCellCommand from '../src/commands/splitcellcommand';
+import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
@@ -118,6 +119,22 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'splitTableCellHorizontally' ) ).to.be.instanceOf( SplitCellCommand );
 	} );
 
+	it( 'adds mergeCellRight command', () => {
+		expect( editor.commands.get( 'mergeTableCellRight' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds mergeCellLeft command', () => {
+		expect( editor.commands.get( 'mergeTableCellLeft' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds mergeCellDown command', () => {
+		expect( editor.commands.get( 'mergeTableCellDown' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds mergeCellUp command', () => {
+		expect( editor.commands.get( 'mergeTableCellUp' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
 	it( 'adds setColumnHeader command', () => {
 		expect( editor.commands.get( 'setTableColumnHeader' ) ).to.be.instanceOf( SetHeaderColumnCommand );
 	} );
@@ -133,11 +150,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-					'<table>' +
-					'<tbody>' +
-					'<tr><td>foo</td></tr>' +
-					'</tbody>' +
-					'</table>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
 					'</figure>'
 				);
 			} );
@@ -150,11 +167,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-					'<table>' +
-					'<thead>' +
-					'<tr><th>foo</th></tr>' +
-					'</thead>' +
-					'</table>' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>foo</th></tr>' +
+							'</thead>' +
+						'</table>' +
 					'</figure>'
 				);
 			} );
