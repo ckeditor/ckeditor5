@@ -17,7 +17,6 @@ import InsertColumnCommand from '../src/commands/insertcolumncommand';
 import RemoveRowCommand from '../src/commands/removerowcommand';
 import RemoveColumnCommand from '../src/commands/removecolumncommand';
 import SplitCellCommand from '../src/commands/splitcellcommand';
-import MergeCellsCommand from '../src/commands/mergecellscommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
@@ -117,10 +116,6 @@ describe( 'TableEditing', () => {
 
 	it( 'adds splitCellHorizontally command', () => {
 		expect( editor.commands.get( 'splitTableCellHorizontally' ) ).to.be.instanceOf( SplitCellCommand );
-	} );
-
-	it( 'adds mergeTableCells command', () => {
-		expect( editor.commands.get( 'mergeTableCells' ) ).to.be.instanceOf( MergeCellsCommand );
 	} );
 
 	it( 'adds setColumnHeader command', () => {
