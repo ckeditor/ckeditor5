@@ -146,7 +146,7 @@ export default class Watchdog {
 	 * @protected
 	 * @returns {Promise}
 	 */
-	async _startErrorHandling() {
+	_startErrorHandling() {
 		window.addEventListener( 'error', this._boundErrorHandler );
 		window.addEventListener( 'unhandledrejection', this._boundErrorHandler );
 	}
@@ -157,7 +157,7 @@ export default class Watchdog {
 	 * @protected
 	 * @returns {Promise}
 	 */
-	async _stopErrorHandling() {
+	_stopErrorHandling() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
 		window.removeEventListener( 'unhandledrejection', this._boundErrorHandler );
 	}
