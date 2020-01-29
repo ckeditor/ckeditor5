@@ -187,7 +187,8 @@ export default class ToolbarView extends View {
 				class: [
 					'ck',
 					'ck-toolbar',
-					bind.to( 'class' )
+					bind.to( 'class' ),
+					bind.if( 'isCompact', 'ck-toolbar_compact' ),
 				],
 				role: 'toolbar',
 				'aria-label': bind.to( 'ariaLabel' ),
