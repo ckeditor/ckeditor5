@@ -13,10 +13,14 @@ import InlineEditorUIView from '../src/inlineeditoruiview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -53,12 +57,6 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		describe( 'panel', () => {
-			afterEach( () => {
-				if ( document.body.contains( viewElement ) ) {
-					document.body.removeChild( viewElement );
-				}
-			} );
-
 			it( 'binds view.panel#isVisible to editor.ui#focusTracker', () => {
 				ui.focusTracker.isFocused = false;
 				expect( view.panel.isVisible ).to.be.false;
@@ -89,13 +87,10 @@ describe( 'InlineEditorUI', () => {
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-			it( 'pin() is called on editor.ui#update when editable element is in the DOM', () => {
+			it( 'pin() is called on editor.ui#update', () => {
 				const spy = sinon.stub( view.panel, 'pin' );
 
-				document.body.appendChild( viewElement );
 				view.panel.show();
-
-				expect( document.body.contains( viewElement ) ).to.be.true;
 
 				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
@@ -103,8 +98,6 @@ describe( 'InlineEditorUI', () => {
 					target: view.editable.element,
 					positions: sinon.match.array
 				} );
-
-				viewElement.remove();
 			} );
 
 			it( 'pin() is not called on editor.ui#update when panel is hidden', () => {
@@ -116,22 +109,11 @@ describe( 'InlineEditorUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'pin() is not called on editor.ui#update when panel is visible but editable element is not in the DOM', () => {
-				const spy = sinon.stub( view.panel, 'pin' );
-
-				view.panel.show();
-
-				expect( document.body.contains( viewElement ) ).to.be.false;
-
-				editor.ui.fire( 'update' );
-				sinon.assert.notCalled( spy );
-			} );
-
+			// Sometimes this test can fail, due to the fact that it have to wait for async ResizeObserver execution.
 			it( 'should set inline toolbar max-width to the width of the editable element', done => {
 				document.body.appendChild( viewElement );
 
 				expect( document.body.contains( viewElement ) ).to.be.true;
-
 				viewElement.style.width = '400px';
 
 				// Unfortunately we have to wait for async ResizeObserver execution.
@@ -139,7 +121,10 @@ describe( 'InlineEditorUI', () => {
 				// needs 2x requestAnimationFrame or timeout to update a layout.
 				// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
 				setTimeout( () => {
-					expect( view.toolbar.maxWidth ).to.be.equal( '400px' );
+					const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
+					expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
+
+					document.body.removeChild( viewElement );
 
 					done();
 				}, 500 );
