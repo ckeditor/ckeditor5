@@ -11,6 +11,7 @@ import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
@@ -136,10 +137,6 @@ export default class InlineEditorUI extends EditorUI {
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
 		view.listenTo( editor.ui, 'update', () => {
-			if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
-				return;
-			}
-
 			// Don't pin if the panel is not already visible. It prevents the panel
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
@@ -162,8 +159,15 @@ export default class InlineEditorUI extends EditorUI {
 		// Set toolbar's max-width on the initialization and update it on the editable resize,
 		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
 		if ( !this._toolbarConfig.shouldNotGroupWhenFull ) {
-			const widthObserver = getResizeObserver( ( [ entry ] ) => {
-				this._setToolbarMaxWidth( entry.contentRect.width );
+			const widthObserver = getResizeObserver( () => {
+				// We need to check if there's already the editable element in the DOM.
+				// Otherwise the `Rect` instance will complain that source (editableElement) is not available
+				// to obtain the element's geometry.
+				if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
+					return;
+				}
+
+				this.view.toolbar.maxWidth = toPx( new Rect( editableElement ).width );
 			} );
 
 			widthObserver.observe( editableElement );
@@ -192,17 +196,5 @@ export default class InlineEditorUI extends EditorUI {
 				isDirectHost: false
 			} );
 		}
-	}
-
-	/**
-	 * Set max-width for toolbar.
-	 *
-	 * @private
-	 */
-	_setToolbarMaxWidth( width ) {
-		const view = this.view;
-		const toolbar = view.toolbar;
-
-		toolbar.maxWidth = toPx( width );
 	}
 }
