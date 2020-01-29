@@ -10,7 +10,7 @@ import { injectSelectionPostFixer } from '../../../src/model/utils/selection-pos
 import { getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe( 'Selection post-fixer', () => {
+describe.only( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {
 		it( 'is a function', () => {
 			expect( injectSelectionPostFixer ).to.be.a( 'function' );
@@ -643,9 +643,67 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				assertEqualMarkup( getModelData( model ),
 					'<table>' +
 						'<tableRow><tableCell><paragraph>[aaa]</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should allow multi-range selection on non-continues blocks (column selected)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B2</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A3</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B2</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A3</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix ranges in multi-range selection (each range set differently - but valid)', () => {
+				setModelData( model,
+					'<paragraph>[foo]</paragraph>' +
+						'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[bbb]</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<paragraph>[foo]</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[bbb]</paragraph></tableCell>' +
+						'</tableRow>' +
 					'</table>'
 				);
 			} );
