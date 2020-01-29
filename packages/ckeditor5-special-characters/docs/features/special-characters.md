@@ -24,23 +24,23 @@ You can define a new special characters category using the {@link module:special
 For example, the following plugin adds the "Emoji" category in the special characters dropdown.
 
 ```js
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-class SpecialCharactersEmoji extends Plugin {
-	static get pluginName() {
-		return 'SpecialCharactersEmoji';
-	}
-
-	init() {
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
-			{ title: 'smiley face', character: '😊' },
-			{ title: 'rocket', character: '🚀' },
-			{ title: 'basketball', character: '🏀' },
-			{ title: 'floppy disk', character: '💾' },
-			{ title: 'hearth', character: '❤' }
-		] );
-	}
+function SpecialCharactersEmoji( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
+		{ title: 'smiley face', character: '😊' },
+		{ title: 'rocket', character: '🚀' },
+		{ title: 'basketball', character: '🏀' },
+		{ title: 'floppy disk', character: '💾' },
+		{ title: 'hearth', character: '❤' }
+	] );
 }
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji, ... ],
+		toolbar: [ 'specialCharacters', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
 ```
 
 After adding the above plugin into the editor, the new special characters category will be available in the dropdown.
@@ -60,20 +60,22 @@ Use the special character icon in the editor's toolbar then select "Emoji" in th
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can also add new special characters into existing category.
 
 ```js
-class SpecialCharactersArrowsExtended extends Plugin {
-	static get pluginName() {
-		return 'SpecialCharactersArrowsExtended';
-	}
-
-	init() {
-		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
-			{ title: 'simple arrow left', character: '←' },
-			{ title: 'simple arrow up', character: '↑' },
-			{ title: 'simple arrow right', character: '→' },
-			{ title: 'simple arrow down', character: '↓' }
-		] );
-	}
+function SpecialCharactersArrowsExtended( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
+		{ title: 'simple arrow left', character: '←' },
+		{ title: 'simple arrow up', character: '↑' },
+		{ title: 'simple arrow right', character: '→' },
+		{ title: 'simple arrow down', character: '↓' }
+	] );
 }
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersArrowsExtended, ... ],
+		toolbar: [ 'specialCharacters', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
 ```
 
 <info-box>
