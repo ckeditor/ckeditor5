@@ -211,7 +211,7 @@ export default class Watchdog {
 			error.is( 'CKEditorError' ) &&
 			error.context !== undefined &&
 
-			// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
+			// In some cases the instance should not be restarted - e.g. during the instance initialization.
 			// That's why the `null` was introduced as a correct error context which does cause restarting.
 			error.context !== null &&
 
@@ -239,7 +239,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog editor occurs
+	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog instance occurs
 	 * and the watchdog will react to it.
 	 *
 	 * @event error
