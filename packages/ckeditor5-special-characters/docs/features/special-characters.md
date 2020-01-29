@@ -43,7 +43,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-After adding the above plugin into the editor, the new special characters category will be available in the dropdown.
+After adding the above plugin into the editor, the new category will be available in the special characters dropdown.
 
 <info-box>
 	A title of a special character must be unique across the entire special characters set.
@@ -51,7 +51,7 @@ After adding the above plugin into the editor, the new special characters catego
 
 #### Adding special characters category demo
 
-Use the special character icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
+Use the special characters icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
 
 {@snippet features/special-characters-new-category}
 
@@ -84,7 +84,7 @@ ClassicEditor
 
 #### Extending an existing special characters category demo
 
-Use the special character icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
+Use the special characters icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
 
 {@snippet features/special-characters-extended-category}
 
