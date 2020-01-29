@@ -167,9 +167,6 @@
  * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set `true`, the toolbar will stop grouping items that wrap to the next line when
  * there is not enough space to display them in a single row.
  *
- *	**Note**: For now this option affects {@link module:editor-classic/classiceditor~ClassicEditor} and
- * {@link module:editor-decoupled/decouplededitor~DecoupledEditor} only that enable automatic toolbar items grouping by default.
- *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */
 
