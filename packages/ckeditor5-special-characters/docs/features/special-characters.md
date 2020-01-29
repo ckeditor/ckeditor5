@@ -89,7 +89,7 @@ Use the special character icon in the editor's toolbar then select `Arrows` in t
 
 ### Removing special character categories
 
-We recommend using `SpecialCharactersEssentials`
+Special characters feature exposes each category as a separate plugin. While `SpecialCharactersEssentials` plugin could be used to conveniently include all of them, you can customize the category list by adding individual of plugins.
 
 The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
@@ -99,6 +99,22 @@ The `@ckeditor/ckeditor5-special-characters` package provides special characters
 - {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – Mathematical special characters,
 - {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
 - {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
+
+For example, you can limit categories to "Mathematical" and "Currency" only by picking following plugins:
+
+```js
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/SpecialCharactersCurrency';
+import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/SpecialCharactersMathematical';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical, ... ],
+		toolbar: [ 'specialCharacters', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Installation
 
