@@ -132,6 +132,9 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * Adds a collection of special characters to specified group. A title of a special character must be unique.
 	 *
+	 * **Note:** The "All" category name is reserved by the plugin and cannot be used as a new name for special
+	 * characters category.
+	 *
 	 * @param {String} groupName
 	 * @param {Array.<module:special-characters/specialcharacters~SpecialCharacterDefinition>} items
 	 */
