@@ -111,7 +111,8 @@ export default class ContextWatchdog extends Watchdog {
 	 * Adds items to the watchdog. Internally watchdogs will be created for these items and they will be available later using
 	 * the {@link #getWatchdog} method.
 	 *
-	 * @param {Array.<Object.<String,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
+	 * // @param {Array.<Object.<String,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
+	 * @param {Array.<Object>} itemConfigurations
 	 * @returns {Promise}
 	 */
 	add( itemConfigurations ) {
@@ -212,8 +213,8 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Restarts the `ContextWatchdog`.
 	 *
-	 * @returns {Promise}
 	 * @protected
+	 * @returns {Promise}
 	 */
 	_restart() {
 		return this._actionQueue.enqueue( () => {
@@ -314,7 +315,7 @@ export default class ContextWatchdog extends Watchdog {
 }
 
 /**
- * An action queue is used to queue async functions.
+ * An action queue that allows queuing async functions.
  *
  * @private
  */
@@ -373,8 +374,18 @@ class ActionQueue {
 	}
 
 	/**
-	 * It handles actions one by one.
+	 * Clears all queued actions (e.g. in case of an error).
 	 *
+	 * @protected
+	 */
+	_clear() {
+		this._queuedActions = [];
+	}
+
+	/**
+	 * It handles queued actions one by one.
+	 *
+	 * @private
 	 * @param {Function} res
 	 * @param {Function} rej
 	 */
@@ -402,15 +413,6 @@ class ActionQueue {
 			} )
 			.catch( err => rej( err ) );
 	}
-
-	/**
-	 * @protected
-	 *
-	 * Clears all queued actions (e.g. in case of an error).
-	 */
-	clear() {
-		this._queuedActions = [];
-	}
 }
 
 /**
@@ -431,5 +433,5 @@ class ActionQueue {
  * @property {String|HTMLElement} sourceElementOrData The source element or data which will be passed
  * as the first argument to the `Editor.create()` method.
  *
- * @property {any} config An editor configuration.
+ * @property {Object} config An editor configuration.
  */

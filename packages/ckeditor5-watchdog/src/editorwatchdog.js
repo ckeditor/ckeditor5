@@ -153,7 +153,7 @@ export default class EditorWatchdog extends Watchdog {
 
 	/**
 	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
-	 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
+	 * the {@link module:watchdog/editorwatchdog~EditorWatchdog.for `Watchdog.for()`} helper.
 	 *
 	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData]
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
@@ -167,8 +167,8 @@ export default class EditorWatchdog extends Watchdog {
 				if ( !this._creator ) {
 					/**
 					 * The watchdog's editor creator is not defined. Define it by using
-					 * {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} or
-					 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
+					 * {@link module:watchdog/editorwatchdog~EditorWatchdog#setCreator `Watchdog#setCreator()`} or
+					 * the {@link module:watchdog/editorwatchdog~EditorWatchdog.for `Watchdog.for()`} helper.
 					 *
 					 * @error watchdog-creator-not-defined
 					 */
@@ -329,7 +329,7 @@ export default class EditorWatchdog extends Watchdog {
 	 *		watchdog.create( elementOrData, config );
 	 *
 	 * @param {*} Editor The editor class.
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
+	 * @param {module:watchdog/editorwatchdog~EditorWatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
 	static for( Editor, watchdogConfig ) {
 		const watchdog = new this( watchdogConfig );

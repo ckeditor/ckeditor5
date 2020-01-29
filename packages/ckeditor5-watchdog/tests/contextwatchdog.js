@@ -197,7 +197,7 @@ describe( 'ContextWatchdog', () => {
 				err = _err;
 			}
 
-			mainWatchdog._actionQueue.clear();
+			mainWatchdog._actionQueue._clear();
 
 			await mainWatchdog.destroy();
 
@@ -218,7 +218,7 @@ describe( 'ContextWatchdog', () => {
 				err = _err;
 			}
 
-			mainWatchdog._actionQueue.clear();
+			mainWatchdog._actionQueue._clear();
 
 			await mainWatchdog.destroy();
 
@@ -282,7 +282,7 @@ describe( 'ContextWatchdog', () => {
 				err = _err;
 			}
 
-			mainWatchdog._actionQueue.clear();
+			mainWatchdog._actionQueue._clear();
 
 			await mainWatchdog.destroy();
 
