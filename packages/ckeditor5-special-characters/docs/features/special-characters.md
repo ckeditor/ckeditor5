@@ -24,6 +24,9 @@ You can define a new special characters category using the {@link module:special
 For example, the following plugin adds the "Emoji" category in the special characters dropdown.
 
 ```js
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ title: 'smiley face', character: '😊' },
@@ -60,6 +63,9 @@ Use the special characters icon in the editor's toolbar then select "Emoji" in t
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can also add new special characters into existing category.
 
 ```js
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+
 function SpecialCharactersArrowsExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
 		{ title: 'simple arrow left', character: '←' },
@@ -105,8 +111,8 @@ For example, you can limit categories to "Mathematical" and "Currency" only by p
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/SpecialCharactersCurrency';
-import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/SpecialCharactersMathematical';
+import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
+import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
