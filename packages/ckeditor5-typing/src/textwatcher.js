@@ -8,7 +8,6 @@
  */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
 
@@ -26,12 +25,29 @@ export default class TextWatcher {
 	 * Creates a text watcher instance.
 	 * @param {module:engine/model/model~Model} model
 	 * @param {Function} testCallback The function used to match the text.
+	 *
+	 * @mixes module:utils/observablemixin~ObservableMixin
 	 */
 	constructor( model, testCallback ) {
 		this.model = model;
 		this.testCallback = testCallback;
 		this.hasMatch = false;
 
+		/**
+		 * Flag indicating whether the TextWatcher is enabled or disabled.
+		 * A disabled TextWatcher will not evaluate text.
+		 *
+		 * TextWatcher can be simply disabled like that:
+		 *
+		 *		// Disable the TextWatcher so that it doesn't evaluate text.
+		 *		const watcher = new TextWatcher( editor.model, text => from.test( text ) );
+		 *		watcher.isEnabled = false;
+		 *
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #isEnabled
+		 */
 		this.set( 'isEnabled', true );
 
 		// Toggle text watching on isEnabled state change.
@@ -140,4 +156,4 @@ export default class TextWatcher {
 	}
 }
 
-mix( TextWatcher, EmitterMixin, ObservableMixin );
+mix( TextWatcher, ObservableMixin );
