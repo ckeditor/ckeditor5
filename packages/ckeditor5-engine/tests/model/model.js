@@ -11,6 +11,7 @@ import ModelPosition from '../../src/model/position';
 import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import Batch from '../../src/model/batch';
+import NoOperation from '../../src/model/operation/nooperation';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -823,6 +824,18 @@ describe( 'Model', () => {
 			const batch = model.createBatch( 'transparent' );
 			expect( batch ).to.be.instanceof( Batch );
 			expect( batch.type ).to.equal( 'transparent' );
+		} );
+	} );
+
+	describe( 'createOperationFromJson()', () => {
+		it( 'should create operation from JSON', () => {
+			const operation = model.createOperationFromJSON( {
+				__className: 'NoOperation',
+				baseVersion: 0
+			} );
+
+			expect( operation ).to.instanceof( NoOperation );
+			expect( operation.baseVersion ).to.equal( 0 );
 		} );
 	} );
 

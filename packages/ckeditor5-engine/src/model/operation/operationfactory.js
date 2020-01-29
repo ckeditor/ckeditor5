@@ -37,7 +37,7 @@ operations[ MergeOperation.className ] = MergeOperation;
  */
 export default class OperationFactory {
 	/**
-	 * Creates concrete `Operation` object from deserialized object, i.e. from parsed JSON string.
+	 * Creates an operation instance from a JSON object (parsed JSON string).
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
