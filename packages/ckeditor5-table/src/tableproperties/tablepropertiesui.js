@@ -138,7 +138,7 @@ export default class TablePropertiesUI extends Plugin {
 			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
 				this._hideView();
 			} else if ( this._isViewVisible ) {
-				repositionContextualBalloon( editor );
+				repositionContextualBalloon( editor, 'table' );
 			}
 		} );
 
