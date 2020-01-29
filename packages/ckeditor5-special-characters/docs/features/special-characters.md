@@ -49,13 +49,13 @@ After adding the above plugin into the editor, the new special characters catego
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-#### Custom special characters category demo
+#### Adding special characters category demo
 
 Use the special character icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
 
 {@snippet features/special-characters-new-category}
 
-### Adding a new special characters to existing category
+### Adding a new special characters to an existing category
 
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can also add new special characters into existing category.
 
@@ -82,7 +82,7 @@ ClassicEditor
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-#### Extending existing special characters category demo
+#### Extending an existing special characters category demo
 
 Use the special character icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
 
@@ -90,7 +90,7 @@ Use the special character icon in the editor's toolbar then select "Arrows" in t
 
 ### Removing special character categories
 
-Special characters feature exposes each category as a separate plugin. While `SpecialCharactersEssentials` plugin could be used to conveniently include all of them, you can customize the category list by adding individual of plugins.
+Special characters feature exposes each category as a separate plugin. While `SpecialCharactersEssentials` plugin can be used to conveniently include all of them, you can customize the category list by adding individual plugins.
 
 The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
