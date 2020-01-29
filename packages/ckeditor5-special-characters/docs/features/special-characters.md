@@ -45,7 +45,7 @@ class SpecialCharactersEmoji extends Plugin {
 
 After adding the above plugin into the editor, the new special characters category will be available in the dropdown.
 
-<info-box warning>
+<info-box>
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
@@ -77,7 +77,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 }
 ```
 
-<info-box warning>
+<info-box>
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
