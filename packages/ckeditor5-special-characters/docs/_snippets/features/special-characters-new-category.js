@@ -7,6 +7,16 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
+function ExtraCat( editor ) {
+	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji2', [
+		{ title: 'smiley face', character: '😊' },
+		{ title: 'rocket', character: '🚀' },
+		{ title: 'basketball', character: '🏀' },
+		{ title: 'floppy disk', character: '💾' },
+		{ title: 'hearth', character: '❤' }
+	] );
+}
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-new-category' ), {
 		removePlugins: [
@@ -23,8 +33,6 @@ ClassicEditor
 				'|',
 				'outdent',
 				'indent',
-				'|',
-				'alignment',
 				'|',
 				'specialCharacters',
 				'blockQuote',
@@ -52,6 +60,7 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		},
+		extraPlugins: [ ExtraCat ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},

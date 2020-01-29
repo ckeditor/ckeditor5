@@ -24,8 +24,6 @@ ClassicEditor
 				'outdent',
 				'indent',
 				'|',
-				'alignment',
-				'|',
 				'specialCharacters',
 				'blockQuote',
 				'link',
