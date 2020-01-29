@@ -19,14 +19,14 @@ import getLastTextLine from './utils/getlasttextline';
  * {@link module:typing/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
  *
  * @private
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class TextWatcher {
 	/**
 	 * Creates a text watcher instance.
+	 *
 	 * @param {module:engine/model/model~Model} model
 	 * @param {Function} testCallback The function used to match the text.
-	 *
-	 * @mixes module:utils/observablemixin~ObservableMixin
 	 */
 	constructor( model, testCallback ) {
 		this.model = model;
@@ -37,15 +37,14 @@ export default class TextWatcher {
 		 * Flag indicating whether the TextWatcher is enabled or disabled.
 		 * A disabled TextWatcher will not evaluate text.
 		 *
-		 * TextWatcher can be simply disabled like that:
+		 * To disable TextWatcher:
 		 *
-		 *		// Disable the TextWatcher so that it doesn't evaluate text.
-		 *		const watcher = new TextWatcher( editor.model, text => from.test( text ) );
+		 *		const watcher = new TextWatcher( editor.model, testCallback );
+		 *
+		 *		// After this a testCallback will not be called.
 		 *		watcher.isEnabled = false;
 		 *
-		 *
 		 * @observable
-		 * @readonly
 		 * @member {Boolean} #isEnabled
 		 */
 		this.set( 'isEnabled', true );
