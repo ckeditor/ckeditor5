@@ -17,17 +17,6 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 ## Configuration
 
-### Special characters in the package
-
-The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
-
-- {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
-- {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
-- {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
-- {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – Mathematical special characters,
-- {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
-- {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
-
 ### Adding a new special character category
 
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
@@ -97,6 +86,19 @@ class SpecialCharactersArrowsExtended extends Plugin {
 Use the special character icon in the editor's toolbar then select `Arrows` in the select dropdown in order to add new arrows.
 
 {@snippet features/special-characters-extended-category}
+
+### Removing special character categories
+
+We recommend using `SpecialCharactersEssentials`
+
+The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
+
+- {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
+- {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
+- {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
+- {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – Mathematical special characters,
+- {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
+- {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
 
 ## Installation
 
