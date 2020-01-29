@@ -75,8 +75,6 @@ export default class ResizeObserver {
 	 */
 	destroy() {
 		ResizeObserver._deleteElementCallback( this._element, this._callback );
-
-		this._element = this._callback = null;
 	}
 
 	/**
