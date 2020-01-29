@@ -125,26 +125,30 @@ export default class EditorWatchdog extends Watchdog {
 	 * @fires restart
 	 * @returns {Promise}
 	 */
-	async _restart() {
-		this.state = 'initializing';
+	_restart() {
+		return Promise.resolve()
+			.then( () => {
+				this.state = 'initializing';
 
-		try {
-			await this._destroy();
-		} catch ( err ) {
-			console.error( 'An error happened during the editor destructing.', err );
-		}
+				return this._destroy();
+			} )
+			.catch( err => {
+				console.error( 'An error happened during the editor destructing.', err );
+			} )
+			.then( () => {
+				if ( typeof this._elementOrData === 'string' ) {
+					return this.create( this._data, this._config );
+				} else {
+					const updatedConfig = Object.assign( {}, this._config, {
+						initialData: this._data
+					} );
 
-		if ( typeof this._elementOrData === 'string' ) {
-			await this.create( this._data, this._config );
-		} else {
-			const updatedConfig = Object.assign( {}, this._config, {
-				initialData: this._data
+					return this.create( this._elementOrData, updatedConfig );
+				}
+			} )
+			.then( () => {
+				this.fire( 'restart' );
 			} );
-
-			await this.create( this._elementOrData, updatedConfig );
-		}
-
-		this.fire( 'restart' );
 	}
 
 	/**
@@ -157,41 +161,45 @@ export default class EditorWatchdog extends Watchdog {
 	 *
 	 * @returns {Promise}
 	 */
-	async create( elementOrData = this._elementOrData, config = this._config, context ) {
-		if ( !this._creator ) {
-			/**
-			 * The watchdog's editor creator is not defined. Define it by using
-			 * {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} or
-			 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
-			 *
-			 * @error watchdog-creator-not-defined
-			 */
-			throw new CKEditorError(
-				'watchdog-creator-not-defined: The watchdog\'s editor creator is not defined.',
-				null
-			);
-		}
+	create( elementOrData = this._elementOrData, config = this._config, context ) {
+		return Promise.resolve()
+			.then( () => {
+				if ( !this._creator ) {
+					/**
+					 * The watchdog's editor creator is not defined. Define it by using
+					 * {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} or
+					 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
+					 *
+					 * @error watchdog-creator-not-defined
+					 */
+					throw new CKEditorError(
+						'watchdog-creator-not-defined: The watchdog\'s editor creator is not defined.',
+						null
+					);
+				}
 
-		super._startErrorHandling();
+				super._startErrorHandling();
 
-		this._elementOrData = elementOrData;
+				this._elementOrData = elementOrData;
 
-		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
-		// when an error occurs in one of these editors, the watchdog will restart all of them.
-		this._config = this._cloneEditorConfiguration( config ) || {};
+				// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
+				// when an error occurs in one of these editors, the watchdog will restart all of them.
+				this._config = this._cloneEditorConfiguration( config ) || {};
 
-		this._config.context = context;
+				this._config.context = context;
 
-		const editor = await this._creator( elementOrData, this._config );
+				return this._creator( elementOrData, this._config );
+			} )
+			.then( editor => {
+				this._editor = editor;
 
-		this._editor = editor;
+				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
 
-		this.listenTo( editor.model.document, 'change:data', this._throttledSave );
+				this._lastDocumentVersion = editor.model.document.version;
+				this._data = this._getData();
 
-		this._lastDocumentVersion = editor.model.document.version;
-		this._data = this._getData();
-
-		this.state = 'ready';
+				this.state = 'ready';
+			} );
 	}
 
 	/**
@@ -200,26 +208,33 @@ export default class EditorWatchdog extends Watchdog {
 	 *
 	 * @returns {Promise}
 	 */
-	async destroy() {
-		this.state = 'destroyed';
+	destroy() {
+		return Promise.resolve()
+			.then( () => {
+				this.state = 'destroyed';
 
-		return this._destroy();
+				return this._destroy();
+			} );
 	}
 
 	/**
 	 * @private
+	 * @returns {Promise}
 	 */
-	async _destroy() {
-		this._stopErrorHandling();
+	_destroy() {
+		return Promise.resolve()
+			.then( () => {
+				this._stopErrorHandling();
 
-		// Save data if there is a remaining editor data change.
-		this._throttledSave.flush();
+				// Save data if there is a remaining editor data change.
+				this._throttledSave.flush();
 
-		const editor = this._editor;
+				const editor = this._editor;
 
-		this._editor = null;
+				this._editor = null;
 
-		await this._destructor( editor );
+				return this._destructor( editor );
+			} );
 	}
 
 	/**

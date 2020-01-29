@@ -448,7 +448,7 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		it( 'Watchdog should not crash permanently when average time between errors' +
-		' is longer than `minimumNonErrorTimePeriod`', async () => {
+			' is longer than `minimumNonErrorTimePeriod`', async () => {
 			const watchdog = new EditorWatchdog( { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -633,7 +633,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 		} );
 
-		it( 'editor should be restarted with the latest available data before the crash', () => {
+		it( 'editor should be restarted with the latest available data before the crash', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -644,51 +644,54 @@ describe( 'EditorWatchdog', () => {
 
 			sinon.stub( console, 'error' );
 
-			return watchdog.create( element, {
+			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
 				plugins: [ Paragraph ]
-			} ).then( () => {
-				const editorGetDataError = new Error( 'Some error' );
-				const getDataStub = sinon.stub( watchdog.editor.data, 'get' )
-					.throwsException( editorGetDataError );
-				// Keep the reference to cleanly destroy it at in the end, as during the TC it
-				// throws an exception during destruction.
-				const firstEditor = watchdog.editor;
+			} );
+
+			const editorGetDataError = new Error( 'Some error' );
+			const getDataStub = sinon.stub( watchdog.editor.data, 'get' )
+				.throwsException( editorGetDataError );
+			// Keep the reference to cleanly destroy it at in the end, as during the TC it
+			// throws an exception during destruction.
+			const firstEditor = watchdog.editor;
+
+			await new Promise( res => {
+				const doc = watchdog.editor.model.document;
+
+				watchdog.editor.model.change( writer => {
+					writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+				} );
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-				return new Promise( res => {
-					const doc = watchdog.editor.model.document;
+				watchdog.on( 'restart', async () => {
+					window.onerror = originalErrorHandler;
 
-					watchdog.editor.model.change( writer => {
-						writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
-					} );
+					// It is called second time by during the default editor destruction
+					// to update the source element.
+					sinon.assert.calledTwice( getDataStub );
 
-					watchdog.on( 'restart', () => {
-						window.onerror = originalErrorHandler;
+					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
 
-						// It is called second time by during the default editor destruction
-						// to update the source element.
-						sinon.assert.calledTwice( getDataStub );
+					sinon.assert.calledWith(
+						console.error,
+						editorGetDataError,
+						'An error happened during restoring editor data. Editor will be restored from the previously saved data.'
+					);
 
-						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+					sinon.assert.calledWith(
+						console.error,
+						'An error happened during the editor destructing.'
+					);
 
-						sinon.assert.calledWith(
-							console.error,
-							editorGetDataError,
-							'An error happened during restoring editor data. Editor will be restored from the previously saved data.'
-						);
+					await watchdog.destroy();
 
-						sinon.assert.calledWith(
-							console.error,
-							'An error happened during the editor destructing.'
-						);
+					getDataStub.restore();
 
-						watchdog.destroy().then( () => {
-							getDataStub.restore();
-							return firstEditor.destroy();
-						} ).then( res );
-					} );
+					await firstEditor.destroy();
+
+					res();
 				} );
 			} );
 		} );
