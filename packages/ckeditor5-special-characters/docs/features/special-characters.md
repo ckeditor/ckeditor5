@@ -90,18 +90,18 @@ Use the special characters icon in the editor's toolbar then select "Arrows" in 
 
 ### Removing special character categories
 
-Special characters feature exposes each category as a separate plugin. While `SpecialCharactersEssentials` plugin can be used to conveniently include all of them, you can customize the category list by adding individual plugins.
+The special characters feature exposes each category as a separate plugin. While the {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} plugin can be used to conveniently include all of them, you can customize the category list by adding individual plugins.
 
 The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
 - {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
 - {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
 - {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
-- {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – Mathematical special characters,
+- {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – mathematical special characters,
 - {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
 - {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
 
-For example, you can limit categories to "Mathematical" and "Currency" only by picking following plugins:
+For example, you can limit categories to "Mathematical" and "Currency" only by picking the {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} and {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} plugins, like so:
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
@@ -119,7 +119,7 @@ ClassicEditor
 
 #### Removing special character categories demo
 
-After clicking special character icon in the editor's toolbar you can see that only few categories are available compared to other instances.
+After clicking the special character icon in the editor's toolbar you can see that it contains fewer categories compared to other instances.
 
 {@snippet features/special-characters-limited-categories}
 
