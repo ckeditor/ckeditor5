@@ -571,6 +571,7 @@ class DynamicGrouping {
 		this.viewElement = view.element;
 
 		this._enableGroupingOnResize();
+		this._enableGroupingOnMaxWidthChange( view );
 	}
 
 	/**
@@ -695,6 +696,21 @@ class DynamicGrouping {
 		this.resizeObserver.observe( this.viewElement );
 
 		this._updateGrouping();
+	}
+
+	/**
+	 * Enables the grouping functionality, just like {@link #_enableGroupingOnResize} but the difference is that
+	 * it listens to the {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth} changes.
+	 *
+	 * Note: Right now it works only with {@link module:editor-inline/inlineeditor~InlineEditor} and
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor}.
+	 *
+	 * @private
+	 */
+	_enableGroupingOnMaxWidthChange( view ) {
+		view.on( 'change:maxWidth', () => {
+			this._updateGrouping();
+		} );
 	}
 
 	/**
