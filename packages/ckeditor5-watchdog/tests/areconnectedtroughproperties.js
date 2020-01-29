@@ -229,4 +229,13 @@ describe( 'areConnectedThroughProperties()', () => {
 
 		expect( areConnectedThroughProperties( el1, el2, new Set( [ shared ] ) ) ).to.be.true;
 	} );
+
+	it( 'should skip the `nested` key since we share props withing ', () => {
+		const shared = {};
+
+		const el1 = { nested: shared };
+		const el2 = { nested: shared };
+
+		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+	} );
 } );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout, window */
+/* globals document, setTimeout, window, console */
 
 import ContextWatchdog from '../src/contextwatchdog';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -118,6 +118,33 @@ describe( 'ContextWatchdog', () => {
 			await mainWatchdog.destroy();
 
 			sinon.assert.calledOnce( customDestructor );
+		} );
+
+		it( 'should log if an error happens during the component destructing', async () => {
+			const mainWatchdog = new ContextWatchdog();
+
+			const consoleErrorStub = sinon.stub( console, 'error' );
+			const err = new Error( 'foo' );
+			mainWatchdog.setCreator( config => Context.create( config ) );
+			mainWatchdog.setDestructor( async editor => {
+				await editor.destroy();
+
+				throw err;
+			} );
+
+			await mainWatchdog.create();
+
+			await mainWatchdog._restart();
+
+			sinon.assert.calledWith(
+				consoleErrorStub,
+				'An error happened during destructing.',
+				err
+			);
+
+			mainWatchdog.setDestructor( editor => editor.destroy() );
+
+			await mainWatchdog.destroy();
 		} );
 
 		describe( 'in case of error handling', () => {
