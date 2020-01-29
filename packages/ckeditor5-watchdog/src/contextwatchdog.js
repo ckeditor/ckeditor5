@@ -192,7 +192,7 @@ export default class ContextWatchdog extends Watchdog {
 	 */
 	create() {
 		return this._actionQueue.enqueue( () => {
-			return this._create( true );
+			return this._create();
 		} );
 	}
 
@@ -206,7 +206,7 @@ export default class ContextWatchdog extends Watchdog {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'destroyed';
 
-			return this._destroy( true );
+			return this._destroy();
 		} );
 	}
 
@@ -220,68 +220,70 @@ export default class ContextWatchdog extends Watchdog {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'initializing';
 
-			return this._destroy( true )
+			return this._destroy()
 				.catch( err => {
 					console.error( 'An error happened during destructing.', err );
 				} )
-				.then( () => this._create( true ) )
+				.then( () => this._create() )
 				.then( () => this.fire( 'restart' ) );
 		} );
 	}
 
 	/**
-	 * @protected
-	 * @param {Boolean} isInternal If the action is internal and should be invoked immediately.
+	 * @private
 	 * @returns {Promise}
 	 */
-	_create( isInternal = false ) {
-		return this._actionQueue.enqueue( () => {
-			this._startErrorHandling();
+	_create() {
+		return Promise.resolve()
+			.then( () => {
+				this._startErrorHandling();
 
-			return this._creator( this._contextConfig )
-				.then( context => {
-					this._context = context;
-					this._contextProps = getSubNodes( this._context );
+				return this._creator( this._contextConfig );
+			} )
+			.then( context => {
+				this._context = context;
+				this._contextProps = getSubNodes( this._context );
 
-					return Promise.all(
-						Array.from( this._watchdogs.values() )
-							.map( watchdog => {
-								watchdog._setExcludedProperties( this._contextProps );
+				return Promise.all(
+					Array.from( this._watchdogs.values() )
+						.map( watchdog => {
+							watchdog._setExcludedProperties( this._contextProps );
 
-								return watchdog.create( undefined, undefined, this._context );
-							} )
-					);
-				} );
-		}, isInternal );
+							return watchdog.create( undefined, undefined, this._context );
+						} )
+				);
+			} );
 	}
 
 	/**
 	 * Destroys the Context and all added items.
 	 *
-	 * @param {Boolean} isInternal If the action is internal and should be invoked immediately.
+	 * @private
 	 * @returns {Promise}
 	 */
-	_destroy( isInternal = false ) {
-		return this._actionQueue.enqueue( () => {
-			this._stopErrorHandling();
+	_destroy() {
+		return Promise.resolve()
+			.then( () => {
+				this._stopErrorHandling();
 
-			const context = this._context;
+				const context = this._context;
 
-			this._context = null;
-			this._contextProps = new Set();
+				this._context = null;
+				this._contextProps = new Set();
 
-			return Promise.all(
-				Array.from( this._watchdogs.values() )
-					.map( watchdog => watchdog.destroy() )
-			)
-				// Context destructor destroys each editor.
-				.then( () => this._destructor( context ) );
-		}, isInternal );
+				return Promise.all(
+					Array.from( this._watchdogs.values() )
+						.map( watchdog => watchdog.destroy() )
+				)
+					// Context destructor destroys each editor.
+					.then( () => this._destructor( context ) );
+			} );
 	}
 
 	/**
 	 * Checks whether the error comes from the Context and not from Editor or ContextItem instances.
 	 *
+	 * @protected
 	 * @param {Error} error
 	 * @returns {Boolean}
 	 */
@@ -348,18 +350,11 @@ class ActionQueue {
 
 	/**
 	 * It adds asynchronous actions (functions) to the queue and runs them one by one.
-	 * If the `isInternal` option is passed then it runs the provided function immediately.
 	 *
 	 * @param {Function} action A function that should be enqueued.
-	 * @param {Boolean} isInternal If the action is internal and should be invoked immediately.
 	 * @returns {Promise}
 	 */
-	enqueue( action, isInternal = false ) {
-		// Run all internal callbacks immediately.
-		if ( isInternal ) {
-			return action();
-		}
-
+	enqueue( action ) {
 		this._queuedActions.push( action );
 
 		if ( this._queuedActions.length > 1 ) {

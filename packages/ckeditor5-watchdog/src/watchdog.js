@@ -22,9 +22,9 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
  */
 export default class Watchdog {
 	/**
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} config The watchdog plugin configuration.
 	 */
-	constructor( config = {} ) {
+	constructor( config ) {
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *

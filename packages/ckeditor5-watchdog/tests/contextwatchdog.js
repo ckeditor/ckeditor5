@@ -113,7 +113,7 @@ describe( 'ContextWatchdog', () => {
 
 			mainWatchdog.setCreator( config => Context.create( config ) );
 			mainWatchdog.setDestructor( customDestructor );
-			mainWatchdog._create();
+			mainWatchdog.create();
 
 			await mainWatchdog.destroy();
 
@@ -143,6 +143,17 @@ describe( 'ContextWatchdog', () => {
 			);
 
 			mainWatchdog.setDestructor( editor => editor.destroy() );
+
+			await mainWatchdog.destroy();
+		} );
+
+		it( 'should handle the Watchdog configuration', async () => {
+			// TODO
+			const mainWatchdog = ContextWatchdog.for( Context, {}, {
+				crashNumberLimit: Infinity
+			} );
+
+			await mainWatchdog.create();
 
 			await mainWatchdog.destroy();
 		} );
