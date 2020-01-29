@@ -31,7 +31,7 @@ The `@ckeditor/ckeditor5-special-characters` package provides special characters
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
 <info-box warning>
-    The "All" category name is reserved by the plugin and cannot be used as a new name for special characters category.
+	The "All" category name is reserved by the plugin and cannot be used as a new name for special characters category.
 </info-box>
 
 For example, the following plugin adds the `Emoji` category in the special characters dropdown.
@@ -59,7 +59,7 @@ export default class SpecialCharactersEmoji extends Plugin {
 After adding the above plugin into the editor, the new special characters category will be available in the dropdown.
 
 <info-box warning>
-    A title of a special character must be unique across the entire special characters set.
+	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
 ### Custom special characters category demo
@@ -79,7 +79,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 	}
 
 	init() {
-        // The `Arrows` category is provided by the `SpecialCharactersArrows` plugin.
+		// The `Arrows` category is provided by the `SpecialCharactersArrows` plugin.
 		this.editor.plugins.get( 'SpecialCharacters' ).addItems( 'Arrows', [
 			{ title: 'simple arrow left', character: '←' },
 			{ title: 'simple arrow up', character: '↑' },
@@ -91,7 +91,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 ```
 
 <info-box warning>
-    A title of a special character must be unique across the entire special characters set.
+	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
 ### Extending existing special characters category category demo
