@@ -358,6 +358,8 @@ class ActionQueue {
 		this._queuedActions.push( action );
 
 		if ( this._queuedActions.length > 1 ) {
+			// This means that the action handler is already running.
+			// Hence we can just register the resolve callback and wait.
 			return new Promise( res => {
 				this._resolveCallbacks.set( action, res );
 			} );

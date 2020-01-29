@@ -8,8 +8,6 @@
 import ContextWatchdog from '../src/contextwatchdog';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Context from '@ckeditor/ckeditor5-core/src/context';
-import sinon from 'sinon';
-import { expect } from 'chai';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ContextWatchdog', () => {
