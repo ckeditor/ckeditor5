@@ -634,7 +634,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should allow selection on block (limit element)', () => {
+			it( 'should fix allow selection on block', () => {
 				model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 				setModelData( model,
@@ -1089,7 +1089,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #3 (selection in limit&object element & before object element)', () => {
+			it( 'should fix #3 (selection inside object element and before block element)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
