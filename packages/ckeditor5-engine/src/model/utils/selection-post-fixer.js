@@ -256,7 +256,7 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 function mergeIntersectingRanges( ranges ) {
 	const nonIntersectingRanges = [];
 
-	// First range will be always de-intersected.
+	// First range will always be fine.
 	nonIntersectingRanges.push( ranges.shift() );
 
 	for ( const range of ranges ) {
