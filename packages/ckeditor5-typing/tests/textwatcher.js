@@ -40,7 +40,6 @@ describe( 'TextWatcher', () => {
 
 	afterEach( () => {
 		sinon.restore();
-		watcher.off();
 
 		if ( editor ) {
 			return editor.destroy();
