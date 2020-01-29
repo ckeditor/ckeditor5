@@ -634,7 +634,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix allow selection on block', () => {
+			it( 'should fix selection on block', () => {
 				model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 				setModelData( model,
