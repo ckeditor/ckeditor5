@@ -15,7 +15,9 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 {@snippet features/special-characters}
 
-## Special characters in the package
+## Configuration
+
+### Special characters in the package
 
 The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
@@ -26,7 +28,7 @@ The `@ckeditor/ckeditor5-special-characters` package provides special characters
 - {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
 - {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
 
-## Adding a new special character category
+### Adding a new special character category
 
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
@@ -58,13 +60,13 @@ After adding the above plugin into the editor, the new special characters catego
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-### Custom special characters category demo
+#### Custom special characters category demo
 
 Use the special character icon in the editor's toolbar then select `Emoji` in the select dropdown in order to insert a emoji into the editor.
 
 {@snippet features/special-characters-new-category}
 
-## Adding a new special characters to existing category
+### Adding a new special characters to existing category
 
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can also add new special characters into existing category.
 
@@ -90,7 +92,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-### Extending existing special characters category category demo
+#### Extending existing special characters category category demo
 
 Use the special character icon in the editor's toolbar then select `Arrows` in the select dropdown in order to add new arrows.
 
