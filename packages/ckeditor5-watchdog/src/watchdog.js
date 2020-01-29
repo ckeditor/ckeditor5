@@ -144,7 +144,6 @@ export default class Watchdog {
 	 * Starts error handling by attaching global error handlers.
 	 *
 	 * @protected
-	 * @returns {Promise}
 	 */
 	_startErrorHandling() {
 		window.addEventListener( 'error', this._boundErrorHandler );
@@ -155,7 +154,6 @@ export default class Watchdog {
 	 * Stops error handling by detaching global error handlers.
 	 *
 	 * @protected
-	 * @returns {Promise}
 	 */
 	_stopErrorHandling() {
 		window.removeEventListener( 'error', this._boundErrorHandler );
