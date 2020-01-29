@@ -11,14 +11,6 @@
 		outline: none;
 	}
 
-	& .ck.ck-form__header {
-		font-weight: bold;
-		padding: 0 var(--ck-spacing-large);
-		height: 38px;
-		line-height: 38px;
-		border-bottom: 1px solid var(--ck-color-base-border);
-	}
-
 	& .ck.ck-input-text {
 		min-width: 100%;
 		width: 0;
@@ -34,37 +26,6 @@
 
 			& .ck-button__label {
 				width: 100%;
-			}
-		}
-	}
-
-	& .ck-form__row {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: nowrap;
-		justify-content: space-between;
-
-		padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
-
-		/* Ignore labels that work as fieldset legends */
-		& > *:not(.ck-label) {
-			flex-grow: 1;
-
-			& + * {
-				padding-left: var(--ck-spacing-large);
-			}
-		}
-
-		&.ck-table-form__action-row {
-			margin-top: var(--ck-spacing-large);
-
-			& .ck-button-save,
-			& .ck-button-cancel {
-				justify-content: center;
-			}
-
-			& .ck-button .ck-button__label {
-				color: var(--ck-color-text);
 			}
 		}
 	}
