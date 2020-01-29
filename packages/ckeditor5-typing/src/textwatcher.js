@@ -34,7 +34,7 @@ export default class TextWatcher {
 		this.hasMatch = false;
 
 		/**
-		 * Flag indicating whether the TextWatcher is enabled or disabled.
+		 * Flag indicating whether the `TextWatcher` instance is enabled or disabled.
 		 * A disabled TextWatcher will not evaluate text.
 		 *
 		 * To disable TextWatcher:
