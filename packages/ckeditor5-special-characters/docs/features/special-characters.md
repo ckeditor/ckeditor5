@@ -80,7 +80,7 @@ class SpecialCharactersArrowsExtended extends Plugin {
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-#### Extending existing special characters category category demo
+#### Extending existing special characters category demo
 
 Use the special character icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
 
