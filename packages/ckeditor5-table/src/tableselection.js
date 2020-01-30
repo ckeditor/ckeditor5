@@ -32,6 +32,14 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
+	 * a
+	 * @returns {Boolean}
+	 */
+	get hasValidSelection() {
+		return this._isSelecting && this._startElement && this._endElement && this._startElement != this._endElement;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	init() {
@@ -65,7 +73,7 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			this._startSelection( tableCell );
+			this.startSelectingFrom( tableCell );
 		} );
 
 		this.listenTo( viewDocument, 'mousemove', ( eventInfo, domEventData ) => {
@@ -79,7 +87,7 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			this._updateModelSelection( tableCell );
+			this.setSelectingTo( tableCell );
 
 			if ( this.hasValidSelection ) {
 				domEventData.preventDefault();
@@ -130,11 +138,16 @@ export default class TableSelection extends Plugin {
 		}, { priority: 'lowest' } ) );
 	}
 
-	get hasValidSelection() {
-		return this._isSelecting && this._startElement && this._endElement && this._startElement != this._endElement;
-	}
-
-	_startSelection( tableCell ) {
+	/**
+	 * Starts a selection process.
+	 *
+	 * This method enables the table selection process.
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( tableCell );
+	 *
+	 * @param {module:engine/model/element~Element} tableCell
+	 */
+	startSelectingFrom( tableCell ) {
 		this.clearSelection();
 
 		this._isSelecting = true;
@@ -142,8 +155,18 @@ export default class TableSelection extends Plugin {
 		this._endElement = tableCell;
 	}
 
-	_updateModelSelection( tableCell ) {
-		// Do not update if not in selection mode or no table cell passed.
+	/**
+	 * Updates current table selection end element. Table selection is defined by #start and #end element.
+	 * This method updates the #end element. Must be preceded by {@link #startSelectingFrom}.
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
+	 *
+	 * @param {module:engine/model/element~Element} tableCell
+	 */
+	setSelectingTo( tableCell ) {
+		// Do not update if not in selection mode or no table cell is passed.
 		if ( !this._isSelecting || !tableCell ) {
 			return;
 		}
@@ -159,6 +182,11 @@ export default class TableSelection extends Plugin {
 		this.redrawSelection();
 	}
 
+	/**
+	 * Stops selection process (but do not clear the current selection).
+	 *
+	 * @param {module:engine/model/element~Element} tableCell
+	 */
 	stopSelection( tableCell ) {
 		if ( this._isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
@@ -167,6 +195,15 @@ export default class TableSelection extends Plugin {
 		this._isSelecting = false;
 	}
 
+	/**
+	 * Stops current selection process and clears table selection.
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).clearSelection();
+	 */
 	clearSelection() {
 		this._startElement = undefined;
 		this._endElement = undefined;
