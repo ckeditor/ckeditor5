@@ -38,7 +38,7 @@ export default class TableSelection extends Plugin {
 	 * @member {Boolean} #hasValidSelection
 	 */
 	get hasValidSelection() {
-		return this._isSelecting && this._startElement && this._endElement && this._startElement != this._endElement;
+		return this._isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
 	}
 
 	/**
@@ -193,7 +193,7 @@ export default class TableSelection extends Plugin {
 	 *
 	 * To clear selection use {@link #clearSelection}.
 	 *
-	 * @param {module:engine/model/element~Element} tableCell
+	 * @param {module:engine/model/element~Element} [tableCell]
 	 */
 	stopSelection( tableCell ) {
 		if ( this._isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {

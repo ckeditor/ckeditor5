@@ -13,26 +13,66 @@ import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable, viewTable } from './_utils/utils';
 
-describe( 'table selection', () => {
-	let editor, model;
+describe.only( 'table selection', () => {
+	let editor, model, tableSelection, modelRoot;
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ TableEditing, TableSelection, Paragraph ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( {
+			plugins: [ TableEditing, TableSelection, Paragraph ]
+		} );
 
-				model = editor.model;
+		model = editor.model;
+		modelRoot = model.document.getRoot();
+		tableSelection = editor.plugins.get( TableSelection );
+
+		setModelData( model, modelTable( [
+			[ '11', '12', '13' ],
+			[ '21', '22', '23' ],
+			[ '31', '32', '33' ]
+		] ) );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	describe( 'TableSelection', () => {
+		describe( 'hasValidSelection()', () => {
+			it( 'should be false if selection is not started', () => {
+				expect( tableSelection.hasValidSelection ).to.be.false;
 			} );
+
+			it( 'should be true if selection is selecting two different cells', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				expect( tableSelection.hasValidSelection ).to.be.true;
+			} );
+
+			it( 'should be false if selection start/end is selecting the same table cell', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				expect( tableSelection.hasValidSelection ).to.be.false;
+			} );
+
+			it( 'should be false if selection has no end cell', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				expect( tableSelection.hasValidSelection ).to.be.false;
+			} );
+
+			it( 'should be false if selection has ended', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+				tableSelection.stopSelection();
+
+				expect( tableSelection.hasValidSelection ).to.be.false;
+			} );
+		} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
-	} );
-
-	describe( 'behavior', () => {
+	describe( 'mouse selection', () => {
 		let view, domEvtDataStub;
 
 		beforeEach( () => {
