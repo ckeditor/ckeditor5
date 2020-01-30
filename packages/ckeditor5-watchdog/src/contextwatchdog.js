@@ -170,6 +170,15 @@ export default class ContextWatchdog extends Watchdog {
 
 					this._watchdogs.set( itemName, watchdog );
 
+					// Enqueue the internal watchdog errors within the main queue.
+					watchdog.on( 'error', () => {
+						if ( watchdog._shouldRestart() ) {
+							this._actionQueue.enqueue( () => new Promise( res => {
+								watchdog.once( 'restart', () => res() );
+							} ) );
+						}
+					} );
+
 					return watchdog.create( item.sourceElementOrData, item.config, this._context );
 				} else {
 					throw new Error( `Not supported item type: '${ item.type }'.` );
@@ -441,7 +450,14 @@ class ActionQueue {
 
 				return this._handleActions( res, rej );
 			} )
-			.catch( err => rej( err ) );
+			.catch( err => {
+				rej( err );
+
+				this._queuedActions.shift();
+
+				// Run pending actions even if an error has happened to unlock the queue.
+				return this._handleActions( res, rej );
+			} );
 	}
 }
 
