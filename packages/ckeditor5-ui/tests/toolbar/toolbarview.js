@@ -54,6 +54,10 @@ describe( 'ToolbarView', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
+		it( 'should set view#isCompact', () => {
+			expect( view.isCompact ).to.be.false;
+		} );
+
 		describe( '#options', () => {
 			it( 'should be an empty object if none were passed', () => {
 				expect( view.options ).to.deep.equal( {} );
@@ -165,6 +169,14 @@ describe( 'ToolbarView', () => {
 				view.class = false;
 				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
 				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
+			} );
+
+			it( 'reacts on view#isCompact', () => {
+				view.isCompact = false;
+				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).to.be.false;
+
+				view.isCompact = true;
+				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).to.be.true;
 			} );
 		} );
 

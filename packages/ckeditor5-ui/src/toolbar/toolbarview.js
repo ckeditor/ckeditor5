@@ -114,6 +114,15 @@ export default class ToolbarView extends View {
 		this.set( 'class' );
 
 		/**
+		 * When set true, makes the toolbar look compact with {@link #element}.
+		 *
+		 * @observable
+		 * @default false
+		 * @member {String} #isCompact
+		 */
+		this.set( 'isCompact', false );
+
+		/**
 		 * A (child) view containing {@link #items toolbar items}.
 		 *
 		 * @readonly
