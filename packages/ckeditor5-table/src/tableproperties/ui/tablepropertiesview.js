@@ -337,8 +337,8 @@ export default class TablePropertiesView extends View {
 
 		[
 			this.borderStyleDropdown,
-			this.borderWidthInput,
 			this.borderColorInput,
+			this.borderWidthInput,
 			this.backgroundInput,
 			this.widthInput,
 			this.heightInput,
