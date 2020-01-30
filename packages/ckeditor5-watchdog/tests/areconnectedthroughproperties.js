@@ -230,12 +230,21 @@ describe( 'areConnectedThroughProperties()', () => {
 		expect( areConnectedThroughProperties( el1, el2, new Set( [ shared ] ) ) ).to.be.true;
 	} );
 
-	it( 'should skip the `nested` key since we share props withing ', () => {
+	it( 'should skip the `defaultValue` key since its commonly shared between editors', () => {
 		const shared = {};
 
-		const el1 = { nested: shared };
-		const el2 = { nested: shared };
+		const el1 = { defaultValue: shared };
+		const el2 = { defaultValue: shared };
 
 		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.false;
+	} );
+
+	it( 'should skip the `defaultValue` key since its commonly shared between editors #2', () => {
+		const shared = {};
+
+		const el1 = { defaultValue: shared, shared };
+		const el2 = { defaultValue: shared, shared };
+
+		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
 	} );
 } );

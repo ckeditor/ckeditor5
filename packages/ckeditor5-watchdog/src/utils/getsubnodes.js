@@ -33,7 +33,7 @@ export default function getSubNodes( head, excludedProperties = new Set() ) {
 				for ( const n of node ) {
 					nodes.push( n );
 
-					// @if CK_DEBUG_WATCHDOG // if ( !prevNodeMap.has( node[ key ] ) ) {
+					// @if CK_DEBUG_WATCHDOG // if ( !prevNodeMap.has( n ) ) {
 					// @if CK_DEBUG_WATCHDOG // 	prevNodeMap.set( n, node );
 					// @if CK_DEBUG_WATCHDOG // }
 				}
@@ -44,17 +44,17 @@ export default function getSubNodes( head, excludedProperties = new Set() ) {
 			}
 		} else {
 			for ( const key in node ) {
-				// We share references (objects) in the ProtobufFactory within the editors,
-				// hence the whole object should be skipped. Although, it's not a perfect
+				// We share a reference via the protobuf library within the editors,
+				// hence the shared value should be skipped. Although, it's not a perfect
 				// solution since new places like that might occur in the future.
-				if ( key === 'nested' ) {
+				if ( key === 'defaultValue' ) {
 					continue;
 				}
 
 				nodes.push( node[ key ] );
 
 				// @if CK_DEBUG_WATCHDOG // if ( !prevNodeMap.has( node[ key ] ) ) {
-				// @if CK_DEBUG_WATCHDOG // 	prevNodeMap.set( n, node );
+				// @if CK_DEBUG_WATCHDOG // 	prevNodeMap.set( node[ key ], node );
 				// @if CK_DEBUG_WATCHDOG // }
 			}
 		}
