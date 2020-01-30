@@ -92,7 +92,7 @@ export default class TableSelection extends Plugin {
 			if ( this.hasValidSelection ) {
 				domEventData.preventDefault();
 
-				this.redrawSelection();
+				this._updateModelSelection();
 			}
 		} );
 
@@ -119,7 +119,7 @@ export default class TableSelection extends Plugin {
 			const viewSelection = viewWriter.document.selection;
 
 			if ( this._isSelecting ) {
-				this.clearPreviousSelection();
+				this._clearHighlightedTableCells();
 
 				for ( const tableCell of this.getSelectedTableCells() ) {
 					const viewElement = conversionApi.mapper.toViewElement( tableCell );
@@ -133,7 +133,7 @@ export default class TableSelection extends Plugin {
 
 				viewWriter.setSelection( from, { fake: true, label: 'TABLE' } );
 			} else {
-				this.clearPreviousSelection();
+				this._clearHighlightedTableCells();
 			}
 		}, { priority: 'lowest' } ) );
 	}
@@ -179,7 +179,7 @@ export default class TableSelection extends Plugin {
 		}
 
 		this._endElement = tableCell;
-		this.redrawSelection();
+		this._updateModelSelection();
 	}
 
 	/**
@@ -214,7 +214,7 @@ export default class TableSelection extends Plugin {
 		this._startElement = undefined;
 		this._endElement = undefined;
 		this._isSelecting = false;
-		this.clearPreviousSelection();
+		this._clearHighlightedTableCells();
 		this._highlighted.clear();
 	}
 
@@ -250,7 +250,12 @@ export default class TableSelection extends Plugin {
 		}
 	}
 
-	redrawSelection() {
+	/**
+	 * Set proper model selection for currently selected table cells.
+	 *
+	 * @private
+	 */
+	_updateModelSelection() {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -266,7 +271,13 @@ export default class TableSelection extends Plugin {
 		} );
 	}
 
-	clearPreviousSelection() {
+	/**
+	 * Removes highlight from table cells.
+	 *
+	 * @TODO move to highlight handling.
+	 * @private
+	 */
+	_clearHighlightedTableCells() {
 		const previous = [ ...this._highlighted.values() ];
 
 		this.editor.editing.view.change( writer => {
