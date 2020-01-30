@@ -22,6 +22,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class EditorWatchdog extends Watchdog {
 	/**
+	 * Returns the instance type of the watchdog.
+	 */
+	static get instanceType() {
+		return 'editor';
+	}
+
+	/**
 	 * @param {module:watchdog/editorwatchdog~EditorWatchdogConfig} [config] The watchdog plugin configuration.
 	 */
 	constructor( config = {} ) {

@@ -31,6 +31,8 @@ export default class ContextWatchdog extends Watchdog {
 		super( watchdogConfig );
 
 		/**
+		 * A map of internal watchdogs for added items.
+		 *
 		 * @protected
 		 * @type {Map.<string,module:watchdog/watchdog~EditorWatchdog>}
 		 */
@@ -97,21 +99,26 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns the watchdog for the added item by its name. Depending on the item type
-	 * the instance can be retrieved from the watchdog.
+	 * Returns the instance created from the item configuration by its name. It's type depends on the item type
+	 * the instance can be retrieved from the watchdog. Note that this might return `undefined` if the item is not created
+	 * yet.
 	 *
-	 * 	const editorWatchdog = contextWatchdog.getWatchdog( 'editor1' );
-	 * 	const editor1 = editorWatchdog.editor;
+	 * 	const editor1 = contextWatchdog.get( 'editor1' );
 	 *
-	 * @param {String} name The item name (the key under which the item config was passed to the add() method).
+	 * @param {String} itemName The item name (the key under which the item config was passed to the add() method).
 	 */
-	getWatchdog( name ) {
-		return this._watchdogs.get( name );
+	get( itemName ) {
+		const watchdog = this._watchdogs.get( itemName );
+
+		if ( !watchdog ) {
+			throw new Error( `Item with the given name was not registered: ${ itemName }.` );
+		}
+
+		return watchdog[ watchdog.constructor.instanceType ];
 	}
 
 	/**
-	 * Adds items to the watchdog. Internally watchdogs will be created for these items and they will be available later using
-	 * the {@link #getWatchdog} method.
+	 * Adds items to the watchdog. Instances of these items once created will be available using the {@link #get} method.
 	 *
 	 * 	watchdog.add( {
 	 *		editor1: {
@@ -124,6 +131,10 @@ export default class ContextWatchdog extends Watchdog {
 	 *			creator: ( element, config ) => ClassicEditor.create( element, config )
 	 *		}
 	 * 	}
+	 *
+	 *  await watchdog.waitForReady();
+	 *
+	 *  const editor1 = watchdog.get( 'editor1' );
 	 *
 	 * // @param {Array.<Object.<String,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
 	 * @param {Array.<Object>} itemConfigurations
@@ -144,7 +155,7 @@ export default class ContextWatchdog extends Watchdog {
 				let watchdog;
 
 				if ( this._watchdogs.has( itemName ) ) {
-					throw new Error( `Watchdog with the given name is already added: '${ itemName }'.` );
+					throw new Error( `Item with the given name is already added: '${ itemName }'.` );
 				}
 
 				if ( item.type === 'editor' ) {

@@ -12,7 +12,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ContextWatchdog', () => {
 	let element1, element2;
-	let mainWatchdog;
+	let watchdog;
 	let originalErrorHandler;
 
 	beforeEach( () => {
@@ -36,14 +36,14 @@ describe( 'ContextWatchdog', () => {
 	} );
 
 	it( 'should disable adding items once the Watchdog is destroyed', async () => {
-		mainWatchdog = ContextWatchdog.for( Context, {} );
+		watchdog = ContextWatchdog.for( Context, {} );
 
-		await mainWatchdog.destroy();
+		await watchdog.destroy();
 
 		let err;
 
 		try {
-			await mainWatchdog.add( {
+			await watchdog.add( {
 				editor2: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -60,9 +60,9 @@ describe( 'ContextWatchdog', () => {
 	} );
 
 	it.skip( 'case: editor, contextItem', async () => {
-		mainWatchdog = ContextWatchdog.for( Context, {} );
+		watchdog = ContextWatchdog.for( Context, {} );
 
-		mainWatchdog.add( {
+		watchdog.add( {
 			editor1: {
 				type: 'editor',
 				creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -75,34 +75,34 @@ describe( 'ContextWatchdog', () => {
 			}
 		} );
 
-		await mainWatchdog.waitForReady();
+		await watchdog.waitForReady();
 
-		await mainWatchdog.destroy();
+		await watchdog.destroy();
 	} );
 
 	describe( 'for scenario with no items', () => {
 		it( 'should create only context', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			expect( mainWatchdog.context ).to.be.instanceOf( Context );
+			expect( watchdog.context ).to.be.instanceOf( Context );
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 		} );
 
 		it( 'should have proper states', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			expect( mainWatchdog.state ).to.equal( 'initializing' );
+			expect( watchdog.state ).to.equal( 'initializing' );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			expect( mainWatchdog.state ).to.equal( 'ready' );
+			expect( watchdog.state ).to.equal( 'ready' );
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 
-			expect( mainWatchdog.state ).to.equal( 'destroyed' );
+			expect( watchdog.state ).to.equal( 'destroyed' );
 		} );
 
 		it( 'should set custom destructor if provided', async () => {
@@ -158,31 +158,31 @@ describe( 'ContextWatchdog', () => {
 
 		describe( 'in case of error handling', () => {
 			it( 'should restart the `Context`', async () => {
-				mainWatchdog = ContextWatchdog.for( Context, {} );
+				watchdog = ContextWatchdog.for( Context, {} );
 				const errorSpy = sinon.spy();
 
-				await mainWatchdog.waitForReady();
+				await watchdog.waitForReady();
 
-				const oldContext = mainWatchdog.context;
+				const oldContext = watchdog.context;
 
-				mainWatchdog.on( 'restart', errorSpy );
+				watchdog.on( 'restart', errorSpy );
 
-				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.context ) );
 
 				await waitCycle();
 
 				sinon.assert.calledOnce( errorSpy );
 
-				expect( mainWatchdog.context ).to.not.equal( oldContext );
+				expect( watchdog.context ).to.not.equal( oldContext );
 			} );
 		} );
 	} );
 
 	describe( 'for multiple items scenario', () => {
 		it( 'should allow adding multiple items without waiting for promises', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			mainWatchdog.add( {
+			watchdog.add( {
 				editor1: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -191,7 +191,7 @@ describe( 'ContextWatchdog', () => {
 				},
 			} );
 
-			mainWatchdog.add( {
+			watchdog.add( {
 				editor2: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -200,15 +200,15 @@ describe( 'ContextWatchdog', () => {
 				},
 			} );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 		} );
 
 		it( 'should throw when multiple items with the same name are added', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			mainWatchdog.add( {
+			watchdog.add( {
 				editor1: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -217,11 +217,11 @@ describe( 'ContextWatchdog', () => {
 				},
 			} );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
 			let err;
 			try {
-				await mainWatchdog.add( {
+				await watchdog.add( {
 					editor1: {
 						type: 'editor',
 						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -233,30 +233,30 @@ describe( 'ContextWatchdog', () => {
 				err = _err;
 			}
 
-			mainWatchdog._actionQueue._clear();
+			watchdog._actionQueue._clear();
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match( /Watchdog with the given name is already added: 'editor1'./ );
+			expect( err.message ).to.match( /Item with the given name is already added: 'editor1'./ );
 		} );
 
 		it( 'should throw when not added item is removed', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
 			let err;
 
 			try {
-				await mainWatchdog.remove( [ 'foo' ] );
+				await watchdog.remove( [ 'foo' ] );
 			} catch ( _err ) {
 				err = _err;
 			}
 
-			mainWatchdog._actionQueue._clear();
+			watchdog._actionQueue._clear();
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
 			expect( err.message ).to.match( /There is no watchdog named: 'foo'\./ );
@@ -279,11 +279,11 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should allow setting editor custom destructors', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
 			const destructorSpy = sinon.spy( editor => editor.destroy() );
 
-			mainWatchdog.add( {
+			watchdog.add( {
 				editor1: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -293,19 +293,19 @@ describe( 'ContextWatchdog', () => {
 				},
 			} );
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 
 			sinon.assert.calledOnce( destructorSpy );
 		} );
 
 		it( 'should throw when the item is of not known type', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
 			let err;
 			try {
-				await mainWatchdog.add( {
+				await watchdog.add( {
 					editor1: {
 						type: 'foo',
 						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -314,22 +314,22 @@ describe( 'ContextWatchdog', () => {
 					},
 				} );
 			} catch ( _err ) {
-				mainWatchdog._stopErrorHandling();
+				watchdog._stopErrorHandling();
 				err = _err;
 			}
 
-			mainWatchdog._actionQueue._clear();
+			watchdog._actionQueue._clear();
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
 			expect( err.message ).to.match( /Not supported item type: 'foo'\./ );
 		} );
 
 		it( 'should allow adding and removing items without waiting', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			mainWatchdog.add( {
+			watchdog.add( {
 				editor1: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -338,7 +338,7 @@ describe( 'ContextWatchdog', () => {
 				},
 			} );
 
-			mainWatchdog.add( {
+			watchdog.add( {
 				editor2: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -347,25 +347,25 @@ describe( 'ContextWatchdog', () => {
 				},
 			} );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			expect( mainWatchdog.state ).to.equal( 'ready' );
+			expect( watchdog.state ).to.equal( 'ready' );
 
-			mainWatchdog.remove( [ 'editor1' ] );
+			watchdog.remove( [ 'editor1' ] );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			mainWatchdog.remove( [ 'editor2' ] );
+			watchdog.remove( [ 'editor2' ] );
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
 		} );
 
 		it( 'should not change the input items', async () => {
-			mainWatchdog = ContextWatchdog.for( Context, {} );
+			watchdog = ContextWatchdog.for( Context, {} );
 
-			mainWatchdog.add( Object.freeze( {
+			watchdog.add( Object.freeze( {
 				editor1: {
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -374,17 +374,51 @@ describe( 'ContextWatchdog', () => {
 				}
 			} ) );
 
-			mainWatchdog._restart();
+			watchdog._restart();
 
-			await mainWatchdog.waitForReady();
+			await watchdog.waitForReady();
 
-			await mainWatchdog.destroy();
+			await watchdog.destroy();
+		} );
+
+		it( 'should return the created items instances with get( itemName )', async () => {
+			watchdog = ContextWatchdog.for( Context, {} );
+
+			watchdog.add( {
+				editor1: {
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element1,
+					config: {}
+				},
+				editor2: {
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element2,
+					config: {}
+				}
+			} );
+
+			await watchdog.waitForReady();
+
+			expect( watchdog.get( 'editor1' ) ).to.be.instanceOf( ClassicTestEditor );
+			expect( watchdog.get( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
+
+			await watchdog.remove( [ 'editor1' ] );
+
+			expect( () => {
+				watchdog.get( 'editor1' );
+			} ).to.throw( /Item with the given name was not registered: editor1\./ );
+
+			expect( watchdog.get( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
+
+			await watchdog.destroy();
 		} );
 
 		describe( 'in case of error handling', () => {
 			it( 'should restart the whole structure of editors if an error happens inside the `Context`', async () => {
-				mainWatchdog = ContextWatchdog.for( Context, {} );
-				mainWatchdog.add( {
+				watchdog = ContextWatchdog.for( Context, {} );
+				watchdog.add( {
 					editor1: {
 						type: 'editor',
 						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -393,28 +427,28 @@ describe( 'ContextWatchdog', () => {
 					}
 				} );
 
-				await mainWatchdog.waitForReady();
+				await watchdog.waitForReady();
 
-				const oldContext = mainWatchdog.context;
+				const oldContext = watchdog.context;
 				const restartSpy = sinon.spy();
 
-				mainWatchdog.on( 'restart', restartSpy );
+				watchdog.on( 'restart', restartSpy );
 
-				setTimeout( () => throwCKEditorError( 'foo', mainWatchdog.context ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.context ) );
 
 				await waitCycle();
 
 				sinon.assert.calledOnce( restartSpy );
 
-				expect( mainWatchdog._watchdogs.get( 'editor1' ).state ).to.equal( 'ready' );
-				expect( mainWatchdog.context ).to.not.equal( oldContext );
+				expect( watchdog._watchdogs.get( 'editor1' ).state ).to.equal( 'ready' );
+				expect( watchdog.context ).to.not.equal( oldContext );
 
-				await mainWatchdog.destroy();
+				await watchdog.destroy();
 			} );
 
 			it( 'should restart only the editor if an error happens inside the editor', async () => {
-				mainWatchdog = ContextWatchdog.for( Context, {} );
-				mainWatchdog.add( {
+				watchdog = ContextWatchdog.for( Context, {} );
+				watchdog.add( {
 					editor1: {
 						type: 'editor',
 						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -423,14 +457,14 @@ describe( 'ContextWatchdog', () => {
 					}
 				} );
 
-				await mainWatchdog.waitForReady();
+				await watchdog.waitForReady();
 
-				const oldContext = mainWatchdog.context;
+				const oldContext = watchdog.context;
 				const restartSpy = sinon.spy();
 
-				const oldEditor = mainWatchdog.getWatchdog( 'editor1' ).editor;
+				const oldEditor = watchdog.get( 'editor1' );
 
-				mainWatchdog.on( 'restart', restartSpy );
+				watchdog.on( 'restart', restartSpy );
 
 				setTimeout( () => throwCKEditorError( 'foo', oldEditor ) );
 
@@ -438,18 +472,17 @@ describe( 'ContextWatchdog', () => {
 
 				sinon.assert.notCalled( restartSpy );
 
-				expect( mainWatchdog.context ).to.equal( oldContext );
+				expect( watchdog.context ).to.equal( oldContext );
 
-				expect( mainWatchdog.getWatchdog( 'editor1' ).editor ).to.not.equal( oldEditor );
-				expect( mainWatchdog.getWatchdog( 'editor1' ).state ).to.equal( 'ready' );
+				expect( watchdog.get( 'editor1' ) ).to.not.equal( oldEditor );
 
-				await mainWatchdog.destroy();
+				await watchdog.destroy();
 			} );
 
 			it( 'should restart only the editor if an error happens inside one of the editors', async () => {
-				mainWatchdog = ContextWatchdog.for( Context, {} );
+				watchdog = ContextWatchdog.for( Context, {} );
 
-				mainWatchdog.add( {
+				watchdog.add( {
 					editor1: {
 						type: 'editor',
 						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -459,26 +492,26 @@ describe( 'ContextWatchdog', () => {
 					editor2: {
 						type: 'editor',
 						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
-						sourceElementOrData: element1,
+						sourceElementOrData: element2,
 						config: {}
 					}
 				} );
 
-				await mainWatchdog.waitForReady();
+				await watchdog.waitForReady();
 
-				const oldContext = mainWatchdog.context;
+				const oldContext = watchdog.context;
 
-				const editorWatchdog1 = mainWatchdog.getWatchdog( 'editor1' );
-				const editorWatchdog2 = mainWatchdog.getWatchdog( 'editor2' );
+				const editorWatchdog1 = watchdog._watchdogs.get( 'editor1' );
+				const editorWatchdog2 = watchdog._watchdogs.get( 'editor2' );
 
-				const oldEditor1 = editorWatchdog1.editor;
-				const oldEditor2 = editorWatchdog2.editor;
+				const oldEditor1 = watchdog.get( 'editor1' );
+				const oldEditor2 = watchdog.get( 'editor2' );
 
 				const mainWatchdogRestartSpy = sinon.spy();
 				const editorWatchdog1RestartSpy = sinon.spy();
 				const editorWatchdog2RestartSpy = sinon.spy();
 
-				mainWatchdog.on( 'restart', mainWatchdogRestartSpy );
+				watchdog.on( 'restart', mainWatchdogRestartSpy );
 				editorWatchdog1.on( 'restart', editorWatchdog1RestartSpy );
 				editorWatchdog2.on( 'restart', editorWatchdog2RestartSpy );
 
@@ -493,14 +526,14 @@ describe( 'ContextWatchdog', () => {
 
 				expect( editorWatchdog1.state ).to.equal( 'ready' );
 				expect( editorWatchdog2.state ).to.equal( 'ready' );
-				expect( mainWatchdog.state ).to.equal( 'ready' );
+				expect( watchdog.state ).to.equal( 'ready' );
 
 				expect( oldEditor1 ).to.not.equal( editorWatchdog1.editor );
 				expect( oldEditor2 ).to.equal( editorWatchdog2.editor );
 
-				expect( mainWatchdog.context ).to.equal( oldContext );
+				expect( watchdog.context ).to.equal( oldContext );
 
-				await mainWatchdog.destroy();
+				await watchdog.destroy();
 			} );
 		} );
 	} );
