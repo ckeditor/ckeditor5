@@ -13,7 +13,17 @@ import MouseSelectionObserver from './tableselection/mouseselectionobserver';
 import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
 
+/**
+ * The table selection plugin.
+ *
+ * It introduces the ability to select table cells using mouse.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class TableSelection extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -21,6 +31,9 @@ export default class TableSelection extends Plugin {
 		this._highlighted = new Set();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		this.tableUtils = editor.plugins.get( 'TableUtils' );
@@ -30,7 +43,7 @@ export default class TableSelection extends Plugin {
 		editor.editing.view.addObserver( MouseSelectionObserver );
 
 		this.listenTo( viewDocument, 'keydown', () => {
-			if ( this.isSelectingBlaBla() ) {
+			if ( this.hasValidSelection ) {
 				this.stopSelection();
 				const tableCell = this._startElement;
 				this.clearSelection();
@@ -43,7 +56,7 @@ export default class TableSelection extends Plugin {
 		} );
 
 		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
-			const tableCell = getTableCell( domEventData, this.editor );
+			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
 
 			if ( !tableCell ) {
 				this.stopSelection();
@@ -60,7 +73,7 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const tableCell = getTableCell( domEventData, this.editor );
+			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
 
 			if ( !tableCell ) {
 				return;
@@ -68,7 +81,7 @@ export default class TableSelection extends Plugin {
 
 			this._updateModelSelection( tableCell );
 
-			if ( this.isSelectingBlaBla() ) {
+			if ( this.hasValidSelection ) {
 				domEventData.preventDefault();
 
 				this.redrawSelection();
@@ -80,7 +93,7 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const tableCell = getTableCell( domEventData, this.editor );
+			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
 
 			this.stopSelection( tableCell );
 		} );
@@ -117,12 +130,13 @@ export default class TableSelection extends Plugin {
 		}, { priority: 'lowest' } ) );
 	}
 
-	isSelectingBlaBla() {
+	get hasValidSelection() {
 		return this._isSelecting && this._startElement && this._endElement && this._startElement != this._endElement;
 	}
 
 	_startSelection( tableCell ) {
 		this.clearSelection();
+
 		this._isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
@@ -220,9 +234,10 @@ export default class TableSelection extends Plugin {
 	}
 }
 
-function getTableCell( domEventData, editor ) {
-	const element = domEventData.target;
-	const modelElement = editor.editing.mapper.toModelElement( element );
+// Finds model table cell for given DOM event - ie. for 'mousedown'.
+function getModelTableCellFromViewEvent( domEventData, editor ) {
+	const viewTargetElement = domEventData.target;
+	const modelElement = editor.editing.mapper.toModelElement( viewTargetElement );
 
 	if ( !modelElement ) {
 		return;
