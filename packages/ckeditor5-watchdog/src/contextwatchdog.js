@@ -22,6 +22,8 @@ import getSubNodes from './utils/getsubnodes';
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
+	 * The constructor should not be called directly. Use the {@link module:watchdog/contextwatchdog~ContextWatchdog.for} method instead.
+	 *
 	 * @param {Object} [contextConfig] {@link module:core/context~Context} configuration.
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
@@ -110,6 +112,18 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Adds items to the watchdog. Internally watchdogs will be created for these items and they will be available later using
 	 * the {@link #getWatchdog} method.
+	 *
+	 * 	watchdog.add( {
+	 *		editor1: {
+	 *			type: 'editor',
+	 *			sourceElementOrData: document.querySelector( '#editor' ),
+	 *			config: {
+	 *				plugins: [ Essentials, Paragraph, Bold, Italic ],
+	 *				toolbar: [ 'bold', 'italic', 'alignment' ]
+	 *			},
+	 *			creator: ( element, config ) => ClassicEditor.create( element, config )
+	 *		}
+	 * 	}
 	 *
 	 * // @param {Array.<Object.<String,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
 	 * @param {Array.<Object>} itemConfigurations
@@ -300,6 +314,14 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
+	 * Creates context watchdog for the given Context constructor, context configuration and watchdog configuration.
+	 *
+	 * 	const contextWatchdog = ContextWatchdog.for( Context, {
+	 * 		plugins: []
+	 * 	} );
+	 *
+	 * 	contextWatchdog.add( watchdogItem );
+	 *
 	 * @param {module:core/context~Context} Context
 	 * @param {Object} [contextConfig]
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig]
@@ -413,7 +435,7 @@ class ActionQueue {
 }
 
 /**
- * The WatchdogItemConfiguration interface
+ * The WatchdogItemConfiguration interface.
  *
  * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
  */
@@ -422,6 +444,8 @@ class ActionQueue {
  * The EditorWatchdogConfiguration interface specifies how editors should be created and destroyed.
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
+ *
+ * @property {'editor'} type A type of the item to create. In this case it should be set to the `editor`.
  *
  * @property {Function} creator A function that needs to be called to initialize the editor.
  *

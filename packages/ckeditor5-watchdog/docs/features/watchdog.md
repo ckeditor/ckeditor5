@@ -14,8 +14,8 @@ The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly t
 It should be noticed that the most "dangerous" places in the API - like `editor.model.change()`, `editor.editing.view.change()`, emitters - are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart editor when they occur.
 
 Currently there are two available watchdogs, which can be used depending on your needs:
-* [Editor Watchdog](#editor-watchdog)
-* [Context Watchdog](#context-watchdog)
+* [editor watchdog](#editor-watchdog) - it fills the most basic scenario when only one editor is created
+* [context watchdog](#context-watchdog) - it
 
 ## Usage
 
@@ -93,7 +93,7 @@ watchdog.create( elementOrData, editorConfig );
 	The default (not overridden) editor destructor is the `editor => editor.destroy()` function.
 </info-box>
 
-#### API
+#### Editor watchdog API
 
 Other useful {@link module:watchdog/editorwatchdog~EditorWatchdog methods, properties and events}:
 
@@ -170,10 +170,14 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Context from '@ckeditor/ckeditor5-core/src/context';
 
-// Create a watchdog for the context
-const watchdog = ContextWatchdog.for( Context );
+// Create a watchdog for the context and pass the context configuration:
+const watchdog = ContextWatchdog.for( Context, {
+	plugins: [],
 
-// Add editor instances.
+	// Rest of the configuration.
+} );
+
+// Add editor instances:
 watchdog.add( {
 	editor1: {
 		type: 'editor',
@@ -195,6 +199,19 @@ watchdog.add( {
 	},
 } );
 ```
+
+The Watchdog will keep the context and editor (and other types of items in the future) instances running
+that are added via the {@link module:watchdog/contextwatchdog~ContextWatchdog#add `ContextWatchdog#add` method}. This method can be called multiple times during the `ContextWatchdog` lifetime.
+
+To destroy one of the editor instances use the {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove` method}. This method can be called multiple times during the `ContextWatchdog` lifetime as well.
+
+```js
+watchdog.remove( [ 'editor1' ] );
+```
+
+<info-box>
+	Note that the above examples does not use promises returning by the context watchdog methods while these methods are asynchronous. You should not depend on these promises because they are resolved only once while your component might be restarted multiple times internally causing watchdog to unmount the editor and to mount again. Read further below for more information about events and watchdog states.
+</info-box>
 
 TODO
 
