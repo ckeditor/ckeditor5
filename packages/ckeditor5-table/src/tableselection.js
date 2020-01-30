@@ -32,8 +32,10 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * a
-	 * @returns {Boolean}
+	 * Flag indicating that table selection is selecting valid ranges in table cell.
+	 *
+	 * @readonly
+	 * @member {Boolean} #hasValidSelection
 	 */
 	get hasValidSelection() {
 		return this._isSelecting && this._startElement && this._endElement && this._startElement != this._endElement;
