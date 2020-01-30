@@ -79,7 +79,7 @@ describe( 'SpecialCharacters', () => {
 
 				// "Mathematical" and "Arrows" are provided by other plugins. "All" is being added by SpecialCharacters itself.
 				expect( listView.items.length ).to.equal( 3 );
-				expect( listView.items.last.children.first.label ).to.equal( 'All' );
+				expect( listView.items.first.children.first.label ).to.equal( 'All' );
 			} );
 
 			it( 'has a grid view', () => {

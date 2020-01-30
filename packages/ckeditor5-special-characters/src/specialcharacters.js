@@ -80,7 +80,7 @@ export default class SpecialCharacters extends Plugin {
 			const specialCharsGroups = [ ...this.getGroups() ];
 
 			// Add a special group that shows all available special characters.
-			specialCharsGroups.push( ALL_SPECIAL_CHARACTERS_GROUP );
+			specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
 
 			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
 			const gridView = new CharacterGridView( locale );
