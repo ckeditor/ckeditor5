@@ -143,15 +143,15 @@ export default class EditorWatchdog extends Watchdog {
 				console.error( 'An error happened during the editor destructing.', err );
 			} )
 			.then( () => {
-				let config = this._config;
-
-				if ( isElement( this._elementOrData ) ) {
-					config = Object.assign( {}, this._config, {
+				if ( typeof this._elementOrData === 'string' ) {
+					return this.create( this._data, this._config );
+				} else {
+					const updatedConfig = Object.assign( {}, this._config, {
 						initialData: this._data
 					} );
-				}
 
-				return this.create( this._elementOrData, config );
+					return this.create( this._elementOrData, updatedConfig );
+				}
 			} )
 			.then( () => {
 				this.fire( 'restart' );
