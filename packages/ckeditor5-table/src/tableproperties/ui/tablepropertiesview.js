@@ -523,7 +523,7 @@ export default class TablePropertiesView extends View {
 		// -- Operator ---------------------------------------------------
 
 		const operatorLabel = new View( locale );
-		operatorLabel.setTemplate( { text: ' × ' } );
+		operatorLabel.setTemplate( { text: '×' } );
 
 		// -- Height ---------------------------------------------------
 
@@ -636,7 +636,7 @@ export default class TablePropertiesView extends View {
 
 		return {
 			left: t( 'Align table to the left' ),
-			center: t( 'Center the table' ),
+			center: t( 'Center table' ),
 			right: t( 'Align table to the right' )
 		};
 	}

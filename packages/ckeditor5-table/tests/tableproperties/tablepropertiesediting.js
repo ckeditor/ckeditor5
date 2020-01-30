@@ -7,7 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import TableEditing from '../../src/tableediting';
-import TableProperties from '../../src/tableproperties';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
 
 import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand';
 import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand';
@@ -28,7 +28,7 @@ describe( 'table properties', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ TableProperties, Paragraph, TableEditing ]
+					plugins: [ TablePropertiesEditing, Paragraph, TableEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -42,7 +42,7 @@ describe( 'table properties', () => {
 		} );
 
 		it( 'should have pluginName', () => {
-			expect( TableProperties.pluginName ).to.equal( 'TableProperties' );
+			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
 		} );
 
 		it( 'adds tableBorderColor command', () => {

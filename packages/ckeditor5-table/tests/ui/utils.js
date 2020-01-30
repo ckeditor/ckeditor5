@@ -38,51 +38,101 @@ describe( 'Utils', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'repositionContextualBalloon', () => {
-		it( 'should re-position the ContextualBalloon when the table cell is selected', () => {
-			const spy = sinon.spy( balloon, 'updatePosition' );
-			const defaultPositions = BalloonPanelView.defaultPositions;
-			const view = new View();
+	describe( 'repositionContextualBalloon()', () => {
+		describe( 'with respect to the table cell', () => {
+			it( 'should re-position the ContextualBalloon when the table cell is selected', () => {
+				const spy = sinon.spy( balloon, 'updatePosition' );
+				const defaultPositions = BalloonPanelView.defaultPositions;
+				const view = new View();
 
-			view.element = global.document.createElement( 'div' );
+				view.element = global.document.createElement( 'div' );
 
-			balloon.add( {
-				view,
-				position: {
-					target: global.document.body
-				}
+				balloon.add( {
+					view,
+					position: {
+						target: global.document.body
+					}
+				} );
+
+				setData( editor.model,
+					'<table><tableRow>' +
+						'<tableCell><paragraph>foo</paragraph></tableCell>' +
+						'<tableCell><paragraph>[bar]</paragraph></tableCell>' +
+					'</tableRow></table>' );
+				repositionContextualBalloon( editor, 'cell' );
+
+				const modelCell = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+				const viewCell = editor.editing.mapper.toViewElement( modelCell );
+
+				sinon.assert.calledWithExactly( spy, {
+					target: editingView.domConverter.viewToDom( viewCell ),
+					positions: [
+						defaultPositions.northArrowSouth,
+						defaultPositions.northArrowSouthWest,
+						defaultPositions.northArrowSouthEast,
+						defaultPositions.southArrowNorth,
+						defaultPositions.southArrowNorthWest,
+						defaultPositions.southArrowNorthEast
+					]
+				} );
 			} );
 
-			setData( editor.model,
-				'<table><tableRow>' +
-					'<tableCell><paragraph>foo</paragraph></tableCell>' +
-					'<tableCell><paragraph>[bar]</paragraph></tableCell>' +
-				'</tableRow></table>' );
-			repositionContextualBalloon( editor );
+			it( 'should not engage with no table is selected', () => {
+				const spy = sinon.spy( balloon, 'updatePosition' );
 
-			const modelCell = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
-			const viewCell = editor.editing.mapper.toViewElement( modelCell );
+				setData( editor.model, '<paragraph>foo</paragraph>' );
 
-			sinon.assert.calledWithExactly( spy, {
-				target: editingView.domConverter.viewToDom( viewCell ),
-				positions: [
-					defaultPositions.northArrowSouth,
-					defaultPositions.northArrowSouthWest,
-					defaultPositions.northArrowSouthEast,
-					defaultPositions.southArrowNorth,
-					defaultPositions.southArrowNorthWest,
-					defaultPositions.southArrowNorthEast
-				]
+				repositionContextualBalloon( editor, 'cell' );
+				sinon.assert.notCalled( spy );
 			} );
 		} );
 
-		it( 'should not engage with no table is selected', () => {
-			const spy = sinon.spy( balloon, 'updatePosition' );
+		describe( 'with respect to the table', () => {
+			it( 'should re-position the ContextualBalloon when the table is selected', () => {
+				const spy = sinon.spy( balloon, 'updatePosition' );
+				const defaultPositions = BalloonPanelView.defaultPositions;
+				const view = new View();
 
-			setData( editor.model, '<paragraph>foo</paragraph>' );
+				view.element = global.document.createElement( 'div' );
 
-			repositionContextualBalloon( editor );
-			sinon.assert.notCalled( spy );
+				balloon.add( {
+					view,
+					position: {
+						target: global.document.body
+					}
+				} );
+
+				setData( editor.model,
+					'<table><tableRow>' +
+						'<tableCell><paragraph>foo</paragraph></tableCell>' +
+						'<tableCell><paragraph>[bar]</paragraph></tableCell>' +
+					'</tableRow></table>' );
+				repositionContextualBalloon( editor, 'table' );
+
+				const modelTable = findAncestor( 'table', editor.model.document.selection.getFirstPosition() );
+				const viewTable = editor.editing.mapper.toViewElement( modelTable );
+
+				sinon.assert.calledWithExactly( spy, {
+					target: editingView.domConverter.viewToDom( viewTable ),
+					positions: [
+						defaultPositions.northArrowSouth,
+						defaultPositions.northArrowSouthWest,
+						defaultPositions.northArrowSouthEast,
+						defaultPositions.southArrowNorth,
+						defaultPositions.southArrowNorthWest,
+						defaultPositions.southArrowNorthEast
+					]
+				} );
+			} );
+
+			it( 'should not engage with no table is selected', () => {
+				const spy = sinon.spy( balloon, 'updatePosition' );
+
+				setData( editor.model, '<paragraph>foo</paragraph>' );
+
+				repositionContextualBalloon( editor, 'table' );
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 	} );
 
