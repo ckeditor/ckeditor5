@@ -26,7 +26,7 @@ describe.only( 'table selection', () => {
 		tableSelection = editor.plugins.get( TableSelection );
 
 		setModelData( model, modelTable( [
-			[ '11', '12', '13' ],
+			[ '11[]', '12', '13' ],
 			[ '21', '22', '23' ],
 			[ '31', '32', '33' ]
 		] ) );
@@ -70,6 +70,146 @@ describe.only( 'table selection', () => {
 				expect( tableSelection.hasValidSelection ).to.be.false;
 			} );
 		} );
+
+		describe( 'startSelectingFrom()', () => {
+			it( 'should not change model selection', () => {
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change', spy );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				sinon.assert.notCalled( spy );
+			} );
+		} );
+
+		describe( 'setSelectingTo()', () => {
+			it( 'should not change model selection if selection is not started', () => {
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change', spy );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should change model selection if valid selection will be set', () => {
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change', spy );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should not change model selection if passed table cell is from other table then start cell', () => {
+				setModelData( model,
+					modelTable( [
+						[ '11[]', '12', '13' ],
+						[ '21', '22', '23' ],
+						[ '31', '32', '33' ]
+					] ) +
+					modelTable( [
+						[ 'a', 'b' ],
+						[ 'c', 'd' ]
+					] )
+				);
+
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change', spy );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 1, 0, 1 ] ) );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should select two table cells', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				assertSelectedCells( [
+					[ 1, 1, 0 ],
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+
+			it( 'should select four table cells for diagonal selection', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				assertSelectedCells( [
+					[ 1, 1, 0 ],
+					[ 1, 1, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+
+			it( 'should select row table cells', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
+
+				assertSelectedCells( [
+					[ 1, 1, 1 ],
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+
+			it( 'should select column table cells', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				assertSelectedCells( [
+					[ 0, 1, 0 ],
+					[ 0, 1, 0 ],
+					[ 0, 1, 0 ]
+				] );
+			} );
+
+			it( 'should create proper selection on consecutive changes', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				assertSelectedCells( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				assertSelectedCells( [
+					[ 0, 1, 0 ],
+					[ 0, 1, 0 ],
+					[ 0, 0, 0 ]
+				] );
+
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+
+				assertSelectedCells( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 1 ],
+					[ 0, 1, 1 ]
+				] );
+			} );
+		} );
+
+		describe( 'stopSelection()', () => {} );
+
+		describe( 'clearSelection()', () => {} );
+
+		describe( '* getSelectedTableCells()', () => {} );
 	} );
 
 	describe( 'mouse selection', () => {
@@ -370,6 +510,50 @@ describe.only( 'table selection', () => {
 			], { asWidget: true } ) + '<p>{}foo</p>' );
 		} );
 	} );
+
+	// Helper method for asserting selected table cells.
+	//
+	// To check if a table has expected cells selected pass two dimensional array of truthy and falsy values:
+	//
+	//		assertSelectedCells( [
+	//			[ 0, 1 ],
+	//			[ 0, 1 ]
+	//		] );
+	//
+	// The above call will check if table has second column selected (assuming no spans).
+	//
+	// **Note**: This function operates on child indexes - not rows/columns.
+	function assertSelectedCells( tableMap ) {
+		const tableIndex = 0;
+
+		for ( let rowIndex = 0; rowIndex < tableMap.length; rowIndex++ ) {
+			const row = tableMap[ rowIndex ];
+
+			for ( let cellIndex = 0; cellIndex < row.length; cellIndex++ ) {
+				const expectSelected = row[ cellIndex ];
+
+				if ( expectSelected ) {
+					assertNodeIsSelected( [ tableIndex, rowIndex, cellIndex ] );
+				} else {
+					assertNodeIsNotSelected( [ tableIndex, rowIndex, cellIndex ] );
+				}
+			}
+		}
+	}
+
+	function assertNodeIsSelected( path ) {
+		const node = modelRoot.getNodeByPath( path );
+		const selectionRanges = Array.from( model.document.selection.getRanges() );
+
+		expect( selectionRanges.some( range => range.containsItem( node ) ), `Expected node [${ path }] to be selected` ).to.be.true;
+	}
+
+	function assertNodeIsNotSelected( path ) {
+		const node = modelRoot.getNodeByPath( path );
+		const selectionRanges = Array.from( model.document.selection.getRanges() );
+
+		expect( selectionRanges.every( range => !range.containsItem( node ) ), `Expected node [${ path }] to be not selected` ).to.be.true;
+	}
 } );
 
 function selectTableCell( domEvtDataStub, view, tableIndex, sectionIndex, rowInSectionIndex, tableCellIndex ) {
