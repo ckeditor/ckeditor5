@@ -11,7 +11,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
-import { modelTable } from './_utils/utils';
+import { modelTable, viewTable } from './_utils/utils';
 
 describe( 'table selection', () => {
 	let editor, model;
@@ -93,7 +93,7 @@ describe( 'table selection', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
@@ -121,7 +121,7 @@ describe( 'table selection', () => {
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
 			], { asWidget: true } ) );
@@ -149,7 +149,7 @@ describe( 'table selection', () => {
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
 			], { asWidget: true } ) );
@@ -174,7 +174,7 @@ describe( 'table selection', () => {
 				[ { contents: '20', isSelected: true }, { contents: '21', isSelected: true }, { contents: '22', isSelected: true } ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[
 					{ contents: '00', class: 'selected', isSelected: true },
 					{ contents: '01', class: 'selected', isSelected: true },
@@ -201,7 +201,7 @@ describe( 'table selection', () => {
 				[ '20', '21', '22' ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[
 					{ contents: '00', class: 'selected', isSelected: true },
 					{ contents: '01', class: 'selected', isSelected: true },
@@ -244,7 +244,7 @@ describe( 'table selection', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
@@ -282,7 +282,7 @@ describe( 'table selection', () => {
 				[ '10', '11' ]
 			] ) );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
@@ -324,7 +324,7 @@ describe( 'table selection', () => {
 				writer.setSelection( writer.createRange( writer.createPositionAt( model.document.getRoot().getChild( 1 ), 0 ) ) );
 			} );
 
-			expect( getViewData( view ) ).to.equal( modelTable( [
+			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { asWidget: true } ) + '<p>{}foo</p>' );
