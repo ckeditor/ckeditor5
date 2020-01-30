@@ -121,7 +121,7 @@ export default class TableSelection extends Plugin {
 			if ( this._isSelecting ) {
 				this.clearPreviousSelection();
 
-				for ( const tableCell of this.getSelection() ) {
+				for ( const tableCell of this.getSelectedTableCells() ) {
 					const viewElement = conversionApi.mapper.toViewElement( tableCell );
 
 					viewWriter.addClass( 'selected', viewElement );
@@ -218,15 +218,22 @@ export default class TableSelection extends Plugin {
 		this._highlighted.clear();
 	}
 
-	* getSelection() {
+	/**
+	 * Returns iterator that iterates over all selected table cells.
+	 *
+	 *		tableSelection.startSelectingFrom( startTableCell );
+	 *		tableSelection.stopSelection();
+	 *
+	 *		const selectedTableCells = Array.from( tableSelection.getSelectedTableCells() );
+	 *		// The above array will consist one table cell.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
+	* getSelectedTableCells() {
 		if ( !this._startElement || !this._endElement ) {
 			return;
 		}
 
-		yield* this._getBlockSelection();
-	}
-
-	* _getBlockSelection() {
 		const startLocation = this.tableUtils.getCellLocation( this._startElement );
 		const endLocation = this.tableUtils.getCellLocation( this._endElement );
 
