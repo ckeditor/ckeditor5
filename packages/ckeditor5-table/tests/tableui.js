@@ -355,7 +355,10 @@ describe( 'TableUI', () => {
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal( [
-				'Merge cells',
+				'Merge cell up',
+				'Merge cell right',
+				'Merge cell down',
+				'Merge cell left',
 				'|',
 				'Split cell vertically',
 				'Split cell horizontally'
@@ -365,29 +368,49 @@ describe( 'TableUI', () => {
 		it( 'should bind items in panel to proper commands (LTR content)', () => {
 			const items = dropdown.listView.items;
 
-			const mergeCellsCommand = editor.commands.get( 'mergeTableCells' );
+			const mergeCellUpCommand = editor.commands.get( 'mergeTableCellUp' );
+			const mergeCellRightCommand = editor.commands.get( 'mergeTableCellRight' );
+			const mergeCellDownCommand = editor.commands.get( 'mergeTableCellDown' );
+			const mergeCellLeftCommand = editor.commands.get( 'mergeTableCellLeft' );
 			const splitCellVerticallyCommand = editor.commands.get( 'splitTableCellVertically' );
 			const splitCellHorizontallyCommand = editor.commands.get( 'splitTableCellHorizontally' );
 
-			mergeCellsCommand.isEnabled = true;
+			mergeCellUpCommand.isEnabled = true;
+			mergeCellRightCommand.isEnabled = true;
+			mergeCellDownCommand.isEnabled = true;
+			mergeCellLeftCommand.isEnabled = true;
 			splitCellVerticallyCommand.isEnabled = true;
 			splitCellHorizontallyCommand.isEnabled = true;
 
-			expect( items.get( 0 ).children.first.isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).to.be.true;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 6 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			mergeCellsCommand.isEnabled = false;
+			mergeCellUpCommand.isEnabled = false;
 
-			expect( items.get( 0 ).children.first.isEnabled ).to.be.false;
+			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			splitCellVerticallyCommand.isEnabled = false;
+			mergeCellRightCommand.isEnabled = false;
+
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			mergeCellDownCommand.isEnabled = false;
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 
-			splitCellHorizontallyCommand.isEnabled = false;
+			mergeCellLeftCommand.isEnabled = false;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
+
+			splitCellVerticallyCommand.isEnabled = false;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+
+			splitCellHorizontallyCommand.isEnabled = false;
+			expect( items.get( 6 ).children.first.isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
@@ -435,7 +458,7 @@ describe( 'TableUI', () => {
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCells' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCellUp' );
 		} );
 	} );
 } );
