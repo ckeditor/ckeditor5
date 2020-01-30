@@ -13,10 +13,16 @@ The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly t
 
 It should be noticed that the most "dangerous" places in the API - like `editor.model.change()`, `editor.editing.view.change()`, emitters - are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart editor when they occur.
 
+Currently there are two available watchdogs, which can be used depending on your needs:
+* [Editor Watchdog](#editor-watchdog)
+* [Context Watchdog](#context-watchdog)
+
 ## Usage
 
+### Editor watchdog
+
 <info-box>
-	Note: Watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
+	Note: The editor watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
 </info-box>
 
 Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
@@ -29,7 +35,7 @@ And then change your `ClassicEditor.create()` call to `watchdog.create()` as fol
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Watchdog from '@ckeditor/ckeditor5-watchdog/src/watchdog';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -37,7 +43,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 // Create a watchdog for the given editor type.
-const watchdog = Watchdog.for( ClassicEditor );
+const watchdog = EditorWatchdog.for( ClassicEditor );
 
 // Create a new editor instance.
 watchdog.create( document.querySelector( '#editor' ), {
@@ -49,18 +55,18 @@ watchdog.create( document.querySelector( '#editor' ), {
 In other words, your goal is to create a watchdog instance and make the watchdog create an instance of the editor you want to use. The watchdog will then create a new editor and if it ever crashes, restart it by creating a new editor.
 
 <info-box>
-	A new editor instance is created every time the watchdog detects a crash. Thus, the editor instance should not be kept in your application's state. Use the {@link module:watchdog/watchdog~Watchdog#editor `Watchdog#editor`} property instead.
+	A new editor instance is created every time the watchdog detects a crash. Thus, the editor instance should not be kept in your application's state. Use the {@link module:watchdog/editorwatchdog~EditorWatchdog#editor `EditorWatchdog#editor`} property instead.
 
-	It also means that any code that should be executed for any new editor instance should be either loaded as an editor plugin or executed in the callbacks defined by {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`}. Read more about controlling the editor creation and destruction in the next section.
+	It also means that any code that should be executed for any new editor instance should be either loaded as an editor plugin or executed in the callbacks defined by {@link module:watchdog/editorwatchdog~EditorWatchdog#setCreator `EditorWatchdog#setCreator()`} and {@link module:watchdog/editorwatchdog~EditorWatchdog#setDestructor `EditorWatchdog#setDestructor()`}. Read more about controlling the editor creation and destruction in the next section.
 </info-box>
 
-### Controlling editor creation and destruction
+#### Controlling editor creation and destruction
 
-For more control over the creation and destruction of editor instances, you can use the {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} and, if needed, the {@link module:watchdog/watchdog~Watchdog#setDestructor `Watchdog#setDestructor()`} methods:
+For more control over the creation and destruction of editor instances, you can use the {@link  module:watchdog/editorwatchdog~EditorWatchdog#setCreator `EditorWatchdog#setCreator()`} and, if needed, the {@link  module:watchdog/editorwatchdog~EditorWatchdog#setDestructor `EditorWatchdog#setDestructor()`} methods:
 
 ```js
 // Instantiate the watchdog manually (do not use the for() helper).
-const watchdog = new Watchdog();
+const watchdog = new EditorWatchdog();
 
 watchdog.setCreator( ( elementOrData, editorConfig ) => {
 	return ClassicEditor
@@ -87,9 +93,9 @@ watchdog.create( elementOrData, editorConfig );
 	The default (not overridden) editor destructor is the `editor => editor.destroy()` function.
 </info-box>
 
-### API
+#### API
 
-Other useful {@link module:watchdog/watchdog~Watchdog methods, properties and events}:
+Other useful {@link module:watchdog/editorwatchdog~EditorWatchdog methods, properties and events}:
 
 ```js
 watchdog.on( 'error', () => { console.log( 'Editor crashed.' ) } );
@@ -124,7 +130,7 @@ watchdog.on( 'change:state' ( evt, name, currentState, prevState ) => {
 watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 ```
 
-### Configuration
+#### Configuration
 
 Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constructor`} and the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for`} methods accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} with the following optional properties:
 
@@ -140,10 +146,58 @@ const watchdog = new Watchdog( {
 } )
 ```
 
-## Limitations
-
-The CKEditor 5 watchdog listens to uncaught errors which can be associated with the editor instance created by that watchdog. Currently, these errors are {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} so those explicitly thrown by the editor (by its internal checks). This means that not every runtime error that crashed the editor can be caught which, in turn, means that not every crash can be detected.
+## Context watchdog
 
 <info-box>
-	The watchdog does not handle errors thrown during the editor initialization (by `Editor.create()`) and editor destruction (`Editor#destroy()`). Errors thrown at these stages mean that there is a serious problem in the code integrating the editor with your application and such problem cannot be easily fixed by restarting the editor.
+	Note: the ContextWatchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
 </info-box>
+
+Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-watchdog
+```
+
+And then change your editor and context initialization code:
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
+
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Context from '@ckeditor/ckeditor5-core/src/context';
+
+// Create a watchdog for the context
+const watchdog = ContextWatchdog.for( Context );
+
+// Add editor instances.
+watchdog.add( {
+	editor1: {
+		type: 'editor',
+		sourceElementOrData: document.querySelector( '#editor' ),
+		config: {
+			plugins: [ Essentials, Paragraph, Bold, Italic ],
+			toolbar: [ 'bold', 'italic', 'alignment' ]
+		},
+		creator: ( element, config ) => ClassicEditor.create( element, config )
+	},
+	editor2: {
+		type: 'editor',
+		sourceElementOrData: document.querySelector( '#editor' ),
+		config: {
+			plugins: [ Essentials, Paragraph, Bold, Italic ],
+			toolbar: [ 'bold', 'italic', 'alignment' ]
+		},
+		creator: ( element, config ) => ClassicEditor.create( element, config )
+	},
+} );
+```
+
+TODO
+
+## Limitations
+
+The watchdog does not handle errors thrown during the editor or context initialization (by e.g. `Editor.create()`) and editor destruction (e.g. `Editor#destroy()`). Errors thrown at these stages mean that there is a serious problem in the code integrating the editor with your application and such problem cannot be easily fixed by restarting the editor.
