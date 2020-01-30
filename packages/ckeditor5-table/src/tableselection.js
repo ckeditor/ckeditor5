@@ -7,12 +7,11 @@
  * @module table/tableselection
  */
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+import MouseSelectionObserver from './tableselection/mouseselectionobserver';
 import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import MouseSelectionObserver from './tableselection/mouseselectionobserver';
 
 export default class TableSelection extends Plugin {
 	constructor( editor ) {
@@ -231,5 +230,3 @@ function getTableCell( domEventData, editor ) {
 
 	return findAncestor( 'tableCell', editor.model.createPositionAt( modelElement, 0 ) );
 }
-
-mix( TableSelection, ObservableMixin );
