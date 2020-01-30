@@ -5,7 +5,6 @@
 
 /* globals window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
@@ -19,4 +18,3 @@ window.SpecialCharacters = SpecialCharacters;
 window.SpecialCharactersCurrency = SpecialCharactersCurrency;
 window.SpecialCharactersMathematical = SpecialCharactersMathematical;
 window.SpecialCharactersEssentials = SpecialCharactersEssentials;
-window.Plugin = Plugin;

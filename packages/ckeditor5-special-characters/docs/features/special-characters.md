@@ -17,7 +17,7 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 ## Configuration
 
-### Adding a new special character category
+### Adding a new category
 
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
@@ -39,7 +39,11 @@ function SpecialCharactersEmoji( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji, ... ],
+		plugins: [
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
+
+			// Other plugins...
+		],
 		toolbar: [ 'specialCharacters', ... ],
 	} )
 	.then( ... )
@@ -52,13 +56,11 @@ After adding the above plugin into the editor, the new category will be availabl
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-#### Adding special characters category demo
-
-Use the special characters icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
+Below, you can see a demo based on the example shown above. Use the special characters icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
 
 {@snippet features/special-characters-new-category}
 
-### Adding a new special characters to an existing category
+### Adding characters to an existing category
 
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can also add new special characters into existing category.
 
@@ -77,7 +79,11 @@ function SpecialCharactersArrowsExtended( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersArrowsExtended, ... ],
+		plugins: [
+			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersArrowsExtended,
+
+			// Other plugins...
+		],
 		toolbar: [ 'specialCharacters', ... ],
 	} )
 	.then( ... )
@@ -88,24 +94,22 @@ ClassicEditor
 	A title of a special character must be unique across the entire special characters set.
 </info-box>
 
-#### Extending an existing special characters category demo
-
-Use the special characters icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
+Below, you can see a demo based on the example shown above. Use the special characters icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
 
 {@snippet features/special-characters-extended-category}
 
-### Removing special character categories
+### Removing categories
 
 The special characters feature exposes each category as a separate plugin. While the {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} plugin can be used to conveniently include all of them, you can customize the category list by adding individual plugins.
 
 The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
-- {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
-- {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
-- {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
-- {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – mathematical special characters,
-- {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
-- {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
+* {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
+* {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
+* {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
+* {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – mathematical special characters,
+* {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
+* {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
 
 For example, you can limit categories to "Mathematical" and "Currency" only by picking the {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} and {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} plugins, like so:
 
@@ -116,16 +120,18 @@ import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-character
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical, ... ],
+		plugins: [
+			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
+
+			// Other plugins...
+		],
 		toolbar: [ 'specialCharacters', ... ],
 	} )
 	.then( ... )
 	.catch( ... );
 ```
 
-#### Removing special character categories demo
-
-After clicking the special character icon in the editor's toolbar you can see that it contains fewer categories compared to other instances.
+Below, you can see a demo based on the example shown above. After clicking the special character icon in the editor's toolbar you can see that it contains fewer categories compared to other editors on this page.
 
 {@snippet features/special-characters-limited-categories}
 
