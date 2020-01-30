@@ -413,15 +413,6 @@ class ActionQueue {
 	}
 
 	/**
-	 * Clears all queued actions (e.g. in case of an error).
-	 *
-	 * @protected
-	 */
-	_clear() {
-		this._queuedActions = [];
-	}
-
-	/**
 	 * It handles queued actions one by one.
 	 *
 	 * @private

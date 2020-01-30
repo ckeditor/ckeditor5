@@ -233,8 +233,6 @@ describe( 'ContextWatchdog', () => {
 				err = _err;
 			}
 
-			watchdog._actionQueue._clear();
-
 			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
@@ -253,8 +251,6 @@ describe( 'ContextWatchdog', () => {
 			} catch ( _err ) {
 				err = _err;
 			}
-
-			watchdog._actionQueue._clear();
 
 			await watchdog.destroy();
 
@@ -317,8 +313,6 @@ describe( 'ContextWatchdog', () => {
 				watchdog._stopErrorHandling();
 				err = _err;
 			}
-
-			watchdog._actionQueue._clear();
 
 			await watchdog.destroy();
 
@@ -532,6 +526,75 @@ describe( 'ContextWatchdog', () => {
 				expect( oldEditor2 ).to.equal( editorWatchdog2.editor );
 
 				expect( watchdog.context ).to.equal( oldContext );
+
+				await watchdog.destroy();
+			} );
+
+			it( 'should handle removing and restarting at the same time', async () => {
+				watchdog = ContextWatchdog.for( Context, {} );
+
+				watchdog.add( {
+					editor1: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					},
+					editor2: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element2,
+						config: {}
+					}
+				} );
+
+				await watchdog.waitForReady();
+
+				const editor1 = watchdog.get( 'editor1' );
+
+				watchdog.remove( [ 'editor1' ] );
+
+				setTimeout( () => throwCKEditorError( 'foo', editor1 ) );
+
+				await waitCycle();
+				await watchdog.waitForReady();
+
+				expect( [ ...watchdog._watchdogs.keys() ] ).to.include( 'editor2' );
+				expect( [ ...watchdog._watchdogs.keys() ] ).to.not.include( 'editor1' );
+
+				await watchdog.destroy();
+			} );
+
+			it( 'should handle restarting the item instance many times', async () => {
+				watchdog = ContextWatchdog.for( Context, {} );
+
+				watchdog.add( {
+					editor1: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element1,
+						config: {}
+					},
+					editor2: {
+						type: 'editor',
+						creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+						sourceElementOrData: element2,
+						config: {}
+					}
+				} );
+
+				await watchdog.waitForReady();
+
+				const editorWatchdog = watchdog._watchdogs.get( 'editor1' );
+
+				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
+				await waitCycle();
+
+				expect( editorWatchdog.state ).to.equal( 'crashedPermanently' );
+				expect( watchdog.state ).to.equal( 'ready' );
 
 				await watchdog.destroy();
 			} );
