@@ -144,13 +144,13 @@ export default class EditorWatchdog extends Watchdog {
 			} )
 			.then( () => {
 				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( this._data, this._config );
+					return this.create( this._data, this._config, this._config.context );
 				} else {
 					const updatedConfig = Object.assign( {}, this._config, {
 						initialData: this._data
 					} );
 
-					return this.create( this._elementOrData, updatedConfig );
+					return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
 				}
 			} )
 			.then( () => {
