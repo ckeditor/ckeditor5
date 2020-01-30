@@ -35,9 +35,9 @@ export default class TableSelection extends Plugin {
 	 * Flag indicating that table selection is selecting valid ranges in table cell.
 	 *
 	 * @readonly
-	 * @member {Boolean} #hasValidSelection
+	 * @member {Boolean} #isSelectingAndSomethingElse
 	 */
-	get hasValidSelection() {
+	get isSelectingAndSomethingElse() {
 		return this._isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
 	}
 
@@ -53,7 +53,7 @@ export default class TableSelection extends Plugin {
 		editor.editing.view.addObserver( MouseSelectionObserver );
 
 		this.listenTo( viewDocument, 'keydown', () => {
-			if ( this.hasValidSelection ) {
+			if ( this.isSelectingAndSomethingElse ) {
 				this.stopSelection();
 				const tableCell = this._startElement;
 				this.clearSelection();
@@ -91,7 +91,7 @@ export default class TableSelection extends Plugin {
 
 			this.setSelectingTo( tableCell );
 
-			if ( this.hasValidSelection ) {
+			if ( this.isSelectingAndSomethingElse ) {
 				domEventData.preventDefault();
 
 				this._updateModelSelection();

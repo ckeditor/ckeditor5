@@ -13,7 +13,7 @@ import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable, viewTable } from './_utils/utils';
 
-describe( 'table selection', () => {
+describe.only( 'table selection', () => {
 	let editor, model, tableSelection, modelRoot;
 
 	beforeEach( async () => {
@@ -37,29 +37,29 @@ describe( 'table selection', () => {
 	} );
 
 	describe( 'TableSelection', () => {
-		describe( 'hasValidSelection()', () => {
+		describe( 'isSelectingAndSomethingElse()', () => {
 			it( 'should be false if selection is not started', () => {
-				expect( tableSelection.hasValidSelection ).to.be.false;
+				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
 			} );
 
 			it( 'should be true if selection is selecting two different cells', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
-				expect( tableSelection.hasValidSelection ).to.be.true;
+				expect( tableSelection.isSelectingAndSomethingElse ).to.be.true;
 			} );
 
 			it( 'should be false if selection start/end is selecting the same table cell', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 
-				expect( tableSelection.hasValidSelection ).to.be.false;
+				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
 			} );
 
 			it( 'should be false if selection has no end cell', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 
-				expect( tableSelection.hasValidSelection ).to.be.false;
+				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
 			} );
 
 			it( 'should be false if selection has ended', () => {
@@ -67,7 +67,7 @@ describe( 'table selection', () => {
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 				tableSelection.stopSelection();
 
-				expect( tableSelection.hasValidSelection ).to.be.false;
+				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
 			} );
 		} );
 
@@ -205,9 +205,80 @@ describe( 'table selection', () => {
 			} );
 		} );
 
-		describe( 'stopSelection()', () => {} );
+		describe( 'stopSelection()', () => {
+			it( 'should not clear currently selected cells if not cell was passed', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
-		describe( 'clearSelection()', () => {} );
+				tableSelection.stopSelection();
+
+				assertSelectedCells( [
+					[ 1, 1, 0 ],
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+
+			it( 'should change model selection if cell was passed', () => {
+				const spy = sinon.spy();
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				model.document.selection.on( 'change', spy );
+				tableSelection.stopSelection( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should extend selection to passed table cell', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+				tableSelection.stopSelection( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				assertSelectedCells( [
+					[ 1, 1, 0 ],
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+		} );
+
+		describe( 'clearSelection()', () => {
+			it( 'should not change model selection', () => {
+				const spy = sinon.spy();
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				model.document.selection.on( 'change', spy );
+
+				tableSelection.clearSelection();
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should stop selecting mode', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				tableSelection.clearSelection();
+
+				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
+			} );
+
+			it( 'should not reset model selections', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				tableSelection.clearSelection();
+
+				assertSelectedCells( [
+					[ 1, 1, 0 ],
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+		} );
 
 		describe( '* getSelectedTableCells()', () => {} );
 	} );
