@@ -8,7 +8,7 @@
  */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import getLastTextLine from './utils/getlasttextline';
 
 /**
@@ -19,10 +19,12 @@ import getLastTextLine from './utils/getlasttextline';
  * {@link module:typing/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
  *
  * @private
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class TextWatcher {
 	/**
 	 * Creates a text watcher instance.
+	 *
 	 * @param {module:engine/model/model~Model} model
 	 * @param {Function} testCallback The function used to match the text.
 	 */
@@ -30,6 +32,32 @@ export default class TextWatcher {
 		this.model = model;
 		this.testCallback = testCallback;
 		this.hasMatch = false;
+
+		/**
+		 * Flag indicating whether the `TextWatcher` instance is enabled or disabled.
+		 * A disabled TextWatcher will not evaluate text.
+		 *
+		 * To disable TextWatcher:
+		 *
+		 *		const watcher = new TextWatcher( editor.model, testCallback );
+		 *
+		 *		// After this a testCallback will not be called.
+		 *		watcher.isEnabled = false;
+		 *
+		 * @observable
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		// Toggle text watching on isEnabled state change.
+		this.on( 'change:isEnabled', () => {
+			if ( this.isEnabled ) {
+				this._startListening();
+			} else {
+				this.stopListening( model.document.selection );
+				this.stopListening( model.document );
+			}
+		} );
 
 		this._startListening();
 	}
@@ -43,7 +71,7 @@ export default class TextWatcher {
 		const model = this.model;
 		const document = model.document;
 
-		document.selection.on( 'change:range', ( evt, { directChange } ) => {
+		this.listenTo( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -62,7 +90,7 @@ export default class TextWatcher {
 			this._evaluateTextBeforeSelection( 'selection' );
 		} );
 
-		document.on( 'change:data', ( evt, batch ) => {
+		this.listenTo( document, 'change:data', ( evt, batch ) => {
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
@@ -127,5 +155,4 @@ export default class TextWatcher {
 	}
 }
 
-mix( TextWatcher, EmitterMixin );
-
+mix( TextWatcher, ObservableMixin );

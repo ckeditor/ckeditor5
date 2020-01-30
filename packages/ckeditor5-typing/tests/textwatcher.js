@@ -46,6 +46,18 @@ describe( 'TextWatcher', () => {
 		}
 	} );
 
+	describe( '#isEnabled', () => {
+		it( 'should be enabled after initialization', () => {
+			expect( watcher.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be disabled after setting #isEnabled to false', () => {
+			watcher.isEnabled = false;
+
+			expect( watcher.isEnabled ).to.be.false;
+		} );
+	} );
+
 	describe( 'testCallback', () => {
 		it( 'should evaluate text before caret for data changes', () => {
 			model.change( writer => {
@@ -97,6 +109,35 @@ describe( 'TextWatcher', () => {
 
 			sinon.assert.notCalled( testCallbackStub );
 		} );
+
+		it( 'should not evaluate text when watcher is disabled', () => {
+			watcher.isEnabled = false;
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+		} );
+
+		it( 'should evaluate text when watcher is enabled again', () => {
+			watcher.isEnabled = false;
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+
+			watcher.isEnabled = true;
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.calledOnce( testCallbackStub );
+			sinon.assert.calledWithExactly( testCallbackStub, 'foo @@' );
+		} );
 	} );
 
 	describe( 'events', () => {
@@ -109,6 +150,22 @@ describe( 'TextWatcher', () => {
 
 			sinon.assert.calledOnce( testCallbackStub );
 			sinon.assert.calledOnce( matchedDataSpy );
+			sinon.assert.notCalled( matchedSelectionSpy );
+			sinon.assert.notCalled( unmatchedSpy );
+		} );
+
+		it( 'should not fire "matched:data" event when watcher is disabled' +
+		' (even when test callback returns true for model data changes)', () => {
+			watcher.isEnabled = false;
+
+			testCallbackStub.returns( true );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+			sinon.assert.notCalled( matchedDataSpy );
 			sinon.assert.notCalled( matchedSelectionSpy );
 			sinon.assert.notCalled( unmatchedSpy );
 		} );
@@ -127,6 +184,26 @@ describe( 'TextWatcher', () => {
 			sinon.assert.calledOnce( testCallbackStub );
 			sinon.assert.notCalled( matchedDataSpy );
 			sinon.assert.calledOnce( matchedSelectionSpy );
+			sinon.assert.notCalled( unmatchedSpy );
+		} );
+
+		it( 'should not fire "matched:selection" event when when watcher is disabled' +
+		' (even when test callback returns true for model data changes)', () => {
+			watcher.isEnabled = false;
+
+			testCallbackStub.returns( true );
+
+			model.enqueueChange( 'transparent', writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+			sinon.assert.notCalled( matchedDataSpy );
+			sinon.assert.notCalled( matchedSelectionSpy );
 			sinon.assert.notCalled( unmatchedSpy );
 		} );
 
@@ -188,6 +265,31 @@ describe( 'TextWatcher', () => {
 			sinon.assert.notCalled( matchedSelectionSpy );
 			sinon.assert.calledOnce( unmatchedSpy );
 		} );
+
+		it( 'should not fire "umatched" event when selection is expanded if watcher is disabled', () => {
+			watcher.isEnabled = false;
+
+			testCallbackStub.returns( true );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+			sinon.assert.notCalled( matchedDataSpy );
+			sinon.assert.notCalled( matchedSelectionSpy );
+			sinon.assert.notCalled( unmatchedSpy );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( doc.getRoot().getChild( 0 ), 0 );
+
+				writer.setSelection( writer.createRange( start, start.getShiftedBy( 1 ) ) );
+			} );
+
+			sinon.assert.notCalled( testCallbackStub );
+			sinon.assert.notCalled( matchedDataSpy );
+			sinon.assert.notCalled( matchedSelectionSpy );
+			sinon.assert.notCalled( unmatchedSpy );
+		} );
 	} );
 } );
-

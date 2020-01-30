@@ -92,12 +92,31 @@ export default class TextTransformation extends Plugin {
 				include: DEFAULT_TRANSFORMATIONS
 			}
 		} );
+
+		this.editor = editor;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
+		const model = this.editor.model;
+		const modelSelection = model.document.selection;
+
+		modelSelection.on( 'change:range', () => {
+			// Disable plugin when selection is inside a code block.
+			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
+		} );
+
+		this._enableTransformationWatchers();
+	}
+
+	/**
+	 * Create new set of TextWatchers listening to the editor for typing and selection events.
+	 *
+	 * @private
+	 */
+	_enableTransformationWatchers() {
 		const editor = this.editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
@@ -110,7 +129,7 @@ export default class TextTransformation extends Plugin {
 
 			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
 
-			watcher.on( 'matched:data', ( evt, data ) => {
+			const watcherCallback = ( evt, data ) => {
 				if ( !input.isInput( data.batch ) ) {
 					return;
 				}
@@ -142,7 +161,10 @@ export default class TextTransformation extends Plugin {
 						changeIndex += replaceWith.length;
 					}
 				} );
-			} );
+			};
+
+			watcher.on( 'matched:data', watcherCallback );
+			watcher.bind( 'isEnabled' ).to( this );
 		}
 	}
 }

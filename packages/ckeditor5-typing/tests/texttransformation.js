@@ -11,6 +11,7 @@ import TextTransformation from '../src/texttransformation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -37,6 +38,24 @@ describe( 'Text transformation feature', () => {
 	it( 'has proper name', () => {
 		return createEditorInstance().then( () => {
 			expect( TextTransformation.pluginName ).to.equal( 'TextTransformation' );
+		} );
+	} );
+
+	describe( '#isEnabled', () => {
+		let plugin;
+
+		beforeEach( () => {
+			return createEditorInstance().then( () => {
+				plugin = editor.plugins.get( TextTransformation );
+			} );
+		} );
+
+		afterEach( () => {
+			plugin.destroy();
+		} );
+
+		it( 'should be enabled after initialization', () => {
+			expect( plugin.isEnabled ).to.be.true;
 		} );
 	} );
 
@@ -153,6 +172,18 @@ describe( 'Text transformation feature', () => {
 
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
+		} );
+
+		it( 'should be disabled inside code blocks', () => {
+			setData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
+
+			simulateTyping( '1/2' );
+
+			const plugin = editor.plugins.get( 'TextTransformation' );
+
+			expect( plugin.isEnabled ).to.be.false;
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
@@ -355,7 +386,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Typing, Paragraph, Bold, TextTransformation ]
+				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
@@ -363,10 +394,6 @@ describe( 'Text transformation feature', () => {
 				model = editor.model;
 				doc = model.document;
 
-				model.schema.register( 'softBreak', {
-					allowWhere: '$text',
-					isInline: true
-				} );
 				editor.conversion.elementToElement( {
 					model: 'softBreak',
 					view: 'br'
