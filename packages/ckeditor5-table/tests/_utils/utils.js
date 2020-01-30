@@ -368,7 +368,10 @@ function makeRows( tableData, options ) {
 				}
 
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
-					contents = `<${ wrappingElement }>${ contents }</${ wrappingElement }>`;
+					contents =
+						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
+							contents +
+						`</${ wrappingElement }>`;
 				}
 
 				const formattedAttributes = formatAttributes( attributes );
