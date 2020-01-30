@@ -42,14 +42,6 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * TODO
-		 *
-		 * @abstract
-		 * @protected
-		 * @method #_restart
-		 */
-
-		/**
 		 * Specifies the state of the instance handled by the watchdog. The state can be one of the following values:
 		 *
 		 * * `initializing` - before the first initialization, and after crashes, before the instance is ready,
@@ -118,6 +110,32 @@ export default class Watchdog {
 		 * @protected
 		 * @member {Function} #_destructor
 		 * @see #setDestructor
+		 */
+
+		/**
+		 * The handled instances.
+		 *
+		 * @abstract
+		 * @protected
+		 * @member {Object} #_instance
+		 */
+
+		/**
+		 * The method responsible for the instance restarting.
+		 *
+		 * @abstract
+		 * @protected
+		 * @method #_restart
+		 */
+
+		/**
+		 * Traverses the error context and the handled instance to find out whether the error should
+		 * be handled by the given instance.
+		 *
+		 * @abstract
+		 * @protected
+		 * @method #_isErrorComingFromThisInstance
+		 * @param {module:utils/ckeditorerror~CKEditorError} error
 		 */
 	}
 

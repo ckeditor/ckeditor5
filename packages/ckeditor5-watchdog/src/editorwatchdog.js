@@ -89,9 +89,7 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns the handled instance.
-	 *
-	 * @protected
+	 * @inheritDoc
 	 */
 	get _instance() {
 		return this._editor;
