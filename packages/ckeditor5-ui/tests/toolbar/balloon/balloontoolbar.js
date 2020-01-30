@@ -14,9 +14,15 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -102,7 +108,7 @@ describe( 'BalloonToolbar', () => {
 			} );
 	} );
 
-	it( 'balloon toolbar should not group items when shouldNotGroupWhenFull option is enabled', () => {
+	it( 'should not group items when the shouldNotGroupWhenFull option is enabled', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -366,12 +372,12 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
-		it( 'should set balloon toolbar max-width to half of the editable width, otherwise it can be wider then editor', done => {
+		it( 'should set the toolbar max-width to half of the editable width', done => {
 			const viewElement = editor.ui.view.editable.element;
 
 			setData( model, '<paragraph>b[ar]</paragraph>' );
 
-			expect( document.body.contains( viewElement ) ).to.be.true;
+			expect( global.document.body.contains( viewElement ) ).to.be.true;
 
 			viewElement.style.width = '400px';
 
@@ -380,7 +386,9 @@ describe( 'BalloonToolbar', () => {
 			// needs 2x requestAnimationFrame or timeout to update a layout.
 			// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
 			setTimeout( () => {
-				expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( '200px' );
+				// The expected width should be 2/3 of the editor's editable element's width.
+				const expectedWidth = toPx( new Rect( viewElement ).width * 0.66 );
+				expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
 
 				done();
 			}, 500 );
