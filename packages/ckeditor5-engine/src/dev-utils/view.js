@@ -471,7 +471,9 @@ class RangeParser {
 			}
 
 			text = text.replace( regexp, '' );
+
 			node._data = text;
+
 			const index = node.index;
 			const parent = node.parent;
 
@@ -927,7 +929,10 @@ class ViewStringify {
 function _convertViewElements( rootNode ) {
 	if ( rootNode.is( 'element' ) || rootNode.is( 'documentFragment' ) ) {
 		// Convert element or leave document fragment.
-		const convertedElement = rootNode.is( 'documentFragment' ) ? new ViewDocumentFragment() : _convertElement( rootNode );
+
+		const convertedElement = rootNode.is( 'documentFragment' ) ?
+			new ViewDocumentFragment( rootNode.document ) :
+			_convertElement( rootNode.document, rootNode );
 
 		// Convert all child nodes.
 		// Cache the nodes in array. Otherwise, we would skip some nodes because during iteration we move nodes
@@ -973,10 +978,10 @@ function _convertViewElements( rootNode ) {
 // module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement|
 // module:engine/view/containerelement~ContainerElement} A tree view
 // element converted according to its name.
-function _convertElement( viewElement ) {
+function _convertElement( viewDocument, viewElement ) {
 	const info = _convertElementNameAndInfo( viewElement );
 	const ElementConstructor = allowedTypes[ info.type ];
-	const newElement = ElementConstructor ? new ElementConstructor( info.name ) : new ViewElement( info.name );
+	const newElement = ElementConstructor ? new ElementConstructor( viewDocument, info.name ) : new ViewElement( viewDocument, info.name );
 
 	if ( newElement.is( 'attributeElement' ) ) {
 		if ( info.priority !== null ) {

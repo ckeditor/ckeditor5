@@ -14,6 +14,7 @@ import ViewElement from './element';
 import ViewPosition from './position';
 import ViewRange from './range';
 import ViewSelection from './selection';
+import ViewDocument from './document';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
 import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
@@ -386,6 +387,8 @@ export default class DomConverter {
 			return null;
 		}
 
+		const viewDocument = new ViewDocument();
+
 		// When node is inside UIElement return that UIElement as it's view representation.
 		const uiElement = this.getParentUIElement( domNode, this._domToViewMapping );
 
@@ -399,7 +402,7 @@ export default class DomConverter {
 			} else {
 				const textData = this._processDataFromDomText( domNode );
 
-				return textData === '' ? null : new ViewText( textData );
+				return textData === '' ? null : new ViewText( viewDocument, textData );
 			}
 		} else if ( this.isComment( domNode ) ) {
 			return null;
@@ -412,7 +415,7 @@ export default class DomConverter {
 
 			if ( this.isDocumentFragment( domNode ) ) {
 				// Create view document fragment.
-				viewElement = new ViewDocumentFragment();
+				viewElement = new ViewDocumentFragment( viewDocument );
 
 				if ( options.bind ) {
 					this.bindDocumentFragments( domNode, viewElement );
@@ -420,7 +423,7 @@ export default class DomConverter {
 			} else {
 				// Create view element.
 				const viewName = options.keepOriginalCase ? domNode.tagName : domNode.tagName.toLowerCase();
-				viewElement = new ViewElement( viewName );
+				viewElement = new ViewElement( viewDocument, viewName );
 
 				if ( options.bind ) {
 					this.bindElements( domNode, viewElement );

@@ -28,8 +28,17 @@ import '@ckeditor/ckeditor5-utils/src/version';
 export default class Node {
 	/**
 	 * Creates a tree view node.
+	 *
+	 * @param {module:engine/view/document~Document} document A document where the node belongs to.
 	 */
-	constructor() {
+	constructor( document ) {
+		/**
+		 * A document where the node belongs to.
+		 *
+		 * @member {module:engine/view/document~Document}
+		 */
+		this.document = document;
+
 		/**
 		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
 		 *
@@ -115,14 +124,14 @@ export default class Node {
 	 * @readonly
 	 * @type {module:engine/view/document~Document|null}
 	 */
-	get document() {
-		// Parent might be Node, null or DocumentFragment.
-		if ( this.parent instanceof Node ) {
-			return this.parent.document;
-		} else {
-			return null;
-		}
-	}
+	// get document() {
+	// 	// Parent might be Node, null or DocumentFragment.
+	// 	if ( this.parent instanceof Node ) {
+	// 		return this.parent.document;
+	// 	} else {
+	// 		return null;
+	// 	}
+	// }
 
 	/**
 	 * Gets a path to the node. The path is an array containing indices of consecutive ancestors of this node,

@@ -25,10 +25,11 @@ export default class Text extends Node {
 	 * Creates a tree view text node.
 	 *
 	 * @protected
+	 * @param {module:engine/view/document~Document} document A document where the text belongs to.
 	 * @param {String} data The text's data.
 	 */
-	constructor( data ) {
-		super();
+	constructor( document, data ) {
+		super( document );
 
 		/**
 		 * The text content.
@@ -125,7 +126,7 @@ export default class Text extends Node {
 	 * @returns {module:engine/view/text~Text} Text node that is a clone of this node.
 	 */
 	_clone() {
-		return new Text( this.data );
+		return new Text( this.document, this.data );
 	}
 
 	// @if CK_DEBUG_ENGINE // toString() {

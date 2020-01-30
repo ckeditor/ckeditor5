@@ -25,10 +25,18 @@ export default class DocumentFragment {
 	 * Creates new DocumentFragment instance.
 	 *
 	 * @protected
+	 * @param {module:engine/view/document~Document} document A document where the document fragment belongs to.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
 	 * A list of nodes to be inserted into the created document fragment.
 	 */
-	constructor( children ) {
+	constructor( document, children ) {
+		/**
+		 * A document where the document fragment belongs to.
+		 *
+		 * @member {module:engine/view/document~Document}
+		 */
+		this.document = document;
+
 		/**
 		 * Array of child nodes.
 		 *
@@ -164,7 +172,7 @@ export default class DocumentFragment {
 		this._fireChange( 'children', this );
 		let count = 0;
 
-		const nodes = normalize( items );
+		const nodes = normalize( this.document, items );
 
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
@@ -238,7 +246,7 @@ mix( DocumentFragment, EmitterMixin );
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @returns {Iterable.<module:engine/view/node~Node>}
-function normalize( nodes ) {
+function normalize( document, nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( nodes ) ];
@@ -252,11 +260,11 @@ function normalize( nodes ) {
 	return Array.from( nodes )
 		.map( node => {
 			if ( typeof node == 'string' ) {
-				return new Text( node );
+				return new Text( document, node );
 			}
 
 			if ( node instanceof TextProxy ) {
-				return new Text( node.data );
+				return new Text( document, node.data );
 			}
 
 			return node;

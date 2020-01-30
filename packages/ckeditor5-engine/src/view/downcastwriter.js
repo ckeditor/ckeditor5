@@ -145,7 +145,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
-		return new Text( data );
+		return new Text( this.document, data );
 	}
 
 	/**
@@ -168,7 +168,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/attributeelement~AttributeElement} Created element.
 	 */
 	createAttributeElement( name, attributes, options = {} ) {
-		const attributeElement = new AttributeElement( name, attributes );
+		const attributeElement = new AttributeElement( this.document, name, attributes );
 
 		if ( options.priority ) {
 			attributeElement._priority = options.priority;
@@ -200,7 +200,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
 	createContainerElement( name, attributes ) {
-		return new ContainerElement( name, attributes );
+		return new ContainerElement( this.document, name, attributes );
 	}
 
 	/**
@@ -214,7 +214,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
 	 */
 	createEditableElement( name, attributes ) {
-		const editableElement = new EditableElement( name, attributes );
+		const editableElement = new EditableElement( this.document, name, attributes );
 		editableElement._document = this.document;
 
 		return editableElement;
@@ -231,7 +231,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/emptyelement~EmptyElement} Created element.
 	 */
 	createEmptyElement( name, attributes ) {
-		return new EmptyElement( name, attributes );
+		return new EmptyElement( this.document, name, attributes );
 	}
 
 	/**
@@ -255,7 +255,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/uielement~UIElement} Created element.
 	 */
 	createUIElement( name, attributes, renderFunction ) {
-		const uiElement = new UIElement( name, attributes );
+		const uiElement = new UIElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			uiElement.render = renderFunction;
@@ -1807,7 +1807,7 @@ function breakTextNode( position ) {
 	position.parent._data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
-	position.parent.parent._insertChild( position.parent.index + 1, new Text( textToMove ) );
+	position.parent.parent._insertChild( position.parent.index + 1, new Text( position.parent.document, textToMove ) );
 
 	// Return new position between two newly created text nodes.
 	return new Position( position.parent.parent, position.parent.index + 1 );
