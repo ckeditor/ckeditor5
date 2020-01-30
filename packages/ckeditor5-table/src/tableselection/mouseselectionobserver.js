@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tableselection/mouseselectionobserver~MouseSelectionObserver
+ * @module table/tableselection/mouseselectionobserver
  */
 
 import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
