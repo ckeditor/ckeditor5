@@ -183,7 +183,13 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Stops selection process (but do not clear the current selection).
+	 * Stops selection process (but do not clear the current selection). The selecting process is ended but the selection in model remains.
+	 *
+	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
+	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
+	 *		editor.plugins.get( 'TableSelection' ).stopSelection();
+	 *
+	 * To clear selection use {@link #clearSelection}.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 */
@@ -199,8 +205,8 @@ export default class TableSelection extends Plugin {
 	 * Stops current selection process and clears table selection.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
-	 *
 	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
+	 *		editor.plugins.get( 'TableSelection' ).stopSelection();
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).clearSelection();
 	 */
@@ -243,7 +249,7 @@ export default class TableSelection extends Plugin {
 
 		const modelRanges = [];
 
-		for ( const tableCell of this.getSelection() ) {
+		for ( const tableCell of this.getSelectedTableCells() ) {
 			modelRanges.push( model.createRangeOn( tableCell ) );
 		}
 
