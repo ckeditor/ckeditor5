@@ -62,7 +62,18 @@ export default class ToolbarView extends View {
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 
 		/**
-		 * Maximum width of the toolbar element.
+		 * The maximum width of the toolbar element.
+		 *
+		 * Note:
+		 * You should not change the toolbar's max-width manually, because by default it's binded
+		 * with the editor's editable element's width and it will be applied automatically each time its value will change.
+		 *
+		 * If you set `config.toolbar.shouldNotGroupWhenFull: true` and also set `ToolbarView#maxWidth`,
+		 * the max-width will be applied and — in this case — you should be careful, because if you set
+		 * the value to be too small, this may cause visual and usability issues with your toolbar.
+		 *
+		 * Another scenario is when the toolbar is grouping overflowing items and you will be trying to set `ToolbarView#maxWidth`.
+		 * This new value will be immediately overridden and will not be applied.
 		 *
 		 * @default 'auto'
 		 * @member {String} #maxWidth
