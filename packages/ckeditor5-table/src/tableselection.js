@@ -155,15 +155,8 @@ export default class TableSelection extends Plugin {
 			return;
 		}
 
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
-		const startInHeading = this._startElement.parent.index < headingRows;
-		const updateCellInHeading = tableCell.parent.index < headingRows;
-
-		// Only add cell to selection if they are in the same table section.
-		if ( startInHeading === updateCellInHeading ) {
-			this._endElement = tableCell;
-			this.redrawSelection();
-		}
+		this._endElement = tableCell;
+		this.redrawSelection();
 	}
 
 	stopSelection( tableCell ) {
