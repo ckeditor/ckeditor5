@@ -22,13 +22,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class EditorWatchdog extends Watchdog {
 	/**
-	 * Returns the instance type of the watchdog.
-	 */
-	static get instanceType() {
-		return 'editor';
-	}
-
-	/**
 	 * @param {module:watchdog/editorwatchdog~EditorWatchdogConfig} [config] The watchdog plugin configuration.
 	 */
 	constructor( config = {} ) {
@@ -96,6 +89,15 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
+	 * Returns the handled instance.
+	 *
+	 * @protected
+	 */
+	get _instance() {
+		return this._editor;
+	}
+
+	/**
 	 * Sets the function that is responsible for the editor creation.
 	 * It expects a function that should return a promise.
 	 *
@@ -128,7 +130,7 @@ export default class EditorWatchdog extends Watchdog {
 	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
 	 * the state to `initializing`.
 	 *
-	 * @public
+	 * @protected
 	 * @fires restart
 	 * @returns {Promise}
 	 */

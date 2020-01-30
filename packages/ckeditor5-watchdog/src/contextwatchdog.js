@@ -114,7 +114,7 @@ export default class ContextWatchdog extends Watchdog {
 			throw new Error( `Item with the given name was not registered: ${ itemName }.` );
 		}
 
-		return watchdog[ watchdog.constructor.instanceType ];
+		return watchdog._instance;
 	}
 
 	/**
