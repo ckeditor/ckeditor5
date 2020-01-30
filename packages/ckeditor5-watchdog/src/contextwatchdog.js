@@ -82,7 +82,7 @@ export default class ContextWatchdog extends Watchdog {
 		this._destructor = context => context.destroy();
 
 		this._actionQueue.onEmpty( () => {
-			if ( this.state !== 'destroyed' ) {
+			if ( this.state === 'initializing' ) {
 				this.state = 'ready';
 			}
 		} );
