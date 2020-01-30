@@ -54,7 +54,7 @@ export default class BalloonToolbar extends Plugin {
 		 * @type {Object}
 		 * @private
 		 */
-		this._balloonConfig = normalizeToolbarConfig( this.editor.config.get( 'balloonToolbar' ) );
+		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
 
 		/**
 		 * The toolbar view displayed in the balloon.
@@ -143,10 +143,17 @@ export default class BalloonToolbar extends Plugin {
 				const editableElement = editor.ui.view.editable.element;
 
 				// Set toolbar's max-width on the initialization and update it on the editable resize.
-				const widthObserver = getResizeObserver( ( [ entry ] ) => {
-					// In the balloon editor toolbar's max-width should be set to half of the editable's width.
+				const widthObserver = getResizeObserver( () => {
+					// We need to check if there's already the editable element in the DOM.
+					// Otherwise the `Rect` instance will complain that source (editableElement) is not available
+					// to obtain the element's geometry.
+					if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
+						return;
+					}
+
+					// In the balloon editor toolbar's max-width should be set to the 2/3 of the editable's width.
 					// It's a safe value, because at the moment we don't re-calculate it when position of the selection changes.
-					this._setToolbarMaxWidth( entry.contentRect.width / 2 );
+					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * 0.66 );
 				} );
 
 				widthObserver.observe( editableElement );
@@ -287,15 +294,6 @@ export default class BalloonToolbar extends Plugin {
 		this._fireSelectionChangeDebounced.cancel();
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
-	}
-
-	/**
-	 * Set max-width for toolbar.
-	 *
-	 * @private
-	 */
-	_setToolbarMaxWidth( width ) {
-		this.toolbarView.maxWidth = toPx( width );
 	}
 
 	/**
