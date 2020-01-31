@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tableselection/mouseselectionobserver
+ * @module table/tableselection/mouseeventsobserver
  */
 
 import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
@@ -23,7 +23,7 @@ import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domev
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
-export default class MouseSelectionObserver extends DomEventObserver {
+export default class MouseEventsObserver extends DomEventObserver {
 	/**
 	 * @inheritDoc
 	 */
@@ -44,13 +44,13 @@ export default class MouseSelectionObserver extends DomEventObserver {
 /**
  * Fired when mouse button is released over one of the editables.
  *
- * Introduced by {@link module:table/tableselection/mouseselectionobserver~MouseSelectionObserver}.
+ * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
  *
  * Note that this event is not available by default. To make it available
- * {@link module:table/tableselection/mouseselectionobserver~MouseSelectionObserver}  needs to be added
+ * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}  needs to be added
  * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
- * @see module:table/tableselection/mouseselectionobserver~MouseSelectionObserver
+ * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
  * @event module:engine/view/document~Document#event:mouseup
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
@@ -58,13 +58,13 @@ export default class MouseSelectionObserver extends DomEventObserver {
 /**
  * Fired when mouse is moved over one of the editables.
  *
- * Introduced by {@link module:table/tableselection/mouseselectionobserver~MouseSelectionObserver}.
+ * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
  *
  * Note that this event is not available by default. To make it available
- * {@link module:table/tableselection/mouseselectionobserver~MouseSelectionObserver}  needs to be added
+ * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}  needs to be added
  * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
- * @see module:table/tableselection/mouseselectionobserver~MouseSelectionObserver
+ * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
  * @event module:engine/view/document~Document#event:mousemove
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
@@ -72,13 +72,13 @@ export default class MouseSelectionObserver extends DomEventObserver {
 /**
  * Fired when mouse is moved away from one of the editables.
  *
- * Introduced by {@link module:table/tableselection/mouseselectionobserver~MouseSelectionObserver}.
+ * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
  *
  * Note that this event is not available by default. To make it available
- * {@link module:table/tableselection/mouseselectionobserver~MouseSelectionObserver}  needs to be added
+ * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}  needs to be added
  * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
- * @see module:table/tableselection/mouseselectionobserver~MouseSelectionObserver
+ * @see module:table/tableselection/mouseeventsobserver~MouseEventsObserver
  * @event module:engine/view/document~Document#event:mouseleave
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

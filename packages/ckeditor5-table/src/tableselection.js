@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import MouseSelectionObserver from './tableselection/mouseselectionobserver';
+import MouseEventsObserver from './tableselection/mouseeventsobserver';
 import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
 
@@ -50,7 +50,7 @@ export default class TableSelection extends Plugin {
 
 		const viewDocument = editor.editing.view.document;
 
-		editor.editing.view.addObserver( MouseSelectionObserver );
+		editor.editing.view.addObserver( MouseEventsObserver );
 
 		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
 			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );

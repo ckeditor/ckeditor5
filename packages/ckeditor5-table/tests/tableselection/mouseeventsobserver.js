@@ -6,15 +6,15 @@
 /* globals document */
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import MouseSelectionObserver from '../../src/tableselection/mouseselectionobserver';
+import MouseEventsObserver from '../../src/tableselection/mouseeventsobserver';
 
-describe( 'MouseSelectionObserver', () => {
+describe( 'MouseEventsObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
 		view = new View();
 		viewDocument = view.document;
-		observer = view.addObserver( MouseSelectionObserver );
+		observer = view.addObserver( MouseEventsObserver );
 	} );
 
 	afterEach( () => {
