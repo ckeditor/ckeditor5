@@ -96,6 +96,13 @@ export default class Watchdog {
 			}
 		};
 
+		if ( !this._restart ) {
+			throw new Error(
+				'The Watchdog class was split into the abstract `Watchdog` class and the `EditorWatchdog` class. ' +
+				'Please, use `EditorWatchdog` if you have used the `Watchdog` class previously.'
+			);
+		}
+
 		/**
 		 * The creation method.
 		 *
