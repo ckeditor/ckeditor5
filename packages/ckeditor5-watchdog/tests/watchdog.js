@@ -9,7 +9,7 @@ describe( 'Watchdog', () => {
 	it( 'should not be created directly', () => {
 		expect( () => {
 			// eslint-disable-next-line no-unused-vars
-			const watchdog = new Watchdog();
+			const watchdog = new Watchdog( {} );
 		} ).to.throw( /Please, use `EditorWatchdog` if you have used the `Watchdog` class previously\./ );
 	} );
 
@@ -21,7 +21,7 @@ describe( 'Watchdog', () => {
 
 		expect( () => {
 			// eslint-disable-next-line no-unused-vars
-			const fooWatchdog = new FooWatchdog();
+			const fooWatchdog = new FooWatchdog( {} );
 		} ).to.not.throw();
 	} );
 } );

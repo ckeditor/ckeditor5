@@ -1026,7 +1026,7 @@ describe( 'EditorWatchdog', () => {
 	} );
 
 	describe( 'multi-root editors', () => {
-		it( 'should support multi-root editors', () => {
+		it( 'should support multi-root editors', async () => {
 			class MultiRootEditor extends Editor {
 				constructor( sourceElements, config ) {
 					super( config );
@@ -1058,29 +1058,26 @@ describe( 'EditorWatchdog', () => {
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog
-				.create( {
-					header: element
-				}, {
-					initialData: {
-						header: '<p>Foo</p>'
-					},
-					plugins: [ Paragraph ]
-				} )
-				.then( () => {
-					expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+			await watchdog.create( {
+				header: element
+			}, {
+				initialData: {
+					header: '<p>Foo</p>'
+				},
+				plugins: [ Paragraph ]
+			} );
 
-					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
 
-					return new Promise( res => {
-						window.onerror = originalErrorHandler;
-						expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
-						res();
-					} );
-				} ).then( () => {
-					return watchdog.destroy();
-				} );
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+
+			await watchdog.destroy();
 		} );
 	} );
 } );
