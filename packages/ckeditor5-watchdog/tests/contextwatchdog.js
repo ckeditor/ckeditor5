@@ -59,27 +59,6 @@ describe( 'ContextWatchdog', () => {
 		expect( err.message ).to.match( /Cannot add items to destroyed watchdog\./ );
 	} );
 
-	it.skip( 'case: editor, contextItem', async () => {
-		watchdog = ContextWatchdog.for( Context, {} );
-
-		watchdog.add( {
-			editor1: {
-				type: 'editor',
-				creator: ( el, config ) => ClassicTestEditor.create( el, config ),
-				sourceElementOrData: element1,
-				config: {}
-			},
-			annotatedInput: {
-				type: 'contextItem',
-				creator: () => { }
-			}
-		} );
-
-		await watchdog.waitForReady();
-
-		await watchdog.destroy();
-	} );
-
 	describe( 'for scenario with no items', () => {
 		it( 'should create only context', async () => {
 			watchdog = ContextWatchdog.for( Context, {} );
