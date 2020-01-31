@@ -280,7 +280,59 @@ describe( 'table selection', () => {
 			} );
 		} );
 
-		describe( '* getSelectedTableCells()', () => {} );
+		describe( '* getSelectedTableCells()', () => {
+			it( 'should return nothing if selection is not started', () => {
+				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [] );
+			} );
+
+			it( 'should return two table cells', () => {
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+
+				tableSelection.startSelectingFrom( firstCell );
+				tableSelection.setSelectingTo( lastCell );
+
+				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+					firstCell, lastCell
+				] );
+			} );
+
+			it( 'should return four table cells for diagonal selection', () => {
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+				tableSelection.startSelectingFrom( firstCell );
+				tableSelection.setSelectingTo( lastCell );
+
+				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+					firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), modelRoot.getNodeByPath( [ 0, 1, 0 ] ), lastCell
+				] );
+			} );
+
+			it( 'should return row table cells', () => {
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+
+				tableSelection.startSelectingFrom( firstCell );
+				tableSelection.setSelectingTo( lastCell );
+
+				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+					firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), lastCell
+				] );
+			} );
+
+			it( 'should return column table cells', () => {
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] );
+
+				tableSelection.startSelectingFrom( firstCell );
+				tableSelection.setSelectingTo( lastCell );
+
+				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+					firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'mouse selection', () => {
