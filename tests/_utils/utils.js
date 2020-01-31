@@ -29,9 +29,16 @@ const predefinedFiles = [
  */
 export function renderPerformanceDataButtons( container ) {
 	let html = '';
+	const labels = {
+		'small': 'small (semantic)',
+		'medium': 'medium (semantic)',
+		'large': 'large (semantic)',
+		'small-inline-css': 'Small inline-heavy (styled)',
+		'full-websites-styled': 'Full websites (styled)',
+	};
 
 	for ( const fixtureName of predefinedFiles ) {
-		html += `<button id="${ fixtureName }-content" data-file-name="${ fixtureName }" disabled>${ fixtureName }</button>`;
+		html += `<button id="${ fixtureName }-content" data-file-name="${ fixtureName }" disabled>${ labels[ fixtureName ] }</button>`;
 	}
 
 	container.innerHTML = html;
