@@ -25,11 +25,11 @@ export default class FormHeaderView extends View {
 	 * Creates an instance of the form header view class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
-	 * @param {Object} options
+	 * @param {Object} [options]
 	 * @param {String} [options.class] When passed, the class will be set on the header element.
 	 * @param {String} [options.label] When passed, the label will be used for the header.
 	 */
-	constructor( locale, options ) {
+	constructor( locale, options = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -58,6 +58,23 @@ export default class FormHeaderView extends View {
 		 */
 		this.set( 'label', options.label || '' );
 
+		const label = new View( locale );
+
+		label.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: [
+					'ck',
+					'ck-form__header__label'
+				],
+			},
+			children: [
+				{ text: bind.to( 'label' ) }
+			]
+		} );
+
+		this.children.add( label );
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -67,13 +84,7 @@ export default class FormHeaderView extends View {
 					bind.to( 'class' )
 				]
 			},
-			children: [
-				{ text: bind.to( 'label' ) },
-				{
-					tag: 'div',
-					children: this.children
-				}
-			]
+			children: this.children
 		} );
 	}
 }
