@@ -27,11 +27,8 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		this._isSelecting = false;
-		this._highlighted = new Set();
+	static get pluginName() {
+		return 'TableSelection';
 	}
 
 	/**
@@ -39,6 +36,16 @@ export default class TableSelection extends Plugin {
 	 */
 	static get requires() {
 		return [ TableUtils ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		this._isSelecting = false;
+		this._highlighted = new Set();
 	}
 
 	/**
