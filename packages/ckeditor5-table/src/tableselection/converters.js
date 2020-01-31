@@ -7,14 +7,22 @@
  * @module table/tableselection/converters
  */
 
+/**
+ * Adds a visual highlight style to a selected table cells.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {module:table/tableselection~TableSelection} tableSelection
+ */
 export function setupTableSelectionHighlighting( editor, tableSelection ) {
 	const highlighted = new Set();
+
 	editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+		const view = editor.editing.view;
 		const viewWriter = conversionApi.writer;
 		const viewSelection = viewWriter.document.selection;
 
-		if ( tableSelection._isSelecting ) {
-			clearHighlightedTableCells( highlighted, editor.editing.view );
+		if ( tableSelection.isSelectingAndSomethingElse ) {
+			clearHighlightedTableCells( highlighted, view );
 
 			for ( const tableCell of tableSelection.getSelectedTableCells() ) {
 				const viewElement = conversionApi.mapper.toViewElement( tableCell );
@@ -23,12 +31,9 @@ export function setupTableSelectionHighlighting( editor, tableSelection ) {
 				highlighted.add( viewElement );
 			}
 
-			const ranges = viewSelection.getRanges();
-			const from = Array.from( ranges );
-
-			viewWriter.setSelection( from, { fake: true, label: 'TABLE' } );
+			viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: 'TABLE' } );
 		} else {
-			clearHighlightedTableCells( highlighted, editor.editing.view );
+			clearHighlightedTableCells( highlighted, view );
 		}
 	}, { priority: 'lowest' } ) );
 }
