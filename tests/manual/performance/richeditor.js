@@ -36,6 +36,8 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
+import { loadPerformanceData } from '../../_utils/utils';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -148,3 +150,17 @@ function addUploadMockAdapter( editor ) {
 		return new UploadAdapterMock( loader );
 	};
 }
+
+loadPerformanceData()
+	.then( fixtures => {
+		const buttons = document.querySelectorAll( '#test-controls button' );
+
+		for ( const button of buttons ) {
+			button.addEventListener( 'click', function() {
+				const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
+
+				window.editor.setData( content );
+			} );
+			button.disabled = false;
+		}
+	} );
