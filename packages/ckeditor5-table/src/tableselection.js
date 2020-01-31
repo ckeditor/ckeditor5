@@ -14,6 +14,7 @@ import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import TableUtils from './tableutils';
 
 /**
  * The table selection plugin.
@@ -34,6 +35,13 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableUtils ];
+	}
+
+	/**
 	 * Flag indicating that table selection is selecting valid ranges in table cell.
 	 *
 	 * @readonly
@@ -49,7 +57,7 @@ export default class TableSelection extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		this.tableUtils = editor.plugins.get( 'TableUtils' );
+		this._tableUtils = editor.plugins.get( 'TableUtils' );
 		this._mouseHandler = new MouseSelectionHandler( this, editor.editing );
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
@@ -180,8 +188,8 @@ export default class TableSelection extends Plugin {
 			return;
 		}
 
-		const startLocation = this.tableUtils.getCellLocation( this._startElement );
-		const endLocation = this.tableUtils.getCellLocation( this._endElement );
+		const startLocation = this._tableUtils.getCellLocation( this._startElement );
+		const endLocation = this._tableUtils.getCellLocation( this._endElement );
 
 		const startRow = startLocation.row > endLocation.row ? endLocation.row : startLocation.row;
 		const endRow = startLocation.row > endLocation.row ? startLocation.row : endLocation.row;
