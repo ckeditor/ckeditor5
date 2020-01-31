@@ -8,13 +8,13 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import MouseEventsObserver from './tableselection/mouseeventsobserver';
-import TableWalker from './tablewalker';
-import { findAncestor } from './commands/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+
+import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
+import { findAncestor } from './commands/utils';
+import MouseEventsObserver from './tableselection/mouseeventsobserver';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 
 /**
