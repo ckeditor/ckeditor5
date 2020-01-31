@@ -33,7 +33,7 @@ export function renderPerformanceDataButtons( container ) {
 		'small': 'small (semantic)',
 		'medium': 'medium (semantic)',
 		'large': 'large (semantic)',
-		'small-inline-css': 'Small inline-heavy (styled)',
+		'small-inline-css': 'Small inline styled',
 		'full-websites-styled': 'Full websites (styled)',
 	};
 
