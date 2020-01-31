@@ -5,7 +5,7 @@
 
 /* globals window, document, Event */
 
-import areConnectedThroughProperties from '../src/utils/areconnectedthroughproperties';
+import areConnectedThroughProperties from '../../src/utils/areconnectedthroughproperties';
 
 describe( 'areConnectedThroughProperties()', () => {
 	it( 'should return `false` if one of the value is primitive #1', () => {
