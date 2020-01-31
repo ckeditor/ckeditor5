@@ -9,32 +9,15 @@
 	flex-wrap: nowrap;
 	justify-content: space-between;
 
-	padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
-
 	/* Ignore labels that work as fieldset legends */
 	& > *:not(.ck-label) {
 		flex-grow: 1;
-
-		& + * {
-			margin-left: var(--ck-spacing-large);
-		}
-	}
-
-	& > .ck-label {
-		width: 100%;
-		min-width: 100%;
 	}
 
 	&.ck-table-form__action-row {
-		margin-top: var(--ck-spacing-large);
-
 		& .ck-button-save,
 		& .ck-button-cancel {
 			justify-content: center;
-		}
-
-		& .ck-button .ck-button__label {
-			color: var(--ck-color-text);
 		}
 	}
 }

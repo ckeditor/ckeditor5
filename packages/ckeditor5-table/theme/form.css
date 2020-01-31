@@ -3,30 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-form {
-	padding: 0 0 var(--ck-spacing-large);
+/*
+ * Note: This file should contain the wireframe styles only. But since there are no such styles,
+ * it acts as a message to the builder telling that it should look for the corresponding styles
+ * **in the theme** when compiling the editor.
+ */
 
-	&:focus {
-		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
-		outline: none;
-	}
-
-	& .ck.ck-input-text {
-		min-width: 100%;
-		width: 0;
-	}
-
-	& .ck.ck-dropdown {
-		min-width: 100%;
-
-		& .ck-dropdown__button {
-			&:not(:focus) {
-				border: 1px solid var(--ck-color-base-border);
-			}
-
-			& .ck-button__label {
-				width: 100%;
-			}
-		}
-	}
-}
