@@ -10,14 +10,15 @@
 import { isObject } from 'lodash-es';
 
 /**
- * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
+ * Returns the parent element of given name. Returns undefined if positionOrElement is not inside desired parent.
  *
  * @param {String} parentName Name of parent element to find.
- * @param {module:engine/model/position~Position|module:engine/model/position~Position} position Position to start searching.
+ * @param {module:engine/model/position~Position|module:engine/model/element~Position} positionOrElement
+ * Position or parentElement to start searching.
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
-export function findAncestor( parentName, position ) {
-	let parent = position.parent;
+export function findAncestor( parentName, positionOrElement ) {
+	let parent = positionOrElement.parent;
 
 	while ( parent ) {
 		if ( parent.name === parentName ) {

@@ -12,6 +12,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
 import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * The table selection plugin.
@@ -46,56 +48,9 @@ export default class TableSelection extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+
 		this.tableUtils = editor.plugins.get( 'TableUtils' );
-
-		const viewDocument = editor.editing.view.document;
-
-		editor.editing.view.addObserver( MouseEventsObserver );
-
-		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
-			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
-
-			if ( !tableCell ) {
-				this.stopSelection();
-				this.clearSelection();
-
-				return;
-			}
-
-			this.startSelectingFrom( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mousemove', ( eventInfo, domEventData ) => {
-			if ( !this._isSelecting ) {
-				return;
-			}
-
-			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
-
-			if ( !tableCell ) {
-				return;
-			}
-
-			this.setSelectingTo( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mouseup', ( eventInfo, domEventData ) => {
-			if ( !this._isSelecting ) {
-				return;
-			}
-
-			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
-
-			this.stopSelection( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mouseleave', () => {
-			if ( !this._isSelecting ) {
-				return;
-			}
-
-			this.stopSelection();
-		} );
+		this._mouseHandler = new MouseSelectionHandler( this, editor.editing );
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
@@ -119,6 +74,14 @@ export default class TableSelection extends Plugin {
 				this._clearHighlightedTableCells();
 			}
 		}, { priority: 'lowest' } ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+		this._mouseHandler.stopListening();
 	}
 
 	/**
@@ -272,13 +235,74 @@ export default class TableSelection extends Plugin {
 }
 
 // Finds model table cell for given DOM event - ie. for 'mousedown'.
-function getModelTableCellFromViewEvent( domEventData, editor ) {
+function getModelTableCellFromViewEvent( domEventData, mapper ) {
 	const viewTargetElement = domEventData.target;
-	const modelElement = editor.editing.mapper.toModelElement( viewTargetElement );
+	const modelElement = mapper.toModelElement( viewTargetElement );
 
 	if ( !modelElement ) {
 		return;
 	}
 
-	return findAncestor( 'tableCell', editor.model.createPositionAt( modelElement, 0 ) );
+	if ( modelElement.is( 'tableCell' ) ) {
+		return modelElement;
+	}
+
+	return findAncestor( 'tableCell', modelElement );
 }
+
+class MouseSelectionHandler {
+	constructor( tableSelection, editing ) {
+		const view = editing.view;
+		const viewDocument = view.document;
+		const mapper = editing.mapper;
+
+		view.addObserver( MouseEventsObserver );
+
+		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
+			const tableCell = getModelTableCellFromViewEvent( domEventData, mapper );
+
+			if ( !tableCell ) {
+				tableSelection.stopSelection();
+				tableSelection.clearSelection();
+
+				return;
+			}
+
+			tableSelection.startSelectingFrom( tableCell );
+		} );
+
+		this.listenTo( viewDocument, 'mousemove', ( eventInfo, domEventData ) => {
+			if ( !tableSelection._isSelecting ) {
+				return;
+			}
+
+			const tableCell = getModelTableCellFromViewEvent( domEventData, mapper );
+
+			if ( !tableCell ) {
+				return;
+			}
+
+			tableSelection.setSelectingTo( tableCell );
+		} );
+
+		this.listenTo( viewDocument, 'mouseup', ( eventInfo, domEventData ) => {
+			if ( !tableSelection._isSelecting ) {
+				return;
+			}
+
+			const tableCell = getModelTableCellFromViewEvent( domEventData, mapper );
+
+			tableSelection.stopSelection( tableCell );
+		} );
+
+		this.listenTo( viewDocument, 'mouseleave', () => {
+			if ( !tableSelection._isSelecting ) {
+				return;
+			}
+
+			tableSelection.stopSelection();
+		} );
+	}
+}
+
+mix( MouseSelectionHandler, ObservableMixin );
