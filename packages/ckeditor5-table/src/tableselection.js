@@ -8,14 +8,11 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
-import { findAncestor } from './commands/utils';
-import MouseEventsObserver from './tableselection/mouseeventsobserver';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
+import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 
 /**
  * The table selection plugin.
@@ -46,6 +43,7 @@ export default class TableSelection extends Plugin {
 		super( editor );
 
 		this._isSelecting = false;
+		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
 	}
 
 	/**
@@ -63,7 +61,6 @@ export default class TableSelection extends Plugin {
 	 */
 	init() {
 		this._tableUtils = this.editor.plugins.get( 'TableUtils' );
-		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
 
 		setupTableSelectionHighlighting( this.editor, this );
 	}
@@ -207,76 +204,3 @@ export default class TableSelection extends Plugin {
 		} );
 	}
 }
-
-// Finds model table cell for given DOM event - ie. for 'mousedown'.
-function getModelTableCellFromViewEvent( domEventData, mapper ) {
-	const viewTargetElement = domEventData.target;
-	const modelElement = mapper.toModelElement( viewTargetElement );
-
-	if ( !modelElement ) {
-		return;
-	}
-
-	if ( modelElement.is( 'tableCell' ) ) {
-		return modelElement;
-	}
-
-	return findAncestor( 'tableCell', modelElement );
-}
-
-class MouseSelectionHandler {
-	constructor( tableSelection, editing ) {
-		const view = editing.view;
-		const viewDocument = view.document;
-		const mapper = editing.mapper;
-
-		view.addObserver( MouseEventsObserver );
-
-		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
-			const tableCell = getModelTableCellFromViewEvent( domEventData, mapper );
-
-			if ( !tableCell ) {
-				tableSelection.stopSelection();
-				tableSelection.clearSelection();
-
-				return;
-			}
-
-			tableSelection.startSelectingFrom( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mousemove', ( eventInfo, domEventData ) => {
-			if ( !tableSelection._isSelecting ) {
-				return;
-			}
-
-			const tableCell = getModelTableCellFromViewEvent( domEventData, mapper );
-
-			if ( !tableCell ) {
-				return;
-			}
-
-			tableSelection.setSelectingTo( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mouseup', ( eventInfo, domEventData ) => {
-			if ( !tableSelection._isSelecting ) {
-				return;
-			}
-
-			const tableCell = getModelTableCellFromViewEvent( domEventData, mapper );
-
-			tableSelection.stopSelection( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mouseleave', () => {
-			if ( !tableSelection._isSelecting ) {
-				return;
-			}
-
-			tableSelection.stopSelection();
-		} );
-	}
-}
-
-mix( MouseSelectionHandler, ObservableMixin );
