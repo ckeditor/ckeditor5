@@ -134,6 +134,7 @@ export default class TableSelection extends Plugin {
 		}
 
 		this._isSelecting = false;
+		this._updateModelSelection();
 	}
 
 	/**

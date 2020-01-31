@@ -13,7 +13,7 @@ import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable, viewTable } from './_utils/utils';
 
-describe.only( 'table selection', () => {
+describe( 'table selection', () => {
 	let editor, model, tableSelection, modelRoot;
 
 	beforeEach( async () => {
