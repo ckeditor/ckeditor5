@@ -1069,11 +1069,17 @@ describe( 'EditorWatchdog', () => {
 
 			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
 
+			const restartSpy = sinon.spy();
+
+			watchdog.on( 'restart', restartSpy );
+
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 			await waitCycle();
 
 			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
 
 			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
 
