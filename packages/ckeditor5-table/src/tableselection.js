@@ -15,6 +15,7 @@ import { findAncestor } from './commands/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import TableUtils from './tableutils';
+import { setupTableSelectionHighlighting } from './tableselection/converters';
 
 /**
  * The table selection plugin.
@@ -45,7 +46,6 @@ export default class TableSelection extends Plugin {
 		super( editor );
 
 		this._isSelecting = false;
-		this._highlighted = new Set();
 	}
 
 	/**
@@ -62,33 +62,10 @@ export default class TableSelection extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
+		this._tableUtils = this.editor.plugins.get( 'TableUtils' );
+		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
 
-		this._tableUtils = editor.plugins.get( 'TableUtils' );
-		this._mouseHandler = new MouseSelectionHandler( this, editor.editing );
-
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
-			const viewWriter = conversionApi.writer;
-			const viewSelection = viewWriter.document.selection;
-
-			if ( this._isSelecting ) {
-				this._clearHighlightedTableCells();
-
-				for ( const tableCell of this.getSelectedTableCells() ) {
-					const viewElement = conversionApi.mapper.toViewElement( tableCell );
-
-					viewWriter.addClass( 'selected', viewElement );
-					this._highlighted.add( viewElement );
-				}
-
-				const ranges = viewSelection.getRanges();
-				const from = Array.from( ranges );
-
-				viewWriter.setSelection( from, { fake: true, label: 'TABLE' } );
-			} else {
-				this._clearHighlightedTableCells();
-			}
-		}, { priority: 'lowest' } ) );
+		setupTableSelectionHighlighting( this.editor, this );
 	}
 
 	/**
@@ -175,8 +152,6 @@ export default class TableSelection extends Plugin {
 		this._startElement = undefined;
 		this._endElement = undefined;
 		this._isSelecting = false;
-		this._clearHighlightedTableCells();
-		this._highlighted.clear();
 	}
 
 	/**
@@ -229,22 +204,6 @@ export default class TableSelection extends Plugin {
 		// Update model's selection
 		model.change( writer => {
 			writer.setSelection( modelRanges );
-		} );
-	}
-
-	/**
-	 * Removes highlight from table cells.
-	 *
-	 * @TODO move to highlight handling.
-	 * @private
-	 */
-	_clearHighlightedTableCells() {
-		const previous = [ ...this._highlighted.values() ];
-
-		this.editor.editing.view.change( writer => {
-			for ( const previouslyHighlighted of previous ) {
-				writer.removeClass( 'selected', previouslyHighlighted );
-			}
 		} );
 	}
 }
