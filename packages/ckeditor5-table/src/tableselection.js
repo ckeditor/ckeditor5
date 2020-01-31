@@ -52,19 +52,6 @@ export default class TableSelection extends Plugin {
 
 		editor.editing.view.addObserver( MouseSelectionObserver );
 
-		this.listenTo( viewDocument, 'keydown', () => {
-			if ( this.isSelectingAndSomethingElse ) {
-				this.stopSelection();
-				const tableCell = this._startElement;
-				this.clearSelection();
-
-				editor.model.change( writer => {
-					// Select the contents of table cell.
-					writer.setSelection( tableCell, 'in' );
-				} );
-			}
-		} );
-
 		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
 			const tableCell = getModelTableCellFromViewEvent( domEventData, this.editor );
 
