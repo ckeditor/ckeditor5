@@ -88,9 +88,12 @@ export function getBalloonCellPositionData( editor ) {
 }
 
 /**
- * TODO
+ * Returns an object containing pairs of CSS border style values and their localized UI
+ * labels. Used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
+ * and {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}.
  *
- * @param {module:utils/locale~Locale#t} t
+ * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
+ * that is used to localize strings.
  * @returns {Object.<String,String>}
  */
 export function getBorderStyleLabels( t ) {
@@ -108,9 +111,10 @@ export function getBorderStyleLabels( t ) {
 }
 
 /**
- * Generates border style item definitions for a list dropdown.
+ * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
  *
- * @param {module:TODO}
+ * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
+ * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
 export function getBorderStyleDefinitions( view ) {
@@ -138,33 +142,35 @@ export function getBorderStyleDefinitions( view ) {
 }
 
 /**
- * Fills an alignment toolbar with buttons that have certain labels and interact with a certain view
- * property upon execution.
+ * A helper that fills a toolbar toolbar with buttons that:
  *
- * TODO
+ * * have some labels,
+ * * have some icons,
+ * * set a certain UI view property value upon execution.
  *
  * @param {Object} options
- * @param {TODO} options.view
+ * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
+ * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} options.view
  * @param {Array.<String>} options.icons
  * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar
- * @param {Array.<String>} labels
+ * @param {Object.<String,String>} labels
  * @param {String} propertyName
  */
-export function fillAlignmentToolbar( { view, icons, toolbar, labels, propertyName } ) {
-	for ( const alignment in labels ) {
+export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
+	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
 
 		button.set( {
-			label: labels[ alignment ],
-			icon: icons[ alignment ],
+			label: labels[ name ],
+			icon: icons[ name ],
 		} );
 
 		button.bind( 'isOn' ).to( view, propertyName, value => {
-			return value === alignment;
+			return value === name;
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = alignment;
+			view[ propertyName ] = name;
 		} );
 
 		toolbar.items.add( button );

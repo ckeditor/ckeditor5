@@ -23,7 +23,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import {
 	getBorderStyleLabels,
-	fillAlignmentToolbar,
+	fillToolbar,
 	getBorderStyleDefinitions
 } from '../../ui/utils';
 
@@ -572,7 +572,7 @@ export default class TablePropertiesView extends View {
 			ariaLabel: t( 'Table alignment toolbar' )
 		} );
 
-		fillAlignmentToolbar( {
+		fillToolbar( {
 			view: this,
 			icons: ALIGNMENT_ICONS,
 			toolbar: alignmentToolbar,
