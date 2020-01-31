@@ -8,41 +8,43 @@
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import MouseEventsObserver from '../../src/tableselection/mouseeventsobserver';
 
-describe( 'MouseEventsObserver', () => {
-	let view, viewDocument, observer;
+describe( 'table selection', () => {
+	describe( 'MouseEventsObserver', () => {
+		let view, viewDocument, observer;
 
-	beforeEach( () => {
-		view = new View();
-		viewDocument = view.document;
-		observer = view.addObserver( MouseEventsObserver );
-	} );
+		beforeEach( () => {
+			view = new View();
+			viewDocument = view.document;
+			observer = view.addObserver( MouseEventsObserver );
+		} );
 
-	afterEach( () => {
-		view.destroy();
-	} );
+		afterEach( () => {
+			view.destroy();
+		} );
 
-	it( 'should define domEventTypes', () => {
-		expect( observer.domEventType ).to.deep.equal( [
-			'mousemove',
-			'mouseup',
-			'mouseleave'
-		] );
-	} );
+		it( 'should define domEventTypes', () => {
+			expect( observer.domEventType ).to.deep.equal( [
+				'mousemove',
+				'mouseup',
+				'mouseleave'
+			] );
+		} );
 
-	describe( 'onDomEvent', () => {
-		for ( const eventName of [ 'mousemove', 'mouseup', 'mouseleave' ] ) {
-			it( `should fire ${ eventName } with the right event data`, () => {
-				const spy = sinon.spy();
+		describe( 'onDomEvent', () => {
+			for ( const eventName of [ 'mousemove', 'mouseup', 'mouseleave' ] ) {
+				it( `should fire ${ eventName } with the right event data`, () => {
+					const spy = sinon.spy();
 
-				viewDocument.on( eventName, spy );
+					viewDocument.on( eventName, spy );
 
-				observer.onDomEvent( { type: eventName, target: document.body } );
+					observer.onDomEvent( { type: eventName, target: document.body } );
 
-				expect( spy.calledOnce ).to.be.true;
+					expect( spy.calledOnce ).to.be.true;
 
-				const data = spy.args[ 0 ][ 1 ];
-				expect( data.domTarget ).to.equal( document.body );
-			} );
-		}
+					const data = spy.args[ 0 ][ 1 ];
+					expect( data.domTarget ).to.equal( document.body );
+				} );
+			}
+		} );
 	} );
 } );
