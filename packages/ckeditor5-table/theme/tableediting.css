@@ -12,6 +12,6 @@
 .ck-content .table table {
 	& td.selected,
 	& th.selected {
-		background: hsl(216, 100%, 67%);
+		box-shadow: inset 0 0 0 1px var(--ck-color-focus-border);
 	}
 }
