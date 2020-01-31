@@ -8,15 +8,15 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
+import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
 
 /**
  * The table cell properties feature.
  *
  * This is a "glue" plugin which loads the
- * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table properties editing feature} and
- * table cell properties UI feature.
+ * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table cell properties editing feature} and
+ * the {@link module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI table cell properties UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -32,6 +32,6 @@ export default class TableCellProperties extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableCellPropertiesEditing ];
+		return [ TableCellPropertiesEditing, TableCellPropertiesUI ];
 	}
 }
