@@ -7,7 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { loadPerformanceData } from '../../_utils/utils';
+import { loadPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils';
+
+renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
 loadPerformanceData()
 	.then( fixtures => {

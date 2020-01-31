@@ -5,7 +5,9 @@
 
 /* globals window, document */
 
-import { loadPerformanceData, createPerformanceEditor } from '../../_utils/utils';
+import { loadPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
+
+renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
 createPerformanceEditor( document.querySelector( '#editor' ) )
 	.then( loadPerformanceData )

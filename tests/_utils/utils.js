@@ -14,24 +14,41 @@ import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import StrikeThrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
+const predefinedFiles = [
+	'small',
+	'medium',
+	'large',
+	'small-inline-css',
+	'full-websites-styled'
+];
+
+/**
+ * Renders a button for each performance fixture in a given `container`.
+ *
+ * @param {HTMLElement} container
+ */
+export function renderPerformanceDataButtons( container ) {
+	let html = '';
+
+	for ( const fixtureName of predefinedFiles ) {
+		html += `<button id="${ fixtureName }-content" data-file-name="${ fixtureName }" disabled>${ fixtureName }</button>`;
+	}
+
+	container.innerHTML = html;
+}
+
 /**
  * Loads a predefined set of performance markup files.
  *
  *		loadPerformanceData()
  *			.then( fixtures => {
  *				window.editor.setData( fixtures.small );
+ *				console.log( fixtures.medium );
  *			} );
  *
  * @returns {Promise.<Object.<String, String>>}
  */
 export function loadPerformanceData() {
-	const predefinedFiles = [
-		'small',
-		'medium',
-		'large',
-		'small-inline-css'
-	];
-
 	return Promise.all( predefinedFiles.map( fileName => getFileContents( fileName ) ) )
 		.then( responses => {
 			const returnValue = {};
