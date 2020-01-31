@@ -41,13 +41,14 @@ function printModelContents( editor ) {
 		.replace( /</g, '&lt;' )
 		.replace( />/g, '&gt;' )
 		.replace( /\n/g, '<br>' )
-		.replace( /\[/g, '<strong>[' )
-		.replace( /]/g, ']</strong>' );
+		.replace( /\[/g, '<span class="print-selected">[' )
+		.replace( /]/g, ']</span>' );
 }
 
 function formatTable( tableString ) {
 	return tableString
-		.replace( /<table>/g, '\n<table>' )
+		.replace( /<table>/g, '\n<table' )
+		.replace( /<table /g, '\n<table ' )
 		.replace( /<tableRow>/g, '\n<tableRow>\n    ' )
 		.replace( /<thead>/g, '\n<thead>\n    ' )
 		.replace( /<tbody>/g, '\n<tbody>\n    ' )
@@ -56,5 +57,8 @@ function formatTable( tableString ) {
 		.replace( /<\/thead>/g, '\n</thead>' )
 		.replace( /<\/tbody>/g, '\n</tbody>' )
 		.replace( /<\/tr>/g, '\n</tr>' )
-		.replace( /<\/table>/g, '\n</table>' );
+		.replace( /<\/table>/g, '\n</table>' )
+		.replace( /tableCell/g, 'cell' )
+		.replace( /tableRow/g, 'row' )
+		.replace( /paragraph/g, 'p' );
 }
