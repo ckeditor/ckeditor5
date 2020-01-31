@@ -30,6 +30,8 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
@@ -66,6 +68,8 @@ ClassicEditor
 			RemoveFormat,
 			StandardEditingMode,
 			SpecialCharacters,
+			TableProperties,
+			TableCellProperties,
 			ImageUpload,
 			ImageResize,
 			WordCount,
@@ -112,7 +116,7 @@ ClassicEditor
 			shouldNotGroupWhenFull: true
 		},
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties' ]
 		},
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', 'imageTextAlternative' ]
