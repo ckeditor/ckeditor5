@@ -686,6 +686,90 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
+			it( 'should allow multi-range selection on continues blocks (row selected)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+							'<tableCell><paragraph>C3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+							'<tableCell><paragraph>C3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should allow multi-range selection with mixed continues/non-continues blocks (part of table selected)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A2</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B3</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C3</paragraph></tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A2</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+							'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B3</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C3</paragraph></tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should not fix ranges in multi-range selection (each range set differently - but valid)', () => {
 				setModelData( model,
 					'<paragraph>[foo]</paragraph>' +
