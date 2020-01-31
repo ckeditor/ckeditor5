@@ -53,6 +53,8 @@ describe( 'secureSourceElement()', () => {
 
 		return editor.destroy()
 			.then( () => {
+				editor = null;
+
 				expect( sourceElement.ckeditorInstance ).to.be.undefined;
 			} );
 	} );

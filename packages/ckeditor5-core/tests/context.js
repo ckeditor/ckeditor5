@@ -49,6 +49,26 @@ describe( 'Context', () => {
 		} );
 	} );
 
+	describe( 'editors', () => {
+		it( 'should keep all the editors created within the context and fire event:add whenever an editor is added', async () => {
+			const spy = sinon.spy();
+			const context = await Context.create();
+
+			context.editors.on( 'add', spy );
+
+			const editorA = await VirtualTestEditor.create( { context } );
+
+			expect( spy.calledOnce );
+
+			const editorB = await VirtualTestEditor.create( { context } );
+
+			expect( spy.calledTwice );
+
+			expect( context.editors.has( editorA ) );
+			expect( context.editors.has( editorB ) );
+		} );
+	} );
+
 	describe( 'locale', () => {
 		it( 'is instantiated and t() is exposed', () => {
 			const context = new Context();
@@ -259,6 +279,21 @@ describe( 'Context', () => {
 			sinon.assert.calledOnce( editorA.destroy );
 			sinon.assert.calledOnce( editorB.destroy );
 			sinon.assert.notCalled( editorC.destroy );
+		} );
+
+		it( 'should not crash when destroyed for the second time', async () => {
+			const context = await Context.create();
+
+			await VirtualTestEditor.create( { context } );
+			await context.destroy();
+			await context.destroy();
+		} );
+
+		it( 'should not crash when destroyed for the second time - editor own managed context', async () => {
+			const editor = await VirtualTestEditor.create();
+
+			await editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 } );
