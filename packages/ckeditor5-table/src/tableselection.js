@@ -77,12 +77,6 @@ export default class TableSelection extends Plugin {
 			}
 
 			this.setSelectingTo( tableCell );
-
-			if ( this.isSelectingAndSomethingElse ) {
-				domEventData.preventDefault();
-
-				this._updateModelSelection();
-			}
 		} );
 
 		this.listenTo( viewDocument, 'mouseup', ( eventInfo, domEventData ) => {
