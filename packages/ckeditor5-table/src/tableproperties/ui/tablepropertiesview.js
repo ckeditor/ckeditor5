@@ -47,7 +47,7 @@ const ALIGNMENT_ICONS = {
 
 /**
  * The class representing a table properties form, allowing users to customize
- * certain style aspects of a table, for instance, border, padding, text alignment, etc..
+ * certain style aspects of a table, for instance, border, background color, alignment, etc..
  *
  * @extends module:ui/view~View
  */
@@ -523,7 +523,17 @@ export default class TablePropertiesView extends View {
 		// -- Operator ---------------------------------------------------
 
 		const operatorLabel = new View( locale );
-		operatorLabel.setTemplate( { text: '×' } );
+		operatorLabel.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: [
+					'ck-table-properties-form__dimension-operator'
+				]
+			},
+			children: [
+				{ text: '×' }
+			]
+		} );
 
 		// -- Height ---------------------------------------------------
 
