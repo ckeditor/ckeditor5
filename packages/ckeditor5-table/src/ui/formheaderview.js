@@ -4,7 +4,7 @@
  */
 
 /**
- * @module
+ * @module table/ui/formheaderview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
