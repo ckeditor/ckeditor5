@@ -413,7 +413,7 @@ describe( 'ContextWatchdog', () => {
 
 				sinon.assert.calledOnce( restartSpy );
 
-				expect( watchdog._watchdogs.get( 'editor1' ).state ).to.equal( 'ready' );
+				expect( watchdog.getState( 'editor1' ) ).to.equal( 'ready' );
 				expect( watchdog.context ).to.not.equal( oldContext );
 
 				await watchdog.destroy();
@@ -497,8 +497,8 @@ describe( 'ContextWatchdog', () => {
 				sinon.assert.notCalled( mainWatchdogRestartSpy );
 				sinon.assert.notCalled( editorWatchdog2RestartSpy );
 
-				expect( editorWatchdog1.state ).to.equal( 'ready' );
-				expect( editorWatchdog2.state ).to.equal( 'ready' );
+				expect( watchdog.getState( 'editor1' ) ).to.equal( 'ready' );
+				expect( watchdog.getState( 'editor2' ) ).to.equal( 'ready' );
 				expect( watchdog.state ).to.equal( 'ready' );
 
 				expect( oldEditor1 ).to.not.equal( editorWatchdog1.editor );
@@ -564,15 +564,13 @@ describe( 'ContextWatchdog', () => {
 
 				await watchdog.waitForReady();
 
-				const editorWatchdog = watchdog._watchdogs.get( 'editor1' );
-
-				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
-				setTimeout( () => throwCKEditorError( 'foo', editorWatchdog.editor ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
 				await waitCycle();
 
-				expect( editorWatchdog.state ).to.equal( 'crashedPermanently' );
+				expect( watchdog.getState( 'editor1' ) ).to.equal( 'crashedPermanently' );
 				expect( watchdog.state ).to.equal( 'ready' );
 
 				await watchdog.destroy();

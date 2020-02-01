@@ -106,15 +106,24 @@ export default class ContextWatchdog extends Watchdog {
 	 * 	const editor1 = contextWatchdog.get( 'editor1' );
 	 *
 	 * @param {String} itemName The item name (the key under which the item config was passed to the add() method).
+	 * @returns {*} The item instance.
 	 */
 	get( itemName ) {
-		const watchdog = this._watchdogs.get( itemName );
-
-		if ( !watchdog ) {
-			throw new Error( `Item with the given name was not registered: ${ itemName }.` );
-		}
+		const watchdog = this._getWatchdog( itemName );
 
 		return watchdog._instance;
+	}
+
+	/**
+	 * Gets state of the given item. For the list of available state see {@link #state}.
+	 *
+	 * @param {String} itemName The item name (the key under which the item config was passed to the add() method).
+	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
+	 */
+	getState( itemName ) {
+		const watchdog = this._getWatchdog( itemName );
+
+		return watchdog.state;
 	}
 
 	/**
@@ -312,6 +321,21 @@ export default class ContextWatchdog extends Watchdog {
 					// Context destructor destroys each editor.
 					.then( () => this._destructor( context ) );
 			} );
+	}
+
+	/**
+	 * @protected
+	 * @param {String} itemName
+	 * @returns {module:watchdog/watchdog~Watchdog} Watchdog
+	 */
+	_getWatchdog( itemName ) {
+		const watchdog = this._watchdogs.get( itemName );
+
+		if ( !watchdog ) {
+			throw new Error( `Item with the given name was not registered: ${ itemName }.` );
+		}
+
+		return watchdog;
 	}
 
 	/**
