@@ -165,6 +165,11 @@ export default class Watchdog {
 		this._destructor = destructor;
 	}
 
+	destroy() {
+		this._stopErrorHandling();
+		this.stopListening();
+	}
+
 	/**
 	 * Starts error handling by attaching global error handlers.
 	 *

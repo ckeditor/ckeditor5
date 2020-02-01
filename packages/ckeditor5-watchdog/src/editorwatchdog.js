@@ -220,6 +220,8 @@ export default class EditorWatchdog extends Watchdog {
 			.then( () => {
 				this.state = 'destroyed';
 
+				super.destroy();
+
 				return this._destroy();
 			} );
 	}

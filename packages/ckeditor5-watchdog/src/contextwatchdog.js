@@ -25,7 +25,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * The constructor should not be called directly. Use the {@link module:watchdog/contextwatchdog~ContextWatchdog.for} method instead.
 	 *
 	 * @param {Object} [contextConfig] {@link module:core/context~Context} configuration.
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog configuration.
 	 */
 	constructor( contextConfig = {}, watchdogConfig = {} ) {
 		super( watchdogConfig );
@@ -37,6 +37,14 @@ export default class ContextWatchdog extends Watchdog {
 		 * @type {Map.<string,module:watchdog/watchdog~EditorWatchdog>}
 		 */
 		this._watchdogs = new Map();
+
+		/**
+		 * The watchdog configuration.
+		 *
+		 * @private
+		 * @type {module:watchdog/watchdog~WatchdogConfig}
+		 */
+		this._watchdogConfig = watchdogConfig;
 
 		/**
 		 * The current context instance.
@@ -168,8 +176,7 @@ export default class ContextWatchdog extends Watchdog {
 				}
 
 				if ( item.type === 'editor' ) {
-					// TODO - await EditorWatchdog.createFrom( item, context ) ?
-					watchdog = new EditorWatchdog();
+					watchdog = new EditorWatchdog( this._watchdogConfig );
 					watchdog.setCreator( item.creator );
 					watchdog._setExcludedProperties( this._contextProps );
 
@@ -248,6 +255,8 @@ export default class ContextWatchdog extends Watchdog {
 	destroy() {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'destroyed';
+
+			super.destroy();
 
 			return this._destroy();
 		} );
