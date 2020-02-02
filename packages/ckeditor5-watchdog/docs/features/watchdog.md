@@ -213,7 +213,63 @@ watchdog.remove( [ 'editor1' ] );
 	Note that the above examples does not use promises returning by the context watchdog methods while these methods are asynchronous. You should not depend on these promises because they are resolved only once while your component might be restarted multiple times internally causing watchdog to unmount the editor and to mount again. Read further below for more information about events and watchdog states.
 </info-box>
 
-TODO
+### Context watchdog API
+
+The ContextWatchdog feature provides the following API:
+
+```js
+// A simple initialization way with default Context creation and destruction functions:
+const watchdog = ContextWatchdog.for( Context, contextConfig, watchdogConfig )
+
+// An advanced initialization where custom creation and destruction functions can be passed:
+const watchdog = new ContextWatchdog( contextConfig, watchdogConfig )
+
+watchdog.setCreator( async config => {
+	const context = await Context.create( config ) );
+
+	// Do something when the context is initialized.
+
+	return context;
+} );
+
+watchdog.setDestructor( async context => {
+	// Do something before destroy.
+
+	await context.destroy();
+} );
+
+watchdog.create();
+
+// Adding, removing and getting item instances:
+watchdog.add( {
+	editor1: {
+		type: 'editor',
+		sourceElementOrData: editorSourceElementOrEditorData
+		config: editorConfig,
+		creator: createEditor,
+		destructor: destroyEditor,
+	},
+	// Possibly more items.
+} );
+
+watchdog.remove( [ 'editor1' ] );
+
+watchdog.add( itemConfig );
+
+// Given item instance.
+const editor1 = watchdog.get( 'editor1' );
+
+// Given item state.
+const editor1State = watchdog.getState( 'editor1' );
+
+// Context state.
+const contextState = watchdog.state;
+
+// Events
+watchdog.on( 'error', () => {} );
+
+watchdog.on( 'restart', () => {} );
+```
 
 ## Limitations
 

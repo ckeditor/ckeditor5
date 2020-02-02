@@ -22,7 +22,8 @@ import getSubNodes from './utils/getsubnodes';
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
-	 * The constructor should not be called directly. Use the {@link module:watchdog/contextwatchdog~ContextWatchdog.for} method instead.
+	 * The ContextWatchdog constructor. See {@glink features/watchdog Watchdog feature guide} to learn how to use it,
+	 * as using the constructor directly requires further steps to initialize the `ContextWatchdog`.
 	 *
 	 * @param {Object} [contextConfig] {@link module:core/context~Context} configuration.
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog configuration.
@@ -333,6 +334,8 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
+	 * Returns watchdog for the given item name.
+	 *
 	 * @protected
 	 * @param {String} itemName
 	 * @returns {module:watchdog/watchdog~Watchdog} Watchdog

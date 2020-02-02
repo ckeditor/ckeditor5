@@ -120,11 +120,11 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * The handled instances.
+		 * The handled instance.
 		 *
 		 * @abstract
 		 * @protected
-		 * @member {Object} #_instance
+		 * @member {Object|undefined} #_instance
 		 */
 
 		/**
@@ -165,6 +165,9 @@ export default class Watchdog {
 		this._destructor = destructor;
 	}
 
+	/**
+	 * Destroys the watchdog and release the resources.
+	 */
 	destroy() {
 		this._stopErrorHandling();
 		this.stopListening();
