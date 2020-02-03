@@ -71,6 +71,8 @@ import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
 import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
+import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
+import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
@@ -119,6 +121,7 @@ const icons = {
 
 	// table
 	table, tableRow, tableColumn, tableMergeCell,
+	tableCellProperties, tableProperties,
 
 	// undo
 	undo, redo
