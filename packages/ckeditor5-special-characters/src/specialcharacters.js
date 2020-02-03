@@ -77,35 +77,7 @@ export default class SpecialCharacters extends Plugin {
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
 			const dropdownView = createDropdown( locale );
-			const specialCharsGroups = [ ...this.getGroups() ];
-
-			// Add a special group that shows all available special characters.
-			specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
-
-			const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
-			const gridView = new CharacterGridView( locale );
-			const infoView = new CharacterInfoView( locale );
-
-			gridView.delegate( 'execute' ).to( dropdownView );
-
-			gridView.on( 'tileHover', ( evt, data ) => {
-				infoView.set( data );
-			} );
-
-			dropdownView.on( 'change:isOpen', () => {
-				infoView.set( {
-					character: null,
-					name: null
-				} );
-			} );
-
-			// Set the initial content of the special characters grid.
-			this._updateGrid( navigationView.currentGroupName, gridView );
-
-			// Update the grid of special characters when a user changed the character group.
-			navigationView.on( 'execute', () => {
-				this._updateGrid( navigationView.currentGroupName, gridView );
-			} );
+			let dropdownPanelContent;
 
 			dropdownView.buttonView.set( {
 				label: t( 'Special characters' ),
@@ -121,9 +93,20 @@ export default class SpecialCharacters extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			dropdownView.panelView.children.add( navigationView );
-			dropdownView.panelView.children.add( gridView );
-			dropdownView.panelView.children.add( infoView );
+			dropdownView.on( 'change:isOpen', () => {
+				if ( !dropdownPanelContent ) {
+					dropdownPanelContent = this._createDropdownPanelContent( locale, dropdownView );
+
+					dropdownView.panelView.children.add( dropdownPanelContent.navigationView );
+					dropdownView.panelView.children.add( dropdownPanelContent.gridView );
+					dropdownView.panelView.children.add( dropdownPanelContent.infoView );
+				}
+
+				dropdownPanelContent.infoView.set( {
+					character: null,
+					name: null
+				} );
+			} );
 
 			return dropdownView;
 		} );
@@ -224,6 +207,33 @@ export default class SpecialCharacters extends Plugin {
 
 			gridView.tiles.add( gridView.createTile( character, title ) );
 		}
+	}
+
+	_createDropdownPanelContent( locale, dropdownView ) {
+		const specialCharsGroups = [ ...this.getGroups() ];
+
+		// Add a special group that shows all available special characters.
+		specialCharsGroups.unshift( ALL_SPECIAL_CHARACTERS_GROUP );
+
+		const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
+		const gridView = new CharacterGridView( locale );
+		const infoView = new CharacterInfoView( locale );
+
+		gridView.delegate( 'execute' ).to( dropdownView );
+
+		gridView.on( 'tileHover', ( evt, data ) => {
+			infoView.set( data );
+		} );
+
+		// Update the grid of special characters when a user changed the character group.
+		navigationView.on( 'execute', () => {
+			this._updateGrid( navigationView.currentGroupName, gridView );
+		} );
+
+		// Set the initial content of the special characters grid.
+		this._updateGrid( navigationView.currentGroupName, gridView );
+
+		return { navigationView, gridView, infoView };
 	}
 }
 
