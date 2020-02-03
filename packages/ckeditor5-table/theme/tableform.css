@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-table-form {
+	& .ck-table-form__border-row {
+		flex-wrap: wrap;
+
+		& .ck-labeled-view {
+			display: flex;
+			flex-direction: column-reverse;
+			align-items: center;
+
+			& > .ck-label {
+				font-size: 10px;
+			}
+
+			& .ck.ck-dropdown {
+				flex-grow: 0;
+			}
+		}
+
+		& .ck-table-form__border-style {
+			width: 80px;
+			min-width: 80px;
+			flex-grow: 0;
+		}
+
+		& .ck-table-form__border-width {
+			width: 80px;
+			min-width: 80px;
+			flex-grow: 0;
+		}
+	}
+}

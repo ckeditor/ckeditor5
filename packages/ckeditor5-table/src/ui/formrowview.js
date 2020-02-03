@@ -9,6 +9,8 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
+import '../../theme/formrow.css';
+
 /**
  * The class representing a single row in the complex form,
  * used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}.

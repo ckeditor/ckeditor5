@@ -4,79 +4,12 @@
  */
 
 .ck.ck-table-cell-properties-form {
-	width: 320px;
-
 	& .ck-form__row {
-		&.ck-table-cell-properties-form__border-row {
-			flex-wrap: wrap;
-
-			& > .ck.ck-label {
-				width: 100%;
-				min-width: 100%;
-			}
-
-			& .ck-labeled-view {
-				display: flex;
-				flex-direction: column-reverse;
-				align-items: center;
-
-				& > .ck-label {
-					font-size: 10px;
-				}
-
-				& .ck.ck-dropdown {
-					flex-grow: 0;
-				}
-			}
-
-			& .ck-table-cell-properties-form__border-style {
-				width: 80px;
-				min-width: 80px;
-				flex-grow: 0;
-			}
-
-			& .ck-table-cell-properties-form__border-width {
-				width: 80px;
-				min-width: 80px;
-				flex-grow: 0;
-			}
-		}
-
-		& .ck-table-cell-properties-form__background,
-		& .ck-table-cell-properties-form__padding {
-			width: 50%;
-		}
-
 		&.ck-table-cell-properties-form__alignment-row {
 			flex-wrap: wrap;
 
-			& > .ck.ck-label {
-				width: 100%;
-				min-width: 100%;
-			}
-
 			& .ck.ck-toolbar {
-				padding: 0;
-				background: 0;
 				flex-grow: 0;
-
-				& .ck-toolbar__items > * {
-					margin: 0;
-
-					&:first-child {
-						border-top-right-radius: 0;
-						border-bottom-right-radius: 0;
-					}
-
-					&:last-child {
-						border-top-left-radius: 0;
-						border-bottom-left-radius: 0;
-					}
-
-					&:not(:first-child):not(:last-child) {
-						border-radius: 0;
-					}
-				}
 			}
 		}
 	}
