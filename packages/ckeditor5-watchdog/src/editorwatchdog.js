@@ -22,7 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class EditorWatchdog extends Watchdog {
 	/**
-	 * @param {module:watchdog/editorwatchdog~EditorWatchdogConfig} [config] The watchdog plugin configuration.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
 	 */
 	constructor( config = {} ) {
 		super( config );
@@ -338,7 +338,7 @@ export default class EditorWatchdog extends Watchdog {
 	 *		watchdog.create( elementOrData, config );
 	 *
 	 * @param {*} Editor The editor class.
-	 * @param {module:watchdog/editorwatchdog~EditorWatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
 	static for( Editor, watchdogConfig ) {
 		const watchdog = new this( watchdogConfig );
@@ -354,12 +354,3 @@ export default class EditorWatchdog extends Watchdog {
 	 * @event restart
 	 */
 }
-
-/**
- * The editor watchdog plugin configuration.
- *
- * @typedef {WatchdogConfig} EditorWatchdogConfig
- *
- * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
- * Note that for large documents this might have an impact on the editor performance.
- */

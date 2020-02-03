@@ -288,7 +288,11 @@ mix( Watchdog, ObservableMixin );
  * when the watchdog stops restarting the instance in case of errors.
  * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the instance. This prevents an infinite restart loop.
+ *
  * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last instance errors
  * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the instance. This prevents an infinite restart loop.
+ *
+ * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
+ * Note that for large documents this might have an impact on the editor performance.
  */
