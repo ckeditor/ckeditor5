@@ -391,10 +391,10 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 0, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
-				[ '10', '11' ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
@@ -419,10 +419,10 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
-				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 1, 1 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
@@ -447,10 +447,10 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 0, 0 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
-				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 1, 1 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
@@ -471,11 +471,11 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 2, 2 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, { contents: '02', isSelected: true } ],
-				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, { contents: '12', isSelected: true } ],
-				[ { contents: '20', isSelected: true }, { contents: '21', isSelected: true }, { contents: '22', isSelected: true } ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1, 1 ],
+				[ 1, 1, 1 ],
+				[ 1, 1, 1 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[
@@ -498,11 +498,11 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
-				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
-				[ '20', '21', '22' ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1, 0 ],
+				[ 1, 1, 0 ],
+				[ 0, 0, 0 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[
@@ -542,10 +542,10 @@ describe( 'table selection', () => {
 
 			view.document.fire( 'mouseup', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
-				[ '10', '11' ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
@@ -555,10 +555,10 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
-				[ '10', '11' ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
 		} );
 
 		it( 'should stop selection mode on "mouseleve" event', () => {
@@ -580,10 +580,10 @@ describe( 'table selection', () => {
 
 			view.document.fire( 'mouseleave', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
-				[ '10', '11' ]
-			] ) );
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
@@ -593,10 +593,42 @@ describe( 'table selection', () => {
 			markTableCellAsSelectedInEvent( domEvtDataStub, view, 0, 0, 1, 1 );
 			view.document.fire( 'mousemove', domEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+			assertSelectedCells( [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
+		} );
+
+		it( 'should do nothing on "mouseleve" event', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
 				[ '10', '11' ]
 			] ) );
+
+			view.document.fire( 'mouseleave', domEvtDataStub );
+
+			assertSelectedCells( [
+				[ 0, 0 ],
+				[ 0, 0 ]
+			] );
+		} );
+
+		it( 'should do nothing on "mousedown" event over ui element (click on selection handle)', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			domEvtDataStub.target = view.document.getRoot()
+				.getChild( 0 )
+				.getChild( 0 ); // selection handler;
+
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			assertEqualMarkup( getModelData( model ), '[' + modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) + ']' );
 		} );
 
 		it( 'should clear view table selection after mouse click outside table', () => {
