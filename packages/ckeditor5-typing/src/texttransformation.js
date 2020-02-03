@@ -94,6 +94,21 @@ export default class TextTransformation extends Plugin {
 		} );
 
 		this.editor = editor;
+
+		/**
+		 * Stores all configured transformations.
+		 *
+		 * @member {Array} #configuredTransformations
+		 */
+		this.configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
+
+		/**
+		 * Stores all normalized versions of configured transformations.
+		 *
+		 * @private
+		 * @member {Map<from:String|to:String,String>} #_normalizedConfiguredTransformations
+		 */
+		this._normalizedConfiguredTransformations = new Map();
 	}
 
 	/**
@@ -108,11 +123,33 @@ export default class TextTransformation extends Plugin {
 			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
 		} );
 
+		// Set normalized versions of configured transformations once, early on the initialization, so
+		// we don't have to iterate over the configuration and normalize each instance of `from` and `to` of the transformation,
+		// inside the TextWatcher's text testing callback.
+		this._setNormalizedTransformations( this.configuredTransformations );
+
 		this._enableTransformationWatchers();
 	}
 
 	/**
-	 * Create new set of TextWatchers listening to the editor for typing and selection events.
+	 * A helper for setting normalized configured transformations.
+	 *
+	 * @private
+	 * @param {Array} transformations Configured transformations data.
+	 */
+	_setNormalizedTransformations( transformations ) {
+		for ( const transformation of transformations ) {
+			// The key is a text from we should normalize the transformation,
+			// eg: `{ key: '(c)', value: { from: '(c)', to: '©' } }`.
+			this._normalizedConfiguredTransformations.set( transformation.from, {
+				from: normalizeFrom( transformation.from ),
+				to: normalizeTo( transformation.to )
+			} );
+		}
+	}
+
+	/**
+	 * Create new TextWatcher listening to the editor for typing and selection events.
 	 *
 	 * @private
 	 */
@@ -121,51 +158,61 @@ export default class TextTransformation extends Plugin {
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
 
-		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
+		const testCallback = text => {
+			for ( const transformation of this.configuredTransformations ) {
+				// Get the normalized version of the configured transformation.
+				// See `_setNormalizedTransformations()`, to get more information how key-value pairs are created.
+				const normalizedTransformation = this._normalizedConfiguredTransformations.get( transformation.from );
+				const from = normalizedTransformation.from;
+				const match = from.test( text );
 
-		for ( const transformation of configuredTransformations ) {
-			const from = normalizeFrom( transformation.from );
-			const to = normalizeTo( transformation.to );
-
-			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
-
-			const watcherCallback = ( evt, data ) => {
-				if ( !input.isInput( data.batch ) ) {
-					return;
+				if ( match ) {
+					return { match, transformation };
 				}
+			}
+		};
 
-				const matches = from.exec( data.text );
-				const replaces = to( matches.slice( 1 ) );
+		const watcherCallback = ( evt, data ) => {
+			if ( !input.isInput( data.batch ) ) {
+				return;
+			}
 
-				const matchedRange = data.range;
+			const from = normalizeFrom( data.transformation.from );
+			const to = normalizeTo( data.transformation.to );
 
-				let changeIndex = matches.index;
+			const matches = from.exec( data.text );
+			const replaces = to( matches.slice( 1 ) );
 
-				model.enqueueChange( writer => {
-					for ( let i = 1; i < matches.length; i++ ) {
-						const match = matches[ i ];
-						const replaceWith = replaces[ i - 1 ];
+			const matchedRange = data.range;
 
-						if ( replaceWith == null ) {
-							changeIndex += match.length;
+			let changeIndex = matches.index;
 
-							continue;
-						}
+			model.enqueueChange( writer => {
+				for ( let i = 1; i < matches.length; i++ ) {
+					const match = matches[ i ];
+					const replaceWith = replaces[ i - 1 ];
 
-						const replacePosition = matchedRange.start.getShiftedBy( changeIndex );
-						const replaceRange = model.createRange( replacePosition, replacePosition.getShiftedBy( match.length ) );
-						const attributes = getTextAttributesAfterPosition( replacePosition );
+					if ( replaceWith == null ) {
+						changeIndex += match.length;
 
-						model.insertContent( writer.createText( replaceWith, attributes ), replaceRange );
-
-						changeIndex += replaceWith.length;
+						continue;
 					}
-				} );
-			};
 
-			watcher.on( 'matched:data', watcherCallback );
-			watcher.bind( 'isEnabled' ).to( this );
-		}
+					const replacePosition = matchedRange.start.getShiftedBy( changeIndex );
+					const replaceRange = model.createRange( replacePosition, replacePosition.getShiftedBy( match.length ) );
+					const attributes = getTextAttributesAfterPosition( replacePosition );
+
+					model.insertContent( writer.createText( replaceWith, attributes ), replaceRange );
+
+					changeIndex += replaceWith.length;
+				}
+			} );
+		};
+
+		const watcher = new TextWatcher( editor.model, testCallback );
+
+		watcher.on( 'matched:data', watcherCallback );
+		watcher.bind( 'isEnabled' ).to( this );
 	}
 }
 
