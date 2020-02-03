@@ -155,8 +155,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when inserting Element', () => {
-			const element = new Element( 'b' );
-			const container = new ContainerElement( 'p' );
+			const element = new Element( document, 'b' );
+			const container = new ContainerElement( document, 'p' );
 			const position = new Position( container, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -165,9 +165,9 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when Element is inserted as child node', () => {
-			const element = new Element( 'b' );
-			const root = new ContainerElement( 'p', null, element );
-			const container = new ContainerElement( 'p' );
+			const element = new Element( document, 'b' );
+			const root = new ContainerElement( document, 'p', null, element );
+			const container = new ContainerElement( document, 'p' );
 			const position = new Position( container, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -176,9 +176,9 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when position is not placed inside container', () => {
-			const element = new Element( 'b' );
+			const element = new Element( document, 'b' );
 			const position = new Position( element, 0 );
-			const attributeElement = new AttributeElement( 'i' );
+			const attributeElement = new AttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
@@ -194,10 +194,10 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to insert inside EmptyElement', () => {
-			const emptyElement = new EmptyElement( 'img' );
-			new ContainerElement( 'p', null, emptyElement ); // eslint-disable-line no-new
+			const emptyElement = new EmptyElement( document, 'img' );
+			new ContainerElement( document, 'p', null, emptyElement ); // eslint-disable-line no-new
 			const position = new Position( emptyElement, 0 );
-			const attributeElement = new AttributeElement( 'i' );
+			const attributeElement = new AttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
@@ -205,10 +205,10 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to insert inside UIElement', () => {
-			const uiElement = new UIElement( 'span' );
-			new ContainerElement( 'p', null, uiElement ); // eslint-disable-line no-new
+			const uiElement = new UIElement( document, 'span' );
+			new ContainerElement( document, 'p', null, uiElement ); // eslint-disable-line no-new
 			const position = new Position( uiElement, 0 );
-			const attributeElement = new AttributeElement( 'i' );
+			const attributeElement = new AttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );

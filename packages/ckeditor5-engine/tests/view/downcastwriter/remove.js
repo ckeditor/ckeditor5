@@ -43,8 +43,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
-			const p1 = new ContainerElement( 'p' );
-			const p2 = new ContainerElement( 'p' );
+			const p1 = new ContainerElement( document, 'p' );
+			const p2 = new ContainerElement( document, 'p' );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
@@ -52,7 +52,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range has no parent container', () => {
-			const el = new AttributeElement( 'b' );
+			const el = new AttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
@@ -60,7 +60,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
-			const p = new ContainerElement( 'p' );
+			const p = new ContainerElement( document, 'p' );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const fragment = writer.remove( range );
 
@@ -130,9 +130,9 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if range is placed inside EmptyElement', () => {
-			const emptyElement = new EmptyElement( 'img' );
-			const attributeElement = new AttributeElement( 'b' );
-			new ContainerElement( 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
+			const emptyElement = new EmptyElement( document, 'img' );
+			const attributeElement = new AttributeElement( document, 'b' );
+			new ContainerElement( document, 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range._createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -149,9 +149,9 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if range is placed inside UIElement', () => {
-			const uiElement = new UIElement( 'span' );
-			const attributeElement = new AttributeElement( 'b' );
-			new ContainerElement( 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
+			const uiElement = new UIElement( document, 'span' );
+			const attributeElement = new AttributeElement( document, 'b' );
+			new ContainerElement( document, 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range._createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -201,7 +201,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when item has no parent container', () => {
-			const el = new AttributeElement( 'b' );
+			const el = new AttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( el );

@@ -19,7 +19,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'move()', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 		// test ranges.
@@ -38,7 +38,8 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			writer = new DowncastWriter( new Document() );
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should move single text node', () => {
@@ -148,12 +149,12 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to EmptyElement', () => {
-			const srcAttribute = new AttributeElement( 'b' );
-			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
+			const srcAttribute = new AttributeElement( document, 'b' );
+			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstEmpty = new EmptyElement( 'img' );
-			new ContainerElement( 'p', null, dstEmpty ); // eslint-disable-line no-new
+			const dstEmpty = new EmptyElement( document, 'img' );
+			new ContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstEmpty, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -171,12 +172,12 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to UIElement', () => {
-			const srcAttribute = new AttributeElement( 'b' );
-			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
+			const srcAttribute = new AttributeElement( document, 'b' );
+			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstUI = new UIElement( 'span' );
-			new ContainerElement( 'p', null, dstUI ); // eslint-disable-line no-new
+			const dstUI = new UIElement( document, 'span' );
+			new ContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstUI, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -187,16 +188,16 @@ describe( 'DowncastWriter', () => {
 		it( 'should not break marker mappings if marker element was split and the original element was removed', () => {
 			const mapper = new Mapper();
 
-			const srcContainer = new ContainerElement( 'p' );
-			const dstContainer = new ContainerElement( 'p' );
+			const srcContainer = new ContainerElement( document, 'p' );
+			const dstContainer = new ContainerElement( document, 'p' );
 
-			const root = new RootEditableElement( 'div' );
+			const root = new RootEditableElement( document, 'div' );
 			root._appendChild( [ srcContainer, dstContainer ] );
 
-			const attrElemA = new AttributeElement( 'span' );
+			const attrElemA = new AttributeElement( document, 'span' );
 			attrElemA._id = 'foo';
 
-			const attrElemB = new AttributeElement( 'span' );
+			const attrElemB = new AttributeElement( document, 'span' );
 			attrElemB._id = 'foo';
 
 			writer.insert( new Position( srcContainer, 0 ), [ attrElemA, attrElemB ] );

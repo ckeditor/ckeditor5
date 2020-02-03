@@ -13,7 +13,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 
 describe( 'DowncastWriter', () => {
 	describe( 'breakContainer()', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 		// test break position.
@@ -28,7 +28,8 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			writer = new DowncastWriter( new Document() );
+			document = new Document();
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'break inside element - should break container element at given position', () => {
@@ -73,7 +74,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if position parent is root', () => {
-			const element = new ContainerElement( 'div' );
+			const element = new ContainerElement( document, 'div' );
 			const position = Position._createAt( element, 0 );
 
 			expectToThrowCKEditorError( () => {

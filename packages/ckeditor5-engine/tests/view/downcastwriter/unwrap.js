@@ -55,12 +55,12 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw error when element is not instance of AttributeElement', () => {
-			const container = new ContainerElement( 'p', null, new AttributeElement( 'b', null, new Text( 'foo' ) ) );
+			const container = new ContainerElement( document, 'p', null, new AttributeElement( document, 'b', null, new Text( 'foo' ) ) );
 			const range = new Range(
 				new Position( container, 0 ),
 				new Position( container, 1 )
 			);
-			const b = new Element( 'b' );
+			const b = new Element( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, b );
@@ -68,13 +68,13 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
-			const container1 = new ContainerElement( 'p' );
-			const container2 = new ContainerElement( 'p' );
+			const container1 = new ContainerElement( document, 'p' );
+			const container2 = new ContainerElement( document, 'p' );
 			const range = new Range(
 				new Position( container1, 0 ),
 				new Position( container2, 1 )
 			);
-			const b = new AttributeElement( 'b' );
+			const b = new AttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, b );
@@ -82,8 +82,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range has no parent container', () => {
-			const el = new AttributeElement( 'b' );
-			const b = new AttributeElement( 'b' );
+			const el = new AttributeElement( document, 'b' );
+			const b = new AttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
@@ -396,9 +396,9 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if range is inside EmptyElement', () => {
-			const empty = new EmptyElement( 'img' );
-			const attribute = new AttributeElement( 'b' );
-			const container = new ContainerElement( 'p', null, [ empty, attribute ] );
+			const empty = new EmptyElement( document, 'img' );
+			const attribute = new AttributeElement( document, 'b' );
+			const container = new ContainerElement( document, 'p', null, [ empty, attribute ] );
 			const range = Range._createFromParentsAndOffsets( empty, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
@@ -415,9 +415,9 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if range is placed inside UIElement', () => {
-			const uiElement = new UIElement( 'span' );
-			const attribute = new AttributeElement( 'b' );
-			const container = new ContainerElement( 'p', null, [ uiElement, attribute ] );
+			const uiElement = new UIElement( document, 'span' );
+			const attribute = new AttributeElement( document, 'b' );
+			const container = new ContainerElement( document, 'p', null, [ uiElement, attribute ] );
 			const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
