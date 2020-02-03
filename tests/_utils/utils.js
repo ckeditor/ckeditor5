@@ -14,13 +14,11 @@ import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import StrikeThrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
-const predefinedFiles = [
-	'small',
-	'medium',
-	'large',
-	'small-inline-css',
-	'full-websites-styled'
-];
+import smallFixture from '../_data/small.html';
+import mediumFixture from '../_data/medium.html';
+import largeFixture from '../_data/large.html';
+import smallInlineCssFixture from '../_data/small-inline-css.html';
+import fullWebsitesStyledFixture from '../_data/full-websites-styled.html';
 
 /**
  * Renders a button for each performance fixture in a given `container`.
@@ -33,11 +31,11 @@ export function renderPerformanceDataButtons( container ) {
 		'small': 'short (semantic)',
 		'medium': 'medium (semantic)',
 		'large': 'long (semantic)',
-		'small-inline-css': 'short inline styled',
-		'full-websites-styled': 'full websites (styled)',
+		'smallInlineCss': 'short inline styled',
+		'fullWebsitesStyled': 'full websites (styled)',
 	};
 
-	for ( const fixtureName of predefinedFiles ) {
+	for ( const fixtureName of Object.keys( labels ) ) {
 		html += `<button id="${ fixtureName }-content" data-file-name="${ fixtureName }" disabled>${ labels[ fixtureName ] }</button>`;
 	}
 
@@ -56,21 +54,13 @@ export function renderPerformanceDataButtons( container ) {
  * @returns {Promise.<Object.<String, String>>}
  */
 export function loadPerformanceData() {
-	return Promise.all( predefinedFiles.map( fileName => getFileContents( fileName ) ) )
-		.then( responses => {
-			const returnValue = {};
-
-			for ( let i = 0; i < predefinedFiles.length; i++ ) {
-				returnValue[ predefinedFiles[ i ] ] = responses[ i ];
-			}
-
-			return returnValue;
-		} );
-
-	function getFileContents( fileName ) {
-		return window.fetch( `_utils/${ fileName }.txt` )
-			.then( resp => resp.text() );
-	}
+	return Promise.resolve( {
+		fullWebsitesStyled: fullWebsitesStyledFixture,
+		large: largeFixture,
+		medium: mediumFixture,
+		small: smallFixture,
+		smallInlineCss: smallInlineCssFixture,
+	} );
 }
 
 /**
