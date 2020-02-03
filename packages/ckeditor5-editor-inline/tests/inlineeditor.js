@@ -183,8 +183,9 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'inline toolbar should not group items when shouldNotGroupWhenFull option is enabled', () => {
+		it( 'should pass the config.toolbar.shouldNotGroupWhenFull configuration to the view', () => {
 			const editorElement = document.createElement( 'div' );
+
 			return InlineEditor.create( editorElement, {
 				toolbar: {
 					shouldNotGroupWhenFull: true
