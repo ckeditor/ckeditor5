@@ -44,6 +44,33 @@
 		}
 	}
 
+	&.ck-toolbar_compact {
+		/* No spacing around items. */
+		padding: 0;
+
+		& .ck-toolbar__items > .ck {
+			/* No spacing between items. */
+			margin: 0;
+
+			/* No rounded corners on the right side of the first child. */
+			&:first-child {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+
+			/* No rounded corners on the left side of the last child. */
+			&:last-child {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+
+			/* "Middle" children should have no rounded corners. */
+			&:not(:first-child):not(:last-child) {
+				border-radius: 0;
+			}
+		}
+	}
+
 	& > .ck-toolbar__items > *,
 	& > .ck.ck-toolbar__grouped-dropdown {
 		/* Make sure items wrapped to the next line have v-spacing */

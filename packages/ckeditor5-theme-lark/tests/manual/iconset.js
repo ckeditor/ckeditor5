@@ -9,10 +9,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
-import alignLeft from '@ckeditor/ckeditor5-alignment/theme/icons/align-left.svg';
-import alignCenter from '@ckeditor/ckeditor5-alignment/theme/icons/align-center.svg';
-import alignRight from '@ckeditor/ckeditor5-alignment/theme/icons/align-right.svg';
-import alignJustify from '@ckeditor/ckeditor5-alignment/theme/icons/align-justify.svg';
+import alignLeft from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import alignCenter from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
+import alignRight from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
+import alignJustify from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
 
 import bold from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
@@ -71,6 +71,8 @@ import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
 import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
+import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
+import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
@@ -119,6 +121,7 @@ const icons = {
 
 	// table
 	table, tableRow, tableColumn, tableMergeCell,
+	tableCellProperties, tableProperties,
 
 	// undo
 	undo, redo
