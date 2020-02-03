@@ -16,16 +16,12 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
 import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
-import { createLabeledInputText, createLabeledDropdown } from '@ckeditor/ckeditor5-ui/src/labeledview/utils';
+import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledview/utils';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import {
-	getBorderStyleLabels,
-	fillToolbar,
-	getBorderStyleDefinitions
-} from '../../ui/utils';
+import { fillToolbar, getBorderStyleDefinitions, getBorderStyleLabels } from '../../ui/utils';
 import FormRowView from '../../ui/formrowview';
 import FormHeaderView from '../../ui/formheaderview';
 
@@ -252,7 +248,9 @@ export default class TablePropertiesView extends View {
 		} );
 
 		// Form header.
-		this.children.add( this._createHeaderView() );
+		this.children.add( new FormHeaderView( locale, {
+			label: this.t( 'Table properties' )
+		} ) );
 
 		// Border row.
 		this.children.add( new FormRowView( locale, {
@@ -362,21 +360,6 @@ export default class TablePropertiesView extends View {
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Creates the header of the form with a localized label.
-	 *
-	 * @private
-	 * @returns {module:table/ui/formheaderview~FormHeaderView}
-	 */
-	_createHeaderView() {
-		const locale = this.locale;
-		const t = this.t;
-
-		return new FormHeaderView( locale, {
-			label: t( 'Table properties' )
-		} );
 	}
 
 	/**
