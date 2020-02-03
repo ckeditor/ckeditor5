@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { getPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils';
+import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
 
 const editorCount = 5;
 
@@ -32,41 +30,7 @@ for ( const button of buttons ) {
 			const editorElement = document.querySelector( `#editor_${ i }` );
 			editorElement.innerHTML = content;
 
-			ClassicEditor
-				.create( editorElement, {
-					plugins: [ ArticlePluginSet ],
-					toolbar: [
-						'heading',
-						'|',
-						'bold',
-						'italic',
-						'link',
-						'bulletedList',
-						'numberedList',
-						'|',
-						'outdent',
-						'indent',
-						'|',
-						'blockQuote',
-						'insertTable',
-						'mediaEmbed',
-						'undo',
-						'redo'
-					],
-					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
-					},
-					table: {
-						contentToolbar: [
-							'tableColumn',
-							'tableRow',
-							'mergeTableCells'
-						]
-					}
-				} )
-				.then( editor => {
-					window.editor = editor;
-				} )
+			createPerformanceEditor( editorElement )
 				.catch( err => {
 					console.error( err.stack );
 				} );
