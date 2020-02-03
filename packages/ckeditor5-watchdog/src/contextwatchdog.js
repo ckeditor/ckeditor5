@@ -213,8 +213,6 @@ export default class ContextWatchdog extends Watchdog {
 	 */
 	remove( itemNames ) {
 		return this._actionQueue.enqueue( () => {
-			console.log( 'remove' );
-
 			return Promise.all( itemNames.map( itemName => {
 				const watchdog = this._getWatchdog( itemName );
 
@@ -269,7 +267,6 @@ export default class ContextWatchdog extends Watchdog {
 	 */
 	_restart() {
 		return this._actionQueue.enqueue( () => {
-			console.log( 'restarting' );
 			this.state = 'initializing';
 
 			return this._destroy()
@@ -277,8 +274,7 @@ export default class ContextWatchdog extends Watchdog {
 					console.error( 'An error happened during destructing.', err );
 				} )
 				.then( () => this._create() )
-				.then( () => this.fire( 'restart' ) )
-				.then( () => console.log( 'restarted' ) );
+				.then( () => this.fire( 'restart' ) );
 		} );
 	}
 

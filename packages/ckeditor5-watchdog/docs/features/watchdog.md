@@ -254,8 +254,6 @@ watchdog.add( {
 
 watchdog.remove( [ 'editor1' ] );
 
-watchdog.add( itemConfig );
-
 // Given item instance.
 const editor1 = watchdog.get( 'editor1' );
 

@@ -234,7 +234,7 @@ describe( 'ContextWatchdog', () => {
 			await watchdog.destroy();
 
 			expect( err ).to.be.instanceOf( Error );
-			expect( err.message ).to.match( /There is no watchdog named: 'foo'\./ );
+			expect( err.message ).to.match( /Item with the given name was not registered: foo\./ );
 		} );
 
 		it( 'should throw when the item is added before the context is created', async () => {
