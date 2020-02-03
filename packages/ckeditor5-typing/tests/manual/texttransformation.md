@@ -17,17 +17,22 @@ Some of the transformations are:
     * Operators: `<=` to `≤`, `>=` to `≥`, `!=` to `≠`.
 
 1. Typography:
-    
+
     * Dashes: ` -- `, ` --- `.
     * Ellipsis: `...` to `…`
-    
+
 1. Quotes:
 
-    * Primary quotes (english): `'Foo bar'` to `‘Foo bar’` 
+    * Primary quotes (english): `'Foo bar'` to `‘Foo bar’`
     * Secondary quotes (english): `"Foo bar's"` to `“Foo bar's”`
 
 ### Testing
 
 * Check if the transformation works. Note that some might need a space to trigger (dashes).
 * Undo a text transformation and type - it should not re-transform it.
-* Change selection - the not transformed elements should stay. 
+* Change selection - the not transformed elements should stay.
+
+### Behaviour inside the code blocks
+
+The transformations **dont work inside the code blocks**. If selection is inside the code block, the TextWatcher becomes disabled.
+When selection moves outside the code block, the TextWatcher becomes enabled again.
