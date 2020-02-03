@@ -30,11 +30,11 @@ const predefinedFiles = [
 export function renderPerformanceDataButtons( container ) {
 	let html = '';
 	const labels = {
-		'small': 'small (semantic)',
+		'small': 'short (semantic)',
 		'medium': 'medium (semantic)',
-		'large': 'large (semantic)',
-		'small-inline-css': 'Small inline styled',
-		'full-websites-styled': 'Full websites (styled)',
+		'large': 'long (semantic)',
+		'small-inline-css': 'short inline styled',
+		'full-websites-styled': 'full websites (styled)',
 	};
 
 	for ( const fixtureName of predefinedFiles ) {
