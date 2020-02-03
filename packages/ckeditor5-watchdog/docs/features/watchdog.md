@@ -130,23 +130,7 @@ watchdog.on( 'change:state' ( evt, name, currentState, prevState ) => {
 watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 ```
 
-#### Configuration
-
-Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constructor`} and the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for`} methods accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} with the following optional properties:
-
-* `crashNumberLimit` - A threshold specifying the number of editor errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
-* `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
-* `saveInterval` - A minimum number of milliseconds between saving editor data internally (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
-
-```js
-const watchdog = new Watchdog( {
-	minimumNonErrorTimePeriod: 2000,
-	crashNumberLimit: 4,
-	saveInterval: 1000
-} )
-```
-
-## Context watchdog
+### Context watchdog
 
 <info-box>
 	Note: the ContextWatchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
@@ -213,7 +197,7 @@ watchdog.remove( [ 'editor1' ] );
 	Note that the above examples does not use promises returning by the context watchdog methods while these methods are asynchronous. You should not depend on these promises because they are resolved only once while your component might be restarted multiple times internally causing watchdog to unmount the editor and to mount again. Read further below for more information about events and watchdog states.
 </info-box>
 
-### Context watchdog API
+#### Context watchdog API
 
 The ContextWatchdog feature provides the following API:
 
@@ -263,11 +247,32 @@ const editor1State = watchdog.getState( 'editor1' );
 // Context state.
 const contextState = watchdog.state;
 
-// Events
+// An event fired when the context watchdog catches the context-related error.
+// Note that the editor errors are not re-fired in the `ContextWatchdog#error`.
 watchdog.on( 'error', () => {} );
 
+// An event fired when the context is back to the `ready` state.
+// Similarly, this event is not thrown for internal editor instances.
 watchdog.on( 'restart', () => {} );
 ```
+
+## Configuration
+
+Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constructor`} and the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for`} methods accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} with the following optional properties:
+
+* `crashNumberLimit` - A threshold specifying the number of editor errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+* `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+* `saveInterval` - A minimum number of milliseconds between saving editor data internally (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
+
+```js
+const watchdog = new Watchdog( {
+	minimumNonErrorTimePeriod: 2000,
+	crashNumberLimit: 4,
+	saveInterval: 1000
+} )
+```
+
+Note that the ContextWatchdog spreads its configuration to the added items.
 
 ## Limitations
 
