@@ -8,6 +8,7 @@ import Model from '../../../src/model/model';
 import { injectSelectionPostFixer } from '../../../src/model/utils/selection-post-fixer';
 
 import { getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {
@@ -40,8 +41,10 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'tableCell', {
 				allowIn: 'tableRow',
 				allowAttributes: [ 'colspan', 'rowspan' ],
-				isLimit: true
+				isObject: true
 			} );
+
+			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 			model.schema.register( 'image', {
 				isObject: true,
@@ -97,7 +100,7 @@ describe( 'Selection post-fixer', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><image></image>' );
 		} );
 
-		describe( 'non-collapsed selection - table scenarios', () => {
+		describe( 'selection - table scenarios', () => {
 			beforeEach( () => {
 				setModelData( model,
 					'<paragraph>[]foo</paragraph>' +
@@ -111,7 +114,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #1 - range start outside table, end on table cell', () => {
+			it( 'should fix #1 (range start outside table, end on table cell)', () => {
 				// <paragraph>f[oo</paragraph><table><tableRow><tableCell></tableCell>]<tableCell>...
 				model.change( writer => {
 					writer.setSelection( writer.createRange(
@@ -132,7 +135,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #2 - range start on table cell, end outside table', () => {
+			it( 'should fix #2 (range start on table cell, end outside table)', () => {
 				// ...<table><tableRow><tableCell></tableCell>[<tableCell></tableCell></tableRow></table><paragraph>b]ar</paragraph>
 				model.change( writer => {
 					writer.setSelection( writer.createRange(
@@ -195,7 +198,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #5', () => {
+			it( 'should fix #5 (collapsed selection between tables)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -214,7 +217,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				assertEqualMarkup( getModelData( model ),
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -325,7 +328,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #1 - selection over paragraphs outside table', () => {
+			it( 'should not fix #1 (selection over paragraphs outside table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -351,7 +354,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #2 - selection over image in table', () => {
+			it( 'should not fix #2 (selection over image in table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -379,7 +382,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #3 - selection over paragraph & image in table', () => {
+			it( 'should not fix #3 (selection over paragraph & image in table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -407,7 +410,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #4 - selection over image & paragraph in table', () => {
+			it( 'should not fix #4 (selection over image & paragraph in table)', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -435,7 +438,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #5 - selection over blockQuote in table', () => {
+			it( 'should not fix #5 (selection over blockQuote in table)', () => {
 				model.schema.register( 'blockQuote', {
 					allowWhere: '$block',
 					allowContentOf: '$root'
@@ -571,7 +574,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix multiple ranges #4', () => {
+			it( 'should not fix multiple ranges #1 (not overlapping ranges)', () => {
 				model.change( writer => {
 					const ranges = [
 						writer.createRange(
@@ -594,12 +597,242 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<table>' +
+					'<tableRow>' +
+					'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+					'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+					'</tableRow>' +
+					'</table>' +
+					'<paragraph>b]a[r]</paragraph>'
+				);
+			} );
+
+			it( 'should not fix multiple ranges on objects (table selection)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>a</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>b</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>c</paragraph></tableCell>]' +
+							'<tableCell><paragraph>d</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+					'<tableRow>' +
+							'[<tableCell><paragraph>a</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>b</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>c</paragraph></tableCell>]' +
+							'<tableCell><paragraph>d</paragraph></tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should fix selection on block', () => {
+				model.schema.extend( '$block', { allowIn: 'tableCell' } );
+
+				setModelData( model,
+					'<table>' +
+					'<tableRow><tableCell>[<paragraph>aaa</paragraph>]</tableCell></tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow><tableCell><paragraph>[aaa]</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should allow multi-range selection on non-continues blocks (column selected)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B2</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A3</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B2</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A3</paragraph></tableCell>]' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should allow multi-range selection on continues blocks (row selected)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+							'<tableCell><paragraph>C3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>A2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'<tableCell><paragraph>B3</paragraph></tableCell>' +
+							'<tableCell><paragraph>C3</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should allow multi-range selection with mixed continues/non-continues blocks (part of table selected)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A2</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B3</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C3</paragraph></tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A1</paragraph></tableCell>' +
+							'<tableCell><paragraph>B1</paragraph></tableCell>' +
+							'<tableCell><paragraph>C1</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A2</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B2</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C2</paragraph></tableCell>]' +
+							'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>A3</paragraph></tableCell>' +
+							'[<tableCell><paragraph>B3</paragraph></tableCell>]' +
+							'[<tableCell><paragraph>C3</paragraph></tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix ranges in multi-range selection (each range set differently - but valid)', () => {
+				setModelData( model,
+					'<paragraph>[foo]</paragraph>' +
+						'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[bbb]</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<paragraph>[foo]</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[bbb]</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should fix partially wrong selection (last range is post-fixed on whole table)', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+							'[<tableCell><paragraph>ccc</paragraph></tableCell>' +
+						'</tableRow>]' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+							'<tableCell><paragraph>ccc</paragraph></tableCell>' +
 						'</tableRow>' +
-					'</table>' +
-					'<paragraph>bar]</paragraph>'
+					'</table>]'
+				);
+			} );
+
+			it( 'should fix partially wrong selection (first range is post-fixed on whole table)', () => {
+				setModelData( model,
+					'<table>' +
+						'[<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+							'[<tableCell><paragraph>ccc</paragraph></tableCell>]' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+							'<tableCell><paragraph>ccc</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>]'
 				);
 			} );
 		} );
@@ -907,7 +1140,7 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>foob[a]r</paragraph>' );
 			} );
 
-			it( 'should not fix #2', () => {
+			it( 'should not fix #2 (inline widget selected)', () => {
 				setModelData( model,
 					'<paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 				);
@@ -917,7 +1150,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #3', () => {
+			it( 'should not fix #3 (text around inline widget)', () => {
 				setModelData( model,
 					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
 				);
@@ -927,7 +1160,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #4 - object in object', () => {
+			it( 'should not fix #4 (object in object)', () => {
 				model.schema.register( 'div', {
 					allowIn: [ '$root', 'div' ],
 					isObject: true
@@ -989,7 +1222,7 @@ describe( 'Selection post-fixer', () => {
 		describe( 'collapsed selection', () => {
 			beforeEach( () => {
 				setModelData( model,
-					'<paragraph>[]foo</paragraph>' +
+					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -1000,7 +1233,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #1', () => {
+			it( 'should fix #1 (selection in limit element & before limit element)', () => {
 				// <table>[]<tableRow>...
 				model.change( writer => {
 					writer.setSelection(
@@ -1020,7 +1253,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #2', () => {
+			it( 'should fix #2 (selection in limit element & before limit+object element)', () => {
 				// <table><tableRow>[]<tableCell>...
 				model.change( writer => {
 					const row = modelRoot.getChild( 1 ).getChild( 0 );
@@ -1034,7 +1267,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -1042,23 +1275,44 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix multiple ranges #1', () => {
-				// []<paragraph>foo</paragraph>[]<table>...
-				model.change( writer => {
-					writer.setSelection(
-						[
-							writer.createRange( writer.createPositionAt( modelRoot, 0 ) ),
-							writer.createRange( writer.createPositionAt( modelRoot, 1 ) )
-						]
-					);
-				} );
+			it( 'should fix #3 (selection inside object element and before block element)', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>[]<paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
 
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>[foo]</paragraph>' +
+				assertEqualMarkup( getModelData( model ),
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should fix multiple ranges outside block element (but not merge them)', () => {
+				setModelData( model,
+					'[]<paragraph>foo</paragraph>[]' +
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<paragraph>[]foo[]</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'

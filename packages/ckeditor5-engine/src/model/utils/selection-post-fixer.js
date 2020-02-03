@@ -92,20 +92,7 @@ function selectionPostFixer( writer, model ) {
 
 	// If any of ranges were corrected update the selection.
 	if ( wasFixed ) {
-		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
-		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-		let fixedRanges = ranges;
-
-		// Fixing selection with many ranges usually breaks the selection in Firefox. As only Firefox supports multiple selection ranges
-		// we simply create one continuous range from fixed selection ranges (even if they are not adjacent).
-		if ( ranges.length > 1 ) {
-			const selectionStart = ranges[ 0 ].start;
-			const selectionEnd = ranges[ ranges.length - 1 ].end;
-
-			fixedRanges = [ new Range( selectionStart, selectionEnd ) ];
-		}
-
-		writer.setSelection( fixedRanges, { backward: selection.isBackward } );
+		writer.setSelection( mergeIntersectingRanges( ranges ), { backward: selection.isBackward } );
 	}
 }
 
@@ -140,16 +127,15 @@ function tryFixingCollapsedRange( range, schema ) {
 		return null;
 	}
 
+	if ( !nearestSelectionRange.isCollapsed ) {
+		return nearestSelectionRange;
+	}
+
 	const fixedPosition = nearestSelectionRange.start;
 
 	// Fixed position is the same as original - no need to return corrected range.
 	if ( originalPosition.isEqual( fixedPosition ) ) {
 		return null;
-	}
-
-	// Check single node selection (happens in tables).
-	if ( fixedPosition.nodeAfter && schema.isLimit( fixedPosition.nodeAfter ) ) {
-		return new Range( fixedPosition, Position._createAfter( fixedPosition.nodeAfter ) );
 	}
 
 	return new Range( fixedPosition );
@@ -263,6 +249,35 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 	return startIsOnBlock || endIsOnBlock;
 }
 
+// Returns a minimal non-intersecting array of ranges.
+//
+// @param {Array.<module:engine/model/range~Range>} ranges
+// @returns {Array.<module:engine/model/range~Range>}
+function mergeIntersectingRanges( ranges ) {
+	const nonIntersectingRanges = [];
+
+	// First range will always be fine.
+	nonIntersectingRanges.push( ranges.shift() );
+
+	for ( const range of ranges ) {
+		const previousRange = nonIntersectingRanges.pop();
+
+		if ( range.isIntersecting( previousRange ) ) {
+			// Get the sum of two ranges.
+			const start = previousRange.start.isAfter( range.start ) ? range.start : previousRange.start;
+			const end = previousRange.end.isAfter( range.end ) ? previousRange.end : range.end;
+
+			const merged = new Range( start, end );
+			nonIntersectingRanges.push( merged );
+		} else {
+			nonIntersectingRanges.push( previousRange );
+			nonIntersectingRanges.push( range );
+		}
+	}
+
+	return nonIntersectingRanges;
+}
+
 // Checks if node exists and if it's an object.
 //
 // @param {module:engine/model/node~Node} node
@@ -271,4 +286,3 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 function isInObject( node, schema ) {
 	return node && schema.isObject( node );
 }
-
