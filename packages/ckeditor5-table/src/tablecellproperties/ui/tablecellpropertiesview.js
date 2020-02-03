@@ -26,6 +26,8 @@ import {
 	fillToolbar,
 	getBorderStyleDefinitions
 } from '../../ui/utils';
+import FormRowView from '../../ui/formrowview';
+import FormHeaderView from '../../ui/formheaderview';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
@@ -40,8 +42,6 @@ import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.s
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
-import FormRowView from '../../ui/formrowview';
-import FormHeaderView from '../../ui/formheaderview';
 
 const ALIGNMENT_ICONS = {
 	left: alignLeftIcon,
