@@ -30,7 +30,7 @@ const BALLOON_POSITIONS = [
  * with respect to the table in the editor content, if one is selected.
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {String} target Either "cell" or "table". Determines the the target the ballon will
+ * @param {String} target Either "cell" or "table". Determines the the target the balloon will
  * be attached to.
  */
 export function repositionContextualBalloon( editor, target ) {
