@@ -4,15 +4,15 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import FormRowView from '../../src/ui/formrowview';
+import FormHeaderView from '../../src/ui/formheaderview';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
-describe( 'FormRowView', () => {
+describe( 'FormHeaderView', () => {
 	let view, locale;
 
 	beforeEach( () => {
 		locale = { t: val => val };
-		view = new FormRowView( locale );
+		view = new FormHeaderView( locale );
 		view.render();
 	} );
 
@@ -27,7 +27,11 @@ describe( 'FormRowView', () => {
 
 		it( 'should create view#children collection', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
-			expect( view.children ).to.have.length( 0 );
+			expect( view.children ).to.have.length( 1 );
+		} );
+
+		it( 'should set view#label', () => {
+			expect( view.label ).to.equal( '' );
 		} );
 
 		it( 'should set view#class', () => {
@@ -36,12 +40,12 @@ describe( 'FormRowView', () => {
 
 		it( 'should set the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-form__row' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-form__header' ) ).to.be.true;
 		} );
 
 		describe( 'options', () => {
 			it( 'should set view#class when class was passed', () => {
-				const view = new FormRowView( locale, {
+				const view = new FormHeaderView( locale, {
 					class: 'foo'
 				} );
 
@@ -50,30 +54,16 @@ describe( 'FormRowView', () => {
 				view.destroy();
 			} );
 
-			it( 'should fill view#children when children were passed', () => {
-				const view = new FormRowView( locale, {
-					children: [
-						new View()
-					]
-				} );
-
-				expect( view.children ).to.have.length( 1 );
-
-				view.destroy();
-			} );
-
-			it( 'should use a label view when passed', () => {
-				const labelView = new View();
-				labelView.id = '123';
-
-				const view = new FormRowView( locale, {
-					labelView
+			it( 'should use a label text when passed', () => {
+				const view = new FormHeaderView( locale, {
+					label: 'foo'
 				} );
 
 				view.render();
 
-				expect( view.element.getAttribute( 'role' ) ).to.equal( 'group' );
-				expect( view.element.getAttribute( 'aria-labelledby' ) ).to.equal( '123' );
+				expect( view.element.firstChild.classList.contains( 'ck' ) ).to.be.true;
+				expect( view.element.firstChild.classList.contains( 'ck-form__header__label' ) ).to.be.true;
+				expect( view.element.firstChild.textContent ).to.equal( 'foo' );
 
 				view.destroy();
 			} );
@@ -85,13 +75,21 @@ describe( 'FormRowView', () => {
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
 			} );
 
+			it( 'should bind #label to the template', () => {
+				view.label = 'bar';
+				expect( view.element.firstChild.textContent ).to.equal( 'bar' );
+
+				view.label = 'baz';
+				expect( view.element.firstChild.textContent ).to.equal( 'baz' );
+			} );
+
 			it( 'should bind #children to the template', () => {
 				const child = new View();
 				child.setTemplate( { tag: 'div' } );
 
 				view.children.add( child );
 
-				expect( view.element.firstChild ).to.equal( child.element );
+				expect( view.element.childNodes[ 1 ] ).to.equal( child.element );
 
 				view.destroy();
 			} );
