@@ -9,10 +9,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
-import alignLeft from '@ckeditor/ckeditor5-alignment/theme/icons/align-left.svg';
-import alignCenter from '@ckeditor/ckeditor5-alignment/theme/icons/align-center.svg';
-import alignRight from '@ckeditor/ckeditor5-alignment/theme/icons/align-right.svg';
-import alignJustify from '@ckeditor/ckeditor5-alignment/theme/icons/align-justify.svg';
+import alignLeft from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import alignCenter from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
+import alignRight from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
+import alignJustify from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
 
 import bold from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
