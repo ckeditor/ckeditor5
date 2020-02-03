@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, DataTransfer */
+/* globals document, DataTransfer */
 
-import { loadPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
+import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
 
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
 createPerformanceEditor( document.querySelector( '#editor' ) )
-	.then( loadPerformanceData )
-	.then( fixtures => {
+	.then( editor => {
+		const fixtures = getPerformanceData();
 		const buttons = document.querySelectorAll( '#test-controls button' );
 
 		for ( const button of buttons ) {
@@ -21,7 +21,7 @@ createPerformanceEditor( document.querySelector( '#editor' ) )
 				const data = new DataTransfer();
 				data.setData( 'text/html', fixtureHtml );
 
-				window.editor.editing.view.document.fire( 'clipboardInput', {
+				editor.editing.view.document.fire( 'clipboardInput', {
 					dataTransfer: data
 				} );
 			} );

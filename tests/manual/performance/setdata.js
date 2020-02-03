@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document */
+/* globals document */
 
-import { loadPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
+import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
 
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
 createPerformanceEditor( document.querySelector( '#editor' ) )
-	.then( loadPerformanceData )
-	.then( fixtures => {
+	.then( editor => {
+		const fixtures = getPerformanceData();
 		const buttons = document.querySelectorAll( '#test-controls button' );
 
 		for ( const button of buttons ) {
 			button.addEventListener( 'click', function() {
 				const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
 
-				window.editor.setData( content );
+				editor.setData( content );
 			} );
 			button.disabled = false;
 		}

@@ -43,24 +43,22 @@ export function renderPerformanceDataButtons( container ) {
 }
 
 /**
- * Loads a predefined set of performance markup files.
+ * Returns a predefined set of performance markup files.
  *
- *		loadPerformanceData()
- *			.then( fixtures => {
- *				window.editor.setData( fixtures.small );
- *				console.log( fixtures.medium );
- *			} );
+ *		const fixtures = loadPerformanceData();
+ *		window.editor.setData( fixtures.small );
+ *		console.log( fixtures.medium );
  *
- * @returns {Promise.<Object.<String, String>>}
+ * @returns {Object.<String, String>}
  */
-export function loadPerformanceData() {
-	return Promise.resolve( {
-		fullWebsitesStyled: fullWebsitesStyledFixture,
-		large: largeFixture,
-		medium: mediumFixture,
+export function getPerformanceData() {
+	return {
 		small: smallFixture,
+		medium: mediumFixture,
+		large: largeFixture,
 		smallInlineCss: smallInlineCssFixture,
-	} );
+		fullWebsitesStyled: fullWebsitesStyledFixture,
+	};
 }
 
 /**
@@ -108,6 +106,7 @@ export function createPerformanceEditor( domElement ) {
 	return ClassicEditor.create( domElement, config )
 		.then( editor => {
 			window.editor = editor;
+			return editor;
 		} )
 		.catch( err => {
 			console.error( err.stack );

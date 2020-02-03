@@ -38,7 +38,7 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
-import { loadPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils';
+import { getPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils';
 
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
@@ -157,16 +157,14 @@ function addUploadMockAdapter( editor ) {
 	};
 }
 
-loadPerformanceData()
-	.then( fixtures => {
-		const buttons = document.querySelectorAll( '#test-controls button' );
+const fixtures = getPerformanceData();
+const buttons = document.querySelectorAll( '#test-controls button' );
 
-		for ( const button of buttons ) {
-			button.addEventListener( 'click', function() {
-				const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
+for ( const button of buttons ) {
+	button.addEventListener( 'click', function() {
+		const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
 
-				window.editor.setData( content );
-			} );
-			button.disabled = false;
-		}
+		window.editor.setData( content );
 	} );
+	button.disabled = false;
+}
