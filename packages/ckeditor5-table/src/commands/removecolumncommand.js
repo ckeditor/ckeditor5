@@ -58,33 +58,22 @@ export default class RemoveColumnCommand extends Command {
 		// Get column index of removed column.
 		const cellData = tableMap.find( value => value.cell === tableCell );
 		const removedColumn = cellData.column;
-		const removedRow = cellData.row;
-
-		let cellToFocus;
-
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-		const columns = tableUtils.getColumns( tableCell.parent.parent );
-
-		const columnToFocus = removedColumn === columns - 1 ? removedColumn - 1 : removedColumn + 1;
-		const rowToFocus = removedRow;
+		const selectionRow = cellData.row;
+		const cellToFocus = getCellToFocus( tableCell );
 
 		model.change( writer => {
 			// Update heading columns attribute if removing a row from head section.
-			if ( headingColumns && removedRow <= headingColumns ) {
+			if ( headingColumns && selectionRow <= headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
 			}
 
-			for ( const { cell, row, column, rowspan, colspan } of tableMap ) {
+			for ( const { cell, column, colspan } of tableMap ) {
 				// If colspaned cell overlaps removed column decrease it's span.
 				if ( column <= removedColumn && colspan > 1 && column + colspan > removedColumn ) {
 					updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
 				} else if ( column === removedColumn ) {
 					// The cell in removed column has colspan of 1.
 					writer.remove( cell );
-				}
-
-				if ( isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan ) ) {
-					cellToFocus = cell;
 				}
 			}
 
@@ -93,6 +82,15 @@ export default class RemoveColumnCommand extends Command {
 	}
 }
 
-function isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan ) {
-	return ( row <= rowToFocus && row + rowspan >= rowToFocus ) && ( column <= columnToFocus && column + colspan >= columnToFocus );
+// Returns a proper table cell to focus after removing a column. It should be a next sibling to selection visually stay in place but:
+// - selection is on last table cell it will return previous cell.
+// - table cell is spanned over 2+ columns - it will be truncated so the selection should stay in that cell.
+function getCellToFocus( tableCell ) {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+	if ( colspan > 1 ) {
+		return tableCell;
+	}
+
+	return tableCell.nextSibling ? tableCell.nextSibling : tableCell.previousSibling;
 }
