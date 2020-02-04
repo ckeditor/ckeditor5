@@ -83,6 +83,9 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'render()', () => {
 		beforeEach( () => {
+			// We need to set this option explicitly before render phase,
+			// otherwise it is `undefined` and toolbar items grouping will be skipped in tests.
+			view.toolbar.options.shouldGroupWhenFull = true;
 			view.render();
 		} );
 
@@ -102,8 +105,8 @@ describe( 'InlineEditorUIView', () => {
 			// Sometimes this test can fail, due to the fact that it have to wait for async ResizeObserver execution.
 			it( 'max-width should be set to the width of the editable element', done => {
 				const viewElement = view.editable.element;
-				global.document.body.appendChild( viewElement );
 
+				global.document.body.appendChild( viewElement );
 				expect( global.document.body.contains( viewElement ) ).to.be.true;
 
 				viewElement.style.width = '400px';
@@ -114,7 +117,6 @@ describe( 'InlineEditorUIView', () => {
 				// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
 				setTimeout( () => {
 					const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
-
 					expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
 
 					global.document.body.removeChild( viewElement );
