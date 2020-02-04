@@ -13,7 +13,7 @@ import { isObject } from 'lodash-es';
  * Returns the parent element of given name. Returns undefined if positionOrElement is not inside desired parent.
  *
  * @param {String} parentName Name of parent element to find.
- * @param {module:engine/model/position~Position|module:engine/model/element~Position} positionOrElement
+ * @param {module:engine/model/position~Position|module:engine/model/element~Element} positionOrElement
  * Position or parentElement to start searching.
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
