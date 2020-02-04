@@ -11,6 +11,11 @@ import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
@@ -25,6 +30,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
+	 * @param {Object} [options={}] Configuration options for the view instance.
 	 */
 	constructor( locale, editingView, editableElement, options = {} ) {
 		super( locale );
@@ -146,6 +152,26 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.body.add( this.panel );
 		this.registerChild( this.editable );
 		this.panel.content.add( this.toolbar );
+
+		const options = this.toolbar.options;
+
+		// Set toolbar's max-width on the initialization and update it on the editable resize,
+		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
+		if ( options.shouldGroupWhenFull ) {
+			const editableElement = this.editable.element;
+			const widthObserver = getResizeObserver( () => {
+				// We need to check if there's already the editable element in the DOM.
+				// Otherwise the `Rect` instance will complain that source (editableElement) is not available
+				// to obtain the element's geometry.
+				if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
+					return;
+				}
+
+				this.toolbar.maxWidth = toPx( new Rect( editableElement ).width );
+			} );
+
+			widthObserver.observe( editableElement );
+		}
 	}
 
 	/**

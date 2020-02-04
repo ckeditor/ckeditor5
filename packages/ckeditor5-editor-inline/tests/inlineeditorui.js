@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, setTimeout */
+/* globals document, Event */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -13,14 +13,10 @@ import InlineEditorUIView from '../src/inlineeditoruiview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-
-const toPx = toUnit( 'px' );
 
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -107,27 +103,6 @@ describe( 'InlineEditorUI', () => {
 
 				editor.ui.fire( 'update' );
 				sinon.assert.notCalled( spy );
-			} );
-
-			// Sometimes this test can fail, due to the fact that it have to wait for async ResizeObserver execution.
-			it( 'should set inline toolbar max-width to the width of the editable element', done => {
-				document.body.appendChild( viewElement );
-
-				expect( document.body.contains( viewElement ) ).to.be.true;
-				viewElement.style.width = '400px';
-
-				// Unfortunately we have to wait for async ResizeObserver execution.
-				// ResizeObserver which has been called after changing width of viewElement,
-				// needs 2x requestAnimationFrame or timeout to update a layout.
-				// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
-				setTimeout( () => {
-					const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
-					expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
-
-					document.body.removeChild( viewElement );
-
-					done();
-				}, 500 );
 			} );
 		} );
 

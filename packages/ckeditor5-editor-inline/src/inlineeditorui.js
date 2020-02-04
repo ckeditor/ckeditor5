@@ -11,11 +11,6 @@ import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-
-const toPx = toUnit( 'px' );
 
 /**
  * The inline editor UI class.
@@ -155,23 +150,6 @@ export default class InlineEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar
 		} );
-
-		// Set the toolbar's max-width on the initialization and update it on the editable resize,
-		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
-		if ( !this._toolbarConfig.shouldNotGroupWhenFull ) {
-			const widthObserver = getResizeObserver( () => {
-				// We need to check if there's already the editable element in the DOM.
-				// Otherwise the `Rect` instance will complain that source (editableElement) is not available
-				// to obtain the element's geometry.
-				if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
-					return;
-				}
-
-				this.view.toolbar.maxWidth = toPx( new Rect( editableElement ).width );
-			} );
-
-			widthObserver.observe( editableElement );
-		}
 	}
 
 	/**

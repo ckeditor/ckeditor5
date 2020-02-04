@@ -10,8 +10,15 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
+const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+/* globals setTimeout */
 
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
@@ -90,6 +97,30 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'sets the default value of the #viewportTopOffset attribute', () => {
 				expect( view.viewportTopOffset ).to.equal( 0 );
+			} );
+
+			// Sometimes this test can fail, due to the fact that it have to wait for async ResizeObserver execution.
+			it( 'max-width should be set to the width of the editable element', done => {
+				const viewElement = view.editable.element;
+				global.document.body.appendChild( viewElement );
+
+				expect( global.document.body.contains( viewElement ) ).to.be.true;
+
+				viewElement.style.width = '400px';
+
+				// Unfortunately we have to wait for async ResizeObserver execution.
+				// ResizeObserver which has been called after changing width of viewElement,
+				// needs 2x requestAnimationFrame or timeout to update a layout.
+				// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
+				setTimeout( () => {
+					const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
+
+					expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
+
+					global.document.body.removeChild( viewElement );
+
+					done();
+				}, 500 );
 			} );
 		} );
 
