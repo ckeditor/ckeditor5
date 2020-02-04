@@ -397,7 +397,9 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
 		if ( options.asWidget ) {
-			const fakeParagraph = conversionApi.writer.createContainerElement( 'span' );
+			// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
+			// See #6062.
+			const fakeParagraph = conversionApi.writer.createContainerElement( 'span', { style: 'display:inline-block' } );
 
 			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
 			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
