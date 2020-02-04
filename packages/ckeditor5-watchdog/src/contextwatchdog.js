@@ -393,11 +393,8 @@ export default class ContextWatchdog extends Watchdog {
 // An action queue that allows queuing async functions.
 class ActionQueue {
 	constructor() {
-		// @type {Array.<Function>}
-		this._queuedActions = [];
-
-		// @type {WeakMap.<Function, Function>}
-		this._resolveCallbacks = new WeakMap();
+		// @type {Promise}
+		this._promiseQueue = Promise.resolve();
 
 		// @type {Array.<Function>}
 		this._onEmptyCallbacks = [];
@@ -415,56 +412,20 @@ class ActionQueue {
 	// @param {Function} action A function that should be enqueued.
 	// @returns {Promise}
 	enqueue( action ) {
-		this._queuedActions.push( action );
+		let nonErrorQueue;
 
-		if ( this._queuedActions.length > 1 ) {
-			// This means that the action handler is already running.
-			// Hence we can just register the resolve callback and wait.
-			return new Promise( res => {
-				this._resolveCallbacks.set( action, res );
-			} );
-		}
-
-		return new Promise( ( res, rej ) => {
-			this._handleActions( res, rej );
-		} );
-	}
-
-	// It handles queued actions one by one.
-	// @param {Function} res
-	// @param {Function} rej
-	_handleActions( res, rej ) {
-		const action = this._queuedActions[ 0 ];
-
-		if ( !action ) {
-			this._onEmptyCallbacks.forEach( cb => cb() );
-
-			res();
-
-			return;
-		}
-
-		const resolve = this._resolveCallbacks.get( action );
-
-		return Promise.resolve()
-			.then( () => action() )
+		const queueWithAction = this._promiseQueue
+			.then( action )
 			.then( () => {
-				if ( resolve ) {
-					resolve();
+				if ( this._promiseQueue === nonErrorQueue ) {
+					this._onEmptyCallbacks.forEach( cb => cb() );
 				}
-
-				this._queuedActions.shift();
-
-				return this._handleActions( res, rej );
-			} )
-			.catch( err => {
-				rej( err );
-
-				this._queuedActions.shift();
-
-				// Run pending actions even if an error has happened to unlock the queue.
-				return this._handleActions( res, rej );
 			} );
+
+		// Catch all errors in the main queue to stack promises even if an error occurred in the past.
+		nonErrorQueue = this._promiseQueue = queueWithAction.catch( () => { } );
+
+		return queueWithAction;
 	}
 }
 
