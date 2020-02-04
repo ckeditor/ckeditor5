@@ -439,12 +439,14 @@ class ActionQueue {
 		if ( !action ) {
 			this._onEmptyCallbacks.forEach( cb => cb() );
 
-			return res();
+			res();
+
+			return;
 		}
 
 		const resolve = this._resolveCallbacks.get( action );
 
-		Promise.resolve()
+		return Promise.resolve()
 			.then( () => action() )
 			.then( () => {
 				if ( resolve ) {
