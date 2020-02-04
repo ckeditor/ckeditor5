@@ -108,17 +108,15 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-     * Returns the item with the given `itemName` that was created by this watchdog.
-	 * the instance can be retrieved from the watchdog. Note that this might return `undefined` if the item is not created
-	 * yet.
+     * Returns the item instance with the given `id`.
 	 *
 	 * 	const editor1 = contextWatchdog.get( 'editor1' );
 	 *
-	 * @param {String} itemName The item name (the key under which the item config was passed to the add() method).
-	 * @returns {*} The item instance.
+	 * @param {String} itemId The item id.
+	 * @returns {*} The item instance or `undefined`.
 	 */
-	get( itemName ) {
-		const watchdog = this._getWatchdog( itemName );
+	get( itemId ) {
+		const watchdog = this._getWatchdog( itemId );
 
 		return watchdog._instance;
 	}
@@ -126,11 +124,11 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Gets state of the given item. For the list of available state see {@link #state}.
 	 *
-	 * @param {String} itemName The item name (the key under which the item config was passed to the add() method).
+	 * @param {String} itemId Item id.
 	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
 	 */
-	getState( itemName ) {
-		const watchdog = this._getWatchdog( itemName );
+	getState( itemId ) {
+		const watchdog = this._getWatchdog( itemId );
 
 		return watchdog.state;
 	}
@@ -138,27 +136,48 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Adds items to the watchdog. Instances of these items once created will be available using the {@link #get} method.
 	 *
-	 * 	watchdog.add( {
-	 *		editor1: {
-	 *			type: 'editor',
-	 *			sourceElementOrData: document.querySelector( '#editor' ),
-	 *			config: {
-	 *				plugins: [ Essentials, Paragraph, Bold, Italic ],
-	 *				toolbar: [ 'bold', 'italic', 'alignment' ]
-	 *			},
-	 *			creator: ( element, config ) => ClassicEditor.create( element, config )
-	 *		}
-	 * 	}
+	 * Items can be passed together as an array of objects:
 	 *
-	 *  await watchdog.waitForReady();
+	 * 	await watchdog.add( [ {
+	 *		id: 'editor1',
+	 *		type: 'editor',
+	 *		sourceElementOrData: document.querySelector( '#editor' ),
+	 *		config: {
+	 *			plugins: [ Essentials, Paragraph, Bold, Italic ],
+	 *			toolbar: [ 'bold', 'italic', 'alignment' ]
+	 *		},
+	 *		creator: ( element, config ) => ClassicEditor.create( element, config )
+	 *	} ] );
 	 *
-	 *  const editor1 = watchdog.get( 'editor1' );
+	 * Or one by one as objects:
 	 *
-	 * // @param {Array.<Object.<String,module:watchdog/contextwatchdog~WatchdogItemConfiguration>>} itemConfigurations
-	 * @param {Array.<Object>} itemConfigurations
+	 * 	await watchdog.add( {
+	 *		id: 'editor1',
+	 *		type: 'editor',
+	 *		sourceElementOrData: document.querySelector( '#editor' ),
+	 *		config: {
+	 *			plugins: [ Essentials, Paragraph, Bold, Italic ],
+	 *			toolbar: [ 'bold', 'italic', 'alignment' ]
+	 *		},
+	 *		creator: ( element, config ) => ClassicEditor.create( element, config )
+	 *	] );
+	 *
+	 * And then the instance can be retrieved using the {@link #get} method:
+	 *
+	 * 	const editor1 = watchdog.get( 'editor1' );
+	 *
+	 * Note that this method can be called multiple times, but for performance reasons it's better
+	 * to pass all items together.
+	 *
+	 * @param {module:watchdog/contextwatchdog~WatchdogItemConfiguration|Array.<module:watchdog/contextwatchdog~WatchdogItemConfiguration>}
+	 * itemConfigurationOrItemConfigurations Item configuration object or an array of item configurations.
 	 * @returns {Promise}
 	 */
-	add( itemConfigurations ) {
+	add( itemConfigurationOrItemConfigurations ) {
+		const itemConfigurations = Array.isArray( itemConfigurationOrItemConfigurations ) ?
+			itemConfigurationOrItemConfigurations :
+			[ itemConfigurationOrItemConfigurations ];
+
 		return this._actionQueue.enqueue( () => {
 			if ( this.state === 'destroyed' ) {
 				throw new Error( 'Cannot add items to destroyed watchdog.' );
@@ -169,11 +188,11 @@ export default class ContextWatchdog extends Watchdog {
 			}
 
 			// Create new watchdogs.
-			return Promise.all( Object.entries( itemConfigurations ).map( ( [ itemName, item ] ) => {
+			return Promise.all( itemConfigurations.map( item => {
 				let watchdog;
 
-				if ( this._watchdogs.has( itemName ) ) {
-					throw new Error( `Item with the given name is already added: '${ itemName }'.` );
+				if ( this._watchdogs.has( item.id ) ) {
+					throw new Error( `Item with the given id is already added: '${ item.id }'.` );
 				}
 
 				if ( item.type === 'editor' ) {
@@ -185,7 +204,7 @@ export default class ContextWatchdog extends Watchdog {
 						watchdog.setDestructor( item.destructor );
 					}
 
-					this._watchdogs.set( itemName, watchdog );
+					this._watchdogs.set( item.id, watchdog );
 
 					// Enqueue the internal watchdog errors within the main queue.
 					watchdog.on( 'error', () => {
@@ -205,18 +224,21 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Removes item by its name from the created items. It destroys the internal watchdog for this item and remove
-	 * the item from the item list.
+	 * Removes and destroys item(s) by its / their id(s).
 	 *
-	 * @param {Array.<String>} itemNames
+	 * @param {Array.<String>|String} itemIdOrItemIds Item id or an array of item ids.
 	 * @returns {Promise}
 	 */
-	remove( itemNames ) {
-		return this._actionQueue.enqueue( () => {
-			return Promise.all( itemNames.map( itemName => {
-				const watchdog = this._getWatchdog( itemName );
+	remove( itemIdOrItemIds ) {
+		const itemIds = Array.isArray( itemIdOrItemIds ) ?
+			itemIdOrItemIds :
+			[ itemIdOrItemIds ];
 
-				this._watchdogs.delete( itemName );
+		return this._actionQueue.enqueue( () => {
+			return Promise.all( itemIds.map( itemId => {
+				const watchdog = this._getWatchdog( itemId );
+
+				this._watchdogs.delete( itemId );
 
 				return watchdog.destroy();
 			} ) );
@@ -330,17 +352,17 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns watchdog for the given item name.
+	 * Returns watchdog for the given item id.
 	 *
 	 * @protected
-	 * @param {String} itemName
+	 * @param {String} itemId Item id.
 	 * @returns {module:watchdog/watchdog~Watchdog} Watchdog
 	 */
-	_getWatchdog( itemName ) {
-		const watchdog = this._watchdogs.get( itemName );
+	_getWatchdog( itemId ) {
+		const watchdog = this._watchdogs.get( itemId );
 
 		if ( !watchdog ) {
-			throw new Error( `Item with the given name was not registered: ${ itemName }.` );
+			throw new Error( `Item with the given id was not registered: ${ itemId }.` );
 		}
 
 		return watchdog;
