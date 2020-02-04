@@ -481,9 +481,9 @@ class ActionQueue {
  *
  * @property {'editor'} type Type of the item to create. At the moment, only `'editor'` is supported.
  *
- * @property {Function} [creator] A function that initializes the editor.
+ * @property {Function} creator A function that initializes the editor. E.g. `( el, config ) => ClassicEditor.create( el, config )`.
  *
- * @property {Function} [destructor] A function that destroys the editor.
+ * @property {Function} [destructor] A function that destroys the editor. E.g. `editor => editor.destroy()`
  *
  * @property {String|HTMLElement} sourceElementOrData The source element or data which will be passed
  * as the first argument to the `Editor.create()` method.
