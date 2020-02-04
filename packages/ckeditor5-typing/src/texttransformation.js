@@ -167,7 +167,10 @@ export default class TextTransformation extends Plugin {
 				const match = from.test( text );
 
 				if ( match ) {
-					return { match, transformation };
+					return {
+						match,
+						normalizedTransformation
+					};
 				}
 			}
 		};
@@ -177,8 +180,8 @@ export default class TextTransformation extends Plugin {
 				return;
 			}
 
-			const from = normalizeFrom( data.transformation.from );
-			const to = normalizeTo( data.transformation.to );
+			const from = data.normalizedTransformation.from;
+			const to = data.normalizedTransformation.to;
 
 			const matches = from.exec( data.text );
 			const replaces = to( matches.slice( 1 ) );

@@ -133,10 +133,10 @@ export default class TextWatcher {
 		this.hasMatch = textHasMatch;
 
 		if ( textHasMatch ) {
-			// If text matches, get the transformation from the match and then pass it to the
+			// If text matches, get the normalized transformation from the match and then pass it to the
 			// event data object.
-			const transformation = textHasMatch.transformation;
-			const eventData = Object.assign( data, { transformation, text, range } );
+			const normalizedTransformation = textHasMatch.normalizedTransformation;
+			const eventData = Object.assign( data, { normalizedTransformation, text, range } );
 
 			/**
 			 * Fired whenever the text watcher found a match for data changes.
