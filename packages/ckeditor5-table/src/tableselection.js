@@ -62,16 +62,6 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Flag indicating that table selection is selecting valid ranges in table cell.
-	 *
-	 * @readonly
-	 * @member {Boolean} #isSelectingAndSomethingElse
-	 */
-	get isSelectingAndSomethingElse() {
-		return this.isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	init() {

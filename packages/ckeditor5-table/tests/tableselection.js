@@ -37,40 +37,6 @@ describe( 'table selection', () => {
 	} );
 
 	describe( 'TableSelection', () => {
-		describe( 'isSelectingAndSomethingElse()', () => {
-			it( 'should be false if selection is not started', () => {
-				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
-			} );
-
-			it( 'should be true if selection is selecting two different cells', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-
-				expect( tableSelection.isSelectingAndSomethingElse ).to.be.true;
-			} );
-
-			it( 'should be false if selection start/end is selecting the same table cell', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-
-				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
-			} );
-
-			it( 'should be false if selection has no end cell', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-
-				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
-			} );
-
-			it( 'should be false if selection has ended', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-				tableSelection.stopSelection();
-
-				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
-			} );
-		} );
-
 		describe( 'startSelectingFrom()', () => {
 			it( 'should not change model selection', () => {
 				const spy = sinon.spy();
@@ -263,7 +229,7 @@ describe( 'table selection', () => {
 
 				tableSelection.clearSelection();
 
-				expect( tableSelection.isSelectingAndSomethingElse ).to.be.false;
+				expect( tableSelection.isSelecting ).to.be.false;
 			} );
 
 			it( 'should not reset model selections', () => {
