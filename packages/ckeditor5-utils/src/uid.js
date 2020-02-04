@@ -13,12 +13,12 @@ const HEX_NUMBERS = new Array( 256 ).fill()
 	.map( ( val, index ) => ( '0' + ( index ).toString( 16 ) ).slice( -2 ) );
 
 /**
- * Returns a unique id. The id starts with an "e" character and a randomly generated string,
- * 32 alphanumeric characters in total.
+ * Returns a unique id. The id starts with an "e" character and a randomly generated string of
+ * 32 alphanumeric characters.
  *
- * **Note**: The characters the unique id is built from correspond to hex number notation
- * (from "0" to "9", from "a" to "f"). In other words, each id represents 16 8-bit numbers
- * next to each other.
+ * **Note**: The characters the unique id is built from correspond to the hex number notation
+ * (from "0" to "9", from "a" to "f"). In other words, each id corresponds to an "e" followed
+ * by 16 8-bit numbers next to each other.
  *
  * @returns {String} An unique id string.
  */
@@ -55,5 +55,5 @@ export default function uid() {
 		HEX_NUMBERS[ r4 >> 0 & 0xFF ] +
 		HEX_NUMBERS[ r4 >> 8 & 0xFF ] +
 		HEX_NUMBERS[ r4 >> 16 & 0xFF ] +
-		HEX_NUMBERS[ r4 >> 24 & 0xFF ][ 0 ]; // Because of leading "e" and 32 character limit.
+		HEX_NUMBERS[ r4 >> 24 & 0xFF ];
 }
