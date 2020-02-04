@@ -553,6 +553,7 @@ describe( 'ContextWatchdog', () => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+
 				await waitCycle();
 
 				expect( watchdog.getState( 'editor1' ) ).to.equal( 'crashedPermanently' );

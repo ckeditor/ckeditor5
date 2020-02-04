@@ -43,7 +43,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 // Create a watchdog for the given editor type.
-const watchdog = EditorWatchdog.for( ClassicEditor );
+const watchdog = new EditorWatchdog( ClassicEditor );
 
 // Create a new editor instance.
 watchdog.create( document.querySelector( '#editor' ), {
@@ -263,21 +263,21 @@ watchdog.on( 'restart', () => {} );
 
 ## Configuration
 
-Both, the {@link module:watchdog/watchdog~Watchdog#constructor `Watchdog#constructor`} and the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for`} methods accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} with the following optional properties:
+Both, {@link module:watchdog/editorwatchdog~EditorWatchdog#constructor `EditorWatchdog`} and {@link module:watchdog/contextwatchdog~ContextWatchdog#constructor `ContextWatchdog`} constructors accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} as the second argument with the following optional properties:
 
 * `crashNumberLimit` - A threshold specifying the number of editor errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
 * `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
 * `saveInterval` - A minimum number of milliseconds between saving editor data internally (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
 
 ```js
-const watchdog = new Watchdog( {
+const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 	minimumNonErrorTimePeriod: 2000,
 	crashNumberLimit: 4,
 	saveInterval: 1000
 } )
 ```
 
-Note that the ContextWatchdog spreads its configuration to the added items.
+Note that the context watchdog passes this configuration to the added editors.
 
 ## Limitations
 

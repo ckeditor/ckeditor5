@@ -63,7 +63,7 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 } );
 
 function createWatchdog( editorElement, stateElement, name ) {
-	const watchdog = EditorWatchdog.for( ClassicEditor );
+	const watchdog = new EditorWatchdog( ClassicEditor );
 
 	watchdog.create( editorElement, editorConfig );
 

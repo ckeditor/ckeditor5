@@ -12,7 +12,6 @@
 import { throttle, cloneDeepWith, isElement } from 'lodash-es';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog from './watchdog';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -22,10 +21,11 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class EditorWatchdog extends Watchdog {
 	/**
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
+	 * @param {*} Editor The editor class.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
 	 */
-	constructor( config = {} ) {
-		super( config );
+	constructor( Editor, watchdogConfig = {} ) {
+		super( watchdogConfig );
 
 		/**
 		 * The current editor instance.
@@ -44,7 +44,7 @@ export default class EditorWatchdog extends Watchdog {
 		 */
 		this._throttledSave = throttle(
 			this._save.bind( this ),
-			typeof config.saveInterval === 'number' ? config.saveInterval : 5000
+			typeof watchdogConfig.saveInterval === 'number' ? watchdogConfig.saveInterval : 5000
 		);
 
 		/**
@@ -75,6 +75,8 @@ export default class EditorWatchdog extends Watchdog {
 		 * @member {Object|undefined} #_config
 		 */
 
+		// Set default creator and destructor functions:
+		this._creator = ( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
 		this._destructor = editor => editor.destroy();
 	}
 
@@ -159,11 +161,10 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
-	 * the {@link module:watchdog/editorwatchdog~EditorWatchdog.for `Watchdog.for()`} helper.
+	 * Creates and keep running the editor instance using the defined creator and destructor.
 	 *
-	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData]
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
+	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData] Editor's source element or the editor's data.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] Editor configuration.
 	 * @param {Object} [context] A context for the editor.
 	 *
 	 * @returns {Promise}
@@ -171,20 +172,6 @@ export default class EditorWatchdog extends Watchdog {
 	create( elementOrData = this._elementOrData, config = this._config, context ) {
 		return Promise.resolve()
 			.then( () => {
-				if ( !this._creator ) {
-					/**
-					 * The watchdog's editor creator is not defined. Define it by using
-					 * {@link module:watchdog/editorwatchdog~EditorWatchdog#setCreator `Watchdog#setCreator()`} or
-					 * the {@link module:watchdog/editorwatchdog~EditorWatchdog.for `Watchdog.for()`} helper.
-					 *
-					 * @error watchdog-creator-not-defined
-					 */
-					throw new CKEditorError(
-						'watchdog-creator-not-defined: The watchdog\'s editor creator is not defined.',
-						null
-					);
-				}
-
 				super._startErrorHandling();
 
 				this._elementOrData = elementOrData;
@@ -325,27 +312,6 @@ export default class EditorWatchdog extends Watchdog {
 				return value;
 			}
 		} );
-	}
-
-	/**
-	 * A shorthand method for creating an instance of the watchdog. For the full usage, see the
-	 * {@link ~Watchdog `Watchdog` class description}.
-	 *
-	 * Usage:
-	 *
-	 *		const watchdog = Watchdog.for( ClassicEditor );
-	 *
-	 *		watchdog.create( elementOrData, config );
-	 *
-	 * @param {*} Editor The editor class.
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
-	 */
-	static for( Editor, watchdogConfig ) {
-		const watchdog = new this( watchdogConfig );
-
-		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
-
-		return watchdog;
 	}
 
 	/**
