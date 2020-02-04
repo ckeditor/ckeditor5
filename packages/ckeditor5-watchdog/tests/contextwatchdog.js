@@ -226,7 +226,7 @@ describe( 'ContextWatchdog', () => {
 			let err;
 
 			try {
-				await watchdog.remove( [ 'foo' ] );
+				await watchdog.remove( 'foo' );
 			} catch ( _err ) {
 				err = _err;
 			}
@@ -318,9 +318,7 @@ describe( 'ContextWatchdog', () => {
 				config: {}
 			} ] );
 
-			watchdog.remove( [ 'editor1' ] );
-
-			watchdog.remove( [ 'editor2' ] );
+			watchdog.remove( [ 'editor1', 'editor2' ] );
 
 			await watchdog.destroy();
 		} );
@@ -365,7 +363,7 @@ describe( 'ContextWatchdog', () => {
 			expect( watchdog.get( 'editor1' ) ).to.be.instanceOf( ClassicTestEditor );
 			expect( watchdog.get( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
 
-			await watchdog.remove( [ 'editor1' ] );
+			await watchdog.remove( 'editor1' );
 
 			expect( () => {
 				watchdog.get( 'editor1' );
@@ -517,7 +515,7 @@ describe( 'ContextWatchdog', () => {
 
 				const editor1 = watchdog.get( 'editor1' );
 
-				const removePromise = watchdog.remove( [ 'editor1' ] );
+				const removePromise = watchdog.remove( 'editor1' );
 
 				setTimeout( () => throwCKEditorError( 'foo', editor1 ) );
 
