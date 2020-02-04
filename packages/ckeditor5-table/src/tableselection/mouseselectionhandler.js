@@ -49,9 +49,9 @@ export default class MouseSelectionHandler {
 		// Currently the MouseObserver only handles `mouseup` events.
 		view.addObserver( MouseEventsObserver );
 
-		this.listenTo( view.document, 'mousedown', ( eventInfo, domEventData ) => this._handleMouseDown( domEventData ) );
-		this.listenTo( view.document, 'mousemove', ( eventInfo, domEventData ) => this._handleMouseMove( domEventData ) );
-		this.listenTo( view.document, 'mouseup', ( eventInfo, domEventData ) => this._handleMouseUp( domEventData ) );
+		this.listenTo( view.document, 'mousedown', ( event, domEventData ) => this._handleMouseDown( domEventData ) );
+		this.listenTo( view.document, 'mousemove', ( event, domEventData ) => this._handleMouseMove( domEventData ) );
+		this.listenTo( view.document, 'mouseup', ( event, domEventData ) => this._handleMouseUp( domEventData ) );
 		this.listenTo( view.document, 'mouseleave', () => this._handleMouseLeave() );
 	}
 
