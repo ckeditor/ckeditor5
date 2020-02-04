@@ -56,7 +56,6 @@ export default class RemoveRowCommand extends Command {
 
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		const rowToFocus = removedRow;
 		const columnToFocus = cellData.column;
 
 		model.change( writer => {
@@ -100,15 +99,26 @@ export default class RemoveRowCommand extends Command {
 
 			writer.remove( tableRow );
 
-			const { cell: cellToFocus } = [ ...new TableWalker( table ) ].find( ( { row, column, rowspan, colspan } ) => {
-				return isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan );
-			} );
-
+			const cellToFocus = getCellToFocus( table, removedRow, columnToFocus );
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
 }
 
-function isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan ) {
-	return ( row <= rowToFocus && row + rowspan >= rowToFocus + 1 ) && ( column <= columnToFocus && column + colspan >= columnToFocus + 1 );
+// Returns a cell to focus on the same column of the focused table cell before removing a row.
+function getCellToFocus( table, removedRow, columnToFocus ) {
+	const row = table.getChild( removedRow );
+
+	// Default to first table cell.
+	let cellToFocus = row.getChild( 0 );
+	let column = 0;
+
+	for ( const tableCell of row.getChildren() ) {
+		if ( column > columnToFocus ) {
+			return cellToFocus;
+		}
+
+		cellToFocus = tableCell;
+		column += parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+	}
 }
