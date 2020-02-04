@@ -210,7 +210,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				);
 			} );
 
-			it( 'converted <span> should be the outermost attribute element', () => {
+			it( 'converted <span> should be the outermost attribute element (inside table)', () => {
 				editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b' } );
 				setModelData( model,
 					'<table><tableRow><tableCell>' +
@@ -237,7 +237,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-					'<span><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
+					'<span style="display:inline-block"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
 					'</td></tr></tbody></table>' +
 					'</figure>'
 				);
