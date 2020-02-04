@@ -16,7 +16,8 @@ import MouseEventsObserver from './mouseeventsobserver';
 /**
  * A mouse selection handler for table selection.
  *
- * It observes view document mouse events and invokes proper {@link module:table/tableselection~TableSelection} actions.
+ * It registers the {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} to observe view document mouse events
+ * and invoke proper {@link module:table/tableselection~TableSelection} actions.
  */
 export default class MouseSelectionHandler {
 	/**
