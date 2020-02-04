@@ -108,7 +108,7 @@ describe( 'SelectionObserver', () => {
 		} );
 	} );
 
-	it( 'should not fired if observer is disabled', done => {
+	it( 'should not fire if observer is disabled', done => {
 		view.getObserver( SelectionObserver ).disable();
 
 		viewDocument.on( 'selectionChange', () => {
@@ -120,43 +120,28 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not fired if there is no focus', done => {
-		viewDocument.isFocused = false;
+	it( 'should not fire if the DOM selection was set outside editable', done => {
+		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-		// changeDomSelection() may focus the editable element (happens on Chrome)
-		// so cancel this because it sets the isFocused flag.
-		viewDocument.on( 'focus', evt => evt.stop(), { priority: 'highest' } );
-
-		viewDocument.on( 'selectionChange', () => {
-			// Validate the correctness of the test. May help tracking issue with this test.
-			expect( viewDocument.isFocused ).to.be.false;
-
-			throw 'selectionChange on render';
+		view.change( writer => {
+			writer.setSelection( viewFoo, 0 );
 		} );
 
-		setTimeout( done, 70 );
-
-		changeDomSelection();
-	} );
-
-	it( 'should fired if there is no focus but document is read-only', done => {
 		const spy = sinon.spy();
-
-		viewDocument.isFocused = false;
-		viewDocument.isReadOnly = true;
-
-		// changeDomSelection() may focus the editable element (happens on Chrome)
-		// so cancel this because it sets the isFocused flag.
-		viewDocument.on( 'focus', evt => evt.stop(), { priority: 'highest' } );
 
 		viewDocument.on( 'selectionChange', spy );
 
 		setTimeout( () => {
-			sinon.assert.called( spy );
+			expect( spy.called ).to.be.false;
+
 			done();
 		}, 70 );
 
-		changeDomSelection();
+		const domSelection = domDocument.getSelection();
+		const editable = domRoot.childNodes[ 1 ];
+		editable.focus();
+
+		domSelection.collapse( editable, 0 );
 	} );
 
 	it( 'should not enter infinite loop', () => {
