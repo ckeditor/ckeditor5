@@ -154,34 +154,36 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Context from '@ckeditor/ckeditor5-core/src/context';
 
-// Create a watchdog for the context and pass the context configuration:
-const watchdog = ContextWatchdog.for( Context, {
-	plugins: [],
-
-	// Rest of the configuration.
+// Create a watchdog for the context and pass the `Context` class with optional watchdog configuration:
+const watchdog = new ContextWatchdog( Context, {
+	crashNumberLimit: 10
 } );
+
+// Initialize it with the context configuration:
+await watchdog.create( {
+	plugins: []
+} )
 
 // Add editor instances:
-watchdog.add( {
-	editor1: {
-		type: 'editor',
-		sourceElementOrData: document.querySelector( '#editor' ),
-		config: {
-			plugins: [ Essentials, Paragraph, Bold, Italic ],
-			toolbar: [ 'bold', 'italic', 'alignment' ]
-		},
-		creator: ( element, config ) => ClassicEditor.create( element, config )
+await watchdog.add( [ {
+	id: 'editor1',
+	type: 'editor',
+	sourceElementOrData: document.querySelector( '#editor' ),
+	config: {
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	editor2: {
-		type: 'editor',
-		sourceElementOrData: document.querySelector( '#editor' ),
-		config: {
-			plugins: [ Essentials, Paragraph, Bold, Italic ],
-			toolbar: [ 'bold', 'italic', 'alignment' ]
-		},
-		creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( element, config ) => ClassicEditor.create( element, config )
+}, {
+	id: 'editor2',
+	type: 'editor',
+	sourceElementOrData: document.querySelector( '#editor' ),
+	config: {
+		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-} );
+	creator: ( element, config ) => ClassicEditor.create( element, config )
+} ] );
 ```
 
 The Watchdog will keep the context and editor instances running
@@ -190,7 +192,11 @@ that are added via the {@link module:watchdog/contextwatchdog~ContextWatchdog#ad
 To destroy one of the editor instances use the {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove` method}. This method can be called multiple times during the `ContextWatchdog` lifetime as well.
 
 ```js
-watchdog.remove( [ 'editor1' ] );
+await watchdog.remove( [ 'editor1', 'editor2' ] );
+
+// Or
+await watchdog.remove( 'editor1' );
+await watchdog.remove( 'editor2' );
 ```
 
 <info-box>
@@ -202,12 +208,10 @@ watchdog.remove( [ 'editor1' ] );
 The ContextWatchdog feature provides the following API:
 
 ```js
-// A simple initialization with default Context creation and destruction functions:
-const watchdog = ContextWatchdog.for( Context, contextConfig, watchdogConfig )
+// Create watchdog that will use the `Context` class and given configuration.
+const watchdog = new ContextWatchdog( Context, watchdogConfig );
 
-// An advanced initialization where custom creation and destruction functions can be passed:
-const watchdog = new ContextWatchdog( contextConfig, watchdogConfig )
-
+// Set a custom creator.
 watchdog.setCreator( async config => {
 	const context = await Context.create( config ) );
 
@@ -216,35 +220,36 @@ watchdog.setCreator( async config => {
 	return context;
 } );
 
+// Set a custom destructor.
 watchdog.setDestructor( async context => {
 	// Do something before destroy.
 
 	await context.destroy();
 } );
 
-watchdog.create();
+// Initialize the context watchdog with the context configuration.
+await watchdog.create( contextConfig );
 
-// Adding, removing and getting item instances:
-watchdog.add( {
-	editor1: {
-		type: 'editor',
-		sourceElementOrData: editorSourceElementOrEditorData
-		config: editorConfig,
-		creator: createEditor,
-		destructor: destroyEditor,
-	},
-	// Possibly more items.
+// Add editor configuration.
+await watchdog.add( {
+	id: 'editor1',
+	type: 'editor',
+	sourceElementOrData: editorSourceElementOrEditorData
+	config: editorConfig,
+	creator: createEditor,
+	destructor: destroyEditor,
 } );
 
-watchdog.remove( [ 'editor1' ] );
+// Remove and destroy given editor.
+await watchdog.remove( [ 'editor1' ] );
 
-// Given item instance.
+// Get given item instance.
 const editor1 = watchdog.get( 'editor1' );
 
-// Given item state.
+// Get given item state.
 const editor1State = watchdog.getState( 'editor1' );
 
-// Context state.
+// Get the context state.
 const contextState = watchdog.state;
 
 // An event fired when the context watchdog catches the context-related error.

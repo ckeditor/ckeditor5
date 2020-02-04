@@ -22,13 +22,20 @@ import getSubNodes from './utils/getsubnodes';
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
-	 * The ContextWatchdog constructor. See {@glink features/watchdog Watchdog feature guide} to learn how to use it,
-	 * as using the constructor directly requires further steps to initialize the `ContextWatchdog`.
+	 * The `ContextWatchdog` class constructor.
 	 *
-	 * @param {Object} [contextConfig] {@link module:core/context~Context} configuration.
+	 * 	const contextWatchdog = new ContextWatchdog( Context );
+	 *
+	 * 	await contextWatchdog.create( contextConfiguration );
+	 *
+	 * 	await contextWatchdog.add( watchdogItem );
+	 *
+	 * See {@glink features/watchdog the watchdog feature guide} to learn more how to use this feature.
+	 *
+	 * @param {Function} Context The {@link module:core/context~Context} class.
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog configuration.
 	 */
-	constructor( contextConfig = {}, watchdogConfig = {} ) {
+	constructor( Context, watchdogConfig = {} ) {
 		super( watchdogConfig );
 
 		/**
@@ -76,9 +83,8 @@ export default class ContextWatchdog extends Watchdog {
 		 * Config for the {@link module:core/context~Context}.
 		 *
 		 * @private
-		 * @type {Object}
+		 * @member {Object} #_contextConfig
 		 */
-		this._contextConfig = contextConfig;
 
 		/**
 		 * The context configuration.
@@ -87,7 +93,8 @@ export default class ContextWatchdog extends Watchdog {
 		 * @member {Object|undefined} #_config
 		 */
 
-		// Default destructor.
+		// Default creator and destructor.
+		this._creator = contextConfig => Context.create( contextConfig );
 		this._destructor = context => context.destroy();
 
 		this._actionQueue.onEmpty( () => {
@@ -108,7 +115,22 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-     * Returns the item instance with the given `id`.
+	 * Initializes the context watchdog. Once it's created the watchdog takes care about
+	 * recreating the context and provided items and starts the error handling mechanism.
+	 *
+	 * @param {Object} [contextConfig] Context configuration. See {@link module:core/context~Context}.
+	 * @returns {Promise}
+	 */
+	create( contextConfig = {} ) {
+		return this._actionQueue.enqueue( () => {
+			this._contextConfig = contextConfig;
+
+			return this._create();
+		} );
+	}
+
+	/**
+     * Returns the item instance with the given `itemId`.
 	 *
 	 * 	const editor1 = contextWatchdog.get( 'editor1' );
 	 *
@@ -122,7 +144,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Gets state of the given item. For the list of available state see {@link #state}.
+	 * Gets state of the given item. For the list of available states see {@link #state}.
 	 *
 	 * @param {String} itemId Item id.
 	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
@@ -255,17 +277,6 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Creates the Context watchdog.
-	 *
-	 * @returns {Promise}
-	 */
-	create() {
-		return this._actionQueue.enqueue( () => {
-			return this._create();
-		} );
-	}
-
-	/**
 	 * Destroys the `ContextWatchdog` and all added items.
 	 * Once the `ContextWatchdog` is destroyed new items can not be added.
 	 *
@@ -386,70 +397,32 @@ export default class ContextWatchdog extends Watchdog {
 		// Ignore cases when the error comes from editors.
 		return areConnectedThroughProperties( this._contextProps, error.context );
 	}
-
-	/**
-	 * Creates context watchdog for the given Context constructor, context configuration and watchdog configuration.
-	 *
-	 * 	const contextWatchdog = ContextWatchdog.for( Context, {
-	 * 		plugins: []
-	 * 	} );
-	 *
-	 * 	contextWatchdog.add( watchdogItem );
-	 *
-	 * @param {module:core/context~Context} Context
-	 * @param {Object} [contextConfig]
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig]
-	 * @returns {module:watchdog/contextwatchdog~ContextWatchdog}
-	 */
-	static for( Context, contextConfig, watchdogConfig ) {
-		const watchdog = new this( contextConfig, watchdogConfig );
-
-		watchdog.setCreator( config => Context.create( config ) );
-
-		watchdog.create();
-
-		return watchdog;
-	}
 }
 
-/**
- * An action queue that allows queuing async functions.
- *
- * @private
- */
+// An action queue that allows queuing async functions.
 class ActionQueue {
 	constructor() {
-		/**
-		 * @type {Array.<Function>}
-		 */
+		// @type {Array.<Function>}
 		this._queuedActions = [];
 
-		/**
-		 * @type {WeakMap.<Function, Function>}
-		 */
+		// @type {WeakMap.<Function, Function>}
 		this._resolveCallbacks = new WeakMap();
 
-		/**
-		 * @type {Array.<Function>}
-		 */
+		// @type {Array.<Function>}
 		this._onEmptyCallbacks = [];
 	}
 
-	/**
-	 * A method used to register callbacks that will be run when the queue becomes empty.
-	 *
-	 * @param {Function} onEmptyCallback A callback that will be run whenever the queue becomes empty.
-	 */
+	// A method used to register callbacks that will be run when the queue becomes empty.
+	//
+	// @param {Function} onEmptyCallback A callback that will be run whenever the queue becomes empty.
 	onEmpty( onEmptyCallback ) {
 		this._onEmptyCallbacks.push( onEmptyCallback );
 	}
 
-	/**
-	 * It adds asynchronous actions (functions) to the queue and runs them one by one.
-	 *
-	 * @param {Function} action A function that should be enqueued.
-	 * @returns {Promise}
-	 */
+	// It adds asynchronous actions (functions) to the queue and runs them one by one.
+	//
+	// @param {Function} action A function that should be enqueued.
+	// @returns {Promise}
 	enqueue( action ) {
 		this._queuedActions.push( action );
 
@@ -466,13 +439,9 @@ class ActionQueue {
 		} );
 	}
 
-	/**
-	 * It handles queued actions one by one.
-	 *
-	 * @private
-	 * @param {Function} res
-	 * @param {Function} rej
-	 */
+	// It handles queued actions one by one.
+	// @param {Function} res
+	// @param {Function} rej
 	_handleActions( res, rej ) {
 		const action = this._queuedActions[ 0 ];
 
@@ -517,9 +486,11 @@ class ActionQueue {
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
  *
+ * @property {string} id A unique item identificator.
+ *
  * @property {'editor'} type Type of the item to create. At the moment, only `'editor'` is supported.
  *
- * @property {Function} creator A function that initializes the editor.
+ * @property {Function} [creator] A function that initializes the editor.
  *
  * @property {Function} [destructor] A function that destroys the editor.
  *

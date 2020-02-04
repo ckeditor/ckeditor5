@@ -36,7 +36,9 @@ describe( 'ContextWatchdog', () => {
 	} );
 
 	it( 'should disable adding items once the ContextWatchdog is destroyed', async () => {
-		watchdog = ContextWatchdog.for( Context, {} );
+		watchdog = new ContextWatchdog( Context );
+
+		watchdog.create();
 
 		await watchdog.destroy();
 
@@ -60,9 +62,9 @@ describe( 'ContextWatchdog', () => {
 
 	describe( 'for scenario with no items', () => {
 		it( 'should create only context', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
 
-			await watchdog.waitForReady();
+			await watchdog.create();
 
 			expect( watchdog.context ).to.be.instanceOf( Context );
 
@@ -70,11 +72,13 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should have proper states', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
+
+			const initializationPromise = watchdog.create();
 
 			expect( watchdog.state ).to.equal( 'initializing' );
 
-			await watchdog.waitForReady();
+			await initializationPromise;
 
 			expect( watchdog.state ).to.equal( 'ready' );
 
@@ -83,13 +87,18 @@ describe( 'ContextWatchdog', () => {
 			expect( watchdog.state ).to.equal( 'destroyed' );
 		} );
 
-		it( 'should set custom destructor if provided', async () => {
-			const mainWatchdog = new ContextWatchdog();
+		it( 'should set custom creator and destructor if provided', async () => {
+			const mainWatchdog = new ContextWatchdog( Context );
+
+			const customCreator = sinon.spy( config => Context.create( config ) );
 			const customDestructor = sinon.spy( context => context.destroy() );
 
-			mainWatchdog.setCreator( config => Context.create( config ) );
+			mainWatchdog.setCreator( customCreator );
 			mainWatchdog.setDestructor( customDestructor );
-			mainWatchdog.create();
+
+			await mainWatchdog.create();
+
+			sinon.assert.calledOnce( customCreator );
 
 			await mainWatchdog.destroy();
 
@@ -97,11 +106,11 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should log if an error happens during the component destructing', async () => {
-			const mainWatchdog = new ContextWatchdog();
+			const mainWatchdog = new ContextWatchdog( Context );
 
 			const consoleErrorStub = sinon.stub( console, 'error' );
 			const err = new Error( 'foo' );
-			mainWatchdog.setCreator( config => Context.create( config ) );
+
 			mainWatchdog.setDestructor( async editor => {
 				await editor.destroy();
 
@@ -109,7 +118,6 @@ describe( 'ContextWatchdog', () => {
 			} );
 
 			await mainWatchdog.create();
-
 			await mainWatchdog._restart();
 
 			sinon.assert.calledWith(
@@ -125,7 +133,7 @@ describe( 'ContextWatchdog', () => {
 
 		it( 'should handle the Watchdog configuration', async () => {
 			// TODO
-			const mainWatchdog = ContextWatchdog.for( Context, {}, {
+			const mainWatchdog = new ContextWatchdog( Context, {
 				crashNumberLimit: Infinity
 			} );
 
@@ -136,10 +144,11 @@ describe( 'ContextWatchdog', () => {
 
 		describe( 'in case of error handling', () => {
 			it( 'should restart the `Context`', async () => {
-				watchdog = ContextWatchdog.for( Context, {} );
+				watchdog = new ContextWatchdog( Context );
+
 				const errorSpy = sinon.spy();
 
-				await watchdog.waitForReady();
+				await watchdog.create();
 
 				const oldContext = watchdog.context;
 
@@ -158,7 +167,9 @@ describe( 'ContextWatchdog', () => {
 
 	describe( 'for multiple items scenario', () => {
 		it( 'should allow adding multiple items without waiting for promises', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
+
+			watchdog.create();
 
 			watchdog.add( {
 				id: 'editor1',
@@ -174,34 +185,29 @@ describe( 'ContextWatchdog', () => {
 				config: {}
 			} );
 
-			// TODO
-			await watchdog.waitForReady();
-
 			await watchdog.destroy();
 		} );
 
 		it( 'should throw when multiple items with the same id are added', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
 
-			watchdog.add( {
+			await watchdog.create();
+
+			const editorItemConfig = {
 				id: 'editor1',
 				type: 'editor',
 				creator: ( el, config ) => ClassicTestEditor.create( el, config ),
 				sourceElementOrData: element1,
 				config: {}
-			} );
+			};
 
-			await watchdog.waitForReady();
+			const editorCreationPromise1 = watchdog.add( editorItemConfig );
+			const editorCreationPromise2 = watchdog.add( editorItemConfig );
 
 			let err;
 			try {
-				await watchdog.add( {
-					id: 'editor1',
-					type: 'editor',
-					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
-					sourceElementOrData: element1,
-					config: {}
-				} );
+				await editorCreationPromise1;
+				await editorCreationPromise2;
 			} catch ( _err ) {
 				err = _err;
 			}
@@ -213,9 +219,9 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should throw when not added item is removed', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
 
-			await watchdog.waitForReady();
+			await watchdog.create();
 
 			let err;
 
@@ -232,7 +238,7 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should throw when the item is added before the context is created', async () => {
-			const mainWatchdog = new ContextWatchdog( {}, {} );
+			const mainWatchdog = new ContextWatchdog( Context );
 
 			let err;
 			try {
@@ -248,7 +254,9 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should allow setting editor custom destructors', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
+
+			watchdog.create();
 
 			const destructorSpy = sinon.spy( editor => editor.destroy() );
 
@@ -267,9 +275,9 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should throw when the item is of not known type', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
 
-			await watchdog.waitForReady();
+			await watchdog.create();
 
 			let err;
 			try {
@@ -292,7 +300,9 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should allow adding and removing items without waiting', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
+
+			watchdog.create();
 
 			watchdog.add( [ {
 				id: 'editor1',
@@ -308,23 +318,17 @@ describe( 'ContextWatchdog', () => {
 				config: {}
 			} ] );
 
-			await watchdog.waitForReady();
-
-			expect( watchdog.state ).to.equal( 'ready' );
-
 			watchdog.remove( [ 'editor1' ] );
 
-			await watchdog.waitForReady();
-
 			watchdog.remove( [ 'editor2' ] );
-
-			await watchdog.waitForReady();
 
 			await watchdog.destroy();
 		} );
 
 		it( 'should not change the input items', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
+
+			watchdog.create();
 
 			watchdog.add( Object.freeze( [ {
 				id: 'editor1',
@@ -334,17 +338,17 @@ describe( 'ContextWatchdog', () => {
 				config: {}
 			} ] ) );
 
-			watchdog._restart();
-
-			await watchdog.waitForReady();
+			await watchdog._restart();
 
 			await watchdog.destroy();
 		} );
 
 		it( 'should return the created items instances with ContextWatchdog#get( itemId )', async () => {
-			watchdog = ContextWatchdog.for( Context, {} );
+			watchdog = new ContextWatchdog( Context );
 
-			watchdog.add( [ {
+			watchdog.create();
+
+			await watchdog.add( [ {
 				id: 'editor1',
 				type: 'editor',
 				creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -357,8 +361,6 @@ describe( 'ContextWatchdog', () => {
 				sourceElementOrData: element2,
 				config: {}
 			} ] );
-
-			await watchdog.waitForReady();
 
 			expect( watchdog.get( 'editor1' ) ).to.be.instanceOf( ClassicTestEditor );
 			expect( watchdog.get( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
@@ -376,16 +378,17 @@ describe( 'ContextWatchdog', () => {
 
 		describe( 'in case of error handling', () => {
 			it( 'should restart the whole structure of editors if an error happens inside the `Context`', async () => {
-				watchdog = ContextWatchdog.for( Context, {} );
-				watchdog.add( [ {
+				watchdog = new ContextWatchdog( Context );
+
+				await watchdog.create();
+
+				await watchdog.add( [ {
 					id: 'editor1',
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
 					sourceElementOrData: element1,
 					config: {}
 				} ] );
-
-				await watchdog.waitForReady();
 
 				const oldContext = watchdog.context;
 				const restartSpy = sinon.spy();
@@ -405,16 +408,17 @@ describe( 'ContextWatchdog', () => {
 			} );
 
 			it( 'should restart only the editor if an error happens inside the editor', async () => {
-				watchdog = ContextWatchdog.for( Context, {} );
-				watchdog.add( {
+				watchdog = new ContextWatchdog( Context );
+
+				await watchdog.create();
+
+				await watchdog.add( {
 					id: 'editor1',
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
 					sourceElementOrData: element1,
 					config: {}
 				} );
-
-				await watchdog.waitForReady();
 
 				const oldContext = watchdog.context;
 				const restartSpy = sinon.spy();
@@ -437,9 +441,11 @@ describe( 'ContextWatchdog', () => {
 			} );
 
 			it( 'should restart only the editor if an error happens inside one of the editors', async () => {
-				watchdog = ContextWatchdog.for( Context, {} );
+				watchdog = new ContextWatchdog( Context );
 
-				watchdog.add( [ {
+				await watchdog.create();
+
+				await watchdog.add( [ {
 					id: 'editor1',
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -452,8 +458,6 @@ describe( 'ContextWatchdog', () => {
 					sourceElementOrData: element2,
 					config: {}
 				} ] );
-
-				await watchdog.waitForReady();
 
 				const oldContext = watchdog.context;
 
@@ -493,9 +497,11 @@ describe( 'ContextWatchdog', () => {
 			} );
 
 			it( 'should handle removing and restarting at the same time', async () => {
-				watchdog = ContextWatchdog.for( Context, {} );
+				watchdog = new ContextWatchdog( Context );
 
-				watchdog.add( [ {
+				await watchdog.create();
+
+				await watchdog.add( [ {
 					id: 'editor1',
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -509,16 +515,14 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				await watchdog.waitForReady();
-
 				const editor1 = watchdog.get( 'editor1' );
 
-				watchdog.remove( [ 'editor1' ] );
+				const removePromise = watchdog.remove( [ 'editor1' ] );
 
 				setTimeout( () => throwCKEditorError( 'foo', editor1 ) );
 
 				await waitCycle();
-				await watchdog.waitForReady();
+				await removePromise;
 
 				expect( [ ...watchdog._watchdogs.keys() ] ).to.include( 'editor2' );
 				expect( [ ...watchdog._watchdogs.keys() ] ).to.not.include( 'editor1' );
@@ -527,9 +531,11 @@ describe( 'ContextWatchdog', () => {
 			} );
 
 			it( 'should handle restarting the item instance many times', async () => {
-				watchdog = ContextWatchdog.for( Context, {} );
+				watchdog = new ContextWatchdog( Context );
 
-				watchdog.add( [ {
+				await watchdog.create();
+
+				await watchdog.add( [ {
 					id: 'editor1',
 					type: 'editor',
 					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
@@ -542,8 +548,6 @@ describe( 'ContextWatchdog', () => {
 					sourceElementOrData: element2,
 					config: {}
 				} ] );
-
-				await watchdog.waitForReady();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
