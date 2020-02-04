@@ -35,7 +35,7 @@ describe( 'ContextWatchdog', () => {
 		sinon.restore();
 	} );
 
-	it( 'should disable adding items once the Watchdog is destroyed', async () => {
+	it( 'should disable adding items once the ContextWatchdog is destroyed', async () => {
 		watchdog = ContextWatchdog.for( Context, {} );
 
 		await watchdog.destroy();

@@ -108,7 +108,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns the instance created from the item configuration by its name. It's type depends on the item type
+     * Returns the item with the given `itemName` that was created by this watchdog.
 	 * the instance can be retrieved from the watchdog. Note that this might return `undefined` if the item is not created
 	 * yet.
 	 *
@@ -244,7 +244,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Destroys the `ContextWatchdog` and all added items. This method can't be undone.
+	 * Destroys the `ContextWatchdog` and all added items.
 	 * Once the `ContextWatchdog` is destroyed new items can not be added.
 	 *
 	 * @returns {Promise}
@@ -495,11 +495,11 @@ class ActionQueue {
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
  *
- * @property {'editor'} type A type of the item to create. In this case it should be set to the `editor`.
+ * @property {'editor'} type Type of the item to create. At the moment, only `'editor'` is supported.
  *
- * @property {Function} creator A function that needs to be called to initialize the editor.
+ * @property {Function} creator A function that initializes the editor.
  *
- * @property {Function} [destructor] A function that is responsible for destructing the editor.
+ * @property {Function} [destructor] A function that destroys the editor.
  *
  * @property {String|HTMLElement} sourceElementOrData The source element or data which will be passed
  * as the first argument to the `Editor.create()` method.

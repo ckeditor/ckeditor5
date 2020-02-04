@@ -184,7 +184,7 @@ watchdog.add( {
 } );
 ```
 
-The Watchdog will keep the context and editor (and other types of items in the future) instances running
+The Watchdog will keep the context and editor instances running
 that are added via the {@link module:watchdog/contextwatchdog~ContextWatchdog#add `ContextWatchdog#add` method}. This method can be called multiple times during the `ContextWatchdog` lifetime.
 
 To destroy one of the editor instances use the {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove` method}. This method can be called multiple times during the `ContextWatchdog` lifetime as well.
@@ -202,7 +202,7 @@ watchdog.remove( [ 'editor1' ] );
 The ContextWatchdog feature provides the following API:
 
 ```js
-// A simple initialization way with default Context creation and destruction functions:
+// A simple initialization with default Context creation and destruction functions:
 const watchdog = ContextWatchdog.for( Context, contextConfig, watchdogConfig )
 
 // An advanced initialization where custom creation and destruction functions can be passed:
@@ -251,7 +251,7 @@ const contextState = watchdog.state;
 // Note that the editor errors are not re-fired in the `ContextWatchdog#error`.
 watchdog.on( 'error', () => {} );
 
-// An event fired when the context is back to the `ready` state.
+// An event fired when the context is set back to the `ready` state (after it was in `error` state).
 // Similarly, this event is not thrown for internal editor instances.
 watchdog.on( 'restart', () => {} );
 ```
@@ -276,4 +276,4 @@ Note that the ContextWatchdog spreads its configuration to the added items.
 
 ## Limitations
 
-The watchdog does not handle errors thrown during the editor or context initialization (by e.g. `Editor.create()`) and editor destruction (e.g. `Editor#destroy()`). Errors thrown at these stages mean that there is a serious problem in the code integrating the editor with your application and such problem cannot be easily fixed by restarting the editor.
+The watchdog does not handle errors thrown during the editor or context initialization (by e.g. `Editor.create()`) and editor destruction (e.g. `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.

@@ -481,7 +481,7 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
-		it( 'Watchdog should warn if the CKEditorError missing its context', async () => {
+		it( 'Watchdog should warn if the CKEditorError is missing its context', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
@@ -533,7 +533,7 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
-		it( 'editor should be restarted with the data before the crash #1', () => {
+		it( 'editor should be restarted with the data from before the crash #1', () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
