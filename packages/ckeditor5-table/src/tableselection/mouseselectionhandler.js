@@ -86,7 +86,7 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseMove( domEventData ) {
-		if ( !this._tableSelection._isSelecting ) {
+		if ( !this._tableSelection.isSelecting ) {
 			return;
 		}
 
@@ -108,7 +108,7 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseUp( domEventData ) {
-		if ( !this._tableSelection._isSelecting ) {
+		if ( !this._tableSelection.isSelecting ) {
 			return;
 		}
 
@@ -126,7 +126,7 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseLeave() {
-		if ( !this._tableSelection._isSelecting ) {
+		if ( !this._tableSelection.isSelecting ) {
 			return;
 		}
 

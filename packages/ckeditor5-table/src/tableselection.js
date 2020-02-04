@@ -42,7 +42,22 @@ export default class TableSelection extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		this._isSelecting = false;
+		/**
+		 * A flag indicating that the selection is "active". A selection is "active" if it was started and not yet finished.
+		 * A selection can be "active" for instance if user moves a mouse over a table while holding a mouse button down.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 */
+		this.isSelecting = false;
+
+		/**
+		 * A mouse selection handler.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {module:table/tableselection/mouseselectionhandler~MouseSelectionHandler}
+		 */
 		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
 	}
 
@@ -53,7 +68,7 @@ export default class TableSelection extends Plugin {
 	 * @member {Boolean} #isSelectingAndSomethingElse
 	 */
 	get isSelectingAndSomethingElse() {
-		return this._isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
+		return this.isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
 	}
 
 	/**
@@ -85,7 +100,7 @@ export default class TableSelection extends Plugin {
 	startSelectingFrom( tableCell ) {
 		this.clearSelection();
 
-		this._isSelecting = true;
+		this.isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
 	}
@@ -102,7 +117,7 @@ export default class TableSelection extends Plugin {
 	 */
 	setSelectingTo( tableCell ) {
 		// Do not update if not in selection mode or no table cell is passed.
-		if ( !this._isSelecting || !tableCell ) {
+		if ( !this.isSelecting || !tableCell ) {
 			return;
 		}
 
@@ -129,11 +144,11 @@ export default class TableSelection extends Plugin {
 	 * @param {module:engine/model/element~Element} [tableCell]
 	 */
 	stopSelection( tableCell ) {
-		if ( this._isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
+		if ( this.isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
 		}
 
-		this._isSelecting = false;
+		this.isSelecting = false;
 		this._updateModelSelection();
 	}
 
@@ -149,7 +164,7 @@ export default class TableSelection extends Plugin {
 	clearSelection() {
 		this._startElement = undefined;
 		this._endElement = undefined;
-		this._isSelecting = false;
+		this.isSelecting = false;
 	}
 
 	/**
