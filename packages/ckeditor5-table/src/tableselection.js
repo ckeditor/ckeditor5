@@ -59,6 +59,14 @@ export default class TableSelection extends Plugin {
 		 * @member {module:table/tableselection/mouseselectionhandler~MouseSelectionHandler}
 		 */
 		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
+
+		/**
+		 * A table utilities.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {module:table/tableutils~TableUtils}
+		 */
 	}
 
 	/**
