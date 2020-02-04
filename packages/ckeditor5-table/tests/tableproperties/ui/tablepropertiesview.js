@@ -5,7 +5,7 @@
 
 /* globals Event */
 
-import TableCellPropertiesView from '../../../src/tablecellproperties/ui/tablecellpropertiesview';
+import TablePropertiesView from '../../../src/tableproperties/ui/tablepropertiesview';
 import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -17,15 +17,15 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-describe( 'table cell properties', () => {
-	describe( 'TableCellPropertiesView', () => {
+describe( 'table properties', () => {
+	describe( 'TablePropertiesView', () => {
 		let view, locale;
 
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
 			locale = { t: val => val };
-			view = new TableCellPropertiesView( locale );
+			view = new TablePropertiesView( locale );
 			view.render();
 		} );
 
@@ -47,10 +47,10 @@ describe( 'table cell properties', () => {
 					borderStyle: 'none',
 					borderWidth: '',
 					borderColor: '',
-					padding: '',
 					backgroundColor: '',
-					horizontalAlignment: 'left',
-					verticalAlignment: 'middle'
+					width: '',
+					height: '',
+					alignment: 'center'
 				} );
 			} );
 
@@ -58,7 +58,7 @@ describe( 'table cell properties', () => {
 				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-form' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-table-form' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-table-cell-properties-form' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-table-properties-form' ) ).to.be.true;
 				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 			} );
 
@@ -67,9 +67,9 @@ describe( 'table cell properties', () => {
 				expect( view.borderWidthInput ).to.be.instanceOf( LabeledView );
 				expect( view.borderColorInput ).to.be.instanceOf( LabeledView );
 				expect( view.backgroundInput ).to.be.instanceOf( LabeledView );
-				expect( view.paddingInput ).to.be.instanceOf( LabeledView );
-				expect( view.horizontalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
-				expect( view.verticalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
+				expect( view.widthInput ).to.be.instanceOf( LabeledView );
+				expect( view.heightInput ).to.be.instanceOf( LabeledView );
+				expect( view.alignmentToolbar ).to.be.instanceOf( ToolbarView );
 
 				expect( view.saveButtonView ).to.be.instanceOf( ButtonView );
 				expect( view.cancelButtonView ).to.be.instanceOf( ButtonView );
@@ -80,7 +80,7 @@ describe( 'table cell properties', () => {
 
 				expect( header.classList.contains( 'ck' ) ).to.be.true;
 				expect( header.classList.contains( 'ck-form__header' ) ).to.be.true;
-				expect( header.textContent ).to.equal( 'Cell properties' );
+				expect( header.textContent ).to.equal( 'Table properties' );
 			} );
 
 			describe( 'form rows', () => {
@@ -219,13 +219,12 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
-				describe( 'background and padding row', () => {
+				describe( 'background row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ] ).to.equal( view.backgroundInput.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.paddingInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -238,7 +237,7 @@ describe( 'table cell properties', () => {
 						it( 'should be created', () => {
 							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Background' );
-							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__background' );
+							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__background' );
 						} );
 
 						it( 'should reflect #backgroundColor property', () => {
@@ -259,56 +258,100 @@ describe( 'table cell properties', () => {
 							expect( view.backgroundColor ).to.equal( 'bar' );
 						} );
 					} );
+				} );
 
-					describe( 'padding input', () => {
+				describe( 'dimensions row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-properties-form__dimensions-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
+						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
+						expect( row.childNodes[ 3 ] ).to.equal( view.heightInput.element );
+					} );
+
+					describe( 'width input', () => {
 						let labeledInput;
 
 						beforeEach( () => {
-							labeledInput = view.paddingInput;
+							labeledInput = view.widthInput;
 						} );
 
 						it( 'should be created', () => {
 							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
-							expect( labeledInput.label ).to.equal( 'Padding' );
-							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__padding' );
+							expect( labeledInput.label ).to.equal( 'Width' );
+							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__width' );
 						} );
 
-						it( 'should reflect #padding property', () => {
-							view.padding = 'foo';
+						it( 'should reflect #width property', () => {
+							view.width = 'foo';
 							expect( labeledInput.view.value ).to.equal( 'foo' );
 
-							view.padding = 'bar';
+							view.width = 'bar';
 							expect( labeledInput.view.value ).to.equal( 'bar' );
 						} );
 
-						it( 'should update #padding on DOM "input" event', () => {
+						it( 'should update #width on DOM "input" event', () => {
 							labeledInput.view.element.value = 'foo';
 							labeledInput.view.fire( 'input' );
-							expect( view.padding ).to.equal( 'foo' );
+							expect( view.width ).to.equal( 'foo' );
 
 							labeledInput.view.element.value = 'bar';
 							labeledInput.view.fire( 'input' );
-							expect( view.padding ).to.equal( 'bar' );
+							expect( view.width ).to.equal( 'bar' );
+						} );
+					} );
+
+					describe( 'height input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.heightInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Height' );
+							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__height' );
+						} );
+
+						it( 'should reflect #height property', () => {
+							view.height = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.height = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #height on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'bar' );
 						} );
 					} );
 				} );
 
-				describe( 'text alignment row', () => {
+				describe( 'dimensions alignment row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ];
+						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Text alignment' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.horizontalAlignmentToolbar.element );
-						expect( row.childNodes[ 2 ] ).to.equal( view.verticalAlignmentToolbar.element );
+						expect( row.classList.contains( 'ck-table-properties-form__alignment-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Alignment' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.alignmentToolbar.element );
 					} );
 
-					describe( 'horizontal text alignment toolbar', () => {
+					describe( 'alignment toolbar', () => {
 						let toolbar;
 
 						beforeEach( () => {
-							toolbar = view.horizontalAlignmentToolbar;
+							toolbar = view.alignmentToolbar;
 						} );
 
 						it( 'should be defined', () => {
@@ -316,54 +359,14 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should have an ARIA label', () => {
-							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
+							expect( toolbar.ariaLabel ).to.equal( 'Table alignment toolbar' );
 						} );
 
 						it( 'should bring alignment buttons', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align cell text to the left',
-								'Align cell text to the center',
-								'Align cell text to the right',
-								'Justify cell text',
-							] );
-
-							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
-								true, false, false, false
-							] );
-						} );
-
-						it( 'should change the #horizontalAlignment value', () => {
-							toolbar.items.last.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( 'justify' );
-							expect( toolbar.items.last.isOn ).to.be.true;
-
-							toolbar.items.first.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( 'left' );
-							expect( toolbar.items.last.isOn ).to.be.false;
-							expect( toolbar.items.first.isOn ).to.be.true;
-						} );
-					} );
-
-					describe( 'vertical text alignment toolbar', () => {
-						let toolbar;
-
-						beforeEach( () => {
-							toolbar = view.verticalAlignmentToolbar;
-						} );
-
-						it( 'should be defined', () => {
-							expect( toolbar ).to.be.instanceOf( ToolbarView );
-						} );
-
-						it( 'should have an ARIA label', () => {
-							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
-						} );
-
-						it( 'should bring alignment buttons', () => {
-							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align cell text to the top',
-								'Align cell text to the middle',
-								'Align cell text to the bottom',
+								'Align table to the left',
+								'Center table',
+								'Align table to the right'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
@@ -371,13 +374,13 @@ describe( 'table cell properties', () => {
 							] );
 						} );
 
-						it( 'should change the #verticalAlignment value', () => {
+						it( 'should change the #horizontalAlignment value', () => {
 							toolbar.items.last.fire( 'execute' );
-							expect( view.verticalAlignment ).to.equal( 'bottom' );
+							expect( view.alignment ).to.equal( 'right' );
 							expect( toolbar.items.last.isOn ).to.be.true;
 
 							toolbar.items.first.fire( 'execute' );
-							expect( view.verticalAlignment ).to.equal( 'top' );
+							expect( view.alignment ).to.equal( 'left' );
 							expect( toolbar.items.last.isOn ).to.be.false;
 							expect( toolbar.items.first.isOn ).to.be.true;
 						} );
@@ -441,26 +444,26 @@ describe( 'table cell properties', () => {
 					view.borderColorInput,
 					view.borderWidthInput,
 					view.backgroundInput,
-					view.paddingInput,
-					view.horizontalAlignmentToolbar,
-					view.verticalAlignmentToolbar,
+					view.widthInput,
+					view.heightInput,
+					view.alignmentToolbar,
 					view.saveButtonView,
-					view.cancelButtonView
+					view.cancelButtonView,
 				] );
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
 				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-				const view = new TableCellPropertiesView( { t: val => val } );
+				const view = new TablePropertiesView( { t: val => val } );
 				view.render();
 
 				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
 				sinon.assert.calledWith( spy, view.borderColorInput.element );
 				sinon.assert.calledWith( spy, view.borderWidthInput.element );
 				sinon.assert.calledWith( spy, view.backgroundInput.element );
-				sinon.assert.calledWith( spy, view.paddingInput.element );
-				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );
-				sinon.assert.calledWith( spy, view.verticalAlignmentToolbar.element );
+				sinon.assert.calledWith( spy, view.widthInput.element );
+				sinon.assert.calledWith( spy, view.heightInput.element );
+				sinon.assert.calledWith( spy, view.alignmentToolbar.element );
 				sinon.assert.calledWith( spy, view.saveButtonView.element );
 				sinon.assert.calledWith( spy, view.cancelButtonView.element );
 
@@ -468,7 +471,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
-				const view = new TableCellPropertiesView( { t: val => val } );
+				const view = new TablePropertiesView( { t: val => val } );
 				const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 				view.render();

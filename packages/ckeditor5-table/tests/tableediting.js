@@ -259,7 +259,7 @@ describe( 'TableEditing', () => {
 
 		describe( 'on TAB', () => {
 			it( 'should do nothing if selection is not in a table', () => {
-				setModelData( model, '[]' + modelTable( [
+				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 
@@ -267,7 +267,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				assertEqualMarkup( getModelData( model ), '[]' + modelTable( [
+				assertEqualMarkup( getModelData( model ), '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
@@ -456,7 +456,7 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should do nothing if selection is not in a table', () => {
-				setModelData( model, '[]' + modelTable( [
+				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 
@@ -467,7 +467,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				assertEqualMarkup( getModelData( model ), '[]' + modelTable( [
+				assertEqualMarkup( getModelData( model ), '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );

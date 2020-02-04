@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecellproperties/tablecellpropertiesui
+ * @module table/tableproperties/tablepropertiesui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -12,24 +12,26 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { getTableWidgetAncestor } from '../utils';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import TableCellPropertiesView from './ui/tablecellpropertiesview';
-import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
-import { repositionContextualBalloon, getBalloonCellPositionData } from '../ui/utils';
+import TablePropertiesView from './ui/tablepropertiesview';
+import tableProperties from './../../theme/icons/table-properties.svg';
+import {
+	repositionContextualBalloon,
+	getBalloonTablePositionData
+} from '../ui/utils';
 
 const DEFAULT_BORDER_STYLE = 'none';
-const DEFAULT_HORIZONTAL_ALIGNMENT = 'left';
-const DEFAULT_VERTICAL_ALIGNMENT = 'middle';
+const DEFAULT_ALIGNMENT = 'center';
 
 /**
- * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
- * that opens a form allowing to specify visual styling of a table cell.
+ * The table properties UI plugin. It introduces the `'tableProperties'` button
+ * that opens a form allowing to specify visual styling of an entire table.
  *
  * It uses the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TableCellPropertiesUI extends Plugin {
+export default class TablePropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -41,7 +43,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TableCellPropertiesUI';
+		return 'TablePropertiesUI';
 	}
 
 	/**
@@ -60,9 +62,9 @@ export default class TableCellPropertiesUI extends Plugin {
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
 		/**
-		 * The cell properties form view displayed inside the balloon.
+		 * The properties form view displayed inside the balloon.
 		 *
-		 * @member {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
+		 * @member {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
 		 */
 		this.view = this._createPropertiesView();
 
@@ -75,12 +77,12 @@ export default class TableCellPropertiesUI extends Plugin {
 		 */
 		this._undoStepBatch = null;
 
-		editor.ui.componentFactory.add( 'tableCellProperties', locale => {
+		editor.ui.componentFactory.add( 'tableProperties', locale => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Cell properties' ),
-				icon: tableCellProperties,
+				label: t( 'Table properties' ),
+				icon: tableProperties,
 				tooltip: true
 			} );
 
@@ -102,16 +104,16 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView} instance.
+	 * Creates the {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} instance.
 	 *
 	 * @private
-	 * @returns {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView} The cell
+	 * @returns {module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} The table
 	 * properties form view instance.
 	 */
 	_createPropertiesView() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-		const view = new TableCellPropertiesView( editor.locale );
+		const view = new TablePropertiesView( editor.locale );
 
 		// Render the view so its #element is available for the clickOutsideHandler.
 		view.render();
@@ -131,12 +133,12 @@ export default class TableCellPropertiesUI extends Plugin {
 			cancel();
 		} );
 
-		// Reposition the balloon or hide the form if a table cell is no longer selected.
+		// Reposition the balloon or hide the form if a table is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
 			if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
 				this._hideView();
 			} else if ( this._isViewVisible ) {
-				repositionContextualBalloon( editor, 'cell' );
+				repositionContextualBalloon( editor, 'table' );
 			}
 		} );
 
@@ -152,13 +154,13 @@ export default class TableCellPropertiesUI extends Plugin {
 		// These listeners update the editor data (via table commands) when any observable
 		// property of the view has changed. This makes the view live, which means the changes are
 		// visible in the editing as soon as the user types or changes fields' values.
-		view.on( 'change:borderStyle', this._getPropertyChangeCallback( 'tableCellBorderStyle' ) );
-		view.on( 'change:borderColor', this._getPropertyChangeCallback( 'tableCellBorderColor' ) );
-		view.on( 'change:borderWidth', this._getPropertyChangeCallback( 'tableCellBorderWidth' ) );
-		view.on( 'change:padding', this._getPropertyChangeCallback( 'tableCellPadding' ) );
-		view.on( 'change:backgroundColor', this._getPropertyChangeCallback( 'tableCellBackgroundColor' ) );
-		view.on( 'change:horizontalAlignment', this._getPropertyChangeCallback( 'tableCellHorizontalAlignment' ) );
-		view.on( 'change:verticalAlignment', this._getPropertyChangeCallback( 'tableCellVerticalAlignment' ) );
+		view.on( 'change:borderStyle', this._getPropertyChangeCallback( 'tableBorderStyle' ) );
+		view.on( 'change:borderColor', this._getPropertyChangeCallback( 'tableBorderColor' ) );
+		view.on( 'change:borderWidth', this._getPropertyChangeCallback( 'tableBorderWidth' ) );
+		view.on( 'change:backgroundColor', this._getPropertyChangeCallback( 'tableBackgroundColor' ) );
+		view.on( 'change:width', this._getPropertyChangeCallback( 'tableWidth' ) );
+		view.on( 'change:height', this._getPropertyChangeCallback( 'tableHeight' ) );
+		view.on( 'change:alignment', this._getPropertyChangeCallback( 'tableAlignment' ) );
 
 		return view;
 	}
@@ -166,7 +168,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * In this method the "editor data -> UI" binding is happening.
 	 *
-	 * When executed, this method obtains selected cell property values from various table commands
+	 * When executed, this method obtains selected table property values from various table commands
 	 * and passes them to the {@link #view}.
 	 *
 	 * This way, the UI stays up–to–date with the editor data.
@@ -177,13 +179,13 @@ export default class TableCellPropertiesUI extends Plugin {
 		const commands = this.editor.commands;
 
 		this.view.set( {
-			borderStyle: commands.get( 'tableCellBorderStyle' ).value || DEFAULT_BORDER_STYLE,
-			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
-			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
-			padding: commands.get( 'tableCellPadding' ).value || '',
-			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
-			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
-			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || DEFAULT_VERTICAL_ALIGNMENT,
+			borderStyle: commands.get( 'tableBorderStyle' ).value || DEFAULT_BORDER_STYLE,
+			borderColor: commands.get( 'tableBorderColor' ).value || '',
+			borderWidth: commands.get( 'tableBorderWidth' ).value || '',
+			backgroundColor: commands.get( 'tableBackgroundColor' ).value || '',
+			width: commands.get( 'tableWidth' ).value || '',
+			height: commands.get( 'tableHeight' ).value || '',
+			alignment: commands.get( 'tableAlignment' ).value || DEFAULT_ALIGNMENT,
 		} );
 	}
 
@@ -201,7 +203,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		this._balloon.add( {
 			view: this.view,
-			position: getBalloonCellPositionData( editor )
+			position: getBalloonTablePositionData( editor )
 		} );
 
 		// Create a new batch. Clicking "Cancel" will undo this batch.

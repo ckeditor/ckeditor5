@@ -8,8 +8,21 @@
  */
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
+
+const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
+const BALLOON_POSITIONS = [
+	DEFAULT_BALLOON_POSITIONS.northArrowSouth,
+	DEFAULT_BALLOON_POSITIONS.northArrowSouthWest,
+	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
+	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
+];
 
 /**
  * A helper utility that positions the
@@ -17,15 +30,42 @@ import { findAncestor } from '../commands/utils';
  * with respect to the table in the editor content, if one is selected.
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @param {String} target Either "cell" or "table". Determines the the target the balloon will
+ * be attached to.
  */
-export function repositionContextualBalloon( editor ) {
+export function repositionContextualBalloon( editor, target ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
 	if ( getTableWidgetAncestor( editor.editing.view.document.selection ) ) {
-		const position = getBalloonCellPositionData( editor );
+		let position;
+
+		if ( target === 'cell' ) {
+			position = getBalloonCellPositionData( editor );
+		} else {
+			position = getBalloonTablePositionData( editor );
+		}
 
 		balloon.updatePosition( position );
 	}
+}
+
+/**
+ * Returns the positioning options that control the geometry of the
+ * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} with respect
+ * to the selected table in the editor content.
+ *
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @returns {module:utils/dom/position~Options}
+ */
+export function getBalloonTablePositionData( editor ) {
+	const firstPosition = editor.model.document.selection.getFirstPosition();
+	const modelTable = findAncestor( 'table', firstPosition );
+	const viewTable = editor.editing.mapper.toViewElement( modelTable );
+
+	return {
+		target: editor.editing.view.domConverter.viewToDom( viewTable ),
+		positions: BALLOON_POSITIONS
+	};
 }
 
 /**
@@ -40,17 +80,99 @@ export function getBalloonCellPositionData( editor ) {
 	const firstPosition = editor.model.document.selection.getFirstPosition();
 	const modelTableCell = findAncestor( 'tableCell', firstPosition );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
-	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTableCell ),
-		positions: [
-			defaultPositions.northArrowSouth,
-			defaultPositions.northArrowSouthWest,
-			defaultPositions.northArrowSouthEast,
-			defaultPositions.southArrowNorth,
-			defaultPositions.southArrowNorthWest,
-			defaultPositions.southArrowNorthEast
-		]
+		positions: BALLOON_POSITIONS
 	};
+}
+
+/**
+ * Returns an object containing pairs of CSS border style values and their localized UI
+ * labels. Used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
+ * and {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}.
+ *
+ * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
+ * that is used to localize strings.
+ * @returns {Object.<String,String>}
+ */
+export function getBorderStyleLabels( t ) {
+	return {
+		none: t( 'None' ),
+		solid: t( 'Solid' ),
+		dotted: t( 'Dotted' ),
+		dashed: t( 'Dashed' ),
+		double: t( 'Double' ),
+		groove: t( 'Groove' ),
+		ridge: t( 'Ridge' ),
+		inset: t( 'Inset' ),
+		outset: t( 'Outset' ),
+	};
+}
+
+/**
+ * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
+ *
+ * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
+ * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
+ * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
+ */
+export function getBorderStyleDefinitions( view ) {
+	const itemDefinitions = new Collection();
+	const styleLabels = getBorderStyleLabels( view.t );
+
+	for ( const style in styleLabels ) {
+		const definition = {
+			type: 'button',
+			model: new Model( {
+				_borderStyleValue: style,
+				label: styleLabels[ style ],
+				withText: true,
+			} )
+		};
+
+		definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
+			return value === style;
+		} );
+
+		itemDefinitions.add( definition );
+	}
+
+	return itemDefinitions;
+}
+
+/**
+ * A helper that fills a toolbar toolbar with buttons that:
+ *
+ * * have some labels,
+ * * have some icons,
+ * * set a certain UI view property value upon execution.
+ *
+ * @param {Object} options
+ * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
+ * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} options.view
+ * @param {Array.<String>} options.icons
+ * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar
+ * @param {Object.<String,String>} labels
+ * @param {String} propertyName
+ */
+export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
+	for ( const name in labels ) {
+		const button = new ButtonView( view.locale );
+
+		button.set( {
+			label: labels[ name ],
+			icon: icons[ name ],
+		} );
+
+		button.bind( 'isOn' ).to( view, propertyName, value => {
+			return value === name;
+		} );
+
+		button.on( 'execute', () => {
+			view[ propertyName ] = name;
+		} );
+
+		toolbar.items.add( button );
+	}
 }

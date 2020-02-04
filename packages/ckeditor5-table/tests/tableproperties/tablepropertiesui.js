@@ -17,14 +17,14 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import Table from '../../src/table';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
-import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
-import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
+import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui';
+import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview';
 
-describe( 'table cell properties', () => {
-	describe( 'TableCellPropertiesUI', () => {
+describe( 'table properties', () => {
+	describe( 'TablePropertiesUI', () => {
 		let editor, editorElement, contextualBalloon,
-			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
+			tablePropertiesUI, tablePropertiesView, tablePropertiesButton;
 
 		testUtils.createSinonSandbox();
 
@@ -34,16 +34,16 @@ describe( 'table cell properties', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, Paragraph, Undo ],
+					plugins: [ Table, TablePropertiesEditing, TablePropertiesUI, Paragraph, Undo ],
 					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} )
 				.then( newEditor => {
 					editor = newEditor;
 
-					tableCellPropertiesUI = editor.plugins.get( TableCellPropertiesUI );
-					tableCellPropertiesButton = editor.ui.componentFactory.create( 'tableCellProperties' );
+					tablePropertiesUI = editor.plugins.get( TablePropertiesUI );
+					tablePropertiesButton = editor.ui.componentFactory.create( 'tableProperties' );
 					contextualBalloon = editor.plugins.get( ContextualBalloon );
-					tableCellPropertiesView = tableCellPropertiesUI.view;
+					tablePropertiesView = tablePropertiesUI.view;
 
 					// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
 					testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
@@ -58,7 +58,7 @@ describe( 'table cell properties', () => {
 		} );
 
 		it( 'should be named', () => {
-			expect( TableCellPropertiesUI.pluginName ).to.equal( 'TableCellPropertiesUI' );
+			expect( TablePropertiesUI.pluginName ).to.equal( 'TablePropertiesUI' );
 		} );
 
 		it( 'should load ContextualBalloon', () => {
@@ -67,36 +67,36 @@ describe( 'table cell properties', () => {
 
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
-				expect( tableCellPropertiesUI._undoStepBatch ).to.be.null;
+				expect( tablePropertiesUI._undoStepBatch ).to.be.null;
 			} );
 
 			describe( '#view', () => {
 				it( 'should be created', () => {
-					expect( tableCellPropertiesUI.view ).to.be.instanceOf( TableCellPropertiesUIView );
+					expect( tablePropertiesUI.view ).to.be.instanceOf( TablePropertiesUIView );
 				} );
 
 				it( 'should be rendered', () => {
-					expect( tableCellPropertiesUI.view.isRendered ).to.be.true;
+					expect( tablePropertiesUI.view.isRendered ).to.be.true;
 				} );
 			} );
 
 			describe( 'toolbar button', () => {
 				it( 'should be registered', () => {
-					expect( tableCellPropertiesButton ).to.be.instanceOf( ButtonView );
+					expect( tablePropertiesButton ).to.be.instanceOf( ButtonView );
 				} );
 
 				it( 'should have a label', () => {
-					expect( tableCellPropertiesButton.label ).to.equal( 'Cell properties' );
+					expect( tablePropertiesButton.label ).to.equal( 'Table properties' );
 				} );
 
 				it( 'should have a tooltip', () => {
-					expect( tableCellPropertiesButton.tooltip ).to.be.true;
+					expect( tablePropertiesButton.tooltip ).to.be.true;
 				} );
 
 				it( 'should call #_showView upon #execute', () => {
-					const spy = testUtils.sinon.stub( tableCellPropertiesUI, '_showView' ).returns( {} );
+					const spy = testUtils.sinon.stub( tablePropertiesUI, '_showView' ).returns( {} );
 
-					tableCellPropertiesButton.fire( 'execute' );
+					tablePropertiesButton.fire( 'execute' );
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
@@ -104,9 +104,9 @@ describe( 'table cell properties', () => {
 
 		describe( 'destroy()', () => {
 			it( 'should destroy the #view', () => {
-				const spy = sinon.spy( tableCellPropertiesView, 'destroy' );
+				const spy = sinon.spy( tablePropertiesView, 'destroy' );
 
-				tableCellPropertiesUI.destroy();
+				tablePropertiesUI.destroy();
 
 				sinon.assert.calledOnce( spy );
 			} );
@@ -120,25 +120,25 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should hide on #submit', () => {
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
-				tableCellPropertiesView.fire( 'submit' );
+				tablePropertiesView.fire( 'submit' );
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
 			it( 'should undo the entire batch of changes on #cancel', () => {
 				// Show the view. New batch will be created.
-				tableCellPropertiesButton.fire( 'execute' );
+				tablePropertiesButton.fire( 'execute' );
 
 				// Do the changes like a user.
-				tableCellPropertiesView.borderStyle = 'dotted';
-				tableCellPropertiesView.backgroundColor = 'red';
+				tablePropertiesView.borderStyle = 'dotted';
+				tablePropertiesView.backgroundColor = 'red';
 
 				expect( getModelData( editor.model ) ).to.equal(
-					'<table>' +
+					'<table backgroundColor="red" borderStyle="dotted">' +
 						'<tableRow>' +
-							'<tableCell backgroundColor="red" borderStyle="dotted">' +
+							'<tableCell>' +
 								'<paragraph>[]foo</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
@@ -146,7 +146,7 @@ describe( 'table cell properties', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				tableCellPropertiesView.fire( 'cancel' );
+				tablePropertiesView.fire( 'cancel' );
 
 				expect( getModelData( editor.model ) ).to.equal(
 					'<table>' +
@@ -161,10 +161,10 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should hide on #cancel', () => {
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
-				tableCellPropertiesView.fire( 'cancel' );
+				tablePropertiesView.fire( 'cancel' );
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
@@ -175,16 +175,16 @@ describe( 'table cell properties', () => {
 					stopPropagation: sinon.spy()
 				};
 
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
-				tableCellPropertiesView.keystrokes.press( keyEvtData );
+				tablePropertiesView.keystrokes.press( keyEvtData );
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
-			it( 'should hide if the table cell is no longer selected on EditorUI#update', () => {
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+			it( 'should hide if the table is no longer selected on EditorUI#update', () => {
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
 				editor.model.change( writer => {
 					// Set selection in the paragraph.
@@ -194,20 +194,20 @@ describe( 'table cell properties', () => {
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
-			it( 'should reposition if table cell is still selected on on EditorUI#update', () => {
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+			it( 'should reposition if table is still selected on on EditorUI#update', () => {
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
 				editor.model.change( writer => {
 					writer.insertText( 'qux', editor.model.document.selection.getFirstPosition() );
 				} );
 
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 			} );
 
 			it( 'should hide if clicked outside the balloon', () => {
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
@@ -218,20 +218,20 @@ describe( 'table cell properties', () => {
 				it( 'should affect the editor state', () => {
 					const spy = testUtils.sinon.stub( editor, 'execute' );
 
-					tableCellPropertiesUI._undoStepBatch = 'foo';
-					tableCellPropertiesView.borderStyle = 'dotted';
+					tablePropertiesUI._undoStepBatch = 'foo';
+					tablePropertiesView.borderStyle = 'dotted';
 
 					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
+					sinon.assert.calledWithExactly( spy, 'tableBorderStyle', { value: 'dotted', batch: 'foo' } );
 				} );
 
 				it( 'should not affect the editor state if internal property has changed', () => {
 					const spy = testUtils.sinon.stub( editor, 'execute' );
 
-					tableCellPropertiesView.set( 'internalProp', 'foo' );
+					tablePropertiesView.set( 'internalProp', 'foo' );
 
-					tableCellPropertiesUI._undoStepBatch = 'foo';
-					tableCellPropertiesView.internalProp = 'bar';
+					tablePropertiesUI._undoStepBatch = 'foo';
+					tablePropertiesView.internalProp = 'bar';
 
 					sinon.assert.notCalled( spy );
 				} );
@@ -246,74 +246,74 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should create a new undoable batch for further #view cancel', () => {
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
-				const firstBatch = tableCellPropertiesUI._undoStepBatch;
+				const firstBatch = tablePropertiesUI._undoStepBatch;
 				expect( firstBatch ).to.be.instanceOf( Batch );
 
-				tableCellPropertiesView.fire( 'submit' );
+				tablePropertiesView.fire( 'submit' );
 				expect( contextualBalloon.visibleView ).to.be.null;
 
-				tableCellPropertiesButton.fire( 'execute' );
+				tablePropertiesButton.fire( 'execute' );
 
-				const secondBatch = tableCellPropertiesUI._undoStepBatch;
+				const secondBatch = tablePropertiesUI._undoStepBatch;
 				expect( secondBatch ).to.be.instanceOf( Batch );
 				expect( firstBatch ).to.not.equal( secondBatch );
 			} );
 
 			describe( 'initial data', () => {
 				it( 'should be set from the command values', () => {
-					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
-					editor.commands.get( 'tableCellBorderColor' ).value = 'b';
-					editor.commands.get( 'tableCellBorderWidth' ).value = 'c';
-					editor.commands.get( 'tableCellPadding' ).value = 'd';
-					editor.commands.get( 'tableCellBackgroundColor' ).value = 'e';
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'f';
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'g';
+					editor.commands.get( 'tableBorderStyle' ).value = 'a';
+					editor.commands.get( 'tableBorderColor' ).value = 'b';
+					editor.commands.get( 'tableBorderWidth' ).value = 'c';
+					editor.commands.get( 'tableBackgroundColor' ).value = 'd';
+					editor.commands.get( 'tableWidth' ).value = 'e';
+					editor.commands.get( 'tableHeight' ).value = 'f';
+					editor.commands.get( 'tableAlignment' ).value = 'g';
 
-					tableCellPropertiesButton.fire( 'execute' );
+					tablePropertiesButton.fire( 'execute' );
 
-					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
-					expect( tableCellPropertiesView ).to.include( {
+					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+					expect( tablePropertiesView ).to.include( {
 						borderStyle: 'a',
 						borderColor: 'b',
 						borderWidth: 'c',
-						padding: 'd',
-						backgroundColor: 'e',
-						horizontalAlignment: 'f',
-						verticalAlignment: 'g'
+						backgroundColor: 'd',
+						width: 'e',
+						height: 'f',
+						alignment: 'g'
 					} );
 				} );
 
 				it( 'should use default values when command has no value', () => {
-					editor.commands.get( 'tableCellBorderStyle' ).value = null;
-					editor.commands.get( 'tableCellBorderColor' ).value = null;
-					editor.commands.get( 'tableCellBorderWidth' ).value = null;
-					editor.commands.get( 'tableCellPadding' ).value = null;
-					editor.commands.get( 'tableCellBackgroundColor' ).value = null;
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = null;
+					editor.commands.get( 'tableBorderStyle' ).value = null;
+					editor.commands.get( 'tableBorderColor' ).value = null;
+					editor.commands.get( 'tableBorderWidth' ).value = null;
+					editor.commands.get( 'tableBackgroundColor' ).value = null;
+					editor.commands.get( 'tableWidth' ).value = null;
+					editor.commands.get( 'tableHeight' ).value = null;
+					editor.commands.get( 'tableAlignment' ).value = null;
 
-					tableCellPropertiesButton.fire( 'execute' );
+					tablePropertiesButton.fire( 'execute' );
 
-					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
-					expect( tableCellPropertiesView ).to.include( {
+					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+					expect( tablePropertiesView ).to.include( {
 						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
-						padding: '',
 						backgroundColor: '',
-						horizontalAlignment: 'left',
-						verticalAlignment: 'middle'
+						width: '',
+						height: '',
+						alignment: 'center'
 					} );
 				} );
 			} );
 
 			it( 'should focus the form view', () => {
-				const spy = testUtils.sinon.spy( tableCellPropertiesView, 'focus' );
+				const spy = testUtils.sinon.spy( tablePropertiesView, 'focus' );
 
-				tableCellPropertiesButton.fire( 'execute' );
+				tablePropertiesButton.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
 			} );
@@ -327,12 +327,12 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should stop listening to EditorUI#update', () => {
-				const spy = testUtils.sinon.spy( tableCellPropertiesUI, 'stopListening' );
+				const spy = testUtils.sinon.spy( tablePropertiesUI, 'stopListening' );
 
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
-				tableCellPropertiesView.fire( 'submit' );
+				tablePropertiesView.fire( 'submit' );
 				expect( contextualBalloon.visibleView ).to.be.null;
 
 				sinon.assert.calledOnce( spy );
@@ -342,10 +342,10 @@ describe( 'table cell properties', () => {
 			it( 'should focus the editing view so the focus is not lost', () => {
 				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-				tableCellPropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				tablePropertiesButton.fire( 'execute' );
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 
-				tableCellPropertiesView.fire( 'submit' );
+				tablePropertiesView.fire( 'submit' );
 
 				sinon.assert.calledOnce( spy );
 			} );
