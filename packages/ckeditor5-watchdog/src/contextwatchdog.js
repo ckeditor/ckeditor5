@@ -268,15 +268,6 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Waits for all previous actions.
-	 *
-	 * @returns {Promise}
-	 */
-	waitForReady() {
-		return this._actionQueue.enqueue( () => { } );
-	}
-
-	/**
 	 * Destroys the `ContextWatchdog` and all added items.
 	 * Once the `ContextWatchdog` is destroyed new items can not be added.
 	 *
