@@ -414,7 +414,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Checks whether the error comes from the Context and not from the item instances.
+	 * Checks whether the error comes from the `Context` instance and not from the item instances.
 	 *
 	 * @protected
 	 * @param {Error} error
@@ -427,9 +427,7 @@ export default class ContextWatchdog extends Watchdog {
 			}
 		}
 
-		// Return true only if the error comes directly from the context.
-		// Ignore cases when the error comes from editors.
-		return areConnectedThroughProperties( this._contextProps, error.context );
+		return areConnectedThroughProperties( this._context, error.context );
 	}
 }
 
