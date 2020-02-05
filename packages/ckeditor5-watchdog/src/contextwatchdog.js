@@ -105,8 +105,8 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * The context instance. Keep in mind that this property might be changed when the ContextWatchdog restarts,
-	 * so do not keep this instance internally. Always operate on the `contextWatchdog.context` property.
+	 * The context instance. Keep in mind that this property might be changed when the `ContextWatchdog` restarts,
+	 * so do not keep this instance internally. Always operate on the `ContextWatchdog#context` property.
 	 *
 	 * @type {module:core/context~Context|null}
 	 */

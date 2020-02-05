@@ -133,7 +133,7 @@ watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 ### Context watchdog
 
 <info-box>
-	Note: the ContextWatchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
+	Note: the context watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
 </info-box>
 
 Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
@@ -205,7 +205,7 @@ await watchdog.remove( 'editor2' );
 
 #### Context watchdog API
 
-The ContextWatchdog feature provides the following API:
+The context watchdog feature provides the following API:
 
 ```js
 // Create watchdog that will use the `Context` class and given configuration.

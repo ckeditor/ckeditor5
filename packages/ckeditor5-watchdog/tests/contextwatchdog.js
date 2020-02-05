@@ -299,7 +299,7 @@ describe( 'ContextWatchdog', () => {
 			expect( err.message ).to.match( /Not supported item type: 'foo'\./ );
 		} );
 
-		it( 'should allow adding and removing items without waiting', async () => {
+		it( 'should allow adding and removing items without waiting for promises', async () => {
 			watchdog = new ContextWatchdog( Context );
 
 			watchdog.create();
