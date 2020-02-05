@@ -19,6 +19,8 @@ import getSubNodes from './utils/getsubnodes';
  *
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
+ *
+ * @extends {module:watchdog/watchdog~Watchdog}
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
@@ -481,7 +483,7 @@ class ActionQueue {
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
  *
- * @property {string} id A unique item identificator.
+ * @property {String} id A unique item identificator.
  *
  * @property {'editor'} type Type of the item to create. At the moment, only `'editor'` is supported.
  *

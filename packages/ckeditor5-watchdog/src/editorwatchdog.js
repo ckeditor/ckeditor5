@@ -18,6 +18,8 @@ import Watchdog from './watchdog';
  *
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
+ *
+ * @extends {module:watchdog/watchdog~Watchdog}
  */
 export default class EditorWatchdog extends Watchdog {
 	/**
