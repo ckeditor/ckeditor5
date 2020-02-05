@@ -159,7 +159,7 @@ export default class Watchdog {
 	 * Sets the function that is responsible for the instance destruction.
 	 *
 	 * @param {Function} destructor A callback that takes the instance and returns the promise
-	 * to the destructing process.
+	 * to the destroying process.
 	 */
 	setDestructor( destructor ) {
 		this._destructor = destructor;

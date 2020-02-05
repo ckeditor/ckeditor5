@@ -639,7 +639,7 @@ describe( 'EditorWatchdog', () => {
 
 					sinon.assert.calledWith(
 						console.error,
-						'An error happened during the editor destructing.'
+						'An error happened during the editor destroying.'
 					);
 
 					await watchdog.destroy();

@@ -324,7 +324,7 @@ export default class ContextWatchdog extends Watchdog {
 
 			return this._destroy()
 				.catch( err => {
-					console.error( 'An error happened during destructing.', err );
+					console.error( 'An error happened during destroying the context or items.', err );
 				} )
 				.then( () => this._create() )
 				.then( () => this.fire( 'restart' ) );

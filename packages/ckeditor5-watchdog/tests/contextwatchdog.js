@@ -105,7 +105,7 @@ describe( 'ContextWatchdog', () => {
 			sinon.assert.calledOnce( customDestructor );
 		} );
 
-		it( 'should log if an error happens during the component destructing', async () => {
+		it( 'should log if an error happens during the component destroying', async () => {
 			const mainWatchdog = new ContextWatchdog( Context );
 
 			const consoleErrorStub = sinon.stub( console, 'error' );
@@ -122,7 +122,7 @@ describe( 'ContextWatchdog', () => {
 
 			sinon.assert.calledWith(
 				consoleErrorStub,
-				'An error happened during destructing.',
+				'An error happened during destroying the context or items.',
 				err
 			);
 

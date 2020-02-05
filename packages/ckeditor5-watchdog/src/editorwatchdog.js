@@ -142,7 +142,7 @@ export default class EditorWatchdog extends Watchdog {
 				return this._destroy();
 			} )
 			.catch( err => {
-				console.error( 'An error happened during the editor destructing.', err );
+				console.error( 'An error happened during the editor destroying.', err );
 			} )
 			.then( () => {
 				if ( typeof this._elementOrData === 'string' ) {
