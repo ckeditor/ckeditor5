@@ -564,6 +564,64 @@ describe( 'ContextWatchdog', () => {
 
 				await watchdog.destroy();
 			} );
+
+			it( 'should rethrow item `error` events as `itemError` events', async () => {
+				watchdog = new ContextWatchdog( Context );
+
+				watchdog.create();
+
+				await watchdog.add( [ {
+					id: 'editor1',
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element1,
+					config: {}
+				} ] );
+
+				const itemErrorSpy = sinon.spy();
+
+				watchdog.on( 'itemError', itemErrorSpy );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( itemErrorSpy );
+				sinon.assert.calledWith( itemErrorSpy, sinon.match.any, sinon.match( data => {
+					return data.itemId === 'editor1';
+				} ) );
+
+				await watchdog.destroy();
+			} );
+
+			it( 'should rethrow item `restart` events as `itemRestart` events', async () => {
+				watchdog = new ContextWatchdog( Context );
+
+				watchdog.create();
+
+				await watchdog.add( [ {
+					id: 'editor1',
+					type: 'editor',
+					creator: ( el, config ) => ClassicTestEditor.create( el, config ),
+					sourceElementOrData: element1,
+					config: {}
+				} ] );
+
+				const itemRestartSpy = sinon.spy();
+
+				watchdog.on( 'itemRestart', itemRestartSpy );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( itemRestartSpy );
+				sinon.assert.calledWith( itemRestartSpy, sinon.match.any, sinon.match( data => {
+					return data.itemId === 'editor1';
+				} ) );
+
+				await watchdog.destroy();
+			} );
 		} );
 	} );
 } );

@@ -255,13 +255,23 @@ const editor1State = watchdog.getState( 'editor1' );
 // Getting the context state.
 const contextState = watchdog.state;
 
-// Listening to an event fired when the context watchdog catches the context-related error.
+// The `error` event is fired when the context watchdog catches the context-related error.
 // Note that the item errors are not re-fired in the `ContextWatchdog#error`.
-watchdog.on( 'error', () => {} );
+watchdog.on( 'error', ( evt, { error } ) => {} );
 
-// Listening to an event fired when the context is set back to the `ready` state (after it was in `error` state).
+// The `restarted` event is fired when the context is set back to the `ready` state (after it was in `error` state).
 // Similarly, this event is not thrown for internal item restarts.
 watchdog.on( 'restart', () => {} );
+
+// The `itemError` event is fired when an error occurred in one of the added items
+watchdog.on( 'itemError', ( evt, { error, itemId } ) => {
+	console.log( `An error occurred in the item with the '${ itemId }' id.` );
+} );
+
+// The `itemRestarted` event is fired when the item is set back to the `ready` state (after it was in `error` state).
+watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
+	console.log( 'The item with with the '${ itemId }' id has been restarted.' );
+} );
 ```
 
 ## Configuration

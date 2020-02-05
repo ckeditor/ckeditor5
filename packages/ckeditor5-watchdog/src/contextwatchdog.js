@@ -266,12 +266,22 @@ export default class ContextWatchdog extends Watchdog {
 					this._watchdogs.set( item.id, watchdog );
 
 					// Enqueue the internal watchdog errors within the main queue.
-					watchdog.on( 'error', () => {
-						if ( watchdog._shouldRestart() ) {
-							this._actionQueue.enqueue( () => new Promise( res => {
-								watchdog.once( 'restart', () => res() );
-							} ) );
+					// And propagate the internal `error` events as `itemError` event.
+					watchdog.on( 'error', ( evt, { error, causesRestart } ) => {
+						this.fire( 'itemError', { itemId: item.id, error } );
+
+						// Do not enqueue the item restart action if the item will not restart.
+						if ( !causesRestart ) {
+							return;
 						}
+
+						this._actionQueue.enqueue( () => new Promise( res => {
+							watchdog.once( 'restart', () => {
+								this.fire( 'itemRestart', { itemId: item.id } );
+
+								res();
+							} );
+						} ) );
 					} );
 
 					return watchdog.create( item.sourceElementOrData, item.config, this._context );

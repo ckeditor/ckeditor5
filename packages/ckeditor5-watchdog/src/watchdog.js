@@ -219,10 +219,12 @@ export default class Watchdog {
 				date: this._now()
 			} );
 
-			this.fire( 'error', { error } );
+			const causesRestart = this._shouldRestart();
+
+			this.fire( 'error', { error, causesRestart } );
 			this.state = 'crashed';
 
-			if ( this._shouldRestart() ) {
+			if ( causesRestart ) {
 				this._restart();
 			} else {
 				this.state = 'crashedPermanently';
