@@ -132,14 +132,19 @@ describe( 'ContextWatchdog', () => {
 		} );
 
 		it( 'should handle the Watchdog configuration', async () => {
-			// TODO
-			const mainWatchdog = new ContextWatchdog( Context, {
-				crashNumberLimit: Infinity
+			watchdog = new ContextWatchdog( Context, {
+				crashNumberLimit: 0
 			} );
 
-			await mainWatchdog.create();
+			await watchdog.create();
 
-			await mainWatchdog.destroy();
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.context ) );
+
+			await waitCycle();
+
+			expect( watchdog.state ).to.equal( 'crashedPermanently' );
+
+			await watchdog.destroy();
 		} );
 
 		describe( 'in case of error handling', () => {
