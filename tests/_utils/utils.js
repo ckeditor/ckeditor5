@@ -23,17 +23,26 @@ import fullWebsitesStyledFixture from '../_data/full-websites-styled.html';
 /**
  * Renders a button for each performance fixture in a given `container`.
  *
+ *		renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ), {
+ *			'smallTablesInlineCss': 'text and tables (styled)'
+ *		} );
+ *
  * @param {HTMLElement} container
+ * @param {Object.<String, String>} [extraLabels] Dictionary for extra buttons.
  */
-export function renderPerformanceDataButtons( container ) {
+export function renderPerformanceDataButtons( container, extraLabels ) {
 	let html = '';
-	const labels = {
+	let labels = {
 		'small': 'short (semantic)',
 		'medium': 'medium (semantic)',
 		'large': 'long (semantic)',
-		'smallInlineCss': 'short inline styled',
+		'smallInlineCss': 'short (styled)',
 		'fullWebsitesStyled': 'full websites (styled)',
 	};
+
+	if ( extraLabels ) {
+		labels = Object.assign( labels, extraLabels );
+	}
 
 	for ( const fixtureName of Object.keys( labels ) ) {
 		html += `<button id="${ fixtureName }-content" data-file-name="${ fixtureName }" disabled>${ labels[ fixtureName ] }</button>`;

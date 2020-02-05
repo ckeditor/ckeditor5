@@ -40,7 +40,11 @@ import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
 import { getPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils';
 
-renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
+import smallTablesInlineCssFixture from '../../_data/small-tables-inline-css.html';
+
+renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ), {
+	'smallTablesInlineCss': 'text and tables (styled)'
+} );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -158,6 +162,8 @@ function addUploadMockAdapter( editor ) {
 }
 
 const fixtures = getPerformanceData();
+fixtures.smallTablesInlineCss = smallTablesInlineCssFixture;
+
 const buttons = document.querySelectorAll( '#test-controls button' );
 
 for ( const button of buttons ) {
