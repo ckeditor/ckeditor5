@@ -441,6 +441,36 @@ export default class ContextWatchdog extends Watchdog {
 
 		return areConnectedThroughProperties( this._context, error.context );
 	}
+
+	/**
+	 * Fired after the watchdog restarts context and added items because of the crash.
+	 *
+	 * 	watchdog.on( 'restart', () => {
+	 * 		console.log( 'The context has been restarted.' );
+	 * 	} );
+	 *
+	 * @event restart
+	 */
+
+	/**
+	 * Fired when a new error occurred in one of the added items.
+	 *
+	 * 	watchdog.on( 'itemError', ( evt, { error, itemId, causesRestart } ) => {
+	 *		console.log( `An error occurred in the item with the '${ itemId }' id.` );
+	 * 	} );
+	 *
+	 * @event itemError
+	 */
+
+	/**
+	 * Fired after an item has been restarted.
+	 *
+	 * 	watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
+	 *		console.log( 'The item with with the '${ itemId }' id has been restarted.' );
+	 * 	} );
+	 *
+	 * @event itemRestart
+	 */
 }
 
 // An action queue that allows queuing async functions.

@@ -275,6 +275,10 @@ export default class Watchdog {
 	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog instance occurs
 	 * and the watchdog will react to it.
 	 *
+	 * 	watchdog.on( 'error', ( evt, { error, causesRestart } ) => {
+	 * 		console.log( 'An error occurred.' );
+	 * 	} );
+	 *
 	 * @event error
 	 */
 }
