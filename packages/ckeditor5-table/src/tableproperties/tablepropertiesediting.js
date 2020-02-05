@@ -181,7 +181,7 @@ function enableAlignmentProperty( schema, conversion ) {
 		}
 
 		writer.setStyle( styles, table );
-	} ) );
+	}, { priority: 'high' } ) );
 }
 
 // Enables conversion for an attribute for simple view-model mappings.
