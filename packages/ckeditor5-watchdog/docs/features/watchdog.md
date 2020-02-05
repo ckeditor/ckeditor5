@@ -257,11 +257,15 @@ const contextState = watchdog.state;
 
 // The `error` event is fired when the context watchdog catches the context-related error.
 // Note that the item errors are not re-fired in the `ContextWatchdog#error`.
-watchdog.on( 'error', ( evt, { error } ) => {} );
+watchdog.on( 'error', ( evt, { error } ) => {
+	console.log( 'The context crashed.' );
+} );
 
 // The `restarted` event is fired when the context is set back to the `ready` state (after it was in `error` state).
 // Similarly, this event is not thrown for internal item restarts.
-watchdog.on( 'restart', () => {} );
+watchdog.on( 'restart', () => {
+	console.log( 'The context has been restarted.' );
+} );
 
 // The `itemError` event is fired when an error occurred in one of the added items
 watchdog.on( 'itemError', ( evt, { error, itemId } ) => {

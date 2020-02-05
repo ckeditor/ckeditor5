@@ -456,7 +456,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * Fired when a new error occurred in one of the added items.
 	 *
 	 * 	watchdog.on( 'itemError', ( evt, { error, itemId, causesRestart } ) => {
-	 *		console.log( `An error occurred in the item with the '${ itemId }' id.` );
+	 *		console.log( `An error occurred in an item with the '${ itemId }' id.` );
 	 * 	} );
 	 *
 	 * @event itemError
@@ -466,7 +466,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * Fired after an item has been restarted.
 	 *
 	 * 	watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
-	 *		console.log( 'The item with with the '${ itemId }' id has been restarted.' );
+	 *		console.log( 'An item with with the '${ itemId }' id has been restarted.' );
 	 * 	} );
 	 *
 	 * @event itemRestart
