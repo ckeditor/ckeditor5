@@ -156,7 +156,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Adds items to the watchdog. Instances of these items once created will be available using the {@link #get} method.
+	 * Adds items to the watchdog. Once created, instances of these items will be available using the {@link #get} method.
 	 *
 	 * Items can be passed together as an array of objects:
 	 *
@@ -246,7 +246,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Removes and destroys item(s) by its / their id(s).
+	 * Removes and destroys item(s) with given id(s).
 	 *
 	 * @param {Array.<String>|String} itemIdOrItemIds Item id or an array of item ids.
 	 * @returns {Promise}
@@ -329,7 +329,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Destroys the Context and all added items.
+	 * Destroys the `Context` instance and all added items.
 	 *
 	 * @private
 	 * @returns {Promise}
@@ -371,7 +371,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Checks whether the error comes from the Context and not from Editor or ContextItem instances.
+	 * Checks whether the error comes from the Context and not from the item instances.
 	 *
 	 * @protected
 	 * @param {Error} error
