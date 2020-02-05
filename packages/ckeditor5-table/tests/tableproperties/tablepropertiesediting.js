@@ -219,6 +219,26 @@ describe( 'table properties', () => {
 					table = createEmptyTable();
 				} );
 
+				it( 'should consume converted item borderColor attribute', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderColor:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'borderColor', '#f00', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderColor:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'borderColor', '#f00', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
 				it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
 					model.change( writer => writer.setAttribute( 'borderColor', {
 						top: '#f00',
@@ -246,6 +266,26 @@ describe( 'table properties', () => {
 					);
 				} );
 
+				it( 'should consume converted item borderStyle attribute', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'borderStyle', 'solid', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'borderStyle', 'solid', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
 				it( 'should downcast borderStyle attribute (same top, right, bottom, left)', () => {
 					model.change( writer => writer.setAttribute( 'borderStyle', {
 						top: 'solid',
@@ -266,6 +306,26 @@ describe( 'table properties', () => {
 					}, table ) );
 
 					assertTableStyle( editor, 'border-bottom:dotted;border-left:dashed;border-right:ridge;border-top:solid;' );
+				} );
+
+				it( 'should consume converted item borderWidth attribute', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'borderWidth', '2px', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'borderWidth', '2px', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 
 				it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
@@ -508,6 +568,26 @@ describe( 'table properties', () => {
 					table = createEmptyTable();
 				} );
 
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:backgroundColor:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:backgroundColor:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
 				it( 'should downcast backgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
 
@@ -535,6 +615,26 @@ describe( 'table properties', () => {
 
 				beforeEach( () => {
 					table = createEmptyTable();
+				} );
+
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:width:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'width', '400px', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:width:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'width', '400px', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 
 				it( 'should downcast width', () => {
@@ -570,6 +670,26 @@ describe( 'table properties', () => {
 					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
 
 					assertTableStyle( editor, 'height:1337px;' );
+				} );
+
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:height:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'height', '400px', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:height:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'height', '400px', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 			} );
 		} );
@@ -665,6 +785,17 @@ describe( 'table properties', () => {
 						} ) );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'highest' } ) );
+
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 
 				it( 'should downcast right alignment', () => {
