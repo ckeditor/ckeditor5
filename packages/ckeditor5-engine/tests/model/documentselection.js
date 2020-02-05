@@ -579,7 +579,7 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			it( 'selection ranges change does not change selection markers - no markers', () => {
+			it( 'selection ranges change does not change selection markers (no markers)', () => {
 				const spy = sinon.spy();
 
 				model.document.selection.on( 'change:marker', spy );
@@ -591,7 +591,7 @@ describe( 'DocumentSelection', () => {
 				expect( spy.called ).to.be.false;
 			} );
 
-			it( 'selection ranges change does not change selection markers - same markers', () => {
+			it( 'selection ranges change does not change selection markers (same markers)', () => {
 				model.change( writer => {
 					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
 				} );
