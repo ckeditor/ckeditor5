@@ -443,47 +443,221 @@ describe( 'DocumentSelection', () => {
 			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
 		} );
 
-		it( 'should fire change:marker event when selection markers change', () => {
-			model.change( writer => {
+		describe( 'should fire change:marker event when', () => {
+			// Set marker to range 0-4.
+			beforeEach( () => {
+				model.change( writer => {
+					writer.addMarker( 'marker-1', {
+						range: writer.createRange(
+							writer.createPositionFromPath( root, [ 2, 0 ] ),
+							writer.createPositionFromPath( root, [ 2, 4 ] )
+						),
+						usingOperation: false
+					} );
+				} );
+			} );
+
+			it( 'selection ranges change (marker added to the selection)', () => {
+				const spy = sinon.spy();
+
+				model.change( writer => {
+					// The selection has no markers before the change.
+					model.document.selection.on( 'change:marker', ( evt, data ) => {
+						expect( data.oldMarkers ).to.deep.equal( [] );
+						spy();
+					} );
+
+					// Move selection to 1-2, that is inside 0-4 marker.
+					writer.setSelection( writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					) );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'selection ranges change (marker removed from the selection)', () => {
+				const spy = sinon.spy();
+
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					) );
+
+					// The selection is in a marker before the change.
+					model.document.selection.on( 'change:marker', ( evt, data ) => {
+						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker-1' ] );
+						spy();
+					} );
+
+					// Move the selection out of the marker.
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'selection focus changes (marker removed from the selection)', () => {
+				const spy = sinon.spy();
+
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
+
+					// The selection is in a marker before the change.
+					model.document.selection.on( 'change:marker', ( evt, data ) => {
+						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker-1' ] );
+						spy();
+					} );
+
+					// Move the selection focus out of the marker.
+					writer.setSelectionFocus( writer.createPositionFromPath( root, [ 2, 5 ] ) );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'a new marker contains the selection', () => {
+				const spy = sinon.spy();
+
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
+
+					// The selection is not in a marker before the change.
+					model.document.selection.on( 'change:marker', ( evt, data ) => {
+						expect( data.oldMarkers ).to.deep.equal( [] );
+						spy();
+					} );
+
+					writer.updateMarker( 'marker-1', {
+						range: writer.createRange(
+							writer.createPositionFromPath( root, [ 2, 0 ] ),
+							writer.createPositionFromPath( root, [ 2, 6 ] )
+						)
+					} );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'a marker stops contains the selection', () => {
+				const spy = sinon.spy();
+
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 3 ] ) );
+
+					// The selection is in a marker before the change.
+					model.document.selection.on( 'change:marker', ( evt, data ) => {
+						expect( data.oldMarkers.map( marker => marker.name ) ).to.deep.equal( [ 'marker-1' ] );
+						spy();
+					} );
+
+					writer.updateMarker( 'marker-1', {
+						range: writer.createRange(
+							writer.createPositionFromPath( root, [ 2, 0 ] ),
+							writer.createPositionFromPath( root, [ 2, 1 ] )
+						)
+					} );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		describe( 'should not fire change:marker event when', () => {
+			// Set marker to range 0-4.
+			beforeEach( () => {
+				model.change( writer => {
+					writer.addMarker( 'marker-1', {
+						range: writer.createRange(
+							writer.createPositionFromPath( root, [ 2, 0 ] ),
+							writer.createPositionFromPath( root, [ 2, 4 ] )
+						),
+						usingOperation: false
+					} );
+				} );
+			} );
+
+			it( 'selection ranges change does not change selection markers - no markers', () => {
 				const spy = sinon.spy();
 
 				model.document.selection.on( 'change:marker', spy );
 
-				writer.setSelection( writer.createRange(
-					writer.createPositionFromPath( root, [ 2, 1 ] ),
-					writer.createPositionFromPath( root, [ 2, 2 ] )
-				) );
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
+				} );
 
 				expect( spy.called ).to.be.false;
+			} );
 
-				writer.addMarker( 'marker-1', {
-					range: writer.createRange(
-						writer.createPositionFromPath( root, [ 2, 0 ] ),
-						writer.createPositionFromPath( root, [ 2, 5 ] )
-					),
-					usingOperation: false
+			it( 'selection ranges change does not change selection markers - same markers', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
 				} );
 
-				expect( spy.calledOnce ).to.be.true;
+				const spy = sinon.spy();
 
-				writer.addMarker( 'marker-2', {
-					range: writer.createRange(
-						writer.createPositionFromPath( root, [ 2, 0 ] ),
-						writer.createPositionFromPath( root, [ 2, 3 ] )
-					),
-					usingOperation: false
+				model.document.selection.on( 'change:marker', spy );
+
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 3 ] ) );
 				} );
 
-				expect( spy.calledTwice ).to.be.true;
-				spy.resetHistory();
+				expect( spy.called ).to.be.false;
+			} );
 
-				writer.setSelection( writer.createPositionFromPath( root, [ 2, 6 ] ) );
+			it( 'selection focus change does not change selection markers', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
+				} );
 
-				expect( spy.calledOnce ).to.be.true;
+				const spy = sinon.spy();
 
-				writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
+				model.document.selection.on( 'change:marker', spy );
 
-				expect( spy.calledTwice ).to.be.true;
+				model.change( writer => {
+					writer.setSelectionFocus( writer.createPositionFromPath( root, [ 2, 3 ] ) );
+				} );
+
+				expect( spy.called ).to.be.false;
+			} );
+
+			it( 'changed marker still contains the selection', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 2 ] ) );
+				} );
+
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change:marker', spy );
+
+				model.change( writer => {
+					writer.updateMarker( 'marker-1', {
+						range: writer.createRange(
+							writer.createPositionFromPath( root, [ 2, 0 ] ),
+							writer.createPositionFromPath( root, [ 2, 5 ] )
+						)
+					} );
+				} );
+
+				expect( spy.called ).to.be.false;
+			} );
+
+			it( 'removed marker did not contain the selection', () => {
+				model.change( writer => {
+					writer.setSelection( writer.createPositionFromPath( root, [ 2, 5 ] ) );
+				} );
+
+				const spy = sinon.spy();
+
+				model.document.selection.on( 'change:marker', spy );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker-1' );
+				} );
+
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 	} );
