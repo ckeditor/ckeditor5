@@ -135,7 +135,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * 	const editor1 = contextWatchdog.get( 'editor1' );
 	 *
 	 * @param {String} itemId The item id.
-	 * @returns {*} The item instance or `undefined`.
+	 * @returns {*} The item instance or `undefined` if an item with given id has not been found.
 	 */
 	get( itemId ) {
 		const watchdog = this._getWatchdog( itemId );

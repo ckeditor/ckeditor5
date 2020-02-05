@@ -208,10 +208,10 @@ await watchdog.remove( 'editor2' );
 The context watchdog feature provides the following API:
 
 ```js
-// Create watchdog that will use the `Context` class and given configuration.
+// Creating watchdog that will use the `Context` class and given configuration.
 const watchdog = new ContextWatchdog( Context, watchdogConfig );
 
-// Set a custom creator.
+// Setting a custom creator.
 watchdog.setCreator( async config => {
 	const context = await Context.create( config ) );
 
@@ -220,17 +220,17 @@ watchdog.setCreator( async config => {
 	return context;
 } );
 
-// Set a custom destructor.
+// Setting a custom destructor.
 watchdog.setDestructor( async context => {
 	// Do something before destroy.
 
 	await context.destroy();
 } );
 
-// Initialize the context watchdog with the context configuration.
+// Initializing the context watchdog with the context configuration.
 await watchdog.create( contextConfig );
 
-// Add editor configuration (or an array of editor configurations).
+// Adding editor configuration (or an array of editor configurations).
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
@@ -240,23 +240,23 @@ await watchdog.add( {
 	destructor: destroyEditor,
 } );
 
-// Remove and destroy given editor.
+// Removing and destroy given editor.
 await watchdog.remove( [ 'editor1' ] );
 
-// Get given item instance.
+// Getting given item instance.
 const editor1 = watchdog.get( 'editor1' );
 
-// Get given item state.
+// Getting given item state.
 const editor1State = watchdog.getState( 'editor1' );
 
-// Get the context state.
+// Getting the context state.
 const contextState = watchdog.state;
 
-// An event fired when the context watchdog catches the context-related error.
+// Listening to an event fired when the context watchdog catches the context-related error.
 // Note that the editor errors are not re-fired in the `ContextWatchdog#error`.
 watchdog.on( 'error', () => {} );
 
-// An event fired when the context is set back to the `ready` state (after it was in `error` state).
+// Listening to an event fired when the context is set back to the `ready` state (after it was in `error` state).
 // Similarly, this event is not thrown for internal editor instances.
 watchdog.on( 'restart', () => {} );
 ```
