@@ -186,10 +186,12 @@ await watchdog.add( [ {
 } ] );
 ```
 
-The Watchdog will keep the context and editor instances running
-that are added via the {@link module:watchdog/contextwatchdog~ContextWatchdog#add `ContextWatchdog#add` method}. This method can be called multiple times during the `ContextWatchdog` lifetime.
+<info-box>
+	The Watchdog will keep the context and item instances running
+	that are added via the {@link module:watchdog/contextwatchdog~ContextWatchdog#add `ContextWatchdog#add` method}. This method can be called multiple times during the `ContextWatchdog` lifetime.
 
-To destroy one of the editor instances use the {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove` method}. This method can be called multiple times during the `ContextWatchdog` lifetime as well.
+	To destroy one of the item instances use the {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove` method}. This method can be called multiple times during the `ContextWatchdog` lifetime as well.
+</info-box>
 
 ```js
 await watchdog.remove( [ 'editor1', 'editor2' ] );
@@ -201,7 +203,7 @@ await watchdog.remove( 'editor2' );
 
 <info-box>
 	Examples presents the "synchronous way" of the integration with the context watchdog feature, however it's not needed to wait for the promises returned by the `create()`, `add()` and `remove()` methods. There might be a need
-	to create and destroy editors dynamically with shared context and that's can be easily achieved as all promises operating on the internal API will be chained.
+	to create and destroy items dynamically with shared context and that's can be easily achieved as all promises operating on the internal API will be chained.
 </info-box>
 
 #### Context watchdog API
@@ -231,7 +233,7 @@ watchdog.setDestructor( async context => {
 // Initializing the context watchdog with the context configuration.
 await watchdog.create( contextConfig );
 
-// Adding editor configuration (or an array of editor configurations).
+// Adding item configuration (or an array of item configurations).
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
@@ -241,7 +243,7 @@ await watchdog.add( {
 	destructor: destroyEditor,
 } );
 
-// Removing and destroy given editor.
+// Removing and destroy given item.
 await watchdog.remove( [ 'editor1' ] );
 
 // Getting given item instance.
@@ -254,11 +256,11 @@ const editor1State = watchdog.getState( 'editor1' );
 const contextState = watchdog.state;
 
 // Listening to an event fired when the context watchdog catches the context-related error.
-// Note that the editor errors are not re-fired in the `ContextWatchdog#error`.
+// Note that the item errors are not re-fired in the `ContextWatchdog#error`.
 watchdog.on( 'error', () => {} );
 
 // Listening to an event fired when the context is set back to the `ready` state (after it was in `error` state).
-// Similarly, this event is not thrown for internal editor instances.
+// Similarly, this event is not thrown for internal item restarts.
 watchdog.on( 'restart', () => {} );
 ```
 
@@ -279,7 +281,7 @@ const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 ```
 
 <info-box>
-	Note that the context watchdog passes this configuration to the added editors.
+	Note that the context watchdog passes its configuration to the added editors.
 </info-box>
 
 ## Limitations

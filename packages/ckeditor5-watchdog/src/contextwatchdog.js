@@ -24,11 +24,11 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * The `ContextWatchdog` class constructor.
 	 *
-	 * 	const contextWatchdog = new ContextWatchdog( Context );
+	 * 	const watchdog = new ContextWatchdog( Context );
 	 *
-	 * 	await contextWatchdog.create( contextConfiguration );
+	 * 	await watchdog.create( contextConfiguration );
 	 *
-	 * 	await contextWatchdog.add( watchdogItem );
+	 * 	await watchdog.add( item );
 	 *
 	 * See {@glink features/watchdog the watchdog feature guide} to learn more how to use this feature.
 	 *
@@ -147,6 +147,10 @@ export default class ContextWatchdog extends Watchdog {
 	 * Initializes the context watchdog. Once it's created the watchdog takes care about
 	 * recreating the context and provided items and starts the error handling mechanism.
 	 *
+	 * 	await watchdog.create( {
+	 * 		plugins: []
+	 * 	} );
+	 *
 	 * @param {Object} [contextConfig] Context configuration. See {@link module:core/context~Context}.
 	 * @returns {Promise}
 	 */
@@ -161,7 +165,7 @@ export default class ContextWatchdog extends Watchdog {
 	/**
      * Returns the item instance with the given `itemId`.
 	 *
-	 * 	const editor1 = contextWatchdog.get( 'editor1' );
+	 * 	const editor1 = watchdog.get( 'editor1' );
 	 *
 	 * @param {String} itemId The item id.
 	 * @returns {*} The item instance or `undefined` if an item with given id has not been found.
@@ -174,6 +178,8 @@ export default class ContextWatchdog extends Watchdog {
 
 	/**
 	 * Gets state of the given item. For the list of available states see {@link #state}.
+	 *
+	 * 	const editor1State = watchdog.getState( 'editor1' );
 	 *
 	 * @param {String} itemId Item id.
 	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
@@ -277,6 +283,12 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Removes and destroys item(s) with given id(s).
 	 *
+	 * 	await watchdog.remove( 'editor1' );
+	 *
+	 * Or
+	 *
+	 * 	await watchdog.remove( [ 'editor1', 'editor2' ] );
+	 *
 	 * @param {Array.<String>|String} itemIdOrItemIds Item id or an array of item ids.
 	 * @returns {Promise}
 	 */
@@ -299,6 +311,8 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Destroys the `ContextWatchdog` and all added items.
 	 * Once the `ContextWatchdog` is destroyed new items can not be added.
+	 *
+	 * 	await watchdog.destroy();
 	 *
 	 * @returns {Promise}
 	 */
