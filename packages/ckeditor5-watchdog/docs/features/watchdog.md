@@ -200,7 +200,8 @@ await watchdog.remove( 'editor2' );
 ```
 
 <info-box>
-	Note that the above examples does not use promises returning by the context watchdog methods while these methods are asynchronous. You should not depend on these promises because they are resolved only once while your component might be restarted multiple times internally causing watchdog to unmount the editor and to mount again. Read further below for more information about events and watchdog states.
+	Examples presents the "synchronous way" of the integration with the context watchdog feature, however it's not needed to wait for the promises returned by the `create()`, `add()` and `remove()` methods. There might be a need
+	to create and destroy editors dynamically with shared context and that's can be easily achieved as all promises operating on the internal API will be chained.
 </info-box>
 
 #### Context watchdog API
@@ -277,7 +278,9 @@ const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 } )
 ```
 
-Note that the context watchdog passes this configuration to the added editors.
+<info-box>
+	Note that the context watchdog passes this configuration to the added editors.
+</info-box>
 
 ## Limitations
 
