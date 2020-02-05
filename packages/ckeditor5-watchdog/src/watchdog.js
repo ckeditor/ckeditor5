@@ -48,7 +48,7 @@ export default class Watchdog {
 		 * * `ready` - a state when a user can interact with the instance,
 		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
 		 * depending on how many and how frequency errors have been caught recently,
-		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the instance crashed,
+		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the item it is watching crashed,
 		 * * `destroyed` - a state when the instance is manually destroyed by the user after calling `watchdog.destroy()`
 		 *
 		 * @public

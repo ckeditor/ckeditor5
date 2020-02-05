@@ -242,8 +242,7 @@ export default class EditorWatchdog extends Watchdog {
 	_save() {
 		const version = this._editor.model.document.version;
 
-		// Change may not produce an operation, so the document's version
-		// can be the same after that change.
+		// Operation may not result in a model change, so the document's version can be the same.
 		if ( version === this._lastDocumentVersion ) {
 			return;
 		}
@@ -285,8 +284,8 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Traverses both structures to find out whether the error context is connected
-	 * with the current editor.
+	 * Traverses error context and the current editor to find out whether these structures are connected
+	 * via properties to each other.
 	 *
 	 * @protected
 	 * @param {module:utils/ckeditorerror~CKEditorError} error

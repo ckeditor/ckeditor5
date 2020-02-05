@@ -14,8 +14,8 @@ The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly t
 It should be noticed that the most "dangerous" places in the API - like `editor.model.change()`, `editor.editing.view.change()`, emitters - are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart editor when they occur.
 
 Currently there are two available watchdogs, which can be used depending on your needs:
-* [editor watchdog](#editor-watchdog) - it fills the most basic scenario when only one editor is created
-* [context watchdog](#context-watchdog) - it
+* [editor watchdog](#editor-watchdog) - that fills the most basic scenario when only one editor is created,
+* [context watchdog](#context-watchdog) - that keeps an advanced structure of connected editors via te context feature running
 
 ## Usage
 
@@ -230,7 +230,7 @@ watchdog.setDestructor( async context => {
 // Initialize the context watchdog with the context configuration.
 await watchdog.create( contextConfig );
 
-// Add editor configuration.
+// Add editor configuration (or an array of editor configurations).
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
