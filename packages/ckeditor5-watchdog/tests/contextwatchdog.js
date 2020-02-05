@@ -578,18 +578,23 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				const itemErrorSpy = sinon.spy();
-
-				watchdog.on( 'itemError', itemErrorSpy );
+				watchdog.on(
+					'itemError',
+					sinon.mock()
+						.once()
+						.withArgs( sinon.match.any, sinon.match( data => {
+							return data.itemId === 'editor1';
+						} ) )
+						.callsFake( () => {
+							expect( watchdog.get( 'editor1' ).state ).to.equal( 'crashed' );
+						} )
+				);
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( itemErrorSpy );
-				sinon.assert.calledWith( itemErrorSpy, sinon.match.any, sinon.match( data => {
-					return data.itemId === 'editor1';
-				} ) );
+				sinon.verify();
 
 				await watchdog.destroy();
 			} );
@@ -607,18 +612,23 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				const itemRestartSpy = sinon.spy();
-
-				watchdog.on( 'itemRestart', itemRestartSpy );
+				watchdog.on(
+					'itemRestart',
+					sinon.mock()
+						.once()
+						.withArgs( sinon.match.any, sinon.match( data => {
+							return data.itemId === 'editor1';
+						} ) )
+						.callsFake( () => {
+							expect( watchdog.get( 'editor1' ).state ).to.equal( 'ready' );
+						} )
+				);
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( itemRestartSpy );
-				sinon.assert.calledWith( itemRestartSpy, sinon.match.any, sinon.match( data => {
-					return data.itemId === 'editor1';
-				} ) );
+				sinon.verify();
 
 				await watchdog.destroy();
 			} );

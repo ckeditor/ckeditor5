@@ -221,8 +221,8 @@ export default class Watchdog {
 
 			const causesRestart = this._shouldRestart();
 
-			this.fire( 'error', { error, causesRestart } );
 			this.state = 'crashed';
+			this.fire( 'error', { error, causesRestart } );
 
 			if ( causesRestart ) {
 				this._restart();
