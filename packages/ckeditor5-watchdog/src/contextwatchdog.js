@@ -102,6 +102,35 @@ export default class ContextWatchdog extends Watchdog {
 				this.state = 'ready';
 			}
 		} );
+
+		/**
+		 * Sets the function that is responsible for the context creation.
+		 * It expects a function that should return a promise (or `undefined`).
+		 *
+		 *		watchdog.setCreator( config => Context.create( config ) );
+		*
+		* @method #setCreator
+		* @param {Function} creator
+		*/
+
+		/**
+		 * Sets the function that is responsible for the context destruction.
+		 * Overrides the default destruction function, which destroys only the context instance.
+		 * It expects a function that should return a promise (or `undefined`).
+		 *
+		 *		watchdog.setDestructor( context => {
+		 *			// Do something before the context is destroyed.
+		*
+		*			return context
+		*				.destroy()
+		*				.then( () => {
+		*					// Do something after the context is destroyed.
+		*				} );
+		*		} );
+		*
+		* @method #setDestructor
+		* @param {Function} destructor
+		*/
 	}
 
 	/**
@@ -444,9 +473,11 @@ class ActionQueue {
  *
  * @property {'editor'} type Type of the item to create. At the moment, only `'editor'` is supported.
  *
- * @property {Function} creator A function that initializes the editor. E.g. `( el, config ) => ClassicEditor.create( el, config )`.
+ * @property {Function} creator A function that initializes the item (the editor). The function takes editor initialization arguments
+ * and should return a promise. E.g. `( el, config ) => ClassicEditor.create( el, config )`.
  *
- * @property {Function} [destructor] A function that destroys the editor. E.g. `editor => editor.destroy()`
+ * @property {Function} [destructor] A function that destroys the item instance (the editor). The function
+ * takes an item and should return a promise. E.g. `editor => editor.destroy()`
  *
  * @property {String|HTMLElement} sourceElementOrData The source element or data which will be passed
  * as the first argument to the `Editor.create()` method.
