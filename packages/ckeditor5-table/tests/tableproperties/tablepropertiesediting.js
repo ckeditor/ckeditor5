@@ -658,6 +658,15 @@ describe( 'table properties', () => {
 					table = createEmptyTable();
 				} );
 
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+				} );
+
 				it( 'should downcast right alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 

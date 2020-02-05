@@ -149,9 +149,14 @@ function enableAlignmentProperty( schema, conversion ) {
 				value: viewElement => viewElement.getAttribute( 'align' )
 			}
 		} );
+
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
+
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
 
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
