@@ -63,6 +63,7 @@ export default class DocumentSelection {
 
 		this._selection.delegate( 'change:range' ).to( this );
 		this._selection.delegate( 'change:attribute' ).to( this );
+		this._selection.delegate( 'change:marker' ).to( this );
 	}
 
 	/**
@@ -542,6 +543,17 @@ mix( DocumentSelection, EmitterMixin );
  * @param {Array.<String>} attributeKeys Array containing keys of attributes that changed.
  */
 
+/**
+ * Fired when selection marker(s) changed.
+ *
+ * @event change:marker
+ * @param {Boolean} directChange This is always set to `false` in case of `change:marker` event as there is no possibility
+ * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
+ * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and
+ * {@link module:engine/model/documentselection~DocumentSelection#event:change:attribute}.
+ * @param {Array.<module:engine/model/markercollection~Marker>} oldMarkers Markers in which the selection was before the change.
+ */
+
 // `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
 //
 // LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
@@ -721,11 +733,13 @@ class LiveSelection extends Selection {
 	setTo( selectable, optionsOrPlaceOrOffset, options ) {
 		super.setTo( selectable, optionsOrPlaceOrOffset, options );
 		this._updateAttributes( true );
+		this._updateMarkers();
 	}
 
 	setFocus( itemOrPosition, offset ) {
 		super.setFocus( itemOrPosition, offset );
 		this._updateAttributes( true );
+		this._updateMarkers();
 	}
 
 	setAttribute( key, value ) {
@@ -830,6 +844,7 @@ class LiveSelection extends Selection {
 
 	_updateMarkers() {
 		const markers = [];
+		let changed = false;
 
 		for ( const marker of this._model.markers ) {
 			const markerRange = marker.getRange();
@@ -841,16 +856,26 @@ class LiveSelection extends Selection {
 			}
 		}
 
+		const oldMarkers = Array.from( this.markers );
+
 		for ( const marker of markers ) {
 			if ( !this.markers.has( marker ) ) {
 				this.markers.add( marker );
+
+				changed = true;
 			}
 		}
 
 		for ( const marker of Array.from( this.markers ) ) {
 			if ( !markers.includes( marker ) ) {
 				this.markers.remove( marker );
+
+				changed = true;
 			}
+		}
+
+		if ( changed ) {
+			this.fire( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
