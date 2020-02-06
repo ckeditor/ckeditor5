@@ -875,8 +875,6 @@ describe( 'EditorWatchdog', () => {
 
 			expect( watchdog.state ).to.equal( 'ready' );
 
-			await watchdog.create( element );
-
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 			setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
 
