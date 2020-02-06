@@ -102,7 +102,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'width:25px;' );
+						assertTableStyle( editor, null, 'width:25px;' );
 					} );
 
 					it( 'should change selected table width to a passed value', () => {
@@ -110,7 +110,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'width:25px;' );
+						assertTableStyle( editor, null, 'width:25px;' );
 					} );
 
 					it( 'should remove width from a selected table if no value is passed', () => {
@@ -128,7 +128,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'width:25px;' );
+						assertTableStyle( editor, null, 'width:25px;' );
 					} );
 
 					it( 'should change selected table width to a passed value', () => {
@@ -136,7 +136,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'width:25px;' );
+						assertTableStyle( editor, null, 'width:25px;' );
 					} );
 
 					it( 'should remove width from a selected table if no value is passed', () => {

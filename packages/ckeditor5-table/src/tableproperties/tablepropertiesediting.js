@@ -12,7 +12,12 @@ import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/borde
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import TableEditing from './../tableediting';
-import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
+import {
+	downcastAttributeToStyle,
+	downcastTableAttribute,
+	upcastBorderStyles,
+	upcastStyleToAttribute
+} from './../converters/tableproperties';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 import TableBorderColorCommand from './commands/tablebordercolorcommand';
 import TableBorderStyleCommand from './commands/tableborderstylecommand';
@@ -77,7 +82,7 @@ export default class TablePropertiesEditing extends Plugin {
 		enableAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor ) );
 
-		enableProperty( schema, conversion, 'width', 'width' );
+		enableTableToFigureProperty( schema, conversion, 'width', 'width' );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor ) );
 
 		enableProperty( schema, conversion, 'height', 'height' );
@@ -191,4 +196,18 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	} );
 	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
 	downcastTableAttribute( conversion, modelAttribute, styleName );
+}
+
+// Enables conversion for an attribute for simple view (figure) to model (table) mappings.
+//
+// @param {String} modelAttribute
+// @param {String} styleName
+// @param {module:engine/model/schema~Schema} schema
+// @param {module:engine/conversion/conversion~Conversion} conversion
+function enableTableToFigureProperty( schema, conversion, modelAttribute, styleName ) {
+	schema.extend( 'table', {
+		allowAttributes: [ modelAttribute ]
+	} );
+	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
+	downcastAttributeToStyle( conversion, 'table', modelAttribute, styleName );
 }
