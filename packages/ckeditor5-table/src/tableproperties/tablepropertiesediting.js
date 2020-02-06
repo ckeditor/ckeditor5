@@ -85,7 +85,7 @@ export default class TablePropertiesEditing extends Plugin {
 		enableTableToFigureProperty( schema, conversion, 'width', 'width' );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor ) );
 
-		enableProperty( schema, conversion, 'height', 'height' );
+		enableTableToFigureProperty( schema, conversion, 'height', 'height' );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor ) );
 
 		viewDoc.addStyleProcessorRules( addBackgroundRules );
