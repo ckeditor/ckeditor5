@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console */
+/* globals console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -113,10 +113,7 @@ export function createPerformanceEditor( domElement ) {
 	};
 
 	return ClassicEditor.create( domElement, config )
-		.then( editor => {
-			window.editor = editor;
-			return editor;
-		} )
+		// Editor is not exposed on window to disable CKEditor5 Inspector for performance tests.
 		.catch( err => {
 			console.error( err.stack );
 		} );
