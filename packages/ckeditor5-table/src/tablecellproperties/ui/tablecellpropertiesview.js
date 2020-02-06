@@ -64,7 +64,6 @@ export default class TableCellPropertiesView extends View {
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { horizontalAlignmentToolbar, verticalAlignmentToolbar, alignmentLabel } = this._createAlignmentFields();
-		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
 		/**
 		 * Tracks information about the DOM focus in the form.
@@ -210,6 +209,11 @@ export default class TableCellPropertiesView extends View {
 		 * @member {module:ui/toolbar/toolbar~ToolbarView}
 		 */
 		this.verticalAlignmentToolbar = verticalAlignmentToolbar;
+
+		// Defer creating to make sure other fields are present and the Save button can
+		// bind its #isEnabled to their error messages so there's no way to save unless all
+		// fields are valid.
+		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
 		/**
 		 * The "Save" button view.
@@ -562,9 +566,14 @@ export default class TableCellPropertiesView extends View {
 	_createActionButtons() {
 		const locale = this.locale;
 		const t = this.t;
-
 		const saveButtonView = new ButtonView( locale );
 		const cancelButtonView = new ButtonView( locale );
+		const fieldsThatShouldValidateToSave = [
+			this.borderWidthInput,
+			this.borderColorInput,
+			this.backgroundInput,
+			this.paddingInput
+		];
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
@@ -572,6 +581,10 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true,
+		} );
+
+		saveButtonView.bind( 'isEnabled' ).toMany( fieldsThatShouldValidateToSave, 'errorText', ( ...errorTexts ) => {
+			return errorTexts.every( errorText => !errorText );
 		} );
 
 		cancelButtonView.set( {
