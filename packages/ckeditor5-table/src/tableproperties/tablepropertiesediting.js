@@ -22,7 +22,6 @@ import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
 
 // RegExp used for matching margin style in converters.
-const MARGIN_REG_EXP = /^(auto|0(%|[a-z]{2,4})?)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|right|center)$/;
 
 /**
@@ -111,48 +110,11 @@ function enableAlignmentProperty( schema, conversion ) {
 	schema.extend( 'table', {
 		allowAttributes: [ 'alignment' ]
 	} );
-	conversion.for( 'upcast' )
+
+	conversion
 		.attributeToAttribute( {
-			view: {
-				styles: {
-					'margin-right': MARGIN_REG_EXP,
-					'margin-left': MARGIN_REG_EXP
-				}
-			},
 			model: {
 				name: 'table',
-				key: 'alignment',
-				value: viewElement => {
-					// At this point we only have auto or 0 value (with a unit).
-					if ( viewElement.getStyle( 'margin-right' ) != 'auto' ) {
-						return 'right';
-					}
-
-					if ( viewElement.getStyle( 'margin-left' ) != 'auto' ) {
-						return 'left';
-					}
-
-					return 'center';
-				}
-			}
-		} )
-		// Support for backwards compatibility and pasting from other sources.
-		.attributeToAttribute( {
-			view: {
-				attributes: {
-					align: ALIGN_VALUES_REG_EXP
-				}
-			},
-			model: {
-				name: 'table',
-				key: 'alignment',
-				value: viewElement => viewElement.getAttribute( 'align' )
-			}
-		} );
-
-	conversion.for( 'downcast' )
-		.attributeToAttribute( {
-			model: {
 				key: 'alignment',
 				values: [ 'left', 'center', 'right' ]
 			},
@@ -180,6 +142,21 @@ function enableAlignmentProperty( schema, conversion ) {
 				}
 			},
 			converterPriority: 'high'
+		} );
+
+	conversion.for( 'upcast' )
+		// Support for backwards compatibility and pasting from other sources.
+		.attributeToAttribute( {
+			view: {
+				attributes: {
+					align: ALIGN_VALUES_REG_EXP
+				}
+			},
+			model: {
+				name: 'table',
+				key: 'alignment',
+				value: viewElement => viewElement.getAttribute( 'align' )
+			}
 		} );
 }
 

@@ -574,21 +574,21 @@ describe( 'table properties', () => {
 			} );
 		} );
 
-		describe.only( 'alignment', () => {
+		describe( 'alignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'alignment' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast style="margin-left:auto;margin-right:0" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="float:left;margin-right:0" to right value', () => {
+					editor.setData( '<table style="float:left;margin-right:0"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
 				} );
 
-				it( 'should upcast style="margin-left:0;margin-right:auto" to left value', () => {
-					editor.setData( '<table style="margin-left:0;margin-right:auto"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="margin-left:0;float:right;" to left value', () => {
+					editor.setData( '<table style="margin-left:0;float:right;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
@@ -601,22 +601,8 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
 				} );
 
-				it( 'should upcast style="margin-left:auto;margin-right:0pt" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0pt"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
-				} );
-
-				it( 'should upcast style="margin-left:auto;margin-right:0%" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0%"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
-				} );
-
-				it( 'should not upcast style="margin-left:auto;margin-right:0.23pt" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0.23pt"><tr><td>foo</td></tr></table>' );
+				it( 'should not upcast style="float:left;margin-right:23px" to right value (non-zero margin)', () => {
+					editor.setData( '<table style="float:left;margin-right:23px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.hasAttribute( 'alignment' ) ).to.be.false;
