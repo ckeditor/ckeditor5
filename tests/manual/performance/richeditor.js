@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -45,6 +45,8 @@ import smallTablesInlineCssFixture from '../../_data/small-tables-inline-css.htm
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ), {
 	'smallTablesInlineCss': 'text and tables (styled)'
 } );
+
+let editor;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -126,11 +128,12 @@ ClassicEditor
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', 'imageTextAlternative' ]
 		}
 	} )
-	.then( editor => {
-		window.editor = editor;
+	.then( newEditor => {
+		// Editor is not exposed as window.editor to disable CKEditor5 Inspector for performance tests.
+		editor = newEditor;
 
-		addWordCountListener( editor );
-		addUploadMockAdapter( editor );
+		addWordCountListener( newEditor );
+		addUploadMockAdapter( newEditor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -170,7 +173,7 @@ for ( const button of buttons ) {
 	button.addEventListener( 'click', function() {
 		const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
 
-		window.editor.setData( content );
+		editor.setData( content );
 	} );
 	button.disabled = false;
 }
