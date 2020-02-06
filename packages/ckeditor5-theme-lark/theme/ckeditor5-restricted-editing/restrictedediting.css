@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -45,5 +45,22 @@
 .ck-restricted-editing_mode_restricted .restricted-editing-exception {
 	&:hover {
 		background: var(--ck-color-restricted-editing-exception-hover-background);
+	}
+}
+
+.ck-restricted-editing_mode_restricted {
+	cursor: default;
+
+	/* For some reason, we also need to override user agent styles for links inside the editor. */
+	& *:not(.restricted-editing-exception) {
+		cursor: default;
+	}
+}
+
+.ck-restricted-editing_mode_restricted .restricted-editing-exception {
+	cursor: text;
+
+	& * {
+		cursor: text;
 	}
 }

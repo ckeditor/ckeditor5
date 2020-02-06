@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -80,6 +80,7 @@ const ui = testUtils.createTestUIView( {
 	'toolbarWrap': '#toolbar-wrap',
 	'toolbarSeparator': '#toolbar-separator',
 	'toolbarMultiRow': '#toolbar-multi-row',
+	'toolbarCompact': '#toolbar-compact',
 
 	'inputLabeled': '#input-labeled',
 	'inputReadOnly': '#input-read-only'
@@ -485,6 +486,28 @@ function renderToolbar() {
 			icon: boldIcon
 		} )
 	] ) );
+
+	// --- Compact ------------------------------------------------------------
+
+	const compactToolbar = toolbar( [
+		button( {
+			icon: boldIcon,
+			withText: false
+		} ),
+		button( {
+			icon: italicIcon,
+			withText: false,
+			isOn: true
+		} ),
+		button( {
+			icon: cancelIcon,
+			withText: false
+		} )
+	] );
+
+	compactToolbar.isCompact = true;
+
+	ui.toolbarCompact.add( compactToolbar );
 }
 
 function renderInput() {
