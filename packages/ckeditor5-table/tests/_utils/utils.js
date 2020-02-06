@@ -297,9 +297,9 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
  * An assertion helper for testing the `<table>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {String} tableStyle A style to assert on table.
+ * @param {String} [tableStyle=''] A style to assert on table.
  */
-export function assertTableStyle( editor, tableStyle ) {
+export function assertTableStyle( editor, tableStyle = '' ) {
 	const styleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
 
 	assertEqualMarkup( editor.getData(),

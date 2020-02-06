@@ -12,7 +12,7 @@ import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/borde
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import TableEditing from './../tableediting';
-import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
+import { downcastTableAttribute, upcastBorderStyles, upcastStyleToAttribute } from './../converters/tableproperties';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 import TableBorderColorCommand from './commands/tablebordercolorcommand';
 import TableBorderStyleCommand from './commands/tableborderstylecommand';
@@ -156,26 +156,10 @@ function enableAlignmentProperty( schema, conversion ) {
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
 		if ( !attributeNewValue ) {
-			writer.removeStyle( 'margin-left', table );
-			writer.removeStyle( 'margin-right', table );
-
 			return;
 		}
 
-		const styles = {
-			'margin-right': 'auto',
-			'margin-left': 'auto'
-		};
-
-		if ( attributeNewValue == 'left' ) {
-			styles[ 'margin-left' ] = '0';
-		}
-
-		if ( attributeNewValue == 'right' ) {
-			styles[ 'margin-right' ] = '0';
-		}
-
-		writer.setStyle( styles, table );
+		writer.setStyle( getAlignmentStylesForAttribute( attributeNewValue ), table );
 	} ) );
 }
 
@@ -192,3 +176,24 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
 	downcastTableAttribute( conversion, modelAttribute, styleName );
 }
+
+function getAlignmentStylesForAttribute( attributeNewValue ) {
+	const styles = {};
+
+	if ( attributeNewValue == 'center' ) {
+		styles[ 'margin-left' ] = 'auto';
+		styles[ 'margin-right' ] = 'auto';
+	}
+
+	if ( attributeNewValue == 'left' ) {
+		styles[ 'margin-left' ] = '0';
+		styles.float = 'right';
+	}
+
+	if ( attributeNewValue == 'right' ) {
+		styles[ 'margin-right' ] = '0';
+		styles.float = 'left';
+	}
+	return styles;
+}
+
