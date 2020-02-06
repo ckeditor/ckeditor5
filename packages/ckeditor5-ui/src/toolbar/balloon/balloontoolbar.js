@@ -185,7 +185,7 @@ export default class BalloonToolbar extends Plugin {
 
 		toolbarView.extendTemplate( {
 			attributes: {
-				class: [ 'ck-toolbar_floating' ]
+				class: [ 'ck-toolbar_floating', 'ck-balloon-toolbar_min-width' ]
 			}
 		} );
 
