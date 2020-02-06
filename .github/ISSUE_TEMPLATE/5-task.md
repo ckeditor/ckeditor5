@@ -9,7 +9,7 @@ assignees: ''
 
 ## Provide a description of the task
 
-*What steps should be taken to fulfill the task?*
+_What steps should be taken to fulfill the task?_
 
 ## 📃 Other details
 

@@ -169,8 +169,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippetGeshi_url">codeSnippetGeshi_url</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_codeClass">codeSnippet_codeClass</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_languages">codeSnippet_languages</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_theme">codeSnippet_theme</a></td>
 			<td>
-				<p>Code blocks are not supported yet, but are <a href="https://github.com/ckeditor/ckeditor5/issues/436" target="_blank" rel="noopener">coming soon</a>.</p>
-				<p>A plugin adding support for the inline <code>&lt;code&gt;</code> element is already included in the {@link features/basic-styles Basic styles} package.<br>
+				<p>Refer to the {@link features/code-blocks Code block feature} guide to learn more about support for blocks of pre–formatted code in CKEditor 5.</p>
+				<p>A plugin adding support for the inline <code>&lt;code&gt;</code> element is included in the {@link features/basic-styles Basic styles} package.<br>
 				Note: The {@link module:basic-styles/code~Code Code feature} is not available by default in any build, but can be enabled in a {@link builds/guides/development/custom-builds custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>

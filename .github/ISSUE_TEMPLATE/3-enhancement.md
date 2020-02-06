@@ -9,7 +9,7 @@ assignees: ''
 
 ## 📝 Provide a description of the improvement
 
-*How the feature works now and what you'd like to change*?
+_How the feature works now and what you'd like to change_?
 
 ## 📃 Other details
 
