@@ -212,11 +212,11 @@ describe( 'DecoupledEditor build', () => {
 			} );
 
 			it( 'font color works', () => {
-				const data = '<p><span style="color:red;">foo</span></p>';
+				const data = '<p><span style="color:hsl(0,75%,60%);">foo</span></p>';
 
 				editor.setData( data );
 				expect( editor.getData() ).to.equal( data );
-				expect( editor.model.document.selection.getAttribute( 'fontColor' ) ).to.equal( 'red' );
+				expect( editor.model.document.selection.getAttribute( 'fontColor' ) ).to.equal( 'hsl(0,75%,60%)' );
 			} );
 
 			it( 'alignment works', () => {
