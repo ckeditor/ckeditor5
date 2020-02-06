@@ -661,45 +661,45 @@ describe( 'table properties', () => {
 				it( 'should downcast right alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
 				} );
 
 				it( 'should downcast left alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, 'float:right;margin-left:0;' );
+					assertTableStyle( editor, null, 'float:right;margin-left:0;' );
 				} );
 
 				it( 'should downcast centered alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
 				} );
 
 				it( 'should downcast changed alignment (center -> right)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
 				} );
 
 				it( 'should downcast changed alignment (right -> center)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
 				} );
 
 				it( 'should downcast removed alignment (from center)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 
@@ -709,7 +709,7 @@ describe( 'table properties', () => {
 				it( 'should downcast removed alignment (from right)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 

@@ -149,18 +149,38 @@ function enableAlignmentProperty( schema, conversion ) {
 				value: viewElement => viewElement.getAttribute( 'align' )
 			}
 		} );
-	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
-		const { item, attributeNewValue } = data;
-		const { mapper, writer } = conversionApi;
 
-		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
-
-		if ( !attributeNewValue ) {
-			return;
-		}
-
-		writer.setStyle( getAlignmentStylesForAttribute( attributeNewValue ), table );
-	} ) );
+	conversion.for( 'downcast' )
+		.attributeToAttribute( {
+			model: {
+				key: 'alignment',
+				values: [ 'left', 'center', 'right' ]
+			},
+			view: {
+				left: {
+					key: 'style',
+					value: {
+						'margin-left': '0',
+						float: 'right'
+					}
+				},
+				center: {
+					key: 'style',
+					value: {
+						'margin-right': 'auto',
+						'margin-left': 'auto'
+					}
+				},
+				right: {
+					key: 'style',
+					value: {
+						'margin-right': '0',
+						float: 'left'
+					}
+				}
+			},
+			converterPriority: 'high'
+		} );
 }
 
 // Enables conversion for an attribute for simple view-model mappings.
@@ -176,24 +196,3 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
 	downcastTableAttribute( conversion, modelAttribute, styleName );
 }
-
-function getAlignmentStylesForAttribute( attributeNewValue ) {
-	const styles = {};
-
-	if ( attributeNewValue == 'center' ) {
-		styles[ 'margin-left' ] = 'auto';
-		styles[ 'margin-right' ] = 'auto';
-	}
-
-	if ( attributeNewValue == 'left' ) {
-		styles[ 'margin-left' ] = '0';
-		styles.float = 'right';
-	}
-
-	if ( attributeNewValue == 'right' ) {
-		styles[ 'margin-right' ] = '0';
-		styles.float = 'left';
-	}
-	return styles;
-}
-
