@@ -114,16 +114,22 @@ watchdog.editor;
 // * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently` depending on how many and how frequency errors have been caught recently,
 // * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
 // * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`.
-// This property is observable.
 watchdog.state;
 
 // Listen to state changes.
-watchdog.on( 'change:state' ( evt, name, currentState, prevState ) => {
+
+let prevState = watchdog.state;
+
+watchdog.on( 'stateChange', () => {
+	const currentState = watchdog.state;
+
 	console.log( `State changed from ${ currentState } to ${ prevState }` );
 
 	if ( currentState === 'crashedPermanently' ) {
 		watchdog.editor.isReadOnly = true;
 	}
+
+	prevState = currentState;
 } );
 
 // An array of editor crashes info.
@@ -257,7 +263,7 @@ const contextState = watchdog.state;
 
 // The `error` event is fired when the context watchdog catches the context-related error.
 // Note that the item errors are not re-fired in the `ContextWatchdog#error`.
-watchdog.on( 'error', ( evt, { error } ) => {
+watchdog.on( 'error', ( _, { error } ) => {
 	console.log( 'The context crashed.' );
 } );
 
@@ -268,12 +274,12 @@ watchdog.on( 'restart', () => {
 } );
 
 // The `itemError` event is fired when an error occurred in one of the added items
-watchdog.on( 'itemError', ( evt, { error, itemId } ) => {
+watchdog.on( 'itemError', ( _, { error, itemId } ) => {
 	console.log( `An error occurred in an item with the '${ itemId }' id.` );
 } );
 
 // The `itemRestarted` event is fired when the item is set back to the `ready` state (after it was in `error` state).
-watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
+watchdog.on( 'itemRestart', ( _, { itemId } ) => {
 	console.log( 'An item with with the '${ itemId }' id has been restarted.' );
 } );
 ```
