@@ -102,6 +102,7 @@ export default class ContextWatchdog extends Watchdog {
 		this._actionQueue.onEmpty( () => {
 			if ( this.state === 'initializing' ) {
 				this.state = 'ready';
+				this.fire( 'stateChange' );
 			}
 		} );
 
@@ -276,11 +277,15 @@ export default class ContextWatchdog extends Watchdog {
 						}
 
 						this._actionQueue.enqueue( () => new Promise( res => {
-							watchdog.once( 'restart', () => {
+							watchdog.on( 'restart', rethrowRestartEventOnce );
+
+							function rethrowRestartEventOnce() {
+								watchdog.off( 'restart', rethrowRestartEventOnce );
+
 								this.fire( 'itemRestart', { itemId: item.id } );
 
 								res();
-							} );
+							}
 						} ) );
 					} );
 
@@ -331,6 +336,7 @@ export default class ContextWatchdog extends Watchdog {
 	destroy() {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'destroyed';
+			this.fire( 'stateChange' );
 
 			super.destroy();
 
@@ -347,6 +353,7 @@ export default class ContextWatchdog extends Watchdog {
 	_restart() {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'initializing';
+			this.fire( 'stateChange' );
 
 			return this._destroy()
 				.catch( err => {

@@ -9,8 +9,7 @@
 
 /* globals window */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import SimpleEventEmitter from './simpleeventemitter';
 
 /**
  * An abstract watchdog class that handles most of the error handling process and the state of the underlying component.
@@ -20,11 +19,13 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
  * @private
  * @abstract
  */
-export default class Watchdog {
+export default class Watchdog extends SimpleEventEmitter {
 	/**
 	 * @param {module:watchdog/watchdog~WatchdogConfig} config The watchdog plugin configuration.
 	 */
 	constructor( config ) {
+		super();
+
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
@@ -52,10 +53,9 @@ export default class Watchdog {
 		 * * `destroyed` - a state when the instance is manually destroyed by the user after calling `watchdog.destroy()`
 		 *
 		 * @public
-		 * @observable
 		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} #state
 		 */
-		this.set( 'state', 'initializing' );
+		this.state = 'initializing';
 
 		/**
 		 * @protected
@@ -166,11 +166,12 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Destroys the watchdog and release the resources.
+	 * Destroys the watchdog and releases the resources.
 	 */
 	destroy() {
 		this._stopErrorHandling();
-		this.stopListening();
+
+		super.destroy();
 	}
 
 	/**
@@ -222,12 +223,14 @@ export default class Watchdog {
 			const causesRestart = this._shouldRestart();
 
 			this.state = 'crashed';
+			this.fire( 'stateChange' );
 			this.fire( 'error', { error, causesRestart } );
 
 			if ( causesRestart ) {
 				this._restart();
 			} else {
 				this.state = 'crashedPermanently';
+				this.fire( 'stateChange' );
 			}
 		}
 	}
@@ -282,8 +285,6 @@ export default class Watchdog {
 	 * @event error
 	 */
 }
-
-mix( Watchdog, ObservableMixin );
 
 /**
  * The watchdog plugin configuration.

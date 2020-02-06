@@ -862,15 +862,6 @@ describe( 'EditorWatchdog', () => {
 	} );
 
 	describe( 'state', () => {
-		let orphanEditors = [];
-
-		afterEach( () => {
-			return Promise.all( orphanEditors.map( editor => editor.destroy() ) )
-				.then( () => {
-					orphanEditors = [];
-				} );
-		} );
-
 		it( 'should reflect the state of the watchdog', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
@@ -882,7 +873,6 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.create( element );
 
-			orphanEditors.push( watchdog.editor );
 			expect( watchdog.state ).to.equal( 'ready' );
 
 			await watchdog.create( element );
@@ -905,48 +895,40 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 			const states = [];
 
-			watchdog.on( 'change:state', ( evt, propName, newValue ) => {
-				states.push( newValue );
+			watchdog.on( 'stateChanged', () => {
+				states.push( watchdog.state );
 			} );
 
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			return watchdog.create( element ).then( () => {
-				orphanEditors.push( watchdog.editor );
+			await watchdog.create( element );
 
-				return watchdog.create( element ).then( () => {
-					setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
-					setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
-					setTimeout( () => throwCKEditorError( 'baz', watchdog.editor ) );
-					setTimeout( () => throwCKEditorError( 'biz', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'baz', watchdog.editor ) );
+			setTimeout( () => throwCKEditorError( 'biz', watchdog.editor ) );
 
-					return new Promise( res => {
-						setTimeout( () => {
-							window.onerror = originalErrorHandler;
+			await waitCycle();
 
-							watchdog.destroy().then( () => {
-								expect( states ).to.deep.equal( [
-									'ready',
-									'crashed',
-									'initializing',
-									'ready',
-									'crashed',
-									'initializing',
-									'ready',
-									'crashed',
-									'initializing',
-									'ready',
-									'crashed',
-									'crashedPermanently',
-									'destroyed'
-								] );
+			window.onerror = originalErrorHandler;
 
-								res();
-							} );
-						} );
-					} );
-				} );
+			watchdog.destroy().then( () => {
+				expect( states ).to.deep.equal( [
+					'ready',
+					'crashed',
+					'initializing',
+					'ready',
+					'crashed',
+					'initializing',
+					'ready',
+					'crashed',
+					'initializing',
+					'ready',
+					'crashed',
+					'crashedPermanently',
+					'destroyed'
+				] );
 			} );
 		} );
 	} );
