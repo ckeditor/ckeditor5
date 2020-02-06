@@ -8,7 +8,7 @@
  */
 
 import objectToMap from './objecttomap';
-import { isPlainObject } from 'lodash-es';
+import isIterable from './isiterable';
 
 /**
  * Transforms object or iterable to map. Iterable needs to be in the format acceptable by the `Map` constructor.
@@ -21,9 +21,9 @@ import { isPlainObject } from 'lodash-es';
  * @returns {Map} Map created from data.
  */
 export default function toMap( data ) {
-	if ( isPlainObject( data ) ) {
-		return objectToMap( data );
-	} else {
+	if ( isIterable( data ) ) {
 		return new Map( data );
+	} else {
+		return objectToMap( data );
 	}
 }
