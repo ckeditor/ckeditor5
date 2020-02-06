@@ -63,6 +63,7 @@ export default class TableCellPropertiesView extends View {
 		super( locale );
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { horizontalAlignmentToolbar, verticalAlignmentToolbar, alignmentLabel } = this._createAlignmentFields();
 		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
@@ -137,6 +138,24 @@ export default class TableCellPropertiesView extends View {
 			backgroundColor: '',
 
 			/**
+			 * The value of the table cell width style.
+			 *
+			 * @observable
+			 * @default ''
+			 * @member #width
+			 */
+			width: '',
+
+			/**
+			 * The value of the table cell height style.
+			 *
+			 * @observable
+			 * @default ''
+			 * @member #height
+			 */
+			height: '',
+
+			/**
 			 * The value of the horizontal text alignment style.
 			 *
 			 * @observable
@@ -194,6 +213,22 @@ export default class TableCellPropertiesView extends View {
 		 * @member {module:ui/inputtext/inputtextview~InputTextView}
 		 */
 		this.paddingInput = this._createPaddingField();
+
+		/**
+		 * An input that allows specifying the table cell width.
+		 *
+		 * @readonly
+		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 */
+		this.widthInput = widthInput;
+
+		/**
+		 * An input that allows specifying the table cell height.
+		 *
+		 * @readonly
+		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 */
+		this.heightInput = heightInput;
 
 		/**
 		 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
@@ -271,6 +306,18 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-row'
 		} ) );
 
+		// Dimensions row.
+		this.children.add( new FormRowView( locale, {
+			labelView: dimensionsLabel,
+			children: [
+				dimensionsLabel,
+				widthInput,
+				operatorLabel,
+				heightInput
+			],
+			class: 'ck-table-cell-properties-form__dimensions-row'
+		} ) );
+
 		// Background and padding row.
 		this.children.add( new FormRowView( locale, {
 			children: [
@@ -333,6 +380,8 @@ export default class TableCellPropertiesView extends View {
 			this.borderWidthInput,
 			this.backgroundInput,
 			this.paddingInput,
+			this.widthInput,
+			this.heightInput,
 			this.horizontalAlignmentToolbar,
 			this.verticalAlignmentToolbar,
 			this.saveButtonView,
@@ -463,6 +512,75 @@ export default class TableCellPropertiesView extends View {
 		} );
 
 		return backgroundInput;
+	}
+
+	/**
+	 * Creates the following form fields:
+	 *
+	 * * {@link #widthInput}.
+	 * * {@link #heightInput}.
+	 *
+	 * @private
+	 * @returns {module:ui/labeledview/labeledview~LabeledView}
+	 */
+	_createDimensionFields() {
+		const locale = this.locale;
+		const t = this.t;
+
+		// -- Label ---------------------------------------------------
+
+		const dimensionsLabel = new LabelView( locale );
+		dimensionsLabel.text = t( 'Dimensions' );
+
+		// -- Width ---------------------------------------------------
+
+		const widthInput = new LabeledView( locale, createLabeledInputText );
+
+		widthInput.set( {
+			label: t( 'Width' ),
+			class: 'ck-table-cell-properties-form__width',
+		} );
+
+		widthInput.view.bind( 'value' ).to( this, 'width' );
+		widthInput.view.on( 'input', () => {
+			this.width = widthInput.view.element.value;
+		} );
+
+		// -- Operator ---------------------------------------------------
+
+		const operatorLabel = new View( locale );
+		operatorLabel.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: [
+					'ck-table-cell-properties-form__dimension-operator'
+				]
+			},
+			children: [
+				{ text: '×' }
+			]
+		} );
+
+		// -- Height ---------------------------------------------------
+
+		const heightInput = new LabeledView( locale, createLabeledInputText );
+
+		heightInput.set( {
+			label: t( 'Height' ),
+			class: 'ck-table-cell-properties-form__height',
+		} );
+
+		heightInput.view.bind( 'value' ).to( this, 'height' );
+		heightInput.view.on( 'input', () => {
+			this.height = heightInput.view.element.value;
+		} );
+
+		return {
+			dimensionsLabel,
+			widthInput,
+			operatorLabel,
+			heightInput
+		};
 	}
 
 	/**

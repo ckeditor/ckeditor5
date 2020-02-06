@@ -157,6 +157,8 @@ export default class TableCellPropertiesUI extends Plugin {
 		view.on( 'change:borderWidth', this._getPropertyChangeCallback( 'tableCellBorderWidth' ) );
 		view.on( 'change:padding', this._getPropertyChangeCallback( 'tableCellPadding' ) );
 		view.on( 'change:backgroundColor', this._getPropertyChangeCallback( 'tableCellBackgroundColor' ) );
+		view.on( 'change:width', this._getPropertyChangeCallback( 'tableCellWidth' ) );
+		view.on( 'change:height', this._getPropertyChangeCallback( 'tableCellHeight' ) );
 		view.on( 'change:horizontalAlignment', this._getPropertyChangeCallback( 'tableCellHorizontalAlignment' ) );
 		view.on( 'change:verticalAlignment', this._getPropertyChangeCallback( 'tableCellVerticalAlignment' ) );
 
