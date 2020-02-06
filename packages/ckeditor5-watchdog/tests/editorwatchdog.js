@@ -895,7 +895,7 @@ describe( 'EditorWatchdog', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 			const states = [];
 
-			watchdog.on( 'stateChanged', () => {
+			watchdog.on( 'stateChange', () => {
 				states.push( watchdog.state );
 			} );
 
@@ -913,23 +913,23 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			watchdog.destroy().then( () => {
-				expect( states ).to.deep.equal( [
-					'ready',
-					'crashed',
-					'initializing',
-					'ready',
-					'crashed',
-					'initializing',
-					'ready',
-					'crashed',
-					'initializing',
-					'ready',
-					'crashed',
-					'crashedPermanently',
-					'destroyed'
-				] );
-			} );
+			await watchdog.destroy();
+
+			expect( states ).to.deep.equal( [
+				'ready',
+				'crashed',
+				'initializing',
+				'ready',
+				'crashed',
+				'initializing',
+				'ready',
+				'crashed',
+				'initializing',
+				'ready',
+				'crashed',
+				'crashedPermanently',
+				'destroyed'
+			] );
 		} );
 	} );
 

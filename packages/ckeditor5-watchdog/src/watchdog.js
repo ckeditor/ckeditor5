@@ -223,14 +223,14 @@ export default class Watchdog extends SimpleEventEmitter {
 			const causesRestart = this._shouldRestart();
 
 			this.state = 'crashed';
-			this.fire( 'stateChange' );
-			this.fire( 'error', { error, causesRestart } );
+			this._fire( 'stateChange' );
+			this._fire( 'error', { error, causesRestart } );
 
 			if ( causesRestart ) {
 				this._restart();
 			} else {
 				this.state = 'crashedPermanently';
-				this.fire( 'stateChange' );
+				this._fire( 'stateChange' );
 			}
 		}
 	}

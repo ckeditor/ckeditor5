@@ -140,7 +140,7 @@ export default class EditorWatchdog extends Watchdog {
 		return Promise.resolve()
 			.then( () => {
 				this.state = 'initializing';
-				this.fire( 'stateChange' );
+				this._fire( 'stateChange' );
 
 				return this._destroy();
 			} )
@@ -159,7 +159,7 @@ export default class EditorWatchdog extends Watchdog {
 				}
 			} )
 			.then( () => {
-				this.fire( 'restart' );
+				this._fire( 'restart' );
 			} );
 	}
 
@@ -196,7 +196,7 @@ export default class EditorWatchdog extends Watchdog {
 				this._data = this._getData();
 
 				this.state = 'ready';
-				this.fire( 'stateChange' );
+				this._fire( 'stateChange' );
 			} );
 	}
 
@@ -210,7 +210,7 @@ export default class EditorWatchdog extends Watchdog {
 		return Promise.resolve()
 			.then( () => {
 				this.state = 'destroyed';
-				this.fire( 'stateChange' );
+				this._fire( 'stateChange' );
 
 				super.destroy();
 
