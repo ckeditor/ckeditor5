@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -30,11 +30,23 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+
+import { getPerformanceData, renderPerformanceDataButtons } from '../../_utils/utils';
+
+import smallTablesInlineCssFixture from '../../_data/small-tables-inline-css.html';
+
+renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ), {
+	'smallTablesInlineCss': 'text and tables (styled)'
+} );
+
+let editor;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -62,6 +74,8 @@ ClassicEditor
 			RemoveFormat,
 			StandardEditingMode,
 			SpecialCharacters,
+			TableProperties,
+			TableCellProperties,
 			ImageUpload,
 			ImageResize,
 			WordCount,
@@ -108,17 +122,18 @@ ClassicEditor
 			shouldNotGroupWhenFull: true
 		},
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties' ]
 		},
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', 'imageTextAlternative' ]
 		}
 	} )
-	.then( editor => {
-		window.editor = editor;
+	.then( newEditor => {
+		// Editor is not exposed as window.editor to disable CKEditor5 Inspector for performance tests.
+		editor = newEditor;
 
-		addWordCountListener( editor );
-		addUploadMockAdapter( editor );
+		addWordCountListener( newEditor );
+		addUploadMockAdapter( newEditor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -147,4 +162,18 @@ function addUploadMockAdapter( editor ) {
 	editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
 		return new UploadAdapterMock( loader );
 	};
+}
+
+const fixtures = getPerformanceData();
+fixtures.smallTablesInlineCss = smallTablesInlineCssFixture;
+
+const buttons = document.querySelectorAll( '#test-controls button' );
+
+for ( const button of buttons ) {
+	button.addEventListener( 'click', function() {
+		const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
+
+		editor.setData( content );
+	} );
+	button.disabled = false;
 }

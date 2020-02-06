@@ -1,3 +1,0 @@
-<h1>Hello world</h1>
-
-<p>This is rather short text with <em>very little</em> text <strong>formatting</strong>.</p>

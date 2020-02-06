@@ -7,27 +7,35 @@
 
 import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
 
+const editorCount = 5;
+
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
 const fixtures = getPerformanceData();
+const editorsWrapper = document.getElementById( 'editors-wrapper' );
 const buttons = document.querySelectorAll( '#test-controls button' );
+
+for ( let i = 0; i < editorCount; i++ ) {
+	const editorElement = document.createElement( 'div' );
+	editorElement.setAttribute( 'id', `editor_${ i }` );
+	editorsWrapper.appendChild( editorElement );
+}
 
 for ( const button of buttons ) {
 	const fixtureName = button.getAttribute( 'data-file-name' );
 	const content = fixtures[ fixtureName ];
-	const editorElement = document.querySelector( `#editor_${ fixtureName }` );
-
-	// Put the source content in editor-related elements ahead of time, so that potentially
-	// big `innerHTML` change does not affect the benchmark when pressing the button.
-	editorElement.innerHTML = content;
 
 	button.addEventListener( 'click', function() {
-		createPerformanceEditor( editorElement )
-			.catch( err => {
-				console.error( err.stack );
-			} );
+		for ( let i = 0; i < editorCount; i++ ) {
+			const editorElement = document.querySelector( `#editor_${ i }` );
+			editorElement.innerHTML = content;
+
+			createPerformanceEditor( editorElement )
+				.catch( err => {
+					console.error( err.stack );
+				} );
+		}
 	} );
 
 	button.disabled = false;
 }
-

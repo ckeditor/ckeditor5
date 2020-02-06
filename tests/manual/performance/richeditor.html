@@ -1,3 +1,13 @@
+<div id="test-controls">
+	Call <code>editor.setData()</code> with:
+	<span id="fixture-buttons"></span>
+	HTML payload.
+	<br><br>
+	Cases marked with "(semantic)" contain elements known by the editor. Cases with "(styled)" focuses on styling using the <code>[style]</code> attribute.
+</div>
+
+<hr>
+
 <div id="word-count-wrapper" style="display:none">
 	Words: <span id="word-count"></span> Characters: <span id="character-count"></span>
 </div>
@@ -61,18 +71,23 @@
 		An example blockquote text.
 	</blockquote>
 
-	<table>
-		<tbody>
-			<tr>
-				<td>cell</td>
-				<td>cell</td>
-			</tr>
-			<tr>
-				<td>cell</td>
-				<td>cell</td>
-			</tr>
-		</tbody>
-	</table>
+	<figure>
+		<table style="border: 1px solid green;background:#fdfd77;width:200px;height:140px">
+			<thead>
+				<tr>
+					<td><p>header</p></td>
+					<td style="border:2px dashed black;background-color: lightblue"><p>styled header</p></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border:2px dashed black;background-color: lightblue"><p>styled cell</p></td>
+					<td><p>cell</p></td>
+				</tr>
+
+			</tbody>
+		</table>
+	</figure>
 
 	<figure class="media">
 		<oembed url="https://www.youtube.com/watch?v=CB70skVw3nU"></oembed>
