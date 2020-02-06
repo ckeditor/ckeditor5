@@ -101,7 +101,7 @@ describe( 'WidgetResize', () => {
 			createResizer();
 		} );
 
-		it( 'doesnt break when called with unexpected element', async () => {
+		it( 'doesn\'t break when called with unexpected element', async () => {
 			const unrelatedElement = document.createElement( 'div' );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
