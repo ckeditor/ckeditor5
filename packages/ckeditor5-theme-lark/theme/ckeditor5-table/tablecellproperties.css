@@ -31,14 +31,6 @@
 				margin-right: var(--ck-spacing-small);
 			}
 
-			& .ck-table-cell-properties-form__dimension-operator {
-				margin: 0;
-				align-self: start;
-				display: inline-block;
-				height: var(--ck-ui-component-min-height);
-				line-height: var(--ck-ui-component-min-height);
-			}
-
 			& .ck-table-cell-properties-form__height {
 				margin-left: var(--ck-spacing-small);
 			}
