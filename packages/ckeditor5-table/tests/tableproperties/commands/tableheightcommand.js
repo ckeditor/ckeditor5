@@ -96,6 +96,62 @@ describe( 'table properties', () => {
 					sinon.assert.calledWith( spy, batch );
 				} );
 
+				it( 'should add default unit for numeric values (number passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25 } );
+
+					assertTableStyle( editor, 'height:25px;' );
+				} );
+
+				it( 'should add default unit for numeric values (string passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25 } );
+
+					assertTableStyle( editor, 'height:25px;' );
+				} );
+
+				it( 'should not add default unit for numeric values with unit', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '25pt' } );
+
+					assertTableStyle( editor, 'height:25pt;' );
+				} );
+
+				it( 'should add default unit to floats (number passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25.1 } );
+
+					assertTableStyle( editor, 'height:25.1px;' );
+				} );
+
+				it( 'should add default unit to floats (string passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '0.1' } );
+
+					assertTableStyle( editor, 'height:0.1px;' );
+				} );
+
+				it( 'should pass invalid values', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 'bar' } );
+
+					assertTableStyle( editor, 'height:bar;' );
+				} );
+
+				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '.2' } );
+
+					assertTableStyle( editor, 'height:.2;' );
+				} );
+
 				describe( 'collapsed selection', () => {
 					it( 'should set selected table height to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );

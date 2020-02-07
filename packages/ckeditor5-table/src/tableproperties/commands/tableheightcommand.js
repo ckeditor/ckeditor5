@@ -8,6 +8,7 @@
  */
 
 import TablePropertyCommand from './tablepropertycommand';
+import { addDefaultUnitToNumericValue } from '../../commands/utils';
 
 /**
  * The table height command.
@@ -31,5 +32,12 @@ export default class TableHeightCommand extends TablePropertyCommand {
 	 */
 	constructor( editor ) {
 		super( editor, 'height' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }
