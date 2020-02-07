@@ -14,29 +14,29 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Provides a common, higher level environment for solutions which use multiple {@link module:core/editor/editor~Editor editors}
- * or/and plugins that work outside of an editor. Use it instead of {@link module:core/editor/editor~Editor.create `Editor.create()`}
+ * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
+ * or plugins that work outside the editor. Use it instead of {@link module:core/editor/editor~Editor.create `Editor.create()`}
  * in advanced application integrations.
  *
- * All configuration options passed to a `Context` will be used as default options for editor instances initialized in that context.
+ * All configuration options passed to a context will be used as default options for editor instances initialized in that context.
  *
- * {@link module:core/contextplugin~ContextPlugin `ContextPlugin`s} passed to a `Context` instance will be shared among all
- * editor instances initialized in that context. These will be the same plugin instances for all the editors.
+ * {@link module:core/contextplugin~ContextPlugin Context plugins} passed to a context instance will be shared among all
+ * editor instances initialized in this context. These will be the same plugin instances for all the editors.
  *
- * **Note:** `Context` can only be initialized with {@link module:core/contextplugin~ContextPlugin `ContextPlugin`s}
- * (e.g. [comments](https://ckeditor.com/collaboration/comments/)). Regular {@link module:core/plugin~Plugin `Plugin`s} require an
- * editor instance to work and cannot be added to a `Context`.
+ * **Note:** The context can only be initialized with {@link module:core/contextplugin~ContextPlugin context plugins}
+ * (e.g. [comments](https://ckeditor.com/collaboration/comments/)). Regular {@link module:core/plugin~Plugin plugins} require an
+ * editor instance to work and cannot be added to a context.
  *
- * **Note:** You can add `ContextPlugin` to an editor instance, though.
+ * **Note:** You can add a context plugin to an editor instance, though.
  *
- * If you are using multiple editor instances on one page and use any `ContextPlugin`s, create `Context` to share configuration and plugins
- * among those editors. Some plugins will use the information about all existing editors to better integrate between them.
+ * If you are using multiple editor instances on one page and use any context plugins, create a context to share the configuration and
+ * plugins among these editors. Some plugins will use the information about all existing editors to better integrate between them.
  *
- * If you are using plugins that do not require an editor to work (e.g. [comments](https://ckeditor.com/collaboration/comments/))
- * enable and configure them using `Context`.
+ * If you are using plugins that do not require an editor to work (e.g. [comments](https://ckeditor.com/collaboration/comments/)),
+ * enable and configure them using the context.
  *
- * If you are using only a single editor on each page use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
- * In such case, `Context` instance will be created by the editor instance in a transparent way.
+ * If you are using only a single editor on each page, use {@link module:core/editor/editor~Editor.create `Editor.create()`} instead.
+ * In such case, a context instance will be created by the editor instance in a transparent way.
  *
  * See {@link module:core/context~Context.create `Context.create()`} for usage examples.
  */
@@ -44,13 +44,13 @@ export default class Context {
 	/**
 	 * Creates a context instance with a given configuration.
 	 *
-	 * Usually, not to be used directly. See the static {@link module:core/context~Context.create `create()`} method.
+	 * Usually not to be used directly. See the static {@link module:core/context~Context.create `create()`} method.
 	 *
-	 * @param {Object} [config={}] The context config.
+	 * @param {Object} [config={}] The context configuration.
 	 */
 	constructor( config ) {
 		/**
-		 * Holds all configurations specific to this context instance.
+		 * Stores all the configurations specific to this context instance.
 		 *
 		 * @readonly
 		 * @type {module:utils/config~Config}
@@ -85,7 +85,7 @@ export default class Context {
 		this.t = this.locale.t;
 
 		/**
-		 * List of editors to which this context instance is injected.
+		 * A list of editors that this context instance is injected to.
 		 *
 		 * @readonly
 		 * @type {module:utils/collection~Collection}
@@ -105,10 +105,10 @@ export default class Context {
 	}
 
 	/**
-	 * Loads and initializes plugins specified in the config.
+	 * Loads and initializes plugins specified in the configuration.
 	 *
 	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
-	 * once the initialization is completed providing an array of loaded plugins.
+	 * once the initialization is completed, providing an array of loaded plugins.
 	 */
 	initPlugins() {
 		const plugins = this.config.get( 'plugins' ) || [];
@@ -135,7 +135,7 @@ export default class Context {
 				 * @error context-initplugins-invalid-plugin
 				 */
 				throw new CKEditorError(
-					'context-initplugins-invalid-plugin: Only a plugin marked as a ContextPlugin is allowed to be used with a context.',
+					'context-initplugins-invalid-plugin: Only a plugin marked as a context plugin is allowed to be used with a context.',
 					null,
 					{ Plugin }
 				);
@@ -146,8 +146,8 @@ export default class Context {
 	}
 
 	/**
-	 * Destroys the context instance, and all editors used with the context.
-	 * Releasing all resources used by the context.
+	 * Destroys the context instance and all editors used with the context,
+	 * releasing all resources used by the context.
 	 *
 	 * @returns {Promise} A promise that resolves once the context instance is fully destroyed.
 	 */
@@ -159,10 +159,10 @@ export default class Context {
 	/**
 	 * Adds a reference to the editor which is used with this context.
 	 *
-	 * When the given editor has created the context then the reference to this editor will be stored
+	 * When the given editor has created the context, the reference to this editor will be stored
 	 * as a {@link ~Context#_contextOwner}.
 	 *
-	 * This method should be used only by the editor.
+	 * This method should only be used by the editor.
 	 *
 	 * @protected
 	 * @param {module:core/editor/editor~Editor} editor
@@ -189,13 +189,13 @@ export default class Context {
 
 	/**
 	 * Removes a reference to the editor which was used with this context.
-	 * When the context was created by the given editor then the context will be destroyed.
+	 * When the context was created by the given editor, the context will be destroyed.
 	 *
-	 * This method should be used only by the editor.
+	 * This method should only be used by the editor.
 	 *
 	 * @protected
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context has been destroyed.
+	 * @return {Promise} A promise that resolves once the editor is removed from the context or when the context was destroyed.
 	 */
 	_removeEditor( editor ) {
 		if ( this.editors.has( editor ) ) {
@@ -210,12 +210,12 @@ export default class Context {
 	}
 
 	/**
-	 * Returns context configuration which will be copied to editors created using this context.
+	 * Returns the context configuration which will be copied to the editors created using this context.
 	 *
-	 * The configuration returned by this method has removed plugins configuration - plugins are shared with all editors
+	 * The configuration returned by this method has the plugins configuration removed &mdash; plugins are shared with all editors
 	 * through another mechanism.
 	 *
-	 * This method should be used only by the editor.
+	 * This method should only be used by the editor.
 	 *
 	 * @protected
 	 * @returns {Object} Configuration as a plain object.
@@ -236,14 +236,14 @@ export default class Context {
 	 * Creates and initializes a new context instance.
 	 *
 	 *		const commonConfig = { ... }; // Configuration for all the plugins and editors.
-	 *		const editorPlugins = [ ... ]; // Regular `Plugin`s here.
+	 *		const editorPlugins = [ ... ]; // Regular plugins here.
 	 *
 	 *		Context
 	 *			.create( {
-	 *				// Only `ContextPlugin`s here.
+	 *				// Only context plugins here.
 	 *				plugins: [ ... ],
 	 *
-	 *				// Configure language for all the editors (it cannot be overwritten).
+	 *				// Configure the language for all the editors (it cannot be overwritten).
 	 *				language: { ... },
 	 *
 	 *				// Configuration for context plugins.
@@ -271,14 +271,14 @@ export default class Context {
 	 *					{
 	 *						editorPlugins,
 	 *						context,
-	 *						toolbar: { ... } // You can overwrite context's configuration.
+	 *						toolbar: { ... } // You can overwrite the configuration of the context.
 	 *					}
 	 *				) );
 	 *
 	 *				return Promise.all( promises );
 	 *			} );
 	 *
-	 * @param {Object} [config] The context config.
+	 * @param {Object} [config] The context configuration.
 	 * @returns {Promise} A promise resolved once the context is ready. The promise resolves with the created context instance.
 	 */
 	static create( config ) {

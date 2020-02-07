@@ -221,7 +221,7 @@ mix( Plugin, ObservableMixin );
  *
  * The name should reflect the constructor name.
  *
- * To keep the plugin class definition tight it is recommended to define this property as a static getter:
+ * To keep the plugin class definition tight, it is recommended to define this property as a static getter:
  *
  *		export default class ImageCaption {
  *			static get pluginName() {
@@ -241,11 +241,11 @@ mix( Plugin, ObservableMixin );
  */
 
 /**
- * The second stage (after plugin {@link #constructor}) of plugin initialization.
+ * The second stage (after plugin {@link #constructor}) of the plugin initialization.
  * Unlike the plugin constructor this method can be asynchronous.
  *
  * A plugin's `init()` method is called after its {@link module:core/plugin~PluginInterface.requires dependencies} are initialized,
- * so in the same order as constructors of these plugins.
+ * so in the same order as the constructors of these plugins.
  *
  * **Note:** This method is optional. A plugin instance does not need to have it defined.
  *
@@ -254,7 +254,7 @@ mix( Plugin, ObservableMixin );
  */
 
 /**
- * The third (and last) stage of plugin initialization. See also {@link #constructor} and {@link #init}.
+ * The third (and last) stage of the plugin initialization. See also {@link #constructor} and {@link #init}.
  *
  * **Note:** This method is optional. A plugin instance does not need to have it defined.
  *
@@ -272,7 +272,7 @@ mix( Plugin, ObservableMixin );
  */
 
 /**
- * A flag which defines if plugin is allowed or not allowed to be use directly by a {@link module:core/context~Context}.
+ * A flag which defines if a plugin is allowed or not allowed to be used directly by a {@link module:core/context~Context}.
  *
  * @static
  * @readonly
@@ -280,7 +280,7 @@ mix( Plugin, ObservableMixin );
  */
 
 /**
- * Array of loaded plugins.
+ * An array of loaded plugins.
  *
  * @typedef {Array.<module:core/plugin~PluginInterface>} module:core/plugin~LoadedPlugins
  */

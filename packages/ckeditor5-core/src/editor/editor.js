@@ -121,8 +121,8 @@ export default class Editor {
 		 *
 		 * The editor is in one of the following states:
 		 *
-		 * * `initializing` &ndash; During the editor initialization (before {@link module:core/editor/editor~Editor.create `Editor.create()`})
-		 * finished its job.
+		 * * `initializing` &ndash; During the editor initialization (before
+		 * {@link module:core/editor/editor~Editor.create `Editor.create()`}) finished its job.
 		 * * `ready` &ndash; After the promise returned by the {@link module:core/editor/editor~Editor.create `Editor.create()`}
 		 * method is resolved.
 		 * * `destroyed` &ndash; Once the {@link #destroy `editor.destroy()`} method was called.
