@@ -17,7 +17,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-describe( 'table cell properties', () => {
+describe.only( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
 		let view, locale;
 
@@ -219,13 +219,12 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
-				describe( 'background and padding row', () => {
+				describe( 'background row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ] ).to.equal( view.backgroundInput.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.paddingInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -259,43 +258,11 @@ describe( 'table cell properties', () => {
 							expect( view.backgroundColor ).to.equal( 'bar' );
 						} );
 					} );
-
-					describe( 'padding input', () => {
-						let labeledInput;
-
-						beforeEach( () => {
-							labeledInput = view.paddingInput;
-						} );
-
-						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
-							expect( labeledInput.label ).to.equal( 'Padding' );
-							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__padding' );
-						} );
-
-						it( 'should reflect #padding property', () => {
-							view.padding = 'foo';
-							expect( labeledInput.view.value ).to.equal( 'foo' );
-
-							view.padding = 'bar';
-							expect( labeledInput.view.value ).to.equal( 'bar' );
-						} );
-
-						it( 'should update #padding on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
-							labeledInput.view.fire( 'input' );
-							expect( view.padding ).to.equal( 'foo' );
-
-							labeledInput.view.element.value = 'bar';
-							labeledInput.view.fire( 'input' );
-							expect( view.padding ).to.equal( 'bar' );
-						} );
-					} );
 				} );
 
 				describe( 'dimensions row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ];
+						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-cell-properties-form__dimensions-row' ) ).to.be.true;
@@ -366,6 +333,38 @@ describe( 'table cell properties', () => {
 							labeledInput.view.element.value = 'bar';
 							labeledInput.view.fire( 'input' );
 							expect( view.height ).to.equal( 'bar' );
+						} );
+					} );
+
+					describe( 'padding input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.paddingInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Padding' );
+							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__padding' );
+						} );
+
+						it( 'should reflect #padding property', () => {
+							view.padding = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.padding = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #padding on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.padding ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.padding ).to.equal( 'bar' );
 						} );
 					} );
 				} );
