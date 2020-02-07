@@ -22,6 +22,14 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '5px'
  *		} );
  *
+ * **Note**: This command adds a default `'px'` unit to a numeric values. Executing:
+ *
+ *		editor.execute( 'tableCellBorderWidth', {
+ *			value: '5'
+ *		} );
+ *
+ * Will set `borderWidth` attribute to `'5px'` in the model.
+ *
  * @extends module:core/command~Command
  */
 export default class TableCellBorderWidthCommand extends TableCellPropertyCommand {

@@ -22,6 +22,14 @@ import { addDefaultUnitToNumericValue } from '../../commands/utils';
  *			value: '500px'
  *		} );
  *
+ * **Note**: This command adds a default `'px'` unit to a numeric values. Executing:
+ *
+ *		editor.execute( 'tableHeight', {
+ *			value: '50'
+ *		} );
+ *
+ * Will set `height` attribute to `'50px'` in the model.
+ *
  * @extends module:core/command~Command
  */
 export default class TableHeightCommand extends TablePropertyCommand {

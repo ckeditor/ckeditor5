@@ -22,6 +22,14 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '50px'
  *		} );
  *
+ * **Note**: This command adds a default `'px'` unit to a numeric values. Executing:
+ *
+ *		editor.execute( 'tableCellWidth', {
+ *			value: '50'
+ *		} );
+ *
+ * Will set `width` attribute to `'50px'` in the model.
+ *
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
  */
 export default class TableCellWidthCommand extends TableCellPropertyCommand {
