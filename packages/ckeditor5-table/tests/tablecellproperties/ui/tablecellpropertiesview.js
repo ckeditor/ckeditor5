@@ -335,6 +335,16 @@ describe( 'table cell properties', () => {
 							expect( view.height ).to.equal( 'bar' );
 						} );
 					} );
+				} );
+
+				describe( 'padding row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-cell-properties-form__padding-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ] ).to.equal( view.paddingInput.element );
+					} );
 
 					describe( 'padding input', () => {
 						let labeledInput;
