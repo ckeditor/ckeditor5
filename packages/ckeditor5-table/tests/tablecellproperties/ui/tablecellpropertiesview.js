@@ -17,7 +17,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-describe.only( 'table cell properties', () => {
+describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
 		let view, locale;
 
@@ -289,6 +289,83 @@ describe.only( 'table cell properties', () => {
 							labeledInput.view.element.value = 'bar';
 							labeledInput.view.fire( 'input' );
 							expect( view.padding ).to.equal( 'bar' );
+						} );
+					} );
+				} );
+
+				describe( 'dimensions row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-cell-properties-form__dimensions-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
+						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
+						expect( row.childNodes[ 3 ] ).to.equal( view.heightInput.element );
+					} );
+
+					describe( 'width input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.widthInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Width' );
+							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__width' );
+						} );
+
+						it( 'should reflect #width property', () => {
+							view.width = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.width = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #width on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.width ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.width ).to.equal( 'bar' );
+						} );
+					} );
+
+					describe( 'height input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.heightInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Height' );
+							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__height' );
+						} );
+
+						it( 'should reflect #height property', () => {
+							view.height = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.height = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #height on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'bar' );
 						} );
 					} );
 				} );
