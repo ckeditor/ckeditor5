@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellpaddingcommand
  */
 
+import { addDefaultUnitToNumericValue, getSingleValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
-import { getSingleValue } from '../../commands/utils';
 
 /**
  * The table cell padding command.
@@ -43,5 +43,12 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 		}
 
 		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }
