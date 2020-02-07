@@ -11,6 +11,24 @@
 }
 
 .ck.ck-table-form {
+	& .ck-table-form__border-row {
+		& .ck-labeled-view {
+			& > .ck-label {
+				font-size: var(--ck-font-size-tiny);
+			}
+		}
+
+		& .ck-table-form__border-style {
+			width: 80px;
+			min-width: 80px;
+		}
+
+		& .ck-table-form__border-width {
+			width: 80px;
+			min-width: 80px;
+		}
+	}
+
 	& .ck-table-form__dimension-operator {
 		margin: 0;
 		align-self: start;
