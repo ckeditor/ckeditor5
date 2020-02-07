@@ -126,97 +126,156 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'Integration (pixels)', () => {
-		let resizer;
+		describe( 'aligned widget', () => {
+			beforeEach( () => {
+				createResizer();
+			} );
 
-		beforeEach( () => {
-			resizer = createResizer();
+			it( 'properly sets the state for subsequent resizes', () => {
+				const usedResizer = 'top-right';
+				const domParts = getWidgetDomParts( widget, usedResizer );
+				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
+
+				const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 50, 0 );
+				mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
+				sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
+
+				const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 50, 0 );
+				mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+				sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
+
+				expect( commitStub.callCount ).to.be.equal( 2 );
+			} );
+
+			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+				usedHandle: 'bottom-left',
+				movePointerBy: { x: 20, y: -10 },
+				expectedWidth: '80px'
+			} ) );
+
+			it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: -20, y: -10 },
+				expectedWidth: '80px'
+			} ) );
+
+			it( 'shrinks correctly with left-top handler', generateResizeTest( {
+				usedHandle: 'top-left',
+				movePointerBy: { x: 20, y: 10 },
+				expectedWidth: '80px'
+			} ) );
+
+			it( 'shrinks correctly with right-top handler', generateResizeTest( {
+				usedHandle: 'top-right',
+				movePointerBy: { x: -20, y: 10 },
+				expectedWidth: '80px'
+			} ) );
+
+			it( 'enlarges correctly with left-bottom handler', generateResizeTest( {
+				usedHandle: 'bottom-left',
+				movePointerBy: { x: -10, y: 10 },
+				expectedWidth: '120px'
+			} ) );
+
+			it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: 10, y: 10 },
+				expectedWidth: '120px'
+			} ) );
+
+			it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: 0, y: 20 },
+				expectedWidth: '140px'
+			} ) );
+
+			it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: 40, y: 0 },
+				expectedWidth: '140px'
+			} ) );
+
+			it( 'enlarges correctly with left-top handler', generateResizeTest( {
+				usedHandle: 'top-left',
+				movePointerBy: { x: -20, y: -10 },
+				expectedWidth: '120px'
+			} ) );
+
+			it( 'enlarges correctly with right-top handler', generateResizeTest( {
+				usedHandle: 'top-right',
+				movePointerBy: { x: 20, y: 10 },
+				expectedWidth: '120px'
+			} ) );
 		} );
 
-		it( 'properly sets the state for subsequent resizes', () => {
-			const usedResizer = 'top-right';
-			const domParts = getWidgetDomParts( widget, usedResizer );
-			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
+		describe( 'centered widget', () => {
+			beforeEach( () => {
+				createResizer( {
+					isCentered: () => true
+				} );
+			} );
 
-			const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 50, 0 );
-			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
-			sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
+			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
+				usedHandle: 'bottom-left',
+				movePointerBy: { x: 10, y: -10 },
+				expectedWidth: '80px'
+			} ) );
 
-			const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 50, 0 );
-			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
-			sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
+			it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: -10, y: -10 },
+				expectedWidth: '80px'
+			} ) );
 
-			expect( commitStub.callCount ).to.be.equal( 2 );
-		} );
+			it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: 10, y: 0 },
+				expectedWidth: '120px'
+			} ) );
 
-		// --- bottom handlers ---
+			it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
+				usedHandle: 'bottom-right',
+				movePointerBy: { x: 0, y: 10 },
+				expectedWidth: '120px'
+			} ) );
 
-		it( 'shrinks correctly with bottom-left handler', generateResizeTest( {
-			usedHandle: 'bottom-left',
-			movePointerBy: { x: 10, y: -10 },
-			expectedWidth: '90px'
-		} ) );
+			it( 'enlarges correctly with left-bottom handler, x axis only', generateResizeTest( {
+				usedHandle: 'bottom-left',
+				movePointerBy: { x: -10, y: 0 },
+				expectedWidth: '120px'
+			} ) );
 
-		it( 'shrinks correctly with bottom-right handler', generateResizeTest( {
-			usedHandle: 'bottom-right',
-			movePointerBy: { x: -10, y: -10 },
-			expectedWidth: '90px'
-		} ) );
+			it( 'enlarges correctly with left-bottom handler, y axis only', generateResizeTest( {
+				usedHandle: 'bottom-left',
+				movePointerBy: { x: 0, y: 10 },
+				expectedWidth: '120px'
+			} ) );
 
-		it( 'enlarges correctly with bottom-right handler, x axis only', generateResizeTest( {
-			usedHandle: 'bottom-right',
-			movePointerBy: { x: 10, y: 0 },
-			expectedWidth: '110px'
-		} ) );
+			// --- top handlers ---
 
-		it( 'enlarges correctly with bottom-right handler, y axis only', generateResizeTest( {
-			usedHandle: 'bottom-right',
-			movePointerBy: { x: 0, y: 10 },
-			expectedWidth: '110px'
-		} ) );
+			it( 'enlarges correctly with left-top handler', generateResizeTest( {
+				usedHandle: 'top-left',
+				movePointerBy: { x: -10, y: -10 },
+				expectedWidth: '120px'
+			} ) );
 
-		it( 'enlarges correctly with bottom-left handler, x axis only', generateResizeTest( {
-			usedHandle: 'bottom-left',
-			movePointerBy: { x: -10, y: 0 },
-			expectedWidth: '110px'
-		} ) );
+			it( 'enlarges correctly with left-top handler, y axis only', generateResizeTest( {
+				usedHandle: 'top-left',
+				movePointerBy: { x: 0, y: -10 },
+				expectedWidth: '120px'
+			} ) );
 
-		it( 'enlarges correctly with bottom-left handler, y axis only', generateResizeTest( {
-			usedHandle: 'bottom-left',
-			movePointerBy: { x: 0, y: 10 },
-			expectedWidth: '110px'
-		} ) );
+			it( 'enlarges correctly with right-top handler', generateResizeTest( {
+				usedHandle: 'top-right',
+				movePointerBy: { x: 10, y: -10 },
+				expectedWidth: '120px'
+			} ) );
 
-		// --- top handlers ---
-
-		it( 'enlarges correctly with top-left handler', generateResizeTest( {
-			usedHandle: 'top-left',
-			movePointerBy: { x: -10, y: -10 },
-			expectedWidth: '110px'
-		} ) );
-
-		it( 'enlarges correctly with top-left handler, y axis only', generateResizeTest( {
-			usedHandle: 'top-left',
-			movePointerBy: { x: 0, y: -10 },
-			expectedWidth: '110px'
-		} ) );
-
-		it( 'enlarges correctly with top-right handler', generateResizeTest( {
-			usedHandle: 'top-right',
-			movePointerBy: { x: 10, y: -10 },
-			expectedWidth: '110px'
-		} ) );
-
-		it( 'enlarges correctly with top-right handler, y axis only', generateResizeTest( {
-			usedHandle: 'top-right',
-			movePointerBy: { x: 0, y: -10 },
-			expectedWidth: '110px'
-		} ) );
-
-		it( 'hides the resize wrapper when resizer gets disabled', () => {
-			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
-			expect( resizerWrapper.style.display ).to.equal( '' );
-			resizer.isEnabled = false;
-			expect( resizerWrapper.style.display ).to.equal( 'none' );
+			it( 'enlarges correctly with right-top handler, y axis only', generateResizeTest( {
+				usedHandle: 'top-right',
+				movePointerBy: { x: 0, y: -10 },
+				expectedWidth: '120px'
+			} ) );
 		} );
 
 		/**
@@ -285,7 +344,7 @@ describe( 'WidgetResize', () => {
 					model: 'widget',
 					view: ( modelItem, viewWriter ) => {
 						const div = viewWriter.createContainerElement( 'div' );
-						viewWriter.setStyle( 'height', '100px', div );
+						viewWriter.setStyle( 'height', '50px', div );
 						viewWriter.setStyle( 'width', '25%', div ); // It evaluates to 100px.
 
 						return toWidget( div, viewWriter, {
