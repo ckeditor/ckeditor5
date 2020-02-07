@@ -7,10 +7,13 @@
  * @module engine/view/styles/utils
  */
 
-const colorRegExp = /^(0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
+const colorRegExp = /^(0$|rgba\(|hsla?\(|[a-zA-Z]+$)/;
+
+const validHexLengths = [ 3, 4, 6, 8 ];
 
 const HEX_VALUE_REGEXP = /^[0-9a-fA-F]+$/;
-const validHexLengths = [ 3, 4, 6, 8 ];
+const BYTE_VALUE_REGEXP = /^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$/;
+const PERCENTAGE_VALUE_REGEXP = /^(0?[0-9]?[0-9]|100)%$/;
 
 /**
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
@@ -29,7 +32,35 @@ export function isColor( string ) {
 		return HEX_VALUE_REGEXP.test( hexValue );
 	}
 
+	if ( string.toLowerCase().startsWith( 'rgb(' ) ) {
+		if ( !string.endsWith( ')' ) ) {
+			return false;
+		}
+
+		const rgbValue = string
+			.substr( 4, string.length - 5 )
+			// .substr( 4 )
+			.replace( /,/g, ' ' )
+			.replace( /[ ]+/g, ' ' );
+
+		const entries = rgbValue.split( ' ' );
+
+		if ( entries.length !== 3 ) {
+			return false;
+		}
+
+		return entries.every( isByteValue ) || entries.every( isPercentValue );
+	}
+
 	return colorRegExp.test( string );
+}
+
+function isByteValue( entry ) {
+	return BYTE_VALUE_REGEXP.test( entry );
+}
+
+function isPercentValue( entry ) {
+	return PERCENTAGE_VALUE_REGEXP.test( entry );
 }
 
 const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ];

@@ -12,7 +12,7 @@ import {
 	isLineStyle
 } from '../../../src/view/styles/utils';
 
-describe.only( 'Styles utils', () => {
+describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {
 		it( 'returns true for #RGB color', () => {
 			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColor );
@@ -35,7 +35,30 @@ describe.only( 'Styles utils', () => {
 		} );
 
 		it( 'returns true for rgb() color', () => {
-			testValues( [ 'rgb(255, 255, 255)', 'rgb(23%,0,100%)' ], isColor );
+			testValues( [
+				'rgb(255,0,153)',
+				'rgb(255, 0, 153)',
+				// 'rgb(255, 0, 153.0)', // TODO: does not validate but might be skipped
+				'rgb(100%,0%,60%)',
+				'rgb(100%, 0%, 60%)',
+				'rgb(255 0 153)' // TODO: might be skipped - adds complexity
+			], isColor );
+		} );
+
+		it( 'returns false for invalid rgb() color', () => {
+			testValues( [
+				'rgb()',
+				'rgb(1)',
+				'rgb(1,2)',
+				'rgb(11,',
+				'rgb(11, 22,',
+				'rgb(11, 22, 33',
+				'rgb((11, 22, 33',
+				'rgb((11, 22, 33)',
+				'rgb((11, 22, 33, 44)', // TODO: valid in Level 4 CSS
+				'rgb(11, 22, 33))',
+				'rgb(100%, 0, 60%)' // Don't mix numbers and percentages. TODO: might be skipped - adds complexity.
+			], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for rgba() color', () => {
