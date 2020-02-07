@@ -7,6 +7,7 @@
  * @module table/tableproperties/commands/tablewidthcommand
  */
 
+import { addDefaultUnitToNumericValue } from '../../commands/utils';
 import TablePropertyCommand from './tablepropertycommand';
 
 /**
@@ -31,5 +32,12 @@ export default class TableWidthCommand extends TablePropertyCommand {
 	 */
 	constructor( editor ) {
 		super( editor, 'width' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }

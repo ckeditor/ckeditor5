@@ -61,10 +61,11 @@ export default class TablePropertyCommand extends Command {
 		const { value, batch } = options;
 
 		const table = findAncestor( 'table', selection.getFirstPosition() );
+		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {
-			if ( value ) {
-				writer.setAttribute( this.attributeName, value, table );
+			if ( valueToSet ) {
+				writer.setAttribute( this.attributeName, valueToSet, table );
 			} else {
 				writer.removeAttribute( this.attributeName, table );
 			}
@@ -84,5 +85,16 @@ export default class TablePropertyCommand extends Command {
 		}
 
 		return table.getAttribute( this.attributeName );
+	}
+
+	/**
+	 * Returns proper model value. Can be used to add default unit to numeric values.
+	 *
+	 * @private
+	 * @param {*} value
+	 * @returns {*}
+	 */
+	_getValueToSet( value ) {
+		return value;
 	}
 }
