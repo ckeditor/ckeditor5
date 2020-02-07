@@ -18,6 +18,11 @@ describe( 'ResizeObserver()', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, any DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
 		elementA = document.createElement( 'div' );
 		elementA.id = 'A';
 		elementB = document.createElement( 'div' );
