@@ -7,8 +7,8 @@
  * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
+import { addDefaultUnitToNumericValue, getSingleValue } from '../../commands/utils';
 import TablePropertyCommand from './tablepropertycommand';
-import { getSingleValue } from '../../commands/utils';
 
 /**
  * The table width border command.
@@ -43,5 +43,12 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 		}
 
 		return getSingleValue( table.getAttribute( this.attributeName ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }
