@@ -564,7 +564,7 @@ export default class TableCellPropertiesView extends View {
 			tag: 'span',
 			attributes: {
 				class: [
-					'ck-table-cell-properties-form__dimension-operator'
+					'ck-table-form__dimension-operator'
 				]
 			},
 			children: [
