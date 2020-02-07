@@ -182,6 +182,8 @@ export default class TableCellPropertiesUI extends Plugin {
 			borderStyle: commands.get( 'tableCellBorderStyle' ).value || DEFAULT_BORDER_STYLE,
 			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
 			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
+			width: commands.get( 'tableCellWidth' ).value || '',
+			height: commands.get( 'tableCellHeight' ).value || '',
 			padding: commands.get( 'tableCellPadding' ).value || '',
 			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
 			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
