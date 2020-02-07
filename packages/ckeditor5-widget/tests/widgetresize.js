@@ -168,11 +168,55 @@ describe( 'WidgetResize', () => {
 			sinon.assert.calledOnce( commitStub );
 		} );
 
-		generateResizeTest( 'enlarges correctly with bottom-right handler, x axis only', {
-			usedResizer: 'bottom-right',
+		it( 'enlarges correctly with bottom-right handler, x axis only', generateResizeTest( {
+			usedHandle: 'bottom-right',
 			movePointerBy: { x: 10, y: 0 },
 			expectedWidth: '110px'
-		} );
+		} ) );
+
+		it( 'enlarges correctly with bottom-right handler, y axis only', generateResizeTest( {
+			usedHandle: 'bottom-right',
+			movePointerBy: { x: 0, y: 10 },
+			expectedWidth: '110px'
+		} ) );
+
+		it( 'enlarges correctly with bottom-left handler, x axis only', generateResizeTest( {
+			usedHandle: 'bottom-left',
+			movePointerBy: { x: -10, y: 0 },
+			expectedWidth: '110px'
+		} ) );
+
+		it( 'enlarges correctly with bottom-left handler, y axis only', generateResizeTest( {
+			usedHandle: 'bottom-left',
+			movePointerBy: { x: 0, y: 10 },
+			expectedWidth: '110px'
+		} ) );
+
+		// --- top handlers ---
+
+		it( 'enlarges correctly with top-left handler', generateResizeTest( {
+			usedHandle: 'top-left',
+			movePointerBy: { x: -10, y: -10 },
+			expectedWidth: '110px'
+		} ) );
+
+		it( 'enlarges correctly with top-left handler, y axis only', generateResizeTest( {
+			usedHandle: 'top-left',
+			movePointerBy: { x: 0, y: -10 },
+			expectedWidth: '110px'
+		} ) );
+
+		it( 'enlarges correctly with top-right handler', generateResizeTest( {
+			usedHandle: 'top-right',
+			movePointerBy: { x: 10, y: -10 },
+			expectedWidth: '110px'
+		} ) );
+
+		it( 'enlarges correctly with top-right handler, y axis only', generateResizeTest( {
+			usedHandle: 'top-right',
+			movePointerBy: { x: 0, y: -10 },
+			expectedWidth: '110px'
+		} ) );
 
 		it( 'hides the resize wrapper when resizer gets disabled', () => {
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
@@ -182,26 +226,25 @@ describe( 'WidgetResize', () => {
 		} );
 
 		/**
-		 *
-		 * @param {String} caseTitle
 		 * @param {Object} options
-		 * @param {String} options.caseTitle
+		 * @param {String} options.usedHandle Handle that should be used for resize, e.g. 'bottom-right'.
 		 * @param {Object} options.movePointerBy How much should the pointer move during the drag compared to the initial position.
+		 * @param {String} options.expectedWidth
 		 */
-		function generateResizeTest( caseTitle, options ) {
-			options = options || {};
-			const usedResizer = options.usedResizer;
-			const pointerDifference = options.movePointerBy;
+		function generateResizeTest( options ) {
+			return () => {
+				options = options || {};
 
-			it( caseTitle, () => {
-				const domParts = getWidgetDomParts( widget, usedResizer );
-				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
+				const usedHandle = options.usedHandle;
+				const domParts = getWidgetDomParts( widget, usedHandle );
+				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedHandle );
+				const pointerDifference = options.movePointerBy;
 				const finalPointerPosition = initialPointerPosition.moveBy( pointerDifference.x, pointerDifference.y );
 
 				mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 				expect( commitStub.args[ 0 ][ 0 ] ).to.be.equal( options.expectedWidth );
 				sinon.assert.calledOnce( commitStub );
-			} );
+			};
 		}
 	} );
 
