@@ -7,22 +7,19 @@
 	width: 320px;
 
 	& .ck-form__row {
-		& .ck-table-cell-properties-form__background,
-		& .ck-table-cell-properties-form__padding {
-			width: 50%;
-		}
-
-
 		&.ck-table-cell-properties-form__dimensions-row,
 		&.ck-table-cell-properties-form__padding-row {
-			padding-left: 0;
-			padding-right: 0;
+			padding: 0;
 		}
 
 		&.ck-table-cell-properties-form__alignment-row {
 			& .ck.ck-toolbar {
 				background: none;
 			}
+		}
+
+		& .ck-table-cell-properties-form__padding-row {
+			width: 35%;
 		}
 
 		&.ck-table-cell-properties-form__dimensions-row {

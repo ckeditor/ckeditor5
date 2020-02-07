@@ -9,8 +9,7 @@
 	& .ck-form__row {
 		&.ck-table-properties-form__dimensions-row,
 		&.ck-table-properties-form__alignment-row {
-			padding-left: 0;
-			padding-right: 0;
+			padding: 0;
 		}
 
 		&.ck-table-properties-form__dimensions-row {
