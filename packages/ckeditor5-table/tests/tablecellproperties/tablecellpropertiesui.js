@@ -295,6 +295,68 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
+				describe( '#width', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.width = '12px';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.width = 'wrong';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.widthInput.errorText ).to.match( /^The value is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.width = '3em';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#height', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.height = '12px';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.height = 'wrong';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.heightInput.errorText ).to.match( /^The value is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.height = '3em';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch: 'foo' } );
+					} );
+				} );
+
 				describe( '#padding', () => {
 					it( 'should affect the editor state', () => {
 						const spy = testUtils.sinon.stub( editor, 'execute' );
