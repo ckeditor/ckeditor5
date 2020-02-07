@@ -121,7 +121,11 @@ export default class TableCellPropertiesUI extends Plugin {
 		} );
 
 		this.listenTo( view, 'cancel', () => {
-			editor.execute( 'undo', this._undoStepBatch );
+			// https://github.com/ckeditor/ckeditor5/issues/6180
+			if ( this._undoStepBatch.operations.length ) {
+				editor.execute( 'undo', this._undoStepBatch );
+			}
+
 			this._hideView();
 		} );
 
