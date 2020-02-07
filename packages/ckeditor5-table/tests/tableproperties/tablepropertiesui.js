@@ -22,7 +22,7 @@ import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui';
 import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview';
 
 describe( 'table properties', () => {
-	describe.only( 'TablePropertiesUI', () => {
+	describe( 'TablePropertiesUI', () => {
 		let editor, editorElement, contextualBalloon,
 			tablePropertiesUI, tablePropertiesView, tablePropertiesButton,
 			clock;
@@ -217,7 +217,7 @@ describe( 'table properties', () => {
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
-			describe.only( 'property changes', () => {
+			describe( 'property changes', () => {
 				beforeEach( () => {
 					tablePropertiesUI._undoStepBatch = 'foo';
 				} );
