@@ -17,7 +17,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-describe( 'table cell properties', () => {
+describe.only( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
 		let view, locale;
 
@@ -295,7 +295,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'text alignment row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ];
+						const row = view.element.childNodes[ 4 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).to.be.true;
@@ -386,7 +386,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'action row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 4 ];
+						const row = view.element.childNodes[ 5 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;

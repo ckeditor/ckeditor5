@@ -306,6 +306,14 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-row'
 		} ) );
 
+		// Background and padding row.
+		this.children.add( new FormRowView( locale, {
+			children: [
+				this.backgroundInput,
+				this.paddingInput,
+			]
+		} ) );
+
 		// Dimensions row.
 		this.children.add( new FormRowView( locale, {
 			labelView: dimensionsLabel,
@@ -316,14 +324,6 @@ export default class TableCellPropertiesView extends View {
 				heightInput
 			],
 			class: 'ck-table-cell-properties-form__dimensions-row'
-		} ) );
-
-		// Background and padding row.
-		this.children.add( new FormRowView( locale, {
-			children: [
-				this.backgroundInput,
-				this.paddingInput,
-			]
 		} ) );
 
 		// Text alignment row.
