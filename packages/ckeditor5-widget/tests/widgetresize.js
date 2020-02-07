@@ -148,25 +148,19 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount ).to.be.equal( 2 );
 		} );
 
-		it( 'shrinks correctly with bottom-left handler', () => {
-			const usedResizer = 'bottom-left';
-			const domParts = getWidgetDomParts( widget, usedResizer );
-			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer ).moveBy( 10, -10 );
+		// --- bottom handlers ---
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
-			sinon.assert.calledWithExactly( commitStub.firstCall, '90px' );
-			sinon.assert.calledOnce( commitStub );
-		} );
+		it( 'shrinks correctly with bottom-left handler', generateResizeTest( {
+			usedHandle: 'bottom-left',
+			movePointerBy: { x: 10, y: -10 },
+			expectedWidth: '90px'
+		} ) );
 
-		it( 'shrinks correctly with bottom-right handler', () => {
-			const usedResizer = 'bottom-right';
-			const domParts = getWidgetDomParts( widget, usedResizer );
-			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer ).moveBy( -10, -10 );
-
-			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
-			sinon.assert.calledWithExactly( commitStub.firstCall, '90px' );
-			sinon.assert.calledOnce( commitStub );
-		} );
+		it( 'shrinks correctly with bottom-right handler', generateResizeTest( {
+			usedHandle: 'bottom-right',
+			movePointerBy: { x: -10, y: -10 },
+			expectedWidth: '90px'
+		} ) );
 
 		it( 'enlarges correctly with bottom-right handler, x axis only', generateResizeTest( {
 			usedHandle: 'bottom-right',
