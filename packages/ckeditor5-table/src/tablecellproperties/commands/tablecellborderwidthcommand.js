@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellborderwidthcommand
  */
 
+import { addDefaultUnitToNumericValue, getSingleValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
-import { getSingleValue } from '../../commands/utils';
 
 /**
  * The table cell border width command.
@@ -43,5 +43,12 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 		}
 
 		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }
