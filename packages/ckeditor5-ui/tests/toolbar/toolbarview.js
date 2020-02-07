@@ -19,6 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -477,6 +478,11 @@ describe( 'ToolbarView', () => {
 			observeSpy = sinon.spy();
 			unobserveSpy = sinon.spy();
 
+			// Make sure other tests of the editor do not affect tests that follow.
+			// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+			// in DOM, the following DOM mock will have no effect.
+			ResizeObserver._observerInstance = null;
+
 			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
 				resizeCallback = callback;
 
@@ -501,7 +507,6 @@ describe( 'ToolbarView', () => {
 		} );
 
 		afterEach( () => {
-			sinon.restore();
 			view.element.remove();
 			view.destroy();
 		} );
