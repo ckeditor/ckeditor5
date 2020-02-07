@@ -89,7 +89,7 @@ describe( 'WidgetResize', () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
-			const finalPointerPosition = initialPointerPosition.moveBy( 20, 0 );
+			const finalPointerPosition = initialPointerPosition.clone().moveBy( 20, 0 );
 
 			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
@@ -137,10 +137,10 @@ describe( 'WidgetResize', () => {
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
-			const intermediatePointerPosition = initialPointerPosition.moveBy( 50, 0 );
+			const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 50, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
 
-			const finalPointerPosition = intermediatePointerPosition.moveBy( 50, 0 );
+			const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 50, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( commitStub.callCount ).to.be.equal( 2 );
@@ -168,10 +168,10 @@ describe( 'WidgetResize', () => {
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
-			const intermediatePointerPosition = initialPointerPosition.moveBy( 100, 0 );
+			const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 100, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
 
-			const finalPointerPosition = intermediatePointerPosition.moveBy( 100, 0 );
+			const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 100, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( commitStub.callCount ).to.be.equal( 2 );
@@ -260,15 +260,15 @@ describe( 'WidgetResize', () => {
 	 */
 	function getHandleCenterPoint( domWrapper, handlePosition ) {
 		const wrapperRect = new Rect( domWrapper );
-		let returnValue = new Point( wrapperRect.left, wrapperRect.top );
+		const returnValue = new Point( wrapperRect.left, wrapperRect.top );
 		const cornerPositionParts = handlePosition.split( '-' );
 
 		if ( cornerPositionParts.includes( 'right' ) ) {
-			returnValue = returnValue.moveToX( wrapperRect.right );
+			returnValue.x = wrapperRect.right;
 		}
 
 		if ( cornerPositionParts.includes( 'bottom' ) ) {
-			returnValue = returnValue.moveToY( wrapperRect.bottom );
+			returnValue.y = wrapperRect.bottom;
 		}
 
 		return returnValue;

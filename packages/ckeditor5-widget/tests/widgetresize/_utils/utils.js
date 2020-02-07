@@ -51,45 +51,27 @@ export const mouseMock = {
 
 export class Point {
 	constructor( x, y ) {
-		/**
-		 * @readonly
-		 */
 		this.x = x;
-
-		/**
-		 * @readonly
-		 */
 		this.y = y;
 	}
 
 	/**
-	 * Moves the point by a given `changeX` and `changeY` and returns it as a **new instance**.
+	 * Moves the point by a given `changeX` and `changeY`.
 	 *
 	 * @param {Number} changeX
 	 * @param {Number} changeY
-	 * @returns {Point}
+	 * @returns {Point} Returns current instance.
 	 */
 	moveBy( changeX, changeY ) {
-		return new Point( this.x + changeX, this.y + changeY );
+		this.x += changeX;
+		this.y += changeY;
+		return this;
 	}
 
 	/**
-	 * Moves the point to a given position in x axis and returns it as a **new instance**.
-	 *
-	 * @param {Number} x
 	 * @returns {Point}
 	 */
-	moveToX( x ) {
-		return new Point( x, this.y );
-	}
-
-	/**
-	 * Moves the point to a given position in y axis and returns it as a **new instance**.
-	 *
-	 * @param {Number} y
-	 * @returns {Point}
-	 */
-	moveToY( y ) {
-		return new Point( this.x, y );
+	clone() {
+		return new Point( this.x, this.y );
 	}
 }
