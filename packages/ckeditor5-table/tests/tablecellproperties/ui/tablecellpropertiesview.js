@@ -17,7 +17,7 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-describe.only( 'table cell properties', () => {
+describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
 		let view, locale;
 
@@ -518,6 +518,8 @@ describe.only( 'table cell properties', () => {
 					view.borderWidthInput,
 					view.backgroundInput,
 					view.paddingInput,
+					view.widthInput,
+					view.heightInput,
 					view.horizontalAlignmentToolbar,
 					view.verticalAlignmentToolbar,
 					view.saveButtonView,
