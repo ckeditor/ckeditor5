@@ -435,10 +435,12 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableCellBorderColor' ).value = 'b';
 					editor.commands.get( 'tableCellBorderWidth' ).value = 'c';
-					editor.commands.get( 'tableCellPadding' ).value = 'd';
-					editor.commands.get( 'tableCellBackgroundColor' ).value = 'e';
-					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'f';
-					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'g';
+					editor.commands.get( 'tableCellWidth' ).value = 'd';
+					editor.commands.get( 'tableCellHeight' ).value = 'e';
+					editor.commands.get( 'tableCellPadding' ).value = 'f';
+					editor.commands.get( 'tableCellBackgroundColor' ).value = 'g';
+					editor.commands.get( 'tableCellHorizontalAlignment' ).value = 'h';
+					editor.commands.get( 'tableCellVerticalAlignment' ).value = 'i';
 
 					tableCellPropertiesButton.fire( 'execute' );
 
@@ -447,10 +449,12 @@ describe( 'table cell properties', () => {
 						borderStyle: 'a',
 						borderColor: 'b',
 						borderWidth: 'c',
-						padding: 'd',
-						backgroundColor: 'e',
-						horizontalAlignment: 'f',
-						verticalAlignment: 'g'
+						width: 'd',
+						height: 'e',
+						padding: 'f',
+						backgroundColor: 'g',
+						horizontalAlignment: 'h',
+						verticalAlignment: 'i'
 					} );
 				} );
 
@@ -458,6 +462,8 @@ describe( 'table cell properties', () => {
 					editor.commands.get( 'tableCellBorderStyle' ).value = null;
 					editor.commands.get( 'tableCellBorderColor' ).value = null;
 					editor.commands.get( 'tableCellBorderWidth' ).value = null;
+					editor.commands.get( 'tableCellWidth' ).value = null;
+					editor.commands.get( 'tableCellHeight' ).value = null;
 					editor.commands.get( 'tableCellPadding' ).value = null;
 					editor.commands.get( 'tableCellBackgroundColor' ).value = null;
 					editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
@@ -470,6 +476,8 @@ describe( 'table cell properties', () => {
 						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
+						width: '',
+						height: '',
 						padding: '',
 						backgroundColor: '',
 						horizontalAlignment: 'left',

@@ -34,6 +34,10 @@
 		}
 	}
 
+	& .ck-table-form__dimension-operator {
+		flex-grow: 0;
+	}
+
 	& .ck.ck-labeled-view {
 		/* Allow absolute positioning of the status (error) balloons. */
 		position: relative;

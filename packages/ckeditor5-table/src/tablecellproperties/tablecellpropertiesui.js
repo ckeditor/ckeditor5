@@ -189,6 +189,20 @@ export default class TableCellPropertiesUI extends Plugin {
 			validator: lengthFieldValidator
 		} ) );
 
+		view.on( 'change:width', this._getValidatedPropertyChangeCallback( {
+			viewField: view.widthInput,
+			commandName: 'tableCellWidth',
+			errorText: lengthErrorText,
+			validator: lengthFieldValidator
+		} ) );
+
+		view.on( 'change:height', this._getValidatedPropertyChangeCallback( {
+			viewField: view.heightInput,
+			commandName: 'tableCellHeight',
+			errorText: lengthErrorText,
+			validator: lengthFieldValidator
+		} ) );
+
 		view.on( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.backgroundInput,
 			commandName: 'tableCellBackgroundColor',
@@ -219,6 +233,8 @@ export default class TableCellPropertiesUI extends Plugin {
 			borderStyle: commands.get( 'tableCellBorderStyle' ).value || DEFAULT_BORDER_STYLE,
 			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
 			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
+			width: commands.get( 'tableCellWidth' ).value || '',
+			height: commands.get( 'tableCellHeight' ).value || '',
 			padding: commands.get( 'tableCellPadding' ).value || '',
 			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
 			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
