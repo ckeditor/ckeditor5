@@ -77,7 +77,7 @@ describe( 'WidgetResize', () => {
 			createResizer();
 		} );
 
-		it( 'don\'t break when called with unexpected element', async () => {
+		it( 'don\'t break when called with unexpected element', () => {
 			const unrelatedElement = document.createElement( 'div' );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
@@ -85,7 +85,7 @@ describe( 'WidgetResize', () => {
 			} );
 		} );
 
-		it( 'passes new width to the options.onCommit()', async () => {
+		it( 'passes new width to the options.onCommit()', () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
@@ -110,7 +110,7 @@ describe( 'WidgetResize', () => {
 		expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
 	} );
 
-	it( 'nothing bad happens if activeResizer got unset', async () => {
+	it( 'nothing bad happens if activeResizer got unset', () => {
 		createResizer( {
 			isCentered: () => true
 		} );
@@ -128,11 +128,11 @@ describe( 'WidgetResize', () => {
 	describe( 'Integration (pixels)', () => {
 		let resizer;
 
-		beforeEach( async () => {
+		beforeEach( () => {
 			resizer = createResizer();
 		} );
 
-		it( 'properly sets the state for subsequent resizes', async () => {
+		it( 'properly sets the state for subsequent resizes', () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
@@ -157,13 +157,13 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'Integration (percents)', () => {
-		beforeEach( async () => {
+		beforeEach( () => {
 			createResizer( {
 				unit: undefined
 			} );
 		} );
 
-		it( 'properly sets the state for subsequent resizes', async () => {
+		it( 'properly sets the state for subsequent resizes', () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
