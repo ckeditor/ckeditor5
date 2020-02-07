@@ -139,13 +139,13 @@ describe( 'WidgetResize', () => {
 
 			const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 50, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
+			sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
 
 			const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 50, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
 
 			expect( commitStub.callCount ).to.be.equal( 2 );
-			sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
-			sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
 		} );
 
 		it( 'hides the resize wrapper when resizer gets disabled', () => {
@@ -170,13 +170,13 @@ describe( 'WidgetResize', () => {
 
 			const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 100, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
+			sinon.assert.calledWithExactly( commitStub.firstCall, '50%' );
 
 			const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 100, 0 );
 			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			sinon.assert.calledWithExactly( commitStub.secondCall, '75%' );
 
 			expect( commitStub.callCount ).to.be.equal( 2 );
-			sinon.assert.calledWithExactly( commitStub.firstCall, '50%' );
-			sinon.assert.calledWithExactly( commitStub.secondCall, '75%' );
 		} );
 	} );
 
