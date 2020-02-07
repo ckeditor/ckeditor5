@@ -7,7 +7,10 @@
  * @module engine/view/styles/utils
  */
 
-const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
+const colorRegExp = /^(0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
+
+const HEX_VALUE_REGEXP = /^[0-9a-fA-F]+$/;
+const validHexLengths = [ 3, 4, 6, 8 ];
 
 /**
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
@@ -16,6 +19,16 @@ const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
  * @returns {Boolean}
  */
 export function isColor( string ) {
+	if ( string.startsWith( '#' ) ) {
+		const hexValue = string.substr( 1 );
+
+		if ( !validHexLengths.includes( hexValue.length ) ) {
+			return false;
+		}
+
+		return HEX_VALUE_REGEXP.test( hexValue );
+	}
+
 	return colorRegExp.test( string );
 }
 

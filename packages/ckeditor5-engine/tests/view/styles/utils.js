@@ -12,22 +12,26 @@ import {
 	isLineStyle
 } from '../../../src/view/styles/utils';
 
-describe( 'Styles utils', () => {
+describe.only( 'Styles utils', () => {
 	describe( 'isColor()', () => {
 		it( 'returns true for #RGB color', () => {
-			testValues( [ '#f00', '#ba2' ], isColor );
+			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColor );
 		} );
 
 		it( 'returns true for #RRGGBB color', () => {
-			testValues( [ '#ff0000', '#bbaa22' ], isColor );
+			testValues( [ '#ff0000', '#bbaa22', '#FF0000', '#BBAA22', '#AabBCC' ], isColor );
 		} );
 
 		it( 'returns true for #RGBA color', () => {
-			testValues( [ '#f000', '#ba24' ], isColor );
+			testValues( [ '#f000', '#ba24', '#F000', '#BA24', '#aBcD' ], isColor );
 		} );
 
 		it( 'returns true for #RRGGBBAA color', () => {
-			testValues( [ '#ff000000', '#bbaa2244' ], isColor );
+			testValues( [ '#ff000000', '#bbaa2244', '#FF000000', '#BBAA2244', '#AabBCCdd' ], isColor );
+		} );
+
+		it( 'returns false for invalid # color', () => {
+			testValues( [ '#ttt', '#1', '#12', '#12345' ], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for rgb() color', () => {
