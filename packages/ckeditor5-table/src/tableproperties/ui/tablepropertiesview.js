@@ -510,7 +510,7 @@ export default class TablePropertiesView extends View {
 			tag: 'span',
 			attributes: {
 				class: [
-					'ck-table-properties-form__dimension-operator'
+					'ck-table-form__dimension-operator'
 				]
 			},
 			children: [
