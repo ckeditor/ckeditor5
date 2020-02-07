@@ -331,7 +331,8 @@ export default class TableCellPropertiesView extends View {
 				new FormRowView( locale, {
 					children: [
 						this.paddingInput
-					]
+					],
+					class: 'ck-table-cell-properties-form__padding-row'
 				} )
 			]
 		} ) );
