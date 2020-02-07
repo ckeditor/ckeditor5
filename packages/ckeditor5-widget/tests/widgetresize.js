@@ -148,12 +148,61 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount ).to.be.equal( 2 );
 		} );
 
+		it( 'shrinks correctly with bottom-left handler', () => {
+			const usedResizer = 'bottom-left';
+			const domParts = getWidgetDomParts( widget, usedResizer );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer ).moveBy( 10, -10 );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			sinon.assert.calledWithExactly( commitStub.firstCall, '90px' );
+			sinon.assert.calledOnce( commitStub );
+		} );
+
+		it( 'shrinks correctly with bottom-right handler', () => {
+			const usedResizer = 'bottom-right';
+			const domParts = getWidgetDomParts( widget, usedResizer );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer ).moveBy( -10, -10 );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			sinon.assert.calledWithExactly( commitStub.firstCall, '90px' );
+			sinon.assert.calledOnce( commitStub );
+		} );
+
+		generateResizeTest( 'enlarges correctly with bottom-right handler, x axis only', {
+			usedResizer: 'bottom-right',
+			movePointerBy: { x: 10, y: 0 },
+			expectedWidth: '110px'
+		} );
+
 		it( 'hides the resize wrapper when resizer gets disabled', () => {
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 			expect( resizerWrapper.style.display ).to.equal( '' );
 			resizer.isEnabled = false;
 			expect( resizerWrapper.style.display ).to.equal( 'none' );
 		} );
+
+		/**
+		 *
+		 * @param {String} caseTitle
+		 * @param {Object} options
+		 * @param {String} options.caseTitle
+		 * @param {Object} options.movePointerBy How much should the pointer move during the drag compared to the initial position.
+		 */
+		function generateResizeTest( caseTitle, options ) {
+			options = options || {};
+			const usedResizer = options.usedResizer;
+			const pointerDifference = options.movePointerBy;
+
+			it( caseTitle, () => {
+				const domParts = getWidgetDomParts( widget, usedResizer );
+				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
+				const finalPointerPosition = initialPointerPosition.moveBy( pointerDifference.x, pointerDifference.y );
+
+				mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+				expect( commitStub.args[ 0 ][ 0 ] ).to.be.equal( options.expectedWidth );
+				sinon.assert.calledOnce( commitStub );
+			} );
+		}
 	} );
 
 	describe( 'Integration (percents)', () => {
