@@ -12,6 +12,13 @@
 			width: 50%;
 		}
 
+
+		&.ck-table-cell-properties-form__dimensions-row,
+		&.ck-table-cell-properties-form__padding-row {
+			padding-left: 0;
+			padding-right: 0;
+		}
+
 		&.ck-table-cell-properties-form__alignment-row {
 			& .ck.ck-toolbar {
 				background: none;
