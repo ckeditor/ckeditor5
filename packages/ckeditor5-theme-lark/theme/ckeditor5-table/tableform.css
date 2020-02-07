@@ -11,6 +11,14 @@
 }
 
 .ck.ck-table-form {
+	& .ck-table-form__dimension-operator {
+		margin: 0;
+		align-self: start;
+		display: inline-block;
+		height: var(--ck-ui-component-min-height);
+		line-height: var(--ck-ui-component-min-height);
+	}
+
 	& .ck.ck-labeled-view {
 		& .ck.ck-labeled-view__status {
 			@mixin ck-rounded-corners;
