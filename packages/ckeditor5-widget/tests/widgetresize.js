@@ -11,40 +11,16 @@ import WidgetResize from '../src/widgetresize';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import {
-	toWidget
-} from '../src/utils';
-import {
-	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { toWidget } from '../src/utils';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { mouseMock, Point } from './widgetresize/_utils/utils';
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies;
 
 	const commitStub = sinon.stub();
-	const mouseMock = {
-		down( editor, domTarget ) {
-			this._getPlugin( editor )._mouseDownListener( {}, {
-				target: domTarget
-			} );
-		},
-		move( editor, domTarget, eventData ) {
-			const combinedEventData = Object.assign( {}, eventData, {
-				target: domTarget
-			} );
-
-			this._getPlugin( editor )._mouseMoveListener( {}, combinedEventData );
-		},
-		up() {
-			this._getPlugin( editor )._mouseUpListener();
-		},
-
-		_getPlugin( editor ) {
-			return editor.plugins.get( WidgetResize );
-		}
-	};
 
 	before( () => {
 		mouseListenerSpies = {
@@ -112,15 +88,10 @@ describe( 'WidgetResize', () => {
 		it( 'passes new width to the options.onCommit()', async () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
-			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
-			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
+			const finalPointerPosition = initialPointerPosition.moveBy( 20, 0 );
 
-			finalPointerPosition.pageX += 20;
-
-			mouseMock.down( editor, domParts.resizeHandle );
-
-			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			mouseMock.up();
+			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( commitStub.callCount ).to.be.equal( 1 );
 			sinon.assert.calledWithExactly( commitStub, '120px' );
@@ -146,14 +117,12 @@ describe( 'WidgetResize', () => {
 
 		const usedResizer = 'top-right';
 		const domParts = getWidgetDomParts( widget, usedResizer );
-		const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
+		const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
 		editor.plugins.get( WidgetResize )._getResizerByHandle = sinon.stub().returns( null );
 
-		mouseMock.down( editor, domParts.resizeHandle );
-
-		mouseMock.move( editor, domParts.resizeHandle, initialPointerPosition );
-		mouseMock.up();
+		mouseMock.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
+		// No exception should be thrown.
 	} );
 
 	describe( 'Integration (pixels)', () => {
@@ -166,21 +135,13 @@ describe( 'WidgetResize', () => {
 		it( 'properly sets the state for subsequent resizes', async () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
-			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
-			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
-			finalPointerPosition.pageX += 50;
+			const intermediatePointerPosition = initialPointerPosition.moveBy( 50, 0 );
+			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
 
-			mouseMock.down( editor, domParts.resizeHandle );
-
-			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			mouseMock.up();
-
-			mouseMock.down( editor, domParts.resizeHandle );
-
-			finalPointerPosition.pageX += 50;
-			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			mouseMock.up();
+			const finalPointerPosition = intermediatePointerPosition.moveBy( 50, 0 );
+			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( commitStub.callCount ).to.be.equal( 2 );
 			sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
@@ -205,21 +166,13 @@ describe( 'WidgetResize', () => {
 		it( 'properly sets the state for subsequent resizes', async () => {
 			const usedResizer = 'top-right';
 			const domParts = getWidgetDomParts( widget, usedResizer );
-			const initialPointerPosition = getElementCenterPoint( domParts.widget, usedResizer );
-			const finalPointerPosition = Object.assign( {}, initialPointerPosition );
+			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
-			finalPointerPosition.pageX += 100;
+			const intermediatePointerPosition = initialPointerPosition.moveBy( 100, 0 );
+			mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
 
-			mouseMock.down( editor, domParts.resizeHandle );
-
-			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			mouseMock.up();
-
-			mouseMock.down( editor, domParts.resizeHandle );
-
-			finalPointerPosition.pageX += 100;
-			mouseMock.move( editor, domParts.resizeHandle, finalPointerPosition );
-			mouseMock.up();
+			const finalPointerPosition = intermediatePointerPosition.moveBy( 100, 0 );
+			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( commitStub.callCount ).to.be.equal( 2 );
 			sinon.assert.calledWithExactly( commitStub.firstCall, '50%' );
@@ -298,23 +251,27 @@ describe( 'WidgetResize', () => {
 		};
 	}
 
-	function getElementCenterPoint( domWrapper, cornerPosition ) {
+	/**
+	 * Returns a center point for a given handle.
+	 *
+	 * @param {HTMLElement} domWrapper Wrapper of an element that contains the resizer.
+	 * @param {String} [handlePosition='top-left']
+	 * @returns {Point}
+	 */
+	function getHandleCenterPoint( domWrapper, handlePosition ) {
 		const wrapperRect = new Rect( domWrapper );
-		const initialPointerPosition = {
-			pageX: wrapperRect.left,
-			pageY: wrapperRect.top
-		};
-		const cornerPositionParts = cornerPosition.split( '-' );
+		let returnValue = new Point( wrapperRect.left, wrapperRect.top );
+		const cornerPositionParts = handlePosition.split( '-' );
 
 		if ( cornerPositionParts.includes( 'right' ) ) {
-			initialPointerPosition.pageX = wrapperRect.right;
+			returnValue = returnValue.moveToX( wrapperRect.right );
 		}
 
 		if ( cornerPositionParts.includes( 'bottom' ) ) {
-			initialPointerPosition.pageY = wrapperRect.bottom;
+			returnValue = returnValue.moveToY( wrapperRect.bottom );
 		}
 
-		return initialPointerPosition;
+		return returnValue;
 	}
 
 	function focusEditor( editor ) {
