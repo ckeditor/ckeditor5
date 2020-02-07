@@ -25,7 +25,7 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
 ];
 
-const isEmpty = val => val.trim() === '';
+const isEmpty = val => val === '';
 
 /**
  * A helper utility that positions the
@@ -147,6 +147,8 @@ export function getLocalizedLengthErrorText( t ) {
  * @returns {Boolean}
  */
 export function colorFieldValidator( value ) {
+	value = value.trim();
+
 	return isEmpty( value ) || isColor( value );
 }
 
@@ -160,6 +162,8 @@ export function colorFieldValidator( value ) {
  * @returns {Boolean}
  */
 export function lengthFieldValidator( value ) {
+	value = value.trim();
+
 	return isEmpty( value ) || isLength( value );
 }
 
