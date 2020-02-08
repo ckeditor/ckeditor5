@@ -15,7 +15,7 @@ import areConnectedThroughProperties from './utils/areconnectedthroughproperties
 import getSubNodes from './utils/getsubnodes';
 
 /**
- * The Context Watchdog class.
+ * A watchdog for the {@link module:core/context~Context} class.
  *
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
