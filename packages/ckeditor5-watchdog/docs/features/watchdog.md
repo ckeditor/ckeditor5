@@ -330,7 +330,7 @@ const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 	minimumNonErrorTimePeriod: 2000,
 	crashNumberLimit: 4,
 	saveInterval: 1000
-} )
+} );
 ```
 
 <info-box>
