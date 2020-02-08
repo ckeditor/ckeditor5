@@ -110,10 +110,10 @@ export default class ContextWatchdog extends Watchdog {
 		 * It expects a function that should return a promise (or `undefined`).
 		 *
 		 *		watchdog.setCreator( config => Context.create( config ) );
-		*
-		* @method #setCreator
-		* @param {Function} creator
-		*/
+		 *
+		 * @method #setCreator
+		 * @param {Function} creator
+		 */
 
 		/**
 		 * Sets the function that is responsible for the context destruction.
@@ -122,17 +122,17 @@ export default class ContextWatchdog extends Watchdog {
 		 *
 		 *		watchdog.setDestructor( context => {
 		 *			// Do something before the context is destroyed.
-		*
-		*			return context
-		*				.destroy()
-		*				.then( () => {
-		*					// Do something after the context is destroyed.
-		*				} );
-		*		} );
-		*
-		* @method #setDestructor
-		* @param {Function} destructor
-		*/
+		 *
+		 *			return context
+		 *				.destroy()
+		 *				.then( () => {
+		 *					// Do something after the context is destroyed.
+		 *				} );
+		 *		} );
+		 *
+		 * @method #setDestructor
+		 * @param {Function} destructor
+		 */
 	}
 
 	/**
@@ -165,7 +165,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-     * Returns the item instance with the given `itemId`.
+	 * Returns the item instance with the given `itemId`.
 	 *
 	 * 	const editor1 = watchdog.get( 'editor1' );
 	 *
@@ -483,7 +483,7 @@ class ActionQueue {
 		this._onEmptyCallbacks = [];
 	}
 
-	// A method used to register callbacks that will be run when the queue becomes empty.
+	// Used to register callbacks that will be run when the queue becomes empty.
 	//
 	// @param {Function} onEmptyCallback A callback that will be run whenever the queue becomes empty.
 	onEmpty( onEmptyCallback ) {
@@ -513,13 +513,13 @@ class ActionQueue {
 }
 
 /**
- * The WatchdogItemConfiguration interface.
+ * The `WatchdogItemConfiguration` interface.
  *
  * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
  */
 
 /**
- * The EditorWatchdogConfiguration interface specifies how editors should be created and destroyed.
+ * The `EditorWatchdogConfiguration` interface specifies how editors should be created and destroyed.
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
  *
