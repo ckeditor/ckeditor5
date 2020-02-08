@@ -167,7 +167,7 @@ await watchdog.create( {
 	    // ...
 	],
 	// ...
-} )
+} );
 
 // Add editor instances.
 // You mat also use multiple `ContextWatchdog#add()` calls, each adding a single editor.
@@ -313,7 +313,7 @@ watchdog.on( 'itemError', ( evt, { error, itemId } ) => {
 
 // The `itemRestart` event is fired when an item is set back to the `ready` state (after it was in `error` state).
 watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
-	console.log( 'An item with with the '${ itemId }' id has been restarted.' );
+	console.log( 'An item with '${ itemId }' id has been restarted.' );
 } );
 ```
 
