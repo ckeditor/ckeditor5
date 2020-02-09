@@ -55,7 +55,11 @@ export default class Context {
 		 * @readonly
 		 * @type {module:utils/config~Config}
 		 */
-		this.config = new Config( config );
+		this.config = new Config( config, this.constructor.defaultConfig );
+
+		const availablePlugins = this.constructor.builtinPlugins;
+
+		this.config.define( 'plugins', availablePlugins );
 
 		/**
 		 * The plugins loaded and in use by this context instance.
@@ -63,7 +67,7 @@ export default class Context {
 		 * @readonly
 		 * @type {module:core/plugincollection~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this );
+		this.plugins = new PluginCollection( this, availablePlugins );
 
 		const languageConfig = this.config.get( 'language' ) || {};
 
