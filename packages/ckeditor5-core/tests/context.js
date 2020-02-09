@@ -296,4 +296,70 @@ describe( 'Context', () => {
 			await editor.destroy();
 		} );
 	} );
+
+	describe( 'builtinPlugins', () => {
+		class PluginA extends ContextPlugin {}
+		class PluginB extends ContextPlugin {}
+		class PluginC extends ContextPlugin {}
+
+		beforeEach( () => {
+			Context.builtinPlugins = [ PluginA, PluginB, PluginC ];
+		} );
+
+		afterEach( () => {
+			delete Context.builtinPlugins;
+		} );
+
+		it( 'should load plugins built in the Context even if the passed config is empty', () => {
+			const context = new Context();
+
+			return context.initPlugins()
+				.then( () => {
+					expect( getPlugins( context ).length ).to.equal( 3 );
+
+					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
+					expect( context.plugins.get( PluginB ) ).to.be.an.instanceof( ContextPlugin );
+					expect( context.plugins.get( PluginC ) ).to.be.an.instanceof( ContextPlugin );
+				} );
+		} );
+
+		it( 'should load plugins provided in the config and should ignore plugins built in the Editor', () => {
+			const context = new Context( {
+				plugins: [
+					PluginA
+				]
+			} );
+
+			return context.initPlugins()
+				.then( () => {
+					expect( getPlugins( context ).length ).to.equal( 1 );
+
+					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
+				} );
+		} );
+	} );
+
+	describe( 'defaultConfig', () => {
+		beforeEach( () => {
+			Context.defaultConfig = { foo: 1, bar: 2 };
+		} );
+
+		afterEach( () => {
+			delete Context.defaultConfig;
+		} );
+
+		it( 'should extend an editor configuration using built in config', () => {
+			const context = new Context( {
+				foo: 4
+			} );
+
+			expect( context.config.get( 'foo' ) ).to.equal( 4 );
+			expect( context.config.get( 'bar' ) ).to.equal( 2 );
+		} );
+	} );
 } );
+
+function getPlugins( editor ) {
+	return Array.from( editor.plugins )
+		.map( entry => entry[ 1 ] ); // Get instances.
+}
