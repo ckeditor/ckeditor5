@@ -354,6 +354,7 @@ mix( Editor, ObservableMixin );
 
 /**
  * An array of plugins built into this editor class.
+ *
  * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
  * during the editor initialization.
  *
@@ -401,6 +402,7 @@ mix( Editor, ObservableMixin );
 
 /**
  * The default configuration which is built into the editor class.
+ *
  * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
  *
  *		ClassicEditor.defaultConfig = {
