@@ -293,3 +293,61 @@ export default class Context {
 		} );
 	}
 }
+
+/**
+ * An array of plugins built into the `Context` class.
+ *
+ * It is used in CKEditor 5 builds featuring `Context` to provide a list of context plugins which are later automatically initialized
+ * during the context initialization.
+ *
+ * They will be automatically initialized by `Context` unless `config.plugins` is passed.
+ *
+ *		// Build some context plugins into the Context class first.
+ *		Context.builtinPlugins = [ FooPlugin, BarPlugin ];
+ *
+ *		// Normally, you need to define config.plugins, but since Context.builtinPlugins was
+ *		// defined, now you can call create() without any configuration.
+ *		Context
+ *			.create()
+ *			.then( context => {
+ *				context.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+ *				context.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
+ *			} );
+ *
+ * See also {@link module:core/editor/editor~Editor.builtinPlugins} and {@link module:core/context~Context.defaultConfig}.
+ *
+ * @static
+ * @member {Array.<Function>} module:core/context~Context.builtinPlugins
+ */
+
+/**
+ * The default configuration which is built into the `Context` class.
+ *
+ * It is used in CKEditor 5 builds featuring `Context` to provide the default configuration options which are later used during the
+ * context initialization.
+ *
+ *		Context.defaultConfig = {
+ *			foo: 1,
+ *			bar: 2
+ *		};
+ *
+ *		Context
+ *			.create()
+ *			.then( context => {
+ *				context.config.get( 'foo' ); // -> 1
+ *				context.config.get( 'bar' ); // -> 2
+ *			} );
+ *
+ *		// The default options can be overridden by the configuration passed to create().
+ *		Context
+ *			.create( { bar: 3 } )
+ *			.then( context => {
+ *				context.config.get( 'foo' ); // -> 1
+ *				context.config.get( 'bar' ); // -> 3
+ *			} );
+ *
+ * See also {@link module:core/editor/editor~Editor.defaultConfig} and {@link module:core/context~Context.builtinPlugins}.
+ *
+ * @static
+ * @member {Object} module:core/context~Context.defaultConfig
+ */
