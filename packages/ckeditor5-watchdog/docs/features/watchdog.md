@@ -240,7 +240,7 @@ const watchdog = new ContextWatchdog( Context, watchdogConfig );
 
 // Setting a custom creator for the context.
 watchdog.setCreator( async config => {
-	const context = await Context.create( config ) );
+	const context = await Context.create( config );
 
 	// Do something when the context is initialized.
 
