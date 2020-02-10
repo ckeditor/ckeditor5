@@ -7,25 +7,21 @@
  * @module watchdog/watchdog
  */
 
-/* globals console, window */
-
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { throttle, cloneDeepWith, isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import areConnectedThroughProperties from '@ckeditor/ckeditor5-utils/src/areconnectedthroughproperties';
+/* globals window */
 
 /**
- * A watchdog for CKEditor 5 editors.
+ * An abstract watchdog class that handles most of the error handling process and the state of the underlying component.
  *
- * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
- * how to use it.
+ * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and how to use it.
+ *
+ * @private
+ * @abstract
  */
 export default class Watchdog {
 	/**
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [config] The watchdog plugin configuration.
+	 * @param {module:watchdog/watchdog~WatchdogConfig} config The watchdog plugin configuration.
 	 */
-	constructor( config = {} ) {
+	constructor( config ) {
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
@@ -43,23 +39,22 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Specifies the state of the editor handled by the watchdog. The state can be one of the following values:
+		 * Specifies the state of the item watched by the watchdog. The state can be one of the following values:
 		 *
-		 * * `initializing` - before the first initialization, and after crashes, before the editor is ready,
-		 * * `ready` - a state when a user can interact with the editor,
+		 * * `initializing` - before the first initialization, and after crashes, before the item is ready,
+		 * * `ready` - a state when a user can interact with the item,
 		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
 		 * depending on how many and how frequency errors have been caught recently,
-		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
-		 * * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`
+		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the item it is watching crashed,
+		 * * `destroyed` - a state when the item is manually destroyed by the user after calling `watchdog.destroy()`
 		 *
 		 * @public
-		 * @observable
 		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} #state
 		 */
-		this.set( 'state', 'initializing' );
+		this.state = 'initializing';
 
 		/**
-		 * @private
+		 * @protected
 		 * @type {Number}
 		 * @see module:watchdog/watchdog~WatchdogConfig
 		 */
@@ -74,15 +69,14 @@ export default class Watchdog {
 		this._now = Date.now;
 
 		/**
-		 * @private
+		 * @protected
 		 * @type {Number}
 		 * @see module:watchdog/watchdog~WatchdogConfig
 		 */
 		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
 		/**
-		 * Checks if the event error comes from the editor that is handled by the watchdog (by checking the error context)
-		 * and restarts the editor.
+		 * Checks if the event error comes from the underlying item and restarts the item.
 		 *
 		 * @private
 		 * @type {Function}
@@ -99,252 +93,171 @@ export default class Watchdog {
 		};
 
 		/**
-		 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
-		 * unless a new action happens in the meantime.
+		 * The creation method.
 		 *
-		 * @private
-		 * @type {Function}
-		 */
-		this._throttledSave = throttle(
-			this._save.bind( this ),
-			typeof config.saveInterval === 'number' ? config.saveInterval : 5000
-		);
-
-		/**
-		 * The current editor instance.
-		 *
-		 * @private
-		 * @type {module:core/editor/editor~Editor}
-		 */
-		this._editor = null;
-
-		/**
-		 * The editor creation method.
-		 *
-		 * @private
+		 * @protected
 		 * @member {Function} #_creator
 		 * @see #setCreator
 		 */
 
 		/**
-		 * The editor destruction method.
+		 * The destruction method.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Function} #_destructor
 		 * @see #setDestructor
 		 */
-		this._destructor = editor => editor.destroy();
 
 		/**
-		 * The latest saved editor data represented as a root name -> root data object.
+		 * The watched item.
 		 *
-		 * @private
-		 * @member {Object.<String,String>} #_data
+		 * @abstract
+		 * @protected
+		 * @member {Object|undefined} #_item
 		 */
 
 		/**
-		 * The last document version.
+		 * The method responsible for restarting the watched item.
 		 *
-		 * @private
-		 * @member {Number} #_lastDocumentVersion
+		 * @abstract
+		 * @protected
+		 * @method #_restart
 		 */
 
 		/**
-		 * The editor source element or data.
+		 * Traverses the error context and the watched item to find out whether the error should
+		 * be handled by the given item.
 		 *
-		 * @private
-		 * @member {HTMLElement|String|Object.<String|String>} #_elementOrData
+		 * @abstract
+		 * @protected
+		 * @method #_isErrorComingFromThisItem
+		 * @param {module:utils/ckeditorerror~CKEditorError} error
 		 */
 
 		/**
-		 * The editor configuration.
+		 * A dictionary of event emitter listeners.
 		 *
 		 * @private
-		 * @member {Object|undefined} #_config
+		 * @type {Object.<String,Array.<Function>>}
 		 */
+		this._listeners = {};
+
+		if ( !this._restart ) {
+			throw new Error(
+				'The Watchdog class was split into the abstract `Watchdog` class and the `EditorWatchdog` class. ' +
+				'Please, use `EditorWatchdog` if you have used the `Watchdog` class previously.'
+			);
+		}
 	}
 
 	/**
-	 * The current editor instance.
+	 * Sets the function that is responsible for creating watchded items.
 	 *
-	 * @readonly
-	 * @type {module:core/editor/editor~Editor}
-	 */
-	get editor() {
-		return this._editor;
-	}
-
-	/**
-	 * Sets the function that is responsible for the editor creation.
-	 * It expects a function that should return a promise.
-	 *
-	 *		watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
-	 *
-	 * @param {Function} creator
+	 * @param {Function} creator A callback responsible for creating an item. Returns a promise
+	 * that is resolved when the item is created.
 	 */
 	setCreator( creator ) {
 		this._creator = creator;
 	}
 
 	/**
-	 * Sets the function that is responsible for the editor destruction.
-	 * Overrides the default destruction function, which destroys only the editor instance.
-	 * It expects a function that should return a promise or `undefined`.
+	 * Sets the function that is responsible for destructing watched items.
 	 *
-	 *		watchdog.setDestructor( editor => {
-	 *			// Do something before the editor is destroyed.
-	 *
-	 *			return editor
-	 *				.destroy()
-	 *				.then( () => {
-	 *					// Do something after the editor is destroyed.
-	 *				} );
-	 *		} );
-	 *
-	 * @param {Function} destructor
+	 * @param {Function} destructor A callback that takes the item and returns the promise
+	 * to the destroying process.
 	 */
 	setDestructor( destructor ) {
 		this._destructor = destructor;
 	}
 
 	/**
-	 * Creates a watched editor instance using the creator passed to the {@link #setCreator `setCreator()`} method or
-	 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
-	 *
-	 * @param {HTMLElement|String|Object.<String|String>} elementOrData
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config]
-	 *
-	 * @returns {Promise}
-	 */
-	create( elementOrData, config ) {
-		if ( !this._creator ) {
-			/**
-			 * The watchdog's editor creator is not defined. Define it by using
-			 * {@link module:watchdog/watchdog~Watchdog#setCreator `Watchdog#setCreator()`} or
-			 * the {@link module:watchdog/watchdog~Watchdog.for `Watchdog.for()`} helper.
-			 *
-			 * @error watchdog-creator-not-defined
-			 */
-			throw new CKEditorError(
-				'watchdog-creator-not-defined: The watchdog\'s editor creator is not defined.',
-				null
-			);
-		}
-
-		this._elementOrData = elementOrData;
-
-		// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
-		// when an error occurs in one of these editors, the watchdog will restart all of them.
-		this._config = cloneDeepWith( config, value => {
-			// Leave DOM references.
-			return isElement( value ) ? value : undefined;
-		} );
-
-		return Promise.resolve()
-			.then( () => this._creator( elementOrData, this._config ) )
-			.then( editor => {
-				this._editor = editor;
-
-				window.addEventListener( 'error', this._boundErrorHandler );
-				window.addEventListener( 'unhandledrejection', this._boundErrorHandler );
-
-				this.listenTo( editor.model.document, 'change:data', this._throttledSave );
-
-				this._lastDocumentVersion = editor.model.document.version;
-
-				this._data = this._getData();
-				this.state = 'ready';
-			} );
-	}
-
-	/**
-	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method
-	 * and sets state to `destroyed`.
-	 *
-	 * @returns {Promise}
+	 * Destroys the watchdog and releases the resources.
 	 */
 	destroy() {
-		this.state = 'destroyed';
+		this._stopErrorHandling();
 
-		return this._destroy();
+		this._listeners = {};
 	}
 
 	/**
-	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method.
+	 * Starts listening to the specific event name by registering a callback that will be executed
+	 * whenever an event with given name fires.
 	 *
-	 * @private
-	 */
-	_destroy() {
-		window.removeEventListener( 'error', this._boundErrorHandler );
-		window.removeEventListener( 'unhandledrejection', this._boundErrorHandler );
-
-		this.stopListening( this._editor.model.document, 'change:data', this._throttledSave );
-
-		// Save data if there is a remaining editor data change.
-		this._throttledSave.flush();
-
-		return Promise.resolve()
-			.then( () => this._destructor( this._editor ) )
-			.then( () => {
-				this._editor = null;
-			} );
-	}
-
-	/**
-	 * Saves the editor data, so it can be restored after the crash even if the data cannot be fetched at
-	 * the moment of the crash.
+	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
 	 *
-	 * @private
+	 * @param {String} eventName  Event name.
+	 * @param {Function} callback A callback which will be added to event listeners.
 	 */
-	_save() {
-		const version = this._editor.model.document.version;
-
-		// Change may not produce an operation, so the document's version
-		// can be the same after that change.
-		if ( version === this._lastDocumentVersion ) {
-			return;
+	on( eventName, callback ) {
+		if ( !this._listeners[ eventName ] ) {
+			this._listeners[ eventName ] = [];
 		}
 
-		try {
-			this._data = this._getData();
-			this._lastDocumentVersion = version;
-		} catch ( err ) {
-			console.error(
-				err,
-				'An error happened during restoring editor data. ' +
-				'Editor will be restored from the previously saved data.'
-			);
-		}
+		this._listeners[ eventName ].push( callback );
 	}
 
 	/**
-	 * Returns the editor data.
+	 * Stops listening to the specified event name by removing the callback from event listeners.
 	 *
-	 * @private
-	 * @returns {Object<String,String>}
+	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
+	 *
+	 * @param {String} eventName Event name.
+	 * @param {Function} callback A callback which will be removed from event listeners.
 	 */
-	_getData() {
-		const data = {};
-
-		for ( const rootName of this._editor.model.document.getRootNames() ) {
-			data[ rootName ] = this._editor.data.get( { rootName } );
-		}
-
-		return data;
+	off( eventName, callback ) {
+		this._listeners[ eventName ] = this._listeners[ eventName ]
+			.filter( cb => cb !== callback );
 	}
 
 	/**
-	 * Checks if the error comes from the editor that is handled by the watchdog (by checking the error context) and
-	 * restarts the editor. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
+	 * Fires an event with given event name and arguments.
+	 *
+	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
 	 *
 	 * @protected
+	 * @param {String} eventName Event name.
+	 * @param  {...*} args Event arguments.
+	 */
+	_fire( eventName, ...args ) {
+		const callbacks = this._listeners[ eventName ] || [];
+
+		for ( const callback of callbacks ) {
+			callback.apply( this, [ null, ...args ] );
+		}
+	}
+
+	/**
+	 * Starts error handling by attaching global error handlers.
+	 *
+	 * @protected
+	 */
+	_startErrorHandling() {
+		window.addEventListener( 'error', this._boundErrorHandler );
+		window.addEventListener( 'unhandledrejection', this._boundErrorHandler );
+	}
+
+	/**
+	 * Stops error handling by detaching global error handlers.
+	 *
+	 * @protected
+	 */
+	_stopErrorHandling() {
+		window.removeEventListener( 'error', this._boundErrorHandler );
+		window.removeEventListener( 'unhandledrejection', this._boundErrorHandler );
+	}
+
+	/**
+	 * Checks if the error comes from the watched item and restarts it.
+	 * It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
+	 *
+	 * @private
 	 * @fires error
 	 * @param {Error} error Error.
 	 * @param {ErrorEvent|PromiseRejectionEvent} evt Error event.
 	 */
 	_handleError( error, evt ) {
 		// @if CK_DEBUG // if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
-		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper editor.' );
+		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper item.' );
 		// @if CK_DEBUG // }
 
 		if ( this._shouldReactToError( error ) ) {
@@ -359,22 +272,26 @@ export default class Watchdog {
 				date: this._now()
 			} );
 
-			this.fire( 'error', { error } );
-			this.state = 'crashed';
+			const causesRestart = this._shouldRestart();
 
-			if ( this._shouldRestartEditor() ) {
+			this.state = 'crashed';
+			this._fire( 'stateChange' );
+			this._fire( 'error', { error, causesRestart } );
+
+			if ( causesRestart ) {
 				this._restart();
 			} else {
 				this.state = 'crashedPermanently';
+				this._fire( 'stateChange' );
 			}
 		}
 	}
 
 	/**
-	 * Checks whether the error should be handled.
+	 * Checks whether the error should be handled by the watchdog.
 	 *
 	 * @private
-	 * @param {Error} error Error
+	 * @param {Error} error An error that was caught by the error handling process.
 	 */
 	_shouldReactToError( error ) {
 		return (
@@ -382,21 +299,21 @@ export default class Watchdog {
 			error.is( 'CKEditorError' ) &&
 			error.context !== undefined &&
 
-			// In some cases the editor should not be restarted - e.g. in case of the editor initialization.
+			// In some cases the watched item should not be restarted - e.g. during the item initialization.
 			// That's why the `null` was introduced as a correct error context which does cause restarting.
 			error.context !== null &&
 
 			// Do not react to errors if the watchdog is in states other than `ready`.
 			this.state === 'ready' &&
 
-			this._isErrorComingFromThisEditor( error )
+			this._isErrorComingFromThisItem( error )
 		);
 	}
 
 	/**
-	 * Checks if the editor should be restared or if it should be marked as crashed.
+	 * Checks if the watchdog should restart the underlying item.
 	 */
-	_shouldRestartEditor() {
+	_shouldRestart() {
 		if ( this.crashes.length <= this._crashNumberLimit ) {
 			return true;
 		}
@@ -410,95 +327,31 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
-	 * the state to `initializing`.
-	 *
-	 * @private
-	 * @fires restart
-	 * @returns {Promise}
-	 */
-	_restart() {
-		this.state = 'initializing';
-
-		return Promise.resolve()
-			.then( () => this._destroy() )
-			.catch( err => console.error( 'An error happened during the editor destructing.', err ) )
-			.then( () => {
-				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( this._data, this._config );
-				}
-
-				const updatedConfig = Object.assign( {}, this._config, {
-					initialData: this._data
-				} );
-
-				return this.create( this._elementOrData, updatedConfig );
-			} )
-			.then( () => {
-				this.fire( 'restart' );
-			} );
-	}
-
-	/**
-	 * Traverses both structures to find out whether the error context is connected
-	 * with the current editor.
-	 *
-	 * @private
-	 * @param {module:utils/ckeditorerror~CKEditorError} error
-	 */
-	_isErrorComingFromThisEditor( error ) {
-		return areConnectedThroughProperties( this._editor, error.context );
-	}
-
-	/**
-	 * A shorthand method for creating an instance of the watchdog. For the full usage, see the
-	 * {@link ~Watchdog `Watchdog` class description}.
-	 *
-	 * Usage:
-	 *
-	 *		const watchdog = Watchdog.for( ClassicEditor );
-	 *
-	 *		watchdog.create( elementOrData, config );
-	 *
-	 * @param {*} Editor The editor class.
-	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog plugin configuration.
-	 */
-	static for( Editor, watchdogConfig ) {
-		const watchdog = new Watchdog( watchdogConfig );
-
-		watchdog.setCreator( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
-
-		return watchdog;
-	}
-
-	/**
-	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog editor occurs
+	 * Fired when a new {@link module:utils/ckeditorerror~CKEditorError `CKEditorError`} error connected to the watchdog instance occurs
 	 * and the watchdog will react to it.
+	 *
+	 * 	watchdog.on( 'error', ( evt, { error, causesRestart } ) => {
+	 * 		console.log( 'An error occurred.' );
+	 * 	} );
 	 *
 	 * @event error
 	 */
-
-	/**
-	 * Fired after the watchdog restarts the error in case of a crash.
-	 *
-	 * @event restart
-	 */
 }
-
-mix( Watchdog, ObservableMixin );
 
 /**
  * The watchdog plugin configuration.
  *
  * @typedef {Object} WatchdogConfig
  *
- * @property {Number} [crashNumberLimit=3] A threshold specifying the number of editor crashes
- * when the watchdog stops restarting the editor in case of errors.
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of watched item crashes
+ * when the watchdog stops restarting the item in case of errors.
  * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last editor errors
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
+ *
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last watched item errors
  * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
+ *
  * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
  * Note that for large documents this might have an impact on the editor performance.
  */
