@@ -5,6 +5,8 @@
 
 import WidgetResize from '../../../src/widgetresize';
 
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
 export const mouseMock = {
 	down( editor, domTarget ) {
 		this._getPlugin( editor )._mouseDownListener( {}, {
@@ -85,4 +87,27 @@ export class Point {
 	clone() {
 		return new Point( this.x, this.y );
 	}
+}
+
+/**
+ * Returns a center point for a given handle.
+ *
+ * @param {HTMLElement} domWrapper Wrapper of an element that contains the resizer.
+ * @param {String} [handlePosition='top-left']
+ * @returns {Point}
+ */
+export function getHandleCenterPoint( domWrapper, handlePosition ) {
+	const wrapperRect = new Rect( domWrapper );
+	const returnValue = new Point( wrapperRect.left, wrapperRect.top );
+	const cornerPositionParts = handlePosition.split( '-' );
+
+	if ( cornerPositionParts.includes( 'right' ) ) {
+		returnValue.x = wrapperRect.right;
+	}
+
+	if ( cornerPositionParts.includes( 'bottom' ) ) {
+		returnValue.y = wrapperRect.bottom;
+	}
+
+	return returnValue;
 }

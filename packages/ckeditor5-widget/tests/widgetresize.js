@@ -14,8 +14,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { mouseMock, getWidgetDomParts, Point } from './widgetresize/_utils/utils';
+import { mouseMock, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies;
@@ -459,29 +458,6 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
-	}
-
-	/**
-	 * Returns a center point for a given handle.
-	 *
-	 * @param {HTMLElement} domWrapper Wrapper of an element that contains the resizer.
-	 * @param {String} [handlePosition='top-left']
-	 * @returns {Point}
-	 */
-	function getHandleCenterPoint( domWrapper, handlePosition ) {
-		const wrapperRect = new Rect( domWrapper );
-		const returnValue = new Point( wrapperRect.left, wrapperRect.top );
-		const cornerPositionParts = handlePosition.split( '-' );
-
-		if ( cornerPositionParts.includes( 'right' ) ) {
-			returnValue.x = wrapperRect.right;
-		}
-
-		if ( cornerPositionParts.includes( 'bottom' ) ) {
-			returnValue.y = wrapperRect.bottom;
-		}
-
-		return returnValue;
 	}
 
 	function focusEditor( editor ) {
