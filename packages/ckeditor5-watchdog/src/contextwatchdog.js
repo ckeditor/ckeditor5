@@ -222,7 +222,7 @@ export default class ContextWatchdog extends Watchdog {
 	 *		creator: ( element, config ) => ClassicEditor.create( element, config )
 	 *	] );
 	 *
-	 * And then the instance can be retrieved using the {@link #get} method:
+	 * And then the instance can be retrieved using the {@link #getItem} method:
 	 *
 	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
