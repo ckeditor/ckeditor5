@@ -130,45 +130,64 @@ describe( 'table properties', () => {
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
-			it( 'should undo the entire batch of changes on #cancel', () => {
-				// Show the view. New batch will be created.
-				tablePropertiesButton.fire( 'execute' );
+			describe( '#cancel event', () => {
+				// https://github.com/ckeditor/ckeditor5/issues/6180
+				it( 'should not undo if it there were no changes made to the property fields', () => {
+					const spy = sinon.spy( editor, 'execute' );
 
-				// Do the changes like a user.
-				tablePropertiesView.borderStyle = 'dotted';
-				tablePropertiesView.backgroundColor = 'red';
+					// Show the view. New batch will be created.
+					tablePropertiesButton.fire( 'execute' );
 
-				expect( getModelData( editor.model ) ).to.equal(
-					'<table backgroundColor="red" borderStyle="dotted">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>[]foo</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>bar</paragraph>'
-				);
+					// Cancel the view immediately.
+					tablePropertiesView.fire( 'cancel' );
 
-				tablePropertiesView.fire( 'cancel' );
+					sinon.assert.notCalled( spy );
+				} );
 
-				expect( getModelData( editor.model ) ).to.equal(
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>[]foo</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>bar</paragraph>'
-				);
-			} );
+				it( 'should undo the entire batch of changes if there were some', () => {
+					const spy = sinon.spy( editor, 'execute' );
 
-			it( 'should hide on #cancel', () => {
-				tablePropertiesButton.fire( 'execute' );
-				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+					// Show the view. New batch will be created.
+					tablePropertiesButton.fire( 'execute' );
 
-				tablePropertiesView.fire( 'cancel' );
-				expect( contextualBalloon.visibleView ).to.be.null;
+					// Do the changes like a user.
+					tablePropertiesView.borderStyle = 'dotted';
+					tablePropertiesView.backgroundColor = 'red';
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<table backgroundColor="red" borderStyle="dotted">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>[]foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+						'<paragraph>bar</paragraph>'
+					);
+
+					tablePropertiesView.fire( 'cancel' );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>[]foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+						'<paragraph>bar</paragraph>'
+					);
+
+					sinon.assert.calledWith( spy, 'undo', tablePropertiesUI._undoStepBatch );
+				} );
+
+				it( 'should hide the view', () => {
+					tablePropertiesButton.fire( 'execute' );
+					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+
+					tablePropertiesView.fire( 'cancel' );
+					expect( contextualBalloon.visibleView ).to.be.null;
+				} );
 			} );
 
 			it( 'should hide on the Esc key press', () => {
