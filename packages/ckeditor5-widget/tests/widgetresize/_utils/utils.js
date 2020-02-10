@@ -49,6 +49,17 @@ export const mouseMock = {
 	}
 };
 
+export function getWidgetDomParts( editor, widget, resizerPosition ) {
+	const view = editor.editing.view;
+	const domWidget = view.domConverter.mapViewToDom( widget );
+
+	return {
+		resizeWrapper: domWidget.querySelector( '.ck-widget__resizer' ),
+		resizeHandle: domWidget.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` ),
+		widget: domWidget
+	};
+}
+
 export class Point {
 	constructor( x, y ) {
 		this.x = x;

@@ -15,7 +15,7 @@ import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { mouseMock, Point } from './widgetresize/_utils/utils';
+import { mouseMock, getWidgetDomParts, Point } from './widgetresize/_utils/utils';
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies;
@@ -87,7 +87,7 @@ describe( 'WidgetResize', () => {
 
 		it( 'passes new width to the options.onCommit()', () => {
 			const usedResizer = 'top-right';
-			const domParts = getWidgetDomParts( widget, usedResizer );
+			const domParts = getWidgetDomParts( editor, widget, usedResizer );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 			const finalPointerPosition = initialPointerPosition.clone().moveBy( 20, 0 );
 
@@ -116,7 +116,7 @@ describe( 'WidgetResize', () => {
 		} );
 
 		const usedResizer = 'top-right';
-		const domParts = getWidgetDomParts( widget, usedResizer );
+		const domParts = getWidgetDomParts( editor, widget, usedResizer );
 		const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
 		editor.plugins.get( WidgetResize )._getResizerByHandle = sinon.stub().returns( null );
@@ -167,7 +167,7 @@ describe( 'WidgetResize', () => {
 
 			it( 'properly sets the state for subsequent resizes', () => {
 				const usedResizer = 'top-right';
-				const domParts = getWidgetDomParts( widget, usedResizer );
+				const domParts = getWidgetDomParts( editor, widget, usedResizer );
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
 				const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 50, 0 );
@@ -323,7 +323,7 @@ describe( 'WidgetResize', () => {
 
 			it( 'properly sets the state for subsequent resizes', () => {
 				const usedResizer = 'top-right';
-				const domParts = getWidgetDomParts( widget, usedResizer );
+				const domParts = getWidgetDomParts( editor, widget, usedResizer );
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
 				const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 100, 0 );
@@ -389,7 +389,7 @@ describe( 'WidgetResize', () => {
 			options = options || {};
 
 			const usedHandle = options.usedHandle;
-			const domParts = getWidgetDomParts( widget, usedHandle );
+			const domParts = getWidgetDomParts( editor, widget, usedHandle );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedHandle );
 			const pointerDifference = options.movePointerBy;
 			const finalPointerPosition = initialPointerPosition.moveBy( pointerDifference.x, pointerDifference.y );
@@ -459,17 +459,6 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
-	}
-
-	function getWidgetDomParts( widget, resizerPosition ) {
-		const view = editor.editing.view;
-		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 0 ) );
-
-		return {
-			resizeWrapper,
-			resizeHandle: resizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` ),
-			widget: view.domConverter.mapViewToDom( widget )
-		};
 	}
 
 	/**
