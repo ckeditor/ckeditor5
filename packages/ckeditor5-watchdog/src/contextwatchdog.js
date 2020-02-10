@@ -167,12 +167,12 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Returns the item instance with the given `itemId`.
 	 *
-	 * 	const editor1 = watchdog.get( 'editor1' );
+	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
 	 * @param {String} itemId The item id.
 	 * @returns {*} The item instance or `undefined` if an item with given id has not been found.
 	 */
-	get( itemId ) {
+	getItem( itemId ) {
 		const watchdog = this._getWatchdog( itemId );
 
 		return watchdog._item;
@@ -181,12 +181,12 @@ export default class ContextWatchdog extends Watchdog {
 	/**
 	 * Gets state of the given item. For the list of available states see {@link #state}.
 	 *
-	 * 	const editor1State = watchdog.getState( 'editor1' );
+	 * 	const editor1State = watchdog.getItemState( 'editor1' );
 	 *
 	 * @param {String} itemId Item id.
 	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
 	 */
-	getState( itemId ) {
+	getItemState( itemId ) {
 		const watchdog = this._getWatchdog( itemId );
 
 		return watchdog.state;
@@ -223,7 +223,7 @@ export default class ContextWatchdog extends Watchdog {
 	 *
 	 * And then the instance can be retrieved using the {@link #get} method:
 	 *
-	 * 	const editor1 = watchdog.get( 'editor1' );
+	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
 	 * Note that this method can be called multiple times, but for performance reasons it's better
 	 * to pass all items together.

@@ -285,10 +285,10 @@ await watchdog.remove( 'editor1' );
 await watchdog.remove( [ 'editor1', 'editor2', ... ] );
 
 // Getting given item instance.
-const editor1 = watchdog.get( 'editor1' );
+const editor1 = watchdog.getItem( 'editor1' );
 
 // Getting given item state.
-const editor1State = watchdog.getState( 'editor1' );
+const editor1State = watchdog.getItemState( 'editor1' );
 
 // Getting the context state.
 const contextState = watchdog.state;
