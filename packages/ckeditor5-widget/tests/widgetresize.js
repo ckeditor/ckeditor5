@@ -14,7 +14,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { mouseMock, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
+import { mouseMock, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies;
@@ -458,10 +458,5 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
-	}
-
-	function focusEditor( editor ) {
-		editor.editing.view.focus();
-		editor.ui.focusTracker.isFocused = true;
 	}
 } );
