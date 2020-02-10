@@ -194,7 +194,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Adds items to the watchdog. Once created, instances of these items will be available using the {@link #get} method.
+	 * Adds items to the watchdog. Once created, instances of these items will be available using the {@link #getItem} method.
 	 *
 	 * Items can be passed together as an array of objects:
 	 *

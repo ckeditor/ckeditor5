@@ -216,7 +216,7 @@ export default class Watchdog {
 	 *
 	 * @protected
 	 * @param {String} eventName Event name.
-	 * @param  {...any} args Event arguments.
+	 * @param  {...*} args Event arguments.
 	 */
 	_fire( eventName, ...args ) {
 		const callbacks = this._listeners[ eventName ] || [];
