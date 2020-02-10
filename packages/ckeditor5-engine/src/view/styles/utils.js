@@ -7,13 +7,13 @@
  * @module engine/view/styles/utils
  */
 
-const colorRegExp = /^(0$|rgba\(|hsla?\(|[a-zA-Z]+$)/;
+const colorRegExp = /^(0$|[a-zA-Z]+$)/;
 
-const validHexLengths = [ 3, 4, 6, 8 ];
-
-const HEX_VALUE_REGEXP = /^[0-9a-fA-F]+$/;
-const BYTE_VALUE_REGEXP = /^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$/;
-const PERCENTAGE_VALUE_REGEXP = /^(0?[0-9]?[0-9]|100)%$/;
+const HEX_VALUE_REGEXP = /^#[0-9a-f]+$/;
+const RGB_REG_EXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/;
+const RGBA_REG_EXP = /^rgba\([ ]?([0-9]{1,3}[ %]?,[ ]?){3}(1|[0-9]+%|[0]?\.[0-9]+)\)$/;
+const HSL_REG_EXP = /^hsl\([ ]?([0-9]{1,3}[ %]?[,]?[ ]*){3}(1|[0-9]+%|[0]?\.[0-9]+)?\)$/;
+const HSLA_REG_EXP = /^hsla\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}(1|[0-9]+%|[0]?\.[0-9]+)\)$/;
 
 /**
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
@@ -22,45 +22,38 @@ const PERCENTAGE_VALUE_REGEXP = /^(0?[0-9]?[0-9]|100)%$/;
  * @returns {Boolean}
  */
 export function isColor( string ) {
-	if ( string.startsWith( '#' ) ) {
-		const hexValue = string.substr( 1 );
+	const toCheck = string.toLowerCase();
 
-		if ( !validHexLengths.includes( hexValue.length ) ) {
+	// Avoid:
+	// - substr
+	// - string replace
+	if ( toCheck.startsWith( '#' ) ) {
+		const length = toCheck.length;
+
+		if ( !( length === 4 || length === 5 || length === 7 || length === 9 ) ) {
 			return false;
 		}
 
-		return HEX_VALUE_REGEXP.test( hexValue );
+		return HEX_VALUE_REGEXP.test( toCheck );
 	}
 
-	if ( string.toLowerCase().startsWith( 'rgb(' ) ) {
-		if ( !string.endsWith( ')' ) ) {
-			return false;
-		}
+	if ( toCheck.startsWith( 'rgb(' ) ) {
+		return RGB_REG_EXP.test( toCheck );
+	}
 
-		const rgbValue = string
-			.substr( 4, string.length - 5 )
-			// .substr( 4 )
-			.replace( /,/g, ' ' )
-			.replace( /[ ]+/g, ' ' );
+	if ( toCheck.startsWith( 'rgba(' ) ) {
+		return RGBA_REG_EXP.test( toCheck );
+	}
 
-		const entries = rgbValue.split( ' ' );
+	if ( toCheck.startsWith( 'hsl(' ) ) {
+		return HSL_REG_EXP.test( toCheck );
+	}
 
-		if ( entries.length !== 3 ) {
-			return false;
-		}
-
-		return entries.every( isByteValue ) || entries.every( isPercentValue );
+	if ( toCheck.startsWith( 'hsla(' ) ) {
+		return HSLA_REG_EXP.test( toCheck );
 	}
 
 	return colorRegExp.test( string );
-}
-
-function isByteValue( entry ) {
-	return BYTE_VALUE_REGEXP.test( entry );
-}
-
-function isPercentValue( entry ) {
-	return PERCENTAGE_VALUE_REGEXP.test( entry );
 }
 
 const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ];

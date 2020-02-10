@@ -4,9 +4,9 @@
  */
 
 import {
-	getShorthandValues,
 	getBoxSidesShorthandValue,
 	getBoxSidesValues,
+	getShorthandValues,
 	isColor,
 	isLength,
 	isLineStyle
@@ -38,10 +38,12 @@ describe( 'Styles utils', () => {
 			testValues( [
 				'rgb(255,0,153)',
 				'rgb(255, 0, 153)',
-				// 'rgb(255, 0, 153.0)', // TODO: does not validate but might be skipped
 				'rgb(100%,0%,60%)',
-				'rgb(100%, 0%, 60%)',
-				'rgb(255 0 153)' // TODO: might be skipped - adds complexity
+				'rgb(100%, 0%, 60%)'
+				// Unsupported:
+				// 'rgb(11, 22, 33, 0.1)', // rgba() is equal to rgb()
+				// 'rgb(255, 0, 153.0)', // Floats are valid
+				// 'rgb(255 0 153)', // CSS Level 4 notation
 			], isColor );
 		} );
 
@@ -55,9 +57,11 @@ describe( 'Styles utils', () => {
 				'rgb(11, 22, 33',
 				'rgb((11, 22, 33',
 				'rgb((11, 22, 33)',
-				'rgb((11, 22, 33, 44)', // TODO: valid in Level 4 CSS
 				'rgb(11, 22, 33))',
-				'rgb(100%, 0, 60%)' // Don't mix numbers and percentages. TODO: might be skipped - adds complexity.
+				'rgb(11, 22, 33, 0.1)',
+				'rgb(11, 22, 33, .153)'
+				// Unsupported:
+				// 'rgb(100%, 0, 60%)', // Mixed numbers and percentages. TODO: might be skipped - adds complexity.,
 			], value => !isColor( value ) );
 		} );
 
@@ -66,7 +70,20 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'returns true for hsl() color', () => {
-			testValues( [ 'hsl(0, 100%, 50%)', 'hsl(340,80%,40%)' ], isColor );
+			testValues( [
+				'hsl(270,60%,70%)',
+				'hsl(270, 60%, 70%)',
+				'hsl(270, 60%, 50%, .15)',
+				'hsl(270, 60%, 50%, 0.15)',
+				'hsl(270, 60%, 50%, 15%)'
+				// Unsupported:
+				// 'hsl(270deg, 60%, 70%)', // Valid deg unit
+				// 'hsl(4.71239rad, 60%, 70%)', // Valid rad unit
+				// 'hsl(.75turn, 60%, 70%)', // Valid turn unit
+				// 'hsl(270 60% 70%)', // CSS Level 4 notation
+				// 'hsl(270 60% 50% / .15)', // CSS Level 4 notation
+				// 'hsl(270 60% 50% / 15%)' // CSS Level 4 notation
+			], isColor );
 		} );
 
 		it( 'returns true for hsla() color', () => {
