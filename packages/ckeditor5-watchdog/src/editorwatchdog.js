@@ -199,8 +199,9 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Destroys the current editor instance by using the destructor passed to the {@link #setDestructor `setDestructor()`} method
-	 * and sets state to `destroyed`.
+	 * Destroys the watchdog and the current editor instance. It fires the callback
+	 * registered in {@link #setDestructor `setDestructor()`} and uses it to destroy the editor instance.
+	 * It also sets state to `destroyed`.
 	 *
 	 * @returns {Promise}
 	 */

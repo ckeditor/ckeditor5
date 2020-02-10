@@ -149,7 +149,8 @@ export default class Watchdog {
 	/**
 	 * Sets the function that is responsible for the instance creation.
 	 *
-	 * @param {Function} creator A callback returning promise that is responsible for instance creation.
+	 * @param {Function} creator A callback responsible for creating instance. Returns a promise
+	 * that is resolved when the instance is created.
 	 */
 	setCreator( creator ) {
 		this._creator = creator;
