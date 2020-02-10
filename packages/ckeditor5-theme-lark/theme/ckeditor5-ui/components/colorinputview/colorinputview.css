@@ -3,63 +3,37 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
-
 @import "../../../mixins/_rounded.css";
 
-.ck.ck-table-form .ck-table-form__border-row {
-	& > .ck-input-color-picker {
-		& > .ck.ck-dropdown__color-picker {
-			display: flex;
-			align-items: center;
-			flex-direction: row;
-			min-width: 100%;
+.ck.ck-input-color-picker {
+	& > .ck.ck-input-text {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
 
-			& > .ck.ck-input-text {
-				min-width: auto;
-				flex-grow: 1;
+	& .ck.ck-dropdown {
+		& > .ck.ck-dropdown__color-picker-button {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			margin-left: -1px;
+			padding: 0;
+
+			&.ck-disabled {
+				background: var(--ck-color-input-disabled-background);
 			}
 
-			& > .ck.ck-dropdown {
-				min-width: auto;
-			}
+			& > .ck.ck-dropdown__color-picker-preview {
+				@mixin ck-rounded-corners;
 
-			& .ck-input-text {
-				border-top-right-radius: 0;
-				border-bottom-right-radius: 0;
-
-				&:active,
-				&:focus {
-					z-index: 1;
-				}
-			}
-
-			& .ck.ck-dropdown__color-picker-button {
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-				margin-left: -1px;
-
-				&.ck-disabled {
-					background: var(--ck-color-input-disabled-background);
-				}
-			}
-
-			& .ck.ck-dropdown__color-picker-preview {
 				width: 20px;
 				height: 20px;
 				border: 1px solid var(--ck-color-input-border);
-
-				@mixin ck-rounded-corners;
-			}
-
-			& .ck.ck-dropdown__color-picker-remove-color {
-				width: 100%;
-				border-bottom: 1px solid var(--ck-color-input-border);
 			}
 		}
+	}
+
+	& .ck.ck-dropdown__color-picker-remove-color {
+		width: 100%;
+		border-bottom: 1px solid var(--ck-color-input-border);
 	}
 }
