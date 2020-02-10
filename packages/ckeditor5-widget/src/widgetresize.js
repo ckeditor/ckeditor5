@@ -173,7 +173,7 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @protected
 	 * @param {module:utils/eventinfo~EventInfo} event
-	 * @param {MouseEvent} domEventData Native DOM event.
+	 * @param {Event} domEventData Native DOM event.
 	 */
 	_mouseDownListener( event, domEventData ) {
 		if ( !Resizer.isResizeHandle( domEventData.target ) ) {
@@ -189,7 +189,7 @@ export default class WidgetResize extends Plugin {
 	/**
 	 * @protected
 	 * @param {module:utils/eventinfo~EventInfo} event
-	 * @param {MouseEvent} domEventData Native DOM event.
+	 * @param {Event} domEventData Native DOM event.
 	 */
 	_mouseMoveListener( event, domEventData ) {
 		if ( this._activeResizer ) {
