@@ -42,21 +42,35 @@ export const mouseMock = {
 	 * Emulates mouse drag gesture by triggering:
 	 *
 	 * * the `mousedown` event on the `domTarget`,
-	 * * the `mousemove` event on `domTarget`, with the pointer coordinates at `finalPosition`,
+	 * * the `mousemove` event on `domTarget`, with the pointer coordinates at `position.from`,
+	 * * the `mousemove` event on `domTarget`, with the pointer coordinates at `position.to` (fired
+	 *	only if `position.to` differs from `position.from`),
 	 * * the `mouseup` event.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {HTMLElement} domTarget
-	 * @param {Point} finalPosition
+	 * @param {Object/Point} position If a `Point` instance is given, the drag is performed without acutal pointer move.
+	 * @param {Point} position.from Coordinates of where the drag begins.
+	 * @param {Point} position.to Coordinates of where the drag ends.
 	 */
-	dragTo( editor, domTarget, finalPosition ) {
-		const moveEventData = {
-			pageX: finalPosition.x,
-			pageY: finalPosition.y
-		};
+	dragTo( editor, domTarget, position ) {
+		const fromPosition = position.from || position;
+		const finalPosition = position.to || position;
 
 		this.down( editor, domTarget );
-		this.move( editor, domTarget, moveEventData );
+
+		this.move( editor, domTarget, {
+			pageX: fromPosition.x,
+			pageY: fromPosition.y
+		} );
+
+		if ( !finalPosition.equals( fromPosition ) ) {
+			this.move( editor, domTarget, {
+				pageX: finalPosition.x,
+				pageY: finalPosition.y
+			} );
+		}
+
 		this.up( editor );
 	},
 
@@ -100,6 +114,16 @@ export class Point {
 	 */
 	clone() {
 		return new Point( this.x, this.y );
+	}
+
+	/**
+	 * Checks if two points are equal.
+	 *
+	 * @param {Point} pointB
+	 * @returns {Boolean}
+	 */
+	equals( pointB ) {
+		return pointB.x == this.x && pointB.y == this.y;
 	}
 }
 
