@@ -9,8 +9,6 @@
 
 /* globals window */
 
-import SimpleEventEmitter from './simpleeventemitter';
-
 /**
  * An abstract watchdog class that handles most of the error handling process and the state of the underlying component.
  *
@@ -19,13 +17,11 @@ import SimpleEventEmitter from './simpleeventemitter';
  * @private
  * @abstract
  */
-export default class Watchdog extends SimpleEventEmitter {
+export default class Watchdog {
 	/**
 	 * @param {module:watchdog/watchdog~WatchdogConfig} config The watchdog plugin configuration.
 	 */
 	constructor( config ) {
-		super();
-
 		/**
 		 * An array of crashes saved as an object with the following properties:
 		 *
@@ -96,13 +92,6 @@ export default class Watchdog extends SimpleEventEmitter {
 			}
 		};
 
-		if ( !this._restart ) {
-			throw new Error(
-				'The Watchdog class was split into the abstract `Watchdog` class and the `EditorWatchdog` class. ' +
-				'Please, use `EditorWatchdog` if you have used the `Watchdog` class previously.'
-			);
-		}
-
 		/**
 		 * The creation method.
 		 *
@@ -144,6 +133,21 @@ export default class Watchdog extends SimpleEventEmitter {
 		 * @method #_isErrorComingFromThisItem
 		 * @param {module:utils/ckeditorerror~CKEditorError} error
 		 */
+
+		/**
+		 * A dictionary of event emitter listeners.
+		 *
+		 * @private
+		 * @type {Object.<String,Array.<Function>>}
+		 */
+		this._listeners = {};
+
+		if ( !this._restart ) {
+			throw new Error(
+				'The Watchdog class was split into the abstract `Watchdog` class and the `EditorWatchdog` class. ' +
+				'Please, use `EditorWatchdog` if you have used the `Watchdog` class previously.'
+			);
+		}
 	}
 
 	/**
@@ -172,7 +176,54 @@ export default class Watchdog extends SimpleEventEmitter {
 	destroy() {
 		this._stopErrorHandling();
 
-		super.destroy();
+		this._listeners = {};
+	}
+
+	/**
+	 * Starts listening to the specific event name by registering a callback that will be executed
+	 * whenever an event with given name fires.
+	 *
+	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
+	 *
+	 * @param {String} eventName  Event name.
+	 * @param {Function} callback A callback which will be added to event listeners.
+	 */
+	on( eventName, callback ) {
+		if ( !this._listeners[ eventName ] ) {
+			this._listeners[ eventName ] = [];
+		}
+
+		this._listeners[ eventName ].push( callback );
+	}
+
+	/**
+	 * Stops listening to the specified event name by removing the callback from event listeners.
+	 *
+	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
+	 *
+	 * @param {String} eventName Event name.
+	 * @param {Function} callback A callback which will be removed from event listeners.
+	 */
+	off( eventName, callback ) {
+		this._listeners[ eventName ] = this._listeners[ eventName ]
+			.filter( cb => cb !== callback );
+	}
+
+	/**
+	 * Fires an event with given event name and arguments.
+	 *
+	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
+	 *
+	 * @protected
+	 * @param {String} eventName Event name.
+	 * @param  {...any} args Event arguments.
+	 */
+	_fire( eventName, ...args ) {
+		const callbacks = this._listeners[ eventName ] || [];
+
+		for ( const callback of callbacks ) {
+			callback.apply( this, [ null, ...args ] );
+		}
 	}
 
 	/**
