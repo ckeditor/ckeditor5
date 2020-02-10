@@ -368,6 +368,17 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
+	describe( '_getResizerByHandle', () => {
+		it( 'returns properly in case of invalid handle element', () => {
+			const randomElement = document.createElement( 'span' );
+			const plugin = editor.plugins.get( WidgetResize );
+
+			createResizer();
+
+			expect( plugin._getResizerByHandle( randomElement ) ).to.be.undefined;
+		} );
+	} );
+
 	/**
 	 * @param {Object} options
 	 * @param {String} options.usedHandle Handle that should be used for resize, e.g. 'bottom-right'.
