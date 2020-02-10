@@ -245,7 +245,7 @@ describe( 'ImageResize', () => {
 
 			editor.commands.get( 'undo' ).execute();
 
-			await wait( 180 ); // ui#update event is throttled.
+			await wait( 200 ); // ui#update event is throttled.
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
