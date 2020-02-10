@@ -175,7 +175,7 @@ export default class ContextWatchdog extends Watchdog {
 	get( itemId ) {
 		const watchdog = this._getWatchdog( itemId );
 
-		return watchdog._instance;
+		return watchdog._item;
 	}
 
 	/**
@@ -432,9 +432,9 @@ export default class ContextWatchdog extends Watchdog {
 	 * @param {Error} error
 	 * @returns {Boolean}
 	 */
-	_isErrorComingFromThisInstance( error ) {
+	_isErrorComingFromThisItem( error ) {
 		for ( const watchdog of this._watchdogs.values() ) {
-			if ( watchdog._isErrorComingFromThisInstance( error ) ) {
+			if ( watchdog._isErrorComingFromThisItem( error ) ) {
 				return false;
 			}
 		}

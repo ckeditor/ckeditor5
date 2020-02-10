@@ -42,14 +42,14 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Specifies the state of the instance handled by the watchdog. The state can be one of the following values:
+		 * Specifies the state of the watchdog item handled by the watchdog. The state can be one of the following values:
 		 *
-		 * * `initializing` - before the first initialization, and after crashes, before the instance is ready,
-		 * * `ready` - a state when a user can interact with the instance,
+		 * * `initializing` - before the first initialization, and after crashes, before the item is ready,
+		 * * `ready` - a state when a user can interact with the item,
 		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
 		 * depending on how many and how frequency errors have been caught recently,
 		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the item it is watching crashed,
-		 * * `destroyed` - a state when the instance is manually destroyed by the user after calling `watchdog.destroy()`
+		 * * `destroyed` - a state when the item is manually destroyed by the user after calling `watchdog.destroy()`
 		 *
 		 * @public
 		 * @observable
@@ -80,7 +80,7 @@ export default class Watchdog {
 		this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === 'number' ? config.minimumNonErrorTimePeriod : 5000;
 
 		/**
-		 * Checks if the event error comes from the underlying instance and restarts the instance.
+		 * Checks if the event error comes from the underlying item and restarts the item.
 		 *
 		 * @private
 		 * @type {Function}
@@ -120,15 +120,15 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * The handled instance.
+		 * The handled watchdog item.
 		 *
 		 * @abstract
 		 * @protected
-		 * @member {Object|undefined} #_instance
+		 * @member {Object|undefined} #_item
 		 */
 
 		/**
-		 * The method responsible for the instance restarting.
+		 * The method responsible for the watchdog item restarting.
 		 *
 		 * @abstract
 		 * @protected
@@ -136,30 +136,30 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * Traverses the error context and the handled instance to find out whether the error should
-		 * be handled by the given instance.
+		 * Traverses the error context and the handled watchdog item to find out whether the error should
+		 * be handled by the given item.
 		 *
 		 * @abstract
 		 * @protected
-		 * @method #_isErrorComingFromThisInstance
+		 * @method #_isErrorComingFromThisItem
 		 * @param {module:utils/ckeditorerror~CKEditorError} error
 		 */
 	}
 
 	/**
-	 * Sets the function that is responsible for the instance creation.
+	 * Sets the function that is responsible for the watchdog item creation.
 	 *
-	 * @param {Function} creator A callback responsible for creating instance. Returns a promise
-	 * that is resolved when the instance is created.
+	 * @param {Function} creator A callback responsible for creating an item. Returns a promise
+	 * that is resolved when the item is created.
 	 */
 	setCreator( creator ) {
 		this._creator = creator;
 	}
 
 	/**
-	 * Sets the function that is responsible for the instance destruction.
+	 * Sets the function that is responsible for the watchdog item destruction.
 	 *
-	 * @param {Function} destructor A callback that takes the instance and returns the promise
+	 * @param {Function} destructor A callback that takes the item and returns the promise
 	 * to the destroying process.
 	 */
 	setDestructor( destructor ) {
@@ -195,8 +195,8 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the error comes from the instance that is handled by the watchdog  and
-	 * restarts it. It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
+	 * Checks if the error comes from the watchdog item and restarts it.
+	 * It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
 	 * @private
 	 * @fires error
@@ -205,7 +205,7 @@ export default class Watchdog {
 	 */
 	_handleError( error, evt ) {
 		// @if CK_DEBUG // if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
-		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper instance.' );
+		// @if CK_DEBUG // console.warn( 'The error is missing its context and Watchdog cannot restart the proper item.' );
 		// @if CK_DEBUG // }
 
 		if ( this._shouldReactToError( error ) ) {
@@ -245,19 +245,19 @@ export default class Watchdog {
 			error.is( 'CKEditorError' ) &&
 			error.context !== undefined &&
 
-			// In some cases the instance should not be restarted - e.g. during the instance initialization.
+			// In some cases the watchdog item should not be restarted - e.g. during the item initialization.
 			// That's why the `null` was introduced as a correct error context which does cause restarting.
 			error.context !== null &&
 
 			// Do not react to errors if the watchdog is in states other than `ready`.
 			this.state === 'ready' &&
 
-			this._isErrorComingFromThisInstance( error )
+			this._isErrorComingFromThisItem( error )
 		);
 	}
 
 	/**
-	 * Checks if the watchdog should restart the underlying instance.
+	 * Checks if the watchdog should restart the underlying item.
 	 */
 	_shouldRestart() {
 		if ( this.crashes.length <= this._crashNumberLimit ) {
@@ -291,14 +291,14 @@ mix( Watchdog, ObservableMixin );
  *
  * @typedef {Object} WatchdogConfig
  *
- * @property {Number} [crashNumberLimit=3] A threshold specifying the number of instance crashes
- * when the watchdog stops restarting the instance in case of errors.
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of watchdog item crashes
+ * when the watchdog stops restarting the item in case of errors.
  * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the instance. This prevents an infinite restart loop.
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
  *
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last instance errors
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last watchdog item errors
  * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
- * the watchdog changes its state to `crashedPermanently` and it stops restarting the instance. This prevents an infinite restart loop.
+ * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
  *
  * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
  * Note that for large documents this might have an impact on the editor performance.

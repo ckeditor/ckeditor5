@@ -95,7 +95,7 @@ export default class EditorWatchdog extends Watchdog {
 	/**
 	 * @inheritDoc
 	 */
-	get _instance() {
+	get _item() {
 		return this._editor;
 	}
 
@@ -293,7 +293,7 @@ export default class EditorWatchdog extends Watchdog {
 	 * @protected
 	 * @param {module:utils/ckeditorerror~CKEditorError} error
 	 */
-	_isErrorComingFromThisInstance( error ) {
+	_isErrorComingFromThisItem( error ) {
 		return areConnectedThroughProperties( this._editor, error.context, this._excludedProps );
 	}
 

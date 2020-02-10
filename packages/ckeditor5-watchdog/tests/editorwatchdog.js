@@ -474,7 +474,7 @@ describe( 'EditorWatchdog', () => {
 
 			sinon.assert.calledWithExactly(
 				console.warn,
-				'The error is missing its context and Watchdog cannot restart the proper instance.'
+				'The error is missing its context and Watchdog cannot restart the proper item.'
 			);
 
 			await watchdog.destroy();
