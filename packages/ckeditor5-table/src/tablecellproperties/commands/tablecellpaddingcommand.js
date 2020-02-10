@@ -22,13 +22,13 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '5px'
  *		} );
  *
- * **Note**: This command adds a default `'px'` unit to a numeric values. Executing:
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
  *		editor.execute( 'tableCellPadding', {
  *			value: '5'
  *		} );
  *
- * Will set `padding` attribute to `'5px'` in the model.
+ * will set the `padding` attribute to `'5px'` in the model.
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
  */
 export default class TableCellPaddingCommand extends TableCellPropertyCommand {

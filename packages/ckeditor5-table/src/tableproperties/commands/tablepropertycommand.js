@@ -88,7 +88,7 @@ export default class TablePropertyCommand extends Command {
 	}
 
 	/**
-	 * Returns proper model value. Can be used to add default unit to numeric values.
+	 * Returns the proper model value. Can be used to add a default unit to numeric values.
 	 *
 	 * @private
 	 * @param {*} value

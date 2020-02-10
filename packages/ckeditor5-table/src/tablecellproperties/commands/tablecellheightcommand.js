@@ -22,13 +22,13 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '50px'
  *		} );
  *
- * **Note**: This command adds a default `'px'` unit to a numeric values. Executing:
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
  *
  *		editor.execute( 'tableCellHeight', {
  *			value: '50'
  *		} );
  *
- * Will set `height` attribute to `'50px'` in the model.
+ * will set the `height` attribute to `'50px'` in the model.
  *
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
  */

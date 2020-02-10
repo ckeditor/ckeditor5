@@ -87,9 +87,9 @@ export function getSingleValue( objectOrString ) {
 }
 
 /**
- * Add a unit to a value if the value is a number or string with a number.
+ * Adds a unit to a value if the value is a number or a string representing a number.
  *
- * Does nothing to a non-numeric values.
+ * **Note**: It does nothing to non-numeric values.
  *
  *		getSingleValue( 25, 'px' );		// '25px'
  *		getSingleValue( 25, 'em' );		// '25em'
