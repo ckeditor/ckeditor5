@@ -28,6 +28,8 @@ import {
 	getHandleCenterPoint
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
+import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+
 describe( 'ImageResize', () => {
 	// 100x50 black png image
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
@@ -88,6 +90,19 @@ describe( 'ImageResize', () => {
 
 			expect( editor.getData() )
 				.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		} );
+
+		it( 'removes style and extra class when no longer resized', () => {
+			setData( editor.model, `<image src="${ IMAGE_SRC_FIXTURE }" width="50%"></image>` );
+
+			const imageModel = editor.model.document.getRoot().getChild( 0 );
+
+			editor.model.change( writer => {
+				writer.removeAttribute( 'width', imageModel );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 		} );
 
 		it( 'doesn\'t downcast consumed tokens', () => {
@@ -176,6 +191,20 @@ describe( 'ImageResize', () => {
 			expect( resizer.isEnabled ).to.be.false;
 			expect( resizerWrapper.style.display ).to.equal( 'none' );
 		} );
+	} );
+
+	it( 'uses percents by default', async () => {
+		const localEditor = await createEditor( {
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+		} );
+
+		const attachToSpy = sinon.spy( localEditor.plugins.get( WidgetResize ), 'attachTo' );
+
+		setData( localEditor.model, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+		expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
+
+		attachToSpy.restore();
 	} );
 
 	describe( 'side image resizing', () => {
@@ -428,6 +457,8 @@ describe( 'ImageResize', () => {
 				widget = viewDocument.getRoot().getChild( 1 );
 
 				focusEditor( editor );
+
+				return editor;
 			} );
 	}
 } );
