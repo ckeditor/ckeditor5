@@ -102,6 +102,7 @@ export default class ContextWatchdog extends Watchdog {
 		this._actionQueue.onEmpty( () => {
 			if ( this.state === 'initializing' ) {
 				this.state = 'ready';
+				this._fire( 'stateChange' );
 			}
 		} );
 
@@ -268,7 +269,7 @@ export default class ContextWatchdog extends Watchdog {
 					// Enqueue the internal watchdog errors within the main queue.
 					// And propagate the internal `error` events as `itemError` event.
 					watchdog.on( 'error', ( evt, { error, causesRestart } ) => {
-						this.fire( 'itemError', { itemId: item.id, error } );
+						this._fire( 'itemError', { itemId: item.id, error } );
 
 						// Do not enqueue the item restart action if the item will not restart.
 						if ( !causesRestart ) {
@@ -276,11 +277,15 @@ export default class ContextWatchdog extends Watchdog {
 						}
 
 						this._actionQueue.enqueue( () => new Promise( res => {
-							watchdog.once( 'restart', () => {
-								this.fire( 'itemRestart', { itemId: item.id } );
+							watchdog.on( 'restart', rethrowRestartEventOnce.bind( this ) );
+
+							function rethrowRestartEventOnce() {
+								watchdog.off( 'restart', rethrowRestartEventOnce );
+
+								this._fire( 'itemRestart', { itemId: item.id } );
 
 								res();
-							} );
+							}
 						} ) );
 					} );
 
@@ -331,6 +336,7 @@ export default class ContextWatchdog extends Watchdog {
 	destroy() {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'destroyed';
+			this._fire( 'stateChange' );
 
 			super.destroy();
 
@@ -347,13 +353,14 @@ export default class ContextWatchdog extends Watchdog {
 	_restart() {
 		return this._actionQueue.enqueue( () => {
 			this.state = 'initializing';
+			this._fire( 'stateChange' );
 
 			return this._destroy()
 				.catch( err => {
 					console.error( 'An error happened during destroying the context or items.', err );
 				} )
 				.then( () => this._create() )
-				.then( () => this.fire( 'restart' ) );
+				.then( () => this._fire( 'restart' ) );
 		} );
 	}
 
