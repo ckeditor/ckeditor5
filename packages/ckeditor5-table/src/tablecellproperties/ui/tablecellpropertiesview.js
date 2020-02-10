@@ -485,14 +485,37 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = new ColorInputView( locale );
-		borderColorInput.label = t( 'Color' );
+		const borderColorInput = new LabeledView( locale, ( labeledView, viewUid, statusUid ) => {
+			const inputView = new ColorInputView( locale );
+
+			inputView.set( {
+				id: viewUid,
+				ariaDescribedById: statusUid
+			} );
+
+			inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
+			inputView.bind( 'errorText' ).to( labeledView );
+
+			inputView.on( 'input', () => {
+				// UX: Make the error text disappear and disable the error indicator as the user
+				// starts fixing the errors.
+				labeledView.errorText = null;
+			} );
+
+			return inputView;
+		} );
+
+		borderColorInput.set( {
+			label: t( 'Color' ),
+			class: 'ck-table-form__border-color',
+		} );
+
 		borderColorInput.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
 			return value !== 'none';
 		} );
-		borderColorInput.on( 'setColor', ( evt, data ) => {
-			this.borderColor = data.value;
+		borderColorInput.view.on( 'input', () => {
+			this.borderColor = borderColorInput.view.value;
 		} );
 
 		return {
