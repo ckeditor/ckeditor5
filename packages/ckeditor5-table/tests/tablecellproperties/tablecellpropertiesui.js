@@ -24,11 +24,13 @@ import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecel
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesUI', () => {
 		let editor, editorElement, contextualBalloon,
-			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton;
+			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton,
+			clock;
 
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
+			clock = sinon.useFakeTimers();
 			editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -52,6 +54,7 @@ describe( 'table cell properties', () => {
 		} );
 
 		afterEach( () => {
+			clock.restore();
 			editorElement.remove();
 
 			return editor.destroy();
@@ -215,14 +218,242 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'property changes', () => {
-				it( 'should affect the editor state', () => {
-					const spy = testUtils.sinon.stub( editor, 'execute' );
-
+				beforeEach( () => {
 					tableCellPropertiesUI._undoStepBatch = 'foo';
-					tableCellPropertiesView.borderStyle = 'dotted';
+				} );
 
-					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
+				describe( '#borderStyle', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.borderStyle = 'dotted';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#borderColor', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.borderColor = '#FFAAFF';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.borderColor = '42';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.borderColorInput.errorText ).to.match( /^The color is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.borderColor = '#AAA';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#borderWidth', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.borderWidth = '12px';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.borderWidth = 'wrong';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.borderWidthInput.errorText ).to.match( /^The value is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.borderWidth = '3em';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#width', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.width = '12px';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.width = 'wrong';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.widthInput.errorText ).to.match( /^The value is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.width = '3em';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#height', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.height = '12px';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.height = 'wrong';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.heightInput.errorText ).to.match( /^The value is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.height = '3em';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#padding', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.padding = '12px';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.padding = 'wrong';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.paddingInput.errorText ).to.match( /^The value is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.padding = '3em';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#backgroundColor', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.backgroundColor = '#FFAAFF';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch: 'foo' } );
+					} );
+
+					it( 'should display an error message if value is invalid', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						// First, let's pass an invalid value and check what happens.
+						tableCellPropertiesView.backgroundColor = '42';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.match( /^The color is invalid/ );
+						sinon.assert.notCalled( spy );
+
+						// And now let's pass a valid value and check if the error text will be gone.
+						tableCellPropertiesView.backgroundColor = '#AAA';
+
+						clock.tick( 500 );
+
+						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#horizontalAlignment', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.horizontalAlignment = 'right';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch: 'foo' } );
+					} );
+				} );
+
+				describe( '#verticalAlignment', () => {
+					it( 'should affect the editor state', () => {
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.verticalAlignment = 'right';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch: 'foo' } );
+					} );
+				} );
+
+				it( 'should not display an error text if user managed to fix the value before the UI timeout', () => {
+					// First, let's pass an invalid value.
+					tableCellPropertiesView.borderColor = '#';
+
+					clock.tick( 100 );
+
+					// Then the user managed to quickly type the correct value.
+					tableCellPropertiesView.borderColor = '#aaa';
+
+					clock.tick( 400 );
+
+					// Because they were quick, they should see no error
+					expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
 				} );
 
 				it( 'should not affect the editor state if internal property has changed', () => {
@@ -230,7 +461,6 @@ describe( 'table cell properties', () => {
 
 					tableCellPropertiesView.set( 'internalProp', 'foo' );
 
-					tableCellPropertiesUI._undoStepBatch = 'foo';
 					tableCellPropertiesView.internalProp = 'bar';
 
 					sinon.assert.notCalled( spy );

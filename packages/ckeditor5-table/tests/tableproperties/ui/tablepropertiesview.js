@@ -417,6 +417,56 @@ describe( 'table properties', () => {
 
 						expect( spy.calledOnce ).to.be.true;
 					} );
+
+					it( 'should make sure the #saveButtonView is disabled until text fields are without errors', () => {
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.widthInput.errorText = 'foo';
+						view.heightInput.errorText = 'foo';
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.widthInput.errorText = 'foo';
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = null;
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = null;
+						view.backgroundInput.errorText = null;
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = null;
+						view.borderColorInput.errorText = null;
+						view.backgroundInput.errorText = null;
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.true;
+					} );
 				} );
 			} );
 
