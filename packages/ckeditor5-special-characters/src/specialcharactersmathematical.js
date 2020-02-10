@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
- * A plugin provides special characters for the "Mathematical" category.
+ * A plugin that provides special characters for the "Mathematical" category.
  *
  *		ClassicEditor
  *			.create( {

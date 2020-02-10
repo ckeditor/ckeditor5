@@ -28,7 +28,7 @@ export default class SpecialCharactersNavigationView extends View {
 	 * class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Iterable.<String>} groupNames Names of the character groups.
+	 * @param {Iterable.<String>} groupNames The names of the character groups.
 	 */
 	constructor( locale, groupNames ) {
 		super( locale );
@@ -36,7 +36,7 @@ export default class SpecialCharactersNavigationView extends View {
 		const t = locale.t;
 
 		/**
-		 * Label of the navigation view describing its purpose.
+		 * The label of the navigation view describing its purpose.
 		 *
 		 * @member {module:ui/label/labelview~LabelView}
 		 */
@@ -67,7 +67,7 @@ export default class SpecialCharactersNavigationView extends View {
 	}
 
 	/**
-	 * Returns a name of the character group currently selected in the {@link #groupDropdownView}.
+	 * Returns the name of the character group currently selected in the {@link #groupDropdownView}.
 	 *
 	 * @returns {String}
 	 */
@@ -79,7 +79,7 @@ export default class SpecialCharactersNavigationView extends View {
 	 * Returns a dropdown that allows selecting character groups.
 	 *
 	 * @private
-	 * @param {Iterable.<String>} groupNames Names of the character groups.
+	 * @param {Iterable.<String>} groupNames The names of the character groups.
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
 	_createGroupDropdown( groupNames ) {
@@ -115,7 +115,7 @@ export default class SpecialCharactersNavigationView extends View {
 	 *
 	 * @private
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {Iterable.<String>} groupNames Names of the character groups.
+	 * @param {Iterable.<String>} groupNames The names of the character groups.
 	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
 	 */
 	_getCharacterGroupListItemDefinitions( dropdown, groupNames ) {

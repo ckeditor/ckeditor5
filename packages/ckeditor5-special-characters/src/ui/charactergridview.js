@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import '../../theme/charactergrid.css';
 
 /**
- * A grid of character tiles. Allows browsing special characters and selecting the character to
+ * A grid of character tiles. It allows browsing special characters and selecting the character to
  * be inserted into the content.
  *
  * @extends module:ui/view~View
@@ -28,7 +28,7 @@ export default class CharacterGridView extends View {
 		super( locale );
 
 		/**
-		 * Collection of the child tile views. Each tile represents some particular character.
+		 * A collection of the child tile views. Each tile represents a particular character.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -62,26 +62,26 @@ export default class CharacterGridView extends View {
 		 *
 		 * @event execute
 		 * @param {Object} data Additional information about the event.
-		 * @param {String} data.name A name of the tile that caused the event (e.g. "greek small letter epsilon").
-		 * @param {String} data.character A human-readable character displayed as label (e.g. "ε").
+		 * @param {String} data.name The name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.character A human-readable character displayed as the label (e.g. "ε").
 		 */
 
 		/**
-		 * Fired when a mouse or other pointing device caused the cursor to move onto any {@link #tiles grid tile}
+		 * Fired when a mouse or another pointing device caused the cursor to move onto any {@link #tiles grid tile}
 		 * (similar to the native `mouseover` DOM event).
 		 *
 		 * @event tileHover
 		 * @param {Object} data Additional information about the event.
-		 * @param {String} data.name A name of the tile that caused the event (e.g. "greek small letter epsilon").
-		 * @param {String} data.character A human-readable character displayed as label (e.g. "ε").
+		 * @param {String} data.name The name of the tile that caused the event (e.g. "greek small letter epsilon").
+		 * @param {String} data.character A human-readable character displayed as the label (e.g. "ε").
 		 */
 	}
 
 	/**
 	 * Creates a new tile for the grid.
 	 *
-	 * @param {String} character A human-readable character displayed as label (e.g. "ε").
-	 * @param {String} name A name of the character (e.g. "greek small letter epsilon").
+	 * @param {String} character A human-readable character displayed as the label (e.g. "ε").
+	 * @param {String} name The name of the character (e.g. "greek small letter epsilon").
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	createTile( character, name ) {

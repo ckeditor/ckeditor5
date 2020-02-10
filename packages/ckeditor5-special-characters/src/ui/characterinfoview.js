@@ -24,7 +24,7 @@ export default class CharacterInfoView extends View {
 		const bind = this.bindTemplate;
 
 		/**
-		 * The character which info is displayed by the view. For instance,
+		 * The character whose information is displayed by the view. For instance,
 		 * "∑" or "¿".
 		 *
 		 * @observable
@@ -96,7 +96,7 @@ export default class CharacterInfoView extends View {
 //
 //	"$" -> "U+0024"
 //
-// Returns empty string when character is `null`.
+// Returns an empty string when the character is `null`.
 //
 // @param {String} character
 // @returns {String}
