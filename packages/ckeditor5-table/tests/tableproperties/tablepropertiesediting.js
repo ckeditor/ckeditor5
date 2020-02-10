@@ -714,13 +714,6 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
 				} );
 
-				it( 'should upcast style="margin-left:auto;margin-right:auto" to center value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:auto"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
-				} );
-
 				it( 'should not upcast style="float:right;margin-right:23px" to right value (non-zero margin)', () => {
 					editor.setData( '<table style="float:right;margin-right:23px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
@@ -742,11 +735,11 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
 				} );
 
-				it( 'should upcast align=center attribute', () => {
+				it( 'should discard align=center attribute', () => {
 					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should discard align=justify attribute', () => {
@@ -784,48 +777,48 @@ describe( 'table properties', () => {
 					assertTableStyle( editor, '' );
 				} );
 
-				it( 'should downcast right alignment', () => {
+				it( 'should downcast "right" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
 					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 				} );
 
-				it( 'should downcast left alignment', () => {
+				it( 'should downcast "left" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
 					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
 				} );
 
-				it( 'should downcast centered alignment', () => {
+				it( 'should not downcast "center" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, '' );
 				} );
 
-				it( 'should downcast changed alignment (center -> right)', () => {
-					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+				it( 'should downcast changed alignment (left -> right)', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
 					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 				} );
 
-				it( 'should downcast changed alignment (right -> center)', () => {
+				it( 'should downcast changed alignment (right -> left)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
 					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 
-					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
 				} );
 
-				it( 'should downcast removed alignment (from center)', () => {
-					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+				it( 'should downcast removed alignment (from left)', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 
