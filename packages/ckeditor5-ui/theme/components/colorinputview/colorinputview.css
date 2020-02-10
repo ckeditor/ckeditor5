@@ -3,15 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+.ck.ck-input-color-picker {
+	width: 100%;
+	display: flex;
 
-.ck.ck-dropdown__input-color-preview {
-	position: absolute;
-	right: 5px;
-  width: 20px;
-	height: 20px;
+	& > .ck.ck-input-text {
+		min-width: auto;
+		flex-grow: 1;
+
+		&:active,
+		&:focus {
+			z-index: 1;
+		}
+	}
+
+	& > .ck.ck-dropdown {
+		min-width: auto;
+
+		/* This dropdown has no arrow but a color preview instead. */
+		& > .ck-dropdown__color-picker-button .ck-dropdown__arrow {
+			display: none;
+		}
+	}
 }

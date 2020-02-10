@@ -53,8 +53,6 @@ export default class DropdownButtonView extends ButtonView {
 			}
 		} );
 
-		this.withArrow = true;
-
 		// The DropdownButton interface expects the open event upon which will open the dropdown.
 		this.delegate( 'execute' ).to( this, 'open' );
 	}
@@ -65,9 +63,7 @@ export default class DropdownButtonView extends ButtonView {
 	render() {
 		super.render();
 
-		if ( this.withArrow ) {
-			this.children.add( this.arrowView );
-		}
+		this.children.add( this.arrowView );
 	}
 
 	/**
