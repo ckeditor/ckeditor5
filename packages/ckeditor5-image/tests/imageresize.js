@@ -21,11 +21,9 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { getWidgetDomParts } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
+import { mouseMock, getWidgetDomParts, getHandleCenterPoint } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
 describe( 'ImageResize', () => {
-	// Id of the left mouse button.
-	const MOUSE_BUTTON_MAIN = 0;
 	// 100x50 black png image
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
@@ -34,7 +32,7 @@ describe( 'ImageResize', () => {
 
 	before( () => {
 		// This container is required to position editor element in a reliable element.
-		// See fireMouseEvent method for more information regarding imprecise mouse position.
+		// @todo ensure whether it's required after migrating the tests.
 		absoluteContainer = document.createElement( 'div' );
 		absoluteContainer.style.top = '50px';
 		absoluteContainer.style.left = '50px';
@@ -198,33 +196,32 @@ describe( 'ImageResize', () => {
 			// (#5189)
 			const resizerPosition = 'bottom-left';
 			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
-			const initialPointerPosition = getResizerCoordinates( domParts.widget, resizerPosition );
+			const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
 			const resizeWrapperView = widget.getChild( 1 );
 
 			focusEditor( editor );
-			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+			mouseMock.down( editor, domParts.resizeHandle );
 
 			await wait( 40 );
 
-			fireMouseEvent( domParts.resizeHandle, 'mousemove', initialPointerPosition );
+			mouseMock.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
 			expect( resizeWrapperView.getStyle( 'width' ) ).to.be.equal( '100px' );
 
-			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+			mouseMock.up( editor );
 		} );
 
 		it( 'makes no change when clicking the handle without drag', () => {
 			const resizerPosition = 'bottom-left';
 			const expectedWidth = 100;
 			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
-			const initialPointerPosition = getResizerCoordinates( domParts.widget, resizerPosition );
 
 			focusEditor( editor );
-			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
+			mouseMock.down( editor, domParts.resizeHandle );
 
 			expect( getDomWidth( domParts.widget ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
 
-			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+			mouseMock.up( editor );
 
 			const modelItem = editor.model.document.getRoot().getChild( 1 );
 
@@ -443,28 +440,15 @@ describe( 'ImageResize', () => {
 
 		it( 'restores toolbar when clicking the handle without drag', () => {
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#pullrequestreview-337725256).
-			const resizerPosition = 'bottom-left';
-			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
-			const initialPointerPosition = getResizerCoordinates( domParts.widget, resizerPosition );
+			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
 
 			focusEditor( editor );
-			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
-			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
+			mouseMock.down( editor, domResizeHandle );
+			mouseMock.up( editor, domResizeHandle );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 	} );
-
-	function fireMouseEvent( target, eventType, eventData ) {
-		// Using initMouseEvent instead of MouseEvent constructor, as MouseEvent constructor doesn't support passing pageX
-		// and pageY. See https://stackoverflow.com/questions/45843458/setting-click-events-pagex-and-pagey-always-reverts-to-0
-		// However there's still a problem, that events created with `initMouseEvent` have **floored** pageX, pageY numbers.
-		const event = document.createEvent( 'MouseEvent' );
-		event.initMouseEvent( eventType, true, true, window, null, 0, 0, eventData.pageX, eventData.pageY, false, false, false, false,
-			MOUSE_BUTTON_MAIN, null );
-
-		target.dispatchEvent( event );
-	}
 
 	function wait( delay ) {
 		return new Promise( resolve => window.setTimeout( () => resolve(), delay ) );
@@ -485,20 +469,17 @@ describe( 'ImageResize', () => {
 
 			focusEditor( editor );
 
-			const initialPointerPosition = getResizerCoordinates( domParts.widget, options.resizerPosition );
+			const initialPointerPosition = getHandleCenterPoint( domParts.widget, options.resizerPosition );
 
-			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
-			fireMouseEvent( domParts.resizeHandle, 'mousemove', initialPointerPosition );
+			mouseMock.down( editor, domParts.resizeHandle );
+			mouseMock.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
 			// We need to wait as mousemove events are throttled.
 			await wait( 40 );
 
-			const finishPointerPosition = Object.assign( {}, initialPointerPosition );
+			const finishPointerPosition = initialPointerPosition.moveBy( options.pointerOffset.x || 0, options.pointerOffset.y || 0 );
 
-			finishPointerPosition.pageX += options.pointerOffset.x || 0;
-			finishPointerPosition.pageY += options.pointerOffset.y || 0;
-
-			fireMouseEvent( domParts.resizeHandle, 'mousemove', finishPointerPosition );
+			mouseMock.move( editor, domParts.resizeHandle, null, finishPointerPosition );
 
 			expect( parseInt( domParts.widget.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
@@ -506,7 +487,7 @@ describe( 'ImageResize', () => {
 				options.checkBeforeMouseUp( domParts.widget, domResizeWrapper );
 			}
 
-			fireMouseEvent( domParts.resizeHandle, 'mouseup', finishPointerPosition );
+			mouseMock.up( editor );
 
 			expect( getData( editor.model, {
 				withoutSelection: true
@@ -523,26 +504,6 @@ describe( 'ImageResize', () => {
 	function focusEditor( editor ) {
 		editor.editing.view.focus();
 		editor.ui.focusTracker.isFocused = true;
-	}
-
-	function getResizerCoordinates( domFigure, resizerPosition ) {
-		const domImage = domFigure.querySelector( 'img' );
-		const imageRect = new Rect( domImage );
-		const initialPointerPosition = {
-			pageX: imageRect.left,
-			pageY: imageRect.top
-		};
-		const resizerPositionParts = resizerPosition.split( '-' );
-
-		if ( resizerPositionParts.includes( 'right' ) ) {
-			initialPointerPosition.pageX = imageRect.right;
-		}
-
-		if ( resizerPositionParts.includes( 'bottom' ) ) {
-			initialPointerPosition.pageY = imageRect.bottom;
-		}
-
-		return initialPointerPosition;
 	}
 
 	function getDomWidth( domElement ) {
