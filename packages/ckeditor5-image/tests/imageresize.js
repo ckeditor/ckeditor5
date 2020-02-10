@@ -392,50 +392,35 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'visibility during the resize', async () => {
-			await generateResizeTest( {
-				expectedWidth: 100,
-				modelRegExp: /.+/,
-				pointerOffset: {
-					x: 0,
-					y: 0
-				},
-				resizerPosition: 'bottom-right',
-				checkBeforeMouseUp: () => {
-					expect( widgetToolbarRepository.isEnabled ).to.be.false;
-				}
-			} )();
+			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
+
+			focusEditor( editor );
+			mouseMock.down( editor, domResizeHandle );
+
+			expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+			mouseMock.up( editor, domResizeHandle );
 		} );
 
 		it( 'visibility after the resize', async () => {
-			await generateResizeTest( {
-				expectedWidth: 100,
-				modelRegExp: /.+/,
-				pointerOffset: {
-					x: 0,
-					y: 0
-				},
-				resizerPosition: 'bottom-right'
-			} )();
+			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
+
+			focusEditor( editor );
+			mouseMock.down( editor, domResizeHandle );
+			mouseMock.up( editor, domResizeHandle );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 
 		it( 'visibility after the resize was canceled', async () => {
 			const resizer = getSelectedImageResizer( editor );
+			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
 
-			await generateResizeTest( {
-				expectedWidth: 100,
-				modelRegExp: /.+/,
-				pointerOffset: {
-					x: 0,
-					y: 0
-				},
-				resizerPosition: 'bottom-right',
-				checkBeforeMouseUp: () => {
-					resizer.cancel();
-					expect( widgetToolbarRepository.isEnabled ).to.be.true;
-				}
-			} )();
+			focusEditor( editor );
+			mouseMock.down( editor, domResizeHandle );
+
+			resizer.cancel();
+			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 
 		it( 'restores toolbar when clicking the handle without drag', () => {
