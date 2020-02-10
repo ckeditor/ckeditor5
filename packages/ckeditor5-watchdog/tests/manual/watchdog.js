@@ -75,12 +75,12 @@ function createWatchdog( editorElement, stateElement, name ) {
 		console.log( `${ name } editor restarted.` );
 	} );
 
-	watchdog.on( 'change:state', ( evt, paramName, currentValue, prevValue ) => {
-		console.log( `${ name } watchdog changed state from ${ prevValue } to ${ currentValue }` );
+	watchdog.on( 'stateChange', () => {
+		console.log( `${ name } watchdog state changed to '${ watchdog.state }'` );
 
-		stateElement.innerText = currentValue;
+		stateElement.innerText = watchdog.state;
 
-		if ( currentValue === 'crashedPermanently' ) {
+		if ( watchdog.state === 'crashedPermanently' ) {
 			watchdog.editor.isReadOnly = true;
 		}
 	} );
