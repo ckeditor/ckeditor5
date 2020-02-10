@@ -35,6 +35,8 @@ import alignTopIcon from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
 import alignMiddleIcon from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
 import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
 
+import ColorInputView from '@ckeditor/ckeditor5-ui/src/colorinputview/colorinputview';
+
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
@@ -419,15 +421,14 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = new LabeledView( locale, createLabeledInputText );
+		const borderColorInput = new ColorInputView( locale );
 		borderColorInput.label = t( 'Color' );
-		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
+		borderColorInput.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
 			return value !== 'none';
 		} );
-
-		borderColorInput.view.on( 'input', () => {
-			this.borderColor = borderColorInput.view.element.value;
+		borderColorInput.on( 'setColor', ( evt, data ) => {
+			this.borderColor = data.value;
 		} );
 
 		return {
