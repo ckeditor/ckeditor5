@@ -247,6 +247,13 @@ describe( 'UI Utils', () => {
 			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;
 		} );
 
+		it( 'should pass for number without unit', () => {
+			expect( lengthFieldValidator( '1' ) ).to.be.true;
+			expect( lengthFieldValidator( '12.1' ) ).to.be.true;
+			expect( lengthFieldValidator( '0.125 ' ) ).to.be.true;
+			expect( lengthFieldValidator( '.1 ' ) ).to.be.true;
+		} );
+
 		it( 'should pass for lengths surrounded by white spaces', () => {
 			expect( lengthFieldValidator( '3px ' ) ).to.be.true;
 			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;

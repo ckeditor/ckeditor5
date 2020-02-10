@@ -153,7 +153,7 @@ export function colorFieldValidator( value ) {
 }
 
 /**
- * Returns `true` when the passed value is an empty string or a valid CSS length expression.
+ * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
@@ -164,7 +164,7 @@ export function colorFieldValidator( value ) {
 export function lengthFieldValidator( value ) {
 	value = value.trim();
 
-	return isEmpty( value ) || isLength( value );
+	return isEmpty( value ) || isNumberString( value ) || isLength( value );
 }
 
 /**
@@ -232,4 +232,8 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
 
 		toolbar.items.add( button );
 	}
+}
+
+function isNumberString( value ) {
+	return !Number.isNaN( parseFloat( value ) );
 }
