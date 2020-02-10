@@ -230,11 +230,6 @@ await watchdog.remove( 'editor1' );
 await watchdog.remove( 'editor2' );
 ```
 
-<info-box>
-	Examples presents the "synchronous way" of the integration with the context watchdog feature, however it's not needed to wait for the promises returned by the `create()`, `add()` and `remove()` methods. There might be a need
-	to create and destroy items dynamically with shared context and that can be easily achieved as all promises operating on the internal API will be chained.
-</info-box>
-
 #### Context watchdog API
 
 The context watchdog feature provides the following API:
