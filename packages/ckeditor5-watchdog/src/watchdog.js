@@ -312,6 +312,8 @@ export default class Watchdog {
 
 	/**
 	 * Checks if the watchdog should restart the underlying item.
+	 *
+	 * @private
 	 */
 	_shouldRestart() {
 		if ( this.crashes.length <= this._crashNumberLimit ) {

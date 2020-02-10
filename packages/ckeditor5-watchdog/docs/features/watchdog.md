@@ -318,7 +318,7 @@ watchdog.on( 'itemRestart', ( _, { itemId } ) => {
 
 ## Configuration
 
-Both {@link module:watchdog/editorwatchdog~EditorWatchdog#constructor `EditorWatchdog`} and {@link module:watchdog/contextwatchdog~ContextWatchdog#constructor `ContextWatchdog`} constructors accept a {{@link module:watchdog/watchdog~WatchdogConfig configuration object} as the second argument with the following optional properties:
+Both {@link module:watchdog/editorwatchdog~EditorWatchdog#constructor `EditorWatchdog`} and {@link module:watchdog/contextwatchdog~ContextWatchdog#constructor `ContextWatchdog`} constructors accept a {@link module:watchdog/watchdog~WatchdogConfig configuration object} as the second argument with the following optional properties:
 
 * `crashNumberLimit` - A threshold specifying the number of errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
 * `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reachedm the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
