@@ -125,7 +125,41 @@ describe( 'WidgetResize', () => {
 		// No exception should be thrown.
 	} );
 
-	describe( 'Integration (pixels)', () => {
+	describe( 'visibility', () => {
+		beforeEach( () => {
+			createResizer();
+		} );
+
+		it( 'it\'s hidden by default', () => {
+			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
+
+			// Since widget is already focused, move the selection out of it.
+			editor.model.change( writer => {
+				const modelWidget = editor.editing.mapper.toModelElement( widget );
+				writer.setSelection( modelWidget, 'before' );
+			} );
+
+			for ( const resizer of allResizers ) {
+				expect( isVisible( resizer ) ).to.be.false;
+			}
+		} );
+
+		it( 'it\'s visible once widget is focused', () => {
+			// Widget is focused by default.
+			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
+
+			for ( const resizer of allResizers ) {
+				expect( isVisible( resizer ) ).to.be.true;
+			}
+		} );
+
+		function isVisible( element ) {
+			// Checks if the DOM element is visible to the end user.
+			return element.offsetParent !== null && !element.classList.contains( 'ck-hidden' );
+		}
+	} );
+
+	describe( 'integration (pixels)', () => {
 		describe( 'aligned widget', () => {
 			beforeEach( () => {
 				createResizer();
@@ -301,7 +335,7 @@ describe( 'WidgetResize', () => {
 		}
 	} );
 
-	describe( 'Integration (percents)', () => {
+	describe( 'integration (percents)', () => {
 		beforeEach( () => {
 			createResizer( {
 				unit: undefined
