@@ -183,150 +183,6 @@ describe( 'ImageResize', () => {
 		} );
 	} );
 
-	describe( 'visual resizers', () => {
-		beforeEach( () => createEditor() );
-
-		beforeEach( () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			widget = viewDocument.getRoot().getChild( 1 );
-		} );
-
-		it( 'correct number is added by default', () => {
-			const resizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
-
-			expect( resizers.length ).to.be.equal( 4 );
-		} );
-
-		describe( 'visibility', () => {
-			it( 'is hidden by default', () => {
-				const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
-
-				for ( const resizer of allResizers ) {
-					expect( isVisible( resizer ) ).to.be.false;
-				}
-			} );
-
-			it( 'is shown when image is focused', () => {
-				const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
-				const domEventDataMock = {
-					target: widget,
-					preventDefault: sinon.spy()
-				};
-
-				focusEditor( editor );
-
-				viewDocument.fire( 'mousedown', domEventDataMock );
-
-				for ( const resizer of allResizers ) {
-					expect( isVisible( resizer ) ).to.be.true;
-				}
-			} );
-		} );
-	} );
-
-	describe( 'standard image resizing', () => {
-		beforeEach( () => createEditor() );
-
-		beforeEach( () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			widget = viewDocument.getRoot().getChild( 1 );
-		} );
-
-		it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: 10,
-				y: -10
-			},
-			resizerPosition: 'bottom-left'
-		} ) );
-
-		it( 'shrinks correctly with right-bottom handler', generateResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: -10,
-				y: -10
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 10,
-				y: 0
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 0,
-				y: 10
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'enlarges correctly with left-bottom handler, x axis only', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: -10,
-				y: 0
-			},
-			resizerPosition: 'bottom-left'
-		} ) );
-
-		it( 'enlarges correctly with left-bottom handler, y axis only', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 0,
-				y: 10
-			},
-			resizerPosition: 'bottom-left'
-		} ) );
-
-		// --- top handlers ---
-
-		it( 'enlarges correctly with left-top handler', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: -10,
-				y: -10
-			},
-			resizerPosition: 'top-left'
-		} ) );
-
-		it( 'enlarges correctly with left-top handler, y axis only', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 0,
-				y: -10
-			},
-			resizerPosition: 'top-left'
-		} ) );
-
-		it( 'enlarges correctly with right-top handler', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 10,
-				y: -10
-			},
-			resizerPosition: 'top-right'
-		} ) );
-
-		it( 'enlarges correctly with right-top handler, y axis only', generateResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 0,
-				y: -10
-			},
-			resizerPosition: 'top-right'
-		} ) );
-	} );
-
 	describe( 'side image resizing', () => {
 		beforeEach( () => createEditor() );
 
@@ -335,96 +191,6 @@ describe( 'ImageResize', () => {
 
 			widget = viewDocument.getRoot().getChild( 1 );
 		} );
-
-		it( 'shrinks correctly with left-bottom handler', generateSideResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: 20,
-				y: -10
-			},
-			resizerPosition: 'bottom-left'
-		} ) );
-
-		it( 'shrinks correctly with right-bottom handler', generateSideResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: -20,
-				y: -10
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'shrinks correctly with left-top handler', generateSideResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: 20,
-				y: 10
-			},
-			resizerPosition: 'top-left'
-		} ) );
-
-		it( 'shrinks correctly with right-top handler', generateSideResizeTest( {
-			expectedWidth: 80,
-			pointerOffset: {
-				x: -20,
-				y: 10
-			},
-			resizerPosition: 'top-right'
-		} ) );
-
-		it( 'enlarges correctly with left-bottom handler', generateSideResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: -10,
-				y: 10
-			},
-			resizerPosition: 'bottom-left'
-		} ) );
-
-		it( 'enlarges correctly with right-bottom handler', generateSideResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 10,
-				y: 10
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'enlarges correctly with right-bottom handler, y axis only', generateSideResizeTest( {
-			expectedWidth: 140,
-			pointerOffset: {
-				x: 0,
-				y: 20
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'enlarges correctly with right-bottom handler, x axis only', generateSideResizeTest( {
-			expectedWidth: 140,
-			pointerOffset: {
-				x: 40,
-				y: 0
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
-
-		it( 'enlarges correctly with left-top handler', generateSideResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: -20,
-				y: -10
-			},
-			resizerPosition: 'top-left'
-		} ) );
-
-		it( 'enlarges correctly with right-top handler', generateSideResizeTest( {
-			expectedWidth: 120,
-			pointerOffset: {
-				x: 20,
-				y: 10
-			},
-			resizerPosition: 'top-right'
-		} ) );
 
 		it( 'doesn\'t flicker at the beginning of the resize', async () => {
 			// (#5189)
@@ -462,12 +228,6 @@ describe( 'ImageResize', () => {
 
 			expect( modelItem.getAttribute( 'width' ), 'model width attribute' ).to.be.undefined;
 		} );
-
-		function generateSideResizeTest( options ) {
-			return generateResizeTest( Object.assign( {
-				modelRegExp: /<paragraph>foo<\/paragraph><image imageStyle="side" src=".+?" width="([\d.]+)px"><\/image>/
-			}, options ) );
-		}
 	} );
 
 	describe( 'percent resizing', () => {
@@ -762,11 +522,6 @@ describe( 'ImageResize', () => {
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 	} );
-
-	function isVisible( element ) {
-		// Checks if the DOM element is visible to the end user.
-		return element.offsetParent !== null && !element.classList.contains( 'ck-hidden' );
-	}
 
 	function fireMouseEvent( target, eventType, eventData ) {
 		// Using initMouseEvent instead of MouseEvent constructor, as MouseEvent constructor doesn't support passing pageX
