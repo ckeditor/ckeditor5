@@ -13,10 +13,24 @@ export const mouseMock = {
 			target: domTarget
 		} );
 	},
-	move( editor, domTarget, eventData ) {
+
+	/**
+	 * Calls the resizer `mousemove` handler with given parameters.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {HTMLElement} domTarget
+	 * @param {Object} [eventData]
+	 * @param {Point} [targetPoint] Place where the pointer should be moved to, overrides `eventData.pageX` and `eventData.pageY`.
+	 */
+	move( editor, domTarget, eventData, targetPoint ) {
 		const combinedEventData = Object.assign( {}, eventData, {
 			target: domTarget
 		} );
+
+		if ( targetPoint ) {
+			combinedEventData.pageX = targetPoint.x;
+			combinedEventData.pageY = targetPoint.y;
+		}
 
 		this._getPlugin( editor )._mouseMoveListener( {}, combinedEventData );
 	},
