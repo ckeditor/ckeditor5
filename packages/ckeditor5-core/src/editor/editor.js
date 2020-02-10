@@ -333,21 +333,15 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * This error is thrown when a user tries to use a `<textarea>` element to create a non-classic editor in it.
+ * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
  *
- * The textarea element represents plain text and in general, cannot be used as an editable root element with CKEditor 5 included.
- * Only {@glink builds/guides/overview#classic-editor Classic Editor} has implemented a special mechanism that
- * **replaces** the DOM element and loads the data from it.
- *
- * Typically you can use a `div` for storing the editor content instead:
+ * The only editor type which can be initialized on `<textarea>` elements is {@glink builds/guides/overview#classic-editor classic editor}.
+ * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
+ * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *
  *		<div id="editor">
  *			<p>Initial content.</p>
  *		</div>
- *
- * ({@link module:editor-classic/classiceditor~ClassicEditor.create read more}). All other editor types
- * use an existing element, load the data from it, and make this element editable. Refer to the description of the `create()` method
- * for each editor type to learn more about this behavior.
  *
  * @error editor-wrong-element
  */
