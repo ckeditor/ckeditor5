@@ -19,7 +19,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { mouseMock, getWidgetDomParts, getHandleCenterPoint } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
@@ -258,7 +258,7 @@ describe( 'ImageResize', () => {
 	describe( 'table integration', () => {
 		beforeEach( () => createEditor() );
 
-		beforeEach( () => {
+		it( 'works when resizing in a table', () => {
 			setData( editor.model,
 				'<table>' +
 					`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
@@ -266,18 +266,21 @@ describe( 'ImageResize', () => {
 			);
 
 			widget = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
-		} );
+			const model = editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-		it( 'works when resizing in a table', generateResizeTest( {
-			getModel: () => editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ),
-			expectedWidth: 60,
-			modelRegExp: /.+/,
-			pointerOffset: {
-				x: -40,
-				y: -20
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
+			const finalPointerPosition = initialPosition.clone().moveBy( -40, -20 );
+
+			focusEditor( editor );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, {
+				from: initialPosition,
+				to: finalPointerPosition
+			} );
+
+			expect( model.getAttribute( 'width' ) ).to.be.equal( '60px' );
+		} );
 	} );
 
 	describe( 'srcset integration', () => {
@@ -285,7 +288,7 @@ describe( 'ImageResize', () => {
 
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
-		const getModel = () => editor.model.document.getRoot().getChild( 0 );
+		let model;
 		let images = [];
 
 		before( () => {
@@ -317,37 +320,42 @@ describe( 'ImageResize', () => {
 			);
 
 			widget = viewDocument.getRoot().getChild( 0 );
+			model = editor.model.document.getRoot().getChild( 0 );
 		} );
 
-		it( 'works with images containing srcset', generateResizeTest( {
-			getModel,
-			expectedWidth: 76,
-			modelRegExp: /.+/,
-			pointerOffset: {
-				x: -20,
-				y: -20
-			},
-			resizerPosition: 'bottom-right'
-		} ) );
+		it( 'works with images containing srcset', () => {
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
+			const finalPointerPosition = initialPosition.clone().moveBy( -20, -20 );
 
-		it( 'retains width after removing srcset', async () => {
-			await generateResizeTest( {
-				getModel,
-				expectedWidth: 80,
-				modelRegExp: /.+/,
-				pointerOffset: {
-					x: -16,
-					y: -16
-				},
-				resizerPosition: 'bottom-right'
-			} )();
+			focusEditor( editor );
 
-			editor.model.change( writer => {
-				writer.removeAttribute( 'srcset', getModel() );
+			mouseMock.dragTo( editor, domParts.resizeHandle, {
+				from: initialPosition,
+				to: finalPointerPosition
 			} );
 
-			expect( editor.getData() )
-				.to.match( /<figure class="image image_resized" style="width:[\d.]{2,}px;"><img src="\/assets\/sample.png"><\/figure>/ );
+			expect( model.getAttribute( 'width' ) ).to.be.equal( '76px' );
+		} );
+
+		it( 'retains width after removing srcset', () => {
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
+			const finalPointerPosition = initialPosition.clone().moveBy( -16, -16 );
+
+			focusEditor( editor );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, {
+				from: initialPosition,
+				to: finalPointerPosition
+			} );
+
+			editor.model.change( writer => {
+				writer.removeAttribute( 'srcset', model );
+			} );
+
+			const expectedHtml = '<figure class="image image_resized" style="width:80px;"><img src="/assets/sample.png"></figure>';
+			expect( editor.getData() ).to.be.equal( expectedHtml );
 		} );
 
 		async function preloadImage( imageUrl ) {
@@ -432,53 +440,6 @@ describe( 'ImageResize', () => {
 
 	function wait( delay ) {
 		return new Promise( resolve => window.setTimeout( () => resolve(), delay ) );
-	}
-
-	function generateResizeTest( options ) {
-		// options.resizerPosition - top-left / top-right / bottom-right / bottom-left
-		// options.pointerOffset - object - pointer offset relative to the dragged corner. Negative values are perfectly fine.
-		// e.g. { x: 10, y: -5 }
-		// options.expectedWidth
-		// Returns a test case that puts
-		return async function() {
-			const domParts = getWidgetDomParts( editor, widget, options.resizerPosition );
-			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-
-			const modelRegExp = options.modelRegExp ? options.modelRegExp :
-				/<paragraph>foo<\/paragraph><image src=".+?" width="([\d]+)px"><\/image>/;
-
-			focusEditor( editor );
-
-			const initialPointerPosition = getHandleCenterPoint( domParts.widget, options.resizerPosition );
-
-			mouseMock.down( editor, domParts.resizeHandle );
-			mouseMock.move( editor, domParts.resizeHandle, null, initialPointerPosition );
-
-			// We need to wait as mousemove events are throttled.
-			await wait( 40 );
-
-			const finishPointerPosition = initialPointerPosition.moveBy( options.pointerOffset.x || 0, options.pointerOffset.y || 0 );
-
-			mouseMock.move( editor, domParts.resizeHandle, null, finishPointerPosition );
-
-			expect( parseInt( domParts.widget.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
-
-			if ( options.checkBeforeMouseUp ) {
-				options.checkBeforeMouseUp( domParts.widget, domResizeWrapper );
-			}
-
-			mouseMock.up( editor );
-
-			expect( getData( editor.model, {
-				withoutSelection: true
-			} ) ).to.match( modelRegExp );
-
-			const modelItem = options.getModel ? options.getModel() : editor.model.document.getRoot().getChild( 1 );
-			const modelWidth = modelItem.getAttribute( 'width' );
-
-			expect( parseFloat( modelWidth, 0 ) )
-				.to.be.closeTo( options.expectedWidth, 2, 'Model width check' );
-		};
 	}
 
 	function focusEditor( editor ) {
