@@ -86,33 +86,33 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount ).to.be.equal( 1 );
 			sinon.assert.calledWithExactly( commitStub, '120px' );
 		} );
-	} );
 
-	it( 'are detached when plugin is destroyed', async () => {
-		await editor.destroy();
-		const plugin = editor.plugins.get( WidgetResize );
-		editor = null;
+		it( 'are detached when plugin is destroyed', async () => {
+			await editor.destroy();
+			const plugin = editor.plugins.get( WidgetResize );
+			editor = null;
 
-		const event = new Event( 'mousedown', { bubbles: true } );
-		document.body.dispatchEvent( event );
+			const event = new Event( 'mousedown', { bubbles: true } );
+			document.body.dispatchEvent( event );
 
-		// Ensure nothing got called.
-		expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
-	} );
-
-	it( 'nothing bad happens if activeResizer got unset', () => {
-		createResizer( {
-			isCentered: () => true
+			// Ensure nothing got called.
+			expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
 		} );
 
-		const usedResizer = 'top-right';
-		const domParts = getWidgetDomParts( editor, widget, usedResizer );
-		const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
+		it( 'nothing bad happens if activeResizer got unset', () => {
+			createResizer( {
+				isCentered: () => true
+			} );
 
-		editor.plugins.get( WidgetResize )._getResizerByHandle = sinon.stub().returns( null );
+			const usedResizer = 'top-right';
+			const domParts = getWidgetDomParts( editor, widget, usedResizer );
+			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
-		mouseMock.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
-		// No exception should be thrown.
+			editor.plugins.get( WidgetResize )._getResizerByHandle = sinon.stub().returns( null );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
+			// No exception should be thrown.
+		} );
 	} );
 
 	describe( 'visibility', () => {
