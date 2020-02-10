@@ -251,7 +251,12 @@ describe( 'UI Utils', () => {
 			expect( lengthFieldValidator( '1' ) ).to.be.true;
 			expect( lengthFieldValidator( '12.1' ) ).to.be.true;
 			expect( lengthFieldValidator( '0.125 ' ) ).to.be.true;
-			expect( lengthFieldValidator( '.1 ' ) ).to.be.true;
+		} );
+
+		it( 'should not pass for invalid number values', () => {
+			expect( lengthFieldValidator( '.1 ' ) ).to.be.false;
+			expect( lengthFieldValidator( '45. ' ) ).to.be.false;
+			expect( lengthFieldValidator( '45.1.1 ' ) ).to.be.false;
 		} );
 
 		it( 'should pass for lengths surrounded by white spaces', () => {

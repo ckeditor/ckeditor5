@@ -234,6 +234,10 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
 	}
 }
 
+// A simple helper method to detect number strings.
+// I allows full number notation, so omitting 0 is not allowed:
 function isNumberString( value ) {
-	return !Number.isNaN( parseFloat( value ) );
+	const parsedValue = parseFloat( value );
+
+	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
 }
