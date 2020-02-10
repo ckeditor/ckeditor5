@@ -17,23 +17,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { mouseMock, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
 
 describe( 'WidgetResize', () => {
-	let editor, editorElement, widget, mouseListenerSpies;
-
-	const commitStub = sinon.stub();
-
-	before( () => {
-		mouseListenerSpies = {
-			down: sinon.spy( WidgetResize.prototype, '_mouseDownListener' ),
-			move: sinon.spy( WidgetResize.prototype, '_mouseMoveListener' ),
-			up: sinon.spy( WidgetResize.prototype, '_mouseUpListener' )
-		};
-	} );
-
-	after( () => {
-		for ( const stub of Object.values( mouseListenerSpies ) ) {
-			stub.restore();
-		}
-	} );
+	let editor, editorElement, widget, mouseListenerSpies, commitStub;
 
 	beforeEach( async () => {
 		editorElement = createEditorElement();
@@ -45,20 +29,27 @@ describe( 'WidgetResize', () => {
 
 		widget = editor.editing.view.document.getRoot().getChild( 0 );
 
-		for ( const stub of Object.values( mouseListenerSpies ) ) {
-			stub.resetHistory();
-		}
-		commitStub.resetHistory();
-
 		// It's crucial to have a precisely defined editor size for this test suite.
 		editor.editing.view.change( writer => {
 			const viewEditableRoot = editor.editing.view.document.getRoot();
 			writer.setAttribute( 'style', 'width: 400px; padding: 0px; overflow: hidden', viewEditableRoot );
 		} );
+
+		commitStub = sinon.stub();
+
+		mouseListenerSpies = {
+			down: sinon.spy( WidgetResize.prototype, '_mouseDownListener' ),
+			move: sinon.spy( WidgetResize.prototype, '_mouseMoveListener' ),
+			up: sinon.spy( WidgetResize.prototype, '_mouseUpListener' )
+		};
 	} );
 
 	afterEach( () => {
 		editorElement.remove();
+
+		for ( const stub of Object.values( mouseListenerSpies ) ) {
+			stub.restore();
+		}
 
 		if ( editor ) {
 			return editor.destroy();
