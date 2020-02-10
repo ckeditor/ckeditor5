@@ -118,28 +118,19 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'uses the command on commit', async () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			widget = viewDocument.getRoot().getChild( 1 );
-
 			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
 
-			await generateResizeTest( {
-				expectedWidth: 80,
-				pointerOffset: {
-					x: 10,
-					y: -10
-				},
-				resizerPosition: 'bottom-left'
-			} )();
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			widget = viewDocument.getRoot().getChild( 1 );
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 
-			// It's either 80px or 81px depending on the device, so we need to make the test a bit more loose.
-			const realWidth = editor.model.document.getRoot().getChild( 1 ).getAttribute( 'width' );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
 
-			expect( realWidth ).to.match( /^\d\dpx$/ );
+			focusEditor( editor );
+			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: realWidth } );
+			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
 		} );
 
 		it( 'disables the resizer if the command is disabled', () => {
@@ -239,18 +230,22 @@ describe( 'ImageResize', () => {
 		} );
 
 		it( 'has correct border size after undo', async () => {
-			await generateResizeTest( {
-				expectedWidth: 120,
-				pointerOffset: {
-					x: 0,
-					y: 10
-				},
-				resizerPosition: 'bottom-left'
-			} )();
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
+			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' );
+			const finalPointerPosition = initialPosition.clone().moveBy( 0, 10 );
+
+			focusEditor( editor );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, {
+				from: initialPosition,
+				to: finalPointerPosition
+			} );
+
+			expect( '120px' ).to.be.equal( domParts.widget.style.width );
 
 			editor.commands.get( 'undo' ).execute();
 
-			await wait( 160 ); // ui#update event is throttled.
+			await wait( 180 ); // ui#update event is throttled.
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
