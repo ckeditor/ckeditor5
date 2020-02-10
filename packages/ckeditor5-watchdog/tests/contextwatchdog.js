@@ -346,7 +346,7 @@ describe( 'ContextWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
-		it( 'should return the created items instances with ContextWatchdog#get( itemId )', async () => {
+		it( 'should return the created items instances with ContextWatchdog#getItem( itemId )', async () => {
 			watchdog = new ContextWatchdog( Context );
 
 			watchdog.create();
@@ -365,16 +365,16 @@ describe( 'ContextWatchdog', () => {
 				config: {}
 			} ] );
 
-			expect( watchdog.get( 'editor1' ) ).to.be.instanceOf( ClassicTestEditor );
-			expect( watchdog.get( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
+			expect( watchdog.getItem( 'editor1' ) ).to.be.instanceOf( ClassicTestEditor );
+			expect( watchdog.getItem( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
 
 			await watchdog.remove( 'editor1' );
 
 			expect( () => {
-				watchdog.get( 'editor1' );
+				watchdog.getItem( 'editor1' );
 			} ).to.throw( /Item with the given id was not registered: editor1\./ );
 
-			expect( watchdog.get( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
+			expect( watchdog.getItem( 'editor2' ) ).to.be.instanceOf( ClassicTestEditor );
 
 			await watchdog.destroy();
 		} );
@@ -404,7 +404,7 @@ describe( 'ContextWatchdog', () => {
 
 				sinon.assert.calledOnce( restartSpy );
 
-				expect( watchdog.getState( 'editor1' ) ).to.equal( 'ready' );
+				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
 				expect( watchdog.context ).to.not.equal( oldContext );
 
 				await watchdog.destroy();
@@ -426,7 +426,7 @@ describe( 'ContextWatchdog', () => {
 				const oldContext = watchdog.context;
 				const restartSpy = sinon.spy();
 
-				const oldEditor = watchdog.get( 'editor1' );
+				const oldEditor = watchdog.getItem( 'editor1' );
 
 				watchdog.on( 'restart', restartSpy );
 
@@ -438,7 +438,7 @@ describe( 'ContextWatchdog', () => {
 
 				expect( watchdog.context ).to.equal( oldContext );
 
-				expect( watchdog.get( 'editor1' ) ).to.not.equal( oldEditor );
+				expect( watchdog.getItem( 'editor1' ) ).to.not.equal( oldEditor );
 
 				await watchdog.destroy();
 			} );
@@ -464,11 +464,11 @@ describe( 'ContextWatchdog', () => {
 
 				const oldContext = watchdog.context;
 
-				const editorWatchdog1 = watchdog._watchdogs.get( 'editor1' );
-				const editorWatchdog2 = watchdog._watchdogs.get( 'editor2' );
+				const editorWatchdog1 = watchdog._getWatchdog( 'editor1' );
+				const editorWatchdog2 = watchdog._getWatchdog( 'editor2' );
 
-				const oldEditor1 = watchdog.get( 'editor1' );
-				const oldEditor2 = watchdog.get( 'editor2' );
+				const oldEditor1 = watchdog.getItem( 'editor1' );
+				const oldEditor2 = watchdog.getItem( 'editor2' );
 
 				const mainWatchdogRestartSpy = sinon.spy();
 				const editorWatchdog1RestartSpy = sinon.spy();
@@ -487,8 +487,8 @@ describe( 'ContextWatchdog', () => {
 				sinon.assert.notCalled( mainWatchdogRestartSpy );
 				sinon.assert.notCalled( editorWatchdog2RestartSpy );
 
-				expect( watchdog.getState( 'editor1' ) ).to.equal( 'ready' );
-				expect( watchdog.getState( 'editor2' ) ).to.equal( 'ready' );
+				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
+				expect( watchdog.getItemState( 'editor2' ) ).to.equal( 'ready' );
 				expect( watchdog.state ).to.equal( 'ready' );
 
 				expect( oldEditor1 ).to.not.equal( editorWatchdog1.editor );
@@ -518,7 +518,7 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				const editor1 = watchdog.get( 'editor1' );
+				const editor1 = watchdog.getItem( 'editor1' );
 
 				const removePromise = watchdog.remove( 'editor1' );
 
@@ -527,8 +527,8 @@ describe( 'ContextWatchdog', () => {
 				await waitCycle();
 				await removePromise;
 
-				expect( [ ...watchdog._watchdogs.keys() ] ).to.include( 'editor2' );
-				expect( [ ...watchdog._watchdogs.keys() ] ).to.not.include( 'editor1' );
+				expect( Array.from( watchdog._watchdogs.keys() ) ).to.include( 'editor2' );
+				expect( Array.from( watchdog._watchdogs.keys() ) ).to.not.include( 'editor1' );
 
 				await watchdog.destroy();
 			} );
@@ -552,14 +552,14 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
 
 				await waitCycle();
 
-				expect( watchdog.getState( 'editor1' ) ).to.equal( 'crashedPermanently' );
+				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'crashedPermanently' );
 				expect( watchdog.state ).to.equal( 'ready' );
 
 				await watchdog.destroy();
@@ -586,11 +586,11 @@ describe( 'ContextWatchdog', () => {
 							return data.itemId === 'editor1';
 						} ) )
 						.callsFake( () => {
-							expect( watchdog.get( 'editor1' ).state ).to.equal( 'crashed' );
+							expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'crashed' );
 						} )
 				);
 
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
 
 				await waitCycle();
 
@@ -620,11 +620,11 @@ describe( 'ContextWatchdog', () => {
 							return data.itemId === 'editor1';
 						} ) )
 						.callsFake( () => {
-							expect( watchdog.get( 'editor1' ).state ).to.equal( 'ready' );
+							expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
 						} )
 				);
 
-				setTimeout( () => throwCKEditorError( 'foo', watchdog.get( 'editor1' ) ) );
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
 
 				await waitCycle();
 

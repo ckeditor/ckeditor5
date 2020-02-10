@@ -15,7 +15,7 @@ import areConnectedThroughProperties from './utils/areconnectedthroughproperties
 import getSubNodes from './utils/getsubnodes';
 
 /**
- * The Context Watchdog class.
+ * A watchdog for the {@link module:core/context~Context} class.
  *
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
@@ -111,10 +111,10 @@ export default class ContextWatchdog extends Watchdog {
 		 * It expects a function that should return a promise (or `undefined`).
 		 *
 		 *		watchdog.setCreator( config => Context.create( config ) );
-		*
-		* @method #setCreator
-		* @param {Function} creator
-		*/
+		 *
+		 * @method #setCreator
+		 * @param {Function} creator
+		 */
 
 		/**
 		 * Sets the function that is responsible for the context destruction.
@@ -123,17 +123,17 @@ export default class ContextWatchdog extends Watchdog {
 		 *
 		 *		watchdog.setDestructor( context => {
 		 *			// Do something before the context is destroyed.
-		*
-		*			return context
-		*				.destroy()
-		*				.then( () => {
-		*					// Do something after the context is destroyed.
-		*				} );
-		*		} );
-		*
-		* @method #setDestructor
-		* @param {Function} destructor
-		*/
+		 *
+		 *			return context
+		 *				.destroy()
+		 *				.then( () => {
+		 *					// Do something after the context is destroyed.
+		 *				} );
+		 *		} );
+		 *
+		 * @method #setDestructor
+		 * @param {Function} destructor
+		 */
 	}
 
 	/**
@@ -166,28 +166,28 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-     * Returns the item instance with the given `itemId`.
+	 * Returns the item instance with the given `itemId`.
 	 *
-	 * 	const editor1 = watchdog.get( 'editor1' );
+	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
 	 * @param {String} itemId The item id.
 	 * @returns {*} The item instance or `undefined` if an item with given id has not been found.
 	 */
-	get( itemId ) {
+	getItem( itemId ) {
 		const watchdog = this._getWatchdog( itemId );
 
-		return watchdog._instance;
+		return watchdog._item;
 	}
 
 	/**
 	 * Gets state of the given item. For the list of available states see {@link #state}.
 	 *
-	 * 	const editor1State = watchdog.getState( 'editor1' );
+	 * 	const editor1State = watchdog.getItemState( 'editor1' );
 	 *
 	 * @param {String} itemId Item id.
 	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
 	 */
-	getState( itemId ) {
+	getItemState( itemId ) {
 		const watchdog = this._getWatchdog( itemId );
 
 		return watchdog.state;
@@ -224,7 +224,7 @@ export default class ContextWatchdog extends Watchdog {
 	 *
 	 * And then the instance can be retrieved using the {@link #get} method:
 	 *
-	 * 	const editor1 = watchdog.get( 'editor1' );
+	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
 	 * Note that this method can be called multiple times, but for performance reasons it's better
 	 * to pass all items together.
@@ -439,9 +439,9 @@ export default class ContextWatchdog extends Watchdog {
 	 * @param {Error} error
 	 * @returns {Boolean}
 	 */
-	_isErrorComingFromThisInstance( error ) {
+	_isErrorComingFromThisItem( error ) {
 		for ( const watchdog of this._watchdogs.values() ) {
-			if ( watchdog._isErrorComingFromThisInstance( error ) ) {
+			if ( watchdog._isErrorComingFromThisItem( error ) ) {
 				return false;
 			}
 		}
@@ -490,7 +490,7 @@ class ActionQueue {
 		this._onEmptyCallbacks = [];
 	}
 
-	// A method used to register callbacks that will be run when the queue becomes empty.
+	// Used to register callbacks that will be run when the queue becomes empty.
 	//
 	// @param {Function} onEmptyCallback A callback that will be run whenever the queue becomes empty.
 	onEmpty( onEmptyCallback ) {
@@ -520,13 +520,13 @@ class ActionQueue {
 }
 
 /**
- * The WatchdogItemConfiguration interface.
+ * The `WatchdogItemConfiguration` interface.
  *
  * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
  */
 
 /**
- * The EditorWatchdogConfiguration interface specifies how editors should be created and destroyed.
+ * The `EditorWatchdogConfiguration` interface specifies how editors should be created and destroyed.
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
  *

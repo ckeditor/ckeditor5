@@ -16,7 +16,7 @@ describe( 'Watchdog', () => {
 	it( 'should be created using the inheritance', () => {
 		class FooWatchdog extends Watchdog {
 			_restart() {}
-			_isErrorComingFromThisInstance() {}
+			_isErrorComingFromThisItem() {}
 		}
 
 		expect( () => {
