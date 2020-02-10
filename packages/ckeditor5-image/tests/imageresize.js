@@ -21,6 +21,8 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
+import { getWidgetDomParts } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
+
 describe( 'ImageResize', () => {
 	// Id of the left mouse button.
 	const MOUSE_BUTTON_MAIN = 0;
@@ -195,8 +197,8 @@ describe( 'ImageResize', () => {
 		it( 'doesn\'t flicker at the beginning of the resize', async () => {
 			// (#5189)
 			const resizerPosition = 'bottom-left';
-			const domParts = getWidgetDomParts( widget, resizerPosition );
-			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.widget, resizerPosition );
 			const resizeWrapperView = widget.getChild( 1 );
 
 			focusEditor( editor );
@@ -214,13 +216,13 @@ describe( 'ImageResize', () => {
 		it( 'makes no change when clicking the handle without drag', () => {
 			const resizerPosition = 'bottom-left';
 			const expectedWidth = 100;
-			const domParts = getWidgetDomParts( widget, resizerPosition );
-			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.widget, resizerPosition );
 
 			focusEditor( editor );
 			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
 
-			expect( getDomWidth( domParts.figure ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
+			expect( getDomWidth( domParts.widget ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
 
 			fireMouseEvent( domParts.resizeHandle, 'mouseup', initialPointerPosition );
 
@@ -442,8 +444,8 @@ describe( 'ImageResize', () => {
 		it( 'restores toolbar when clicking the handle without drag', () => {
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#pullrequestreview-337725256).
 			const resizerPosition = 'bottom-left';
-			const domParts = getWidgetDomParts( widget, resizerPosition );
-			const initialPointerPosition = getResizerCoordinates( domParts.figure, resizerPosition );
+			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.widget, resizerPosition );
 
 			focusEditor( editor );
 			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
@@ -475,7 +477,7 @@ describe( 'ImageResize', () => {
 		// options.expectedWidth
 		// Returns a test case that puts
 		return async function() {
-			const domParts = getWidgetDomParts( widget, options.resizerPosition );
+			const domParts = getWidgetDomParts( editor, widget, options.resizerPosition );
 			const domResizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
 
 			const modelRegExp = options.modelRegExp ? options.modelRegExp :
@@ -483,7 +485,7 @@ describe( 'ImageResize', () => {
 
 			focusEditor( editor );
 
-			const initialPointerPosition = getResizerCoordinates( domParts.figure, options.resizerPosition );
+			const initialPointerPosition = getResizerCoordinates( domParts.widget, options.resizerPosition );
 
 			fireMouseEvent( domParts.resizeHandle, 'mousedown', initialPointerPosition );
 			fireMouseEvent( domParts.resizeHandle, 'mousemove', initialPointerPosition );
@@ -498,10 +500,10 @@ describe( 'ImageResize', () => {
 
 			fireMouseEvent( domParts.resizeHandle, 'mousemove', finishPointerPosition );
 
-			expect( parseInt( domParts.figure.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
+			expect( parseInt( domParts.widget.style.width ) ).to.be.closeTo( options.expectedWidth, 2, 'DOM width check' );
 
 			if ( options.checkBeforeMouseUp ) {
-				options.checkBeforeMouseUp( domParts.figure, domResizeWrapper );
+				options.checkBeforeMouseUp( domParts.widget, domResizeWrapper );
 			}
 
 			fireMouseEvent( domParts.resizeHandle, 'mouseup', finishPointerPosition );
@@ -541,18 +543,6 @@ describe( 'ImageResize', () => {
 		}
 
 		return initialPointerPosition;
-	}
-
-	function getWidgetDomParts( widget, resizerPosition ) {
-		const resizeWrapper = view.domConverter.mapViewToDom( widget.getChild( 1 ) );
-		const resizeHandle = resizeWrapper.querySelector( `.ck-widget__resizer__handle-${ resizerPosition }` );
-		const figure = view.domConverter.mapViewToDom( widget );
-
-		return {
-			resizeWrapper,
-			resizeHandle,
-			figure
-		};
 	}
 
 	function getDomWidth( domElement ) {
