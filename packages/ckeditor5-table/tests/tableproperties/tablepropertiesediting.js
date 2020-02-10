@@ -21,7 +21,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
-describe( 'table properties', () => {
+describe.only( 'table properties', () => {
 	describe( 'TablePropertiesEditing', () => {
 		let editor, model;
 
@@ -700,15 +700,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast style="float:left;margin-right:0" to right value', () => {
-					editor.setData( '<table style="float:left;margin-right:0"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="float:right;margin-right:0" to right value', () => {
+					editor.setData( '<table style="float:right;margin-right:0"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
 				} );
 
-				it( 'should upcast style="margin-left:0;float:right;" to left value', () => {
-					editor.setData( '<table style="margin-left:0;float:right;"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="margin-left:0;float:left;" to left value', () => {
+					editor.setData( '<table style="margin-left:0;float:left;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
@@ -721,8 +721,8 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
 				} );
 
-				it( 'should not upcast style="float:left;margin-right:23px" to right value (non-zero margin)', () => {
-					editor.setData( '<table style="float:left;margin-right:23px"><tr><td>foo</td></tr></table>' );
+				it( 'should not upcast style="float:right;margin-right:23px" to right value (non-zero margin)', () => {
+					editor.setData( '<table style="float:right;margin-right:23px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.hasAttribute( 'alignment' ) ).to.be.false;
@@ -787,13 +787,13 @@ describe( 'table properties', () => {
 				it( 'should downcast right alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 				} );
 
 				it( 'should downcast left alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-left:0;' );
+					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
 				} );
 
 				it( 'should downcast centered alignment', () => {
@@ -809,13 +809,13 @@ describe( 'table properties', () => {
 
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 				} );
 
 				it( 'should downcast changed alignment (right -> center)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
@@ -835,7 +835,7 @@ describe( 'table properties', () => {
 				it( 'should downcast removed alignment (from right)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 

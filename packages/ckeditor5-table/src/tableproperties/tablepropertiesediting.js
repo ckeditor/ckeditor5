@@ -123,7 +123,7 @@ function enableAlignmentProperty( schema, conversion ) {
 					key: 'style',
 					value: {
 						'margin-left': '0',
-						float: 'right'
+						float: 'left'
 					}
 				},
 				center: {
@@ -137,7 +137,7 @@ function enableAlignmentProperty( schema, conversion ) {
 					key: 'style',
 					value: {
 						'margin-right': '0',
-						float: 'left'
+						float: 'right'
 					}
 				}
 			},
