@@ -57,7 +57,6 @@ export default class TablePropertiesView extends View {
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
-		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
 		/**
 		 * Tracks information about the DOM focus in the form.
@@ -203,6 +202,11 @@ export default class TablePropertiesView extends View {
 		 * @member {module:ui/toolbar/toolbar~ToolbarView}
 		 */
 		this.alignmentToolbar = alignmentToolbar;
+
+		// Defer creating to make sure other fields are present and the Save button can
+		// bind its #isEnabled to their error messages so there's no way to save unless all
+		// fields are valid.
+		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
 		/**
 		 * The "Save" button view.
@@ -510,7 +514,7 @@ export default class TablePropertiesView extends View {
 			tag: 'span',
 			attributes: {
 				class: [
-					'ck-table-properties-form__dimension-operator'
+					'ck-table-form__dimension-operator'
 				]
 			},
 			children: [
@@ -594,6 +598,13 @@ export default class TablePropertiesView extends View {
 
 		const saveButtonView = new ButtonView( locale );
 		const cancelButtonView = new ButtonView( locale );
+		const fieldsThatShouldValidateToSave = [
+			this.borderWidthInput,
+			this.borderColorInput,
+			this.backgroundInput,
+			this.widthInput,
+			this.heightInput
+		];
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
@@ -601,6 +612,10 @@ export default class TablePropertiesView extends View {
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true,
+		} );
+
+		saveButtonView.bind( 'isEnabled' ).toMany( fieldsThatShouldValidateToSave, 'errorText', ( ...errorTexts ) => {
+			return errorTexts.every( errorText => !errorText );
 		} );
 
 		cancelButtonView.set( {
