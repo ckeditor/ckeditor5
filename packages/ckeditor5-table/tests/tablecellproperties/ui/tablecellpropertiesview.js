@@ -219,13 +219,12 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
-				describe( 'background and padding row', () => {
+				describe( 'background row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ] ).to.equal( view.backgroundInput.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.paddingInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -258,6 +257,93 @@ describe( 'table cell properties', () => {
 							labeledInput.view.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'bar' );
 						} );
+					} );
+				} );
+
+				describe( 'dimensions row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-cell-properties-form__dimensions-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
+						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
+						expect( row.childNodes[ 3 ] ).to.equal( view.heightInput.element );
+					} );
+
+					describe( 'width input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.widthInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Width' );
+							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__width' );
+						} );
+
+						it( 'should reflect #width property', () => {
+							view.width = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.width = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #width on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.width ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.width ).to.equal( 'bar' );
+						} );
+					} );
+
+					describe( 'height input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.heightInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Height' );
+							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__height' );
+						} );
+
+						it( 'should reflect #height property', () => {
+							view.height = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.height = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #height on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'bar' );
+						} );
+					} );
+				} );
+
+				describe( 'padding row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-cell-properties-form__padding-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ] ).to.equal( view.paddingInput.element );
 					} );
 
 					describe( 'padding input', () => {
@@ -295,7 +381,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'text alignment row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ];
+						const row = view.element.childNodes[ 4 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).to.be.true;
@@ -386,7 +472,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'action row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 4 ];
+						const row = view.element.childNodes[ 5 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
@@ -441,6 +527,8 @@ describe( 'table cell properties', () => {
 					view.borderColorInput,
 					view.borderWidthInput,
 					view.backgroundInput,
+					view.widthInput,
+					view.heightInput,
 					view.paddingInput,
 					view.horizontalAlignmentToolbar,
 					view.verticalAlignmentToolbar,

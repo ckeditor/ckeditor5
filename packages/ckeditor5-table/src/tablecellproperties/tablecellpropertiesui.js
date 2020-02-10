@@ -157,6 +157,8 @@ export default class TableCellPropertiesUI extends Plugin {
 		view.on( 'change:borderWidth', this._getPropertyChangeCallback( 'tableCellBorderWidth' ) );
 		view.on( 'change:padding', this._getPropertyChangeCallback( 'tableCellPadding' ) );
 		view.on( 'change:backgroundColor', this._getPropertyChangeCallback( 'tableCellBackgroundColor' ) );
+		view.on( 'change:width', this._getPropertyChangeCallback( 'tableCellWidth' ) );
+		view.on( 'change:height', this._getPropertyChangeCallback( 'tableCellHeight' ) );
 		view.on( 'change:horizontalAlignment', this._getPropertyChangeCallback( 'tableCellHorizontalAlignment' ) );
 		view.on( 'change:verticalAlignment', this._getPropertyChangeCallback( 'tableCellVerticalAlignment' ) );
 
@@ -180,6 +182,8 @@ export default class TableCellPropertiesUI extends Plugin {
 			borderStyle: commands.get( 'tableCellBorderStyle' ).value || DEFAULT_BORDER_STYLE,
 			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
 			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
+			width: commands.get( 'tableCellWidth' ).value || '',
+			height: commands.get( 'tableCellHeight' ).value || '',
 			padding: commands.get( 'tableCellPadding' ).value || '',
 			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
 			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
