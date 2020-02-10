@@ -22,7 +22,7 @@ import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
 
 // RegExp used for matching margin style in converters.
-const ALIGN_VALUES_REG_EXP = /^(left|right|center)$/;
+const ALIGN_VALUES_REG_EXP = /^(left|right)$/;
 
 /**
  * The table properties editing feature.
@@ -116,7 +116,7 @@ function enableAlignmentProperty( schema, conversion ) {
 			model: {
 				name: 'table',
 				key: 'alignment',
-				values: [ 'left', 'center', 'right' ]
+				values: [ 'left', 'right' ]
 			},
 			view: {
 				left: {
@@ -124,13 +124,6 @@ function enableAlignmentProperty( schema, conversion ) {
 					value: {
 						'margin-left': '0',
 						float: 'left'
-					}
-				},
-				center: {
-					key: 'style',
-					value: {
-						'margin-right': 'auto',
-						'margin-left': 'auto'
 					}
 				},
 				right: {
