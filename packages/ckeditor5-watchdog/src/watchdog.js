@@ -39,7 +39,7 @@ export default class Watchdog {
 		this.crashes = [];
 
 		/**
-		 * Specifies the state of the watchdog item handled by the watchdog. The state can be one of the following values:
+		 * Specifies the state of the item watched by the watchdog. The state can be one of the following values:
 		 *
 		 * * `initializing` - before the first initialization, and after crashes, before the item is ready,
 		 * * `ready` - a state when a user can interact with the item,
@@ -109,7 +109,7 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * The handled watchdog item.
+		 * The watched item.
 		 *
 		 * @abstract
 		 * @protected
@@ -117,7 +117,7 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * The method responsible for the watchdog item restarting.
+		 * The method responsible for restarting the watched item.
 		 *
 		 * @abstract
 		 * @protected
@@ -125,7 +125,7 @@ export default class Watchdog {
 		 */
 
 		/**
-		 * Traverses the error context and the handled watchdog item to find out whether the error should
+		 * Traverses the error context and the watched item to find out whether the error should
 		 * be handled by the given item.
 		 *
 		 * @abstract
@@ -151,7 +151,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for the watchdog item creation.
+	 * Sets the function that is responsible for creating watchded items.
 	 *
 	 * @param {Function} creator A callback responsible for creating an item. Returns a promise
 	 * that is resolved when the item is created.
@@ -161,7 +161,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for the watchdog item destruction.
+	 * Sets the function that is responsible for destructing watched items.
 	 *
 	 * @param {Function} destructor A callback that takes the item and returns the promise
 	 * to the destroying process.
@@ -247,7 +247,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the error comes from the watchdog item and restarts it.
+	 * Checks if the error comes from the watched item and restarts it.
 	 * It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
 	 * @private
@@ -299,7 +299,7 @@ export default class Watchdog {
 			error.is( 'CKEditorError' ) &&
 			error.context !== undefined &&
 
-			// In some cases the watchdog item should not be restarted - e.g. during the item initialization.
+			// In some cases the watched item should not be restarted - e.g. during the item initialization.
 			// That's why the `null` was introduced as a correct error context which does cause restarting.
 			error.context !== null &&
 
@@ -343,12 +343,12 @@ export default class Watchdog {
  *
  * @typedef {Object} WatchdogConfig
  *
- * @property {Number} [crashNumberLimit=3] A threshold specifying the number of watchdog item crashes
+ * @property {Number} [crashNumberLimit=3] A threshold specifying the number of watched item crashes
  * when the watchdog stops restarting the item in case of errors.
  * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
  *
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last watchdog item errors
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last watched item errors
  * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
  *
