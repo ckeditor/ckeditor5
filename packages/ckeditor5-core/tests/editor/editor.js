@@ -683,7 +683,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins built in the Editor even if the passed config is empty', () => {
-			Editor.builtinPlugins = [ PluginA, PluginB, PluginC ];
+			TestEditor.builtinPlugins = [ PluginA, PluginB, PluginC ];
 
 			const editor = new TestEditor();
 
@@ -698,7 +698,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins provided in the config and should ignore plugins built in the Editor', () => {
-			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
+			TestEditor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			const editor = new TestEditor( {
 				plugins: [
@@ -717,7 +717,7 @@ describe( 'Editor', () => {
 		it( 'should load plugins built in the Editor using their names', () => {
 			class PrivatePlugin extends Plugin {}
 
-			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
+			TestEditor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			const editor = new TestEditor( {
 				plugins: [
@@ -740,7 +740,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins inherited from the base Editor', () => {
-			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
+			TestEditor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			class CustomEditor extends TestEditor {}
 
@@ -796,7 +796,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should not load plugins built in the Editor', () => {
-				Editor.builtinPlugins = [ PluginA, PluginD ];
+				TestEditor.builtinPlugins = [ PluginA, PluginD ];
 
 				const editor = new TestEditor( {
 					removePlugins: [ 'D' ]
@@ -854,7 +854,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should not duplicate plugins built in the Editor', () => {
-				Editor.builtinPlugins = [ PluginA, PluginB ];
+				TestEditor.builtinPlugins = [ PluginA, PluginB ];
 
 				const editor = new TestEditor( {
 					extraPlugins: [ 'B' ]
