@@ -24,7 +24,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 describe( 'ImageResize', () => {
 	// Id of the left mouse button.
 	const MOUSE_BUTTON_MAIN = 0;
-	// 60x50 black png image
+	// 100x50 black png image
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 
