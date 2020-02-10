@@ -300,7 +300,7 @@ watchdog.on( 'error', ( evt, { error } ) => {
 	console.log( 'The context crashed.' );
 } );
 
-// The `restart` event is fired when the context is set back to the `ready` state (after it was in `error` state).
+// The `restart` event is fired when the context is set back to the `ready` state (after it was in `crashed` state).
 // Similarly, this event is not thrown for internal item restarts.
 watchdog.on( 'restart', () => {
 	console.log( 'The context has been restarted.' );
@@ -311,7 +311,7 @@ watchdog.on( 'itemError', ( evt, { error, itemId } ) => {
 	console.log( `An error occurred in an item with the '${ itemId }' id.` );
 } );
 
-// The `itemRestart` event is fired when an item is set back to the `ready` state (after it was in `error` state).
+// The `itemRestart` event is fired when an item is set back to the `ready` state (after it was in `crashed` state).
 watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
 	console.log( 'An item with '${ itemId }' id has been restarted.' );
 } );
