@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "../../../mixins/_rounded.css";
+@import "../mixins/_rounded.css";
 
 .ck.ck-input-color-picker {
 	& > .ck.ck-input-text {
