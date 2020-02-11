@@ -14,7 +14,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { mouseMock, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
+import { resizerMouseSimulator, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies, commitStub;
@@ -81,7 +81,7 @@ describe( 'WidgetResize', () => {
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 			const finalPointerPosition = initialPointerPosition.clone().moveBy( 20, 0 );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( commitStub.callCount ).to.be.equal( 1 );
 			sinon.assert.calledWithExactly( commitStub, '120px' );
@@ -110,7 +110,7 @@ describe( 'WidgetResize', () => {
 
 			editor.plugins.get( WidgetResize )._getResizerByHandle = sinon.stub().returns( null );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
 			// No exception should be thrown.
 		} );
 	} );
@@ -161,11 +161,11 @@ describe( 'WidgetResize', () => {
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
 				const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 50, 0 );
-				mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
+				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
 				sinon.assert.calledWithExactly( commitStub.firstCall, '150px' );
 
 				const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 50, 0 );
-				mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 				sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
 
 				expect( commitStub.callCount ).to.be.equal( 2 );
@@ -317,11 +317,11 @@ describe( 'WidgetResize', () => {
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, usedResizer );
 
 				const intermediatePointerPosition = initialPointerPosition.clone().moveBy( 100, 0 );
-				mouseMock.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
+				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, intermediatePointerPosition );
 				sinon.assert.calledWithExactly( commitStub.firstCall, '50%' );
 
 				const finalPointerPosition = intermediatePointerPosition.clone().moveBy( 100, 0 );
-				mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 				sinon.assert.calledWithExactly( commitStub.secondCall, '75%' );
 
 				expect( commitStub.callCount ).to.be.equal( 2 );
@@ -395,7 +395,7 @@ describe( 'WidgetResize', () => {
 			const pointerDifference = options.movePointerBy;
 			const finalPointerPosition = initialPointerPosition.moveBy( pointerDifference.x, pointerDifference.y );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 			expect( commitStub.callCount, 'call count' ).to.be.eql( 1 );
 			expect( commitStub.args[ 0 ][ 0 ], 'width' ).to.be.equal( options.expectedWidth );
 			sinon.assert.calledOnce( commitStub );

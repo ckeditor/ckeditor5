@@ -7,7 +7,7 @@ import WidgetResize from '../../../src/widgetresize';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
-export const mouseMock = {
+export const resizerMouseSimulator = {
 	down( editor, domTarget ) {
 		this._getPlugin( editor )._mouseDownListener( {}, {
 			target: domTarget
