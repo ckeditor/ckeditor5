@@ -63,8 +63,8 @@ export default class TableCellPropertiesView extends View {
 		super( locale );
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { horizontalAlignmentToolbar, verticalAlignmentToolbar, alignmentLabel } = this._createAlignmentFields();
-		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
 		/**
 		 * Tracks information about the DOM focus in the form.
@@ -137,6 +137,24 @@ export default class TableCellPropertiesView extends View {
 			backgroundColor: '',
 
 			/**
+			 * The value of the table cell width style.
+			 *
+			 * @observable
+			 * @default ''
+			 * @member #width
+			 */
+			width: '',
+
+			/**
+			 * The value of the table cell height style.
+			 *
+			 * @observable
+			 * @default ''
+			 * @member #height
+			 */
+			height: '',
+
+			/**
 			 * The value of the horizontal text alignment style.
 			 *
 			 * @observable
@@ -196,6 +214,22 @@ export default class TableCellPropertiesView extends View {
 		this.paddingInput = this._createPaddingField();
 
 		/**
+		 * An input that allows specifying the table cell width.
+		 *
+		 * @readonly
+		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 */
+		this.widthInput = widthInput;
+
+		/**
+		 * An input that allows specifying the table cell height.
+		 *
+		 * @readonly
+		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 */
+		this.heightInput = heightInput;
+
+		/**
 		 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
 		 *
 		 * @readonly
@@ -210,6 +244,11 @@ export default class TableCellPropertiesView extends View {
 		 * @member {module:ui/toolbar/toolbar~ToolbarView}
 		 */
 		this.verticalAlignmentToolbar = verticalAlignmentToolbar;
+
+		// Defer creating to make sure other fields are present and the Save button can
+		// bind its #isEnabled to their error messages so there's no way to save unless all
+		// fields are valid.
+		const { saveButtonView, cancelButtonView } = this._createActionButtons();
 
 		/**
 		 * The "Save" button view.
@@ -271,11 +310,34 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-row'
 		} ) );
 
-		// Background and padding row.
+		// Background.
 		this.children.add( new FormRowView( locale, {
 			children: [
-				this.backgroundInput,
-				this.paddingInput,
+				this.backgroundInput
+			]
+		} ) );
+
+		// Dimensions row and padding.
+		this.children.add( new FormRowView( locale, {
+			children: [
+				// Dimensions row.
+				new FormRowView( locale, {
+					labelView: dimensionsLabel,
+					children: [
+						dimensionsLabel,
+						widthInput,
+						operatorLabel,
+						heightInput
+					],
+					class: 'ck-table-cell-properties-form__dimensions-row'
+				} ),
+				// Padding row.
+				new FormRowView( locale, {
+					children: [
+						this.paddingInput
+					],
+					class: 'ck-table-cell-properties-form__padding-row'
+				} )
 			]
 		} ) );
 
@@ -332,6 +394,8 @@ export default class TableCellPropertiesView extends View {
 			this.borderColorInput,
 			this.borderWidthInput,
 			this.backgroundInput,
+			this.widthInput,
+			this.heightInput,
 			this.paddingInput,
 			this.horizontalAlignmentToolbar,
 			this.verticalAlignmentToolbar,
@@ -468,6 +532,75 @@ export default class TableCellPropertiesView extends View {
 	/**
 	 * Creates the following form fields:
 	 *
+	 * * {@link #widthInput}.
+	 * * {@link #heightInput}.
+	 *
+	 * @private
+	 * @returns {module:ui/labeledview/labeledview~LabeledView}
+	 */
+	_createDimensionFields() {
+		const locale = this.locale;
+		const t = this.t;
+
+		// -- Label ---------------------------------------------------
+
+		const dimensionsLabel = new LabelView( locale );
+		dimensionsLabel.text = t( 'Dimensions' );
+
+		// -- Width ---------------------------------------------------
+
+		const widthInput = new LabeledView( locale, createLabeledInputText );
+
+		widthInput.set( {
+			label: t( 'Width' ),
+			class: 'ck-table-cell-properties-form__width',
+		} );
+
+		widthInput.view.bind( 'value' ).to( this, 'width' );
+		widthInput.view.on( 'input', () => {
+			this.width = widthInput.view.element.value;
+		} );
+
+		// -- Operator ---------------------------------------------------
+
+		const operatorLabel = new View( locale );
+		operatorLabel.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: [
+					'ck-table-form__dimension-operator'
+				]
+			},
+			children: [
+				{ text: '×' }
+			]
+		} );
+
+		// -- Height ---------------------------------------------------
+
+		const heightInput = new LabeledView( locale, createLabeledInputText );
+
+		heightInput.set( {
+			label: t( 'Height' ),
+			class: 'ck-table-cell-properties-form__height',
+		} );
+
+		heightInput.view.bind( 'value' ).to( this, 'height' );
+		heightInput.view.on( 'input', () => {
+			this.height = heightInput.view.element.value;
+		} );
+
+		return {
+			dimensionsLabel,
+			widthInput,
+			operatorLabel,
+			heightInput
+		};
+	}
+
+	/**
+	 * Creates the following form fields:
+	 *
 	 * * {@link #paddingInput}.
 	 *
 	 * @private
@@ -562,9 +695,14 @@ export default class TableCellPropertiesView extends View {
 	_createActionButtons() {
 		const locale = this.locale;
 		const t = this.t;
-
 		const saveButtonView = new ButtonView( locale );
 		const cancelButtonView = new ButtonView( locale );
+		const fieldsThatShouldValidateToSave = [
+			this.borderWidthInput,
+			this.borderColorInput,
+			this.backgroundInput,
+			this.paddingInput
+		];
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
@@ -572,6 +710,10 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true,
+		} );
+
+		saveButtonView.bind( 'isEnabled' ).toMany( fieldsThatShouldValidateToSave, 'errorText', ( ...errorTexts ) => {
+			return errorTexts.every( errorText => !errorText );
 		} );
 
 		cancelButtonView.set( {

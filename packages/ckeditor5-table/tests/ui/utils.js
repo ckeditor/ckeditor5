@@ -19,6 +19,10 @@ import {
 	getBalloonCellPositionData,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
+	getLocalizedColorErrorText,
+	getLocalizedLengthErrorText,
+	lengthFieldValidator,
+	colorFieldValidator,
 	fillToolbar
 } from '../../src/ui/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -145,7 +149,7 @@ describe( 'UI Utils', () => {
 		} );
 	} );
 
-	describe( 'getBalloonCellPositionData', () => {
+	describe( 'getBalloonCellPositionData()', () => {
 		it( 'returns the position data', () => {
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -187,6 +191,65 @@ describe( 'UI Utils', () => {
 				inset: 'Inset',
 				outset: 'Outset',
 			} );
+		} );
+	} );
+
+	describe( 'getLocalizedColorErrorText()', () => {
+		it( 'should return the error text', () => {
+			const t = string => string;
+
+			expect( getLocalizedColorErrorText( t ) ).to.match( /^The color is invalid/ );
+		} );
+	} );
+
+	describe( 'getLocalizedLengthErrorText()', () => {
+		it( 'should return the error text', () => {
+			const t = string => string;
+
+			expect( getLocalizedLengthErrorText( t ) ).to.match( /^The value is invalid/ );
+		} );
+	} );
+
+	describe( 'colorFieldValidator()', () => {
+		it( 'should passe for an empty value', () => {
+			expect( colorFieldValidator( '' ) ).to.be.true;
+		} );
+
+		it( 'should passe for white spaces', () => {
+			expect( colorFieldValidator( '  ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for colors', () => {
+			expect( colorFieldValidator( '#FFF' ) ).to.be.true;
+			expect( colorFieldValidator( '#FFAA11' ) ).to.be.true;
+			expect( colorFieldValidator( 'rgb(255,123,100)' ) ).to.be.true;
+			expect( colorFieldValidator( 'red' ) ).to.be.true;
+		} );
+
+		it( 'should pass for colors surrounded by white spaces', () => {
+			expect( colorFieldValidator( ' #AAA ' ) ).to.be.true;
+			expect( colorFieldValidator( ' rgb(255,123,100) ' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'lengthFieldValidator()', () => {
+		it( 'should passe for an empty value', () => {
+			expect( lengthFieldValidator( '' ) ).to.be.true;
+		} );
+
+		it( 'should passe for white spaces', () => {
+			expect( lengthFieldValidator( '  ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for lengths', () => {
+			expect( lengthFieldValidator( '1px' ) ).to.be.true;
+			expect( lengthFieldValidator( '12em' ) ).to.be.true;
+			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for lengths surrounded by white spaces', () => {
+			expect( lengthFieldValidator( '3px ' ) ).to.be.true;
+			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;
 		} );
 	} );
 

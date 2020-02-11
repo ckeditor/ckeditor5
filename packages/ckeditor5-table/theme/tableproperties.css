@@ -13,10 +13,6 @@
 		&.ck-table-properties-form__dimensions-row {
 			align-items: center;
 
-			& .ck-table-properties-form__dimension-operator {
-				flex-grow: 0;
-			}
-
 			& .ck-labeled-view {
 				display: flex;
 				flex-direction: column-reverse;
