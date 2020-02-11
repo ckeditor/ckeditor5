@@ -120,21 +120,18 @@ describe( 'WidgetResize', () => {
 			createResizer();
 		} );
 
-		it( 'it\'s hidden by default', () => {
-			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
+		it( 'it\'s hidden when no widget is focused', () => {
+			// This particular test needs a paragraph, so that widget is no longer focused.
+			setModelData( editor.model, '<widget></widget><paragraph>[]</paragraph>' );
 
-			// Since widget is already focused, move the selection out of it.
-			editor.model.change( writer => {
-				const modelWidget = editor.editing.mapper.toModelElement( widget );
-				writer.setSelection( modelWidget, 'before' );
-			} );
+			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 
 			for ( const resizer of allResizers ) {
 				expect( isVisible( resizer ) ).to.be.false;
 			}
 		} );
 
-		it( 'it\'s visible once widget is focused', () => {
+		it( 'it\'s visible once the widget is focused', () => {
 			// Widget is focused by default.
 			const allResizers = editor.ui.getEditableElement().querySelectorAll( '.ck-widget__resizer__handle' );
 
