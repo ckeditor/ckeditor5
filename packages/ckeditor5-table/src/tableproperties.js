@@ -51,7 +51,7 @@ export default class TableProperties extends Plugin {
  *
  * TODO: Mention {@link module:table/table~TableColorConfig}.
  *
- * The default colors for both the background and the border are defined as follows:
+ * The default colors for the background and the border are the same and defined as follows:
  *
  *		[
  *			{
@@ -118,9 +118,9 @@ export default class TableProperties extends Plugin {
  *		]
  *
  * **Note**: The colors configuration does not impact the data loaded into the editor;
- * it is reflected only in the UI.
+ * it is reflected only in the UI allowing users to pick colors in a more convenient way.
  *
- * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ * Read more about configuring the table feature in {@link module:table/table~TableConfig}.
  *
  * @member {Object} module:table/table~TableConfig#tableProperties
  */
