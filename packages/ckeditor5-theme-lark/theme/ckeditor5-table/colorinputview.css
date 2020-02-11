@@ -11,7 +11,7 @@
 		border-bottom-right-radius: 0;
 	}
 
-	& .ck.ck-dropdown {
+	& > .ck.ck-dropdown {
 		& > .ck.ck-dropdown__color-picker-button {
 			border-top-left-radius: 0;
 			border-bottom-left-radius: 0;
