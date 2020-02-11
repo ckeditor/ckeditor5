@@ -124,7 +124,36 @@ describe( 'Styles utils', () => {
 	describe( 'isLength()', () => {
 		it( 'returns true for various units', () => {
 			testValues(
-				[ '1px', '2rem', '34.5px', '.2em', '0', '1346vmax' ],
+				[
+					'1px',
+					'1cm',
+					'1mm',
+					'1in',
+					'1pc',
+					'1pt',
+					'1ch',
+					'1em',
+					'1ex',
+					'1rem',
+					'1vh',
+					'1vw',
+					'1vmin',
+					'1vmax'
+				],
+				isLength
+			);
+		} );
+
+		it( 'returns true for various values notation', () => {
+			testValues(
+				[
+					'0',
+					'1px',
+					'1000px',
+					'1.1px',
+					'345.457px',
+					'.457px'
+				],
 				isLength
 			);
 		} );
