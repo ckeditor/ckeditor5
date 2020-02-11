@@ -1,4 +1,13 @@
 /**
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module ui/colorgrid/utils
+ */
+
+/**
  * Returns color configuration options as defined in `editor.config.(fontColor|fontBackgroundColor).colors` or
  * `editor.config.table.(tableProperties|tableCellProperties).(background|border).colors
  * but processed to account for editor localization in the correct language.
