@@ -121,6 +121,62 @@ describe( 'table properties', () => {
 					sinon.assert.calledWith( spy, batch );
 				} );
 
+				it( 'should add default unit for numeric values (number passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25 } );
+
+					assertTableStyle( editor, 'border-bottom:25px;border-left:25px;border-right:25px;border-top:25px;' );
+				} );
+
+				it( 'should add default unit for numeric values (string passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25 } );
+
+					assertTableStyle( editor, 'border-bottom:25px;border-left:25px;border-right:25px;border-top:25px;' );
+				} );
+
+				it( 'should not add default unit for numeric values with unit', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '25pt' } );
+
+					assertTableStyle( editor, 'border-bottom:25pt;border-left:25pt;border-right:25pt;border-top:25pt;' );
+				} );
+
+				it( 'should add default unit to floats (number passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25.1 } );
+
+					assertTableStyle( editor, 'border-bottom:25.1px;border-left:25.1px;border-right:25.1px;border-top:25.1px;' );
+				} );
+
+				it( 'should add default unit to floats (string passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '0.1' } );
+
+					assertTableStyle( editor, 'border-bottom:0.1px;border-left:0.1px;border-right:0.1px;border-top:0.1px;' );
+				} );
+
+				it( 'should pass invalid values', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 'bar' } );
+
+					assertTableStyle( editor, 'border-bottom:bar;border-left:bar;border-right:bar;border-top:bar;' );
+				} );
+
+				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '.2' } );
+
+					assertTableStyle( editor, 'border-bottom:.2;border-left:.2;border-right:.2;border-top:.2;' );
+				} );
+
 				describe( 'collapsed selection', () => {
 					it( 'should set selected table borderWidth to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );

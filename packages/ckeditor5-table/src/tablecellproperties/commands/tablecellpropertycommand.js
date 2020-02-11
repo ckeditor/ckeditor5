@@ -62,10 +62,11 @@ export default class TableCellPropertyCommand extends Command {
 
 		const tableCells = Array.from( selection.getSelectedBlocks() )
 			.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) );
+		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {
-			if ( value ) {
-				tableCells.forEach( tableCell => writer.setAttribute( this.attributeName, value, tableCell ) );
+			if ( valueToSet ) {
+				tableCells.forEach( tableCell => writer.setAttribute( this.attributeName, valueToSet, tableCell ) );
 			} else {
 				tableCells.forEach( tableCell => writer.removeAttribute( this.attributeName, tableCell ) );
 			}
@@ -85,5 +86,16 @@ export default class TableCellPropertyCommand extends Command {
 		}
 
 		return tableCell.getAttribute( this.attributeName );
+	}
+
+	/**
+	 * Returns the proper model value. Can be used to add a default unit to numeric values.
+	 *
+	 * @private
+	 * @param {*} value
+	 * @returns {*}
+	 */
+	_getValueToSet( value ) {
+		return value;
 	}
 }
