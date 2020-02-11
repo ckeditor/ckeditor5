@@ -495,6 +495,7 @@ export default class TableCellPropertiesView extends View {
 
 			inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
 			inputView.bind( 'errorText' ).to( labeledView );
+			inputView.bind( 'value' ).to( this, 'borderColor' );
 
 			inputView.on( 'input', () => {
 				// UX: Make the error text disappear and disable the error indicator as the user
@@ -510,7 +511,6 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-color',
 		} );
 
-		borderColorInput.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
 			return value !== 'none';
 		} );
