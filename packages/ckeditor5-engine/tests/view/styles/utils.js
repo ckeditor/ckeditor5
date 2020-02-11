@@ -9,7 +9,7 @@ import {
 	getShorthandValues,
 	isColor,
 	isLength,
-	isLineStyle
+	isLineStyle, isPercentage
 } from '../../../src/view/styles/utils';
 
 describe( 'Styles utils', () => {
@@ -156,6 +156,16 @@ describe( 'Styles utils', () => {
 				],
 				isLength
 			);
+		} );
+	} );
+
+	describe( 'isPercentage()', () => {
+		it( 'returns true valid values', () => {
+			testValues( [ '1%', '100%', '1123.1312%', '0.9876%' ], isPercentage );
+		} );
+
+		it( 'returns false for not a percentage values', () => {
+			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentage( value ) );
 		} );
 	} );
 

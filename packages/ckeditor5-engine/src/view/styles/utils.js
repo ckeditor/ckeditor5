@@ -98,6 +98,18 @@ export function isLength( string ) {
 	return lengthRegExp.test( string );
 }
 
+const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*[.]?[0-9]+%$/;
+
+/**
+ * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
+export function isPercentage( string ) {
+	return PERCENTAGE_VALUE_REGEXP.test( string );
+}
+
 const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-repeat' ];
 
 /**
