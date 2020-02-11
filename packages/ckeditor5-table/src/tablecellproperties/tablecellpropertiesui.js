@@ -120,7 +120,10 @@ export default class TableCellPropertiesUI extends Plugin {
 	_createPropertiesView() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-		const view = new TableCellPropertiesView( editor.locale );
+		const config = editor.config.get( 'table.tableCellProperties' );
+		const view = new TableCellPropertiesView( editor.locale, {
+			config,
+		} );
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.

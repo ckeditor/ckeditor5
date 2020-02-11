@@ -61,8 +61,21 @@ export default class TableCellPropertiesView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale, options ) {
 		super( locale );
+
+		/**
+		 * A reference to the options object passed to the constructor.
+		 *
+		 * @readonly
+		 * @member {module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI}
+		 */
+
+		// These options have to be placed high enough in the constructor that fields like `borderColorInput`
+		// or `backgroundInput` could use them.
+		// It's because those fields contain color picker which can be configured through the table cell properties config
+		// — `editor.config.table.tableCellProperties`.
+		this.options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
@@ -486,7 +499,7 @@ export default class TableCellPropertiesView extends View {
 		// -- Color ---------------------------------------------------
 
 		const borderColorInput = new LabeledView( locale, ( labeledView, viewUid, statusUid ) => {
-			const inputView = new ColorInputView( locale );
+			const inputView = new ColorInputView( locale, this.options );
 
 			inputView.set( {
 				id: viewUid,
