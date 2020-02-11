@@ -7,6 +7,7 @@
  * @module table/tableproperties/commands/tablewidthcommand
  */
 
+import { addDefaultUnitToNumericValue } from '../../commands/utils';
 import TablePropertyCommand from './tablepropertycommand';
 
 /**
@@ -21,6 +22,14 @@ import TablePropertyCommand from './tablepropertycommand';
  *			value: '400px'
  *		} );
  *
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableWidth', {
+ *			value: '50'
+ *		} );
+ *
+ * Will set the `width` attribute to `'50px'` in the model.
+ *
  * @extends module:table/tableproperties/commands/tablepropertycommand
  */
 export default class TableWidthCommand extends TablePropertyCommand {
@@ -31,5 +40,12 @@ export default class TableWidthCommand extends TablePropertyCommand {
 	 */
 	constructor( editor ) {
 		super( editor, 'width' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }

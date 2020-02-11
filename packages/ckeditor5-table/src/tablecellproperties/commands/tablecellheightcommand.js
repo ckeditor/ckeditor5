@@ -7,6 +7,7 @@
  * @module table/tablecellproperties/commands/tablecellheightcommand
  */
 
+import { addDefaultUnitToNumericValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
 
 /**
@@ -21,6 +22,14 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '50px'
  *		} );
  *
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableCellHeight', {
+ *			value: '50'
+ *		} );
+ *
+ * will set the `height` attribute to `'50px'` in the model.
+ *
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
  */
 export default class TableCellHeightCommand extends TableCellPropertyCommand {
@@ -31,5 +40,12 @@ export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	 */
 	constructor( editor ) {
 		super( editor, 'height' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }
