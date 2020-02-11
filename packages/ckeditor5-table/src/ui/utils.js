@@ -11,7 +11,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import { isColor, isLength } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
+import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
 
@@ -157,11 +157,27 @@ export function colorFieldValidator( value ) {
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
+ * See {@link module:engine/view/styles/utils~isPercentage}.
  *
  * @param {String} value
  * @returns {Boolean}
  */
 export function lengthFieldValidator( value ) {
+	value = value.trim();
+
+	return isEmpty( value ) || isNumberString( value ) || isLength( value ) || isPercentage( value );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
+ * Otherwise, `false` is returned.
+ *
+ * See {@link module:engine/view/styles/utils~isLength}.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function lineWidthFieldValidator( value ) {
 	value = value.trim();
 
 	return isEmpty( value ) || isNumberString( value ) || isLength( value );
