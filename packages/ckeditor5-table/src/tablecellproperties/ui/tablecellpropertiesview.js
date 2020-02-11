@@ -21,7 +21,12 @@ import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { fillToolbar, getBorderStyleDefinitions, getBorderStyleLabels } from '../../ui/utils';
+import {
+	fillToolbar,
+	getBorderStyleDefinitions,
+	getBorderStyleLabels,
+	getLabeledColorInputCreator,
+} from '../../ui/utils';
 import FormRowView from '../../ui/formrowview';
 import FormHeaderView from '../../ui/formheaderview';
 
@@ -34,8 +39,6 @@ import alignJustifyIcon from '@ckeditor/ckeditor5-core/theme/icons/align-justify
 import alignTopIcon from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
 import alignMiddleIcon from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
 import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
-
-import ColorInputView from '../../ui/colorinputview';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
@@ -59,23 +62,21 @@ const ALIGNMENT_ICONS = {
  */
 export default class TableCellPropertiesView extends View {
 	/**
-	 * @inheritDoc
+	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param {Object} options TODO
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.borderColors TODO
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.backgroundColors
 	 */
 	constructor( locale, options ) {
 		super( locale );
 
 		/**
-		 * A reference to the options object passed to the constructor.
+		 * Options passed to the view.
 		 *
-		 * @readonly
-		 * @member {module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI}
+		 * @protected
+		 * @member {Object}
 		 */
-
-		// These options have to be placed high enough in the constructor that fields like `borderColorInput`
-		// or `backgroundInput` could use them.
-		// It's because those fields contain color picker which can be configured through the table cell properties config
-		// — `editor.config.table.tableCellProperties`.
-		this.options = options;
+		this._options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
@@ -446,6 +447,10 @@ export default class TableCellPropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const colorInputCreator = getLabeledColorInputCreator( {
+			colorDefinitions: this._options.borderColors,
+			columns: 5
+		} );
 		const locale = this.locale;
 		const t = this.t;
 
@@ -498,35 +503,19 @@ export default class TableCellPropertiesView extends View {
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = new LabeledView( locale, ( labeledView, viewUid, statusUid ) => {
-			const inputView = new ColorInputView( locale, this.options );
-
-			inputView.set( {
-				id: viewUid,
-				ariaDescribedById: statusUid
-			} );
-
-			inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
-			inputView.bind( 'errorText' ).to( labeledView );
-			inputView.bind( 'value' ).to( this, 'borderColor' );
-
-			inputView.on( 'input', () => {
-				// UX: Make the error text disappear and disable the error indicator as the user
-				// starts fixing the errors.
-				labeledView.errorText = null;
-			} );
-
-			return inputView;
-		} );
+		const borderColorInput = new LabeledView( locale, colorInputCreator );
 
 		borderColorInput.set( {
 			label: t( 'Color' ),
 			class: 'ck-table-form__border-color',
 		} );
 
+		borderColorInput.bind( 'value' ).to( this, 'borderColor' );
+
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
 			return value !== 'none';
 		} );
+
 		borderColorInput.view.on( 'input', () => {
 			this.borderColor = borderColorInput.view.value;
 		} );
@@ -550,8 +539,12 @@ export default class TableCellPropertiesView extends View {
 	_createBackgroundField() {
 		const locale = this.locale;
 		const t = this.t;
+		const colorInputCreator = getLabeledColorInputCreator( {
+			colorDefinitions: this._options.backgroundColors,
+			columns: 5
+		} );
 
-		const backgroundInput = new LabeledView( locale, createLabeledInputText );
+		const backgroundInput = new LabeledView( locale, colorInputCreator );
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
@@ -560,7 +553,7 @@ export default class TableCellPropertiesView extends View {
 
 		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
 		backgroundInput.view.on( 'input', () => {
-			this.backgroundColor = backgroundInput.view.element.value;
+			this.backgroundColor = backgroundInput.view.value;
 		} );
 
 		return backgroundInput;

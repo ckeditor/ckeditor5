@@ -7,7 +7,7 @@
 	width: 100%;
 	display: flex;
 
-	& > .ck.ck-input-text {
+	& > input.ck.ck-input-text {
 		min-width: auto;
 		flex-grow: 1;
 
@@ -17,7 +17,7 @@
 		}
 	}
 
-	& > .ck.ck-dropdown {
+	& > div.ck.ck-dropdown {
 		min-width: auto;
 
 		/* This dropdown has no arrow but a color preview instead. */

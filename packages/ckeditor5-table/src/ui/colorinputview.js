@@ -3,7 +3,6 @@ import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorGrid from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import { getLocalizedColorOptions, normalizeColorOptions } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import '../../theme/colorinputview.css';
 
 export default class ColorInputView extends View {
@@ -26,8 +25,7 @@ export default class ColorInputView extends View {
 
 		this.set( 'ariaDescribedById' );
 
-		this.set( 'options', options );
-
+		this._options = options;
 		this._dropdownView = this._createDropdownView( locale );
 		this._inputView = this._createInputTextView( locale );
 
@@ -142,10 +140,10 @@ export default class ColorInputView extends View {
 	}
 
 	_createColorGrid( locale ) {
-		const config = this.options && this.options.config;
-		const parsedOptions = this._getParsedColorGridOptions( locale, config );
-
-		const colorGrid = new ColorGrid( locale, parsedOptions );
+		const colorGrid = new ColorGrid( locale, {
+			colorDefinitions: this._options.colorDefinitions,
+			columns: this._options.columns
+		} );
 
 		colorGrid.on( 'execute', ( evtData, data ) => {
 			this.value = data.value;
@@ -156,97 +154,5 @@ export default class ColorInputView extends View {
 		colorGrid.bind( 'selectedColor' ).to( this, 'value' );
 
 		return colorGrid;
-	}
-
-	_getParsedColorGridOptions( locale, config ) {
-		const defaultOptions = {
-			colors: [
-				{
-					color: 'hsl(0, 0%, 0%)',
-					label: 'Black'
-				},
-				{
-					color: 'hsl(0, 0%, 30%)',
-					label: 'Dim grey'
-				},
-				{
-					color: 'hsl(0, 0%, 60%)',
-					label: 'Grey'
-				},
-				{
-					color: 'hsl(0, 0%, 90%)',
-					label: 'Light grey'
-				},
-				{
-					color: 'hsl(0, 0%, 100%)',
-					label: 'White',
-					hasBorder: true
-				},
-				{
-					color: 'hsl(0, 75%, 60%)',
-					label: 'Red'
-				},
-				{
-					color: 'hsl(30, 75%, 60%)',
-					label: 'Orange'
-				},
-				{
-					color: 'hsl(60, 75%, 60%)',
-					label: 'Yellow'
-				},
-				{
-					color: 'hsl(90, 75%, 60%)',
-					label: 'Light green'
-				},
-				{
-					color: 'hsl(120, 75%, 60%)',
-					label: 'Green'
-				},
-				{
-					color: 'hsl(150, 75%, 60%)',
-					label: 'Aquamarine'
-				},
-				{
-					color: 'hsl(180, 75%, 60%)',
-					label: 'Turquoise'
-				},
-				{
-					color: 'hsl(210, 75%, 60%)',
-					label: 'Light blue'
-				},
-				{
-					color: 'hsl(240, 75%, 60%)',
-					label: 'Blue'
-				},
-				{
-					color: 'hsl(270, 75%, 60%)',
-					label: 'Purple'
-				}
-			],
-			columns: 5
-		};
-
-		let options = config;
-
-		if ( !config ) {
-			options = defaultOptions;
-		}
-
-		const colors = normalizeColorOptions( options.colors );
-		const columns = options.columns;
-
-		const localizedColors = getLocalizedColorOptions( locale, colors );
-		const parsedColors = localizedColors.map( item => ( {
-			color: item.model,
-			label: item.label,
-			options: {
-				hasBorder: item.hasBorder
-			}
-		} ) );
-
-		return {
-			colorDefinitions: parsedColors,
-			columns
-		};
 	}
 }

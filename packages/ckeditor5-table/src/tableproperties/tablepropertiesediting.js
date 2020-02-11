@@ -13,6 +13,7 @@ import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/b
 
 import TableEditing from './../tableediting';
 import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
+import { defaultColors } from '../ui/utils';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 import TableBorderColorCommand from './commands/tablebordercolorcommand';
 import TableBorderStyleCommand from './commands/tableborderstylecommand';
@@ -57,6 +58,20 @@ export default class TablePropertiesEditing extends Plugin {
 	 */
 	static get requires() {
 		return [ TableEditing ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'table.tableProperties', {
+			border: {
+				colors: defaultColors
+			},
+			backgroundColors: defaultColors
+		} );
 	}
 
 	/**

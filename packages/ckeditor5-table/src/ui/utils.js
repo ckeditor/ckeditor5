@@ -11,6 +11,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+import ColorInputView from './colorinputview';
 import { isColor, isLength } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
@@ -232,4 +233,144 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
 
 		toolbar.items.add( button );
 	}
+}
+
+/**
+ * TODO
+ */
+export const defaultColors = [
+	{
+		color: 'hsl(0, 0%, 0%)',
+		label: 'Black'
+	},
+	{
+		color: 'hsl(0, 0%, 30%)',
+		label: 'Dim grey'
+	},
+	{
+		color: 'hsl(0, 0%, 60%)',
+		label: 'Grey'
+	},
+	{
+		color: 'hsl(0, 0%, 90%)',
+		label: 'Light grey'
+	},
+	{
+		color: 'hsl(0, 0%, 100%)',
+		label: 'White',
+		hasBorder: true
+	},
+	{
+		color: 'hsl(0, 75%, 60%)',
+		label: 'Red'
+	},
+	{
+		color: 'hsl(30, 75%, 60%)',
+		label: 'Orange'
+	},
+	{
+		color: 'hsl(60, 75%, 60%)',
+		label: 'Yellow'
+	},
+	{
+		color: 'hsl(90, 75%, 60%)',
+		label: 'Light green'
+	},
+	{
+		color: 'hsl(120, 75%, 60%)',
+		label: 'Green'
+	},
+	{
+		color: 'hsl(150, 75%, 60%)',
+		label: 'Aquamarine'
+	},
+	{
+		color: 'hsl(180, 75%, 60%)',
+		label: 'Turquoise'
+	},
+	{
+		color: 'hsl(210, 75%, 60%)',
+		label: 'Light blue'
+	},
+	{
+		color: 'hsl(240, 75%, 60%)',
+		label: 'Blue'
+	},
+	{
+		color: 'hsl(270, 75%, 60%)',
+		label: 'Purple'
+	}
+];
+
+/**
+ * TODO
+ *
+ * @param {*} config
+ */
+export function colorConfigToColorGridDefinitions( config ) {
+	return config.map( item => ( {
+		color: item.model,
+		label: item.label,
+		options: {
+			hasBorder: item.hasBorder
+		}
+	} ) );
+}
+
+/**
+ * A helper that creates a labeled color input factory.
+ *
+ * It creates an instance of a {@link TODO color input text} that is
+ * logically related to a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
+ *
+ * The helper does the following:
+ *
+ * * It sets input's `id` and `ariaDescribedById` attributes.
+ * * It binds input's `isReadOnly` to the labeled view.
+ * * It binds input's `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when user starts typing in the input..
+ *
+ * Usage:
+ *
+ *		const colorInputCreator = getLabeledColorInputCreator( {
+ *			colorDefinitions: [ ... ]
+ *		} );
+ *
+ *		const labeledInputView = new LabeledView( locale, colorInputCreator );
+ *		console.log( labeledInputView.view ); // An color input instance.
+ *
+ * @private
+ * @param options TODO
+ * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.colorDefinitions TODO
+ * @returns {Function}
+ */
+export function getLabeledColorInputCreator( options ) {
+	// @param {module:ui/labeledview/labeledview~LabeledView} labeledView The instance of the labeled view.
+	// @param {String} viewUid An UID string that allows DOM logical connection between the
+	// {@link module:ui/labeledview/labeledview~LabeledView#labelView labeled view's label} and the input.
+	// @param {String} statusUid An UID string that allows DOM logical connection between the
+	// {@link module:ui/labeledview/labeledview~LabeledView#statusView labeled view's status} and the input.
+	// @returns {module:ui/inputtext/inputtextview~InputTextView} The input text view instance.
+	return ( labeledView, viewUid, statusUid ) => {
+		const inputView = new ColorInputView( labeledView.locale, {
+			colorDefinitions: colorConfigToColorGridDefinitions( options.colorDefinitions ),
+			columns: options.columns
+		} );
+
+		inputView.set( {
+			id: viewUid,
+			ariaDescribedById: statusUid
+		} );
+
+		inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
+		inputView.bind( 'errorText' ).to( labeledView );
+
+		inputView.on( 'input', () => {
+			// UX: Make the error text disappear and disable the error indicator as the user
+			// starts fixing the errors.
+			labeledView.errorText = null;
+		} );
+
+		return inputView;
+	};
 }

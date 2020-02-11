@@ -22,6 +22,10 @@ import {
 	colorFieldValidator,
 	lengthFieldValidator
 } from '../ui/utils';
+import {
+	getLocalizedColorOptions,
+	normalizeColorOptions
+} from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
 
 const DEFAULT_BORDER_STYLE = 'none';
@@ -121,8 +125,13 @@ export default class TableCellPropertiesUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 		const config = editor.config.get( 'table.tableCellProperties' );
+		const borderColorsConfig = normalizeColorOptions( config.border.colors );
+		const localizedBorderColors = getLocalizedColorOptions( editor, borderColorsConfig );
+		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
+		const localizedBackgroundColors = getLocalizedColorOptions( editor, backgroundColorsConfig );
 		const view = new TableCellPropertiesView( editor.locale, {
-			config,
+			borderColors: localizedBorderColors,
+			backgroundColors: localizedBackgroundColors
 		} );
 		const t = editor.t;
 
