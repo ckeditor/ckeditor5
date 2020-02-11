@@ -64,8 +64,8 @@ export default class TableCellPropertiesView extends View {
 	/**
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param {Object} options TODO
-	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.borderColors TODO
-	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.backgroundColors
+	 * @param {module:table/table~TableColorConfig} options.borderColors TODO
+	 * @param {module:table/table~TableColorConfig} options.backgroundColors TODO
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -448,7 +448,7 @@ export default class TableCellPropertiesView extends View {
 	 */
 	_createBorderFields() {
 		const colorInputCreator = getLabeledColorInputCreator( {
-			colorDefinitions: this._options.borderColors,
+			colorConfig: this._options.borderColors,
 			columns: 5
 		} );
 		const locale = this.locale;
@@ -540,7 +540,7 @@ export default class TableCellPropertiesView extends View {
 		const locale = this.locale;
 		const t = this.t;
 		const colorInputCreator = getLabeledColorInputCreator( {
-			colorDefinitions: this._options.backgroundColors,
+			colorConfig: this._options.backgroundColors,
 			columns: 5
 		} );
 

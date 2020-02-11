@@ -48,6 +48,8 @@ export default class TableCellProperties extends Plugin {
  *			}
  *		};
  *
+ * TODO: Mention {@link module:table/table~TableColorConfig}.
+ *
  * **Note**: The colors configuration does not impact the data loaded into the editor;
  * it is reflected only in the UI.
  *

@@ -20,7 +20,8 @@ import {
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
 	colorFieldValidator,
-	lengthFieldValidator
+	lengthFieldValidator,
+	defaultColors
 } from '../ui/utils';
 import { debounce } from 'lodash-es';
 
@@ -50,6 +51,20 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TablePropertiesUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'table.tableProperties', {
+			border: {
+				colors: defaultColors
+			},
+			backgroundColors: defaultColors
+		} );
 	}
 
 	/**

@@ -303,57 +303,37 @@ export const defaultColors = [
 ];
 
 /**
- * TODO
+ * A function that helps creating labeled color inputs.
  *
- * @param {*} config
- */
-export function colorConfigToColorGridDefinitions( config ) {
-	return config.map( item => ( {
-		color: item.model,
-		label: item.label,
-		options: {
-			hasBorder: item.hasBorder
-		}
-	} ) );
-}
-
-/**
- * A helper that creates a labeled color input factory.
- *
- * It creates an instance of a {@link TODO color input text} that is
+ * For given options, it returns a function that creates an instance of {@link TODO color input text}
  * logically related to a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
  *
  * The helper does the following:
  *
- * * It sets input's `id` and `ariaDescribedById` attributes.
- * * It binds input's `isReadOnly` to the labeled view.
- * * It binds input's `hasError` to the labeled view.
- * * It enables a logic that cleans up the error when user starts typing in the input..
+ * * It sets color input's `id` and `ariaDescribedById` attributes.
+ * * It binds color input's `isReadOnly` to the labeled view.
+ * * It binds color input's `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when user starts typing in the color input.
  *
  * Usage:
  *
  *		const colorInputCreator = getLabeledColorInputCreator( {
- *			colorDefinitions: [ ... ]
+ *			colorConfig: [ ... ]
  *		} );
  *
  *		const labeledInputView = new LabeledView( locale, colorInputCreator );
  *		console.log( labeledInputView.view ); // An color input instance.
  *
  * @private
- * @param options TODO
- * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.colorDefinitions TODO
+ * @param options Color input options.
+ * @param {module:table/table~TableColorConfig} options.colorConfig TODO
+ * @param {Number} options.columns TODO
  * @returns {Function}
  */
 export function getLabeledColorInputCreator( options ) {
-	// @param {module:ui/labeledview/labeledview~LabeledView} labeledView The instance of the labeled view.
-	// @param {String} viewUid An UID string that allows DOM logical connection between the
-	// {@link module:ui/labeledview/labeledview~LabeledView#labelView labeled view's label} and the input.
-	// @param {String} statusUid An UID string that allows DOM logical connection between the
-	// {@link module:ui/labeledview/labeledview~LabeledView#statusView labeled view's status} and the input.
-	// @returns {module:ui/inputtext/inputtextview~InputTextView} The input text view instance.
 	return ( labeledView, viewUid, statusUid ) => {
 		const inputView = new ColorInputView( labeledView.locale, {
-			colorDefinitions: colorConfigToColorGridDefinitions( options.colorDefinitions ),
+			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
 			columns: options.columns
 		} );
 
@@ -381,4 +361,16 @@ function isNumberString( value ) {
 	const parsedValue = parseFloat( value );
 
 	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
+}
+
+// @param {Array.<Object>} colorConfig
+// @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+function colorConfigToColorGridDefinitions( colorConfig ) {
+	return colorConfig.map( item => ( {
+		color: item.model,
+		label: item.label,
+		options: {
+			hasBorder: item.hasBorder
+		}
+	} ) );
 }
