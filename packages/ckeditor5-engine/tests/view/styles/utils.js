@@ -90,8 +90,25 @@ describe( 'Styles utils', () => {
 			testValues( [ 'hsla(240, 100%, 50%, 1)', 'hsla(240, 100%, 50%, .05)' ], isColor );
 		} );
 
-		it( 'returns true for currentColor color', () => {
-			testValues( [ 'currentColor' ], isColor );
+		it( 'returns true for color keywords', () => {
+			testValues( [ 'currentColor', 'transparent' ], isColor );
+		} );
+
+		it( 'returns true for color keyword', () => {
+			testValues( [
+				// CSS Level 1
+				'red', 'green', 'blue', // ...
+				// CSS Level 2
+				'orange',
+				// CSS Level 3
+				'cyan', 'azure', 'wheat',
+				// CSS Level 4
+				'rebeccapurple'
+			], isColor );
+		} );
+
+		it( 'returns false for unknown color keyword', () => {
+			testValues( [ 'redx', 'greenx', 'bluex' ], value => !isColor( value ) );
 		} );
 	} );
 
