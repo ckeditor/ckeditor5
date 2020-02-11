@@ -101,7 +101,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 25 } );
 
-					assertTableStyle( editor, 'width:25px;' );
+					assertTableStyle( editor, null, 'width:25px;' );
 				} );
 
 				it( 'should add default unit for numeric values (string passed)', () => {
@@ -109,7 +109,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 25 } );
 
-					assertTableStyle( editor, 'width:25px;' );
+					assertTableStyle( editor, null, 'width:25px;' );
 				} );
 
 				it( 'should not add default unit for numeric values with unit', () => {
@@ -117,7 +117,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: '25pt' } );
 
-					assertTableStyle( editor, 'width:25pt;' );
+					assertTableStyle( editor, null, 'width:25pt;' );
 				} );
 
 				it( 'should add default unit to floats (number passed)', () => {
@@ -125,7 +125,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 25.1 } );
 
-					assertTableStyle( editor, 'width:25.1px;' );
+					assertTableStyle( editor, null, 'width:25.1px;' );
 				} );
 
 				it( 'should add default unit to floats (string passed)', () => {
@@ -133,7 +133,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: '0.1' } );
 
-					assertTableStyle( editor, 'width:0.1px;' );
+					assertTableStyle( editor, null, 'width:0.1px;' );
 				} );
 
 				it( 'should pass invalid values', () => {
@@ -141,7 +141,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: 'bar' } );
 
-					assertTableStyle( editor, 'width:bar;' );
+					assertTableStyle( editor, null, 'width:bar;' );
 				} );
 
 				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
@@ -149,7 +149,7 @@ describe( 'table properties', () => {
 
 					command.execute( { value: '.2' } );
 
-					assertTableStyle( editor, 'width:.2;' );
+					assertTableStyle( editor, null, 'width:.2;' );
 				} );
 
 				describe( 'collapsed selection', () => {
