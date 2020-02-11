@@ -316,7 +316,7 @@ describe( 'UI Utils', () => {
 				false,
 				false,
 				true,
-				false,
+				false
 			] );
 		} );
 	} );
@@ -326,12 +326,14 @@ describe( 'UI Utils', () => {
 
 		const labels = {
 			first: 'Do something',
-			second: 'Do something else'
+			second: 'Do something else',
+			third: 'Be default'
 		};
 
 		const icons = {
-			first: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path /></svg>',
-			second: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path /></svg>'
+			first: '<svg viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"><path /></svg>',
+			second: '<svg viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><path /></svg>',
+			third: '<svg viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg"><path /></svg>'
 		};
 
 		beforeEach( () => {
@@ -342,7 +344,8 @@ describe( 'UI Utils', () => {
 
 			fillToolbar( {
 				view, toolbar, icons, labels,
-				propertyName: 'someProperty'
+				propertyName: 'someProperty',
+				nameToValue: name => name === 'third' ? '' : name
 			} );
 		} );
 
@@ -351,33 +354,45 @@ describe( 'UI Utils', () => {
 		} );
 
 		it( 'should create buttons', () => {
-			expect( toolbar.items ).to.have.length( 2 );
+			expect( toolbar.items ).to.have.length( 3 );
 			expect( toolbar.items.first ).to.be.instanceOf( ButtonView );
+			expect( toolbar.items.get( 1 ) ).to.be.instanceOf( ButtonView );
 			expect( toolbar.items.last ).to.be.instanceOf( ButtonView );
 		} );
 
 		it( 'should set button labels', () => {
 			expect( toolbar.items.first.label ).to.equal( 'Do something' );
-			expect( toolbar.items.last.label ).to.equal( 'Do something else' );
+			expect( toolbar.items.get( 1 ).label ).to.equal( 'Do something else' );
+			expect( toolbar.items.last.label ).to.equal( 'Be default' );
 		} );
 
 		it( 'should set button icons', () => {
 			expect( toolbar.items.first.icon ).to.equal( icons.first );
-			expect( toolbar.items.last.icon ).to.equal( icons.second );
+			expect( toolbar.items.get( 1 ).icon ).to.equal( icons.second );
+			expect( toolbar.items.last.icon ).to.equal( icons.third );
 		} );
 
 		it( 'should bind button #isOn to an observable property', () => {
 			expect( toolbar.items.first.isOn ).to.be.false;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
 			expect( toolbar.items.last.isOn ).to.be.false;
 
 			view.someProperty = 'first';
 
 			expect( toolbar.items.first.isOn ).to.be.true;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
 			expect( toolbar.items.last.isOn ).to.be.false;
 
 			view.someProperty = 'second';
 
 			expect( toolbar.items.first.isOn ).to.be.false;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.true;
+			expect( toolbar.items.last.isOn ).to.be.false;
+
+			view.someProperty = '';
+
+			expect( toolbar.items.first.isOn ).to.be.false;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
 			expect( toolbar.items.last.isOn ).to.be.true;
 		} );
 
@@ -386,9 +401,13 @@ describe( 'UI Utils', () => {
 
 			expect( view.someProperty ).to.equal( 'first' );
 
-			toolbar.items.last.fire( 'execute' );
+			toolbar.items.get( 1 ).fire( 'execute' );
 
 			expect( view.someProperty ).to.equal( 'second' );
+
+			toolbar.items.last.fire( 'execute' );
+
+			expect( view.someProperty ).to.equal( '' );
 		} );
 	} );
 } );

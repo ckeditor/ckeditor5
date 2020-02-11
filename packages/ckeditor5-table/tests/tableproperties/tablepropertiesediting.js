@@ -792,7 +792,7 @@ describe( 'table properties', () => {
 				it( 'should not downcast "center" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, null, '' );
+					assertTableStyle( editor, null, null );
 				} );
 
 				it( 'should downcast changed alignment (left -> right)', () => {
