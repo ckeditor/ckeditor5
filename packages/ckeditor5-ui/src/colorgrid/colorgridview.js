@@ -102,13 +102,13 @@ export default class ColorGridView extends View {
 				color: item.color,
 				label: item.label,
 				tooltip: true,
-				hasBorder: item.options && item.options.hasBorder
+				hasBorder: item.options.hasBorder
 			} );
 
 			colorTile.on( 'execute', () => {
 				this.fire( 'execute', {
 					value: item.color,
-					hasBorder: item.options && item.options.hasBorder,
+					hasBorder: item.options.hasBorder,
 					label: item.label
 				} );
 			} );
