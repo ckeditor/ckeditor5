@@ -126,9 +126,9 @@ export default class TableCellPropertiesUI extends Plugin {
 		const viewDocument = editor.editing.view.document;
 		const config = editor.config.get( 'table.tableCellProperties' );
 		const borderColorsConfig = normalizeColorOptions( config.border.colors );
-		const localizedBorderColors = getLocalizedColorOptions( editor, borderColorsConfig );
+		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
-		const localizedBackgroundColors = getLocalizedColorOptions( editor, backgroundColorsConfig );
+		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
 		const view = new TableCellPropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors
