@@ -86,7 +86,7 @@ export function isLineStyle( string ) {
 	return lineStyleValues.includes( string );
 }
 
-const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax|%)|0)$/;
+const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax)|0)$/;
 
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
