@@ -5,6 +5,7 @@
 
 import {
 	normalizeColorOptions,
+	getLocalizedColorOptions
 } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -114,6 +115,56 @@ describe( 'utils', () => {
 							color: 'black'
 						}
 					}
+				}
+			] );
+		} );
+	} );
+
+	describe( 'getLocalizedColorOptions()', () => {
+		const locale = {
+			t: string => 'Localized:' + string
+		};
+
+		it( 'should return localized color options', () => {
+			expect( getLocalizedColorOptions( locale, [
+				{
+					color: 'red',
+					label: 'Red'
+				},
+				{
+					color: 'blue',
+					label: 'Blue'
+				}
+			] ) ).to.deep.equal( [
+				{
+					color: 'red',
+					label: 'Localized:Red'
+				},
+				{
+					color: 'blue',
+					label: 'Localized:Blue'
+				}
+			] );
+		} );
+
+		it( 'should omit unknown color options', () => {
+			expect( getLocalizedColorOptions( locale, [
+				{
+					color: 'red',
+					label: 'Red'
+				},
+				{
+					color: 'unknown',
+					label: 'Unknown'
+				}
+			] ) ).to.deep.equal( [
+				{
+					color: 'red',
+					label: 'Localized:Red'
+				},
+				{
+					color: 'unknown',
+					label: 'Unknown'
 				}
 			] );
 		} );
