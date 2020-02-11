@@ -35,7 +35,7 @@ import alignTopIcon from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
 import alignMiddleIcon from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
 import alignBottomIcon from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
 
-import ColorInputView from '@ckeditor/ckeditor5-ui/src/colorinputview/colorinputview';
+import ColorInputView from '../../ui/colorinputview';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
