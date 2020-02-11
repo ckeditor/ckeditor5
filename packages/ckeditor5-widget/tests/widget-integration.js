@@ -102,8 +102,8 @@ describe( 'Widget - integration', () => {
 	} );
 
 	it( 'should do nothing if clicked inside a nested editable', () => {
-		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		setModelData( model, '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 
 		const preventDefault = sinon.spy();
@@ -118,11 +118,10 @@ describe( 'Widget - integration', () => {
 
 		sinon.assert.notCalled( preventDefault );
 
-		expect( getViewData( view ) ).to.equal(
-			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
-		);
+		expect( getViewData( view ) ).to.equal( '<p>[]</p>' +
+			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>' );
 
-		expect( getModelData( model ) ).to.equal( '[]<widget><nested>foo bar</nested></widget>' );
+		expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if triple clicked', () => {
@@ -222,9 +221,9 @@ describe( 'Widget - integration', () => {
 	it( 'should does nothing for non-Safari browser', () => {
 		testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
 
-		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
+		setModelData( model, '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
@@ -238,9 +237,9 @@ describe( 'Widget - integration', () => {
 		sinon.assert.notCalled( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
+			'<p>[]</p><div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
 		);
 
-		expect( getModelData( model ) ).to.equal( '[]<widget><nested>foo bar</nested></widget>' );
+		expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 	} );
 } );
