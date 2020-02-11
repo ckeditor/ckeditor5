@@ -230,6 +230,40 @@ describe( 'Border styles normalization', () => {
 		expect( styles.getAsString( 'border-left' ) ).to.equal( '1px' );
 	} );
 
+	it( 'should properly remove border properties one by one', () => {
+		styles.setTo( 'border:1px solid blue;' );
+
+		expect( styles.toString() ).to.equal(
+			'border-bottom:1px solid blue;' +
+			'border-left:1px solid blue;' +
+			'border-right:1px solid blue;' +
+			'border-top:1px solid blue;'
+		);
+
+		styles.remove( 'border-color' );
+
+		expect( styles.toString() ).to.equal(
+			'border-bottom:1px solid;' +
+			'border-left:1px solid;' +
+			'border-right:1px solid;' +
+			'border-top:1px solid;'
+		);
+
+		styles.remove( 'border-style' );
+
+		expect( styles.toString() ).to.equal(
+			'border-bottom:1px;' +
+			'border-left:1px;' +
+			'border-right:1px;' +
+			'border-top:1px;'
+		);
+
+		styles.remove( 'border-width' );
+
+		expect( styles.isEmpty ).to.be.true;
+		expect( styles.toString() ).to.equal( '' );
+	} );
+
 	describe( 'normalized values getters', () => {
 		it( 'should output border-*-color', () => {
 			styles.setTo( 'border:1px solid #f00;' );
