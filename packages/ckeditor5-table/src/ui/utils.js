@@ -11,6 +11,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { isColor, isLength } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
 
@@ -23,6 +24,8 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
 ];
+
+const isEmpty = val => val === '';
 
 /**
  * A helper utility that positions the
@@ -111,6 +114,60 @@ export function getBorderStyleLabels( t ) {
 }
 
 /**
+ * Returns a localized error string that can be displayed next to color (background, border)
+ * fields that have an invalid value.
+ *
+ * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
+ * that is used to localize strings.
+ * @returns {String}
+ */
+export function getLocalizedColorErrorText( t ) {
+	return t( 'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".' );
+}
+
+/**
+ * Returns a localized error string that can be displayed next to length (padding, border width)
+ * fields that have an invalid value.
+ *
+ * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
+ * that is used to localize strings.
+ * @returns {String}
+ */
+export function getLocalizedLengthErrorText( t ) {
+	return t( 'The value is invalid. Try "10px" or "2em" or simply "2".' );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string or a valid CSS color expression.
+ * Otherwise, `false` is returned.
+ *
+ * See {@link module:engine/view/styles/utils~isColor}.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function colorFieldValidator( value ) {
+	value = value.trim();
+
+	return isEmpty( value ) || isColor( value );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
+ * Otherwise, `false` is returned.
+ *
+ * See {@link module:engine/view/styles/utils~isLength}.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function lengthFieldValidator( value ) {
+	value = value.trim();
+
+	return isEmpty( value ) || isNumberString( value ) || isLength( value );
+}
+
+/**
  * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
  *
  * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
@@ -175,4 +232,12 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
 
 		toolbar.items.add( button );
 	}
+}
+
+// A simple helper method to detect number strings.
+// I allows full number notation, so omitting 0 is not allowed:
+function isNumberString( value ) {
+	const parsedValue = parseFloat( value );
+
+	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
 }
