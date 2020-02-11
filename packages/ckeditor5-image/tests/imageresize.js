@@ -23,7 +23,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import {
 	focusEditor,
-	mouseMock,
+	resizerMouseSimulator,
 	getWidgetDomParts,
 	getHandleCenterPoint
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
@@ -146,7 +146,7 @@ describe( 'ImageResize', () => {
 
 			const finalPointerPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' ).moveBy( 10, -10 );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
@@ -223,15 +223,15 @@ describe( 'ImageResize', () => {
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
 			const resizeWrapperView = widget.getChild( 1 );
 
-			mouseMock.down( editor, domParts.resizeHandle );
+			resizerMouseSimulator.down( editor, domParts.resizeHandle );
 
 			await wait( 40 );
 
-			mouseMock.move( editor, domParts.resizeHandle, null, initialPointerPosition );
+			resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
 			expect( resizeWrapperView.getStyle( 'width' ) ).to.be.equal( '100px' );
 
-			mouseMock.up( editor );
+			resizerMouseSimulator.up( editor );
 		} );
 
 		it( 'makes no change when clicking the handle without drag', () => {
@@ -239,11 +239,11 @@ describe( 'ImageResize', () => {
 			const expectedWidth = 100;
 			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
 
-			mouseMock.down( editor, domParts.resizeHandle );
+			resizerMouseSimulator.down( editor, domParts.resizeHandle );
 
 			expect( getDomWidth( domParts.widget ), 'DOM width check' ).to.be.closeTo( expectedWidth, 2 );
 
-			mouseMock.up( editor );
+			resizerMouseSimulator.up( editor );
 
 			const modelItem = editor.model.document.getRoot().getChild( 1 );
 
@@ -268,7 +268,7 @@ describe( 'ImageResize', () => {
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -40, -20 );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, {
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 				from: initialPosition,
 				to: finalPointerPosition
 			} );
@@ -322,7 +322,7 @@ describe( 'ImageResize', () => {
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -20, -20 );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, {
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 				from: initialPosition,
 				to: finalPointerPosition
 			} );
@@ -335,7 +335,7 @@ describe( 'ImageResize', () => {
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -16, -16 );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, {
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 				from: initialPosition,
 				to: finalPointerPosition
 			} );
@@ -387,18 +387,18 @@ describe( 'ImageResize', () => {
 		it( 'visibility during the resize', async () => {
 			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
 
-			mouseMock.down( editor, domResizeHandle );
+			resizerMouseSimulator.down( editor, domResizeHandle );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.false;
 
-			mouseMock.up( editor, domResizeHandle );
+			resizerMouseSimulator.up( editor, domResizeHandle );
 		} );
 
 		it( 'visibility after the resize', async () => {
 			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
 
-			mouseMock.down( editor, domResizeHandle );
-			mouseMock.up( editor, domResizeHandle );
+			resizerMouseSimulator.down( editor, domResizeHandle );
+			resizerMouseSimulator.up( editor, domResizeHandle );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
@@ -407,7 +407,7 @@ describe( 'ImageResize', () => {
 			const resizer = getSelectedImageResizer( editor );
 			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
 
-			mouseMock.down( editor, domResizeHandle );
+			resizerMouseSimulator.down( editor, domResizeHandle );
 
 			resizer.cancel();
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
@@ -417,8 +417,8 @@ describe( 'ImageResize', () => {
 			// (https://github.com/ckeditor/ckeditor5-widget/pull/112#pullrequestreview-337725256).
 			const domResizeHandle = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeHandle;
 
-			mouseMock.down( editor, domResizeHandle );
-			mouseMock.up( editor, domResizeHandle );
+			resizerMouseSimulator.down( editor, domResizeHandle );
+			resizerMouseSimulator.up( editor, domResizeHandle );
 
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
