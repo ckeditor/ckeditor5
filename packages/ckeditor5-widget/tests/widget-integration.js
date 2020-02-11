@@ -118,8 +118,9 @@ describe( 'Widget - integration', () => {
 
 		sinon.assert.notCalled( preventDefault );
 
-		expect( getViewData( view ) ).to.equal( '<p>[]</p>' +
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>' );
+		expect( getViewData( view ) ).to.equal(
+			'<p>[]</p><div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
+		);
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 	} );
