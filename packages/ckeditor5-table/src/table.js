@@ -65,26 +65,14 @@ export default class Table extends Plugin {
  */
 
 /**
- * Available colors defined as an array of strings or objects.
+ * An array of colors definitions (either strings or objects).
  *
- * Used by {@link module:table/table~TableConfig#tableProperties} and {@link module:table/table~TableConfig#tableCellProperties}
- * configurations.
- *
- * The default value registers the following colors:
- *
- *		const colorDefinitions = [
- *			{
- *				color: 'hsl(0, 0%, 0%)',
- *				label: 'Black'
- *			},
- *			{
- *				color: 'hsl(0, 0%, 30%)',
- *				label: 'Dim grey'
- *			},
+ *		const colors = [
  *			{
  *				color: 'hsl(0, 0%, 60%)',
  *				label: 'Grey'
  *			},
+ *			'hsl(0, 0%, 80%)',
  *			{
  *				color: 'hsl(0, 0%, 90%)',
  *				label: 'Light grey'
@@ -94,47 +82,11 @@ export default class Table extends Plugin {
  *				label: 'White',
  *				hasBorder: true
  *			},
- *			{
- *				color: 'hsl(0, 75%, 60%)',
- *				label: 'Red'
- *			},
- *			{
- *				color: 'hsl(30, 75%, 60%)',
- *				label: 'Orange'
- *			},
- *			{
- *				color: 'hsl(60, 75%, 60%)',
- *				label: 'Yellow'
- *			},
- *			{
- *				color: 'hsl(90, 75%, 60%)',
- *				label: 'Light green'
- *			},
- *			{
- *				color: 'hsl(120, 75%, 60%)',
- *				label: 'Green'
- *			},
- *			{
- *				color: 'hsl(150, 75%, 60%)',
- *				label: 'Aquamarine'
- *			},
- *			{
- *				color: 'hsl(180, 75%, 60%)',
- *				label: 'Turquoise'
- *			},
- *			{
- *				color: 'hsl(210, 75%, 60%)',
- *				label: 'Light blue'
- *			},
- *			{
- *				color: 'hsl(240, 75%, 60%)',
- *				label: 'Blue'
- *			},
- *			{
- *				color: 'hsl(270, 75%, 60%)',
- *				label: 'Purple'
- *			}
+ *			'#FF0000'
  *		]
+ *
+ * Usually used as a configuration, for instance in {@link module:table/table~TableConfig#tableProperties}
+ * or {@link module:table/table~TableConfig#tableCellProperties}.
  *
  * @typedef {Array.<String|Object>} module:table/table~TableColorConfig
  */
