@@ -13,7 +13,7 @@
 
 		&:active,
 		&:focus {
-			z-index: 1;
+			z-index: var(--ck-z-default);
 		}
 	}
 

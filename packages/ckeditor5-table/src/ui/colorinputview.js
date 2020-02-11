@@ -12,7 +12,7 @@ import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorGrid from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import '../../theme/colorinputview.css';
+import '../../theme/colorinput.css';
 
 /**
  * The color input view class.
