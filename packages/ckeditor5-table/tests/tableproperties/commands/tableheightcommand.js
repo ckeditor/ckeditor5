@@ -158,7 +158,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'height:25px;' );
+						assertTableStyle( editor, null, 'height:25px;' );
 					} );
 
 					it( 'should change selected table height to a passed value', () => {
@@ -166,7 +166,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'height:25px;' );
+						assertTableStyle( editor, null, 'height:25px;' );
 					} );
 
 					it( 'should remove height from a selected table if no value is passed', () => {
@@ -184,7 +184,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'height:25px;' );
+						assertTableStyle( editor, null, 'height:25px;' );
 					} );
 
 					it( 'should change selected table height to a passed value', () => {
@@ -192,7 +192,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '25px' } );
 
-						assertTableStyle( editor, 'height:25px;' );
+						assertTableStyle( editor, null, 'height:25px;' );
 					} );
 
 					it( 'should remove height from a selected table if no value is passed', () => {

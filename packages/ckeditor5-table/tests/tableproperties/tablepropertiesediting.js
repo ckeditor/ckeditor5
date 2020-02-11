@@ -522,8 +522,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast width', () => {
+				it( 'should upcast width from <table>', () => {
 					editor.setData( '<table style="width:1337px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast width from <figure>', () => {
+					editor.setData( '<figure style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
@@ -540,7 +547,7 @@ describe( 'table properties', () => {
 				it( 'should downcast width', () => {
 					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
 
-					assertTableStyle( editor, 'width:1337px;' );
+					assertTableStyle( editor, null, 'width:1337px;' );
 				} );
 			} );
 		} );
@@ -551,8 +558,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast height', () => {
+				it( 'should upcast height from <table>', () => {
 					editor.setData( '<table style="height:1337px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast height from <figure>', () => {
+					editor.setData( '<figure style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
@@ -569,7 +583,7 @@ describe( 'table properties', () => {
 				it( 'should downcast height', () => {
 					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
 
-					assertTableStyle( editor, 'height:1337px;' );
+					assertTableStyle( editor, null, 'height:1337px;' );
 				} );
 			} );
 		} );
