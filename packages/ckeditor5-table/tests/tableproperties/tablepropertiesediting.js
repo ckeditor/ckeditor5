@@ -22,7 +22,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
 describe( 'table properties', () => {
-	describe( 'TablePropertiesEditing', () => {
+	describe.only( 'TablePropertiesEditing', () => {
 		let editor, model;
 
 		beforeEach( () => {
@@ -513,6 +513,24 @@ describe( 'table properties', () => {
 
 					assertTableStyle( editor, 'background-color:#f00;' );
 				} );
+
+				it( 'should downcast backgroundColor removal', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					model.change( writer => writer.removeAttribute( 'backgroundColor', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast backgroundColor change', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					assertTableStyle( editor, 'background-color:#f00;' );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#ba7', table ) );
+
+					assertTableStyle( editor, 'background-color:#ba7;' );
+				} );
 			} );
 		} );
 
@@ -549,6 +567,24 @@ describe( 'table properties', () => {
 
 					assertTableStyle( editor, null, 'width:1337px;' );
 				} );
+
+				it( 'should downcast width removal', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+					model.change( writer => writer.removeAttribute( 'width', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast width change', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+					assertTableStyle( editor, null, 'width:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'width', '1410em', table ) );
+
+					assertTableStyle( editor, null, 'width:1410em;' );
+				} );
 			} );
 		} );
 
@@ -584,6 +620,24 @@ describe( 'table properties', () => {
 					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
 
 					assertTableStyle( editor, null, 'height:1337px;' );
+				} );
+
+				it( 'should downcast height removal', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+					model.change( writer => writer.removeAttribute( 'height', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast height change', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+					assertTableStyle( editor, null, 'height:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'height', '1410em', table ) );
+
+					assertTableStyle( editor, null, 'height:1410em;' );
 				} );
 			} );
 		} );
