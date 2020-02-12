@@ -16,7 +16,7 @@ import SpecialCharactersLatin from './specialcharacterslatin';
 import SpecialCharactersText from './specialcharacterstext';
 
 /**
- * A plugin combining basic set of characters for the special characters plugin.
+ * A plugin combining a basic set of characters for the special characters plugin.
  *
  *		ClassicEditor
  *			.create( {

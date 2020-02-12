@@ -11,9 +11,9 @@ function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ title: 'smiley face', character: '😊' },
 		{ title: 'rocket', character: '🚀' },
-		{ title: 'basketball', character: '🏀' },
+		{ title: 'wind blowing face', character: '🌬️' },
 		{ title: 'floppy disk', character: '💾' },
-		{ title: 'hearth', character: '❤' }
+		{ title: 'heart', character: '❤️' }
 	] );
 }
 
@@ -33,10 +33,8 @@ ClassicEditor
 				'indent',
 				'|',
 				'specialCharacters',
-				'blockQuote',
 				'link',
 				'imageUpload',
-				'mediaEmbed',
 				'insertTable',
 				'|',
 				'undo',

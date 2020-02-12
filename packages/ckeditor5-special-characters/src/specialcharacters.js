@@ -113,9 +113,9 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Adds a collection of special characters to specified group. A title of a special character must be unique.
+	 * Adds a collection of special characters to the specified group. The title of a special character must be unique.
 	 *
-	 * **Note:** The "All" category name is reserved by the plugin and cannot be used as a new name for special
+	 * **Note:** The "All" category name is reserved by the plugin and cannot be used as a new name for a special
 	 * characters category.
 	 *
 	 * @param {String} groupName
@@ -124,8 +124,8 @@ export default class SpecialCharacters extends Plugin {
 	addItems( groupName, items ) {
 		if ( groupName === ALL_SPECIAL_CHARACTERS_GROUP ) {
 			/**
-			 * The name "All" for special category group cannot be used because it's a special category which displays all available
-			 * special characters.
+			 * The name "All" for a special category group cannot be used because it is a special category that displays all
+			 * available special characters.
 			 *
 			 * @error special-character-invalid-group-name
 			 */
@@ -143,7 +143,7 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Returns iterator of special characters groups.
+	 * Returns an iterator of special characters groups.
 	 *
 	 * @returns {Iterable.<String>}
 	 */
@@ -166,9 +166,10 @@ export default class SpecialCharacters extends Plugin {
 	}
 
 	/**
-	 * Returns a symbol of the special character for specified name. If the special character couldn't be found, `undefined` is returned.
+	 * Returns the symbol of a special character for the specified name. If the special character could not be found, `undefined`
+	 * is returned.
 	 *
-	 * @param {String} title A title of the special character.
+	 * @param {String} title The title of a special character.
 	 * @returns {String|undefined}
 	 */
 	getCharacter( title ) {
@@ -179,7 +180,7 @@ export default class SpecialCharacters extends Plugin {
 	 * Returns a group of special characters. If the group with the specified name does not exist, it will be created.
 	 *
 	 * @private
-	 * @param {String} groupName A name of group to create.
+	 * @param {String} groupName The name of the group to create.
 	 */
 	_getGroup( groupName ) {
 		if ( !this._groups.has( groupName ) ) {
@@ -249,5 +250,5 @@ export default class SpecialCharacters extends Plugin {
  * @typedef {Object} module:special-characters/specialcharacters~SpecialCharacterDefinition
  *
  * @property {String} title A unique name of the character (e.g. "greek small letter epsilon").
- * @property {String} character A human-readable character displayed as label (e.g. "ε").
+ * @property {String} character A human-readable character displayed as the label (e.g. "ε").
  */

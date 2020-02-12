@@ -9,7 +9,7 @@ The {@link module:special-characters/specialcharacters~SpecialCharacters} plugin
 
 ## Demo
 
-Use the editor below to see the {@link module:special-characters/specialcharacters~SpecialCharacters} plugin in action.
+Use the editor below to see the special characters plugin in action.
 
 {@snippet features/special-characters-source}
 
@@ -17,11 +17,13 @@ Use the editor below to see the {@link module:special-characters/specialcharacte
 
 ## Configuration
 
+By default, a few categories of special characters have been defined. You can easily customize the special characters available in your WYSIWYG editor installation by adding new categories, extending the existing ones or removing them altogether.
+
 ### Adding a new category
 
 You can define a new special characters category using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function.
 
-For example, the following plugin adds the "Emoji" category in the special characters dropdown.
+For example, the following plugin adds the "Emoji" category to the special characters dropdown.
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
@@ -31,9 +33,9 @@ function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
 		{ title: 'smiley face', character: '😊' },
 		{ title: 'rocket', character: '🚀' },
-		{ title: 'basketball', character: '🏀' },
+		{ title: 'wind blowing face', character: '🌬️' },
 		{ title: 'floppy disk', character: '💾' },
-		{ title: 'hearth', character: '❤' }
+		{ title: 'heart', character: '❤️' }
 	] );
 }
 
@@ -50,19 +52,19 @@ ClassicEditor
 	.catch( ... );
 ```
 
-After adding the above plugin into the editor, the new category will be available in the special characters dropdown.
+After adding the above plugin to the editor configuration, the new category will become available in the special characters dropdown.
 
 <info-box>
-	A title of a special character must be unique across the entire special characters set.
+	The title of a special character must be unique across the entire special characters set.
 </info-box>
 
-Below, you can see a demo based on the example shown above. Use the special characters icon in the editor's toolbar then select "Emoji" in the select dropdown in order to insert a emoji into the editor.
+Below you can see a demo based on the example shown above. Use the special characters icon in the editor toolbar and then select "Emoji" in the select dropdown in order to insert an emoji into the WYSIWYG editor.
 
 {@snippet features/special-characters-new-category}
 
 ### Adding characters to an existing category
 
-By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function, you can also add new special characters into existing category.
+By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters into an existing category.
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
@@ -91,27 +93,27 @@ ClassicEditor
 ```
 
 <info-box>
-	A title of a special character must be unique across the entire special characters set.
+	The title of a special character must be unique across the entire special characters set.
 </info-box>
 
-Below, you can see a demo based on the example shown above. Use the special characters icon in the editor's toolbar then select "Arrows" in the select dropdown. You'll see that it contains more arrows than the other instances.
+Below, you can see a demo based on the example shown above. Use the special characters icon in the editor toolbar and then select "Arrows" in the select dropdown. You will see that the category now contains the additional arrow characters added in the configuration above.
 
 {@snippet features/special-characters-extended-category}
 
 ### Removing categories
 
-The special characters feature exposes each category as a separate plugin. While the {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} plugin can be used to conveniently include all of them, you can customize the category list by adding individual plugins.
+The special characters feature exposes each category as a separate plugin. While the {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} plugin can be used to conveniently include all of them, you can customize the category list by adding individual plugins with particular categories.
 
-The `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
+By default, the `@ckeditor/ckeditor5-special-characters` package provides special characters grouped into the following categories:
 
-* {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} – arrows special characters,
-* {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} - currency special characters,
-* {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} – Latin special characters,
-* {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} – mathematical special characters,
-* {@link module:special-characters/specialcharacterstext~SpecialCharactersText} – text special characters,
-* {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} – combining plugins listed above.
+* {@link module:special-characters/specialcharactersarrows~SpecialCharactersArrows} &ndash; Arrows special characters.
+* {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} &ndash; Currency special characters.
+* {@link module:special-characters/specialcharacterslatin~SpecialCharactersLatin} &ndash; Latin special characters.
+* {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} &ndash; Mathematical special characters.
+* {@link module:special-characters/specialcharacterstext~SpecialCharactersText} &ndash; Text special characters.
+* {@link module:special-characters/specialcharactersessentials~SpecialCharactersEssentials} &ndash; Combines the plugins listed above.
 
-For example, you can limit categories to "Mathematical" and "Currency" only by picking the {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} and {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} plugins, like so:
+For example, you can limit the categories to "Mathematical" and "Currency" only by picking the {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} and {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} plugins, like so:
 
 ```js
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
@@ -131,7 +133,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Below, you can see a demo based on the example shown above. After clicking the special character icon in the editor's toolbar you can see that it contains fewer categories compared to other editors on this page.
+Below, you can see a demo based on the example shown above. After clicking the special character icon in the editor toolbar you can see that it contains fewer categories compared to other editors on this page.
 
 {@snippet features/special-characters-limited-categories}
 
@@ -146,9 +148,9 @@ npm install --save @ckeditor/ckeditor5-special-characters
 And add it to your plugin list configuration:
 
 ```js
-// Core plugin that provides the API for management special characters and their categories.
+// Core plugin that provides the API for the management of special characters and their categories.
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-// Plugin that combines the basic set of special characters.
+// A plugin that combines a basic set of special characters.
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
 ClassicEditor
