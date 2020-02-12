@@ -25,7 +25,7 @@ import {
 import { debounce } from 'lodash-es';
 
 const DEFAULT_BORDER_STYLE = 'none';
-const DEFAULT_ALIGNMENT = 'center';
+const DEFAULT_ALIGNMENT = '';
 const ERROR_TEXT_TIMEOUT = 500;
 
 /**
