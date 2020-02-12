@@ -46,5 +46,10 @@
 	& .ck.ck-input-color__remove-color {
 		width: 100%;
 		border-bottom: 1px solid var(--ck-color-input-border);
+		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
+
+		& .ck.ck-icon {
+			margin-right: var(--ck-spacing-standard);
+		}
 	}
 }
