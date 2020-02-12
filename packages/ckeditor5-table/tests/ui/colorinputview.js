@@ -91,6 +91,19 @@ describe( 'ColorInputView', () => {
 				expect( preview.element.classList.contains( 'ck-dropdown__color-picker-preview' ) ).to.be.true;
 			} );
 
+			it( 'should display no-color preview when color is not set', () => {
+				const preview = view._dropdownView.buttonView.children.first;
+				const noColorPreview = preview.element.firstChild;
+
+				view.value = 'hsl(0, 0, 50%)';
+
+				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				view.value = '';
+
+				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
 			it( 'should have the color grid', () => {
 				expect( view._dropdownView.panelView.children.last ).to.be.instanceOf( ColorGridView );
 			} );
