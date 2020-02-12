@@ -121,7 +121,7 @@ export default class ColorTableView extends View {
 		 * The property is loaded once the the parent dropdown is opened the first time.
 		 *
 		 * @readonly
-		 * @member {module:ui/colorgrid/colorgrid~ColorGridView/undefined}
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView|undefined}
 		 */
 
 		/**
@@ -131,7 +131,7 @@ export default class ColorTableView extends View {
 		 * The property is loaded once the the parent dropdown is opened the first time.
 		 *
 		 * @readonly
-		 * @member {module:ui/colorgrid/colorgrid~ColorGridView/undefined}
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView|undefined}
 		 */
 
 		/**
@@ -241,9 +241,9 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Renders and appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
+	 * Appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
 	 */
-	renderGrids() {
+	appendGrids() {
 		if ( this.staticColorsGrid ) {
 			return;
 		}

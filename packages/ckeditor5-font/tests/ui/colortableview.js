@@ -79,7 +79,7 @@ describe( 'ColorTableView', () => {
 			documentColorsLabel: 'Document colors',
 			documentColorsCount: 4
 		} );
-		colorTableView.renderGrids();
+		colorTableView.appendGrids();
 		colorTableView.render();
 	} );
 
@@ -364,7 +364,7 @@ describe( 'ColorTableView', () => {
 					removeButtonLabel: 'Remove color',
 					documentColorsCount: 0
 				} );
-				colorTableView.renderGrids();
+				colorTableView.appendGrids();
 				colorTableView.render();
 			} );
 
