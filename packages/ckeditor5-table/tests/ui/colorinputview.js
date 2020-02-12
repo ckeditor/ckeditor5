@@ -104,16 +104,16 @@ describe( 'ColorInputView', () => {
 				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.false;
 			} );
 
-			it( 'should have the color grid', () => {
-				expect( view._dropdownView.panelView.children.last ).to.be.instanceOf( ColorGridView );
-			} );
-
 			it( 'should have the remove color button', () => {
 				expect( view._dropdownView.panelView.children.first ).to.be.instanceOf( ButtonView );
 			} );
 		} );
 
 		describe( 'color grid', () => {
+			it( 'should be an instance of ColorGridView', () => {
+				expect( colorGridView ).to.be.instanceOf( ColorGridView );
+			} );
+
 			it( 'should set #value upon #execute', () => {
 				expect( view.value ).to.equal( '' );
 
