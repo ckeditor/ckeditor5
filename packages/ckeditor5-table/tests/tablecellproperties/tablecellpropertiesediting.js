@@ -23,7 +23,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils';
 
-describe.only( 'table cell properties', () => {
+describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesEditing', () => {
 		let editor, model;
 

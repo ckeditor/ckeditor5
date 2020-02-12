@@ -22,7 +22,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
 describe( 'table properties', () => {
-	describe.only( 'TablePropertiesEditing', () => {
+	describe( 'TablePropertiesEditing', () => {
 		let editor, model;
 
 		beforeEach( () => {
