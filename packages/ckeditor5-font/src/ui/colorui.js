@@ -9,11 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import {
-	addColorTableToDropdown,
-	normalizeColorOptions,
-	getLocalizedColorOptions
-} from '../utils';
+import { normalizeColorOptions, getLocalizedColorOptions } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
+import { addColorTableToDropdown } from '../utils';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
@@ -86,10 +83,11 @@ export default class ColorUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
+		const locale = editor.locale;
+		const t = locale.t;
 		const command = editor.commands.get( this.commandName );
 		const colorsConfig = normalizeColorOptions( editor.config.get( this.componentName ).colors );
-		const localizedColors = getLocalizedColorOptions( editor, colorsConfig );
+		const localizedColors = getLocalizedColorOptions( locale, colorsConfig );
 		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` );
 
 		// Register the UI component.
