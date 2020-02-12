@@ -600,6 +600,20 @@ describe( 'table cell properties', () => {
 
 					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
 				} );
+
+				it( 'should upcast from background shorthand', () => {
+					editor.setData( '<table><tr><td style="background:#f00 center center">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+				} );
+
+				it( 'should upcast from background shorthand (rbg color value with spaces)', () => {
+					editor.setData( '<table><tr><td style="background:rgb(253, 253, 119) center center">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
