@@ -7,6 +7,7 @@
 
 import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -151,6 +152,15 @@ describe( 'ColorUI', () => {
 			const colorTableView = dropdown.colorTableView;
 
 			expect( colorTableView.documentColorsCount ).to.equal( 3 );
+		} );
+
+		it( 'does not initialize grids when not open', () => {
+			const localDropdown = editor.ui.componentFactory.create( 'testColor' );
+			localDropdown.render();
+
+			for ( const item of localDropdown.colorTableView.items ) {
+				expect( item ).not.to.be.instanceOf( ColorGridView );
+			}
 		} );
 
 		describe( 'model to command binding', () => {
