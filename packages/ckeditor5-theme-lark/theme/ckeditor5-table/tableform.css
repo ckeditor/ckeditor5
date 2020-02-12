@@ -31,7 +31,7 @@
 			}
 		}
 
-		&.ck-table-properties-form__dimensions-row {
+		&.ck-table-form__dimensions-row {
 			padding: 0;
 
 			& .ck-labeled-view > .ck-label {
@@ -39,22 +39,22 @@
 				text-align: center;
 			}
 
-			& .ck-table-properties-form__width {
+			& .ck-table-form__dimensions-row__width {
 				margin-right: var(--ck-spacing-small);
 			}
 
-			& .ck-table-properties-form__height {
+			& .ck-table-form__dimensions-row__height {
 				margin-left: var(--ck-spacing-small);
 			}
-		}
-	}
 
-	& .ck-table-form__dimension-operator {
-		margin: 0;
-		align-self: start;
-		display: inline-block;
-		height: var(--ck-ui-component-min-height);
-		line-height: var(--ck-ui-component-min-height);
+			& .ck-table-form__dimension-operator {
+				margin: 0;
+				align-self: start;
+				display: inline-block;
+				height: var(--ck-ui-component-min-height);
+				line-height: var(--ck-ui-component-min-height);
+			}
+		}
 	}
 
 	& .ck.ck-labeled-view {
