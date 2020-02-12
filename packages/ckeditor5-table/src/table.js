@@ -85,8 +85,9 @@ export default class Table extends Plugin {
  *			'#FF0000'
  *		]
  *
- * Usually used as a configuration, for instance in {@link module:table/table~TableConfig#tableProperties}
- * or {@link module:table/table~TableConfig#tableCellProperties}.
+ * Usually used as a configuration parameter, for instance in
+ * {@link module:table/table~TableConfig#tableProperties `config.table.tableProperties`}
+ * or {@link module:table/table~TableConfig#tableCellProperties `config.table.tableCellProperties`}.
  *
  * @typedef {Array.<String|Object>} module:table/table~TableColorConfig
  */

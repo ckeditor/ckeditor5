@@ -67,7 +67,7 @@ export default class TablePropertiesView extends View {
 		super( locale );
 
 		/**
-		 * Options passed to the view.
+		 * Options passed to the view. See {@link #constructor} to learn more.
 		 *
 		 * @protected
 		 * @member {Object}
@@ -187,7 +187,7 @@ export default class TablePropertiesView extends View {
 		 * An input that allows specifying the color of the table border.
 		 *
 		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 * @member {module:table/ui/colorinputview~ColorInputView}
 		 */
 		this.borderColorInput = borderColorInput;
 
@@ -195,7 +195,7 @@ export default class TablePropertiesView extends View {
 		 * An input that allows specifying the table background color.
 		 *
 		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 * @member {module:table/ui/colorinputview~ColorInputView}
 		 */
 		this.backgroundInput = this._createBackgroundField();
 
