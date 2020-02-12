@@ -593,6 +593,24 @@ describe( 'table properties', () => {
 
 					assertTableStyle( editor, 'background-color:#f00;' );
 				} );
+
+				it( 'should downcast backgroundColor removal', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					model.change( writer => writer.removeAttribute( 'backgroundColor', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast backgroundColor change', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					assertTableStyle( editor, 'background-color:#f00;' );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#ba7', table ) );
+
+					assertTableStyle( editor, 'background-color:#ba7;' );
+				} );
 			} );
 		} );
 
@@ -602,8 +620,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast width', () => {
+				it( 'should upcast width from <table>', () => {
 					editor.setData( '<table style="width:1337px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast width from <figure>', () => {
+					editor.setData( '<figure style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
@@ -640,7 +665,25 @@ describe( 'table properties', () => {
 				it( 'should downcast width', () => {
 					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
 
-					assertTableStyle( editor, 'width:1337px;' );
+					assertTableStyle( editor, null, 'width:1337px;' );
+				} );
+
+				it( 'should downcast width removal', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+					model.change( writer => writer.removeAttribute( 'width', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast width change', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+					assertTableStyle( editor, null, 'width:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'width', '1410em', table ) );
+
+					assertTableStyle( editor, null, 'width:1410em;' );
 				} );
 			} );
 		} );
@@ -651,8 +694,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast height', () => {
+				it( 'should upcast height from <table>', () => {
 					editor.setData( '<table style="height:1337px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast height from <figure>', () => {
+					editor.setData( '<figure style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
@@ -669,7 +719,25 @@ describe( 'table properties', () => {
 				it( 'should downcast height', () => {
 					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
 
-					assertTableStyle( editor, 'height:1337px;' );
+					assertTableStyle( editor, null, 'height:1337px;' );
+				} );
+
+				it( 'should downcast height removal', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+					model.change( writer => writer.removeAttribute( 'height', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast height change', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+					assertTableStyle( editor, null, 'height:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'height', '1410em', table ) );
+
+					assertTableStyle( editor, null, 'height:1410em;' );
 				} );
 
 				it( 'should consume converted item', () => {

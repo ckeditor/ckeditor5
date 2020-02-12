@@ -153,7 +153,7 @@ export function colorFieldValidator( value ) {
 }
 
 /**
- * Returns `true` when the passed value is an empty string or a valid CSS length expression.
+ * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
@@ -164,7 +164,7 @@ export function colorFieldValidator( value ) {
 export function lengthFieldValidator( value ) {
 	value = value.trim();
 
-	return isEmpty( value ) || isLength( value );
+	return isEmpty( value ) || isNumberString( value ) || isLength( value );
 }
 
 /**
@@ -233,4 +233,12 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameT
 
 		toolbar.items.add( button );
 	}
+}
+
+// A simple helper method to detect number strings.
+// I allows full number notation, so omitting 0 is not allowed:
+function isNumberString( value ) {
+	const parsedValue = parseFloat( value );
+
+	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
 }

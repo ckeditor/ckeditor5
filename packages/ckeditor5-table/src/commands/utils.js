@@ -85,3 +85,31 @@ export function getSingleValue( objectOrString ) {
 		return top;
 	}
 }
+
+/**
+ * Adds a unit to a value if the value is a number or a string representing a number.
+ *
+ * **Note**: It does nothing to non-numeric values.
+ *
+ *		getSingleValue( 25, 'px' );		// '25px'
+ *		getSingleValue( 25, 'em' );		// '25em'
+ *		getSingleValue( '25em', 'px' );	// '25em'
+ *		getSingleValue( 'foo', 'px' );	// 'foo'
+ *
+ * @param {*} value
+ * @param {String} defaultUnit A default unit added to a numeric value.
+ * @returns {String|*}
+ */
+export function addDefaultUnitToNumericValue( value, defaultUnit ) {
+	const numericValue = parseFloat( value );
+
+	if ( Number.isNaN( numericValue ) ) {
+		return value;
+	}
+
+	if ( String( numericValue ) !== String( value ) ) {
+		return value;
+	}
+
+	return `${ numericValue }${ defaultUnit }`;
+}

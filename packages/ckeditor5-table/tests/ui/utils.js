@@ -211,11 +211,11 @@ describe( 'UI Utils', () => {
 	} );
 
 	describe( 'colorFieldValidator()', () => {
-		it( 'should passe for an empty value', () => {
+		it( 'should pass for an empty value', () => {
 			expect( colorFieldValidator( '' ) ).to.be.true;
 		} );
 
-		it( 'should passe for white spaces', () => {
+		it( 'should pass for white spaces', () => {
 			expect( colorFieldValidator( '  ' ) ).to.be.true;
 		} );
 
@@ -233,11 +233,11 @@ describe( 'UI Utils', () => {
 	} );
 
 	describe( 'lengthFieldValidator()', () => {
-		it( 'should passe for an empty value', () => {
+		it( 'should pass for an empty value', () => {
 			expect( lengthFieldValidator( '' ) ).to.be.true;
 		} );
 
-		it( 'should passe for white spaces', () => {
+		it( 'should pass for white spaces', () => {
 			expect( lengthFieldValidator( '  ' ) ).to.be.true;
 		} );
 
@@ -245,6 +245,18 @@ describe( 'UI Utils', () => {
 			expect( lengthFieldValidator( '1px' ) ).to.be.true;
 			expect( lengthFieldValidator( '12em' ) ).to.be.true;
 			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for number without unit', () => {
+			expect( lengthFieldValidator( '1' ) ).to.be.true;
+			expect( lengthFieldValidator( '12.1' ) ).to.be.true;
+			expect( lengthFieldValidator( '0.125 ' ) ).to.be.true;
+		} );
+
+		it( 'should not pass for invalid number values', () => {
+			expect( lengthFieldValidator( '.1 ' ) ).to.be.false;
+			expect( lengthFieldValidator( '45. ' ) ).to.be.false;
+			expect( lengthFieldValidator( '45.1.1 ' ) ).to.be.false;
 		} );
 
 		it( 'should pass for lengths surrounded by white spaces', () => {

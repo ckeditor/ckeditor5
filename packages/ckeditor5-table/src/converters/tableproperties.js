@@ -114,7 +114,7 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 		if ( attributeNewValue ) {
 			writer.setStyle( styleName, attributeNewValue, table );
 		} else {
-			writer.removeAttribute( styleName, table );
+			writer.removeStyle( styleName, table );
 		}
 	} ) );
 }
