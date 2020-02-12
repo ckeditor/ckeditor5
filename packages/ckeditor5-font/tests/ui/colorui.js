@@ -116,6 +116,7 @@ describe( 'ColorUI', () => {
 		beforeEach( () => {
 			command = editor.commands.get( 'testColorCommand' );
 			dropdown = editor.ui.componentFactory.create( 'testColor' );
+			dropdown.isOpen = true;
 
 			dropdown.render();
 		} );
@@ -308,6 +309,7 @@ describe( 'ColorUI', () => {
 
 				colors.forEach( test => {
 					it( `tested color "${ test.color }" translated to "${ test.label }".`, () => {
+						dropdown.isOpen = true;
 						const colorGrid = dropdown.colorTableView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
