@@ -12,7 +12,7 @@
 	}
 
 	& > .ck.ck-dropdown {
-		& > .ck.ck-dropdown__color-picker-button {
+		& > .ck.ck-input-color__button {
 			border-top-left-radius: 0;
 			border-bottom-left-radius: 0;
 			margin-left: -1px;
@@ -22,7 +22,7 @@
 				background: var(--ck-color-input-disabled-background);
 			}
 
-			& > .ck.ck-dropdown__color-picker-preview {
+			& > .ck.ck-input-color__button__preview {
 				/*
 				To make sure that `color-picker-preview--no-color` positions properly,
 				we have to display `color-picker-preview` always as a square shape.
@@ -37,7 +37,7 @@
 				border: 1px solid var(--ck-color-input-border);
 				overflow: hidden;
 
-				& > .ck.ck-dropdown__color-picker-preview--no-color {
+				& > .ck.ck-input-color__button__preview__no-color-indicator {
 					position: absolute;
 					top: -30%;
 					left: 50%;
@@ -53,7 +53,7 @@
 		}
 	}
 
-	& .ck.ck-dropdown__color-picker-remove-color {
+	& .ck.ck-input-color__remove-color {
 		width: 100%;
 		border-bottom: 1px solid var(--ck-color-input-border);
 	}
