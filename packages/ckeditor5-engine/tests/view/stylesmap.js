@@ -5,7 +5,7 @@
 
 import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
 import encodedImage from './_utils/encodedimage.txt';
-import { addPaddingRules } from '../../src/view/styles/padding';
+import { addMarginRules } from '../../src/view/styles/margin';
 import { getBoxSidesValueReducer } from '../../src/view/styles/utils';
 
 describe( 'StylesMap', () => {
@@ -25,7 +25,7 @@ describe( 'StylesMap', () => {
 		} ) );
 		stylesProcessor.setReducer( 'foo', getBoxSidesValueReducer( 'foo' ) );
 
-		addPaddingRules( stylesProcessor );
+		addMarginRules( stylesProcessor );
 		StylesMap._setProcessor( stylesProcessor );
 		stylesMap = new StylesMap();
 	} );
@@ -49,9 +49,9 @@ describe( 'StylesMap', () => {
 
 	describe( 'setTo()', () => {
 		it( 'should reset styles to a new value', () => {
-			stylesMap.setTo( 'color:red;margin:1px;' );
+			stylesMap.setTo( 'color:red;padding:1px;' );
 
-			expect( stylesMap.getNormalized() ).to.deep.equal( { color: 'red', margin: '1px' } );
+			expect( stylesMap.getNormalized() ).to.deep.equal( { color: 'red', padding: '1px' } );
 
 			stylesMap.setTo( 'overflow:hidden;' );
 
@@ -231,6 +231,27 @@ describe( 'StylesMap', () => {
 			stylesMap.remove( 'margin-top' );
 
 			expect( stylesMap.getAsString( 'margin-top' ) ).to.be.undefined;
+		} );
+
+		it( 'should remove normalized properties one by one', () => {
+			stylesMap.setTo( 'margin:1px' );
+
+			stylesMap.remove( 'margin-top' );
+			stylesMap.remove( 'margin-right' );
+			stylesMap.remove( 'margin-bottom' );
+			stylesMap.remove( 'margin-left' );
+
+			expect( stylesMap.toString() ).to.equal( '' );
+		} );
+
+		it( 'should remove path-like property', () => {
+			stylesMap.setTo( 'text-align:left' );
+
+			expect( stylesMap.toString() ).to.equal( 'text-align:left;' );
+
+			stylesMap.remove( 'text-align' );
+
+			expect( stylesMap.toString() ).to.equal( '' );
 		} );
 	} );
 
