@@ -6,7 +6,6 @@
 import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
-	normalizeColorOptions,
 	addColorTableToDropdown,
 	renderDowncastElement
 } from './../src/utils';
@@ -20,114 +19,6 @@ describe( 'utils', () => {
 	it( 'plugin names has proper values', () => {
 		expect( FONT_COLOR ).to.equal( 'fontColor' );
 		expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
-	} );
-
-	describe( 'normalizeColorOptions()', () => {
-		it( 'should return normalized config object from string', () => {
-			const normalizedOption = normalizeColorOptions( [ 'black' ] );
-
-			expect( normalizedOption ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				}
-			] );
-		} );
-
-		it( 'should return normalized config object from object( color )', () => {
-			const normalizedOption = normalizeColorOptions( [ { color: 'black' } ] );
-
-			expect( normalizedOption ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				}
-			] );
-		} );
-
-		it( 'should return normalized config object from object( color, label )', () => {
-			const normalizedOption = normalizeColorOptions( [
-				{
-					color: 'black',
-					label: 'Black'
-				}
-			] );
-
-			expect( normalizedOption ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'Black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				}
-			] );
-		} );
-
-		it( 'should return normalized config object from object( color, label, hasBorder )', () => {
-			const normalizedOption = normalizeColorOptions( [
-				{
-					color: 'black',
-					label: 'Black',
-					hasBorder: true
-				}
-			] );
-
-			expect( normalizedOption ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'Black',
-					hasBorder: true,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				}
-			] );
-		} );
-
-		it( 'should return normalized config object from object( color, hasBorder )', () => {
-			const normalizedOption = normalizeColorOptions( [
-				{
-					color: 'black',
-					hasBorder: true
-				}
-			] );
-
-			expect( normalizedOption ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: true,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				}
-			] );
-		} );
 	} );
 
 	describe( 'addColorTableToDropdown()', () => {
