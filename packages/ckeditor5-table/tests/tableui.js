@@ -53,6 +53,7 @@ describe( 'TableUI', () => {
 
 		beforeEach( () => {
 			insertTable = editor.ui.componentFactory.create( 'insertTable' );
+			insertTable.isOpen = true; // Dropdown is lazy loaded, so make sure its open (#6193).
 		} );
 
 		it( 'should register insertTable button', () => {
@@ -65,7 +66,7 @@ describe( 'TableUI', () => {
 			const command = editor.commands.get( 'insertTable' );
 
 			command.isEnabled = true;
-			expect( insertTable.buttonView.isOn ).to.be.false;
+			expect( insertTable.buttonView.isOn ).to.be.true;
 			expect( insertTable.buttonView.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
@@ -74,8 +75,6 @@ describe( 'TableUI', () => {
 
 		it( 'should execute insertTable command on button execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-			insertTable.isOpen = true;
 
 			const tableSizeView = insertTable.panelView.children.first;
 
