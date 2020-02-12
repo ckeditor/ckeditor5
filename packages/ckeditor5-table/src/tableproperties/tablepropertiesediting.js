@@ -11,13 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
-import TableEditing from './../tableediting';
+import TableEditing from '../tableediting';
 import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
 	upcastBorderStyles,
 	upcastStyleToAttribute
-} from './../converters/tableproperties';
+} from '../converters/tableproperties';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 import TableBorderColorCommand from './commands/tablebordercolorcommand';
 import TableBorderStyleCommand from './commands/tableborderstylecommand';
@@ -154,6 +154,7 @@ function enableAlignmentProperty( schema, conversion ) {
 				value: viewElement => viewElement.getAttribute( 'align' )
 			}
 		} );
+
 	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;

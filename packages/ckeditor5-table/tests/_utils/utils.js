@@ -317,7 +317,7 @@ export function assertTableStyle( editor, tableStyle, figureStyle ) {
  * An assertion helper for testing the `<td>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {String} tableCellStyle A style to assert on td.
+ * @param {String} [tableCellStyle=''] A style to assert on td.
  */
 export function assertTableCellStyle( editor, tableCellStyle ) {
 	assertEqualMarkup( editor.getData(),

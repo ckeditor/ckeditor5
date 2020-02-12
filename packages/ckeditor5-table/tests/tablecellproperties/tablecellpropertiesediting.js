@@ -564,6 +564,24 @@ describe( 'table cell properties', () => {
 
 					assertTableCellStyle( editor, 'background-color:#f00;' );
 				} );
+
+				it( 'should downcast backgroundColor removal', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+
+					model.change( writer => writer.removeAttribute( 'backgroundColor', tableCell ) );
+
+					assertTableCellStyle( editor );
+				} );
+
+				it( 'should downcast backgroundColor change', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+
+					assertTableCellStyle( editor, 'background-color:#f00;' );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#ba7', tableCell ) );
+
+					assertTableCellStyle( editor, 'background-color:#ba7;' );
+				} );
 			} );
 		} );
 
@@ -736,6 +754,24 @@ describe( 'table cell properties', () => {
 
 					assertTableCellStyle( editor, 'padding:2px 3px 4px 5px;' );
 				} );
+
+				it( 'should downcast padding removal', () => {
+					model.change( writer => writer.setAttribute( 'padding', '1337px', tableCell ) );
+
+					model.change( writer => writer.removeAttribute( 'padding', tableCell ) );
+
+					assertTableCellStyle( editor );
+				} );
+
+				it( 'should downcast padding change', () => {
+					model.change( writer => writer.setAttribute( 'padding', '1337px', tableCell ) );
+
+					assertTableCellStyle( editor, 'padding:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'padding', '1410em', tableCell ) );
+
+					assertTableCellStyle( editor, 'padding:1410em;' );
+				} );
 			} );
 		} );
 
@@ -779,6 +815,24 @@ describe( 'table cell properties', () => {
 						'<figure class="table"><table><tbody><tr><td style="width:20px;">foo</td></tr></tbody></table></figure>'
 					);
 				} );
+
+				it( 'should downcast width removal', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', tableCell ) );
+
+					model.change( writer => writer.removeAttribute( 'width', tableCell ) );
+
+					assertTableCellStyle( editor );
+				} );
+
+				it( 'should downcast width change', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', tableCell ) );
+
+					assertTableCellStyle( editor, 'width:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'width', '1410em', tableCell ) );
+
+					assertTableCellStyle( editor, 'width:1410em;' );
+				} );
 			} );
 		} );
 
@@ -821,6 +875,24 @@ describe( 'table cell properties', () => {
 						editor.getData(),
 						'<figure class="table"><table><tbody><tr><td style="height:20px;">foo</td></tr></tbody></table></figure>'
 					);
+				} );
+
+				it( 'should downcast height removal', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', tableCell ) );
+
+					model.change( writer => writer.removeAttribute( 'height', tableCell ) );
+
+					assertTableCellStyle( editor );
+				} );
+
+				it( 'should downcast height change', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', tableCell ) );
+
+					assertTableCellStyle( editor, 'height:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'height', '1410em', tableCell ) );
+
+					assertTableCellStyle( editor, 'height:1410em;' );
 				} );
 			} );
 		} );
