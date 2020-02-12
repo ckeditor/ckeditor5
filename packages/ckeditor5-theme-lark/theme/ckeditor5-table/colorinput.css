@@ -5,7 +5,7 @@
 
 @import "../mixins/_rounded.css";
 
-.ck.ck-input-color-picker {
+.ck.ck-input-color {
 	& > .ck.ck-input-text {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
