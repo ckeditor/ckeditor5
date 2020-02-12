@@ -665,7 +665,10 @@ export default class TableCellPropertiesView extends View {
 			icons: ALIGNMENT_ICONS,
 			toolbar: horizontalAlignmentToolbar,
 			labels: this._horizontalAlignmentLabels,
-			propertyName: 'horizontalAlignment'
+			propertyName: 'horizontalAlignment',
+			nameToValue: name => {
+				return name === 'left' ? '' : name;
+			}
 		} );
 
 		// -- Vertical -----------------------------------------------------
@@ -682,7 +685,10 @@ export default class TableCellPropertiesView extends View {
 			icons: ALIGNMENT_ICONS,
 			toolbar: verticalAlignmentToolbar,
 			labels: this._verticalAlignmentLabels,
-			propertyName: 'verticalAlignment'
+			propertyName: 'verticalAlignment',
+			nameToValue: name => {
+				return name === 'middle' ? '' : name;
+			}
 		} );
 
 		return {

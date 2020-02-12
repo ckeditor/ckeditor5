@@ -25,8 +25,6 @@ import {
 import { debounce } from 'lodash-es';
 
 const DEFAULT_BORDER_STYLE = 'none';
-const DEFAULT_HORIZONTAL_ALIGNMENT = 'left';
-const DEFAULT_VERTICAL_ALIGNMENT = 'middle';
 const ERROR_TEXT_TIMEOUT = 500;
 
 /**
@@ -241,8 +239,8 @@ export default class TableCellPropertiesUI extends Plugin {
 			height: commands.get( 'tableCellHeight' ).value || '',
 			padding: commands.get( 'tableCellPadding' ).value || '',
 			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
-			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
-			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || DEFAULT_VERTICAL_ALIGNMENT,
+			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || '',
+			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || ''
 		} );
 	}
 
