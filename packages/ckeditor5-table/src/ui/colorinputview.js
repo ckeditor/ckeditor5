@@ -16,7 +16,8 @@ import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/colorinput.css';
 
 /**
- * The color input view class.
+ * The color input view class. It allows the user to type in a color (hex, rgb, etc.)
+ * or choose it from the configurable color palette with a preview.
  *
  * @private
  * @extends module:ui/view~View
@@ -27,8 +28,9 @@ export default class ColorInputView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Object} options The input options.
-	 * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options.colorDefinitions
-	 * @param {Number} options.columns
+	 * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options.colorDefinitions The colors to be displayed
+	 * in the palette inside the input's dropdown.
+	 * @param {Number} options.columns The number of columns in which the colors will be displayed.
 	 */
 	constructor( locale, options ) {
 		super( locale );
