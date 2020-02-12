@@ -35,7 +35,7 @@ describe( 'table properties', () => {
 			it( 'should properly downcast table with Alignment plugin enabled', () => {
 				model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-				assertTableStyle( editor, null, 'float:right;margin-right:0;' );
+				assertTableStyle( editor, null, 'float:right;' );
 			} );
 		} );
 
