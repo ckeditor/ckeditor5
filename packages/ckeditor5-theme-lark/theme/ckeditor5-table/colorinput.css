@@ -23,25 +23,15 @@
 			}
 
 			& > .ck.ck-input-color__button__preview {
-				/*
-				To make sure that `color-picker-preview--no-color` positions properly,
-				we have to display `color-picker-preview` always as a square shape.
-				*/
-				--previewSize: 20px;
-
 				@mixin ck-rounded-corners;
 
-				position: relative;
-				width: var(--previewSize);
-				height: var(--previewSize);
+				width: 20px;
+				height: 20px;
 				border: 1px solid var(--ck-color-input-border);
-				overflow: hidden;
 
 				& > .ck.ck-input-color__button__preview__no-color-indicator {
-					position: absolute;
 					top: -30%;
 					left: 50%;
-					display: block;
 					height: 150%;
 					width: 8%;
 					background: red;
