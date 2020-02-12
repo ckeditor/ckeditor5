@@ -75,6 +75,8 @@ describe( 'TableUI', () => {
 		it( 'should execute insertTable command on button execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
+			insertTable.isOpen = true;
+
 			const tableSizeView = insertTable.panelView.children.first;
 
 			tableSizeView.rows = 2;
@@ -87,6 +89,8 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should reset rows & columns on dropdown open', () => {
+			insertTable.isOpen = true;
+
 			const tableSizeView = insertTable.panelView.children.first;
 
 			expect( tableSizeView.rows ).to.equal( 0 );
