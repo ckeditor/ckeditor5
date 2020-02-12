@@ -121,7 +121,7 @@ export default class ColorTableView extends View {
 		 * @readonly
 		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
 		 */
-		this.staticColorsGrid = this._createStaticColorsGrid();
+		this.staticColorsGrid;
 
 		/**
 		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
@@ -164,14 +164,25 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this._removeColorButton() );
+
+		this._documentColorsCount = documentColorsCount;
+		this._documentColorsLabel = documentColorsLabel;
+	}
+
+	renderGrids() {
+		if ( this.staticColorsGrid ) {
+			return;
+		}
+
+		this.staticColorsGrid = this._createStaticColorsGrid();
+
 		this.items.add( this.staticColorsGrid );
 
-		if ( documentColorsCount ) {
+		if ( this._documentColorsCount ) {
 			// Create a label for document colors.
 			const bind = Template.bind( this.documentColors, this.documentColors );
 			const label = new LabelView( this.locale );
-
-			label.text = documentColorsLabel;
+			label.text = this._documentColorsLabel;
 			label.extendTemplate( {
 				attributes: {
 					class: [
@@ -181,9 +192,7 @@ export default class ColorTableView extends View {
 					]
 				}
 			} );
-
 			this.items.add( label );
-
 			this.documentColorsGrid = this._createDocumentColorsGrid();
 			this.items.add( this.documentColorsGrid );
 		}

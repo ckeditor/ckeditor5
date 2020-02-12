@@ -132,6 +132,8 @@ export default class ColorUI extends Plugin {
 			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
+				dropdownView.colorTableView.renderGrids();
+
 				if ( isVisible ) {
 					if ( documentColorsCount !== 0 ) {
 						this.colorTableView.updateDocumentColors( editor.model, this.componentName );
