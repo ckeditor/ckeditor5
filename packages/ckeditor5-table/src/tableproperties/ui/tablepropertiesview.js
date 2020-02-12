@@ -54,7 +54,14 @@ const ALIGNMENT_ICONS = {
  */
 export default class TablePropertiesView extends View {
 	/**
-	 * @inheritDoc
+	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param {Object} options Additional configuration of the view.
+	 * @param {module:table/table~TableColorConfig} options.borderColors A configuration of the border
+	 * color palette used by the
+	 * {@link module:table/tablecellproperties/ui/tablepropertiesview~TablePropertiesView#borderColorInput}.
+	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
+	 * color palette used by the
+	 * {@link module:table/tablecellproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
 	 */
 	constructor( locale, options ) {
 		super( locale );

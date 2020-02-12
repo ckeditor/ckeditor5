@@ -236,7 +236,76 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
 }
 
 /**
- * TODO
+ * A default color palette for table properties used in various user interfaces, for instance,
+ * by {@link module:table/tablecellproperties/ui/tablecellproperties~TableCellProperties}
+ * or {@link module:table/tableproperties/ui/tableproperties~TableProperties}.
+ *
+ * The color palette follows the {@link module:table/table~TableColorConfig table color configuration format}
+ * and contains the following color definitions:
+ *
+ *		const defaultColors = [
+ *			{
+ *				color: 'hsl(0, 0%, 0%)',
+ *				label: 'Black'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 30%)',
+ *				label: 'Dim grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 60%)',
+ *				label: 'Grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 90%)',
+ *				label: 'Light grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 100%)',
+ *				label: 'White',
+ *				hasBorder: true
+ *			},
+ *			{
+ *				color: 'hsl(0, 75%, 60%)',
+ *				label: 'Red'
+ *			},
+ *			{
+ *				color: 'hsl(30, 75%, 60%)',
+ *				label: 'Orange'
+ *			},
+ *			{
+ *				color: 'hsl(60, 75%, 60%)',
+ *				label: 'Yellow'
+ *			},
+ *			{
+ *				color: 'hsl(90, 75%, 60%)',
+ *				label: 'Light green'
+ *			},
+ *			{
+ *				color: 'hsl(120, 75%, 60%)',
+ *				label: 'Green'
+ *			},
+ *			{
+ *				color: 'hsl(150, 75%, 60%)',
+ *				label: 'Aquamarine'
+ *			},
+ *			{
+ *				color: 'hsl(180, 75%, 60%)',
+ *				label: 'Turquoise'
+ *			},
+ *			{
+ *				color: 'hsl(210, 75%, 60%)',
+ *				label: 'Light blue'
+ *			},
+ *			{
+ *				color: 'hsl(240, 75%, 60%)',
+ *				label: 'Blue'
+ *			},
+ *			{
+ *				color: 'hsl(270, 75%, 60%)',
+ *				label: 'Purple'
+ *			}
+ *		];
  */
 export const defaultColors = [
 	{
@@ -305,8 +374,9 @@ export const defaultColors = [
 /**
  * A function that helps creating labeled color inputs.
  *
- * For given options, it returns a function that creates an instance of {@link TODO color input text}
- * logically related to a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
+ * For given options, it returns a function that creates an instance of
+ * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
+ * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
  *
  * The helper does the following:
  *
@@ -318,7 +388,8 @@ export const defaultColors = [
  * Usage:
  *
  *		const colorInputCreator = getLabeledColorInputCreator( {
- *			colorConfig: [ ... ]
+ *			colorConfig: [ ... ],
+ *			columns: 3,
  *		} );
  *
  *		const labeledInputView = new LabeledView( locale, colorInputCreator );
@@ -326,8 +397,10 @@ export const defaultColors = [
  *
  * @private
  * @param options Color input options.
- * @param {module:table/table~TableColorConfig} options.colorConfig TODO
- * @param {Number} options.columns TODO
+ * @param {module:table/table~TableColorConfig} options.colorConfig The configuration of the color palette
+ * displayed in the input's dropdown.
+ * @param {Number} options.columns The configuration of the number of columns the color palette consists of
+ * in the input's dropdown.
  * @returns {Function}
  */
 export function getLabeledColorInputCreator( options ) {
