@@ -13,7 +13,7 @@ import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe.only( 'utils', () => {
+describe( 'utils', () => {
 	testUtils.createSinonSandbox();
 
 	it( 'plugin names has proper values', () => {
