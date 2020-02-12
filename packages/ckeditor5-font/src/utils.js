@@ -8,7 +8,6 @@
  */
 
 import ColorTableView from './ui/colortableview';
-import { normalizeColorCode } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 
 /**
  * The name of the font size plugin.
@@ -111,4 +110,12 @@ export function addColorTableToDropdown( { dropdownView, colors, columns, remove
 	colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
 
 	return colorTableView;
+}
+
+// Fixes the color value string.
+//
+// @param {String} value
+// @returns {String}
+function normalizeColorCode( value ) {
+	return value.replace( /\s/g, '' );
 }
