@@ -23,11 +23,32 @@
 			}
 
 			& > .ck.ck-dropdown__color-picker-preview {
+				/*
+				To make sure that `color-picker-preview--no-color` positions properly,
+				we have to display `color-picker-preview` always as a square shape.
+				*/
+				--previewSize: 20px;
+
 				@mixin ck-rounded-corners;
 
-				width: 20px;
-				height: 20px;
+				position: relative;
+				width: var(--previewSize);
+				height: var(--previewSize);
 				border: 1px solid var(--ck-color-input-border);
+				overflow: hidden;
+
+				& > .ck.ck-dropdown__color-picker-preview--no-color {
+					position: absolute;
+					top: -30%;
+					left: 50%;
+					display: block;
+					height: 150%;
+					width: 8%;
+					background: red;
+					border-radius: 2px;
+					transform: rotate(45deg);
+					transform-origin: 50%;
+				}
 			}
 		}
 	}
