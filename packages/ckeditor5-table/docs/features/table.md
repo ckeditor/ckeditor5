@@ -11,6 +11,10 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 {@snippet features/table}
 
+## Styling tables
+
+{@snippet features/table-styling}
+
 ## Installation
 
 <info-box info>
