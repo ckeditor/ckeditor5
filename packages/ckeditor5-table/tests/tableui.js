@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableUI from '../src/tableui';
+import InsertTableView from '../src/ui/inserttableview';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
@@ -102,6 +103,14 @@ describe( 'TableUI', () => {
 
 			expect( tableSizeView.rows ).to.equal( 0 );
 			expect( tableSizeView.columns ).to.equal( 0 );
+		} );
+
+		it( 'is not fully initialized when not open', () => {
+			const dropdown = editor.ui.componentFactory.create( 'insertTable' );
+
+			for ( const childView of dropdown.panelView.children ) {
+				expect( childView ).not.to.be.instanceOf( InsertTableView );
+			}
 		} );
 	} );
 
