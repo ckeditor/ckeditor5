@@ -25,4 +25,16 @@
 			display: none;
 		}
 	}
+
+	& .ck.ck-input-color__button {
+		& .ck.ck-input-color__button__preview {
+			position: relative;
+			overflow: hidden;
+
+			& > .ck.ck-input-color__button__preview__no-color-indicator {
+				position: absolute;
+				display: block;
+			}
+		}
+	}
 }
