@@ -118,19 +118,21 @@ export default class ColorTableView extends View {
 		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
 		 * the default (static) color set.
 		 *
+		 * The property is loaded once the the parent dropdown is opened the first time.
+		 *
 		 * @readonly
-		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView/undefined}
 		 */
-		this.staticColorsGrid;
 
 		/**
 		 * Preserves the reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
 		 * the document colors. It remains undefined if the document colors feature is disabled.
 		 *
+		 * The property is loaded once the the parent dropdown is opened the first time.
+		 *
 		 * @readonly
-		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView/undefined}
 		 */
-		this.documentColorsGrid;
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the list.
@@ -152,6 +154,15 @@ export default class ColorTableView extends View {
 			}
 		} );
 
+		/**
+		 * Document color section's label.
+		 *
+		 * @private
+		 * @readonly
+		 * @type {String}
+		 */
+		this._documentColorsLabel = documentColorsLabel;
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -164,38 +175,6 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this._removeColorButton() );
-
-		this._documentColorsCount = documentColorsCount;
-		this._documentColorsLabel = documentColorsLabel;
-	}
-
-	renderGrids() {
-		if ( this.staticColorsGrid ) {
-			return;
-		}
-
-		this.staticColorsGrid = this._createStaticColorsGrid();
-
-		this.items.add( this.staticColorsGrid );
-
-		if ( this._documentColorsCount ) {
-			// Create a label for document colors.
-			const bind = Template.bind( this.documentColors, this.documentColors );
-			const label = new LabelView( this.locale );
-			label.text = this._documentColorsLabel;
-			label.extendTemplate( {
-				attributes: {
-					class: [
-						'ck',
-						'ck-color-grid__label',
-						bind.if( 'isEmpty', 'ck-hidden' )
-					]
-				}
-			} );
-			this.items.add( label );
-			this.documentColorsGrid = this._createDocumentColorsGrid();
-			this.items.add( this.documentColorsGrid );
-		}
 	}
 
 	/**
@@ -259,6 +238,38 @@ export default class ColorTableView extends View {
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * Renders and appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
+	 */
+	renderGrids() {
+		if ( this.staticColorsGrid ) {
+			return;
+		}
+
+		this.staticColorsGrid = this._createStaticColorsGrid();
+
+		this.items.add( this.staticColorsGrid );
+
+		if ( this.documentColorsCount ) {
+			// Create a label for document colors.
+			const bind = Template.bind( this.documentColors, this.documentColors );
+			const label = new LabelView( this.locale );
+			label.text = this._documentColorsLabel;
+			label.extendTemplate( {
+				attributes: {
+					class: [
+						'ck',
+						'ck-color-grid__label',
+						bind.if( 'isEmpty', 'ck-hidden' )
+					]
+				}
+			} );
+			this.items.add( label );
+			this.documentColorsGrid = this._createDocumentColorsGrid();
+			this.items.add( this.documentColorsGrid );
+		}
 	}
 
 	/**

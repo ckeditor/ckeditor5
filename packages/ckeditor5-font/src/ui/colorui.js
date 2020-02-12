@@ -132,6 +132,7 @@ export default class ColorUI extends Plugin {
 			} );
 
 			dropdownView.on( 'change:isOpen', ( evt, name, isVisible ) => {
+				// Grids rendering is deferred (#6192).
 				dropdownView.colorTableView.renderGrids();
 
 				if ( isVisible ) {
