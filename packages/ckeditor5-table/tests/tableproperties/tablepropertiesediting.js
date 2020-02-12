@@ -499,6 +499,13 @@ describe( 'table properties', () => {
 
 					expect( table.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
 				} );
+
+				it( 'should upcast from background shorthand (rbg color value with spaces)', () => {
+					editor.setData( '<table style="background:rgb(253, 253, 119) center center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
