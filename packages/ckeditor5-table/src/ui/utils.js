@@ -213,22 +213,23 @@ export function getBorderStyleDefinitions( view ) {
  * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar
  * @param {Object.<String,String>} labels
  * @param {String} propertyName
+ * @param {Function} [nameToValue] Optional function that maps button name to value. By default names are the same as values.
  */
-export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
+export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameToValue = name => name } ) {
 	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
 
 		button.set( {
 			label: labels[ name ],
-			icon: icons[ name ],
+			icon: icons[ name ]
 		} );
 
 		button.bind( 'isOn' ).to( view, propertyName, value => {
-			return value === name;
+			return value === nameToValue( name );
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = name;
+			view[ propertyName ] = nameToValue( name );
 		} );
 
 		toolbar.items.add( button );

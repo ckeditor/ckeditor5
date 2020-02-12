@@ -74,41 +74,6 @@ export default class TableCellPropertiesView extends View {
 	constructor( locale, options ) {
 		super( locale );
 
-		/**
-		 * Options passed to the view. See {@link #constructor} to learn more.
-		 *
-		 * @member {Object}
-		 */
-		this.options = options;
-
-		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
-		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
-		const { horizontalAlignmentToolbar, verticalAlignmentToolbar, alignmentLabel } = this._createAlignmentFields();
-
-		/**
-		 * Tracks information about the DOM focus in the form.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * A collection of child views in the form.
-		 *
-		 * @readonly
-		 * @type {module:ui/viewcollection~ViewCollection}
-		 */
-		this.children = this.createCollection();
-
 		this.set( {
 			/**
 			 * The value of the cell border style.
@@ -191,6 +156,41 @@ export default class TableCellPropertiesView extends View {
 			 */
 			verticalAlignment: 'middle'
 		} );
+
+		/**
+		 * Options passed to the view. See {@link #constructor} to learn more.
+		 *
+		 * @member {Object}
+		 */
+		this.options = options;
+
+		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
+		const { horizontalAlignmentToolbar, verticalAlignmentToolbar, alignmentLabel } = this._createAlignmentFields();
+
+		/**
+		 * Tracks information about the DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * A collection of child views in the form.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
+		this.children = this.createCollection();
 
 		/**
 		 * A dropdown that allows selecting the style of the table cell border.
@@ -521,6 +521,15 @@ export default class TableCellPropertiesView extends View {
 
 		borderColorInput.view.on( 'input', () => {
 			this.borderColor = borderColorInput.view.value;
+		} );
+
+		// Reset the border color and width fields when style is "none".
+		// https://github.com/ckeditor/ckeditor5/issues/6227
+		this.on( 'change:borderStyle', ( evt, name, value ) => {
+			if ( value === 'none' ) {
+				this.borderColor = '';
+				this.borderWidth = '';
+			}
 		} );
 
 		return {

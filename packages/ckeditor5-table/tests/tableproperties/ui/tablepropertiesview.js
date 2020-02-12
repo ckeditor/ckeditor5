@@ -77,7 +77,7 @@ describe( 'table properties', () => {
 					backgroundColor: '',
 					width: '',
 					height: '',
-					alignment: 'center'
+					alignment: ''
 				} );
 			} );
 
@@ -161,8 +161,19 @@ describe( 'table properties', () => {
 							expect( labeledDropdown.view.listView.items.map( item => {
 								return item.children.first.label;
 							} ) ).to.have.ordered.members( [
-								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset',
+								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset'
 							] );
+						} );
+
+						it( 'should reset border width and color inputs when setting style to none', () => {
+							view.borderStyle = 'dotted';
+							view.borderWidth = '1px';
+							view.borderColor = 'red';
+
+							view.borderStyle = 'none';
+
+							expect( view.borderColor ).to.equal( '' );
+							expect( view.borderWidth ).to.equal( '' );
 						} );
 					} );
 
