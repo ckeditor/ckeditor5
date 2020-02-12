@@ -494,6 +494,8 @@ export default class TableCellPropertiesView extends View {
 			this.borderColor = borderColorInput.view.element.value;
 		} );
 
+		// Reset the border color and width fields when style is "none".
+		// https://github.com/ckeditor/ckeditor5/issues/6227
 		this.on( 'change:borderStyle', ( evt, name, value ) => {
 			if ( value === 'none' ) {
 				this.borderColor = '';
