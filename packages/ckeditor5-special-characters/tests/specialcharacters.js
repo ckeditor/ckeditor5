@@ -64,6 +64,7 @@ describe( 'SpecialCharacters', () => {
 
 			beforeEach( () => {
 				dropdown = editor.ui.componentFactory.create( 'specialCharacters' );
+				dropdown.isOpen = true; // Dropdown is lazy loaded, so needs to be open to be verified (#6175).
 			} );
 
 			afterEach( () => {
@@ -176,6 +177,12 @@ describe( 'SpecialCharacters', () => {
 					expect( characterInfo.name ).to.equal( 'Less-than sign' );
 					expect( characterInfo.code ).to.equal( 'U+003c' );
 				} );
+			} );
+
+			it( 'is fully initialized when not open', () => {
+				// (#6175)
+				const uninitializedDropdown = editor.ui.componentFactory.create( 'specialCharacters' );
+				expect( uninitializedDropdown.panelView.children.length ).to.be.equal( 0 );
 			} );
 		} );
 	} );
