@@ -6,7 +6,7 @@
 import {
 	normalizeColorOptions,
 	getLocalizedColorOptions
-} from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
+} from '../../src/colorgrid/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'utils', () => {
