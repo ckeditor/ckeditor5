@@ -7,7 +7,7 @@
  * @module engine/view/styles/background
  */
 
-import { isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
+import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
 
 /**
  * Adds a background CSS styles processing rules.
@@ -46,7 +46,7 @@ export function addBackgroundRules( stylesProcessor ) {
 function normalizeBackground( value ) {
 	const background = {};
 
-	const parts = value.split( ' ' );
+	const parts = getShorthandValues( value );
 
 	for ( const part of parts ) {
 		if ( isRepeat( part ) ) {
