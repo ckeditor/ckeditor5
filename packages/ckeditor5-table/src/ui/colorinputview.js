@@ -208,6 +208,7 @@ export default class ColorInputView extends View {
 		removeColorButton.on( 'execute', () => {
 			this.value = '';
 			this._dropdownView.isOpen = false;
+			this.fire( 'input' );
 		} );
 
 		return removeColorButton;
