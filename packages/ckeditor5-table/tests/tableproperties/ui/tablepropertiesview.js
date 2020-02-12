@@ -50,7 +50,7 @@ describe( 'table properties', () => {
 					backgroundColor: '',
 					width: '',
 					height: '',
-					alignment: 'center'
+					alignment: ''
 				} );
 			} );
 
