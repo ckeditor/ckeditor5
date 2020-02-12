@@ -7,32 +7,14 @@
 	width: 320px;
 
 	& .ck-form__row {
-		&.ck-table-cell-properties-form__dimensions-row,
 		&.ck-table-cell-properties-form__padding-row {
 			padding: 0;
+			width: 35%;
 		}
 
 		&.ck-table-cell-properties-form__alignment-row {
 			& .ck.ck-toolbar {
 				background: none;
-			}
-		}
-
-		& .ck-table-cell-properties-form__padding-row {
-			width: 35%;
-		}
-
-		&.ck-table-cell-properties-form__dimensions-row {
-			& .ck-labeled-view > .ck-label {
-				font-size: 10px;
-			}
-
-			& .ck-table-cell-properties-form__width {
-				margin-right: var(--ck-spacing-small);
-			}
-
-			& .ck-table-cell-properties-form__height {
-				margin-left: var(--ck-spacing-small);
 			}
 		}
 	}
