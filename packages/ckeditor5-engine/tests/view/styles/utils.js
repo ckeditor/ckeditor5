@@ -4,50 +4,135 @@
  */
 
 import {
-	getShorthandValues,
 	getBoxSidesShorthandValue,
 	getBoxSidesValues,
+	getShorthandValues,
 	isColor,
 	isLength,
-	isLineStyle
+	isLineStyle, isPercentage
 } from '../../../src/view/styles/utils';
 
 describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {
 		it( 'returns true for #RGB color', () => {
-			testValues( [ '#f00', '#ba2' ], isColor );
+			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColor );
 		} );
 
 		it( 'returns true for #RRGGBB color', () => {
-			testValues( [ '#ff0000', '#bbaa22' ], isColor );
+			testValues( [ '#ff0000', '#bbaa22', '#FF0000', '#BBAA22', '#AabBCC' ], isColor );
 		} );
 
 		it( 'returns true for #RGBA color', () => {
-			testValues( [ '#f000', '#ba24' ], isColor );
+			testValues( [ '#f000', '#ba24', '#F000', '#BA24', '#aBcD' ], isColor );
 		} );
 
 		it( 'returns true for #RRGGBBAA color', () => {
-			testValues( [ '#ff000000', '#bbaa2244' ], isColor );
+			testValues( [ '#ff000000', '#bbaa2244', '#FF000000', '#BBAA2244', '#AabBCCdd' ], isColor );
+		} );
+
+		it( 'returns false for invalid # color', () => {
+			testValues( [ '#ttt', '#1', '#12', '#12345' ], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for rgb() color', () => {
-			testValues( [ 'rgb(255, 255, 255)', 'rgb(23%,0,100%)' ], isColor );
+			testValues( [
+				'rgb(255,0,153)',
+				'rgb(255, 0, 153)',
+				'rgb(100%,0%,60%)',
+				'rgb(100%, 0%, 60%)'
+				// Unsupported:
+				// 'rgb(11, 22, 33, 0.1)', // rgba() is equal to rgb()
+				// 'rgb(255, 0, 153.0)', // Floats are valid
+				// 'rgb(255 0 153)', // CSS Level 4 notation
+			], isColor );
+		} );
+
+		it( 'returns false for invalid rgb() color', () => {
+			testValues( [
+				'rgb()',
+				'rgb(1)',
+				'rgb(1,2)',
+				'rgb(11,',
+				'rgb(11, 22,',
+				'rgb(11, 22, 33',
+				'rgb((11, 22, 33',
+				'rgb((11, 22, 33)',
+				'rgb(11, 22, 33))',
+				'rgb(11, 22, 33, 0.1)',
+				'rgb(11, 22, 33, .153)'
+				// Unsupported:
+				// 'rgb(100%, 0, 60%)', // Mixed numbers and percentages - adds complexity.,
+			], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for rgba() color', () => {
-			testValues( [ 'rgba(1,2,3,0.7)', 'rgba(12%,0,0,1)' ], isColor );
+			testValues( [
+				'rgba(1,2,3,0.7)',
+				'rgba(12%,0,0,1)',
+				'rgba(255,0,153, 0.123)',
+				'rgba(255, 0, 153, 0.123)',
+				'rgba(100%,0%,60%, 0.123)',
+				'rgba(100%, 0%, 60%, 0.123)',
+				'rgba(255,0,153, 0)',
+				'rgba(255, 0, 153, 0)',
+				'rgba(100%,0%,60%, 0)',
+				'rgba(100%, 0%, 60%, 0)',
+				'rgba(255,0,153, 1)',
+				'rgba(255, 0, 153, 1)',
+				'rgba(100%,0%,60%, 1)',
+				'rgba(100%, 0%, 60%, 1)'
+			], isColor );
+		} );
+
+		it( 'returns false for wrong rgba() color', () => {
+			testValues( [
+				'rgba(1,2,3,0.7',
+				'rgba((1,2,3,0.7',
+				'rgba(1,a,3,0.7)',
+				'rgba(1,2,3,*)',
+			], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for hsl() color', () => {
-			testValues( [ 'hsl(0, 100%, 50%)', 'hsl(340,80%,40%)' ], isColor );
+			testValues( [
+				'hsl(270,60%,70%)',
+				'hsl(270, 60%, 70%)',
+				'hsl(270, 60%, 50%, .15)',
+				'hsl(270, 60%, 50%, 0.15)',
+				'hsl(270, 60%, 50%, 15%)'
+				// Unsupported:
+				// 'hsl(270deg, 60%, 70%)', // Valid deg unit
+				// 'hsl(4.71239rad, 60%, 70%)', // Valid rad unit
+				// 'hsl(.75turn, 60%, 70%)', // Valid turn unit
+				// 'hsl(270 60% 70%)', // CSS Level 4 notation
+				// 'hsl(270 60% 50% / .15)', // CSS Level 4 notation
+				// 'hsl(270 60% 50% / 15%)' // CSS Level 4 notation
+			], isColor );
 		} );
 
 		it( 'returns true for hsla() color', () => {
 			testValues( [ 'hsla(240, 100%, 50%, 1)', 'hsla(240, 100%, 50%, .05)' ], isColor );
 		} );
 
-		it( 'returns true for currentColor color', () => {
-			testValues( [ 'currentColor' ], isColor );
+		it( 'returns true for color keywords', () => {
+			testValues( [ 'currentColor', 'transparent' ], isColor );
+		} );
+
+		it( 'returns true for color keyword', () => {
+			testValues( [
+				// CSS Level 1
+				'red', 'green', 'blue', // ...
+				// CSS Level 2
+				'orange',
+				// CSS Level 3
+				'cyan', 'azure', 'wheat',
+				// CSS Level 4
+				'rebeccapurple'
+			], isColor );
+		} );
+
+		it( 'returns false for unknown color keyword', () => {
+			testValues( [ 'redx', 'greenx', 'bluex' ], value => !isColor( value ) );
 		} );
 	} );
 
@@ -63,9 +148,48 @@ describe( 'Styles utils', () => {
 	describe( 'isLength()', () => {
 		it( 'returns true for various units', () => {
 			testValues(
-				[ '1px', '2rem', '34.5px', '.2em', '0', '1346vmax' ],
+				[
+					'1px',
+					'1cm',
+					'1mm',
+					'1in',
+					'1pc',
+					'1pt',
+					'1ch',
+					'1em',
+					'1ex',
+					'1rem',
+					'1vh',
+					'1vw',
+					'1vmin',
+					'1vmax'
+				],
 				isLength
 			);
+		} );
+
+		it( 'returns true for various values notation', () => {
+			testValues(
+				[
+					'0',
+					'1px',
+					'1000px',
+					'1.1px',
+					'345.457px',
+					'.457px'
+				],
+				isLength
+			);
+		} );
+	} );
+
+	describe( 'isPercentage()', () => {
+		it( 'returns true valid values', () => {
+			testValues( [ '1%', '100%', '1123.1312%', '0.9876%' ], isPercentage );
+		} );
+
+		it( 'returns false for not a percentage values', () => {
+			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentage( value ) );
 		} );
 	} );
 

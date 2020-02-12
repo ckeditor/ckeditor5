@@ -7,16 +7,71 @@
  * @module engine/view/styles/utils
  */
 
-const colorRegExp = /^([#0-9A-Fa-f]{3,9}$|0$|rgba?\(|hsla?\(|[a-zA-Z]+$)/;
+const HEX_COLOR_REGEXP = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+const RGB_COLOR_REGEXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/i;
+const RGBA_COLOR_REGEXP = /^rgba\([ ]?([0-9]{1,3}[ %]?,[ ]?){3}(1|[0-9]+%|[0]?\.?[0-9]+)\)$/i;
+const HSL_COLOR_REGEXP = /^hsl\([ ]?([0-9]{1,3}[ %]?[,]?[ ]*){3}(1|[0-9]+%|[0]?\.?[0-9]+)?\)$/i;
+const HSLA_COLOR_REGEXP = /^hsla\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}(1|[0-9]+%|[0]?\.?[0-9]+)\)$/i;
+
+const COLOR_NAMES = new Set( [
+	// CSS Level 1
+	'black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia',
+	'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua',
+	// CSS Level 2 (Revision 1)
+	'orange',
+	// CSS Color Module Level 3
+	'aliceblue', 'antiquewhite', 'aquamarine', 'azure', 'beige', 'bisque', 'blanchedalmond', 'blueviolet', 'brown',
+	'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan',
+	'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki', 'darkmagenta',
+	'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue',
+	'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey',
+	'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod',
+	'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush',
+	'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray',
+	'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray',
+	'lightslategrey', 'lightsteelblue', 'lightyellow', 'limegreen', 'linen', 'magenta', 'mediumaquamarine',
+	'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen',
+	'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite',
+	'oldlace', 'olivedrab', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred',
+	'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon',
+	'sandybrown', 'seagreen', 'seashell', 'sienna', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow',
+	'springgreen', 'steelblue', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'whitesmoke', 'yellowgreen',
+	// CSS Color Module Level 4
+	'rebeccapurple',
+	// Keywords
+	'currentcolor', 'transparent'
+] );
 
 /**
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
+ *
+ *		isColor( '#f00' );						// true
+ *		isColor( '#AA00BB33' );					// true
+ *		isColor( 'rgb(0, 0, 250)' );			// true
+ *		isColor( 'hsla(240, 100%, 50%, .7)' );	// true
+ *		isColor( 'deepskyblue' );				// true
+ *
+ * **Note**: It does not support CSS Level 4 whitespace syntax, system colors and radius values for HSL colors.
  *
  * @param {String} string
  * @returns {Boolean}
  */
 export function isColor( string ) {
-	return colorRegExp.test( string );
+	// As far as I was able to test checking some pre-conditions is faster than joining each test with ||.
+	if ( string.startsWith( '#' ) ) {
+		return HEX_COLOR_REGEXP.test( string );
+	}
+
+	if ( string.startsWith( 'rgb' ) ) {
+		return RGB_COLOR_REGEXP.test( string ) || RGBA_COLOR_REGEXP.test( string );
+	}
+
+	if ( string.startsWith( 'hsl' ) ) {
+		return HSL_COLOR_REGEXP.test( string ) || HSLA_COLOR_REGEXP.test( string );
+	}
+
+	// Array check > RegExp test.
+	return COLOR_NAMES.has( string.toLowerCase() );
 }
 
 const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ];
@@ -31,7 +86,7 @@ export function isLineStyle( string ) {
 	return lineStyleValues.includes( string );
 }
 
-const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+([a-z]+|%)|0)$/;
+const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax)|0)$/;
 
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
@@ -41,6 +96,18 @@ const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+([a-z]+|%)|0)$/;
  */
 export function isLength( string ) {
 	return lengthRegExp.test( string );
+}
+
+const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*[.]?[0-9]+%$/;
+
+/**
+ * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.
+ *
+ * @param {String} string
+ * @returns {Boolean}
+ */
+export function isPercentage( string ) {
+	return PERCENTAGE_VALUE_REGEXP.test( string );
 }
 
 const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-repeat' ];
