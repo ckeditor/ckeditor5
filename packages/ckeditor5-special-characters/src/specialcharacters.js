@@ -209,6 +209,14 @@ export default class SpecialCharacters extends Plugin {
 		}
 	}
 
+	/**
+	 * Initializes the dropdown, used for lazy loading.
+	 *
+	 * @private
+	 * @param {module:utils/locale~Locale} locale
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+	 * @returns {Object} Returns an object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
+	 */
 	_createDropdownPanelContent( locale, dropdownView ) {
 		const specialCharsGroups = [ ...this.getGroups() ];
 
