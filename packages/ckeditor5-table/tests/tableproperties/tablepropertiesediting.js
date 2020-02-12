@@ -768,25 +768,18 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast style="float:right;margin-right:0" to right value', () => {
-					editor.setData( '<table style="float:right;margin-right:0"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="float:right" to right value', () => {
+					editor.setData( '<table style="float:right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
 				} );
 
-				it( 'should upcast style="margin-left:0;float:left;" to left value', () => {
-					editor.setData( '<table style="margin-left:0;float:left;"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="float:left;" to left value', () => {
+					editor.setData( '<table style="float:left;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
-				} );
-
-				it( 'should not upcast style="float:right;margin-right:23px" to right value (non-zero margin)', () => {
-					editor.setData( '<table style="float:right;margin-right:23px"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.hasAttribute( 'alignment' ) ).to.be.false;
 				} );
 
 				it( 'should upcast align=right attribute', () => {
@@ -848,13 +841,13 @@ describe( 'table properties', () => {
 				it( 'should downcast "right" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;' );
 				} );
 
 				it( 'should downcast "left" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
+					assertTableStyle( editor, null, 'float:left;' );
 				} );
 
 				it( 'should not downcast "center" alignment', () => {
@@ -866,27 +859,27 @@ describe( 'table properties', () => {
 				it( 'should downcast changed alignment (left -> right)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
+					assertTableStyle( editor, null, 'float:left;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;' );
 				} );
 
 				it( 'should downcast changed alignment (right -> left)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
+					assertTableStyle( editor, null, 'float:left;' );
 				} );
 
 				it( 'should downcast removed alignment (from left)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-left:0;' );
+					assertTableStyle( editor, null, 'float:left;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 
@@ -896,7 +889,7 @@ describe( 'table properties', () => {
 				it( 'should downcast removed alignment (from right)', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 

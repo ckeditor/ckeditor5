@@ -26,7 +26,6 @@ import TableWidthCommand from './commands/tablewidthcommand';
 import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
 
-// RegExp used for matching margin style in converters.
 const ALIGN_VALUES_REG_EXP = /^(left|right)$/;
 
 /**
@@ -127,14 +126,12 @@ function enableAlignmentProperty( schema, conversion ) {
 				left: {
 					key: 'style',
 					value: {
-						'margin-left': '0',
 						float: 'left'
 					}
 				},
 				right: {
 					key: 'style',
 					value: {
-						'margin-right': '0',
 						float: 'right'
 					}
 				}
