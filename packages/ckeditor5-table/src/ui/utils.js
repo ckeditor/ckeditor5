@@ -237,8 +237,7 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
 
 /**
  * A default color palette for table properties used in various user interfaces, for instance,
- * by {@link module:table/tablecellproperties/ui/tablecellproperties~TableCellProperties}
- * or {@link module:table/tableproperties/ui/tableproperties~TableProperties}.
+ * by {@link module:table/tablecellproperties~TableCellProperties} or {@link module:table/tableproperties~TableProperties}.
  *
  * The color palette follows the {@link module:table/table~TableColorConfig table color configuration format}
  * and contains the following color definitions:
