@@ -149,7 +149,7 @@ export default class ColorInputView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-dropdown__color-picker-preview'
+					'ck-input-color__button__preview'
 				],
 				style: {
 					backgroundColor: bind.to( 'value' )
@@ -160,7 +160,7 @@ export default class ColorInputView extends View {
 				attributes: {
 					class: [
 						'ck',
-						'ck-dropdown__color-picker-preview--no-color',
+						'ck-input-color__button__preview__no-color-indicator',
 						bind.if( 'value', 'ck-hidden', value => value != '' )
 					]
 				}
@@ -169,7 +169,7 @@ export default class ColorInputView extends View {
 
 		dropdown.buttonView.extendTemplate( {
 			attributes: {
-				class: 'ck-dropdown__color-picker-button'
+				class: 'ck-input-color__button'
 			},
 		} );
 
@@ -215,7 +215,7 @@ export default class ColorInputView extends View {
 		const t = locale.t;
 		const removeColorButton = new ButtonView( locale );
 
-		removeColorButton.class = 'ck-dropdown__color-picker-remove-color';
+		removeColorButton.class = 'ck-input-color__remove-color';
 		removeColorButton.withText = true;
 		removeColorButton.icon = removeButtonIcon;
 		removeColorButton.label = t( 'Remove color' );

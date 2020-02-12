@@ -72,7 +72,7 @@ describe( 'ColorInputView', () => {
 		describe( 'dropdown', () => {
 			it( 'should be created', () => {
 				expect( view._dropdownView ).to.be.instanceOf( DropdownView );
-				expect( view._dropdownView.buttonView.element.classList.contains( 'ck-dropdown__color-picker-button' ) ).to.be.true;
+				expect( view._dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).to.be.true;
 				expect( view._dropdownView.panelPosition ).to.equal( 'sw' );
 			} );
 
@@ -88,7 +88,7 @@ describe( 'ColorInputView', () => {
 				const preview = view._dropdownView.buttonView.children.first;
 
 				expect( preview.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( preview.element.classList.contains( 'ck-dropdown__color-picker-preview' ) ).to.be.true;
+				expect( preview.element.classList.contains( 'ck-input-color__button__preview' ) ).to.be.true;
 			} );
 
 			it( 'should display no-color preview when color is not set', () => {
@@ -149,7 +149,7 @@ describe( 'ColorInputView', () => {
 
 		describe( 'remove color button', () => {
 			it( 'should be created from the template', () => {
-				expect( removeColorButton.element.classList.contains( 'ck-dropdown__color-picker-remove-color' ) ).to.be.true;
+				expect( removeColorButton.element.classList.contains( 'ck-input-color__remove-color' ) ).to.be.true;
 				expect( removeColorButton.withText ).to.be.true;
 				expect( removeColorButton.label ).to.equal( 'Remove color' );
 			} );

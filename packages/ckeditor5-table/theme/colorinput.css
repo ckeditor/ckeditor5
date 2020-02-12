@@ -21,7 +21,7 @@
 		min-width: auto;
 
 		/* This dropdown has no arrow but a color preview instead. */
-		& > .ck-dropdown__color-picker-button .ck-dropdown__arrow {
+		& > .ck-input-color__button .ck-dropdown__arrow {
 			display: none;
 		}
 	}
