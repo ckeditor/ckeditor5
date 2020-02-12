@@ -61,12 +61,36 @@ describe( 'Styles utils', () => {
 				'rgb(11, 22, 33, 0.1)',
 				'rgb(11, 22, 33, .153)'
 				// Unsupported:
-				// 'rgb(100%, 0, 60%)', // Mixed numbers and percentages. TODO: might be skipped - adds complexity.,
+				// 'rgb(100%, 0, 60%)', // Mixed numbers and percentages - adds complexity.,
 			], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for rgba() color', () => {
-			testValues( [ 'rgba(1,2,3,0.7)', 'rgba(12%,0,0,1)' ], isColor );
+			testValues( [
+				'rgba(1,2,3,0.7)',
+				'rgba(12%,0,0,1)',
+				'rgba(255,0,153, 0.123)',
+				'rgba(255, 0, 153, 0.123)',
+				'rgba(100%,0%,60%, 0.123)',
+				'rgba(100%, 0%, 60%, 0.123)',
+				'rgba(255,0,153, 0)',
+				'rgba(255, 0, 153, 0)',
+				'rgba(100%,0%,60%, 0)',
+				'rgba(100%, 0%, 60%, 0)',
+				'rgba(255,0,153, 1)',
+				'rgba(255, 0, 153, 1)',
+				'rgba(100%,0%,60%, 1)',
+				'rgba(100%, 0%, 60%, 1)'
+			], isColor );
+		} );
+
+		it( 'returns false for wrong rgba() color', () => {
+			testValues( [
+				'rgba(1,2,3,0.7',
+				'rgba((1,2,3,0.7',
+				'rgba(1,a,3,0.7)',
+				'rgba(1,2,3,*)',
+			], value => !isColor( value ) );
 		} );
 
 		it( 'returns true for hsl() color', () => {
