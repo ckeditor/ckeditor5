@@ -73,10 +73,9 @@ export default class TableCellPropertiesView extends View {
 		/**
 		 * Options passed to the view.
 		 *
-		 * @protected
 		 * @member {Object}
 		 */
-		this._options = options;
+		this.options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
@@ -448,7 +447,7 @@ export default class TableCellPropertiesView extends View {
 	 */
 	_createBorderFields() {
 		const colorInputCreator = getLabeledColorInputCreator( {
-			colorConfig: this._options.borderColors,
+			colorConfig: this.options.borderColors,
 			columns: 5
 		} );
 		const locale = this.locale;
@@ -540,7 +539,7 @@ export default class TableCellPropertiesView extends View {
 		const locale = this.locale;
 		const t = this.t;
 		const colorInputCreator = getLabeledColorInputCreator( {
-			colorConfig: this._options.backgroundColors,
+			colorConfig: this.options.backgroundColors,
 			columns: 5
 		} );
 

@@ -20,7 +20,8 @@ import {
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
 	colorFieldValidator,
-	lengthFieldValidator
+	lengthFieldValidator,
+	defaultColors
 } from '../ui/utils';
 import {
 	getLocalizedColorOptions,
@@ -55,6 +56,20 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TableCellPropertiesUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'table.tableCellProperties', {
+			border: {
+				colors: defaultColors
+			},
+			backgroundColors: defaultColors
+		} );
 	}
 
 	/**

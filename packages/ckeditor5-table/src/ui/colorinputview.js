@@ -84,7 +84,7 @@ export default class ColorInputView extends View {
 		 *
 		 * @member {Object}
 		 */
-		this._options = options;
+		this.options = options;
 
 		/**
 		 * An instance of the dropdown allowing to select a color from a grid.
@@ -221,8 +221,8 @@ export default class ColorInputView extends View {
 	 */
 	_createColorGrid( locale ) {
 		const colorGrid = new ColorGrid( locale, {
-			colorDefinitions: this._options.colorDefinitions,
-			columns: this._options.columns
+			colorDefinitions: this.options.colorDefinitions,
+			columns: this.options.columns
 		} );
 
 		colorGrid.on( 'execute', ( evtData, data ) => {

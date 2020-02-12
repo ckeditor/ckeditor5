@@ -50,6 +50,13 @@ describe( 'ColorInputView', () => {
 	} );
 
 	describe( 'constructor()', () => {
+		it( 'should set view#options', () => {
+			expect( view.options ).to.deep.equal( {
+				colorDefinitions: DEFAULT_COLORS,
+				columns: 5
+			} );
+		} );
+
 		it( 'should set view#locale', () => {
 			expect( view.locale ).to.equal( locale );
 		} );

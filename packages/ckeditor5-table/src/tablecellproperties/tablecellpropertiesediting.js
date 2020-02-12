@@ -13,7 +13,6 @@ import { addPaddingRules } from '@ckeditor/ckeditor5-engine/src/view/styles/padd
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
-import { defaultColors } from '../ui/utils';
 import TableEditing from './../tableediting';
 import TableCellPaddingCommand from './commands/tablecellpaddingcommand';
 import TableCellWidthCommand from './commands/tablecellwidthcommand';
@@ -59,20 +58,6 @@ export default class TableCellPropertiesEditing extends Plugin {
 	 */
 	static get requires() {
 		return [ TableEditing ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor ) {
-		super( editor );
-
-		editor.config.define( 'table.tableCellProperties', {
-			border: {
-				colors: defaultColors
-			},
-			backgroundColors: defaultColors
-		} );
 	}
 
 	/**
