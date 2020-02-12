@@ -27,8 +27,8 @@ ClassicEditor
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			tableToolbar: [ 'bold', 'italic' ],
-		},
+			tableToolbar: [ 'bold', 'italic' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
