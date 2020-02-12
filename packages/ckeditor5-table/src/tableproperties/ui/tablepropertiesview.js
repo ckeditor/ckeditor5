@@ -21,7 +21,12 @@ import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { fillToolbar, getBorderStyleDefinitions, getBorderStyleLabels } from '../../ui/utils';
+import {
+	fillToolbar,
+	getBorderStyleDefinitions,
+	getBorderStyleLabels,
+	getLabeledColorInputCreator
+} from '../../ui/utils';
 import FormRowView from '../../ui/formrowview';
 import FormHeaderView from '../../ui/formheaderview';
 
@@ -51,8 +56,16 @@ export default class TablePropertiesView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale, options ) {
 		super( locale );
+
+		/**
+		 * Options passed to the view.
+		 *
+		 * @protected
+		 * @member {Object}
+		 */
+		this._options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
@@ -377,6 +390,10 @@ export default class TablePropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const colorInputCreator = getLabeledColorInputCreator( {
+			colorConfig: this._options.borderColors,
+			columns: 5
+		} );
 		const locale = this.locale;
 		const t = this.t;
 
@@ -429,15 +446,21 @@ export default class TablePropertiesView extends View {
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = new LabeledView( locale, createLabeledInputText );
-		borderColorInput.label = t( 'Color' );
+		const borderColorInput = new LabeledView( locale, colorInputCreator );
+
+		borderColorInput.set( {
+			label: t( 'Color' ),
+			class: 'ck-table-form__border-color',
+		} );
+
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
+
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
 			return value !== 'none';
 		} );
 
 		borderColorInput.view.on( 'input', () => {
-			this.borderColor = borderColorInput.view.element.value;
+			this.borderColor = borderColorInput.view.value;
 		} );
 
 		return {
@@ -457,10 +480,14 @@ export default class TablePropertiesView extends View {
 	 * @returns {module:ui/labeledview/labeledview~LabeledView}
 	 */
 	_createBackgroundField() {
+		const backgroundInputCreator = getLabeledColorInputCreator( {
+			colorConfig: this._options.borderColors,
+			columns: 5
+		} );
 		const locale = this.locale;
 		const t = this.t;
 
-		const backgroundInput = new LabeledView( locale, createLabeledInputText );
+		const backgroundInput = new LabeledView( locale, backgroundInputCreator );
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
@@ -469,7 +496,7 @@ export default class TablePropertiesView extends View {
 
 		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
 		backgroundInput.view.on( 'input', () => {
-			this.backgroundColor = backgroundInput.view.element.value;
+			this.backgroundColor = backgroundInput.view.value;
 		} );
 
 		return backgroundInput;
