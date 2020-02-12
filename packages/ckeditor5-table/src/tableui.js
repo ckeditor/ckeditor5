@@ -54,21 +54,29 @@ export default class TableUI extends Plugin {
 				tooltip: true
 			} );
 
-			// Prepare custom view for dropdown's panel.
-			const insertTableView = new InsertTableView( locale );
-			dropdownView.panelView.children.add( insertTableView );
+			let insertTableView;
 
-			insertTableView.delegate( 'execute' ).to( dropdownView );
+			dropdownView.on( 'change:isOpen', () => {
+				if ( insertTableView ) {
+					return;
+				}
 
-			dropdownView.buttonView.on( 'open', () => {
-				// Reset the chooser before showing it to the user.
-				insertTableView.rows = 0;
-				insertTableView.columns = 0;
-			} );
+				// Prepare custom view for dropdown's panel.
+				insertTableView = new InsertTableView( locale );
+				dropdownView.panelView.children.add( insertTableView );
 
-			dropdownView.on( 'execute', () => {
-				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
-				editor.editing.view.focus();
+				insertTableView.delegate( 'execute' ).to( dropdownView );
+
+				dropdownView.buttonView.on( 'open', () => {
+					// Reset the chooser before showing it to the user.
+					insertTableView.rows = 0;
+					insertTableView.columns = 0;
+				} );
+
+				dropdownView.on( 'execute', () => {
+					editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
+					editor.editing.view.focus();
+				} );
 			} );
 
 			return dropdownView;

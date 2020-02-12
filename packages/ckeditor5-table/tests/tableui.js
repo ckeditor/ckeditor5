@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableUI from '../src/tableui';
+import InsertTableView from '../src/ui/inserttableview';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
@@ -53,6 +54,7 @@ describe( 'TableUI', () => {
 
 		beforeEach( () => {
 			insertTable = editor.ui.componentFactory.create( 'insertTable' );
+			insertTable.isOpen = true; // Dropdown is lazy loaded, so make sure its open (#6193).
 		} );
 
 		it( 'should register insertTable button', () => {
@@ -65,7 +67,7 @@ describe( 'TableUI', () => {
 			const command = editor.commands.get( 'insertTable' );
 
 			command.isEnabled = true;
-			expect( insertTable.buttonView.isOn ).to.be.false;
+			expect( insertTable.buttonView.isOn ).to.be.true;
 			expect( insertTable.buttonView.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
@@ -87,6 +89,8 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should reset rows & columns on dropdown open', () => {
+			insertTable.isOpen = true;
+
 			const tableSizeView = insertTable.panelView.children.first;
 
 			expect( tableSizeView.rows ).to.equal( 0 );
@@ -99,6 +103,14 @@ describe( 'TableUI', () => {
 
 			expect( tableSizeView.rows ).to.equal( 0 );
 			expect( tableSizeView.columns ).to.equal( 0 );
+		} );
+
+		it( 'is not fully initialized when not open', () => {
+			const dropdown = editor.ui.componentFactory.create( 'insertTable' );
+
+			for ( const childView of dropdown.panelView.children ) {
+				expect( childView ).not.to.be.instanceOf( InsertTableView );
+			}
 		} );
 	} );
 
