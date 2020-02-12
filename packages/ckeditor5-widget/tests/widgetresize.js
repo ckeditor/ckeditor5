@@ -365,7 +365,7 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
-	describe( '_getResizerByHandle', () => {
+	describe( '_getResizerByHandle()', () => {
 		it( 'returns properly in case of invalid handle element', () => {
 			const randomElement = document.createElement( 'span' );
 			const plugin = editor.plugins.get( WidgetResize );

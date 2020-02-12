@@ -40,7 +40,7 @@ describe( 'ResizerState', () => {
 		} );
 	} );
 
-	describe( 'begin', () => {
+	describe( 'begin()', () => {
 		const domContentWrapper = document.createElement( 'div' );
 
 		before( () => {
@@ -78,7 +78,7 @@ describe( 'ResizerState', () => {
 		} );
 	} );
 
-	describe( 'update', () => {
+	describe( 'update()', () => {
 		it( 'changes the properties', () => {
 			const state = new ResizerState();
 

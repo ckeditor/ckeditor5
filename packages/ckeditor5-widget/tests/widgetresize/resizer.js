@@ -82,7 +82,7 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
-	describe( '_proposeNewSize', () => {
+	describe( '_proposeNewSize()', () => {
 		let resizer;
 
 		beforeEach( () => {
