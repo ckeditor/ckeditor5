@@ -210,7 +210,7 @@ describe( 'ColorInputView', () => {
 
 		it( 'should set the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-input-color-picker' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-input-color' ) ).to.be.true;
 			expect( view.element.firstChild ).to.equal( inputView.element );
 			expect( view.element.lastChild ).to.equal( view._dropdownView.element );
 		} );

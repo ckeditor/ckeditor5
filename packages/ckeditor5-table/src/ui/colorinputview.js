@@ -107,7 +107,7 @@ export default class ColorInputView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-input-color-picker',
+					'ck-input-color',
 					bind.if( 'hasError', 'ck-error' )
 				],
 				id: bind.to( 'id' ),
