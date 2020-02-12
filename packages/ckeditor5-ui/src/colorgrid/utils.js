@@ -63,14 +63,6 @@ export function normalizeColorOptions( options ) {
 		.filter( option => !!option );
 }
 
-// Fixes the color value string.
-//
-// @param {String} value
-// @returns {String}
-export function normalizeColorCode( value ) {
-	return value.replace( /\s/g, '' );
-}
-
 // Creates a normalized color definition from the user-defined configuration.
 //
 // @param {String|module:ui/colorgrid/colorgrid~ColorDefinition}
