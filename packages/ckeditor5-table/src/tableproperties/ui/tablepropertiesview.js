@@ -306,7 +306,7 @@ export default class TablePropertiesView extends View {
 						operatorLabel,
 						heightInput
 					],
-					class: 'ck-table-properties-form__dimensions-row'
+					class: 'ck-table-form__dimensions-row'
 				} ),
 				// Alignment row.
 				new FormRowView( locale, {
@@ -542,7 +542,7 @@ export default class TablePropertiesView extends View {
 
 		widthInput.set( {
 			label: t( 'Width' ),
-			class: 'ck-table-properties-form__width',
+			class: 'ck-table-form__dimensions-row__width',
 		} );
 
 		widthInput.view.bind( 'value' ).to( this, 'width' );
@@ -571,7 +571,7 @@ export default class TablePropertiesView extends View {
 
 		heightInput.set( {
 			label: t( 'Height' ),
-			class: 'ck-table-properties-form__height',
+			class: 'ck-table-form__dimensions-row__height',
 		} );
 
 		heightInput.view.bind( 'value' ).to( this, 'height' );

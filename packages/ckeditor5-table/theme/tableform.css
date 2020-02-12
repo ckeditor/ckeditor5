@@ -26,7 +26,7 @@
 			}
 		}
 
-		&.ck-table-properties-form__dimensions-row {
+		&.ck-table-form__dimensions-row {
 			flex-wrap: wrap;
 			align-items: center;
 
@@ -39,11 +39,11 @@
 					flex-grow: 0;
 				}
 			}
-		}
-	}
 
-	& .ck-table-form__dimension-operator {
-		flex-grow: 0;
+			& .ck-table-form__dimension-operator {
+				flex-grow: 0;
+			}
+		}
 	}
 
 	& .ck.ck-labeled-view {

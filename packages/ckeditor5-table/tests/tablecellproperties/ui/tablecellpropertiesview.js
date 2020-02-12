@@ -334,7 +334,7 @@ describe( 'table cell properties', () => {
 						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-properties-form__dimensions-row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
 						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
@@ -351,7 +351,7 @@ describe( 'table cell properties', () => {
 						it( 'should be created', () => {
 							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Width' );
-							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__width' );
+							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__width' );
 						} );
 
 						it( 'should reflect #width property', () => {
@@ -383,7 +383,7 @@ describe( 'table cell properties', () => {
 						it( 'should be created', () => {
 							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Height' );
-							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__height' );
+							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__height' );
 						} );
 
 						it( 'should reflect #height property', () => {
