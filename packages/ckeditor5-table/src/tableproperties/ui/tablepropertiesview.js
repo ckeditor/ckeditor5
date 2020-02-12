@@ -54,34 +54,6 @@ export default class TablePropertiesView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
-		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
-		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
-
-		/**
-		 * Tracks information about the DOM focus in the form.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * A collection of child views in the form.
-		 *
-		 * @readonly
-		 * @type {module:ui/viewcollection~ViewCollection}
-		 */
-		this.children = this.createCollection();
-
 		this.set( {
 			/**
 			 * The value of the border style.
@@ -146,6 +118,34 @@ export default class TablePropertiesView extends View {
 			 */
 			alignment: 'center',
 		} );
+
+		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
+		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
+
+		/**
+		 * Tracks information about the DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * A collection of child views in the form.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
+		this.children = this.createCollection();
 
 		/**
 		 * A dropdown that allows selecting the style of the table border.
@@ -440,11 +440,18 @@ export default class TablePropertiesView extends View {
 			this.borderColor = borderColorInput.view.element.value;
 		} );
 
+		this.on( 'change:borderStyle', ( evt, name, value ) => {
+			if ( value === 'none' ) {
+				this.borderColor = '';
+				this.borderWidth = '';
+			}
+		} );
+
 		return {
 			borderRowLabel,
 			borderStyleDropdown,
 			borderColorInput,
-			borderWidthInput,
+			borderWidthInput
 		};
 	}
 
