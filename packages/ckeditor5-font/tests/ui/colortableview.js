@@ -79,6 +79,7 @@ describe( 'ColorTableView', () => {
 			documentColorsLabel: 'Document colors',
 			documentColorsCount: 4
 		} );
+		colorTableView.appendGrids();
 		colorTableView.render();
 	} );
 
@@ -363,6 +364,7 @@ describe( 'ColorTableView', () => {
 					removeButtonLabel: 'Remove color',
 					documentColorsCount: 0
 				} );
+				colorTableView.appendGrids();
 				colorTableView.render();
 			} );
 
@@ -418,6 +420,8 @@ describe( 'ColorTableView', () => {
 					model = editor.model;
 
 					dropdown = editor.ui.componentFactory.create( 'testColor' );
+					dropdown.isOpen = true;
+					dropdown.isOpen = false;
 					dropdown.render();
 
 					staticColorsGrid = dropdown.colorTableView.staticColorsGrid;
