@@ -151,7 +151,17 @@ export default class ColorInputView extends View {
 				style: {
 					backgroundColor: bind.to( 'value' )
 				}
-			}
+			},
+			children: [ {
+				tag: 'span',
+				attributes: {
+					class: [
+						'ck',
+						'ck-dropdown__color-picker-preview--no-color',
+						bind.if( 'value', 'ck-hidden', value => value != '' )
+					]
+				}
+			} ]
 		} );
 
 		dropdown.buttonView.extendTemplate( {
