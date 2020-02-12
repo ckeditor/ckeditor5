@@ -113,10 +113,10 @@ export default class TablePropertiesView extends View {
 			 * The value of the table alignment style.
 			 *
 			 * @observable
-			 * @default 'center'
+			 * @default ''
 			 * @member #alignment
 			 */
-			alignment: 'center',
+			alignment: ''
 		} );
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
@@ -581,7 +581,10 @@ export default class TablePropertiesView extends View {
 			icons: ALIGNMENT_ICONS,
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
-			propertyName: 'alignment'
+			propertyName: 'alignment',
+			nameToValue: name => {
+				return name === 'center' ? '' : name;
+			}
 		} );
 
 		return {
