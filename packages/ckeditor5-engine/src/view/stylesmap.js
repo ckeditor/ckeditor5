@@ -208,8 +208,12 @@ export default class StylesMap {
 	 * @param {String} name Style name.
 	 */
 	remove( name ) {
-		unset( this._styles, toPath( name ) );
+		const path = toPath( name );
+
+		unset( this._styles, path );
 		delete this._styles[ name ];
+
+		this._cleanEmptyObjectsOnPath( path );
 	}
 
 	/**
@@ -405,6 +409,35 @@ export default class StylesMap {
 		}
 
 		return parsed;
+	}
+
+	/**
+	 * Removes empty objects upon removing an entry from internal object.
+	 *
+	 * @param {String} path
+	 * @private
+	 */
+	_cleanEmptyObjectsOnPath( path ) {
+		const pathParts = path.split( '.' );
+		const isChildPath = pathParts.length > 1;
+
+		if ( !isChildPath ) {
+			return;
+		}
+
+		const parentPath = pathParts.splice( 0, pathParts.length - 1 ).join( '.' );
+
+		const parentObject = get( this._styles, parentPath );
+
+		if ( !parentObject ) {
+			return;
+		}
+
+		const isParentEmpty = !Array.from( Object.keys( parentObject ) ).length;
+
+		if ( isParentEmpty ) {
+			this.remove( parentPath );
+		}
 	}
 
 	/**
