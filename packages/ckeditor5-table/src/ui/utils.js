@@ -373,7 +373,7 @@ export const defaultColors = [
 ];
 
 /**
- * A function that helps creating labeled color inputs.
+ * Returns a creator for color input with a label.
  *
  * For given options, it returns a function that creates an instance of
  * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
