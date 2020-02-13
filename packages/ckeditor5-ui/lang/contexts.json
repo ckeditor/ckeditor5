@@ -7,5 +7,20 @@
 	"%0 of %1": "Label for a 'page X of Y' status of a typical next/previous page navigation.",
 	"Editor toolbar": "Label used by assistive technologies describing a generic editor toolbar.",
 	"Dropdown toolbar": "Label used by assistive technologies describing a toolbar displayed inside a dropdown.",
-	"Show more items": "Label of a toolbar button which reveals more toolbar items."
+	"Show more items": "Label of a toolbar button which reveals more toolbar items.",
+	"Black": "Label of a button that applies a black text color (font color and background)",
+	"Dim grey": "Label of a button that applies a dim grey text color (font color and background)",
+	"Grey": "Label of a button that applies a grey text color (font color and background)",
+	"Light grey": "Label of a button that applies a light grey text color (font color and background)",
+	"White": "Label of a button that applies a white text color (font color and background)",
+	"Red": "Label of a button that applies a red text color (font color and background)",
+	"Orange": "Label of a button that applies a orange text color (font color and background)",
+	"Yellow": "Label of a button that applies a yellow text color (font color and background)",
+	"Light green": "Label of a button that applies a light green text color (font color and background)",
+	"Green": "Label of a button that applies a green text color (font color and background)",
+	"Aquamarine": "Label of a button that applies a aquamarine text color (font color and background)",
+	"Turquoise": "Label of a button that applies a turquoise text color (font color and background)",
+	"Light blue": "Label of a button that applies a light blue text color (font color and background)",
+	"Blue": "Label of a button that applies a blue text color (font color and background)",
+	"Purple": "Label of a button that applies a purple text color (font color and background)"
 }
