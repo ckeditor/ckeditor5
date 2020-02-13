@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -30,7 +30,7 @@ msgstr "底線"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "程式碼"
+msgstr "代碼"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
