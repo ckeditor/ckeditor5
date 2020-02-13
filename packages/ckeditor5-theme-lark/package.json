@@ -29,7 +29,7 @@
     "@ckeditor/ckeditor5-paragraph": "^16.0.0",
     "@ckeditor/ckeditor5-remove-format": "^16.0.0",
     "@ckeditor/ckeditor5-restricted-editing": "^16.0.0",
-    "@ckeditor/ckeditor5-special-characters": "^16.0.0",
+    "@ckeditor/ckeditor5-special-characters": "^0.0.1",
     "@ckeditor/ckeditor5-undo": "^16.0.0",
     "@ckeditor/ckeditor5-utils": "^16.0.0",
     "@ckeditor/ckeditor5-table": "^16.0.0",
