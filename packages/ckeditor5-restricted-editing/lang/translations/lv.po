@@ -12,26 +12,26 @@
 #
 msgid ""
 msgstr ""
-"Language: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable editing"
-msgstr "Disable editing"
+msgstr "Atspējot labošanu"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
-msgstr "Enable editing"
+msgstr "Iespējot labošanu"
 
 msgctxt "A label of the button that moves selection to the previous editable region in the content."
 msgid "Previous editable region"
-msgstr "Previous editable region"
+msgstr "Iepriekšējais labošanas reģions"
 
 msgctxt "A label of the button that moves selection to the next editable region in the content."
 msgid "Next editable region"
-msgstr "Next editable region"
+msgstr "Nākamais labošanas reģions"
 
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
-msgstr "Navigate editable regions"
+msgstr "Navigēt caur labojamajiem reģioniem"
