@@ -250,6 +250,11 @@ describe( 'areConnectedThroughProperties()', () => {
 	} );
 
 	describe( 'integration tests', () => {
+		afterEach( () => {
+			delete Editor.builtinPlugins;
+			delete Editor.defaultConfig;
+		} );
+
 		it( 'should return false for two different editors', () => {
 			const editor1 = new Editor( {} );
 			const editor2 = new Editor( {} );
@@ -266,8 +271,6 @@ describe( 'areConnectedThroughProperties()', () => {
 			const editor2 = new Editor();
 
 			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
-
-			delete Editor.builtinPlugins;
 		} );
 
 		it( 'should return false for two different editors inheriting default configuration', () => {
@@ -281,8 +284,6 @@ describe( 'areConnectedThroughProperties()', () => {
 			const editor2 = new Editor();
 
 			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
-
-			delete Editor.defaultConfig;
 		} );
 
 		it( 'should return false for two different editors sharing builtin plugins', () => {
@@ -294,8 +295,6 @@ describe( 'areConnectedThroughProperties()', () => {
 			const editor2 = new Editor();
 
 			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
-
-			delete Editor.builtinPlugins;
 		} );
 	} );
 } );
