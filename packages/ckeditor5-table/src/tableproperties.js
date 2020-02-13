@@ -40,20 +40,18 @@ export default class TableProperties extends Plugin {
 /**
  * A configuration of the table properties user interface (balloon). It allows to define:
  *
- * * the color palette for the table border color style field (`tableProperties.border.colors`),
+ * * the color palette for the table border color style field (`tableProperties.borderColors`),
  * * the color palette for the table background style field (`tableProperties.backgroundColors`).
  *
  *		const tableConfig = {
  *			tableProperties: {
- *				border: {
- *					colors: [
- *						{
- *							color: 'hsl(0, 0%, 90%)',
- *							label: 'Light grey'
- *						},
- *						// ...
- *					]
- *				},
+ *				borderColors: [
+ *					{
+ *						color: 'hsl(0, 0%, 90%)',
+ *						label: 'Light grey'
+ *					},
+ *					// ...
+ *				],
  *				backgroundColors: [
  *					{
  *						color: 'hsl(120, 75%, 60%)',

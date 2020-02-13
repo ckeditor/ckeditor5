@@ -72,9 +72,7 @@ describe( 'table cell properties', () => {
 		describe( 'constructor()', () => {
 			it( 'should define table.tableCellProperties config', () => {
 				expect( editor.config.get( 'table.tableCellProperties' ) ).to.deep.equal( {
-					border: {
-						colors: defaultColors
-					},
+					borderColors: defaultColors,
 					backgroundColors: defaultColors
 				} );
 			} );

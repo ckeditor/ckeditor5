@@ -39,20 +39,18 @@ export default class TableCellProperties extends Plugin {
 /**
  * A configuration of the table cell properties user interface (balloon). It allows to define:
  *
- * * the color palette for the cell border color style field (`tableCellProperties.border.colors`),
+ * * the color palette for the cell border color style field (`tableCellProperties.borderColors`),
  * * the color palette for the cell background style field (`tableCellProperties.backgroundColors`).
  *
  *		const tableConfig = {
  *			tableCellProperties: {
- *				border: {
- *					colors: [
- *						{
- *							color: 'hsl(0, 0%, 90%)',
- *							label: 'Light grey'
- *						},
- *						// ...
- *					]
- *				},
+ *				borderColors: [
+ *					{
+ *						color: 'hsl(0, 0%, 90%)',
+ *						label: 'Light grey'
+ *					},
+ *					// ...
+ *				],
  *				backgroundColors: [
  *					{
  *						color: 'hsl(120, 75%, 60%)',
