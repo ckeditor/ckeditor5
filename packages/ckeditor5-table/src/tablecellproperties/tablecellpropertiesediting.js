@@ -92,7 +92,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableCellBackgroundColor', new TableCellBackgroundColorCommand( editor ) );
 
-		enableProperty( schema, conversion, 'verticalAlignment', 'vertical-align' );
+		enableVerticalAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableCellVerticalAlignment', new TableCellVerticalAlignmentCommand( editor ) );
 	}
 }
@@ -144,6 +144,38 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 				key: 'style',
 				value: {
 					'text-align': 'justify'
+				}
+			}
+		}
+	} );
+}
+
+// Enables the `'verticalAlignment'` attribute for table cells.
+//
+// @param {module:engine/model/schema~Schema} schema
+// @param {module:engine/conversion/conversion~Conversion} conversion
+function enableVerticalAlignmentProperty( schema, conversion ) {
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'verticalAlignment' ]
+	} );
+
+	conversion.attributeToAttribute( {
+		model: {
+			name: 'tableCell',
+			key: 'verticalAlignment',
+			values: [ 'top', 'bottom' ]
+		},
+		view: {
+			top: {
+				key: 'style',
+				value: {
+					'vertical-align': 'top'
+				}
+			},
+			bottom: {
+				key: 'style',
+				value: {
+					'vertical-align': 'bottom'
 				}
 			}
 		}
