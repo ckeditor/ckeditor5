@@ -7,26 +7,9 @@
 	width: 320px;
 
 	& .ck-form__row {
-		&.ck-table-properties-form__dimensions-row,
 		&.ck-table-properties-form__alignment-row {
 			padding: 0;
-		}
 
-		&.ck-table-properties-form__dimensions-row {
-			& .ck-labeled-view > .ck-label {
-				font-size: 10px;
-			}
-
-			& .ck-table-properties-form__width {
-				margin-right: var(--ck-spacing-small);
-			}
-
-			& .ck-table-properties-form__height {
-				margin-left: var(--ck-spacing-small);
-			}
-		}
-
-		&.ck-table-properties-form__alignment-row {
 			& .ck.ck-toolbar {
 				background: none;
 

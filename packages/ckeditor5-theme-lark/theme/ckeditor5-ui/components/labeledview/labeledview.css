@@ -15,3 +15,9 @@
 .ck.ck-labeled-view .ck-labeled-view__status_error {
 	color: var(--ck-color-base-error);
 }
+
+.ck.ck-labeled-view > .ck.ck-label {
+	width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
