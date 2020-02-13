@@ -12,14 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
-"Language: en_AU\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the Save button."
 msgid "Save"
-msgstr "Save"
+msgstr "บันทึก"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "ยกเลิก"
