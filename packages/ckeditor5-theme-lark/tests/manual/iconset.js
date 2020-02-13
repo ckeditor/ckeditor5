@@ -17,6 +17,8 @@ import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/striketh
 import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
 import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
 
+import browseFiles from '@ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg';
+
 import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
 
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
@@ -96,6 +98,9 @@ import '../../theme/ckeditor5-ui/components/editorui/editorui.css';
 const icons = {
 	// basic-styles
 	bold, italic, underline, code, strikethrough, subscript, superscript,
+
+	// ckfinder
+	browseFiles,
 
 	// code block
 	codeBlock,
