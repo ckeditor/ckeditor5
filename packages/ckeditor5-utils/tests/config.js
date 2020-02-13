@@ -6,6 +6,7 @@
 /* global document */
 
 import Config from '../src/config';
+import areConnectedThroughProperties from '../src/areconnectedthroughproperties';
 
 describe( 'Config', () => {
 	let config;
@@ -61,6 +62,25 @@ describe( 'Config', () => {
 
 			expect( config.get( 'foo' ) ).to.equal( 1 );
 			expect( config.get( 'bar' ) ).to.equal( 2 );
+		} );
+
+		it( 'should copy default configuration to not share properties between config instances [watchdog]', () => {
+			const defaultConfig = {
+				foo: 1,
+				bar: [
+					/some regex/,
+					{
+						baz: {}
+					}
+				]
+			};
+
+			const config1 = new Config( {}, defaultConfig );
+			const config2 = new Config( {}, defaultConfig );
+
+			const areStructuresConnected = areConnectedThroughProperties( config1, config2 );
+
+			expect( areStructuresConnected ).to.be.false;
 		} );
 
 		it( 'passed parameters should override default parameters', () => {
