@@ -12,110 +12,110 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
-"Language: fi\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Fontin koko"
+msgstr "ขนาดข้อความ"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr "Hyvin pieni"
+msgstr "เล็กมาก"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr "Pieni"
+msgstr "เล็ก"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr "Suuri"
+msgstr "ใหญ่"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr "Hyvin suuri"
+msgstr "ใหญ่มาก"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr "Fonttiperhe"
+msgstr "แบบอักษร"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
-msgstr "Oletus"
+msgstr "ค่าเริ่มต้น"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr "Fontin väri"
+msgstr "สีข้อความ"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr "Fontin taustaväri"
+msgstr "สีพื้นหลังข้อความ"
 
 msgctxt "Label or a button that removes the color from the text (font color and background)."
 msgid "Remove color"
-msgstr "Poista väri"
+msgstr "ลบสี"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "สีเอกสาร"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
-msgstr "Musta"
+msgstr "สีดำ"
 
 msgctxt "Label of a button that applies a dim grey text color (font color and background)"
 msgid "Dim grey"
-msgstr ""
+msgstr "สีเทาเข้ม"
 
 msgctxt "Label of a button that applies a grey text color (font color and background)"
 msgid "Grey"
-msgstr "Harmaa"
+msgstr "สีเทา"
 
 msgctxt "Label of a button that applies a light grey text color (font color and background)"
 msgid "Light grey"
-msgstr "Vaaleanharmaa"
+msgstr "สีเทาอ่อน"
 
 msgctxt "Label of a button that applies a white text color (font color and background)"
 msgid "White"
-msgstr "Valkoinen"
+msgstr "สีขาว"
 
 msgctxt "Label of a button that applies a red text color (font color and background)"
 msgid "Red"
-msgstr "Punainen"
+msgstr "สีแดง"
 
 msgctxt "Label of a button that applies a orange text color (font color and background)"
 msgid "Orange"
-msgstr "Oranssi"
+msgstr "สีส้ม"
 
 msgctxt "Label of a button that applies a yellow text color (font color and background)"
 msgid "Yellow"
-msgstr "Keltainen"
+msgstr "สีเหลือง"
 
 msgctxt "Label of a button that applies a light green text color (font color and background)"
 msgid "Light green"
-msgstr "Vaaleanvihreä"
+msgstr "สีเขียวอ่อน"
 
 msgctxt "Label of a button that applies a green text color (font color and background)"
 msgid "Green"
-msgstr "Vihreä"
+msgstr "สีเขียว"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr "Akvamariini"
+msgstr "พลอยสีฟ้า"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr "Turkoosi"
+msgstr "สีเขียวขุ่น"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
-msgstr "Vaaleansininen"
+msgstr "สีฟ้า"
 
 msgctxt "Label of a button that applies a blue text color (font color and background)"
 msgid "Blue"
-msgstr "Sininen"
+msgstr "สีน้ำเงิน"
 
 msgctxt "Label of a button that applies a purple text color (font color and background)"
 msgid "Purple"
-msgstr "Purppura"
+msgstr "สีม่วง"
