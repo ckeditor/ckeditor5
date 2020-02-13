@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Russian (https://www.transifex.com/ckeditor/teams/11143/ru/)\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "A message that a file upload is in progress."
 msgid "Upload in progress"
-msgstr "Идёт загрузка"
+msgstr "กำลังดำเนินการอัปโหลด"
