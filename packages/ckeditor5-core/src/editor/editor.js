@@ -61,6 +61,8 @@ export default class Editor {
 		this._context = config.context || new Context( { language: config.language } );
 		this._context._addEditor( this, !config.context );
 
+		// Clone the plugins to make sure that the plugin array will not be shared
+		// between editors and make the watchdog feature work correctly.
 		const availablePlugins = Array.from( this.constructor.builtinPlugins || [] );
 
 		/**
