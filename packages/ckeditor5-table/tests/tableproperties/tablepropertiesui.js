@@ -21,7 +21,7 @@ import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesedi
 import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui';
 import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview';
 
-describe.only( 'table properties', () => {
+describe( 'table properties', () => {
 	describe( 'TablePropertiesUI', () => {
 		let editor, editorElement, contextualBalloon,
 			tablePropertiesUI, tablePropertiesView, tablePropertiesButton,
