@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Persian (https://www.transifex.com/ckeditor/teams/11143/fa/)\n"
-"Language: fa\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
-msgstr "نوار ابزارک ها"
+msgstr "แถมเครื่องมือวิดเจ็ต"
