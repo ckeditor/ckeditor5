@@ -12,14 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
-"Language: lv\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the Undo feature."
 msgid "Undo"
-msgstr "Atsaukt"
+msgstr "ย้อนกลับ"
 
 msgctxt "Toolbar button tooltip for the Redo feature."
 msgid "Redo"
-msgstr "Uz priekšu"
+msgstr "ทำซ้ำ"
