@@ -11,6 +11,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+import ColorInputView from './colorinputview';
 import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
@@ -255,10 +256,215 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameT
 	}
 }
 
+/**
+ * A default color palette used by various user interfaces related to tables, for instance,
+ * by {@link module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI} or
+ * {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI}.
+ *
+ * The color palette follows the {@link module:table/table~TableColorConfig table color configuration format}
+ * and contains the following color definitions:
+ *
+ *		const defaultColors = [
+ *			{
+ *				color: 'hsl(0, 0%, 0%)',
+ *				label: 'Black'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 30%)',
+ *				label: 'Dim grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 60%)',
+ *				label: 'Grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 90%)',
+ *				label: 'Light grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 100%)',
+ *				label: 'White',
+ *				hasBorder: true
+ *			},
+ *			{
+ *				color: 'hsl(0, 75%, 60%)',
+ *				label: 'Red'
+ *			},
+ *			{
+ *				color: 'hsl(30, 75%, 60%)',
+ *				label: 'Orange'
+ *			},
+ *			{
+ *				color: 'hsl(60, 75%, 60%)',
+ *				label: 'Yellow'
+ *			},
+ *			{
+ *				color: 'hsl(90, 75%, 60%)',
+ *				label: 'Light green'
+ *			},
+ *			{
+ *				color: 'hsl(120, 75%, 60%)',
+ *				label: 'Green'
+ *			},
+ *			{
+ *				color: 'hsl(150, 75%, 60%)',
+ *				label: 'Aquamarine'
+ *			},
+ *			{
+ *				color: 'hsl(180, 75%, 60%)',
+ *				label: 'Turquoise'
+ *			},
+ *			{
+ *				color: 'hsl(210, 75%, 60%)',
+ *				label: 'Light blue'
+ *			},
+ *			{
+ *				color: 'hsl(240, 75%, 60%)',
+ *				label: 'Blue'
+ *			},
+ *			{
+ *				color: 'hsl(270, 75%, 60%)',
+ *				label: 'Purple'
+ *			}
+ *		];
+ */
+export const defaultColors = [
+	{
+		color: 'hsl(0, 0%, 0%)',
+		label: 'Black'
+	},
+	{
+		color: 'hsl(0, 0%, 30%)',
+		label: 'Dim grey'
+	},
+	{
+		color: 'hsl(0, 0%, 60%)',
+		label: 'Grey'
+	},
+	{
+		color: 'hsl(0, 0%, 90%)',
+		label: 'Light grey'
+	},
+	{
+		color: 'hsl(0, 0%, 100%)',
+		label: 'White',
+		hasBorder: true
+	},
+	{
+		color: 'hsl(0, 75%, 60%)',
+		label: 'Red'
+	},
+	{
+		color: 'hsl(30, 75%, 60%)',
+		label: 'Orange'
+	},
+	{
+		color: 'hsl(60, 75%, 60%)',
+		label: 'Yellow'
+	},
+	{
+		color: 'hsl(90, 75%, 60%)',
+		label: 'Light green'
+	},
+	{
+		color: 'hsl(120, 75%, 60%)',
+		label: 'Green'
+	},
+	{
+		color: 'hsl(150, 75%, 60%)',
+		label: 'Aquamarine'
+	},
+	{
+		color: 'hsl(180, 75%, 60%)',
+		label: 'Turquoise'
+	},
+	{
+		color: 'hsl(210, 75%, 60%)',
+		label: 'Light blue'
+	},
+	{
+		color: 'hsl(240, 75%, 60%)',
+		label: 'Blue'
+	},
+	{
+		color: 'hsl(270, 75%, 60%)',
+		label: 'Purple'
+	}
+];
+
+/**
+ * Returns a creator for color input with a label.
+ *
+ * For given options, it returns a function that creates an instance of
+ * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
+ * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
+ *
+ * The helper does the following:
+ *
+ * * It sets color input's `id` and `ariaDescribedById` attributes.
+ * * It binds color input's `isReadOnly` to the labeled view.
+ * * It binds color input's `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when user starts typing in the color input.
+ *
+ * Usage:
+ *
+ *		const colorInputCreator = getLabeledColorInputCreator( {
+ *			colorConfig: [ ... ],
+ *			columns: 3,
+ *		} );
+ *
+ *		const labeledInputView = new LabeledView( locale, colorInputCreator );
+ *		console.log( labeledInputView.view ); // An color input instance.
+ *
+ * @private
+ * @param options Color input options.
+ * @param {module:table/table~TableColorConfig} options.colorConfig The configuration of the color palette
+ * displayed in the input's dropdown.
+ * @param {Number} options.columns The configuration of the number of columns the color palette consists of
+ * in the input's dropdown.
+ * @returns {Function}
+ */
+export function getLabeledColorInputCreator( options ) {
+	return ( labeledView, viewUid, statusUid ) => {
+		const inputView = new ColorInputView( labeledView.locale, {
+			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
+			columns: options.columns
+		} );
+
+		inputView.set( {
+			id: viewUid,
+			ariaDescribedById: statusUid
+		} );
+
+		inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
+		inputView.bind( 'errorText' ).to( labeledView );
+
+		inputView.on( 'input', () => {
+			// UX: Make the error text disappear and disable the error indicator as the user
+			// starts fixing the errors.
+			labeledView.errorText = null;
+		} );
+
+		return inputView;
+	};
+}
+
 // A simple helper method to detect number strings.
 // I allows full number notation, so omitting 0 is not allowed:
 function isNumberString( value ) {
 	const parsedValue = parseFloat( value );
 
 	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
+}
+
+// @param {Array.<Object>} colorConfig
+// @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+function colorConfigToColorGridDefinitions( colorConfig ) {
+	return colorConfig.map( item => ( {
+		color: item.model,
+		label: item.label,
+		options: {
+			hasBorder: item.hasBorder
+		}
+	} ) );
 }

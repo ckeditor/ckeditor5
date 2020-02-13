@@ -20,6 +20,7 @@ import Table from '../../src/table';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
+import { defaultColors } from '../../src/ui/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesUI', () => {
@@ -68,6 +69,15 @@ describe( 'table cell properties', () => {
 			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 		} );
 
+		describe( 'constructor()', () => {
+			it( 'should define table.tableCellProperties config', () => {
+				expect( editor.config.get( 'table.tableCellProperties' ) ).to.deep.equal( {
+					borderColors: defaultColors,
+					backgroundColors: defaultColors
+				} );
+			} );
+		} );
+
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
 				expect( tableCellPropertiesUI._undoStepBatch ).to.be.null;
@@ -80,6 +90,14 @@ describe( 'table cell properties', () => {
 
 				it( 'should be rendered', () => {
 					expect( tableCellPropertiesUI.view.isRendered ).to.be.true;
+				} );
+
+				it( 'should get the border colors configurations', () => {
+					expect( tableCellPropertiesView.options.borderColors ).to.have.length( 15 );
+				} );
+
+				it( 'should get the background colors configurations', () => {
+					expect( tableCellPropertiesView.options.backgroundColors ).to.have.length( 15 );
 				} );
 			} );
 

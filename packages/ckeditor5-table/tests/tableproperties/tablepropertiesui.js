@@ -20,6 +20,7 @@ import Table from '../../src/table';
 import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
 import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui';
 import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview';
+import { defaultColors } from '../../src/ui/utils';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesUI', () => {
@@ -68,6 +69,15 @@ describe( 'table properties', () => {
 			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 		} );
 
+		describe( 'constructor()', () => {
+			it( 'should define table.tableProperties config', () => {
+				expect( editor.config.get( 'table.tableProperties' ) ).to.deep.equal( {
+					borderColors: defaultColors,
+					backgroundColors: defaultColors
+				} );
+			} );
+		} );
+
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
 				expect( tablePropertiesUI._undoStepBatch ).to.be.null;
@@ -80,6 +90,14 @@ describe( 'table properties', () => {
 
 				it( 'should be rendered', () => {
 					expect( tablePropertiesUI.view.isRendered ).to.be.true;
+				} );
+
+				it( 'should get the border colors configurations', () => {
+					expect( tablePropertiesView.options.borderColors ).to.have.length( 15 );
+				} );
+
+				it( 'should get the background colors configurations', () => {
+					expect( tablePropertiesView.options.backgroundColors ).to.have.length( 15 );
 				} );
 			} );
 

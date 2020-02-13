@@ -19,10 +19,15 @@ import {
 	getBalloonCellPositionData,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
+	defaultColors,
 	lengthFieldValidator,
 	lineWidthFieldValidator,
 	repositionContextualBalloon
 } from '../ui/utils';
+import {
+	getLocalizedColorOptions,
+	normalizeColorOptions
+} from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
 
 const ERROR_TEXT_TIMEOUT = 500;
@@ -49,6 +54,18 @@ export default class TableCellPropertiesUI extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TableCellPropertiesUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'table.tableCellProperties', {
+			borderColors: defaultColors,
+			backgroundColors: defaultColors
+		} );
 	}
 
 	/**
@@ -118,7 +135,15 @@ export default class TableCellPropertiesUI extends Plugin {
 	_createPropertiesView() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-		const view = new TableCellPropertiesView( editor.locale );
+		const config = editor.config.get( 'table.tableCellProperties' );
+		const borderColorsConfig = normalizeColorOptions( config.borderColors );
+		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
+		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
+		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+		const view = new TableCellPropertiesView( editor.locale, {
+			borderColors: localizedBorderColors,
+			backgroundColors: localizedBackgroundColors
+		} );
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.

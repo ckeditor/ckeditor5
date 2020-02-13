@@ -21,7 +21,12 @@ import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { fillToolbar, getBorderStyleDefinitions, getBorderStyleLabels } from '../../ui/utils';
+import {
+	fillToolbar,
+	getBorderStyleDefinitions,
+	getBorderStyleLabels,
+	getLabeledColorInputCreator
+} from '../../ui/utils';
 import FormRowView from '../../ui/formrowview';
 import FormHeaderView from '../../ui/formheaderview';
 
@@ -49,9 +54,16 @@ const ALIGNMENT_ICONS = {
  */
 export default class TablePropertiesView extends View {
 	/**
-	 * @inheritDoc
+	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param {Object} options Additional configuration of the view.
+	 * @param {module:table/table~TableColorConfig} options.borderColors A configuration of the border
+	 * color palette used by the
+	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#borderColorInput}.
+	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
+	 * color palette used by the
+	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
 	 */
-	constructor( locale ) {
+	constructor( locale, options ) {
 		super( locale );
 
 		this.set( {
@@ -119,6 +131,14 @@ export default class TablePropertiesView extends View {
 			alignment: ''
 		} );
 
+		/**
+		 * Options passed to the view. See {@link #constructor} to learn more.
+		 *
+		 * @protected
+		 * @member {Object}
+		 */
+		this.options = options;
+
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
@@ -167,7 +187,7 @@ export default class TablePropertiesView extends View {
 		 * An input that allows specifying the color of the table border.
 		 *
 		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 * @member {module:table/ui/colorinputview~ColorInputView}
 		 */
 		this.borderColorInput = borderColorInput;
 
@@ -175,7 +195,7 @@ export default class TablePropertiesView extends View {
 		 * An input that allows specifying the table background color.
 		 *
 		 * @readonly
-		 * @member {module:ui/inputtext/inputtextview~InputTextView}
+		 * @member {module:table/ui/colorinputview~ColorInputView}
 		 */
 		this.backgroundInput = this._createBackgroundField();
 
@@ -286,7 +306,7 @@ export default class TablePropertiesView extends View {
 						operatorLabel,
 						heightInput
 					],
-					class: 'ck-table-properties-form__dimensions-row'
+					class: 'ck-table-form__dimensions-row'
 				} ),
 				// Alignment row.
 				new FormRowView( locale, {
@@ -377,6 +397,10 @@ export default class TablePropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const colorInputCreator = getLabeledColorInputCreator( {
+			colorConfig: this.options.borderColors,
+			columns: 5
+		} );
 		const locale = this.locale;
 		const t = this.t;
 
@@ -427,13 +451,18 @@ export default class TablePropertiesView extends View {
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = new LabeledView( locale, createLabeledInputText );
-		borderColorInput.label = t( 'Color' );
+		const borderColorInput = new LabeledView( locale, colorInputCreator );
+
+		borderColorInput.set( {
+			label: t( 'Color' ),
+			class: 'ck-table-form__border-color',
+		} );
+
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 
 		borderColorInput.view.on( 'input', () => {
-			this.borderColor = borderColorInput.view.element.value;
+			this.borderColor = borderColorInput.view.value;
 		} );
 
 		// Reset the border color and width fields when style is "none".
@@ -462,10 +491,14 @@ export default class TablePropertiesView extends View {
 	 * @returns {module:ui/labeledview/labeledview~LabeledView}
 	 */
 	_createBackgroundField() {
+		const backgroundInputCreator = getLabeledColorInputCreator( {
+			colorConfig: this.options.backgroundColors,
+			columns: 5
+		} );
 		const locale = this.locale;
 		const t = this.t;
 
-		const backgroundInput = new LabeledView( locale, createLabeledInputText );
+		const backgroundInput = new LabeledView( locale, backgroundInputCreator );
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
@@ -474,7 +507,7 @@ export default class TablePropertiesView extends View {
 
 		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
 		backgroundInput.view.on( 'input', () => {
-			this.backgroundColor = backgroundInput.view.element.value;
+			this.backgroundColor = backgroundInput.view.value;
 		} );
 
 		return backgroundInput;
@@ -504,7 +537,7 @@ export default class TablePropertiesView extends View {
 
 		widthInput.set( {
 			label: t( 'Width' ),
-			class: 'ck-table-properties-form__width',
+			class: 'ck-table-form__dimensions-row__width',
 		} );
 
 		widthInput.view.bind( 'value' ).to( this, 'width' );
@@ -533,7 +566,7 @@ export default class TablePropertiesView extends View {
 
 		heightInput.set( {
 			label: t( 'Height' ),
-			class: 'ck-table-properties-form__height',
+			class: 'ck-table-form__dimensions-row__height',
 		} );
 
 		heightInput.view.bind( 'value' ).to( this, 'height' );
