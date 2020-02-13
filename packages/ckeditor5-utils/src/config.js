@@ -30,7 +30,9 @@ export default class Config {
 
 		// Set default configuration.
 		if ( defaultConfigurations ) {
-			this.define( defaultConfigurations );
+			// Clone the configuration to make sure that the properties will not be shared
+			// between editors and make the watchdog feature work correctly.
+			this.define( cloneConfig( defaultConfigurations ) );
 		}
 
 		// Set initial configuration.
@@ -234,7 +236,7 @@ function cloneConfig( source ) {
 	return cloneDeepWith( source, leaveDOMReferences );
 }
 
-// A customizer function for cloneDeepWith.
+// A customized function for cloneDeepWith.
 // It will leave references to DOM Elements instead of cloning them.
 //
 // @param {*} value
