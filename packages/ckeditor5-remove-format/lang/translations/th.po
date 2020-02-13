@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Afrikaans (https://www.transifex.com/ckeditor/teams/11143/af/)\n"
-"Language: af\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "The label of the remove format toolbar button."
 msgid "Remove Format"
-msgstr "Verwyder formatering"
+msgstr "ลบรูปแบบ"
