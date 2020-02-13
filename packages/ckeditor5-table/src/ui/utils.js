@@ -171,7 +171,7 @@ export function lengthFieldValidator( value ) {
  * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
  *
  * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
- * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
+ * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} view
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
 export function getBorderStyleDefinitions( view ) {
@@ -182,15 +182,19 @@ export function getBorderStyleDefinitions( view ) {
 		const definition = {
 			type: 'button',
 			model: new Model( {
-				_borderStyleValue: style,
+				_borderStyleValue: style === 'none' ? '' : style,
 				label: styleLabels[ style ],
-				withText: true,
+				withText: true
 			} )
 		};
 
-		definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
-			return value === style;
-		} );
+		if ( style === 'none' ) {
+			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => !value );
+		} else {
+			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
+				return value === style;
+			} );
+		}
 
 		itemDefinitions.add( definition );
 	}
