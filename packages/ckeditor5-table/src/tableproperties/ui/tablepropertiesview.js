@@ -420,7 +420,7 @@ export default class TablePropertiesView extends View {
 		} );
 
 		borderWidthInput.view.bind( 'value' ).to( this, 'borderWidth' );
-		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => !!value );
+		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 		borderWidthInput.view.on( 'input', () => {
 			this.borderWidth = borderWidthInput.view.element.value;
 		} );
@@ -430,7 +430,7 @@ export default class TablePropertiesView extends View {
 		const borderColorInput = new LabeledView( locale, createLabeledInputText );
 		borderColorInput.label = t( 'Color' );
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
-		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => !!value );
+		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 
 		borderColorInput.view.on( 'input', () => {
 			this.borderColor = borderColorInput.view.element.value;
@@ -439,7 +439,7 @@ export default class TablePropertiesView extends View {
 		// Reset the border color and width fields when style is "none".
 		// https://github.com/ckeditor/ckeditor5/issues/6227
 		this.on( 'change:borderStyle', ( evt, name, value ) => {
-			if ( !value ) {
+			if ( !isBorderStyleSet( value ) ) {
 				this.borderColor = '';
 				this.borderWidth = '';
 			}
@@ -656,4 +656,8 @@ export default class TablePropertiesView extends View {
 			right: t( 'Align table to the right' )
 		};
 	}
+}
+
+function isBorderStyleSet( value ) {
+	return !!value;
 }
