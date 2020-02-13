@@ -12,82 +12,82 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Ukrainian (https://www.transifex.com/ckeditor/teams/11143/uk/)\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Вставити таблицю"
+msgstr "แทรกตาราง"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Заголовок стовпця"
+msgstr "หัวข้อคอลัมน์"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Вставити стовпець зліва"
+msgstr "แทรกคอลัมน์ทางซ้าย"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Вставити стовпець справа"
+msgstr "แทรกคอลัมน์ทางขวา"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Видалити стовпець"
+msgstr "ลบคอลัมน์"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Стовпець"
+msgstr "คอลัมน์"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Заголовок рядка"
+msgstr "ส่วนหัวแถว"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Вставити рядок зверху"
+msgstr "แทรกส่วนหัวด้านล่าง"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Вставити рядок знизу"
+msgstr "แทรกส่วนหัวด้านบน"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Видалити рядок"
+msgstr "ลบแถว"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Рядок"
+msgstr "แถว"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Поєднати комірки вгору"
+msgstr "ผสานเซลล์ด้านบน"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Поєднати комірки праворуч"
+msgstr "ผสานเซลล์ด้านขวา"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Поєднати комірки внизу"
+msgstr "ผสานเซลล์ด้านล่าง"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Поєднати комірки ліворуч"
+msgstr "ผสานเซลล์ด้านซ้าย"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Розділити комірки вертикально"
+msgstr "แยกเซลล์แนวตั้ง"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Розділити комірки горизонтально"
+msgstr "แยกเซลล์แนวนอน"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Поєднати комірки"
+msgstr "ผสานเซลล์"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr "Панель інструментів таблиці"
+msgstr "เครื่องมือตาราง"
