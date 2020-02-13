@@ -455,7 +455,7 @@ export default class TableCellPropertiesView extends View {
 		} );
 
 		borderStyleDropdown.view.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
-			return styleLabels[ value ];
+			return styleLabels[ value ? value : 'none' ];
 		} );
 
 		borderStyleDropdown.view.on( 'execute', evt => {
