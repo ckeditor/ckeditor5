@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Galician (https://www.transifex.com/ckeditor/teams/11143/gl/)\n"
-"Language: gl\n"
+"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Horizontal line"
 msgid "Horizontal line"
-msgstr "Liña horizontal"
+msgstr "Línea horizontal"
