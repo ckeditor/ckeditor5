@@ -11,9 +11,6 @@
 
 	& .ck-editor__top .ck-sticky-panel .ck-toolbar {
 		/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
-		/* https://github.com/ckeditor/ckeditor5/issues/6220 */
-		z-index: calc(var(--ck-z-modal) + 1);
-
-		position: relative;
+		z-index: var(--ck-z-modal);
 	}
 }
