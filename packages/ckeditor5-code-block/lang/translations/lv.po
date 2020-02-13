@@ -12,14 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgctxt "A label of the button that allows inserting a new code block into the editor content."
 msgid "Insert code block"
-msgstr "Insert code block"
+msgstr "Ievietot koda bloku"
 
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
-msgstr "Plain text"
+msgstr "Vienkāršs teksts"

@@ -12,9 +12,9 @@
 #
 msgid ""
 msgstr ""
-"Language: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Language: en_AU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "A label of the button that allows inserting a new code block into the editor content."
 msgid "Insert code block"
