@@ -29,6 +29,8 @@ The {@link api/basic-styles basic styles} package provides text formatting featu
 
 <info-box info>
 	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link builds/guides/overview editor builds}.
+
+	The {@link module:basic-styles/code~Code} feature provides support for inline code formatting. To create blocks of pre-formatted code with a specific programming language assigned, use the {@link features/code-blocks code block feature}.
 </info-box>
 
 ### Supported input
