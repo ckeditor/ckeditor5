@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -54,8 +54,8 @@ msgstr "Nadpis 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "Vložte nadpis"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "Vložte obsah"

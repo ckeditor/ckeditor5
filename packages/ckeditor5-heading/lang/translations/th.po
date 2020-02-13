@@ -12,33 +12,33 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Khmer (https://www.transifex.com/ckeditor/teams/11143/km/)\n"
-"Language: km\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "កថាខណ្ឌ"
+msgstr "ย่อหน้า"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "ក្បាលអត្ថបទ"
+msgstr "หัวข้อ"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "ជ្រើសរើស​ក្បាលអត្ថបទ"
+msgstr "เลือกขนาดหัวข้อ"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "ក្បាលអត្ថបទ 1"
+msgstr "หัวข้อขนาด 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "ក្បាលអត្ថបទ 2"
+msgstr ""
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "ក្បាលអត្ថបទ 3"
+msgstr ""
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
