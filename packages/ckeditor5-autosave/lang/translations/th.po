@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Turkish (https://www.transifex.com/ckeditor/teams/11143/tr/)\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "A message that the data is being saved."
 msgid "Saving changes"
-msgstr "Değişiklikler Kaydediliyor"
+msgstr "บันทึกการเปลี่ยนแปลง<br>"
