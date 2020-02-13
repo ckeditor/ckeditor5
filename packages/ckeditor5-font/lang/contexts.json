@@ -9,20 +9,5 @@
 	"Font Color": "Label of a button that allows selecting a font color.",
 	"Font Background Color": "Label of a button that allows selecting a font background color.",
 	"Remove color": "Label or a button that removes the color from the text (font color and background).",
-	"Document colors": "Title of a color picker section containing the colors currently used in the document.",
-	"Black": "Label of a button that applies a black text color (font color and background)",
-	"Dim grey": "Label of a button that applies a dim grey text color (font color and background)",
-	"Grey": "Label of a button that applies a grey text color (font color and background)",
-	"Light grey": "Label of a button that applies a light grey text color (font color and background)",
-	"White": "Label of a button that applies a white text color (font color and background)",
-	"Red": "Label of a button that applies a red text color (font color and background)",
-	"Orange": "Label of a button that applies a orange text color (font color and background)",
-	"Yellow": "Label of a button that applies a yellow text color (font color and background)",
-	"Light green": "Label of a button that applies a light green text color (font color and background)",
-	"Green": "Label of a button that applies a green text color (font color and background)",
-	"Aquamarine": "Label of a button that applies a aquamarine text color (font color and background)",
-	"Turquoise": "Label of a button that applies a turquoise text color (font color and background)",
-	"Light blue": "Label of a button that applies a light blue text color (font color and background)",
-	"Blue": "Label of a button that applies a blue text color (font color and background)",
-	"Purple": "Label of a button that applies a purple text color (font color and background)"
+	"Document colors": "Title of a color picker section containing the colors currently used in the document."
 }
