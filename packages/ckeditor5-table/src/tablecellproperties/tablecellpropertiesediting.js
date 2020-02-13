@@ -24,6 +24,8 @@ import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand'
 import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
 
+const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
+
 /**
  * The table cell properties editing feature.
  *
@@ -180,6 +182,21 @@ function enableVerticalAlignmentProperty( schema, conversion ) {
 			}
 		}
 	} );
+
+	conversion.for( 'upcast' )
+		// Support for backwards compatibility and pasting from other sources.
+		.attributeToAttribute( {
+			view: {
+				attributes: {
+					valign: VALIGN_VALUES_REG_EXP
+				}
+			},
+			model: {
+				name: 'tableCell',
+				key: 'verticalAlignment',
+				value: viewElement => viewElement.getAttribute( 'valign' )
+			}
+		} );
 }
 
 // Enables conversion for an attribute for simple view-model mappings.

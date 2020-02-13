@@ -803,6 +803,27 @@ describe( 'table cell properties', () => {
 
 					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
 				} );
+
+				it( 'should upcast "top" valign attribute', () => {
+					editor.setData( '<table><tr><td valign="top">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+				} );
+
+				it( 'should upcast "bottom" valign attribute', () => {
+					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
+				} );
+
+				it( 'should not upcast "middle" valign attribute', () => {
+					editor.setData( '<table><tr><td valign="middle">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
