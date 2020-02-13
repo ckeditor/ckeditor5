@@ -251,6 +251,39 @@ describe( 'ImageResize', () => {
 		} );
 	} );
 
+	describe( 'undo integration', () => {
+		beforeEach( () => createEditor() );
+
+		beforeEach( () => {
+			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			widget = viewDocument.getRoot().getChild( 1 );
+		} );
+
+		it( 'has correct border size after undo', async () => {
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
+			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' );
+			const finalPointerPosition = initialPosition.clone().moveBy( 0, 10 );
+
+			mouseMock.dragTo( editor, domParts.resizeHandle, {
+				from: initialPosition,
+				to: finalPointerPosition
+			} );
+
+			expect( '120px' ).to.be.equal( domParts.widget.style.width );
+
+			editor.commands.get( 'undo' ).execute();
+
+			await wait( 200 ); // ui#update event is throttled.
+
+			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
+			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
+
+			expect( shadowBoundingRect.width ).to.be.equal( 100 );
+			expect( shadowBoundingRect.height ).to.be.equal( 50 );
+		} );
+	} );
+
 	describe( 'table integration', () => {
 		beforeEach( () => createEditor() );
 
