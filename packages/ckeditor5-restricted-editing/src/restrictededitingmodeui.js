@@ -14,9 +14,9 @@ import lockIcon from '../theme/icons/contentlock.svg';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
- * The Restricted Editing Mode UI feature.
+ * The restricted editing mode UI feature.
  *
- * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate exceptions across
+ * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate between exceptions across
  * the document.
  *
  * @extends module:core/plugin~Plugin
@@ -74,9 +74,9 @@ export default class RestrictedEditingModeUI extends Plugin {
 	 * Returns a definition of the navigation button to be used in the dropdown.
 	 *
 	 * @private
-	 * @param {String} commandName Name of the command the button represents.
-	 * @param {String} label Translated label of the button.
-	 * @param {String} keystroke Keystroke of the button.
+	 * @param {String} commandName The name of the command that the button represents.
+	 * @param {String} label The translated label of the button.
+	 * @param {String} keystroke The button keystroke.
 	 * @returns {module:ui/dropdown/utils~ListDropdownItemDefinition}
 	 */
 	_getButtonDefinition( commandName, label, keystroke ) {

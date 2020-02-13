@@ -9,8 +9,8 @@
 
 /**
  * Returns a single "restricted-editing-exception" marker at a given position. Contrary to
- * {@link module:engine/model/markercollection~MarkerCollection#getMarkersAtPosition} it return a marker also when the postion is equal
- * to one of markers start or end positions.
+ * {@link module:engine/model/markercollection~MarkerCollection#getMarkersAtPosition}, it returnd a marker also when the postion is
+ * equal to one of the marker's start or end positions.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {module:engine/model/position~Position} position
@@ -29,7 +29,7 @@ export function getMarkerAtPosition( editor, position ) {
 }
 
 /**
- * Checks if the position is fully contained in range. Positions equal to range start or end are considered "in".
+ * Checks if the position is fully contained in the range. Positions equal to range start or end are considered "in".
  *
  * @param {module:engine/model/range~Range} range
  * @param {module:engine/model/position~Position} position
@@ -44,7 +44,7 @@ export function isPositionInRangeBoundaries( range, position ) {
 }
 
 /**
- * Checks if the selection is fully contained in marker. Positions on marker boundaries are considered "in".
+ * Checks if the selection is fully contained in the marker. Positions on marker boundaries are considered "in".
  *
  *		<marker>[]foo</marker> -> true
  *		<marker>f[oo]</marker> -> true

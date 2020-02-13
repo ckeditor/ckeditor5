@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import unlockIcon from '../theme/icons/contentunlock.svg';
 
 /**
- * The Standard Editing Mode UI feature.
+ * The standard editing mode UI feature.
  *
  * It introduces the `'restrictedEditingException'` button that marks text as unrestricted for editing.
  *

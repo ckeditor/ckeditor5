@@ -11,10 +11,10 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
 
 /**
- * The Standard Editing Mode editing feature.
+ * The standard editing mode editing feature.
  *
- * * It introduces the `restrictedEditingException` text attributes that is rendered as
- * `<spans>` with the `restricted-editing-exception` CSS class.
+ * * It introduces the `restrictedEditingException` text attribute that is rendered as
+ * a `<span>` element with the `restricted-editing-exception` CSS class.
  * * It registers the `'restrictedEditingException'` command.
  *
  * @extends module:core/plugin~Plugin

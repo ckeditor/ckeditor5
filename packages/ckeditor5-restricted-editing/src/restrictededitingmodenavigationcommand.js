@@ -18,14 +18,14 @@ export default class RestrictedEditingModeNavigationCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {String} direction Direction the command works. Can be either `'forward'` or `'backward'`.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {String} direction The direction that the command works. Can be either `'forward'` or `'backward'`.
 	 */
 	constructor( editor, direction ) {
 		super( editor );
 
 		/**
-		 * A direction of the command. Can be `'forward'` or `'backward'`.
+		 * The direction of the command. Can be `'forward'` or `'backward'`.
 		 *
 		 * @readonly
 		 * @private

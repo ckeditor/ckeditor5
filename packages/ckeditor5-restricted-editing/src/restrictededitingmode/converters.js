@@ -13,14 +13,14 @@ import { getMarkerAtPosition } from './utils';
 const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
 
 /**
- * Adds a visual highlight style to a restricted editing exception the selection is anchored to.
+ * Adds a visual highlight style to a restricted editing exception that the selection is anchored to.
  *
- * Highlight is turned on by adding the `.restricted-editing-exception_selected` class to the
+ * The highlight is turned on by adding the `.ck-restricted-editing-exception_selected` class to the
  * exception in the view:
  *
- * * The class is removed before the conversion has started, as callbacks added with the `'highest'` priority
+ * * The class is removed before the conversion starts, as callbacks added with the `'highest'` priority
  * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events.
- * * The class is added in the view post fixer, after other changes in the model tree were converted to the view.
+ * * The class is added in the view post-fixer, after other changes in the model tree are converted to the view.
  *
  * This way, adding and removing the highlight does not interfere with conversion.
  *
@@ -67,7 +67,7 @@ export function setupExceptionHighlighting( editor ) {
 }
 
 /**
- * A post-fixer that prevents removing collapsed marker from the document.
+ * A post-fixer that prevents removing a collapsed marker from the document.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Function}
@@ -92,7 +92,7 @@ export function resurrectCollapsedMarkerPostFixer( editor ) {
 }
 
 /**
- * A post-fixer that extends a marker when user types on it boundaries.
+ * A post-fixer that extends a marker when the user types on its boundaries.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @returns {Function}
@@ -114,12 +114,12 @@ export function extendMarkerOnTypingPostFixer( editor ) {
 }
 
 /**
- * A view highlight to marker conversion helper.
+ * A view highlight-to-marker conversion helper.
  *
  * @param {Object} config Conversion configuration.
- * @param {module:engine/view/matcher~MatcherPattern} [config.view] Pattern matching all view elements which should be converted. If not
+ * @param {module:engine/view/matcher~MatcherPattern} [config.view] A pattern matching all view elements which should be converted. If not
  * set, the converter will fire for every view element.
- * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
+ * @param {String|module:engine/model/element~Element|Function} config.model The name of the model element, a model element
  * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  */

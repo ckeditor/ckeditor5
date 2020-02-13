@@ -14,11 +14,11 @@ Check out the {@link features/restricted-editing#demo demo in the restricted edi
 
 ## Documentation
 
-See the {@link features/restricted-editing restricted editing feature} guide and the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} and {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugins documentation.
+See the {@link features/restricted-editing restricted editing feature} guide as well as the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} and {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugins documentation.
 
 ## Installation
 
-```bash
+```plaintext
 npm install --save @ckeditor/ckeditor5-restricted-editing
 ```
 
