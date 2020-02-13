@@ -252,5 +252,6 @@
   "Trade mark sign": "Trade mark sign",
   "Section sign": "Section sign",
   "Paragraph sign": "Paragraph sign",
-  "Reversed paragraph sign": "Reversed paragraph sign"
+  "Reversed paragraph sign": "Reversed paragraph sign",
+  "Character categories": "The label for tooltip showing when user hovers over plugin icon"
 }
