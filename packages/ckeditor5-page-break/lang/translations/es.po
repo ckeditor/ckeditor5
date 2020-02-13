@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
-"Language: cs\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Page break"
 msgid "Page break"
-msgstr "Konec stránky"
+msgstr "Salto de página"
