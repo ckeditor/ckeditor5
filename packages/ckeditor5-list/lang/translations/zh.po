@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
-msgstr "有編號的清單"
+msgstr "有序清單"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "項目符號清單"
+msgstr "符號清單"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
