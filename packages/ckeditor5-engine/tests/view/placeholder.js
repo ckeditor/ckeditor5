@@ -83,7 +83,7 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
-		it.only( 'if element has selection inside set only data attribute', () => {
+		it( 'if element has selection inside set only data attribute', () => {
 			setData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 

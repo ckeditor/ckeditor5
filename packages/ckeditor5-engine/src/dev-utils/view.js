@@ -471,9 +471,7 @@ class RangeParser {
 			}
 
 			text = text.replace( regexp, '' );
-
 			node._data = text;
-
 			const index = node.index;
 			const parent = node.parent;
 
