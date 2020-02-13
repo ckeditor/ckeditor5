@@ -15,6 +15,7 @@
     "@ckeditor/ckeditor5-alignment": "^16.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^16.0.0",
     "@ckeditor/ckeditor5-code-block": "^16.0.0",
+    "@ckeditor/ckeditor5-ckfinder": "^16.0.0",
     "@ckeditor/ckeditor5-core": "^16.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "^16.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^16.0.0",
