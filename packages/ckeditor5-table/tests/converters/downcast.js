@@ -26,7 +26,10 @@ function paragraphInTableCell() {
 
 				if ( viewElement && viewElement.name === 'span' ) {
 					conversionApi.mapper.unbindModelElement( tableCell );
+
+					conversionApi.writer.removeStyle( 'display', viewElement );
 					conversionApi.writer.rename( 'p', viewElement );
+
 					conversionApi.mapper.bindElements( child, viewElement );
 				}
 			}
@@ -339,7 +342,9 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span></span></td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block"></span>' +
+									'</td>' +
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
@@ -572,7 +577,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span>00</span>' +
+										'<span style="display:inline-block">00</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
@@ -718,7 +723,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span>00</span>' +
+										'<span style="display:inline-block">00</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
 								'</tr>' +
@@ -895,7 +900,7 @@ describe( 'downcast converters', () => {
 							'<thead>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span>00</span>' +
+										'<span style="display:inline-block">00</span>' +
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
@@ -1109,7 +1114,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span>00</span>' +
+										'<span style="display:inline-block">00</span>' +
 									'</th>' +
 								'</tr>' +
 							'</tbody>' +

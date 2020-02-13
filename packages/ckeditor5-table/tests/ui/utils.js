@@ -19,6 +19,11 @@ import {
 	getBalloonCellPositionData,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
+	getLocalizedColorErrorText,
+	getLocalizedLengthErrorText,
+	lengthFieldValidator,
+	lineWidthFieldValidator,
+	colorFieldValidator,
 	fillToolbar
 } from '../../src/ui/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -145,7 +150,7 @@ describe( 'UI Utils', () => {
 		} );
 	} );
 
-	describe( 'getBalloonCellPositionData', () => {
+	describe( 'getBalloonCellPositionData()', () => {
 		it( 'returns the position data', () => {
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -187,6 +192,112 @@ describe( 'UI Utils', () => {
 				inset: 'Inset',
 				outset: 'Outset',
 			} );
+		} );
+	} );
+
+	describe( 'getLocalizedColorErrorText()', () => {
+		it( 'should return the error text', () => {
+			const t = string => string;
+
+			expect( getLocalizedColorErrorText( t ) ).to.match( /^The color is invalid/ );
+		} );
+	} );
+
+	describe( 'getLocalizedLengthErrorText()', () => {
+		it( 'should return the error text', () => {
+			const t = string => string;
+
+			expect( getLocalizedLengthErrorText( t ) ).to.match( /^The value is invalid/ );
+		} );
+	} );
+
+	describe( 'colorFieldValidator()', () => {
+		it( 'should pass for an empty value', () => {
+			expect( colorFieldValidator( '' ) ).to.be.true;
+		} );
+
+		it( 'should pass for white spaces', () => {
+			expect( colorFieldValidator( '  ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for colors', () => {
+			expect( colorFieldValidator( '#FFF' ) ).to.be.true;
+			expect( colorFieldValidator( '#FFAA11' ) ).to.be.true;
+			expect( colorFieldValidator( 'rgb(255,123,100)' ) ).to.be.true;
+			expect( colorFieldValidator( 'red' ) ).to.be.true;
+		} );
+
+		it( 'should pass for colors surrounded by white spaces', () => {
+			expect( colorFieldValidator( ' #AAA ' ) ).to.be.true;
+			expect( colorFieldValidator( ' rgb(255,123,100) ' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'lengthFieldValidator()', () => {
+		it( 'should pass for an empty value', () => {
+			expect( lengthFieldValidator( '' ) ).to.be.true;
+		} );
+
+		it( 'should pass for white spaces', () => {
+			expect( lengthFieldValidator( '  ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for lengths', () => {
+			expect( lengthFieldValidator( '1px' ) ).to.be.true;
+			expect( lengthFieldValidator( '12em' ) ).to.be.true;
+			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;
+			expect( lengthFieldValidator( '45%' ) ).to.be.true;
+		} );
+
+		it( 'should pass for number without unit', () => {
+			expect( lengthFieldValidator( '1' ) ).to.be.true;
+			expect( lengthFieldValidator( '12.1' ) ).to.be.true;
+			expect( lengthFieldValidator( '0.125 ' ) ).to.be.true;
+		} );
+
+		it( 'should not pass for invalid number values', () => {
+			expect( lengthFieldValidator( '.1 ' ) ).to.be.false;
+			expect( lengthFieldValidator( '45. ' ) ).to.be.false;
+			expect( lengthFieldValidator( '45.1.1 ' ) ).to.be.false;
+		} );
+
+		it( 'should pass for lengths surrounded by white spaces', () => {
+			expect( lengthFieldValidator( '3px ' ) ).to.be.true;
+			expect( lengthFieldValidator( ' 12em ' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'lineWidthFieldValidator()', () => {
+		it( 'should pass for an empty value', () => {
+			expect( lineWidthFieldValidator( '' ) ).to.be.true;
+		} );
+
+		it( 'should pass for white spaces', () => {
+			expect( lineWidthFieldValidator( '  ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for lengths', () => {
+			expect( lineWidthFieldValidator( '1px' ) ).to.be.true;
+			expect( lineWidthFieldValidator( '12em' ) ).to.be.true;
+			expect( lineWidthFieldValidator( ' 12em ' ) ).to.be.true;
+		} );
+
+		it( 'should pass for number without unit', () => {
+			expect( lineWidthFieldValidator( '1' ) ).to.be.true;
+			expect( lineWidthFieldValidator( '12.1' ) ).to.be.true;
+			expect( lineWidthFieldValidator( '0.125 ' ) ).to.be.true;
+		} );
+
+		it( 'should not pass for invalid number values', () => {
+			expect( lineWidthFieldValidator( '.1 ' ) ).to.be.false;
+			expect( lineWidthFieldValidator( '45. ' ) ).to.be.false;
+			expect( lineWidthFieldValidator( '45.1.1 ' ) ).to.be.false;
+			expect( lineWidthFieldValidator( '45%' ) ).to.be.false;
+		} );
+
+		it( 'should pass for lengths surrounded by white spaces', () => {
+			expect( lineWidthFieldValidator( '3px ' ) ).to.be.true;
+			expect( lineWidthFieldValidator( ' 12em ' ) ).to.be.true;
 		} );
 	} );
 
@@ -253,7 +364,7 @@ describe( 'UI Utils', () => {
 				false,
 				false,
 				true,
-				false,
+				false
 			] );
 		} );
 	} );
@@ -263,12 +374,14 @@ describe( 'UI Utils', () => {
 
 		const labels = {
 			first: 'Do something',
-			second: 'Do something else'
+			second: 'Do something else',
+			third: 'Be default'
 		};
 
 		const icons = {
-			first: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path /></svg>',
-			second: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path /></svg>'
+			first: '<svg viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"><path /></svg>',
+			second: '<svg viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><path /></svg>',
+			third: '<svg viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg"><path /></svg>'
 		};
 
 		beforeEach( () => {
@@ -279,7 +392,8 @@ describe( 'UI Utils', () => {
 
 			fillToolbar( {
 				view, toolbar, icons, labels,
-				propertyName: 'someProperty'
+				propertyName: 'someProperty',
+				nameToValue: name => name === 'third' ? '' : name
 			} );
 		} );
 
@@ -288,33 +402,45 @@ describe( 'UI Utils', () => {
 		} );
 
 		it( 'should create buttons', () => {
-			expect( toolbar.items ).to.have.length( 2 );
+			expect( toolbar.items ).to.have.length( 3 );
 			expect( toolbar.items.first ).to.be.instanceOf( ButtonView );
+			expect( toolbar.items.get( 1 ) ).to.be.instanceOf( ButtonView );
 			expect( toolbar.items.last ).to.be.instanceOf( ButtonView );
 		} );
 
 		it( 'should set button labels', () => {
 			expect( toolbar.items.first.label ).to.equal( 'Do something' );
-			expect( toolbar.items.last.label ).to.equal( 'Do something else' );
+			expect( toolbar.items.get( 1 ).label ).to.equal( 'Do something else' );
+			expect( toolbar.items.last.label ).to.equal( 'Be default' );
 		} );
 
 		it( 'should set button icons', () => {
 			expect( toolbar.items.first.icon ).to.equal( icons.first );
-			expect( toolbar.items.last.icon ).to.equal( icons.second );
+			expect( toolbar.items.get( 1 ).icon ).to.equal( icons.second );
+			expect( toolbar.items.last.icon ).to.equal( icons.third );
 		} );
 
 		it( 'should bind button #isOn to an observable property', () => {
 			expect( toolbar.items.first.isOn ).to.be.false;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
 			expect( toolbar.items.last.isOn ).to.be.false;
 
 			view.someProperty = 'first';
 
 			expect( toolbar.items.first.isOn ).to.be.true;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
 			expect( toolbar.items.last.isOn ).to.be.false;
 
 			view.someProperty = 'second';
 
 			expect( toolbar.items.first.isOn ).to.be.false;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.true;
+			expect( toolbar.items.last.isOn ).to.be.false;
+
+			view.someProperty = '';
+
+			expect( toolbar.items.first.isOn ).to.be.false;
+			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
 			expect( toolbar.items.last.isOn ).to.be.true;
 		} );
 
@@ -323,9 +449,13 @@ describe( 'UI Utils', () => {
 
 			expect( view.someProperty ).to.equal( 'first' );
 
-			toolbar.items.last.fire( 'execute' );
+			toolbar.items.get( 1 ).fire( 'execute' );
 
 			expect( view.someProperty ).to.equal( 'second' );
+
+			toolbar.items.last.fire( 'execute' );
+
+			expect( view.someProperty ).to.equal( '' );
 		} );
 	} );
 } );

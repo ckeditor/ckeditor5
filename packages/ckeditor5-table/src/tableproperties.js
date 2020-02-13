@@ -36,3 +36,43 @@ export default class TableProperties extends Plugin {
 		return [ TablePropertiesEditing, TablePropertiesUI ];
 	}
 }
+
+/**
+ * A configuration of the table properties user interface (balloon). It allows to define:
+ *
+ * * the color palette for the table border color style field (`tableProperties.borderColors`),
+ * * the color palette for the table background style field (`tableProperties.backgroundColors`).
+ *
+ *		const tableConfig = {
+ *			tableProperties: {
+ *				borderColors: [
+ *					{
+ *						color: 'hsl(0, 0%, 90%)',
+ *						label: 'Light grey'
+ *					},
+ *					// ...
+ *				],
+ *				backgroundColors: [
+ *					{
+ *						color: 'hsl(120, 75%, 60%)',
+ *						label: 'Green'
+ *					},
+ *					// ...
+ *				]
+ *			}
+ *		};
+ *
+ * **Note**: The configurations do not impact the data being loaded into the editor,
+ * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
+ * allowing users to pick colors in a more convenient way.
+ *
+ * The default color palettes for the table background and the table border are the same
+ * ({@link module:table/ui/utils~defaultColors check out their content}).
+ *
+ * Both color palette configurations must follow the
+ * {@link module:table/table~TableColorConfig table color configuration format}.
+ *
+ * Read more about configuring the table feature in {@link module:table/table~TableConfig}.
+ *
+ * @member {Object} module:table/table~TableConfig#tableProperties
+ */

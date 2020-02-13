@@ -297,13 +297,19 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
  * An assertion helper for testing the `<table>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {String} tableStyle A style to assert on table.
+ * @param {String} [tableStyle=''] A style to assert on <table>.
+ * @param {String} [figureStyle=''] A style to assert on <figure>.
  */
-export function assertTableStyle( editor, tableStyle ) {
-	const styleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+export function assertTableStyle( editor, tableStyle, figureStyle ) {
+	const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+	const figureStyleEntry = figureStyle ? ` style="${ figureStyle }"` : '';
 
 	assertEqualMarkup( editor.getData(),
-		`<figure class="table"><table${ styleEntry }><tbody><tr><td>foo</td></tr></tbody></table></figure>`
+		`<figure class="table"${ figureStyleEntry }>` +
+			`<table${ tableStyleEntry }>` +
+				'<tbody><tr><td>foo</td></tr></tbody>' +
+			'</table>' +
+		'</figure>'
 	);
 }
 
@@ -311,7 +317,7 @@ export function assertTableStyle( editor, tableStyle ) {
  * An assertion helper for testing the `<td>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {String} tableCellStyle A style to assert on td.
+ * @param {String} [tableCellStyle=''] A style to assert on td.
  */
 export function assertTableCellStyle( editor, tableCellStyle ) {
 	assertEqualMarkup( editor.getData(),
@@ -372,7 +378,10 @@ function makeRows( tableData, options ) {
 				}
 
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
-					contents = `<${ wrappingElement }>${ contents }</${ wrappingElement }>`;
+					contents =
+						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
+							contents +
+						`</${ wrappingElement }>`;
 				}
 
 				const formattedAttributes = formatAttributes( attributes );

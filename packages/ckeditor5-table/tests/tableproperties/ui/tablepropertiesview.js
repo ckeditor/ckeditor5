@@ -16,6 +16,29 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
+import ColorInputView from '../../../src/ui/colorinputview';
+
+const VIEW_OPTIONS = {
+	borderColors: [
+		{
+			model: 'rgb(255,0,0)',
+			label: 'Red',
+			hasBorder: false
+		},
+		{
+			model: 'rgb(0,0,255)',
+			label: 'Blue',
+			hasBorder: false
+		}
+	],
+	backgroundColors: [
+		{
+			model: 'rgb(0,255,0)',
+			label: 'Green',
+			hasBorder: false
+		},
+	]
+};
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesView', () => {
@@ -25,7 +48,7 @@ describe( 'table properties', () => {
 
 		beforeEach( () => {
 			locale = { t: val => val };
-			view = new TablePropertiesView( locale );
+			view = new TablePropertiesView( locale, VIEW_OPTIONS );
 			view.render();
 		} );
 
@@ -34,6 +57,10 @@ describe( 'table properties', () => {
 		} );
 
 		describe( 'constructor()', () => {
+			it( 'should set view#options', () => {
+				expect( view.options ).to.deep.equal( VIEW_OPTIONS );
+			} );
+
 			it( 'should set view#locale', () => {
 				expect( view.locale ).to.equal( locale );
 			} );
@@ -44,13 +71,13 @@ describe( 'table properties', () => {
 
 			it( 'should define the public data interface (observable properties)', () => {
 				expect( view ).to.include( {
-					borderStyle: 'none',
+					borderStyle: '',
 					borderWidth: '',
 					borderColor: '',
 					backgroundColor: '',
 					width: '',
 					height: '',
-					alignment: 'center'
+					alignment: ''
 				} );
 			} );
 
@@ -124,7 +151,7 @@ describe( 'table properties', () => {
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.view.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( 'none' );
+							expect( view.borderStyle ).to.equal( '' );
 
 							labeledDropdown.view.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
@@ -134,8 +161,19 @@ describe( 'table properties', () => {
 							expect( labeledDropdown.view.listView.items.map( item => {
 								return item.children.first.label;
 							} ) ).to.have.ordered.members( [
-								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset',
+								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset'
 							] );
+						} );
+
+						it( 'should reset border width and color inputs when setting style to none', () => {
+							view.borderStyle = 'dotted';
+							view.borderWidth = '1px';
+							view.borderColor = 'red';
+
+							view.borderStyle = '';
+
+							expect( view.borderColor ).to.equal( '' );
+							expect( view.borderWidth ).to.equal( '' );
 						} );
 					} );
 
@@ -161,7 +199,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -187,8 +225,31 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.view ).to.be.instanceOf( ColorInputView );
 							expect( labeledInput.label ).to.equal( 'Color' );
+						} );
+
+						it( 'should get the color configuration', () => {
+							expect( labeledInput.view.options.colorDefinitions ).to.deep.equal( [
+								{
+									color: 'rgb(255,0,0)',
+									label: 'Red',
+									options: {
+										hasBorder: false
+									}
+								},
+								{
+									color: 'rgb(0,0,255)',
+									label: 'Blue',
+									options: {
+										hasBorder: false
+									}
+								}
+							] );
+						} );
+
+						it( 'should obtain the columns configuration', () => {
+							expect( labeledInput.view.options.columns ).to.equal( 5 );
 						} );
 
 						it( 'should reflect #borderColor property', () => {
@@ -200,7 +261,7 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -208,11 +269,11 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should update #borderColor on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
+							labeledInput.view.value = 'foo';
 							labeledInput.view.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
+							labeledInput.view.value = 'bar';
 							labeledInput.view.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'bar' );
 						} );
@@ -235,9 +296,25 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.view ).to.be.instanceOf( ColorInputView );
 							expect( labeledInput.label ).to.equal( 'Background' );
 							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__background' );
+						} );
+
+						it( 'should get the color configuration', () => {
+							expect( labeledInput.view.options.colorDefinitions ).to.deep.equal( [
+								{
+									color: 'rgb(0,255,0)',
+									label: 'Green',
+									options: {
+										hasBorder: false
+									}
+								}
+							] );
+						} );
+
+						it( 'should obtain the columns configuration', () => {
+							expect( labeledInput.view.options.columns ).to.equal( 5 );
 						} );
 
 						it( 'should reflect #backgroundColor property', () => {
@@ -249,11 +326,11 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should update #backgroundColor on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
+							labeledInput.view.value = 'foo';
 							labeledInput.view.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
+							labeledInput.view.value = 'bar';
 							labeledInput.view.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'bar' );
 						} );
@@ -265,7 +342,7 @@ describe( 'table properties', () => {
 						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-properties-form__dimensions-row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
 						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
@@ -282,7 +359,7 @@ describe( 'table properties', () => {
 						it( 'should be created', () => {
 							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Width' );
-							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__width' );
+							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__width' );
 						} );
 
 						it( 'should reflect #width property', () => {
@@ -314,7 +391,7 @@ describe( 'table properties', () => {
 						it( 'should be created', () => {
 							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Height' );
-							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__height' );
+							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__height' );
 						} );
 
 						it( 'should reflect #height property', () => {
@@ -417,6 +494,56 @@ describe( 'table properties', () => {
 
 						expect( spy.calledOnce ).to.be.true;
 					} );
+
+					it( 'should make sure the #saveButtonView is disabled until text fields are without errors', () => {
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.widthInput.errorText = 'foo';
+						view.heightInput.errorText = 'foo';
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.widthInput.errorText = 'foo';
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = null;
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = null;
+						view.backgroundInput.errorText = null;
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = null;
+						view.borderColorInput.errorText = null;
+						view.backgroundInput.errorText = null;
+						view.widthInput.errorText = null;
+						view.heightInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.true;
+					} );
 				} );
 			} );
 
@@ -454,7 +581,7 @@ describe( 'table properties', () => {
 
 			it( 'should register child views\' #element in #focusTracker', () => {
 				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-				const view = new TablePropertiesView( { t: val => val } );
+				const view = new TablePropertiesView( { t: val => val }, VIEW_OPTIONS );
 				view.render();
 
 				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
@@ -471,7 +598,7 @@ describe( 'table properties', () => {
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
-				const view = new TablePropertiesView( { t: val => val } );
+				const view = new TablePropertiesView( { t: val => val }, VIEW_OPTIONS );
 				const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 				view.render();

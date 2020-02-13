@@ -11,6 +11,8 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+import ColorInputView from './colorinputview';
+import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
 
@@ -23,6 +25,8 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
 ];
+
+const isEmpty = val => val === '';
 
 /**
  * A helper utility that positions the
@@ -111,10 +115,80 @@ export function getBorderStyleLabels( t ) {
 }
 
 /**
+ * Returns a localized error string that can be displayed next to color (background, border)
+ * fields that have an invalid value.
+ *
+ * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
+ * that is used to localize strings.
+ * @returns {String}
+ */
+export function getLocalizedColorErrorText( t ) {
+	return t( 'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".' );
+}
+
+/**
+ * Returns a localized error string that can be displayed next to length (padding, border width)
+ * fields that have an invalid value.
+ *
+ * @param {module:utils/locale~Locale#t} t The "t" function provided by the editor
+ * that is used to localize strings.
+ * @returns {String}
+ */
+export function getLocalizedLengthErrorText( t ) {
+	return t( 'The value is invalid. Try "10px" or "2em" or simply "2".' );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string or a valid CSS color expression.
+ * Otherwise, `false` is returned.
+ *
+ * See {@link module:engine/view/styles/utils~isColor}.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function colorFieldValidator( value ) {
+	value = value.trim();
+
+	return isEmpty( value ) || isColor( value );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
+ * Otherwise, `false` is returned.
+ *
+ * See {@link module:engine/view/styles/utils~isLength}.
+ * See {@link module:engine/view/styles/utils~isPercentage}.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function lengthFieldValidator( value ) {
+	value = value.trim();
+
+	return isEmpty( value ) || isNumberString( value ) || isLength( value ) || isPercentage( value );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
+ * Otherwise, `false` is returned.
+ *
+ * See {@link module:engine/view/styles/utils~isLength}.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function lineWidthFieldValidator( value ) {
+	value = value.trim();
+
+	return isEmpty( value ) || isNumberString( value ) || isLength( value );
+}
+
+/**
  * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
  *
  * @param {module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView|
- * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}
+ * module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView} view
  * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>}
  */
 export function getBorderStyleDefinitions( view ) {
@@ -125,15 +199,19 @@ export function getBorderStyleDefinitions( view ) {
 		const definition = {
 			type: 'button',
 			model: new Model( {
-				_borderStyleValue: style,
+				_borderStyleValue: style === 'none' ? '' : style,
 				label: styleLabels[ style ],
-				withText: true,
+				withText: true
 			} )
 		};
 
-		definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
-			return value === style;
-		} );
+		if ( style === 'none' ) {
+			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => !value );
+		} else {
+			definition.model.bind( 'isOn' ).to( view, 'borderStyle', value => {
+				return value === style;
+			} );
+		}
 
 		itemDefinitions.add( definition );
 	}
@@ -155,24 +233,238 @@ export function getBorderStyleDefinitions( view ) {
  * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar
  * @param {Object.<String,String>} labels
  * @param {String} propertyName
+ * @param {Function} nameToValue Function that maps button name to value. By default names are the same as values.
  */
-export function fillToolbar( { view, icons, toolbar, labels, propertyName } ) {
+export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameToValue } ) {
 	for ( const name in labels ) {
 		const button = new ButtonView( view.locale );
 
 		button.set( {
 			label: labels[ name ],
-			icon: icons[ name ],
+			icon: icons[ name ]
 		} );
 
 		button.bind( 'isOn' ).to( view, propertyName, value => {
-			return value === name;
+			return value === nameToValue( name );
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = name;
+			view[ propertyName ] = nameToValue( name );
 		} );
 
 		toolbar.items.add( button );
 	}
+}
+
+/**
+ * A default color palette used by various user interfaces related to tables, for instance,
+ * by {@link module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI} or
+ * {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI}.
+ *
+ * The color palette follows the {@link module:table/table~TableColorConfig table color configuration format}
+ * and contains the following color definitions:
+ *
+ *		const defaultColors = [
+ *			{
+ *				color: 'hsl(0, 0%, 0%)',
+ *				label: 'Black'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 30%)',
+ *				label: 'Dim grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 60%)',
+ *				label: 'Grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 90%)',
+ *				label: 'Light grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 100%)',
+ *				label: 'White',
+ *				hasBorder: true
+ *			},
+ *			{
+ *				color: 'hsl(0, 75%, 60%)',
+ *				label: 'Red'
+ *			},
+ *			{
+ *				color: 'hsl(30, 75%, 60%)',
+ *				label: 'Orange'
+ *			},
+ *			{
+ *				color: 'hsl(60, 75%, 60%)',
+ *				label: 'Yellow'
+ *			},
+ *			{
+ *				color: 'hsl(90, 75%, 60%)',
+ *				label: 'Light green'
+ *			},
+ *			{
+ *				color: 'hsl(120, 75%, 60%)',
+ *				label: 'Green'
+ *			},
+ *			{
+ *				color: 'hsl(150, 75%, 60%)',
+ *				label: 'Aquamarine'
+ *			},
+ *			{
+ *				color: 'hsl(180, 75%, 60%)',
+ *				label: 'Turquoise'
+ *			},
+ *			{
+ *				color: 'hsl(210, 75%, 60%)',
+ *				label: 'Light blue'
+ *			},
+ *			{
+ *				color: 'hsl(240, 75%, 60%)',
+ *				label: 'Blue'
+ *			},
+ *			{
+ *				color: 'hsl(270, 75%, 60%)',
+ *				label: 'Purple'
+ *			}
+ *		];
+ */
+export const defaultColors = [
+	{
+		color: 'hsl(0, 0%, 0%)',
+		label: 'Black'
+	},
+	{
+		color: 'hsl(0, 0%, 30%)',
+		label: 'Dim grey'
+	},
+	{
+		color: 'hsl(0, 0%, 60%)',
+		label: 'Grey'
+	},
+	{
+		color: 'hsl(0, 0%, 90%)',
+		label: 'Light grey'
+	},
+	{
+		color: 'hsl(0, 0%, 100%)',
+		label: 'White',
+		hasBorder: true
+	},
+	{
+		color: 'hsl(0, 75%, 60%)',
+		label: 'Red'
+	},
+	{
+		color: 'hsl(30, 75%, 60%)',
+		label: 'Orange'
+	},
+	{
+		color: 'hsl(60, 75%, 60%)',
+		label: 'Yellow'
+	},
+	{
+		color: 'hsl(90, 75%, 60%)',
+		label: 'Light green'
+	},
+	{
+		color: 'hsl(120, 75%, 60%)',
+		label: 'Green'
+	},
+	{
+		color: 'hsl(150, 75%, 60%)',
+		label: 'Aquamarine'
+	},
+	{
+		color: 'hsl(180, 75%, 60%)',
+		label: 'Turquoise'
+	},
+	{
+		color: 'hsl(210, 75%, 60%)',
+		label: 'Light blue'
+	},
+	{
+		color: 'hsl(240, 75%, 60%)',
+		label: 'Blue'
+	},
+	{
+		color: 'hsl(270, 75%, 60%)',
+		label: 'Purple'
+	}
+];
+
+/**
+ * Returns a creator for color input with a label.
+ *
+ * For given options, it returns a function that creates an instance of
+ * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
+ * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
+ *
+ * The helper does the following:
+ *
+ * * It sets color input's `id` and `ariaDescribedById` attributes.
+ * * It binds color input's `isReadOnly` to the labeled view.
+ * * It binds color input's `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when user starts typing in the color input.
+ *
+ * Usage:
+ *
+ *		const colorInputCreator = getLabeledColorInputCreator( {
+ *			colorConfig: [ ... ],
+ *			columns: 3,
+ *		} );
+ *
+ *		const labeledInputView = new LabeledView( locale, colorInputCreator );
+ *		console.log( labeledInputView.view ); // An color input instance.
+ *
+ * @private
+ * @param options Color input options.
+ * @param {module:table/table~TableColorConfig} options.colorConfig The configuration of the color palette
+ * displayed in the input's dropdown.
+ * @param {Number} options.columns The configuration of the number of columns the color palette consists of
+ * in the input's dropdown.
+ * @returns {Function}
+ */
+export function getLabeledColorInputCreator( options ) {
+	return ( labeledView, viewUid, statusUid ) => {
+		const inputView = new ColorInputView( labeledView.locale, {
+			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
+			columns: options.columns
+		} );
+
+		inputView.set( {
+			id: viewUid,
+			ariaDescribedById: statusUid
+		} );
+
+		inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
+		inputView.bind( 'errorText' ).to( labeledView );
+
+		inputView.on( 'input', () => {
+			// UX: Make the error text disappear and disable the error indicator as the user
+			// starts fixing the errors.
+			labeledView.errorText = null;
+		} );
+
+		return inputView;
+	};
+}
+
+// A simple helper method to detect number strings.
+// I allows full number notation, so omitting 0 is not allowed:
+function isNumberString( value ) {
+	const parsedValue = parseFloat( value );
+
+	return !Number.isNaN( parsedValue ) && value === String( parsedValue );
+}
+
+// @param {Array.<Object>} colorConfig
+// @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+function colorConfigToColorGridDefinitions( colorConfig ) {
+	return colorConfig.map( item => ( {
+		color: item.model,
+		label: item.label,
+		options: {
+			hasBorder: item.hasBorder
+		}
+	} ) );
 }

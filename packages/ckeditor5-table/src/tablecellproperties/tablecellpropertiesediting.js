@@ -24,6 +24,8 @@ import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand'
 import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
 
+const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
+
 /**
  * The table cell properties editing feature.
  *
@@ -92,7 +94,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableCellBackgroundColor', new TableCellBackgroundColorCommand( editor ) );
 
-		enableProperty( schema, conversion, 'verticalAlignment', 'vertical-align' );
+		enableVerticalAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableCellVerticalAlignment', new TableCellVerticalAlignmentCommand( editor ) );
 	}
 }
@@ -125,16 +127,9 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 		model: {
 			name: 'tableCell',
 			key: 'horizontalAlignment',
-			values: [ 'left', 'right', 'center', 'justify' ]
+			values: [ 'right', 'center', 'justify' ]
 		},
 		view: {
-			// TODO: controversial one but I don't know if we want "default".
-			left: {
-				key: 'style',
-				value: {
-					'text-align': 'left'
-				}
-			},
 			right: {
 				key: 'style',
 				value: {
@@ -155,6 +150,53 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 			}
 		}
 	} );
+}
+
+// Enables the `'verticalAlignment'` attribute for table cells.
+//
+// @param {module:engine/model/schema~Schema} schema
+// @param {module:engine/conversion/conversion~Conversion} conversion
+function enableVerticalAlignmentProperty( schema, conversion ) {
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'verticalAlignment' ]
+	} );
+
+	conversion.attributeToAttribute( {
+		model: {
+			name: 'tableCell',
+			key: 'verticalAlignment',
+			values: [ 'top', 'bottom' ]
+		},
+		view: {
+			top: {
+				key: 'style',
+				value: {
+					'vertical-align': 'top'
+				}
+			},
+			bottom: {
+				key: 'style',
+				value: {
+					'vertical-align': 'bottom'
+				}
+			}
+		}
+	} );
+
+	conversion.for( 'upcast' )
+		// Support for backwards compatibility and pasting from other sources.
+		.attributeToAttribute( {
+			view: {
+				attributes: {
+					valign: VALIGN_VALUES_REG_EXP
+				}
+			},
+			model: {
+				name: 'tableCell',
+				key: 'verticalAlignment',
+				value: viewElement => viewElement.getAttribute( 'valign' )
+			}
+		} );
 }
 
 // Enables conversion for an attribute for simple view-model mappings.

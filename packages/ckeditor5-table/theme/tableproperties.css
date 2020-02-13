@@ -5,29 +5,6 @@
 
 .ck.ck-table-properties-form {
 	& .ck-form__row {
-		&.ck-table-properties-form__dimensions-row,
-		&.ck-table-properties-form__alignment-row {
-			flex-wrap: wrap;
-		}
-
-		&.ck-table-properties-form__dimensions-row {
-			align-items: center;
-
-			& .ck-table-properties-form__dimension-operator {
-				flex-grow: 0;
-			}
-
-			& .ck-labeled-view {
-				display: flex;
-				flex-direction: column-reverse;
-				align-items: center;
-
-				& .ck.ck-dropdown {
-					flex-grow: 0;
-				}
-			}
-		}
-
 		&.ck-table-properties-form__alignment-row {
 			flex-wrap: wrap;
 			flex-basis: 0;

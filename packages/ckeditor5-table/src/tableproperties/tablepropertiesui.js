@@ -15,12 +15,22 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import TablePropertiesView from './ui/tablepropertiesview';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
+	colorFieldValidator,
+	getBalloonTablePositionData,
+	getLocalizedColorErrorText,
+	getLocalizedLengthErrorText,
+	lengthFieldValidator,
+	lineWidthFieldValidator,
 	repositionContextualBalloon,
-	getBalloonTablePositionData
+	defaultColors,
 } from '../ui/utils';
+import {
+	getLocalizedColorOptions,
+	normalizeColorOptions
+} from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
+import { debounce } from 'lodash-es';
 
-const DEFAULT_BORDER_STYLE = 'none';
-const DEFAULT_ALIGNMENT = 'center';
+const ERROR_TEXT_TIMEOUT = 500;
 
 /**
  * The table properties UI plugin. It introduces the `'tableProperties'` button
@@ -44,6 +54,18 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TablePropertiesUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'table.tableProperties', {
+			borderColors: defaultColors,
+			backgroundColors: defaultColors
+		} );
 	}
 
 	/**
@@ -113,7 +135,16 @@ export default class TablePropertiesUI extends Plugin {
 	_createPropertiesView() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-		const view = new TablePropertiesView( editor.locale );
+		const config = editor.config.get( 'table.tableProperties' );
+		const borderColorsConfig = normalizeColorOptions( config.borderColors );
+		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
+		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
+		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+		const view = new TablePropertiesView( editor.locale, {
+			borderColors: localizedBorderColors,
+			backgroundColors: localizedBackgroundColors
+		} );
+		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.
 		view.render();
@@ -123,7 +154,11 @@ export default class TablePropertiesUI extends Plugin {
 		} );
 
 		this.listenTo( view, 'cancel', () => {
-			editor.execute( 'undo', this._undoStepBatch );
+			// https://github.com/ckeditor/ckeditor5/issues/6180
+			if ( this._undoStepBatch.operations.length ) {
+				editor.execute( 'undo', this._undoStepBatch );
+			}
+
 			this._hideView();
 		} );
 
@@ -150,16 +185,51 @@ export default class TablePropertiesUI extends Plugin {
 			callback: () => this._hideView()
 		} );
 
+		const colorErrorText = getLocalizedColorErrorText( t );
+		const lengthErrorText = getLocalizedLengthErrorText( t );
+
 		// Create the "UI -> editor data" binding.
 		// These listeners update the editor data (via table commands) when any observable
-		// property of the view has changed. This makes the view live, which means the changes are
+		// property of the view has changed. They also validate the value and display errors in the UI
+		// when necessary. This makes the view live, which means the changes are
 		// visible in the editing as soon as the user types or changes fields' values.
 		view.on( 'change:borderStyle', this._getPropertyChangeCallback( 'tableBorderStyle' ) );
-		view.on( 'change:borderColor', this._getPropertyChangeCallback( 'tableBorderColor' ) );
-		view.on( 'change:borderWidth', this._getPropertyChangeCallback( 'tableBorderWidth' ) );
-		view.on( 'change:backgroundColor', this._getPropertyChangeCallback( 'tableBackgroundColor' ) );
-		view.on( 'change:width', this._getPropertyChangeCallback( 'tableWidth' ) );
-		view.on( 'change:height', this._getPropertyChangeCallback( 'tableHeight' ) );
+
+		view.on( 'change:borderColor', this._getValidatedPropertyChangeCallback( {
+			viewField: view.borderColorInput,
+			commandName: 'tableBorderColor',
+			errorText: colorErrorText,
+			validator: colorFieldValidator
+		} ) );
+
+		view.on( 'change:borderWidth', this._getValidatedPropertyChangeCallback( {
+			viewField: view.borderWidthInput,
+			commandName: 'tableBorderWidth',
+			errorText: lengthErrorText,
+			validator: lineWidthFieldValidator
+		} ) );
+
+		view.on( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
+			viewField: view.backgroundInput,
+			commandName: 'tableBackgroundColor',
+			errorText: colorErrorText,
+			validator: colorFieldValidator
+		} ) );
+
+		view.on( 'change:width', this._getValidatedPropertyChangeCallback( {
+			viewField: view.widthInput,
+			commandName: 'tableWidth',
+			errorText: lengthErrorText,
+			validator: lengthFieldValidator
+		} ) );
+
+		view.on( 'change:height', this._getValidatedPropertyChangeCallback( {
+			viewField: view.heightInput,
+			commandName: 'tableHeight',
+			errorText: lengthErrorText,
+			validator: lengthFieldValidator
+		} ) );
+
 		view.on( 'change:alignment', this._getPropertyChangeCallback( 'tableAlignment' ) );
 
 		return view;
@@ -179,13 +249,13 @@ export default class TablePropertiesUI extends Plugin {
 		const commands = this.editor.commands;
 
 		this.view.set( {
-			borderStyle: commands.get( 'tableBorderStyle' ).value || DEFAULT_BORDER_STYLE,
+			borderStyle: commands.get( 'tableBorderStyle' ).value || '',
 			borderColor: commands.get( 'tableBorderColor' ).value || '',
 			borderWidth: commands.get( 'tableBorderWidth' ).value || '',
 			backgroundColor: commands.get( 'tableBackgroundColor' ).value || '',
 			width: commands.get( 'tableWidth' ).value || '',
 			height: commands.get( 'tableHeight' ).value || '',
-			alignment: commands.get( 'tableAlignment' ).value || DEFAULT_ALIGNMENT,
+			alignment: commands.get( 'tableAlignment' ).value || '',
 		} );
 	}
 
@@ -275,6 +345,40 @@ export default class TablePropertiesUI extends Plugin {
 				value: newValue,
 				batch: this._undoStepBatch
 			} );
+		};
+	}
+
+	/**
+	 * Creates a callback that when executed upon {@link #view view's} property change:
+	 * * executes a related editor command with the new property value if the value is valid,
+	 * * or sets the error text next to the invalid field, if the value did not pass the validation.
+	 *
+	 * @private
+	 * @param {Object} options
+	 * @param {String} options.commandName
+	 * @param {module:ui/view~View} options.viewField
+	 * @param {Function} options.validator
+	 * @param {String} options.errorText
+	 * @returns {Function}
+	 */
+	_getValidatedPropertyChangeCallback( { commandName, viewField, validator, errorText } ) {
+		const setErrorTextDebounced = debounce( () => {
+			viewField.errorText = errorText;
+		}, ERROR_TEXT_TIMEOUT );
+
+		return ( evt, propertyName, newValue ) => {
+			setErrorTextDebounced.cancel();
+
+			if ( validator( newValue ) ) {
+				this.editor.execute( commandName, {
+					value: newValue,
+					batch: this._undoStepBatch
+				} );
+
+				viewField.errorText = null;
+			} else {
+				setErrorTextDebounced();
+			}
 		};
 	}
 }

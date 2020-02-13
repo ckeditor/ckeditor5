@@ -16,6 +16,29 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
+import ColorInputView from '../../../src/ui/colorinputview';
+
+const VIEW_OPTIONS = {
+	borderColors: [
+		{
+			model: 'rgb(255,0,0)',
+			label: 'Red',
+			hasBorder: false
+		},
+		{
+			model: 'rgb(0,0,255)',
+			label: 'Blue',
+			hasBorder: false
+		}
+	],
+	backgroundColors: [
+		{
+			model: 'rgb(0,255,0)',
+			label: 'Green',
+			hasBorder: false
+		},
+	]
+};
 
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesView', () => {
@@ -25,7 +48,7 @@ describe( 'table cell properties', () => {
 
 		beforeEach( () => {
 			locale = { t: val => val };
-			view = new TableCellPropertiesView( locale );
+			view = new TableCellPropertiesView( locale, VIEW_OPTIONS );
 			view.render();
 		} );
 
@@ -34,6 +57,10 @@ describe( 'table cell properties', () => {
 		} );
 
 		describe( 'constructor()', () => {
+			it( 'should set view#options', () => {
+				expect( view.options ).to.deep.equal( VIEW_OPTIONS );
+			} );
+
 			it( 'should set view#locale', () => {
 				expect( view.locale ).to.equal( locale );
 			} );
@@ -44,13 +71,13 @@ describe( 'table cell properties', () => {
 
 			it( 'should define the public data interface (observable properties)', () => {
 				expect( view ).to.include( {
-					borderStyle: 'none',
+					borderStyle: '',
 					borderWidth: '',
 					borderColor: '',
 					padding: '',
 					backgroundColor: '',
-					horizontalAlignment: 'left',
-					verticalAlignment: 'middle'
+					horizontalAlignment: '',
+					verticalAlignment: ''
 				} );
 			} );
 
@@ -124,7 +151,7 @@ describe( 'table cell properties', () => {
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.view.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( 'none' );
+							expect( view.borderStyle ).to.equal( '' );
 
 							labeledDropdown.view.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
@@ -134,8 +161,19 @@ describe( 'table cell properties', () => {
 							expect( labeledDropdown.view.listView.items.map( item => {
 								return item.children.first.label;
 							} ) ).to.have.ordered.members( [
-								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset',
+								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset'
 							] );
+						} );
+
+						it( 'should reset border width and color inputs when setting style to none', () => {
+							view.borderStyle = 'dotted';
+							view.borderWidth = '1px';
+							view.borderColor = 'red';
+
+							view.borderStyle = '';
+
+							expect( view.borderColor ).to.equal( '' );
+							expect( view.borderWidth ).to.equal( '' );
 						} );
 					} );
 
@@ -161,7 +199,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -187,8 +225,27 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.view ).to.be.instanceOf( ColorInputView );
 							expect( labeledInput.label ).to.equal( 'Color' );
+						} );
+
+						it( 'should get the color configuration', () => {
+							expect( labeledInput.view.options.colorDefinitions ).to.deep.equal( [
+								{
+									color: 'rgb(255,0,0)',
+									label: 'Red',
+									options: {
+										hasBorder: false
+									}
+								},
+								{
+									color: 'rgb(0,0,255)',
+									label: 'Blue',
+									options: {
+										hasBorder: false
+									}
+								}
+							] );
 						} );
 
 						it( 'should reflect #borderColor property', () => {
@@ -200,7 +257,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -208,24 +265,23 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should update #borderColor on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
+							labeledInput.view.value = 'foo';
 							labeledInput.view.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
+							labeledInput.view.value = 'bar';
 							labeledInput.view.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'bar' );
 						} );
 					} );
 				} );
 
-				describe( 'background and padding row', () => {
+				describe( 'background row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ] ).to.equal( view.backgroundInput.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.paddingInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -236,9 +292,21 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.view ).to.be.instanceOf( ColorInputView );
 							expect( labeledInput.label ).to.equal( 'Background' );
 							expect( labeledInput.class ).to.equal( 'ck-table-cell-properties-form__background' );
+						} );
+
+						it( 'should get the color configuration', () => {
+							expect( labeledInput.view.options.colorDefinitions ).to.deep.equal( [
+								{
+									color: 'rgb(0,255,0)',
+									label: 'Green',
+									options: {
+										hasBorder: false
+									}
+								}
+							] );
 						} );
 
 						it( 'should reflect #backgroundColor property', () => {
@@ -250,14 +318,101 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should update #backgroundColor on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
+							labeledInput.view.value = 'foo';
 							labeledInput.view.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
+							labeledInput.view.value = 'bar';
 							labeledInput.view.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'bar' );
 						} );
+					} );
+				} );
+
+				describe( 'dimensions row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
+						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
+						expect( row.childNodes[ 3 ] ).to.equal( view.heightInput.element );
+					} );
+
+					describe( 'width input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.widthInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Width' );
+							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__width' );
+						} );
+
+						it( 'should reflect #width property', () => {
+							view.width = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.width = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #width on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.width ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.width ).to.equal( 'bar' );
+						} );
+					} );
+
+					describe( 'height input', () => {
+						let labeledInput;
+
+						beforeEach( () => {
+							labeledInput = view.heightInput;
+						} );
+
+						it( 'should be created', () => {
+							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.label ).to.equal( 'Height' );
+							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__height' );
+						} );
+
+						it( 'should reflect #height property', () => {
+							view.height = 'foo';
+							expect( labeledInput.view.value ).to.equal( 'foo' );
+
+							view.height = 'bar';
+							expect( labeledInput.view.value ).to.equal( 'bar' );
+						} );
+
+						it( 'should update #height on DOM "input" event', () => {
+							labeledInput.view.element.value = 'foo';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'foo' );
+
+							labeledInput.view.element.value = 'bar';
+							labeledInput.view.fire( 'input' );
+							expect( view.height ).to.equal( 'bar' );
+						} );
+					} );
+				} );
+
+				describe( 'padding row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-cell-properties-form__padding-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ] ).to.equal( view.paddingInput.element );
 					} );
 
 					describe( 'padding input', () => {
@@ -295,11 +450,11 @@ describe( 'table cell properties', () => {
 
 				describe( 'text alignment row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ];
+						const row = view.element.childNodes[ 4 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-cell-properties-form__alignment-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Text alignment' );
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Table cell text alignment' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.horizontalAlignmentToolbar.element );
 						expect( row.childNodes[ 2 ] ).to.equal( view.verticalAlignmentToolbar.element );
 					} );
@@ -338,7 +493,7 @@ describe( 'table cell properties', () => {
 							expect( toolbar.items.last.isOn ).to.be.true;
 
 							toolbar.items.first.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( 'left' );
+							expect( view.horizontalAlignment ).to.equal( '' );
 							expect( toolbar.items.last.isOn ).to.be.false;
 							expect( toolbar.items.first.isOn ).to.be.true;
 						} );
@@ -386,7 +541,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'action row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 4 ];
+						const row = view.element.childNodes[ 5 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
@@ -413,6 +568,43 @@ describe( 'table cell properties', () => {
 						view.cancelButtonView.fire( 'execute' );
 
 						expect( spy.calledOnce ).to.be.true;
+					} );
+
+					it( 'should make sure the #saveButtonView is disabled until text fields are without errors', () => {
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.paddingInput.errorText = 'foo';
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = 'foo';
+						view.paddingInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = 'foo';
+						view.backgroundInput.errorText = null;
+						view.paddingInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = 'foo';
+						view.borderColorInput.errorText = null;
+						view.backgroundInput.errorText = null;
+						view.paddingInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.false;
+
+						view.borderWidthInput.errorText = null;
+						view.borderColorInput.errorText = null;
+						view.backgroundInput.errorText = null;
+						view.paddingInput.errorText = null;
+
+						expect( view.saveButtonView.isEnabled ).to.be.true;
 					} );
 				} );
 			} );
@@ -441,6 +633,8 @@ describe( 'table cell properties', () => {
 					view.borderColorInput,
 					view.borderWidthInput,
 					view.backgroundInput,
+					view.widthInput,
+					view.heightInput,
 					view.paddingInput,
 					view.horizontalAlignmentToolbar,
 					view.verticalAlignmentToolbar,
@@ -451,7 +645,7 @@ describe( 'table cell properties', () => {
 
 			it( 'should register child views\' #element in #focusTracker', () => {
 				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-				const view = new TableCellPropertiesView( { t: val => val } );
+				const view = new TableCellPropertiesView( { t: val => val }, VIEW_OPTIONS );
 				view.render();
 
 				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
@@ -468,7 +662,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
-				const view = new TableCellPropertiesView( { t: val => val } );
+				const view = new TableCellPropertiesView( { t: val => val }, VIEW_OPTIONS );
 				const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 				view.render();

@@ -63,3 +63,31 @@ export default class Table extends Plugin {
  *
  * @member {module:table/table~TableConfig} module:core/editor/editorconfig~EditorConfig#table
  */
+
+/**
+ * An array of colors definitions (either strings or objects).
+ *
+ *		const colors = [
+ *			{
+ *				color: 'hsl(0, 0%, 60%)',
+ *				label: 'Grey'
+ *			},
+ *			'hsl(0, 0%, 80%)',
+ *			{
+ *				color: 'hsl(0, 0%, 90%)',
+ *				label: 'Light grey'
+ *			},
+ *			{
+ *				color: 'hsl(0, 0%, 100%)',
+ *				label: 'White',
+ *				hasBorder: true
+ *			},
+ *			'#FF0000'
+ *		]
+ *
+ * Usually used as a configuration parameter, for instance in
+ * {@link module:table/table~TableConfig#tableProperties `config.table.tableProperties`}
+ * or {@link module:table/table~TableConfig#tableCellProperties `config.table.tableCellProperties`}.
+ *
+ * @typedef {Array.<String|Object>} module:table/table~TableColorConfig
+ */

@@ -105,12 +105,16 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
 
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
 		if ( attributeNewValue ) {
 			writer.setStyle( styleName, attributeNewValue, table );
 		} else {
-			writer.removeAttribute( styleName, table );
+			writer.removeStyle( styleName, table );
 		}
 	} ) );
 }
