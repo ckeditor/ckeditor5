@@ -524,7 +524,7 @@ describe( 'table properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 					expect( tablePropertiesView ).to.include( {
-						borderStyle: 'none',
+						borderStyle: '',
 						borderColor: '',
 						borderWidth: '',
 						backgroundColor: '',

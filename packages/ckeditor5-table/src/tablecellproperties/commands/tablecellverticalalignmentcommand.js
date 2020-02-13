@@ -26,7 +26,8 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * * `'top'`
  * * `'bottom'`
- * * `'middle'`
+ *
+ * The `'middle'` value is default one so there's no need to set this value.
  *
  * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
  */

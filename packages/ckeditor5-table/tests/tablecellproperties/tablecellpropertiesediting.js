@@ -600,6 +600,20 @@ describe( 'table cell properties', () => {
 
 					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
 				} );
+
+				it( 'should upcast from background shorthand', () => {
+					editor.setData( '<table><tr><td style="background:#f00 center center">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+				} );
+
+				it( 'should upcast from background shorthand (rbg color value with spaces)', () => {
+					editor.setData( '<table><tr><td style="background:rgb(253, 253, 119) center center">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -671,11 +685,11 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast text-align:left style', () => {
+				it( 'should not upcast text-align:left style', () => {
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should upcast text-align:right style', () => {
@@ -737,10 +751,10 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast horizontalAlignment=left', () => {
+				it( 'should not downcast horizontalAlignment=left', () => {
 					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'left', tableCell ) );
 
-					assertTableCellStyle( editor, 'text-align:left;' );
+					assertTableCellStyle( editor );
 				} );
 
 				it( 'should downcast horizontalAlignment=right', () => {
@@ -769,11 +783,46 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast vertical-align', () => {
+				it( 'should upcast "top" vertical-align', () => {
 					editor.setData( '<table><tr><td style="vertical-align:top">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+				} );
+
+				it( 'should upcast "bottom" vertical-align', () => {
+					editor.setData( '<table><tr><td style="vertical-align:bottom">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
+				} );
+
+				it( 'should not upcast "middle" vertical-align', () => {
+					editor.setData( '<table><tr><td style="vertical-align:middle">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast "top" valign attribute', () => {
+					editor.setData( '<table><tr><td valign="top">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+				} );
+
+				it( 'should upcast "bottom" valign attribute', () => {
+					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
+				} );
+
+				it( 'should not upcast "middle" valign attribute', () => {
+					editor.setData( '<table><tr><td valign="middle">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -815,9 +864,9 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should downcast verticalAlignment', () => {
-					model.change( writer => writer.setAttribute( 'verticalAlignment', 'middle', tableCell ) );
+					model.change( writer => writer.setAttribute( 'verticalAlignment', 'top', tableCell ) );
 
-					assertTableCellStyle( editor, 'vertical-align:middle;' );
+					assertTableCellStyle( editor, 'vertical-align:top;' );
 				} );
 			} );
 		} );

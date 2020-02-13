@@ -71,13 +71,13 @@ describe( 'table cell properties', () => {
 
 			it( 'should define the public data interface (observable properties)', () => {
 				expect( view ).to.include( {
-					borderStyle: 'none',
+					borderStyle: '',
 					borderWidth: '',
 					borderColor: '',
 					padding: '',
 					backgroundColor: '',
-					horizontalAlignment: 'left',
-					verticalAlignment: 'middle'
+					horizontalAlignment: '',
+					verticalAlignment: ''
 				} );
 			} );
 
@@ -151,7 +151,7 @@ describe( 'table cell properties', () => {
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.view.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( 'none' );
+							expect( view.borderStyle ).to.equal( '' );
 
 							labeledDropdown.view.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
@@ -170,7 +170,7 @@ describe( 'table cell properties', () => {
 							view.borderWidth = '1px';
 							view.borderColor = 'red';
 
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 
 							expect( view.borderColor ).to.equal( '' );
 							expect( view.borderWidth ).to.equal( '' );
@@ -199,7 +199,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -257,7 +257,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = 'none';
+							view.borderStyle = '';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -493,7 +493,7 @@ describe( 'table cell properties', () => {
 							expect( toolbar.items.last.isOn ).to.be.true;
 
 							toolbar.items.first.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( 'left' );
+							expect( view.horizontalAlignment ).to.equal( '' );
 							expect( toolbar.items.last.isOn ).to.be.false;
 							expect( toolbar.items.first.isOn ).to.be.true;
 						} );

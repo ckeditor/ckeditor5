@@ -572,15 +572,15 @@ describe( 'table cell properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
-						borderStyle: 'none',
+						borderStyle: '',
 						borderColor: '',
 						borderWidth: '',
 						width: '',
 						height: '',
 						padding: '',
 						backgroundColor: '',
-						horizontalAlignment: 'left',
-						verticalAlignment: 'middle'
+						horizontalAlignment: '',
+						verticalAlignment: ''
 					} );
 				} );
 			} );

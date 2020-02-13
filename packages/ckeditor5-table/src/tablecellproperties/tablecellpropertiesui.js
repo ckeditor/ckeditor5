@@ -15,13 +15,14 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import {
-	repositionContextualBalloon,
+	colorFieldValidator,
 	getBalloonCellPositionData,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
-	colorFieldValidator,
+	defaultColors,
 	lengthFieldValidator,
-	defaultColors
+	lineWidthFieldValidator,
+	repositionContextualBalloon
 } from '../ui/utils';
 import {
 	getLocalizedColorOptions,
@@ -29,9 +30,6 @@ import {
 } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
 
-const DEFAULT_BORDER_STYLE = 'none';
-const DEFAULT_HORIZONTAL_ALIGNMENT = 'left';
-const DEFAULT_VERTICAL_ALIGNMENT = 'middle';
 const ERROR_TEXT_TIMEOUT = 500;
 
 /**
@@ -208,7 +206,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			viewField: view.borderWidthInput,
 			commandName: 'tableCellBorderWidth',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator
+			validator: lineWidthFieldValidator
 		} ) );
 
 		view.on( 'change:padding', this._getValidatedPropertyChangeCallback( {
@@ -259,15 +257,15 @@ export default class TableCellPropertiesUI extends Plugin {
 		const commands = this.editor.commands;
 
 		this.view.set( {
-			borderStyle: commands.get( 'tableCellBorderStyle' ).value || DEFAULT_BORDER_STYLE,
+			borderStyle: commands.get( 'tableCellBorderStyle' ).value || '',
 			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
 			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
 			width: commands.get( 'tableCellWidth' ).value || '',
 			height: commands.get( 'tableCellHeight' ).value || '',
 			padding: commands.get( 'tableCellPadding' ).value || '',
 			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
-			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || DEFAULT_HORIZONTAL_ALIGNMENT,
-			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || DEFAULT_VERTICAL_ALIGNMENT,
+			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || '',
+			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || ''
 		} );
 	}
 
