@@ -620,6 +620,7 @@ export default class Element extends Node {
 			}
 
 			node.parent = this;
+			node.document = this.document;
 
 			this._children.splice( index, 0, node );
 			index++;
