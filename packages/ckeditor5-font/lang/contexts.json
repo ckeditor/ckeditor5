@@ -8,6 +8,5 @@
 	"Default": "Dropdown option label for the default font family.",
 	"Font Color": "Label of a button that allows selecting a font color.",
 	"Font Background Color": "Label of a button that allows selecting a font background color.",
-	"Remove color": "Label or a button that removes the color from the text (font color and background).",
 	"Document colors": "Title of a color picker section containing the colors currently used in the document."
 }
