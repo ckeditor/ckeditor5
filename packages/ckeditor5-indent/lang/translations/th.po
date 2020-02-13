@@ -12,14 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
-"Language: ne_NP\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the increase indentation feature."
 msgid "Increase indent"
-msgstr "इन्डेन्ट बढाउन"
+msgstr "เพิ่มการเยื้อง"
 
 msgctxt "Toolbar button tooltip for the decrease indentation feature."
 msgid "Decrease indent"
-msgstr "इन्डेन्ट घटाउन"
+msgstr "ลดการเยื้อง"
