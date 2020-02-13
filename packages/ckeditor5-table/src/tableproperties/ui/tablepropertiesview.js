@@ -59,10 +59,10 @@ export default class TablePropertiesView extends View {
 			 * The value of the border style.
 			 *
 			 * @observable
-			 * @default 'none'
+			 * @default ''
 			 * @member #borderStyle
 			 */
-			borderStyle: 'none',
+			borderStyle: '',
 
 			/**
 			 * The value of the border width style.
@@ -401,7 +401,7 @@ export default class TablePropertiesView extends View {
 		} );
 
 		borderStyleDropdown.view.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
-			return styleLabels[ value ];
+			return styleLabels[ value ? value : 'none' ];
 		} );
 
 		borderStyleDropdown.view.on( 'execute', evt => {
@@ -416,13 +416,11 @@ export default class TablePropertiesView extends View {
 
 		borderWidthInput.set( {
 			label: t( 'Width' ),
-			class: 'ck-table-form__border-width',
+			class: 'ck-table-form__border-width'
 		} );
 
 		borderWidthInput.view.bind( 'value' ).to( this, 'borderWidth' );
-		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
-			return value !== 'none';
-		} );
+		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 		borderWidthInput.view.on( 'input', () => {
 			this.borderWidth = borderWidthInput.view.element.value;
 		} );
@@ -432,9 +430,7 @@ export default class TablePropertiesView extends View {
 		const borderColorInput = new LabeledView( locale, createLabeledInputText );
 		borderColorInput.label = t( 'Color' );
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
-		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', value => {
-			return value !== 'none';
-		} );
+		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 
 		borderColorInput.view.on( 'input', () => {
 			this.borderColor = borderColorInput.view.element.value;
@@ -443,7 +439,7 @@ export default class TablePropertiesView extends View {
 		// Reset the border color and width fields when style is "none".
 		// https://github.com/ckeditor/ckeditor5/issues/6227
 		this.on( 'change:borderStyle', ( evt, name, value ) => {
-			if ( value === 'none' ) {
+			if ( !isBorderStyleSet( value ) ) {
 				this.borderColor = '';
 				this.borderWidth = '';
 			}
@@ -660,4 +656,8 @@ export default class TablePropertiesView extends View {
 			right: t( 'Align table to the right' )
 		};
 	}
+}
+
+function isBorderStyleSet( value ) {
+	return !!value;
 }

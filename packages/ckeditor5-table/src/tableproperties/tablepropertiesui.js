@@ -15,18 +15,16 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import TablePropertiesView from './ui/tablepropertiesview';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
-	repositionContextualBalloon,
+	colorFieldValidator,
 	getBalloonTablePositionData,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
-	colorFieldValidator,
 	lengthFieldValidator,
-	lineWidthFieldValidator
+	lineWidthFieldValidator,
+	repositionContextualBalloon
 } from '../ui/utils';
 import { debounce } from 'lodash-es';
 
-const DEFAULT_BORDER_STYLE = 'none';
-const DEFAULT_ALIGNMENT = '';
 const ERROR_TEXT_TIMEOUT = 500;
 
 /**
@@ -226,13 +224,13 @@ export default class TablePropertiesUI extends Plugin {
 		const commands = this.editor.commands;
 
 		this.view.set( {
-			borderStyle: commands.get( 'tableBorderStyle' ).value || DEFAULT_BORDER_STYLE,
+			borderStyle: commands.get( 'tableBorderStyle' ).value || '',
 			borderColor: commands.get( 'tableBorderColor' ).value || '',
 			borderWidth: commands.get( 'tableBorderWidth' ).value || '',
 			backgroundColor: commands.get( 'tableBackgroundColor' ).value || '',
 			width: commands.get( 'tableWidth' ).value || '',
 			height: commands.get( 'tableHeight' ).value || '',
-			alignment: commands.get( 'tableAlignment' ).value || DEFAULT_ALIGNMENT,
+			alignment: commands.get( 'tableAlignment' ).value || '',
 		} );
 	}
 
