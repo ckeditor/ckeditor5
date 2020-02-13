@@ -12,30 +12,30 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Azerbaijani (https://www.transifex.com/ckeditor/teams/11143/az/)\n"
-"Language: az\n"
+"Language-Team: Portuguese (https://www.transifex.com/ckeditor/teams/11143/pt/)\n"
+"Language: pt\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for aligning the text to the left."
 msgid "Align left"
-msgstr "Soldan düzləndir"
+msgstr "Alinhar à esquerda"
 
 msgctxt "Toolbar button tooltip for aligning the text to the right."
 msgid "Align right"
-msgstr "Sağdan düzləndir"
+msgstr "Alinhar à direita"
 
 msgctxt "Toolbar button tooltip for aligning the text to center."
 msgid "Align center"
-msgstr "Mərkəzə düzləndir"
+msgstr "Alinhar ao centro"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "Eninə görə"
+msgstr "Justificar"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
-msgstr "Mətn düzləndirməsi"
+msgstr "Alinhamento de texto"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr "Mətnin düzləndirmə paneli"
+msgstr "Ferramentas de alinhamento de texto"
