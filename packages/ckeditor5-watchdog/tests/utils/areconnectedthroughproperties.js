@@ -6,6 +6,7 @@
 /* globals window, document, Event */
 
 import areConnectedThroughProperties from '../../src/utils/areconnectedthroughproperties';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
 describe( 'areConnectedThroughProperties()', () => {
 	it( 'should return `false` if one of the value is primitive #1', () => {
@@ -246,5 +247,54 @@ describe( 'areConnectedThroughProperties()', () => {
 		const el2 = { defaultValue: shared, shared };
 
 		expect( areConnectedThroughProperties( el1, el2 ) ).to.be.true;
+	} );
+
+	describe( 'integration tests', () => {
+		afterEach( () => {
+			delete Editor.builtinPlugins;
+			delete Editor.defaultConfig;
+		} );
+
+		it( 'should return false for two different editors', () => {
+			const editor1 = new Editor( {} );
+			const editor2 = new Editor( {} );
+
+			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
+		} );
+
+		it( 'should return false for two different editors sharing builtin plugins', () => {
+			class FakePlugin {}
+
+			Editor.builtinPlugins = [ FakePlugin ];
+
+			const editor1 = new Editor();
+			const editor2 = new Editor();
+
+			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
+		} );
+
+		it( 'should return false for two different editors inheriting default configuration', () => {
+			Editor.defaultConfig = {
+				foo: {
+					bar: []
+				}
+			};
+
+			const editor1 = new Editor();
+			const editor2 = new Editor();
+
+			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
+		} );
+
+		it( 'should return false for two different editors sharing builtin plugins', () => {
+			Editor.builtinPlugins = [
+				class Foo {}
+			];
+
+			const editor1 = new Editor();
+			const editor2 = new Editor();
+
+			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
+		} );
 	} );
 } );
