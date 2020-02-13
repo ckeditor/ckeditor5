@@ -125,16 +125,9 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 		model: {
 			name: 'tableCell',
 			key: 'horizontalAlignment',
-			values: [ 'left', 'right', 'center', 'justify' ]
+			values: [ 'right', 'center', 'justify' ]
 		},
 		view: {
-			// TODO: controversial one but I don't know if we want "default".
-			left: {
-				key: 'style',
-				value: {
-					'text-align': 'left'
-				}
-			},
 			right: {
 				key: 'style',
 				value: {

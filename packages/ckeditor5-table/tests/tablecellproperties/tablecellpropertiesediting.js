@@ -685,11 +685,11 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast text-align:left style', () => {
+				it( 'should not upcast text-align:left style', () => {
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should upcast text-align:right style', () => {
@@ -751,10 +751,10 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast horizontalAlignment=left', () => {
+				it( 'should not downcast horizontalAlignment=left', () => {
 					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'left', tableCell ) );
 
-					assertTableCellStyle( editor, 'text-align:left;' );
+					assertTableCellStyle( editor );
 				} );
 
 				it( 'should downcast horizontalAlignment=right', () => {
