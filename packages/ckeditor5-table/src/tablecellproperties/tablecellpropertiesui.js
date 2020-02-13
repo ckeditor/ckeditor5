@@ -20,6 +20,7 @@ import {
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
 	lengthFieldValidator,
+	lineWidthFieldValidator,
 	repositionContextualBalloon
 } from '../ui/utils';
 import { debounce } from 'lodash-es';
@@ -180,7 +181,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			viewField: view.borderWidthInput,
 			commandName: 'tableCellBorderWidth',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator
+			validator: lineWidthFieldValidator
 		} ) );
 
 		view.on( 'change:padding', this._getValidatedPropertyChangeCallback( {
