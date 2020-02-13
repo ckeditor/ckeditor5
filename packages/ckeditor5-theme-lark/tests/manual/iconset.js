@@ -9,11 +9,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
-import alignLeft from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import alignCenter from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
-import alignRight from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
-import alignJustify from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
-
 import bold from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import underline from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
@@ -29,6 +24,13 @@ import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import eraser from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import lowVision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import image from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import alignBottom from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
+import alignMiddle from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
+import alignTop from '@ckeditor/ckeditor5-core/theme/icons/align-top.svg';
+import alignLeft from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
+import alignCenter from '@ckeditor/ckeditor5-core/theme/icons/align-center.svg';
+import alignRight from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
+import alignJustify from '@ckeditor/ckeditor5-core/theme/icons/align-justify.svg';
 import objectLeft from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import objectCenter from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import objectRight from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
@@ -36,6 +38,7 @@ import objectFullWidth from '@ckeditor/ckeditor5-core/theme/icons/object-full-wi
 import pencil from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
+import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
 import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
@@ -60,12 +63,20 @@ import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
 import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
 import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
+import todoList from '@ckeditor/ckeditor5-list/theme/icons/todolist.svg';
 
 import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
+
+import pageBreak from '@ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg';
 
 import paragraph from '@ckeditor/ckeditor5-paragraph/theme/icons/paragraph.svg';
 
 import removeFormat from '@ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg';
+
+import contentLock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentlock.svg';
+import contentUnlock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg';
+
+import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
 import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
@@ -74,15 +85,15 @@ import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-ce
 import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
 import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
+import nextArrow from '@ckeditor/ckeditor5-ui/theme/icons/next-arrow.svg';
+import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
 import '../../theme/ckeditor5-ui/components/editorui/editorui.css';
 
 const icons = {
-	// alignment
-	alignLeft, alignCenter, alignRight, alignJustify,
-
 	// basic-styles
 	bold, italic, underline, code, strikethrough, subscript, superscript,
 
@@ -90,7 +101,10 @@ const icons = {
 	codeBlock,
 
 	// core
-	check, cancel, eraser, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil, pilcrow,
+	alignTop, alignBottom, alignMiddle, alignLeft, alignCenter, alignRight,
+	alignJustify, cancel, check, eraser, image, lowVision, objectCenter,
+	objectFullWidth, objectLeft, objectRight, pencil, pilcrow, quote,
+	threeVerticalDots,
 
 	// font
 	fontFamily, fontSize, fontColor, fontBackground,
@@ -98,20 +112,23 @@ const icons = {
 	// heading
 	heading1, heading2, heading3, heading4, heading5, heading6,
 
-	// indent
-	indent, outdent,
-
 	// highlight
 	marker, pen,
+
+	// indent
+	indent, outdent,
 
 	// link
 	link, unlink,
 
 	// list
-	bulletedList, numberedList,
+	bulletedList, numberedList, todoList,
 
 	// media-embed
 	media,
+
+	// page-break
+	pageBreak,
 
 	// paragraph
 	paragraph,
@@ -119,9 +136,18 @@ const icons = {
 	// remove-format
 	removeFormat,
 
+	// restricted-editing
+	contentLock, contentUnlock,
+
+	// special-characters
+	specialCharacters,
+
 	// table
 	table, tableRow, tableColumn, tableMergeCell,
 	tableCellProperties, tableProperties,
+
+	// ui
+	nextArrow, previousArrow,
 
 	// undo
 	undo, redo
