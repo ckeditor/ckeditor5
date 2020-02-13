@@ -67,10 +67,10 @@ export default class TableCellPropertiesView extends View {
 			 * The value of the cell border style.
 			 *
 			 * @observable
-			 * @default 'none'
+			 * @default ''
 			 * @member #borderStyle
 			 */
-			borderStyle: 'none',
+			borderStyle: '',
 
 			/**
 			 * The value of the cell border width style.
@@ -130,19 +130,19 @@ export default class TableCellPropertiesView extends View {
 			 * The value of the horizontal text alignment style.
 			 *
 			 * @observable
-			 * @default 'left'
+			 * @default ''
 			 * @member #horizontalAlignment
 			 */
-			horizontalAlignment: 'left',
+			horizontalAlignment: '',
 
 			/**
 			 * The value of the vertical text alignment style.
 			 *
 			 * @observable
-			 * @default 'middle'
+			 * @default ''
 			 * @member #verticalAlignment
 			 */
-			verticalAlignment: 'middle'
+			verticalAlignment: ''
 		} );
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();

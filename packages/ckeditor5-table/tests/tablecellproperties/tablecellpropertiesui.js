@@ -21,7 +21,7 @@ import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellp
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
 
-describe( 'table cell properties', () => {
+describe.only( 'table cell properties', () => {
 	describe( 'TableCellPropertiesUI', () => {
 		let editor, editorElement, contextualBalloon,
 			tableCellPropertiesUI, tableCellPropertiesView, tableCellPropertiesButton,
@@ -554,15 +554,15 @@ describe( 'table cell properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
-						borderStyle: 'none',
+						borderStyle: '',
 						borderColor: '',
 						borderWidth: '',
 						width: '',
 						height: '',
 						padding: '',
 						backgroundColor: '',
-						horizontalAlignment: 'left',
-						verticalAlignment: 'middle'
+						horizontalAlignment: '',
+						verticalAlignment: ''
 					} );
 				} );
 			} );

@@ -59,10 +59,10 @@ export default class TablePropertiesView extends View {
 			 * The value of the border style.
 			 *
 			 * @observable
-			 * @default 'none'
+			 * @default ''
 			 * @member #borderStyle
 			 */
-			borderStyle: 'none',
+			borderStyle: '',
 
 			/**
 			 * The value of the border width style.

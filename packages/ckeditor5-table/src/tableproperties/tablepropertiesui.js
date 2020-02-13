@@ -15,16 +15,15 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import TablePropertiesView from './ui/tablepropertiesview';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
-	repositionContextualBalloon,
+	colorFieldValidator,
 	getBalloonTablePositionData,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
-	colorFieldValidator,
-	lengthFieldValidator
+	lengthFieldValidator,
+	repositionContextualBalloon
 } from '../ui/utils';
 import { debounce } from 'lodash-es';
 
-const DEFAULT_ALIGNMENT = '';
 const ERROR_TEXT_TIMEOUT = 500;
 
 /**
@@ -230,7 +229,7 @@ export default class TablePropertiesUI extends Plugin {
 			backgroundColor: commands.get( 'tableBackgroundColor' ).value || '',
 			width: commands.get( 'tableWidth' ).value || '',
 			height: commands.get( 'tableHeight' ).value || '',
-			alignment: commands.get( 'tableAlignment' ).value || DEFAULT_ALIGNMENT,
+			alignment: commands.get( 'tableAlignment' ).value || '',
 		} );
 	}
 
