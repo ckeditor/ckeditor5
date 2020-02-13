@@ -677,7 +677,7 @@ export default class TableCellPropertiesView extends View {
 
 		const alignmentLabel = new LabelView( locale );
 
-		alignmentLabel.text = t( 'Text alignment' );
+		alignmentLabel.text = t( 'Table cell text alignment' );
 
 		// -- Horizontal ---------------------------------------------------
 
