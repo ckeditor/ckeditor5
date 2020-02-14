@@ -17,6 +17,8 @@ import Font from '@ckeditor/ckeditor5-font/src/font';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
 ClassicEditor.builtinPlugins.push(
 	PasteFromOffice,
@@ -30,6 +32,10 @@ ClassicEditor.builtinPlugins.push(
 	Indent,
 	IndentBlock,
 	ImageResize,
+	TableProperties,
+	TableCellProperties
 );
+
+ClassicEditor.defaultConfig.table.contentToolbar.push( 'tableProperties', 'tableCellProperties' );
 
 window.ClassicEditor = ClassicEditor;
