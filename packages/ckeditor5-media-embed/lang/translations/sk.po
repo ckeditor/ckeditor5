@@ -12,38 +12,38 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "Widget de contenido multimedia"
+msgstr "Nástroj pre médiá"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
-msgstr "URL del contenido multimedia"
+msgstr "URL média"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr "Pega la URL del contenido multimedia"
+msgstr "Vložte URL média."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
-msgstr "Tip: pega la URL dentro del contenido para embeber más rápido"
+msgstr "Tip: URL adresu média vložte do obsahu."
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "La URL no debe estar vacía"
+msgstr "Musíte zadať URL."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "La URL de este contenido multimedia no está soportada"
+msgstr "URL média nie je podporovaná."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
-msgstr "Insertar contenido multimedia"
+msgstr "Vložiť média"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
-msgstr "Barra de herramientas de contenido multimedia"
+msgstr "Nástroje pre médiá"

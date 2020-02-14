@@ -26,7 +26,7 @@ msgstr "Medya URL'si"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr "Media URL'siini metin kutusuna yapıştırınız."
+msgstr "Medya URL'siini metin kutusuna yapıştırınız."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
