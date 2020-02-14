@@ -764,11 +764,11 @@
     lodash-es "^4.17.11"
 
 "@ckeditor/ckeditor5-dev-docs@^11.0.9":
-  version "11.0.11"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-11.0.11.tgz#c2c3c2f2700b443707135bc294b929c3e4736ee6"
-  integrity sha512-75NAk1sLaJDHS0tFL36JE9ocd/XaD4eaPoHz51bJKfpeYDtBaR35+QpiqkiwJniPtgbbjYqVDJh1Mfln4lWo7w==
+  version "11.0.12"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-11.0.12.tgz#379c6c1245559baa934059dc78312aee3bf6bfdd"
+  integrity sha512-2k1IvVxlZMIhfu+9gO8dVzQZ9JIKjklQoISNBkaUefFGNbZ/thQdPM2DS1yiQoEF6OyQKpquMK/efvQ5KEqiLg==
   dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^12.0.7"
+    "@ckeditor/ckeditor5-dev-utils" "^12.0.8"
     "@ckeditor/jsdoc-plugins" "^3.0.8"
     jsdoc ckeditor/jsdoc#node12
     map-stream "^0.0.7"
@@ -776,11 +776,11 @@
     vinyl-fs "^3.0.2"
 
 "@ckeditor/ckeditor5-dev-env@^17.0.0":
-  version "17.1.2"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-env/-/ckeditor5-dev-env-17.1.2.tgz#5c453543c39db693d879944151720130b37d02d3"
-  integrity sha512-yaduzf9RmfFrvzJXLlwDt0Mf5QNubggR1iL5ThlfmR8iwUh5boMEcNbof64Ht74yxIXXs4Kc5ebhpPswxUOkXQ==
+  version "17.1.3"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-env/-/ckeditor5-dev-env-17.1.3.tgz#73f8bd5df696df76e3dfc2799067191e74458f36"
+  integrity sha512-BqUrINuuJytvo12vU864ZHgU854tUKUxpo5UYTG2nGKO86nYt0aCAKCLBwHaD8mu8QruBunHmnJkQ9i70xRF+Q==
   dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^12.0.7"
+    "@ckeditor/ckeditor5-dev-utils" "^12.0.8"
     "@octokit/rest" "^16.28.2"
     chalk "^3.0.0"
     compare-func "^1.3.2"
@@ -800,13 +800,13 @@
     semver "^6.2.0"
 
 "@ckeditor/ckeditor5-dev-tests@^18.0.0":
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-18.0.1.tgz#c5f3aaa480701051e8a093acf25e624eccf702da"
-  integrity sha512-+dO9bJ6zJ0c4ystlsmvAe1nMvd3dtMjdvCYJaLDtVfAlQihr/bYJ/6oWiMR23mfNdFy5atpWfow8aExD+aUVKQ==
+  version "18.0.2"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-18.0.2.tgz#0cefceed3d83111c615a9000c461342760f0949a"
+  integrity sha512-FqJHNugSr2x56fTmtnjqsfYlXkbkBXsl6zfmIGRVJtjk9E0ES8GJjA+BH7z6n1feqsgJcsP7FH0CsAKL6KHbsw==
   dependencies:
     "@babel/core" "^7.0.0"
-    "@ckeditor/ckeditor5-dev-utils" "^12.0.7"
-    "@ckeditor/ckeditor5-dev-webpack-plugin" "^8.0.7"
+    "@ckeditor/ckeditor5-dev-utils" "^12.0.8"
+    "@ckeditor/ckeditor5-dev-webpack-plugin" "^8.0.8"
     "@ckeditor/ckeditor5-inspector" "^1.0.0"
     babel-core "^6.26.0"
     babel-loader "^8.0.2"
@@ -846,10 +846,10 @@
     style-loader "^1.0.0"
     webpack "^4.39.1"
 
-"@ckeditor/ckeditor5-dev-utils@^12.0.0", "@ckeditor/ckeditor5-dev-utils@^12.0.5", "@ckeditor/ckeditor5-dev-utils@^12.0.7":
-  version "12.0.7"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-12.0.7.tgz#f38ae53c4f6156732df94fa647d4d3551e436e9e"
-  integrity sha512-kH0Fc3zw7kME12tB2D+5RxnWzzy2xqiKoq79dSwwbBgd7Y1v/y1cXsv02jYz0N0eO0259pK3Ignj90SM8MDJ1g==
+"@ckeditor/ckeditor5-dev-utils@^12.0.0", "@ckeditor/ckeditor5-dev-utils@^12.0.5", "@ckeditor/ckeditor5-dev-utils@^12.0.8":
+  version "12.0.8"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-12.0.8.tgz#7ee23b4f02a13e3e5e0da4bae768d48f30a47f1f"
+  integrity sha512-plWPyka9zNPyqogbU0jownpWTfTBgaH5LugiwuDRHOoMfSlSp/WN61oea82iDQjE/qiOE979HIsSL3sKGxl+Qw==
   dependencies:
     acorn "^6.2.1"
     acorn-walk "^6.2.0"
@@ -867,12 +867,12 @@
     shelljs "^0.8.1"
     through2 "^3.0.1"
 
-"@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.5", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.7":
-  version "8.0.7"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-8.0.7.tgz#f4a0be2d79ba1f67b00c9da38b08c76d67479d3d"
-  integrity sha512-w5fKC95W4aVJ5pm6r+sUwp3t2Qsm1tkALXDt5oGcbXRzTqmGoLsGxj284FESI40oA/ProgZ34UKXVosWjKJ6Ug==
+"@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.5", "@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.8":
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-8.0.8.tgz#b8b74597aa403059497fe1f74d8e90b782ba7da0"
+  integrity sha512-x0vorVOrjagcDQqHpfGA037uWnu86zgYOTtRxgu/Dxf0UCEznaiMZcmodZRMjBb6hpXrKHsUnTadM0CWNJNacg==
   dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^12.0.7"
+    "@ckeditor/ckeditor5-dev-utils" "^12.0.8"
     chalk "^3.0.0"
     rimraf "^2.6.2"
     webpack-sources "^1.1.0"
@@ -2279,13 +2279,13 @@ browserify-zlib@^0.2.0:
     pako "~1.0.5"
 
 browserslist@^4.0.0, browserslist@^4.8.3, browserslist@^4.8.5:
-  version "4.8.6"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.6.tgz#96406f3f5f0755d272e27a66f4163ca821590a7e"
-  integrity sha512-ZHao85gf0eZ0ESxLfCp73GG9O/VTytYDIkIiZDlURppLTI9wErSM/5yAKEq6rcUdxBLjMELmrYUJGg5sxGKMHg==
+  version "4.8.7"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.7.tgz#ec8301ff415e6a42c949d0e66b405eb539c532d0"
+  integrity sha512-gFOnZNYBHrEyUML0xr5NJ6edFaaKbTFX9S9kQHlYfCP0Rit/boRIz4G+Avq6/4haEKJXdGGUnoolx+5MWW2BoA==
   dependencies:
-    caniuse-lite "^1.0.30001023"
-    electron-to-chromium "^1.3.341"
-    node-releases "^1.1.47"
+    caniuse-lite "^1.0.30001027"
+    electron-to-chromium "^1.3.349"
+    node-releases "^1.1.49"
 
 btoa-lite@^1.0.0:
   version "1.0.0"
@@ -2508,7 +2508,7 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001020, caniuse-lite@^1.0.30001023:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001020, caniuse-lite@^1.0.30001027:
   version "1.0.30001027"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001027.tgz#283e2ef17d94889cc216a22c6f85303d78ca852d"
   integrity sha512-7xvKeErvXZFtUItTHgNtLgS9RJpVnwBlWX8jSo/BO8VsF6deszemZSkJJJA1KOKrXuzZH4WALpAJdq5EyfgMLg==
@@ -4000,7 +4000,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-electron-to-chromium@^1.3.341:
+electron-to-chromium@^1.3.349:
   version "1.3.349"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.349.tgz#663f26a69d348a462df47b4d7ab162a2f29bbcb7"
   integrity sha512-uEb2zs6EJ6OZIqaMsCSliYVgzE/f7/s1fLWqtvRtHg/v5KBF2xds974fUnyatfxIDgkqzQVwFtam5KExqywx0Q==
@@ -8149,7 +8149,7 @@ node-pre-gyp@*:
     semver "^5.3.0"
     tar "^4.4.2"
 
-node-releases@^1.1.47:
+node-releases@^1.1.49:
   version "1.1.49"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.49.tgz#67ba5a3fac2319262675ef864ed56798bb33b93e"
   integrity sha512-xH8t0LS0disN0mtRCh+eByxFPie+msJUBL/lJDBuap53QGiYPa9joh83K4pCZgWJ+2L4b9h88vCVdXQ60NO2bg==
@@ -9831,9 +9831,9 @@ read-pkg@^5.1.1:
     util-deprecate "~1.0.1"
 
 "readable-stream@2 || 3", readable-stream@^3.0.2, readable-stream@^3.1.1:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.5.0.tgz#465d70e6d1087f6162d079cd0b5db7fbebfd1606"
-  integrity sha512-gSz026xs2LfxBPudDuI41V1lka8cxg64E66SGe78zJlsUofOg/yqwezdIcdfwik6B4h8LFmWPA9ef9X3FiNFLA==
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
+  integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
   dependencies:
     inherits "^2.0.3"
     string_decoder "^1.1.1"
@@ -9966,9 +9966,9 @@ regjsparser@^0.1.4:
     jsesc "~0.5.0"
 
 regjsparser@^0.6.0:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/regjsparser/-/regjsparser-0.6.2.tgz#fd62c753991467d9d1ffe0a9f67f27a529024b96"
-  integrity sha512-E9ghzUtoLwDekPT0DYCp+c4h+bvuUpe6rRHCTYn6eGoqj1LgKXxT6I0Il4WbjhQkOghzi/V+y03bPKvbllL93Q==
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/regjsparser/-/regjsparser-0.6.3.tgz#74192c5805d35e9f5ebe3c1fb5b40d40a8a38460"
+  integrity sha512-8uZvYbnfAtEm9Ab8NTb3hdLwL4g/LQzEYP7Xs27T96abJCCE2d6r3cPZPQEsLKy0vRSGVNG+/zVGtLr86HQduA==
   dependencies:
     jsesc "~0.5.0"
 
