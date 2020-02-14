@@ -43,15 +43,6 @@ export default class TableSelection extends Plugin {
 		super( editor );
 
 		/**
-		 * A flag indicating that the selection is "active". A selection is "active" if it was started and not yet finished.
-		 * A selection can be "active" for instance if user moves a mouse over a table while holding a mouse button down.
-		 *
-		 * @readonly
-		 * @member {Boolean}
-		 */
-		this.isSelecting = false;
-
-		/**
 		 * A mouse selection handler.
 		 *
 		 * @private
@@ -107,7 +98,6 @@ export default class TableSelection extends Plugin {
 	startSelectingFrom( tableCell ) {
 		this.clearSelection();
 
-		this.isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
 	}
@@ -124,7 +114,7 @@ export default class TableSelection extends Plugin {
 	 */
 	setSelectingTo( tableCell ) {
 		// Do not update if not in selection mode or no table cell is passed.
-		if ( !this.isSelecting || !tableCell ) {
+		if ( !tableCell ) {
 			return;
 		}
 
@@ -151,11 +141,10 @@ export default class TableSelection extends Plugin {
 	 * @param {module:engine/model/element~Element} [tableCell]
 	 */
 	stopSelection( tableCell ) {
-		if ( this.isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
+		if ( tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
 		}
 
-		this.isSelecting = false;
 		this._updateModelSelection();
 	}
 
@@ -171,7 +160,6 @@ export default class TableSelection extends Plugin {
 	clearSelection() {
 		this._startElement = undefined;
 		this._endElement = undefined;
-		this.isSelecting = false;
 	}
 
 	/**

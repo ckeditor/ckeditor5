@@ -37,6 +37,15 @@ export default class MouseSelectionHandler {
 		this._tableSelection = tableSelection;
 
 		/**
+		 * A flag indicating that the mouse selection is "active". A selection is "active" if it was started and not yet finished.
+		 * A selection can be "active" for instance if user moves a mouse over a table while holding a mouse button down.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 */
+		this.isSelecting = false;
+
+		/**
 		 * Editing mapper.
 		 *
 		 * @private
@@ -74,6 +83,7 @@ export default class MouseSelectionHandler {
 			return;
 		}
 
+		this.isSelecting = true;
 		this._tableSelection.startSelectingFrom( tableCell );
 	}
 
@@ -86,9 +96,11 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseMove( domEventData ) {
-		// if ( !this._tableSelection.isSelecting ) {
-		// 	return;
-		// }
+		if ( !isButtonPressed( domEventData ) ) {
+			this._tableSelection.stopSelection();
+
+			return;
+		}
 
 		const tableCell = this._getModelTableCellFromDomEvent( domEventData );
 
@@ -155,6 +167,10 @@ export default class MouseSelectionHandler {
 
 		return findAncestor( 'tableCell', modelElement );
 	}
+}
+
+function isButtonPressed( domEventData ) {
+	return !!domEventData.domEvent.buttons;
 }
 
 mix( MouseSelectionHandler, ObservableMixin );
