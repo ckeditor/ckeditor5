@@ -68,8 +68,8 @@ export default class MouseSelectionHandler {
 		const tableCell = this._getModelTableCellFromDomEvent( domEventData );
 
 		if ( !tableCell ) {
-			this._tableSelection.stopSelection();
 			this._tableSelection.clearSelection();
+			this._tableSelection.stopSelection();
 
 			return;
 		}

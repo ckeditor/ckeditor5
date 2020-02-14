@@ -69,6 +69,10 @@ export default class TableSelection extends Plugin {
 		 */
 	}
 
+	get hasMultiCellSelection() {
+		return this.isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -177,7 +181,7 @@ export default class TableSelection extends Plugin {
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	* getSelectedTableCells() {
-		if ( !this._startElement || !this._endElement ) {
+		if ( !this.hasMultiCellSelection ) {
 			return;
 		}
 
@@ -203,6 +207,10 @@ export default class TableSelection extends Plugin {
 	 * @private
 	 */
 	_updateModelSelection() {
+		if ( !this.hasMultiCellSelection ) {
+			return;
+		}
+
 		const editor = this.editor;
 		const model = editor.model;
 

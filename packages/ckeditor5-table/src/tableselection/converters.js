@@ -21,7 +21,7 @@ export function setupTableSelectionHighlighting( editor, tableSelection ) {
 		const viewWriter = conversionApi.writer;
 		const viewSelection = viewWriter.document.selection;
 
-		if ( tableSelection.isSelecting ) {
+		if ( tableSelection.hasMultiCellSelection ) {
 			clearHighlightedTableCells( highlighted, view );
 
 			for ( const tableCell of tableSelection.getSelectedTableCells() ) {
