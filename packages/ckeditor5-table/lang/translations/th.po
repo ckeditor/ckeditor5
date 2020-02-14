@@ -12,82 +12,82 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Insertar tabla"
+msgstr "แทรกตาราง"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Columna de encabezado"
+msgstr "หัวข้อคอลัมน์"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Insertar columna izquierda"
+msgstr "แทรกคอลัมน์ทางซ้าย"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Insertar columna derecha"
+msgstr "แทรกคอลัมน์ทางขวา"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Eliminar columna"
+msgstr "ลบคอลัมน์"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Columna"
+msgstr "คอลัมน์"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Fila de encabezado"
+msgstr "ส่วนหัวแถว"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Insertar fila debajo"
+msgstr "แทรกส่วนหัวด้านล่าง"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Insertar fila encima"
+msgstr "แทรกส่วนหัวด้านบน"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Eliminar fila"
+msgstr "ลบแถว"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Fila"
+msgstr "แถว"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Combinar celda superior"
+msgstr "ผสานเซลล์ด้านบน"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Combinar celda derecha"
+msgstr "ผสานเซลล์ด้านขวา"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Combinar celda inferior"
+msgstr "ผสานเซลล์ด้านล่าง"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Combinar celda izquierda"
+msgstr "ผสานเซลล์ด้านซ้าย"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Dividir celdas verticalmente"
+msgstr "แยกเซลล์แนวตั้ง"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Dividir celdas horizontalmente"
+msgstr "แยกเซลล์แนวนอน"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Combinar celdas"
+msgstr "ผสานเซลล์"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr "Barra de herramientas de tabla"
+msgstr "เครื่องมือตาราง"
