@@ -69,8 +69,13 @@ export default class TableSelection extends Plugin {
 		 */
 	}
 
+	/**
+	 * Flag indicating that there are selected table cells.
+	 *
+	 * @type {Boolean}
+	 */
 	get hasMultiCellSelection() {
-		return this.isSelecting && this._startElement && this._endElement && this._startElement !== this._endElement;
+		return !!this._startElement && !!this._endElement && this._startElement !== this._endElement;
 	}
 
 	/**
