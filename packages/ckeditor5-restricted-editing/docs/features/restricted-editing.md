@@ -31,6 +31,28 @@ Then you can switch to the restricted editing mode to see how the editable and n
 
 {@snippet features/restricted-editing}
 
+## Configuration
+
+It is possible to configure which features should be available in the restricted mode. For instance, the following configuration will not only allow typing and deleting but also bolding text.
+
+```js
+import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/restrictededitingmode';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Bold, RestrictedEditingMode, ... ],
+		toolbar: [ 'bold', '|', 'restrictedEditing', ... ],
+		restrictedEditing: {
+			allowedCommands: [ 'bold' ]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig `config.restrictedEditing`} documentation.
+
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-restricted-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing) package:
