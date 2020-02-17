@@ -140,20 +140,20 @@ export function hidePlaceholder( writer, element ) {
  * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
- * @param {module:engine/view/element~Element} element
+ * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} elementOrDocumentFragment
  * @returns {Boolean}
  */
-export function needsPlaceholder( element ) {
-	const doc = element.document;
-
-	// The element was removed from document.
-	if ( !doc ) {
+export function needsPlaceholder( elementOrDocumentFragment ) {
+	// TODO: How to check whether the element was removed from the document?
+	if ( elementOrDocumentFragment.root.is( 'documentFragment' ) ) {
 		return false;
 	}
 
 	// The element is empty only as long as it contains nothing but uiElements.
-	const isEmptyish = !Array.from( element.getChildren() )
+	const isEmptyish = !Array.from( elementOrDocumentFragment.getChildren() )
 		.some( element => !element.is( 'uiElement' ) );
+
+	const doc = elementOrDocumentFragment.document;
 
 	// If the element is empty and the document is blurred.
 	if ( !doc.isFocused && isEmptyish ) {
@@ -164,7 +164,7 @@ export function needsPlaceholder( element ) {
 	const selectionAnchor = viewSelection.anchor;
 
 	// If document is focused and the element is empty but the selection is not anchored inside it.
-	if ( isEmptyish && selectionAnchor && selectionAnchor.parent !== element ) {
+	if ( isEmptyish && selectionAnchor && selectionAnchor.parent !== elementOrDocumentFragment ) {
 		return true;
 	}
 
