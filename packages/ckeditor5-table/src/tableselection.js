@@ -17,7 +17,24 @@ import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 /**
  * The table selection plugin.
  *
- * It introduces the ability to select table cells using mouse.
+ * It introduces the ability to select table cells. Table selection is described by two nodes: start and end.
+ * Both are the oposite corners of an rectangle that spans over them.
+ *
+ * Consider a table:
+ *
+ *		    0   1   2   3
+ *		  +---+---+---+---+
+ *		0 | a | b | c | d |
+ *		  +-------+   +---+
+ *		1 | e | f |   | g |
+ *		  +---+---+---+---+
+ *		2 | h | i     | j |
+ *		  +---+---+---+---+
+ *
+ * Setting table selection start as table cell "b" and end as table cell "g" will select table cells: "b", "c", "d", "f", and "g".
+ * The cells that spans over multiple rows or columns can extend over the selection rectangle. For instance setting a selection from
+ * table cell "a" to table cell "i" will create a selection in which table cell "i" will be extended over a rectangular of the selected
+ * cell: "a", "b", "e", "f", "h", and "i".
  *
  * @extends module:core/plugin~Plugin
  */
@@ -61,7 +78,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Flag indicating that there are selected table cells.
+	 * Flag indicating that there are selected table cells and the selection has more than one table cell.
 	 *
 	 * @type {Boolean}
 	 */
@@ -113,9 +130,8 @@ export default class TableSelection extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 */
 	setSelectingTo( tableCell ) {
-		// Do not update if not in selection mode or no table cell is passed.
-		if ( !tableCell ) {
-			return;
+		if ( !this._startElement ) {
+			this._startElement = tableCell;
 		}
 
 		const table = this._startElement.parent.parent;
@@ -163,13 +179,13 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Returns iterator that iterates over all selected table cells.
+	 * Returns iterator for selected table cells.
 	 *
 	 *		tableSelection.startSelectingFrom( startTableCell );
-	 *		tableSelection.stopSelection();
+	 *		tableSelection.stopSelection( endTableCell );
 	 *
 	 *		const selectedTableCells = Array.from( tableSelection.getSelectedTableCells() );
-	 *		// The above array will consist one table cell.
+	 *		// The above array will consist a rectangular table selection.
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
