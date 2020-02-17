@@ -11,6 +11,7 @@ import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewDocument from '../../src/view/document';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
 import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view';
@@ -22,7 +23,7 @@ import DowncastHelpers from '../../src/conversion/downcasthelpers';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DataController', () => {
-	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers;
+	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument;
 
 	beforeEach( () => {
 		model = new Model();
@@ -36,6 +37,7 @@ describe( 'DataController', () => {
 		schema.register( '$title', { inheritAllFrom: '$root' } );
 
 		htmlDataProcessor = new HtmlDataProcessor();
+		viewDocument = new ViewDocument();
 
 		data = new DataController( model, htmlDataProcessor );
 
@@ -139,7 +141,7 @@ describe( 'DataController', () => {
 			schema.register( 'inlineRoot' );
 			schema.extend( '$text', { allowIn: 'inlineRoot' } );
 
-			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
+			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
 
 			// Model fragment in root.
 			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );

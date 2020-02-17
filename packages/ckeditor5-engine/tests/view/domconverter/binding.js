@@ -9,6 +9,7 @@ import ViewElement from '../../../src/view/element';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
+import ViewDocument from '../../../src/view/document';
 import { INLINE_FILLER } from '../../../src/view/filler';
 
 import { parse } from '../../../src/dev-utils/view';
@@ -16,16 +17,17 @@ import { parse } from '../../../src/dev-utils/view';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
-	let converter;
+	let converter, viewDocument;
 
 	before( () => {
 		converter = new DomConverter();
+		viewDocument = new ViewDocument();
 	} );
 
 	describe( 'bindElements()', () => {
 		it( 'should bind elements', () => {
 			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
+			const viewElement = new ViewElement( viewDocument, 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
@@ -37,7 +39,7 @@ describe( 'DomConverter', () => {
 	describe( 'bindDocumentFragments()', () => {
 		it( 'should bind document fragments', () => {
 			const domFragment = document.createDocumentFragment();
-			const viewFragment = new ViewDocumentFragment();
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			converter.bindDocumentFragments( domFragment, viewFragment );
 
@@ -49,7 +51,7 @@ describe( 'DomConverter', () => {
 	describe( 'mapDomToView()', () => {
 		it( 'should return corresponding view element if element is passed', () => {
 			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
+			const viewElement = new ViewElement( viewDocument, 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
@@ -77,7 +79,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domImg, domText ] );
 
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 
 			converter.bindElements( domImg, viewImg );
 
@@ -173,7 +175,7 @@ describe( 'DomConverter', () => {
 	describe( 'mapViewToDom()', () => {
 		it( 'should return corresponding DOM element if element was passed', () => {
 			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
+			const viewElement = new ViewElement( viewDocument, 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
@@ -182,7 +184,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return corresponding DOM document fragment', () => {
 			const domFragment = document.createDocumentFragment();
-			const viewFragment = new ViewDocumentFragment();
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			converter.bindElements( domFragment, viewFragment );
 
@@ -203,7 +205,7 @@ describe( 'DomConverter', () => {
 			domP.appendChild( domImg );
 			domP.appendChild( domText );
 
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 
 			converter.bindElements( domImg, viewImg );
 
@@ -267,7 +269,7 @@ describe( 'DomConverter', () => {
 		let domEl, selection, viewElement;
 
 		beforeEach( () => {
-			viewElement = new ViewElement();
+			viewElement = new ViewElement( viewDocument );
 			domEl = document.createElement( 'div' );
 			selection = new ViewDocumentSelection( viewElement, 'in' );
 			converter.bindFakeSelection( domEl, selection );
@@ -282,7 +284,7 @@ describe( 'DomConverter', () => {
 		it( 'should keep a copy of selection', () => {
 			const selectionCopy = new ViewDocumentSelection( selection );
 
-			selection._setTo( new ViewElement(), 'in', { backward: true } );
+			selection._setTo( new ViewElement( viewDocument ), 'in', { backward: true } );
 			const bindSelection = converter.fakeSelectionToView( domEl );
 
 			expect( bindSelection ).to.not.equal( selection );
@@ -294,7 +296,7 @@ describe( 'DomConverter', () => {
 	describe( 'unbindDomElement', () => {
 		it( 'should unbind elements', () => {
 			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
+			const viewElement = new ViewElement( viewDocument, 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
@@ -312,8 +314,8 @@ describe( 'DomConverter', () => {
 			const domChild = document.createElement( 'span' );
 			domElement.appendChild( domChild );
 
-			const viewElement = new ViewElement( 'p' );
-			const viewChild = new ViewElement( 'span' );
+			const viewElement = new ViewElement( viewDocument, 'p' );
+			const viewChild = new ViewElement( viewDocument, 'span' );
 
 			converter.bindElements( domElement, viewElement );
 			converter.bindElements( domChild, viewChild );
@@ -329,7 +331,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should do nothing if there are no elements bind', () => {
 			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
+			const viewElement = new ViewElement( viewDocument, 'p' );
 
 			expect( converter.mapDomToView( domElement ) ).to.be.undefined;
 			expect( converter.mapViewToDom( viewElement ) ).to.be.undefined;

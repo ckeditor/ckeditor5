@@ -11,14 +11,16 @@ import RootEditableElement from '../../src/view/rooteditableelement';
 
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Document from '../../src/view/document';
 
 describe( 'TextProxy', () => {
-	let text, parent, wrapper, textProxy;
+	let text, parent, wrapper, textProxy, document;
 
 	beforeEach( () => {
-		text = new Text( 'abcdefgh' );
-		parent = new ContainerElement( 'p', [], [ text ] );
-		wrapper = new ContainerElement( 'div', [], parent );
+		document = new Document();
+		text = new Text( document, 'abcdefgh' );
+		parent = new ContainerElement( document, 'p', [], [ text ] );
+		wrapper = new ContainerElement( document, 'div', [], parent );
 
 		textProxy = new TextProxy( text, 2, 3 );
 	} );
@@ -90,31 +92,25 @@ describe( 'TextProxy', () => {
 	} );
 
 	describe( 'getDocument', () => {
-		it( 'should return null if any parent has not set Document', () => {
-			expect( textProxy.document ).to.be.null;
-		} );
-
 		it( 'should return Document attached to the parent element', () => {
-			const docMock = createDocumentMock();
-			const root = new RootEditableElement( 'div' );
-			root._document = docMock;
+			const root = new RootEditableElement( document, 'div' );
 
 			wrapper.parent = root;
 
-			expect( textProxy.document ).to.equal( docMock );
+			expect( textProxy.document ).to.equal( document );
 		} );
 
-		it( 'should return null if element is inside DocumentFragment', () => {
-			new DocumentFragment( [ wrapper ] ); // eslint-disable-line no-new
+		it( 'should return Document if element is inside DocumentFragment', () => {
+			new DocumentFragment( document, [ wrapper ] ); // eslint-disable-line no-new
 
-			expect( textProxy.document ).to.be.null;
+			expect( textProxy.document ).to.equal( document );
 		} );
 	} );
 
 	describe( 'getRoot', () => {
 		it( 'should return root element', () => {
-			const root = new RootEditableElement( 'div' );
-			root._document = createDocumentMock();
+			const docMock = createDocumentMock();
+			const root = new RootEditableElement( docMock, 'div' );
 
 			wrapper.parent = root;
 

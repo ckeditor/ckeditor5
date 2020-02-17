@@ -201,6 +201,7 @@ function updateDocumentPlaceholders( doc, writer ) {
 // @returns {Boolean} True if any changes were made to the view document.
 function updatePlaceholder( writer, element, config ) {
 	const { text, isDirectHost } = config;
+
 	const hostElement = isDirectHost ? element : getChildPlaceholderHostSubstitute( element );
 	let wasViewModified = false;
 

@@ -5,12 +5,19 @@
 
 import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
+import Document from '../../src/view/document';
 
 describe( 'Matcher', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document();
+	} );
+
 	describe( 'add', () => {
 		it( 'should allow to add pattern to matcher', () => {
 			const matcher = new Matcher( 'div' );
-			const el = new Element( 'p', { title: 'foobar' } );
+			const el = new Element( document, 'p', { title: 'foobar' } );
 
 			expect( matcher.match( el ) ).to.be.null;
 			const pattern = { name: 'p', attributes: { title: 'foobar' } };
@@ -26,8 +33,8 @@ describe( 'Matcher', () => {
 
 		it( 'should allow to add more than one pattern', () => {
 			const matcher = new Matcher();
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'div' );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'div' );
 
 			matcher.add( 'p', 'div' );
 
@@ -46,8 +53,8 @@ describe( 'Matcher', () => {
 	describe( 'match', () => {
 		it( 'should match element name', () => {
 			const matcher = new Matcher( 'p' );
-			const el = new Element( 'p' );
-			const el2 = new Element( 'div' );
+			const el = new Element( document, 'p' );
+			const el2 = new Element( document, 'div' );
 
 			const result = matcher.match( el );
 
@@ -63,8 +70,8 @@ describe( 'Matcher', () => {
 		it( 'should match element name with RegExp', () => {
 			const pattern = /^text...a$/;
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'textarea' );
-			const el2 = new Element( 'div' );
+			const el1 = new Element( document, 'textarea' );
+			const el2 = new Element( document, 'div' );
 
 			const result = matcher.match( el1 );
 
@@ -82,9 +89,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { title: 'foobar'	} );
-			const el2 = new Element( 'p', { title: 'foobaz'	} );
-			const el3 = new Element( 'p', { name: 'foobar' } );
+			const el1 = new Element( document, 'p', { title: 'foobar'	} );
+			const el2 = new Element( document, 'p', { title: 'foobaz'	} );
+			const el3 = new Element( document, 'p', { name: 'foobar' } );
 
 			const result = matcher.match( el1 );
 
@@ -106,9 +113,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { title: 'foobar'	} );
-			const el2 = new Element( 'p', { title: 'foobaz'	} );
-			const el3 = new Element( 'p', { title: 'qux' } );
+			const el1 = new Element( document, 'p', { title: 'foobar'	} );
+			const el2 = new Element( document, 'p', { title: 'foobaz'	} );
+			const el3 = new Element( document, 'p', { title: 'qux' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -133,9 +140,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { title: 'foobar'	} );
-			const el2 = new Element( 'p', { title: '' } );
-			const el3 = new Element( 'p' );
+			const el1 = new Element( document, 'p', { title: 'foobar'	} );
+			const el2 = new Element( document, 'p', { title: '' } );
+			const el3 = new Element( document, 'p' );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -157,7 +164,7 @@ describe( 'Matcher', () => {
 		it( 'should match element class names', () => {
 			const pattern = { classes: 'foobar' };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { class: 'foobar' } );
+			const el1 = new Element( document, 'p', { class: 'foobar' } );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -171,9 +178,9 @@ describe( 'Matcher', () => {
 		it( 'should match element class names using RegExp', () => {
 			const pattern = { classes: /fooba./ };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { class: 'foobar'	} );
-			const el2 = new Element( 'p', { class: 'foobaz'	} );
-			const el3 = new Element( 'p', { class: 'qux'	} );
+			const el1 = new Element( document, 'p', { class: 'foobar'	} );
+			const el2 = new Element( document, 'p', { class: 'foobaz'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -198,8 +205,8 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { style: 'color: red' } );
-			const el2 = new Element( 'p', { style: 'position: absolute' } );
+			const el1 = new Element( document, 'p', { style: 'color: red' } );
+			const el2 = new Element( document, 'p', { style: 'position: absolute' } );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -218,9 +225,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p', { style: 'color: blue' } );
-			const el2 = new Element( 'p', { style: 'color: darkblue' } );
-			const el3 = new Element( 'p', { style: 'color: red' } );
+			const el1 = new Element( document, 'p', { style: 'color: blue' } );
+			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new Element( document, 'p', { style: 'color: red' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -248,8 +255,8 @@ describe( 'Matcher', () => {
 				return null;
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'div', null, [ el1 ] );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'div', null, [ el1 ] );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 			const result = matcher.match( el2 );
@@ -262,9 +269,9 @@ describe( 'Matcher', () => {
 			const pattern = {
 				name: 'p'
 			};
-			const el1 = new Element( 'div' );
-			const el2 = new Element( 'p' );
-			const el3 = new Element( 'span' );
+			const el1 = new Element( document, 'div' );
+			const el2 = new Element( document, 'p' );
+			const el3 = new Element( document, 'span' );
 			const matcher = new Matcher( pattern );
 
 			const result = matcher.match( el1, el2, el3 );
@@ -284,7 +291,7 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el = new Element( 'a', {
+			const el = new Element( document, 'a', {
 				name: 'foo',
 				title: 'bar'
 			} );
@@ -305,7 +312,7 @@ describe( 'Matcher', () => {
 				classes: [ 'foo', 'bar' ]
 			};
 			const matcher = new Matcher( pattern );
-			const el = new Element( 'a' );
+			const el = new Element( document, 'a' );
 			el._addClass( [ 'foo', 'bar', 'baz' ] );
 
 			const result = matcher.match( el );
@@ -327,7 +334,7 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el = new Element( 'a' );
+			const el = new Element( document, 'a' );
 			el._setStyle( {
 				color: 'red',
 				position: 'relative'
@@ -347,9 +354,9 @@ describe( 'Matcher', () => {
 	describe( 'matchAll', () => {
 		it( 'should return all matched elements with correct patterns', () => {
 			const matcher = new Matcher( 'p', 'div' );
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'div' );
-			const el3 = new Element( 'span' );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'div' );
+			const el3 = new Element( document, 'span' );
 
 			const result = matcher.matchAll( el1, el2, el3 );
 			expect( result ).to.be.an( 'array' );
@@ -372,9 +379,9 @@ describe( 'Matcher', () => {
 		it( 'should return all matched elements when using RegExp pattern', () => {
 			const pattern = { classes: /^red-.*/ };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'p' );
-			const el3 = new Element( 'p' );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'p' );
+			const el3 = new Element( document, 'p' );
 
 			el1._addClass( 'red-foreground' );
 			el2._addClass( 'red-background' );

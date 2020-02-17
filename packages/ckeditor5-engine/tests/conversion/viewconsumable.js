@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
 import ViewText from '../../src/view/text';
 import ViewDocumentFragment from '../../src/view/documentfragment';
@@ -13,11 +14,12 @@ import { addMarginRules } from '../../src/view/styles/margin';
 import { addPaddingRules } from '../../src/view/styles/padding';
 
 describe( 'ViewConsumable', () => {
-	let viewConsumable, el;
+	let viewConsumable, el, viewDocument;
 
 	beforeEach( () => {
+		viewDocument = new ViewDocument();
 		viewConsumable = new ViewConsumable();
-		el = new ViewElement( 'p' );
+		el = new ViewElement( viewDocument, 'p' );
 	} );
 
 	describe( 'add', () => {
@@ -28,14 +30,14 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should allow to add text node', () => {
-			const text = new ViewText( 'foobar' );
+			const text = new ViewText( viewDocument, 'foobar' );
 			viewConsumable.add( text );
 
 			expect( viewConsumable.test( text ) ).to.be.true;
 		} );
 
 		it( 'should allow to add document fragment', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 			viewConsumable.add( fragment );
 			expect( viewConsumable.test( fragment ) ).to.be.true;
 		} );
@@ -102,7 +104,7 @@ describe( 'ViewConsumable', () => {
 
 	describe( 'test', () => {
 		it( 'should test element name', () => {
-			const el2 = new ViewElement( 'p' );
+			const el2 = new ViewElement( viewDocument, 'p' );
 
 			viewConsumable.add( el, { name: true } );
 
@@ -111,8 +113,8 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should test text nodes', () => {
-			const text1 = new ViewText();
-			const text2 = new ViewText();
+			const text1 = new ViewText( viewDocument );
+			const text2 = new ViewText( viewDocument );
 
 			viewConsumable.add( text1 );
 
@@ -121,8 +123,8 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should test document fragments', () => {
-			const fragment1 = new ViewDocumentFragment();
-			const fragment2 = new ViewDocumentFragment();
+			const fragment1 = new ViewDocumentFragment( viewDocument );
+			const fragment2 = new ViewDocumentFragment( viewDocument );
 
 			viewConsumable.add( fragment1 );
 
@@ -131,7 +133,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should test attribute, classes and styles', () => {
-			const el = new ViewElement( 'p' );
+			const el = new ViewElement( viewDocument, 'p' );
 
 			viewConsumable.add( el, { attributes: 'href', classes: 'foobar', styles: 'color' } );
 
@@ -241,7 +243,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should consume text node', () => {
-			const text = new ViewText();
+			const text = new ViewText( viewDocument );
 			viewConsumable.add( text );
 			const consumed = viewConsumable.consume( text );
 			expect( consumed ).to.be.true;
@@ -250,7 +252,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should consume document fragment', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 			viewConsumable.add( fragment );
 			const consumed = viewConsumable.consume( fragment );
 			expect( consumed ).to.be.true;
@@ -357,8 +359,8 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should revert text node', () => {
-			const text1 = new ViewText();
-			const text2 = new ViewText();
+			const text1 = new ViewText( viewDocument );
+			const text2 = new ViewText( viewDocument );
 
 			viewConsumable.add( text1 );
 			viewConsumable.consume( text1 );
@@ -371,8 +373,8 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should revert document fragment', () => {
-			const fragment1 = new ViewDocumentFragment();
-			const fragment2 = new ViewDocumentFragment();
+			const fragment1 = new ViewDocumentFragment( viewDocument );
+			const fragment2 = new ViewDocumentFragment( viewDocument );
 
 			viewConsumable.add( fragment1 );
 			viewConsumable.consume( fragment1 );
@@ -528,7 +530,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should return new ViewConsumable instance from document fragment', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 			const newConsumable = ViewConsumable.createFrom( fragment );
 
 			expect( newConsumable ).to.be.instanceof( ViewConsumable );
@@ -536,11 +538,11 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all child elements', () => {
-			const text1 = new ViewText( 'foo' );
-			const text2 = new ViewText( 'bar' );
-			const child1 = new ViewElement( 'p', { 'title': 'baz' }, [ text1 ] );
-			const child2 = new ViewElement( 'p' );
-			const child3 = new ViewElement( 'p', { 'style': 'top:10px;', 'class': 'qux bar' }, [ text2, child2 ] );
+			const text1 = new ViewText( viewDocument, 'foo' );
+			const text2 = new ViewText( viewDocument, 'bar' );
+			const child1 = new ViewElement( viewDocument, 'p', { 'title': 'baz' }, [ text1 ] );
+			const child2 = new ViewElement( viewDocument, 'p' );
+			const child3 = new ViewElement( viewDocument, 'p', { 'style': 'top:10px;', 'class': 'qux bar' }, [ text2, child2 ] );
 			el._appendChild( [ child1, child3 ] );
 
 			const newConsumable = ViewConsumable.createFrom( el );

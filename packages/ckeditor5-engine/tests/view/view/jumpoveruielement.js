@@ -21,7 +21,7 @@ describe( 'View', () => {
 	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
 
 	function createUIElement( name, contents ) {
-		const element = new UIElement( name );
+		const element = new UIElement( viewDocument, name );
 
 		element.render = function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
@@ -49,8 +49,8 @@ describe( 'View', () => {
 
 		viewDocument.isFocused = true;
 
-		foo = new ViewText( 'foo' );
-		bar = new ViewText( 'bar' );
+		foo = new ViewText( viewDocument, 'foo' );
+		bar = new ViewText( viewDocument, 'bar' );
 		ui = createUIElement( 'span', 'xxx' );
 		ui2 = createUIElement( 'span', 'yyy' );
 	} );
@@ -88,7 +88,7 @@ describe( 'View', () => {
 		describe( 'collapsed selection', () => {
 			it( 'do nothing when another key is pressed', () => {
 				// <container:p>foo<ui:span>xxx</ui:span>{}bar</container:p>
-				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -106,7 +106,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element when right arrow is pressed before ui element - directly before ui element', () => {
 				// <container:p>foo[]<ui:span>xxx</ui:span>bar</container:p>
-				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -126,7 +126,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element when right arrow is pressed before ui element - not directly before ui element', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span>bar</container:p>
-				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -146,7 +146,7 @@ describe( 'View', () => {
 
 			it( 'jump over multiple ui elements when right arrow is pressed before ui element', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span><ui:span>yyy</ui:span>bar</container:p>'
-				const p = new ViewContainerElement( 'p', null, [ foo, ui, ui2, bar ] );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, ui2, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -166,8 +166,8 @@ describe( 'View', () => {
 
 			it( 'jump over ui elements at the end of container element', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span><ui:span>yyy</ui:span></container:p><container:div></container:div>
-				const p = new ViewContainerElement( 'p', null, [ foo, ui, ui2 ] );
-				const div = new ViewContainerElement( 'div' );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, ui2 ] );
+				const div = new ViewContainerElement( viewDocument, 'div' );
 
 				view.change( writer => {
 					viewRoot._appendChild( p );
@@ -188,8 +188,8 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if selection is in attribute element - case 1', () => {
 				// <container:p><attribute:b>foo{}</attribute:b><ui:span>xxx</ui:span>bar</container:p>
-				const b = new ViewAttribtueElement( 'b', null, foo );
-				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
+				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ b, ui, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -209,8 +209,8 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if selection is in attribute element - case 2', () => {
 				// <container:p><attribute:b>foo[]</attribute:b><ui:span>xxx</ui:span>bar</container:p>
-				const b = new ViewAttribtueElement( 'b', null, foo );
-				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
+				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ b, ui, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -238,9 +238,9 @@ describe( 'View', () => {
 				// 		</ui:span>
 				// 		bar
 				// </container:p>
-				const b = new ViewAttribtueElement( 'b', null, foo );
-				const i = new ViewAttribtueElement( 'i', null, b );
-				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
+				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const i = new ViewAttribtueElement( viewDocument, 'i', null, b );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ i, ui, bar ] );
 
 				viewRoot._appendChild( p );
 
@@ -268,9 +268,9 @@ describe( 'View', () => {
 				// 		<attribute:b></attribute:b>
 				// 		bar
 				// </container:p>
-				const b1 = new ViewAttribtueElement( 'b' );
-				const b2 = new ViewAttribtueElement( 'b' );
-				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
+				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot._appendChild( p );
 
@@ -299,9 +299,9 @@ describe( 'View', () => {
 				// 		bar
 				// </container:p>
 
-				const b1 = new ViewAttribtueElement( 'b' );
-				const b2 = new ViewAttribtueElement( 'b' );
-				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
+				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot._appendChild( p );
 
@@ -380,7 +380,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if shift key is pressed', () => {
 				// <container:p>fo{o}<ui:span>xxx</ui:span>bar</container:p>
-				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, ui, bar ] );
 
 				viewRoot._appendChild( p );
 
@@ -407,9 +407,9 @@ describe( 'View', () => {
 				// 		<ui:span>xxx</ui:span>
 				// 		bar
 				// </container:p>
-				const b = new ViewAttribtueElement( 'b', null, foo );
-				const i = new ViewAttribtueElement( 'i', null, b );
-				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
+				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const i = new ViewAttribtueElement( viewDocument, 'i', null, b );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ i, ui, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
@@ -436,9 +436,9 @@ describe( 'View', () => {
 				// 		<attribute:b></attribute:b>
 				// 		bar
 				// </container:p>
-				const b1 = new ViewAttribtueElement( 'b' );
-				const b2 = new ViewAttribtueElement( 'b' );
-				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
+				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 				viewRoot._appendChild( p );
 
 				view.change( writer => {

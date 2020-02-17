@@ -5,14 +5,20 @@
 
 import AttributeElement from '../../src/view/attributeelement';
 import Element from '../../src/view/element';
+import Document from '../../src/view/document';
 import { parse } from '../../src/dev-utils/view';
-
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'AttributeElement', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create element with default priority', () => {
-			const el = new AttributeElement( 'strong' );
+			const el = new AttributeElement( document, 'strong' );
 
 			expect( el ).to.be.an.instanceof( AttributeElement );
 			expect( el ).to.be.an.instanceof( Element );
@@ -25,7 +31,7 @@ describe( 'AttributeElement', () => {
 		let el;
 
 		before( () => {
-			el = new AttributeElement( 'span' );
+			el = new AttributeElement( document, 'span' );
 		} );
 
 		it( 'should return true for attributeElement/element, also with correct name and element name', () => {
@@ -60,7 +66,7 @@ describe( 'AttributeElement', () => {
 
 	describe( '_clone()', () => {
 		it( 'should clone element with priority', () => {
-			const el = new AttributeElement( 'b' );
+			const el = new AttributeElement( document, 'b' );
 			el._priority = 7;
 
 			const clone = el._clone();
@@ -73,32 +79,32 @@ describe( 'AttributeElement', () => {
 
 	describe( 'isSimilar', () => {
 		it( 'should return true if priorities are the same', () => {
-			const b1 = new AttributeElement( 'b' );
+			const b1 = new AttributeElement( document, 'b' );
 			b1._priority = 7;
 
-			const b2 = new AttributeElement( 'b' );
+			const b2 = new AttributeElement( document, 'b' );
 			b2._priority = 7;
 
 			expect( b1.isSimilar( b2 ) ).to.be.true;
 		} );
 
 		it( 'should return false if priorities are different', () => {
-			const b1 = new AttributeElement( 'b' );
+			const b1 = new AttributeElement( document, 'b' );
 			b1._priority = 7;
 
-			const b2 = new AttributeElement( 'b' ); // default priority
+			const b2 = new AttributeElement( document, 'b' ); // default priority
 
 			expect( b1.isSimilar( b2 ) ).to.be.false;
 		} );
 
 		it( 'should return true if ids are the same even if other properties are different', () => {
-			const element1 = new AttributeElement( 'b' );
+			const element1 = new AttributeElement( document, 'b' );
 			element1._id = 'xyz';
 
-			const element2 = new AttributeElement( 'b', { foo: 'bar' } );
+			const element2 = new AttributeElement( document, 'b', { foo: 'bar' } );
 			element2._id = 'xyz';
 
-			const element3 = new AttributeElement( 'span' );
+			const element3 = new AttributeElement( document, 'span' );
 			element3._id = 'xyz';
 
 			expect( element1.isSimilar( element2 ) ).to.be.true;
@@ -106,11 +112,11 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return false if ids are different even if other properties are same', () => {
-			const element1 = new AttributeElement( 'span', { foo: 'bar' } );
+			const element1 = new AttributeElement( document, 'span', { foo: 'bar' } );
 			element1._priority = 3;
 			element1._id = 'foo';
 
-			const element2 = new AttributeElement( 'span', { foo: 'bar' } );
+			const element2 = new AttributeElement( document, 'span', { foo: 'bar' } );
 			element2._priority = 3;
 			element2._id = 'bar';
 
@@ -121,8 +127,8 @@ describe( 'AttributeElement', () => {
 	// More tests are available in DowncastWriter tests.
 	describe( 'getElementsWithSameId', () => {
 		it( 'should return a copy of _clonesGroup set', () => {
-			const attributeA = new AttributeElement( 'b' );
-			const attributeB = new AttributeElement( 'b' );
+			const attributeA = new AttributeElement( document, 'b' );
+			const attributeB = new AttributeElement( document, 'b' );
 
 			attributeA._id = 'foo';
 			attributeB._id = 'foo';
@@ -135,7 +141,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should throw if attribute element has no id', () => {
-			const attribute = new AttributeElement( 'b' );
+			const attribute = new AttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				attribute.getElementsWithSameId();
@@ -194,7 +200,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return null if there is no parent', () => {
-			const attribute = new AttributeElement( 'b' );
+			const attribute = new AttributeElement( document, 'b' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );

@@ -165,7 +165,7 @@ describe( 'DomEventObserver', () => {
 		let domRoot, domEvent, evtSpy, uiElement;
 
 		function createUIElement( name ) {
-			const element = new UIElement( name );
+			const element = new UIElement( viewDocument, name );
 
 			element.render = function( domDocument ) {
 				const root = this.toDomElement( domDocument );

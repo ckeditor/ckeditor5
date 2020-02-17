@@ -13,6 +13,7 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
+import ViewDocument from '../../src/view/document';
 import UIElement from '../../src/view/uielement';
 import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
@@ -30,13 +31,14 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Renderer', () => {
-	let selection, domConverter, renderer;
+	let selection, domConverter, renderer, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		selection = new DocumentSelection();
 		domConverter = new DomConverter();
+		viewDocument = new ViewDocument();
 		renderer = new Renderer( domConverter, selection );
 		renderer.domDocuments.add( document );
 	} );
@@ -45,11 +47,11 @@ describe( 'Renderer', () => {
 		let viewRoot;
 
 		beforeEach( () => {
-			viewRoot = new ViewElement( 'p' );
+			viewRoot = new ViewElement( viewDocument, 'p' );
 
 			const domRoot = document.createElement( 'p' );
 			domConverter.bindElements( domRoot, viewRoot );
-			viewRoot._appendChild( new ViewText( 'foo' ) );
+			viewRoot._appendChild( new ViewText( viewDocument, 'foo' ) );
 
 			renderer.markedTexts.clear();
 			renderer.markedAttributes.clear();
@@ -65,7 +67,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should mark children which need update', () => {
-			viewRoot._appendChild( new ViewText( 'foo' ) );
+			viewRoot._appendChild( new ViewText( viewDocument, 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 
@@ -74,9 +76,9 @@ describe( 'Renderer', () => {
 
 		it( 'should not mark children if element has no corresponding node', () => {
 			// Overwrite viewRoot with node without coresponding DOM node.
-			viewRoot = new ViewElement( 'p' );
+			viewRoot = new ViewElement( viewDocument, 'p' );
 
-			viewRoot._appendChild( new ViewText( 'foo' ) );
+			viewRoot._appendChild( new ViewText( viewDocument, 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 
@@ -84,7 +86,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should mark text which need update', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 			viewText._data = 'bar';
 
@@ -94,9 +96,9 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not mark text if parent has no corresponding node', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			// Overwrite viewRoot with node without coresponding DOM node.
-			viewRoot = new ViewElement( 'p' );
+			viewRoot = new ViewElement( viewDocument, 'p' );
 
 			viewRoot._appendChild( viewText );
 			viewText._data = 'bar';
@@ -117,7 +119,7 @@ describe( 'Renderer', () => {
 		let viewRoot, domRoot;
 
 		beforeEach( () => {
-			viewRoot = new ViewEditableElement( 'div' );
+			viewRoot = new ViewEditableElement( viewDocument, 'div' );
 			viewRoot.getFillerOffset = () => null;
 
 			domRoot = document.createElement( 'div' );
@@ -164,7 +166,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should add children', () => {
-			viewRoot._appendChild( new ViewText( 'foo' ) );
+			viewRoot._appendChild( new ViewText( viewDocument, 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -176,7 +178,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should remove children', () => {
-			viewRoot._appendChild( new ViewText( 'foo' ) );
+			viewRoot._appendChild( new ViewText( viewDocument, 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -195,7 +197,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update text', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -216,7 +218,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not update same text', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -238,8 +240,8 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not update text parent child list changed', () => {
-			const viewImg = new ViewElement( 'img' );
-			const viewText = new ViewText( 'foo' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( [ viewImg, viewText ] );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -252,7 +254,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not change text if it is the same during text rendering', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -269,7 +271,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not change text if it is the same during children rendering', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -286,7 +288,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not change element if it is the same', () => {
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 			viewRoot._appendChild( viewImg );
 
 			// This should not be changed during the render.
@@ -303,13 +305,13 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should change element if it is different', () => {
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 			viewRoot._appendChild( viewImg );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
-			const viewP = new ViewElement( 'p' );
+			const viewP = new ViewElement( viewDocument, 'p' );
 			viewRoot._removeChildren( 0, 1 );
 			viewRoot._appendChild( viewP );
 
@@ -321,9 +323,9 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update removed item when it is reinserted', () => {
-			const viewFoo = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p', null, viewFoo );
-			const viewDiv = new ViewElement( 'div', null, viewP );
+			const viewFoo = new ViewText( viewDocument, 'foo' );
+			const viewP = new ViewElement( viewDocument, 'p', null, viewFoo );
+			const viewDiv = new ViewElement( viewDocument, 'div', null, viewP );
 
 			viewRoot._appendChild( viewDiv );
 
@@ -355,9 +357,9 @@ describe( 'Renderer', () => {
 
 		it( 'should update removed item when it is reinserted #2', () => {
 			// Prepare view: root -> div "outer" -> div "inner" -> p.
-			const viewP = new ViewElement( 'p' );
-			const viewDivInner = new ViewElement( 'div', null, viewP );
-			const viewDivOuter = new ViewElement( 'div', null, viewDivInner );
+			const viewP = new ViewElement( viewDocument, 'p' );
+			const viewDivInner = new ViewElement( viewDocument, 'div', null, viewP );
+			const viewDivOuter = new ViewElement( viewDocument, 'div', null, viewDivInner );
 			viewRoot._appendChild( viewDivOuter );
 
 			// Render view tree to DOM.
@@ -393,9 +395,9 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not throw when trying to update children of view element that got removed and lost its binding', () => {
-			const viewFoo = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p', null, viewFoo );
-			const viewDiv = new ViewElement( 'div', null, viewP );
+			const viewFoo = new ViewText( viewDocument, 'foo' );
+			const viewP = new ViewElement( viewDocument, 'p', null, viewFoo );
+			const viewDiv = new ViewElement( viewDocument, 'div', null, viewP );
 
 			viewRoot._appendChild( viewDiv );
 
@@ -420,7 +422,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-			const viewRoot = new ViewElement( 'p' );
+			const viewRoot = new ViewElement( viewDocument, 'p' );
 			viewRoot._appendChild( viewP );
 			selection._setTo( newSelection );
 
@@ -720,7 +722,7 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
 
 			// Step 2: Add text node.
-			const viewText = new ViewText( 'x' );
+			const viewText = new ViewText( viewDocument, 'x' );
 			viewB._appendChild( viewText );
 			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
@@ -903,7 +905,7 @@ describe( 'Renderer', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			const viewText = new ViewText( 'x' );
+			const viewText = new ViewText( viewDocument, 'x' );
 			viewP._appendChild( viewText );
 			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
@@ -933,7 +935,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Add text node only in View <p>x{}</p>
-			const viewText = new ViewText( 'x' );
+			const viewText = new ViewText( viewDocument, 'x' );
 			viewP._appendChild( viewText );
 			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
@@ -1031,7 +1033,7 @@ describe( 'Renderer', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			const viewText = new ViewText( 'x' );
+			const viewText = new ViewText( viewDocument, 'x' );
 			viewB._appendChild( viewText );
 			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
@@ -1074,7 +1076,7 @@ describe( 'Renderer', () => {
 			domSelection.removeAllRanges();
 			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
 
-			const viewText = new ViewText( 'x' );
+			const viewText = new ViewText( viewDocument, 'x' );
 			viewB._appendChild( viewText );
 			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
@@ -1137,7 +1139,7 @@ describe( 'Renderer', () => {
 
 			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
 
-			const viewText = new ViewText( 'x' );
+			const viewText = new ViewText( viewDocument, 'x' );
 			viewB._appendChild( viewText );
 			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
@@ -1195,7 +1197,7 @@ describe( 'Renderer', () => {
 			domSelection.removeAllRanges();
 			domSelection.collapse( domDiv, 0 );
 
-			const viewDiv = new ViewElement( 'div' );
+			const viewDiv = new ViewElement( viewDocument, 'div' );
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
 			viewDiv._appendChild( viewP );
@@ -1329,7 +1331,7 @@ describe( 'Renderer', () => {
 			// 3. Move the inline filler parent to a newly created element.
 			const viewLi = view.getChild( 0 );
 			const viewLiIndented = view._removeChildren( 1, 1 ); // Array with one element.
-			const viewUl = new ViewContainerElement( 'ul', null, viewLiIndented );
+			const viewUl = new ViewContainerElement( viewDocument, 'ul', null, viewLiIndented );
 			viewLi._appendChild( viewUl );
 
 			// 4. Mark changed items and render the view.
@@ -1391,7 +1393,7 @@ describe( 'Renderer', () => {
 			// Insert space resulting in '<p>x <b> y</b></p>'.
 			const viewB = viewP.getChild( 1 );
 			viewB._removeChildren( 0 );
-			viewB._appendChild( new ViewText( ' y' ) );
+			viewB._appendChild( new ViewText( viewDocument, ' y' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1469,7 +1471,7 @@ describe( 'Renderer', () => {
 
 			// Insert space resulting in '<p>x <b> y</b></p>'.
 			viewP._removeChildren( 0 );
-			viewP._insertChild( 0, new ViewText( 'x ' ) );
+			viewP._insertChild( 0, new ViewText( viewDocument, 'x ' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1498,7 +1500,7 @@ describe( 'Renderer', () => {
 			// Insert space resulting in '<p><b>x </b> y</p>'.
 			const viewB = viewP.getChild( 0 );
 			viewB._removeChildren( 0 );
-			viewB._insertChild( 0, new ViewText( 'x ' ) );
+			viewB._insertChild( 0, new ViewText( viewDocument, 'x ' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1528,7 +1530,7 @@ describe( 'Renderer', () => {
 			// Insert space resulting in '<p><b>x </b><i> y</i></p>'.
 			const viewB = viewP.getChild( 0 );
 			viewB._removeChildren( 0 );
-			viewB._insertChild( 0, new ViewText( 'x ' ) );
+			viewB._insertChild( 0, new ViewText( viewDocument, 'x ' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1580,7 +1582,7 @@ describe( 'Renderer', () => {
 			// '<h2>He<i>ading 1</i></h2>' -> '<h2>Heading 2</h2>'
 			const viewHeading = viewRoot.getChild( 0 );
 			viewHeading._removeChildren( 0, viewHeading.childCount );
-			viewHeading._insertChild( 0, new ViewText( 'Heading 2' ) );
+			viewHeading._insertChild( 0, new ViewText( viewDocument, 'Heading 2' ) );
 
 			// Usually whole subtree is marked to sync so we mark root, changed element and all its direct children.
 			renderer.markToSync( 'children', viewRoot );
@@ -1697,7 +1699,7 @@ describe( 'Renderer', () => {
 			const viewLi = view.getChild( 0 );
 			const viewLiIndented = view._removeChildren( 1, 1 ); // Array with one element.
 			viewLiIndented[ 0 ]._appendChild( parse( '<attribute:i>Baz</attribute:i>' ) );
-			const viewUl = new ViewContainerElement( 'ul', null, viewLiIndented );
+			const viewUl = new ViewContainerElement( viewDocument, 'ul', null, viewLiIndented );
 			viewLi._appendChild( viewUl );
 
 			renderer.markToSync( 'children', view );
@@ -1986,7 +1988,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should move fake selection container between editables', () => {
-				const viewEditable = new ViewEditableElement( 'div' );
+				const viewEditable = new ViewEditableElement( viewDocument, 'div' );
 				viewEditable._appendChild( parse( '<container:p>abc xyz</container:p>' ) );
 
 				const domEditable = document.createElement( 'div' );
@@ -3162,7 +3164,7 @@ describe( 'Renderer', () => {
 
 			it( 'should handle uiElement rendering', () => {
 				function createUIElement( id, text ) {
-					const element = new UIElement( 'span' );
+					const element = new UIElement( viewDocument, 'span' );
 					element.render = function( domDocument ) {
 						const domElement = this.toDomElement( domDocument );
 						domElement.innerText = `<span id="${ id }"><b>${ text }</b></span>`;
@@ -3174,7 +3176,11 @@ describe( 'Renderer', () => {
 
 				const ui1 = createUIElement( 'id1', 'UI1' );
 				const ui2 = createUIElement( 'id2', 'UI2' );
-				const viewP = new ViewContainerElement( 'p', null, [ new ViewText( 'Foo ' ), ui1, new ViewText( 'Bar' ) ] );
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, [
+					new ViewText( viewDocument, 'Foo ' ),
+					ui1,
+					new ViewText( viewDocument, 'Bar' )
+				] );
 				viewRoot._appendChild( viewP );
 
 				renderer.markToSync( 'children', viewRoot );
@@ -3184,7 +3190,7 @@ describe( 'Renderer', () => {
 					'<p>Foo <span><span id="id1"><b>UI1</b></span></span>Bar</p>' ) );
 
 				viewP._removeChildren( 0, viewP.childCount );
-				viewP._insertChild( 0, [ new ViewText( 'Foo' ), ui2, new ViewText( ' Bar' ) ] );
+				viewP._insertChild( 0, [ new ViewText( viewDocument, 'Foo' ), ui2, new ViewText( viewDocument, ' Bar' ) ] );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.markToSync( 'children', viewP );
@@ -3206,7 +3212,10 @@ describe( 'Renderer', () => {
 				// While linking, the existing DOM children are moved to a new `a` element during binding
 				// inside the `domConverter.viewToDom()` method. It happens because of a modified view structure
 				// where view elements were moved to a newly created link view element.
-				const viewA = new ViewAttributeElement( 'a', { href: '#href' }, [ new ViewText( 'Foo' ), viewP.getChild( 1 ) ] );
+				const viewA = new ViewAttributeElement( viewDocument, 'a', { href: '#href' }, [
+					new ViewText( viewDocument, 'Foo' ),
+					viewP.getChild( 1 )
+				] );
 
 				viewP._removeChildren( 0, viewP.childCount );
 				viewP._insertChild( 0, viewA );
@@ -3743,7 +3752,7 @@ describe( 'Renderer', () => {
 
 			// Unwrap italic attribute element.
 			view.change( writer => {
-				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( viewDocument, 'italic' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
@@ -3769,7 +3778,7 @@ describe( 'Renderer', () => {
 
 			// Unwrap italic attribute element and change text inside.
 			view.change( writer => {
-				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( viewDocument, 'italic' ) );
 			} );
 
 			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 )._data = 'bar';
@@ -3796,7 +3805,7 @@ describe( 'Renderer', () => {
 			textNode._data = 'foobar';
 
 			view.change( writer => {
-				writer.insert( ViewPosition._createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+				writer.insert( ViewPosition._createAfter( textNode ), new ViewAttributeElement( viewDocument, 'img' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -3822,7 +3831,7 @@ describe( 'Renderer', () => {
 			textNode._data = 'foobar';
 
 			view.change( writer => {
-				writer.insert( ViewPosition._createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+				writer.insert( ViewPosition._createBefore( textNode ), new ViewAttributeElement( viewDocument, 'img' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -3886,7 +3895,7 @@ describe( 'Renderer', () => {
 		let viewRoot;
 
 		beforeEach( () => {
-			viewRoot = new ViewElement( 'div' );
+			viewRoot = new ViewElement( viewDocument, 'div' );
 
 			renderer.markedTexts.clear();
 			renderer.markedAttributes.clear();
@@ -3953,7 +3962,7 @@ describe( 'Renderer', () => {
 		let viewRoot, domRoot;
 
 		beforeEach( () => {
-			viewRoot = new ViewElement( 'div' );
+			viewRoot = new ViewElement( viewDocument, 'div' );
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
@@ -3971,7 +3980,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update text - change on end', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -3989,7 +3998,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update text - change on start', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -4007,7 +4016,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update text - change in the middle', () => {
-			const viewText = new ViewText( 'foobar' );
+			const viewText = new ViewText( viewDocument, 'foobar' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -4025,7 +4034,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update text - empty expected', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -4043,7 +4052,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update text - empty actual', () => {
-			const viewText = new ViewText( '' );
+			const viewText = new ViewText( viewDocument, '' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -4061,7 +4070,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should handle filler during text modifications', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -4102,7 +4111,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should handle filler during text modifications - empty text', () => {
-			const viewText = new ViewText( '' );
+			const viewText = new ViewText( viewDocument, '' );
 			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
@@ -4145,8 +4154,8 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should handle filler during text modifications inside inline element', () => {
-			const viewB = new ViewElement( 'b' );
-			const viewText = new ViewText( 'foo' );
+			const viewB = new ViewElement( viewDocument, 'b' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 
 			viewB._appendChild( viewText );
 			viewRoot._appendChild( viewB );

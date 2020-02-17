@@ -187,12 +187,13 @@ export default class DataController {
 
 		// First, convert elements.
 		const modelRange = ModelRange._createIn( modelElementOrFragment );
+		const viewDocument = new ViewDocument();
 
-		const viewDocumentFragment = new ViewDocumentFragment();
+		const viewDocumentFragment = new ViewDocumentFragment( viewDocument );
 
 		// Create separate ViewDowncastWriter just for data conversion purposes.
 		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
-		const viewWriter = new ViewDowncastWriter( new ViewDocument() );
+		const viewWriter = new ViewDowncastWriter( viewDocument );
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );

@@ -13,6 +13,7 @@ import ViewAttributeElement from '../../../src/view/attributeelement';
 import ViewEmptyElement from '../../../src/view/emptyelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
+import ViewDocument from '../../../src/view/document';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
 
 import { parse } from '../../../src/dev-utils/view';
@@ -20,17 +21,18 @@ import { parse } from '../../../src/dev-utils/view';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
-	let converter;
+	let converter, viewDocument;
 
 	before( () => {
 		converter = new DomConverter();
+		viewDocument = new ViewDocument();
 	} );
 
 	describe( 'viewToDom()', () => {
 		it( 'should create tree of DOM elements from view elements', () => {
-			const viewImg = new ViewElement( 'img' );
-			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p', { class: 'foo' } );
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+			const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
 
 			viewP._appendChild( viewImg );
 			viewP._appendChild( viewText );
@@ -56,9 +58,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create tree of DOM elements from view elements and bind elements', () => {
-			const viewImg = new ViewElement( 'img' );
-			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p', { class: 'foo' } );
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+			const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
 
 			viewP._appendChild( viewImg );
 			viewP._appendChild( viewText );
@@ -80,8 +82,8 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should support unicode', () => {
-			const viewText = new ViewText( 'நிலைக்கு' );
-			const viewP = new ViewElement( 'p', null, viewText );
+			const viewText = new ViewText( viewDocument, 'நிலைக்கு' );
+			const viewP = new ViewElement( viewDocument, 'p', null, viewText );
 
 			const domP = converter.viewToDom( viewP, document, { bind: true } );
 
@@ -93,9 +95,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create tree of DOM elements from view element without children', () => {
-			const viewImg = new ViewElement( 'img' );
-			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p', { class: 'foo' } );
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+			const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
 
 			viewP._appendChild( viewImg );
 			viewP._appendChild( viewText );
@@ -117,9 +119,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create DOM document fragment from view document fragment and bind elements', () => {
-			const viewImg = new ViewElement( 'img' );
-			const viewText = new ViewText( 'foo' );
-			const viewFragment = new ViewDocumentFragment();
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			viewFragment._appendChild( viewImg );
 			viewFragment._appendChild( viewText );
@@ -136,9 +138,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create DOM document fragment from view document without children', () => {
-			const viewImg = new ViewElement( 'img' );
-			const viewText = new ViewText( 'foo' );
-			const viewFragment = new ViewDocumentFragment();
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			viewFragment._appendChild( viewImg );
 			viewFragment._appendChild( viewText );
@@ -157,7 +159,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return already bind document fragment', () => {
 			const domFragment = document.createDocumentFragment();
-			const viewFragment = new ViewDocumentFragment();
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			converter.bindDocumentFragments( domFragment, viewFragment );
 
@@ -167,7 +169,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create DOM text node from view text node', () => {
-			const viewTextNode = new ViewText( 'foo' );
+			const viewTextNode = new ViewText( viewDocument, 'foo' );
 			const domTextNode = converter.viewToDom( viewTextNode, document );
 
 			expect( domTextNode ).to.be.instanceof( Text );
@@ -176,7 +178,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should create namespaced elements', () => {
 			const namespace = 'http://www.w3.org/2000/svg';
-			const viewSvg = new ViewElement( 'svg', { xmlns: namespace } );
+			const viewSvg = new ViewElement( viewDocument, 'svg', { xmlns: namespace } );
 
 			const domSvg = converter.viewToDom( viewSvg, document );
 
@@ -185,10 +187,10 @@ describe( 'DomConverter', () => {
 
 		describe( 'it should convert spaces to &nbsp;', () => {
 			it( 'at the beginning of each container element', () => {
-				const viewDiv = new ViewContainerElement( 'div', null, [
-					new ViewContainerElement( 'p', null, new ViewText( ' foo' ) ),
-					new ViewContainerElement( 'p', null, new ViewText( 'bar' ) ),
-					new ViewContainerElement( 'p', null, new ViewText( ' xxx' ) )
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, ' foo' ) ),
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'bar' ) ),
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, ' xxx' ) )
 				] );
 
 				const domDiv = converter.viewToDom( viewDiv, document );
@@ -197,10 +199,10 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'at the end of each container element', () => {
-				const viewDiv = new ViewContainerElement( 'div', null, [
-					new ViewContainerElement( 'p', null, new ViewText( 'foo ' ) ),
-					new ViewContainerElement( 'p', null, new ViewText( 'bar' ) ),
-					new ViewContainerElement( 'p', null, new ViewText( 'xxx ' ) )
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'foo ' ) ),
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'bar' ) ),
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'xxx ' ) )
 				] );
 
 				const domDiv = converter.viewToDom( viewDiv, document );
@@ -209,12 +211,12 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'when there are multiple spaces next to each other or between attribute elements', () => {
-				const viewDiv = new ViewContainerElement( 'div', null, [
-					new ViewText( 'x  x   x x ' ),
-					new ViewAttributeElement( 'b', null, new ViewText( ' x ' ) ),
-					new ViewAttributeElement( 'i', null,
-						new ViewAttributeElement( 'b', null,
-							new ViewAttributeElement( 'u', null, new ViewText( ' x' ) )
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewText( viewDocument, 'x  x   x x ' ),
+					new ViewAttributeElement( viewDocument, 'b', null, new ViewText( viewDocument, ' x ' ) ),
+					new ViewAttributeElement( viewDocument, 'i', null,
+						new ViewAttributeElement( viewDocument, 'b', null,
+							new ViewAttributeElement( viewDocument, 'u', null, new ViewText( viewDocument, ' x' ) )
 						)
 					)
 				] );
@@ -225,17 +227,17 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'all together', () => {
-				const viewDiv = new ViewContainerElement( 'div', null, [
-					new ViewContainerElement( 'p', null, [
-						new ViewText( ' x  x   x x ' ),
-						new ViewAttributeElement( 'b', null, new ViewText( ' x ' ) ),
-						new ViewAttributeElement( 'i', null,
-							new ViewAttributeElement( 'b', null,
-								new ViewAttributeElement( 'u', null, new ViewText( ' x ' ) )
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewContainerElement( viewDocument, 'p', null, [
+						new ViewText( viewDocument, ' x  x   x x ' ),
+						new ViewAttributeElement( viewDocument, 'b', null, new ViewText( viewDocument, ' x ' ) ),
+						new ViewAttributeElement( viewDocument, 'i', null,
+							new ViewAttributeElement( viewDocument, 'b', null,
+								new ViewAttributeElement( viewDocument, 'u', null, new ViewText( viewDocument, ' x ' ) )
 							)
 						)
 					] ),
-					new ViewContainerElement( 'p', null, new ViewText( '  x  ' ) )
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, '  x  ' ) )
 				] );
 
 				const domDiv = converter.viewToDom( viewDiv, document );
@@ -251,10 +253,10 @@ describe( 'DomConverter', () => {
 				}
 
 				it( 'spaces in a text node: ' + inputTexts.join( '|' ) + ' -> ' + output, () => {
-					const viewElement = new ViewContainerElement( 'p' );
+					const viewElement = new ViewContainerElement( viewDocument, 'p' );
 
 					for ( const text of inputTexts ) {
-						viewElement._appendChild( new ViewText( text.replace( /_/g, '\u00A0' ) ) );
+						viewElement._appendChild( new ViewText( viewDocument, text.replace( /_/g, '\u00A0' ) ) );
 					}
 
 					const domElement = converter.viewToDom( viewElement, document );
@@ -415,15 +417,18 @@ describe( 'DomConverter', () => {
 			test( [ '   ', '   ' ], '_ _ __' );
 
 			it( 'not in preformatted blocks', () => {
-				const viewPre = new ViewContainerElement( 'pre', null, [ new ViewText( '   foo   ' ), new ViewText( ' bar ' ) ] );
+				const viewPre = new ViewContainerElement( viewDocument, 'pre', null, [
+					new ViewText( viewDocument, '   foo   ' ),
+					new ViewText( viewDocument, ' bar ' )
+				] );
 				const domPre = converter.viewToDom( viewPre, document );
 
 				expect( domPre.innerHTML ).to.equal( '   foo    bar ' );
 			} );
 
 			it( 'not in a preformatted block followed by a text', () => {
-				const viewPre = new ViewAttributeElement( 'pre', null, new ViewText( 'foo   ' ) );
-				const viewDiv = new ViewContainerElement( 'div', null, [ viewPre, new ViewText( ' bar' ) ] );
+				const viewPre = new ViewAttributeElement( viewDocument, 'pre', null, new ViewText( viewDocument, 'foo   ' ) );
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [ viewPre, new ViewText( viewDocument, ' bar' ) ] );
 				const domDiv = converter.viewToDom( viewDiv, document );
 
 				expect( domDiv.innerHTML ).to.equal( '<pre>foo   </pre> bar' );
@@ -431,10 +436,10 @@ describe( 'DomConverter', () => {
 
 			describe( 'around <br>s', () => {
 				it( 'before <br> – a single space', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -442,10 +447,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'before <br> – two spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo  ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo  ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -453,10 +458,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'before <br> – three spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo   ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo   ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -464,10 +469,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'before <br> – only a space', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( ' ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, ' ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -475,10 +480,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'before <br> – only two spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( '  ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, '  ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -486,10 +491,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'before <br> – only three spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( '   ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, '   ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -497,10 +502,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'after <br> – a single space', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( ' bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, ' bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -508,10 +513,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'after <br> – two spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( '  bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, '  bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -519,10 +524,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'after <br> – three spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( '   bar' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, '   bar' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -530,10 +535,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'after <br> – only a space', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( ' ' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, ' ' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -541,10 +546,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'after <br> – only two spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( '  ' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, '  ' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -552,10 +557,10 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'after <br> – only three spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewText( 'foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( '   ' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewText( viewDocument, 'foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, '   ' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -563,11 +568,11 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'between <br>s – a single space', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewEmptyElement( 'br' ),
-						new ViewText( ' ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'foo' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, ' ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'foo' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -575,11 +580,11 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'between <br>s – only two spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewEmptyElement( 'br' ),
-						new ViewText( '  ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'foo' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, '  ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'foo' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -587,11 +592,11 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'between <br>s – only three spaces', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewEmptyElement( 'br' ),
-						new ViewText( '   ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'foo' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, '   ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'foo' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -599,11 +604,11 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'between <br>s – space and text', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewEmptyElement( 'br' ),
-						new ViewText( ' foo' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'foo' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, ' foo' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'foo' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -611,11 +616,11 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'between <br>s – text and space', () => {
-					const viewDiv = new ViewContainerElement( 'div', null, [
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'foo ' ),
-						new ViewEmptyElement( 'br' ),
-						new ViewText( 'foo' )
+					const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'foo ' ),
+						new ViewEmptyElement( viewDocument, 'br' ),
+						new ViewText( viewDocument, 'foo' )
 					] );
 					const domDiv = converter.viewToDom( viewDiv, document );
 
@@ -793,7 +798,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should return null if view position is in a view text node that has not been rendered to DOM', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 			const viewPosition = new ViewPosition( viewText, 1 );
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
@@ -801,7 +806,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should return null if view position is in a view element that has not been rendered to DOM', () => {
-			const viewElement = new ViewContainerElement( 'div' );
+			const viewElement = new ViewContainerElement( viewDocument, 'div' );
 			const viewPosition = new ViewPosition( viewElement, 0 );
 			const domPosition = converter.viewPositionToDom( viewPosition );
 

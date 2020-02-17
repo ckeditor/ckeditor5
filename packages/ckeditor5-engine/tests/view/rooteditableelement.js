@@ -10,10 +10,15 @@ import RootEditableElement from '../../src/view/rooteditableelement';
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 
 describe( 'RootEditableElement', () => {
+	let document;
+
+	beforeEach( () => {
+		document = createDocumentMock();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create an element with default root name', () => {
-			const root = new RootEditableElement( 'div' );
-			root._document = createDocumentMock();
+			const root = new RootEditableElement( document, 'div' );
 
 			expect( root ).to.be.instanceof( EditableElement );
 			expect( root ).to.be.instanceof( ContainerElement );
@@ -26,8 +31,7 @@ describe( 'RootEditableElement', () => {
 		} );
 
 		it( 'should create an element with custom root name', () => {
-			const root = new RootEditableElement( 'h1' );
-			root._document = createDocumentMock();
+			const root = new RootEditableElement( document, 'h1' );
 			root.rootName = 'header';
 
 			expect( root.rootName ).to.equal( 'header' );
@@ -42,7 +46,7 @@ describe( 'RootEditableElement', () => {
 		let el;
 
 		before( () => {
-			el = new RootEditableElement( 'div' );
+			el = new RootEditableElement( document, 'div' );
 		} );
 
 		it( 'should return true for rootElement/containerElement/editable/element, also with correct name and element name', () => {
@@ -88,7 +92,7 @@ describe( 'RootEditableElement', () => {
 
 	describe( '_name', () => {
 		it( 'should set new name to element', () => {
-			const el = new RootEditableElement( '$root' );
+			const el = new RootEditableElement( document, '$root' );
 
 			expect( el.name ).to.equal( '$root' );
 
@@ -99,13 +103,12 @@ describe( 'RootEditableElement', () => {
 	} );
 
 	it( 'should be cloned properly', () => {
-		const root = new RootEditableElement( 'h1' );
-		root._document = createDocumentMock();
+		const root = new RootEditableElement( document, 'h1' );
 		root.rootName = 'header';
 
 		const newRoot = root._clone();
 
-		expect( newRoot._document ).to.equal( root._document );
+		expect( newRoot.document ).to.equal( root.document );
 		expect( newRoot.rootName ).to.equal( root.rootName );
 	} );
 } );

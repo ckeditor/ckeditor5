@@ -249,7 +249,7 @@ mix( DocumentFragment, EmitterMixin );
 function normalize( document, nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( nodes ) ];
+		return [ new Text( document, nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {

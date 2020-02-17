@@ -414,8 +414,8 @@ describe( 'DowncastDispatcher', () => {
 			root._appendChild( [ image ] );
 
 			// Create view elements that will be "mapped" to model elements.
-			const viewCaption = new ViewContainerElement( 'caption' );
-			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
+			const viewCaption = new ViewContainerElement( view.document, 'caption' );
+			const viewFigure = new ViewContainerElement( view.document, 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
 			viewFigure._setCustomProperty( 'addHighlight', () => {} );

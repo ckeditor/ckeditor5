@@ -8,11 +8,18 @@ import Node from '../../src/view/node';
 import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
+import Document from '../../src/view/document';
 
 describe( 'Element', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 
 			expect( el ).to.be.an.instanceof( Node );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
@@ -21,7 +28,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
-			const el = new Element( 'p', { foo: 'bar' } );
+			const el = new Element( document, 'p', { foo: 'bar' } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -32,7 +39,7 @@ describe( 'Element', () => {
 			const attrs = new Map();
 			attrs.set( 'foo', 'bar' );
 
-			const el = new Element( 'p', attrs );
+			const el = new Element( document, 'p', attrs );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -40,7 +47,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should stringify attributes', () => {
-			const el = new Element( 'p', { foo: true, bar: null, object: {} } );
+			const el = new Element( document, 'p', { foo: true, bar: null, object: {} } );
 
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'true' );
 			expect( el.getAttribute( 'bar' ) ).to.be.undefined;
@@ -48,8 +55,8 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with children', () => {
-			const child = new Element( 'p', { foo: 'bar' } );
-			const parent = new Element( 'div', [], [ child ] );
+			const child = new Element( document, 'p', { foo: 'bar' } );
+			const parent = new Element( document, 'div', [], [ child ] );
 
 			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );
 			expect( parent.childCount ).to.equal( 1 );
@@ -57,7 +64,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should move class attribute to class set ', () => {
-			const el = new Element( 'p', { id: 'test', class: 'one two three' } );
+			const el = new Element( document, 'p', { id: 'test', class: 'one two three' } );
 
 			expect( el._attrs.has( 'class' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -67,7 +74,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should move style attribute to style proxy', () => {
-			const el = new Element( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
+			const el = new Element( document, 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
 
 			expect( el._attrs.has( 'style' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -85,7 +92,7 @@ describe( 'Element', () => {
 		let el;
 
 		before( () => {
-			el = new Element( 'p' );
+			el = new Element( document, 'p' );
 		} );
 
 		it( 'should return true for node, element, element with correct name and element name', () => {
@@ -120,13 +127,13 @@ describe( 'Element', () => {
 
 	describe( 'isEmpty', () => {
 		it( 'should return true if there are no children in element', () => {
-			const element = new Element( 'p' );
+			const element = new Element( document, 'p' );
 
 			expect( element.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if there are children in element', () => {
-			const fragment = new Element( 'p', null, new Element( 'img' ) );
+			const fragment = new Element( document, 'p', null, new Element( document, 'img' ) );
 
 			expect( fragment.isEmpty ).to.be.false;
 		} );
@@ -134,7 +141,7 @@ describe( 'Element', () => {
 
 	describe( '_clone()', () => {
 		it( 'should clone element', () => {
-			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' } );
+			const el = new Element( document, 'p', { attr1: 'foo', attr2: 'bar' } );
 			const clone = el._clone();
 
 			expect( clone ).to.not.equal( el );
@@ -144,9 +151,9 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should deeply clone element', () => {
-			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' }, [
-				new Element( 'b', { attr: 'baz' } ),
-				new Element( 'span', { attr: 'qux' } )
+			const el = new Element( document, 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new Element( document, 'b', { attr: 'baz' } ),
+				new Element( document, 'span', { attr: 'qux' } )
 			] );
 			const count = el.childCount;
 			const clone = el._clone( true );
@@ -168,9 +175,9 @@ describe( 'Element', () => {
 		} );
 
 		it( 'shouldn\'t clone any children when deep copy is not performed', () => {
-			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' }, [
-				new Element( 'b', { attr: 'baz' } ),
-				new Element( 'span', { attr: 'qux' } )
+			const el = new Element( document, 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new Element( document, 'b', { attr: 'baz' } ),
+				new Element( document, 'span', { attr: 'qux' } )
 			] );
 			const clone = el._clone( false );
 
@@ -182,7 +189,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone class attribute', () => {
-			const el = new Element( 'p', { foo: 'bar' } );
+			const el = new Element( document, 'p', { foo: 'bar' } );
 			el._addClass( [ 'baz', 'qux' ] );
 			const clone = el._clone( false );
 
@@ -193,7 +200,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone style attribute', () => {
-			const el = new Element( 'p', { style: 'color: red; font-size: 12px;' } );
+			const el = new Element( document, 'p', { style: 'color: red; font-size: 12px;' } );
 			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
@@ -205,7 +212,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone custom properties', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 			const symbol = Symbol( 'custom' );
 			el._setCustomProperty( 'foo', 'bar' );
 			el._setCustomProperty( symbol, 'baz' );
@@ -217,7 +224,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone getFillerOffset', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 			const fm = () => 'foo bar';
 
 			expect( el.getFillerOffset ).to.be.undefined;
@@ -230,7 +237,7 @@ describe( 'Element', () => {
 	} );
 
 	describe( 'isSimilar()', () => {
-		const el = new Element( 'p', { foo: 'bar' } );
+		const el = new Element( document, 'p', { foo: 'bar' } );
 		it( 'should return false when comparing to non-element', () => {
 			expect( el.isSimilar( null ) ).to.be.false;
 			expect( el.isSimilar( {} ) ).to.be.false;
@@ -241,7 +248,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return true for element with same attributes and name', () => {
-			const other = new Element( 'p', { foo: 'bar' } );
+			const other = new Element( document, 'p', { foo: 'bar' } );
 			expect( el.isSimilar( other ) ).to.be.true;
 		} );
 
@@ -265,10 +272,10 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should compare class attribute', () => {
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'p' );
-			const el3 = new Element( 'p' );
-			const el4 = new Element( 'p' );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'p' );
+			const el3 = new Element( document, 'p' );
+			const el4 = new Element( document, 'p' );
 
 			el1._addClass( [ 'foo', 'bar' ] );
 			el2._addClass( [ 'bar', 'foo' ] );
@@ -284,8 +291,8 @@ describe( 'Element', () => {
 			let element, other;
 
 			beforeEach( () => {
-				element = new Element( 'p' );
-				other = new Element( 'p' );
+				element = new Element( document, 'p' );
+				other = new Element( document, 'p' );
 
 				element._setStyle( 'color', 'red' );
 				element._setStyle( 'top', '10px' );
@@ -338,11 +345,11 @@ describe( 'Element', () => {
 		let parent, el1, el2, el3, el4;
 
 		beforeEach( () => {
-			parent = new Element( 'p' );
-			el1 = new Element( 'el1' );
-			el2 = new Element( 'el2' );
-			el3 = new Element( 'el3' );
-			el4 = new Element( 'el4' );
+			parent = new Element( document, 'p' );
+			el1 = new Element( document, 'el1' );
+			el2 = new Element( document, 'el2' );
+			el3 = new Element( document, 'el3' );
+			el4 = new Element( document, 'el4' );
 		} );
 
 		describe( 'insertion', () => {
@@ -365,7 +372,7 @@ describe( 'Element', () => {
 				expect( parent.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 				parent._removeChildren( 0, 1 );
-				parent._insertChild( 0, [ new Element( 'p' ), 'abc' ] );
+				parent._insertChild( 0, [ new Element( document, 'p' ), 'abc' ] );
 
 				expect( parent.childCount ).to.equal( 2 );
 				expect( parent.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
@@ -386,8 +393,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should accept and correctly handle text proxies', () => {
-				const element = new Element( 'div' );
-				const text = new Text( 'abcxyz' );
+				const element = new Element( document, 'div' );
+				const text = new Text( document, 'abcxyz' );
 				const textProxy = new TextProxy( text, 2, 3 );
 
 				element._insertChild( 0, textProxy );
@@ -469,7 +476,7 @@ describe( 'Element', () => {
 		let el;
 
 		beforeEach( () => {
-			el = new Element( 'p' );
+			el = new Element( document, 'p' );
 		} );
 
 		describe( '_setAttribute', () => {
@@ -662,7 +669,7 @@ describe( 'Element', () => {
 
 			it( 'should remove class attribute', () => {
 				el._addClass( [ 'foo', 'bar' ] );
-				const el2 = new Element( 'p' );
+				const el2 = new Element( document, 'p' );
 				const removed1 = el._removeAttribute( 'class' );
 				const removed2 = el2._removeAttribute( 'class' );
 
@@ -676,7 +683,7 @@ describe( 'Element', () => {
 			it( 'should remove style attribute', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'position', 'fixed' );
-				const el2 = new Element( 'p' );
+				const el2 = new Element( document, 'p' );
 				const removed1 = el._removeAttribute( 'style' );
 				const removed2 = el2._removeAttribute( 'style' );
 
@@ -693,7 +700,7 @@ describe( 'Element', () => {
 		let el;
 
 		beforeEach( () => {
-			el = new Element( 'p' );
+			el = new Element( document, 'p' );
 		} );
 
 		describe( '_addClass()', () => {
@@ -791,7 +798,7 @@ describe( 'Element', () => {
 		let el;
 
 		beforeEach( () => {
-			el = new Element( 'p' );
+			el = new Element( document, 'p' );
 		} );
 
 		describe( '_setStyle()', () => {
@@ -919,29 +926,29 @@ describe( 'Element', () => {
 
 	describe( 'findAncestor', () => {
 		it( 'should return null if element have no ancestor', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 
 			expect( el.findAncestor( 'div' ) ).to.be.null;
 		} );
 
 		it( 'should return ancestor if matching', () => {
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'div', null, el1 );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'div', null, el1 );
 
 			expect( el1.findAncestor( 'div' ) ).to.equal( el2 );
 		} );
 
 		it( 'should return parent\'s ancestor if matching', () => {
-			const el1 = new Element( 'p' );
-			const el2 = new Element( 'div', null, el1 );
-			const el3 = new Element( 'div', { class: 'foo bar' }, el2 );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'div', null, el1 );
+			const el3 = new Element( document, 'div', { class: 'foo bar' }, el2 );
 
 			expect( el1.findAncestor( { classes: 'foo' } ) ).to.equal( el3 );
 		} );
 
 		it( 'should return null if no matches found', () => {
-			const el1 = new Element( 'p' );
-			new Element( 'div', null, el1 ); // eslint-disable-line no-new
+			const el1 = new Element( document, 'p' );
+			new Element( document, 'div', null, el1 ); // eslint-disable-line no-new
 
 			expect( el1.findAncestor( {
 				name: 'div',
@@ -952,14 +959,14 @@ describe( 'Element', () => {
 
 	describe( 'custom properties', () => {
 		it( 'should allow to set and get custom properties', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 			el._setCustomProperty( 'foo', 'bar' );
 
 			expect( el.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 		} );
 
 		it( 'should allow to add symbol property', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 			const symbol = Symbol( 'custom' );
 			el._setCustomProperty( symbol, 'bar' );
 
@@ -967,7 +974,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should allow to remove custom property', () => {
-			const el = new Element( 'foo' );
+			const el = new Element( document, 'foo' );
 			const symbol = Symbol( 'quix' );
 			el._setCustomProperty( 'bar', 'baz' );
 			el._setCustomProperty( symbol, 'test' );
@@ -983,7 +990,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should allow to iterate over custom properties', () => {
-			const el = new Element( 'p' );
+			const el = new Element( document, 'p' );
 			el._setCustomProperty( 'foo', 1 );
 			el._setCustomProperty( 'bar', 2 );
 			el._setCustomProperty( 'baz', 3 );
@@ -1001,20 +1008,20 @@ describe( 'Element', () => {
 
 	describe( 'getIdentity()', () => {
 		it( 'should return only name if no other attributes are present', () => {
-			const el = new Element( 'foo' );
+			const el = new Element( document, 'foo' );
 
 			expect( el.getIdentity() ).to.equal( 'foo' );
 		} );
 
 		it( 'should return classes in sorted order', () => {
-			const el = new Element( 'fruit' );
+			const el = new Element( document, 'fruit' );
 			el._addClass( [ 'banana', 'lemon', 'apple' ] );
 
 			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon"' );
 		} );
 
 		it( 'should return styles in sorted order', () => {
-			const el = new Element( 'foo', {
+			const el = new Element( document, 'foo', {
 				style: 'margin-top: 2em; background-color: red'
 			} );
 
@@ -1022,7 +1029,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return attributes in sorted order', () => {
-			const el = new Element( 'foo', {
+			const el = new Element( document, 'foo', {
 				a: 1,
 				d: 4,
 				b: 3
@@ -1032,7 +1039,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return classes, styles and attributes', () => {
-			const el = new Element( 'baz', {
+			const el = new Element( document, 'baz', {
 				foo: 'one',
 				bar: 'two',
 				style: 'text-align:center;border-radius:10px'

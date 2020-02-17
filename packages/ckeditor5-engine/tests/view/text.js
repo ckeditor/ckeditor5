@@ -5,11 +5,18 @@
 
 import Node from '../../src/view/node';
 import Text from '../../src/view/text';
+import Document from '../../src/view/document';
 
 describe( 'Text', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
-			const text = new Text( 'foo' );
+			const text = new Text( document, 'foo' );
 
 			expect( text ).to.be.an.instanceof( Node );
 			expect( text.data ).to.equal( 'foo' );
@@ -21,7 +28,7 @@ describe( 'Text', () => {
 		let text;
 
 		before( () => {
-			text = new Text( 'foo' );
+			text = new Text( document, 'foo' );
 		} );
 
 		it( 'should return true for node, text', () => {
@@ -49,7 +56,7 @@ describe( 'Text', () => {
 
 	describe( '_clone()', () => {
 		it( 'should return new text with same data', () => {
-			const text = new Text( 'foo bar' );
+			const text = new Text( document, 'foo bar' );
 			const clone = text._clone();
 
 			expect( clone ).to.not.equal( text );
@@ -58,7 +65,7 @@ describe( 'Text', () => {
 	} );
 
 	describe( 'isSimilar', () => {
-		const text = new Text( 'foo' );
+		const text = new Text( document, 'foo' );
 
 		it( 'should return false when comparing to non-text', () => {
 			expect( text.isSimilar( null ) ).to.be.false;
@@ -70,7 +77,7 @@ describe( 'Text', () => {
 		} );
 
 		it( 'should return true when data is the same', () => {
-			const other = new Text( 'foo' );
+			const other = new Text( document, 'foo' );
 
 			expect( text.isSimilar( other ) ).to.be.true;
 		} );
@@ -85,15 +92,15 @@ describe( 'Text', () => {
 
 	describe( 'setText', () => {
 		it( 'should change the text', () => {
-			const text = new Text( 'foo' );
+			const text = new Text( document, 'foo' );
 			text._data = 'bar';
 
 			expect( text.data ).to.equal( 'bar' );
 		} );
 
 		it( 'works when using addition assignment operator (+=)', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
+			const foo = new Text( document, 'foo' );
+			const bar = new Text( document, 'bar' );
 
 			foo._data += bar.data;
 			expect( foo.data ).to.equal( 'foobar' );

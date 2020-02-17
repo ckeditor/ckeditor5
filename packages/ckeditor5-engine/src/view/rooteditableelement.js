@@ -22,10 +22,11 @@ export default class RootEditableElement extends EditableElement {
 	/**
 	 * Creates root editable element.
 	 *
+	 * @param {module:engine/view/document~Document} document A document where the element belongs to.
 	 * @param {String} name Node name.
 	 */
-	constructor( name ) {
-		super( name );
+	constructor( document, name ) {
+		super( document, name );
 
 		/**
 		 * Name of this root inside {@link module:engine/view/document~Document} that is an owner of this root. If no

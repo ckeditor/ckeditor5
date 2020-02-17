@@ -5,12 +5,19 @@
 
 import { default as ContainerElement, getFillerOffset } from '../../src/view/containerelement';
 import Element from '../../src/view/element';
+import Document from '../../src/view/document';
 import { parse } from '../../src/dev-utils/view';
 
 describe( 'ContainerElement', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create element with default priority', () => {
-			const el = new ContainerElement( 'p' );
+			const el = new ContainerElement( document, 'p' );
 
 			expect( el ).to.be.an.instanceof( ContainerElement );
 			expect( el ).to.be.an.instanceof( Element );
@@ -22,7 +29,7 @@ describe( 'ContainerElement', () => {
 		let el;
 
 		before( () => {
-			el = new ContainerElement( 'p' );
+			el = new ContainerElement( document, 'p' );
 		} );
 
 		it( 'should return true for containerElement/element, also with correct name and element name', () => {

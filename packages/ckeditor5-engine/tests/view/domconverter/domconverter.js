@@ -39,7 +39,7 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
-			viewEditable = new ViewEditable( 'div' );
+			viewEditable = new ViewEditable( viewDocument, 'div' );
 			viewEditable._document = viewDocument;
 
 			domEditable = document.createElement( 'div' );
@@ -192,7 +192,7 @@ describe( 'DomConverter', () => {
 			return sel;
 		}
 
-		let domP, domFillerTextNode, domUiSpan, domUiDeepSpan;
+		let domP, domFillerTextNode, domUiSpan, domUiDeepSpan, viewDocument;
 
 		beforeEach( () => {
 			// <p>INLINE_FILLERfoo<span></span></p>.
@@ -203,8 +203,10 @@ describe( 'DomConverter', () => {
 			domUiDeepSpan = document.createElement( 'span' );
 			domUiSpan.appendChild( domUiDeepSpan );
 
-			const viewUiSpan = new ViewUIElement( 'span' );
-			const viewElementSpan = new ViewContainerElement( 'span' );
+			viewDocument = new ViewDocument();
+
+			const viewUiSpan = new ViewUIElement( viewDocument, 'span' );
+			const viewElementSpan = new ViewContainerElement( viewDocument, 'span' );
 
 			domP.appendChild( domFillerTextNode );
 			domP.appendChild( domUiSpan );

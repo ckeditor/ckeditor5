@@ -6,6 +6,7 @@
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
+import ViewDocument from '../../../src/view/document';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
@@ -17,10 +18,11 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
-	let converter;
+	let converter, viewDocument;
 
 	before( () => {
 		converter = new DomConverter();
+		viewDocument = new ViewDocument();
 	} );
 
 	describe( 'domToView()', () => {
@@ -29,7 +31,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domImg, domText ] );
 
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 
 			converter.bindElements( domImg, viewImg );
 
@@ -90,7 +92,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domImg, domText ] );
 
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 
 			converter.bindElements( domImg, viewImg );
 
@@ -133,7 +135,7 @@ describe( 'DomConverter', () => {
 			domFragment.appendChild( domImg );
 			domFragment.appendChild( domText );
 
-			const viewImg = new ViewElement( 'img' );
+			const viewImg = new ViewElement( viewDocument, 'img' );
 
 			converter.bindElements( domImg, viewImg );
 
@@ -1001,7 +1003,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewDocumentSelection( new ViewElement(), 'in' );
+			const viewSelection = new ViewDocumentSelection( new ViewElement( viewDocument ), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
@@ -1022,7 +1024,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewDocumentSelection( new ViewElement(), 'in' );
+			const viewSelection = new ViewDocumentSelection( new ViewElement( viewDocument ), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();

@@ -564,7 +564,7 @@ export default class Element extends Node {
 		}
 
 		// ContainerElement and AttributeElement should be also cloned properly.
-		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
+		const cloned = new this.constructor( this.document, this.name, this._attrs, childrenClone );
 
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
@@ -611,7 +611,7 @@ export default class Element extends Node {
 		this._fireChange( 'children', this );
 		let count = 0;
 
-		const nodes = normalize( items );
+		const nodes = normalize( this.document, items );
 
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
@@ -887,10 +887,10 @@ function parseClasses( classesSet, classesString ) {
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @returns {Iterable.<module:engine/view/node~Node>}
-function normalize( nodes ) {
+function normalize( document, nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( nodes ) ];
+		return [ new Text( document, nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {
@@ -901,11 +901,11 @@ function normalize( nodes ) {
 	return Array.from( nodes )
 		.map( node => {
 			if ( typeof node == 'string' ) {
-				return new Text( node );
+				return new Text( document, node );
 			}
 
 			if ( node instanceof TextProxy ) {
-				return new Text( node.data );
+				return new Text( document, node.data );
 			}
 
 			return node;

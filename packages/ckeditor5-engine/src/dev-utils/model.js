@@ -212,10 +212,9 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 	// Create a temporary view controller.
 	const view = new View();
 	const viewDocument = view.document;
-	const viewRoot = new ViewRootEditableElement( 'div' );
+	const viewRoot = new ViewRootEditableElement( viewDocument, 'div' );
 
 	// Create a temporary root element in view document.
-	viewRoot._document = view.document;
 	viewRoot.rootName = 'main';
 	viewDocument.roots.add( viewRoot );
 
@@ -242,7 +241,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 		// Stringify object types values for properly display as an output string.
 		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
-		return new ViewContainerElement( modelItem.name, attributes );
+		return new ViewContainerElement( viewDocument, modelItem.name, attributes );
 	} ) );
 
 	downcastDispatcher.on( 'selection', convertRangeSelection() );

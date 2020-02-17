@@ -5,15 +5,17 @@
 
 import EmptyElement from '../../src/view/emptyelement';
 import Element from '../../src/view/element';
+import Document from '../../src/view/document';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'EmptyElement', () => {
-	let element, emptyElement;
+	let element, emptyElement, document;
 
 	beforeEach( () => {
-		element = new Element( 'b' );
-		emptyElement = new EmptyElement( 'img', {
+		document = new Document();
+		element = new Element( document, 'b' );
+		emptyElement = new EmptyElement( document, 'img', {
 			alt: 'alternative text',
 			style: 'margin-top: 2em;color: white;',
 			class: 'image big'
@@ -24,7 +26,7 @@ describe( 'EmptyElement', () => {
 		let el;
 
 		before( () => {
-			el = new EmptyElement( 'p' );
+			el = new EmptyElement( document, 'p' );
 		} );
 
 		it( 'should return true for emptyElement/element, also with correct name and element name', () => {
@@ -59,10 +61,10 @@ describe( 'EmptyElement', () => {
 	} );
 
 	it( 'should throw if child elements are passed to constructor', () => {
-		const el = new Element( 'i' );
+		const el = new Element( document, 'i' );
 
 		expectToThrowCKEditorError( () => {
-			new EmptyElement( 'img', null, [ el ] ); // eslint-disable-line no-new
+			new EmptyElement( document, 'img', null, [ el ] ); // eslint-disable-line no-new
 		}, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.', el );
 	} );
 

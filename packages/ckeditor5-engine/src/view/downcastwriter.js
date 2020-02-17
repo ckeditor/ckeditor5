@@ -686,7 +686,7 @@ export default class DowncastWriter {
 
 		// If range is collapsed - nothing to remove.
 		if ( range.isCollapsed ) {
-			return new DocumentFragment();
+			return new DocumentFragment( this.document );
 		}
 
 		// Break attributes at range start and end.
@@ -708,7 +708,7 @@ export default class DowncastWriter {
 		range.end = mergePosition.clone();
 
 		// Return removed nodes.
-		return new DocumentFragment( removed );
+		return new DocumentFragment( this.document, removed );
 	}
 
 	/**
@@ -914,7 +914,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
 	 */
 	rename( newName, viewElement ) {
-		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
+		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
 
 		this.insert( Position._createAfter( viewElement ), newElement );
 		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
