@@ -13,7 +13,7 @@ import MentionEditing from '../src/mentionediting';
 import MentionUI from '../src/mentionui';
 
 describe( 'Mention', () => {
-	let editorElement, editor;
+	let editorElement, editor, viewDocument;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -25,6 +25,7 @@ describe( 'Mention', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				viewDocument = editor.editing.view.document;
 			} );
 	} );
 
@@ -52,9 +53,9 @@ describe( 'Mention', () => {
 
 	describe( 'toMentionAttribute()', () => {
 		it( 'should create mention attribute with default properties', () => {
-			const text = new Text( 'John Doe' );
+			const text = new Text( viewDocument, 'John Doe' );
 
-			const viewElement = new Element( 'span', {
+			const viewElement = new Element( viewDocument, 'span', {
 				'data-mention': '@John'
 			}, text );
 
@@ -66,9 +67,9 @@ describe( 'Mention', () => {
 		} );
 
 		it( 'should create mention attribute with provided attributes', () => {
-			const text = new Text( 'John Doe' );
+			const text = new Text( viewDocument, 'John Doe' );
 
-			const viewElement = new Element( 'span', {
+			const viewElement = new Element( viewDocument, 'span', {
 				'data-mention': '@John'
 			}, text );
 
@@ -81,7 +82,7 @@ describe( 'Mention', () => {
 		} );
 
 		it( 'should return undefined if Element has no text node', () => {
-			const viewElement = new Element( 'span', {
+			const viewElement = new Element( viewDocument, 'span', {
 				'data-mention': '@John'
 			} );
 
