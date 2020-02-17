@@ -18,8 +18,7 @@ describe( 'InlineEditableUIView', () => {
 		editableElement = document.createElement( 'div' );
 
 		editingView = new EditingView();
-		editingViewRoot = new ViewRootEditableElement( 'div' );
-		editingViewRoot._document = editingView.document;
+		editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
 		editingView.document.roots.add( editingViewRoot );
 		view = new InlineEditableUIView( locale, editingView );
 		view.name = editingViewRoot.rootName;
