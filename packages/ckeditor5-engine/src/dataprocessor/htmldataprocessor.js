@@ -11,6 +11,7 @@
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
+import ViewDocument from '../view/document';
 
 /**
  * The HTML data processor class.
@@ -72,9 +73,10 @@ export default class HtmlDataProcessor {
 	toView( data ) {
 		// Convert input HTML data to DOM DocumentFragment.
 		const domFragment = this._toDom( data );
+		const viewDocument = new ViewDocument();
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this._domConverter.domToView( domFragment );
+		return this._domConverter.domToView( viewDocument, domFragment );
 	}
 
 	/**

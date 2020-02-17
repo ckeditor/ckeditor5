@@ -41,10 +41,9 @@ export default class Renderer {
 	/**
 	 * Creates a renderer instance.
 	 *
-	 * @param {module:engine/view/domconverter~DomConverter} domConverter Converter instance.
-	 * @param {module:engine/view/documentselection~DocumentSelection} selection View selection.
+	 * @param {module:engine/view/view~View} view View editing controller.
 	 */
-	constructor( domConverter, selection ) {
+	constructor( view ) {
 		/**
 		 * Set of DOM Documents instances.
 		 *
@@ -59,7 +58,7 @@ export default class Renderer {
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this.domConverter = domConverter;
+		this.domConverter = view.domConverter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
@@ -91,7 +90,7 @@ export default class Renderer {
 		 * @readonly
 		 * @member {module:engine/view/documentselection~DocumentSelection}
 		 */
-		this.selection = selection;
+		this.selection = view.document.selection;
 
 		/**
 		 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
@@ -116,6 +115,14 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
+
+		/**
+		 * Reference to the {@link module:engine/view/view~View#document}.
+		 *
+		 * @private
+		 * @member {module:engine/view/document~Document}
+		 */
+		this._viewDocument = view.document;
 	}
 
 	/**
@@ -557,7 +564,7 @@ export default class Renderer {
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
-				this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
+				this._markDescendantTextToSync( this.domConverter.domToView( this._viewDocument, expectedDomChildren[ i ] ) );
 				i++;
 			}
 		}

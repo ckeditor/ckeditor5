@@ -14,7 +14,6 @@ import ViewElement from './element';
 import ViewPosition from './position';
 import ViewRange from './range';
 import ViewSelection from './selection';
-import ViewDocument from './document';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
 import { BR_FILLER, getDataWithoutFiller, INLINE_FILLER_LENGTH, isInlineFiller, NBSP_FILLER, startsWithFiller } from './filler';
@@ -374,6 +373,7 @@ export default class DomConverter {
 	 * {@link module:engine/view/filler fillers} `null` will be returned.
 	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
 	 *
+	 * @param {module:engine/view/document~Document} viewDocument View document where the created node will belong to.
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
@@ -382,12 +382,10 @@ export default class DomConverter {
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
-	domToView( domNode, options = {} ) {
+	domToView( viewDocument, domNode, options = {} ) {
 		if ( this.isBlockFiller( domNode, this.blockFillerMode ) ) {
 			return null;
 		}
-
-		const viewDocument = new ViewDocument();
 
 		// When node is inside UIElement return that UIElement as it's view representation.
 		const uiElement = this.getParentUIElement( domNode, this._domToViewMapping );
@@ -438,7 +436,7 @@ export default class DomConverter {
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( const child of this.domChildrenToView( domNode, options ) ) {
+				for ( const child of this.domChildrenToView( viewDocument, domNode, options ) ) {
 					viewElement._appendChild( child );
 				}
 			}
@@ -452,14 +450,15 @@ export default class DomConverter {
 	 * the {@link module:engine/view/domconverter~DomConverter#domToView} method.
 	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
 	 *
+	 * @param {module:engine/view/document~Document} viewDocument View document where the created node will belong to.
 	 * @param {HTMLElement} domElement Parent DOM element.
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
 	 * @returns {Iterable.<module:engine/view/node~Node>} View nodes.
 	 */
-	* domChildrenToView( domElement, options = {} ) {
+	* domChildrenToView( viewDocument, domElement, options = {} ) {
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
-			const viewChild = this.domToView( domChild, options );
+			const viewChild = this.domToView( viewDocument, domChild, options );
 
 			if ( viewChild !== null ) {
 				yield viewChild;

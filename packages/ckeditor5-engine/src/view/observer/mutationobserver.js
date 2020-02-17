@@ -206,7 +206,7 @@ export default class MutationObserver extends Observer {
 		for ( const viewElement of mutatedElements ) {
 			const domElement = domConverter.mapViewToDom( viewElement );
 			const viewChildren = Array.from( viewElement.getChildren() );
-			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement, { withChildren: false } ) );
+			const newViewChildren = Array.from( domConverter.domChildrenToView( this.document, domElement, { withChildren: false } ) );
 
 			// It may happen that as a result of many changes (sth was inserted and then removed),
 			// both elements haven't really changed. #1031
@@ -287,7 +287,7 @@ export default class MutationObserver extends Observer {
 
 		// Check if mutation added only one node on the end of its parent.
 		if ( mutation.nextSibling === null && mutation.removedNodes.length === 0 && mutation.addedNodes.length == 1 ) {
-			addedNode = this.domConverter.domToView( mutation.addedNodes[ 0 ], {
+			addedNode = this.domConverter.domToView( this.document, mutation.addedNodes[ 0 ], {
 				withChildren: false
 			} );
 		}
