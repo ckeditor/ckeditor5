@@ -13,7 +13,7 @@ import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/uti
 /**
  * The insert table command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTable'` editor command.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'insertTable'` editor command.
  *
  * To insert a table at the current selection, execute the command and specify the dimensions:
  *

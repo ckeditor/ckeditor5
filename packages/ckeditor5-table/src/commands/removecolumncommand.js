@@ -15,7 +15,7 @@ import { findAncestor, updateNumericAttribute } from './utils';
 /**
  * The remove column command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'removeTableColumn'` editor command.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'removeTableColumn'` editor command.
  *
  * To remove the column containing the selected cell, execute the command:
  *

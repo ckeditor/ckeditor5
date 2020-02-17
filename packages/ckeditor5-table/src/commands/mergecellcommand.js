@@ -14,7 +14,7 @@ import { findAncestor, updateNumericAttribute } from './utils';
 /**
  * The merge cell command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'mergeTableCellRight'`, `'mergeTableCellLeft'`,
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'mergeTableCellRight'`, `'mergeTableCellLeft'`,
  * `'mergeTableCellUp'` and `'mergeTableCellDown'` editor commands.
  *
  * To merge a table cell at the current selection with another cell, execute the command corresponding with the preferred direction.
@@ -240,7 +240,7 @@ function getVerticalCell( tableCell, direction ) {
 	return cellToMergeData && cellToMergeData.cell;
 }
 
-// Properly removes empty row from a table. Will update `rowspan` attribute of cells that overlaps removed row.
+// Properly removes an empty row from a table. It will update the `rowspan` attribute of cells that overlap the removed row.
 //
 // @param {module:engine/model/element~Element} removedTableCellRow
 // @param {module:engine/model/writer~Writer} writer
@@ -260,9 +260,9 @@ function removeEmptyRow( removedTableCellRow, writer ) {
 	writer.remove( removedTableCellRow );
 }
 
-// Merges two table cells - will ensure that after merging cells with empty paragraph the result table cell will only have one paragraph.
-// If one of the merged table cell is empty the merged table cell will have contents of the non-empty table cell.
-// If both are empty the merged table cell will have only one empty paragraph.
+// Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
+// paragraph. If one of the merged table cell is empty, the merged table cell will have the contents of the non-empty table cell.
+// If both are empty, the merged table cell will have only one empty paragraph.
 //
 // @param {module:engine/model/element~Element} cellToRemove
 // @param {module:engine/model/element~Element} cellToExpand
@@ -280,7 +280,7 @@ function mergeTableCells( cellToRemove, cellToExpand, writer ) {
 	writer.remove( cellToRemove );
 }
 
-// Checks if passed table cell contains empty paragraph.
+// Checks if the passed table cell contains an empty paragraph.
 //
 // @param {module:engine/model/element~Element} tableCell
 // @returns {Boolean}

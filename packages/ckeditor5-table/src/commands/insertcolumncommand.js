@@ -13,7 +13,7 @@ import { findAncestor } from './utils';
 /**
  * The insert column command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableColumnLeft'` and
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'insertTableColumnLeft'` and
  * `'insertTableColumnRight'` editor commands.
  *
  * To insert a column to the left of the selected cell, execute the following command:

@@ -10,10 +10,10 @@
 import { isObject } from 'lodash-es';
 
 /**
- * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
+ * Returns the parent element of the given name. Returns undefined if the position is not inside the desired parent.
  *
- * @param {String} parentName Name of parent element to find.
- * @param {module:engine/model/position~Position|module:engine/model/position~Position} position Position to start searching.
+ * @param {String} parentName The name of the parent element to find.
+ * @param {module:engine/model/position~Position|module:engine/model/position~Position} position The position to start searching.
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
 export function findAncestor( parentName, position ) {
@@ -31,11 +31,11 @@ export function findAncestor( parentName, position ) {
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
- * @param {String} key Attribute key.
+ * @param {String} key An attribute key.
  * @param {*} value The new attribute value.
- * @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
+ * @param {module:engine/model/item~Item} item A model item on which the attribute will be set.
  * @param {module:engine/model/writer~Writer} writer
- * @param {*} defaultValue Default attribute value. If a value is lower or equal, it will be unset.
+ * @param {*} defaultValue The default attribute value. If a value is lower or equal, it will be unset.
  */
 export function updateNumericAttribute( key, value, item, writer, defaultValue = 1 ) {
 	if ( value > defaultValue ) {
@@ -46,11 +46,11 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
 }
 
 /**
- * Common method to create empty table cell - it will create proper model structure as table cell must have at least one block inside.
+ * A common method to create an empty table cell. It creates a proper model structure as a table cell must have at least one block inside.
  *
- * @param {module:engine/model/writer~Writer} writer Model writer.
- * @param {module:engine/model/position~Position} insertPosition Position at which table cell should be inserted.
- * @param {Object} attributes Element's attributes.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @param {module:engine/model/position~Position} insertPosition The position at which the table cell should be inserted.
+ * @param {Object} attributes The element attributes.
  */
 export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
 	const tableCell = writer.createElement( 'tableCell', attributes );
@@ -63,7 +63,7 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
  *
  * If a string is passed, it is treated as a single value (pass-through).
  *
- *		// returns 'foo':
+ *		// Returns 'foo':
  *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
  *		getSingleValue( 'foo' );
  *

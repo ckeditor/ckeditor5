@@ -15,7 +15,7 @@ import { findAncestor, updateNumericAttribute } from './utils';
 /**
  * The remove row command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'removeTableRow'` editor command.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'removeTableRow'` editor command.
  *
  * To remove the row containing the selected cell, execute the command:
  *

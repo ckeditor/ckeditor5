@@ -13,7 +13,7 @@ import { findAncestor } from './utils';
 /**
  * The split cell command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'splitTableCellVertically'`
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'splitTableCellVertically'`
  * and `'splitTableCellHorizontally'`  editor commands.
  *
  * You can split any cell vertically or horizontally by executing this command. For example, to split the selected table cell vertically:
