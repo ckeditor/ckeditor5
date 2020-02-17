@@ -403,6 +403,15 @@ describe( 'Element', () => {
 				expect( element.getChild( 0 ) ).to.be.instanceof( Text );
 				expect( element.getChild( 0 ).data ).to.equal( 'cxy' );
 			} );
+
+			it( 'set proper #document on inserted children', () => {
+				const anotherDocument = new Document();
+				const anotherEl = new Element( anotherDocument, 'p' );
+
+				parent._insertChild( 0, anotherEl );
+
+				expect( anotherEl.document ).to.be.equal( document );
+			} );
 		} );
 
 		describe( 'getChildIndex', () => {
