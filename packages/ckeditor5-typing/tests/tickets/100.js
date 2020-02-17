@@ -104,7 +104,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: paragraph,
 				oldChildren: [ italic ],
-				newChildren: [ new ViewElement( 'i' ) ]
+				newChildren: [ new ViewElement( viewDocument, 'i' ) ]
 			},
 
 			// Third mutation - italic's new children.
@@ -112,7 +112,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: strong,
 				oldChildren: [ text ],
-				newChildren: [ new ViewElement( 'a', null, text._clone() ), new ViewText( 'x' ) ]
+				newChildren: [ new ViewElement( viewDocument, 'a', null, text._clone() ), new ViewText( viewDocument, 'x' ) ]
 			}
 		] );
 
@@ -151,7 +151,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: paragraph,
 				oldChildren: [ italic ],
-				newChildren: [ new ViewElement( 'i' ) ]
+				newChildren: [ new ViewElement( viewDocument, 'i' ) ]
 			},
 
 			// Third mutation - italic's new children.
@@ -159,7 +159,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: strong,
 				oldChildren: [ text ],
-				newChildren: [ new ViewText( 'x' ), new ViewElement( 'a', null, 'text' ) ]
+				newChildren: [ new ViewText( viewDocument, 'x' ), new ViewElement( viewDocument, 'a', null, 'text' ) ]
 			}
 		] );
 
@@ -199,7 +199,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: paragraph,
 				oldChildren: [ textBefore, link ],
-				newChildren: [ new ViewText( 'xxx' ), new ViewElement( 'i' ) ]
+				newChildren: [ new ViewText( viewDocument, 'xxx' ), new ViewElement( viewDocument, 'i' ) ]
 			},
 
 			// Third mutation - italic's new children.
@@ -207,7 +207,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: italic,
 				oldChildren: [ text ],
-				newChildren: [ new ViewElement( 'a', null, 'text' ), new ViewText( 'x' ) ]
+				newChildren: [ new ViewElement( viewDocument, 'a', null, 'text' ), new ViewText( viewDocument, 'x' ) ]
 			}
 		] );
 
@@ -237,7 +237,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: paragraph,
 				oldChildren: [ strong ],
-				newChildren: [ new ViewElement( 'b', null, 'fixed text' ) ]
+				newChildren: [ new ViewElement( viewDocument, 'b', null, 'fixed text' ) ]
 			}
 		] );
 
@@ -267,7 +267,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: strong,
 				oldChildren: [ text ],
-				newChildren: [ new ViewText( 'this is bar' ), new ViewText( ' text' ) ]
+				newChildren: [ new ViewText( viewDocument, 'this is bar' ), new ViewText( viewDocument, ' text' ) ]
 			}
 		] );
 
@@ -296,8 +296,8 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				node: paragraph,
 				oldChildren: [ strong ],
 				newChildren: [
-					new ViewElement( 'strong', null, new ViewText( 'text' ) ),
-					new ViewElement( 'img' )
+					new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'text' ) ),
+					new ViewElement( viewDocument, 'img' )
 				]
 			}
 		] );
@@ -326,7 +326,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: paragraph,
 				oldChildren: [ strong ],
-				newChildren: [ new ViewElement( 'strong', null, new ViewText( 'text' ) ) ]
+				newChildren: [ new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'text' ) ) ]
 			}
 		] );
 
@@ -378,7 +378,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: new ViewContainerElement( 'div' ),
 				oldChildren: [],
-				newChildren: [ new ViewText( 'foo' ), new ViewText( 'bar' ) ]
+				newChildren: [ new ViewText( viewDocument, 'foo' ), new ViewText( viewDocument, 'bar' ) ]
 			}
 		] );
 
@@ -408,7 +408,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: paragraph,
 				oldChildren: [ strong ],
-				newChildren: [ new ViewElement( 'b', null, new ViewText( 'textx' ) ) ]
+				newChildren: [ new ViewElement( viewDocument, 'b', null, new ViewText( viewDocument, 'textx' ) ) ]
 			}
 		], viewSelection );
 
@@ -436,7 +436,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 			{
 				type: 'children',
 				oldChildren: [ strong ],
-				newChildren: [ strong, new ViewElement( 'b', null, new ViewText( 'apple' ) ) ],
+				newChildren: [ strong, new ViewElement( viewDocument, 'b', null, new ViewText( viewDocument, 'apple' ) ) ],
 				node: paragraph
 			}
 		], viewSelection );
