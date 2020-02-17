@@ -118,22 +118,6 @@ export default class Node {
 	}
 
 	/**
-	 * {@link module:engine/view/document~Document View document} that owns this node, or `null` if the node is inside
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
-	 *
-	 * @readonly
-	 * @type {module:engine/view/document~Document|null}
-	 */
-	// get document() {
-	// 	// Parent might be Node, null or DocumentFragment.
-	// 	if ( this.parent instanceof Node ) {
-	// 		return this.parent.document;
-	// 	} else {
-	// 		return null;
-	// 	}
-	// }
-
-	/**
 	 * Gets a path to the node. The path is an array containing indices of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/view/node~Node#root root}, down to this node's index.
 	 *
