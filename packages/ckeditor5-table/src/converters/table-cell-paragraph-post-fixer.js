@@ -8,9 +8,9 @@
  */
 
 /**
- * Injects a table cell post-fixer into the model which inserts `paragraph` element into empty table cells.
+ * Injects a table cell post-fixer into the model which inserts a `paragraph` element into empty table cells.
  *
- * A table cell must contain at least one block element as a child. An empty table cell will have empty `paragraph` as a child.
+ * A table cell must contain at least one block element as a child. An empty table cell will have an empty `paragraph` as a child.
  *
  *		<table>
  *			<tableRow>
@@ -91,8 +91,8 @@ function fixTableRow( tableRow, writer ) {
 }
 
 // Fixes all table cell content by:
-// - adding paragraph to a table cell without any child.
-// - wrapping direct $text in <paragraph>.
+// - Adding a paragraph to a table cell without any child.
+// - Wrapping direct $text in a `<paragraph>`.
 //
 // @param {module:engine/model/element~Element} table
 // @param {module:engine/model/writer~Writer} writer
@@ -117,9 +117,9 @@ function fixTableCellContent( tableCell, writer ) {
 	return !!textNodes.length;
 }
 
-// Check if differ change should fix table cell. This happens on:
-// - removing content from table cell (ie tableCell can be left empty).
-// - adding text node directly into a table cell.
+// Checks if a differ change should fix the table cell. This happens on:
+// - Removing content from the table cell (i.e. `tableCell` can be left empty).
+// - Adding a text node directly into a table cell.
 //
 // @param {Object} differ change entry
 // @returns {Boolean}

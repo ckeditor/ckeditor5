@@ -11,10 +11,10 @@
  * Injects a table cell post-fixer into the model which marks the table cell in the differ to have it re-rendered.
  *
  * Model `paragraph` inside a table cell can be rendered as `<span>` or `<p>`. It is rendered as `<span>` if this is the only block
- * element in that table cell and it doesn't have any attributes. It is rendered as `<p>` otherwise.
+ * element in that table cell and it does not have any attributes. It is rendered as `<p>` otherwise.
  *
- * When table cell content changes, for example a second `paragraph` element is added we need to ensure that the first `paragraph` is
- * re-rendered so it changes to `<p>` from `<span>`. The easiest way to do it is to re-render whole table cell.
+ * When table cell content changes, for example a second `paragraph` element is added, we need to ensure that the first `paragraph` is
+ * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
  *
  * @param {module:engine/model/model~Model} model
  */
@@ -49,16 +49,16 @@ function tableCellRefreshPostFixer( model ) {
 
 // Checks if the model table cell requires refreshing to be re-rendered to a proper state in the view.
 //
-// This methods detects changes that will require renaming <span> to <p> (or vice versa) in the view.
+// This method detects changes that will require renaming `<span>` to `<p>` (or vice versa) in the view.
 //
 // This method is a simple heuristic that checks only a single change and will sometimes give a false positive result when multiple changes
 // will result in a state that does not require renaming in the view (but will be seen as requiring a refresh).
 //
-// For instance: a `<span>` should be renamed to `<p>` when adding an attribute to a `<paragraph>`.
-// But adding one attribute and removing another one will result in a false positive: the check for added attribute will see one attribute
-// on a paragraph and will falsy qualify such change as adding an attribute to a paragraph without any attribute.
+// For instance: A `<span>` should be renamed to `<p>` when adding an attribute to a `<paragraph>`.
+// But adding one attribute and removing another one will result in a false positive: the check for an added attribute will see one
+// attribute on a paragraph and will falsely qualify such change as adding an attribute to a paragraph without any attribute.
 //
-// @param {module:engine/model/element~Element} tableCell Table cell to check.
+// @param {module:engine/model/element~Element} tableCell The table cell to check.
 // @param {String} type Type of change.
 function checkRefresh( tableCell, type ) {
 	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'paragraph' ) );

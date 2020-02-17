@@ -140,9 +140,9 @@ export function upcastTableCell( elementName ) {
 
 // Scans table rows and extracts required metadata from the table:
 //
-// headingRows    - the number of rows that goes as table header.
-// headingColumns - max number of row headings.
-// rows           - sorted `<tr>`s as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
+// headingRows    - The number of rows that go as table headers.
+// headingColumns - The maximum number of row headings.
+// rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
 //
 // @param {module:engine/view/element~Element} viewTable
 // @returns {{headingRows, headingColumns, rows}}
@@ -152,9 +152,9 @@ function scanTable( viewTable ) {
 		headingColumns: 0
 	};
 
-	// The `<tbody>` and <thead> sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more then one of
-	// them.
-	// As the model does not have those sections, rows from different sections must be sorted.
+	// The `<tbody>` and `<thead>` sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more than one
+	// of them.
+	// As the model does not have these sections, rows from different sections must be sorted.
 	// For example, below is a valid HTML table:
 	//
 	//		<table>
@@ -163,7 +163,7 @@ function scanTable( viewTable ) {
 	//			<tbody><tr><td>3</td></tr></tbody>
 	//		</table>
 	//
-	// But browsers will render rows in order as: 1 as heading and 2 and 3 as (body).
+	// But browsers will render rows in order as: 1 as heading and 2 and 3 as the body.
 	const headRows = [];
 	const bodyRows = [];
 
@@ -208,12 +208,12 @@ function scanTable( viewTable ) {
 	return tableMeta;
 }
 
-// Scans `<tr>` and its children for metadata:
+// Scans a `<tr>` element and its children for metadata:
 // - For heading row:
-//     - either adds this row to heading or body rows.
-//     - updates number of heading rows.
+//     - Adds this row to either the heading or the body rows.
+//     - Updates the number of heading rows.
 // - For body rows:
-//     - calculates the number of column headings.
+//     - Calculates the number of column headings.
 //
 // @param {module:engine/view/element~Element} tr
 // @returns {Number}
