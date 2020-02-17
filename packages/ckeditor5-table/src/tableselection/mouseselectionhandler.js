@@ -62,7 +62,6 @@ export default class MouseSelectionHandler {
 		this.listenTo( view.document, 'mousedown', ( event, domEventData ) => this._handleMouseDown( domEventData ) );
 		this.listenTo( view.document, 'mousemove', ( event, domEventData ) => this._handleMouseMove( domEventData ) );
 		this.listenTo( view.document, 'mouseup', ( event, domEventData ) => this._handleMouseUp( domEventData ) );
-		this.listenTo( view.document, 'mouseleave', () => this._handleMouseLeave() );
 	}
 
 	/**
@@ -120,7 +119,7 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseUp( domEventData ) {
-		if ( !this._tableSelection.isSelecting ) {
+		if ( !this.isSelecting ) {
 			return;
 		}
 
@@ -128,21 +127,6 @@ export default class MouseSelectionHandler {
 
 		// Selection can be stopped if table cell is undefined.
 		this._tableSelection.stopSelection( tableCell );
-	}
-
-	/**
-	 * Handles stopping a selection on "mouseleave" event.
-	 *
-	 * Does nothing if selection is not started.
-	 *
-	 * @private
-	 */
-	_handleMouseLeave() {
-		// if ( !this._tableSelection.isSelecting ) {
-		// 	return;
-		// }
-
-		// this._tableSelection.stopSelection();
 	}
 
 	/**

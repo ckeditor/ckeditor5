@@ -14,7 +14,7 @@ import TableSelection from '../../src/tableselection';
 import { modelTable, viewTable } from '../_utils/utils';
 
 describe( 'table selection', () => {
-	let editor, model, modelRoot, view;
+	let editor, model, modelRoot, view, viewDoc;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -24,6 +24,7 @@ describe( 'table selection', () => {
 		model = editor.model;
 		modelRoot = model.document.getRoot();
 		view = editor.editing.view;
+		viewDoc = view.document;
 
 		setModelData( model, modelTable( [
 			[ '11[]', '12', '13' ],
@@ -36,7 +37,7 @@ describe( 'table selection', () => {
 		await editor.destroy();
 	} );
 
-	describe( 'MouseEventObserver', () => {
+	describe( 'MouseSelectionObserver', () => {
 		it( 'should not start table selection when mouse move is inside one table cell', () => {
 			setModelData( model, modelTable( [
 				[ '[]00', '01' ],
@@ -231,6 +232,20 @@ describe( 'table selection', () => {
 			] );
 		} );
 
+		it( 'should do nothing on "mouseup" event', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			releaseMouseButtonOver( getTableCell( '01' ) );
+
+			assertSelectedCells( [
+				[ 0, 0 ],
+				[ 0, 0 ]
+			] );
+		} );
+
 		it( 'should stop selection mode on "mouseleve" event if next "mousemove" has no button pressed', () => {
 			setModelData( model, modelTable( [
 				[ '[]00', '01' ],
@@ -319,11 +334,29 @@ describe( 'table selection', () => {
 				[ '10', '11' ]
 			] ) );
 
-			const uiElement = view.document.getRoot()
+			const uiElement = viewDoc.getRoot()
 				.getChild( 0 )
 				.getChild( 0 ); // selection handler;
 
-			fireEvent( view, 'mousedown', addTarget( uiElement ) );
+			fireEvent( view, 'mousedown', addTarget( uiElement ), mouseButtonPressed );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should do nothing on "mousemove" event over ui element (click on selection handle)', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const uiElement = viewDoc.getRoot()
+				.getChild( 0 )
+				.getChild( 0 ); // selection handler;
+
+			fireEvent( view, 'mousemove', addTarget( uiElement ), mouseButtonPressed );
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]00', '01' ],
@@ -346,7 +379,7 @@ describe( 'table selection', () => {
 
 			movePressedMouseOver( getTableCell( '01' ) );
 
-			const paragraph = view.document.getRoot().getChild( 1 );
+			const paragraph = viewDoc.getRoot().getChild( 1 );
 
 			fireEvent( view, 'mousemove', addTarget( paragraph ) );
 			fireEvent( view, 'mousedown', addTarget( paragraph ) );
@@ -409,7 +442,7 @@ describe( 'table selection', () => {
 	}
 
 	function getTableCell( data ) {
-		for ( const value of view.createRangeIn( view.document.getRoot() ) ) {
+		for ( const value of view.createRangeIn( viewDoc.getRoot() ) ) {
 			if ( value.type === 'text' && value.item.data === data ) {
 				return value.item.parent.parent;
 			}
@@ -421,7 +454,7 @@ describe( 'table selection', () => {
 	}
 
 	function pressMouseButtonOver( target ) {
-		fireEvent( view, 'mousemove', addTarget( target ), mouseButtonPressed );
+		fireEvent( view, 'mousedown', addTarget( target ), mouseButtonPressed );
 	}
 
 	function movePressedMouseOver( target ) {
@@ -468,6 +501,6 @@ describe( 'table selection', () => {
 			decorator( domEvtDataStub );
 		}
 
-		view.document.fire( eventName, domEvtDataStub );
+		viewDoc.fire( eventName, domEvtDataStub );
 	}
 } );
