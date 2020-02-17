@@ -19,7 +19,7 @@ describe( 'DomEventData', () => {
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
-		viewBody = view.domConverter.domToView( document.body, { bind: true } );
+		viewBody = view.domConverter.domToView( viewDocument, document.body, { bind: true } );
 	} );
 
 	afterEach( () => {

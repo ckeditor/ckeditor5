@@ -13,10 +13,7 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
-import ViewDocument from '../../src/view/document';
 import UIElement from '../../src/view/uielement';
-import DocumentSelection from '../../src/view/documentselection';
-import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import DocumentFragment from '../../src/view/documentfragment';
 import DowncastWriter from '../../src/view/downcastwriter';
@@ -31,15 +28,18 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Renderer', () => {
-	let selection, domConverter, renderer, viewDocument;
+	let view, selection, domConverter, renderer, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		selection = new DocumentSelection();
-		domConverter = new DomConverter();
-		viewDocument = new ViewDocument();
-		renderer = new Renderer( domConverter, selection );
+		view = new View();
+		viewDocument = view.document;
+
+		renderer = new Renderer( view );
+		domConverter = renderer.domConverter;
+		selection = renderer.selection;
+
 		renderer.domDocuments.add( document );
 	} );
 
