@@ -205,54 +205,186 @@ The above model structure will be rendered to the data and to the editing view a
 
 ## Common API
 
-The {@link module:table/table~Table} plugin registers the following UI components:
+### UI components
 
-* The `'insertTable'` dropdown.
-* The `'tableColumn'` dropdown.
-* The `'tableRow'` dropdown.
-* The `'mergeTableCells'` dropdown.
-* The `'tableProperties'` button.
-* The `'tableCellProperties'` button.
+The table plugins register the following UI components:
 
-And the following commands:
+<table>
+	<thead>
+		<th>{@link builds/guides/integration/configuration#toolbar-setup Component} name</th>
+		<th>Registered by</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>'insertTable'</code> dropdown</td>
+			<td rowspan="4">{@link module:table/table~Table}</td>
+		</tr>
+		<tr>
+			<td><code>'tableColumn'</code> dropdown</td>
+		</tr>
+		<tr>
+			<td><code>'tableRow'</code> dropdown</td>
+		</tr>
+		<tr>
+			<td><code>'mergeTableCells'</code> dropdown</td>
+		</tr>
+		<tr>
+			<td><code>'tableProperties'</code> button</td>
+			<td>{@link module:table/tableproperties~TableProperties}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellProperties'</code> button</td>
+			<td>{@link module:table/tablecellproperties~TableCellProperties}</td>
+		</tr>
+	</tbody>
+</table>
 
-| {@link framework/guides/architecture/core-editor-architecture#commands Command} name | Implemented by |
-|----------------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| `'insertTable'`                  | {@link module:table/commands/inserttablecommand~InsertTableCommand}                                                       |
-| `'insertTableColumnLeft'`        | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}                                                     |
-| `'insertTableColumnRight'`       | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}                                                     |
-| `'insertTableRowAbove'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}                                                           |
-| `'insertTableRowBelow'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}                                                           |
-| `'removeTableColumn'`            | {@link module:table/commands/removecolumncommand~RemoveColumnCommand}                                                     |
-| `'removeTableRow'`               | {@link module:table/commands/removerowcommand~RemoveRowCommand}                                                           |
-| `'setTableColumnHeader'`         | {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand}                                               |
-| `'setTableRowHeader'`            | {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}                                                     |
-| `'mergeTableCellRight'`          | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
-| `'mergeTableCellLeft'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
-| `'mergeTableCellUp'`             | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
-| `'mergeTableCellDown'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
-| `'splitTableCellVertically'`     | {@link module:table/commands/splitcellcommand~SplitCellCommand}                                                           |
-| `'splitTableCellHorizontally'`   | {@link module:table/commands/splitcellcommand~SplitCellCommand}                                                           |
-| `'tableCellBorderStyle'`         | {@link module:table/tablecellproperties/commands/tablecellborderstylecommand~TableCellBorderStyleCommand}                 |
-| `'tableCellBorderColor'`         | {@link module:table/tablecellproperties/commands/tablecellbordercolorcommand~TableCellBorderColorCommand}                 |
-| `'tableCellBorderWidth'`         | {@link module:table/tablecellproperties/commands/tablecellborderwidthcommand~TableCellBorderWidthCommand}                 |
-| `'tableCellHorizontalAlignment'` | {@link module:table/tablecellproperties/commands/tablecellhorizontalalignmentcommand~TableCellHorizontalAlignmentCommand} |
-| `'tableCellWidth'`               | {@link module:table/tablecellproperties/commands/tablecellwidthcommand~TableCellWidthCommand}                             |
-| `'tableCellHeight'`              | {@link module:table/tablecellproperties/commands/tablecellheightcommand~TableCellHeightCommand}                           |
-| `'tableCellPadding'`             | {@link module:table/tablecellproperties/commands/tablecellpaddingcommand~TableCellPaddingCommand}                         |
-| `'tableCellBackgroundColor'`     | {@link module:table/tablecellproperties/commands/tablecellbackgroundcolorcommand~TableCellBackgroundColorCommand}         |
-| `'tableCellVerticalAlignment'`   | {@link module:table/tablecellproperties/commands/tablecellverticalalignmentcommand~TableCellVerticalAlignmentCommand}     |
-| `'tableBorderColor'`             | {@link module:table/tableproperties/commands/tablebordercolorcommand~TableBorderColorCommand}                             |
-| `'tableBorderStyle'`             | {@link module:table/tableproperties/commands/tableborderstylecommand~TableBorderStyleCommand}                             |
-| `'tableBorderWidth'`             | {@link module:table/tableproperties/commands/tableborderwidthcommand~TableBorderWidthCommand}                             |
-| `'tableAlignment'`               | {@link module:table/tableproperties/commands/tablealignmentcommand~TableAlignmentCommand}                                 |
-| `'tableWidth'`                   | {@link module:table/tableproperties/commands/tablewidthcommand~TableWidthCommand}                                         |
-| `'tableHeight'`                  | {@link module:table/tableproperties/commands/tableheightcommand~TableHeightCommand}                                       |
-| `'tableBackgroundColor'`         | {@link module:table/tableproperties/commands/tablebackgroundcolorcommand~TableBackgroundColorCommand}                     |
+#### Toolbars
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
 * The content toolbar shows up when table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
 * The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
+
+### Editor commands
+
+<table>
+	<thead>
+		<tr>
+			<th>{@link framework/guides/architecture/core-editor-architecture#commands Command} name</th>
+			<th>Command class</th>
+			<th>Belongs to (top–level plugin)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>'insertTable'</code></td>
+			<td>{@link module:table/commands/inserttablecommand~InsertTableCommand}</td>
+			<td rowspan="15">{@link module:table/table~Table}</td>
+		</tr>
+		<tr>
+			<td><code>'insertTableColumnLeft'</code></td>
+			<td>{@link module:table/commands/insertcolumncommand~InsertColumnCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'insertTableColumnRight'</code></td>
+			<td>{@link module:table/commands/insertcolumncommand~InsertColumnCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'insertTableRowAbove'</code></td>
+			<td>{@link module:table/commands/insertrowcommand~InsertRowCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'insertTableRowBelow'</code></td>
+			<td>{@link module:table/commands/insertrowcommand~InsertRowCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'removeTableColumn'</code></td>
+			<td>{@link module:table/commands/removecolumncommand~RemoveColumnCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'removeTableRow'</code></td>
+			<td>{@link module:table/commands/removerowcommand~RemoveRowCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'setTableColumnHeader'</code></td>
+			<td>{@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'setTableRowHeader'</code></td>
+			<td>{@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'mergeTableCellRight'</code></td>
+			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'mergeTableCellLeft'</code></td>
+			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'mergeTableCellUp'</code></td>
+			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'mergeTableCellDown'</code></td>
+			<td>{@link module:table/commands/mergecellcommand~MergeCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'splitTableCellVertically'</code></td>
+			<td>{@link module:table/commands/splitcellcommand~SplitCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'splitTableCellHorizontally'</code></td>
+			<td>{@link module:table/commands/splitcellcommand~SplitCellCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableBorderColor'</code></td>
+			<td>{@link module:table/tableproperties/commands/tablebordercolorcommand~TableBorderColorCommand}</td>
+			<td rowspan="7">{@link module:table/tableproperties~TableProperties}</td>
+		</tr>
+		<tr>
+			<td><code>'tableBorderStyle'</code></td>
+			<td>{@link module:table/tableproperties/commands/tableborderstylecommand~TableBorderStyleCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableBorderWidth'</code></td>
+			<td>{@link module:table/tableproperties/commands/tableborderwidthcommand~TableBorderWidthCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableAlignment'</code></td>
+			<td>{@link module:table/tableproperties/commands/tablealignmentcommand~TableAlignmentCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableWidth'</code></td>
+			<td>{@link module:table/tableproperties/commands/tablewidthcommand~TableWidthCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableHeight'</code></td>
+			<td>{@link module:table/tableproperties/commands/tableheightcommand~TableHeightCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableBackgroundColor'</code></td>
+			<td>{@link module:table/tableproperties/commands/tablebackgroundcolorcommand~TableBackgroundColorCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellBorderStyle'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellborderstylecommand~TableCellBorderStyleCommand}</td>
+			<td rowspan="9">{@link module:table/tablecellproperties~TableCellProperties}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellBorderColor'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellbordercolorcommand~TableCellBorderColorCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellBorderWidth'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellborderwidthcommand~TableCellBorderWidthCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellHorizontalAlignment'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellhorizontalalignmentcommand~TableCellHorizontalAlignmentCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellWidth'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellwidthcommand~TableCellWidthCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellHeight'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellheightcommand~TableCellHeightCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellPadding'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellpaddingcommand~TableCellPaddingCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellBackgroundColor'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellbackgroundcolorcommand~TableCellBackgroundColorCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'tableCellVerticalAlignment'</code></td>
+			<td>{@link module:table/tablecellproperties/commands/tablecellverticalalignmentcommand~TableCellVerticalAlignmentCommand}</td>
+		</tr>
+	</tbody>
+</table>
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
