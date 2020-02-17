@@ -7,33 +7,43 @@ category: features
 
 The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents.
 
-## Demo
+## Demos
+
+### Basic table features
+
+The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
 {@snippet features/table}
 
-## Styling tables and table cells
+Use the **"Insert table"** button in the toolbar to create new tables. Focus any cell in the table to display the toolbar with buttons that will help you further shape the structure of the table.
 
-Sometimes the default table formatting is not enough or maybe you just want to paste a table from other text editor and preserve as much formatting as possible. This is when {@link module:table/tableproperties~TableProperties table properties} and {@link module:table/tablecellproperties~TableCellProperties table cell properties} plugins come in handy.
+### Table and cell styling tools
 
-Take, for example, a table in the editor below. You may have noticed that there are plenty of table cells with non–standard formatting like background colors or borders, especially when compared with the previous demo. Put a selection in the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. You can change the border of the entire table, set its background color, change its dimensions or tune the alignment for the best look of your content.
-
-Now if you are satisfied with the look of your table, it is time to focus on individual cells. Put the caret in the table cell you would like to change and click the **"Cell properties"** button in the toolbar. A now–familiar form with styling options will show up, but this time the adjustments will apply to an individual table cell. If you look closely, you may also spot some new fields: "Padding" and "Table cell text alignment". Use the former to give the text in a cell some space around it. The latter will be useful when your table cell requires a non–standard text alignment, be it horizontal or vertical.
+In addition to the default table features described in the [previous section](#basic-table-features), the editor below comes with some additional tools that will help you modify **the look of tables and table cells**, for instance, border color and style, background color, padding, or text alignment.
 
 {@snippet features/table-styling}
 
-## Installation
+Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. If you click the **"Cell properties"** button, a similar interface will appear but for individual table cells.
 
-<info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+<info-box>
+	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+## Installation
+
+### Basic table features
+
+<info-box info>
+	The basic table features are enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+</info-box>
+
+To add only the basic tables features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-table
 ```
 
-Then add `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
+Then add the `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
 
 ```js
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -50,6 +60,41 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+### Table and cell styling tools
+
+To enable not only the [basic table features](#basic-table-features-2) but also the rich table and cell styling tools in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-table
+```
+
+Then add the `Table`, `TableToolbar`, **`TableProperties`**, and **`TableCellProperties`** plugins to your plugin list and configure the table toolbar:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, ... ],
+		toolbar: [ 'insertTable', ... ],
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells',
+				'tableProperties', 'tableCellProperties'
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
 
 ## Block vs inline content in table cells
 
