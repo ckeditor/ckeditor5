@@ -14,7 +14,7 @@ import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertie
 /**
  * The table cell properties feature.
  *
- * This is a "glue" plugin which loads the
+ * This is a "glue" plugin that loads the
  * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table cell properties editing feature} and
  * the {@link module:table/tablecellproperties/tablecellpropertiesui~TableCellPropertiesUI table cell properties UI feature}.
  *
@@ -37,10 +37,10 @@ export default class TableCellProperties extends Plugin {
 }
 
 /**
- * A configuration of the table cell properties user interface (balloon). It allows to define:
+ * The configuration of the table cell properties user interface (balloon). It allows to define:
  *
- * * the color palette for the cell border color style field (`tableCellProperties.borderColors`),
- * * the color palette for the cell background style field (`tableCellProperties.backgroundColors`).
+ * * The color palette for the cell border color style field (`tableCellProperties.borderColors`),
+ * * The color palette for the cell background style field (`tableCellProperties.backgroundColors`).
  *
  *		const tableConfig = {
  *			tableCellProperties: {

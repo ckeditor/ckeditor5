@@ -8,7 +8,7 @@
  */
 
 /**
- * Table iterator class. It allows to iterate over table cells. For each cell the iterator yields
+ * The table iterator class. It allows to iterate over table cells. For each cell the iterator yields
  * {@link module:table/tablewalker~TableWalkerValue} with proper table cell attributes.
  */
 export default class TableWalker {
@@ -17,7 +17,7 @@ export default class TableWalker {
 	 *
 	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
 	 * It walks row by row and column by column in order to output values defined in the constructor.
-	 * By default it will output only those locations that are occupied by a cell. To include also spanned rows and columns,
+	 * By default it will output only the locations that are occupied by a cell. To include also spanned rows and columns,
 	 * pass the `includeSpanned` option to the constructor.
 	 *
 	 * The most important values of the iterator are column and row indexes of a cell.
@@ -59,7 +59,7 @@ export default class TableWalker {
 	 *			console.log( 'Cell at ' + value.row + ' x ' + value.column + ' : ' + ( value.isSpanned ? 'is spanned' : 'has data' ) );
 	 *		}
 	 *
-	 * will log in the console for the table from previous example:
+	 * will log in the console for the table from the previous example:
 	 *
 	 *		'Cell at 1 x 0 : is spanned'
 	 *		'Cell at 1 x 1 : is spanned'
@@ -72,8 +72,8 @@ export default class TableWalker {
 	 * @param {module:engine/model/element~Element} table A table over which the walker iterates.
 	 * @param {Object} [options={}] An object with configuration.
 	 * @param {Number} [options.column] A column index for which this iterator will output cells.
-	 * @param {Number} [options.startRow=0] A row index for which this iterator should start.
-	 * @param {Number} [options.endRow] A row index for which this iterator should end.
+	 * @param {Number} [options.startRow=0] A row index from which this iterator should start.
+	 * @param {Number} [options.endRow] A row index at which this iterator should end.
 	 * @param {Boolean} [options.includeSpanned=false] Also return values for spanned cells.
 	 */
 	constructor( table, options = {} ) {
@@ -86,7 +86,7 @@ export default class TableWalker {
 		this.table = table;
 
 		/**
-		 * A row index on which this iterator will start.
+		 * A row index from which this iterator will start.
 		 *
 		 * @readonly
 		 * @member {Number}
@@ -94,7 +94,7 @@ export default class TableWalker {
 		this.startRow = options.startRow || 0;
 
 		/**
-		 * A row index on which this iterator will end.
+		 * A row index at which this iterator will end.
 		 *
 		 * @readonly
 		 * @member {Number}
@@ -237,7 +237,7 @@ export default class TableWalker {
 	 * Marks a row to skip in the next iteration. It will also skip cells from the current row if there are any cells from the current row
 	 * to output.
 	 *
-	 * @param {Number} row Row index to skip.
+	 * @param {Number} row The row index to skip.
 	 */
 	skipRow( row ) {
 		this._skipRows.add( row );
@@ -259,11 +259,11 @@ export default class TableWalker {
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} cell The table cell to output.
-	 * @param {Number} column Column index (use the cached value).
-	 * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or actual cell.
-	 * @param {Number} rowspan Rowspan of the current cell.
-	 * @param {Number} colspan Colspan of the current cell.
-	 * @returns {{done: boolean, value: {cell: *, row: Number, column: *, rowspan: *, colspan: *, cellIndex: Number}}}
+	 * @param {Number} column The column index (use the cached value).
+	 * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or an actual cell.
+	 * @param {Number} rowspan The rowspan of the current cell.
+	 * @param {Number} colspan The colspan of the current cell.
+	 * @returns {{done: Boolean, value: {cell: *, row: Number, column: *, rowspan: *, colspan: *, cellIndex: Number}}}
 	 */
 	_formatOutValue( cell, column, isSpanned, rowspan = 1, colspan = 1 ) {
 		return {
@@ -312,8 +312,8 @@ export default class TableWalker {
 	 * Checks if the current cell location (row x column) is spanned by another cell.
 	 *
 	 * @private
-	 * @param {Number} row Row index of a cell location to check.
-	 * @param {Number} column Column index of a cell location to check.
+	 * @param {Number} row The row index of a cell location to check.
+	 * @param {Number} column The column index of a cell location to check.
 	 * @returns {Boolean}
 	 */
 	_isSpanned( row, column ) {
@@ -329,11 +329,11 @@ export default class TableWalker {
 	}
 
 	/**
-	 * Returns the cell element that is spanned over `row` x `column` location.
+	 * Returns the cell element that is spanned over the `row` x `column` location.
 	 *
 	 * @private
-	 * @param {Number} row Row index of the cell location.
-	 * @param {Number} column Column index of the cell location.
+	 * @param {Number} row The row index of the cell location.
+	 * @param {Number} column The column index of the cell location.
 	 * @returns {module:engine/model/element~Element}
 	 */
 	_getSpanned( row, column ) {
@@ -344,11 +344,11 @@ export default class TableWalker {
 	 * Updates spanned cells map relative to the current cell location and its span dimensions.
 	 *
 	 * @private
-	 * @param {Number} row Row index of a cell.
-	 * @param {Number} column Column index of a cell.
+	 * @param {Number} row The row index of a cell.
+	 * @param {Number} column The column index of a cell.
 	 * @param {Number} rowspan Cell height.
 	 * @param {Number} colspan Cell width.
-	 * @param {module:engine/model/element~Element} cell Cell that is spanned.
+	 * @param {module:engine/model/element~Element} cell A cell that is spanned.
 	 */
 	_recordSpans( row, column, rowspan, colspan, cell ) {
 		// This will update all cell locations after current column - ie a cell has colspan set.
@@ -368,9 +368,9 @@ export default class TableWalker {
 	 * Marks the cell location as spanned by another cell.
 	 *
 	 * @private
-	 * @param {Number} row Row index of the cell location.
-	 * @param {Number} column Column index of the cell location.
-	 * @param {module:engine/model/element~Element} cell Cell that is spanned.
+	 * @param {Number} row The row index of the cell location.
+	 * @param {Number} column The column index of the cell location.
+	 * @param {module:engine/model/element~Element} cell A cell that is spanned.
 	 */
 	_markSpannedCell( row, column, cell ) {
 		if ( !this._spannedCells.has( row ) ) {
@@ -390,10 +390,10 @@ export default class TableWalker {
  * @property {module:engine/model/element~Element} cell The current table cell.
  * @property {Number} row The row index of a cell.
  * @property {Number} column The column index of a cell. Column index is adjusted to widths and heights of previous cells.
- * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or actual cell.
- * @property {Number} colspan The `colspan` attribute of a cell. It the model attribute is not present, it is set to `1`. For spanned
+ * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or an actual cell.
+ * @property {Number} colspan The `colspan` attribute of a cell. If the model attribute is not present, it is set to `1`. For spanned
  * table locations, it is set to `1`.
- * @property {Number} rowspan The `rowspan` attribute of a cell. It the model attribute is not present, it is set to `1`. For spanned
+ * @property {Number} rowspan The `rowspan` attribute of a cell. If the model attribute is not present, it is set to `1`. For spanned
  * table locations, it is set to `1`.
- * @property {Number} cellIndex The index of the current cell in a parent row.
+ * @property {Number} cellIndex The index of the current cell in the parent row.
  */

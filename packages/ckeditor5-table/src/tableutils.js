@@ -28,7 +28,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns the table cell location as an object with table row and table column indexes.
 	 *
-	 * For instance in the table below:
+	 * For instance, in the table below:
 	 *
 	 *		    0   1   2   3
 	 *		  +---+---+---+---+
@@ -68,14 +68,14 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Creates an empty table with proper structure. The table needs to be inserted into the model,
-	 * ie. using {@link module:engine/model/model~Model#insertContent} function.
+	 * Creates an empty table with a proper structure. The table needs to be inserted into the model,
+	 * for example, by using the {@link module:engine/model/model~Model#insertContent} function.
 	 *
 	 *		model.change( ( writer ) => {
 	 *			// Create a table of 2 rows and 7 columns:
 	 *			const table = tableUtils.createTable( writer, 2, 7);
 	 *
-	 *			// Insert table to the model at the best position taking current selection:
+	 *			// Insert a table to the model at the best position taking the current selection:
 	 *			model.insertContent( table );
 	 *		}
 	 *
@@ -114,7 +114,7 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @param {module:engine/model/element~Element} table The table model element where the rows will be inserted.
 	 * @param {Object} options
-	 * @param {Number} [options.at=0] Row index at which the rows will be inserted.
+	 * @param {Number} [options.at=0] The row index at which the rows will be inserted.
 	 * @param {Number} [options.rows=1] The number of rows to insert.
 	 */
 	insertRows( table, options = {} ) {
@@ -189,7 +189,7 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @param {module:engine/model/element~Element} table The table model element where the columns will be inserted.
 	 * @param {Object} options
-	 * @param {Number} [options.at=0] Column index at which the columns will be inserted.
+	 * @param {Number} [options.at=0] The column index at which the columns will be inserted.
 	 * @param {Number} [options.columns=1] The number of columns to insert.
 	 */
 	insertColumns( table, options = {} ) {
@@ -259,7 +259,7 @@ export default class TableUtils extends Plugin {
 	 * The cell will be visually split into more cells by updating colspans of other cells in a column
 	 * and inserting cells (columns) after that cell.
 	 *
-	 * In the table below, if cell "a" is split to 3 cells:
+	 * In the table below, if cell "a" is split into 3 cells:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -286,7 +286,7 @@ export default class TableUtils extends Plugin {
 	 *		| b | c | d |
 	 *		+---+---+---+
 	 *
-	 * Splitting cell "a" with `colspan=3` to 2 cells will create 1 cell with a `colspan=a` and cell "a" that will have `colspan=2`:
+	 * Splitting cell "a" with `colspan=3` into 2 cells will create 1 cell with a `colspan=a` and cell "a" that will have `colspan=2`:
 	 *
 	 *		+---+---+---+
 	 *		| a     |   |
@@ -383,7 +383,7 @@ export default class TableUtils extends Plugin {
 	 * The cell will be visually split into more cells by updating rowspans of other cells in the row and inserting rows with a single cell
 	 * below.
 	 *
-	 * If in the table below cell "b" is split to 3 cells:
+	 * If in the table below cell "b" is split into 3 cells:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -418,7 +418,7 @@ export default class TableUtils extends Plugin {
 	 *		|   | h | i |
 	 *		+---+---+---+
 	 *
-	 * Splitting cell "a" with `rowspan=4` to 3 cells will create 2 cells with a `rowspan=1` and cell "a" will have `rowspan=2`:
+	 * Splitting cell "a" with `rowspan=4` into 3 cells will create 2 cells with a `rowspan=1` and cell "a" will have `rowspan=2`:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -556,9 +556,9 @@ export default class TableUtils extends Plugin {
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/element~Element} table
-// @param {Number} insertAt Row index of row insertion.
-// @param {Number} rows Number of rows to create.
-// @param {Number} tableCellToInsert Number of cells to insert in each row.
+// @param {Number} insertAt The row index of row insertion.
+// @param {Number} rows The number of rows to create.
+// @param {Number} tableCellToInsert The number of cells to insert in each row.
 function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attributes = {} ) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
@@ -571,7 +571,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 
 // Creates cells at a given position.
 //
-// @param {Number} columns Number of columns to create
+// @param {Number} columns The number of columns to create
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/position~Position} insertPosition
 function createCells( cells, writer, insertPosition, attributes = {} ) {
@@ -589,8 +589,8 @@ function createCells( cells, writer, insertPosition, attributes = {} ) {
 //
 // as two cells will have a span of 2 and the remainder will go the first cell so its span will change to 3.
 //
-// @param {Number} span Span value do break.
-// @param {Number} numberOfCells Number of resulting spans.
+// @param {Number} span The span value do break.
+// @param {Number} numberOfCells The number of resulting spans.
 // @returns {{newCellsSpan: Number, updatedSpan: Number}}
 function breakSpanEvenly( span, numberOfCells ) {
 	if ( span < numberOfCells ) {

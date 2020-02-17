@@ -53,7 +53,7 @@ export function getSelectedTableWidget( selection ) {
 }
 
 /**
- * Returns a table widget editing view element if one is among selection's ancestors.
+ * Returns a table widget editing view element if one is among the selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/view/element~Element|null}
