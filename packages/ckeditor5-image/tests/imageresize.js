@@ -265,7 +265,7 @@ describe( 'ImageResize', () => {
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' );
 			const finalPointerPosition = initialPosition.clone().moveBy( 0, 10 );
 
-			mouseMock.dragTo( editor, domParts.resizeHandle, {
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 				from: initialPosition,
 				to: finalPointerPosition
 			} );
