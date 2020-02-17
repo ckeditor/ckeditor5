@@ -51,7 +51,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Note, that typing and text deletion is inherently allowed. For more information check {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig} documentation.
+**Note**: Typing and deleting text is always possible in restricted editing regions. For more information check {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig} documentation.
 
 ## Installation
 
